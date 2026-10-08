@@ -1,0 +1,347 @@
+{
+  "root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+  "counts": {
+    "residual": 14,
+    "cpu-limit": 6,
+    "native-closure": 8,
+    "adapter-closure": 7,
+    "memory-limit": 2
+  },
+  "elapsed_seconds": 17906.601873599924,
+  "records": [
+    {
+      "id": "block_0x800d6960",
+      "outcome": "residual",
+      "cpu_seconds": 26.477971,
+      "peak_rss_kib": 1523548,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d6974",
+      "outcome": "residual",
+      "cpu_seconds": 992.425392,
+      "peak_rss_kib": 3086160,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d697c",
+      "outcome": "cpu-limit",
+      "cpu_seconds": 1199.875069,
+      "peak_rss_kib": 3458892,
+      "limit": "cpu",
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d698c",
+      "outcome": "residual",
+      "cpu_seconds": 165.18855200000002,
+      "peak_rss_kib": 2667576,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 12
+    },
+    {
+      "id": "block_0x800d69a4",
+      "outcome": "native-closure",
+      "cpu_seconds": 9.382062000000001,
+      "peak_rss_kib": 1185708,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d69b0",
+      "outcome": "residual",
+      "cpu_seconds": 386.640989,
+      "peak_rss_kib": 4284388,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d69d8",
+      "outcome": "native-closure",
+      "cpu_seconds": 13.389638000000001,
+      "peak_rss_kib": 1177580,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d69e0",
+      "outcome": "native-closure",
+      "cpu_seconds": 15.70702,
+      "peak_rss_kib": 1287672,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d69e8",
+      "outcome": "cpu-limit",
+      "cpu_seconds": 1199.853591,
+      "peak_rss_kib": 3649304,
+      "limit": "cpu",
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d6a00",
+      "outcome": "native-closure",
+      "cpu_seconds": 17.056949,
+      "peak_rss_kib": 1305724,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d6a08",
+      "outcome": "residual",
+      "cpu_seconds": 16.921718000000002,
+      "peak_rss_kib": 1238588,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d6a14",
+      "outcome": "native-closure",
+      "cpu_seconds": 5.914422,
+      "peak_rss_kib": 1124384,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d6a24",
+      "outcome": "residual",
+      "cpu_seconds": 805.3644259999999,
+      "peak_rss_kib": 2910164,
+      "limit": null,
+      "CPU_budget_seconds": 2400,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d6a38",
+      "outcome": "residual",
+      "cpu_seconds": 26.266263,
+      "peak_rss_kib": 1220220,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d6a40",
+      "outcome": "residual",
+      "cpu_seconds": 450.91253900000004,
+      "peak_rss_kib": 4376468,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d6a64",
+      "outcome": "native-closure",
+      "cpu_seconds": 17.189759,
+      "peak_rss_kib": 1310644,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d6a6c",
+      "outcome": "native-closure",
+      "cpu_seconds": 23.704967,
+      "peak_rss_kib": 1407160,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d6a78",
+      "outcome": "residual",
+      "cpu_seconds": 532.5869369999999,
+      "peak_rss_kib": 4829180,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d6aa8",
+      "outcome": "residual",
+      "cpu_seconds": 16.856226,
+      "peak_rss_kib": 1236588,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d6ab4",
+      "outcome": "native-closure",
+      "cpu_seconds": 5.872728,
+      "peak_rss_kib": 1127880,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "outcome": "residual",
+      "cpu_seconds": 810.5184150000001,
+      "peak_rss_kib": 2910116,
+      "limit": null,
+      "CPU_budget_seconds": 2400,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d6ad8",
+      "outcome": "residual",
+      "cpu_seconds": 56.903227,
+      "peak_rss_kib": 1488376,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d6ae0",
+      "outcome": "residual",
+      "cpu_seconds": 590.771295,
+      "peak_rss_kib": 5771120,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "block_0x800d6b08",
+      "outcome": "residual",
+      "cpu_seconds": 487.104992,
+      "peak_rss_kib": 4837256,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "decodeItemJoin698cFrom697c",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 102.87792800000001,
+      "peak_rss_kib": 2402712,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "decodeItemJoin698cFrom69e8",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 126.03891499999999,
+      "peak_rss_kib": 2477552,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "decodeItemJoin6a24From6a14",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 5.5274779999999994,
+      "peak_rss_kib": 1111940,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "outcome": "memory-limit",
+      "cpu_seconds": 763.9861,
+      "peak_rss_kib": 6295448,
+      "limit": "memory",
+      "CPU_budget_seconds": 2400,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "decodeItemJoin6ac4From6ab4",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 5.7127300000000005,
+      "peak_rss_kib": 1115964,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "outcome": "memory-limit",
+      "cpu_seconds": 1340.4854,
+      "peak_rss_kib": 6293488,
+      "limit": "memory",
+      "CPU_budget_seconds": 2400,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "decodeItemJoin6ae0From6970",
+      "outcome": "cpu-limit",
+      "cpu_seconds": 1199.866466,
+      "peak_rss_kib": 3070028,
+      "limit": "cpu",
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "decodeItemJoin6ae0From69e0",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 7.765098,
+      "peak_rss_kib": 1151028,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "decodeItemJoin6ae0From6a08",
+      "outcome": "cpu-limit",
+      "cpu_seconds": 1199.8315650000002,
+      "peak_rss_kib": 2672516,
+      "limit": "cpu",
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "decodeItemJoin6ae0From6a38",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 47.381027,
+      "peak_rss_kib": 1900736,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "decodeItemJoin6ae0From6a6c",
+      "outcome": "cpu-limit",
+      "cpu_seconds": 1199.8662389999997,
+      "peak_rss_kib": 3256432,
+      "limit": "cpu",
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "decodeItemJoin6ae0From6aa8",
+      "outcome": "cpu-limit",
+      "cpu_seconds": 1199.8333760000003,
+      "peak_rss_kib": 2643796,
+      "limit": "cpu",
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    },
+    {
+      "id": "decodeItemJoin6ae0From6ad8",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 70.24464900000001,
+      "peak_rss_kib": 2202176,
+      "limit": null,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6
+    }
+  ],
+  "cost_limit": "Changed roots and hint scopes do not establish isolated rule cost."
+}

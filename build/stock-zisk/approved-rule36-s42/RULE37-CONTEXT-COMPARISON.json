@@ -1,0 +1,472 @@
+{
+  "read_only": true,
+  "S42_root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+  "A_root": "bca6121a2c0343356f73ac4b7b83fa4e225753c5",
+  "A_candidate_tree": "c6768f87a74e7285196c63f1b644cbdc89e41ab0",
+  "A_candidate": "rule37",
+  "S42_scope": {
+    "hints": [
+      "DecodeItemBranchGuardFacts",
+      "DecodeItemCanonicalAnchors",
+      "DecodeItemCompletedFoldFacts",
+      "DecodeItemCorrectedWitnessSelections",
+      "DecodeItemDataWitnessFacts",
+      "DecodeItemEntryByteIndexFacts",
+      "DecodeItemEntryGuardFacts",
+      "DecodeItemFoldBackEdgeWitnesses",
+      "DecodeItemFoldExitFacts",
+      "DecodeItemFoldInitializationWitnesses",
+      "DecodeItemFoldRejectionFacts",
+      "DecodeItemFoldSuccessorWitnesses",
+      "DecodeItemFoldZeroFacts",
+      "DecodeItemHeaderWitnessFacts",
+      "DecodeItemInitializationPureFacts",
+      "DecodeItemInputHeadWordFacts",
+      "DecodeItemOutcomeWitnessFacts",
+      "DecodeItemOutputBaseWitnessFacts",
+      "DecodeItemOutputWitnessSelections",
+      "DecodeItemRawOutputFacts",
+      "DecodeItemS40GuardFacts",
+      "DecodeItemSavedFrameWitnesses",
+      "DecodeItemShortListHandoffFacts",
+      "DecodeItemStringSuccessorWitnesses"
+    ],
+    "approved_classes": {
+      "ArrayBounds": "ZesuSsz.Automation.Hooks.ZesuStepArrayBounds",
+      "ArrayRegionBounds": "ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds",
+      "CanonicalAnchor": "ZesuSsz.Automation.Hooks.ZesuStepCanonicalAnchor",
+      "EvarImplicationGuard": "ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard",
+      "EvarSideconditionGuard": "ZesuSsz.Automation.Hooks.ZesuStepEvarSideconditionGuard",
+      "InstructionLookup": "ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup",
+      "IntegerArrayAddress": "ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress",
+      "KnownPairWitness": "ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness",
+      "ListWitness": "ZesuSsz.Automation.Hooks.ZesuStepListWitness",
+      "LowMask": "ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask",
+      "PureFactHints": "ZesuSsz.Automation.Hooks.ZesuStepPureFactHints",
+      "PureWitnessConstraints": "ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints",
+      "RamFault": "ZesuSsz.Automation.Hooks.ZesuStepRamFault",
+      "RecordWitness": "ZesuSsz.Automation.Hooks.ZesuStepRecordWitness",
+      "RegionFault": "ZesuSsz.Automation.Hooks.ZesuStepRegionFault",
+      "RegionFaultNormalization": "ZesuSsz.Automation.Hooks.ZesuStepRegionFaultNormalization",
+      "RegisterCollectionSelection": "ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection",
+      "ReturnBundle": "ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle",
+      "ReturnWand": "ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand",
+      "StackWrite": "ZesuSsz.Automation.Hooks.ZesuStepStackWrite",
+      "StrictSigned": "ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned",
+      "TupleWitness": "ZesuSsz.Automation.Hooks.ZesuStepTupleWitness",
+      "WordArrayHandoff": "ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff"
+    },
+    "excluded_classes": [
+      {
+        "class": "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepArrayLoadPriority",
+        "switch": "ArrayLoadPriority"
+      },
+      {
+        "class": "ZesuSsz.Automation.BoundedArithmetic.ZesuStepBoundedArithmetic",
+        "switch": "BoundedArithmetic"
+      },
+      {
+        "class": "ZesuSsz.Automation.ByteFold.ZesuStepByteFold",
+        "switch": "ByteFold"
+      },
+      {
+        "class": "ZesuSsz.Automation.CallReturn.ZesuStepCallReturn",
+        "switch": "CallReturn"
+      },
+      {
+        "class": "ZesuSsz.Automation.CallReturnSpecTable.ZesuStepCallReturnSpecTable",
+        "switch": "CallReturnSpecTable"
+      },
+      {
+        "class": "ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch",
+        "switch": "ConjunctMatch"
+      },
+      {
+        "class": "ZesuSsz.Automation.ExistentialArrayRestore.ZesuStepExistentialArrayRestore",
+        "switch": "ExistentialArrayRestore"
+      },
+      {
+        "class": "ZesuSsz.Automation.InstrPreAddress.ZesuStepInstrPreAddress",
+        "switch": "InstrPreAddress"
+      },
+      {
+        "class": "ZesuSsz.Automation.InteriorByteSlice.ZesuStepInteriorByteSlice",
+        "switch": "InteriorByteSlice"
+      },
+      {
+        "class": "ZesuSsz.Automation.LoadedTrace.ZesuStepLoadedTrace",
+        "switch": "LoadedTrace"
+      },
+      {
+        "class": "ZesuSsz.Automation.LookupReduce.ZesuStepLookupReduce",
+        "switch": "LookupReduce"
+      },
+      {
+        "class": "ZesuSsz.Automation.OutcomeHandoff.ZesuStepOutcomeHandoff",
+        "switch": "OutcomeHandoff"
+      },
+      {
+        "class": "ZesuSsz.Automation.SealedCoverage.ZesuStepSealedOpen",
+        "switch": "SealedOpen"
+      },
+      {
+        "class": "ZesuSsz.Automation.SpecPrefix.ZesuStepSpecTail",
+        "switch": "SpecTail"
+      },
+      {
+        "class": "ZesuSsz.Automation.TracePrefixTail.ZesuStepTracePrefixTail",
+        "switch": "TracePrefixTail"
+      },
+      {
+        "class": "ZesuSsz.Automation.PureFacts.ZesuStepWitnessArith",
+        "switch": "WitnessArith"
+      },
+      {
+        "class": "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepWordArrayLookup",
+        "switch": "WordArrayLookup"
+      }
+    ],
+    "Rule34": "ON",
+    "Rule35": "ON",
+    "Rule36": "ON",
+    "SwitchDispatch": "ON"
+  },
+  "A_scope": {
+    "baseline_switches": 27,
+    "ON_switches": 28,
+    "hint_umbrella_modules": 24,
+    "historical_exclusions": 17,
+    "I39": "unbound"
+  },
+  "S42_report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/REPORT.json",
+    "sha256": "9e2fdf3c1777874546c1c4ca7fe4c6dd2e88b20aa24b9380c0043115a22a8376"
+  },
+  "A_report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/REPORT.json",
+    "sha256": "f4196b618b632ce68f551159513e6f36d41ee6a605829fde156d4063c452e939"
+  },
+  "records": [
+    {
+      "active_index": 28,
+      "S42_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-028.json",
+        "sha256": "930dc178d099b3ebc5f0ab2b1c7d44d739e0bfbdd45b2e2e89822728537b6be6"
+      },
+      "A_OFF_capture": {
+        "index": 28,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/off-goal-28.json",
+        "sha256": "c3a23eeeba451b2c80a2b87aa7d37a1d9110618e19ad0c1f4f04061665c8ae14",
+        "conclusion_sha256": "05712e63e0b41fa54cc7e132583537b1f9b6848725dc34e1429a2ecd9e28cacc"
+      },
+      "file_bytes_equal": false,
+      "decoded_records_equal": false,
+      "raw_goal_equal": false,
+      "differing_fields": [
+        "conclusion",
+        "context",
+        "coq",
+        "persistent",
+        "raw_goal",
+        "spatial"
+      ],
+      "full_field_diff": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/fields-28.json",
+        "sha256": "ef2f7e39b4973db8b70740477aaf89a96ce6f27a28b183a930282951be8fa7c7"
+      },
+      "ordered_local_names_equal": true,
+      "ordered_resource_counts": {
+        "S42_persistent": 1,
+        "OFF_persistent": 1,
+        "S42_spatial": 18,
+        "OFF_spatial": 18
+      },
+      "same_printed_callback_kind": "FindRegMapsTo \"medeleg\"",
+      "S42_exact_record_matches_in_ON": [],
+      "S42_exact_raw_matches_in_ON": [],
+      "A_OFF_exact_record_matches_in_ON": [],
+      "kernel_context_identity": "unverified; print formats and trace visibility differ"
+    },
+    {
+      "active_index": 29,
+      "S42_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-029.json",
+        "sha256": "37b4eb3de9ed10eb24ee97f2d303caaacd57362fb155ae3027038c5ccc753845"
+      },
+      "A_OFF_capture": {
+        "index": 29,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/off-goal-29.json",
+        "sha256": "accebb15058240d9e638b824cc939130d1fdeeffddcfe139ee414d816b291cd0",
+        "conclusion_sha256": "e6913f19c2a75df6e11239547d7d361f4b1d2e7341a3dc1a03398f9ec5468e01"
+      },
+      "file_bytes_equal": false,
+      "decoded_records_equal": false,
+      "raw_goal_equal": false,
+      "differing_fields": [
+        "conclusion",
+        "context",
+        "coq",
+        "persistent",
+        "raw_goal",
+        "spatial"
+      ],
+      "full_field_diff": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/fields-29.json",
+        "sha256": "5a952c0d6e68567d059948eb82f762067d5b423e79f03d8c3fa67f450dd12941"
+      },
+      "ordered_local_names_equal": true,
+      "ordered_resource_counts": {
+        "S42_persistent": 1,
+        "OFF_persistent": 1,
+        "S42_spatial": 18,
+        "OFF_spatial": 18
+      },
+      "same_printed_callback_kind": "FindRegMapsTo \"medeleg\"",
+      "S42_exact_record_matches_in_ON": [],
+      "S42_exact_raw_matches_in_ON": [],
+      "A_OFF_exact_record_matches_in_ON": [],
+      "kernel_context_identity": "unverified; print formats and trace visibility differ"
+    },
+    {
+      "active_index": 30,
+      "S42_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-030.json",
+        "sha256": "f0e77d76190a8c3c34b4ad55c4ab52d1b3eab110d971eb29eb20956f09e6bd76"
+      },
+      "A_OFF_capture": {
+        "index": 30,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/off-goal-30.json",
+        "sha256": "5aca92c8f56ea47b169b6c62dbe709fdda60ce3d0bc87453e00ebeae7a1db6ce",
+        "conclusion_sha256": "7f285e2fead3cfb878234e6acbccfe9366a9bcc7ca7438202ef10e6532d7d76a"
+      },
+      "file_bytes_equal": false,
+      "decoded_records_equal": false,
+      "raw_goal_equal": false,
+      "differing_fields": [
+        "conclusion",
+        "context",
+        "coq",
+        "persistent",
+        "raw_goal",
+        "spatial"
+      ],
+      "full_field_diff": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/fields-30.json",
+        "sha256": "bda7320b631be87f3c32a3d9d1f75699652fbf0ca013bfaa99086e186ee2366e"
+      },
+      "ordered_local_names_equal": true,
+      "ordered_resource_counts": {
+        "S42_persistent": 1,
+        "OFF_persistent": 1,
+        "S42_spatial": 18,
+        "OFF_spatial": 18
+      },
+      "same_printed_callback_kind": "FindRegMapsTo \"medeleg\"",
+      "S42_exact_record_matches_in_ON": [],
+      "S42_exact_raw_matches_in_ON": [],
+      "A_OFF_exact_record_matches_in_ON": [],
+      "kernel_context_identity": "unverified; print formats and trace visibility differ"
+    },
+    {
+      "active_index": 31,
+      "S42_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-031.json",
+        "sha256": "4637031603ce8fe81e01579c0d75628d1d8053470f1f6ad997a76f7985677224"
+      },
+      "A_OFF_capture": {
+        "index": 31,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/off-goal-31.json",
+        "sha256": "fc939f137b53ae85786e2e5dfdf6ac4f2d914ccb5ca0369f42263d953c245017",
+        "conclusion_sha256": "5afe00b1a171d77a28cc5d8bf6c4572eafc9487f362f6972ed15c40e7ace5ada"
+      },
+      "file_bytes_equal": false,
+      "decoded_records_equal": false,
+      "raw_goal_equal": false,
+      "differing_fields": [
+        "conclusion",
+        "context",
+        "coq",
+        "persistent",
+        "raw_goal",
+        "spatial"
+      ],
+      "full_field_diff": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/fields-31.json",
+        "sha256": "d6f1ae60d1fe5baa999d8f849c8a3be276ba17e58c94da1eeb0e7c2ecd14edda"
+      },
+      "ordered_local_names_equal": true,
+      "ordered_resource_counts": {
+        "S42_persistent": 1,
+        "OFF_persistent": 1,
+        "S42_spatial": 18,
+        "OFF_spatial": 18
+      },
+      "same_printed_callback_kind": "FindRegMapsTo \"medeleg\"",
+      "S42_exact_record_matches_in_ON": [],
+      "S42_exact_raw_matches_in_ON": [],
+      "A_OFF_exact_record_matches_in_ON": [],
+      "kernel_context_identity": "unverified; print formats and trace visibility differ"
+    }
+  ],
+  "A_OFF_count": 32,
+  "A_ON_count": 21,
+  "A_ON_medeleg_callback_indices": [],
+  "snapshot_bindings": [
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/off-goal-28.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/off-off-goal-28.json",
+      "sha256": "c3a23eeeba451b2c80a2b87aa7d37a1d9110618e19ad0c1f4f04061665c8ae14"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/off-goal-29.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/off-off-goal-29.json",
+      "sha256": "accebb15058240d9e638b824cc939130d1fdeeffddcfe139ee414d816b291cd0"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/off-goal-30.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/off-off-goal-30.json",
+      "sha256": "5aca92c8f56ea47b169b6c62dbe709fdda60ce3d0bc87453e00ebeae7a1db6ce"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/off-goal-31.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/off-off-goal-31.json",
+      "sha256": "fc939f137b53ae85786e2e5dfdf6ac4f2d914ccb5ca0369f42263d953c245017"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-00.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-00.json",
+      "sha256": "5992abbe97ccc321c021869228578e79fe209c7a037f7a7a6d2ad98cf19138d5"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-01.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-01.json",
+      "sha256": "405ac293024a4df65d5bf2d95e1f8749e9766de386937edb95ae7a845cedcf31"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-02.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-02.json",
+      "sha256": "61adc0f11a308b8bcc8a4e8b6105a47f05458e6aae5140a4101741faf2000733"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-03.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-03.json",
+      "sha256": "65ac7798bbd1855047a63896a9f5359c1b16418c6acdf3470c42841cee2894a8"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-04.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-04.json",
+      "sha256": "b364ce0c0adf2c8acf963fdc19d265310d34e087e70499fec89121cce3f8d931"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-05.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-05.json",
+      "sha256": "ce785010f9c1971236a0b240ef47eef31a2139b87621fcc86afd15a2f7362fbc"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-06.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-06.json",
+      "sha256": "49865d80ffbc833cbfd965e0baae338ffe1a54708ad67f17c34d570fb5faff88"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-07.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-07.json",
+      "sha256": "9f698e159affa1af254a1c357b74e079dc7fb95190e6629092dc231ef29184b2"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-08.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-08.json",
+      "sha256": "56771495e78f9146593dd2b0ee338c1fc1178140ad38e12d739ef01a016ebdff"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-09.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-09.json",
+      "sha256": "f333093734730f45b472e45083394a72273c20be997546c65765d343a176dcfb"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-10.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-10.json",
+      "sha256": "54b831a8a23f5f4a31038d610ad6ee257ad52851ae0af1c06da6b23e8fb8a0a1"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-11.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-11.json",
+      "sha256": "6c3ef1e789e0ef1546e984700a57bc8a63b51267fc253f3b6e17c32627fe0c22"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-12.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-12.json",
+      "sha256": "dc0891db917c785c0b3b35f1c82a83609b1c4bfe886bbb87d5f479c5b80deb78"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-13.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-13.json",
+      "sha256": "19d50485a590bb35c49192c97be4dd08ed7f82f4eaaebf55e139b7d85bd10319"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-14.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-14.json",
+      "sha256": "a683e1a0d64a43aabee2ad72af58c739e0dcc07ab211de88247a49f04dd28078"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-15.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-15.json",
+      "sha256": "75680021750efbc1228876f47340d8d9d11bf94ef209f19371c2bc060e678fe2"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-16.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-16.json",
+      "sha256": "6f8a5c385dd3811151d3032e31f0698ba986aeb4fe7c7316f5f9b5ee963b4f57"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-17.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-17.json",
+      "sha256": "3eab38dd9c4c70c66d7dc1e57f1180c2169d35bd4b0ec6fbc7594b695804c617"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-18.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-18.json",
+      "sha256": "09aca112bf353b37e99ae149ef39669f3f6635dadb587c8eafc501acf95fc4be"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-19.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-19.json",
+      "sha256": "5017137cddeec299049dc3dddc13570025f1cb5973f23cacccda2f294a7397cc"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/on-goal-20.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/on-on-goal-20.json",
+      "sha256": "b86e172a05600df9697497ad490e12fc88b5ee8e890d740ecc7fb03caf64817b"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-028.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/s42-block_0x800d6974-028.json",
+      "sha256": "930dc178d099b3ebc5f0ab2b1c7d44d739e0bfbdd45b2e2e89822728537b6be6"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-029.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/s42-block_0x800d6974-029.json",
+      "sha256": "37b4eb3de9ed10eb24ee97f2d303caaacd57362fb155ae3027038c5ccc753845"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-030.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/s42-block_0x800d6974-030.json",
+      "sha256": "f0e77d76190a8c3c34b4ad55c4ab52d1b3eab110d971eb29eb20956f09e6bd76"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-031.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-rule37-register-binding-001/s42-block_0x800d6974-031.json",
+      "sha256": "4637031603ce8fe81e01579c0d75628d1d8053470f1f6ad997a76f7985677224"
+    }
+  ],
+  "finding": "The four positional callbacks differ as exact printed records. A OFF prints explicit arguments and expands traces that S42 hides. All four S42 records and all four A OFF records are absent from ON. ON has no printed medeleg lookup callback.",
+  "limits": [
+    "The roots and candidate trees differ. This comparison does not isolate costs across roots.",
+    "Printing differences prevent an exact kernel-context identity claim.",
+    "Absence from the final ON capture does not establish helper consumption or internal solver lineage.",
+    "No native proof, interpreter, watcher change, or frozen input edit occurred.",
+    "Actual stack, shelf, and given_up groups remain unavailable for these native captures."
+  ],
+  "interpreter_sessions": 0,
+  "native_replays": 0,
+  "watchers_changed": false
+}

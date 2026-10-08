@@ -86,7 +86,12 @@
       ]
     },
     "other_entries": "Listed table binders are universal; unlisted write-register values can be existential inside entry predicates",
-    "continuations": "Outcome existentials inside shared continuations are not table locals"
+    "continuations": "Outcome existentials inside shared continuations are not table locals",
+    "code_persistence": "block_table_pre boxes the supplied code resource",
+    "code_resource": "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedCode",
+    "code_source_hashes": {
+      "ZesuSsz/Contracts/DecodeItemSelected.v": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804"
+    }
   },
   "edge_condition_scope": "register values before the source block's final instruction",
   "condition_ops": {

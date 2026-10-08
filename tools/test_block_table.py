@@ -161,6 +161,9 @@ class BlockTableTests(unittest.TestCase):
             "pc_ownership": "instr_pre pc state supplies PC; entry predicates do not own PC",
             "universal_binders": "Each row's binders, in their listed order",
             "resource_application": "Apply resource_predicate to arguments in order",
+            "code_persistence": "block_table_pre boxes the supplied code resource",
+            "code_resource": "Contracts.Code.fixtureCode",
+            "code_source_hashes": {"Contracts/Code.v": "0" * 64},
         }
         for block in design["blocks"]:
             name = f"ZesuSsz.Contracts.Fixture.entry{address_suffix(block['entry_pc'])}"
@@ -209,16 +212,37 @@ class BlockTableTests(unittest.TestCase):
             root = Path(directory)
             path = root / "Contracts.v"
             path.write_text("supplied declaration")
+            (root / "Contracts").mkdir()
+            code = root / "Contracts/Code.v"
+            code.write_text("supplied code resource")
+            design["table_convention"]["code_source_hashes"] = {"Contracts/Code.v": generate_table.digest(code)}
             expected = generate_table.digest(path)
             for block in design["blocks"]:
                 block["source_hashes"] = {"Contracts.v": expected}
-            self.assertEqual(generate_table.entry_source_hashes(design, root), {"Contracts.v": expected})
+            self.assertEqual(generate_table.entry_source_hashes(design, root),
+                             {"Contracts.v": expected, "Contracts/Code.v": generate_table.digest(code)})
             path.write_text("changed declaration")
             with self.assertRaisesRegex(ValueError, "source hash changed"):
                 generate_table.entry_source_hashes(design, root)
             design["blocks"][0]["source_hashes"] = {"../Contracts.v": expected}
             with self.assertRaisesRegex(ValueError, "repository-relative"):
                 generate_table.entry_source_hashes(design, root)
+
+    def test_table_code_resource_is_bound_and_rendered(self):
+        design, report = self.executable_fixture()
+        source = generate_table.render_table(design, report)
+        self.assertIn("Require Import Contracts.Code.", source)
+        self.assertIn("block_table_code := Contracts.Code.fixtureCode;", source)
+        self.assertIn("block_table_entries := [", source)
+        del design["table_convention"]["code_resource"]
+        with self.assertRaisesRegex(ValueError, "fully qualified"):
+            generate_table.render_table(design, report)
+
+    def test_table_code_source_is_required(self):
+        design, report = self.executable_fixture()
+        design["table_convention"]["code_source_hashes"] = {"Other.v": "0" * 64}
+        with self.assertRaisesRegex(ValueError, "declaration has no bound source"):
+            generate_table.render_table(design, report)
 
     def test_unknown_table_convention_is_rejected(self):
         design, report = self.executable_fixture()

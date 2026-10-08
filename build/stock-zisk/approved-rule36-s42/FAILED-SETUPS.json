@@ -1,0 +1,70 @@
+{
+  "failures": [
+    {
+      "attempt": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003",
+      "seal_sha256": "7eda32d5c9220524faaff10889be6c0757cb4929431ef62e939c8700eee470ce",
+      "inputs_unchanged": true,
+      "files": {
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/RELEASE.json": "a050ce5e75190a4fc0ce69eaed32848fdf816f803e30f62d595118b32ccb9eab",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/dependency-schemas.json": "9c51f68d7c1775e9b5121d10fa2faf7eefaee1c50dda749832b9c0926aea0d6d",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/dependency-health-response.json": "c056c400142889518a7cb3e902e9ea10daa0a1e32dc291a771bc4610742073f5",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/dependency-owner-response.json": "1fec88d698aff50818945de0dfbb2e81353ae323199d4c18202c1b32f0b13d5e",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/block-table-dependency-response.json": "513c91b624f8425300a4628fab1eb44b4976c5861c79dd46af7a840d1b710188",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/dependency-closing-health-response.json": "c056c400142889518a7cb3e902e9ea10daa0a1e32dc291a771bc4610742073f5",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/interactive-schemas.json": "9c51f68d7c1775e9b5121d10fa2faf7eefaee1c50dda749832b9c0926aea0d6d",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/interactive-health-response.json": "c056c400142889518a7cb3e902e9ea10daa0a1e32dc291a771bc4610742073f5",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/interactive-owner-response.json": "740890bbb29c45743f8e8c515c4dbf5d71eb9ac6c788f389093853709315f086",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/control-active-start-response.json": "051ddbc4b522001d2656eb50caa2670e3744c780539ace63e94f05456678de0e",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/control-active-groups-response.json": "7021b9bf1b0113a002c3401c4b62d7adbbee28031b933c52fec8225b3139a4c8",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/control-stack-start-response.json": "58fed196d8578f70629af237ffcb205015a8b0805809927161c9e0468992d8f9",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/control-stack-check-response.json": "d9a269e690ddfcbf268f525af819a0968c8018074de62eb0a4590bc49bb72e8d",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/control-stack-groups-response.json": "29840cd319bc02fbc090fc7b11bbda1a8ad301cdd74aeaa72f61540b3a5de609",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/control-shelf-start-response.json": "4dbddbfb6627e46bfac123fa880d34a8df7200f64e0e4b269573f7857ad14c23",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/control-shelf-check-response.json": "1cc00fe7cf16e13ba1d30ca3c4320e2792f63e7b816d71a1feff47337ccec7fa",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/interactive-closing-health-response.json": "0d060c101f3aa99e52526503d5aa3fbe0b02187eac9a05ba528b74dd6c20a2fd",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/result.json": "96628f32ad8a0a4215b9531365bc73baf6a8e77600ebf29a891cd96b94ae3ff7",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/launcher-result.json": "41874351c158e554d8d571989d662a5ba1046c7fe6baf47601982d91417bd487",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/actual-goals/state_1.json": "56dab040940d08e56862ffc3448379d129ee50c166d7cdc44bda0554969667ae",
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/_build/i54-adapter-mcp-003/actual-goals/state_4.json": "c7b64fc95a302154d9b7fa122e7390671c62bd9e6e804a8037d61bc6a9128807"
+      },
+      "cause": "The shelf control called shelve with two active focused goals.",
+      "native_replays": 0
+    },
+    {
+      "attempt": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-001",
+      "seal_sha256": "092a2b45fe433d3af40b465cc262ee08069243dc29d50c3ff2b9bfbbc5ff8ae1",
+      "inputs_unchanged": true,
+      "files": {
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-001/recipe.json": "4ab56093b14c32d9bed0d7da2cd46bcb81c46de20babbc9203d10d0e7f79d392",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-001/RELEASE.json": "73371eb66fcbcec002fdd03ef91ecd581fa8b92401acc72a205c88eeec7f2253",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-001/launcher-result.json": "daf34f2eee987afbd9100c6841f373e37b07b484116680c6255b8c33d6b86ff1",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-001/mcp/block_0x800d69a4-preflight-tool-schemas.json": "9c51f68d7c1775e9b5121d10fa2faf7eefaee1c50dda749832b9c0926aea0d6d",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-001/mcp/block_0x800d69a4-preflight-health-response.json": "c056c400142889518a7cb3e902e9ea10daa0a1e32dc291a771bc4610742073f5",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-001/mcp/block_0x800d69a4-preflight-owner-response.json": "697c2a28c22b8f69a1f40ee01df29887988b538f508031f8ec36965cee60eb65",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-001/mcp/block_0x800d69a4-initial-compile-response.json": "ff49a4d62fdf1636bd94bc92ff7c35f3c2db62ea9746dd6809f950848891bbb4",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-001/mcp/block_0x800d69a4-preflight-closing-health-response.json": "0267e5d654859d2ebb88779079e5aa3859fd3f524556a2c572a7692e80d5971f",
+        "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-001/mcp/result.json": "e4ce7b9bfa3b14c077f51f8bf105e039d0737ab828e07b4d76db4f44a0a0e819"
+      },
+      "cause": "The artifact symlink resolved outside the workspace. MCP rejected the dependency mappings.",
+      "native_replays": 0
+    },
+    {
+      "attempt": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-code/_build/i54-table-code-mcp-001",
+      "seal_sha256": "c8e71ca12247c71883350bfaa10d4df109e3471ba061881326b9294d0911f529",
+      "inputs_unchanged": true,
+      "files": {
+        "/home/cody/zesislar/.worktrees/worker2-child-i54-table-code/_build/i54-table-code-mcp-001/recipe.json": "e4ad1438525f1aa170068c92c80f63dea2acd3cf71b5acfe139325e53cafe046"
+      },
+      "cause": "The controller required unrelated certificate success before opening a transport.",
+      "native_replays": 0
+    }
+  ],
+  "repairs": {
+    "shelf_control": "split. 1: shelve.",
+    "certificate_mappings": "Fresh physical object copies inside each workspace.",
+    "table_code_dependency": "Verified normal transport closure. Its four proof verifications remain mandatory."
+  },
+  "sources_and_native_objects_unchanged": true,
+  "scope_changes": 0,
+  "shell_fallbacks": 0
+}
