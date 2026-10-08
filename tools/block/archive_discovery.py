@@ -3,9 +3,14 @@
 import hashlib
 import json
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from dune_trace_guard import reject_environment_header
 
 
 def store(archive, data):
+    reject_environment_header(data)
     digest = hashlib.sha256(data).hexdigest()
     path = Path(archive) / digest[:2] / digest
     path.parent.mkdir(parents=True, exist_ok=True)

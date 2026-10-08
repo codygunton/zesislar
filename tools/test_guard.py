@@ -27,6 +27,24 @@ def fixture_environment(**changes):
 
 
 class GuardLockTest(unittest.TestCase):
+    def test_batch_scrubs_trace_before_returning_failure(self):
+        from test_coqc_recipe import csexp
+
+        (self.bin / "systemd-run").write_text(
+            '#!/bin/sh\nwhile [ "$1" != -- ]; do shift; done; shift; exec "$@"\n')
+        header = csexp(["config", "init", "1", ["env", ["TEST_KEY=private-value"]]])
+        event = csexp(["process", "finish", "2", ["exit", "1"]])
+        trace = Path(self.directory.name) / "trace.csexp"
+        writer = Path(self.directory.name) / "write_trace.py"
+        writer.write_text("import pathlib,sys\n"
+                          f"pathlib.Path(sys.argv[2]).write_bytes({header + event!r})\n"
+                          "raise SystemExit(7)\n")
+        result = self.guard("batch", "trace", "--", sys.executable,
+                            str(writer), "--trace-file", str(trace))
+        self.assertEqual(result.returncode, 7, result.stderr)
+        self.assertEqual(trace.read_bytes(), event)
+        self.assertNotIn("private-value", result.stdout + result.stderr)
+
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
         base = Path(self.directory.name)

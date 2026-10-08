@@ -1064,9 +1064,11 @@ run_batch() {
   trap 'exit 143' TERM
   trap 'exit 130' INT
   echo "$unit.scope" >> "$REGISTRY"
+  # Remove private Dune headers before a completed batch returns to its caller.
   env ZESU_IN_BATCH=1 ZESU_AGGREGATE_SLICE="$slice" ZESU_AGGREGATE_LIMIT="$limit" \
     systemd-run --user --scope --quiet --unit="$unit" --slice="$slice" \
-    -p "MemoryMax=$limit" -p MemorySwapMax=0 -- $(io_class) "$@" &
+    -p "MemoryMax=$limit" -p MemorySwapMax=0 -- $(io_class) \
+    python3 "$(dirname "$(realpath "$0")")/dune_trace_guard.py" -- "$@" &
   child=$!
   wait "$child"
   status=$?

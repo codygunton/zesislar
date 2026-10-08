@@ -6,7 +6,8 @@ import tempfile
 from pathlib import Path
 
 
-def trace_events(data: bytes):
+def trace_records(data: bytes):
+    """Read complete records with their exact bytes, including private headers."""
     offset = 0
 
     def parse():
@@ -26,11 +27,28 @@ def trace_events(data: bytes):
         return atom
 
     while offset < len(data):
+        start = offset
         try:
             event = parse()
         except (ValueError, IndexError, UnicodeDecodeError):
             break  # A running Dune process can leave its last event incomplete.
-        yield event
+        yield event, data[start:offset]
+
+
+def trace_environment_header(event):
+    """Identify Dune configuration headers and environment fields."""
+    if not isinstance(event, list):
+        return False
+    if event[:2] == ["config", "init"] or event[:1] == ["env"]:
+        return True
+    return any(trace_environment_header(field) for field in event)
+
+
+def trace_events(data: bytes):
+    """Expose trace events without private configuration or environment records."""
+    for event, _ in trace_records(data):
+        if not trace_environment_header(event):
+            yield event
 
 
 def project_recipe(recipe):
