@@ -546,6 +546,70 @@ Class ZesuCanonicalAnchor {Sigma}
   zesu_canonical_anchor_intro : ZesuPureFactAnchor canonical anchor source.
 #[global] Hint Mode ZesuCanonicalAnchor + + - - : typeclass_instances.
 
+Class ZesuStepCanonicalPureConjunction : Prop := {}.
+
+(* The private registry view preserves the global Anchor input modes. *)
+From Ltac2 Require Import Ltac2.
+Declare ML Module "zesu-signature-gates.plugin".
+Ltac2 @ external zesu_target_registration : constr -> unit :=
+  "zesu-signature-gates.plugin" "target_registration".
+Set Default Proof Mode "Classic".
+Ltac zesu_lookup_target_registration :=
+  ltac2:(zesu_target_registration '(@ZesuPureFactAnchor)).
+
+(* The result contains a closed introduction and its retained pure proof. *)
+Record ZesuTargetRegistration {Sigma} (target : iProp Sigma) : Type := {
+  zesu_target_condition : Prop;
+  zesu_target_resources : iProp Sigma;
+  zesu_target_introduction :
+    ZesuPureFactIntro target (⌜zesu_target_condition⌝ ∗ zesu_target_resources)%I;
+  zesu_target_derivation : zesu_target_condition
+}.
+
+(* Retained pure facts determine hidden certificate arguments. *)
+Ltac zesu_closed_target_registration target :=
+  constr:(ltac:(
+    assert_fails (has_evar target);
+    lazymatch type of target with iProp ?Sigma =>
+      let evidence := open_constr:(ltac:(zesu_lookup_target_registration)
+        : @ZesuPureFactAnchor Sigma target _ _) in
+      lazymatch type of evidence with
+      | ZesuPureFactAnchor _ ?anchor ?source =>
+          let premises := open_constr:(_ : Prop) in
+          let resources := open_constr:(_ : iProp Sigma) in
+          unify source (⌜premises⌝ ∗ resources)%I;
+          let derivation := constr:(ltac:(solve [repeat first
+            [eassumption | split | zesu_finish_lia]]) : premises) in
+          assert_fails (has_evar evidence);
+          assert_fails (has_evar derivation);
+          exact {| zesu_target_condition := premises;
+            zesu_target_resources := resources;
+            zesu_target_introduction :=
+              @zesu_pure_fact_anchor_intro Sigma target anchor source evidence;
+            zesu_target_derivation := derivation |}
+      end
+    end) : ZesuTargetRegistration target).
+
+(* Run before resource splitting or existential packaging. *)
+Ltac zesu_target_registered_intro_if_enabled :=
+  zesu_switch_enabled constr:(ZesuStepCanonicalPureConjunction);
+  lazymatch goal with
+  | |- envs_entails _ ?requested =>
+      let target := lazymatch requested with
+        | (?leftTarget ∗ True)%I => constr:(leftTarget)
+        | _ => constr:(requested)
+        end in
+      let registration := zesu_closed_target_registration target in
+      let introduction := constr:(@zesu_target_introduction _ target registration) in
+      let derivation := constr:(@zesu_target_derivation _ target registration) in
+      let source := constr:((⌜@zesu_target_condition _ target registration⌝ ∗
+        @zesu_target_resources _ target registration)%I) in
+      zesu_expose_environment_alias;
+      first [constr_eq requested target | iSplitL; [|done]];
+      iApply (@zesu_pure_fact_intro _ target source introduction);
+      iSplit; [iPureIntro; exact derivation|]
+  end.
+
 (* The owned anchor determines the registered target before conversion. *)
 Ltac zesu_canonical_anchor_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepCanonicalAnchor);

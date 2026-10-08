@@ -1,0 +1,49 @@
+{
+  "archive_root": "/home/cody/zesislar-archive/sha256",
+  "indexes": [
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/9f/9fd50030b2cf2936e3ea28d92cfce854974a8f14573c799f0c4275ef8f6d3ed4",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-comparison/_build/rule35-evidence-preparation-001/base-archive-index.json",
+      "records": 10975,
+      "sha256": "9fd50030b2cf2936e3ea28d92cfce854974a8f14573c799f0c4275ef8f6d3ed4",
+      "unique_archive_files": 8042
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/07/07f305b2cd57704e5c3765d83f174a155cd109644845699dfa2ac6d9a7aa2603",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-comparison/_build/rule35-evidence-preparation-001/native-archive-index.json",
+      "records": 11739,
+      "sha256": "07f305b2cd57704e5c3765d83f174a155cd109644845699dfa2ac6d9a7aa2603",
+      "unique_archive_files": 8094
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/37/37c869ddebb0204452eca2a77cdd5936a8b162846e1d695a7ce870515ca67d1f",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/_build/rule35-c9-evidence-preparation-001/pre-repair-archive-index.json",
+      "records": 51,
+      "sha256": "37c869ddebb0204452eca2a77cdd5936a8b162846e1d695a7ce870515ca67d1f",
+      "unique_archive_files": 35
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/33/33419e90e1222f672ebaa3061798ca5844926b40384e632493745dfbfe429694",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/_build/rule35-c9-evidence-preparation-001/standalone-prerelease-archive-index.json",
+      "records": 16598,
+      "sha256": "33419e90e1222f672ebaa3061798ca5844926b40384e632493745dfbfe429694",
+      "unique_archive_files": 8096
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/3b/3bba4ade8f5d023c989b11d8ba897b772539bce3843725f65ef0e4e54f2819dc",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/_build/rule35-c9-evidence-preparation-001/post-gates-off-archive-index.json",
+      "records": 41,
+      "sha256": "3bba4ade8f5d023c989b11d8ba897b772539bce3843725f65ef0e4e54f2819dc",
+      "unique_archive_files": 40
+    },
+    {
+      "archive_path": "/home/cody/zesislar-archive/sha256/f5/f5c74db3097598a9a7a057aa0bb277559aac89157891a2cd147f316c9588e9b6",
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/_build/rule35-c9-evidence-preparation-001/standalone-final-archive-index.json",
+      "records": 38,
+      "sha256": "f5c74db3097598a9a7a057aa0bb277559aac89157891a2cd147f316c9588e9b6",
+      "unique_archive_files": 33
+    }
+  ],
+  "native_replayed": false,
+  "trace_archived": false
+}

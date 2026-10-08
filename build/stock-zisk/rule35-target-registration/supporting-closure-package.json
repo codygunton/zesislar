@@ -1,0 +1,176 @@
+{
+  "I39_overlay_sha256": "d4d9d43d90d97a3090b43658a823cff662d70728d0d6ecd99c50a3273a201f5a",
+  "archives": {
+    "base": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-comparison/_build/rule35-evidence-preparation-001/base-archive-index.json",
+      "sha256": "9fd50030b2cf2936e3ea28d92cfce854974a8f14573c799f0c4275ef8f6d3ed4"
+    },
+    "native": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-comparison/_build/rule35-evidence-preparation-001/native-archive-index.json",
+      "sha256": "07f305b2cd57704e5c3765d83f174a155cd109644845699dfa2ac6d9a7aa2603"
+    },
+    "standalone_prerelease": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/_build/rule35-c9-evidence-preparation-001/standalone-prerelease-archive-index.json",
+      "sha256": "33419e90e1222f672ebaa3061798ca5844926b40384e632493745dfbfe429694"
+    }
+  },
+  "block_count_audit": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/_build/rule35-c9-final-preparation-001/block-count-audit.json",
+    "sha256": "627391eb5fc984e33df95ef2ffb911ddf11a7700fa206f69ae10572b011e9718"
+  },
+  "dependency_limit": "Imports do not prove necessity. The B8 comparison measures Rule35 under equal I39. The C9 confirmation changes root and hint scope.",
+  "gates": {
+    "fast": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/_build/rule35-c9-gates-002/fast-gate-audit.json",
+      "sha256": "1c6b1baa78500a8baf17533cd3cc31c5a799bede7d972769be784f33d8cd0eed"
+    },
+    "iris": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/_build/rule35-c9-final-preparation-001/iris-gate-audit.json",
+      "sha256": "e0a9b6f74a3875d93343604185ed25853757e781306ea3f247bf9138a6935999"
+    }
+  },
+  "item": "Rule35 supporting-transfer closures",
+  "level1_closed": false,
+  "measurement_root": "b8af7980eeca5b220ce9887e7f85fa6940b5943c",
+  "measurement_scope": {
+    "I39": "identical unlanded overlay in both arms",
+    "ON_switches": 27,
+    "baseline_switches": 26,
+    "direct_root_hints": 18,
+    "dispatch": "ON",
+    "historical_classes_active": [],
+    "input_seals_each_arm": 10582,
+    "rule34": "ON"
+  },
+  "native_selected_certificate": "unobserved",
+  "production_MCP": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/_build/rule35-c9-production-mcp-004/audit.json",
+    "sha256": "173af6f5ae690bb0ee25e2ce0f6f59387dab46185537ee223c2608c908580af2"
+  },
+  "production_has_I39": false,
+  "production_root": "c9f9a727a9200a2af25eac169c6b46c65250cafa",
+  "sites": {
+    "697c": {
+      "MCP_all_final_groups_empty": true,
+      "assumptions": [],
+      "compiler_CPU_seconds": 103.681855,
+      "compiler_exit": 0,
+      "compiler_limit": null,
+      "compiler_peak_RSS_KiB": 2398468,
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-comparison/_build/rule35-frozen-comparison-001/697c-on-001/evidence.json",
+        "sha256": "81800cf33778e06f6eb0cd4473210bcd3d0f2e7de3bfe9fa4e59407e7cbab896"
+      },
+      "exact_statement": "Lemma decodeItemJoin698cFrom697c_correct `{!islaG Sigma} `{!threadG}\n args (frameBytes : list byte) (prefix : bv 64) (inputPrefix : byte) (rest : list byte) :\n \u22a2 decodeItemJoin698cFrom697c args frameBytes prefix inputPrefix rest.",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "named_Qed_compiled": true,
+      "pair_audit": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-comparison/_build/rule35-frozen-comparison-001/697c-pair-audit.json",
+        "sha256": "bcec032d1416364042da888493ee400394b3a6f4e61825b31108f553143cdcb9"
+      },
+      "primary_body_sha256": "baf270efc8d09bee21e01759a06187cec4364922e6d908207d21b6e1c9516421",
+      "retained_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-comparison/_build/rule35-frozen-comparison-001/697c-on-001/Boundary.vo",
+        "sha256": "7fb927b9ebbb35c773a7d52c0f23af7ce7b29f9098fc976ea0d300af048050eb"
+      },
+      "retained_object_MCP_audit": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-comparison/_build/rule35-native-object-audit-697c-001/audit.json",
+        "sha256": "93da041c0fddf232d3aeca2dd121e3b5cf92b61c4eae7c638366b3b4efe36090"
+      },
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-comparison/_build/rule35-frozen-comparison-001/697c-on-001/Boundary.v",
+        "sha256": "639e877b2c84643a3fae81990690c31e5b7548a8c0910af12786d60843f64189"
+      },
+      "statement_sha256": "4748057706b5b416e21197ad585293c0c2e5e59467077817438ea18fc4f54874",
+      "static_block_counts": {
+        "conditional_branch_count": 0,
+        "end_pc_exclusive": "0x800d698c",
+        "entry_pc": "0x800d697c",
+        "instruction_PCs": [
+          "0x800d697c",
+          "0x800d6980",
+          "0x800d6984",
+          "0x800d6988"
+        ],
+        "instruction_count": 4,
+        "loops": 0,
+        "successor_pcs": [
+          "0x800d698c"
+        ],
+        "unconditional_jump_count": 0
+      },
+      "theorem": "decodeItemJoin698cFrom697c_correct"
+    },
+    "69e8": {
+      "MCP_all_final_groups_empty": true,
+      "assumptions": [],
+      "compiler_CPU_seconds": 135.11250600000002,
+      "compiler_exit": 0,
+      "compiler_limit": null,
+      "compiler_peak_RSS_KiB": 2478100,
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-comparison/_build/rule35-frozen-comparison-001/69e8-on-001/evidence.json",
+        "sha256": "32540e67b7c896d6b24b106c07ee79384344b2dc5ff9b76d0f5534662d7c60a8"
+      },
+      "exact_statement": "Lemma decodeItemJoin698cFrom69e8_correct `{!islaG Sigma} `{!threadG}\n    (args : DecodeItemArgs) (frameBytes : list byte)\n    (payloadLength : bv 64) (inputPrefix : byte) (rest : list byte) :\n  \u22a2 decodeItemJoin698cFrom69e8 args frameBytes payloadLength inputPrefix rest.",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "named_Qed_compiled": true,
+      "pair_audit": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-comparison/_build/rule35-frozen-comparison-001/69e8-pair-audit.json",
+        "sha256": "7c6ce22b4fb7d304c92363cd6c2c19b179e9ef69d2e6b7dcc4d8bab17aba522a"
+      },
+      "primary_body_sha256": "65131e433bc698eab474ad157800471b3b0aa624cc000f56b1e7482ea4dae65f",
+      "retained_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-comparison/_build/rule35-frozen-comparison-001/69e8-on-001/Boundary.vo",
+        "sha256": "f438f93fcdbb7654134c62a22532fb80e80c8d97e825c9cb6aeec8cba6bf36b3"
+      },
+      "retained_object_MCP_audit": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-comparison/_build/rule35-native-object-audit-69e8-001/audit.json",
+        "sha256": "2452eafbd33c339f9c9850051fe44a02d40149a032d1656d62c411f375a3579b"
+      },
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-comparison/_build/rule35-frozen-comparison-001/69e8-on-001/Boundary.v",
+        "sha256": "d19b20eddc082f8701fd777e76e79d23fa0d770455eaef4194cf0085a19d5a70"
+      },
+      "statement_sha256": "5b43b7c6efed32b243b585279e540af1925bc58ea6fa3306b1dfe046acb4b3ba",
+      "static_block_counts": {
+        "conditional_branch_count": 0,
+        "end_pc_exclusive": "0x800d6a00",
+        "entry_pc": "0x800d69e8",
+        "instruction_PCs": [
+          "0x800d69e8",
+          "0x800d69ec",
+          "0x800d69f0",
+          "0x800d69f4",
+          "0x800d69f8",
+          "0x800d69fc"
+        ],
+        "instruction_count": 6,
+        "loops": 0,
+        "successor_pcs": [
+          "0x800d698c"
+        ],
+        "unconditional_jump_count": 1
+      },
+      "theorem": "decodeItemJoin698cFrom69e8_correct"
+    }
+  },
+  "standalone_scope": {
+    "I39": "absent",
+    "ON_switches": 26,
+    "baseline_switches": 25,
+    "direct_root_hints": 21,
+    "dispatch": "ON",
+    "historical_classes_active": [],
+    "input_seals_each_arm": 16591,
+    "rule34": "ON",
+    "status": "OFF watched; ON released serially after fresh admission"
+  },
+  "termination_proved": false
+}
