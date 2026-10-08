@@ -1,0 +1,1055 @@
+{
+  "additional_lineage": [
+    {
+      "captures": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-6373-0.json",
+          "sha256": "df2e67be86799ebf34bd13b064e8f86ec08f549d91a04306f1833fbfd2fd8704"
+        }
+      ],
+      "event": {
+        "ancestors": [
+          6373,
+          6368,
+          6367,
+          6365,
+          6358,
+          2,
+          1
+        ],
+        "application_returned": false,
+        "attempted": true,
+        "committed_firing": false,
+        "id": 6373,
+        "label": "\"zesu_region_fault_arithmetic\"",
+        "parent": 6368,
+        "returned_step_ancestors": [
+          6365
+        ],
+        "rolled_back": true,
+        "survives_observed_rollback": false,
+        "surviving_application_return": false
+      }
+    },
+    {
+      "captures": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-7786-0.json",
+          "sha256": "bb612e7d97e4dc21794153b10da624069929260e0bae273fbed39e841320d093"
+        }
+      ],
+      "event": {
+        "ancestors": [
+          7786,
+          7781,
+          7779,
+          7769,
+          7762,
+          2,
+          1
+        ],
+        "application_returned": false,
+        "attempted": true,
+        "committed_firing": false,
+        "id": 7786,
+        "label": "\"zesu_stack_arithmetic\"",
+        "parent": 7781,
+        "returned_step_ancestors": [
+          7769
+        ],
+        "rolled_back": true,
+        "survives_observed_rollback": false,
+        "surviving_application_return": false
+      }
+    },
+    {
+      "captures": [],
+      "event": {
+        "ancestors": [
+          19195,
+          19191,
+          19184,
+          2,
+          1
+        ],
+        "application_returned": true,
+        "attempted": true,
+        "committed_firing": true,
+        "id": 19195,
+        "label": "\"zesu_ram_fault_if_enabled\"",
+        "parent": 19191,
+        "returned_step_ancestors": [
+          19191
+        ],
+        "rolled_back": false,
+        "survives_observed_rollback": true,
+        "surviving_application_return": true
+      }
+    },
+    {
+      "captures": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-19197-0.json",
+          "sha256": "4336a306d759270c783aa25d6f3990d9a17253d13c4a96f06bf09fd65f84fbc8"
+        }
+      ],
+      "event": {
+        "ancestors": [
+          19197,
+          19195,
+          19191,
+          19184,
+          2,
+          1
+        ],
+        "application_returned": true,
+        "attempted": true,
+        "committed_firing": true,
+        "id": 19197,
+        "label": "\"zesu_stack_arithmetic\"",
+        "parent": 19195,
+        "returned_step_ancestors": [
+          19191
+        ],
+        "rolled_back": false,
+        "survives_observed_rollback": true,
+        "surviving_application_return": true
+      }
+    },
+    {
+      "captures": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-23451-0.json",
+          "sha256": "328c0dd131d437b4272b48bd95992cf6ef71cd4c4d80bd89c53724b8042ab1ad"
+        }
+      ],
+      "event": {
+        "ancestors": [
+          23451,
+          23449,
+          23442,
+          2,
+          1
+        ],
+        "application_returned": true,
+        "attempted": true,
+        "committed_firing": true,
+        "id": 23451,
+        "label": "\"zesu_region_fault_if_enabled\"",
+        "parent": 23449,
+        "returned_step_ancestors": [
+          23449
+        ],
+        "rolled_back": false,
+        "survives_observed_rollback": true,
+        "surviving_application_return": true
+      }
+    },
+    {
+      "captures": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-23459-0.json",
+          "sha256": "741ee2d17ff5125b97d96aacc6fb03e0d432e8d07e8dd9d69107667324c53cda"
+        }
+      ],
+      "event": {
+        "ancestors": [
+          23459,
+          23453,
+          23451,
+          23449,
+          23442,
+          2,
+          1
+        ],
+        "application_returned": true,
+        "attempted": true,
+        "committed_firing": true,
+        "id": 23459,
+        "label": "\"zesu_region_fault_assert-wp_assert\"",
+        "parent": 23453,
+        "returned_step_ancestors": [
+          23449
+        ],
+        "rolled_back": false,
+        "survives_observed_rollback": true,
+        "surviving_application_return": true
+      }
+    },
+    {
+      "captures": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-24054-0.json",
+          "sha256": "6e8d44d1f5f1e6e6bf99bec3c8d3b8f50f6b00de85042031e7761a974680239f"
+        }
+      ],
+      "event": {
+        "ancestors": [
+          24054,
+          24052,
+          24045,
+          2,
+          1
+        ],
+        "application_returned": true,
+        "attempted": true,
+        "committed_firing": true,
+        "id": 24054,
+        "label": "\"zesu_region_fault_if_enabled\"",
+        "parent": 24052,
+        "returned_step_ancestors": [
+          24052
+        ],
+        "rolled_back": false,
+        "survives_observed_rollback": true,
+        "surviving_application_return": true
+      }
+    },
+    {
+      "captures": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-24062-0.json",
+          "sha256": "797b17fa4c8241828c6b01e032a4ddcfe6e5a929a4b40fd0c833bd4c7fe8888e"
+        }
+      ],
+      "event": {
+        "ancestors": [
+          24062,
+          24056,
+          24054,
+          24052,
+          24045,
+          2,
+          1
+        ],
+        "application_returned": true,
+        "attempted": true,
+        "committed_firing": true,
+        "id": 24062,
+        "label": "\"zesu_region_fault_assert-wp_assert\"",
+        "parent": 24056,
+        "returned_step_ancestors": [
+          24052
+        ],
+        "rolled_back": false,
+        "survives_observed_rollback": true,
+        "surviving_application_return": true
+      }
+    }
+  ],
+  "assumptions": "No native theorem or assumption certificate exists",
+  "bindings": {
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-6974-firing-unbounded-002/Boundary.v": "d6c2da5c26fd36c34d908adf1fee2daa23456f56503f4d60607132f9e46cc1fc",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-6974-firing-unbounded-002/compiler-environment.json": "50e4c9a6090605617bb3e104e2976dccb92a4b62681c9e0d94a4815d5a4472e7",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-6974-firing-unbounded-002/compiler.json": "a1bedc0256bb78dc9f0138558cc3ad036cbee005d35bab8c8b60411337b8942f",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-6974-firing-unbounded-002/compiler.log": "914b0830c778e6e5c1e2e049e376838cc7117c3069d73be5f2ed636b4c312da9",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-6974-firing-unbounded-002/controller-result.json": "02323eab45d9ca6c54a90b13645d32847634f53bb07af8e3216f78f6c655ab11",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-6974-firing-unbounded-002/controller.py": "264480b8e053c35848bd92ca738a442c85809bcc69c7ed7df6d21fe151855773",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-6974-firing-unbounded-002/evidence.json": "d9315e86e954917fa1a28d208edaa80731752709f83e9624de7133743680b154",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-6974-firing-unbounded-002/firing-trace.json": "ab8870c60336574019f92933ede9d30ff993273d3b697b808bb622cae25724ae",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-6974-firing-unbounded-002/launcher.py": "8b16f995a47f8813707644f6cc37135d715d534c026b2db56408d119e3546eed",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-6974-firing-unbounded-002/parent-release.json": "85702d1643acc04a53dc3aceb9421a972bc9460769b73f31e3414f6f4d8eed52",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-6974-firing-unbounded-002/release-audit.json": "217397afec8cc9473f9a692c1ea60c17d5b514c99362d07d3e7c5b807624d080",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-6974-firing-unbounded-002/result.json": "20f6c94ec65837792b5e5f2f2ef4fdc63ede6d26aceb548ba5814418186e26bf",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-6974-firing-unbounded-002/run-inputs.json": "3077be41a2e73be5a00517dfdd8baa438f9cade1b95ed71112f656903455dd84",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-6974-firing-unbounded-002/sealed-coqc-recipe.json": "1e1825db7c5b5ca5a24225310faf84aac6b9f090ab6206d454daa12aeab0573a",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-6974-firing-unbounded-002/sealed-observer.diff": "9b13d3b20e437bfa5c6f3f8cdcfc2529f7278b47d3575fc6e22f5be14566a58b",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-6974-firing-unbounded-002/selector-contexts.json": "0de7d77f9b07a2732dbb36159b44d994e6d25857be5da73694ebe12b669d7e7e",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-final-controls-audit-001/ENTRY-COMPARISON.json": "cf630cba26bb542e03b47dae3dc67415e10e824cc35b2c5b6b436538ad51f62e",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-final-controls-audit-001/REPORT.json": "c8bcc5d01dd64da4d522638f85e22431b8cbcf0ce9388297e1687b5b473c8a24",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-final-seal-audit-003/SEALED-PACKAGE.json": "8899b889374bcd7210cd0354b85fd7d80596b8f8094030110e260af91d03d279",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/audit-result.py": "311b16163039eef2b6aceded86a896aec88490085db2134aa40f7cc39f665273",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-10783.json": "e55e6eaf6c627992feba6d90c38b48fe26c6fe67e90664e3822db336c5267095",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-10787.json": "bfd4b8f8091e0911fe8232448d180df4b56209f1c653d7bafa09d2c8b1da5568",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-19197-0.json": "4336a306d759270c783aa25d6f3990d9a17253d13c4a96f06bf09fd65f84fbc8",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-20745.json": "2b1840b05a69b3f60f3fca4dfd979e44a46d3bfb42d18bbf8aee0f1108a88935",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-20749.json": "87aa739f7d58b850d19c624d77bed030c5b6b9330783accdbccc012b903eef6b",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-23451-0.json": "328c0dd131d437b4272b48bd95992cf6ef71cd4c4d80bd89c53724b8042ab1ad",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-23454.json": "c842d44d393ac88b18a313c2c7b9efd4caad311dca4259ec4f99f8c99bdb074f",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-23458.json": "54c07129ee3bb299d4ffe6ac8da90cf6e94ac4b40a828987e86ff1e5c5e54d72",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-23459-0.json": "741ee2d17ff5125b97d96aacc6fb03e0d432e8d07e8dd9d69107667324c53cda",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-23473.json": "f64827c5bcaea0445a0135e81e40dd1b1eb1fc96909bdb5b0ec2b00559b785e6",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-23477.json": "3da88ad51d2f0de6236ffc68163a54060d507625677f831540c91ae75c06b66a",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-24054-0.json": "6e8d44d1f5f1e6e6bf99bec3c8d3b8f50f6b00de85042031e7761a974680239f",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-24057.json": "439e78ae23d976df74f0109c9a5dc43839273298a4afecc11d94f0c93cedc736",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-24061.json": "7788111d8a43b86c51a63769d9b7bdcb5f9a638e2fa8b113036830a88176dd75",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-24062-0.json": "797b17fa4c8241828c6b01e032a4ddcfe6e5a929a4b40fd0c833bd4c7fe8888e",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-6373-0.json": "df2e67be86799ebf34bd13b064e8f86ec08f549d91a04306f1833fbfd2fd8704",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-7774.json": "f3d3935face3833771f6e6f3dd067f61e4895a720a35dea5283384dd2e186194",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-7778.json": "441864cf219a6a562e2d277c187716b6d8b45e50ff2246eb29a8fbc0819e68c7",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-7786-0.json": "bb612e7d97e4dc21794153b10da624069929260e0bae273fbed39e841320d093",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-0.json": "f82506d8808d3df4f9f27d257843a0791216bad2cfcc1f01fd8239843df7692d",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-1.json": "1c6d8e0bc21a38080ab511c497cce7d9cbd7bcdc895462c7a78ef40d7fbb449b",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-10.json": "82acdac61aee3c1f8d47bac2f35f58bd2c81c43196bad338f9da2dff6a2a9cad",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-11.json": "91fc3ea73113c0d8fcc10746bc8c0b0f509d1a3708eae83e0c58986a6cc1d76b",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-12.json": "1331cfbee326850a9455b21f127820de673d23b5ad9ad94c80ccd057fb9f1a9e",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-13.json": "121ae5590d1e1c7dfc1ad7324779a5f7865ea6b9f6ba04098fc569519a3eea29",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-14.json": "dda73f24d198736047f015933a9c2d77af564b07188c533c81c59ae7034a8f95",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-15.json": "87367395998b189b91b853c9fb1cbeed7e8579311fe28ab56962fdc0f7cd8655",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-16.json": "f53b2929a66478231efc46e1702c7fb81c3b9f3968e8f52dbc469dc4e09ce799",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-17.json": "fcb97dc839996fda2da922ae6fb4a4e9857b8704fe8cd194853354f6676dce4b",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-18.json": "f638ac65ba27f5858ebe2943c2289148dd0e01e6b457de763201faae502e322d",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-19.json": "9864e43e2b9723f6c229e0511f3c8ae2933a4e0d8f7306f4adb8d0a815b79128",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-2.json": "60f07e97d4e5ab20aaa404289c095d26bfae16abc52abfadbe4461a44bae74a5",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-3.json": "772b41f12085a7b4c6e7ee3e1684cc48e165b97915f450d0829b576c5b3dbd30",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-4.json": "18926a342f572238c5eabb5b79c33c20401fd5d7e6bb0efdcd5f1500f0e8d710",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-5.json": "ddedd5b459363501d11c3a2fd2f7b7e5e7bcb5919a50640e6e41295ca035102b",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-6.json": "5018f67c142e394b26bb4ac292881979bfd4c6ac1ef333162539365b6f1151f8",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-7.json": "f903bf15b57b289c7150ead53e826c7a5d08f65e3d296c8395c92dfec988d2a4",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-8.json": "acd2bc0e38e4b66525673e265110ffa7c10b9dc7400ecf3cef829ee6fc4cf4e0",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-9.json": "f67fd59850db58c5f9422a56035b1e6e390fbfac1a538899f0f9020b6c65b843"
+  },
+  "boundary_closed": false,
+  "candidate_tree": "ef3f1d349a156a7db38603e24ace7d7eab817611",
+  "checked_inputs": 13405,
+  "classification": "Both rules are attempted and enabled. Four retained exception branches reach arithmetic and reject before wp_assert. RegionFault also prunes two other exception branches. RamFault returns once through its negative-bound fallback, not through the direct assertion route.",
+  "compiled_native_object": null,
+  "compiler": {
+    "cpu_seconds": 1062.966891,
+    "elapsed_seconds": 1065.7217887109146,
+    "exit_code": 1,
+    "limit": null,
+    "limits": {
+      "cpu_seconds": 1200,
+      "module_seconds": null,
+      "rss_kib": 6291456
+    },
+    "peak_rss_kib": 3180408
+  },
+  "controller_elapsed_seconds": 1090.5360790700652,
+  "controller_exit": 0,
+  "current_fault_assertions": [
+    {
+      "arithmetic_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-7778.json",
+        "sha256": "441864cf219a6a562e2d277c187716b6d8b45e50ff2246eb29a8fbc0819e68c7"
+      },
+      "arithmetic_event": {
+        "ancestors": [
+          7778,
+          7773,
+          7771,
+          7769,
+          7762,
+          2,
+          1
+        ],
+        "application_returned": false,
+        "attempted": true,
+        "committed_firing": false,
+        "id": 7778,
+        "label": "\"zesu_region_fault_arithmetic\"",
+        "parent": 7773,
+        "returned_step_ancestors": [
+          7769
+        ],
+        "rolled_back": true,
+        "survives_observed_rollback": false,
+        "surviving_application_return": false
+      },
+      "arithmetic_target": "(@bv_signed 128 (@bv_zero_extend 64 128 LET0 + 1) \u2264 @bv_signed 128 3221225472)%Z",
+      "assertion": "(Assert (Unop Not (Val (Val_Bool LET2) Mk_annot) Mk_annot))",
+      "next_medeleg_symbol": 44,
+      "shape_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-7774.json",
+        "sha256": "f3d3935face3833771f6e6f3dd067f61e4895a720a35dea5283384dd2e186194"
+      },
+      "shape_event": {
+        "ancestors": [
+          7774,
+          7773,
+          7771,
+          7769,
+          7762,
+          2,
+          1
+        ],
+        "application_returned": true,
+        "attempted": true,
+        "committed_firing": false,
+        "id": 7774,
+        "label": "\"region-target-shape-return\"",
+        "parent": 7773,
+        "returned_step_ancestors": [
+          7769
+        ],
+        "rolled_back": true,
+        "survives_observed_rollback": false,
+        "surviving_application_return": false
+      },
+      "step_before": 219
+    },
+    {
+      "arithmetic_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-10787.json",
+        "sha256": "bfd4b8f8091e0911fe8232448d180df4b56209f1c653d7bafa09d2c8b1da5568"
+      },
+      "arithmetic_event": {
+        "ancestors": [
+          10787,
+          10782,
+          10780,
+          10778,
+          10771,
+          2,
+          1
+        ],
+        "application_returned": false,
+        "attempted": true,
+        "committed_firing": false,
+        "id": 10787,
+        "label": "\"zesu_region_fault_arithmetic\"",
+        "parent": 10782,
+        "returned_step_ancestors": [
+          10778
+        ],
+        "rolled_back": true,
+        "survives_observed_rollback": false,
+        "surviving_application_return": false
+      },
+      "arithmetic_target": "(@bv_signed 128 (@bv_zero_extend 64 128 LET0 + 1) \u2264 @bv_signed 128 (@bv_zero_extend 64 128 (Z_to_bv 64 (decodeItemInputEnd args))))%Z",
+      "assertion": "(Assert (Unop Not (Val (Val_Bool LET3) Mk_annot) Mk_annot))",
+      "next_medeleg_symbol": 85,
+      "shape_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-10783.json",
+        "sha256": "e55e6eaf6c627992feba6d90c38b48fe26c6fe67e90664e3822db336c5267095"
+      },
+      "shape_event": {
+        "ancestors": [
+          10783,
+          10782,
+          10780,
+          10778,
+          10771,
+          2,
+          1
+        ],
+        "application_returned": true,
+        "attempted": true,
+        "committed_firing": false,
+        "id": 10783,
+        "label": "\"region-target-shape-return\"",
+        "parent": 10782,
+        "returned_step_ancestors": [
+          10778
+        ],
+        "rolled_back": true,
+        "survives_observed_rollback": false,
+        "surviving_application_return": false
+      },
+      "step_before": 300
+    },
+    {
+      "arithmetic_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-20749.json",
+        "sha256": "87aa739f7d58b850d19c624d77bed030c5b6b9330783accdbccc012b903eef6b"
+      },
+      "arithmetic_event": {
+        "ancestors": [
+          20749,
+          20744,
+          20742,
+          20740,
+          20733,
+          2,
+          1
+        ],
+        "application_returned": false,
+        "attempted": true,
+        "committed_firing": false,
+        "id": 20749,
+        "label": "\"zesu_region_fault_arithmetic\"",
+        "parent": 20744,
+        "returned_step_ancestors": [
+          20740
+        ],
+        "rolled_back": true,
+        "survives_observed_rollback": false,
+        "surviving_application_return": false
+      },
+      "arithmetic_target": "(@bv_signed 128 (@bv_zero_extend 64 128 LET0) >= @bv_signed 128 1073741832)%Z",
+      "assertion": "(Assert (Unop Not (Val (Val_Bool LET6) Mk_annot) Mk_annot))",
+      "next_medeleg_symbol": 127,
+      "shape_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-20745.json",
+        "sha256": "2b1840b05a69b3f60f3fca4dfd979e44a46d3bfb42d18bbf8aee0f1108a88935"
+      },
+      "shape_event": {
+        "ancestors": [
+          20745,
+          20744,
+          20742,
+          20740,
+          20733,
+          2,
+          1
+        ],
+        "application_returned": true,
+        "attempted": true,
+        "committed_firing": false,
+        "id": 20745,
+        "label": "\"region-target-shape-return\"",
+        "parent": 20744,
+        "returned_step_ancestors": [
+          20740
+        ],
+        "rolled_back": true,
+        "survives_observed_rollback": false,
+        "surviving_application_return": false
+      },
+      "step_before": 569
+    },
+    {
+      "arithmetic_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-23458.json",
+        "sha256": "54c07129ee3bb299d4ffe6ac8da90cf6e94ac4b40a828987e86ff1e5c5e54d72"
+      },
+      "arithmetic_event": {
+        "ancestors": [
+          23458,
+          23453,
+          23451,
+          23449,
+          23442,
+          2,
+          1
+        ],
+        "application_returned": true,
+        "attempted": true,
+        "committed_firing": true,
+        "id": 23458,
+        "label": "\"zesu_region_fault_arithmetic\"",
+        "parent": 23453,
+        "returned_step_ancestors": [
+          23449
+        ],
+        "rolled_back": false,
+        "survives_observed_rollback": true,
+        "surviving_application_return": true
+      },
+      "arithmetic_target": "(@bv_signed 128 (@bv_zero_extend 64 128 LET0 + 1) \u2264 @bv_signed 128 2148632184)%Z",
+      "assertion": "(Assert (Unop Not (Val (Val_Bool LET6) Mk_annot) Mk_annot))",
+      "next_medeleg_symbol": 160,
+      "shape_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-23454.json",
+        "sha256": "c842d44d393ac88b18a313c2c7b9efd4caad311dca4259ec4f99f8c99bdb074f"
+      },
+      "shape_event": {
+        "ancestors": [
+          23454,
+          23453,
+          23451,
+          23449,
+          23442,
+          2,
+          1
+        ],
+        "application_returned": true,
+        "attempted": true,
+        "committed_firing": true,
+        "id": 23454,
+        "label": "\"region-target-shape-return\"",
+        "parent": 23453,
+        "returned_step_ancestors": [
+          23449
+        ],
+        "rolled_back": false,
+        "survives_observed_rollback": true,
+        "surviving_application_return": true
+      },
+      "step_before": 639
+    },
+    {
+      "arithmetic_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-23477.json",
+        "sha256": "3da88ad51d2f0de6236ffc68163a54060d507625677f831540c91ae75c06b66a"
+      },
+      "arithmetic_event": {
+        "ancestors": [
+          23477,
+          23472,
+          23470,
+          23468,
+          23461,
+          2,
+          1
+        ],
+        "application_returned": false,
+        "attempted": true,
+        "committed_firing": false,
+        "id": 23477,
+        "label": "\"zesu_region_fault_arithmetic\"",
+        "parent": 23472,
+        "returned_step_ancestors": [
+          23468
+        ],
+        "rolled_back": true,
+        "survives_observed_rollback": false,
+        "surviving_application_return": false
+      },
+      "arithmetic_target": "(@bv_signed 128 (@bv_zero_extend 64 128 LET0) >= @bv_signed 128 2148597120)%Z",
+      "assertion": "(Assert (Unop Not (Val (Val_Bool LET5) Mk_annot) Mk_annot))",
+      "next_medeleg_symbol": 186,
+      "shape_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-23473.json",
+        "sha256": "f64827c5bcaea0445a0135e81e40dd1b1eb1fc96909bdb5b0ec2b00559b785e6"
+      },
+      "shape_event": {
+        "ancestors": [
+          23473,
+          23472,
+          23470,
+          23468,
+          23461,
+          2,
+          1
+        ],
+        "application_returned": true,
+        "attempted": true,
+        "committed_firing": false,
+        "id": 23473,
+        "label": "\"region-target-shape-return\"",
+        "parent": 23472,
+        "returned_step_ancestors": [
+          23468
+        ],
+        "rolled_back": true,
+        "survives_observed_rollback": false,
+        "surviving_application_return": false
+      },
+      "step_before": 640
+    },
+    {
+      "arithmetic_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-24061.json",
+        "sha256": "7788111d8a43b86c51a63769d9b7bdcb5f9a638e2fa8b113036830a88176dd75"
+      },
+      "arithmetic_event": {
+        "ancestors": [
+          24061,
+          24056,
+          24054,
+          24052,
+          24045,
+          2,
+          1
+        ],
+        "application_returned": true,
+        "attempted": true,
+        "committed_firing": true,
+        "id": 24061,
+        "label": "\"zesu_region_fault_arithmetic\"",
+        "parent": 24056,
+        "returned_step_ancestors": [
+          24052
+        ],
+        "rolled_back": false,
+        "survives_observed_rollback": true,
+        "surviving_application_return": true
+      },
+      "arithmetic_target": "(@bv_signed 128 (@bv_zero_extend 64 128 LET0) >= @bv_signed 128 1073741824)%Z",
+      "assertion": "(Assert (Unop Not (Val (Val_Bool LET3) Mk_annot) Mk_annot))",
+      "next_medeleg_symbol": 211,
+      "shape_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/context-event-24057.json",
+        "sha256": "439e78ae23d976df74f0109c9a5dc43839273298a4afecc11d94f0c93cedc736"
+      },
+      "shape_event": {
+        "ancestors": [
+          24057,
+          24056,
+          24054,
+          24052,
+          24045,
+          2,
+          1
+        ],
+        "application_returned": true,
+        "attempted": true,
+        "committed_firing": true,
+        "id": 24057,
+        "label": "\"region-target-shape-return\"",
+        "parent": 24056,
+        "returned_step_ancestors": [
+          24052
+        ],
+        "rolled_back": false,
+        "survives_observed_rollback": true,
+        "surviving_application_return": true
+      },
+      "step_before": 654
+    }
+  ],
+  "first_global_arithmetic_rejection": {
+    "event": 6373,
+    "qualification": "This negated RAM lower-bound branch is not the first retained medeleg branch",
+    "step_before": 180,
+    "target": "(\u00ac (@bv_signed 128 (@bv_zero_extend 64 128 LET0) >= @bv_signed 128 2684354560)%Z)"
+  },
+  "first_retained_medeleg_predecessor_rejection": {
+    "arithmetic_event": 7778,
+    "first_observed_unsuccessful_operation": "zesu_region_fault_arithmetic",
+    "inner_solver_cause": "unobserved; no focused replay ran",
+    "next_ram_arithmetic_event": 7786,
+    "passed_stages": [
+      "Switch check",
+      "Current assertion shape",
+      "Condition extraction",
+      "Order guard",
+      "Widened128 guard"
+    ],
+    "shape_event": 7774,
+    "step_before": 219,
+    "target": "(@bv_signed 128 (@bv_zero_extend 64 128 LET0 + 1) \u2264 @bv_signed 128 3221225472)%Z"
+  },
+  "generated_inputs": 9321,
+  "item": "I52",
+  "level1_closed": false,
+  "limits": [
+    "No global proof-state commitment claim",
+    "Reachable evars only; global evar map unavailable",
+    "Opaque external tactic selections unavailable",
+    "Arithmetic inner failure is not observed",
+    "No named native theorem exists",
+    "Root differs from the prior Rule36 comparison"
+  ],
+  "named_qed_attempted": true,
+  "named_qed_failed": true,
+  "native_replayed": false,
+  "native_runs": 1,
+  "next_focused_subproblem": "Replay event7778 with its exact local context. Inspect finite normalization stages before any generic repair.",
+  "post_run_seal_mismatches": [],
+  "residual_groups": {
+    "given_up": "unavailable",
+    "printed_active": 20,
+    "shelf": "unavailable",
+    "stack": "unavailable"
+  },
+  "residuals": [
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-0.json",
+        "sha256": "f82506d8808d3df4f9f27d257843a0791216bad2cfcc1f01fd8239843df7692d"
+      },
+      "conclusion_sha256": "d919a100ce6b45524d415d52d088d5817587c6dd8c3691b03b8063c44d043523",
+      "kind": "witness",
+      "ordinal": 0
+    },
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-1.json",
+        "sha256": "1c6d8e0bc21a38080ab511c497cce7d9cbd7bcdc895462c7a78ef40d7fbb449b"
+      },
+      "conclusion_sha256": "d919a100ce6b45524d415d52d088d5817587c6dd8c3691b03b8063c44d043523",
+      "kind": "witness",
+      "ordinal": 1
+    },
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-2.json",
+        "sha256": "60f07e97d4e5ab20aaa404289c095d26bfae16abc52abfadbe4461a44bae74a5"
+      },
+      "conclusion_sha256": "d919a100ce6b45524d415d52d088d5817587c6dd8c3691b03b8063c44d043523",
+      "kind": "witness",
+      "ordinal": 2
+    },
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-3.json",
+        "sha256": "772b41f12085a7b4c6e7ee3e1684cc48e165b97915f450d0829b576c5b3dbd30"
+      },
+      "conclusion_sha256": "d919a100ce6b45524d415d52d088d5817587c6dd8c3691b03b8063c44d043523",
+      "kind": "witness",
+      "ordinal": 3
+    },
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-4.json",
+        "sha256": "18926a342f572238c5eabb5b79c33c20401fd5d7e6bb0efdcd5f1500f0e8d710"
+      },
+      "conclusion_sha256": "46a60cd4a9a44fb4bef8028352988ebb3be6d5ac1e6b742de8552398e1d758b2",
+      "kind": "index_equality_or_bound",
+      "ordinal": 4
+    },
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-5.json",
+        "sha256": "ddedd5b459363501d11c3a2fd2f7b7e5e7bcb5919a50640e6e41295ca035102b"
+      },
+      "conclusion_sha256": "c529c0d4e6e3d5f1db1bfaac110f43f657c901af5acfaaa4345f0334b936bd47",
+      "kind": "index_equality_or_bound",
+      "ordinal": 5
+    },
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-6.json",
+        "sha256": "5018f67c142e394b26bb4ac292881979bfd4c6ac1ef333162539365b6f1151f8"
+      },
+      "conclusion_sha256": "0fc4774c49dd6fd78a0dc20bba5cb36c1142df4fd6d2998b74fec2236a783008",
+      "kind": "index_equality_or_bound",
+      "ordinal": 6
+    },
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-7.json",
+        "sha256": "f903bf15b57b289c7150ead53e826c7a5d08f65e3d296c8395c92dfec988d2a4"
+      },
+      "conclusion_sha256": "f642c54d8e207ff218d416dd822dc284fe6cd080371eaab4eca8c81f524f1438",
+      "kind": "index_equality_or_bound",
+      "ordinal": 7
+    },
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-8.json",
+        "sha256": "acd2bc0e38e4b66525673e265110ffa7c10b9dc7400ecf3cef829ee6fc4cf4e0"
+      },
+      "conclusion_sha256": "9e0834906e3fbeef78dd5e76e01d18e63853116fcfac8eea577c7d875f317277",
+      "kind": "index_equality_or_bound",
+      "ordinal": 8
+    },
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-9.json",
+        "sha256": "f67fd59850db58c5f9422a56035b1e6e390fbfac1a538899f0f9020b6c65b843"
+      },
+      "conclusion_sha256": "be426bf5c209ebe4af1672f026667d3e79719a2a5988fedad13017e5f05ea35b",
+      "kind": "index_equality_or_bound",
+      "ordinal": 9
+    },
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-10.json",
+        "sha256": "82acdac61aee3c1f8d47bac2f35f58bd2c81c43196bad338f9da2dff6a2a9cad"
+      },
+      "conclusion_sha256": "79f29d4a5f31147015ae7d404ca439ae3484152a605c23dddbf06bb529519f6f",
+      "kind": "index_equality_or_bound",
+      "ordinal": 10
+    },
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-11.json",
+        "sha256": "91fc3ea73113c0d8fcc10746bc8c0b0f509d1a3708eae83e0c58986a6cc1d76b"
+      },
+      "conclusion_sha256": "97f8d441eb7e11f3d72642d69adacc9e242ded6662ba628a460bde1741fdf0e7",
+      "kind": "index_equality_or_bound",
+      "ordinal": 11
+    },
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-12.json",
+        "sha256": "1331cfbee326850a9455b21f127820de673d23b5ad9ad94c80ccd057fb9f1a9e"
+      },
+      "conclusion_sha256": "e78f07e250288c830002b305c72d90bd82230d468284b0b5bdb83b06eb042610",
+      "kind": "byte_lookup_continuation",
+      "ordinal": 12
+    },
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-13.json",
+        "sha256": "121ae5590d1e1c7dfc1ad7324779a5f7865ea6b9f6ba04098fc569519a3eea29"
+      },
+      "conclusion_sha256": "05712e63e0b41fa54cc7e132583537b1f9b6848725dc34e1429a2ecd9e28cacc",
+      "kind": "medeleg_lookup",
+      "ordinal": 13
+    },
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-14.json",
+        "sha256": "dda73f24d198736047f015933a9c2d77af564b07188c533c81c59ae7034a8f95"
+      },
+      "conclusion_sha256": "0d819f265ef3ac7e0390f8555150359fb8057dc5fe3e6ba7ce1ee7a9213150e8",
+      "kind": "byte_lookup_continuation",
+      "ordinal": 14
+    },
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-15.json",
+        "sha256": "87367395998b189b91b853c9fb1cbeed7e8579311fe28ab56962fdc0f7cd8655"
+      },
+      "conclusion_sha256": "e6913f19c2a75df6e11239547d7d361f4b1d2e7341a3dc1a03398f9ec5468e01",
+      "kind": "medeleg_lookup",
+      "ordinal": 15
+    },
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-16.json",
+        "sha256": "f53b2929a66478231efc46e1702c7fb81c3b9f3968e8f52dbc469dc4e09ce799"
+      },
+      "conclusion_sha256": "edfd03ac3782bf0c9df389a9fa97254f8d267f29c7009025a1f715f739fa45f9",
+      "kind": "byte_lookup_continuation",
+      "ordinal": 16
+    },
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-17.json",
+        "sha256": "fcb97dc839996fda2da922ae6fb4a4e9857b8704fe8cd194853354f6676dce4b"
+      },
+      "conclusion_sha256": "7f285e2fead3cfb878234e6acbccfe9366a9bcc7ca7438202ef10e6532d7d76a",
+      "kind": "medeleg_lookup",
+      "ordinal": 17
+    },
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-18.json",
+        "sha256": "f638ac65ba27f5858ebe2943c2289148dd0e01e6b457de763201faae502e322d"
+      },
+      "conclusion_sha256": "648e24ea96e28e78ef9d691ea59fb081682f841c28be251d5167981deb8efe30",
+      "kind": "byte_lookup_continuation",
+      "ordinal": 18
+    },
+    {
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-result-audit-001/residual-19.json",
+        "sha256": "9864e43e2b9723f6c229e0511f3c8ae2933a4e0d8f7306f4adb8d0a815b79128"
+      },
+      "conclusion_sha256": "5afe00b1a171d77a28cc5d8bf6c4572eafc9487f362f6972ed15c40e7ace5ada",
+      "kind": "medeleg_lookup",
+      "ordinal": 19
+    }
+  ],
+  "root": "2b3fefa4c642b2671e162cff3995d582ff5663c4",
+  "route_counts": {
+    "ram-condition-extraction-return": {
+      "application_returns": 18,
+      "attempts": 18,
+      "observed_rollbacks": 18,
+      "returns_inside_surviving_observed_step": 0,
+      "surviving_application_returns": 0
+    },
+    "ram-order-guard": {
+      "application_returns": 14,
+      "attempts": 18,
+      "observed_rollbacks": 18,
+      "returns_inside_surviving_observed_step": 0,
+      "surviving_application_returns": 0
+    },
+    "ram-target-shape-return": {
+      "application_returns": 18,
+      "attempts": 18,
+      "observed_rollbacks": 18,
+      "returns_inside_surviving_observed_step": 0,
+      "surviving_application_returns": 0
+    },
+    "ram-widened-guard": {
+      "application_returns": 14,
+      "attempts": 14,
+      "observed_rollbacks": 14,
+      "returns_inside_surviving_observed_step": 0,
+      "surviving_application_returns": 0
+    },
+    "ram_direct_arithmetic": {
+      "application_returns": 0,
+      "attempts": 14
+    },
+    "ram_negative_bound_fallback_arithmetic": {
+      "application_returns": 1,
+      "attempts": 718
+    },
+    "region-condition-extraction-return": {
+      "application_returns": 31,
+      "attempts": 31,
+      "observed_rollbacks": 29,
+      "returns_inside_surviving_observed_step": 2,
+      "surviving_application_returns": 2
+    },
+    "region-order-guard": {
+      "application_returns": 28,
+      "attempts": 31,
+      "observed_rollbacks": 29,
+      "returns_inside_surviving_observed_step": 2,
+      "surviving_application_returns": 2
+    },
+    "region-target-shape-return": {
+      "application_returns": 31,
+      "attempts": 31,
+      "observed_rollbacks": 29,
+      "returns_inside_surviving_observed_step": 2,
+      "surviving_application_returns": 2
+    },
+    "region-widened-guard": {
+      "application_returns": 25,
+      "attempts": 28,
+      "observed_rollbacks": 26,
+      "returns_inside_surviving_observed_step": 2,
+      "surviving_application_returns": 2
+    },
+    "zesu_ram_fault_assert": {
+      "application_returns": 0,
+      "attempts": 704,
+      "observed_rollbacks": 704,
+      "returns_inside_surviving_observed_step": 0,
+      "surviving_application_returns": 0
+    },
+    "zesu_ram_fault_assert-wp_assert": {
+      "application_returns": 0,
+      "attempts": 0,
+      "observed_rollbacks": 0,
+      "returns_inside_surviving_observed_step": 0,
+      "surviving_application_returns": 0
+    },
+    "zesu_ram_fault_if_enabled": {
+      "application_returns": 1,
+      "attempts": 695,
+      "observed_rollbacks": 694,
+      "returns_inside_surviving_observed_step": 1,
+      "surviving_application_returns": 1
+    },
+    "zesu_region_fault_arithmetic": {
+      "application_returns": 2,
+      "attempts": 25,
+      "observed_rollbacks": 23,
+      "returns_inside_surviving_observed_step": 2,
+      "surviving_application_returns": 2
+    },
+    "zesu_region_fault_assert": {
+      "application_returns": 2,
+      "attempts": 708,
+      "observed_rollbacks": 706,
+      "returns_inside_surviving_observed_step": 2,
+      "surviving_application_returns": 2
+    },
+    "zesu_region_fault_assert-wp_assert": {
+      "application_returns": 2,
+      "attempts": 2,
+      "observed_rollbacks": 0,
+      "returns_inside_surviving_observed_step": 2,
+      "surviving_application_returns": 2
+    },
+    "zesu_region_fault_if_enabled": {
+      "application_returns": 2,
+      "attempts": 697,
+      "observed_rollbacks": 695,
+      "returns_inside_surviving_observed_step": 2,
+      "surviving_application_returns": 2
+    },
+    "zesu_stack_arithmetic": {
+      "application_returns": 1,
+      "attempts": 732,
+      "observed_rollbacks": 731,
+      "returns_inside_surviving_observed_step": 1,
+      "surviving_application_returns": 1
+    }
+  },
+  "scope": {
+    "I39": "unbound",
+    "Rule34": "ON",
+    "Rule35": "ON",
+    "Rule36": "ON",
+    "approved_switches": 27,
+    "dispatch": "ON",
+    "historical_exclusions": 17,
+    "umbrella_modules": 23
+  },
+  "switch_checks": "Every observed outer fault attempt reached its inner assertion after the switched check; no inactive-switch rejection is observed",
+  "termination_proved": false,
+  "trace": {
+    "contexts": 4232,
+    "events": 26239,
+    "global_committed_steps": "unavailable",
+    "lineage_checked": true,
+    "parser_errors": [],
+    "result_field_correction": "committed_steps counts returned records without observed ancestor rollback; it does not count global committed steps",
+    "returned_steps": 658,
+    "returned_steps_surviving_observed_ancestry": 658
+  }
+}

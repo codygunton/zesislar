@@ -1,0 +1,13 @@
+{
+  "archive_index": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-evidence/_build/i52-evidence-archive-001/archive-index.json",
+  "archive_index_sha256": "8c6524f22fd6690f728708d1a112b2a79276ea8f5ee628134d053e887122b6d8",
+  "record_count": 13466,
+  "unique_archive_files": 10512,
+  "all_hashes_and_sizes_match": true,
+  "known_secret_value_available": true,
+  "credential_matches": [],
+  "environment_header_matches": [],
+  "native_input_count": 13405,
+  "native_replayed": false,
+  "production_changes": false
+}

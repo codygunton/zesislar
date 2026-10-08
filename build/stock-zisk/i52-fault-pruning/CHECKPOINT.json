@@ -1,0 +1,195 @@
+{
+  "archive_audit": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-evidence/build/stock-zisk/i52-fault-pruning/archive-audit.json",
+    "sha256": "46c2d5977695ecb3eb4871b09f62c915776c2c54665266013379952284dd6028"
+  },
+  "archive_index": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-evidence/build/stock-zisk/i52-fault-pruning/archive-index.json",
+    "sha256": "8c6524f22fd6690f728708d1a112b2a79276ea8f5ee628134d053e887122b6d8"
+  },
+  "claim_limits": [
+    "No global proof-state commitment claim",
+    "Reachable evars only; global evar map unavailable",
+    "Opaque external tactic selections unavailable",
+    "Arithmetic inner failure is not observed",
+    "No named native theorem exists",
+    "Root differs from the prior Rule36 comparison"
+  ],
+  "compiler_metrics": {
+    "cpu_seconds": 1062.966891,
+    "elapsed_seconds": 1065.7217887109146,
+    "exit_code": 1,
+    "limit": null,
+    "limits": {
+      "cpu_seconds": 1200,
+      "module_seconds": null,
+      "rss_kib": 6291456
+    },
+    "peak_rss_kib": 3180408
+  },
+  "controls_report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-final-controls-audit-001/REPORT.json",
+    "sha256": "c8bcc5d01dd64da4d522638f85e22431b8cbcf0ce9388297e1687b5b473c8a24"
+  },
+  "entry_comparison": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-final-controls-audit-001/ENTRY-COMPARISON.json",
+    "sha256": "cf630cba26bb542e03b47dae3dc67415e10e824cc35b2c5b6b436538ad51f62e"
+  },
+  "evidence_only": true,
+  "finding": "Both rules are attempted and enabled. Four retained exception branches reach arithmetic and reject before wp_assert. RegionFault also prunes two other exception branches. RamFault returns once through its negative-bound fallback, not through the direct assertion route.",
+  "first_retained_rejection": {
+    "arithmetic_event": 7778,
+    "first_observed_unsuccessful_operation": "zesu_region_fault_arithmetic",
+    "inner_solver_cause": "unobserved; no focused replay ran",
+    "next_ram_arithmetic_event": 7786,
+    "passed_stages": [
+      "Switch check",
+      "Current assertion shape",
+      "Condition extraction",
+      "Order guard",
+      "Widened128 guard"
+    ],
+    "shape_event": 7774,
+    "step_before": 219,
+    "target": "(@bv_signed 128 (@bv_zero_extend 64 128 LET0 + 1) \u2264 @bv_signed 128 3221225472)%Z"
+  },
+  "gate_archive_index": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-evidence/build/stock-zisk/i52-fault-pruning/gate-archive-index.json",
+    "sha256": "e1010d6a5deeb950ecf7ef2050f53fde2371e672602807383566a47c11f86d73"
+  },
+  "gates": {
+    "check-fast": {
+      "after": {
+        "both_generated_sets_match": true,
+        "diagnostic_tree": "ef3f1d349a156a7db38603e24ace7d7eab817611",
+        "gate_input_count": 1698,
+        "gate_tree": "82b8ec5d3fb3ad906d53f5af1121b4556c4513c0",
+        "generated_inputs": 9321,
+        "index_sha256": "3077be41a2e73be5a00517dfdd8baa438f9cade1b95ed71112f656903455dd84",
+        "input_count": 13405,
+        "mismatches": [],
+        "root": "2b3fefa4c642b2671e162cff3995d582ff5663c4"
+      },
+      "before": {
+        "both_generated_sets_match": true,
+        "diagnostic_tree": "ef3f1d349a156a7db38603e24ace7d7eab817611",
+        "gate_input_count": 1698,
+        "gate_tree": "82b8ec5d3fb3ad906d53f5af1121b4556c4513c0",
+        "generated_inputs": 9321,
+        "index_sha256": "3077be41a2e73be5a00517dfdd8baa438f9cade1b95ed71112f656903455dd84",
+        "input_count": 13405,
+        "mismatches": [],
+        "root": "2b3fefa4c642b2671e162cff3995d582ff5663c4"
+      },
+      "children_cpu_seconds": 1577.726927,
+      "elapsed_seconds": 1548.9096460342407,
+      "exit_code": 0,
+      "gate_class": "child",
+      "log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-evidence/_build/i52-evidence-gates-001/check-fast.log",
+        "sha256": "02db8ba19e8d072213cf06beee5ac558b4d7d624f315f2a97783929050b7c0b4"
+      },
+      "peak_children_rss_kib": 3036504,
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-evidence/_build/i52-evidence-gates-001/check-fast-result.json",
+        "sha256": "6b022def1a2bcc0203be3f63e68257285409e4ab6deccd7484b073b21e7ae28a"
+      },
+      "workers": 6
+    },
+    "check-iris": {
+      "after": {
+        "both_generated_sets_match": true,
+        "diagnostic_tree": "ef3f1d349a156a7db38603e24ace7d7eab817611",
+        "gate_input_count": 1698,
+        "gate_tree": "82b8ec5d3fb3ad906d53f5af1121b4556c4513c0",
+        "generated_inputs": 9321,
+        "index_sha256": "3077be41a2e73be5a00517dfdd8baa438f9cade1b95ed71112f656903455dd84",
+        "input_count": 13405,
+        "mismatches": [],
+        "root": "2b3fefa4c642b2671e162cff3995d582ff5663c4"
+      },
+      "before": {
+        "both_generated_sets_match": true,
+        "diagnostic_tree": "ef3f1d349a156a7db38603e24ace7d7eab817611",
+        "gate_input_count": 1698,
+        "gate_tree": "82b8ec5d3fb3ad906d53f5af1121b4556c4513c0",
+        "generated_inputs": 9321,
+        "index_sha256": "3077be41a2e73be5a00517dfdd8baa438f9cade1b95ed71112f656903455dd84",
+        "input_count": 13405,
+        "mismatches": [],
+        "root": "2b3fefa4c642b2671e162cff3995d582ff5663c4"
+      },
+      "children_cpu_seconds": 3386.13349,
+      "elapsed_seconds": 2545.7788441181183,
+      "exit_code": 0,
+      "gate_class": "child",
+      "log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-evidence/_build/i52-evidence-gates-001/check-iris.log",
+        "sha256": "3fa1624490fb2669d0479cf7d3b624a84a2a4e190fd692c969f9b804f5832042"
+      },
+      "peak_children_rss_kib": 1694824,
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-evidence/_build/i52-evidence-gates-001/check-iris-result.json",
+        "sha256": "d01b4d7144aa201a740c268fa2184a47b42d32e40cb47dece89bdbad82cbd350"
+      },
+      "workers": 6
+    }
+  },
+  "generated_inputs": 9321,
+  "global_committed_steps": "unavailable",
+  "item": "I52",
+  "level1_closed": false,
+  "mcp": {
+    "all_final_groups_empty": true,
+    "assumptions": [],
+    "compile_file": "passed",
+    "health": "passed",
+    "interactive_checks": "passed",
+    "method": "module_m",
+    "native_theorem_certificate": "unavailable; named Qed failed",
+    "verified_certificates": 13
+  },
+  "metrics": {
+    "compiler_cpu_seconds": 1062.966891,
+    "compiler_peak_rss_kib": 3180408,
+    "gate_children_cpu_seconds": 4963.860417,
+    "gate_elapsed_seconds": 4094.688490152359,
+    "scope": "Measured compiler and gate processes; no token total available"
+  },
+  "native_boundary_closed": false,
+  "native_input_count": 13405,
+  "native_primary_body_sha256": "f8375cfbb975c9f8acec44ebcb154278f9a9c5eae0843d2743dc452e0b24362b",
+  "native_replayed": false,
+  "native_scope": {
+    "I39": "unbound",
+    "Rule34": "ON",
+    "Rule35": "ON",
+    "Rule36": "ON",
+    "approved_switches": 27,
+    "dispatch": "ON",
+    "historical_exclusions": 17,
+    "umbrella_modules": 23
+  },
+  "native_statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+  "production_changes": false,
+  "report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-evidence/build/stock-zisk/i52-fault-pruning/REPORT.json",
+    "sha256": "c930d1ef2f4ce346b625fcff3ccd04ca5e9c5e82b576b3295fc5a0d58dac35df"
+  },
+  "returned_steps": 658,
+  "root": "2b3fefa4c642b2671e162cff3995d582ff5663c4",
+  "sealed_package": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-final-seal-audit-003/SEALED-PACKAGE.json",
+    "sha256": "8899b889374bcd7210cd0354b85fd7d80596b8f8094030110e260af91d03d279"
+  },
+  "secret_scan": {
+    "all_original_CAS_records_checked": 13466,
+    "credential_matches": [],
+    "gate_archive_records_checked": 8,
+    "known_value_available": true,
+    "private_environment_header_matches": [],
+    "values_printed": false
+  },
+  "surviving_observed_ancestry_returns": 658,
+  "termination_proved": false
+}
