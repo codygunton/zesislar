@@ -1,0 +1,21 @@
+{
+  "result": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-evidence-gates-001/check-iris-result.json",
+  "result_sha256": "86bfa50921f54458837a1dea37388952a7618bcb3d05419019c7319c6950a185",
+  "log": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-evidence-gates-001/check-iris.log",
+  "log_sha256": "8d5cac9d3a3b09735f7d5d3c93526dfea3ca108b36e8a811e497bee9bfb9edbc",
+  "exit_code": 0,
+  "workers": 6,
+  "gate_class": "child",
+  "elapsed_seconds": 1746.5771543979645,
+  "children_cpu_seconds": 3390.846244,
+  "peak_children_rss_kib": 1691536,
+  "native_inputs_checked": 12978,
+  "generated_inputs_checked": 9321,
+  "before_after_equal": true,
+  "current_input_mismatches": [],
+  "source_root": "20efd9555a9b36adef40425480733154eed94579",
+  "source_tree": "c24042736762abb4810de18fa34a20c59a10c8f5",
+  "production_sources_unchanged": true,
+  "known_secret_log_matches": 0,
+  "native_replay": false
+}

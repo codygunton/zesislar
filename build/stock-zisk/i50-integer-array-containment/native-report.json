@@ -1,0 +1,2452 @@
+{
+  "item": "I50",
+  "measurement_root": "20efd9555a9b36adef40425480733154eed94579",
+  "tree": "c24042736762abb4810de18fa34a20c59a10c8f5",
+  "statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+  "body_sha256": "f8375cfbb975c9f8acec44ebcb154278f9a9c5eae0843d2743dc452e0b24362b",
+  "scope_switches": 26,
+  "hint_module": "ZesuSsz.Compliance.DecodeItemHints",
+  "historical_exclusions": 17,
+  "input_count": 12978,
+  "input_mismatches": [],
+  "offline_reparse_matches_after_JSON_normalization": true,
+  "returned_steps": 628,
+  "all_returned_steps_survive_observed_rollback": true,
+  "selector_contexts": [
+    {
+      "event": 9171,
+      "returned_steps_before": 207,
+      "route": "\"zesu_integer_array_address_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-9171.json",
+      "context_sha256": "402a418115b64d9eae11b8575c4ec0cfc1b8a973e4ef446dd523cdc70772c4c3",
+      "target_sha256": "b9d601ac500a727e40cd9a4ed992eeb43cccbf772adf56d3dca7ed74cfdd3a6e",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": [
+        {
+          "event": 9172,
+          "label": "\"integer-switch\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 9173,
+          "label": "\"integer-environment\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        }
+      ]
+    },
+    {
+      "event": 9189,
+      "returned_steps_before": 207,
+      "route": "\"liStep\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-9189.json",
+      "context_sha256": "3726d09da71885421f476737692fc49240e5c08e746681f46269917270fad8b3",
+      "target_sha256": "b9d601ac500a727e40cd9a4ed992eeb43cccbf772adf56d3dca7ed74cfdd3a6e",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": true,
+      "rolled_back": false,
+      "surviving_return": true,
+      "stage_events": []
+    },
+    {
+      "event": 9218,
+      "returned_steps_before": 208,
+      "route": "\"zesu_integer_array_address_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-9218.json",
+      "context_sha256": "a1709ad50d3c89de9c9d4ebb2593800f0c49e1ec5a6843cf8d1ca605a9820702",
+      "target_sha256": "75218186f809561d8c755d9a046617152b1d1b474c0669665f8b2cd866beac0d",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": [
+        {
+          "event": 9219,
+          "label": "\"integer-switch\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 9220,
+          "label": "\"integer-environment\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        }
+      ]
+    },
+    {
+      "event": 9236,
+      "returned_steps_before": 208,
+      "route": "\"liStep\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-9236.json",
+      "context_sha256": "ca0f6064d81b7e2eed1dccbef7fe72104add00eb239e572533028f24d6e77fe6",
+      "target_sha256": "75218186f809561d8c755d9a046617152b1d1b474c0669665f8b2cd866beac0d",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": true,
+      "rolled_back": false,
+      "surviving_return": true,
+      "stage_events": []
+    },
+    {
+      "event": 9265,
+      "returned_steps_before": 209,
+      "route": "\"zesu_integer_array_address_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-9265.json",
+      "context_sha256": "6b6273c3ba2f4aed90e9ca1b0e56c974c9633f3982533f23d415d62fe8fdab02",
+      "target_sha256": "372a195a0b52ea2a3ab29454ac4d02a08a538fa30aa2129eec80c6a4f4864af5",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": [
+        {
+          "event": 9266,
+          "label": "\"integer-switch\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 9267,
+          "label": "\"integer-environment\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 9268,
+          "label": "\"integer-shape-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 9269,
+          "label": "\"integer-root-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 9270,
+          "label": "\"integer-root-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 9271,
+          "label": "\"integer-extraction-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 9272,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 9273,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 9274,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 9275,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 9276,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 9277,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 9278,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 9279,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 9280,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        }
+      ]
+    },
+    {
+      "event": 9296,
+      "returned_steps_before": 209,
+      "route": "\"liStep\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-9296.json",
+      "context_sha256": "0449c988b5eead15d62496960c08ef8b52d8666f821bfa0e3eb82357f4cb3e60",
+      "target_sha256": "372a195a0b52ea2a3ab29454ac4d02a08a538fa30aa2129eec80c6a4f4864af5",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 12396,
+      "returned_steps_before": 279,
+      "route": "\"zesu_integer_array_address_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-12396.json",
+      "context_sha256": "12e6177a63496c2227e0e85b7bfcb700b6ab3897839ea05f381fb699cab6eec1",
+      "target_sha256": "b9d601ac500a727e40cd9a4ed992eeb43cccbf772adf56d3dca7ed74cfdd3a6e",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": [
+        {
+          "event": 12397,
+          "label": "\"integer-switch\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 12398,
+          "label": "\"integer-environment\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        }
+      ]
+    },
+    {
+      "event": 12414,
+      "returned_steps_before": 279,
+      "route": "\"liStep\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-12414.json",
+      "context_sha256": "65fc467943d8f93620dd0aa2eed1bc14c5855fc453db478001fd6f39b354933a",
+      "target_sha256": "b9d601ac500a727e40cd9a4ed992eeb43cccbf772adf56d3dca7ed74cfdd3a6e",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": true,
+      "rolled_back": false,
+      "surviving_return": true,
+      "stage_events": []
+    },
+    {
+      "event": 12443,
+      "returned_steps_before": 280,
+      "route": "\"zesu_integer_array_address_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-12443.json",
+      "context_sha256": "5c0b08d9b18a9fa25f9c434fe5d1ad848748767411827c4ca50cae5930d092a8",
+      "target_sha256": "75218186f809561d8c755d9a046617152b1d1b474c0669665f8b2cd866beac0d",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": [
+        {
+          "event": 12444,
+          "label": "\"integer-switch\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 12445,
+          "label": "\"integer-environment\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        }
+      ]
+    },
+    {
+      "event": 12461,
+      "returned_steps_before": 280,
+      "route": "\"liStep\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-12461.json",
+      "context_sha256": "05e1f9f34d435db4190394871e93cc8dd2c779258dc3375f2950a176649731a2",
+      "target_sha256": "75218186f809561d8c755d9a046617152b1d1b474c0669665f8b2cd866beac0d",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": true,
+      "rolled_back": false,
+      "surviving_return": true,
+      "stage_events": []
+    },
+    {
+      "event": 12490,
+      "returned_steps_before": 281,
+      "route": "\"zesu_integer_array_address_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-12490.json",
+      "context_sha256": "8ac67baffbb0e6e8732345d8b4e8a9bc6efc92ab5fc955b02a8d91f937cd7cb7",
+      "target_sha256": "372a195a0b52ea2a3ab29454ac4d02a08a538fa30aa2129eec80c6a4f4864af5",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": [
+        {
+          "event": 12491,
+          "label": "\"integer-switch\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 12492,
+          "label": "\"integer-environment\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 12493,
+          "label": "\"integer-shape-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 12494,
+          "label": "\"integer-root-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 12495,
+          "label": "\"integer-root-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 12496,
+          "label": "\"integer-extraction-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 12497,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 12498,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 12499,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 12500,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 12501,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 12502,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 12503,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 12504,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 12505,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        }
+      ]
+    },
+    {
+      "event": 12521,
+      "returned_steps_before": 281,
+      "route": "\"liStep\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-12521.json",
+      "context_sha256": "5776f026c67788fde1dc5140c51316c93c4c81f2b5227ac205fc9d60980fc270",
+      "target_sha256": "372a195a0b52ea2a3ab29454ac4d02a08a538fa30aa2129eec80c6a4f4864af5",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 16275,
+      "returned_steps_before": 366,
+      "route": "\"zesu_integer_array_address_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-16275.json",
+      "context_sha256": "56e4e258149314b65f739bd405147bb82790d3212f758b4fb3a6b63b6fd65fe6",
+      "target_sha256": "b9d601ac500a727e40cd9a4ed992eeb43cccbf772adf56d3dca7ed74cfdd3a6e",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": [
+        {
+          "event": 16276,
+          "label": "\"integer-switch\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 16277,
+          "label": "\"integer-environment\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        }
+      ]
+    },
+    {
+      "event": 16293,
+      "returned_steps_before": 366,
+      "route": "\"liStep\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-16293.json",
+      "context_sha256": "315ef356f845bde6cd0943595736cdcb0edaf6db8e45ca813c450d52b4903ae3",
+      "target_sha256": "b9d601ac500a727e40cd9a4ed992eeb43cccbf772adf56d3dca7ed74cfdd3a6e",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": true,
+      "rolled_back": false,
+      "surviving_return": true,
+      "stage_events": []
+    },
+    {
+      "event": 16322,
+      "returned_steps_before": 367,
+      "route": "\"zesu_integer_array_address_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-16322.json",
+      "context_sha256": "d049d28dd88cb6f14a7bbaac0a4df4017292bd5bfa119849d0e84fbd5a17d3c1",
+      "target_sha256": "75218186f809561d8c755d9a046617152b1d1b474c0669665f8b2cd866beac0d",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": [
+        {
+          "event": 16323,
+          "label": "\"integer-switch\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 16324,
+          "label": "\"integer-environment\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        }
+      ]
+    },
+    {
+      "event": 16340,
+      "returned_steps_before": 367,
+      "route": "\"liStep\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-16340.json",
+      "context_sha256": "5515de991200a872795d1a1ba4a6b5aba0097cabedb50ad8d58515ff27be395e",
+      "target_sha256": "75218186f809561d8c755d9a046617152b1d1b474c0669665f8b2cd866beac0d",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": true,
+      "rolled_back": false,
+      "surviving_return": true,
+      "stage_events": []
+    },
+    {
+      "event": 16369,
+      "returned_steps_before": 368,
+      "route": "\"zesu_integer_array_address_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-16369.json",
+      "context_sha256": "c6d57efd46d0fc6ac2786e50e5c6d3f5035560352cc5eca71de3d2ad61fdc366",
+      "target_sha256": "372a195a0b52ea2a3ab29454ac4d02a08a538fa30aa2129eec80c6a4f4864af5",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": [
+        {
+          "event": 16370,
+          "label": "\"integer-switch\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 16371,
+          "label": "\"integer-environment\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 16372,
+          "label": "\"integer-shape-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 16373,
+          "label": "\"integer-root-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 16374,
+          "label": "\"integer-root-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 16375,
+          "label": "\"integer-extraction-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 16376,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 16377,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 16378,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 16379,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 16380,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 16381,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 16382,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 16383,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 16384,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        }
+      ]
+    },
+    {
+      "event": 16400,
+      "returned_steps_before": 368,
+      "route": "\"liStep\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-16400.json",
+      "context_sha256": "da7959350cf6cae21580be7532da84a6de5b184bf4458ee8355323f9a36387cd",
+      "target_sha256": "372a195a0b52ea2a3ab29454ac4d02a08a538fa30aa2129eec80c6a4f4864af5",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 26615,
+      "returned_steps_before": 603,
+      "route": "\"zesu_integer_array_address_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-26615.json",
+      "context_sha256": "2b6b0c9bca0c254a9dcf6156f08ad90fae9729a266954bd3fa758cab1832993c",
+      "target_sha256": "b9d601ac500a727e40cd9a4ed992eeb43cccbf772adf56d3dca7ed74cfdd3a6e",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": [
+        {
+          "event": 26616,
+          "label": "\"integer-switch\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 26617,
+          "label": "\"integer-environment\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        }
+      ]
+    },
+    {
+      "event": 26633,
+      "returned_steps_before": 603,
+      "route": "\"liStep\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-26633.json",
+      "context_sha256": "5515ff56279707dcce3779276cabcb8969ed29ca714e760e4f49b46b81c39e41",
+      "target_sha256": "b9d601ac500a727e40cd9a4ed992eeb43cccbf772adf56d3dca7ed74cfdd3a6e",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": true,
+      "rolled_back": false,
+      "surviving_return": true,
+      "stage_events": []
+    },
+    {
+      "event": 26662,
+      "returned_steps_before": 604,
+      "route": "\"zesu_integer_array_address_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-26662.json",
+      "context_sha256": "4a9db2ef3e0ee03332866404c66813c462335f76a5dd034a7a94731365967df5",
+      "target_sha256": "75218186f809561d8c755d9a046617152b1d1b474c0669665f8b2cd866beac0d",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": [
+        {
+          "event": 26663,
+          "label": "\"integer-switch\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 26664,
+          "label": "\"integer-environment\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        }
+      ]
+    },
+    {
+      "event": 26680,
+      "returned_steps_before": 604,
+      "route": "\"liStep\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-26680.json",
+      "context_sha256": "182f3d34c104deee442a83a501274f4dd4684df3ab5141e7f2056b2610fadcb2",
+      "target_sha256": "75218186f809561d8c755d9a046617152b1d1b474c0669665f8b2cd866beac0d",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": true,
+      "rolled_back": false,
+      "surviving_return": true,
+      "stage_events": []
+    },
+    {
+      "event": 26709,
+      "returned_steps_before": 605,
+      "route": "\"zesu_integer_array_address_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-26709.json",
+      "context_sha256": "9815835e2a08c3bb7fb139df0750179e97dc4bf0dbfd2253fa7a3d6038f7f076",
+      "target_sha256": "372a195a0b52ea2a3ab29454ac4d02a08a538fa30aa2129eec80c6a4f4864af5",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": [
+        {
+          "event": 26710,
+          "label": "\"integer-switch\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 26711,
+          "label": "\"integer-environment\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 26712,
+          "label": "\"integer-shape-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 26713,
+          "label": "\"integer-root-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 26714,
+          "label": "\"integer-root-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 26715,
+          "label": "\"integer-extraction-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 26716,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 26717,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 26718,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 26719,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 26720,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 26721,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 26722,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 26723,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 26724,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        }
+      ]
+    },
+    {
+      "event": 26740,
+      "returned_steps_before": 605,
+      "route": "\"liStep\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-26740.json",
+      "context_sha256": "0ef42116cd9a9ea8c9e930f48a7f2a06e567a2a67a627a56ff6b78c761b4a187",
+      "target_sha256": "372a195a0b52ea2a3ab29454ac4d02a08a538fa30aa2129eec80c6a4f4864af5",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 27509,
+      "returned_steps_before": 625,
+      "route": "\"zesu_array_region_selection_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27509.json",
+      "context_sha256": "19393e92faf872f02fe038f2a2014d487b211e413c15a97189b1bb4f96bae9a0",
+      "target_sha256": "372a195a0b52ea2a3ab29454ac4d02a08a538fa30aa2129eec80c6a4f4864af5",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 27521,
+      "returned_steps_before": 625,
+      "route": "\"zesu_array_region_selection_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27521.json",
+      "context_sha256": "a74b8e3c454349aba72439e86c36f62e8066e9355f03ff61a35257fe39d7ffb8",
+      "target_sha256": "372a195a0b52ea2a3ab29454ac4d02a08a538fa30aa2129eec80c6a4f4864af5",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 27533,
+      "returned_steps_before": 625,
+      "route": "\"zesu_array_region_selection_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27533.json",
+      "context_sha256": "25087db3c807ef9e0d06ba2af7142f2aad3e52ee200b4ebb450aee13e5ed26f9",
+      "target_sha256": "372a195a0b52ea2a3ab29454ac4d02a08a538fa30aa2129eec80c6a4f4864af5",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 27545,
+      "returned_steps_before": 625,
+      "route": "\"zesu_array_region_selection_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27545.json",
+      "context_sha256": "db74affef07b11928a385204c23d0ff83bceedac1458a72e6a1042f275036d94",
+      "target_sha256": "372a195a0b52ea2a3ab29454ac4d02a08a538fa30aa2129eec80c6a4f4864af5",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 27614,
+      "returned_steps_before": 625,
+      "route": "\"zesu_array_region_selection_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27614.json",
+      "context_sha256": "34e3b40293d291a98fbe256fa855f7655a3a06cd0fe5166ed5f5be4175122a4f",
+      "target_sha256": "23570e0637ddb100c58b44d4c527ca2315264b7804d089663d8c9aef2f1c0ba3",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 27626,
+      "returned_steps_before": 625,
+      "route": "\"zesu_array_region_selection_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27626.json",
+      "context_sha256": "e8f0f7df9f32fa6924e4a80d539a667be9e2253ac3543121b703a58e1144abd8",
+      "target_sha256": "845545d3c8d9e27d228853c505284ab566af240b0d74fb2b3e062984fac4be80",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 27638,
+      "returned_steps_before": 625,
+      "route": "\"zesu_array_region_selection_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27638.json",
+      "context_sha256": "2be627195c831f3d51e9f05c3461f7e80b66e1c7752cf633515f7cfa47bb1aef",
+      "target_sha256": "23586ecf31f6ed3b83cef4d4dff7109949e5ee7d37428102ad0191ffccaea6df",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 27650,
+      "returned_steps_before": 625,
+      "route": "\"zesu_array_region_selection_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27650.json",
+      "context_sha256": "2607cc27c8cd71691294f13d8a861110ac763f3798fc6a282574078f3f217cd8",
+      "target_sha256": "c5a9d30c40d60a73ffdec9e29c6c4669221a327b75224cc765b63c5a1bb793cd",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 27823,
+      "returned_steps_before": 628,
+      "route": "\"zesu_integer_array_address_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27823.json",
+      "context_sha256": "f58a077fb691b4171a5b65d4d73ea27b9de3fb4ee7af421d830adf789bd7f6f8",
+      "target_sha256": "52ebe74faf5ff35e82a540fc284dd0ee5b0abc38129b0792b8fd58fc3aae8a4a",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": [
+        {
+          "event": 27824,
+          "label": "\"integer-switch\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27825,
+          "label": "\"integer-environment\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27826,
+          "label": "\"integer-shape-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27827,
+          "label": "\"integer-root-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27828,
+          "label": "\"integer-root-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27829,
+          "label": "\"integer-extraction-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27830,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27831,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27832,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27833,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27834,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27835,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27836,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27837,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27838,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        }
+      ]
+    },
+    {
+      "event": 27854,
+      "returned_steps_before": 628,
+      "route": "\"liStep\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27854.json",
+      "context_sha256": "f18f4ce449a2b5766d6a82de4e87bec8645a957930b42759632b715aa213a523",
+      "target_sha256": "52ebe74faf5ff35e82a540fc284dd0ee5b0abc38129b0792b8fd58fc3aae8a4a",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 27865,
+      "returned_steps_before": 628,
+      "route": "\"zesu_array_region_selection_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27865.json",
+      "context_sha256": "27e2ce18472bbeeb3bb9d0d0bd4949b7e6aa1a8d5a8f30ddacc02f83c50f7c21",
+      "target_sha256": "23570e0637ddb100c58b44d4c527ca2315264b7804d089663d8c9aef2f1c0ba3",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 27872,
+      "returned_steps_before": 628,
+      "route": "\"zesu_array_region_selection_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27872.json",
+      "context_sha256": "16a7f0a59fd97191c9e139d9f5926f41df2e050512788999b73483734f52ce2e",
+      "target_sha256": "23570e0637ddb100c58b44d4c527ca2315264b7804d089663d8c9aef2f1c0ba3",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 27984,
+      "returned_steps_before": 628,
+      "route": "\"zesu_integer_array_address_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27984.json",
+      "context_sha256": "caa05bf533355b0ca5584e3a5e3ada29fd9e48448416f3a66095a6fcb7aaaf27",
+      "target_sha256": "60205186de475e519da59cb6eb634d820ad09a672b655f2f2fe79a854c1fc79e",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": [
+        {
+          "event": 27985,
+          "label": "\"integer-switch\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27986,
+          "label": "\"integer-environment\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27987,
+          "label": "\"integer-shape-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27988,
+          "label": "\"integer-root-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27989,
+          "label": "\"integer-root-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27990,
+          "label": "\"integer-extraction-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27991,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27992,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27993,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27994,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27995,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27996,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27997,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27998,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 27999,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        }
+      ]
+    },
+    {
+      "event": 28015,
+      "returned_steps_before": 628,
+      "route": "\"liStep\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28015.json",
+      "context_sha256": "81a9ea5e64136e7abbc298053ebaebf6b682a80792e3cc7c3d395027b0f6c98a",
+      "target_sha256": "60205186de475e519da59cb6eb634d820ad09a672b655f2f2fe79a854c1fc79e",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 28026,
+      "returned_steps_before": 628,
+      "route": "\"zesu_array_region_selection_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28026.json",
+      "context_sha256": "752569679b96f5fa730ec949d157d4b8c1080ccc0e21249bc6acf156d2d10a75",
+      "target_sha256": "845545d3c8d9e27d228853c505284ab566af240b0d74fb2b3e062984fac4be80",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 28033,
+      "returned_steps_before": 628,
+      "route": "\"zesu_array_region_selection_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28033.json",
+      "context_sha256": "04564c589582273123594dff67db474e3e57986d21a81e049bf24b0af3dc1a28",
+      "target_sha256": "845545d3c8d9e27d228853c505284ab566af240b0d74fb2b3e062984fac4be80",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 28145,
+      "returned_steps_before": 628,
+      "route": "\"zesu_integer_array_address_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28145.json",
+      "context_sha256": "4e0457f8acb590b0ce7ef6bf8b453bf8988ab7a1cdbbe5ebb46c717a86d49aeb",
+      "target_sha256": "007d2d030bb829b0299318f5e36b7c0653fab292134db5ff69fa0501ff2d0f5f",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": [
+        {
+          "event": 28146,
+          "label": "\"integer-switch\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28147,
+          "label": "\"integer-environment\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28148,
+          "label": "\"integer-shape-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28149,
+          "label": "\"integer-root-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28150,
+          "label": "\"integer-root-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28151,
+          "label": "\"integer-extraction-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28152,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28153,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28154,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28155,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28156,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28157,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28158,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28159,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28160,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        }
+      ]
+    },
+    {
+      "event": 28176,
+      "returned_steps_before": 628,
+      "route": "\"liStep\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28176.json",
+      "context_sha256": "1a2f6425b37ab151da9da2e98a2e8865d84678ea3520513a55296b21d95b944a",
+      "target_sha256": "007d2d030bb829b0299318f5e36b7c0653fab292134db5ff69fa0501ff2d0f5f",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 28187,
+      "returned_steps_before": 628,
+      "route": "\"zesu_array_region_selection_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28187.json",
+      "context_sha256": "221c9b10723f06f25c02a19bf49d820cff9b08ce776fd7f39f51d6ad3a2c4533",
+      "target_sha256": "23586ecf31f6ed3b83cef4d4dff7109949e5ee7d37428102ad0191ffccaea6df",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 28194,
+      "returned_steps_before": 628,
+      "route": "\"zesu_array_region_selection_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28194.json",
+      "context_sha256": "382a90faea87833798c5730a1d5fe4dc7762414c07510d13d39fa128b5123273",
+      "target_sha256": "23586ecf31f6ed3b83cef4d4dff7109949e5ee7d37428102ad0191ffccaea6df",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 28306,
+      "returned_steps_before": 628,
+      "route": "\"zesu_integer_array_address_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28306.json",
+      "context_sha256": "e68c9f8cb932adce2e438ca0242719b5b3be4971284a19e953f6f6859d1647bb",
+      "target_sha256": "2d346d2ce5e8964396d4a090dd9bb2fe5721782b6d0b64671a82aac024595e5e",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": [
+        {
+          "event": 28307,
+          "label": "\"integer-switch\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28308,
+          "label": "\"integer-environment\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28309,
+          "label": "\"integer-shape-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28310,
+          "label": "\"integer-root-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28311,
+          "label": "\"integer-root-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28312,
+          "label": "\"integer-extraction-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28313,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28314,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28315,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28316,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28317,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28318,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28319,
+          "label": "\"integer-array-byte-type-return\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28320,
+          "label": "\"integer-cast-proof\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        },
+        {
+          "event": 28321,
+          "label": "\"integer-containment-attempt\"",
+          "returned": true,
+          "rolled_back": true,
+          "surviving": false
+        }
+      ]
+    },
+    {
+      "event": 28337,
+      "returned_steps_before": 628,
+      "route": "\"liStep\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28337.json",
+      "context_sha256": "c62d630a6f0092cb3417a0dc4ce09aceaed9696fa61f1504e43804677e4f36b6",
+      "target_sha256": "2d346d2ce5e8964396d4a090dd9bb2fe5721782b6d0b64671a82aac024595e5e",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 28348,
+      "returned_steps_before": 628,
+      "route": "\"zesu_array_region_selection_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28348.json",
+      "context_sha256": "0e11e95ddaaf1961c1b93f320cc2d808f61f2a5725913f5b372d667d6d57c062",
+      "target_sha256": "c5a9d30c40d60a73ffdec9e29c6c4669221a327b75224cc765b63c5a1bb793cd",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    },
+    {
+      "event": 28355,
+      "returned_steps_before": 628,
+      "route": "\"zesu_array_region_selection_if_enabled\"",
+      "context": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28355.json",
+      "context_sha256": "7d4e289e90b9e2a3348349a36a315af5dfc59398c8dda210f06a811c19096d42",
+      "target_sha256": "c5a9d30c40d60a73ffdec9e29c6c4669221a327b75224cc765b63c5a1bb793cd",
+      "complete_Envs_fields": 19,
+      "printer_ellipses": false,
+      "goal_has_unresolved_evars": false,
+      "reachable_evar_names": [],
+      "application_returned": false,
+      "rolled_back": true,
+      "surviving_return": false,
+      "stage_events": []
+    }
+  ],
+  "route_counts": {
+    "\"zesu_run_pass\"": {
+      "attempts": 12,
+      "application_returns": 12,
+      "observed_rollbacks": 8,
+      "surviving_returns": 4,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_run_pass_v2\"": {
+      "attempts": 12,
+      "application_returns": 12,
+      "observed_rollbacks": 8,
+      "surviving_returns": 4,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_expose_environment_alias\"": {
+      "attempts": 12,
+      "application_returns": 12,
+      "observed_rollbacks": 8,
+      "surviving_returns": 4,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_prepare_uninit_goal\"": {
+      "attempts": 12,
+      "application_returns": 0,
+      "observed_rollbacks": 12,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_normalize_find_mem_address\"": {
+      "attempts": 642,
+      "application_returns": 0,
+      "observed_rollbacks": 642,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_target_registered_intro_if_enabled\"": {
+      "attempts": 1288,
+      "application_returns": 0,
+      "observed_rollbacks": 1288,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_array_load_preselect\"": {
+      "attempts": 644,
+      "application_returns": 0,
+      "observed_rollbacks": 644,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_array_load_priority\"": {
+      "attempts": 644,
+      "application_returns": 0,
+      "observed_rollbacks": 644,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_conjunct_match_if_enabled\"": {
+      "attempts": 644,
+      "application_returns": 0,
+      "observed_rollbacks": 644,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_run_pass_steps\"": {
+      "attempts": 644,
+      "application_returns": 628,
+      "observed_rollbacks": 16,
+      "surviving_returns": 628,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_open_requested_instr_bundle\"": {
+      "attempts": 644,
+      "application_returns": 0,
+      "observed_rollbacks": 644,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_open_requested_struct_sys_package\"": {
+      "attempts": 644,
+      "application_returns": 0,
+      "observed_rollbacks": 644,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_open_requested_saved_x9_package\"": {
+      "attempts": 644,
+      "application_returns": 0,
+      "observed_rollbacks": 644,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_open_matching_resource_package\"": {
+      "attempts": 644,
+      "application_returns": 0,
+      "observed_rollbacks": 644,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_finish_pure_resources\"": {
+      "attempts": 644,
+      "application_returns": 10,
+      "observed_rollbacks": 634,
+      "surviving_returns": 10,
+      "returned_step_covered_returns": 10
+    },
+    "\"zesu_pack_owned_register_goal\"": {
+      "attempts": 634,
+      "application_returns": 0,
+      "observed_rollbacks": 634,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_pack_shaped_register_goal\"": {
+      "attempts": 634,
+      "application_returns": 0,
+      "observed_rollbacks": 634,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_pack_owned_word_goal\"": {
+      "attempts": 634,
+      "application_returns": 0,
+      "observed_rollbacks": 634,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_normalize_packed_word_subsume\"": {
+      "attempts": 634,
+      "application_returns": 0,
+      "observed_rollbacks": 634,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_prepare_initialized_array_read\"": {
+      "attempts": 634,
+      "application_returns": 0,
+      "observed_rollbacks": 634,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_finish_initialized_array_read\"": {
+      "attempts": 634,
+      "application_returns": 0,
+      "observed_rollbacks": 634,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_liAStep\"": {
+      "attempts": 634,
+      "application_returns": 618,
+      "observed_rollbacks": 16,
+      "surviving_returns": 618,
+      "returned_step_covered_returns": 618
+    },
+    "\"zesu_expose_instruction_lookup\"": {
+      "attempts": 634,
+      "application_returns": 1,
+      "observed_rollbacks": 633,
+      "surviving_returns": 1,
+      "returned_step_covered_returns": 1
+    },
+    "\"zesu_region_fault_if_enabled\"": {
+      "attempts": 633,
+      "application_returns": 2,
+      "observed_rollbacks": 631,
+      "surviving_returns": 2,
+      "returned_step_covered_returns": 2
+    },
+    "\"zesu_ram_fault_if_enabled\"": {
+      "attempts": 631,
+      "application_returns": 1,
+      "observed_rollbacks": 630,
+      "surviving_returns": 1,
+      "returned_step_covered_returns": 1
+    },
+    "\"zesu_signed_address_if_enabled\"": {
+      "attempts": 630,
+      "application_returns": 0,
+      "observed_rollbacks": 630,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_stack_write_if_enabled\"": {
+      "attempts": 630,
+      "application_returns": 0,
+      "observed_rollbacks": 630,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_handoff_goal_address_if_enabled\"": {
+      "attempts": 630,
+      "application_returns": 0,
+      "observed_rollbacks": 630,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_handoff_memory_if_enabled\"": {
+      "attempts": 630,
+      "application_returns": 0,
+      "observed_rollbacks": 630,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_handoff_adjacent_words_if_enabled\"": {
+      "attempts": 630,
+      "application_returns": 0,
+      "observed_rollbacks": 630,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_handoff_facts_if_enabled\"": {
+      "attempts": 630,
+      "application_returns": 0,
+      "observed_rollbacks": 630,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_handoff_integer_equality_if_enabled\"": {
+      "attempts": 630,
+      "application_returns": 0,
+      "observed_rollbacks": 630,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_integer_array_address_if_enabled\"": {
+      "attempts": 630,
+      "application_returns": 0,
+      "observed_rollbacks": 630,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"integer-switch\"": {
+      "attempts": 630,
+      "application_returns": 630,
+      "observed_rollbacks": 630,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"integer-environment\"": {
+      "attempts": 630,
+      "application_returns": 630,
+      "observed_rollbacks": 630,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_liAWriteMem\"": {
+      "attempts": 630,
+      "application_returns": 0,
+      "observed_rollbacks": 630,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_liAReadMem\"": {
+      "attempts": 630,
+      "application_returns": 4,
+      "observed_rollbacks": 626,
+      "surviving_returns": 4,
+      "returned_step_covered_returns": 4
+    },
+    "\"liAAsm\"": {
+      "attempts": 626,
+      "application_returns": 133,
+      "observed_rollbacks": 493,
+      "surviving_returns": 133,
+      "returned_step_covered_returns": 133
+    },
+    "\"liAExp\"": {
+      "attempts": 493,
+      "application_returns": 10,
+      "observed_rollbacks": 483,
+      "surviving_returns": 10,
+      "returned_step_covered_returns": 10
+    },
+    "\"liAOther\"": {
+      "attempts": 483,
+      "application_returns": 0,
+      "observed_rollbacks": 483,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_pure_fact_hints_if_enabled\"": {
+      "attempts": 483,
+      "application_returns": 3,
+      "observed_rollbacks": 480,
+      "surviving_returns": 3,
+      "returned_step_covered_returns": 3
+    },
+    "\"liUnfoldEarly\"": {
+      "attempts": 480,
+      "application_returns": 7,
+      "observed_rollbacks": 473,
+      "surviving_returns": 7,
+      "returned_step_covered_returns": 7
+    },
+    "\"zesu_known_pair_witness_if_enabled\"": {
+      "attempts": 473,
+      "application_returns": 0,
+      "observed_rollbacks": 473,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_pure_witness_constraints_if_enabled\"": {
+      "attempts": 473,
+      "application_returns": 1,
+      "observed_rollbacks": 472,
+      "surviving_returns": 1,
+      "returned_step_covered_returns": 1
+    },
+    "\"zesu_record_witness_if_enabled\"": {
+      "attempts": 472,
+      "application_returns": 0,
+      "observed_rollbacks": 472,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_primitive_tuple_if_enabled\"": {
+      "attempts": 472,
+      "application_returns": 22,
+      "observed_rollbacks": 450,
+      "surviving_returns": 22,
+      "returned_step_covered_returns": 22
+    },
+    "\"zesu_liInstrPreMatch\"": {
+      "attempts": 450,
+      "application_returns": 0,
+      "observed_rollbacks": 450,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_preserve_current_unsigned\"": {
+      "attempts": 450,
+      "application_returns": 0,
+      "observed_rollbacks": 450,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_register_collection_selection_if_enabled\"": {
+      "attempts": 450,
+      "application_returns": 14,
+      "observed_rollbacks": 436,
+      "surviving_returns": 14,
+      "returned_step_covered_returns": 14
+    },
+    "\"liStep\"": {
+      "attempts": 436,
+      "application_returns": 404,
+      "observed_rollbacks": 32,
+      "surviving_returns": 404,
+      "returned_step_covered_returns": 404
+    },
+    "\"liLetBindHint\"": {
+      "attempts": 32,
+      "application_returns": 15,
+      "observed_rollbacks": 17,
+      "surviving_returns": 15,
+      "returned_step_covered_returns": 15
+    },
+    "\"integer-shape-return\"": {
+      "attempts": 8,
+      "application_returns": 8,
+      "observed_rollbacks": 8,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"integer-root-attempt\"": {
+      "attempts": 8,
+      "application_returns": 8,
+      "observed_rollbacks": 8,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"integer-root-return\"": {
+      "attempts": 8,
+      "application_returns": 8,
+      "observed_rollbacks": 8,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"integer-extraction-return\"": {
+      "attempts": 8,
+      "application_returns": 8,
+      "observed_rollbacks": 8,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"integer-array-byte-type-return\"": {
+      "attempts": 24,
+      "application_returns": 24,
+      "observed_rollbacks": 24,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"integer-cast-proof\"": {
+      "attempts": 24,
+      "application_returns": 24,
+      "observed_rollbacks": 24,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"integer-containment-attempt\"": {
+      "attempts": 24,
+      "application_returns": 24,
+      "observed_rollbacks": 24,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"liUnfoldLate\"": {
+      "attempts": 17,
+      "application_returns": 1,
+      "observed_rollbacks": 16,
+      "surviving_returns": 1,
+      "returned_step_covered_returns": 1
+    },
+    "\"zesu_open_matching_two_level_frame\"": {
+      "attempts": 16,
+      "application_returns": 0,
+      "observed_rollbacks": 16,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_extract_matching_descriptor_pure\"": {
+      "attempts": 16,
+      "application_returns": 0,
+      "observed_rollbacks": 16,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_close_matching_trace_tail\"": {
+      "attempts": 16,
+      "application_returns": 0,
+      "observed_rollbacks": 16,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_open_trace_exist\"": {
+      "attempts": 16,
+      "application_returns": 0,
+      "observed_rollbacks": 16,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_rule_set_v2_steps\"": {
+      "attempts": 16,
+      "application_returns": 0,
+      "observed_rollbacks": 16,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_finish_closed_wand\"": {
+      "attempts": 16,
+      "application_returns": 0,
+      "observed_rollbacks": 16,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_finish_framed_wand\"": {
+      "attempts": 16,
+      "application_returns": 0,
+      "observed_rollbacks": 16,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_finish\"": {
+      "attempts": 39,
+      "application_returns": 39,
+      "observed_rollbacks": 16,
+      "surviving_returns": 23,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_array_region_selection_if_enabled\"": {
+      "attempts": 39,
+      "application_returns": 0,
+      "observed_rollbacks": 39,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_defer_unresolved_sidecondition_if_enabled\"": {
+      "attempts": 39,
+      "application_returns": 0,
+      "observed_rollbacks": 39,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_list_cons_witness_if_enabled\"": {
+      "attempts": 39,
+      "application_returns": 0,
+      "observed_rollbacks": 39,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_primitive_tuple_guard_if_enabled\"": {
+      "attempts": 39,
+      "application_returns": 0,
+      "observed_rollbacks": 39,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_finish_v2\"": {
+      "attempts": 39,
+      "application_returns": 39,
+      "observed_rollbacks": 16,
+      "surviving_returns": 23,
+      "returned_step_covered_returns": 0
+    },
+    "\"zesu_solve_instances\"": {
+      "attempts": 31,
+      "application_returns": 0,
+      "observed_rollbacks": 31,
+      "surviving_returns": 0,
+      "returned_step_covered_returns": 0
+    }
+  },
+  "complete_integer_attempt_events": [
+    9265,
+    12490,
+    16369,
+    26709,
+    27823,
+    27984,
+    28145,
+    28306
+  ],
+  "integer_array_answer": "Attempted and rejected. No application return or surviving selection exists.",
+  "first_complete_integer_event": 9265,
+  "first_final_integer_event": 27823,
+  "first_unsuccessful_stage": "Containment proof after successful switch, environment, pointer root, integer extraction, and unsigned-cast proof.",
+  "containment_proof_attempts": 24,
+  "containment_proof_returns": 0,
+  "candidate_identity_limit": "The observer did not label individual array candidates. The contexts retain all three owned byte arrays.",
+  "finer_failure_limit": "The observer did not record internal containment solver operations. No narrower failure cause is established.",
+  "array_region_answer": "Attempted and rejected. The 16 retained selector contexts have envs_entails/find_in_context targets. The rule requires a FindHypEqual region target.",
+  "liStep_scope": "External Lithium selections remain opaque. Application returns do not identify its selected internal rule.",
+  "guard_markers_are_selected_rule_firing": false,
+  "residuals": [
+    {
+      "capture": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/residual-0.json",
+      "capture_sha256": "5d84535fcfcecf145642aec6d3ceb701818d0863f2d9ccddcc8f0c93f7c31c65",
+      "target_sha256": "23570e0637ddb100c58b44d4c527ca2315264b7804d089663d8c9aef2f1c0ba3",
+      "selector": "FindMemMapsTo",
+      "printed_terms_have_ellipses": false
+    },
+    {
+      "capture": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/residual-1.json",
+      "capture_sha256": "58ea805342b7182cfce50c3e75159ea2e1e0c7c5170d44140577c349c3354905",
+      "target_sha256": "05712e63e0b41fa54cc7e132583537b1f9b6848725dc34e1429a2ecd9e28cacc",
+      "selector": "FindRegMapsTo",
+      "printed_terms_have_ellipses": false
+    },
+    {
+      "capture": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/residual-2.json",
+      "capture_sha256": "e6fb97c3e28b9e941433d80b6247097bed5b07a514c7d6cae16aeb8d0e09c5c6",
+      "target_sha256": "845545d3c8d9e27d228853c505284ab566af240b0d74fb2b3e062984fac4be80",
+      "selector": "FindMemMapsTo",
+      "printed_terms_have_ellipses": false
+    },
+    {
+      "capture": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/residual-3.json",
+      "capture_sha256": "e044961a2e8ae52111def4e3ab2105444c874ff74e36716cad23862adab55d3c",
+      "target_sha256": "e6913f19c2a75df6e11239547d7d361f4b1d2e7341a3dc1a03398f9ec5468e01",
+      "selector": "FindRegMapsTo",
+      "printed_terms_have_ellipses": false
+    },
+    {
+      "capture": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/residual-4.json",
+      "capture_sha256": "a5c27d2204bf45d4b49f98bce8556bde7313681a8ca33a93b30f352756c7b687",
+      "target_sha256": "23586ecf31f6ed3b83cef4d4dff7109949e5ee7d37428102ad0191ffccaea6df",
+      "selector": "FindMemMapsTo",
+      "printed_terms_have_ellipses": false
+    },
+    {
+      "capture": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/residual-5.json",
+      "capture_sha256": "f3a19538d1727271a03a3ef9dc2453328f1c36980284d10257368e3b28d50c55",
+      "target_sha256": "7f285e2fead3cfb878234e6acbccfe9366a9bcc7ca7438202ef10e6532d7d76a",
+      "selector": "FindRegMapsTo",
+      "printed_terms_have_ellipses": false
+    },
+    {
+      "capture": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/residual-6.json",
+      "capture_sha256": "e9ef525da91973ef46d04193ee7533d07a300e27da609613a3cf379fd1d3f78e",
+      "target_sha256": "c5a9d30c40d60a73ffdec9e29c6c4669221a327b75224cc765b63c5a1bb793cd",
+      "selector": "FindMemMapsTo",
+      "printed_terms_have_ellipses": false
+    },
+    {
+      "capture": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/residual-7.json",
+      "capture_sha256": "49e731648d5e800b579da8cfa2ce3e2978486f230c6be97a048a156e11f6b102",
+      "target_sha256": "5afe00b1a171d77a28cc5d8bf6c4572eafc9487f362f6972ed15c40e7ace5ada",
+      "selector": "FindRegMapsTo",
+      "printed_terms_have_ellipses": false
+    }
+  ],
+  "compiler": {
+    "exit_code": 1,
+    "cpu_seconds": 400.837672,
+    "elapsed_seconds": 401.96525644604117,
+    "peak_rss_kib": 2568276,
+    "limit": null
+  },
+  "controller_elapsed_seconds": 825.7049475160893,
+  "named_Qed_attempted": true,
+  "named_Qed_failed": true,
+  "boundary_closed": false,
+  "Level1_closed": false,
+  "termination_proved": false,
+  "complete_goal_groups": {
+    "active": "Eight printed goals",
+    "stack": "unavailable",
+    "shelf": "unavailable",
+    "given_up": "unavailable"
+  },
+  "shared_evar_limit": "All captured goals report no reachable unresolved evars. Other goal groups and the global evar map remain unavailable.",
+  "MCP_preparation": "Nine exact certificates passed with assumptions [] and empty final groups. Import003 passed health, interactive, compile and verify checks.",
+  "repair_proposal": "Replay the exact retained containment side condition through MCP. If retained list facts prove nonemptiness, use a switched generic registered derivation before containment. Do not add a rule before that focused evidence.",
+  "production_changes": false,
+  "native_replay": false,
+  "bound_files": {
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/audit.py": "11ffb4df26c4ceda52d26a00d5fbda551c99bb1ba5b87f33c8acfb5a171c1a32",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-9171.json": "402a418115b64d9eae11b8575c4ec0cfc1b8a973e4ef446dd523cdc70772c4c3",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-9189.json": "3726d09da71885421f476737692fc49240e5c08e746681f46269917270fad8b3",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-9218.json": "a1709ad50d3c89de9c9d4ebb2593800f0c49e1ec5a6843cf8d1ca605a9820702",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-9236.json": "ca0f6064d81b7e2eed1dccbef7fe72104add00eb239e572533028f24d6e77fe6",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-9265.json": "6b6273c3ba2f4aed90e9ca1b0e56c974c9633f3982533f23d415d62fe8fdab02",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-9296.json": "0449c988b5eead15d62496960c08ef8b52d8666f821bfa0e3eb82357f4cb3e60",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-12396.json": "12e6177a63496c2227e0e85b7bfcb700b6ab3897839ea05f381fb699cab6eec1",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-12414.json": "65fc467943d8f93620dd0aa2eed1bc14c5855fc453db478001fd6f39b354933a",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-12443.json": "5c0b08d9b18a9fa25f9c434fe5d1ad848748767411827c4ca50cae5930d092a8",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-12461.json": "05e1f9f34d435db4190394871e93cc8dd2c779258dc3375f2950a176649731a2",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-12490.json": "8ac67baffbb0e6e8732345d8b4e8a9bc6efc92ab5fc955b02a8d91f937cd7cb7",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-12521.json": "5776f026c67788fde1dc5140c51316c93c4c81f2b5227ac205fc9d60980fc270",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-16275.json": "56e4e258149314b65f739bd405147bb82790d3212f758b4fb3a6b63b6fd65fe6",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-16293.json": "315ef356f845bde6cd0943595736cdcb0edaf6db8e45ca813c450d52b4903ae3",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-16322.json": "d049d28dd88cb6f14a7bbaac0a4df4017292bd5bfa119849d0e84fbd5a17d3c1",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-16340.json": "5515de991200a872795d1a1ba4a6b5aba0097cabedb50ad8d58515ff27be395e",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-16369.json": "c6d57efd46d0fc6ac2786e50e5c6d3f5035560352cc5eca71de3d2ad61fdc366",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-16400.json": "da7959350cf6cae21580be7532da84a6de5b184bf4458ee8355323f9a36387cd",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-26615.json": "2b6b0c9bca0c254a9dcf6156f08ad90fae9729a266954bd3fa758cab1832993c",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-26633.json": "5515ff56279707dcce3779276cabcb8969ed29ca714e760e4f49b46b81c39e41",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-26662.json": "4a9db2ef3e0ee03332866404c66813c462335f76a5dd034a7a94731365967df5",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-26680.json": "182f3d34c104deee442a83a501274f4dd4684df3ab5141e7f2056b2610fadcb2",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-26709.json": "9815835e2a08c3bb7fb139df0750179e97dc4bf0dbfd2253fa7a3d6038f7f076",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-26740.json": "0ef42116cd9a9ea8c9e930f48a7f2a06e567a2a67a627a56ff6b78c761b4a187",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27509.json": "19393e92faf872f02fe038f2a2014d487b211e413c15a97189b1bb4f96bae9a0",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27521.json": "a74b8e3c454349aba72439e86c36f62e8066e9355f03ff61a35257fe39d7ffb8",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27533.json": "25087db3c807ef9e0d06ba2af7142f2aad3e52ee200b4ebb450aee13e5ed26f9",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27545.json": "db74affef07b11928a385204c23d0ff83bceedac1458a72e6a1042f275036d94",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27614.json": "34e3b40293d291a98fbe256fa855f7655a3a06cd0fe5166ed5f5be4175122a4f",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27626.json": "e8f0f7df9f32fa6924e4a80d539a667be9e2253ac3543121b703a58e1144abd8",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27638.json": "2be627195c831f3d51e9f05c3461f7e80b66e1c7752cf633515f7cfa47bb1aef",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27650.json": "2607cc27c8cd71691294f13d8a861110ac763f3798fc6a282574078f3f217cd8",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27823.json": "f58a077fb691b4171a5b65d4d73ea27b9de3fb4ee7af421d830adf789bd7f6f8",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27854.json": "f18f4ce449a2b5766d6a82de4e87bec8645a957930b42759632b715aa213a523",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27865.json": "27e2ce18472bbeeb3bb9d0d0bd4949b7e6aa1a8d5a8f30ddacc02f83c50f7c21",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27872.json": "16a7f0a59fd97191c9e139d9f5926f41df2e050512788999b73483734f52ce2e",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-27984.json": "caa05bf533355b0ca5584e3a5e3ada29fd9e48448416f3a66095a6fcb7aaaf27",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28015.json": "81a9ea5e64136e7abbc298053ebaebf6b682a80792e3cc7c3d395027b0f6c98a",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28026.json": "752569679b96f5fa730ec949d157d4b8c1080ccc0e21249bc6acf156d2d10a75",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28033.json": "04564c589582273123594dff67db474e3e57986d21a81e049bf24b0af3dc1a28",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28145.json": "4e0457f8acb590b0ce7ef6bf8b453bf8988ab7a1cdbbe5ebb46c717a86d49aeb",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28176.json": "1a2f6425b37ab151da9da2e98a2e8865d84678ea3520513a55296b21d95b944a",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28187.json": "221c9b10723f06f25c02a19bf49d820cff9b08ce776fd7f39f51d6ad3a2c4533",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28194.json": "382a90faea87833798c5730a1d5fe4dc7762414c07510d13d39fa128b5123273",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28306.json": "e68c9f8cb932adce2e438ca0242719b5b3be4971284a19e953f6f6859d1647bb",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28337.json": "c62d630a6f0092cb3417a0dc4ce09aceaed9696fa61f1504e43804677e4f36b6",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28348.json": "0e11e95ddaaf1961c1b93f320cc2d808f61f2a5725913f5b372d667d6d57c062",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/context-event-28355.json": "7d4e289e90b9e2a3348349a36a315af5dfc59398c8dda210f06a811c19096d42",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/residual-0.json": "5d84535fcfcecf145642aec6d3ceb701818d0863f2d9ccddcc8f0c93f7c31c65",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/residual-1.json": "58ea805342b7182cfce50c3e75159ea2e1e0c7c5170d44140577c349c3354905",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/residual-2.json": "e6fb97c3e28b9e941433d80b6247097bed5b07a514c7d6cae16aeb8d0e09c5c6",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/residual-3.json": "e044961a2e8ae52111def4e3ab2105444c874ff74e36716cad23862adab55d3c",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/residual-4.json": "a5c27d2204bf45d4b49f98bce8556bde7313681a8ca33a93b30f352756c7b687",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/residual-5.json": "f3a19538d1727271a03a3ef9dc2453328f1c36980284d10257368e3b28d50c55",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/residual-6.json": "e9ef525da91973ef46d04193ee7533d07a300e27da609613a3cf379fd1d3f78e",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-audit-002/residual-7.json": "49e731648d5e800b579da8cfa2ce3e2978486f230c6be97a048a156e11f6b102",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-6974-firing-unbounded-002/run-inputs.json": "1861e1a1f09acfa83f99b5d2dae3cd63573616a93787f7b78e8699c3029272ba",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-6974-firing-unbounded-002/Boundary.v": "ebefddc26a9479cc0a23656a6e571b444f95e43ca1509f1f37f3f9998d3a4393",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-6974-firing-unbounded-002/launcher.py": "dc0bcc1fc2323350db04a579d97c5017bbbc7f8114c5d17a5657075f24fc578a",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-6974-firing-unbounded-002/compiler-environment.json": "94b22a4e6688336c47f2c2aec7b90ca4e72cdabe23ea0f54289315208a4e3388",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-6974-firing-unbounded-002/compiler.json": "38c67f7f8f60614e6e529495e00254801f10e991ad5cdd9280a1889287842faa",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-6974-firing-unbounded-002/compiler.log": "4d01d5ab9024ff59012699788ea8c894bf7b38c178e608d38c862e3fb24dd676",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-6974-firing-unbounded-002/evidence.json": "aa992a93cc872300171b1942e79455901745e8ea9c242e5aba54361691d303cf",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-6974-firing-unbounded-002/result.json": "67735ccf9d4090b84772d37c3676da55272826de204bd5c2a2eee73139e4d207",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-6974-firing-unbounded-002/firing-trace.json": "17ee9c09b95fb379adb72479b03d107aab724a12c1a9752d0e9af3510adea114",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-6974-firing-unbounded-002/selector-contexts.json": "f14215b0f09bec7a35f9abd3419649ac0d815ea04bd55b7b3edb56d34fa14064",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-6974-firing-unbounded-002/parent-release-002.json": "fd1780c30b28bf8c6140b983b57003c90735a96a4319840c8c3dcce5f78f1684",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-6974-firing-unbounded-002/no-write-check.json": "f475f71a3e11c96ac301264820dbff56275f61fb27f8fdc6b18be61ea07f9fca",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-6974-firing-unbounded-002/final-seal-audit.json": "6a0523f40588302f92776c489096604c86cfcef7dac9c51687974d3dc749ae63",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-6974-firing-unbounded-002/sealed-coqc-recipe.json": "387b4dc0df8a3bee827d4fba46bb0f003aa7a2eea863339f8ac62f1599257102",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-6974-firing-unbounded-002/firing_trace.py": "9705b7176e9f94455bb6c64b5668d43134f780803f5cc6997fbe68b5c3a7dc57",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-6974-firing-unbounded-002/capture_contexts.py": "0f98fe8ad63d278980b560917a669157c4a0b97706ae4a8313af0d727059f0e6",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-6974-firing-unbounded-002/instrumentation.diff": "a866c1f3482632222f261fbd6c584760568f38fdec37639e2de95009014889e4",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-native-admission-002/controller.py": "60fcdb9eacc7c0e40604291d214f75a80098733418c95aa27c0da9db9dd8667d",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-native-admission-002/controller-result.json": "7f9d12c1ca73ee86d787faffa6924ec0778b2878422c537a9133803617bac634",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-native-admission-002/controller-start.json": "4f219d883cbb0ac3ab53bb5cce01f4dcad67abe5e948427f6801a56ce2224e21",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-native-admission-002/admission-records.jsonl": "7daafe01699e820288aaee7614f515e0e567b7cc36005860d1279cc14f1b365a",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-findlib-import-mcp-003/audit.json": "a14882527c2a111d6145f8af2cf22e9d303d80c91dc97f95f75187b57bab562e",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-findlib-import-mcp-003/raw-calls.json": "7fbbcaced57993ca266b24af3df71e1173ee9c731f0fa57ef521d448e8ffd419",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-findlib-import-mcp-003/results.json": "531bd180cb8dc541b3592b393e311ee7bb0725abb42165a430f0956f4eb00913"
+  }
+}
