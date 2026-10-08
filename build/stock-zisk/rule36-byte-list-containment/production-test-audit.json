@@ -1,0 +1,96 @@
+{
+  "actual_files_compiled": 2,
+  "files": [
+    {
+      "label": "on",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Proofs/Tests/ByteListContainment.v",
+      "source_sha256": "cc72e6ed197ea10e23b41686b2e6a6060500e848ecac1e498659357bf1fecc39",
+      "compile": {
+        "success": true,
+        "output": "",
+        "dune_build_warning": "dune could not build 'ZesuSsz/Proofs/Tests/ByteListContainment.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead."
+      },
+      "verify": {
+        "success": true,
+        "verification_method": "shared_defs",
+        "assumptions": [],
+        "note": "Verified using shared-definitions template (definitions placed outside Module M for type compatibility)."
+      },
+      "object": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-production-tests-mcp-001/retained/on.vo",
+      "object_sha256": "6a2c2fcc0a51da2d5c896e92bbcca93da7552ffa450119dda35308b2f5246570",
+      "checked_theorem": "rule36_folded_head",
+      "statement_sha256": "07d454e7884b9819f71ee0bcd68b8e9b77876e1484d7bfba42f6242ac4c5b18f",
+      "final_groups": "The corresponding retained fixture exports have all four groups empty."
+    },
+    {
+      "label": "off",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Proofs/Tests/ByteListContainmentOff.v",
+      "source_sha256": "1b554e1eb141a12ea78b621c6344d2adc59743b859db093f7acc39f584c02968",
+      "compile": {
+        "success": true,
+        "output": "",
+        "dune_build_warning": "dune could not build 'ZesuSsz/Proofs/Tests/ByteListContainmentOff.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead."
+      },
+      "verify": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "object": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-production-tests-mcp-001/retained/off.vo",
+      "object_sha256": "01ac7fb4fbabd393a3812d4d7610892cb0bb890ab8962e05f8dbca8199b6c938",
+      "checked_theorem": "rule36_off",
+      "statement_sha256": "65d951383dad51eeca15a6d2ed70f629deb086ad6f4f630b4303b44702b4d4e6",
+      "final_groups": "The corresponding retained fixture exports have all four groups empty."
+    }
+  ],
+  "assumptions": [],
+  "health_passed": true,
+  "interactive_provenance": "Retained005/006/007 fixture checks cover the same declarations and tactic bodies.",
+  "native_replay": false,
+  "bindings": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Proofs/Tests/ByteListContainment.v",
+      "sha256": "cc72e6ed197ea10e23b41686b2e6a6060500e848ecac1e498659357bf1fecc39"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-production-tests-mcp-001/retained/on.vo",
+      "sha256": "6a2c2fcc0a51da2d5c896e92bbcca93da7552ffa450119dda35308b2f5246570"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/folded_headProblem.v",
+      "sha256": "677ef88e1b247c0aa19e0138a1bbef1a04c49bee0dcd9743977d0cd3cfac8fd6"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Proofs/Tests/ByteListContainmentOff.v",
+      "sha256": "1b554e1eb141a12ea78b621c6344d2adc59743b859db093f7acc39f584c02968"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-production-tests-mcp-001/retained/off.vo",
+      "sha256": "01ac7fb4fbabd393a3812d4d7610892cb0bb890ab8962e05f8dbca8199b6c938"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/offProblem.v",
+      "sha256": "e9da2d22ec49b4ffef163015cd4ac6e8304be097538674a912f2eac888848dbe"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-production-tests-mcp-001/raw-calls.json",
+      "sha256": "db764b5f40d4c8fb7321f1fae1cba8859aa50f1b9e05c23fe31845c9b4987ceb"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-production-tests-mcp-001/schemas.json",
+      "sha256": "7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-production-tests-mcp-001/result.json",
+      "sha256": "03ad0e819719fa032a8676093c69b49fd64a5e4adcf7407ea9873b78d51d26ac"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-production-tests-mcp-001/results.json",
+      "sha256": "6a8328c9ac821928197505f82a5de0e8d38c3513c8c876de6b42530b9d7758a3"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-production-tests-mcp-001/session-closure.json",
+      "sha256": "383788351eb004e2f6675ee0647827a8b0e60efc3694ca178a26a825f1dafafe"
+    }
+  ]
+}
