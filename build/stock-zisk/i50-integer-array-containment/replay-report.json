@@ -1,0 +1,70 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "raw_calls": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-containment-replay-mcp-001/raw-calls.json",
+      "raw_calls_sha256": "5bb6547b4514cd0eec2f3814b89a5089633888bee53deb68912b33c1fd8a08d7",
+      "classification": "helper/selector timeout; Section proof parameters"
+    },
+    {
+      "attempt": 2,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-containment-replay-mcp-002/audit.json",
+      "sha256": "b610643807fca9ddbab7aae56107f9b82068e02a1c53df124d5803cc93fac554"
+    },
+    {
+      "attempt": 3,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-containment-replay-mcp-003/binding-failure-audit.json",
+      "sha256": "fcd8bcf9d4495a880b1d0692f57d5e77d67f85a9c0560c1d87064b67ed86594f"
+    },
+    {
+      "attempt": 4,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-containment-replay-mcp-004/audit.json",
+      "sha256": "b2d45bae0f19325ee86a98d69bc38b27cc2bfbf7d689bd2f3e00d3c45a4f06e5"
+    },
+    {
+      "attempt": 5,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-containment-replay-mcp-005/audit.json",
+      "sha256": "de950c33d66c6945eff218bb707839330d7999e228288529447bd4f8af824fc1"
+    },
+    {
+      "attempt": 6,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-containment-replay-mcp-006/audit.json",
+      "sha256": "e936c3a308dce528a029984cfa97686d63b4bfe76a7ca9f5ed101e5aa0f28c22"
+    },
+    {
+      "attempt": 7,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-containment-replay-mcp-007/audit.json",
+      "sha256": "c7a4dc40e39b164d36507f0845fb7caa909da2baae0c001fb1f87931a0d5c4f9"
+    },
+    {
+      "attempt": 8,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-containment-replay-mcp-008/audit.json",
+      "sha256": "3be5ff4cb27d54a55736f47bfbad0cabfc56d312a6105aa3db84568b94743572"
+    },
+    {
+      "attempt": 9,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-containment-replay-mcp-009/audit.json",
+      "sha256": "f55bf71fd627f31eb48078c1b25f386199b9e5ec2d7b76c6816e07b6c6ae411c"
+    },
+    {
+      "attempt": 10,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-containment-replay-mcp-010/audit.json",
+      "sha256": "e2ad0e392a89a6f9d845082112f66bdf8beac616fde99ac30775027bafce7e4b"
+    }
+  ],
+  "qualifications": [
+    "Attempts001/002 used Section proof parameters. Their learning timeouts do not establish native failure.",
+    "Attempt003 failed at bare idtac message evaluation.",
+    "Attempts004/005 retained and regenerated Section conjunctions.",
+    "Attempt006 local binders removed H2. Its context order differs.",
+    "Attempt007 restores native context order. One proof-goal identifier mapping makes complete exports equal.",
+    "Attempt008 individually learns conjunctions. Fifteen stages pass; lia and bv_solve fail.",
+    "Attempt009 separate width and input-head branches retain failed solver trials.",
+    "Attempt010 combined width, input-head equality, length rewrite, and cons reduction let lia close the pure input range.",
+    "The positive diagnostic has empty interactive groups. It has no compiled certificate or native closure.",
+    "The exact native inner cause and generic repair remain pending."
+  ],
+  "native_replay": false,
+  "production_changes": false,
+  "diagnosis_remains_active": true
+}

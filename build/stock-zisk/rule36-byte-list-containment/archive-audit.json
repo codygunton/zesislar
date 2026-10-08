@@ -1,0 +1,12 @@
+{
+  "archive_index": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/build/stock-zisk/rule36-byte-list-containment/archive-index.json",
+  "archive_index_sha256": "48bcabb17fde09befa821888905be79b72072b3294b708b7752211976ee0f7aa",
+  "records_checked": 14443,
+  "unique_archived_files_checked": 11429,
+  "all_hashes_and_sizes_match": true,
+  "known_secret_matches": 0,
+  "credential_pattern_matches": 0,
+  "private_environment_headers": 0,
+  "raw_Dune_traces_excluded": true,
+  "native_replayed": false
+}

@@ -1,0 +1,28 @@
+{
+  "root": "d582716e7b47cc150f4fbf0239d434d644d74f62",
+  "staged_tree": "c77f65dc5ffe67981b07dd059e90f98e973a76bb",
+  "sources": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Automation/Hooks.v",
+      "sha256": "3597847e0cf58a07849148b6a9554646371f9e7f6bdad2fed2eeb9badc5396af"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Automation/Finish.v",
+      "sha256": "f9968dad7176f7c0c0cdb286e37037d60f9b3f7ff6a59c1c5185ae756f812c52"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Automation/Switches/ByteListContainment.v",
+      "sha256": "7f419b79a67c9eaaa8890c4f2f4370cdcb0e8a056fc0ca14a9e5c549011b96ab"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Proofs/Tests/ByteListContainment.v",
+      "sha256": "cc72e6ed197ea10e23b41686b2e6a6060500e848ecac1e498659357bf1fecc39"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Proofs/Tests/ByteListContainmentOff.v",
+      "sha256": "1b554e1eb141a12ea78b621c6344d2adc59743b859db093f7acc39f584c02968"
+    }
+  ],
+  "evidence_staged": false,
+  "gates_pending": true
+}

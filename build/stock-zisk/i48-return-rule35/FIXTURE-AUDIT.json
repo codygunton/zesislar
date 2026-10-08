@@ -1,0 +1,377 @@
+{
+  "I48": "OFF absent; ON instance present. Only the switch import varies.",
+  "MCP_calls": 54,
+  "Rule35": "ON equally. The cache fixture and actual dispatch definitions passed.",
+  "actual_binding_queries": [
+    {
+      "arguments": {
+        "command": "Print Ltac ZesuSsz.Automation.Finish.zesu_block. Print Ltac ZesuSsz.Automation.Finish.zesu_run. Print Ltac ZesuSsz.Automation.Finish.zesu_search_switches. Print Ltac ZesuSsz.Automation.Hooks.zesu_defer_unresolved_memory_kind_if_enabled. Print Ltac liImpl. Print Ltac ZesuSsz.Automation.Hooks.zesu_liAStep. Print Ltac ZesuSsz.Automation.Finish.zesu_finish. Print Ltac ZesuSsz.Automation.Hooks.zesu_memory_kind_has_unresolved_evar.",
+        "from_state": 1,
+        "timeout": 300
+      },
+      "result": {
+        "from_state_id": 1,
+        "output": "Ltac ZesuSsz.Automation.Finish.zesu_block :=\n  tryif PureFacts.zesu_rule_set_v2_on then zesu_block_v2 else zesu_block_v1 \nLtac ZesuSsz.Automation.Finish.zesu_run :=\n  let switches := zesu_search_switches in\n  zesu_dispatch_search switches\n   ltac:(fun _ =>\n           unshelve\n            (repeat\n              progress (zesu_run_pass; try zesu_solve_instances; zesu_finish));\n            try zesu_solve_instances)\nLtac ZesuSsz.Automation.Finish.zesu_search_switches :=\n  constr:([ZesuStepRegionFaultNormalization; ZesuStepInstructionLookup;\n           ZesuStepStackWrite; ZesuStepRamFault; ZesuStepRegionFault;\n           ZesuStepLowMask; ZesuStepIntegerArrayAddress;\n           ZesuStepRecordWitness; ZesuStepArrayBounds;\n           ZesuStepWordArrayHandoff; ZesuStepReturnBundle;\n           ReturnWand.ZesuStepReturnWand; ZesuStepStrictSigned;\n           ZesuStepListWitness; ZesuStepTupleWitness;\n           ZesuStepArrayRegionBounds; ZesuStepPureFactHints;\n           ZesuStepKnownPairWitness; ZesuStepPureWitnessConstraints;\n           ZesuStepRegisterCollectionSelection;\n           ZesuStepEvarSideconditionGuard; ZesuStepEvarImplicationGuard;\n           ZesuStepEvarMemoryKindGuard; ZesuStepCanonicalAnchor;\n           ZesuStepCanonicalPureConjunction])\nLtac ZesuSsz.Automation.Hooks.zesu_defer_unresolved_memory_kind_if_enabled :=\n  zesu_switch_enabled ltac:(constr:(ZesuStepEvarMemoryKindGuard));\n   lazymatch goal with\n   | |- environments.envs_entails _ ?target =>\n         lazymatch target with\n         | match ?kind with\n           | MKMapsTo _ _ | _ => _\n           end => zesu_memory_kind_has_unresolved_evar kind\n         end\n   end\nLtac liImpl :=\n  tryif zesu_defer_unresolved_implication_if_enabled then\n   fail \"unresolved implication premise\" else normalize_and_simpl_impl false \nRedefined by:\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nLtac ZesuSsz.Automation.Hooks.zesu_liAStep :=\n  tryif zesu_defer_unresolved_memory_kind_if_enabled then\n   fail \"unresolved memory kind\" else idtac ; liEnsureInvariant;\n   try progress unfold TRACE_LET; try liAIntroduceLetInGoal; (first\n   [ zesu_expose_instruction_lookup\n   | zesu_region_fault_if_enabled\n   | zesu_ram_fault_if_enabled\n   | zesu_signed_address_if_enabled\n   | zesu_stack_write_if_enabled\n   | zesu_handoff_goal_address_if_enabled\n   | zesu_handoff_memory_if_enabled\n   | zesu_handoff_adjacent_words_if_enabled\n   | zesu_handoff_facts_if_enabled\n   | zesu_handoff_integer_equality_if_enabled\n   | zesu_integer_array_address_if_enabled\n   | zesu_normalize_find_mem_address\n   | zesu_liAWriteMem\n   | zesu_liAReadMem\n   | liAAsm\n   | liAExp\n   | liAOther\n   | zesu_pure_fact_hints_if_enabled\n   | liUnfoldEarly\n   | zesu_known_pair_witness_if_enabled\n   | zesu_pure_witness_constraints_if_enabled\n   | zesu_record_witness_if_enabled\n   | zesu_primitive_tuple_if_enabled\n   | zesu_liInstrPreMatch\n   | zesu_preserve_current_unsigned\n   | zesu_register_collection_selection_if_enabled\n   | liStep\n   | liLetBindHint\n   | liUnfoldLate ]); liSimpl\nLtac ZesuSsz.Automation.Finish.zesu_finish :=\n  tryif zesu_defer_unresolved_memory_kind_if_enabled then idtac else\n   (try (solve [ zesu_array_region_selection_if_enabled ]);\n     tryif zesu_defer_unresolved_sidecondition_if_enabled then idtac else\n      (try (solve\n        [ zesu_list_cons_witness_if_enabled\n        | zesu_primitive_tuple_guard_if_enabled ]);\n        tryif PureFacts.zesu_rule_set_v2_on then\n         tryif\n          (let _ :=\n            constr:((_ : BoundedArithmetic.ZesuStepBoundedArithmetic))\n           in\n           idtac) then\n          try BoundedArithmetic.zesu_bounded_arithmetic ltac:(zesu_finish_v2)\n           else zesu_finish_v2  else zesu_finish_v1 ) ) \nLtac ZesuSsz.Automation.Hooks.zesu_memory_kind_has_unresolved_evar kind :=\n  let reduced := eval cbv beta zeta in kind in\n  first\n  [ is_evar reduced\n  | is_var reduced;\n     multimatch goal with\n     | local:=?body:mem_mapsto_kind\n       |- _ =>\n           constr_eq local reduced; zesu_memory_kind_has_unresolved_evar body\n     end ]",
+        "success": true
+      },
+      "tool": "rocq_query",
+      "wall_seconds": 0.004508086945861578
+    },
+    {
+      "arguments": {
+        "command": "Print Ltac ZesuSsz.Automation.Finish.zesu_block. Print Ltac ZesuSsz.Automation.Finish.zesu_run. Print Ltac ZesuSsz.Automation.Finish.zesu_search_switches. Print Ltac ZesuSsz.Automation.Hooks.zesu_defer_unresolved_memory_kind_if_enabled. Print Ltac liImpl. Print Ltac ZesuSsz.Automation.Hooks.zesu_liAStep. Print Ltac ZesuSsz.Automation.Finish.zesu_finish. Print Ltac ZesuSsz.Automation.Hooks.zesu_memory_kind_has_unresolved_evar.",
+        "from_state": 34,
+        "timeout": 300
+      },
+      "result": {
+        "from_state_id": 34,
+        "output": "Ltac ZesuSsz.Automation.Finish.zesu_block :=\n  tryif PureFacts.zesu_rule_set_v2_on then zesu_block_v2 else zesu_block_v1 \nLtac ZesuSsz.Automation.Finish.zesu_run :=\n  let switches := zesu_search_switches in\n  zesu_dispatch_search switches\n   ltac:(fun _ =>\n           unshelve\n            (repeat\n              progress (zesu_run_pass; try zesu_solve_instances; zesu_finish));\n            try zesu_solve_instances)\nLtac ZesuSsz.Automation.Finish.zesu_search_switches :=\n  constr:([ZesuStepRegionFaultNormalization; ZesuStepInstructionLookup;\n           ZesuStepStackWrite; ZesuStepRamFault; ZesuStepRegionFault;\n           ZesuStepLowMask; ZesuStepIntegerArrayAddress;\n           ZesuStepRecordWitness; ZesuStepArrayBounds;\n           ZesuStepWordArrayHandoff; ZesuStepReturnBundle;\n           ReturnWand.ZesuStepReturnWand; ZesuStepStrictSigned;\n           ZesuStepListWitness; ZesuStepTupleWitness;\n           ZesuStepArrayRegionBounds; ZesuStepPureFactHints;\n           ZesuStepKnownPairWitness; ZesuStepPureWitnessConstraints;\n           ZesuStepRegisterCollectionSelection;\n           ZesuStepEvarSideconditionGuard; ZesuStepEvarImplicationGuard;\n           ZesuStepEvarMemoryKindGuard; ZesuStepCanonicalAnchor;\n           ZesuStepCanonicalPureConjunction])\nLtac ZesuSsz.Automation.Hooks.zesu_defer_unresolved_memory_kind_if_enabled :=\n  zesu_switch_enabled ltac:(constr:(ZesuStepEvarMemoryKindGuard));\n   lazymatch goal with\n   | |- environments.envs_entails _ ?target =>\n         lazymatch target with\n         | match ?kind with\n           | MKMapsTo _ _ | _ => _\n           end => zesu_memory_kind_has_unresolved_evar kind\n         end\n   end\nLtac liImpl :=\n  tryif zesu_defer_unresolved_implication_if_enabled then\n   fail \"unresolved implication premise\" else normalize_and_simpl_impl false \nRedefined by:\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nHooks\nLtac ZesuSsz.Automation.Hooks.zesu_liAStep :=\n  tryif zesu_defer_unresolved_memory_kind_if_enabled then\n   fail \"unresolved memory kind\" else idtac ; liEnsureInvariant;\n   try progress unfold TRACE_LET; try liAIntroduceLetInGoal; (first\n   [ zesu_expose_instruction_lookup\n   | zesu_region_fault_if_enabled\n   | zesu_ram_fault_if_enabled\n   | zesu_signed_address_if_enabled\n   | zesu_stack_write_if_enabled\n   | zesu_handoff_goal_address_if_enabled\n   | zesu_handoff_memory_if_enabled\n   | zesu_handoff_adjacent_words_if_enabled\n   | zesu_handoff_facts_if_enabled\n   | zesu_handoff_integer_equality_if_enabled\n   | zesu_integer_array_address_if_enabled\n   | zesu_normalize_find_mem_address\n   | zesu_liAWriteMem\n   | zesu_liAReadMem\n   | liAAsm\n   | liAExp\n   | liAOther\n   | zesu_pure_fact_hints_if_enabled\n   | liUnfoldEarly\n   | zesu_known_pair_witness_if_enabled\n   | zesu_pure_witness_constraints_if_enabled\n   | zesu_record_witness_if_enabled\n   | zesu_primitive_tuple_if_enabled\n   | zesu_liInstrPreMatch\n   | zesu_preserve_current_unsigned\n   | zesu_register_collection_selection_if_enabled\n   | liStep\n   | liLetBindHint\n   | liUnfoldLate ]); liSimpl\nLtac ZesuSsz.Automation.Finish.zesu_finish :=\n  tryif zesu_defer_unresolved_memory_kind_if_enabled then idtac else\n   (try (solve [ zesu_array_region_selection_if_enabled ]);\n     tryif zesu_defer_unresolved_sidecondition_if_enabled then idtac else\n      (try (solve\n        [ zesu_list_cons_witness_if_enabled\n        | zesu_primitive_tuple_guard_if_enabled ]);\n        tryif PureFacts.zesu_rule_set_v2_on then\n         tryif\n          (let _ :=\n            constr:((_ : BoundedArithmetic.ZesuStepBoundedArithmetic))\n           in\n           idtac) then\n          try BoundedArithmetic.zesu_bounded_arithmetic ltac:(zesu_finish_v2)\n           else zesu_finish_v2  else zesu_finish_v1 ) ) \nLtac ZesuSsz.Automation.Hooks.zesu_memory_kind_has_unresolved_evar kind :=\n  let reduced := eval cbv beta zeta in kind in\n  first\n  [ is_evar reduced\n  | is_var reduced;\n     multimatch goal with\n     | local:=?body:mem_mapsto_kind\n       |- _ =>\n           constr_eq local reduced; zesu_memory_kind_has_unresolved_evar body\n     end ]",
+        "success": true
+      },
+      "tool": "rocq_query",
+      "wall_seconds": 0.0048716559540480375
+    }
+  ],
+  "baseline_switches": 26,
+  "calls_sha256": "5b79033041f6969ad4b8fc1ee982bd3861fee8ccacf3070e8854a044545824b6",
+  "certificate_scope": "These four True certificates establish scope and exclusions. They do not prove the native return transfer.",
+  "certificates": [
+    {
+      "certificate": {
+        "assumptions": [],
+        "success": true,
+        "verification_method": "module_m"
+      },
+      "complete_final_groups": {
+        "active_goals": 0,
+        "bytes": 49,
+        "given_up_goals": 0,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/exports/state_32.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "shelved_goals": 0,
+        "stack_entries": 0,
+        "stack_frame_goal_counts": [],
+        "state_id": 32,
+        "success": true
+      },
+      "declaration_query": {
+        "from_state_id": 33,
+        "output": "comparison_activation\n     : True",
+        "success": true
+      },
+      "exact_generalized_type": "True",
+      "file": "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/ActivationOff.v",
+      "source_sha256": "5b42b43b41a308362f9b728d438ffa4bb70ecb770056e810bf5208b356e44d85",
+      "theorem": "comparison_activation"
+    },
+    {
+      "certificate": {
+        "assumptions": [],
+        "success": true,
+        "verification_method": "module_m"
+      },
+      "complete_final_groups": {
+        "active_goals": 0,
+        "bytes": 49,
+        "given_up_goals": 0,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/exports/state_66.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "shelved_goals": 0,
+        "stack_entries": 0,
+        "stack_frame_goal_counts": [],
+        "state_id": 66,
+        "success": true
+      },
+      "declaration_query": {
+        "from_state_id": 67,
+        "output": "comparison_activation\n     : True",
+        "success": true
+      },
+      "exact_generalized_type": "True",
+      "file": "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/ActivationOn.v",
+      "source_sha256": "e45540cb5a6c2d34da310e8da48ce0523ea57ad4dd7656f81d48a21e5da4652b",
+      "theorem": "comparison_activation"
+    },
+    {
+      "certificate": {
+        "assumptions": [],
+        "success": true,
+        "verification_method": "module_m"
+      },
+      "complete_final_groups": {
+        "active_goals": 0,
+        "bytes": 49,
+        "given_up_goals": 0,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/exports/state_69.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "shelved_goals": 0,
+        "stack_entries": 0,
+        "stack_frame_goal_counts": [],
+        "state_id": 69,
+        "success": true
+      },
+      "declaration_query": {
+        "from_state_id": 70,
+        "output": "excluded_classes_absent\n     : True",
+        "success": true
+      },
+      "exact_generalized_type": "True",
+      "file": "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/Exclusions.v",
+      "source_sha256": "f6546ffa61f51fca673b938fb157b273fa79b4d84dbd2cc9d15d1f27bfb66052",
+      "theorem": "excluded_classes_absent"
+    },
+    {
+      "certificate": {
+        "assumptions": [],
+        "success": true,
+        "verification_method": "module_m"
+      },
+      "complete_final_groups": {
+        "active_goals": 0,
+        "bytes": 49,
+        "given_up_goals": 0,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/exports/state_72.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "shelved_goals": 0,
+        "stack_entries": 0,
+        "stack_frame_goal_counts": [],
+        "state_id": 72,
+        "success": true
+      },
+      "declaration_query": {
+        "from_state_id": 73,
+        "output": "excluded_classes_absent\n     : True",
+        "success": true
+      },
+      "exact_generalized_type": "True",
+      "file": "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/ExclusionsOn.v",
+      "source_sha256": "2889bdef04daba33dcd416696f3c6558cc41e62d9d070d5966b35234775c521e",
+      "theorem": "excluded_classes_absent"
+    }
+  ],
+  "entry_records": [
+    {
+      "complete_groups": {
+        "active_goals": 1,
+        "bytes": 879,
+        "given_up_goals": 0,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/exports/state_78.json",
+        "sha256": "45e27fe2800f581c5520ea56717c4b3d831544e696bb7ab3a5e81dd4c820343e",
+        "shelved_goals": 0,
+        "stack_entries": 0,
+        "stack_frame_goal_counts": [],
+        "state_id": 78,
+        "success": true
+      },
+      "exact_terms": {
+        "given_up": [],
+        "goals": [
+          {
+            "hyps": [
+              {
+                "names": [
+                  "Sigma"
+                ],
+                "ty": "gFunctors"
+              },
+              {
+                "names": [
+                  "islaG0"
+                ],
+                "ty": "islaG Sigma"
+              },
+              {
+                "names": [
+                  "H"
+                ],
+                "ty": "threadG"
+              },
+              {
+                "names": [
+                  "args"
+                ],
+                "ty": "DecodeItemArgs"
+              },
+              {
+                "names": [
+                  "locals"
+                ],
+                "ty": "DecodeItemReturnLocals"
+              },
+              {
+                "names": [
+                  "inputPrefix"
+                ],
+                "ty": "bv 8"
+              },
+              {
+                "names": [
+                  "rest"
+                ],
+                "ty": "list (bv 8)"
+              },
+              {
+                "names": [
+                  "headerLength",
+                  "payloadLength"
+                ],
+                "ty": "Z"
+              }
+            ],
+            "ty": "\"Hcode\" : instr_lookup_resources\n            (SelectedCodeLookup.selectedCodeLookup index_decodeItem.instr_map)\n--------------------------------------\u25a1\ninstr_body 2148362816\n  (decodeItemEntryAt800d6a40 args locals inputPrefix rest headerLength\n     payloadLength \u2217\n   decodeItemReturnOkExit args (bv_unsigned (returnA1 locals))\n     (bv_unsigned (returnA3 locals)) (bv_unsigned (returnA4 locals)) false \u2217\n   True)"
+          }
+        ],
+        "shelf": [],
+        "stack": []
+      },
+      "file": "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/EntryOff.v",
+      "native_statement_sha256": "066839761552bc06f74ddf6018f51e0843f61d7e0d966bf7ec335308c693f828",
+      "setup": "\n  unfold decodeItemReturnAt800d6a40, decodeItemReturnBlockObligation.\n  iIntros \"Hcode\".\n  iEval (unfold decodeItemSelectedCode) in \"Hcode\".\n  iDestruct \"Hcode\" as \"#Hcode\".\n",
+      "theorem": "decodeItemReturnAt6a40_correct"
+    },
+    {
+      "complete_groups": {
+        "active_goals": 1,
+        "bytes": 879,
+        "given_up_goals": 0,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/exports/state_83.json",
+        "sha256": "45e27fe2800f581c5520ea56717c4b3d831544e696bb7ab3a5e81dd4c820343e",
+        "shelved_goals": 0,
+        "stack_entries": 0,
+        "stack_frame_goal_counts": [],
+        "state_id": 83,
+        "success": true
+      },
+      "exact_terms": {
+        "given_up": [],
+        "goals": [
+          {
+            "hyps": [
+              {
+                "names": [
+                  "Sigma"
+                ],
+                "ty": "gFunctors"
+              },
+              {
+                "names": [
+                  "islaG0"
+                ],
+                "ty": "islaG Sigma"
+              },
+              {
+                "names": [
+                  "H"
+                ],
+                "ty": "threadG"
+              },
+              {
+                "names": [
+                  "args"
+                ],
+                "ty": "DecodeItemArgs"
+              },
+              {
+                "names": [
+                  "locals"
+                ],
+                "ty": "DecodeItemReturnLocals"
+              },
+              {
+                "names": [
+                  "inputPrefix"
+                ],
+                "ty": "bv 8"
+              },
+              {
+                "names": [
+                  "rest"
+                ],
+                "ty": "list (bv 8)"
+              },
+              {
+                "names": [
+                  "headerLength",
+                  "payloadLength"
+                ],
+                "ty": "Z"
+              }
+            ],
+            "ty": "\"Hcode\" : instr_lookup_resources\n            (SelectedCodeLookup.selectedCodeLookup index_decodeItem.instr_map)\n--------------------------------------\u25a1\ninstr_body 2148362816\n  (decodeItemEntryAt800d6a40 args locals inputPrefix rest headerLength\n     payloadLength \u2217\n   decodeItemReturnOkExit args (bv_unsigned (returnA1 locals))\n     (bv_unsigned (returnA3 locals)) (bv_unsigned (returnA4 locals)) false \u2217\n   True)"
+          }
+        ],
+        "shelf": [],
+        "stack": []
+      },
+      "file": "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/EntryOn.v",
+      "native_statement_sha256": "066839761552bc06f74ddf6018f51e0843f61d7e0d966bf7ec335308c693f828",
+      "setup": "\n  unfold decodeItemReturnAt800d6a40, decodeItemReturnBlockObligation.\n  iIntros \"Hcode\".\n  iEval (unfold decodeItemSelectedCode) in \"Hcode\".\n  iDestruct \"Hcode\" as \"#Hcode\".\n",
+      "theorem": "decodeItemReturnAt6a40_correct"
+    }
+  ],
+  "exact_entry_terms_equal": true,
+  "excluded_classes": 17,
+  "health": {
+    "ok": true,
+    "pet": {
+      "pid": null,
+      "running": false
+    },
+    "server_version": "0.3.1",
+    "success": true,
+    "switch": "islaris",
+    "switch_is_local": true,
+    "switch_prefix": "/home/cody/islaris/_opam",
+    "switch_source": "opam_env",
+    "toolchain": {
+      "coqc": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/capture_compile_output.py",
+        "version": "Traceback (most recent call last):"
+      },
+      "pet": {
+        "path": "/home/cody/islaris/_opam/bin/pet",
+        "pytanque_importable": true,
+        "version": "0.2.4-dev"
+      }
+    },
+    "warnings": []
+  },
+  "health_version_limit": "The coqc wrapper returned Traceback text to the version probe. Exact compiler paths and bytes remain bound by the native input indexes.",
+  "hint_exports": 22,
+  "hint_umbrella": "ZesuSsz.Compliance.DecodeItemHints",
+  "native_started": false,
+  "post_qed_groups": "Unavailable after accepted Qed. The actual pre-Qed goal counts are zero.",
+  "raw_calls_sha256": "fb7ab97fe7c3e72f13a2bc93d6f18146d709ec91c28f280c4a35ced220080f90",
+  "raw_trace_headers_archived": false,
+  "root": "e8fb293773dab5a4124f813634b3d2ccd1fff400",
+  "security_scan": {
+    "checked_path_records": 7950,
+    "checked_unique_files": 7342,
+    "credential_name_matches": 4,
+    "credential_value_matches": 0,
+    "credential_value_recorded": false,
+    "private_environment_header_matches": 0
+  },
+  "session_closure": {
+    "after": null,
+    "before": {
+      "pid": 1340319,
+      "rss_kib": 3772572,
+      "start_ticks": "114663286"
+    },
+    "owned_transport_closed": true
+  },
+  "token_totals": "Unavailable.",
+  "verified_sources": {
+    "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/ActivationOff.v": "5b42b43b41a308362f9b728d438ffa4bb70ecb770056e810bf5208b356e44d85",
+    "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/ActivationOn.v": "e45540cb5a6c2d34da310e8da48ce0523ea57ad4dd7656f81d48a21e5da4652b",
+    "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/ENTRIES.json": "b704ca5675081d195094b7b47f4f95378c79f4e7367cf3b00f1aa22d7c99fd18",
+    "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/EntryOff.v": "fa8e0f5a09c1e3b227edbd4b78926faaf743313f85fc9be10f3530b2fbe8f93b",
+    "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/EntryOn.v": "a26ecd0bb92840542f2ae3adbf78d5feb8cd8244cd0a951da503dd49ea75a8e0",
+    "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/Exclusions.v": "f6546ffa61f51fca673b938fb157b273fa79b4d84dbd2cc9d15d1f27bfb66052",
+    "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/ExclusionsOn.v": "2889bdef04daba33dcd416696f3c6558cc41e62d9d070d5966b35234775c521e",
+    "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/capture_compile_output.py": "d533ed6936754f92acbfa52c2912975609f1c772c49f3182917d8fe3b2d69b37",
+    "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-scope-mcp-001/run_scope.py": "352dfd599cb791ecc63d93b7171d6da065ae86b8d325b39d5c39415507759a55",
+    "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-source-preparation-001/SOURCE-PREPARATION.json": "441a759960225c0164452b897ffcb30d9aeebb2443785c3b5cf8d52964c66e92"
+  }
+}

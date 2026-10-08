@@ -930,14 +930,29 @@ class GuardLockTest(unittest.TestCase):
         try:
             self.assertEqual(self.guard("lock-want", str(holder.pid), "t").returncode,
                              0)
-            environment = {**self.environment, **self.batch_environment()}
-            done = subprocess.run(
-                ["timeout", "1", str(GUARD), "scope", "arm-job", "--", "true"],
-                capture_output=True, text=True, env=environment,
-            )
-            self.assertEqual(done.returncode, 0, done.stderr)
-            self.assertIn("MemoryMax=6G", done.stdout)
-            self.assertTrue(self.lock.read_text().startswith("state=wanted "))
+            self.environment.update(self.batch_environment())
+            for startup_delay in (0, 1.1):
+                with self.subTest(startup_delay=startup_delay):
+                    (self.bin / "systemd-run").write_text(
+                        f"#!/bin/sh\nsleep {startup_delay}\nprintf '%s\\n' \"$@\"\n")
+                    process = subprocess.Popen(
+                        [str(GUARD), "scope", "arm-job", "--", "true"],
+                        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                        text=True, env=self.environment,
+                    )
+                    try:
+                        deadline = time.monotonic() + 10
+                        while process.poll() is None and time.monotonic() < deadline:
+                            time.sleep(0.02)
+                        self.assertIsNotNone(process.poll(), "scope startup did not complete")
+                        stdout, stderr = process.communicate(timeout=1)
+                        self.assertEqual(process.returncode, 0, stderr)
+                        self.assertIn("MemoryMax=6G", stdout)
+                        self.assertTrue(self.lock.read_text().startswith("state=wanted "))
+                    finally:
+                        if process.poll() is None:
+                            process.terminate()
+                        process.communicate(timeout=3)
         finally:
             holder.kill()
             holder.wait()

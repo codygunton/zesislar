@@ -1,0 +1,141 @@
+{
+  "root": "d582716e7b47cc150f4fbf0239d434d644d74f62",
+  "candidate_tree": "c77f65dc5ffe67981b07dd059e90f98e973a76bb",
+  "candidate_patch_sha256": "d1b269956066624812a3d7751ba4a018e68ff1e2ed7ef3758597d6fb98d0b341",
+  "arms": {
+    "off": {
+      "outcome": "native-residual",
+      "compiler_exit_code": 1,
+      "limit": null,
+      "CPU_seconds": 347.875041,
+      "compiler_elapsed_seconds": 348.87777443998493,
+      "peak_RSS_KiB": 2344572,
+      "controller_and_guard_wall_seconds": 349.40900238603354,
+      "named_Qed_attempted": true,
+      "named_Qed_failed": true,
+      "active_capture_count": 8,
+      "group_coverage": {
+        "goals": "printed active records",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "closure": false,
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "capture_file": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-final-pair-audit-001/off-captures.json",
+      "capture_file_sha256": "62eadcf8c6747a50e24b81fdb157f69c17c0e4bdeed4c19a5fb7561f33740d3d",
+      "inputs_checked": 14154,
+      "compiled_object": null
+    },
+    "on": {
+      "outcome": "native-residual",
+      "compiler_exit_code": 1,
+      "limit": null,
+      "CPU_seconds": 331.720634,
+      "compiler_elapsed_seconds": 332.64660112396814,
+      "peak_RSS_KiB": 2371584,
+      "controller_and_guard_wall_seconds": 334.13102230615914,
+      "named_Qed_attempted": true,
+      "named_Qed_failed": true,
+      "active_capture_count": 20,
+      "group_coverage": {
+        "goals": "printed active records",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "closure": false,
+      "assumptions": {
+        "verified": false,
+        "reason": "The compiler returned no assumption certificate"
+      },
+      "capture_file": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-final-pair-audit-001/on-captures.json",
+      "capture_file_sha256": "2a3f4c768b899438b798daf2ca2cb66f3f5893e55f9e40f3724ffada63e26727",
+      "inputs_checked": 14154,
+      "compiled_object": null
+    }
+  },
+  "exact_capture_equality": false,
+  "measured_supporting_closure_change": false,
+  "effect": "The pair requires residual review.",
+  "scope": {
+    "I39": "absent",
+    "ON_switches": 27,
+    "Rule34": "ON",
+    "Rule35": "ON",
+    "baseline_switches": 26,
+    "dispatch": "ON",
+    "historical_exclusions": 17,
+    "umbrella_exports": 22
+  },
+  "sole_variable": "Rule36 switch import",
+  "initial_statements_bodies_recipes_and_inputs_match": true,
+  "selected_helper_firing": "The uninstrumented pair does not record helper application events.",
+  "Level1_closed": false,
+  "termination_proved": false,
+  "complete_native_group_limit": "Printed active groups only. Stack, shelf, and given_up remain unavailable.",
+  "wrapper_exit_is_not_proof_closure": true,
+  "retained_object_MCP_pending": false,
+  "earlier_root20_firing_trace": "Preserved. Different root and scope prevent a single-variable comparison with this pair.",
+  "bindings": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/off/result.json",
+      "sha256": "624d8374f82ceb256e40c6224181e90f7996f537d83cdc8e22baff80c1e95d99"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/off/evidence.json",
+      "sha256": "0adac2ff54b134577d04c3a5dac4988323aa60a34b719f7d62797b2dd3ae2863"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/off/compiler.json",
+      "sha256": "b52964da9abcccf2823bad0f12dfa7b7a56e2991fe81546dab0c99608b763c4b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/off/run-inputs.json",
+      "sha256": "196168640de3e6c83e2fbfba578ddc2013de46eb165f7dc8357884ab64c06a78"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/off/Boundary.v",
+      "sha256": "37f711d97d6d52beb76b4f929747b33bda2c0ee3329fba4ce1d2c1ebb44ee7c8"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/off/compiler.log",
+      "sha256": "707b9f63730f27a6aca48fa9555fe63f9e9bd05a482108589149addab031e169"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-final-pair-audit-001/off-captures.json",
+      "sha256": "62eadcf8c6747a50e24b81fdb157f69c17c0e4bdeed4c19a5fb7561f33740d3d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/on/result.json",
+      "sha256": "2943103614bdaf283e1297ab7cc46608d5ce5f6bf5f2044225c510afe9ba3546"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/on/evidence.json",
+      "sha256": "7a32b546999bb085f228c583e4c3d6ea5b2b3d3d99c74abedb49fbf432d0aff7"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/on/compiler.json",
+      "sha256": "62b80c4f48676a97ded182aede4d3ee3ec5946cb94990bfb560a92493bda4892"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/on/run-inputs.json",
+      "sha256": "5e7176d2c4e89392ddbbd0bf5e1c4f76e6d41e69f339acdc04bff116ccf2850e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/on/Boundary.v",
+      "sha256": "800a0fb0dcc9cfaf60cdd47c285bc3ab8c5657a7a6b096505885c83220081c6d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/on/compiler.log",
+      "sha256": "f3e9e941acfc6bfd75dd6eac291211ac2710bb1fb52fbdf7b8e9862c2962f023"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-final-pair-audit-001/on-captures.json",
+      "sha256": "2a3f4c768b899438b798daf2ca2cb66f3f5893e55f9e40f3724ffada63e26727"
+    }
+  ]
+}

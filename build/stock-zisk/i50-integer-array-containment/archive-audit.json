@@ -1,0 +1,13 @@
+{
+  "archive_index": "/home/cody/zesislar/.worktrees/worker2-child-platform-i50-6974/_build/i50-final-package-001/archive-index.json",
+  "archive_index_sha256": "051400f2a348230cc318374100d6af326fdc7d006d396355dc8d065344e5fea0",
+  "record_count": 13375,
+  "unique_archive_files": 10405,
+  "all_hashes_and_sizes_match": true,
+  "known_secret_value_available": true,
+  "credential_matches": [],
+  "environment_header_matches": [],
+  "native_input_count": 12978,
+  "native_replay": false,
+  "production_changes": false
+}
