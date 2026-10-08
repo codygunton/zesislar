@@ -1,24 +1,10 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Compliance.DecodeItemHints.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemReturnFacts.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
-Require Import ZesuSsz.Compliance.DecodeItemBranchGuardFacts.
-Require Import ZesuSsz.Compliance.DecodeItemDataWitnessFacts.
-Require Import ZesuSsz.Compliance.DecodeItemOutcomeWitnessFacts.
-Require Import ZesuSsz.Compliance.DecodeItemFoldRejectionFacts.
-Require Import ZesuSsz.Compliance.DecodeItemFoldInitializationWitnesses.
-Require Import ZesuSsz.Compliance.DecodeItemFoldZeroFacts.
-Require Import ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts.
-Require Import ZesuSsz.Compliance.DecodeItemOutputBaseWitnessFacts.
-Require Import ZesuSsz.Compliance.DecodeItemShortListHandoffFacts.
-Require Import ZesuSsz.Compliance.DecodeItemFoldBackEdgeWitnesses.
-Require Import ZesuSsz.Compliance.DecodeItemS40GuardFacts.
-Require Import ZesuSsz.Compliance.DecodeItemCorrectedWitnessSelections.
-Require Import ZesuSsz.Compliance.DecodeItemCanonicalAnchors.
-Require Import ZesuSsz.Compliance.DecodeItemCompletedFoldFacts.
-Require Import ZesuSsz.Compliance.DecodeItemInitializationPureFacts.
 From Coq Require Import List ZArith.
 Import ListNotations.
 Open Scope Z_scope.
@@ -212,3 +198,11 @@ Lemma nativeRegistered_6ac4_12 (args : DecodeItemArgs) (inputPrefix : (bv 8)) (i
    (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)))).
 Proof. intros H5. registered_native_fact. Qed.
 Print Assumptions nativeRegistered_6ac4_12.
+
+Lemma nativeRegistered_69a4_1 (prefix : byte) :
+  128 <= bv_unsigned prefix -> bv_unsigned prefix <= 255 ->
+  bv_and (Z_to_bv 64 (bv_signed prefix)) 255 <> 128%bv ->
+  129 <= bv_unsigned prefix.
+Proof. intros H1 H2 H9. registered_native_fact. Qed.
+
+Print Assumptions nativeRegistered_69a4_1.
