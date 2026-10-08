@@ -1,0 +1,17 @@
+{
+  "current_root": "e8fb293773dab5a4124f813634b3d2ccd1fff400",
+  "previous_root": "246a0fde8c84ed338a8b4f79e2947930823fe58e",
+  "previous_report_sha256": "551924652d5532c18876e710ed930fc812c1fa4616d4d74ddb079d59e861e8c4",
+  "current_scope": "22 umbrella hint modules. Rule35 ON.",
+  "previous_scope": "15 frozen hint modules. Rule35 absent.",
+  "statement_hashes_match": true,
+  "new_compiler_closure_ids": [
+    "block_0x800d69a4",
+    "decodeItemJoin698cFrom697c",
+    "decodeItemJoin698cFrom69e8"
+  ],
+  "lost_compiler_closure_ids": [],
+  "current_active_records": 60,
+  "previous_active_records": 96,
+  "cost_limit": "Changed roots,hint scope,and Rule35 activation do not establish isolated Rule35 cost."
+}

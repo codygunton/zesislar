@@ -1,0 +1,195 @@
+{
+  "root": "e8fb293773dab5a4124f813634b3d2ccd1fff400",
+  "scope": "DecodeItemHints exports22 modules. Rule34,Rule35,and SwitchDispatch ON. Historical17 OFF.",
+  "elapsed_seconds": 27043.908028200036,
+  "total_compiler_cpu_seconds": 16994.722212,
+  "peak_arm_rss_kib": 6293336,
+  "limits": {
+    "block_0x800d6960": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d6974": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d697c": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": "cpu"
+    },
+    "block_0x800d698c": {
+      "CPU_seconds": 1200,
+      "memory_gib": 12,
+      "observed_limit": null
+    },
+    "block_0x800d69a4": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d69b0": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d69d8": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d69e0": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d69e8": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": "cpu"
+    },
+    "block_0x800d6a00": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d6a08": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d6a14": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d6a24": {
+      "CPU_seconds": 2400,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d6a38": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d6a40": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d6a64": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d6a6c": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d6a78": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d6aa8": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d6ab4": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d6ac4": {
+      "CPU_seconds": 2400,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d6ad8": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d6ae0": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "block_0x800d6b08": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "decodeItemJoin698cFrom697c": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "decodeItemJoin698cFrom69e8": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "decodeItemJoin6a24From6a14": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "decodeItemJoin6a24Backedge": {
+      "CPU_seconds": 2400,
+      "memory_gib": 6,
+      "observed_limit": "memory"
+    },
+    "decodeItemJoin6ac4From6ab4": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "decodeItemJoin6ac4Backedge": {
+      "CPU_seconds": 2400,
+      "memory_gib": 6,
+      "observed_limit": "memory"
+    },
+    "decodeItemJoin6ae0From6970": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": "cpu"
+    },
+    "decodeItemJoin6ae0From69e0": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "decodeItemJoin6ae0From6a08": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": "cpu"
+    },
+    "decodeItemJoin6ae0From6a38": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": null
+    },
+    "decodeItemJoin6ae0From6a6c": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": "cpu"
+    },
+    "decodeItemJoin6ae0From6aa8": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": "cpu"
+    },
+    "decodeItemJoin6ae0From6ad8": {
+      "CPU_seconds": 1200,
+      "memory_gib": 6,
+      "observed_limit": "cpu"
+    }
+  },
+  "wall_deadlines": false
+}

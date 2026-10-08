@@ -1,0 +1,13 @@
+{
+  "root": "e8fb293773dab5a4124f813634b3d2ccd1fff400",
+  "path": "/home/cody/zesislar-archive/stock-zisk/approved-rule35-i46/53ca1145e9c033057e7d963c63faf7f23f577a033c55a6892ee127052b20efb9.tar.gz",
+  "sha256": "53ca1145e9c033057e7d963c63faf7f23f577a033c55a6892ee127052b20efb9",
+  "size_bytes": 215209431,
+  "manifest_sha256": "b8a1e000233bf442876cfc0357c200481a1c5ef244449dfa7f589548bb1eae7b",
+  "members": 10953,
+  "source_records": 10952,
+  "all_member_hashes_verified": true,
+  "credential_matches": [],
+  "private_environment_headers_excluded": true,
+  "Dune_trace_headers_excluded": true
+}
