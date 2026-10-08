@@ -1,0 +1,65 @@
+{
+  "records": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-placement-mcp-003/Event7778.v",
+      "sha256": "530422dffffb20f73e07f5c81a90cf4d2d161d1a973a1d94da38874eaafb836a",
+      "bytes": 453
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-placement-mcp-003/client-error.json",
+      "sha256": "1d09a15f48aa7b42a0fd6d37bbf9b64388dacce8f6ca1fa4c323fa050e20db1c",
+      "bytes": 589
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-placement-mcp-003/exports/state_2.json",
+      "sha256": "5665626110cba8897d987fcde306b36d47814305664f5572ce7bf8cb8b4121fd",
+      "bytes": 365
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-placement-mcp-003/exports/state_3.json",
+      "sha256": "5665626110cba8897d987fcde306b36d47814305664f5572ce7bf8cb8b4121fd",
+      "bytes": 365
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-placement-mcp-003/mcp-client.py",
+      "sha256": "bbd3d5a6dbe9c25db9f662e002c4b94214bc93ae7027e09aaafe49d9532dc190",
+      "bytes": 7401
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-placement-mcp-003/preflight.json",
+      "sha256": "a28e999f44c16b2180de9c4f4e91117c6c894bd6938949ce49e8014e9fe33e7d",
+      "bytes": 269
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-placement-mcp-003/preparation.json",
+      "sha256": "cf1a5c58c82e14d2659f7bd19d83eeed64c70490f17a4b659e99283f575eb1a9",
+      "bytes": 2585
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-placement-mcp-003/raw-calls.json",
+      "sha256": "1febbe44d849e74f7e2dabc625018ca803614a8ef8243d5ef15988a942ede07f",
+      "bytes": 13009
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-placement-mcp-003/schemas.json",
+      "sha256": "7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a",
+      "bytes": 18498
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-placement-mcp-003/session-closure.json",
+      "sha256": "0d43305ff9763b913edfc21c536867f2c1bd4516146aab6e655fccccb8837d58",
+      "bytes": 99
+    }
+  ],
+  "direct_cached_off": "Rejected as expected.",
+  "whole_arithmetic_cached_off": "Rejected with No applicable tactic.",
+  "filtered_state": "The exact copied filter prefix retains Hcache. Its export is byte-identical to the initial state.",
+  "post_filter_helper": "Rejected as expected. The harness incorrectly required success.",
+  "placement_decision": "Keep the helper at its current site. This control does not establish a cache admission defect.",
+  "preserved_failures": [
+    "attempt002 unqualified external helper",
+    "attempt003 incorrect expected-success assertion"
+  ],
+  "native_execution": false,
+  "certificate_claim": false
+}
