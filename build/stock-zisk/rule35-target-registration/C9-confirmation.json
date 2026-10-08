@@ -1,0 +1,38 @@
+{
+  "I39": "absent",
+  "Level1_closed": false,
+  "MCP_audit": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/_build/rule35-c9-standalone-object-audit-001/audit.json",
+    "sha256": "4fef968bc3e2f29097abffacfe8f52f4540297fc2a0f5a297bb410374353d3d5"
+  },
+  "MCP_final_groups": {
+    "active": 0,
+    "given_up": 0,
+    "shelf": 0,
+    "stack": 0
+  },
+  "OFF_evidence": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/_build/rule35-c9-standalone-frozen-001/69e8-off-001/evidence.json",
+    "sha256": "ecec68b31986520b39b3463cf71e0255794fbb827594f78c8326e2306238a51e"
+  },
+  "ON_evidence": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/_build/rule35-c9-standalone-frozen-001/69e8-on-001/evidence.json",
+    "sha256": "1847f558b1dd27d81df19f991e479d4eec14b0341cf0716724bc7a9cb613bff3"
+  },
+  "assumptions": [],
+  "inherited_debts": {
+    "pending_goals": [],
+    "shelved_goals": []
+  },
+  "named_Qed_compiled": true,
+  "only_variable": "Rule35 switch import",
+  "pair_audit": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/_build/rule35-c9-standalone-frozen-001/69e8-pair-audit.json",
+    "sha256": "580636ad868b4137ff1d2b1b1d32645dccff482d2a08bb325af74bb5558a902f"
+  },
+  "primary_body_sha256": "65131e433bc698eab474ad157800471b3b0aa624cc000f56b1e7482ea4dae65f",
+  "root": "c9f9a727a9200a2af25eac169c6b46c65250cafa",
+  "scope_difference_from_B8": "C9 root, 21 direct hints, no I39; B8 root, 18 direct hints, equal I39 overlay. Each pair varies only Rule35.",
+  "statement_sha256": "5b43b7c6efed32b243b585279e540af1925bc58ea6fa3306b1dfe046acb4b3ba",
+  "termination_proved": false
+}

@@ -1,0 +1,29 @@
+{
+  "all_native_input_counts": {
+    "697c-off-001": 10582,
+    "697c-on-001": 10582,
+    "69e8-off-001": 10582,
+    "69e8-on-001": 10582
+  },
+  "all_source_hashes": {
+    "ZesuSsz/Automation/Finish.v": "70070c6ca69eb3d3dece74c0004819400e956bd918d3fcad5ceb336ba137c492",
+    "ZesuSsz/Automation/Hooks.v": "668ec6ad7a587d6cf15d21793137250500b69af94101e7f58cb16bc83a520ac1",
+    "ZesuSsz/Automation/Switches/CanonicalPureConjunction.v": "28fab080877d773c3dbba62bb127fd7552990357d3971045cc9324c6a6b6a0e8",
+    "ZesuSsz/Evidence/GatesPlugin/signature_gates_plugin.ml": "ab27e4442b1501d90db621bd1c883406905a105c544896c6abdde65bc0d7ba66",
+    "ZesuSsz/Evidence/spec_shape_baseline.json": "678779533fd89972c24b69b6c38a34506b4a208c3ec9af9ea94b3a70c113c3cf",
+    "ZesuSsz/Proofs/Tests/CanonicalPureConjunction.v": "408aeb059ab8f11cd6129a8aff38693e9b02cbf973621209ac7080e49ec5bbba"
+  },
+  "children_CPU_seconds": 3389.050789,
+  "elapsed_seconds": 2659.3921196460724,
+  "exit_code": 0,
+  "gate": "check-iris",
+  "gate_class": "child",
+  "generated_input_count": 9321,
+  "log_sha256": "d1b3c4e9c76baf135e934be13339f2f6d13535cebe95dd4c6dba976d423073c3",
+  "native_replayed": false,
+  "peak_children_RSS_KiB": 1695228,
+  "result_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/_build/rule35-c9-gates-002/check-iris-result.json",
+  "result_sha256": "c159fa23506bcac8670cc39c322f1eae0bc84a5f871823e7bbd6b997802a5269",
+  "source_and_input_seals_equal": true,
+  "workers": 6
+}

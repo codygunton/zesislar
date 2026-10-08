@@ -45,3 +45,26 @@ let () =
   define { Tac2expr.mltac_plugin = "zesu-signature-gates.plugin"; mltac_tactic = "exact_axioms" }
     (Tac2ffi.constr @-> Tac2ffi.list Tac2ffi.constr @-> eret Tac2ffi.unit)
     check_axioms
+
+(* Keep the relaxed lookup mode private to this search. *)
+let target_registration reference =
+  Proofview.Goal.enter (fun goal ->
+    let sigma = Proofview.Goal.sigma goal in
+    let head = GlobRef.ConstRef (constant_of_term sigma reference) in
+    let database = Hints.searchtable_map Class_tactics.typeclasses_db in
+    let mode = [|Hints.ModeInput; Hints.ModeInput;
+                 Hints.ModeOutput; Hints.ModeOutput|] in
+    let database = Hints.Hint_db.add_modes
+      (GlobRef.Map.singleton head [mode]) database in
+    let modes = Hints.Hint_db.modes database in
+    let transparency = Hints.Hint_db.transparent_state database in
+    Class_tactics.Search.eauto_tac (modes, transparency)
+      ~only_classes:true ~best_effort:false ~depth:(Some 12)
+      ~dep:true [database])
+
+let () =
+  let open Tac2externals in
+  define { Tac2expr.mltac_plugin = "zesu-signature-gates.plugin";
+           mltac_tactic = "target_registration" }
+    (Tac2ffi.constr @-> tac Tac2ffi.unit)
+    target_registration
