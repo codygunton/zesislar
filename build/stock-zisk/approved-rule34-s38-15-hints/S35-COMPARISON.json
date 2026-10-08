@@ -1,0 +1,16 @@
+{
+  "current_root": "246a0fde8c84ed338a8b4f79e2947930823fe58e",
+  "current_scope": "15 root hints, baseline23, Rule34 ON, SwitchDispatch ON, historical17 OFF",
+  "previous_root": "a4f2472ecc88f0b61e82903c151082299338c9a3",
+  "previous_report_sha256": "70b431ac5a6d716828dcf8e54b719dab0a9ed2f92faa2432ff4d2e0a5a0208e6",
+  "current_closure_count": 10,
+  "previous_closure_count": 10,
+  "current_active_records": 96,
+  "previous_active_records": 130,
+  "root_difference": "S51 back-edge facts and S70 root-entry continuation differ between frozen roots.",
+  "cost_limit": "These changed-root observations do not establish isolated Rule34 cost.",
+  "closure_ids_match": true,
+  "statement_hashes_match": true,
+  "current_native_captures": 70,
+  "current_adapter_captures": 26
+}
