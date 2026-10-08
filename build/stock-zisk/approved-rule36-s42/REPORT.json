@@ -1,0 +1,3034 @@
+{
+  "root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+  "pass_result_sha256": "3cff1d51032168f011b3cbc976a217dc7f574308ded621f53090a646f945dbdb",
+  "seal_sha256": "7750586c488f508cfdd7b578c1aa9f3da3a4cf3cb1d0f0e34239620e74a5c557",
+  "input_count": 14832,
+  "changed_inputs": [],
+  "recipe_sha256": "b31c38070cf57177fd21aa01c8f848087adf741ecbea57b7a6aea5d8274fdbda",
+  "admission_supplement_sha256": "509cf20eefc3fa6e35145d13a9625f6e789d1c37a6256fae83aa56c728889f16",
+  "release_record_sha256": "593f3b938c5b7c9cb68cf60ecc22827e12dc48ed1e5bc7a0365ad5d605d8defd",
+  "native_count": 24,
+  "adapter_count": 13,
+  "hint_scope": [
+    "DecodeItemBranchGuardFacts",
+    "DecodeItemCanonicalAnchors",
+    "DecodeItemCompletedFoldFacts",
+    "DecodeItemCorrectedWitnessSelections",
+    "DecodeItemDataWitnessFacts",
+    "DecodeItemEntryByteIndexFacts",
+    "DecodeItemEntryGuardFacts",
+    "DecodeItemFoldBackEdgeWitnesses",
+    "DecodeItemFoldExitFacts",
+    "DecodeItemFoldInitializationWitnesses",
+    "DecodeItemFoldRejectionFacts",
+    "DecodeItemFoldSuccessorWitnesses",
+    "DecodeItemFoldZeroFacts",
+    "DecodeItemHeaderWitnessFacts",
+    "DecodeItemInitializationPureFacts",
+    "DecodeItemInputHeadWordFacts",
+    "DecodeItemOutcomeWitnessFacts",
+    "DecodeItemOutputBaseWitnessFacts",
+    "DecodeItemOutputWitnessSelections",
+    "DecodeItemRawOutputFacts",
+    "DecodeItemS40GuardFacts",
+    "DecodeItemSavedFrameWitnesses",
+    "DecodeItemShortListHandoffFacts",
+    "DecodeItemStringSuccessorWitnesses"
+  ],
+  "hint_count": 24,
+  "approved_classes": {
+    "ArrayBounds": "ZesuSsz.Automation.Hooks.ZesuStepArrayBounds",
+    "ArrayRegionBounds": "ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds",
+    "CanonicalAnchor": "ZesuSsz.Automation.Hooks.ZesuStepCanonicalAnchor",
+    "EvarImplicationGuard": "ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard",
+    "EvarSideconditionGuard": "ZesuSsz.Automation.Hooks.ZesuStepEvarSideconditionGuard",
+    "InstructionLookup": "ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup",
+    "IntegerArrayAddress": "ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress",
+    "KnownPairWitness": "ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness",
+    "ListWitness": "ZesuSsz.Automation.Hooks.ZesuStepListWitness",
+    "LowMask": "ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask",
+    "PureFactHints": "ZesuSsz.Automation.Hooks.ZesuStepPureFactHints",
+    "PureWitnessConstraints": "ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints",
+    "RamFault": "ZesuSsz.Automation.Hooks.ZesuStepRamFault",
+    "RecordWitness": "ZesuSsz.Automation.Hooks.ZesuStepRecordWitness",
+    "RegionFault": "ZesuSsz.Automation.Hooks.ZesuStepRegionFault",
+    "RegionFaultNormalization": "ZesuSsz.Automation.Hooks.ZesuStepRegionFaultNormalization",
+    "RegisterCollectionSelection": "ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection",
+    "ReturnBundle": "ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle",
+    "ReturnWand": "ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand",
+    "StackWrite": "ZesuSsz.Automation.Hooks.ZesuStepStackWrite",
+    "StrictSigned": "ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned",
+    "TupleWitness": "ZesuSsz.Automation.Hooks.ZesuStepTupleWitness",
+    "WordArrayHandoff": "ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff"
+  },
+  "excluded_classes": [
+    {
+      "class": "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepArrayLoadPriority",
+      "switch": "ArrayLoadPriority"
+    },
+    {
+      "class": "ZesuSsz.Automation.BoundedArithmetic.ZesuStepBoundedArithmetic",
+      "switch": "BoundedArithmetic"
+    },
+    {
+      "class": "ZesuSsz.Automation.ByteFold.ZesuStepByteFold",
+      "switch": "ByteFold"
+    },
+    {
+      "class": "ZesuSsz.Automation.CallReturn.ZesuStepCallReturn",
+      "switch": "CallReturn"
+    },
+    {
+      "class": "ZesuSsz.Automation.CallReturnSpecTable.ZesuStepCallReturnSpecTable",
+      "switch": "CallReturnSpecTable"
+    },
+    {
+      "class": "ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch",
+      "switch": "ConjunctMatch"
+    },
+    {
+      "class": "ZesuSsz.Automation.ExistentialArrayRestore.ZesuStepExistentialArrayRestore",
+      "switch": "ExistentialArrayRestore"
+    },
+    {
+      "class": "ZesuSsz.Automation.InstrPreAddress.ZesuStepInstrPreAddress",
+      "switch": "InstrPreAddress"
+    },
+    {
+      "class": "ZesuSsz.Automation.InteriorByteSlice.ZesuStepInteriorByteSlice",
+      "switch": "InteriorByteSlice"
+    },
+    {
+      "class": "ZesuSsz.Automation.LoadedTrace.ZesuStepLoadedTrace",
+      "switch": "LoadedTrace"
+    },
+    {
+      "class": "ZesuSsz.Automation.LookupReduce.ZesuStepLookupReduce",
+      "switch": "LookupReduce"
+    },
+    {
+      "class": "ZesuSsz.Automation.OutcomeHandoff.ZesuStepOutcomeHandoff",
+      "switch": "OutcomeHandoff"
+    },
+    {
+      "class": "ZesuSsz.Automation.SealedCoverage.ZesuStepSealedOpen",
+      "switch": "SealedOpen"
+    },
+    {
+      "class": "ZesuSsz.Automation.SpecPrefix.ZesuStepSpecTail",
+      "switch": "SpecTail"
+    },
+    {
+      "class": "ZesuSsz.Automation.TracePrefixTail.ZesuStepTracePrefixTail",
+      "switch": "TracePrefixTail"
+    },
+    {
+      "class": "ZesuSsz.Automation.PureFacts.ZesuStepWitnessArith",
+      "switch": "WitnessArith"
+    },
+    {
+      "class": "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepWordArrayLookup",
+      "switch": "WordArrayLookup"
+    }
+  ],
+  "Rule34": "ON",
+  "SwitchDispatch": "ON",
+  "Rule35": "ON",
+  "Rule36": "ON",
+  "counts": {
+    "residual": 14,
+    "cpu-limit": 6,
+    "native-closure": 8,
+    "adapter-closure": 7,
+    "memory-limit": 2
+  },
+  "capture_count": 81,
+  "native_capture_count": 81,
+  "adapter_capture_count": 0,
+  "rows": [
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 26.477971,
+      "peak_rss_kib": 1523548,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 7,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "returnAddress",
+              "args"
+            ],
+            "initial_context_size": 5,
+            "returned_context_size": 44,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "returnAddress",
+              "args"
+            ],
+            "initial_context_size": 5,
+            "returned_context_size": 44,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "returnAddress",
+              "args"
+            ],
+            "initial_context_size": 5,
+            "returned_context_size": 44,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 3,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "returnAddress",
+              "args"
+            ],
+            "initial_context_size": 5,
+            "returned_context_size": 44,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 4,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "returnAddress",
+              "args"
+            ],
+            "initial_context_size": 5,
+            "returned_context_size": 49,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 5,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "returnAddress",
+              "args"
+            ],
+            "initial_context_size": 5,
+            "returned_context_size": 45,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 6,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "returnAddress",
+              "args"
+            ],
+            "initial_context_size": 5,
+            "returned_context_size": 45,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6960",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "f80bc55ff42e575d9ef766431ab6da0c6d51aa34183bcb52124824e1b128f9bf",
+      "log_sha256": "4a258e19eb73a9f7700fe99a9b087df7a622ae1842e0e8f471a9b9b032b0eb47",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 992.425392,
+      "peak_rss_kib": 3086160,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 32,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 66,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 66,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 66,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 3,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 66,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 4,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 66,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 5,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 66,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 6,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 66,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 7,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 67,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 8,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 67,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 9,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 67,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 10,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 67,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 11,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 67,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 12,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 67,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 13,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 67,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 14,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 69,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 15,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 69,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 16,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 69,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 17,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 69,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 18,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 69,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 19,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 69,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 20,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 69,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 21,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 70,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 22,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 70,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 23,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 70,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 24,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 70,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 25,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 70,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 26,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 70,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 27,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 70,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 28,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 38,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 29,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 39,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 30,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 42,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 31,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 41,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6974",
+      "statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "e9f3bc95cdc93e569bad31af7bb960f45b19ded6d5482fa2f8105b301081357d",
+      "log_sha256": "79ca51d81aca72f49a58dbe40a0fb15852c9521a0560b38d8d1e8a6f4a40b035",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d697c",
+      "kind": "native",
+      "outcome": "cpu-limit",
+      "cpu_seconds": 1199.875069,
+      "peak_rss_kib": 3458892,
+      "exit_code": -9,
+      "limit": "cpu",
+      "active_records": null,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d697c",
+      "statement_sha256": "4416a8f35e49ca7dce03358b8f4b4d354f056c0e475248816df61c27ad0ef6f0",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "2863b9226f38f6966950f76bf015b8ef8858bf075ce79d7675ed4428fa9bf531",
+      "log_sha256": "82f6fdf4bb9f187d10249017b1d217c9cbd48a572f393299b09fe410fd33fb57",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "limit-stop",
+      "group_coverage": {
+        "goals": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d698c",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 165.18855200000002,
+      "peak_rss_kib": 2667576,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 3,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "pointerBytes",
+              "lengthBytes",
+              "inputPrefix",
+              "rest",
+              "isLiteral"
+            ],
+            "initial_context_size": 10,
+            "returned_context_size": 82,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "pointerBytes",
+              "lengthBytes",
+              "inputPrefix",
+              "rest",
+              "isLiteral"
+            ],
+            "initial_context_size": 10,
+            "returned_context_size": 82,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "pointerBytes",
+              "lengthBytes",
+              "inputPrefix",
+              "rest",
+              "isLiteral"
+            ],
+            "initial_context_size": 10,
+            "returned_context_size": 82,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d698c",
+      "statement_sha256": "6624de3c1a1e012af027f5aa9afd4c7e519f9bec28752700eaeabd7b7fd3fead",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "c94f70889bb3c828f5ecd4813cde844f3f0e69f009c892d2c7a4f6b6f791863c",
+      "log_sha256": "ade966edd1feb1facde7455e3291502b1e18759ccb246928c24eed8440ba6339",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 12,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d69a4",
+      "kind": "native",
+      "outcome": "native-closure",
+      "cpu_seconds": 9.382062000000001,
+      "peak_rss_kib": 1185708,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d69a4",
+      "statement_sha256": "d3cf1dc28a76ce7896cb2a474ba6293904253f905cc3a0e0f20ddaadf5a29e65",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "bd1c51226ec5b74ecadc8afe3fa5ed6dc5260cfaf1251cb999746b20f15f9b7e",
+      "log_sha256": "182bee15e9003eb956459ed10155c8e441572e89cbfcdaef74b50a77dea2319d",
+      "object_sha256": "8712493148626a3be1897b516c2f4223db07c214c5c2b3cbd5afa3745ffd9d90",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-boundary-closed",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d69b0",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 386.640989,
+      "peak_rss_kib": 4284388,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 3,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 136,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 138,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 136,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d69b0",
+      "statement_sha256": "a31c1250082926f364182f6cd1fe25f157ae943c78039f2b2fba10e61997f795",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "a5b135971b6560dc641b0f8b9435c7a1ad2753590ab10b87e420e5eee0866111",
+      "log_sha256": "a17d84430ed8ed12fb56271794c040a2ea2e8885b0f64a636568bd1c70efd12f",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d69d8",
+      "kind": "native",
+      "outcome": "native-closure",
+      "cpu_seconds": 13.389638000000001,
+      "peak_rss_kib": 1177580,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d69d8",
+      "statement_sha256": "b294c17a822648ee71de41f30e5bde7e9d78be4f54e628d6ef3d0e76b216a668",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "3c7c522e8f81db2a23de40f06f261b28dcc57761d302af945b39ce406517532d",
+      "log_sha256": "82b5eae851f8ae528b7a42fc54c861deb58741d2d149b943ce86c5984b1807e4",
+      "object_sha256": "5135c639d680f280b7299ae7de5b177e26c2e9c79bb381aae70d873663b76bca",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-boundary-closed",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d69e0",
+      "kind": "native",
+      "outcome": "native-closure",
+      "cpu_seconds": 15.70702,
+      "peak_rss_kib": 1287672,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d69e0",
+      "statement_sha256": "c0613d6a425c33bc56f14a4111a4649511a277b5a888bbe41dd501155e23b271",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "b86951c23e7b1fbcce025e05d969a5c7de457eafc5ad947e8bc5c75f2a43af9e",
+      "log_sha256": "82781aac4177a27eb5cb7cf48b992f605373ce433062c6ffd9babaf702efcef1",
+      "object_sha256": "ff57091f1bba94c0bf4fc3ad9c73cd3ef7702ff6e3987e3a5229172d51fdf141",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-boundary-closed",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d69e8",
+      "kind": "native",
+      "outcome": "cpu-limit",
+      "cpu_seconds": 1199.853591,
+      "peak_rss_kib": 3649304,
+      "exit_code": -9,
+      "limit": "cpu",
+      "active_records": null,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d69e8",
+      "statement_sha256": "3b68710d40940010dfd36b1dd533142e87af5bf79dd8cc4086b6242b88ddc3ae",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "967ace9e187a67064ee2baa530b742b5de87cc8070ac34794f211b516e615aed",
+      "log_sha256": "196b03295dc75c6986e137548926b9bb7ec65b1effd50defeab2726afcbb9b4f",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "limit-stop",
+      "group_coverage": {
+        "goals": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a00",
+      "kind": "native",
+      "outcome": "native-closure",
+      "cpu_seconds": 17.056949,
+      "peak_rss_kib": 1305724,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6a00",
+      "statement_sha256": "9cc28faf4111fdb126d37c3e6212af69a35755b85dc6032024c995a58267193c",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "9044fdf41aa9cd4c34b0922ba400fd1022c39596a72343925065631ac6c5dfa6",
+      "log_sha256": "593bceb5b50199f33e03030bd0094506f5bbc3d720961b466e98676e311cad78",
+      "object_sha256": "e5dbaf88f31a20f8766f17dcce0e3f5941d3707291f131651ebe36e233b87261",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-boundary-closed",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a08",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 16.921718000000002,
+      "peak_rss_kib": 1238588,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 4,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "x13",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 8,
+            "returned_context_size": 32,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "x13",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 8,
+            "returned_context_size": 32,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "x13",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 8,
+            "returned_context_size": 32,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 3,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "x13",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 8,
+            "returned_context_size": 38,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6a08",
+      "statement_sha256": "1f4da2e5a4e2c860d3d742809c7b5110a077d54dbf15c3a851b930cf79a0d42f",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "f6df7b923c553b09603cfd4c37e31c517ceade83a6fc47016bb9b490331abebb",
+      "log_sha256": "664b634a2d8529b64f6fe275e2fdae7c21fdb53255749ec60a784dac0dd92063",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a14",
+      "kind": "native",
+      "outcome": "native-closure",
+      "cpu_seconds": 5.914422,
+      "peak_rss_kib": 1124384,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6a14",
+      "statement_sha256": "a58a51bcede39919116652c6768070bc7b9d134f36fffa177cdce592d3e3089b",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "d833758d3990fa7ec841b255911d51da6f6143fc1a0e2a50c0c2e05dfab28f8d",
+      "log_sha256": "7aca8d675704088ba6cff3429b0f9882c707b9ebea55f6b9b4e83028d4d677bb",
+      "object_sha256": "934ea27e87a4bb0dce0ebbf457dbdfb8ce6410c67fc9843af2bc60a6bf9c9be9",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-boundary-closed",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 805.3644259999999,
+      "peak_rss_kib": 2910164,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 8,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 90,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 90,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 90,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 3,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 90,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 4,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 93,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 5,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 93,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 6,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 93,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 7,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 93,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [
+        {
+          "active_index": 2,
+          "old_goal": 3,
+          "selected_constant": "decodeItemFoldExitAccumulator",
+          "conclusion_matches": true,
+          "required_context_matches": true,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "scheduling_failure",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6a24-002.json",
+          "old_capture_sha256": "4d9ad06f6fa08db52a90b95adbded12f28aa6462c2129d31ca6b903850373101",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 2,
+          "old_goal": 7,
+          "selected_constant": "decodeItemFoldExitAccumulator",
+          "conclusion_matches": true,
+          "required_context_matches": false,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "matching_guard_with_changed_context_requires_review",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6a24-006.json",
+          "old_capture_sha256": "fc51e9baf19368efe1091c394e18d5c01efa6bb512aaa73027711032c3eb19f6",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 3,
+          "old_goal": 4,
+          "selected_constant": "decodeItemCompletedFoldFacts",
+          "conclusion_matches": true,
+          "required_context_matches": true,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "scheduling_failure",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6a24-003.json",
+          "old_capture_sha256": "f3c0eebd32b0e7756226e71dabaf27ef7a05671c5ec9575e7d1fae5bca5d92c2",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 3,
+          "old_goal": 8,
+          "selected_constant": "decodeItemCompletedFoldFacts",
+          "conclusion_matches": true,
+          "required_context_matches": false,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "matching_guard_with_changed_context_requires_review",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6a24-007.json",
+          "old_capture_sha256": "a3898e1a187966f8e85c64a05600870ee67900ff65fa8013ecfc73ce38df7581",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 6,
+          "old_goal": 3,
+          "selected_constant": "decodeItemFoldExitAccumulator",
+          "conclusion_matches": true,
+          "required_context_matches": false,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "matching_guard_with_changed_context_requires_review",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6a24-002.json",
+          "old_capture_sha256": "4d9ad06f6fa08db52a90b95adbded12f28aa6462c2129d31ca6b903850373101",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 6,
+          "old_goal": 7,
+          "selected_constant": "decodeItemFoldExitAccumulator",
+          "conclusion_matches": true,
+          "required_context_matches": true,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "scheduling_failure",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6a24-006.json",
+          "old_capture_sha256": "fc51e9baf19368efe1091c394e18d5c01efa6bb512aaa73027711032c3eb19f6",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 7,
+          "old_goal": 4,
+          "selected_constant": "decodeItemCompletedFoldFacts",
+          "conclusion_matches": true,
+          "required_context_matches": false,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "matching_guard_with_changed_context_requires_review",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6a24-003.json",
+          "old_capture_sha256": "f3c0eebd32b0e7756226e71dabaf27ef7a05671c5ec9575e7d1fae5bca5d92c2",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 7,
+          "old_goal": 8,
+          "selected_constant": "decodeItemCompletedFoldFacts",
+          "conclusion_matches": true,
+          "required_context_matches": true,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "scheduling_failure",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6a24-007.json",
+          "old_capture_sha256": "a3898e1a187966f8e85c64a05600870ee67900ff65fa8013ecfc73ce38df7581",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        }
+      ],
+      "lemma": "DesignedBoundary_800d6a24",
+      "statement_sha256": "668333abd8c294ac9c21f89c05abf9dfb1e59978bb6aa9ccc6eb1509d8bb62d8",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "90adc893d5bfea649335678c8cf70ead3227aff5b5bf59cbd39f6d6f59555a3f",
+      "log_sha256": "9041f22ccc376a2a3b68c584282a7b3d644c3c0edd5ae0e9b02c598d5b1c5e47",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 2400,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a38",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 26.266263,
+      "peak_rss_kib": 1220220,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 1,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "n",
+              "payloadStart",
+              "lengthBytes",
+              "frameBytes",
+              "loaded",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 11,
+            "returned_context_size": 26,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6a38",
+      "statement_sha256": "970e0d014336a47cea2d5e19f49a159199f396c663c462ee9e0131bc4d329fa6",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "9616f8256fa76825d9c79248d05d288d26a7452a5aff7baa1a9474e8af5d4733",
+      "log_sha256": "deb701e1a81b713480eaec8051996c49dc083c7ec15c69cafa684e83fdddf0dd",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a40",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 450.91253900000004,
+      "peak_rss_kib": 4376468,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 3,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest",
+              "headerLength",
+              "payloadLength"
+            ],
+            "initial_context_size": 9,
+            "returned_context_size": 134,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest",
+              "headerLength",
+              "payloadLength"
+            ],
+            "initial_context_size": 9,
+            "returned_context_size": 136,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest",
+              "headerLength",
+              "payloadLength"
+            ],
+            "initial_context_size": 9,
+            "returned_context_size": 134,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6a40",
+      "statement_sha256": "446283b03c50624d81511f102d78c88d91241baec7c0c056eb466a8de79a0ddf",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "fbb2d540057243d945d30cf0adbc277287bbe8a0933d9b3b359d3ed701e1b4e6",
+      "log_sha256": "818778c2e03c58f89feb9fcf565300369084e0cbff3800e34b32a586da001cfc",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a64",
+      "kind": "native",
+      "outcome": "native-closure",
+      "cpu_seconds": 17.189759,
+      "peak_rss_kib": 1310644,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6a64",
+      "statement_sha256": "65b503d390be6994296a68b0597dde532b4bdcd8ea583ef02408aae3e302b61f",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "0fecdd19e2dae3c4aa6899cb1ea0d6c336301ba98554c647e0753a9ec2047bf9",
+      "log_sha256": "93c576e211562c74cace346524b3cb6b6c4a80559247167cb63d649e299fb6ad",
+      "object_sha256": "7779573c04388b984dcf419dbd86781f58dcd25175fa32fc6bf0d3495d616cc3",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-boundary-closed",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a6c",
+      "kind": "native",
+      "outcome": "native-closure",
+      "cpu_seconds": 23.704967,
+      "peak_rss_kib": 1407160,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6a6c",
+      "statement_sha256": "ea9491d8148d8cdf9209c48b3ad087ec81572553273ada1ca3b147ee5bdf1b83",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "0ef3d2d81fcdd4d0368250e105f3d2ad62c246178f3d22eed151cb0ae0847b57",
+      "log_sha256": "a197b9486d645582b75ca702863d697b4c40484c8f5efa528490a7d387f7b8a0",
+      "object_sha256": "737e98e060634fbf7717a9f3f3e06ec20a7433f2895f00c766bd8c6eb3f2260f",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-boundary-closed",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a78",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 532.5869369999999,
+      "peak_rss_kib": 4829180,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 3,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 150,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 152,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 150,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6a78",
+      "statement_sha256": "6a9b7fe601eeecca8c04fee785e3456580f7a8f15199aa95c386c3fd22f74da2",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "39729c2dc684be426616a8342437be637c51e79ca7b2d1b2b73f50cef26573cd",
+      "log_sha256": "b7ac95374e333b1bfa38a67909a950d4bedbb5eaab75ecc390c83d783328fbd8",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6aa8",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 16.856226,
+      "peak_rss_kib": 1236588,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 4,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "x13",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 8,
+            "returned_context_size": 32,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "x13",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 8,
+            "returned_context_size": 32,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "x13",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 8,
+            "returned_context_size": 32,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 3,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "x13",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 8,
+            "returned_context_size": 38,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6aa8",
+      "statement_sha256": "3beb68118ad4cb18d4aad5e439553ae393e5ed7e4114b21ff84cbc5430ccb19c",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "081e81ede89e345582f958cbdd96a9998df6093a793ff05263d0137218f51338",
+      "log_sha256": "1b9baf90dbd4d1c6f3fe39609fa2655b43b8811fdfb5364aede4aae039e90e7c",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ab4",
+      "kind": "native",
+      "outcome": "native-closure",
+      "cpu_seconds": 5.872728,
+      "peak_rss_kib": 1127880,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6ab4",
+      "statement_sha256": "101f4543034625b1a94f38fe469f721cbf8ddb537ef3482e8463cb848c61bdd6",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "cc6a2d7ea542bb25499da6d762489e3cd8e7d86171b6a4ead1ff781093b21385",
+      "log_sha256": "21d3bd20672670a5dce4c1f53c255471bf06b7604c3a6ad17c48b57e888dd070",
+      "object_sha256": "b1f80f3e1bb8b6d338f480242407b9aa5d4333471b8b743dabeb820668d696de",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-boundary-closed",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 810.5184150000001,
+      "peak_rss_kib": 2910116,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 8,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 90,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 90,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 90,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 3,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 90,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 4,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 93,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 5,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 93,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 6,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 93,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 7,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 93,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [
+        {
+          "active_index": 2,
+          "old_goal": 3,
+          "selected_constant": "decodeItemFoldExitAccumulator",
+          "conclusion_matches": true,
+          "required_context_matches": true,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "scheduling_failure",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6ac4-002.json",
+          "old_capture_sha256": "22614d5af943119e2538cc0ef71d96389b4ba479587cae5032578c5b68ea5999",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 2,
+          "old_goal": 7,
+          "selected_constant": "decodeItemFoldExitAccumulator",
+          "conclusion_matches": true,
+          "required_context_matches": false,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "matching_guard_with_changed_context_requires_review",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6ac4-006.json",
+          "old_capture_sha256": "c442a8ba2b52e63c6825a30d1978cc13996ce1a5f0e81305b814df75ab47146c",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 3,
+          "old_goal": 4,
+          "selected_constant": "decodeItemCompletedFoldFacts",
+          "conclusion_matches": true,
+          "required_context_matches": true,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "scheduling_failure",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6ac4-003.json",
+          "old_capture_sha256": "a036532d578033faedf37ba5eb54445d81c215cbca03dedde42ed04400d2f55e",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 3,
+          "old_goal": 8,
+          "selected_constant": "decodeItemCompletedFoldFacts",
+          "conclusion_matches": true,
+          "required_context_matches": false,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "matching_guard_with_changed_context_requires_review",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6ac4-007.json",
+          "old_capture_sha256": "3fcbde06cb7a9648363d72fa03a22997561207de74965007c8c4b62677d4c5d3",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 6,
+          "old_goal": 3,
+          "selected_constant": "decodeItemFoldExitAccumulator",
+          "conclusion_matches": true,
+          "required_context_matches": false,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "matching_guard_with_changed_context_requires_review",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6ac4-002.json",
+          "old_capture_sha256": "22614d5af943119e2538cc0ef71d96389b4ba479587cae5032578c5b68ea5999",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 6,
+          "old_goal": 7,
+          "selected_constant": "decodeItemFoldExitAccumulator",
+          "conclusion_matches": true,
+          "required_context_matches": true,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "scheduling_failure",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6ac4-006.json",
+          "old_capture_sha256": "c442a8ba2b52e63c6825a30d1978cc13996ce1a5f0e81305b814df75ab47146c",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 7,
+          "old_goal": 4,
+          "selected_constant": "decodeItemCompletedFoldFacts",
+          "conclusion_matches": true,
+          "required_context_matches": false,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "matching_guard_with_changed_context_requires_review",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6ac4-003.json",
+          "old_capture_sha256": "a036532d578033faedf37ba5eb54445d81c215cbca03dedde42ed04400d2f55e",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 7,
+          "old_goal": 8,
+          "selected_constant": "decodeItemCompletedFoldFacts",
+          "conclusion_matches": true,
+          "required_context_matches": true,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "scheduling_failure",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6ac4-007.json",
+          "old_capture_sha256": "3fcbde06cb7a9648363d72fa03a22997561207de74965007c8c4b62677d4c5d3",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        }
+      ],
+      "lemma": "DesignedBoundary_800d6ac4",
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "d8489cfc16ad7ae92033579addead78e48b044e25336ef206da059568896bb5e",
+      "log_sha256": "867ec8408603c286064a349c25fcdbec7cdb8fd3df0d140e06afc5adb600db6c",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 2400,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ad8",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 56.903227,
+      "peak_rss_kib": 1488376,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 1,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "n",
+              "payloadStart",
+              "lengthBytes",
+              "frameBytes",
+              "loaded",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 11,
+            "returned_context_size": 26,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6ad8",
+      "statement_sha256": "145487ee42b96d1f2528deb974822761f8c072f7cba3d04cd206ed148cc5e2e1",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "7de52c840cdf54bb3b9e5b6fe5cc49d2f9ba09df0c65d2bd7b14808b0d20d91d",
+      "log_sha256": "a55d0bb83c288e31776e01d385bf847847ba67242be67cbf2b4c58fe50a8d329",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ae0",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 590.771295,
+      "peak_rss_kib": 5771120,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 1,
+      "residual_state": "total_search_failure_after_rollback",
+      "residual_classification": {
+        "state": "total_search_failure_after_rollback",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "restored_theorem_goal",
+            "whole_proposition_matches": true,
+            "initial_argument_names": [
+              "args",
+              "locals"
+            ],
+            "initial_context_size": 5,
+            "returned_context_size": 5,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6ae0",
+      "statement_sha256": "a173e2a65b54c347008f8cf26a95353b8eca2a9a91f5e0c0d03d6f3d66f7a530",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "6454614728cc35e6b6ce5e905ed9ad57f0f51f3207e4ad44b65777ee039b29f5",
+      "log_sha256": "574a01ac6484c04b053cb686f5e58a390316321c3c1cd5e9e4126de6c15905ca",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6b08",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 487.104992,
+      "peak_rss_kib": 4837256,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 3,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest",
+              "headerLength",
+              "payloadLength"
+            ],
+            "initial_context_size": 9,
+            "returned_context_size": 140,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest",
+              "headerLength",
+              "payloadLength"
+            ],
+            "initial_context_size": 9,
+            "returned_context_size": 142,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest",
+              "headerLength",
+              "payloadLength"
+            ],
+            "initial_context_size": 9,
+            "returned_context_size": 140,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6b08",
+      "statement_sha256": "7ebddc1f3223074613cd624d751d15feecbb4925d111a39c5d5e5e815ee80fdd",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "001d38a257f9aac56d36042c04483a60ef25f08ae74a279abeba8080bc5875c6",
+      "log_sha256": "fb6b3df4db0919e437cbdf311a6a3e758339406a52a5e90edb3ea6f6bd914e1a",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom697c",
+      "kind": "adapter",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 102.87792800000001,
+      "peak_rss_kib": 2402712,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin698cFrom697c_automatic",
+      "statement_sha256": "4879e08d4cebc0762556813ba4f7d5db1d6807572976706aed539ef81cfdb61e",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "63c7b0f701baab965b8d3ceb3c785d752fe097e3d361e26564465415faa912c4",
+      "log_sha256": "2f21c253f5933aef071f9038f44736d95c5e0d1e3d8741ca1e6881f1680ee3cc",
+      "object_sha256": "4685bd34fa751fc97532babc518c98d8871852fdc7732c0de4a7224f7b5ab701",
+      "inherited_debts": {},
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom69e8",
+      "kind": "adapter",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 126.03891499999999,
+      "peak_rss_kib": 2477552,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin698cFrom69e8_automatic",
+      "statement_sha256": "4ecbd43a542dd185752264ca572016870ea8a50aed40e57d4fd2e97bb9c3852c",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "65071c6ee4043aa0bbc2767793fad8a34b1c1cdae39ed6972b3f25fbc5c161af",
+      "log_sha256": "bb4cbaa6b895dfb75ad5b1a90aaa9513a337e910bae5a4ed96be6783e4484e45",
+      "object_sha256": "1f0c07b1f6914400d690799aa0d8b6fc2b292ca45d62838ac7c4497a3854c6ee",
+      "inherited_debts": {},
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24From6a14",
+      "kind": "adapter",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 5.5274779999999994,
+      "peak_rss_kib": 1111940,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6a24From6a14_automatic",
+      "statement_sha256": "638fa0e3af0b1c2c61469e6f1549072450099a1369dd51fc9a738e0593f47609",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "e65c36c88d1bd4ee5d473d3f96fbf91dba964e5be416a97b049447807560322c",
+      "log_sha256": "8e6f9258a31cb56cad9a40a6483fb2f852992d36f72d007e7295958decb09975",
+      "object_sha256": "7e8e19a76c6516c2a85b58dafcd5c473894cc682118d32dc9e229c3a8e5193ec",
+      "inherited_debts": {},
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "outcome": "memory-limit",
+      "cpu_seconds": 763.9861,
+      "peak_rss_kib": 6295448,
+      "exit_code": -15,
+      "limit": "memory",
+      "active_records": null,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6a24Backedge_automatic",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "5fbed49ff586f4f4af5488a2e1e054a190ba3b50504037376a65dc5b35b41f63",
+      "log_sha256": "e00c2f3b712e8c330dd5395cbf1386872c37b1940dc1e90cd6367949d08c7eea",
+      "object_sha256": null,
+      "inherited_debts": {},
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 2400,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4From6ab4",
+      "kind": "adapter",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 5.7127300000000005,
+      "peak_rss_kib": 1115964,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6ac4From6ab4_automatic",
+      "statement_sha256": "226f81c4661ae1e5d964225375b010672e39a0f29c31010a698495abe7efdb6b",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "796f175b1b874f87374d01e108731278833a1be976a9bcd550d3bef3c5a59270",
+      "log_sha256": "a38b27ca399f93010c37a39439da0c90a24234c33a74c84da63e6b733b2bdae6",
+      "object_sha256": "1d40273b791ddc4fc6ce83405bf55380ba604ae9c7b98f83f18a4ba57fb4baf2",
+      "inherited_debts": {},
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "outcome": "memory-limit",
+      "cpu_seconds": 1340.4854,
+      "peak_rss_kib": 6293488,
+      "exit_code": -15,
+      "limit": "memory",
+      "active_records": null,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6ac4Backedge_automatic",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "549d06686ce5ed23173251674d0296206932aad69e252f16b46794784ae70670",
+      "log_sha256": "1ededb0887f86f64c772abf75687998e10b564d0c6b7b4089cf8321c8c020eef",
+      "object_sha256": null,
+      "inherited_debts": {},
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 2400,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ae0From6970",
+      "kind": "adapter",
+      "outcome": "cpu-limit",
+      "cpu_seconds": 1199.866466,
+      "peak_rss_kib": 3070028,
+      "exit_code": -9,
+      "limit": "cpu",
+      "active_records": null,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6ae0From6970_automatic",
+      "statement_sha256": "b9e41c14b74359819751ffb1f792326381a08e7c60bd136105ee0b5271d60e8d",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "02078f7ad168545adc6253d37d8d347eac6b85dd84209a60163ee7efa05b409b",
+      "log_sha256": "d1ea98111c3f12807543546ea77729b9b91e6eee76476c88d0683cf16d4d6eff",
+      "object_sha256": null,
+      "inherited_debts": {},
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ae0From69e0",
+      "kind": "adapter",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 7.765098,
+      "peak_rss_kib": 1151028,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6ae0From69e0_automatic",
+      "statement_sha256": "7fe36da0a1ba819ea72ca87fb40e70e9c38e70487015495ef4b9fde2eab7ec63",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "bdc4a5b528007bb19d497464dafdebb6df018c6adfc2ffc6a88e28e2f74384dc",
+      "log_sha256": "da9a01cacc67fb289ed996526da2e449a1381ca08f4b7d65ce0ab7cb5e496a45",
+      "object_sha256": "4d10d4f8e1cfa6a469c01fc5f665b0e94dfaf54ca50980d10b4e555c9deea44a",
+      "inherited_debts": {},
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ae0From6a08",
+      "kind": "adapter",
+      "outcome": "cpu-limit",
+      "cpu_seconds": 1199.8315650000002,
+      "peak_rss_kib": 2672516,
+      "exit_code": -9,
+      "limit": "cpu",
+      "active_records": null,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6ae0From6a08_automatic",
+      "statement_sha256": "5ffa808d7f5a94ace32b4e0c9d8f74597089784733e3e18aa286c372f991d10b",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "4d558c9c29e0a76b10ca10f0ce865f976aaec20974efbec95af4a0cd31c8f48e",
+      "log_sha256": "0a6c09ab4fdefad0530c219d4ae0aa787b0927353619b5f99c6aebdd99de99c3",
+      "object_sha256": null,
+      "inherited_debts": {},
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ae0From6a38",
+      "kind": "adapter",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 47.381027,
+      "peak_rss_kib": 1900736,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6ae0From6a38_automatic",
+      "statement_sha256": "28e27d4587196305ec299d358ff850b47768a15d2d118cd7aac731ac29931ff7",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "96a9c92098b296c06af2e537f656d3d76172cc4f18f42beed9825af20e1212e4",
+      "log_sha256": "388b4ee80f4df940cbbf528a82e87c8fbd2f80d5a8f1312dc09d5cb292b96a18",
+      "object_sha256": "80954fa66338991ff59f3a1dc8776108a0b8ec15eb654ce54383d4294b2f1ad8",
+      "inherited_debts": {},
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ae0From6a6c",
+      "kind": "adapter",
+      "outcome": "cpu-limit",
+      "cpu_seconds": 1199.8662389999997,
+      "peak_rss_kib": 3256432,
+      "exit_code": -9,
+      "limit": "cpu",
+      "active_records": null,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6ae0From6a6c_automatic",
+      "statement_sha256": "38cd7dbcf951f6e7431a555afb219d92884e399b5cfba5cbdb5220fba0064ca8",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "00357bb5a63632e3d0c7cb991e8273920bd433906a168feee61b9cddbcbe5bac",
+      "log_sha256": "115da608d3403f5670b722c86a965551d0d16f89ae50162446cfec7a0fe53c72",
+      "object_sha256": null,
+      "inherited_debts": {},
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ae0From6aa8",
+      "kind": "adapter",
+      "outcome": "cpu-limit",
+      "cpu_seconds": 1199.8333760000003,
+      "peak_rss_kib": 2643796,
+      "exit_code": -9,
+      "limit": "cpu",
+      "active_records": null,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6ae0From6aa8_automatic",
+      "statement_sha256": "d8ba332f2867563f9c395c24597238d38841cf83ed88feab6990efeab80cb7af",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "3633cae3149dae86122d9a8900fe4da2e0b84ab5253b56eda7ba88a9a8204f8b",
+      "log_sha256": "599ba73cf2510374f0de0ad38cf1fa556362b62ff328bb42d98c5e799ef0e568",
+      "object_sha256": null,
+      "inherited_debts": {},
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ae0From6ad8",
+      "kind": "adapter",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 70.24464900000001,
+      "peak_rss_kib": 2202176,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6ae0From6ad8_automatic",
+      "statement_sha256": "14e43a64fcd03e0afba600442d0583dc5d94b877bde8f1b5f56df77f92b87f38",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "b5152e0c9c317007f0eed486701b47de9bfa9a8d6a7f3510601f6f3d8fe62989",
+      "log_sha256": "a9a097c9274b6270c67d56b7daef1824568e5f45060c2e8eba26b5272fcd1265",
+      "object_sha256": "85d1e8b32f0c2c4fc24d5d9cc781f21955be66d1447ccbf0d01f8993ec35c76c",
+      "inherited_debts": {},
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    }
+  ],
+  "object_log_evidence_bindings": {
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6960/primary/Boundary.v": "f80bc55ff42e575d9ef766431ab6da0c6d51aa34183bcb52124824e1b128f9bf",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6960/primary/compiler.log": "4a258e19eb73a9f7700fe99a9b087df7a622ae1842e0e8f471a9b9b032b0eb47",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6960/primary/evidence.json": "1ffbef6a163a4d6d4bfba08289dbe1016483ae010dd74a395544055140e462f9",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6960/primary/compiler.json": "cd9006691fe44e3cc91eff607a4221c13b8e9681090dd36acc86d3cfb1e1ede7",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6974/primary/Boundary.v": "e9f3bc95cdc93e569bad31af7bb960f45b19ded6d5482fa2f8105b301081357d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6974/primary/compiler.log": "79ca51d81aca72f49a58dbe40a0fb15852c9521a0560b38d8d1e8a6f4a40b035",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6974/primary/evidence.json": "5ab07a7a4e3878a4400a0882186d3eb76d70a56839e18630978d5d7108b4f3fe",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6974/primary/compiler.json": "03e0eeca5fbf6ed493fa01958d346a17b0974dc2f40e2a19236f72b699c4267a",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d697c/primary/Boundary.v": "2863b9226f38f6966950f76bf015b8ef8858bf075ce79d7675ed4428fa9bf531",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d697c/primary/compiler.log": "82f6fdf4bb9f187d10249017b1d217c9cbd48a572f393299b09fe410fd33fb57",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d697c/primary/evidence.json": "302d8c53f3db578b8bb3a8424959099b496947e48d2227c8666fcffb816dba1d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d697c/primary/compiler.json": "2ff7894da3a40fe066025e4e32ed3b2b231b6adf14bf42635fbb5514b48b73ca",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d698c/primary/Boundary.v": "c94f70889bb3c828f5ecd4813cde844f3f0e69f009c892d2c7a4f6b6f791863c",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d698c/primary/compiler.log": "ade966edd1feb1facde7455e3291502b1e18759ccb246928c24eed8440ba6339",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d698c/primary/evidence.json": "d000e415cbbf1e595cc7488118cda98d2eeffbcd60e5837971bf7e0a3e8c7b06",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d698c/primary/compiler.json": "921007fa4bc55e5ec816e3e4e5e4180ca9781dd1cfc7e0cd6ddf1800d2cefd5d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69a4/primary/Boundary.v": "bd1c51226ec5b74ecadc8afe3fa5ed6dc5260cfaf1251cb999746b20f15f9b7e",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69a4/primary/compiler.log": "182bee15e9003eb956459ed10155c8e441572e89cbfcdaef74b50a77dea2319d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69a4/primary/evidence.json": "b48270ed6978540d65b62fef71b1a1e82fbe7a992d2d8e20f107dfcf9486323f",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69a4/primary/compiler.json": "ddf798c772e8ad6ed723444fce1d8878ec63ffbadf77be2e46ffcfc8d558bb75",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69a4/primary/Boundary.vo": "8712493148626a3be1897b516c2f4223db07c214c5c2b3cbd5afa3745ffd9d90",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69b0/primary/Boundary.v": "a5b135971b6560dc641b0f8b9435c7a1ad2753590ab10b87e420e5eee0866111",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69b0/primary/compiler.log": "a17d84430ed8ed12fb56271794c040a2ea2e8885b0f64a636568bd1c70efd12f",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69b0/primary/evidence.json": "17d0db3a62f5e52a5351e4ccd683aebfe9267fb3c69c86c84969de4b3c5a6123",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69b0/primary/compiler.json": "5eaabbd8440c5fe525e6a4cd00ec9f94427937c4bea29e28b4d00d3d307601bd",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69d8/primary/Boundary.v": "3c7c522e8f81db2a23de40f06f261b28dcc57761d302af945b39ce406517532d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69d8/primary/compiler.log": "82b5eae851f8ae528b7a42fc54c861deb58741d2d149b943ce86c5984b1807e4",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69d8/primary/evidence.json": "4db590fb03791f0f6743410b483f95caf7660f96ee56dbd6384f06d4cef551b7",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69d8/primary/compiler.json": "a6e97758bb1ff7ba0a86a2877f6fbc7c4ac89c28b17c01fcce9d89a7b19b7eb6",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69d8/primary/Boundary.vo": "5135c639d680f280b7299ae7de5b177e26c2e9c79bb381aae70d873663b76bca",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69e0/primary/Boundary.v": "b86951c23e7b1fbcce025e05d969a5c7de457eafc5ad947e8bc5c75f2a43af9e",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69e0/primary/compiler.log": "82781aac4177a27eb5cb7cf48b992f605373ce433062c6ffd9babaf702efcef1",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69e0/primary/evidence.json": "c3d40ec7569bac252a1011fbb6a2f5324f2b57dab9ed20925fd73c41e9233ea5",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69e0/primary/compiler.json": "c6457dd80ae2df88875887e296480571fd763b7a857708133ab71a1764577f14",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69e0/primary/Boundary.vo": "ff57091f1bba94c0bf4fc3ad9c73cd3ef7702ff6e3987e3a5229172d51fdf141",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69e8/primary/Boundary.v": "967ace9e187a67064ee2baa530b742b5de87cc8070ac34794f211b516e615aed",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69e8/primary/compiler.log": "196b03295dc75c6986e137548926b9bb7ec65b1effd50defeab2726afcbb9b4f",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69e8/primary/evidence.json": "4fdb68ae9e6acc80de04faca7b1b4be57c480b657a385c3269254fb1ed819652",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69e8/primary/compiler.json": "a22cb478747314df156d73a8e686b9529914e5f6dc4b92ae9440fd188728ff14",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a00/primary/Boundary.v": "9044fdf41aa9cd4c34b0922ba400fd1022c39596a72343925065631ac6c5dfa6",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a00/primary/compiler.log": "593bceb5b50199f33e03030bd0094506f5bbc3d720961b466e98676e311cad78",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a00/primary/evidence.json": "de144a7f52cc759f8e4418a1be9c955bb055f12151353e0260ffb00bdebf25ee",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a00/primary/compiler.json": "068503d09220876196a0a9ca777aa062068eb63c8f157c6784923b8ae49d5c5d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a00/primary/Boundary.vo": "e5dbaf88f31a20f8766f17dcce0e3f5941d3707291f131651ebe36e233b87261",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a08/primary/Boundary.v": "f6df7b923c553b09603cfd4c37e31c517ceade83a6fc47016bb9b490331abebb",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a08/primary/compiler.log": "664b634a2d8529b64f6fe275e2fdae7c21fdb53255749ec60a784dac0dd92063",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a08/primary/evidence.json": "13115ae59c155ed9369303ec82054b93703e1931a7a142891139d58cbd7254af",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a08/primary/compiler.json": "020253cfba77fe529e31091d2a244574c0121f685ed7d9fdc8f1df286f217eb6",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a14/primary/Boundary.v": "d833758d3990fa7ec841b255911d51da6f6143fc1a0e2a50c0c2e05dfab28f8d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a14/primary/compiler.log": "7aca8d675704088ba6cff3429b0f9882c707b9ebea55f6b9b4e83028d4d677bb",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a14/primary/evidence.json": "b11631d6e8a8683d4a122cb6ce8e01d7a7ade53fd0be470c6673ecc689aa6da0",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a14/primary/compiler.json": "baa69b831756532e7246f059c190f0bc7ec7be4526d7926366d4c12414837689",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a14/primary/Boundary.vo": "934ea27e87a4bb0dce0ebbf457dbdfb8ce6410c67fc9843af2bc60a6bf9c9be9",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a24/primary/Boundary.v": "90adc893d5bfea649335678c8cf70ead3227aff5b5bf59cbd39f6d6f59555a3f",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a24/primary/compiler.log": "9041f22ccc376a2a3b68c584282a7b3d644c3c0edd5ae0e9b02c598d5b1c5e47",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a24/primary/evidence.json": "d839ee99918c8b09030df9336f89b027a517f3537ba198eef136a2291078827c",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a24/primary/compiler.json": "066bb50d3a4cbbcd9d97614715a4382d311d90b3ae66892907facb2db768fb97",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a38/primary/Boundary.v": "9616f8256fa76825d9c79248d05d288d26a7452a5aff7baa1a9474e8af5d4733",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a38/primary/compiler.log": "deb701e1a81b713480eaec8051996c49dc083c7ec15c69cafa684e83fdddf0dd",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a38/primary/evidence.json": "d1ad3bf997d57570e68a86c46f2b2121a224db9a5089802ca57818d79633e6d4",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a38/primary/compiler.json": "b08c89be449bc6d4deded8dc330120d77c06cebb7557bf6ea5b534a715278293",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a40/primary/Boundary.v": "fbb2d540057243d945d30cf0adbc277287bbe8a0933d9b3b359d3ed701e1b4e6",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a40/primary/compiler.log": "818778c2e03c58f89feb9fcf565300369084e0cbff3800e34b32a586da001cfc",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a40/primary/evidence.json": "371aea5cddf3f5887f336802368eaf9420ea8564a6110fa2cb029134a0b9f7d3",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a40/primary/compiler.json": "1545fe49fe084ff87806d645eaa43da3ea75f19b5dcf398b56cb3f6dd1f2913a",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a64/primary/Boundary.v": "0fecdd19e2dae3c4aa6899cb1ea0d6c336301ba98554c647e0753a9ec2047bf9",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a64/primary/compiler.log": "93c576e211562c74cace346524b3cb6b6c4a80559247167cb63d649e299fb6ad",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a64/primary/evidence.json": "eaed872abb2bb50240693db7187ceb3ae25192062604aa0a75a1cceed1c83703",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a64/primary/compiler.json": "1b8a204d8a8dccd95ee4afccdfee2048de37e3c5aa28f90df4b002deb7bfee3c",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a64/primary/Boundary.vo": "7779573c04388b984dcf419dbd86781f58dcd25175fa32fc6bf0d3495d616cc3",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a6c/primary/Boundary.v": "0ef3d2d81fcdd4d0368250e105f3d2ad62c246178f3d22eed151cb0ae0847b57",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a6c/primary/compiler.log": "a197b9486d645582b75ca702863d697b4c40484c8f5efa528490a7d387f7b8a0",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a6c/primary/evidence.json": "a07d3e9be5c9f0b8d48387ab981b4da4cd1df2dedf4a7dda5fe3683b124943d8",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a6c/primary/compiler.json": "7ded41a6215dacc3879d8311feaee683db90ea98b3157f30e9bc091d8c158e2e",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a6c/primary/Boundary.vo": "737e98e060634fbf7717a9f3f3e06ec20a7433f2895f00c766bd8c6eb3f2260f",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a78/primary/Boundary.v": "39729c2dc684be426616a8342437be637c51e79ca7b2d1b2b73f50cef26573cd",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a78/primary/compiler.log": "b7ac95374e333b1bfa38a67909a950d4bedbb5eaab75ecc390c83d783328fbd8",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a78/primary/evidence.json": "2ab7996e00a729a0fa7a97f95f5369e7a27669be59e5bc6cc35f3f31258219ce",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a78/primary/compiler.json": "44edb7048147869da29520fa293cffb2980260e5e4ac532b2fb3df5f599d32e1",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6aa8/primary/Boundary.v": "081e81ede89e345582f958cbdd96a9998df6093a793ff05263d0137218f51338",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6aa8/primary/compiler.log": "1b9baf90dbd4d1c6f3fe39609fa2655b43b8811fdfb5364aede4aae039e90e7c",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6aa8/primary/evidence.json": "61a39ceb33dc63d61d08cfd27bfce999c74585e2db760c10d70a16edf0826ffb",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6aa8/primary/compiler.json": "73c65d6683138ab45d400e9ff16b81da98fe543af1bab98dd8d25710f69e9b74",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6ab4/primary/Boundary.v": "cc6a2d7ea542bb25499da6d762489e3cd8e7d86171b6a4ead1ff781093b21385",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6ab4/primary/compiler.log": "21d3bd20672670a5dce4c1f53c255471bf06b7604c3a6ad17c48b57e888dd070",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6ab4/primary/evidence.json": "061499b95ab1d22fcc6bbd675af388c36131446d38c36126f2a9b3b04aab7e0f",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6ab4/primary/compiler.json": "d26d948ff233108e296fb53da8a1fe9db6634c451c955cdca128b429c5d8977d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6ab4/primary/Boundary.vo": "b1f80f3e1bb8b6d338f480242407b9aa5d4333471b8b743dabeb820668d696de",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6ac4/primary/Boundary.v": "d8489cfc16ad7ae92033579addead78e48b044e25336ef206da059568896bb5e",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6ac4/primary/compiler.log": "867ec8408603c286064a349c25fcdbec7cdb8fd3df0d140e06afc5adb600db6c",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6ac4/primary/evidence.json": "519ea662a7d3e891e82149f7e9317162f0e55dd1f3f7076c4d71f5448256f796",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6ac4/primary/compiler.json": "d5c91118532f92de907413b4a3745693591d04c9f997b8632a23885291b554ca",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6ad8/primary/Boundary.v": "7de52c840cdf54bb3b9e5b6fe5cc49d2f9ba09df0c65d2bd7b14808b0d20d91d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6ad8/primary/compiler.log": "a55d0bb83c288e31776e01d385bf847847ba67242be67cbf2b4c58fe50a8d329",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6ad8/primary/evidence.json": "ff79200294c4d72f66204e0381ad9921f6bee866fd7a40f6ea877f489dfce7aa",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6ad8/primary/compiler.json": "f964c54725d4721e07fb39b7f3190c7a64d3585dc94c3819704de35ed36e70b0",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6ae0/primary/Boundary.v": "6454614728cc35e6b6ce5e905ed9ad57f0f51f3207e4ad44b65777ee039b29f5",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6ae0/primary/compiler.log": "574a01ac6484c04b053cb686f5e58a390316321c3c1cd5e9e4126de6c15905ca",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6ae0/primary/evidence.json": "d811370ceb90bb40d42af843a45a62b2dff04122cff13337b564e201d8b6f17d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6ae0/primary/compiler.json": "35b2b13ca11614c887f5032e435e9ed0485ef4f685c6f80f016ffd5713c4cc90",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6b08/primary/Boundary.v": "001d38a257f9aac56d36042c04483a60ef25f08ae74a279abeba8080bc5875c6",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6b08/primary/compiler.log": "fb6b3df4db0919e437cbdf311a6a3e758339406a52a5e90edb3ea6f6bd914e1a",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6b08/primary/evidence.json": "e1dd2760be8bb661d5cf564db211fc46a9ba621c7f13e1c71090f710de229428",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6b08/primary/compiler.json": "0af24eec3fa5733bfc25bce1ae1c04cbd62a766ac7f9533b8bcdc79a9a51d196",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin698cFrom697c/Boundary.v": "63c7b0f701baab965b8d3ceb3c785d752fe097e3d361e26564465415faa912c4",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin698cFrom697c/primary/compiler.log": "2f21c253f5933aef071f9038f44736d95c5e0d1e3d8741ca1e6881f1680ee3cc",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin698cFrom697c/primary/evidence.json": "cf6bc5e9faedc340c49492eb4afc4ed9e61c91c5bde1857c12cdcfcb571400f7",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin698cFrom697c/primary/compiler.json": "2ee625d73756a536076fe6f8a1f98313a43e6e4d3fa3cc4d1f64018075eaf2b9",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin698cFrom697c/primary/Boundary.vo": "4685bd34fa751fc97532babc518c98d8871852fdc7732c0de4a7224f7b5ab701",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin698cFrom69e8/Boundary.v": "65071c6ee4043aa0bbc2767793fad8a34b1c1cdae39ed6972b3f25fbc5c161af",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin698cFrom69e8/primary/compiler.log": "bb4cbaa6b895dfb75ad5b1a90aaa9513a337e910bae5a4ed96be6783e4484e45",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin698cFrom69e8/primary/evidence.json": "aad62e2aa0b2fd9e307d65cac4581f094d6560dc047c7951c30e789312a94483",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin698cFrom69e8/primary/compiler.json": "5d59e994710597e125542ca2aad2ddece32c1094bb66ff37c1fca325fd25fcab",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin698cFrom69e8/primary/Boundary.vo": "1f0c07b1f6914400d690799aa0d8b6fc2b292ca45d62838ac7c4497a3854c6ee",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6a24From6a14/Boundary.v": "e65c36c88d1bd4ee5d473d3f96fbf91dba964e5be416a97b049447807560322c",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6a24From6a14/primary/compiler.log": "8e6f9258a31cb56cad9a40a6483fb2f852992d36f72d007e7295958decb09975",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6a24From6a14/primary/evidence.json": "8aa61cce06105f13bf95500e507308a04f4c059b60b6f8a2f364c4d119db51f9",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6a24From6a14/primary/compiler.json": "77d7f1324d8ed1b15715a3d21cfe627d33f4326a9d03eb8daa121ccb39b945e8",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6a24From6a14/primary/Boundary.vo": "7e8e19a76c6516c2a85b58dafcd5c473894cc682118d32dc9e229c3a8e5193ec",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6a24Backedge/Boundary.v": "5fbed49ff586f4f4af5488a2e1e054a190ba3b50504037376a65dc5b35b41f63",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6a24Backedge/primary/compiler.log": "e00c2f3b712e8c330dd5395cbf1386872c37b1940dc1e90cd6367949d08c7eea",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6a24Backedge/primary/evidence.json": "11f260966f1d7cf260b3815c29562442c7ad51f0bf9de952869aa38f8a823269",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6a24Backedge/primary/compiler.json": "943baaa8301b1cf67045e15d96650d4f38f0ae9fc46dc020dd8bae3da58aae88",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ac4From6ab4/Boundary.v": "796f175b1b874f87374d01e108731278833a1be976a9bcd550d3bef3c5a59270",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ac4From6ab4/primary/compiler.log": "a38b27ca399f93010c37a39439da0c90a24234c33a74c84da63e6b733b2bdae6",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ac4From6ab4/primary/evidence.json": "4bedd2e48451eaa706ca6eee0f689f2e14c60a24909c05e67752be15c1b11ad9",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ac4From6ab4/primary/compiler.json": "afcab2018cd384e9af01dfa333d1465aac35c7007d376022743d69bf8b8fbdeb",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ac4From6ab4/primary/Boundary.vo": "1d40273b791ddc4fc6ce83405bf55380ba604ae9c7b98f83f18a4ba57fb4baf2",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ac4Backedge/Boundary.v": "549d06686ce5ed23173251674d0296206932aad69e252f16b46794784ae70670",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ac4Backedge/primary/compiler.log": "1ededb0887f86f64c772abf75687998e10b564d0c6b7b4089cf8321c8c020eef",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ac4Backedge/primary/evidence.json": "41e0e7b2516ce1317cebd1c85ca147240da2467acf448b65e2a9a3b49dd696fa",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ac4Backedge/primary/compiler.json": "e3e3becb85ddcda3ed2c080f3f62a054e043b68f2cfc555613f254018880393c",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6970/Boundary.v": "02078f7ad168545adc6253d37d8d347eac6b85dd84209a60163ee7efa05b409b",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6970/primary/compiler.log": "d1ea98111c3f12807543546ea77729b9b91e6eee76476c88d0683cf16d4d6eff",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6970/primary/evidence.json": "4dc022e43b0d597f579360250bf0912866de3b487f1ea225dd18dc2dad54464f",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6970/primary/compiler.json": "5e4e238dbadfef077e92618afb6d628af4e35c416a572d50f3534425ca446c1d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From69e0/Boundary.v": "bdc4a5b528007bb19d497464dafdebb6df018c6adfc2ffc6a88e28e2f74384dc",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From69e0/primary/compiler.log": "da9a01cacc67fb289ed996526da2e449a1381ca08f4b7d65ce0ab7cb5e496a45",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From69e0/primary/evidence.json": "5d19a031c4d507ddecd3e65c3602785e8aab4db3791a2a9216fbea09f8decfa7",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From69e0/primary/compiler.json": "e604edb5efa2e5b9abd001acaaa031daa4c4120f5c1161e379d0f34fd39c3a04",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From69e0/primary/Boundary.vo": "4d10d4f8e1cfa6a469c01fc5f665b0e94dfaf54ca50980d10b4e555c9deea44a",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6a08/Boundary.v": "4d558c9c29e0a76b10ca10f0ce865f976aaec20974efbec95af4a0cd31c8f48e",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6a08/primary/compiler.log": "0a6c09ab4fdefad0530c219d4ae0aa787b0927353619b5f99c6aebdd99de99c3",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6a08/primary/evidence.json": "0500113b038b5db9868fd6dcb7a391049b5f9b4f61c5bf6438bdf47c43de0650",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6a08/primary/compiler.json": "342aed4d3a3b7ee4817e6fb2abf8882e00a5154c3018bf560d56912c891f368d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6a38/Boundary.v": "96a9c92098b296c06af2e537f656d3d76172cc4f18f42beed9825af20e1212e4",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6a38/primary/compiler.log": "388b4ee80f4df940cbbf528a82e87c8fbd2f80d5a8f1312dc09d5cb292b96a18",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6a38/primary/evidence.json": "2e3ee05cdb79d17172a588115e122e7ee4fc786f5e8f32c286bcb26c15cc184f",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6a38/primary/compiler.json": "4bb54036b35d8e1193d3887873f782f2fb12923393ce09f87335de5d133bebc5",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6a38/primary/Boundary.vo": "80954fa66338991ff59f3a1dc8776108a0b8ec15eb654ce54383d4294b2f1ad8",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6a6c/Boundary.v": "00357bb5a63632e3d0c7cb991e8273920bd433906a168feee61b9cddbcbe5bac",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6a6c/primary/compiler.log": "115da608d3403f5670b722c86a965551d0d16f89ae50162446cfec7a0fe53c72",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6a6c/primary/evidence.json": "777c6a198dd3c1e3f004ef6fdc2a7d244a77fe15edc1a1de320e6a61c891cb69",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6a6c/primary/compiler.json": "2de2fa90f8fccdf1ce14d5716c7e94c4cebd35a32a9dd1504b2b3d905c4d85f4",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6aa8/Boundary.v": "3633cae3149dae86122d9a8900fe4da2e0b84ab5253b56eda7ba88a9a8204f8b",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6aa8/primary/compiler.log": "599ba73cf2510374f0de0ad38cf1fa556362b62ff328bb42d98c5e799ef0e568",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6aa8/primary/evidence.json": "7af72ef12efb4ad5c6c8a52a17648822e0c65a3c4272e38090a651abff3febd0",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6aa8/primary/compiler.json": "c486883b1cf10e1d44d977fcfd10260041ee7677bfbc14a7898b79009bfa098b",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6ad8/Boundary.v": "b5152e0c9c317007f0eed486701b47de9bfa9a8d6a7f3510601f6f3d8fe62989",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6ad8/primary/compiler.log": "a9a097c9274b6270c67d56b7daef1824568e5f45060c2e8eba26b5272fcd1265",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6ad8/primary/evidence.json": "ca95bf608b752109ea234f14d889eac19e166b3b42488d8e02d3d7f1c7362fe1",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6ad8/primary/compiler.json": "22f57e157c97c3ce295687f359993bd090f34d80a22a763673044b03fcdefa8c",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6ad8/primary/Boundary.vo": "85d1e8b32f0c2c4fc24d5d9cc781f21955be66d1447ccbf0d01f8993ec35c76c"
+  },
+  "native_table_sha256": "9ab63573685199e27f144ad2e7bbfe1d2937f5c554637d9953fb5774baeb453b",
+  "adapter_table_sha256": "2d5e430fbf4d839e70f0fd442bbc7bca92fdfa95f8213fef14967dde6d3c8b90",
+  "capture_index_sha256": "7b0008e8e7a76f68b916f7a2b1478ae87e5495f600dc1f0229ba07be2fdf45a6",
+  "certificate_manifest_sha256": "dec8c4ea326a7b37c8319adc9f813e662837603764989408f75a833776d390ba",
+  "preflight_count": 37,
+  "elapsed_seconds": 17906.601873599924,
+  "Level1_closed": false,
+  "goal_count_is_not_a_progress_measure": true,
+  "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+  "S87_classification_sha256": "62fc46c64343848cdfb619b2591f58d36c4e9493bad872875aafb02d2e3649f8",
+  "limitations": [
+    "This pass uses DecodeItemHints with 24 exported modules and 104 registration locations. It includes Rule36 and S82 registrations.",
+    "Only returned active goals are captured. Auxiliary proof groups are unavailable.",
+    "Compiler CPU and memory limits are distinct from residual results. The audit uses the exact compiler limit field.",
+    "Native and adapter closures need retained-object MCP final checks. No primary will run again.",
+    "Changed roots and hint scopes do not support isolated Rule34, Rule35, or Rule36 cost attribution."
+  ]
+}

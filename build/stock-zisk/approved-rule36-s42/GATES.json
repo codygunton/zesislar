@@ -1,0 +1,37 @@
+{
+  "root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+  "results": [
+    {
+      "target": "check-fast",
+      "root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+      "exit": 0,
+      "elapsed_seconds": 1923.546295430977,
+      "changed_inputs": [],
+      "seal_sha256": "ad21576cc9f7ed5f0a89d53fcdc510fbde70e236161732c575e9ecaa3fdf5051",
+      "FAST_JOBS": 6,
+      "AGENT_JOBS": 6,
+      "gate_class": "child",
+      "build_directory": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/agents/worker2-approved-rule36-s42-evidence-gate"
+    },
+    {
+      "target": "check-iris",
+      "root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+      "exit": 0,
+      "elapsed_seconds": 1727.0158319571055,
+      "changed_inputs": [],
+      "seal_sha256": "ad21576cc9f7ed5f0a89d53fcdc510fbde70e236161732c575e9ecaa3fdf5051",
+      "FAST_JOBS": 6,
+      "AGENT_JOBS": 6,
+      "gate_class": "child",
+      "build_directory": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/agents/worker2-approved-rule36-s42-evidence-gate"
+    }
+  ],
+  "result_sha256": "0cc30203401165bf2217c2ede596cfe8268f2f4ae994afdc461bef0322d6b04b",
+  "seal_sha256": "ad21576cc9f7ed5f0a89d53fcdc510fbde70e236161732c575e9ecaa3fdf5051",
+  "input_count": 15796,
+  "watcher_log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261008-164757-child-c-approved-rule36-s42-evidence-gates001.log",
+  "watcher_log_sha256": "e58fddb3e9b75d0686c6696e34bc8d37ecc242fdf9d5caf45b948a032564bf70",
+  "FAST_JOBS": 6,
+  "AGENT_JOBS": 6,
+  "gate_class": "child"
+}

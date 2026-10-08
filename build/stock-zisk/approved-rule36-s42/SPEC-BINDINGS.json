@@ -1,0 +1,1670 @@
+{
+  "root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+  "read_only": true,
+  "S42_report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/REPORT.json",
+    "sha256": "9e2fdf3c1777874546c1c4ca7fe4c6dd2e88b20aa24b9380c0043115a22a8376"
+  },
+  "S42_capture_index": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/capture-index.json",
+    "sha256": "7b0008e8e7a76f68b916f7a2b1478ae87e5495f600dc1f0229ba07be2fdf45a6"
+  },
+  "reports": [
+    {
+      "report": "S90",
+      "original_path": "/home/cody/zesislar/.worktrees/worker1-spec-a/build/stock-zisk/spec-a-s90/MISSING-PREMISES.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-spec-bindings-001/S90.json",
+      "sha256": "777ce8e1e8a8a968e8777f3076f7091ed529b0e2440cb46242cb024aea1efc45"
+    },
+    {
+      "report": "S92",
+      "original_path": "/home/cody/zesislar/.worktrees/worker1-spec-b/build/stock-zisk/spec-b-s92/AUDIT.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-spec-bindings-001/S92.json",
+      "sha256": "613ac439905efb48f1498cc5e7ddaa83323f6050e42ae7ebda28b22fd0782759"
+    },
+    {
+      "report": "S93",
+      "original_path": "/home/cody/zesislar/.worktrees/worker1-spec-c/build/stock-zisk/spec-c-s93/REPORT.json",
+      "snapshot_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-spec-bindings-001/S93.json",
+      "sha256": "1aefd9f342506a7d002a65108f205af96fb0b5dab59dc30044ac8e20a1a7055e"
+    }
+  ],
+  "S90_missing_premise_counts": {
+    "prepared_blocks": 8,
+    "successor_edge_obligations": 14,
+    "distinct_successor_PCs": 13,
+    "code_derivation_obligations": 8,
+    "promoted_slots": 0,
+    "pending_slots": 24
+  },
+  "S90_explicit_missing_premises": [
+    {
+      "pc": "0x800d69a4",
+      "native_theorem": {
+        "name": "DesignedBoundary_800d69a4",
+        "exact_statement": "Lemma DesignedBoundary_800d69a4 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte)   :\n  instr_pre 0x800d69b0 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0 (args) (successor_locals) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d69d8 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69a4\n    (DesignedEntry_800d69a4 args frameBytes x13 inputPrefix rest).",
+        "statement_sha256": "d3cf1dc28a76ce7896cb2a474ba6293904253f905cc3a0e0f20ddaadf5a29e65",
+        "exact_kernel_type": "DesignedBoundary_800d69a4\n     : \u2200 (args : RlpDecodeItemContract.DecodeItemArgs) (frameBytes : list (bv 8)) (x13 : bv 64) (inputPrefix : bv 8) (rest : list (bv 8)),\n         instr_pre 2148362672\n           (\u2203 (successor_locals : RlpDecodeItemBlockEntries.DecodeItemReturnLocals) (successor_inputPrefix : bv 8) (successor_rest : list (bv 8)),\n              RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0 args successor_locals successor_inputPrefix successor_rest) -\u2217\n         instr_pre 2148362712\n           (\u2203 (successor_frameBytes : list (bv 8)) (successor_x13 : bv 64) (successor_inputPrefix : bv 8) (successor_rest : list (bv 8)),\n              DecodeItemBranchEntries.decodeItemEntryAt800d69d8 args successor_frameBytes successor_x13 successor_inputPrefix successor_rest) -\u2217\n         DecodeItemSelected.decodeItemSelectedCode -\u2217 instr_body 2148362660 (DesignedEntry_800d69a4 args frameBytes x13 inputPrefix rest)",
+        "certificate_bindings": {
+          "id": "block_0x800d69a4",
+          "kind": "native",
+          "lemma": "DesignedBoundary_800d69a4",
+          "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d69a4/Certificate.v",
+          "problem": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d69a4/Problem.v",
+          "object": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-001/block_0x800d69a4/primary/Boundary.vo",
+            "sha256": "19f4e3c275fa5751564c76e73d7826b60d23b1eaebf4d4586e97513f44f0e9f0"
+          },
+          "imported_object_copy": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d69a4/Boundary.vo",
+            "sha256": "19f4e3c275fa5751564c76e73d7826b60d23b1eaebf4d4586e97513f44f0e9f0"
+          },
+          "statement_sha256": "d3cf1dc28a76ce7896cb2a474ba6293904253f905cc3a0e0f20ddaadf5a29e65",
+          "source_sha256": "3a66f41f3aa3bff57222f11bb2f3b6a86a6b36b87b193b3df202b6b97fb9f4ac",
+          "problem_sha256": "25840712f36a88c199ab04b7dab190dcbde69b4efef0bc45d1235f987c1aeada"
+        },
+        "reviewed_verification": {
+          "id": "block_0x800d69a4",
+          "kind": "native",
+          "lemma": "DesignedBoundary_800d69a4",
+          "statement_sha256": "d3cf1dc28a76ce7896cb2a474ba6293904253f905cc3a0e0f20ddaadf5a29e65",
+          "certificate_source_sha256": "3a66f41f3aa3bff57222f11bb2f3b6a86a6b36b87b193b3df202b6b97fb9f4ac",
+          "problem_sha256": "25840712f36a88c199ab04b7dab190dcbde69b4efef0bc45d1235f987c1aeada",
+          "retained_object_sha256": "19f4e3c275fa5751564c76e73d7826b60d23b1eaebf4d4586e97513f44f0e9f0",
+          "copy_object_sha256": "19f4e3c275fa5751564c76e73d7826b60d23b1eaebf4d4586e97513f44f0e9f0",
+          "dependency_object_count": 702,
+          "compile_response_sha256": "6356fcad9eaea93e7db77dfcefea9d15e6eadc9dbaf56d4d6d5c30d86c6741c9",
+          "verify_response_sha256": "cd83e1ee61766f3e560f82d34fff3985e203ef754ae61e4a73a4d7f162321855",
+          "compile": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        }
+      },
+      "universal_slot": {
+        "state_name": "decodeItemState800d69a4",
+        "exact_definition": "Definition decodeItemState800d69a4 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69a4 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.",
+        "definition_sha256": "efd9a822e6632b40a03c1e306fce3da15dcef04c03e48b4eb2378b93ce6c1475",
+        "required_signature": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 instr_body 0x800d69a4 decodeItemState800d69a4",
+        "entry_conversion_to_named_entry_separated_with_True": {
+          "match": true,
+          "method": "Positive eq_refl check",
+          "result": "DesignedEntry converts to the current named entry separated with True."
+        }
+      },
+      "code_obligation": {
+        "required_entailment": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 decodeItemSelectedCode",
+        "required_native_premise": "decodeItemSelectedCode",
+        "status": "Unresolved. No supplied code-ownership derivation exists.",
+        "available_table_resources": "Twenty-four boxed instr_pre continuations. Their guarded state-to-instruction wands do not expose the selectedCodeLookup instruction resources as an owned conjunction.",
+        "definition": "decodeItemSelectedCode := instr_lookup_resources (selectedCodeLookup ZesuSsz.Stock.Closure.index_decodeItem.instr_map).",
+        "external_source": "decodeItemSelectedModel places selected code inside its Level1 resources. This does not add that resource to the unchanged table-body slot.",
+        "forbidden_substitutes": [
+          "Assume the target body.",
+          "Create selected code ownership.",
+          "Add selected code as an unreviewed slot premise."
+        ]
+      },
+      "successor_obligations": [
+        {
+          "pc": "0x800d69b0",
+          "available_source": "\u25a1 instr_pre 0x800d69b0 decodeItemState800d69b0",
+          "source_derivation": "block_table_pre_lookup at the unchanged destination slot.",
+          "P_universal_state": "Definition decodeItemState800d69b0 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0 (args) (locals) (inputPrefix) (rest))%I.",
+          "Q_native_existential_state": "(\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0 (args) (successor_locals) (successor_inputPrefix) (successor_rest))%I",
+          "required_wand_exact": "\u22a2 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0 (args) (successor_locals) (successor_inputPrefix) (successor_rest))%I -\u2217 decodeItemState800d69b0",
+          "required_wand_sha256": "ca43cf821c81c688b0a8d60157e168250dfa445583c77626600e4dd298bf4db3",
+          "destination_binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "locals",
+              "type": "DecodeItemReturnLocals"
+            },
+            {
+              "name": "inputPrefix",
+              "type": "byte"
+            },
+            {
+              "name": "rest",
+              "type": "list byte"
+            }
+          ],
+          "status": "Unresolved. No exact entailment certificate exists.",
+          "reason": "Q retains a fixed native args value and existential successor witnesses. P quantifies every destination binder, including args, inside iProp. Specializing P to one pointwise entry is the opposite direction.",
+          "available_entry_resources": "The selected witness entry retains its registers, arrays, domain/frame facts and caller continuation. Those resources do not by source inspection provide every arbitrary destination-binder instance.",
+          "proof_method": "Read-only source inspection. No failed tactic is presented as proof of impossibility."
+        },
+        {
+          "pc": "0x800d69d8",
+          "available_source": "\u25a1 instr_pre 0x800d69d8 decodeItemState800d69d8",
+          "source_derivation": "block_table_pre_lookup at the unchanged destination slot.",
+          "P_universal_state": "Definition decodeItemState800d69d8 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.",
+          "Q_native_existential_state": "(\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I",
+          "required_wand_exact": "\u22a2 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217 decodeItemState800d69d8",
+          "required_wand_sha256": "ad56037f30ece990f4c41f9232024dd9975e13580d63a5128d63a6965d40cdfb",
+          "destination_binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "x13",
+              "type": "bv 64"
+            },
+            {
+              "name": "inputPrefix",
+              "type": "byte"
+            },
+            {
+              "name": "rest",
+              "type": "list byte"
+            }
+          ],
+          "status": "Unresolved. No exact entailment certificate exists.",
+          "reason": "Q retains a fixed native args value and existential successor witnesses. P quantifies every destination binder, including args, inside iProp. Specializing P to one pointwise entry is the opposite direction.",
+          "available_entry_resources": "The selected witness entry retains its registers, arrays, domain/frame facts and caller continuation. Those resources do not by source inspection provide every arbitrary destination-binder instance.",
+          "proof_method": "Read-only source inspection. No failed tactic is presented as proof of impossibility."
+        }
+      ]
+    },
+    {
+      "pc": "0x800d69d8",
+      "native_theorem": {
+        "name": "DesignedBoundary_800d69d8",
+        "exact_statement": "Lemma DesignedBoundary_800d69d8 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte)   :\n  instr_pre 0x800d69e0 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6a00 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69d8\n    (DesignedEntry_800d69d8 args frameBytes x13 inputPrefix rest).",
+        "statement_sha256": "b294c17a822648ee71de41f30e5bde7e9d78be4f54e628d6ef3d0e76b216a668",
+        "exact_kernel_type": "DesignedBoundary_800d69d8\n     : \u2200 (args : RlpDecodeItemContract.DecodeItemArgs) (frameBytes : list (bv 8)) (x13 : bv 64) (inputPrefix : bv 8) (rest : list (bv 8)),\n         instr_pre 2148362720\n           (\u2203 (successor_frameBytes : list (bv 8)) (successor_x13 : bv 64) (successor_inputPrefix : bv 8) (successor_rest : list (bv 8)),\n              DecodeItemBranchEntries.decodeItemEntryAt800d69e0 args successor_frameBytes successor_x13 successor_inputPrefix successor_rest) -\u2217\n         instr_pre 2148362752\n           (\u2203 (successor_frameBytes : list (bv 8)) (successor_x13 : bv 64) (successor_inputPrefix : bv 8) (successor_rest : list (bv 8)),\n              DecodeItemBranchEntries.decodeItemEntryAt800d6a00 args successor_frameBytes successor_x13 successor_inputPrefix successor_rest) -\u2217\n         DecodeItemSelected.decodeItemSelectedCode -\u2217 instr_body 2148362712 (DesignedEntry_800d69d8 args frameBytes x13 inputPrefix rest)",
+        "certificate_bindings": {
+          "id": "block_0x800d69d8",
+          "kind": "native",
+          "lemma": "DesignedBoundary_800d69d8",
+          "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d69d8/Certificate.v",
+          "problem": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d69d8/Problem.v",
+          "object": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-001/block_0x800d69d8/primary/Boundary.vo",
+            "sha256": "33caebd5302cf278afaf0605dc85cbce28c3216c64e84996915f01ffa9798938"
+          },
+          "imported_object_copy": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d69d8/Boundary.vo",
+            "sha256": "33caebd5302cf278afaf0605dc85cbce28c3216c64e84996915f01ffa9798938"
+          },
+          "statement_sha256": "b294c17a822648ee71de41f30e5bde7e9d78be4f54e628d6ef3d0e76b216a668",
+          "source_sha256": "8f2fcf6c48781545b26f837697bc9382711085248ec55b20f9f42499597e84cb",
+          "problem_sha256": "a66212f3d910ed37321c5c25ded582b7f890750119033d21e0e07493c5a41c60"
+        },
+        "reviewed_verification": {
+          "id": "block_0x800d69d8",
+          "kind": "native",
+          "lemma": "DesignedBoundary_800d69d8",
+          "statement_sha256": "b294c17a822648ee71de41f30e5bde7e9d78be4f54e628d6ef3d0e76b216a668",
+          "certificate_source_sha256": "8f2fcf6c48781545b26f837697bc9382711085248ec55b20f9f42499597e84cb",
+          "problem_sha256": "a66212f3d910ed37321c5c25ded582b7f890750119033d21e0e07493c5a41c60",
+          "retained_object_sha256": "33caebd5302cf278afaf0605dc85cbce28c3216c64e84996915f01ffa9798938",
+          "copy_object_sha256": "33caebd5302cf278afaf0605dc85cbce28c3216c64e84996915f01ffa9798938",
+          "dependency_object_count": 702,
+          "compile_response_sha256": "6356fcad9eaea93e7db77dfcefea9d15e6eadc9dbaf56d4d6d5c30d86c6741c9",
+          "verify_response_sha256": "cd83e1ee61766f3e560f82d34fff3985e203ef754ae61e4a73a4d7f162321855",
+          "compile": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        }
+      },
+      "universal_slot": {
+        "state_name": "decodeItemState800d69d8",
+        "exact_definition": "Definition decodeItemState800d69d8 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.",
+        "definition_sha256": "f06b18ebed773cd72de6f33064bfda8177c5443f0bbe4d415b3157ea58d9e75c",
+        "required_signature": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 instr_body 0x800d69d8 decodeItemState800d69d8",
+        "entry_conversion_to_named_entry_separated_with_True": {
+          "match": true,
+          "method": "Positive eq_refl check",
+          "result": "DesignedEntry converts to the current named entry separated with True."
+        }
+      },
+      "code_obligation": {
+        "required_entailment": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 decodeItemSelectedCode",
+        "required_native_premise": "decodeItemSelectedCode",
+        "status": "Unresolved. No supplied code-ownership derivation exists.",
+        "available_table_resources": "Twenty-four boxed instr_pre continuations. Their guarded state-to-instruction wands do not expose the selectedCodeLookup instruction resources as an owned conjunction.",
+        "definition": "decodeItemSelectedCode := instr_lookup_resources (selectedCodeLookup ZesuSsz.Stock.Closure.index_decodeItem.instr_map).",
+        "external_source": "decodeItemSelectedModel places selected code inside its Level1 resources. This does not add that resource to the unchanged table-body slot.",
+        "forbidden_substitutes": [
+          "Assume the target body.",
+          "Create selected code ownership.",
+          "Add selected code as an unreviewed slot premise."
+        ]
+      },
+      "successor_obligations": [
+        {
+          "pc": "0x800d69e0",
+          "available_source": "\u25a1 instr_pre 0x800d69e0 decodeItemState800d69e0",
+          "source_derivation": "block_table_pre_lookup at the unchanged destination slot.",
+          "P_universal_state": "Definition decodeItemState800d69e0 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.",
+          "Q_native_existential_state": "(\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I",
+          "required_wand_exact": "\u22a2 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217 decodeItemState800d69e0",
+          "required_wand_sha256": "1fe39cab67125fde2f778ed90cf94842ed867d967920df5b27984fa1b84fca1c",
+          "destination_binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "x13",
+              "type": "bv 64"
+            },
+            {
+              "name": "inputPrefix",
+              "type": "byte"
+            },
+            {
+              "name": "rest",
+              "type": "list byte"
+            }
+          ],
+          "status": "Unresolved. No exact entailment certificate exists.",
+          "reason": "Q retains a fixed native args value and existential successor witnesses. P quantifies every destination binder, including args, inside iProp. Specializing P to one pointwise entry is the opposite direction.",
+          "available_entry_resources": "The selected witness entry retains its registers, arrays, domain/frame facts and caller continuation. Those resources do not by source inspection provide every arbitrary destination-binder instance.",
+          "proof_method": "Read-only source inspection. No failed tactic is presented as proof of impossibility."
+        },
+        {
+          "pc": "0x800d6a00",
+          "available_source": "\u25a1 instr_pre 0x800d6a00 decodeItemState800d6a00",
+          "source_derivation": "block_table_pre_lookup at the unchanged destination slot.",
+          "P_universal_state": "Definition decodeItemState800d6a00 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.",
+          "Q_native_existential_state": "(\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I",
+          "required_wand_exact": "\u22a2 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217 decodeItemState800d6a00",
+          "required_wand_sha256": "37c06a4bda485c21ace9ae78661c23cc85a9df79a6dd9d5623623741fa649910",
+          "destination_binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "x13",
+              "type": "bv 64"
+            },
+            {
+              "name": "inputPrefix",
+              "type": "byte"
+            },
+            {
+              "name": "rest",
+              "type": "list byte"
+            }
+          ],
+          "status": "Unresolved. No exact entailment certificate exists.",
+          "reason": "Q retains a fixed native args value and existential successor witnesses. P quantifies every destination binder, including args, inside iProp. Specializing P to one pointwise entry is the opposite direction.",
+          "available_entry_resources": "The selected witness entry retains its registers, arrays, domain/frame facts and caller continuation. Those resources do not by source inspection provide every arbitrary destination-binder instance.",
+          "proof_method": "Read-only source inspection. No failed tactic is presented as proof of impossibility."
+        }
+      ]
+    },
+    {
+      "pc": "0x800d69e0",
+      "native_theorem": {
+        "name": "DesignedBoundary_800d69e0",
+        "exact_statement": "Lemma DesignedBoundary_800d69e0 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte)   :\n  instr_pre 0x800d69e8 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e8 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69e0\n    (DesignedEntry_800d69e0 args frameBytes x13 inputPrefix rest).",
+        "statement_sha256": "c0613d6a425c33bc56f14a4111a4649511a277b5a888bbe41dd501155e23b271",
+        "exact_kernel_type": "DesignedBoundary_800d69e0\n     : \u2200 (args : RlpDecodeItemContract.DecodeItemArgs) (frameBytes : list (bv 8)) (x13 : bv 64) (inputPrefix : bv 8) (rest : list (bv 8)),\n         instr_pre 2148362728\n           (\u2203 (successor_frameBytes : list (bv 8)) (successor_x13 : bv 64) (successor_inputPrefix : bv 8) (successor_rest : list (bv 8)),\n              DecodeItemBranchEntries.decodeItemEntryAt800d69e8 args successor_frameBytes successor_x13 successor_inputPrefix successor_rest) -\u2217\n         instr_pre 2148362976 (\u2203 successor_locals : RlpDecodeItemBlockEntries.DecodeItemReturnLocals, RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 args successor_locals) -\u2217\n         DecodeItemSelected.decodeItemSelectedCode -\u2217 instr_body 2148362720 (DesignedEntry_800d69e0 args frameBytes x13 inputPrefix rest)",
+        "certificate_bindings": {
+          "id": "block_0x800d69e0",
+          "kind": "native",
+          "lemma": "DesignedBoundary_800d69e0",
+          "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d69e0/Certificate.v",
+          "problem": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d69e0/Problem.v",
+          "object": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-001/block_0x800d69e0/primary/Boundary.vo",
+            "sha256": "7712279834459b739936f12ea1b8e30126c2c3517eca5a4772fb6cf3302cba7d"
+          },
+          "imported_object_copy": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d69e0/Boundary.vo",
+            "sha256": "7712279834459b739936f12ea1b8e30126c2c3517eca5a4772fb6cf3302cba7d"
+          },
+          "statement_sha256": "c0613d6a425c33bc56f14a4111a4649511a277b5a888bbe41dd501155e23b271",
+          "source_sha256": "047d806100a548b1acf534428b9e1fee85b6193aebba69df8d50e036a2ae5977",
+          "problem_sha256": "3f60493bf8a7bf0c3277a98faf681232fa9b8c6da7b82e71f2fe361c7acfeac1"
+        },
+        "reviewed_verification": {
+          "id": "block_0x800d69e0",
+          "kind": "native",
+          "lemma": "DesignedBoundary_800d69e0",
+          "statement_sha256": "c0613d6a425c33bc56f14a4111a4649511a277b5a888bbe41dd501155e23b271",
+          "certificate_source_sha256": "047d806100a548b1acf534428b9e1fee85b6193aebba69df8d50e036a2ae5977",
+          "problem_sha256": "3f60493bf8a7bf0c3277a98faf681232fa9b8c6da7b82e71f2fe361c7acfeac1",
+          "retained_object_sha256": "7712279834459b739936f12ea1b8e30126c2c3517eca5a4772fb6cf3302cba7d",
+          "copy_object_sha256": "7712279834459b739936f12ea1b8e30126c2c3517eca5a4772fb6cf3302cba7d",
+          "dependency_object_count": 702,
+          "compile_response_sha256": "6356fcad9eaea93e7db77dfcefea9d15e6eadc9dbaf56d4d6d5c30d86c6741c9",
+          "verify_response_sha256": "cd83e1ee61766f3e560f82d34fff3985e203ef754ae61e4a73a4d7f162321855",
+          "compile": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        }
+      },
+      "universal_slot": {
+        "state_name": "decodeItemState800d69e0",
+        "exact_definition": "Definition decodeItemState800d69e0 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.",
+        "definition_sha256": "646ab95215f204f5d4b3471dd5c11cbfbbf1f4424efd3c06e5a402acf32041b4",
+        "required_signature": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 instr_body 0x800d69e0 decodeItemState800d69e0",
+        "entry_conversion_to_named_entry_separated_with_True": {
+          "match": true,
+          "method": "Positive eq_refl check",
+          "result": "DesignedEntry converts to the current named entry separated with True."
+        }
+      },
+      "code_obligation": {
+        "required_entailment": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 decodeItemSelectedCode",
+        "required_native_premise": "decodeItemSelectedCode",
+        "status": "Unresolved. No supplied code-ownership derivation exists.",
+        "available_table_resources": "Twenty-four boxed instr_pre continuations. Their guarded state-to-instruction wands do not expose the selectedCodeLookup instruction resources as an owned conjunction.",
+        "definition": "decodeItemSelectedCode := instr_lookup_resources (selectedCodeLookup ZesuSsz.Stock.Closure.index_decodeItem.instr_map).",
+        "external_source": "decodeItemSelectedModel places selected code inside its Level1 resources. This does not add that resource to the unchanged table-body slot.",
+        "forbidden_substitutes": [
+          "Assume the target body.",
+          "Create selected code ownership.",
+          "Add selected code as an unreviewed slot premise."
+        ]
+      },
+      "successor_obligations": [
+        {
+          "pc": "0x800d69e8",
+          "available_source": "\u25a1 instr_pre 0x800d69e8 decodeItemState800d69e8",
+          "source_derivation": "block_table_pre_lookup at the unchanged destination slot.",
+          "P_universal_state": "Definition decodeItemState800d69e8 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e8 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.",
+          "Q_native_existential_state": "(\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e8 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I",
+          "required_wand_exact": "\u22a2 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e8 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217 decodeItemState800d69e8",
+          "required_wand_sha256": "fa43bce6344ba933ab45c2bf1c05c1c3ea0c76360629bfd89ae2a82e3284283a",
+          "destination_binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "x13",
+              "type": "bv 64"
+            },
+            {
+              "name": "inputPrefix",
+              "type": "byte"
+            },
+            {
+              "name": "rest",
+              "type": "list byte"
+            }
+          ],
+          "status": "Unresolved. No exact entailment certificate exists.",
+          "reason": "Q retains a fixed native args value and existential successor witnesses. P quantifies every destination binder, including args, inside iProp. Specializing P to one pointwise entry is the opposite direction.",
+          "available_entry_resources": "The selected witness entry retains its registers, arrays, domain/frame facts and caller continuation. Those resources do not by source inspection provide every arbitrary destination-binder instance.",
+          "proof_method": "Read-only source inspection. No failed tactic is presented as proof of impossibility."
+        },
+        {
+          "pc": "0x800d6ae0",
+          "available_source": "\u25a1 instr_pre 0x800d6ae0 decodeItemState800d6ae0",
+          "source_derivation": "block_table_pre_lookup at the unchanged destination slot.",
+          "P_universal_state": "Definition decodeItemState800d6ae0 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (locals))%I.",
+          "Q_native_existential_state": "(\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I",
+          "required_wand_exact": "\u22a2 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217 decodeItemState800d6ae0",
+          "required_wand_sha256": "647802ae7c89cfe016ecbf61e9a424764db2e19ad4c121715500c9d2817f7e97",
+          "destination_binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "locals",
+              "type": "DecodeItemReturnLocals"
+            }
+          ],
+          "status": "Unresolved. No exact entailment certificate exists.",
+          "reason": "Q retains a fixed native args value and existential successor witnesses. P quantifies every destination binder, including args, inside iProp. Specializing P to one pointwise entry is the opposite direction.",
+          "available_entry_resources": "The selected witness entry retains its registers, arrays, domain/frame facts and caller continuation. Those resources do not by source inspection provide every arbitrary destination-binder instance.",
+          "proof_method": "Read-only source inspection. No failed tactic is presented as proof of impossibility."
+        }
+      ]
+    },
+    {
+      "pc": "0x800d6a00",
+      "native_theorem": {
+        "name": "DesignedBoundary_800d6a00",
+        "exact_statement": "Lemma DesignedBoundary_800d6a00 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte)   :\n  instr_pre 0x800d6a08 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a08 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6a64 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a00\n    (DesignedEntry_800d6a00 args frameBytes x13 inputPrefix rest).",
+        "statement_sha256": "9cc28faf4111fdb126d37c3e6212af69a35755b85dc6032024c995a58267193c",
+        "exact_kernel_type": "DesignedBoundary_800d6a00\n     : \u2200 (args : RlpDecodeItemContract.DecodeItemArgs) (frameBytes : list (bv 8)) (x13 : bv 64) (inputPrefix : bv 8) (rest : list (bv 8)),\n         instr_pre 2148362760\n           (\u2203 (successor_frameBytes : list (bv 8)) (successor_x13 : bv 64) (successor_inputPrefix : bv 8) (successor_rest : list (bv 8)),\n              DecodeItemBranchEntries.decodeItemEntryAt800d6a08 args successor_frameBytes successor_x13 successor_inputPrefix successor_rest) -\u2217\n         instr_pre 2148362852\n           (\u2203 (successor_frameBytes : list (bv 8)) (successor_x13 : bv 64) (successor_inputPrefix : bv 8) (successor_rest : list (bv 8)),\n              DecodeItemBranchEntries.decodeItemEntryAt800d6a64 args successor_frameBytes successor_x13 successor_inputPrefix successor_rest) -\u2217\n         DecodeItemSelected.decodeItemSelectedCode -\u2217 instr_body 2148362752 (DesignedEntry_800d6a00 args frameBytes x13 inputPrefix rest)",
+        "certificate_bindings": {
+          "id": "block_0x800d6a00",
+          "kind": "native",
+          "lemma": "DesignedBoundary_800d6a00",
+          "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d6a00/Certificate.v",
+          "problem": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d6a00/Problem.v",
+          "object": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-001/block_0x800d6a00/primary/Boundary.vo",
+            "sha256": "e4f5dcf32e3993ac4b0368b0d94382ed108961bab69f12cec0c77235dd2561b3"
+          },
+          "imported_object_copy": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d6a00/Boundary.vo",
+            "sha256": "e4f5dcf32e3993ac4b0368b0d94382ed108961bab69f12cec0c77235dd2561b3"
+          },
+          "statement_sha256": "9cc28faf4111fdb126d37c3e6212af69a35755b85dc6032024c995a58267193c",
+          "source_sha256": "b696610d671b45b08b5e43fe33717020d6e7061294d0e53f7539a1e6d9fdb191",
+          "problem_sha256": "443f30b21e4a40fe020830647793a2a23a33ebda63aefd13553858442e67fd20"
+        },
+        "reviewed_verification": {
+          "id": "block_0x800d6a00",
+          "kind": "native",
+          "lemma": "DesignedBoundary_800d6a00",
+          "statement_sha256": "9cc28faf4111fdb126d37c3e6212af69a35755b85dc6032024c995a58267193c",
+          "certificate_source_sha256": "b696610d671b45b08b5e43fe33717020d6e7061294d0e53f7539a1e6d9fdb191",
+          "problem_sha256": "443f30b21e4a40fe020830647793a2a23a33ebda63aefd13553858442e67fd20",
+          "retained_object_sha256": "e4f5dcf32e3993ac4b0368b0d94382ed108961bab69f12cec0c77235dd2561b3",
+          "copy_object_sha256": "e4f5dcf32e3993ac4b0368b0d94382ed108961bab69f12cec0c77235dd2561b3",
+          "dependency_object_count": 702,
+          "compile_response_sha256": "6356fcad9eaea93e7db77dfcefea9d15e6eadc9dbaf56d4d6d5c30d86c6741c9",
+          "verify_response_sha256": "cd83e1ee61766f3e560f82d34fff3985e203ef754ae61e4a73a4d7f162321855",
+          "compile": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        }
+      },
+      "universal_slot": {
+        "state_name": "decodeItemState800d6a00",
+        "exact_definition": "Definition decodeItemState800d6a00 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.",
+        "definition_sha256": "447bd9e05426a61478ccc4877566b8b84b4afa9909bcab339d66c85f63bc9905",
+        "required_signature": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 instr_body 0x800d6a00 decodeItemState800d6a00",
+        "entry_conversion_to_named_entry_separated_with_True": {
+          "match": true,
+          "method": "Positive eq_refl check",
+          "result": "DesignedEntry converts to the current named entry separated with True."
+        }
+      },
+      "code_obligation": {
+        "required_entailment": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 decodeItemSelectedCode",
+        "required_native_premise": "decodeItemSelectedCode",
+        "status": "Unresolved. No supplied code-ownership derivation exists.",
+        "available_table_resources": "Twenty-four boxed instr_pre continuations. Their guarded state-to-instruction wands do not expose the selectedCodeLookup instruction resources as an owned conjunction.",
+        "definition": "decodeItemSelectedCode := instr_lookup_resources (selectedCodeLookup ZesuSsz.Stock.Closure.index_decodeItem.instr_map).",
+        "external_source": "decodeItemSelectedModel places selected code inside its Level1 resources. This does not add that resource to the unchanged table-body slot.",
+        "forbidden_substitutes": [
+          "Assume the target body.",
+          "Create selected code ownership.",
+          "Add selected code as an unreviewed slot premise."
+        ]
+      },
+      "successor_obligations": [
+        {
+          "pc": "0x800d6a08",
+          "available_source": "\u25a1 instr_pre 0x800d6a08 decodeItemState800d6a08",
+          "source_derivation": "block_table_pre_lookup at the unchanged destination slot.",
+          "P_universal_state": "Definition decodeItemState800d6a08 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a08 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.",
+          "Q_native_existential_state": "(\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a08 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I",
+          "required_wand_exact": "\u22a2 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a08 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217 decodeItemState800d6a08",
+          "required_wand_sha256": "ea79f1d1128d1dd671ca8b8427b13783059dc95fad3c30c2379a7b54a3e85852",
+          "destination_binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "x13",
+              "type": "bv 64"
+            },
+            {
+              "name": "inputPrefix",
+              "type": "byte"
+            },
+            {
+              "name": "rest",
+              "type": "list byte"
+            }
+          ],
+          "status": "Unresolved. No exact entailment certificate exists.",
+          "reason": "Q retains a fixed native args value and existential successor witnesses. P quantifies every destination binder, including args, inside iProp. Specializing P to one pointwise entry is the opposite direction.",
+          "available_entry_resources": "The selected witness entry retains its registers, arrays, domain/frame facts and caller continuation. Those resources do not by source inspection provide every arbitrary destination-binder instance.",
+          "proof_method": "Read-only source inspection. No failed tactic is presented as proof of impossibility."
+        },
+        {
+          "pc": "0x800d6a64",
+          "available_source": "\u25a1 instr_pre 0x800d6a64 decodeItemState800d6a64",
+          "source_derivation": "block_table_pre_lookup at the unchanged destination slot.",
+          "P_universal_state": "Definition decodeItemState800d6a64 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.",
+          "Q_native_existential_state": "(\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I",
+          "required_wand_exact": "\u22a2 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217 decodeItemState800d6a64",
+          "required_wand_sha256": "b5d1b2670c2e597422bff4a4251e3571f5d0fc5160732f5be170dedc8a63b949",
+          "destination_binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "x13",
+              "type": "bv 64"
+            },
+            {
+              "name": "inputPrefix",
+              "type": "byte"
+            },
+            {
+              "name": "rest",
+              "type": "list byte"
+            }
+          ],
+          "status": "Unresolved. No exact entailment certificate exists.",
+          "reason": "Q retains a fixed native args value and existential successor witnesses. P quantifies every destination binder, including args, inside iProp. Specializing P to one pointwise entry is the opposite direction.",
+          "available_entry_resources": "The selected witness entry retains its registers, arrays, domain/frame facts and caller continuation. Those resources do not by source inspection provide every arbitrary destination-binder instance.",
+          "proof_method": "Read-only source inspection. No failed tactic is presented as proof of impossibility."
+        }
+      ]
+    },
+    {
+      "pc": "0x800d6a14",
+      "native_theorem": {
+        "name": "DesignedBoundary_800d6a14",
+        "exact_statement": "Lemma DesignedBoundary_800d6a14 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (oldAcc : bv 64) (oldCursor : bv 64) (loaded : bv 64) (inputPrefix : byte) (rest : list byte)  :\n  instr_pre 0x800d6a24 (\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24 (args) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a14\n    (DesignedEntry_800d6a14 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded inputPrefix rest).",
+        "statement_sha256": "a58a51bcede39919116652c6768070bc7b9d134f36fffa177cdce592d3e3089b",
+        "exact_kernel_type": "DesignedBoundary_800d6a14\n     : \u2200 (args : RlpDecodeItemContract.DecodeItemArgs) (n payloadStart : Z) (lengthBytes frameBytes : list (bv 8)) (oldAcc oldCursor loaded : bv 64) (inputPrefix : bv 8) (rest : list (bv 8)),\n         instr_pre 2148362788 (\u2203 (successor_inputPrefix : bv 8) (successor_rest : list (bv 8)), RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24 args successor_inputPrefix successor_rest) -\u2217\n         DecodeItemSelected.decodeItemSelectedCode -\u2217 instr_body 2148362772 (DesignedEntry_800d6a14 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded inputPrefix rest)",
+        "certificate_bindings": {
+          "id": "block_0x800d6a14",
+          "kind": "native",
+          "lemma": "DesignedBoundary_800d6a14",
+          "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d6a14/Certificate.v",
+          "problem": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d6a14/Problem.v",
+          "object": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-001/block_0x800d6a14/primary/Boundary.vo",
+            "sha256": "35bf82ca761e80678238ed8a95a293a4105fae188da254cefcee2fce957a416c"
+          },
+          "imported_object_copy": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d6a14/Boundary.vo",
+            "sha256": "35bf82ca761e80678238ed8a95a293a4105fae188da254cefcee2fce957a416c"
+          },
+          "statement_sha256": "a58a51bcede39919116652c6768070bc7b9d134f36fffa177cdce592d3e3089b",
+          "source_sha256": "95358ffb837abf4ed25c3f9932e385dc51ed3adc988758ba84042dda7479b114",
+          "problem_sha256": "715b420142bab81e1a425c48d84146f0a86334eeba743b65b45bb44ed4337ca8"
+        },
+        "reviewed_verification": {
+          "id": "block_0x800d6a14",
+          "kind": "native",
+          "lemma": "DesignedBoundary_800d6a14",
+          "statement_sha256": "a58a51bcede39919116652c6768070bc7b9d134f36fffa177cdce592d3e3089b",
+          "certificate_source_sha256": "95358ffb837abf4ed25c3f9932e385dc51ed3adc988758ba84042dda7479b114",
+          "problem_sha256": "715b420142bab81e1a425c48d84146f0a86334eeba743b65b45bb44ed4337ca8",
+          "retained_object_sha256": "35bf82ca761e80678238ed8a95a293a4105fae188da254cefcee2fce957a416c",
+          "copy_object_sha256": "35bf82ca761e80678238ed8a95a293a4105fae188da254cefcee2fce957a416c",
+          "dependency_object_count": 702,
+          "compile_response_sha256": "6356fcad9eaea93e7db77dfcefea9d15e6eadc9dbaf56d4d6d5c30d86c6741c9",
+          "verify_response_sha256": "cd83e1ee61766f3e560f82d34fff3985e203ef754ae61e4a73a4d7f162321855",
+          "compile": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        }
+      },
+      "universal_slot": {
+        "state_name": "decodeItemState800d6a14",
+        "exact_definition": "Definition decodeItemState800d6a14 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (oldAcc : bv 64) (oldCursor : bv 64) (loaded : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14 (args) (n) (payloadStart) (lengthBytes) (frameBytes) (oldAcc) (oldCursor) (loaded) (inputPrefix) (rest))%I.",
+        "definition_sha256": "af59e86d341e94ed9fd84c4a59316a59c4b2ff5553d29f5036cfece57e4b990b",
+        "required_signature": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 instr_body 0x800d6a14 decodeItemState800d6a14",
+        "entry_conversion_to_named_entry_separated_with_True": {
+          "match": true,
+          "method": "Positive eq_refl check",
+          "result": "DesignedEntry converts to the current named entry separated with True."
+        }
+      },
+      "code_obligation": {
+        "required_entailment": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 decodeItemSelectedCode",
+        "required_native_premise": "decodeItemSelectedCode",
+        "status": "Unresolved. No supplied code-ownership derivation exists.",
+        "available_table_resources": "Twenty-four boxed instr_pre continuations. Their guarded state-to-instruction wands do not expose the selectedCodeLookup instruction resources as an owned conjunction.",
+        "definition": "decodeItemSelectedCode := instr_lookup_resources (selectedCodeLookup ZesuSsz.Stock.Closure.index_decodeItem.instr_map).",
+        "external_source": "decodeItemSelectedModel places selected code inside its Level1 resources. This does not add that resource to the unchanged table-body slot.",
+        "forbidden_substitutes": [
+          "Assume the target body.",
+          "Create selected code ownership.",
+          "Add selected code as an unreviewed slot premise."
+        ]
+      },
+      "successor_obligations": [
+        {
+          "pc": "0x800d6a24",
+          "available_source": "\u25a1 instr_pre 0x800d6a24 decodeItemState800d6a24",
+          "source_derivation": "block_table_pre_lookup at the unchanged destination slot.",
+          "P_universal_state": "Definition decodeItemState800d6a24 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24 (args) (inputPrefix) (rest))%I.",
+          "Q_native_existential_state": "(\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24 (args) (successor_inputPrefix) (successor_rest))%I",
+          "required_wand_exact": "\u22a2 (\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24 (args) (successor_inputPrefix) (successor_rest))%I -\u2217 decodeItemState800d6a24",
+          "required_wand_sha256": "f7f261bd498e1b09c2258dc467b4dcb4b1ad37e9858857791661197f9c472ff5",
+          "destination_binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "inputPrefix",
+              "type": "byte"
+            },
+            {
+              "name": "rest",
+              "type": "list byte"
+            }
+          ],
+          "status": "Unresolved. No exact entailment certificate exists.",
+          "reason": "Q retains a fixed native args value and existential successor witnesses. P quantifies every destination binder, including args, inside iProp. Specializing P to one pointwise entry is the opposite direction.",
+          "available_entry_resources": "The selected witness entry retains its registers, arrays, domain/frame facts and caller continuation. Those resources do not by source inspection provide every arbitrary destination-binder instance.",
+          "proof_method": "Read-only source inspection. No failed tactic is presented as proof of impossibility."
+        }
+      ]
+    },
+    {
+      "pc": "0x800d6a64",
+      "native_theorem": {
+        "name": "DesignedBoundary_800d6a64",
+        "exact_statement": "Lemma DesignedBoundary_800d6a64 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte)   :\n  instr_pre 0x800d6a6c (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6aa8 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6aa8 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a64\n    (DesignedEntry_800d6a64 args frameBytes x13 inputPrefix rest).",
+        "statement_sha256": "65b503d390be6994296a68b0597dde532b4bdcd8ea583ef02408aae3e302b61f",
+        "exact_kernel_type": "DesignedBoundary_800d6a64\n     : \u2200 (args : RlpDecodeItemContract.DecodeItemArgs) (frameBytes : list (bv 8)) (x13 : bv 64) (inputPrefix : bv 8) (rest : list (bv 8)),\n         instr_pre 2148362860\n           (\u2203 (successor_frameBytes : list (bv 8)) (successor_x13 : bv 64) (successor_inputPrefix : bv 8) (successor_rest : list (bv 8)),\n              DecodeItemBranchEntries.decodeItemEntryAt800d6a6c args successor_frameBytes successor_x13 successor_inputPrefix successor_rest) -\u2217\n         instr_pre 2148362920\n           (\u2203 (successor_frameBytes : list (bv 8)) (successor_x13 : bv 64) (successor_inputPrefix : bv 8) (successor_rest : list (bv 8)),\n              DecodeItemBranchEntries.decodeItemEntryAt800d6aa8 args successor_frameBytes successor_x13 successor_inputPrefix successor_rest) -\u2217\n         DecodeItemSelected.decodeItemSelectedCode -\u2217 instr_body 2148362852 (DesignedEntry_800d6a64 args frameBytes x13 inputPrefix rest)",
+        "certificate_bindings": {
+          "id": "block_0x800d6a64",
+          "kind": "native",
+          "lemma": "DesignedBoundary_800d6a64",
+          "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d6a64/Certificate.v",
+          "problem": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d6a64/Problem.v",
+          "object": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-001/block_0x800d6a64/primary/Boundary.vo",
+            "sha256": "d23185bda461ea8988084e1586d4af5e6bef3edab00aacd436650052cdff90c8"
+          },
+          "imported_object_copy": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d6a64/Boundary.vo",
+            "sha256": "d23185bda461ea8988084e1586d4af5e6bef3edab00aacd436650052cdff90c8"
+          },
+          "statement_sha256": "65b503d390be6994296a68b0597dde532b4bdcd8ea583ef02408aae3e302b61f",
+          "source_sha256": "a7c07038cb746ef526dd34670122aefc3a5e1bf23b9813095536c9636ce5f01d",
+          "problem_sha256": "48929dc8858e57754ae985c67bd09b17dc93228b2b4f9f9e5a1e848cac378d94"
+        },
+        "reviewed_verification": {
+          "id": "block_0x800d6a64",
+          "kind": "native",
+          "lemma": "DesignedBoundary_800d6a64",
+          "statement_sha256": "65b503d390be6994296a68b0597dde532b4bdcd8ea583ef02408aae3e302b61f",
+          "certificate_source_sha256": "a7c07038cb746ef526dd34670122aefc3a5e1bf23b9813095536c9636ce5f01d",
+          "problem_sha256": "48929dc8858e57754ae985c67bd09b17dc93228b2b4f9f9e5a1e848cac378d94",
+          "retained_object_sha256": "d23185bda461ea8988084e1586d4af5e6bef3edab00aacd436650052cdff90c8",
+          "copy_object_sha256": "d23185bda461ea8988084e1586d4af5e6bef3edab00aacd436650052cdff90c8",
+          "dependency_object_count": 702,
+          "compile_response_sha256": "6356fcad9eaea93e7db77dfcefea9d15e6eadc9dbaf56d4d6d5c30d86c6741c9",
+          "verify_response_sha256": "cd83e1ee61766f3e560f82d34fff3985e203ef754ae61e4a73a4d7f162321855",
+          "compile": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        }
+      },
+      "universal_slot": {
+        "state_name": "decodeItemState800d6a64",
+        "exact_definition": "Definition decodeItemState800d6a64 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.",
+        "definition_sha256": "9d315183e37b3ba803e105eb466f3600a22e179bce1d4662a37aa6ee5f1d4f90",
+        "required_signature": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 instr_body 0x800d6a64 decodeItemState800d6a64",
+        "entry_conversion_to_named_entry_separated_with_True": {
+          "match": true,
+          "method": "Positive eq_refl check",
+          "result": "DesignedEntry converts to the current named entry separated with True."
+        }
+      },
+      "code_obligation": {
+        "required_entailment": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 decodeItemSelectedCode",
+        "required_native_premise": "decodeItemSelectedCode",
+        "status": "Unresolved. No supplied code-ownership derivation exists.",
+        "available_table_resources": "Twenty-four boxed instr_pre continuations. Their guarded state-to-instruction wands do not expose the selectedCodeLookup instruction resources as an owned conjunction.",
+        "definition": "decodeItemSelectedCode := instr_lookup_resources (selectedCodeLookup ZesuSsz.Stock.Closure.index_decodeItem.instr_map).",
+        "external_source": "decodeItemSelectedModel places selected code inside its Level1 resources. This does not add that resource to the unchanged table-body slot.",
+        "forbidden_substitutes": [
+          "Assume the target body.",
+          "Create selected code ownership.",
+          "Add selected code as an unreviewed slot premise."
+        ]
+      },
+      "successor_obligations": [
+        {
+          "pc": "0x800d6a6c",
+          "available_source": "\u25a1 instr_pre 0x800d6a6c decodeItemState800d6a6c",
+          "source_derivation": "block_table_pre_lookup at the unchanged destination slot.",
+          "P_universal_state": "Definition decodeItemState800d6a6c : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c (args) (frameBytes) (x13) (inputPrefix) (rest))%I.",
+          "Q_native_existential_state": "(\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I",
+          "required_wand_exact": "\u22a2 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217 decodeItemState800d6a6c",
+          "required_wand_sha256": "d5389d7b95842b9016383fa2b857f8b8520c3255a3d175538f8382e62042d8bd",
+          "destination_binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "x13",
+              "type": "bv 64"
+            },
+            {
+              "name": "inputPrefix",
+              "type": "byte"
+            },
+            {
+              "name": "rest",
+              "type": "list byte"
+            }
+          ],
+          "status": "Unresolved. No exact entailment certificate exists.",
+          "reason": "Q retains a fixed native args value and existential successor witnesses. P quantifies every destination binder, including args, inside iProp. Specializing P to one pointwise entry is the opposite direction.",
+          "available_entry_resources": "The selected witness entry retains its registers, arrays, domain/frame facts and caller continuation. Those resources do not by source inspection provide every arbitrary destination-binder instance.",
+          "proof_method": "Read-only source inspection. No failed tactic is presented as proof of impossibility."
+        },
+        {
+          "pc": "0x800d6aa8",
+          "available_source": "\u25a1 instr_pre 0x800d6aa8 decodeItemState800d6aa8",
+          "source_derivation": "block_table_pre_lookup at the unchanged destination slot.",
+          "P_universal_state": "Definition decodeItemState800d6aa8 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6aa8 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.",
+          "Q_native_existential_state": "(\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6aa8 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I",
+          "required_wand_exact": "\u22a2 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6aa8 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217 decodeItemState800d6aa8",
+          "required_wand_sha256": "b06fdc18d479cb67d7148cea88ceb3346d1ade35ae4a2fdc51224792fb5171ec",
+          "destination_binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "frameBytes",
+              "type": "list byte"
+            },
+            {
+              "name": "x13",
+              "type": "bv 64"
+            },
+            {
+              "name": "inputPrefix",
+              "type": "byte"
+            },
+            {
+              "name": "rest",
+              "type": "list byte"
+            }
+          ],
+          "status": "Unresolved. No exact entailment certificate exists.",
+          "reason": "Q retains a fixed native args value and existential successor witnesses. P quantifies every destination binder, including args, inside iProp. Specializing P to one pointwise entry is the opposite direction.",
+          "available_entry_resources": "The selected witness entry retains its registers, arrays, domain/frame facts and caller continuation. Those resources do not by source inspection provide every arbitrary destination-binder instance.",
+          "proof_method": "Read-only source inspection. No failed tactic is presented as proof of impossibility."
+        }
+      ]
+    },
+    {
+      "pc": "0x800d6a6c",
+      "native_theorem": {
+        "name": "DesignedBoundary_800d6a6c",
+        "exact_statement": "Lemma DesignedBoundary_800d6a6c `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte)   :\n  instr_pre 0x800d6a78 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78 (args) (successor_locals) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a6c\n    (DesignedEntry_800d6a6c args frameBytes x13 inputPrefix rest).",
+        "statement_sha256": "ea9491d8148d8cdf9209c48b3ad087ec81572553273ada1ca3b147ee5bdf1b83",
+        "exact_kernel_type": "DesignedBoundary_800d6a6c\n     : \u2200 (args : RlpDecodeItemContract.DecodeItemArgs) (frameBytes : list (bv 8)) (x13 : bv 64) (inputPrefix : bv 8) (rest : list (bv 8)),\n         instr_pre 2148362872\n           (\u2203 (successor_locals : RlpDecodeItemBlockEntries.DecodeItemReturnLocals) (successor_inputPrefix : bv 8) (successor_rest : list (bv 8)),\n              RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78 args successor_locals successor_inputPrefix successor_rest) -\u2217\n         instr_pre 2148362976 (\u2203 successor_locals : RlpDecodeItemBlockEntries.DecodeItemReturnLocals, RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 args successor_locals) -\u2217\n         DecodeItemSelected.decodeItemSelectedCode -\u2217 instr_body 2148362860 (DesignedEntry_800d6a6c args frameBytes x13 inputPrefix rest)",
+        "certificate_bindings": {
+          "id": "block_0x800d6a6c",
+          "kind": "native",
+          "lemma": "DesignedBoundary_800d6a6c",
+          "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d6a6c/Certificate.v",
+          "problem": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d6a6c/Problem.v",
+          "object": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-001/block_0x800d6a6c/primary/Boundary.vo",
+            "sha256": "7f8198e24acf568456f5b18f28ad82a0f225c34616615904d8bed080b6aa242b"
+          },
+          "imported_object_copy": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d6a6c/Boundary.vo",
+            "sha256": "7f8198e24acf568456f5b18f28ad82a0f225c34616615904d8bed080b6aa242b"
+          },
+          "statement_sha256": "ea9491d8148d8cdf9209c48b3ad087ec81572553273ada1ca3b147ee5bdf1b83",
+          "source_sha256": "1421390879fd59ee76a31662c816870d293683c0843e9e8ca50e1640a25c6476",
+          "problem_sha256": "a466aa6d6699705b300a0ebd05bec13f659a68ca397a8eb63119edb95fcf1a0f"
+        },
+        "reviewed_verification": {
+          "id": "block_0x800d6a6c",
+          "kind": "native",
+          "lemma": "DesignedBoundary_800d6a6c",
+          "statement_sha256": "ea9491d8148d8cdf9209c48b3ad087ec81572553273ada1ca3b147ee5bdf1b83",
+          "certificate_source_sha256": "1421390879fd59ee76a31662c816870d293683c0843e9e8ca50e1640a25c6476",
+          "problem_sha256": "a466aa6d6699705b300a0ebd05bec13f659a68ca397a8eb63119edb95fcf1a0f",
+          "retained_object_sha256": "7f8198e24acf568456f5b18f28ad82a0f225c34616615904d8bed080b6aa242b",
+          "copy_object_sha256": "7f8198e24acf568456f5b18f28ad82a0f225c34616615904d8bed080b6aa242b",
+          "dependency_object_count": 702,
+          "compile_response_sha256": "6356fcad9eaea93e7db77dfcefea9d15e6eadc9dbaf56d4d6d5c30d86c6741c9",
+          "verify_response_sha256": "cd83e1ee61766f3e560f82d34fff3985e203ef754ae61e4a73a4d7f162321855",
+          "compile": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        }
+      },
+      "universal_slot": {
+        "state_name": "decodeItemState800d6a6c",
+        "exact_definition": "Definition decodeItemState800d6a6c : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c (args) (frameBytes) (x13) (inputPrefix) (rest))%I.",
+        "definition_sha256": "a1715931f93ac46845a779db80cc6c3afaf709a260a2353ec0436f8cad53528c",
+        "required_signature": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 instr_body 0x800d6a6c decodeItemState800d6a6c",
+        "entry_conversion_to_named_entry_separated_with_True": {
+          "match": true,
+          "method": "Positive eq_refl check",
+          "result": "DesignedEntry converts to the current named entry separated with True."
+        }
+      },
+      "code_obligation": {
+        "required_entailment": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 decodeItemSelectedCode",
+        "required_native_premise": "decodeItemSelectedCode",
+        "status": "Unresolved. No supplied code-ownership derivation exists.",
+        "available_table_resources": "Twenty-four boxed instr_pre continuations. Their guarded state-to-instruction wands do not expose the selectedCodeLookup instruction resources as an owned conjunction.",
+        "definition": "decodeItemSelectedCode := instr_lookup_resources (selectedCodeLookup ZesuSsz.Stock.Closure.index_decodeItem.instr_map).",
+        "external_source": "decodeItemSelectedModel places selected code inside its Level1 resources. This does not add that resource to the unchanged table-body slot.",
+        "forbidden_substitutes": [
+          "Assume the target body.",
+          "Create selected code ownership.",
+          "Add selected code as an unreviewed slot premise."
+        ]
+      },
+      "successor_obligations": [
+        {
+          "pc": "0x800d6a78",
+          "available_source": "\u25a1 instr_pre 0x800d6a78 decodeItemState800d6a78",
+          "source_derivation": "block_table_pre_lookup at the unchanged destination slot.",
+          "P_universal_state": "Definition decodeItemState800d6a78 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78 (args) (locals) (inputPrefix) (rest))%I.",
+          "Q_native_existential_state": "(\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78 (args) (successor_locals) (successor_inputPrefix) (successor_rest))%I",
+          "required_wand_exact": "\u22a2 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78 (args) (successor_locals) (successor_inputPrefix) (successor_rest))%I -\u2217 decodeItemState800d6a78",
+          "required_wand_sha256": "2031f91106325297a434100dcaaa1ac245617a005346b5a9b52840fd40a60b96",
+          "destination_binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "locals",
+              "type": "DecodeItemReturnLocals"
+            },
+            {
+              "name": "inputPrefix",
+              "type": "byte"
+            },
+            {
+              "name": "rest",
+              "type": "list byte"
+            }
+          ],
+          "status": "Unresolved. No exact entailment certificate exists.",
+          "reason": "Q retains a fixed native args value and existential successor witnesses. P quantifies every destination binder, including args, inside iProp. Specializing P to one pointwise entry is the opposite direction.",
+          "available_entry_resources": "The selected witness entry retains its registers, arrays, domain/frame facts and caller continuation. Those resources do not by source inspection provide every arbitrary destination-binder instance.",
+          "proof_method": "Read-only source inspection. No failed tactic is presented as proof of impossibility."
+        },
+        {
+          "pc": "0x800d6ae0",
+          "available_source": "\u25a1 instr_pre 0x800d6ae0 decodeItemState800d6ae0",
+          "source_derivation": "block_table_pre_lookup at the unchanged destination slot.",
+          "P_universal_state": "Definition decodeItemState800d6ae0 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (locals))%I.",
+          "Q_native_existential_state": "(\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I",
+          "required_wand_exact": "\u22a2 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217 decodeItemState800d6ae0",
+          "required_wand_sha256": "647802ae7c89cfe016ecbf61e9a424764db2e19ad4c121715500c9d2817f7e97",
+          "destination_binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "locals",
+              "type": "DecodeItemReturnLocals"
+            }
+          ],
+          "status": "Unresolved. No exact entailment certificate exists.",
+          "reason": "Q retains a fixed native args value and existential successor witnesses. P quantifies every destination binder, including args, inside iProp. Specializing P to one pointwise entry is the opposite direction.",
+          "available_entry_resources": "The selected witness entry retains its registers, arrays, domain/frame facts and caller continuation. Those resources do not by source inspection provide every arbitrary destination-binder instance.",
+          "proof_method": "Read-only source inspection. No failed tactic is presented as proof of impossibility."
+        }
+      ]
+    },
+    {
+      "pc": "0x800d6ab4",
+      "native_theorem": {
+        "name": "DesignedBoundary_800d6ab4",
+        "exact_statement": "Lemma DesignedBoundary_800d6ab4 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (oldAcc : bv 64) (oldCursor : bv 64) (loaded : bv 64) (inputPrefix : byte) (rest : list byte)  :\n  instr_pre 0x800d6ac4 (\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4 (args) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ab4\n    (DesignedEntry_800d6ab4 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded inputPrefix rest).",
+        "statement_sha256": "101f4543034625b1a94f38fe469f721cbf8ddb537ef3482e8463cb848c61bdd6",
+        "exact_kernel_type": "DesignedBoundary_800d6ab4\n     : \u2200 (args : RlpDecodeItemContract.DecodeItemArgs) (n payloadStart : Z) (lengthBytes frameBytes : list (bv 8)) (oldAcc oldCursor loaded : bv 64) (inputPrefix : bv 8) (rest : list (bv 8)),\n         instr_pre 2148362948 (\u2203 (successor_inputPrefix : bv 8) (successor_rest : list (bv 8)), RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4 args successor_inputPrefix successor_rest) -\u2217\n         DecodeItemSelected.decodeItemSelectedCode -\u2217 instr_body 2148362932 (DesignedEntry_800d6ab4 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded inputPrefix rest)",
+        "certificate_bindings": {
+          "id": "block_0x800d6ab4",
+          "kind": "native",
+          "lemma": "DesignedBoundary_800d6ab4",
+          "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d6ab4/Certificate.v",
+          "problem": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d6ab4/Problem.v",
+          "object": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-001/block_0x800d6ab4/primary/Boundary.vo",
+            "sha256": "7bf58fb87fd504382f3b6f5d961b3130ce038a8c83e30897e87bcb9fa9386c52"
+          },
+          "imported_object_copy": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-certificate-standalone-001/block_0x800d6ab4/Boundary.vo",
+            "sha256": "7bf58fb87fd504382f3b6f5d961b3130ce038a8c83e30897e87bcb9fa9386c52"
+          },
+          "statement_sha256": "101f4543034625b1a94f38fe469f721cbf8ddb537ef3482e8463cb848c61bdd6",
+          "source_sha256": "e6ecc5e19befaa9686a2c356ca0952bf87d982a2a88b5edd1a2d7f3b3c87771b",
+          "problem_sha256": "d5d199d446cb64987a9dd8c29ba1e4cbf4c5774368505f0325251870ece16688"
+        },
+        "reviewed_verification": {
+          "id": "block_0x800d6ab4",
+          "kind": "native",
+          "lemma": "DesignedBoundary_800d6ab4",
+          "statement_sha256": "101f4543034625b1a94f38fe469f721cbf8ddb537ef3482e8463cb848c61bdd6",
+          "certificate_source_sha256": "e6ecc5e19befaa9686a2c356ca0952bf87d982a2a88b5edd1a2d7f3b3c87771b",
+          "problem_sha256": "d5d199d446cb64987a9dd8c29ba1e4cbf4c5774368505f0325251870ece16688",
+          "retained_object_sha256": "7bf58fb87fd504382f3b6f5d961b3130ce038a8c83e30897e87bcb9fa9386c52",
+          "copy_object_sha256": "7bf58fb87fd504382f3b6f5d961b3130ce038a8c83e30897e87bcb9fa9386c52",
+          "dependency_object_count": 702,
+          "compile_response_sha256": "6356fcad9eaea93e7db77dfcefea9d15e6eadc9dbaf56d4d6d5c30d86c6741c9",
+          "verify_response_sha256": "cd83e1ee61766f3e560f82d34fff3985e203ef754ae61e4a73a4d7f162321855",
+          "compile": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        }
+      },
+      "universal_slot": {
+        "state_name": "decodeItemState800d6ab4",
+        "exact_definition": "Definition decodeItemState800d6ab4 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (oldAcc : bv 64) (oldCursor : bv 64) (loaded : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4 (args) (n) (payloadStart) (lengthBytes) (frameBytes) (oldAcc) (oldCursor) (loaded) (inputPrefix) (rest))%I.",
+        "definition_sha256": "2c616eb32c9684043b2293ae518afcae9d6d0cb32618c10d531ed24ed6b83b68",
+        "required_signature": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 instr_body 0x800d6ab4 decodeItemState800d6ab4",
+        "entry_conversion_to_named_entry_separated_with_True": {
+          "match": true,
+          "method": "Positive eq_refl check",
+          "result": "DesignedEntry converts to the current named entry separated with True."
+        }
+      },
+      "code_obligation": {
+        "required_entailment": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 decodeItemSelectedCode",
+        "required_native_premise": "decodeItemSelectedCode",
+        "status": "Unresolved. No supplied code-ownership derivation exists.",
+        "available_table_resources": "Twenty-four boxed instr_pre continuations. Their guarded state-to-instruction wands do not expose the selectedCodeLookup instruction resources as an owned conjunction.",
+        "definition": "decodeItemSelectedCode := instr_lookup_resources (selectedCodeLookup ZesuSsz.Stock.Closure.index_decodeItem.instr_map).",
+        "external_source": "decodeItemSelectedModel places selected code inside its Level1 resources. This does not add that resource to the unchanged table-body slot.",
+        "forbidden_substitutes": [
+          "Assume the target body.",
+          "Create selected code ownership.",
+          "Add selected code as an unreviewed slot premise."
+        ]
+      },
+      "successor_obligations": [
+        {
+          "pc": "0x800d6ac4",
+          "available_source": "\u25a1 instr_pre 0x800d6ac4 decodeItemState800d6ac4",
+          "source_derivation": "block_table_pre_lookup at the unchanged destination slot.",
+          "P_universal_state": "Definition decodeItemState800d6ac4 : iProp Sigma :=\n  (\u2200 (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4 (args) (inputPrefix) (rest))%I.",
+          "Q_native_existential_state": "(\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4 (args) (successor_inputPrefix) (successor_rest))%I",
+          "required_wand_exact": "\u22a2 (\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4 (args) (successor_inputPrefix) (successor_rest))%I -\u2217 decodeItemState800d6ac4",
+          "required_wand_sha256": "2700d0b75d311f2627b619b5cb1586c6f33eb713e44cee0d2d43d5541d685285",
+          "destination_binders": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs"
+            },
+            {
+              "name": "inputPrefix",
+              "type": "byte"
+            },
+            {
+              "name": "rest",
+              "type": "list byte"
+            }
+          ],
+          "status": "Unresolved. No exact entailment certificate exists.",
+          "reason": "Q retains a fixed native args value and existential successor witnesses. P quantifies every destination binder, including args, inside iProp. Specializing P to one pointwise entry is the opposite direction.",
+          "available_entry_resources": "The selected witness entry retains its registers, arrays, domain/frame facts and caller continuation. Those resources do not by source inspection provide every arbitrary destination-binder instance.",
+          "proof_method": "Read-only source inspection. No failed tactic is presented as proof of impossibility."
+        }
+      ]
+    }
+  ],
+  "S92_join_roles": [
+    {
+      "id": "decodeItemJoin698cFrom697c",
+      "source_pc": "0x800d697c",
+      "successor_pc": "0x800d698c",
+      "covers_all_designed_successors": true,
+      "table_role": "complete sole-successor source machine-transfer certificate; candidate source-body adapter input",
+      "direct_table_signature_match": false,
+      "pure_edge_entailment": false,
+      "adapter_support_obligations": [
+        "Code support: prove block_table_pre decodeItemBlockTable \u22a2 decodeItemSelectedCode. The table precondition contains successor instr_pre resources, not the selected-code facts.",
+        "Continuation support: prove joinEntry \u2217 True \u22a2 decodeItemState<successor>. Existential or fixed-parameter native successor resources do not establish the universal table state. Only then apply instr_pre_wand.",
+        "Entry support: wire the universal table state to this exact source entry plus the continuation and True.",
+        "Establish the body/entry conversion and universal-binder handling through the generic template."
+      ]
+    },
+    {
+      "id": "decodeItemJoin698cFrom69e8",
+      "source_pc": "0x800d69e8",
+      "successor_pc": "0x800d698c",
+      "covers_all_designed_successors": true,
+      "table_role": "complete sole-successor source machine-transfer certificate; candidate source-body adapter input",
+      "direct_table_signature_match": false,
+      "pure_edge_entailment": false,
+      "adapter_support_obligations": [
+        "Code support: prove block_table_pre decodeItemBlockTable \u22a2 decodeItemSelectedCode. The table precondition contains successor instr_pre resources, not the selected-code facts.",
+        "Continuation support: prove joinEntry \u2217 True \u22a2 decodeItemState<successor>. Existential or fixed-parameter native successor resources do not establish the universal table state. Only then apply instr_pre_wand.",
+        "Entry support: wire the universal table state to this exact source entry plus the continuation and True.",
+        "Establish the body/entry conversion and universal-binder handling through the generic template."
+      ]
+    },
+    {
+      "id": "decodeItemJoin6a24From6a14",
+      "source_pc": "0x800d6a14",
+      "successor_pc": "0x800d6a24",
+      "covers_all_designed_successors": true,
+      "table_role": "complete sole-successor source machine-transfer certificate; candidate source-body adapter input",
+      "direct_table_signature_match": false,
+      "pure_edge_entailment": false,
+      "adapter_support_obligations": [
+        "Code support: prove block_table_pre decodeItemBlockTable \u22a2 decodeItemSelectedCode. The table precondition contains successor instr_pre resources, not the selected-code facts.",
+        "Continuation support: prove joinEntry \u2217 True \u22a2 decodeItemState<successor>. Existential or fixed-parameter native successor resources do not establish the universal table state. Only then apply instr_pre_wand.",
+        "Entry support: wire the universal table state to this exact source entry plus the continuation and True.",
+        "Establish the body/entry conversion and universal-binder handling through the generic template."
+      ]
+    },
+    {
+      "id": "decodeItemJoin6ac4From6ab4",
+      "source_pc": "0x800d6ab4",
+      "successor_pc": "0x800d6ac4",
+      "covers_all_designed_successors": true,
+      "table_role": "complete sole-successor source machine-transfer certificate; candidate source-body adapter input",
+      "direct_table_signature_match": false,
+      "pure_edge_entailment": false,
+      "adapter_support_obligations": [
+        "Code support: prove block_table_pre decodeItemBlockTable \u22a2 decodeItemSelectedCode. The table precondition contains successor instr_pre resources, not the selected-code facts.",
+        "Continuation support: prove joinEntry \u2217 True \u22a2 decodeItemState<successor>. Existential or fixed-parameter native successor resources do not establish the universal table state. Only then apply instr_pre_wand.",
+        "Entry support: wire the universal table state to this exact source entry plus the continuation and True.",
+        "Establish the body/entry conversion and universal-binder handling through the generic template."
+      ]
+    },
+    {
+      "id": "decodeItemJoin6ae0From69e0",
+      "source_pc": "0x800d69e0",
+      "successor_pc": "0x800d6ae0",
+      "covers_all_designed_successors": false,
+      "table_role": "guarded branch machine-transfer certificate; edge role only",
+      "direct_table_signature_match": false,
+      "pure_edge_entailment": false,
+      "adapter_support_obligations": [
+        "Code support: prove block_table_pre decodeItemBlockTable \u22a2 decodeItemSelectedCode. The table precondition contains successor instr_pre resources, not the selected-code facts.",
+        "Continuation support: prove joinEntry \u2217 True \u22a2 decodeItemState<successor>. Existential or fixed-parameter native successor resources do not establish the universal table state. Only then apply instr_pre_wand.",
+        "Entry support: wire the universal table state to this exact source entry plus the continuation and True.",
+        "Establish the body/entry conversion and universal-binder handling through the generic template.",
+        "Guard coverage is absent for the complete 69e0 source entry. Preserve this as a guarded edge; use the separate native 69e0 certificate for full-body promotion."
+      ]
+    }
+  ],
+  "S93_context_bindings": [
+    {
+      "id": "block_0x800d6960",
+      "S93_goal_number": 1,
+      "S93_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-000.json",
+        "sha256": "4784a378fb3ca8e50a5b6c6ae66f481fd9f2e2cb2dfee2654c34c5b2df72def9"
+      },
+      "S93_raw": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-000.txt",
+        "sha256": "f6219d275109815a4234f895e3d4e83879216966abf202b0caa6f9a7223c8bfa"
+      },
+      "exact_S42_matches": [
+        {
+          "id": "block_0x800d6960",
+          "kind": "native",
+          "active_index": 0,
+          "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-000.json",
+          "capture_sha256": "4784a378fb3ca8e50a5b6c6ae66f481fd9f2e2cb2dfee2654c34c5b2df72def9",
+          "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-000.txt",
+          "raw_sha256": "f6219d275109815a4234f895e3d4e83879216966abf202b0caa6f9a7223c8bfa",
+          "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6960/primary/compiler.log",
+          "compiler_log_sha256": "4a258e19eb73a9f7700fe99a9b087df7a622ae1842e0e8f471a9b9b032b0eb47",
+          "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable."
+        }
+      ],
+      "status": "exact_context_match",
+      "selection": "Unmeasured. Shape or imports do not establish native helper selection.",
+      "closure_claim": false
+    },
+    {
+      "id": "block_0x800d6960",
+      "S93_goal_number": 2,
+      "S93_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-001.json",
+        "sha256": "aad534d8907284853b3129f555b042c5f802d90671e893501af6736ea237340a"
+      },
+      "S93_raw": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-001.txt",
+        "sha256": "10b495c8df8c1eb240e0c9dcb5c38c30335c49bf83fcf8d547fb9eadaadb4ec8"
+      },
+      "exact_S42_matches": [
+        {
+          "id": "block_0x800d6960",
+          "kind": "native",
+          "active_index": 1,
+          "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-001.json",
+          "capture_sha256": "aad534d8907284853b3129f555b042c5f802d90671e893501af6736ea237340a",
+          "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-001.txt",
+          "raw_sha256": "10b495c8df8c1eb240e0c9dcb5c38c30335c49bf83fcf8d547fb9eadaadb4ec8",
+          "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6960/primary/compiler.log",
+          "compiler_log_sha256": "4a258e19eb73a9f7700fe99a9b087df7a622ae1842e0e8f471a9b9b032b0eb47",
+          "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable."
+        },
+        {
+          "id": "block_0x800d6960",
+          "kind": "native",
+          "active_index": 3,
+          "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-003.json",
+          "capture_sha256": "aad534d8907284853b3129f555b042c5f802d90671e893501af6736ea237340a",
+          "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-003.txt",
+          "raw_sha256": "10b495c8df8c1eb240e0c9dcb5c38c30335c49bf83fcf8d547fb9eadaadb4ec8",
+          "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6960/primary/compiler.log",
+          "compiler_log_sha256": "4a258e19eb73a9f7700fe99a9b087df7a622ae1842e0e8f471a9b9b032b0eb47",
+          "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable."
+        }
+      ],
+      "status": "exact_context_match",
+      "selection": "Unmeasured. Shape or imports do not establish native helper selection.",
+      "closure_claim": false
+    },
+    {
+      "id": "block_0x800d6960",
+      "S93_goal_number": 3,
+      "S93_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-002.json",
+        "sha256": "f95aa1dbc47363e3fdc11f193a7af4356f234b28061f59b7f0e1ef2c49ae6e08"
+      },
+      "S93_raw": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-002.txt",
+        "sha256": "2f9b282f8fbce35df859e8a2015257024b9bd63861a00a7e17019dd41d4f85bf"
+      },
+      "exact_S42_matches": [
+        {
+          "id": "block_0x800d6960",
+          "kind": "native",
+          "active_index": 2,
+          "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-002.json",
+          "capture_sha256": "f95aa1dbc47363e3fdc11f193a7af4356f234b28061f59b7f0e1ef2c49ae6e08",
+          "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-002.txt",
+          "raw_sha256": "2f9b282f8fbce35df859e8a2015257024b9bd63861a00a7e17019dd41d4f85bf",
+          "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6960/primary/compiler.log",
+          "compiler_log_sha256": "4a258e19eb73a9f7700fe99a9b087df7a622ae1842e0e8f471a9b9b032b0eb47",
+          "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable."
+        }
+      ],
+      "status": "exact_context_match",
+      "selection": "Unmeasured. Shape or imports do not establish native helper selection.",
+      "closure_claim": false
+    },
+    {
+      "id": "block_0x800d6960",
+      "S93_goal_number": 4,
+      "S93_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-003.json",
+        "sha256": "aad534d8907284853b3129f555b042c5f802d90671e893501af6736ea237340a"
+      },
+      "S93_raw": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-003.txt",
+        "sha256": "10b495c8df8c1eb240e0c9dcb5c38c30335c49bf83fcf8d547fb9eadaadb4ec8"
+      },
+      "exact_S42_matches": [
+        {
+          "id": "block_0x800d6960",
+          "kind": "native",
+          "active_index": 1,
+          "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-001.json",
+          "capture_sha256": "aad534d8907284853b3129f555b042c5f802d90671e893501af6736ea237340a",
+          "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-001.txt",
+          "raw_sha256": "10b495c8df8c1eb240e0c9dcb5c38c30335c49bf83fcf8d547fb9eadaadb4ec8",
+          "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6960/primary/compiler.log",
+          "compiler_log_sha256": "4a258e19eb73a9f7700fe99a9b087df7a622ae1842e0e8f471a9b9b032b0eb47",
+          "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable."
+        },
+        {
+          "id": "block_0x800d6960",
+          "kind": "native",
+          "active_index": 3,
+          "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-003.json",
+          "capture_sha256": "aad534d8907284853b3129f555b042c5f802d90671e893501af6736ea237340a",
+          "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-003.txt",
+          "raw_sha256": "10b495c8df8c1eb240e0c9dcb5c38c30335c49bf83fcf8d547fb9eadaadb4ec8",
+          "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6960/primary/compiler.log",
+          "compiler_log_sha256": "4a258e19eb73a9f7700fe99a9b087df7a622ae1842e0e8f471a9b9b032b0eb47",
+          "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable."
+        }
+      ],
+      "status": "exact_context_match",
+      "selection": "Unmeasured. Shape or imports do not establish native helper selection.",
+      "closure_claim": false
+    },
+    {
+      "id": "block_0x800d6960",
+      "S93_goal_number": 5,
+      "S93_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-004.json",
+        "sha256": "6674507a9f11af1a20c23d49bc3ef7bcc5723ff5902a1c4a945dd4f849c27f85"
+      },
+      "S93_raw": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-004.txt",
+        "sha256": "4a8b872a13a2d59905e5225a90bd2908157d3c1641ff76e11e5fcd0c1616df2a"
+      },
+      "exact_S42_matches": [
+        {
+          "id": "block_0x800d6960",
+          "kind": "native",
+          "active_index": 4,
+          "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-004.json",
+          "capture_sha256": "6674507a9f11af1a20c23d49bc3ef7bcc5723ff5902a1c4a945dd4f849c27f85",
+          "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-004.txt",
+          "raw_sha256": "4a8b872a13a2d59905e5225a90bd2908157d3c1641ff76e11e5fcd0c1616df2a",
+          "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6960/primary/compiler.log",
+          "compiler_log_sha256": "4a258e19eb73a9f7700fe99a9b087df7a622ae1842e0e8f471a9b9b032b0eb47",
+          "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable."
+        }
+      ],
+      "status": "exact_context_match",
+      "selection": "Unmeasured. Shape or imports do not establish native helper selection.",
+      "closure_claim": false
+    },
+    {
+      "id": "block_0x800d6960",
+      "S93_goal_number": 6,
+      "S93_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-005.json",
+        "sha256": "d355e764d8ab92bc60f96237893f9a20944789102a7b48a9e4584e4ed580351c"
+      },
+      "S93_raw": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-005.txt",
+        "sha256": "02fcc331686d695d97ab06fd9059bbfabdc4644da6f4d9da7b121f41c96cb978"
+      },
+      "exact_S42_matches": [
+        {
+          "id": "block_0x800d6960",
+          "kind": "native",
+          "active_index": 5,
+          "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-005.json",
+          "capture_sha256": "d355e764d8ab92bc60f96237893f9a20944789102a7b48a9e4584e4ed580351c",
+          "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-005.txt",
+          "raw_sha256": "02fcc331686d695d97ab06fd9059bbfabdc4644da6f4d9da7b121f41c96cb978",
+          "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6960/primary/compiler.log",
+          "compiler_log_sha256": "4a258e19eb73a9f7700fe99a9b087df7a622ae1842e0e8f471a9b9b032b0eb47",
+          "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable."
+        }
+      ],
+      "status": "exact_context_match",
+      "selection": "Unmeasured. Shape or imports do not establish native helper selection.",
+      "closure_claim": false
+    },
+    {
+      "id": "block_0x800d6960",
+      "S93_goal_number": 7,
+      "S93_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-006.json",
+        "sha256": "ab243fb7c83d5df2009be74e065debd71c1f641bc8244564eb65e69a71beb7ec"
+      },
+      "S93_raw": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-006.txt",
+        "sha256": "a1541b7c996423a210107eeb23ee7aa666f363683b2bac48fce72907172c02ea"
+      },
+      "exact_S42_matches": [
+        {
+          "id": "block_0x800d6960",
+          "kind": "native",
+          "active_index": 6,
+          "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-006.json",
+          "capture_sha256": "ab243fb7c83d5df2009be74e065debd71c1f641bc8244564eb65e69a71beb7ec",
+          "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-006.txt",
+          "raw_sha256": "a1541b7c996423a210107eeb23ee7aa666f363683b2bac48fce72907172c02ea",
+          "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6960/primary/compiler.log",
+          "compiler_log_sha256": "4a258e19eb73a9f7700fe99a9b087df7a622ae1842e0e8f471a9b9b032b0eb47",
+          "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable."
+        }
+      ],
+      "status": "exact_context_match",
+      "selection": "Unmeasured. Shape or imports do not establish native helper selection.",
+      "closure_claim": false
+    },
+    {
+      "id": "block_0x800d6974",
+      "S93_goal_number": 1,
+      "S93_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-000.json",
+        "sha256": "1c88fe426049a3dad78a59d4fc95e16fdd0b5c147ecb62b297485272e45eb76f"
+      },
+      "S93_raw": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-000.txt",
+        "sha256": "33e30906431adb90e050284980c15804c9db25418d3e4d2200ee83b408614c12"
+      },
+      "exact_S42_matches": [],
+      "status": "no_exact_context_match",
+      "selection": "Unmeasured. Shape or imports do not establish native helper selection.",
+      "closure_claim": false
+    },
+    {
+      "id": "block_0x800d6974",
+      "S93_goal_number": 2,
+      "S93_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-001.json",
+        "sha256": "930dc178d099b3ebc5f0ab2b1c7d44d739e0bfbdd45b2e2e89822728537b6be6"
+      },
+      "S93_raw": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-001.txt",
+        "sha256": "61b0fea07873fbc09932396680c68dcb084243995f4ac943324f9927174b4643"
+      },
+      "exact_S42_matches": [
+        {
+          "id": "block_0x800d6974",
+          "kind": "native",
+          "active_index": 28,
+          "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-028.json",
+          "capture_sha256": "930dc178d099b3ebc5f0ab2b1c7d44d739e0bfbdd45b2e2e89822728537b6be6",
+          "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-028.txt",
+          "raw_sha256": "61b0fea07873fbc09932396680c68dcb084243995f4ac943324f9927174b4643",
+          "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6974/primary/compiler.log",
+          "compiler_log_sha256": "79ca51d81aca72f49a58dbe40a0fb15852c9521a0560b38d8d1e8a6f4a40b035",
+          "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable."
+        }
+      ],
+      "status": "exact_context_match",
+      "selection": "Unmeasured. Shape or imports do not establish native helper selection.",
+      "closure_claim": false
+    },
+    {
+      "id": "block_0x800d6974",
+      "S93_goal_number": 3,
+      "S93_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-002.json",
+        "sha256": "6da2a99e5bfaba739c1dfe6c8d26f399cf1cf3f687067ddfb33c5d9d46fdbff9"
+      },
+      "S93_raw": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-002.txt",
+        "sha256": "ee22df872f2d9275be29af35de098ed1281cd358ea00203bb1d82f92d65a58d1"
+      },
+      "exact_S42_matches": [],
+      "status": "no_exact_context_match",
+      "selection": "Unmeasured. Shape or imports do not establish native helper selection.",
+      "closure_claim": false
+    },
+    {
+      "id": "block_0x800d6974",
+      "S93_goal_number": 4,
+      "S93_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-003.json",
+        "sha256": "37b4eb3de9ed10eb24ee97f2d303caaacd57362fb155ae3027038c5ccc753845"
+      },
+      "S93_raw": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-003.txt",
+        "sha256": "e01a946aed515c073b91e7c741639650e08705fa58c1c5c0062c6874942716bd"
+      },
+      "exact_S42_matches": [
+        {
+          "id": "block_0x800d6974",
+          "kind": "native",
+          "active_index": 29,
+          "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-029.json",
+          "capture_sha256": "37b4eb3de9ed10eb24ee97f2d303caaacd57362fb155ae3027038c5ccc753845",
+          "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-029.txt",
+          "raw_sha256": "e01a946aed515c073b91e7c741639650e08705fa58c1c5c0062c6874942716bd",
+          "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6974/primary/compiler.log",
+          "compiler_log_sha256": "79ca51d81aca72f49a58dbe40a0fb15852c9521a0560b38d8d1e8a6f4a40b035",
+          "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable."
+        }
+      ],
+      "status": "exact_context_match",
+      "selection": "Unmeasured. Shape or imports do not establish native helper selection.",
+      "closure_claim": false
+    },
+    {
+      "id": "block_0x800d6974",
+      "S93_goal_number": 5,
+      "S93_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-004.json",
+        "sha256": "eae62325a532baab2a20631a1a1ba9055336662994ca074fd66ab328fa692705"
+      },
+      "S93_raw": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-004.txt",
+        "sha256": "6165e2bc3a19c92a7dc17e2d1d535ff969eaf7c5adf58fb022865521edaad399"
+      },
+      "exact_S42_matches": [],
+      "status": "no_exact_context_match",
+      "selection": "Unmeasured. Shape or imports do not establish native helper selection.",
+      "closure_claim": false
+    },
+    {
+      "id": "block_0x800d6974",
+      "S93_goal_number": 6,
+      "S93_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-005.json",
+        "sha256": "f0e77d76190a8c3c34b4ad55c4ab52d1b3eab110d971eb29eb20956f09e6bd76"
+      },
+      "S93_raw": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-005.txt",
+        "sha256": "2f9943924894438f360cf09b60eefb64df57e02b814a2ca0d1f662cd700f1d03"
+      },
+      "exact_S42_matches": [
+        {
+          "id": "block_0x800d6974",
+          "kind": "native",
+          "active_index": 30,
+          "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-030.json",
+          "capture_sha256": "f0e77d76190a8c3c34b4ad55c4ab52d1b3eab110d971eb29eb20956f09e6bd76",
+          "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-030.txt",
+          "raw_sha256": "2f9943924894438f360cf09b60eefb64df57e02b814a2ca0d1f662cd700f1d03",
+          "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6974/primary/compiler.log",
+          "compiler_log_sha256": "79ca51d81aca72f49a58dbe40a0fb15852c9521a0560b38d8d1e8a6f4a40b035",
+          "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable."
+        }
+      ],
+      "status": "exact_context_match",
+      "selection": "Unmeasured. Shape or imports do not establish native helper selection.",
+      "closure_claim": false
+    },
+    {
+      "id": "block_0x800d6974",
+      "S93_goal_number": 7,
+      "S93_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-006.json",
+        "sha256": "4d8f505050bca682b1d1734d1841381b9ab05c54f3e5526adf99f02075d77470"
+      },
+      "S93_raw": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-006.txt",
+        "sha256": "2c5a6d00b52c5ea1b7dffd156aba54361a67bf46059cb3afbc3b1ad060106df7"
+      },
+      "exact_S42_matches": [],
+      "status": "no_exact_context_match",
+      "selection": "Unmeasured. Shape or imports do not establish native helper selection.",
+      "closure_claim": false
+    },
+    {
+      "id": "block_0x800d6974",
+      "S93_goal_number": 8,
+      "S93_capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-007.json",
+        "sha256": "4637031603ce8fe81e01579c0d75628d1d8053470f1f6ad997a76f7985677224"
+      },
+      "S93_raw": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-007.txt",
+        "sha256": "61cc9bd3e6f225d0ce5e1ccf2fe852aead7bc5071a363830d37b6dfe36e2bec1"
+      },
+      "exact_S42_matches": [
+        {
+          "id": "block_0x800d6974",
+          "kind": "native",
+          "active_index": 31,
+          "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-031.json",
+          "capture_sha256": "4637031603ce8fe81e01579c0d75628d1d8053470f1f6ad997a76f7985677224",
+          "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-031.txt",
+          "raw_sha256": "61cc9bd3e6f225d0ce5e1ccf2fe852aead7bc5071a363830d37b6dfe36e2bec1",
+          "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6974/primary/compiler.log",
+          "compiler_log_sha256": "79ca51d81aca72f49a58dbe40a0fb15852c9521a0560b38d8d1e8a6f4a40b035",
+          "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable."
+        }
+      ],
+      "status": "exact_context_match",
+      "selection": "Unmeasured. Shape or imports do not establish native helper selection.",
+      "closure_claim": false
+    }
+  ],
+  "S93_source_bindings": [
+    {
+      "reported_path": "ZesuSsz/Compliance/DecodeItemSavedFrameWitnesses.v",
+      "S42_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/ZesuSsz/Compliance/DecodeItemSavedFrameWitnesses.v",
+      "reported_sha256": "e4d4738e2e88daa6a3cfd46eb8e2ad723ca5da027db480472684e831c7075c38",
+      "S42_sha256": "e4d4738e2e88daa6a3cfd46eb8e2ad723ca5da027db480472684e831c7075c38",
+      "equal": true
+    },
+    {
+      "reported_path": "ZesuSsz/Compliance/DecodeItemEntryByteIndexFacts.v",
+      "S42_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/ZesuSsz/Compliance/DecodeItemEntryByteIndexFacts.v",
+      "reported_sha256": "f9e88e7bfe4ef715fc0af9b5005f0fed49f40eb6987f8d9818fcd5e4c5e0c015",
+      "S42_sha256": "f9e88e7bfe4ef715fc0af9b5005f0fed49f40eb6987f8d9818fcd5e4c5e0c015",
+      "equal": true
+    },
+    {
+      "reported_path": "ZesuSsz/Compliance/DecodeItemHints.v",
+      "S42_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/ZesuSsz/Compliance/DecodeItemHints.v",
+      "reported_sha256": "08ffa2711f008dbc9fb7ef05c4b5edc74c802d533678a5f8fee19cd85052361a",
+      "S42_sha256": "08ffa2711f008dbc9fb7ef05c4b5edc74c802d533678a5f8fee19cd85052361a",
+      "equal": true
+    },
+    {
+      "reported_path": "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v",
+      "S42_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v",
+      "reported_sha256": "95401eda743e1aee52d58edd215fd6628ba97710c280206e27e6665d6192e457",
+      "S42_sha256": "95401eda743e1aee52d58edd215fd6628ba97710c280206e27e6665d6192e457",
+      "equal": true
+    },
+    {
+      "reported_path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+      "S42_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+      "reported_sha256": "45c8d41da95e03677aab58d4cf8029171d9464dabf67e38881f0ccfd05a7c825",
+      "S42_sha256": "45c8d41da95e03677aab58d4cf8029171d9464dabf67e38881f0ccfd05a7c825",
+      "equal": true
+    },
+    {
+      "reported_path": "ZesuSsz/Contracts/RlpDecodeItemContract.v",
+      "S42_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+      "reported_sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+      "S42_sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+      "equal": true
+    },
+    {
+      "reported_path": "ZesuSsz/Proofs/Tests/DecodeItemSavedFrameWitnesses.v",
+      "S42_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/ZesuSsz/Proofs/Tests/DecodeItemSavedFrameWitnesses.v",
+      "reported_sha256": "650ed989137cfd72da8648c0e705d36398da53b2c18993dfc03b5eb413ea27b8",
+      "S42_sha256": "650ed989137cfd72da8648c0e705d36398da53b2c18993dfc03b5eb413ea27b8",
+      "equal": true
+    },
+    {
+      "reported_path": "ZesuSsz/Proofs/Tests/DecodeItemEntryByteIndexFacts.v",
+      "S42_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/ZesuSsz/Proofs/Tests/DecodeItemEntryByteIndexFacts.v",
+      "reported_sha256": "fd11dd8c0e0abc86aca127b3c075922a08b8093cdce6ee1523c9ae9855d35c54",
+      "S42_sha256": "fd11dd8c0e0abc86aca127b3c075922a08b8093cdce6ee1523c9ae9855d35c54",
+      "equal": true
+    }
+  ],
+  "S93_prior_references_verified": {
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-000.json": "4784a378fb3ca8e50a5b6c6ae66f481fd9f2e2cb2dfee2654c34c5b2df72def9",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-000.txt": "f6219d275109815a4234f895e3d4e83879216966abf202b0caa6f9a7223c8bfa",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-001/block_0x800d6960/primary/compiler.log": "563dab3421291292591c4378e21c512fa1e3be84aa1cd3cf84d15af9db8dfcb6",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-001.json": "aad534d8907284853b3129f555b042c5f802d90671e893501af6736ea237340a",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-001.txt": "10b495c8df8c1eb240e0c9dcb5c38c30335c49bf83fcf8d547fb9eadaadb4ec8",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-002.json": "f95aa1dbc47363e3fdc11f193a7af4356f234b28061f59b7f0e1ef2c49ae6e08",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-002.txt": "2f9b282f8fbce35df859e8a2015257024b9bd63861a00a7e17019dd41d4f85bf",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-003.json": "aad534d8907284853b3129f555b042c5f802d90671e893501af6736ea237340a",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-003.txt": "10b495c8df8c1eb240e0c9dcb5c38c30335c49bf83fcf8d547fb9eadaadb4ec8",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-004.json": "6674507a9f11af1a20c23d49bc3ef7bcc5723ff5902a1c4a945dd4f849c27f85",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-004.txt": "4a8b872a13a2d59905e5225a90bd2908157d3c1641ff76e11e5fcd0c1616df2a",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-005.json": "d355e764d8ab92bc60f96237893f9a20944789102a7b48a9e4584e4ed580351c",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-005.txt": "02fcc331686d695d97ab06fd9059bbfabdc4644da6f4d9da7b121f41c96cb978",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-006.json": "ab243fb7c83d5df2009be74e065debd71c1f641bc8244564eb65e69a71beb7ec",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6960-006.txt": "a1541b7c996423a210107eeb23ee7aa666f363683b2bac48fce72907172c02ea",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-000.json": "1c88fe426049a3dad78a59d4fc95e16fdd0b5c147ecb62b297485272e45eb76f",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-000.txt": "33e30906431adb90e050284980c15804c9db25418d3e4d2200ee83b408614c12",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-001/block_0x800d6974/primary/compiler.log": "0f2603994054f718c6914dfc4c357827add313e74429cbf4179e77c48dfffe86",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-001.json": "930dc178d099b3ebc5f0ab2b1c7d44d739e0bfbdd45b2e2e89822728537b6be6",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-001.txt": "61b0fea07873fbc09932396680c68dcb084243995f4ac943324f9927174b4643",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-002.json": "6da2a99e5bfaba739c1dfe6c8d26f399cf1cf3f687067ddfb33c5d9d46fdbff9",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-002.txt": "ee22df872f2d9275be29af35de098ed1281cd358ea00203bb1d82f92d65a58d1",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-003.json": "37b4eb3de9ed10eb24ee97f2d303caaacd57362fb155ae3027038c5ccc753845",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-003.txt": "e01a946aed515c073b91e7c741639650e08705fa58c1c5c0062c6874942716bd",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-004.json": "eae62325a532baab2a20631a1a1ba9055336662994ca074fd66ab328fa692705",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-004.txt": "6165e2bc3a19c92a7dc17e2d1d535ff969eaf7c5adf58fb022865521edaad399",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-005.json": "f0e77d76190a8c3c34b4ad55c4ab52d1b3eab110d971eb29eb20956f09e6bd76",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-005.txt": "2f9943924894438f360cf09b60eefb64df57e02b814a2ca0d1f662cd700f1d03",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-006.json": "4d8f505050bca682b1d1734d1841381b9ab05c54f3e5526adf99f02075d77470",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-006.txt": "2c5a6d00b52c5ea1b7dffd156aba54361a67bf46059cb3afbc3b1ad060106df7",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-007.json": "4637031603ce8fe81e01579c0d75628d1d8053470f1f6ad997a76f7985677224",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6974-007.txt": "61cc9bd3e6f225d0ce5e1ccf2fe852aead7bc5071a363830d37b6dfe36e2bec1"
+  },
+  "S93_exact_matching_record_count": 11,
+  "S93_changed_record_count": 4,
+  "S93_findings": [
+    {
+      "site": "6960 goal6",
+      "helper": "decodeItemSavedFrameRejectedIntroduction",
+      "earlier_target_match": "Exact printed suffix shape under an existential frameBytes binder, replacing the unresolved frame evar. Domain/facts conjunction order, storage length, continuation and rejection postcondition agree.",
+      "source_match": "H0 supplies DomainAt. H13 supplies zero-length word. The two retained saved-word resources and caller instr_pre match the source after unfolding BranchContinuationAt.",
+      "existing_state_limit": "The active goal omits the existential binder and refers to ?Goal1. No concrete frame assignment is visible. An earlier existential introduction does not directly establish an arbitrarily committed frame suffix."
+    },
+    {
+      "site": "6960 goal7",
+      "helper": "decodeItemSavedFrameReturnIntroduction",
+      "earlier_target_match": "Exact printed suffix shape under an existential frameBytes binder, replacing the unresolved frame evar. SavedFrameFacts, own DomainAt, continuation and True agree.",
+      "source_match": "H0 and the two saved words supply the guarded source. The caller instr_pre agrees after unfolding BranchContinuationAt. H13 nonzero remains independent; this helper needs no nonzero premise.",
+      "existing_state_limit": "The active goal omits the existential binder and refers to ?Goal2. No concrete frame assignment is visible. The helper cannot justify a different fixed frame."
+    },
+    {
+      "site": "6974 goals1/3/5/7",
+      "helper": "decodeItemEntryByteIndexWitness; decodeItemEntryByteBound; decodeItemEntryByteLookup",
+      "earlier_target_match": "Conditional MKArray match after selecting the owned byte input array, normalizing bv_unsigned(Z_to_bv64 inputPointer) to inputPointer, and denominator to one. The existential index is zero. The preserved K must contain every remaining bound, lookup, byte equality, array ownership and WPasm obligation.",
+      "source_match": "H0 supplies InputHead. H3 supplies DomainAt and the pointer cast bound. The input array is spatially retained. The literal S82 source also requires the exact address-range proposition and K0; neither is shown as an active supplied continuation in this capture.",
+      "existing_state_limit": "Current goals are FindMemMapsTo callbacks, not ZesuPureFactIntro goals. No selected MKArray, array base or index assignment is shown. S82 does not solve FindMemMapsTo or synthesize K0."
+    },
+    {
+      "site": "6974 goals2/4/6/8",
+      "helper": null,
+      "earlier_target_match": "No S82/S84 statement proves the medeleg lookup callback.",
+      "source_match": "reg_col sys_regs is retained; register extraction and the remaining WPasm remain independent obligations.",
+      "existing_state_limit": "HIDDEN prevents checking the remaining trace."
+    },
+    {
+      "site": "6960 goals1..5",
+      "helper": null,
+      "earlier_target_match": "S84 only covers the frame suffixes. S82 requires InputHead and does not supply unresolved root prefix/rest witnesses.",
+      "existing_state_limit": "Root prefix/rest/frame witnesses and the printed SHELVED_SIDECOND remain separate. Auxiliary groups are unavailable."
+    }
+  ],
+  "conclusions": {
+    "S84": "S93 matches the earlier existential frame introductions. A committed frame evar needs a separate derivation.",
+    "S82": "S93 records a conditional match after array selection and pointer normalization. Exact range and K0 remain required.",
+    "callbacks": "S93 establishes no remaining callback or hidden WPasm closure.",
+    "S42_memory_callbacks": "The four earlier FindMemMapsTo contexts have no byte-identical S42 capture. The S42 6974 result has 32 active records. Helper consumption remains unmeasured.",
+    "S42_register_callbacks": "Four unchanged medeleg callbacks remain at S42 active indices 28,29,30,31. Their hidden WPasm remains unverified.",
+    "I54": "The generic interface keeps selected-code and successor support as explicit conditional premises. These derivations remain unproved.",
+    "join_adapters": "Four i46 joins cover sole-successor bodies. The guarded 69e0 rejection join excludes its other branch. No join directly proves a universal slot or pure edge entailment.",
+    "6960": "The hand bridge requires nonzero input. It cannot fill the universal root slot.",
+    "slots": "All 24 table slots remain open."
+  },
+  "interpreter_sessions": 0,
+  "native_replays": 0,
+  "production_edits": 0,
+  "frozen_inputs_changed": 0,
+  "auxiliary_groups": "Original native stack, shelf, and given_up remain unavailable.",
+  "watchers_changed": false
+}

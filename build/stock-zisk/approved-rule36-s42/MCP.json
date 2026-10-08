@@ -1,0 +1,2959 @@
+{
+  "root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+  "measurement_root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+  "success": true,
+  "attempts": [
+    {
+      "attempt": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002",
+      "seal_sha256": "7563bca4d770a0172759e633d0fe3c1ad4edb5447633b4ebfc40375ebf05d39a",
+      "input_count": 11444,
+      "launcher_sha256": "6a3445d89461dc648eee70b1ccea96db1cc2cbe10974f7dfc803f64aa10328af",
+      "result_sha256": "b494b1d90135cf6ac557ee4ebcacc4772674354e2112478ef403c4a44a0ef56f",
+      "session_closures": [
+        {
+          "phase": "block_0x800d69a4-preflight",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d69a4-interactive",
+          "pet_identity": {
+            "verified": true,
+            "pid": 789892,
+            "ppid": 789698,
+            "name": "pet",
+            "start_ticks": 119618548,
+            "rss_kib": 802604,
+            "server_identity": {
+              "success": true,
+              "server_pid": 789698,
+              "server_start_ticks": 119618348,
+              "source": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/complete_goals_mcp.py",
+              "source_sha256": "0ad2fd1199c5dc82a4835ea88b96b4e5acac5257f835320fef7539cbb459e62f",
+              "ownership_method": "owned-stdio-response"
+            }
+          },
+          "pet_exited": true,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": true,
+              "pid": 789892
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d69a4-standalone",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d69d8-preflight",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d69d8-interactive",
+          "pet_identity": {
+            "verified": true,
+            "pid": 802897,
+            "ppid": 800943,
+            "name": "pet",
+            "start_ticks": 119621259,
+            "rss_kib": 802516,
+            "server_identity": {
+              "success": true,
+              "server_pid": 800943,
+              "server_start_ticks": 119621055,
+              "source": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/complete_goals_mcp.py",
+              "source_sha256": "0ad2fd1199c5dc82a4835ea88b96b4e5acac5257f835320fef7539cbb459e62f",
+              "ownership_method": "owned-stdio-response"
+            }
+          },
+          "pet_exited": true,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": true,
+              "pid": 802897
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d69d8-standalone",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d69e0-preflight",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d69e0-interactive",
+          "pet_identity": {
+            "verified": true,
+            "pid": 821069,
+            "ppid": 819796,
+            "name": "pet",
+            "start_ticks": 119624007,
+            "rss_kib": 802368,
+            "server_identity": {
+              "success": true,
+              "server_pid": 819796,
+              "server_start_ticks": 119623803,
+              "source": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/complete_goals_mcp.py",
+              "source_sha256": "0ad2fd1199c5dc82a4835ea88b96b4e5acac5257f835320fef7539cbb459e62f",
+              "ownership_method": "owned-stdio-response"
+            }
+          },
+          "pet_exited": true,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": true,
+              "pid": 821069
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d69e0-standalone",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d6a00-preflight",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d6a00-interactive",
+          "pet_identity": {
+            "verified": true,
+            "pid": 827799,
+            "ppid": 826488,
+            "name": "pet",
+            "start_ticks": 119626445,
+            "rss_kib": 802760,
+            "server_identity": {
+              "success": true,
+              "server_pid": 826488,
+              "server_start_ticks": 119625887,
+              "source": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/complete_goals_mcp.py",
+              "source_sha256": "0ad2fd1199c5dc82a4835ea88b96b4e5acac5257f835320fef7539cbb459e62f",
+              "ownership_method": "owned-stdio-response"
+            }
+          },
+          "pet_exited": true,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": null
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": true,
+              "pid": 827799
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d6a00-standalone",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d6a14-preflight",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d6a14-interactive",
+          "pet_identity": {
+            "verified": true,
+            "pid": 832564,
+            "ppid": 832267,
+            "name": "pet",
+            "start_ticks": 119631416,
+            "rss_kib": 802324,
+            "server_identity": {
+              "success": true,
+              "server_pid": 832267,
+              "server_start_ticks": 119631318,
+              "source": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/complete_goals_mcp.py",
+              "source_sha256": "0ad2fd1199c5dc82a4835ea88b96b4e5acac5257f835320fef7539cbb459e62f",
+              "ownership_method": "owned-stdio-response"
+            }
+          },
+          "pet_exited": true,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": true,
+              "pid": 832564
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d6a14-standalone",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d6a64-preflight",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d6a64-interactive",
+          "pet_identity": {
+            "verified": true,
+            "pid": 835174,
+            "ppid": 835021,
+            "name": "pet",
+            "start_ticks": 119633867,
+            "rss_kib": 802432,
+            "server_identity": {
+              "success": true,
+              "server_pid": 835021,
+              "server_start_ticks": 119633768,
+              "source": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/complete_goals_mcp.py",
+              "source_sha256": "0ad2fd1199c5dc82a4835ea88b96b4e5acac5257f835320fef7539cbb459e62f",
+              "ownership_method": "owned-stdio-response"
+            }
+          },
+          "pet_exited": true,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": true,
+              "pid": 835174
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d6a64-standalone",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d6a6c-preflight",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d6a6c-interactive",
+          "pet_identity": {
+            "verified": true,
+            "pid": 836987,
+            "ppid": 836843,
+            "name": "pet",
+            "start_ticks": 119635919,
+            "rss_kib": 802368,
+            "server_identity": {
+              "success": true,
+              "server_pid": 836843,
+              "server_start_ticks": 119635823,
+              "source": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/complete_goals_mcp.py",
+              "source_sha256": "0ad2fd1199c5dc82a4835ea88b96b4e5acac5257f835320fef7539cbb459e62f",
+              "ownership_method": "owned-stdio-response"
+            }
+          },
+          "pet_exited": true,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": true,
+              "pid": 836987
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d6a6c-standalone",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d6ab4-preflight",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d6ab4-interactive",
+          "pet_identity": {
+            "verified": true,
+            "pid": 838825,
+            "ppid": 838681,
+            "name": "pet",
+            "start_ticks": 119637866,
+            "rss_kib": 802420,
+            "server_identity": {
+              "success": true,
+              "server_pid": 838681,
+              "server_start_ticks": 119637768,
+              "source": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/complete_goals_mcp.py",
+              "source_sha256": "0ad2fd1199c5dc82a4835ea88b96b4e5acac5257f835320fef7539cbb459e62f",
+              "ownership_method": "owned-stdio-response"
+            }
+          },
+          "pet_exited": true,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": true,
+              "pid": 838825
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "block_0x800d6ab4-standalone",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin698cFrom697c-preflight",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin698cFrom697c-interactive",
+          "pet_identity": {
+            "verified": true,
+            "pid": 840886,
+            "ppid": 840717,
+            "name": "pet",
+            "start_ticks": 119639873,
+            "rss_kib": 755188,
+            "server_identity": {
+              "success": true,
+              "server_pid": 840717,
+              "server_start_ticks": 119639674,
+              "source": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/complete_goals_mcp.py",
+              "source_sha256": "0ad2fd1199c5dc82a4835ea88b96b4e5acac5257f835320fef7539cbb459e62f",
+              "ownership_method": "owned-stdio-response"
+            }
+          },
+          "pet_exited": true,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": true,
+              "pid": 840886
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin698cFrom697c-standalone",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin698cFrom69e8-preflight",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin698cFrom69e8-interactive",
+          "pet_identity": {
+            "verified": true,
+            "pid": 842791,
+            "ppid": 842632,
+            "name": "pet",
+            "start_ticks": 119642011,
+            "rss_kib": 755396,
+            "server_identity": {
+              "success": true,
+              "server_pid": 842632,
+              "server_start_ticks": 119641906,
+              "source": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/complete_goals_mcp.py",
+              "source_sha256": "0ad2fd1199c5dc82a4835ea88b96b4e5acac5257f835320fef7539cbb459e62f",
+              "ownership_method": "owned-stdio-response"
+            }
+          },
+          "pet_exited": true,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": true,
+              "pid": 842791
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin698cFrom69e8-standalone",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin6a24From6a14-preflight",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin6a24From6a14-interactive",
+          "pet_identity": {
+            "verified": true,
+            "pid": 844586,
+            "ppid": 844418,
+            "name": "pet",
+            "start_ticks": 119644295,
+            "rss_kib": 755200,
+            "server_identity": {
+              "success": true,
+              "server_pid": 844418,
+              "server_start_ticks": 119644096,
+              "source": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/complete_goals_mcp.py",
+              "source_sha256": "0ad2fd1199c5dc82a4835ea88b96b4e5acac5257f835320fef7539cbb459e62f",
+              "ownership_method": "owned-stdio-response"
+            }
+          },
+          "pet_exited": true,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": true,
+              "pid": 844586
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin6a24From6a14-standalone",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin6ac4From6ab4-preflight",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin6ac4From6ab4-interactive",
+          "pet_identity": {
+            "verified": true,
+            "pid": 846601,
+            "ppid": 846443,
+            "name": "pet",
+            "start_ticks": 119646213,
+            "rss_kib": 755520,
+            "server_identity": {
+              "success": true,
+              "server_pid": 846443,
+              "server_start_ticks": 119646111,
+              "source": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/complete_goals_mcp.py",
+              "source_sha256": "0ad2fd1199c5dc82a4835ea88b96b4e5acac5257f835320fef7539cbb459e62f",
+              "ownership_method": "owned-stdio-response"
+            }
+          },
+          "pet_exited": true,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": true,
+              "pid": 846601
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin6ac4From6ab4-standalone",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin6ae0From69e0-preflight",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin6ae0From69e0-interactive",
+          "pet_identity": {
+            "verified": true,
+            "pid": 848995,
+            "ppid": 848851,
+            "name": "pet",
+            "start_ticks": 119648146,
+            "rss_kib": 755428,
+            "server_identity": {
+              "success": true,
+              "server_pid": 848851,
+              "server_start_ticks": 119648043,
+              "source": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/complete_goals_mcp.py",
+              "source_sha256": "0ad2fd1199c5dc82a4835ea88b96b4e5acac5257f835320fef7539cbb459e62f",
+              "ownership_method": "owned-stdio-response"
+            }
+          },
+          "pet_exited": true,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": true,
+              "pid": 848995
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin6ae0From69e0-standalone",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin6ae0From6a38-preflight",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin6ae0From6a38-interactive",
+          "pet_identity": {
+            "verified": true,
+            "pid": 850815,
+            "ppid": 850610,
+            "name": "pet",
+            "start_ticks": 119650117,
+            "rss_kib": 755140,
+            "server_identity": {
+              "success": true,
+              "server_pid": 850610,
+              "server_start_ticks": 119650010,
+              "source": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/complete_goals_mcp.py",
+              "source_sha256": "0ad2fd1199c5dc82a4835ea88b96b4e5acac5257f835320fef7539cbb459e62f",
+              "ownership_method": "owned-stdio-response"
+            }
+          },
+          "pet_exited": true,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": true,
+              "pid": 850815
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin6ae0From6a38-standalone",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin6ae0From6ad8-preflight",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin6ae0From6ad8-interactive",
+          "pet_identity": {
+            "verified": true,
+            "pid": 852704,
+            "ppid": 852545,
+            "name": "pet",
+            "start_ticks": 119652318,
+            "rss_kib": 755096,
+            "server_identity": {
+              "success": true,
+              "server_pid": 852545,
+              "server_start_ticks": 119652220,
+              "source": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/complete_goals_mcp.py",
+              "source_sha256": "0ad2fd1199c5dc82a4835ea88b96b4e5acac5257f835320fef7539cbb459e62f",
+              "ownership_method": "owned-stdio-response"
+            }
+          },
+          "pet_exited": true,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": true,
+              "pid": 852704
+            },
+            "warnings": []
+          },
+          "error": null
+        },
+        {
+          "phase": "decodeItemJoin6ae0From6ad8-standalone",
+          "pet_identity": {
+            "verified": false,
+            "reason": "The health response has no live Pet identity."
+          },
+          "pet_exited": null,
+          "transport_closed_normally": true,
+          "closing_health": {
+            "success": true,
+            "ok": true,
+            "server_version": "0.3.1",
+            "switch": "islaris",
+            "switch_prefix": "/home/cody/islaris/_opam",
+            "switch_is_local": true,
+            "switch_source": "opam_env",
+            "toolchain": {
+              "coqc": {
+                "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+                "version": "8.19.2+lsp 4.14.4"
+              },
+              "pet": {
+                "path": "/home/cody/islaris/_opam/bin/pet",
+                "version": "0.2.4-dev",
+                "pytanque_importable": true
+              }
+            },
+            "pet": {
+              "running": false,
+              "pid": null
+            },
+            "warnings": []
+          },
+          "error": null
+        }
+      ]
+    }
+  ],
+  "certificates": [
+    {
+      "id": "block_0x800d69a4",
+      "kind": "native",
+      "measurement_root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+      "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69a4",
+      "initial": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69a4/Initial.v",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69a4/Certificate.v",
+      "lemma": "s42Certificate_800d69a4",
+      "retained_lemma": "Boundary.DesignedBoundary_800d69a4",
+      "original_statement": "Lemma DesignedBoundary_800d69a4 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte)   :\n  instr_pre 0x800d69b0 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0 (args) (successor_locals) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d69d8 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69a4\n    (DesignedEntry_800d69a4 args frameBytes x13 inputPrefix rest).\n",
+      "statement_sha256": "438be9c8396b6025906c5d07335518b5d969642a0724f216a57e8302017fa44b",
+      "primary_statement_sha256": "d3cf1dc28a76ce7896cb2a474ba6293904253f905cc3a0e0f20ddaadf5a29e65",
+      "retained_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69a4/primary/Boundary.vo",
+        "sha256": "8712493148626a3be1897b516c2f4223db07c214c5c2b3cbd5afa3745ffd9d90"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69a4/RetainedObject/Boundary.vo",
+        "sha256": "8712493148626a3be1897b516c2f4223db07c214c5c2b3cbd5afa3745ffd9d90"
+      },
+      "initial_sha256": "bacab7a03a847dd478551a26e98ec94acb44a80c19cf24b9fd81681260ea97a9",
+      "source_sha256": "4fa8157b9c83c2e01509b5168ce871e4290ee91c5f66097d5a7dedad957b1371",
+      "check_names": [
+        "DecodeItemArgs",
+        "ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs",
+        "list",
+        "byte",
+        "bv",
+        "islaG",
+        "threadG",
+        "instr_pre",
+        "instr_body",
+        "decodeItemSelectedCode",
+        "Boundary.DesignedBoundary_800d69a4",
+        "DesignedEntry_800d69a4",
+        "DecodeItemReturnLocals"
+      ],
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "goal_groups": {
+        "given_up": [],
+        "goals": [],
+        "shelf": [],
+        "stack": []
+      },
+      "actual_export": {
+        "success": true,
+        "state_id": 4,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002/mcp/actual-goals/state_4.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69a4",
+        "theorem": "s42Certificate_800d69a4",
+        "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69a4/Initial.v",
+        "source_sha256": "bacab7a03a847dd478551a26e98ec94acb44a80c19cf24b9fd81681260ea97a9",
+        "proof_finished": true
+      },
+      "compiled": true,
+      "verified": true,
+      "assumptions": [],
+      "verification_method": "module_m",
+      "certificate_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69a4/Certificate.vo",
+        "sha256": "f1892ff1b94ec2e805157713b0513a65898d5cdf1eaa2003cc4ad4a0f97ee8b7"
+      },
+      "object_after_sha256": "8712493148626a3be1897b516c2f4223db07c214c5c2b3cbd5afa3745ffd9d90",
+      "copy_after_sha256": "8712493148626a3be1897b516c2f4223db07c214c5c2b3cbd5afa3745ffd9d90",
+      "attempt": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002",
+      "result_sha256": "b494b1d90135cf6ac557ee4ebcacc4772674354e2112478ef403c4a44a0ef56f",
+      "actual_groups_scope": "Fresh Require/apply certificate state before Qed. Original native auxiliary groups remain unavailable."
+    },
+    {
+      "id": "block_0x800d69d8",
+      "kind": "native",
+      "measurement_root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+      "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69d8",
+      "initial": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69d8/Initial.v",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69d8/Certificate.v",
+      "lemma": "s42Certificate_800d69d8",
+      "retained_lemma": "Boundary.DesignedBoundary_800d69d8",
+      "original_statement": "Lemma DesignedBoundary_800d69d8 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte)   :\n  instr_pre 0x800d69e0 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6a00 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69d8\n    (DesignedEntry_800d69d8 args frameBytes x13 inputPrefix rest).\n",
+      "statement_sha256": "d21cd32777045e869b63daf5947ed91135c96359a17050ad47627221fa006052",
+      "primary_statement_sha256": "b294c17a822648ee71de41f30e5bde7e9d78be4f54e628d6ef3d0e76b216a668",
+      "retained_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69d8/primary/Boundary.vo",
+        "sha256": "5135c639d680f280b7299ae7de5b177e26c2e9c79bb381aae70d873663b76bca"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69d8/RetainedObject/Boundary.vo",
+        "sha256": "5135c639d680f280b7299ae7de5b177e26c2e9c79bb381aae70d873663b76bca"
+      },
+      "initial_sha256": "d43615ed34acefe784e08372ac52a6cf6c3ac91fb29f7251843e53a2d5ad3827",
+      "source_sha256": "de5ec2472a469e5ab6257b47a12e55e99439fbb88d99da3e294012191407143f",
+      "check_names": [
+        "DecodeItemArgs",
+        "ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs",
+        "list",
+        "byte",
+        "bv",
+        "islaG",
+        "threadG",
+        "instr_pre",
+        "instr_body",
+        "decodeItemSelectedCode",
+        "Boundary.DesignedBoundary_800d69d8",
+        "DesignedEntry_800d69d8"
+      ],
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "goal_groups": {
+        "given_up": [],
+        "goals": [],
+        "shelf": [],
+        "stack": []
+      },
+      "actual_export": {
+        "success": true,
+        "state_id": 4,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002/mcp/actual-goals/state_4.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69d8",
+        "theorem": "s42Certificate_800d69d8",
+        "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69d8/Initial.v",
+        "source_sha256": "d43615ed34acefe784e08372ac52a6cf6c3ac91fb29f7251843e53a2d5ad3827",
+        "proof_finished": true
+      },
+      "compiled": true,
+      "verified": true,
+      "assumptions": [],
+      "verification_method": "module_m",
+      "certificate_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69d8/Certificate.vo",
+        "sha256": "ebac2570806076978937da71c752e1816bf26bd7968c2f241a41f71615be4fb7"
+      },
+      "object_after_sha256": "5135c639d680f280b7299ae7de5b177e26c2e9c79bb381aae70d873663b76bca",
+      "copy_after_sha256": "5135c639d680f280b7299ae7de5b177e26c2e9c79bb381aae70d873663b76bca",
+      "attempt": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002",
+      "result_sha256": "b494b1d90135cf6ac557ee4ebcacc4772674354e2112478ef403c4a44a0ef56f",
+      "actual_groups_scope": "Fresh Require/apply certificate state before Qed. Original native auxiliary groups remain unavailable."
+    },
+    {
+      "id": "block_0x800d69e0",
+      "kind": "native",
+      "measurement_root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+      "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69e0",
+      "initial": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69e0/Initial.v",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69e0/Certificate.v",
+      "lemma": "s42Certificate_800d69e0",
+      "retained_lemma": "Boundary.DesignedBoundary_800d69e0",
+      "original_statement": "Lemma DesignedBoundary_800d69e0 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte)   :\n  instr_pre 0x800d69e8 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e8 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69e0\n    (DesignedEntry_800d69e0 args frameBytes x13 inputPrefix rest).\n",
+      "statement_sha256": "de4076842b15a8aea1fd4ac111dd2bc0ca838c650925a71ab4c5fa7022b751f2",
+      "primary_statement_sha256": "c0613d6a425c33bc56f14a4111a4649511a277b5a888bbe41dd501155e23b271",
+      "retained_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d69e0/primary/Boundary.vo",
+        "sha256": "ff57091f1bba94c0bf4fc3ad9c73cd3ef7702ff6e3987e3a5229172d51fdf141"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69e0/RetainedObject/Boundary.vo",
+        "sha256": "ff57091f1bba94c0bf4fc3ad9c73cd3ef7702ff6e3987e3a5229172d51fdf141"
+      },
+      "initial_sha256": "f7ee2045653b6b342c9ba2cce881b7a3ca9adb59aa6975aa67f554a243b851c6",
+      "source_sha256": "0ab036e7ff257819d6beb720c2dbd0ad3550f8b2842e50275e2627cebe09f4e2",
+      "check_names": [
+        "DecodeItemArgs",
+        "ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs",
+        "list",
+        "byte",
+        "bv",
+        "islaG",
+        "threadG",
+        "instr_pre",
+        "instr_body",
+        "decodeItemSelectedCode",
+        "Boundary.DesignedBoundary_800d69e0",
+        "DesignedEntry_800d69e0",
+        "DecodeItemReturnLocals"
+      ],
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "goal_groups": {
+        "given_up": [],
+        "goals": [],
+        "shelf": [],
+        "stack": []
+      },
+      "actual_export": {
+        "success": true,
+        "state_id": 4,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002/mcp/actual-goals/state_4.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69e0",
+        "theorem": "s42Certificate_800d69e0",
+        "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69e0/Initial.v",
+        "source_sha256": "f7ee2045653b6b342c9ba2cce881b7a3ca9adb59aa6975aa67f554a243b851c6",
+        "proof_finished": true
+      },
+      "compiled": true,
+      "verified": true,
+      "assumptions": [],
+      "verification_method": "module_m",
+      "certificate_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d69e0/Certificate.vo",
+        "sha256": "d274c1968422e55114806e0d9793c0d9f6cc056d97908be0ab3dd202346053f2"
+      },
+      "object_after_sha256": "ff57091f1bba94c0bf4fc3ad9c73cd3ef7702ff6e3987e3a5229172d51fdf141",
+      "copy_after_sha256": "ff57091f1bba94c0bf4fc3ad9c73cd3ef7702ff6e3987e3a5229172d51fdf141",
+      "attempt": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002",
+      "result_sha256": "b494b1d90135cf6ac557ee4ebcacc4772674354e2112478ef403c4a44a0ef56f",
+      "actual_groups_scope": "Fresh Require/apply certificate state before Qed. Original native auxiliary groups remain unavailable."
+    },
+    {
+      "id": "block_0x800d6a00",
+      "kind": "native",
+      "measurement_root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+      "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a00",
+      "initial": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a00/Initial.v",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a00/Certificate.v",
+      "lemma": "s42Certificate_800d6a00",
+      "retained_lemma": "Boundary.DesignedBoundary_800d6a00",
+      "original_statement": "Lemma DesignedBoundary_800d6a00 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte)   :\n  instr_pre 0x800d6a08 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a08 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6a64 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a00\n    (DesignedEntry_800d6a00 args frameBytes x13 inputPrefix rest).\n",
+      "statement_sha256": "716228bd8d76107010a4e86bf1692b335a6d3d0396f514ab65859df749af4cf1",
+      "primary_statement_sha256": "9cc28faf4111fdb126d37c3e6212af69a35755b85dc6032024c995a58267193c",
+      "retained_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a00/primary/Boundary.vo",
+        "sha256": "e5dbaf88f31a20f8766f17dcce0e3f5941d3707291f131651ebe36e233b87261"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a00/RetainedObject/Boundary.vo",
+        "sha256": "e5dbaf88f31a20f8766f17dcce0e3f5941d3707291f131651ebe36e233b87261"
+      },
+      "initial_sha256": "8519571edd0e5d719b5a6314e2736ceda76828a9821f3c10578565976530cf42",
+      "source_sha256": "c34a28e12bc56f6a71219d591f7eb118289d2c85305672ed54c19093160906e6",
+      "check_names": [
+        "DecodeItemArgs",
+        "ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs",
+        "list",
+        "byte",
+        "bv",
+        "islaG",
+        "threadG",
+        "instr_pre",
+        "instr_body",
+        "decodeItemSelectedCode",
+        "Boundary.DesignedBoundary_800d6a00",
+        "DesignedEntry_800d6a00"
+      ],
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "goal_groups": {
+        "given_up": [],
+        "goals": [],
+        "shelf": [],
+        "stack": []
+      },
+      "actual_export": {
+        "success": true,
+        "state_id": 4,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002/mcp/actual-goals/state_4.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a00",
+        "theorem": "s42Certificate_800d6a00",
+        "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a00/Initial.v",
+        "source_sha256": "8519571edd0e5d719b5a6314e2736ceda76828a9821f3c10578565976530cf42",
+        "proof_finished": true
+      },
+      "compiled": true,
+      "verified": true,
+      "assumptions": [],
+      "verification_method": "module_m",
+      "certificate_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a00/Certificate.vo",
+        "sha256": "3e03443de4d6348cba55d15ea06712c690f5753d1a5c0f91dd808648a052eff8"
+      },
+      "object_after_sha256": "e5dbaf88f31a20f8766f17dcce0e3f5941d3707291f131651ebe36e233b87261",
+      "copy_after_sha256": "e5dbaf88f31a20f8766f17dcce0e3f5941d3707291f131651ebe36e233b87261",
+      "attempt": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002",
+      "result_sha256": "b494b1d90135cf6ac557ee4ebcacc4772674354e2112478ef403c4a44a0ef56f",
+      "actual_groups_scope": "Fresh Require/apply certificate state before Qed. Original native auxiliary groups remain unavailable."
+    },
+    {
+      "id": "block_0x800d6a14",
+      "kind": "native",
+      "measurement_root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+      "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a14",
+      "initial": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a14/Initial.v",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a14/Certificate.v",
+      "lemma": "s42Certificate_800d6a14",
+      "retained_lemma": "Boundary.DesignedBoundary_800d6a14",
+      "original_statement": "Lemma DesignedBoundary_800d6a14 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (oldAcc : bv 64) (oldCursor : bv 64) (loaded : bv 64) (inputPrefix : byte) (rest : list byte)  :\n  instr_pre 0x800d6a24 (\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24 (args) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a14\n    (DesignedEntry_800d6a14 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded inputPrefix rest).\n",
+      "statement_sha256": "d20e1d636ba3be7c6da15774959440b5559caccada99206e2640ed3ec13c59f2",
+      "primary_statement_sha256": "a58a51bcede39919116652c6768070bc7b9d134f36fffa177cdce592d3e3089b",
+      "retained_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a14/primary/Boundary.vo",
+        "sha256": "934ea27e87a4bb0dce0ebbf457dbdfb8ce6410c67fc9843af2bc60a6bf9c9be9"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a14/RetainedObject/Boundary.vo",
+        "sha256": "934ea27e87a4bb0dce0ebbf457dbdfb8ce6410c67fc9843af2bc60a6bf9c9be9"
+      },
+      "initial_sha256": "3ea4e98f600b5476118adb7092a873afcbe60781492e26b927415592d963c01e",
+      "source_sha256": "c8db4c63d81bbe8b821bc56ff0ed75098de52e7018c0248220f9fb47346b18e0",
+      "check_names": [
+        "DecodeItemArgs",
+        "ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs",
+        "list",
+        "byte",
+        "bv",
+        "islaG",
+        "threadG",
+        "instr_pre",
+        "instr_body",
+        "decodeItemSelectedCode",
+        "Boundary.DesignedBoundary_800d6a14",
+        "DesignedEntry_800d6a14"
+      ],
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "goal_groups": {
+        "given_up": [],
+        "goals": [],
+        "shelf": [],
+        "stack": []
+      },
+      "actual_export": {
+        "success": true,
+        "state_id": 4,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002/mcp/actual-goals/state_4.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a14",
+        "theorem": "s42Certificate_800d6a14",
+        "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a14/Initial.v",
+        "source_sha256": "3ea4e98f600b5476118adb7092a873afcbe60781492e26b927415592d963c01e",
+        "proof_finished": true
+      },
+      "compiled": true,
+      "verified": true,
+      "assumptions": [],
+      "verification_method": "module_m",
+      "certificate_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a14/Certificate.vo",
+        "sha256": "04d9800caa5d18a63ef244d978d7416d3ff5196e98e81612fb54b57a99e0419c"
+      },
+      "object_after_sha256": "934ea27e87a4bb0dce0ebbf457dbdfb8ce6410c67fc9843af2bc60a6bf9c9be9",
+      "copy_after_sha256": "934ea27e87a4bb0dce0ebbf457dbdfb8ce6410c67fc9843af2bc60a6bf9c9be9",
+      "attempt": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002",
+      "result_sha256": "b494b1d90135cf6ac557ee4ebcacc4772674354e2112478ef403c4a44a0ef56f",
+      "actual_groups_scope": "Fresh Require/apply certificate state before Qed. Original native auxiliary groups remain unavailable."
+    },
+    {
+      "id": "block_0x800d6a64",
+      "kind": "native",
+      "measurement_root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+      "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a64",
+      "initial": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a64/Initial.v",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a64/Certificate.v",
+      "lemma": "s42Certificate_800d6a64",
+      "retained_lemma": "Boundary.DesignedBoundary_800d6a64",
+      "original_statement": "Lemma DesignedBoundary_800d6a64 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte)   :\n  instr_pre 0x800d6a6c (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6aa8 (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6aa8 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a64\n    (DesignedEntry_800d6a64 args frameBytes x13 inputPrefix rest).\n",
+      "statement_sha256": "835800af72be56b94720532254eb8c18c5ad631f49b418759f952594c15fcbb9",
+      "primary_statement_sha256": "65b503d390be6994296a68b0597dde532b4bdcd8ea583ef02408aae3e302b61f",
+      "retained_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a64/primary/Boundary.vo",
+        "sha256": "7779573c04388b984dcf419dbd86781f58dcd25175fa32fc6bf0d3495d616cc3"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a64/RetainedObject/Boundary.vo",
+        "sha256": "7779573c04388b984dcf419dbd86781f58dcd25175fa32fc6bf0d3495d616cc3"
+      },
+      "initial_sha256": "a193dc86b2c7d9703bcd27d193f8ca8d405cb8704404eccc67ea17fad5a32956",
+      "source_sha256": "bdd54a2d319ae31c61a84e8d126741e47910e3fdaa69fb7e459d828976a5efdd",
+      "check_names": [
+        "DecodeItemArgs",
+        "ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs",
+        "list",
+        "byte",
+        "bv",
+        "islaG",
+        "threadG",
+        "instr_pre",
+        "instr_body",
+        "decodeItemSelectedCode",
+        "Boundary.DesignedBoundary_800d6a64",
+        "DesignedEntry_800d6a64"
+      ],
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "goal_groups": {
+        "given_up": [],
+        "goals": [],
+        "shelf": [],
+        "stack": []
+      },
+      "actual_export": {
+        "success": true,
+        "state_id": 4,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002/mcp/actual-goals/state_4.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a64",
+        "theorem": "s42Certificate_800d6a64",
+        "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a64/Initial.v",
+        "source_sha256": "a193dc86b2c7d9703bcd27d193f8ca8d405cb8704404eccc67ea17fad5a32956",
+        "proof_finished": true
+      },
+      "compiled": true,
+      "verified": true,
+      "assumptions": [],
+      "verification_method": "module_m",
+      "certificate_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a64/Certificate.vo",
+        "sha256": "043aa30f7653cc35747c8866fb90cb4c9754bed735dcc67804eec6c7e291efe3"
+      },
+      "object_after_sha256": "7779573c04388b984dcf419dbd86781f58dcd25175fa32fc6bf0d3495d616cc3",
+      "copy_after_sha256": "7779573c04388b984dcf419dbd86781f58dcd25175fa32fc6bf0d3495d616cc3",
+      "attempt": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002",
+      "result_sha256": "b494b1d90135cf6ac557ee4ebcacc4772674354e2112478ef403c4a44a0ef56f",
+      "actual_groups_scope": "Fresh Require/apply certificate state before Qed. Original native auxiliary groups remain unavailable."
+    },
+    {
+      "id": "block_0x800d6a6c",
+      "kind": "native",
+      "measurement_root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+      "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a6c",
+      "initial": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a6c/Initial.v",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a6c/Certificate.v",
+      "lemma": "s42Certificate_800d6a6c",
+      "retained_lemma": "Boundary.DesignedBoundary_800d6a6c",
+      "original_statement": "Lemma DesignedBoundary_800d6a6c `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte)   :\n  instr_pre 0x800d6a78 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78 (args) (successor_locals) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a6c\n    (DesignedEntry_800d6a6c args frameBytes x13 inputPrefix rest).\n",
+      "statement_sha256": "6b373e3a0125a04c941827d9bfa2975dbbaa82a2147ad528dd55014aa5c5a45d",
+      "primary_statement_sha256": "ea9491d8148d8cdf9209c48b3ad087ec81572553273ada1ca3b147ee5bdf1b83",
+      "retained_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6a6c/primary/Boundary.vo",
+        "sha256": "737e98e060634fbf7717a9f3f3e06ec20a7433f2895f00c766bd8c6eb3f2260f"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a6c/RetainedObject/Boundary.vo",
+        "sha256": "737e98e060634fbf7717a9f3f3e06ec20a7433f2895f00c766bd8c6eb3f2260f"
+      },
+      "initial_sha256": "41fdba100627c47475524510a9a7073119bd14dce8fc623ff668eec84f3359ce",
+      "source_sha256": "d582268f164a39a7eab68c67095833b3ebfc429e483e9db4391aa5e65ca376d7",
+      "check_names": [
+        "DecodeItemArgs",
+        "ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs",
+        "list",
+        "byte",
+        "bv",
+        "islaG",
+        "threadG",
+        "instr_pre",
+        "instr_body",
+        "decodeItemSelectedCode",
+        "Boundary.DesignedBoundary_800d6a6c",
+        "DesignedEntry_800d6a6c",
+        "DecodeItemReturnLocals"
+      ],
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "goal_groups": {
+        "given_up": [],
+        "goals": [],
+        "shelf": [],
+        "stack": []
+      },
+      "actual_export": {
+        "success": true,
+        "state_id": 4,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002/mcp/actual-goals/state_4.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a6c",
+        "theorem": "s42Certificate_800d6a6c",
+        "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a6c/Initial.v",
+        "source_sha256": "41fdba100627c47475524510a9a7073119bd14dce8fc623ff668eec84f3359ce",
+        "proof_finished": true
+      },
+      "compiled": true,
+      "verified": true,
+      "assumptions": [],
+      "verification_method": "module_m",
+      "certificate_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6a6c/Certificate.vo",
+        "sha256": "d68228f98dd1546e0fd7b0fcb79de3492e7cf9251b31cc05ad26b30c1107f63c"
+      },
+      "object_after_sha256": "737e98e060634fbf7717a9f3f3e06ec20a7433f2895f00c766bd8c6eb3f2260f",
+      "copy_after_sha256": "737e98e060634fbf7717a9f3f3e06ec20a7433f2895f00c766bd8c6eb3f2260f",
+      "attempt": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002",
+      "result_sha256": "b494b1d90135cf6ac557ee4ebcacc4772674354e2112478ef403c4a44a0ef56f",
+      "actual_groups_scope": "Fresh Require/apply certificate state before Qed. Original native auxiliary groups remain unavailable."
+    },
+    {
+      "id": "block_0x800d6ab4",
+      "kind": "native",
+      "measurement_root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+      "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6ab4",
+      "initial": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6ab4/Initial.v",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6ab4/Certificate.v",
+      "lemma": "s42Certificate_800d6ab4",
+      "retained_lemma": "Boundary.DesignedBoundary_800d6ab4",
+      "original_statement": "Lemma DesignedBoundary_800d6ab4 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (oldAcc : bv 64) (oldCursor : bv 64) (loaded : bv 64) (inputPrefix : byte) (rest : list byte)  :\n  instr_pre 0x800d6ac4 (\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4 (args) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ab4\n    (DesignedEntry_800d6ab4 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded inputPrefix rest).\n",
+      "statement_sha256": "11b3ce5d66531a71fb3527036498b4391b15246c1e07f8ac192b117b59aeb302",
+      "primary_statement_sha256": "101f4543034625b1a94f38fe469f721cbf8ddb537ef3482e8463cb848c61bdd6",
+      "retained_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/block_0x800d6ab4/primary/Boundary.vo",
+        "sha256": "b1f80f3e1bb8b6d338f480242407b9aa5d4333471b8b743dabeb820668d696de"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6ab4/RetainedObject/Boundary.vo",
+        "sha256": "b1f80f3e1bb8b6d338f480242407b9aa5d4333471b8b743dabeb820668d696de"
+      },
+      "initial_sha256": "8e093c19cdf1fa60b02f0f15fb102a8b200e019b0de5451c867362da14b3ed55",
+      "source_sha256": "98b7e5b97799cc9399dad7c854f38e53f0ba003b07c7c11f5439d270b2552cff",
+      "check_names": [
+        "DecodeItemArgs",
+        "ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs",
+        "list",
+        "byte",
+        "bv",
+        "islaG",
+        "threadG",
+        "instr_pre",
+        "instr_body",
+        "decodeItemSelectedCode",
+        "Boundary.DesignedBoundary_800d6ab4",
+        "DesignedEntry_800d6ab4"
+      ],
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "goal_groups": {
+        "given_up": [],
+        "goals": [],
+        "shelf": [],
+        "stack": []
+      },
+      "actual_export": {
+        "success": true,
+        "state_id": 4,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002/mcp/actual-goals/state_4.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6ab4",
+        "theorem": "s42Certificate_800d6ab4",
+        "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6ab4/Initial.v",
+        "source_sha256": "8e093c19cdf1fa60b02f0f15fb102a8b200e019b0de5451c867362da14b3ed55",
+        "proof_finished": true
+      },
+      "compiled": true,
+      "verified": true,
+      "assumptions": [],
+      "verification_method": "module_m",
+      "certificate_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/block_0x800d6ab4/Certificate.vo",
+        "sha256": "382ee4b54340ba1af4a9e8b8abcadba0e0983c467bad1196cd57a76b3f579ca2"
+      },
+      "object_after_sha256": "b1f80f3e1bb8b6d338f480242407b9aa5d4333471b8b743dabeb820668d696de",
+      "copy_after_sha256": "b1f80f3e1bb8b6d338f480242407b9aa5d4333471b8b743dabeb820668d696de",
+      "attempt": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002",
+      "result_sha256": "b494b1d90135cf6ac557ee4ebcacc4772674354e2112478ef403c4a44a0ef56f",
+      "actual_groups_scope": "Fresh Require/apply certificate state before Qed. Original native auxiliary groups remain unavailable."
+    },
+    {
+      "id": "decodeItemJoin698cFrom697c",
+      "kind": "adapter",
+      "measurement_root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+      "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin698cFrom697c",
+      "initial": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin698cFrom697c/Initial.v",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin698cFrom697c/Certificate.v",
+      "lemma": "s42Certificate_Join698cFrom697c",
+      "retained_lemma": "Boundary.decodeItemJoin698cFrom697c_automatic",
+      "original_statement": "Lemma decodeItemJoin698cFrom697c_automatic `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte)\n    (prefix : bv 64)\n    (inputPrefix : byte) (rest : list byte) :\n  \u22a2 decodeItemJoin698cFrom697c args frameBytes prefix inputPrefix rest.\n",
+      "statement_sha256": "44df56c3405140177b02729dc8df262542c653e10c74069ebd73a7eaa2f96a3a",
+      "primary_statement_sha256": "4879e08d4cebc0762556813ba4f7d5db1d6807572976706aed539ef81cfdb61e",
+      "retained_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin698cFrom697c/primary/Boundary.vo",
+        "sha256": "4685bd34fa751fc97532babc518c98d8871852fdc7732c0de4a7224f7b5ab701"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin698cFrom697c/RetainedObject/Boundary.vo",
+        "sha256": "4685bd34fa751fc97532babc518c98d8871852fdc7732c0de4a7224f7b5ab701"
+      },
+      "initial_sha256": "e64f06b1272a053e713eac6221a91e26235a15043cdf3805e02ba5ebe47f446f",
+      "source_sha256": "b0fdcec3a3153787a7671a7654bf0098dddfe1f1c8c848961815e7364c18449c",
+      "check_names": [
+        "DecodeItemArgs",
+        "ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs",
+        "list",
+        "byte",
+        "bv",
+        "islaG",
+        "threadG",
+        "instr_pre",
+        "instr_body",
+        "decodeItemSelectedCode",
+        "Boundary.decodeItemJoin698cFrom697c_automatic"
+      ],
+      "inherited_debts": {},
+      "goal_groups": {
+        "given_up": [],
+        "goals": [],
+        "shelf": [],
+        "stack": []
+      },
+      "actual_export": {
+        "success": true,
+        "state_id": 4,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002/mcp/actual-goals/state_4.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin698cFrom697c",
+        "theorem": "s42Certificate_Join698cFrom697c",
+        "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin698cFrom697c/Initial.v",
+        "source_sha256": "e64f06b1272a053e713eac6221a91e26235a15043cdf3805e02ba5ebe47f446f",
+        "proof_finished": true
+      },
+      "compiled": true,
+      "verified": true,
+      "assumptions": [],
+      "verification_method": "module_m",
+      "certificate_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin698cFrom697c/Certificate.vo",
+        "sha256": "e496afc7217a2f10131d6cc7bedc11e2f5fe5d68e2c892f8d479c4c3ac856422"
+      },
+      "object_after_sha256": "4685bd34fa751fc97532babc518c98d8871852fdc7732c0de4a7224f7b5ab701",
+      "copy_after_sha256": "4685bd34fa751fc97532babc518c98d8871852fdc7732c0de4a7224f7b5ab701",
+      "attempt": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002",
+      "result_sha256": "b494b1d90135cf6ac557ee4ebcacc4772674354e2112478ef403c4a44a0ef56f",
+      "actual_groups_scope": "Fresh Require/apply certificate state before Qed. Original native auxiliary groups remain unavailable."
+    },
+    {
+      "id": "decodeItemJoin698cFrom69e8",
+      "kind": "adapter",
+      "measurement_root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+      "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin698cFrom69e8",
+      "initial": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin698cFrom69e8/Initial.v",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin698cFrom69e8/Certificate.v",
+      "lemma": "s42Certificate_Join698cFrom69e8",
+      "retained_lemma": "Boundary.decodeItemJoin698cFrom69e8_automatic",
+      "original_statement": "Lemma decodeItemJoin698cFrom69e8_automatic `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte)\n    (payloadLength : bv 64)\n    (inputPrefix : byte) (rest : list byte) :\n  \u22a2 decodeItemJoin698cFrom69e8 args frameBytes payloadLength inputPrefix rest.\n",
+      "statement_sha256": "afbee1033ce121db3f38db9e6bdcac84e68a68ac2a5a84b9efce13b401201c53",
+      "primary_statement_sha256": "4ecbd43a542dd185752264ca572016870ea8a50aed40e57d4fd2e97bb9c3852c",
+      "retained_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin698cFrom69e8/primary/Boundary.vo",
+        "sha256": "1f0c07b1f6914400d690799aa0d8b6fc2b292ca45d62838ac7c4497a3854c6ee"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin698cFrom69e8/RetainedObject/Boundary.vo",
+        "sha256": "1f0c07b1f6914400d690799aa0d8b6fc2b292ca45d62838ac7c4497a3854c6ee"
+      },
+      "initial_sha256": "a0546899564ae2e0f99a9309c39bcbe41ed8af67a914bd5241d1de2acb35775d",
+      "source_sha256": "14ea569098533487940cd26b56d7bb13d8dafde6a81ab5549f0328021af7f4d7",
+      "check_names": [
+        "DecodeItemArgs",
+        "ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs",
+        "list",
+        "byte",
+        "bv",
+        "islaG",
+        "threadG",
+        "instr_pre",
+        "instr_body",
+        "decodeItemSelectedCode",
+        "Boundary.decodeItemJoin698cFrom69e8_automatic"
+      ],
+      "inherited_debts": {},
+      "goal_groups": {
+        "given_up": [],
+        "goals": [],
+        "shelf": [],
+        "stack": []
+      },
+      "actual_export": {
+        "success": true,
+        "state_id": 4,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002/mcp/actual-goals/state_4.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin698cFrom69e8",
+        "theorem": "s42Certificate_Join698cFrom69e8",
+        "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin698cFrom69e8/Initial.v",
+        "source_sha256": "a0546899564ae2e0f99a9309c39bcbe41ed8af67a914bd5241d1de2acb35775d",
+        "proof_finished": true
+      },
+      "compiled": true,
+      "verified": true,
+      "assumptions": [],
+      "verification_method": "module_m",
+      "certificate_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin698cFrom69e8/Certificate.vo",
+        "sha256": "56ca07f2511c7682a810e126304d85315180e70f4a1a9777e8eb55e5a89ddca0"
+      },
+      "object_after_sha256": "1f0c07b1f6914400d690799aa0d8b6fc2b292ca45d62838ac7c4497a3854c6ee",
+      "copy_after_sha256": "1f0c07b1f6914400d690799aa0d8b6fc2b292ca45d62838ac7c4497a3854c6ee",
+      "attempt": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002",
+      "result_sha256": "b494b1d90135cf6ac557ee4ebcacc4772674354e2112478ef403c4a44a0ef56f",
+      "actual_groups_scope": "Fresh Require/apply certificate state before Qed. Original native auxiliary groups remain unavailable."
+    },
+    {
+      "id": "decodeItemJoin6a24From6a14",
+      "kind": "adapter",
+      "measurement_root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+      "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6a24From6a14",
+      "initial": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6a24From6a14/Initial.v",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6a24From6a14/Certificate.v",
+      "lemma": "s42Certificate_Join6a24From6a14",
+      "retained_lemma": "Boundary.decodeItemJoin6a24From6a14_automatic",
+      "original_statement": "Lemma decodeItemJoin6a24From6a14_automatic `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (n payloadStart : Z)\n    (lengthBytes frameBytes : list byte)\n    (oldAcc oldCursor loaded : bv 64)\n    (inputPrefix : byte) (rest : list byte) :\n  \u22a2 decodeItemJoin6a24From6a14 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded inputPrefix rest.\n",
+      "statement_sha256": "0182d6afef7cfd1e77f300c52e0b9b66e55bb1659bdafd910a9725d80d982fae",
+      "primary_statement_sha256": "638fa0e3af0b1c2c61469e6f1549072450099a1369dd51fc9a738e0593f47609",
+      "retained_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6a24From6a14/primary/Boundary.vo",
+        "sha256": "7e8e19a76c6516c2a85b58dafcd5c473894cc682118d32dc9e229c3a8e5193ec"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6a24From6a14/RetainedObject/Boundary.vo",
+        "sha256": "7e8e19a76c6516c2a85b58dafcd5c473894cc682118d32dc9e229c3a8e5193ec"
+      },
+      "initial_sha256": "e9536e38b8e0d2219588a880838c3421e39741a5665507d664d2c5e145a14c78",
+      "source_sha256": "b73d234a351e101c4a1662e522d31ab506c7416178741711ad6b8b3e30522323",
+      "check_names": [
+        "DecodeItemArgs",
+        "ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs",
+        "list",
+        "byte",
+        "bv",
+        "islaG",
+        "threadG",
+        "instr_pre",
+        "instr_body",
+        "decodeItemSelectedCode",
+        "Boundary.decodeItemJoin6a24From6a14_automatic"
+      ],
+      "inherited_debts": {},
+      "goal_groups": {
+        "given_up": [],
+        "goals": [],
+        "shelf": [],
+        "stack": []
+      },
+      "actual_export": {
+        "success": true,
+        "state_id": 4,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002/mcp/actual-goals/state_4.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6a24From6a14",
+        "theorem": "s42Certificate_Join6a24From6a14",
+        "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6a24From6a14/Initial.v",
+        "source_sha256": "e9536e38b8e0d2219588a880838c3421e39741a5665507d664d2c5e145a14c78",
+        "proof_finished": true
+      },
+      "compiled": true,
+      "verified": true,
+      "assumptions": [],
+      "verification_method": "module_m",
+      "certificate_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6a24From6a14/Certificate.vo",
+        "sha256": "5a4a2952faf0279766f8ea2a32923a93e3c284160794843a1876a2aeb397aad7"
+      },
+      "object_after_sha256": "7e8e19a76c6516c2a85b58dafcd5c473894cc682118d32dc9e229c3a8e5193ec",
+      "copy_after_sha256": "7e8e19a76c6516c2a85b58dafcd5c473894cc682118d32dc9e229c3a8e5193ec",
+      "attempt": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002",
+      "result_sha256": "b494b1d90135cf6ac557ee4ebcacc4772674354e2112478ef403c4a44a0ef56f",
+      "actual_groups_scope": "Fresh Require/apply certificate state before Qed. Original native auxiliary groups remain unavailable."
+    },
+    {
+      "id": "decodeItemJoin6ac4From6ab4",
+      "kind": "adapter",
+      "measurement_root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+      "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ac4From6ab4",
+      "initial": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ac4From6ab4/Initial.v",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ac4From6ab4/Certificate.v",
+      "lemma": "s42Certificate_Join6ac4From6ab4",
+      "retained_lemma": "Boundary.decodeItemJoin6ac4From6ab4_automatic",
+      "original_statement": "Lemma decodeItemJoin6ac4From6ab4_automatic `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (n payloadStart : Z)\n    (lengthBytes frameBytes : list byte)\n    (oldAcc oldCursor loaded : bv 64)\n    (inputPrefix : byte) (rest : list byte) :\n  \u22a2 decodeItemJoin6ac4From6ab4 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded inputPrefix rest.\n",
+      "statement_sha256": "774821028596c12459dbfa2ee8fa62a0fc180b8bef4401139785df7738e659d7",
+      "primary_statement_sha256": "226f81c4661ae1e5d964225375b010672e39a0f29c31010a698495abe7efdb6b",
+      "retained_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ac4From6ab4/primary/Boundary.vo",
+        "sha256": "1d40273b791ddc4fc6ce83405bf55380ba604ae9c7b98f83f18a4ba57fb4baf2"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ac4From6ab4/RetainedObject/Boundary.vo",
+        "sha256": "1d40273b791ddc4fc6ce83405bf55380ba604ae9c7b98f83f18a4ba57fb4baf2"
+      },
+      "initial_sha256": "6d6e6ac7b455d4121894a56bd1e842522c787239fdb3eee7869dcfd3076c4aa7",
+      "source_sha256": "6e068df25acf072100b291c6a517059115ff6f5c0454a6df9bc3cbcd18409c60",
+      "check_names": [
+        "DecodeItemArgs",
+        "ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs",
+        "list",
+        "byte",
+        "bv",
+        "islaG",
+        "threadG",
+        "instr_pre",
+        "instr_body",
+        "decodeItemSelectedCode",
+        "Boundary.decodeItemJoin6ac4From6ab4_automatic"
+      ],
+      "inherited_debts": {},
+      "goal_groups": {
+        "given_up": [],
+        "goals": [],
+        "shelf": [],
+        "stack": []
+      },
+      "actual_export": {
+        "success": true,
+        "state_id": 4,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002/mcp/actual-goals/state_4.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ac4From6ab4",
+        "theorem": "s42Certificate_Join6ac4From6ab4",
+        "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ac4From6ab4/Initial.v",
+        "source_sha256": "6d6e6ac7b455d4121894a56bd1e842522c787239fdb3eee7869dcfd3076c4aa7",
+        "proof_finished": true
+      },
+      "compiled": true,
+      "verified": true,
+      "assumptions": [],
+      "verification_method": "module_m",
+      "certificate_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ac4From6ab4/Certificate.vo",
+        "sha256": "df7307d4e6c05769af6a6ca42d707b7c115df39c9879e4a01f96504572ffb6b4"
+      },
+      "object_after_sha256": "1d40273b791ddc4fc6ce83405bf55380ba604ae9c7b98f83f18a4ba57fb4baf2",
+      "copy_after_sha256": "1d40273b791ddc4fc6ce83405bf55380ba604ae9c7b98f83f18a4ba57fb4baf2",
+      "attempt": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002",
+      "result_sha256": "b494b1d90135cf6ac557ee4ebcacc4772674354e2112478ef403c4a44a0ef56f",
+      "actual_groups_scope": "Fresh Require/apply certificate state before Qed. Original native auxiliary groups remain unavailable."
+    },
+    {
+      "id": "decodeItemJoin6ae0From69e0",
+      "kind": "adapter",
+      "measurement_root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+      "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From69e0",
+      "initial": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From69e0/Initial.v",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From69e0/Certificate.v",
+      "lemma": "s42Certificate_Join6ae0From69e0",
+      "retained_lemma": "Boundary.decodeItemJoin6ae0From69e0_automatic",
+      "original_statement": "Lemma decodeItemJoin6ae0From69e0_automatic `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte)\n    (lengthRegister : bv 64)\n    (inputPrefix : byte) (rest : list byte) :\n  \u22a2 decodeItemJoin6ae0From69e0 args frameBytes lengthRegister inputPrefix rest.\n",
+      "statement_sha256": "5ea772d0ca87d34bc80132fa6b5f9d9fc8ee91f612ab36c98adc14b631bd380b",
+      "primary_statement_sha256": "7fe36da0a1ba819ea72ca87fb40e70e9c38e70487015495ef4b9fde2eab7ec63",
+      "retained_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From69e0/primary/Boundary.vo",
+        "sha256": "4d10d4f8e1cfa6a469c01fc5f665b0e94dfaf54ca50980d10b4e555c9deea44a"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From69e0/RetainedObject/Boundary.vo",
+        "sha256": "4d10d4f8e1cfa6a469c01fc5f665b0e94dfaf54ca50980d10b4e555c9deea44a"
+      },
+      "initial_sha256": "9449eb5238e52ced71495c99998fb20d462cdf974f1b99896289eea3cbe5f67a",
+      "source_sha256": "36224bdaea9486800cc53725b7eab3bca316d9f794facea85c0032eae1ac7cf4",
+      "check_names": [
+        "DecodeItemArgs",
+        "ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs",
+        "list",
+        "byte",
+        "bv",
+        "islaG",
+        "threadG",
+        "instr_pre",
+        "instr_body",
+        "decodeItemSelectedCode",
+        "Boundary.decodeItemJoin6ae0From69e0_automatic"
+      ],
+      "inherited_debts": {},
+      "goal_groups": {
+        "given_up": [],
+        "goals": [],
+        "shelf": [],
+        "stack": []
+      },
+      "actual_export": {
+        "success": true,
+        "state_id": 4,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002/mcp/actual-goals/state_4.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From69e0",
+        "theorem": "s42Certificate_Join6ae0From69e0",
+        "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From69e0/Initial.v",
+        "source_sha256": "9449eb5238e52ced71495c99998fb20d462cdf974f1b99896289eea3cbe5f67a",
+        "proof_finished": true
+      },
+      "compiled": true,
+      "verified": true,
+      "assumptions": [],
+      "verification_method": "module_m",
+      "certificate_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From69e0/Certificate.vo",
+        "sha256": "6bbff9517b83a0604c65c24fbba32fea1bfe8ab10891b4aabce5365f498d522c"
+      },
+      "object_after_sha256": "4d10d4f8e1cfa6a469c01fc5f665b0e94dfaf54ca50980d10b4e555c9deea44a",
+      "copy_after_sha256": "4d10d4f8e1cfa6a469c01fc5f665b0e94dfaf54ca50980d10b4e555c9deea44a",
+      "attempt": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002",
+      "result_sha256": "b494b1d90135cf6ac557ee4ebcacc4772674354e2112478ef403c4a44a0ef56f",
+      "actual_groups_scope": "Fresh Require/apply certificate state before Qed. Original native auxiliary groups remain unavailable."
+    },
+    {
+      "id": "decodeItemJoin6ae0From6a38",
+      "kind": "adapter",
+      "measurement_root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+      "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From6a38",
+      "initial": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From6a38/Initial.v",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From6a38/Certificate.v",
+      "lemma": "s42Certificate_Join6ae0From6a38",
+      "retained_lemma": "Boundary.decodeItemJoin6ae0From6a38_automatic",
+      "original_statement": "Lemma decodeItemJoin6ae0From6a38_automatic `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (n payloadStart : Z)\n    (lengthBytes frameBytes : list byte) (loaded : bv 64)\n    (inputPrefix : byte) (rest : list byte) :\n  \u22a2 decodeItemJoin6ae0From6a38 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest.\n",
+      "statement_sha256": "946a8b43480ad8da491756c5de5fc6a2f50a5c7274a625fb2894ad126ae9bafe",
+      "primary_statement_sha256": "28e27d4587196305ec299d358ff850b47768a15d2d118cd7aac731ac29931ff7",
+      "retained_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6a38/primary/Boundary.vo",
+        "sha256": "80954fa66338991ff59f3a1dc8776108a0b8ec15eb654ce54383d4294b2f1ad8"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From6a38/RetainedObject/Boundary.vo",
+        "sha256": "80954fa66338991ff59f3a1dc8776108a0b8ec15eb654ce54383d4294b2f1ad8"
+      },
+      "initial_sha256": "d839dc8c5d34ac47809544020742e63b3658d3e08aa8fc09a7c1cb5bfdb771c7",
+      "source_sha256": "a09f37231fd6d15f7f77be813bf0f1ff894cca8513bfbe2bad4f680c67040592",
+      "check_names": [
+        "DecodeItemArgs",
+        "ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs",
+        "list",
+        "byte",
+        "bv",
+        "islaG",
+        "threadG",
+        "instr_pre",
+        "instr_body",
+        "decodeItemSelectedCode",
+        "Boundary.decodeItemJoin6ae0From6a38_automatic"
+      ],
+      "inherited_debts": {},
+      "goal_groups": {
+        "given_up": [],
+        "goals": [],
+        "shelf": [],
+        "stack": []
+      },
+      "actual_export": {
+        "success": true,
+        "state_id": 4,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002/mcp/actual-goals/state_4.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From6a38",
+        "theorem": "s42Certificate_Join6ae0From6a38",
+        "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From6a38/Initial.v",
+        "source_sha256": "d839dc8c5d34ac47809544020742e63b3658d3e08aa8fc09a7c1cb5bfdb771c7",
+        "proof_finished": true
+      },
+      "compiled": true,
+      "verified": true,
+      "assumptions": [],
+      "verification_method": "module_m",
+      "certificate_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From6a38/Certificate.vo",
+        "sha256": "3189eec27a131d6833cc797576a45dbb65a6fc870edac937265e59ba6d535e29"
+      },
+      "object_after_sha256": "80954fa66338991ff59f3a1dc8776108a0b8ec15eb654ce54383d4294b2f1ad8",
+      "copy_after_sha256": "80954fa66338991ff59f3a1dc8776108a0b8ec15eb654ce54383d4294b2f1ad8",
+      "attempt": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002",
+      "result_sha256": "b494b1d90135cf6ac557ee4ebcacc4772674354e2112478ef403c4a44a0ef56f",
+      "actual_groups_scope": "Fresh Require/apply certificate state before Qed. Original native auxiliary groups remain unavailable."
+    },
+    {
+      "id": "decodeItemJoin6ae0From6ad8",
+      "kind": "adapter",
+      "measurement_root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+      "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From6ad8",
+      "initial": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From6ad8/Initial.v",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From6ad8/Certificate.v",
+      "lemma": "s42Certificate_Join6ae0From6ad8",
+      "retained_lemma": "Boundary.decodeItemJoin6ae0From6ad8_automatic",
+      "original_statement": "Lemma decodeItemJoin6ae0From6ad8_automatic `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (n payloadStart : Z)\n    (lengthBytes frameBytes : list byte) (loaded : bv 64)\n    (inputPrefix : byte) (rest : list byte) :\n  \u22a2 decodeItemJoin6ae0From6ad8 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest.\n",
+      "statement_sha256": "47cc118377cf17048228927966c653cf4daf8da9dc9cfafc8d3d0e3c27c80a52",
+      "primary_statement_sha256": "14e43a64fcd03e0afba600442d0583dc5d94b877bde8f1b5f56df77f92b87f38",
+      "retained_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6ad8/primary/Boundary.vo",
+        "sha256": "85d1e8b32f0c2c4fc24d5d9cc781f21955be66d1447ccbf0d01f8993ec35c76c"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From6ad8/RetainedObject/Boundary.vo",
+        "sha256": "85d1e8b32f0c2c4fc24d5d9cc781f21955be66d1447ccbf0d01f8993ec35c76c"
+      },
+      "initial_sha256": "f890212bc68ccf039c4c7e436d9e0f3bc93863a921721d1e560c4272920a6691",
+      "source_sha256": "b1473ee8b4061752522550ee66779fe97f9d3b7bc88ba2c2f11691d5632d648f",
+      "check_names": [
+        "DecodeItemArgs",
+        "ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs",
+        "list",
+        "byte",
+        "bv",
+        "islaG",
+        "threadG",
+        "instr_pre",
+        "instr_body",
+        "decodeItemSelectedCode",
+        "Boundary.decodeItemJoin6ae0From6ad8_automatic"
+      ],
+      "inherited_debts": {},
+      "goal_groups": {
+        "given_up": [],
+        "goals": [],
+        "shelf": [],
+        "stack": []
+      },
+      "actual_export": {
+        "success": true,
+        "state_id": 4,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002/mcp/actual-goals/state_4.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From6ad8",
+        "theorem": "s42Certificate_Join6ae0From6ad8",
+        "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From6ad8/Initial.v",
+        "source_sha256": "f890212bc68ccf039c4c7e436d9e0f3bc93863a921721d1e560c4272920a6691",
+        "proof_finished": true
+      },
+      "compiled": true,
+      "verified": true,
+      "assumptions": [],
+      "verification_method": "module_m",
+      "certificate_object": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-preparation-002/decodeItemJoin6ae0From6ad8/Certificate.vo",
+        "sha256": "22600b46f93f876f7b9135ad2642328691ee39ed1a3554d2e16d92ab0040f36b"
+      },
+      "object_after_sha256": "85d1e8b32f0c2c4fc24d5d9cc781f21955be66d1447ccbf0d01f8993ec35c76c",
+      "copy_after_sha256": "85d1e8b32f0c2c4fc24d5d9cc781f21955be66d1447ccbf0d01f8993ec35c76c",
+      "attempt": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-certificates-002",
+      "result_sha256": "b494b1d90135cf6ac557ee4ebcacc4772674354e2112478ef403c4a44a0ef56f",
+      "actual_groups_scope": "Fresh Require/apply certificate state before Qed. Original native auxiliary groups remain unavailable."
+    }
+  ],
+  "reused_first_certificate": null,
+  "primary_replays": 0,
+  "shell_fallbacks": 0,
+  "table_slot_adapters": 0,
+  "original_native_auxiliary_groups": "unavailable",
+  "scope": "Retained-object certificates for eight S42 native closures and seven adapter closures. No table slot is promoted.",
+  "frozen_inputs_unchanged": true,
+  "new_adapter_closures": [
+    "decodeItemJoin6ae0From6a38",
+    "decodeItemJoin6ae0From6ad8"
+  ]
+}
