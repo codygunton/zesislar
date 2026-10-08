@@ -1,0 +1,12 @@
+{
+  "index_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-checkpoint-archive-001/INDEX.json",
+  "index_sha256": "ec87bf9cd664e17f0da1dca00e4840c656adffa4d85a6cd27dc31e2e3ba59389",
+  "record_count": 13371,
+  "unique_CAS_files": 10421,
+  "all_content_hashes_match": true,
+  "credential_matches": [],
+  "raw_Dune_headers_excluded": true,
+  "report_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-result-audit-001/REPORT.json",
+  "report_sha256": "f4196b618b632ce68f551159513e6f36d41ee6a605829fde156d4063c452e939",
+  "native_replayed": false
+}

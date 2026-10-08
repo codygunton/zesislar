@@ -1,0 +1,11 @@
+{
+  "index": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-final-archive-001/INDEX.json",
+    "sha256": "daffd36fadfe5237cd897b135ff32dfccaf68bd3a5bd9a6062350ffaa6fa077d"
+  },
+  "record_count": 10,
+  "all_hashes_and_sizes_match": true,
+  "credential_matches": [],
+  "private_Dune_headers": [],
+  "native_replayed": false
+}

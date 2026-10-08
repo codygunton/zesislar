@@ -1,0 +1,289 @@
+{
+  "root": "bca6121a2c0343356f73ac4b7b83fa4e225753c5",
+  "production_source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Proofs/Tests/RegionFaultCastHypotheses.v",
+  "source_sha256": "24972d1d9ede702b77ff0483afd989bb7ea7b01b6fa31e646f72a6b7639f1bbb",
+  "object": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-001/ProductionTests.retained.vo",
+    "sha256": "5ccafd02a89b1dd7e51f521d71a48e44e94bc4564bfbbfe00ecaaad11abbca76"
+  },
+  "statements": [
+    "Lemma region_cast_nonzero (count : Z) (Hnonnegative : 0 <= count)\n    (Hnonzero : bv_unsigned (Z_to_bv 64 count) <> 0) : 0 < count.",
+    "Lemma region_cast_multiple (left right : Z)\n    (Hleft : bv_unsigned (Z_to_bv 64 left) <> 0)\n    (Hright : bv_unsigned (Z_to_bv 32 right) <> 0)\n    (HleftNonnegative : 0 <= left) (HrightNonnegative : 0 <= right) :\n    0 < left + right.",
+    "Lemma region_cast_symbolic_local (count : Z) (Hnonnegative : 0 <= count) :\n    let local_count := count in\n    bv_unsigned (Z_to_bv 64 local_count) <> 0 -> 0 < local_count.",
+    "Lemma region_cast_cached_off (count : Z) (Hnonnegative : 0 <= count)\n    (Hnonzero : bv_unsigned (Z_to_bv 64 count) <> 0) : 0 < count.",
+    "Lemma region_cast_nonmatching (value : bv 64)\n    (Hnonzero : bv_unsigned value <> 0) : 0 < bv_unsigned value.",
+    "Lemma region_cast_rollback (count : Z) (Hnonnegative : 0 <= count)\n    (Hnonzero : bv_unsigned (Z_to_bv 64 count) <> 0) : 0 < count.",
+    "Lemma region_cast_shared_evar_rejected : True.",
+    "Lemma region_cast_unrelated_shared_evar (count : Z)\n    (Hnonnegative : 0 <= count)\n    (Hnonzero : bv_unsigned (Z_to_bv 64 count) <> 0) : True.",
+    "Lemma region_cast_nested_evar_rejected : True."
+  ],
+  "certificates": [
+    {
+      "name": "region_cast_nonzero",
+      "verification": {
+        "success": true,
+        "verification_method": "direct",
+        "assumptions": [],
+        "note": "Verified via direct compilation (no Module M sandbox)."
+      }
+    },
+    {
+      "name": "region_cast_multiple",
+      "verification": {
+        "success": true,
+        "verification_method": "direct",
+        "assumptions": [],
+        "note": "Verified via direct compilation (no Module M sandbox)."
+      }
+    },
+    {
+      "name": "region_cast_symbolic_local",
+      "verification": {
+        "success": true,
+        "verification_method": "direct",
+        "assumptions": [],
+        "note": "Verified via direct compilation (no Module M sandbox)."
+      }
+    },
+    {
+      "name": "region_cast_cached_off",
+      "verification": {
+        "success": true,
+        "verification_method": "direct",
+        "assumptions": [],
+        "note": "Verified via direct compilation (no Module M sandbox)."
+      }
+    },
+    {
+      "name": "region_cast_nonmatching",
+      "verification": {
+        "success": true,
+        "verification_method": "direct",
+        "assumptions": [],
+        "note": "Verified via direct compilation (no Module M sandbox)."
+      }
+    },
+    {
+      "name": "region_cast_rollback",
+      "verification": {
+        "success": true,
+        "verification_method": "direct",
+        "assumptions": [],
+        "note": "Verified via direct compilation (no Module M sandbox)."
+      }
+    },
+    {
+      "name": "region_cast_shared_evar_rejected",
+      "statement": "Lemma region_cast_shared_evar_rejected : True.",
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      }
+    },
+    {
+      "name": "region_cast_unrelated_shared_evar",
+      "statement": "Lemma region_cast_unrelated_shared_evar (count : Z)\n    (Hnonnegative : 0 <= count)\n    (Hnonzero : bv_unsigned (Z_to_bv 64 count) <> 0) : True.",
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      }
+    },
+    {
+      "name": "region_cast_nested_evar_rejected",
+      "statement": "Lemma region_cast_nested_evar_rejected : True.",
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      }
+    }
+  ],
+  "interactive": {
+    "trial": {
+      "success": true,
+      "results": [
+        {
+          "tactic": "zesu_region_fault_cast_hypotheses_if_enabled. bv_solve.",
+          "success": true,
+          "goals": "No goals remaining.",
+          "proof_finished": true,
+          "focus_depth": 0
+        }
+      ],
+      "from_state_id": 1
+    },
+    "qed": {
+      "success": true,
+      "goals": "No goals remaining.",
+      "proof_finished": true,
+      "commands_run": 1,
+      "check_time_ms": 3,
+      "state_id": 4,
+      "from_state_id": 3,
+      "feedback": [
+        [
+          "Qed.",
+          "region_cast_nonzero is defined"
+        ]
+      ],
+      "proof_tactics": [
+        "zesu_region_fault_cast_hypotheses_if_enabled.",
+        "bv_solve.",
+        "Qed."
+      ],
+      "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+    },
+    "final_groups": {
+      "success": true,
+      "state_id": 3,
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-001/exports/state_3.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+      "bytes": 49,
+      "active_goals": 0,
+      "stack_entries": 0,
+      "shelved_goals": 0,
+      "given_up_goals": 0,
+      "stack_frame_goal_counts": []
+    }
+  },
+  "compilation": {
+    "success": true,
+    "output": "",
+    "dune_build_warning": "dune could not build '_build/pruning-cast-production-tests-mcp-001/ProductionTests.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.",
+    "vo_rebuild_warning": "rocq_compile_file rebuilt 1 .vo file(s) in workspace '/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization'. 4 interactive session(s) in this workspace may be holding stale dependency state \u2014 call rocq_start again to refresh."
+  },
+  "records": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-001/ProductionTests.retained.vo",
+      "sha256": "5ccafd02a89b1dd7e51f521d71a48e44e94bc4564bfbbfe00ecaaad11abbca76",
+      "bytes": 135613
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-001/ProductionTests.v",
+      "sha256": "24972d1d9ede702b77ff0483afd989bb7ea7b01b6fa31e646f72a6b7639f1bbb",
+      "bytes": 3634
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-001/assembly.json",
+      "sha256": "935e9e97d52364114ae98f935cc077243bc953d4356cf29a672e8b80bc31fafb",
+      "bytes": 13912
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-001/client-error.json",
+      "sha256": "e0d04db47a31d930c5dd7bc5941c890af42b716e8832fe4b1a9e97c3d4a2ad6f",
+      "bytes": 402
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-001/exports/state_3.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+      "bytes": 49
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-001/mcp-client.py",
+      "sha256": "444c59528e2f7fd3c8305f137ae2632cc6e950c81223be10464a85772181be99",
+      "bytes": 6737
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-001/preflight.json",
+      "sha256": "7f9911862a8c7a24506740f2dafe39ac660070083eb2d482b0e4d077e9ba9f09",
+      "bytes": 282
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-001/raw-calls.json",
+      "sha256": "9aa578c08313a02138bd9f7f8c25d59495600ffa582eb6f4bb6b707b3c6cad11",
+      "bytes": 88754
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-001/results.json",
+      "sha256": "7c0f6fc7c098e45c499184e21c4153e9484be81d021bdda337292d593a078de4",
+      "bytes": 3765
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-001/schemas.json",
+      "sha256": "7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a",
+      "bytes": 18498
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-001/session-closure.json",
+      "sha256": "3abf20612ab6b5d519a03ab8f3280c3f16ffa42c09adc5dcc1f3d868eb818e88",
+      "bytes": 100
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-002/assembly.json",
+      "sha256": "ddad3c2849921fb0d6a6939a13360faff006aaac50f035a3997c78d2fa0d3a04",
+      "bytes": 15550
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-002/failed-module-m-wrapper.v",
+      "sha256": "c8cf51db2695af428aaa66f42c226eaf1c44c96136502b7edbb4c5fa50f22e42",
+      "bytes": 5542
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-002/mcp-client.py",
+      "sha256": "d9e5bec8f70bbe41b3cfa23f9f7eeb6cb4cf493adcb0890be1f7ee535c9bfc0e",
+      "bytes": 5480
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-002/preflight.json",
+      "sha256": "95e57e45099173612528e9419cc799d3d32e997ef3397f85604e2b89d6d95096",
+      "bytes": 208
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-002/raw-calls.json",
+      "sha256": "09ff2045f3f0a8174a4167d0348db7ddb337d3ca30580379675519e8b4ab04f7",
+      "bytes": 28299
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-002/region_cast_nested_evar_rejected_module_m.v",
+      "sha256": "c070e2c32cf65b6c5c72379d31ebc6e1bb25550c8b3c0eb19f6967b7b5bb0166",
+      "bytes": 4342
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-002/region_cast_nested_evar_rejected_problem.v",
+      "sha256": "079616c013a443c27990089397e44b2e789f86a8f317acc1aa183a9509dceacb",
+      "bytes": 308
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-002/region_cast_shared_evar_rejected_module_m.v",
+      "sha256": "692a523c382a64b1162e2eb809151b36110a3612095c044bb7fe7bb48f180dec",
+      "bytes": 4342
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-002/region_cast_shared_evar_rejected_problem.v",
+      "sha256": "0ddc6d1e01596f49e6883e29cdf9ac2430fb9dcb56c462d3743fef03cb2d3777",
+      "bytes": 308
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-002/region_cast_unrelated_shared_evar_module_m.v",
+      "sha256": "502d3a820d4f45db4d01e7a7634163807730fba5e547d03cd2ba991835e60e45",
+      "bytes": 4444
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-002/region_cast_unrelated_shared_evar_problem.v",
+      "sha256": "b20b908cbb27b6d31a527ba1272a43b1af0029d29d2219aa765420f26c99caef",
+      "bytes": 406
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-002/results.json",
+      "sha256": "6334f93d055e1423f347d51a511625a6e992306848979dd1cfe52b2b5c369358",
+      "bytes": 964
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-002/schemas.json",
+      "sha256": "7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a",
+      "bytes": 18498
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-production-tests-mcp-002/wrapper-cause.json",
+      "sha256": "37375277f89a7cf2982a9bb346fc00408bbee95e50849714064ac768cf104f2d",
+      "bytes": 6459
+    }
+  ],
+  "request_correction": "The three missing requests contain only their own target declaration. The full nine-proof production file stays exact.",
+  "failed_wrapper": "Attempt001 supplied nine admitted problem declarations. The cleaner removes only the final Admitted. Its Print Assumptions selected the earlier requested stub.",
+  "group_coverage": "The actual production first theorem has four empty final groups. Exact independent fixture groups cover the other target statements.",
+  "exact_independent_groups": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/audit.json",
+  "native_execution": false
+}

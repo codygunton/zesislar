@@ -1,0 +1,28 @@
+{
+  "root": "bca6121a2c0343356f73ac4b7b83fa4e225753c5",
+  "candidate_tree": "c6768f87a74e7285196c63f1b644cbdc89e41ab0",
+  "sources": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Automation/Hooks.v",
+      "sha256": "166d1f3d2e91e5e9806ec335d688d4915c9f69ec5bb58d78b7878cf661fed577"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Automation/Finish.v",
+      "sha256": "e1755c2f0414ad1fd59655e3943d9181e335657543d4be709fc27bcc95d9ad18"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Automation/Switches/RegionFaultCastHypotheses.v",
+      "sha256": "628613fe938f4611c4e7eedb3045263d0a36893cf741bb1e7a74734d39df0156"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Proofs/Tests/RegionFaultCastHypotheses.v",
+      "sha256": "24972d1d9ede702b77ff0483afd989bb7ea7b01b6fa31e646f72a6b7639f1bbb"
+    }
+  ],
+  "inputs_per_arm": 13129,
+  "both_input_maps_equal": true,
+  "all_input_hashes_match": true,
+  "generated_inputs": 9321,
+  "generated_hashes_match": true,
+  "native_replayed": false
+}

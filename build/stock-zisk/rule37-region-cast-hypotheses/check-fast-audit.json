@@ -1,0 +1,19 @@
+{
+  "result": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-gates-001/check-fast-result.json",
+    "sha256": "c243fcf95cf46ce4d7b7a123bf40a087a228ca2cafd6669561c7be7bc3bc58ba"
+  },
+  "log": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-gates-001/check-fast.log",
+    "sha256": "10f029c718d67a0b11fe7432c88845c9930aa68e2a80d93021498b2996a0b8ad"
+  },
+  "source_tree": "c6768f87a74e7285196c63f1b644cbdc89e41ab0",
+  "root": "bca6121a2c0343356f73ac4b7b83fa4e225753c5",
+  "both_13129_input_sets_match": true,
+  "generated_9321_inputs_match": true,
+  "four_production_hashes_match": true,
+  "exit_code": 0,
+  "workers": 6,
+  "gate_class": "child",
+  "native_replayed": false
+}

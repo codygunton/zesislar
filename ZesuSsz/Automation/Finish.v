@@ -568,7 +568,8 @@ Ltac zesu_search_switches := constr:([
   ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard;
   ZesuSsz.Automation.Hooks.ZesuStepCanonicalAnchor;
   ZesuSsz.Automation.Hooks.ZesuStepCanonicalPureConjunction;
-  ZesuSsz.Automation.Hooks.ZesuStepByteListContainment]).
+  ZesuSsz.Automation.Hooks.ZesuStepByteListContainment;
+  ZesuSsz.Automation.Hooks.ZesuStepRegionFaultCastHypotheses]).
 
 Ltac zesu_run :=
   let switches := zesu_search_switches in

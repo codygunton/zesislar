@@ -1,0 +1,45 @@
+{
+  "root": "bca6121a2c0343356f73ac4b7b83fa4e225753c5",
+  "oracle_root": "2b3fefa4c642b2671e162cff3995d582ff5663c4",
+  "oracle_audit": "/home/cody/zesislar/.worktrees/worker2-child-platform-i52-fault-pruning/_build/i52-arithmetic-replay-mcp-006/audit.json",
+  "oracle_audit_sha256": "f8f4bdfde30123d296f37ed66384ab12b48dab34819b103b66cdc47ea5d89a35",
+  "switch": "ZesuStepRegionFaultCastHypotheses",
+  "site": "Immediately before bv_solve in zesu_region_fault_arithmetic, after existing signed rewrites.",
+  "normalization": "Rewrite the exact Z_to_bv_unsigned width value lemma in matching Prop hypotheses.",
+  "guards": [
+    "The goal and hypothesis pass zesu_region_arithmetic_statement.",
+    "The unsigned projection and conversion have syntactically equal widths.",
+    "The existing zesu_condition_has_unresolved_evar follows referenced local definitions and rejects unresolved statement, width, or value terms.",
+    "The helper reports success only when a rewrite changes the state."
+  ],
+  "rollback": "Rejected candidates and forced failure after rewriting have byte-identical complete exports. Successful rewriting can restrict an unrelated open evar context and change its identity. It does not choose its value.",
+  "preservation": "The rewrite changes only the selected hypothesis type. Coq can move that hypothesis in context order. It adds no premises and changes no local definition.",
+  "rejected_alternative": "bv_simplify_arith H1 removes six local definitions in the exact replay. The narrower lemma rewrite preserves them.",
+  "fixtures": [
+    "Generic nonzero cast",
+    "Two cast hypotheses",
+    "Symbolic local value",
+    "Cached OFF",
+    "Nonmatching hypothesis",
+    "Shared-evar rejection",
+    "Unrelated shared-evar preservation",
+    "Successful rewrite followed by rollback",
+    "Exact event7778 arithmetic oracle with the production helper"
+  ],
+  "cost": "Measure client elapsed time for the narrow rewrite, bv_simplify_arith, and no-wrap cast alternative. Label client time separately from native CPU.",
+  "native_comparison_released": false,
+  "production_native_search_executed": false,
+  "cache_placement": "The qualified control retains Hcache after the actual filter prefix. Direct and post-filter helper checks reject cached OFF. Keep the current site.",
+  "previous_design": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-design-002/DESIGN.json",
+    "sha256": "84ba786f2365772886beb8c1844b30910cff6616da4892d80a1362d007741c8e"
+  },
+  "fixture_audit": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/audit.json",
+    "sha256": "20f63e580d27c480308d19dbd8ed8593469e2d657c6e4c2b6ffa4131a4051a00"
+  },
+  "cache_audit": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-placement-mcp-003/audit.json",
+    "sha256": "0f69ec3ea3007776b924caa374e57cf8f674d3b1d26487a9c92596c9592c5e55"
+  }
+}
