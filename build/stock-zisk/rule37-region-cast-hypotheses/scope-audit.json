@@ -1,0 +1,949 @@
+{
+  "root": "bca6121a2c0343356f73ac4b7b83fa4e225753c5",
+  "certificates": 2,
+  "verified_certificates": [
+    {
+      "name": "pruning_cast_native_scope_off",
+      "source_sha256": "84393f5d040b0d777d007247fd9ba46b10c873b99000009a25f0e9b0622aac86",
+      "proof_sha256": "039e69e389c7166a11ae397e5aa26cbc05d3048e30d6dab2a960fd7630ef99e2",
+      "statement": "Lemma pruning_cast_native_scope_off : Coq.Init.Logic.True.",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/retained-objects/pruning_cast_native_scope_off_proof.vo",
+      "object_sha256": "dd731e6354359b44d22bf9421093cbddcd05282b946ecacb5ac5d4d0413a2682",
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "final_groups": {
+        "success": true,
+        "state_id": 3,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/exports/state_3.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "cache": [
+        [
+          "ZesuStepRegionFaultNormalization",
+          "true"
+        ],
+        [
+          "ZesuStepInstructionLookup",
+          "true"
+        ],
+        [
+          "ZesuStepStackWrite",
+          "true"
+        ],
+        [
+          "ZesuStepRamFault",
+          "true"
+        ],
+        [
+          "ZesuStepRegionFault",
+          "true"
+        ],
+        [
+          "ZesuStepLowMask",
+          "true"
+        ],
+        [
+          "ZesuStepIntegerArrayAddress",
+          "true"
+        ],
+        [
+          "ZesuStepRecordWitness",
+          "true"
+        ],
+        [
+          "ZesuStepArrayBounds",
+          "true"
+        ],
+        [
+          "ZesuStepWordArrayHandoff",
+          "true"
+        ],
+        [
+          "ZesuStepReturnBundle",
+          "true"
+        ],
+        [
+          "ReturnWand.ZesuStepReturnWand",
+          "true"
+        ],
+        [
+          "ZesuStepStrictSigned",
+          "true"
+        ],
+        [
+          "ZesuStepListWitness",
+          "true"
+        ],
+        [
+          "ZesuStepTupleWitness",
+          "true"
+        ],
+        [
+          "ZesuStepArrayRegionBounds",
+          "true"
+        ],
+        [
+          "ZesuStepPureFactHints",
+          "true"
+        ],
+        [
+          "ZesuStepKnownPairWitness",
+          "true"
+        ],
+        [
+          "ZesuStepPureWitnessConstraints",
+          "true"
+        ],
+        [
+          "ZesuStepRegisterCollectionSelection",
+          "true"
+        ],
+        [
+          "ZesuStepEvarSideconditionGuard",
+          "true"
+        ],
+        [
+          "ZesuStepEvarImplicationGuard",
+          "true"
+        ],
+        [
+          "ZesuStepCanonicalAnchor",
+          "true"
+        ],
+        [
+          "ZesuStepCanonicalPureConjunction",
+          "true"
+        ],
+        [
+          "ZesuStepByteListContainment",
+          "true"
+        ],
+        [
+          "ZesuStepRegionFaultCastHypotheses",
+          "false"
+        ]
+      ]
+    },
+    {
+      "name": "pruning_cast_native_scope_on",
+      "source_sha256": "ce87c3d689f42de12378ad96b07cac4bcd63d1f2aa2e5f4f526a73fea78a2471",
+      "proof_sha256": "926281efb684430f34813fd87ed0745f89fadee30567ef9c483ecd45da505087",
+      "statement": "Lemma pruning_cast_native_scope_on : Coq.Init.Logic.True.",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/retained-objects/pruning_cast_native_scope_on_proof.vo",
+      "object_sha256": "1d20b4a11a965192b7230ad4ac8ad374bce1b64414ffba441592ede901e036bc",
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "final_groups": {
+        "success": true,
+        "state_id": 8,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/exports/state_8.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "cache": [
+        [
+          "ZesuStepRegionFaultNormalization",
+          "true"
+        ],
+        [
+          "ZesuStepInstructionLookup",
+          "true"
+        ],
+        [
+          "ZesuStepStackWrite",
+          "true"
+        ],
+        [
+          "ZesuStepRamFault",
+          "true"
+        ],
+        [
+          "ZesuStepRegionFault",
+          "true"
+        ],
+        [
+          "ZesuStepLowMask",
+          "true"
+        ],
+        [
+          "ZesuStepIntegerArrayAddress",
+          "true"
+        ],
+        [
+          "ZesuStepRecordWitness",
+          "true"
+        ],
+        [
+          "ZesuStepArrayBounds",
+          "true"
+        ],
+        [
+          "ZesuStepWordArrayHandoff",
+          "true"
+        ],
+        [
+          "ZesuStepReturnBundle",
+          "true"
+        ],
+        [
+          "ReturnWand.ZesuStepReturnWand",
+          "true"
+        ],
+        [
+          "ZesuStepStrictSigned",
+          "true"
+        ],
+        [
+          "ZesuStepListWitness",
+          "true"
+        ],
+        [
+          "ZesuStepTupleWitness",
+          "true"
+        ],
+        [
+          "ZesuStepArrayRegionBounds",
+          "true"
+        ],
+        [
+          "ZesuStepPureFactHints",
+          "true"
+        ],
+        [
+          "ZesuStepKnownPairWitness",
+          "true"
+        ],
+        [
+          "ZesuStepPureWitnessConstraints",
+          "true"
+        ],
+        [
+          "ZesuStepRegisterCollectionSelection",
+          "true"
+        ],
+        [
+          "ZesuStepEvarSideconditionGuard",
+          "true"
+        ],
+        [
+          "ZesuStepEvarImplicationGuard",
+          "true"
+        ],
+        [
+          "ZesuStepCanonicalAnchor",
+          "true"
+        ],
+        [
+          "ZesuStepCanonicalPureConjunction",
+          "true"
+        ],
+        [
+          "ZesuStepByteListContainment",
+          "true"
+        ],
+        [
+          "ZesuStepRegionFaultCastHypotheses",
+          "true"
+        ]
+      ]
+    }
+  ],
+  "records": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/assembly.json",
+      "sha256": "d81b8f4751b2f10b1d83700b85088cf2810c8866ba4a2ce64fdcaacc527788a6",
+      "bytes": 18256
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/exports/state_1.json",
+      "sha256": "9be1d82391438f4c7083960daa20b539245cb6b2ae4fe701967811e8920ffcf9",
+      "bytes": 116
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/exports/state_3.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+      "bytes": 49
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/exports/state_5.json",
+      "sha256": "9be1d82391438f4c7083960daa20b539245cb6b2ae4fe701967811e8920ffcf9",
+      "bytes": 116
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/exports/state_8.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+      "bytes": 49
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/mcp-client.py",
+      "sha256": "a5640830c3c2c52d47274c60d2b8496fb8b8c0a379ef8f6d9b08cf8003f581a7",
+      "bytes": 7534
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/preflight.json",
+      "sha256": "87e67b73c32486cf23bdc87f9033bd6dfd22c9f845dcda832587c23e7b0578f6",
+      "bytes": 306
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/pruning_cast_native_scope_off-batches.json",
+      "sha256": "090835d94cac9eb36a148778b5cbe9886aae53503e314ebda713fff18b6cb23d",
+      "bytes": 1378
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/pruning_cast_native_scope_off.v",
+      "sha256": "84393f5d040b0d777d007247fd9ba46b10c873b99000009a25f0e9b0622aac86",
+      "bytes": 5151
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/pruning_cast_native_scope_off_proof.v",
+      "sha256": "039e69e389c7166a11ae397e5aa26cbc05d3048e30d6dab2a960fd7630ef99e2",
+      "bytes": 7786
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/pruning_cast_native_scope_on-batches.json",
+      "sha256": "aedced1e6ec6804e36eb8b8987ded19c81a1f2f6b006b0f1842938e63073ca62",
+      "bytes": 1598
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/pruning_cast_native_scope_on.v",
+      "sha256": "ce87c3d689f42de12378ad96b07cac4bcd63d1f2aa2e5f4f526a73fea78a2471",
+      "bytes": 5148
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/pruning_cast_native_scope_on_proof.v",
+      "sha256": "926281efb684430f34813fd87ed0745f89fadee30567ef9c483ecd45da505087",
+      "bytes": 7854
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/raw-calls.json",
+      "sha256": "ac0ec6fc48b76a1e52ed35df2ae7431e4258973e7e8017503772a18b065d5c74",
+      "bytes": 84170
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/results.json",
+      "sha256": "ac513f3408742ab0dfee6056ae358634318d5e85b64ba3c18573689ef203dd7c",
+      "bytes": 12599
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/retained-objects/pruning_cast_native_scope_off_proof.vo",
+      "sha256": "dd731e6354359b44d22bf9421093cbddcd05282b946ecacb5ac5d4d0413a2682",
+      "bytes": 130796
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/retained-objects/pruning_cast_native_scope_on_proof.vo",
+      "sha256": "1d20b4a11a965192b7230ad4ac8ad374bce1b64414ffba441592ede901e036bc",
+      "bytes": 130949
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/schemas.json",
+      "sha256": "7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a",
+      "bytes": 18498
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-004/session-closure.json",
+      "sha256": "b3bc27a62dd87ccb20bbf56377853654e51cf665416c893926c6dc0f24a1f1cd",
+      "bytes": 100
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-visibility-mcp-001/Visibility.v",
+      "sha256": "15ca6271c0632d2646fcc95fc2291ffc271fd81410fe10dff53e6fad8ccbb342",
+      "bytes": 2441
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-visibility-mcp-001/assembly.json",
+      "sha256": "4e1ee4995fdac70f4e7a176f4c4cafbb6140abfade859e374bea38126361ac32",
+      "bytes": 29897
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-visibility-mcp-001/exports/state_1.json",
+      "sha256": "9be1d82391438f4c7083960daa20b539245cb6b2ae4fe701967811e8920ffcf9",
+      "bytes": 116
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-visibility-mcp-001/mcp-client.py",
+      "sha256": "021c778f2d4547d8a7283416ec80c99aefc0500dfc0c15f6d3efbe673242301d",
+      "bytes": 5529
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-visibility-mcp-001/preflight.json",
+      "sha256": "8dfdc73be9b737551d3b0a798376cc30e6ab21d582269027506e829c66813211",
+      "bytes": 213
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-visibility-mcp-001/raw-calls.json",
+      "sha256": "cf43bccf98c2adfe28db3c05fd6a87bc960cf70c7289bf634f6959411ef3e388",
+      "bytes": 12742
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-visibility-mcp-001/results.json",
+      "sha256": "d3171b717dea0484189a0e7eb658568a2ab7dd20c2f1e4cfe094aeac10b26179",
+      "bytes": 7315
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-visibility-mcp-001/schemas.json",
+      "sha256": "7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a",
+      "bytes": 18498
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-visibility-mcp-001/session-closure.json",
+      "sha256": "5e27f40185366b4faf4f13e52d8a832002338767cb6735def997ebeaa9535b33",
+      "bytes": 99
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v",
+      "sha256": "fc9dc5b53e1c87c635ef6bbe5b4cd8447ec0613472e04ebb4e6906f15f9745c9",
+      "bytes": 16218
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemBranchGuardFacts.vo",
+      "sha256": "2d9fc9a8951b30c8a34a4b27cadf0f1aefc06231ad4ca9fbf6d787489cde007d",
+      "bytes": 217533
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemCanonicalAnchors.v",
+      "sha256": "5ef4f78e819ccd33c962a88339b95d039e20dfa61b227caa2b79d009ac1f40b0",
+      "bytes": 10301
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemCanonicalAnchors.vo",
+      "sha256": "f457b42b66d18b03b723862c15c9c6c559d2276f09121682d4fb59bfe6e7fa8d",
+      "bytes": 141369
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemCompletedFoldFacts.v",
+      "sha256": "82c37d062ce0ecf2df36ff7babb0369683e7a5c63815b5263629a1fa3e41019d",
+      "bytes": 1072
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemCompletedFoldFacts.vo",
+      "sha256": "34d90a85e42291d594c991d37583a1c018976f70d6e2b8336e55114a226e87a4",
+      "bytes": 131452
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.v",
+      "sha256": "8553b8925aac534d89eaf9553a3eebc735518bf3e8d0a5bc4ec7ae631c6c5c2d",
+      "bytes": 19645
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.vo",
+      "sha256": "61911facf5d72e95170ff302d0fc4450ad44289ac53434aab9bec2ac7e70b408",
+      "bytes": 239741
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemDataWitnessFacts.v",
+      "sha256": "b68804cc4ae99c43b93dbb0a3dd167b82f7660e3c23c11634869ee74dae4d395",
+      "bytes": 2404
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemDataWitnessFacts.vo",
+      "sha256": "e7a3184e9b9d737bd1c721a231ea6f3d0a8147531ecbfdbb96697513599bde1a",
+      "bytes": 136000
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemEntryByteIndexFacts.v",
+      "sha256": "f9e88e7bfe4ef715fc0af9b5005f0fed49f40eb6987f8d9818fcd5e4c5e0c015",
+      "bytes": 3310
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemEntryByteIndexFacts.vo",
+      "sha256": "36308481f3fbd4126225c2dda38f7ae8cc8f919a3b97ba4fc96d24d846d1d4f5",
+      "bytes": 140278
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
+      "sha256": "c650ac48e8c8d1a64d760c7a71eaea84579b706611f139af97d1bc744680cb8d",
+      "bytes": 4736
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemEntryGuardFacts.vo",
+      "sha256": "9825c775d3b89e51366bdfe6cb82e1729677cfc88c37ce39726dcb88b50fecd7",
+      "bytes": 144076
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemFoldBackEdgeWitnesses.v",
+      "sha256": "3e3ab0788e1efdc487bf92eaaed3633b3e144475ffb725a68879866d1884a677",
+      "bytes": 2830
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemFoldBackEdgeWitnesses.vo",
+      "sha256": "253437bdc001e14e4238147fc8ea442109484b9acefc5d428cb74de769104fd5",
+      "bytes": 133448
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemFoldExitFacts.v",
+      "sha256": "60eb61b7539c65edccefdf9c1ba2827403441b862c7d21a1f0c58febd3fba805",
+      "bytes": 4940
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemFoldExitFacts.vo",
+      "sha256": "a1843dbd56e21a65a905e41a9dcf6b1ea1808312111b7082f19f7768462b8e3a",
+      "bytes": 166353
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemFoldInitializationWitnesses.v",
+      "sha256": "f1cc75393d97f51dbbc1cf95c07a9fe0fde25e9d9f283aa2d02d6c1ba4c213c3",
+      "bytes": 6726
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemFoldInitializationWitnesses.vo",
+      "sha256": "33a84308a84373b58f018ac8ac90bf3f6c9596553f24ae601a7f8d13852b8029",
+      "bytes": 136537
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemFoldRejectionFacts.v",
+      "sha256": "8d98ea60363456d648bfe3ec1b36e14208cd837b28d24659056e4d130de35754",
+      "bytes": 3162
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemFoldRejectionFacts.vo",
+      "sha256": "b8ba1d676cca8c656a2053af2f2f0b8c0004da881a0f23aad1236265e8426033",
+      "bytes": 135743
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.v",
+      "sha256": "312f2fa8b2b01338bc365aac83dac66609641e63e7d910e90d1fe06fb027af7d",
+      "bytes": 25429
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.vo",
+      "sha256": "4214525579fb1f098ca8c22d81cdb42db5cd90b34c7fa8f13070b08c4379d1cd",
+      "bytes": 184582
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemFoldZeroFacts.v",
+      "sha256": "0009ada7391f083a5b66706e6862d6736df601845b87e4cbe917183527e507a9",
+      "bytes": 1307
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemFoldZeroFacts.vo",
+      "sha256": "b6700b16c8ddd5e636d1aea7fb5cd8a4d9431e9aeb003c306f479e8b31369cc7",
+      "bytes": 127605
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v",
+      "sha256": "95401eda743e1aee52d58edd215fd6628ba97710c280206e27e6665d6192e457",
+      "bytes": 20352
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.vo",
+      "sha256": "4eb63f81dfa7dbb89639dddebf436df70872e8569c1a89ac30b9873beba0b1fa",
+      "bytes": 203550
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemInitializationPureFacts.v",
+      "sha256": "709066321f0303c05ed929750a92464d0245d393e35561efd6713035dbc61cb3",
+      "bytes": 2609
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemInitializationPureFacts.vo",
+      "sha256": "a61a1341695652cffd03508590ff564e7036c979a589ff3bae5f1894b9624050",
+      "bytes": 137720
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemInputHeadWordFacts.v",
+      "sha256": "fe969fbbd93c470505d1ff499911c8c3834b0042b6f38e4bce95ddad6981c6b3",
+      "bytes": 2907
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemInputHeadWordFacts.vo",
+      "sha256": "15d8e7d5e7170bd17a221a952f6baa7ed7e18823b057eeda45a0777e87c9e282",
+      "bytes": 131208
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemOutcomeWitnessFacts.v",
+      "sha256": "f82c15722474685a39d5dc38af2703923ac19377745d590ada4a59185c937fef",
+      "bytes": 1178
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemOutcomeWitnessFacts.vo",
+      "sha256": "dcba06902c330f668d7f88671244ed037efd29dae0da64b948ff29c5752e9d35",
+      "bytes": 127918
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemOutputBaseWitnessFacts.v",
+      "sha256": "3a03223467769c763a0489c5d401ac9972a8795fafab7be398ceab41498ee8b4",
+      "bytes": 2680
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemOutputBaseWitnessFacts.vo",
+      "sha256": "a9bda1f5cb71a3fe3cfe8fe5df2888d7ba9307d3040a92f0cd34a35bca667f2e",
+      "bytes": 132132
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemOutputWitnessSelections.v",
+      "sha256": "86cbeb4fd17fd7492c45199599debc376361b36ff691689038135eba693c1b7d",
+      "bytes": 12831
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemOutputWitnessSelections.vo",
+      "sha256": "d3dd9aa3f879e7a28a818698e145da0bf01a2ddbfc5d9eb9bb265a2e437f3879",
+      "bytes": 229651
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemRawOutputFacts.v",
+      "sha256": "1070d24efac9ab70ac04f73ad13e68efb5c58ce1a2097025f0b78dd48f589d3f",
+      "bytes": 8013
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemRawOutputFacts.vo",
+      "sha256": "fc4b938e3ac187851d5f5378928d223a91f69f6919be2e841bb7b8eb28b6a6fd",
+      "bytes": 208821
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemS40GuardFacts.v",
+      "sha256": "f3e7b88605f42f728c43f87a0eeaee0f9284fb70fcdfc9f6a5eaeca279367d62",
+      "bytes": 12357
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemS40GuardFacts.vo",
+      "sha256": "b3fdbe862ba63f56254812e3ad6d82cc0c2bc27f58191f5a7210abbcc2ba37af",
+      "bytes": 168951
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemSavedFrameWitnesses.v",
+      "sha256": "e4d4738e2e88daa6a3cfd46eb8e2ad723ca5da027db480472684e831c7075c38",
+      "bytes": 5660
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemSavedFrameWitnesses.vo",
+      "sha256": "f13b72d7247a1957bbe2149405947b661dc1e64296d8178654f97cf517b052da",
+      "bytes": 145775
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemShortListHandoffFacts.v",
+      "sha256": "d409e6d431af0fc9076b648d8273fd6cba5f8ebad95b819c084b22f4bb3f26d4",
+      "bytes": 1081
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemShortListHandoffFacts.vo",
+      "sha256": "3cc8bd65527cb4984dceb590971a1c99512438abbb66721a31f994398eebc20c",
+      "bytes": 128505
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemStringSuccessorWitnesses.v",
+      "sha256": "4c9d511d36d9ee36170926bfd2102135c14dda3b310292790e53ab663a4d9865",
+      "bytes": 6710
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemStringSuccessorWitnesses.vo",
+      "sha256": "95ef914db50d9ecdb410add13c610b142b16edaaaff6b75d2deac5af8f0416c7",
+      "bytes": 173029
+    }
+  ],
+  "scope": {
+    "baseline_switches": 27,
+    "ON_switches": 28,
+    "cache_entries": 26,
+    "classes_outside_cache": [
+      "SwitchDispatch",
+      "PureFactExistential"
+    ],
+    "I39": "unbound",
+    "historical_exclusions": [
+      {
+        "class": "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepArrayLoadPriority",
+        "switch": "ArrayLoadPriority",
+        "visibility": "visible",
+        "exclusion": "The exact scope source has Fail Definition for this class."
+      },
+      {
+        "class": "ZesuSsz.Automation.BoundedArithmetic.ZesuStepBoundedArithmetic",
+        "switch": "BoundedArithmetic",
+        "visibility": "visible",
+        "exclusion": "The exact scope source has Fail Definition for this class."
+      },
+      {
+        "class": "ZesuSsz.Automation.ByteFold.ZesuStepByteFold",
+        "switch": "ByteFold",
+        "visibility": "visible",
+        "exclusion": "The exact scope source has Fail Definition for this class."
+      },
+      {
+        "class": "ZesuSsz.Automation.CallReturn.ZesuStepCallReturn",
+        "switch": "CallReturn",
+        "visibility": "visible",
+        "exclusion": "The exact scope source has Fail Definition for this class."
+      },
+      {
+        "class": "ZesuSsz.Automation.CallReturnSpecTable.ZesuStepCallReturnSpecTable",
+        "switch": "CallReturnSpecTable",
+        "visibility": "visible",
+        "exclusion": "The exact scope source has Fail Definition for this class."
+      },
+      {
+        "class": "ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch",
+        "switch": "ConjunctMatch",
+        "visibility": "visible",
+        "exclusion": "The exact scope source has Fail Definition for this class."
+      },
+      {
+        "class": "ZesuSsz.Automation.ExistentialArrayRestore.ZesuStepExistentialArrayRestore",
+        "switch": "ExistentialArrayRestore",
+        "visibility": "visible",
+        "exclusion": "The exact scope source has Fail Definition for this class."
+      },
+      {
+        "class": "ZesuSsz.Automation.InstrPreAddress.ZesuStepInstrPreAddress",
+        "switch": "InstrPreAddress",
+        "visibility": "absent from exact native imports",
+        "exclusion": "The exact scope source has Fail Check for this absent class."
+      },
+      {
+        "class": "ZesuSsz.Automation.InteriorByteSlice.ZesuStepInteriorByteSlice",
+        "switch": "InteriorByteSlice",
+        "visibility": "visible",
+        "exclusion": "The exact scope source has Fail Definition for this class."
+      },
+      {
+        "class": "ZesuSsz.Automation.LoadedTrace.ZesuStepLoadedTrace",
+        "switch": "LoadedTrace",
+        "visibility": "visible",
+        "exclusion": "The exact scope source has Fail Definition for this class."
+      },
+      {
+        "class": "ZesuSsz.Automation.LookupReduce.ZesuStepLookupReduce",
+        "switch": "LookupReduce",
+        "visibility": "visible",
+        "exclusion": "The exact scope source has Fail Definition for this class."
+      },
+      {
+        "class": "ZesuSsz.Automation.OutcomeHandoff.ZesuStepOutcomeHandoff",
+        "switch": "OutcomeHandoff",
+        "visibility": "visible",
+        "exclusion": "The exact scope source has Fail Definition for this class."
+      },
+      {
+        "class": "ZesuSsz.Automation.SealedCoverage.ZesuStepSealedOpen",
+        "switch": "SealedOpen",
+        "visibility": "visible",
+        "exclusion": "The exact scope source has Fail Definition for this class."
+      },
+      {
+        "class": "ZesuSsz.Automation.SpecPrefix.ZesuStepSpecTail",
+        "switch": "SpecTail",
+        "visibility": "visible",
+        "exclusion": "The exact scope source has Fail Definition for this class."
+      },
+      {
+        "class": "ZesuSsz.Automation.TracePrefixTail.ZesuStepTracePrefixTail",
+        "switch": "TracePrefixTail",
+        "visibility": "visible",
+        "exclusion": "The exact scope source has Fail Definition for this class."
+      },
+      {
+        "class": "ZesuSsz.Automation.PureFacts.ZesuStepWitnessArith",
+        "switch": "WitnessArith",
+        "visibility": "visible",
+        "exclusion": "The exact scope source has Fail Definition for this class."
+      },
+      {
+        "class": "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepWordArrayLookup",
+        "switch": "WordArrayLookup",
+        "visibility": "visible",
+        "exclusion": "The exact scope source has Fail Definition for this class."
+      }
+    ]
+  },
+  "hint_umbrella": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemHints.v",
+    "sha256": "08ffa2711f008dbc9fb7ef05c4b5edc74c802d533678a5f8fee19cd85052361a",
+    "modules": [
+      "ZesuSsz.Compliance.DecodeItemBranchGuardFacts",
+      "ZesuSsz.Compliance.DecodeItemCanonicalAnchors",
+      "ZesuSsz.Compliance.DecodeItemCompletedFoldFacts",
+      "ZesuSsz.Compliance.DecodeItemCorrectedWitnessSelections",
+      "ZesuSsz.Compliance.DecodeItemDataWitnessFacts",
+      "ZesuSsz.Compliance.DecodeItemEntryByteIndexFacts",
+      "ZesuSsz.Compliance.DecodeItemEntryGuardFacts",
+      "ZesuSsz.Compliance.DecodeItemFoldBackEdgeWitnesses",
+      "ZesuSsz.Compliance.DecodeItemFoldExitFacts",
+      "ZesuSsz.Compliance.DecodeItemFoldInitializationWitnesses",
+      "ZesuSsz.Compliance.DecodeItemFoldRejectionFacts",
+      "ZesuSsz.Compliance.DecodeItemFoldSuccessorWitnesses",
+      "ZesuSsz.Compliance.DecodeItemFoldZeroFacts",
+      "ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts",
+      "ZesuSsz.Compliance.DecodeItemInitializationPureFacts",
+      "ZesuSsz.Compliance.DecodeItemInputHeadWordFacts",
+      "ZesuSsz.Compliance.DecodeItemOutcomeWitnessFacts",
+      "ZesuSsz.Compliance.DecodeItemOutputBaseWitnessFacts",
+      "ZesuSsz.Compliance.DecodeItemOutputWitnessSelections",
+      "ZesuSsz.Compliance.DecodeItemRawOutputFacts",
+      "ZesuSsz.Compliance.DecodeItemS40GuardFacts",
+      "ZesuSsz.Compliance.DecodeItemSavedFrameWitnesses",
+      "ZesuSsz.Compliance.DecodeItemShortListHandoffFacts",
+      "ZesuSsz.Compliance.DecodeItemStringSuccessorWitnesses"
+    ]
+  },
+  "hint_bindings": {
+    "ZesuSsz.Compliance.DecodeItemBranchGuardFacts": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v",
+      "source_sha256": "fc9dc5b53e1c87c635ef6bbe5b4cd8447ec0613472e04ebb4e6906f15f9745c9",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemBranchGuardFacts.vo",
+      "object_sha256": "2d9fc9a8951b30c8a34a4b27cadf0f1aefc06231ad4ca9fbf6d787489cde007d"
+    },
+    "ZesuSsz.Compliance.DecodeItemCanonicalAnchors": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemCanonicalAnchors.v",
+      "source_sha256": "5ef4f78e819ccd33c962a88339b95d039e20dfa61b227caa2b79d009ac1f40b0",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemCanonicalAnchors.vo",
+      "object_sha256": "f457b42b66d18b03b723862c15c9c6c559d2276f09121682d4fb59bfe6e7fa8d"
+    },
+    "ZesuSsz.Compliance.DecodeItemCompletedFoldFacts": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemCompletedFoldFacts.v",
+      "source_sha256": "82c37d062ce0ecf2df36ff7babb0369683e7a5c63815b5263629a1fa3e41019d",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemCompletedFoldFacts.vo",
+      "object_sha256": "34d90a85e42291d594c991d37583a1c018976f70d6e2b8336e55114a226e87a4"
+    },
+    "ZesuSsz.Compliance.DecodeItemCorrectedWitnessSelections": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.v",
+      "source_sha256": "8553b8925aac534d89eaf9553a3eebc735518bf3e8d0a5bc4ec7ae631c6c5c2d",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.vo",
+      "object_sha256": "61911facf5d72e95170ff302d0fc4450ad44289ac53434aab9bec2ac7e70b408"
+    },
+    "ZesuSsz.Compliance.DecodeItemDataWitnessFacts": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemDataWitnessFacts.v",
+      "source_sha256": "b68804cc4ae99c43b93dbb0a3dd167b82f7660e3c23c11634869ee74dae4d395",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemDataWitnessFacts.vo",
+      "object_sha256": "e7a3184e9b9d737bd1c721a231ea6f3d0a8147531ecbfdbb96697513599bde1a"
+    },
+    "ZesuSsz.Compliance.DecodeItemEntryByteIndexFacts": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemEntryByteIndexFacts.v",
+      "source_sha256": "f9e88e7bfe4ef715fc0af9b5005f0fed49f40eb6987f8d9818fcd5e4c5e0c015",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemEntryByteIndexFacts.vo",
+      "object_sha256": "36308481f3fbd4126225c2dda38f7ae8cc8f919a3b97ba4fc96d24d846d1d4f5"
+    },
+    "ZesuSsz.Compliance.DecodeItemEntryGuardFacts": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
+      "source_sha256": "c650ac48e8c8d1a64d760c7a71eaea84579b706611f139af97d1bc744680cb8d",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemEntryGuardFacts.vo",
+      "object_sha256": "9825c775d3b89e51366bdfe6cb82e1729677cfc88c37ce39726dcb88b50fecd7"
+    },
+    "ZesuSsz.Compliance.DecodeItemFoldBackEdgeWitnesses": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemFoldBackEdgeWitnesses.v",
+      "source_sha256": "3e3ab0788e1efdc487bf92eaaed3633b3e144475ffb725a68879866d1884a677",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemFoldBackEdgeWitnesses.vo",
+      "object_sha256": "253437bdc001e14e4238147fc8ea442109484b9acefc5d428cb74de769104fd5"
+    },
+    "ZesuSsz.Compliance.DecodeItemFoldExitFacts": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemFoldExitFacts.v",
+      "source_sha256": "60eb61b7539c65edccefdf9c1ba2827403441b862c7d21a1f0c58febd3fba805",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemFoldExitFacts.vo",
+      "object_sha256": "a1843dbd56e21a65a905e41a9dcf6b1ea1808312111b7082f19f7768462b8e3a"
+    },
+    "ZesuSsz.Compliance.DecodeItemFoldInitializationWitnesses": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemFoldInitializationWitnesses.v",
+      "source_sha256": "f1cc75393d97f51dbbc1cf95c07a9fe0fde25e9d9f283aa2d02d6c1ba4c213c3",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemFoldInitializationWitnesses.vo",
+      "object_sha256": "33a84308a84373b58f018ac8ac90bf3f6c9596553f24ae601a7f8d13852b8029"
+    },
+    "ZesuSsz.Compliance.DecodeItemFoldRejectionFacts": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemFoldRejectionFacts.v",
+      "source_sha256": "8d98ea60363456d648bfe3ec1b36e14208cd837b28d24659056e4d130de35754",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemFoldRejectionFacts.vo",
+      "object_sha256": "b8ba1d676cca8c656a2053af2f2f0b8c0004da881a0f23aad1236265e8426033"
+    },
+    "ZesuSsz.Compliance.DecodeItemFoldSuccessorWitnesses": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.v",
+      "source_sha256": "312f2fa8b2b01338bc365aac83dac66609641e63e7d910e90d1fe06fb027af7d",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.vo",
+      "object_sha256": "4214525579fb1f098ca8c22d81cdb42db5cd90b34c7fa8f13070b08c4379d1cd"
+    },
+    "ZesuSsz.Compliance.DecodeItemFoldZeroFacts": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemFoldZeroFacts.v",
+      "source_sha256": "0009ada7391f083a5b66706e6862d6736df601845b87e4cbe917183527e507a9",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemFoldZeroFacts.vo",
+      "object_sha256": "b6700b16c8ddd5e636d1aea7fb5cd8a4d9431e9aeb003c306f479e8b31369cc7"
+    },
+    "ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v",
+      "source_sha256": "95401eda743e1aee52d58edd215fd6628ba97710c280206e27e6665d6192e457",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.vo",
+      "object_sha256": "4eb63f81dfa7dbb89639dddebf436df70872e8569c1a89ac30b9873beba0b1fa"
+    },
+    "ZesuSsz.Compliance.DecodeItemInitializationPureFacts": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemInitializationPureFacts.v",
+      "source_sha256": "709066321f0303c05ed929750a92464d0245d393e35561efd6713035dbc61cb3",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemInitializationPureFacts.vo",
+      "object_sha256": "a61a1341695652cffd03508590ff564e7036c979a589ff3bae5f1894b9624050"
+    },
+    "ZesuSsz.Compliance.DecodeItemInputHeadWordFacts": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemInputHeadWordFacts.v",
+      "source_sha256": "fe969fbbd93c470505d1ff499911c8c3834b0042b6f38e4bce95ddad6981c6b3",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemInputHeadWordFacts.vo",
+      "object_sha256": "15d8e7d5e7170bd17a221a952f6baa7ed7e18823b057eeda45a0777e87c9e282"
+    },
+    "ZesuSsz.Compliance.DecodeItemOutcomeWitnessFacts": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemOutcomeWitnessFacts.v",
+      "source_sha256": "f82c15722474685a39d5dc38af2703923ac19377745d590ada4a59185c937fef",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemOutcomeWitnessFacts.vo",
+      "object_sha256": "dcba06902c330f668d7f88671244ed037efd29dae0da64b948ff29c5752e9d35"
+    },
+    "ZesuSsz.Compliance.DecodeItemOutputBaseWitnessFacts": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemOutputBaseWitnessFacts.v",
+      "source_sha256": "3a03223467769c763a0489c5d401ac9972a8795fafab7be398ceab41498ee8b4",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemOutputBaseWitnessFacts.vo",
+      "object_sha256": "a9bda1f5cb71a3fe3cfe8fe5df2888d7ba9307d3040a92f0cd34a35bca667f2e"
+    },
+    "ZesuSsz.Compliance.DecodeItemOutputWitnessSelections": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemOutputWitnessSelections.v",
+      "source_sha256": "86cbeb4fd17fd7492c45199599debc376361b36ff691689038135eba693c1b7d",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemOutputWitnessSelections.vo",
+      "object_sha256": "d3dd9aa3f879e7a28a818698e145da0bf01a2ddbfc5d9eb9bb265a2e437f3879"
+    },
+    "ZesuSsz.Compliance.DecodeItemRawOutputFacts": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemRawOutputFacts.v",
+      "source_sha256": "1070d24efac9ab70ac04f73ad13e68efb5c58ce1a2097025f0b78dd48f589d3f",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemRawOutputFacts.vo",
+      "object_sha256": "fc4b938e3ac187851d5f5378928d223a91f69f6919be2e841bb7b8eb28b6a6fd"
+    },
+    "ZesuSsz.Compliance.DecodeItemS40GuardFacts": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemS40GuardFacts.v",
+      "source_sha256": "f3e7b88605f42f728c43f87a0eeaee0f9284fb70fcdfc9f6a5eaeca279367d62",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemS40GuardFacts.vo",
+      "object_sha256": "b3fdbe862ba63f56254812e3ad6d82cc0c2bc27f58191f5a7210abbcc2ba37af"
+    },
+    "ZesuSsz.Compliance.DecodeItemSavedFrameWitnesses": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemSavedFrameWitnesses.v",
+      "source_sha256": "e4d4738e2e88daa6a3cfd46eb8e2ad723ca5da027db480472684e831c7075c38",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemSavedFrameWitnesses.vo",
+      "object_sha256": "f13b72d7247a1957bbe2149405947b661dc1e64296d8178654f97cf517b052da"
+    },
+    "ZesuSsz.Compliance.DecodeItemShortListHandoffFacts": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemShortListHandoffFacts.v",
+      "source_sha256": "d409e6d431af0fc9076b648d8273fd6cba5f8ebad95b819c084b22f4bb3f26d4",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemShortListHandoffFacts.vo",
+      "object_sha256": "3cc8bd65527cb4984dceb590971a1c99512438abbb66721a31f994398eebc20c"
+    },
+    "ZesuSsz.Compliance.DecodeItemStringSuccessorWitnesses": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Compliance/DecodeItemStringSuccessorWitnesses.v",
+      "source_sha256": "4c9d511d36d9ee36170926bfd2102135c14dda3b310292790e53ab663a4d9865",
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Compliance/DecodeItemStringSuccessorWitnesses.vo",
+      "object_sha256": "95ef914db50d9ecdb410add13c610b142b16edaaaff6b75d2deac5af8f0416c7"
+    }
+  },
+  "successful_prior_activation_probes": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-native-scope-mcp-003/raw-calls.json",
+  "retained_failures": [
+    "scope001 combined tactic failure",
+    "scope002 exceeded max20 tactics",
+    "scope003 compiled an unavailable excluded-class reference"
+  ],
+  "native_imports_unchanged": true,
+  "native_execution": false,
+  "claim_limit": "This certificate checks activation and exclusions. It does not prove native rule firing or closure."
+}

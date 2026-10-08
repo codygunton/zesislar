@@ -1342,6 +1342,26 @@ Ltac zesu_region_reduce_closed term :=
       else change_no_check term with reduced in * ))
   else reduce_closed term.
 
+Class ZesuStepRegionFaultCastHypotheses : Prop := {}.
+
+(* Normalize retained unsigned conversions without unfolding local definitions. *)
+Ltac zesu_region_fault_cast_hypotheses_if_enabled :=
+  zesu_switch_enabled constr:(ZesuStepRegionFaultCastHypotheses);
+  lazymatch goal with
+  | |- ?statement => zesu_region_arithmetic_statement statement
+  end;
+  progress (repeat match goal with
+  | Hcast : context[@bv_unsigned ?width (Z_to_bv ?castWidth ?value)] |- _ =>
+      constr_eq width castWidth;
+      let statement := type of Hcast in
+      lazymatch type of statement with Prop => idtac end;
+      zesu_region_arithmetic_statement statement;
+      assert_fails (zesu_condition_has_unresolved_evar statement);
+      assert_fails (zesu_condition_has_unresolved_evar width);
+      assert_fails (zesu_condition_has_unresolved_evar value);
+      progress (rewrite (Z_to_bv_unsigned width value) in Hcast)
+  end).
+
 Ltac zesu_region_fault_arithmetic :=
   lazymatch goal with |- ~ _ => intro | _ => idtac end;
   repeat first [progress zesu_split_folded_pure |
@@ -1371,6 +1391,7 @@ Ltac zesu_region_fault_arithmetic :=
       rewrite (zesu_signed_zero_extend_64_128 value) in H
   end;
   rewrite ?zesu_signed_zero_extend_64_128;
+  try zesu_region_fault_cast_hypotheses_if_enabled;
   first [bv_solve |
     match goal with Hnegative : ~ ?bound |- _ =>
       zesu_region_arithmetic_statement bound;

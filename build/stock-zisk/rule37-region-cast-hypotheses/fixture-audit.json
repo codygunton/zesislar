@@ -1,0 +1,854 @@
+{
+  "root": "bca6121a2c0343356f73ac4b7b83fa4e225753c5",
+  "certificates": [
+    {
+      "name": "region_cast_shared_evar_rejected",
+      "statement": "Lemma region_cast_shared_evar_rejected : True.",
+      "statement_sha256": "f59cfebdd3ffa7196cad6f640399432f7014c7efb18e760ee40b8df594acc225",
+      "source": {
+        "name": "region_cast_shared_evar_rejected",
+        "file": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_shared_evar_rejected.v",
+        "proof_file": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_shared_evar_rejected_proof.v",
+        "body": "  evar (pending : Z).\n  assert (Hopen : bv_unsigned (Z_to_bv 64 pending) =\n    bv_unsigned (Z_to_bv 64 pending)) by reflexivity.\n  assert (Hprobe : 0 <= bv_unsigned (Z_to_bv 64 pending)).\n  1: (first [zesu_region_fault_cast_hypotheses_if_enabled;\n    fail 1 \"unexpected normalization success\" | idtac]).\n  1: (let value := eval unfold pending in pending in\n    has_evar value; unify value 0%Z; bv_solve).\n  exact I.",
+        "setup": "  evar (pending : Z).\n  assert (Hopen : bv_unsigned (Z_to_bv 64 pending) =\n    bv_unsigned (Z_to_bv 64 pending)) by reflexivity.\n  assert (Hprobe : 0 <= bv_unsigned (Z_to_bv 64 pending)).\n",
+        "action": "1: (first [zesu_region_fault_cast_hypotheses_if_enabled;\n    fail 1 \"unexpected normalization success\" | idtac]).",
+        "rest": "\n  1: (let value := eval unfold pending in pending in\n    has_evar value; unify value 0%Z; bv_solve).\n  exact I.",
+        "expected_unchanged": true,
+        "source_sha256": "fd86993ddae9948eb0f4142930928c7adf91205796decf450d73190df6fea7ea",
+        "proof_sha256": "11a1020875134acb50e2bab8033ea81d16873495bc3919ffb5a4e7de6ba9e1ca"
+      },
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/retained-objects/region_cast_shared_evar_rejected_proof.vo",
+      "object_sha256": "62e2e035532c4001d6997e5896a1122fa200dd7b829d8852696bd8dc26b2a179",
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "final_groups": {
+        "success": true,
+        "state_id": 7,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_7.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "preservation": {
+        "name": "region_cast_shared_evar_rejected",
+        "before": {
+          "success": true,
+          "state_id": 4,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_4.json",
+          "sha256": "355dd45e339acce7d083dc8ec5cff41c2998a422e5c9b25d60899d3a304c8421",
+          "bytes": 651,
+          "active_goals": 2,
+          "stack_entries": 0,
+          "shelved_goals": 1,
+          "given_up_goals": 0,
+          "stack_frame_goal_counts": []
+        },
+        "after": {
+          "success": true,
+          "state_id": 5,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_5.json",
+          "sha256": "355dd45e339acce7d083dc8ec5cff41c2998a422e5c9b25d60899d3a304c8421",
+          "bytes": 651,
+          "active_goals": 2,
+          "stack_entries": 0,
+          "shelved_goals": 1,
+          "given_up_goals": 0,
+          "stack_frame_goal_counts": []
+        },
+        "trial": {
+          "success": true,
+          "results": [
+            {
+              "tactic": "1: (first [zesu_region_fault_cast_hypotheses_if_enabled;\n    fail 1 \"unexpected normalization success\" | idtac]).",
+              "success": true,
+              "goals": "Goal 1:\npending := ?pending : Z\nHopen : bv_unsigned (Z_to_bv 64 pending) = bv_unsigned (Z_to_bv 64 pending)\n|-0 \u2264 bv_unsigned (Z_to_bv 64 pending)\n\nGoal 2:\npending := ?pending : Z\nHopen : bv_unsigned (Z_to_bv 64 pending) = bv_unsigned (Z_to_bv 64 pending)\nHprobe : 0 \u2264 bv_unsigned (Z_to_bv 64 pending)\n|-True",
+              "proof_finished": false,
+              "shelved_goals": 1,
+              "focus_depth": 0
+            }
+          ],
+          "from_state_id": 4
+        }
+      },
+      "shelf_change": null
+    },
+    {
+      "name": "region_cast_nested_evar_rejected",
+      "statement": "Lemma region_cast_nested_evar_rejected : True.",
+      "statement_sha256": "f59cfebdd3ffa7196cad6f640399432f7014c7efb18e760ee40b8df594acc225",
+      "source": {
+        "name": "region_cast_nested_evar_rejected",
+        "file": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_nested_evar_rejected.v",
+        "proof_file": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_nested_evar_rejected_proof.v",
+        "body": "  evar (pending : Z).\n  pose (first_alias := pending).\n  pose (second_alias := first_alias).\n  assert (Hopen : bv_unsigned (Z_to_bv 64 second_alias) =\n    bv_unsigned (Z_to_bv 64 second_alias)) by reflexivity.\n  assert (Hprobe : 0 <= bv_unsigned (Z_to_bv 64 second_alias)).\n  1: (first [zesu_region_fault_cast_hypotheses_if_enabled;\n    fail 1 \"unexpected normalization success\" | idtac]).\n  1: (let value := eval unfold pending in pending in\n    has_evar value; unify value 0%Z; bv_solve).\n  exact I.",
+        "setup": "  evar (pending : Z).\n  pose (first_alias := pending).\n  pose (second_alias := first_alias).\n  assert (Hopen : bv_unsigned (Z_to_bv 64 second_alias) =\n    bv_unsigned (Z_to_bv 64 second_alias)) by reflexivity.\n  assert (Hprobe : 0 <= bv_unsigned (Z_to_bv 64 second_alias)).\n",
+        "action": "1: (first [zesu_region_fault_cast_hypotheses_if_enabled;\n    fail 1 \"unexpected normalization success\" | idtac]).",
+        "rest": "\n  1: (let value := eval unfold pending in pending in\n    has_evar value; unify value 0%Z; bv_solve).\n  exact I.",
+        "expected_unchanged": true,
+        "source_sha256": "91653261e94d151f6ba3db44e8fe7a970fd9c29729bbdf9d147c8a0f423d3285",
+        "proof_sha256": "91c73c6ff30c0a7fe9941c785be92661eb24f44d9955bd52c2a9077a5a1931ce"
+      },
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/retained-objects/region_cast_nested_evar_rejected_proof.vo",
+      "object_sha256": "8c4ac118331a1094a73c387819ec8a2066be512d2f5f401ccc12c6cd6285e73e",
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "final_groups": {
+        "success": true,
+        "state_id": 17,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_17.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "preservation": {
+        "name": "region_cast_nested_evar_rejected",
+        "before": {
+          "success": true,
+          "state_id": 14,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_14.json",
+          "sha256": "9bcdfa6ba161a8c6c1f8b5ffbae1b267b924ad805f52a0ce569dc0235a935b98",
+          "bytes": 895,
+          "active_goals": 2,
+          "stack_entries": 0,
+          "shelved_goals": 1,
+          "given_up_goals": 0,
+          "stack_frame_goal_counts": []
+        },
+        "after": {
+          "success": true,
+          "state_id": 15,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_15.json",
+          "sha256": "9bcdfa6ba161a8c6c1f8b5ffbae1b267b924ad805f52a0ce569dc0235a935b98",
+          "bytes": 895,
+          "active_goals": 2,
+          "stack_entries": 0,
+          "shelved_goals": 1,
+          "given_up_goals": 0,
+          "stack_frame_goal_counts": []
+        },
+        "trial": {
+          "success": true,
+          "results": [
+            {
+              "tactic": "1: (first [zesu_region_fault_cast_hypotheses_if_enabled;\n    fail 1 \"unexpected normalization success\" | idtac]).",
+              "success": true,
+              "goals": "Goal 1:\npending := ?pending : Z\nfirst_alias := pending : Z\nsecond_alias := first_alias : Z\nHopen : bv_unsigned (Z_to_bv 64 second_alias) = bv_unsigned (Z_to_bv 64 second_alias)\n|-0 \u2264 bv_unsigned (Z_to_bv 64 second_alias)\n\nGoal 2:\npending := ?pending : Z\nfirst_alias := pending : Z\nsecond_alias := first_alias : Z\nHopen : bv_unsigned (Z_to_bv 64 second_alias) = bv_unsigned (Z_to_bv 64 second_alias)\nHprobe : 0 \u2264 bv_unsigned (Z_to_bv 64 second_alias)\n|-True",
+              "proof_finished": false,
+              "shelved_goals": 1,
+              "focus_depth": 0
+            }
+          ],
+          "from_state_id": 14
+        }
+      },
+      "shelf_change": null
+    },
+    {
+      "name": "region_cast_unrelated_shared_evar",
+      "statement": "Lemma region_cast_unrelated_shared_evar (count : Z)\n    (Hnonnegative : 0 <= count)\n    (Hnonzero : bv_unsigned (Z_to_bv 64 count) <> 0) : True.",
+      "statement_sha256": "5ee230559fa5c8ac39c9c16ef2cc42eadd816eff39d3e1496b42bdc8e5894fc2",
+      "source": {
+        "name": "region_cast_unrelated_shared_evar",
+        "file": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_unrelated_shared_evar.v",
+        "proof_file": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_unrelated_shared_evar_proof.v",
+        "body": "  evar (pending : nat).\n  assert (Haux : Coq.Init.Logic.True) by shelve.\n  assert (Hprobe : 0 < count).\n  1: zesu_region_fault_cast_hypotheses_if_enabled.\n  1: (let value := eval unfold pending in pending in has_evar value; bv_solve).\n  1: (let value := eval unfold pending in pending in\n    has_evar value; unify value 0%nat; exact I).\n  Unshelve. all: exact I.",
+        "setup": "  evar (pending : nat).\n  assert (Haux : Coq.Init.Logic.True) by shelve.\n  assert (Hprobe : 0 < count).\n",
+        "action": "1: zesu_region_fault_cast_hypotheses_if_enabled.",
+        "rest": "\n  1: (let value := eval unfold pending in pending in has_evar value; bv_solve).\n  1: (let value := eval unfold pending in pending in\n    has_evar value; unify value 0%nat; exact I).\n  Unshelve. all: exact I.",
+        "expected_unchanged": false,
+        "source_sha256": "e55a49cf05beeab8db55a610160b12e998c55d7348705fbd95fecadc35388f46",
+        "proof_sha256": "9db3bb19438ae97c7c02860956edcbb52f3ed53d6e30a8b203ef33b381008ed4"
+      },
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/retained-objects/region_cast_unrelated_shared_evar_proof.vo",
+      "object_sha256": "4acc1b50f19ff912edb58dbffbce18ffd9ea3163bc4778eb6a42caa336bc1662",
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "final_groups": {
+        "success": true,
+        "state_id": 27,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_27.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "preservation": {
+        "name": "region_cast_unrelated_shared_evar",
+        "before": {
+          "success": true,
+          "state_id": 22,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_22.json",
+          "sha256": "bdd45d32f3f021cbb60f3eb01178aba18e7ff43c1d91d52a0edd7d21a02810a3",
+          "bytes": 1239,
+          "active_goals": 2,
+          "stack_entries": 0,
+          "shelved_goals": 2,
+          "given_up_goals": 0,
+          "stack_frame_goal_counts": []
+        },
+        "after": {
+          "success": true,
+          "state_id": 23,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_23.json",
+          "sha256": "cb0cd4ad28aab2b120be3885a0461527267f8f914116469dfd24d12a7655c0d9",
+          "bytes": 1144,
+          "active_goals": 2,
+          "stack_entries": 0,
+          "shelved_goals": 2,
+          "given_up_goals": 0,
+          "stack_frame_goal_counts": []
+        },
+        "trial": {
+          "success": true,
+          "results": [
+            {
+              "tactic": "1: zesu_region_fault_cast_hypotheses_if_enabled.",
+              "success": true,
+              "goals": "Goal 1:\ncount : Z\nHnonnegative : 0 \u2264 count\npending := ?pending : nat\nHaux : True\nHnonzero : bv_wrap 64 count \u2260 0\n|-0 < count\n\nGoal 2:\ncount : Z\nHnonnegative : 0 \u2264 count\nHnonzero : bv_unsigned (Z_to_bv 64 count) \u2260 0\npending := ?pending : nat\nHaux : True\nHprobe : 0 < count\n|-True",
+              "proof_finished": false,
+              "shelved_goals": 2,
+              "focus_depth": 0
+            }
+          ],
+          "from_state_id": 22
+        }
+      },
+      "shelf_change": {
+        "before": {
+          "hyps": [
+            {
+              "def": null,
+              "names": [
+                "count"
+              ],
+              "ty": "Z"
+            },
+            {
+              "def": null,
+              "names": [
+                "Hnonnegative"
+              ],
+              "ty": "0 \u2264 count"
+            },
+            {
+              "def": null,
+              "names": [
+                "Hnonzero"
+              ],
+              "ty": "bv_unsigned (Z_to_bv 64 count) \u2260 0"
+            }
+          ],
+          "info": {
+            "evar": [
+              "Ser_Evar",
+              15
+            ],
+            "name": [
+              "Id",
+              "pending"
+            ]
+          },
+          "ty": "nat"
+        },
+        "after": {
+          "hyps": [
+            {
+              "def": null,
+              "names": [
+                "count"
+              ],
+              "ty": "Z"
+            },
+            {
+              "def": null,
+              "names": [
+                "Hnonnegative"
+              ],
+              "ty": "0 \u2264 count"
+            }
+          ],
+          "info": {
+            "evar": [
+              "Ser_Evar",
+              25
+            ],
+            "name": [
+              "Id",
+              "pending"
+            ]
+          },
+          "ty": "nat"
+        },
+        "observation": "Coq restricts the unresolved pending evar context and reorders the shelf after rewriting its old hypothesis dependency.",
+        "limit": "The export does not expose the complete Sigma or internal evar forwarding assignment."
+      }
+    },
+    {
+      "name": "region_cast_direct_evar_rejected",
+      "statement": "Lemma region_cast_direct_evar_rejected : Coq.Init.Logic.True.",
+      "statement_sha256": "6bab9097bde5efbd853aac0a24fbf1b3c22f959c219f868bffb341ace138eccf",
+      "source": {
+        "name": "region_cast_direct_evar_rejected",
+        "file": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_direct_evar_rejected.v",
+        "proof_file": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_direct_evar_rejected_proof.v",
+        "body": "evar (pending : Z).\nlet value := eval unfold pending in pending in\nassert (Hopen : bv_unsigned (Z_to_bv 64 value) = bv_unsigned (Z_to_bv 64 value)) by reflexivity.\nlet value := eval unfold pending in pending in\nassert (Hprobe : 0 <= bv_unsigned (Z_to_bv 64 value)).\n1: (first [zesu_region_fault_cast_hypotheses_if_enabled; fail 1 \"unexpected normalization success\" | idtac]).\n1: (let value := eval unfold pending in pending in has_evar value; unify value 0%Z; bv_solve). exact I.",
+        "setup": "evar (pending : Z).\nlet value := eval unfold pending in pending in\nassert (Hopen : bv_unsigned (Z_to_bv 64 value) = bv_unsigned (Z_to_bv 64 value)) by reflexivity.\nlet value := eval unfold pending in pending in\nassert (Hprobe : 0 <= bv_unsigned (Z_to_bv 64 value)).",
+        "action": "1: (first [zesu_region_fault_cast_hypotheses_if_enabled; fail 1 \"unexpected normalization success\" | idtac]).",
+        "rest": "1: (let value := eval unfold pending in pending in has_evar value; unify value 0%Z; bv_solve). exact I.",
+        "expected_unchanged": true,
+        "source_sha256": "141cdafbe4f2bf18c2fdc22231a7ec582b1eee9f5919c938947b5c2d36ade7fa",
+        "proof_sha256": "ab97c8d36224956855aabd3ac21c8443081bd8ec16bc8c33cf426f66549a5693"
+      },
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/retained-objects/region_cast_direct_evar_rejected_proof.vo",
+      "object_sha256": "cc64d052e0bd093e998292579ad15e2a86ad2243f85a9ae8478350eb021d23c6",
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "final_groups": {
+        "success": true,
+        "state_id": 35,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_35.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "preservation": {
+        "name": "region_cast_direct_evar_rejected",
+        "before": {
+          "success": true,
+          "state_id": 32,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_32.json",
+          "sha256": "ffa00f34f8587a626ff1263146e5d3e4d7a93d8a790bb56b88facc5c456488c7",
+          "bytes": 657,
+          "active_goals": 2,
+          "stack_entries": 0,
+          "shelved_goals": 1,
+          "given_up_goals": 0,
+          "stack_frame_goal_counts": []
+        },
+        "after": {
+          "success": true,
+          "state_id": 33,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_33.json",
+          "sha256": "ffa00f34f8587a626ff1263146e5d3e4d7a93d8a790bb56b88facc5c456488c7",
+          "bytes": 657,
+          "active_goals": 2,
+          "stack_entries": 0,
+          "shelved_goals": 1,
+          "given_up_goals": 0,
+          "stack_frame_goal_counts": []
+        },
+        "trial": {
+          "success": true,
+          "results": [
+            {
+              "tactic": "1: (first [zesu_region_fault_cast_hypotheses_if_enabled; fail 1 \"unexpected normalization success\" | idtac]).",
+              "success": true,
+              "goals": "Goal 1:\npending := ?pending : Z\nHopen : bv_unsigned (Z_to_bv 64 ?pending) = bv_unsigned (Z_to_bv 64 ?pending)\n|-0 \u2264 bv_unsigned (Z_to_bv 64 ?pending)\n\nGoal 2:\npending := ?pending : Z\nHopen : bv_unsigned (Z_to_bv 64 ?pending) = bv_unsigned (Z_to_bv 64 ?pending)\nHprobe : 0 \u2264 bv_unsigned (Z_to_bv 64 ?pending)\n|-True",
+              "proof_finished": false,
+              "shelved_goals": 1,
+              "focus_depth": 0
+            }
+          ],
+          "from_state_id": 32
+        }
+      },
+      "shelf_change": null
+    },
+    {
+      "name": "region_cast_resolved_nested_alias",
+      "statement": "Lemma region_cast_resolved_nested_alias (count : Z) (Hnonnegative : 0 <= count)\n(Hnonzero : bv_unsigned (Z_to_bv 64 count) <> 0) : Coq.Init.Logic.True.",
+      "statement_sha256": "202a399eb9323f02549dabd47d2d7cc61ddddb70360e2e14f037c02894a4d932",
+      "source": {
+        "name": "region_cast_resolved_nested_alias",
+        "file": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_resolved_nested_alias.v",
+        "proof_file": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_resolved_nested_alias_proof.v",
+        "body": "pose (first_alias := count). pose (second_alias := first_alias).\nassert (Hcast : bv_unsigned (Z_to_bv 64 second_alias) <> 0) by exact Hnonzero.\nassert (Hprobe : 0 < second_alias).\n1: zesu_region_fault_cast_hypotheses_if_enabled.\n1: bv_solve. exact I.",
+        "setup": "pose (first_alias := count). pose (second_alias := first_alias).\nassert (Hcast : bv_unsigned (Z_to_bv 64 second_alias) <> 0) by exact Hnonzero.\nassert (Hprobe : 0 < second_alias).",
+        "action": "1: zesu_region_fault_cast_hypotheses_if_enabled.",
+        "rest": "1: bv_solve. exact I.",
+        "expected_unchanged": false,
+        "source_sha256": "c75cde0fa27dcf24d613e71d7d0e01e6a5138bffa732a42919a1fc104ee49055",
+        "proof_sha256": "6832fe0ccd3dc51138490f1d596d8edc3a277270e15d5bf8fe6f98453fa6b39d"
+      },
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/retained-objects/region_cast_resolved_nested_alias_proof.vo",
+      "object_sha256": "ec7548c9be0e69c99eddad44464175f17b71000423ea956442093288504ed148",
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "final_groups": {
+        "success": true,
+        "state_id": 44,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_44.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "preservation": {
+        "name": "region_cast_resolved_nested_alias",
+        "before": {
+          "success": true,
+          "state_id": 41,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_41.json",
+          "sha256": "c42d01754d076d6a22a2ef29b7ec02ba5d06ed0d042642a3e6b3ba494b3bad8a",
+          "bytes": 893,
+          "active_goals": 2,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0,
+          "stack_frame_goal_counts": []
+        },
+        "after": {
+          "success": true,
+          "state_id": 42,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_42.json",
+          "sha256": "1fe68decb624f3f03ecce1525ea2927dca3fc46f90ea822f4c5344e899fa4b85",
+          "bytes": 865,
+          "active_goals": 2,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0,
+          "stack_frame_goal_counts": []
+        },
+        "trial": {
+          "success": true,
+          "results": [
+            {
+              "tactic": "1: zesu_region_fault_cast_hypotheses_if_enabled.",
+              "success": true,
+              "goals": "Goal 1:\ncount : Z\nHnonnegative : 0 \u2264 count\nfirst_alias := count : Z\nsecond_alias := first_alias : Z\nHcast : bv_wrap 64 second_alias \u2260 0\nHnonzero : bv_wrap 64 count \u2260 0\n|-0 < second_alias\n\nGoal 2:\ncount : Z\nHnonnegative : 0 \u2264 count\nHnonzero : bv_unsigned (Z_to_bv 64 count) \u2260 0\nfirst_alias := count : Z\nsecond_alias := first_alias : Z\nHcast : bv_unsigned (Z_to_bv 64 second_alias) \u2260 0\nHprobe : 0 < second_alias\n|-True",
+              "proof_finished": false,
+              "focus_depth": 0
+            }
+          ],
+          "from_state_id": 41
+        }
+      },
+      "shelf_change": null
+    },
+    {
+      "name": "region_cast_shared_rollback",
+      "statement": "Lemma region_cast_shared_rollback (count : Z) (Hnonnegative : 0 <= count)\n(Hnonzero : bv_unsigned (Z_to_bv 64 count) <> 0) : Coq.Init.Logic.True.",
+      "statement_sha256": "202a399eb9323f02549dabd47d2d7cc61ddddb70360e2e14f037c02894a4d932",
+      "source": {
+        "name": "region_cast_shared_rollback",
+        "file": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_shared_rollback.v",
+        "proof_file": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_shared_rollback_proof.v",
+        "body": "evar (pending : nat).\nassert (Haux : Coq.Init.Logic.True) by shelve.\nassert (Hprobe : 0 < count).\n1: assert_fails (zesu_region_fault_cast_hypotheses_if_enabled; fail 0).\n1: zesu_region_fault_cast_hypotheses_if_enabled.\n1: (let value := eval unfold pending in pending in has_evar value; bv_solve).\n1: (let value := eval unfold pending in pending in has_evar value; unify value 0%nat; exact I).\nUnshelve. all: exact I.",
+        "setup": "evar (pending : nat).\nassert (Haux : Coq.Init.Logic.True) by shelve.\nassert (Hprobe : 0 < count).",
+        "action": "1: assert_fails (zesu_region_fault_cast_hypotheses_if_enabled; fail 0).",
+        "rest": "1: zesu_region_fault_cast_hypotheses_if_enabled.\n1: (let value := eval unfold pending in pending in has_evar value; bv_solve).\n1: (let value := eval unfold pending in pending in has_evar value; unify value 0%nat; exact I).\nUnshelve. all: exact I.",
+        "expected_unchanged": true,
+        "source_sha256": "9cb4b67786a4baf79b51b564435d5c55d9d95dcc29cf6d7453298a8374a32d77",
+        "proof_sha256": "b36d153038ef76247a68503899221db394bcc0059af3ff05bac5f65876650a60"
+      },
+      "object_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/retained-objects/region_cast_shared_rollback_proof.vo",
+      "object_sha256": "1c48803892be73b64600c75b38460faba9144cc8eeb1e3ddc55e2a340e0d2f9d",
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "final_groups": {
+        "success": true,
+        "state_id": 55,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_55.json",
+        "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+        "bytes": 49,
+        "active_goals": 0,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "preservation": {
+        "name": "region_cast_shared_rollback",
+        "before": {
+          "success": true,
+          "state_id": 49,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_49.json",
+          "sha256": "bdd45d32f3f021cbb60f3eb01178aba18e7ff43c1d91d52a0edd7d21a02810a3",
+          "bytes": 1239,
+          "active_goals": 2,
+          "stack_entries": 0,
+          "shelved_goals": 2,
+          "given_up_goals": 0,
+          "stack_frame_goal_counts": []
+        },
+        "after": {
+          "success": true,
+          "state_id": 50,
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_50.json",
+          "sha256": "bdd45d32f3f021cbb60f3eb01178aba18e7ff43c1d91d52a0edd7d21a02810a3",
+          "bytes": 1239,
+          "active_goals": 2,
+          "stack_entries": 0,
+          "shelved_goals": 2,
+          "given_up_goals": 0,
+          "stack_frame_goal_counts": []
+        },
+        "trial": {
+          "success": true,
+          "results": [
+            {
+              "tactic": "1: assert_fails (zesu_region_fault_cast_hypotheses_if_enabled; fail 0).",
+              "success": true,
+              "goals": "Goal 1:\ncount : Z\nHnonnegative : 0 \u2264 count\nHnonzero : bv_unsigned (Z_to_bv 64 count) \u2260 0\npending := ?pending : nat\nHaux : True\n|-0 < count\n\nGoal 2:\ncount : Z\nHnonnegative : 0 \u2264 count\nHnonzero : bv_unsigned (Z_to_bv 64 count) \u2260 0\npending := ?pending : nat\nHaux : True\nHprobe : 0 < count\n|-True",
+              "proof_finished": false,
+              "shelved_goals": 2,
+              "focus_depth": 0
+            }
+          ],
+          "from_state_id": 49
+        }
+      },
+      "shelf_change": null
+    }
+  ],
+  "records": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/assembly.json",
+      "sha256": "b0aa93a4e34c6eee22a006bceefd5c6fe9fdad1e3ac161d813bdfafef58e7d09",
+      "bytes": 11773
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_14.json",
+      "sha256": "9bcdfa6ba161a8c6c1f8b5ffbae1b267b924ad805f52a0ce569dc0235a935b98",
+      "bytes": 895
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_15.json",
+      "sha256": "9bcdfa6ba161a8c6c1f8b5ffbae1b267b924ad805f52a0ce569dc0235a935b98",
+      "bytes": 895
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_17.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+      "bytes": 49
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_22.json",
+      "sha256": "bdd45d32f3f021cbb60f3eb01178aba18e7ff43c1d91d52a0edd7d21a02810a3",
+      "bytes": 1239
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_23.json",
+      "sha256": "cb0cd4ad28aab2b120be3885a0461527267f8f914116469dfd24d12a7655c0d9",
+      "bytes": 1144
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_27.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+      "bytes": 49
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_32.json",
+      "sha256": "ffa00f34f8587a626ff1263146e5d3e4d7a93d8a790bb56b88facc5c456488c7",
+      "bytes": 657
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_33.json",
+      "sha256": "ffa00f34f8587a626ff1263146e5d3e4d7a93d8a790bb56b88facc5c456488c7",
+      "bytes": 657
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_35.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+      "bytes": 49
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_4.json",
+      "sha256": "355dd45e339acce7d083dc8ec5cff41c2998a422e5c9b25d60899d3a304c8421",
+      "bytes": 651
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_41.json",
+      "sha256": "c42d01754d076d6a22a2ef29b7ec02ba5d06ed0d042642a3e6b3ba494b3bad8a",
+      "bytes": 893
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_42.json",
+      "sha256": "1fe68decb624f3f03ecce1525ea2927dca3fc46f90ea822f4c5344e899fa4b85",
+      "bytes": 865
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_44.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+      "bytes": 49
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_49.json",
+      "sha256": "bdd45d32f3f021cbb60f3eb01178aba18e7ff43c1d91d52a0edd7d21a02810a3",
+      "bytes": 1239
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_5.json",
+      "sha256": "355dd45e339acce7d083dc8ec5cff41c2998a422e5c9b25d60899d3a304c8421",
+      "bytes": 651
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_50.json",
+      "sha256": "bdd45d32f3f021cbb60f3eb01178aba18e7ff43c1d91d52a0edd7d21a02810a3",
+      "bytes": 1239
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_55.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+      "bytes": 49
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/exports/state_7.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+      "bytes": 49
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/mcp-client.py",
+      "sha256": "d4c37bc51ab4311aae2d86782ebfd12f1eab57052c0e2296a50a21f8c19dac40",
+      "bytes": 8311
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/preflight.json",
+      "sha256": "619dc060967da3b052526f57a25f98631980078f4d7802487d20e13b9123d6cb",
+      "bytes": 221
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/raw-calls.json",
+      "sha256": "907fac49595b210660a6157f91e2760c55dc732161a4b2301473f981eac5af54",
+      "bytes": 112389
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_direct_evar_rejected-preservation.json",
+      "sha256": "419c77736105a6a21350f199024fee7add2e712b87b854b7a2fd78b0057316cb",
+      "bytes": 1639
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_direct_evar_rejected.v",
+      "sha256": "141cdafbe4f2bf18c2fdc22231a7ec582b1eee9f5919c938947b5c2d36ade7fa",
+      "bytes": 327
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_direct_evar_rejected_proof.v",
+      "sha256": "ab97c8d36224956855aabd3ac21c8443081bd8ec16bc8c33cf426f66549a5693",
+      "bytes": 805
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_nested_evar_rejected-preservation.json",
+      "sha256": "ab304d5e31c1c901d6e377fcf9ff01ce585585a563abdc61184c6b53cc6a04cd",
+      "bytes": 1790
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_nested_evar_rejected.v",
+      "sha256": "91653261e94d151f6ba3db44e8fe7a970fd9c29729bbdf9d147c8a0f423d3285",
+      "bytes": 312
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_nested_evar_rejected_proof.v",
+      "sha256": "91c73c6ff30c0a7fe9941c785be92661eb24f44d9955bd52c2a9077a5a1931ce",
+      "bytes": 812
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_resolved_nested_alias-preservation.json",
+      "sha256": "e328434747814cd3bd2799841a1356ee86f70c17f9addad9597c1b616f27e9ba",
+      "bytes": 1679
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_resolved_nested_alias.v",
+      "sha256": "c75cde0fa27dcf24d613e71d7d0e01e6a5138bffa732a42919a1fc104ee49055",
+      "bytes": 417
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_resolved_nested_alias_proof.v",
+      "sha256": "6832fe0ccd3dc51138490f1d596d8edc3a277270e15d5bf8fe6f98453fa6b39d",
+      "bytes": 666
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_shared_evar_rejected-preservation.json",
+      "sha256": "dd8fe816d0045c489ee3bdc113a8136b8bdbac579b15f191aca1da3752690503",
+      "bytes": 1633
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_shared_evar_rejected.v",
+      "sha256": "fd86993ddae9948eb0f4142930928c7adf91205796decf450d73190df6fea7ea",
+      "bytes": 312
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_shared_evar_rejected_proof.v",
+      "sha256": "11a1020875134acb50e2bab8033ea81d16873495bc3919ffb5a4e7de6ba9e1ca",
+      "bytes": 726
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_shared_rollback-preservation.json",
+      "sha256": "e788301021a1592cc136a2315394113555f0c5cfd62396b6341f112b67f981c4",
+      "bytes": 1590
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_shared_rollback.v",
+      "sha256": "9cb4b67786a4baf79b51b564435d5c55d9d95dcc29cf6d7453298a8374a32d77",
+      "bytes": 411
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_shared_rollback_proof.v",
+      "sha256": "b36d153038ef76247a68503899221db394bcc0059af3ff05bac5f65876650a60",
+      "bytes": 826
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_unrelated_shared_evar-preservation.json",
+      "sha256": "334c3bca12f14aadd6291051883957abb8332f769f66e6eaebfb8c4bebb99492",
+      "bytes": 1559
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_unrelated_shared_evar.v",
+      "sha256": "e55a49cf05beeab8db55a610160b12e998c55d7348705fbd95fecadc35388f46",
+      "bytes": 410
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/region_cast_unrelated_shared_evar_proof.v",
+      "sha256": "9db3bb19438ae97c7c02860956edcbb52f3ed53d6e30a8b203ef33b381008ed4",
+      "bytes": 771
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/results.json",
+      "sha256": "ae7f3f68a2a7b20918341a51d076f2ce1aae062cfe6d8c93d881e42c06bf0ed8",
+      "bytes": 21860
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/retained-objects/region_cast_direct_evar_rejected_proof.vo",
+      "sha256": "cc64d052e0bd093e998292579ad15e2a86ad2243f85a9ae8478350eb021d23c6",
+      "bytes": 124754
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/retained-objects/region_cast_nested_evar_rejected_proof.vo",
+      "sha256": "8c4ac118331a1094a73c387819ec8a2066be512d2f5f401ccc12c6cd6285e73e",
+      "bytes": 124893
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/retained-objects/region_cast_resolved_nested_alias_proof.vo",
+      "sha256": "ec7548c9be0e69c99eddad44464175f17b71000423ea956442093288504ed148",
+      "bytes": 127456
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/retained-objects/region_cast_shared_evar_rejected_proof.vo",
+      "sha256": "62e2e035532c4001d6997e5896a1122fa200dd7b829d8852696bd8dc26b2a179",
+      "bytes": 124792
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/retained-objects/region_cast_shared_rollback_proof.vo",
+      "sha256": "1c48803892be73b64600c75b38460faba9144cc8eeb1e3ddc55e2a340e0d2f9d",
+      "bytes": 126999
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/retained-objects/region_cast_unrelated_shared_evar_proof.vo",
+      "sha256": "4acc1b50f19ff912edb58dbffbce18ffd9ea3163bc4778eb6a42caa336bc1662",
+      "bytes": 127018
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/schemas.json",
+      "sha256": "7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a",
+      "bytes": 18498
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/session-closure.json",
+      "sha256": "52283846527fe2bb59dcd410b4f1ed47d371c04669ace2ce90343813150a2355",
+      "bytes": 100
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Automation/All.vo",
+      "sha256": "1695eb67d1183be61c9fb87539213e4af1b87737a6a155951a9b99b1276c070d",
+      "bytes": 118702
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Automation/Hooks.vo",
+      "sha256": "1123a4ee0282df4749a0acc1080f1c428c7efcc73acda86f4933bcc8fd8d905d",
+      "bytes": 391951
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Automation/Finish.vo",
+      "sha256": "fd3485b878abdb896d79f2dbde88f80de8845686f6e5da482ceb3db2386e9d2a",
+      "bytes": 203487
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Automation/Switches/RegionFaultCastHypotheses.vo",
+      "sha256": "da1d2d1da5d082347855eb077cbff613c1f3767cdf0e8d923dee330b77376e17",
+      "bytes": 118453
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Automation/SwitchDispatch.vo",
+      "sha256": "8a4e8625ce63ddc9274cefe3b995aab9094e88c1c15db312aa8788ad0be086fa",
+      "bytes": 18898
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/default/ZesuSsz/Automation/BitvectorFacts.vo",
+      "sha256": "9792123fe901e945811e307b72987fb288d86a7e82e007b7b960c755fb7c15a8",
+      "bytes": 69058
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/agents/worker2-child-platform-pruning-cast-normalization/install/default/lib/zesu-signature-gates/META",
+      "sha256": "c146b8f02181514a3cd46bd47de94a1de47c3b3189086315382ff0b8f229c80a",
+      "bytes": 308
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/agents/worker2-child-platform-pruning-cast-normalization/install/default/lib/zesu-signature-gates/plugin/signature_gates_plugin.cma",
+      "sha256": "a253d5bdce8194f436990ee49cd838c3587d9a90c57e8041692452ed44e6db92",
+      "bytes": 20030
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/agents/worker2-child-platform-pruning-cast-normalization/install/default/lib/zesu-signature-gates/plugin/signature_gates_plugin.cmxs",
+      "sha256": "e29096581d79b8a17028fb00a4194e9f784d81b476e965d77c33196723bf98b7",
+      "bytes": 46000
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-fixtures-mcp-003/CANDIDATE.diff",
+      "sha256": "052884883c913cb194019995329b68be3b8a218e1a86f8ca7fa43baa734f2e2f",
+      "bytes": 6770
+    }
+  ],
+  "sources": {
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Automation/Hooks.v": "166d1f3d2e91e5e9806ec335d688d4915c9f69ec5bb58d78b7878cf661fed577",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Automation/Finish.v": "e1755c2f0414ad1fd59655e3943d9181e335657543d4be709fc27bcc95d9ad18",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Automation/Switches/RegionFaultCastHypotheses.v": "628613fe938f4611c4e7eedb3045263d0a36893cf741bb1e7a74734d39df0156",
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/ZesuSsz/Proofs/Tests/RegionFaultCastHypotheses.v": "24972d1d9ede702b77ff0483afd989bb7ea7b01b6fa31e646f72a6b7639f1bbb"
+  },
+  "alias_guard": "zesu_condition_has_unresolved_evar follows only local definitions referenced by the selected term.",
+  "preservation": "Rejected candidates and forced rollback have identical complete exports. Successful focused rewrites preserve other active goals and group counts. The unrelated pending evar remains unresolved with a restricted context and changed identity.",
+  "auxiliary_witness_limit": "Fixture-only pending witnesses close after the preservation checks. No native witness is selected.",
+  "source_site": "The hook remains before bv_solve, after filtering and signed rewrites. Cache placement has a separate pending audit.",
+  "preserved_failures": [
+    "pruning-cast-fixtures-mcp-001 missing client",
+    "pruning-cast-fixtures-mcp-002 aliased evar guard failure"
+  ],
+  "previous_certificates": "Six unchanged successful fixture statements and objects remain under attempt002.",
+  "native_execution": false,
+  "global_evar_map_available": false
+}

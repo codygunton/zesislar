@@ -1,0 +1,263 @@
+{
+  "rule": 37,
+  "kind": "switched generic source and measured evidence",
+  "measurement_root": "bca6121a2c0343356f73ac4b7b83fa4e225753c5",
+  "candidate_tree": "c6768f87a74e7285196c63f1b644cbdc89e41ab0",
+  "effect": "ON omits seven later branch records and four medeleg callbacks.",
+  "exact_common_prefix": 21,
+  "native_closure": false,
+  "Level1_closed": false,
+  "termination_proved": false,
+  "helper_firing": "Unmeasured.",
+  "scope": {
+    "baseline_switches": 27,
+    "ON_switches": 28,
+    "hint_umbrella_modules": 24,
+    "historical_exclusions": 17,
+    "I39": "unbound"
+  },
+  "budgets": {
+    "cpu_seconds": 1200,
+    "memory_gib": 6,
+    "wall_seconds": null
+  },
+  "statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+  "body_sha256": "f8375cfbb975c9f8acec44ebcb154278f9a9c5eae0843d2743dc452e0b24362b",
+  "recipe_sha256": "e1d2d4509e9f08d37d7ebfb9b5a2ccc91ca80dbbe685cf76f4debaea65a32c5d",
+  "inputs_per_arm": 13129,
+  "generated_inputs": 9321,
+  "MCP": {
+    "verification_results": [
+      {
+        "name": "region_cast_shared_evar_rejected",
+        "audit": "fixture-audit.json",
+        "method": "module_m",
+        "assumptions": []
+      },
+      {
+        "name": "region_cast_nested_evar_rejected",
+        "audit": "fixture-audit.json",
+        "method": "module_m",
+        "assumptions": []
+      },
+      {
+        "name": "region_cast_unrelated_shared_evar",
+        "audit": "fixture-audit.json",
+        "method": "module_m",
+        "assumptions": []
+      },
+      {
+        "name": "region_cast_direct_evar_rejected",
+        "audit": "fixture-audit.json",
+        "method": "module_m",
+        "assumptions": []
+      },
+      {
+        "name": "region_cast_resolved_nested_alias",
+        "audit": "fixture-audit.json",
+        "method": "module_m",
+        "assumptions": []
+      },
+      {
+        "name": "region_cast_shared_rollback",
+        "audit": "fixture-audit.json",
+        "method": "module_m",
+        "assumptions": []
+      },
+      {
+        "name": "pruning_cast_exact_oracle_off",
+        "audit": "oracle-audit.json",
+        "method": "module_m",
+        "assumptions": []
+      },
+      {
+        "name": "pruning_cast_exact_oracle_on",
+        "audit": "oracle-audit.json",
+        "method": "module_m",
+        "assumptions": []
+      },
+      {
+        "name": "pruning_cast_native_scope_off",
+        "audit": "scope-audit.json",
+        "method": "module_m",
+        "assumptions": []
+      },
+      {
+        "name": "pruning_cast_native_scope_on",
+        "audit": "scope-audit.json",
+        "method": "module_m",
+        "assumptions": []
+      },
+      {
+        "name": "region_cast_nonzero",
+        "audit": "production-test-audit.json",
+        "method": "direct",
+        "assumptions": []
+      },
+      {
+        "name": "region_cast_multiple",
+        "audit": "production-test-audit.json",
+        "method": "direct",
+        "assumptions": []
+      },
+      {
+        "name": "region_cast_symbolic_local",
+        "audit": "production-test-audit.json",
+        "method": "direct",
+        "assumptions": []
+      },
+      {
+        "name": "region_cast_cached_off",
+        "audit": "production-test-audit.json",
+        "method": "direct",
+        "assumptions": []
+      },
+      {
+        "name": "region_cast_nonmatching",
+        "audit": "production-test-audit.json",
+        "method": "direct",
+        "assumptions": []
+      },
+      {
+        "name": "region_cast_rollback",
+        "audit": "production-test-audit.json",
+        "method": "direct",
+        "assumptions": []
+      },
+      {
+        "name": "region_cast_shared_evar_rejected",
+        "audit": "production-test-audit.json",
+        "method": "module_m",
+        "assumptions": []
+      },
+      {
+        "name": "region_cast_unrelated_shared_evar",
+        "audit": "production-test-audit.json",
+        "method": "module_m",
+        "assumptions": []
+      },
+      {
+        "name": "region_cast_nested_evar_rejected",
+        "audit": "production-test-audit.json",
+        "method": "module_m",
+        "assumptions": []
+      }
+    ],
+    "health_interactive_compile_verify": true,
+    "native_assumptions_certificate": null,
+    "production_final_groups": "Independent controls are empty. Full-file groups are available only for the checked interactive target."
+  },
+  "gates": {
+    "check-fast": {
+      "exit_code": 0,
+      "workers": 6,
+      "gate_class": "child",
+      "elapsed_seconds": 1008.1681561470032,
+      "children_cpu_seconds": 1587.2739720000002,
+      "peak_children_rss_kib": 3039392,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-gates-001/check-fast.log",
+      "log_sha256": "10f029c718d67a0b11fe7432c88845c9930aa68e2a80d93021498b2996a0b8ad",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-gates-001/check-fast-result.json",
+        "sha256": "c243fcf95cf46ce4d7b7a123bf40a087a228ca2cafd6669561c7be7bc3bc58ba"
+      }
+    },
+    "check-iris": {
+      "exit_code": 0,
+      "workers": 6,
+      "gate_class": "child",
+      "elapsed_seconds": 1614.374632358551,
+      "children_cpu_seconds": 3413.789924,
+      "peak_children_rss_kib": 1693044,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-gates-001/check-iris.log",
+      "log_sha256": "f1e9ab833d0f78137e95369aed8cd74adbed839db8e024c450ad1b7307dfe7b0",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/_build/pruning-cast-gates-001/check-iris-result.json",
+        "sha256": "c1017e0603774d531260fcbb946803ecdf61c90d4aaad8ecc15583e51d552c76"
+      }
+    }
+  },
+  "references": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/build/stock-zisk/rule37-region-cast-hypotheses/REPORT.md",
+      "sha256": "c240ee461f3313fa392ab563e844c34e495b7f3800c2ecff5ebc6d5cad849c8a"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/build/stock-zisk/rule37-region-cast-hypotheses/archive-audit.json",
+      "sha256": "e40a61aa76c0786b440d38fe412f677ebc7f8d854df1d968e2d30721b5f2f120"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/build/stock-zisk/rule37-region-cast-hypotheses/archive-index.json",
+      "sha256": "ec87bf9cd664e17f0da1dca00e4840c656adffa4d85a6cd27dc31e2e3ba59389"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/build/stock-zisk/rule37-region-cast-hypotheses/check-fast-audit.json",
+      "sha256": "2df5d615b57ddf28d3d528d7ad3299680f413f3e2b9a5135b78b7e42f04ea92f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/build/stock-zisk/rule37-region-cast-hypotheses/check-iris-audit.json",
+      "sha256": "c965a779031ca0dc795837bf6dd517d7f3704fe7cb683bad8ae0cec4e9508c9c"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/build/stock-zisk/rule37-region-cast-hypotheses/design.json",
+      "sha256": "05084aad1871f765638c6aa046374530aeb272dfdd2fab1389321adb14e8a76f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/build/stock-zisk/rule37-region-cast-hypotheses/fixture-audit.json",
+      "sha256": "20f63e580d27c480308d19dbd8ed8593469e2d657c6e4c2b6ffa4131a4051a00"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/build/stock-zisk/rule37-region-cast-hypotheses/gate-archive-audit.json",
+      "sha256": "a050193e6d4c128f29cc4a5ba77cd701620810c01361f1d5122a1c45c43b52d1"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/build/stock-zisk/rule37-region-cast-hypotheses/gate-archive-index.json",
+      "sha256": "daffd36fadfe5237cd897b135ff32dfccaf68bd3a5bd9a6062350ffaa6fa077d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/build/stock-zisk/rule37-region-cast-hypotheses/native-report.json",
+      "sha256": "f4196b618b632ce68f551159513e6f36d41ee6a605829fde156d4063c452e939"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/build/stock-zisk/rule37-region-cast-hypotheses/oracle-audit.json",
+      "sha256": "e63367939879d36464d57659f0fd5d5099c8bf7304c554db03cead267b6bed01"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/build/stock-zisk/rule37-region-cast-hypotheses/placement-audit.json",
+      "sha256": "0f69ec3ea3007776b924caa374e57cf8f674d3b1d26487a9c92596c9592c5e55"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/build/stock-zisk/rule37-region-cast-hypotheses/production-test-audit.json",
+      "sha256": "a09b569f222b30664200124b87cf836cf71ff248337b21a5bbeea688767f11ec"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/build/stock-zisk/rule37-region-cast-hypotheses/scope-audit.json",
+      "sha256": "488a4c427f546e03587fd13d2c78581494cde947cd4c46dc5a3b8eb750175c66"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/build/stock-zisk/rule37-region-cast-hypotheses/secret-audit.json",
+      "sha256": "87dfde71502e82e5028fac7d53561c938e04e05bfe418ae70e54511fe388ff2f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/build/stock-zisk/rule37-region-cast-hypotheses/source-audit.json",
+      "sha256": "94a2cc5291786ccd7e7819a395898097ae4cf7a1f11bbb3011dc3d44eeba902f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/build/stock-zisk/rule37-region-cast-hypotheses/staged-secret-audit.json",
+      "sha256": "df4c5bac5d5af4b050291203e7f1c3f6b86dba64804fc7b43cd882adbb06bce5"
+    }
+  ],
+  "FAA_evidence_included": false,
+  "native_replayed": false,
+  "claim_limits": [
+    "No compiled native object or native assumption certificate exists.",
+    "Stack, shelf, given_up, and the global evar map remain unavailable.",
+    "Returned wrapper success does not establish proof closure.",
+    "Printed terms are retained exactly. Printer omissions remain possible.",
+    "The original I52 evidence remains separate."
+  ],
+  "final_staged_secret_scan": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-pruning-cast-normalization/build/stock-zisk/rule37-region-cast-hypotheses/staged-secret-audit.json",
+    "sha256": "df4c5bac5d5af4b050291203e7f1c3f6b86dba64804fc7b43cd882adbb06bce5"
+  }
+}
