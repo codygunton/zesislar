@@ -1,0 +1,13 @@
+{
+  "root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+  "path": "/home/cody/zesislar-archive/stock-zisk/approved-rule36-s42/1bc09142bb1edb78771f284686ecb1c700be4735c2633443d995510d5fe3c3b9.tar.gz",
+  "sha256": "1bc09142bb1edb78771f284686ecb1c700be4735c2633443d995510d5fe3c3b9",
+  "size_bytes": 280168790,
+  "manifest_sha256": "061e234e28fa530bf420ef29b517ec409717a9df035e016fef83964a7e57302a",
+  "members": 19014,
+  "source_records": 19013,
+  "all_member_hashes_verified": true,
+  "credential_matches": [],
+  "private_environment_headers_excluded": true,
+  "Dune_trace_headers_excluded": true
+}

@@ -1,0 +1,81 @@
+{
+  "root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+  "scope": "Baseline23, Rule34, Rule35, Rule36, and SwitchDispatch ON. DecodeItemHints exports 24 modules and 104 registration locations. Historical17 OFF.",
+  "report_files": {
+    "REPORT.json": "9e2fdf3c1777874546c1c4ca7fe4c6dd2e88b20aa24b9380c0043115a22a8376",
+    "NATIVE.csv": "9ab63573685199e27f144ad2e7bbfe1d2937f5c554637d9953fb5774baeb453b",
+    "ADAPTER.csv": "2d5e430fbf4d839e70f0fd442bbc7bca92fdfa95f8213fef14967dde6d3c8b90",
+    "CAPTURES.json": "7b0008e8e7a76f68b916f7a2b1478ae87e5495f600dc1f0229ba07be2fdf45a6",
+    "LOOP-CAPTURES.json": "cf8eb7bb3da33da9e25a12991c010774655f31c055de7c171566c12ceb670626",
+    "MCP.json": "814700352bd9af69465428c70c5ca7ff2d4e452d528b2a797bd34866e529abb2",
+    "GATES.json": "af39f68a1160252e3953a8dd926a891bde1712810c16509fd04d79ba46a62976",
+    "SPEC-BINDINGS.json": "a78043bf2409434e3941145a3565a3f39a2d29dbdfa4760f40f5c2f5bc0bdbbe",
+    "RULE37-CONTEXT-COMPARISON.json": "1c79253b4afad7521d9022d338c8d4940a49db63dbdd11146ee9e2bc9f614118",
+    "FAILED-SETUPS.json": "a148e4c4d5ee6ea7cdcf08fc95659c6a2e987ccfc8d050a0e09afdd5a4ad9967",
+    "METRICS.json": "11c58713e5fc39ee7aa38365de14c649100de11760cfdcdf2a19c0e666763d87",
+    "README.md": "16b9446efbc32f3063e218079ee06e708728803edd004d1e4278fac28c977f85",
+    "ARCHIVE-MANIFEST.json": "061e234e28fa530bf420ef29b517ec409717a9df035e016fef83964a7e57302a",
+    "ARCHIVE.json": "68c404298936b3b3b80d4fe4f3731c0f158831a4f7149ad7934989df7e550832"
+  },
+  "report_sha256": "9e2fdf3c1777874546c1c4ca7fe4c6dd2e88b20aa24b9380c0043115a22a8376",
+  "native_table_sha256": "9ab63573685199e27f144ad2e7bbfe1d2937f5c554637d9953fb5774baeb453b",
+  "adapter_table_sha256": "2d5e430fbf4d839e70f0fd442bbc7bca92fdfa95f8213fef14967dde6d3c8b90",
+  "capture_index_sha256": "7b0008e8e7a76f68b916f7a2b1478ae87e5495f600dc1f0229ba07be2fdf45a6",
+  "MCP_sha256": "814700352bd9af69465428c70c5ca7ff2d4e452d528b2a797bd34866e529abb2",
+  "gates_sha256": "af39f68a1160252e3953a8dd926a891bde1712810c16509fd04d79ba46a62976",
+  "archive": {
+    "root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+    "path": "/home/cody/zesislar-archive/stock-zisk/approved-rule36-s42/1bc09142bb1edb78771f284686ecb1c700be4735c2633443d995510d5fe3c3b9.tar.gz",
+    "sha256": "1bc09142bb1edb78771f284686ecb1c700be4735c2633443d995510d5fe3c3b9",
+    "size_bytes": 280168790,
+    "manifest_sha256": "061e234e28fa530bf420ef29b517ec409717a9df035e016fef83964a7e57302a",
+    "members": 19014,
+    "source_records": 19013,
+    "all_member_hashes_verified": true,
+    "credential_matches": [],
+    "private_environment_headers_excluded": true,
+    "Dune_trace_headers_excluded": true
+  },
+  "input_seal_sha256": "7750586c488f508cfdd7b578c1aa9f3da3a4cf3cb1d0f0e34239620e74a5c557",
+  "sealed_input_count": 14832,
+  "admission_supplement_count": 13,
+  "gate_sealed_input_count": 15796,
+  "all_sealed_inputs_unchanged": true,
+  "counts": {
+    "residual": 14,
+    "cpu-limit": 6,
+    "native-closure": 8,
+    "adapter-closure": 7,
+    "memory-limit": 2
+  },
+  "active_capture_count": 81,
+  "native_certificate_count": 8,
+  "adapter_certificate_count": 7,
+  "MCP_assumptions": [],
+  "MCP_verification_method": "module_m",
+  "MCP_transport_closed_normally": true,
+  "new_adapter_closures": [
+    "decodeItemJoin6ae0From6a38",
+    "decodeItemJoin6ae0From6ad8"
+  ],
+  "actual_certificate_groups": {
+    "goals": [],
+    "stack": [],
+    "shelf": [],
+    "given_up": []
+  },
+  "actual_group_scope": "Fresh Require/apply certificate states before Qed. Original native auxiliary groups remain unavailable.",
+  "original_native_auxiliary_groups": "unavailable",
+  "rollback_classification": {
+    "block_0x800d6ae0": "Whole theorem restored. Total search failure after rollback.",
+    "block_0x800d69b0": "Reduced residual contexts."
+  },
+  "goal_count_is_not_a_progress_measure": true,
+  "primary_replays": 0,
+  "shell_fallbacks": 0,
+  "universal_table_slots_certified": 0,
+  "Level1_closed": false,
+  "termination_proved": false,
+  "cost_limit": "Changed roots and hint scopes do not establish isolated rule-cost attribution.",
+  "changed_scope": "Evidence files only. The production source tree remains unchanged."
+}

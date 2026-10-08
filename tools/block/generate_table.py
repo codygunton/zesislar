@@ -44,6 +44,14 @@ def entry_source_hashes(design, root=ROOT):
             if name in hashes and hashes[name] != expected:
                 raise ValueError("The declarations bind different versions of one source.")
             hashes[name] = expected
+    convention = design.get("table_convention", {})
+    if "code_source_hashes" in convention:
+        fields = {"source_hashes": convention["code_source_hashes"]}
+        entry_schema.verify_sources(fields, root)
+        for name, expected in fields["source_hashes"].items():
+            if name in hashes and hashes[name] != expected:
+                raise ValueError("The table code binds another source version.")
+            hashes[name] = expected
     return hashes
 
 
@@ -55,10 +63,20 @@ def table_convention(design):
         "pc_ownership": "instr_pre pc state supplies PC; entry predicates do not own PC",
         "universal_binders": "Each row's binders, in their listed order",
         "resource_application": "Apply resource_predicate to arguments in order",
+        "code_persistence": "block_table_pre boxes the supplied code resource",
     }
     if not isinstance(convention, dict) or any(convention.get(key) != value
                                                for key, value in expected.items()):
         raise ValueError("The table convention is absent or differs from the approved convention.")
+    code = convention.get("code_resource")
+    sources = convention.get("code_source_hashes")
+    if not isinstance(code, str) or not entry_schema.ROCQ_NAME.fullmatch(code):
+        raise ValueError("The table code resource is not a fully qualified Rocq name.")
+    if not isinstance(sources, dict) or not sources:
+        raise ValueError("The table code resource has no bound source.")
+    module = code.rsplit(".", 1)[0]
+    if module.replace(".", "/") + ".v" not in sources:
+        raise ValueError("The table code declaration has no bound source.")
     return convention
 
 
@@ -250,9 +268,9 @@ def render_table(design, report):
     The caller must validate the approved table convention before rendering.
     This function introduces no body proof and no execution premise.
     """
-    table_convention(design)
+    convention = table_convention(design)
     blocks = sorted(design["blocks"], key=lambda block: address(block["entry_pc"]))
-    imports, states = set(), []
+    imports, states = {convention["code_resource"].rsplit(".", 1)[0]}, []
     for block in blocks:
         fields = entry_schema.contract_fields(block)
         if fields is None:
@@ -287,7 +305,9 @@ def render_table(design, report):
     entries = ";\n   ".join(f"(0x{address(block['entry_pc']):x}, {name})"
                               for block, name, _ in states)
     lines += ["Definition decodeItemBlockTable : blockTable Sigma :=",
-              f"  [{entries}].", "", "(* This is the existing guarded interface, specialized to the table. *)",
+              "  {| block_table_code := " + convention["code_resource"] + ";",
+              f"     block_table_entries := [{entries}] |}}.", "",
+              "(* Completion requires the persistent code resource and every block body. *)",
               "Definition decodeItemBlockTable_complete :=",
               "  block_table_complete decodeItemBlockTable.", "",
               "End decode_item_block_table.", ""]
