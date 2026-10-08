@@ -1,0 +1,50 @@
+{
+  "bound_cfg_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/build/stock-zisk/cfg.json",
+  "bound_cfg_sha256": "98c4614e6ff7b6e1cb85bdc3b9e600dd85eccd5afacda8b1c5b75ff66db16fc2",
+  "bound_design_archive_path": "/home/cody/zesislar-archive/sha256/59/5905dc39240e34696ba7be214fb7f6118ae52f61a2dae4a8c44e346d65571dc0",
+  "bound_design_sha256": "5905dc39240e34696ba7be214fb7f6118ae52f61a2dae4a8c44e346d65571dc0",
+  "counts": {
+    "697c": {
+      "conditional_branch_count": 0,
+      "end_pc_exclusive": "0x800d698c",
+      "entry_pc": "0x800d697c",
+      "instruction_PCs": [
+        "0x800d697c",
+        "0x800d6980",
+        "0x800d6984",
+        "0x800d6988"
+      ],
+      "instruction_count": 4,
+      "loops": 0,
+      "successor_pcs": [
+        "0x800d698c"
+      ],
+      "unconditional_jump_count": 0
+    },
+    "69e8": {
+      "conditional_branch_count": 0,
+      "end_pc_exclusive": "0x800d6a00",
+      "entry_pc": "0x800d69e8",
+      "instruction_PCs": [
+        "0x800d69e8",
+        "0x800d69ec",
+        "0x800d69f0",
+        "0x800d69f4",
+        "0x800d69f8",
+        "0x800d69fc"
+      ],
+      "instruction_count": 6,
+      "loops": 0,
+      "successor_pcs": [
+        "0x800d698c"
+      ],
+      "unconditional_jump_count": 1
+    }
+  },
+  "current_design_differs_from_metadata_bound_design": true,
+  "current_design_sha256": "fe4ceb80dc7944edc0a0169f04ec483822ec0ad90334f4bb1b93918a260affc5",
+  "design_note": "The current design hash differs. Counts use the exact archived design identified by the metadata. No generated file changed.",
+  "metadata_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/ZesuSsz/Generated/DecodeItem/block_table_metadata.json",
+  "metadata_sha256": "4ea11e6a196f7c4dcc4fb38b45cc8334977bb88a0b71febd90fef7d8e4603fc3",
+  "scope": "Static block counts from metadata-bound design and CFG; no native execution trace"
+}

@@ -1,0 +1,23 @@
+{
+  "archive_index": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/a9/a9cacf7db835afd2aa54e99f0992c518cab0b2f6ffa56957e132795c85c82fc4",
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/_build/rule35-c9-evidence-correction-001/archive-index.json",
+    "records": 5,
+    "sha256": "a9cacf7db835afd2aa54e99f0992c518cab0b2f6ffa56957e132795c85c82fc4"
+  },
+  "correction": "The redundant secret_audit reference now binds the committed final audit. final_secret_scan stays unchanged.",
+  "gate_audit": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/_build/rule35-c9-evidence-correction-001/gate-audit.json",
+    "sha256": "576f9533042bdcc41140459c73f0e90490749d6e49d919bcba136fe8f29fea86"
+  },
+  "green_Iris_reused": true,
+  "native_replayed": false,
+  "prior_commit": "8a7162f140ac8540a4c4947e0b94df9d2c8b0915",
+  "production_sources_unchanged": true,
+  "reference_audit": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule35-c9/_build/rule35-c9-evidence-correction-001/report-reference-audit.json",
+    "sha256": "67f00f801e0f09176b46c391aecfbac54611b249bac82ff8454acd140d4efa54"
+  },
+  "report_reference_count": 45,
+  "report_reference_defects": []
+}

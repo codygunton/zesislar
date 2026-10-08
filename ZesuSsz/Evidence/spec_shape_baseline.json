@@ -9,24 +9,28 @@
     "unfold_without_typeclasses_opaque": 2
   },
   "ZesuSsz/Contracts/DecodeItemBranchEntries.v": {
-    "uninferable_existentials": 1,
-    "reason": "The decodeItem branch continuation introduces its result outcome when it returns; this witness is not inferred from an entry register."
+    "reason": "The decodeItem branch continuation introduces its result outcome when it returns; this witness is not inferred from an entry register.",
+    "uninferable_existentials": 1
   },
   "ZesuSsz/Contracts/Level1.v": {
-    "uninferable_existentials": 1,
-    "reason": "The generic Level 1 exit continuation introduces its outcome when the machine returns; this witness is not inferred from entry resources."
+    "reason": "The generic Level 1 exit continuation introduces its outcome when the machine returns; this witness is not inferred from entry resources.",
+    "uninferable_existentials": 1
   },
   "ZesuSsz/Contracts/ParentHeaderMemcpyService.v": {
-    "uninferable_existentials": 1,
-    "reason": "The memcpy service continuation introduces the after-state when it returns; this witness is not inferred from entry resources."
+    "reason": "The memcpy service continuation introduces the after-state when it returns; this witness is not inferred from entry resources.",
+    "uninferable_existentials": 1
   },
   "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v": {
-    "uninferable_existentials": 24,
-    "reason": "Four fold entries package six Q46 locals each. The predecessor resources carry concrete witnesses. The compiled entailment adapter must introduce those witnesses at each edge; raw register inference is not assumed."
+    "reason": "Four fold entries package six Q46 locals each. The predecessor resources carry concrete witnesses. The compiled entailment adapter must introduce those witnesses at each edge; raw register inference is not assumed.",
+    "uninferable_existentials": 24
   },
   "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.v": {
-    "uninferable_existentials": 4,
-    "reason": "The 698c and 6ae0 join targets package four output witnesses. The machine edge proof supplies their concrete values from register and memory resources."
+    "reason": "The 698c and 6ae0 join targets package four output witnesses. The machine edge proof supplies their concrete values from register and memory resources.",
+    "uninferable_existentials": 4
+  },
+  "ZesuSsz/Proofs/Tests/CanonicalPureConjunction.v": {
+    "reason": "Synthetic fixtures test registered witness selection and failed lookup for six intentionally uninferable existentials.",
+    "uninferable_existentials": 6
   },
   "ZesuSsz/Proofs/Tests/InstrPreFlex.v": {
     "unfold_without_typeclasses_opaque": 1
