@@ -1,0 +1,21 @@
+{
+  "root": "246a0fde8c84ed338a8b4f79e2947930823fe58e",
+  "archive_sha256": "6ec41d28c265c725d66194c7c83c5420466d2a7e1a750bc2b0ba5f407ac5a32d",
+  "manifest_sha256": "698389b01c14c169a681c95ddcaed21313a08fe9a5f389d540f01db270ab6ce5",
+  "members_verified": 8674,
+  "source_records": 8673,
+  "text_members_scanned": 1557,
+  "credential_pattern_names": [
+    "private_key",
+    "AWS_access_key",
+    "github_token",
+    "API_token",
+    "bearer_credential",
+    "credential_env_assignment"
+  ],
+  "credential_matches": [],
+  "private_environment_headers": [],
+  "all_member_hashes_verified": true,
+  "archive_launcher_result_sha256": "b464667750c6ec087b80e2d62437178b66871b9dc406c2ddc1ff3b83fde663ed",
+  "scan_scope": "The scan checks high-confidence credential formats and private environment header files. It does not claim to detect every possible secret."
+}
