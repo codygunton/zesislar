@@ -11,6 +11,7 @@ import time
 from pathlib import Path
 
 from coqc_recipe import remember_recipe
+from dune_trace_guard import scrub_trace
 
 
 def error_class(returncode: int, output: str) -> str | None:
@@ -38,6 +39,7 @@ def main() -> int:
     result = subprocess.run(command, text=True, stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT, check=False)
     elapsed_ms = round((time.monotonic() - started) * 1000)
+    scrub_trace(Path(args.build_dir) / "trace.csexp")
     remember_recipe(Path(args.build_dir))
     sys.stdout.write(result.stdout)
     usage = resource.getrusage(resource.RUSAGE_CHILDREN)
