@@ -3,6 +3,7 @@ Require Export ZesuSsz.Compliance.DecodeItemCanonicalAnchors.
 Require Export ZesuSsz.Compliance.DecodeItemCompletedFoldFacts.
 Require Export ZesuSsz.Compliance.DecodeItemCorrectedWitnessSelections.
 Require Export ZesuSsz.Compliance.DecodeItemDataWitnessFacts.
+Require Export ZesuSsz.Compliance.DecodeItemEntryByteIndexFacts.
 Require Export ZesuSsz.Compliance.DecodeItemEntryGuardFacts.
 Require Export ZesuSsz.Compliance.DecodeItemFoldBackEdgeWitnesses.
 Require Export ZesuSsz.Compliance.DecodeItemFoldExitFacts.
