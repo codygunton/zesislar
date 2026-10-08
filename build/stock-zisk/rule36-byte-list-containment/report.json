@@ -1,0 +1,239 @@
+{
+  "rule": 36,
+  "kind": "switched generic source and evidence",
+  "measurement_root": "d582716e7b47cc150f4fbf0239d434d644d74f62",
+  "measured_candidate_tree": "c77f65dc5ffe67981b07dd059e90f98e973a76bb",
+  "candidate_patch_sha256": "d1b269956066624812a3d7751ba4a018e68ff1e2ed7ef3758597d6fb98d0b341",
+  "explicit_rule_authorization": true,
+  "effect": "ON advances the four input memory searches to array-index and byte-load continuation obligations.",
+  "all_original_eight_discharged": false,
+  "scope": {
+    "baseline_switches": 26,
+    "ON_switches": 27,
+    "hint_module": "ZesuSsz.Compliance.DecodeItemHints",
+    "hints": 22,
+    "Rule35": true,
+    "Rule34": true,
+    "dispatch": true,
+    "I39": false,
+    "historical_exclusions": 17
+  },
+  "sole_variable": "Rule36 switch import",
+  "inputs_per_arm": 14154,
+  "generated_inputs": 9321,
+  "statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+  "primary_body_sha256": "f8375cfbb975c9f8acec44ebcb154278f9a9c5eae0843d2743dc452e0b24362b",
+  "limits": {
+    "CPU_seconds": 1200,
+    "RSS_GiB": 6,
+    "wall": null,
+    "steps": null
+  },
+  "instruction_count": 2,
+  "conditional_branches": 1,
+  "loops": 0,
+  "native_metrics": {
+    "off": {
+      "CPU_seconds": 347.875041,
+      "RSS_KiB": 2344572,
+      "compiler_elapsed_seconds": 348.87777443998493,
+      "limit": null
+    },
+    "on": {
+      "CPU_seconds": 331.720634,
+      "RSS_KiB": 2371584,
+      "compiler_elapsed_seconds": 332.64660112396814,
+      "limit": null
+    }
+  },
+  "native_closure": {
+    "supporting_transfer": false,
+    "Level1": false,
+    "termination": false,
+    "named_Qed_failed_both": true,
+    "native_objects": null,
+    "native_assumption_certificate": "Unavailable because Qed failed."
+  },
+  "selected_helper_firing": "Unmeasured. No helper application events were recorded.",
+  "native_group_limit": "Stack, shelf, and given_up remain unavailable.",
+  "native_trace_limit": "WPasm and TRACE contain HIDDEN. The complete trace contents are not recoverable from these prints.",
+  "MCP": {
+    "certificates": 15,
+    "methods": {
+      "shared_defs": 1,
+      "module_m": 14
+    },
+    "assumptions": [],
+    "all_final_groups_empty": true,
+    "health_interactive_Qed_compile_verify": true,
+    "actual_production_files_compiled_verified": 2,
+    "production_checks": [
+      {
+        "label": "on",
+        "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Proofs/Tests/ByteListContainment.v",
+        "source_sha256": "cc72e6ed197ea10e23b41686b2e6a6060500e848ecac1e498659357bf1fecc39",
+        "compile": {
+          "success": true,
+          "output": "",
+          "dune_build_warning": "dune could not build 'ZesuSsz/Proofs/Tests/ByteListContainment.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead."
+        },
+        "verify": {
+          "success": true,
+          "verification_method": "shared_defs",
+          "assumptions": [],
+          "note": "Verified using shared-definitions template (definitions placed outside Module M for type compatibility)."
+        },
+        "object": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-production-tests-mcp-001/retained/on.vo",
+        "object_sha256": "6a2c2fcc0a51da2d5c896e92bbcca93da7552ffa450119dda35308b2f5246570",
+        "checked_theorem": "rule36_folded_head",
+        "statement_sha256": "07d454e7884b9819f71ee0bcd68b8e9b77876e1484d7bfba42f6242ac4c5b18f",
+        "final_groups": "The corresponding retained fixture exports have all four groups empty."
+      },
+      {
+        "label": "off",
+        "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Proofs/Tests/ByteListContainmentOff.v",
+        "source_sha256": "1b554e1eb141a12ea78b621c6344d2adc59743b859db093f7acc39f584c02968",
+        "compile": {
+          "success": true,
+          "output": "",
+          "dune_build_warning": "dune could not build 'ZesuSsz/Proofs/Tests/ByteListContainmentOff.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead."
+        },
+        "verify": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "object": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-production-tests-mcp-001/retained/off.vo",
+        "object_sha256": "01ac7fb4fbabd393a3812d4d7610892cb0bb890ab8962e05f8dbca8199b6c938",
+        "checked_theorem": "rule36_off",
+        "statement_sha256": "65d951383dad51eeca15a6d2ed70f629deb086ad6f4f630b4303b44702b4d4e6",
+        "final_groups": "The corresponding retained fixture exports have all four groups empty."
+      }
+    ]
+  },
+  "historical_pending_fields": "The immutable prerequisite and mechanical reports retain their original pending fields. The production and progress audits resolve them.",
+  "necessity_qualification": "The minimal suffix follows alias preparation and15 finite stages. Explicit width normalization and H0 exposure are jointly optional.",
+  "gates": {
+    "check-fast": {
+      "exit_code": 0,
+      "workers": 6,
+      "gate_class": "child",
+      "elapsed_seconds": 1583.484717130661,
+      "children_cpu_seconds": 1572.9153609999998,
+      "peak_children_rss_kib": 3035952,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-gates-001/check-fast.log",
+      "log_sha256": "4ec26914a50c90998bd7a13fb51d5be812d0e61ca908ae45259556deff376814",
+      "native_trace_cache": "/home/cody/zesislar/_build/stock-zisk/native-trace-cache",
+      "result": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-gates-001/check-fast-result.json",
+      "result_sha256": "71014455b385eaf0dbc37a48d7c1e275074e10f90899c7f8547d2e6cd0befee6",
+      "before_after_equal": true
+    },
+    "check-iris": {
+      "exit_code": 0,
+      "workers": 6,
+      "gate_class": "child",
+      "elapsed_seconds": 2554.225006580353,
+      "children_cpu_seconds": 3406.626609,
+      "peak_children_rss_kib": 1690844,
+      "log": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-gates-001/check-iris.log",
+      "log_sha256": "5b9c218cfb9031df9029bec8cbc2a68f4ae06925967e29049b7d507228ea5e99",
+      "native_trace_cache": "/home/cody/zesislar/_build/stock-zisk/native-trace-cache",
+      "result": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-gates-001/check-iris-result.json",
+      "result_sha256": "663d26de83a3aa0e9fe09cdd41fb32f1c17647aac43071de07938092c04f7850",
+      "before_after_equal": true
+    }
+  },
+  "production_sources": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Automation/Hooks.v",
+      "sha256": "3597847e0cf58a07849148b6a9554646371f9e7f6bdad2fed2eeb9badc5396af"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Automation/Finish.v",
+      "sha256": "f9968dad7176f7c0c0cdb286e37037d60f9b3f7ff6a59c1c5185ae756f812c52"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Automation/Switches/ByteListContainment.v",
+      "sha256": "7f419b79a67c9eaaa8890c4f2f4370cdcb0e8a056fc0ca14a9e5c549011b96ab"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Proofs/Tests/ByteListContainment.v",
+      "sha256": "cc72e6ed197ea10e23b41686b2e6a6060500e848ecac1e498659357bf1fecc39"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Proofs/Tests/ByteListContainmentOff.v",
+      "sha256": "1b554e1eb141a12ea78b621c6344d2adc59743b859db093f7acc39f584c02968"
+    }
+  ],
+  "failed_attempts_preserved": true,
+  "stale_private_test_copy": "Preserved. Actual production source and retained MCP object are bound separately.",
+  "native_replayed": false,
+  "trace_regeneration": false,
+  "references": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/build/stock-zisk/rule36-byte-list-containment/REPORT.md",
+      "sha256": "b34d8acafdc509751d348287ed9b08363d00cc98eeb8555f02a85ca44b0ecb79"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/build/stock-zisk/rule36-byte-list-containment/archive-audit.json",
+      "sha256": "f638ca02a62c28113dc192adaf21de4b85117f1b830c39693230c7c77fe7daf6"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/build/stock-zisk/rule36-byte-list-containment/archive-index.json",
+      "sha256": "48bcabb17fde09befa821888905be79b72072b3294b708b7752211976ee0f7aa"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/build/stock-zisk/rule36-byte-list-containment/check-fast-audit.json",
+      "sha256": "99bfcda253d532882a8a18b10b8a9ab8836f47a277d52046901fc69002b07564"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/build/stock-zisk/rule36-byte-list-containment/check-iris-audit.json",
+      "sha256": "a7a1d1bc41ddb7b42f57fdb5e1529a74cd18665faf403d02c55b63e61fd1ce8c"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/build/stock-zisk/rule36-byte-list-containment/eight-index-obligations.json",
+      "sha256": "818620a6d655f81a7668b3e56741c30a8160696e5f2f969d6d0d868e7fada452"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/build/stock-zisk/rule36-byte-list-containment/fixture-report.json",
+      "sha256": "80d46986ef1b1688d10662072566f3cf4b369da2c7cb04f5882b991d6d0513f0"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/build/stock-zisk/rule36-byte-list-containment/native-archive-audit.json",
+      "sha256": "c270883ceac9f14797459af8aff2f7981c0be405f49303cf70227af510d02e05"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/build/stock-zisk/rule36-byte-list-containment/native-report.json",
+      "sha256": "555849d4cbb8c1600321f87ea03a21de34743e711779be1e241187e9318e12b7"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/build/stock-zisk/rule36-byte-list-containment/prerelease-archive-audit.json",
+      "sha256": "93b2fb2b1c5d13a597926c830818afdf207d2fe849ece08566c3509fc75ae6d6"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/build/stock-zisk/rule36-byte-list-containment/production-test-audit.json",
+      "sha256": "e52f67a55c4fa431b2ec3b6d99fc8710f05457950254cae3a4c427fa3e32b8ce"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/build/stock-zisk/rule36-byte-list-containment/progress-report.json",
+      "sha256": "4518d3043c7ded5b851650068fe871f0d7c865d208d81650f53e44efa596cde2"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/build/stock-zisk/rule36-byte-list-containment/secret-audit.json",
+      "sha256": "f3391ff2b85241527d6f36d580cc9b5d9cc42625322edcd4b96f426251c1477e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/build/stock-zisk/rule36-byte-list-containment/source-audit.json",
+      "sha256": "4a3af6ce8bae577e27ef269c3c4756c243fd3b20e2a09c46d29771ca374d2948"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/build/stock-zisk/rule36-byte-list-containment/spec-s82-classification.json",
+      "sha256": "22cd94aec3870c8a00cf1a9782709a9c275c5588272e9c339cbafb2842bb9414"
+    }
+  ],
+  "spec_S82": {
+    "source": "/home/cody/zesislar/.worktrees/worker1-spec-b/build/stock-zisk/spec-b-s82/CLASSIFICATION.json",
+    "source_sha256": "22cd94aec3870c8a00cf1a9782709a9c275c5588272e9c339cbafb2842bb9414",
+    "qualification": "Three independent audits verify zero equality, a bound from HarrayAddressRange, and lookup from H0. The eight obligations share four unresolved witnesses. Native zero selection remains unobserved. Selection-gap ownership remains pending orch."
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "archive_index": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-pair-archive-001/index.json",
+  "archive_index_sha256": "1aff409d66cac8e005e21392ebf210240fa288ba84f24061ae3653b669612d95",
+  "records_checked": 55,
+  "unique_CAS_files_checked": 53,
+  "all_current_and_archived_hashes_and_sizes_match": true,
+  "known_secret_matches": 0,
+  "credential_pattern_matches": 0,
+  "private_environment_headers": 0,
+  "raw_Dune_traces_excluded": true,
+  "scan_findings": [],
+  "frozen_inputs": [
+    {
+      "arm": "off",
+      "index": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/off/run-inputs.json",
+      "sha256": "196168640de3e6c83e2fbfba578ddc2013de46eb165f7dc8357884ab64c06a78",
+      "inputs_checked": 14154,
+      "mismatches": []
+    },
+    {
+      "arm": "on",
+      "index": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/on/run-inputs.json",
+      "sha256": "5e7176d2c4e89392ddbbd0bf5e1c4f76e6d41e69f339acdc04bff116ccf2850e",
+      "inputs_checked": 14154,
+      "mismatches": []
+    }
+  ],
+  "native_replayed": false,
+  "proof_commands_executed": false,
+  "gate_results_included": false
+}

@@ -1573,6 +1573,44 @@ Ltac zesu_integer_array_facts :=
 Class ZesuStepArrayBounds : Prop :=
   zesu_step_array_bounds : True.
 
+Class ZesuStepByteListContainment : Prop := {}.
+
+(* Rewrite one retained list equality before the containment solver.
+   Syntactic endpoint matching must not determine unresolved native data. *)
+Ltac zesu_byte_list_containment_if_enabled :=
+  zesu_switch_enabled constr:(ZesuStepByteListContainment);
+  lazymatch goal with
+  | |- envs_entails _ _ => fail 0
+  | _ => idtac
+  end;
+  match goal with
+  | H : ?statement |- context [length ?values] =>
+      let valuesType := type of values in
+      constr_eq valuesType (list (bv 8));
+      assert_fails (has_evar values);
+      assert_fails (has_evar statement);
+      assert_fails (has_evar H);
+      let expanded := eval hnf in statement in
+      lazymatch expanded with
+      | @eq (list (bv 8)) ?left ?right =>
+          first [
+            constr_eq values left;
+            assert_fails (constr_eq left right);
+            let replacement := eval hnf in right in
+            lazymatch replacement with _ :: _ => idtac end;
+            progress (rewrite H;
+              change (length right) with (length replacement);
+              cbn [length])
+          | constr_eq values right;
+            assert_fails (constr_eq left right);
+            let replacement := eval hnf in left in
+            lazymatch replacement with _ :: _ => idtac end;
+            progress (rewrite <- H;
+              change (length left) with (length replacement);
+              cbn [length])]
+      end
+  end.
+
 (* Convert an integer address only from its owned no-wrap facts. *)
 Ltac zesu_array_bound_integer_casts :=
   repeat match goal with
@@ -1651,6 +1689,7 @@ Ltac zesu_integer_array_address_if_enabled :=
                   first [
                     zesu_switch_enabled constr:(ZesuStepArrayRegionBounds);
                     zesu_array_bound_integer_casts;
+                    try zesu_byte_list_containment_if_enabled;
                     zesu_byte_array_lengths_if_enabled;
                     solve [lia | bv_solve]
                   | bv_solve]));

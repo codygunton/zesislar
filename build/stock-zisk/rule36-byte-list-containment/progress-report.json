@@ -1,0 +1,170 @@
+{
+  "native_effect": "ON advances the four input memory searches to array-index and byte-load continuation obligations.",
+  "all_original_eight_discharged": false,
+  "OFF": {
+    "FindMemMapsTo": 4,
+    "medeleg_FindRegMapsTo": 4,
+    "active_records": 8
+  },
+  "ON": {
+    "unresolved_nat_witnesses": 4,
+    "index_equalities": 4,
+    "index_bounds": 4,
+    "dependent_byte_load_continuations": 4,
+    "unchanged_medeleg_FindRegMapsTo": 4,
+    "active_records": 20
+  },
+  "exact_unchanged_captures": [
+    {
+      "OFF_index": 1,
+      "ON_index": 13,
+      "capture_equal": true,
+      "capture_sha256": "731c460e0d91dfcde30d3888ae56e0d670b130106c4d300aff085c874ba43d64",
+      "conclusion": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n1)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' -\u2217 WPasm HIDDEN)%I\n      | RKCol regs =>\n          li_tactic (regcol_compute_hint (regcol_lookup (KindReg \"medeleg\")) regs) (\u03bb '(_, s), (reg_col regs -\u2217 \u231cvalu_has_shape (RegVal_Struct [(\"bits\", RVal_Bits n1)]) s\u231d -\u2217 WPasm HIDDEN)%I)\n      end))"
+    },
+    {
+      "OFF_index": 3,
+      "ON_index": 15,
+      "capture_equal": true,
+      "capture_sha256": "a2ef698d79cec889983f481b9568345d9cf836cd90ab831e463563f957107854",
+      "conclusion": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n1)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' -\u2217 WPasm HIDDEN)%I\n      | RKCol regs =>\n          li_tactic (regcol_compute_hint (regcol_lookup (KindReg \"medeleg\")) regs) (\u03bb '(_, s), (reg_col regs -\u2217 \u231cvalu_has_shape (RegVal_Struct [(\"bits\", RVal_Bits n1)]) s\u231d -\u2217 WPasm HIDDEN)%I)\n      end))"
+    },
+    {
+      "OFF_index": 5,
+      "ON_index": 17,
+      "capture_equal": true,
+      "capture_sha256": "f01e54579aeb4dd46c9efcb404978f90ff49754d70d48075bd22d91860fc6744",
+      "conclusion": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n1)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' -\u2217 WPasm HIDDEN)%I\n      | RKCol regs =>\n          li_tactic (regcol_compute_hint (regcol_lookup (KindReg \"medeleg\")) regs) (\u03bb '(_, s), (reg_col regs -\u2217 \u231cvalu_has_shape (RegVal_Struct [(\"bits\", RVal_Bits n1)]) s\u231d -\u2217 WPasm HIDDEN)%I)\n      end))"
+    },
+    {
+      "OFF_index": 7,
+      "ON_index": 19,
+      "capture_equal": true,
+      "capture_sha256": "9e32750dffe6d88580c6821e0726e1be732fec420884a1cdbee396df8b405d99",
+      "conclusion": "(find_in_context (FindRegMapsTo \"medeleg\")\n   (\u03bb rk : reg_mapsto_kind,\n      match rk with\n      | RKMapsTo v' => (\u231cRegVal_Struct [(\"bits\", RVal_Bits n1)] = v'\u231d -\u2217 \"medeleg\" \u21a6\u1d63 v' -\u2217 WPasm HIDDEN)%I\n      | RKCol regs =>\n          li_tactic (regcol_compute_hint (regcol_lookup (KindReg \"medeleg\")) regs) (\u03bb '(_, s), (reg_col regs -\u2217 \u231cvalu_has_shape (RegVal_Struct [(\"bits\", RVal_Bits n1)]) s\u231d -\u2217 WPasm HIDDEN)%I)\n      end))"
+    }
+  ],
+  "OFF_memory_indices": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "ON_load_continuation_indices": [
+    12,
+    14,
+    16,
+    18
+  ],
+  "input_range_hypothesis": "(decodeItemInputPointer args \u2264 decodeItemInputPointer args + 0 < decodeItemInputPointer args + length (decodeItemInputBytes args) * Z.of_N (8 `div` 8))%Z",
+  "input_range_present_only_after_ON_memory_progress": true,
+  "eight_obligations": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-final-pair-audit-001/eight-index-obligations.json",
+  "captured_nat_witness_selection": "Unresolved. The capture does not select zero.",
+  "SHELVED_SIDECOND_limit": "The wrapper name does not establish shelf membership. These records belong to the printed active group.",
+  "trace_limit": "WPasm and TRACE contain HIDDEN. The complete trace contents are not recoverable from these prints.",
+  "instruction_progress_limit": "The continuations still concern the first byte load. The capture does not establish second-instruction completion.",
+  "resources": "DomainAt, InputHead, SavedFrameFacts, input/output/frame resources remain retained in the load continuations.",
+  "firing_limit": "No helper application events were recorded. The single-switch pair establishes measured progress, not a selected-helper trace.",
+  "complete_groups": "Stack, shelf, and given_up remain unavailable.",
+  "closure": {
+    "supporting_transfer": false,
+    "Level1": false,
+    "termination": false,
+    "named_Qed_failed_both": true,
+    "native_objects": null,
+    "native_assumption_certificate": "Unavailable because Qed failed."
+  },
+  "metrics": {
+    "off": {
+      "CPU_seconds": 347.875041,
+      "RSS_KiB": 2344572,
+      "compiler_elapsed_seconds": 348.87777443998493,
+      "limit": null
+    },
+    "on": {
+      "CPU_seconds": 331.720634,
+      "RSS_KiB": 2371584,
+      "compiler_elapsed_seconds": 332.64660112396814,
+      "limit": null
+    }
+  },
+  "cost_limit": "One pair does not establish a speedup. Lower CPU is separate from the changed stopping stage.",
+  "controller_elapsed_seconds": 1789.6098837980535,
+  "normal_gate_admission": true,
+  "serial_execution": true,
+  "source_statement_recipe_scope_budget_checks": "Passed in the full mechanical audit. Both14154 input sets match.",
+  "bindings": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/off/Boundary.v",
+      "sha256": "37f711d97d6d52beb76b4f929747b33bda2c0ee3329fba4ce1d2c1ebb44ee7c8"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/off/run-inputs.json",
+      "sha256": "196168640de3e6c83e2fbfba578ddc2013de46eb165f7dc8357884ab64c06a78"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/off/compiler.json",
+      "sha256": "b52964da9abcccf2823bad0f12dfa7b7a56e2991fe81546dab0c99608b763c4b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/off/compiler.log",
+      "sha256": "707b9f63730f27a6aca48fa9555fe63f9e9bd05a482108589149addab031e169"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/off/evidence.json",
+      "sha256": "0adac2ff54b134577d04c3a5dac4988323aa60a34b719f7d62797b2dd3ae2863"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-final-pair-audit-001/off-captures.json",
+      "sha256": "62eadcf8c6747a50e24b81fdb157f69c17c0e4bdeed4c19a5fb7561f33740d3d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/on/Boundary.v",
+      "sha256": "800a0fb0dcc9cfaf60cdd47c285bc3ab8c5657a7a6b096505885c83220081c6d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/on/run-inputs.json",
+      "sha256": "5e7176d2c4e89392ddbbd0bf5e1c4f76e6d41e69f339acdc04bff116ccf2850e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/on/compiler.json",
+      "sha256": "62b80c4f48676a97ded182aede4d3ee3ec5946cb94990bfb560a92493bda4892"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/on/compiler.log",
+      "sha256": "f3e9e941acfc6bfd75dd6eac291211ac2710bb1fb52fbdf7b8e9862c2962f023"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/on/evidence.json",
+      "sha256": "7a32b546999bb085f228c583e4c3d6ea5b2b3d3d99c74abedb49fbf432d0aff7"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-final-pair-audit-001/on-captures.json",
+      "sha256": "2a3f4c768b899438b798daf2ca2cb66f3f5893e55f9e40f3724ffada63e26727"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-final-pair-audit-001/report.json",
+      "sha256": "555849d4cbb8c1600321f87ea03a21de34743e711779be1e241187e9318e12b7"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-final-pair-audit-001/eight-index-obligations.json",
+      "sha256": "818620a6d655f81a7668b3e56741c30a8160696e5f2f969d6d0d868e7fada452"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/controller-result-002.json",
+      "sha256": "f3e01a39b9f0197799be0efa7debed5f3fceb4514693433b9318ad9989e870f6"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/admission-records-002.jsonl",
+      "sha256": "bab6043399eee6f5db38b5088deb08f27b5bfbe736a55244daeb5649fb6d64c4"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/pair-seals-002.json",
+      "sha256": "af9b1a9011688ceafb35cfb9ddcc3bf2bff0686b73fda8cbd5bd5b1671eb8447"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-native-comparison-001/parent-release.json",
+      "sha256": "1ac1dba9a4969debcbfe6e3e56396e13828bd92f83e657439d35b015f77af31a"
+    }
+  ]
+}

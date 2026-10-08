@@ -1,0 +1,257 @@
+{
+  "I48_status": "The candidate remains a private experimental overlay. It does not land.",
+  "ON_minus_OFF": {
+    "compiler_cpu_seconds": -90.84342499999997,
+    "compiler_elapsed_seconds": -91.11448052804917,
+    "compiler_peak_rss_kib": 30760
+  },
+  "Rule35": "ON equally.",
+  "archive_records": 7950,
+  "archive_unique_contents": 7342,
+  "baseline_switches": 26,
+  "body_sha256": "6c1eee9b7d80c64c48bb921e70916cd9b31ff8441998ee91605acfee296a662e",
+  "budget": {
+    "cpu_seconds": 1200,
+    "memory_gib": 6,
+    "wall_limit": null
+  },
+  "capture_comparisons": {
+    "final": {
+      "available": {
+        "off": true,
+        "on": true
+      },
+      "byte_identical_files": false,
+      "counts": {
+        "off": 3,
+        "on": 3
+      },
+      "exact_recorder_records_equal": false,
+      "first_observed_divergent_ordinal": 2,
+      "sha256": {
+        "off": "14a8a1e2dc328277947df5e0fe15ace79cfc33d10e3368baa3f06e9bbbff4107",
+        "on": "0c139834337a02c0d3d53181b21a26bc1d6cf67ca96fb271e1876407ae997db3"
+      }
+    },
+    "initial": {
+      "available": {
+        "off": true,
+        "on": true
+      },
+      "byte_identical_files": true,
+      "counts": {
+        "off": 1,
+        "on": 1
+      },
+      "exact_recorder_records_equal": true,
+      "first_observed_divergent_ordinal": null,
+      "sha256": {
+        "off": "3d891cee65e82d39281409cd88c621cd5170871c24320aa26c1dba8ed4b5fe1b",
+        "on": "3d891cee65e82d39281409cd88c621cd5170871c24320aa26c1dba8ed4b5fe1b"
+      }
+    }
+  },
+  "causal_limit": "These costs include the recorder and machine variation. A cost difference alone does not establish an I48 improvement.",
+  "complete_goal_groups": "Unavailable. Complete recorder bytes are separate from exhaustive kernel-term and goal-group exports.",
+  "earliest_native_divergence": "Unmeasured. Goal2 is the first difference in retained final captures.",
+  "entry_pc": "0x800d6a40",
+  "evidence_gates": {
+    "fast": {
+      "exit_code": 0,
+      "log_sha256": "fe44cfa0572217369ca6d675921f15895227c4322847e573e9ed6d591d969cff",
+      "result_sha256": "cf2f6274d275f301a10fbd34fad38f3e6e53480b0d4743334262c4bb4dea7267",
+      "workers": 6
+    },
+    "iris": {
+      "exit_code": 0,
+      "log_sha256": "ebb6b720979bb7cb22d6d0989e25d257f3e9b3d6b50ba3b27321cc5663f65659",
+      "result_sha256": "1188448b3975a1c535ffec4388ac679e02c84ecf3541075e10ca879bf91c1fad",
+      "workers": 6
+    }
+  },
+  "excluded_classes": 17,
+  "hint_exports": 22,
+  "hint_umbrella": "ZesuSsz.Compliance.DecodeItemHints",
+  "input_records_per_arm": 7874,
+  "kernel_conversion": "Unmeasured. The exact retained differences remain evidence.",
+  "marker_ledger_equal": false,
+  "marker_ledger_sha256": "41b5c2f7a0796593fee1806b110fe7e109cd31f9bbfd276333677cb400a837fc",
+  "metrics": {
+    "off": {
+      "compiled_object": null,
+      "compiler_cpu_seconds": 464.860146,
+      "compiler_elapsed_seconds": 466.1304763611406,
+      "compiler_exit": 1,
+      "compiler_peak_rss_kib": 4229224,
+      "controller_admission_wait_seconds": 542.9560281559825,
+      "controller_total_wall_seconds": 1016.643979244167,
+      "final_captures": 3,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-native-seal-preparation-001/off/Diagnostic.v\", line 159, characters 0-4:\nError:\n (in proof decodeItemReturnAt6a40_correct): Attempt to save an incomplete proof\n\nexit=1 ms=471370 rss_kb=4228144\n",
+      "launcher_exit": 0,
+      "limit": null,
+      "named_qed_attempted": true,
+      "scratch_exit": 1,
+      "scratch_wrapper_wall_seconds": 472.8673475650139
+    },
+    "on": {
+      "compiled_object": null,
+      "compiler_cpu_seconds": 374.016721,
+      "compiler_elapsed_seconds": 375.01599583309144,
+      "compiler_exit": 1,
+      "compiler_peak_rss_kib": 4259984,
+      "controller_admission_wait_seconds": 90.9769127778709,
+      "controller_total_wall_seconds": 467.53011275385506,
+      "final_captures": 3,
+      "first_error": "File \"/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-native-seal-preparation-001/on/Diagnostic.v\", line 160, characters 0-4:\nError:\n (in proof decodeItemReturnAt6a40_correct): Attempt to save an incomplete proof\n\nexit=1 ms=375530 rss_kb=4257688\n",
+      "launcher_exit": 0,
+      "limit": null,
+      "named_qed_attempted": true,
+      "scratch_exit": 1,
+      "scratch_wrapper_wall_seconds": 375.7465300508775
+    }
+  },
+  "native_replay": false,
+  "no_further_native_run": true,
+  "only_source_toggle": "Require Import ZesuSsz.Automation.Switches.EvarMemoryKindGuard.",
+  "parent_ON_release_sha256": "9c1f32ad4429faed2646e68952311168aa70d32bca75fb740ecbb05236fd0e61",
+  "post_gate_archive_scan": {
+    "archive_path_records": 7950,
+    "credential_name_file_matches": 4,
+    "credential_value_matches": 0,
+    "gate_result_and_log_refs_match": true,
+    "native_seals_checked": 7878,
+    "private_header_matches": 0,
+    "unique_archive_contents": 7342
+  },
+  "post_gate_seal_count": 7878,
+  "predicate_result": "Unmeasured in both full return arms. The scope checks establish activation, not invocation results.",
+  "production_source_committed": false,
+  "progress_limit": "The full arms have no diagnostic counter. Retained goals and marker records describe observed progress.",
+  "proof_closure": "Compiler, Qed, object, and exact certificate status remain separate. No closure claim follows from launcher success.",
+  "recipe_sha256": "64584fc82ca3e489e8503f75b5b08395ff66cac6ca0fc2f9ede52b925fbd57a9",
+  "residual_classification": [
+    {
+      "finding": "The complete raw recorder records match bytewise. The target requests a memory-kind witness type.",
+      "ordinal": 1,
+      "target": "mem_mapsto_kind"
+    },
+    {
+      "finding": "Printed targets match. HarrayAddressRange2 and HarrayFact47 differ in their printed types. OFF retains seven bv_signed_in_range let bindings before literal eight. ON prints literal eight. The drop length prints eight plus N.to_nat eight in ON. No kernel conversion check ran.",
+      "ordinal": 2,
+      "target": "FindHypEqual (ZesuMemRegionSearch (bv_unsigned LET0))"
+    },
+    {
+      "finding": "Printed targets and contexts differ. ON retains LET, LET0, LET1, LET2, TRACE and n4. OFF expands address expressions and prints WPasm HIDDEN. ON prints WPasm TRACE with TRACE body HIDDEN. H49 and H50 use LET0 in ON. OFF alone retains H51 through H54 range hypotheses. Both targets retain the unresolved kind evar and its explicit H51 through H54 substitutions.",
+      "ordinal": 3,
+      "target": "Iris spatial store continuation at PC0x800d6a50 and output+24"
+    }
+  ],
+  "root": "e8fb293773dab5a4124f813634b3d2ccd1fff400",
+  "scope": "Diagnostic return supporting transfer. Rule35 stays ON in both arms. Only the rejected I48 overlay varies.",
+  "source_reports": {
+    "off": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-off-result-audit-001/REPORT.json",
+      "result_sha256": "82ff3855739094f135502395b0712136332e997ac09e1b8d599962c77b0ccf4a",
+      "sha256": "3fbd9199927f28ad469e13b08e04c783cc1067ddf4c5e6896be922c4b67fda0f"
+    },
+    "on": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-i46/_build/i48-return-rule35-on-result-audit-001/REPORT.json",
+      "result_sha256": "c4311a1976d2a204c4b951bd521969f08db71acbdcf02666b456882b23f0fd06",
+      "sha256": "55aec3686b4c3d53d546f548cf80d7941858f8314100f33a62ea9c7954931a3e"
+    }
+  },
+  "statement_sha256": "066839761552bc06f74ddf6018f51e0843f61d7e0d966bf7ec335308c693f828",
+  "target_printing_limits": {
+    "off": [
+      {
+        "WPasm_HIDDEN": false,
+        "ordinal": 1,
+        "printer_ellipsis": false,
+        "raw_capture_sha256": "b1e6e763fd3fbd2689673fb80d80c860c8e621e3ce9686bc5e65dbec1efe926e",
+        "target_sha256": "698598c4e815f534a018c60fc6ad4367b1567897587045926b2b05230f0c592c"
+      },
+      {
+        "WPasm_HIDDEN": false,
+        "ordinal": 2,
+        "printer_ellipsis": true,
+        "raw_capture_sha256": "ccd1f67e5c6f226de4663dde5fdcd65f0782706742e9928f6bdacb086bc8fb9b",
+        "target_sha256": "254a15d25059fe8ad33c9f977b2a43603ab6f29c428fe83b0898e722bc6566a4"
+      },
+      {
+        "WPasm_HIDDEN": true,
+        "ordinal": 3,
+        "printer_ellipsis": false,
+        "raw_capture_sha256": "80da514ee78b157a1fb1b6ebc43256356c4e9f4c37ab82b9fbd25337e6ddd32e",
+        "target_sha256": "beb6a585941e7b45159dd18a2e16d43e1638c82485c061a2419f516ca0719c6f"
+      }
+    ],
+    "on": [
+      {
+        "WPasm_HIDDEN": false,
+        "ordinal": 1,
+        "printer_ellipsis": false,
+        "raw_capture_sha256": "b1e6e763fd3fbd2689673fb80d80c860c8e621e3ce9686bc5e65dbec1efe926e",
+        "target_sha256": "698598c4e815f534a018c60fc6ad4367b1567897587045926b2b05230f0c592c"
+      },
+      {
+        "WPasm_HIDDEN": false,
+        "ordinal": 2,
+        "printer_ellipsis": true,
+        "raw_capture_sha256": "48b6aa3b34b57181a65d846af216040765b0d91d83a565535684448ec4fb8065",
+        "target_sha256": "254a15d25059fe8ad33c9f977b2a43603ab6f29c428fe83b0898e722bc6566a4"
+      },
+      {
+        "WPasm_HIDDEN": false,
+        "ordinal": 3,
+        "printer_ellipsis": false,
+        "raw_capture_sha256": "5a9b22dda89c84b96516dd2a513ca8ff1e2ed4e37298bbcf055981e911873947",
+        "target_sha256": "5932d4daca468e353cf285fdb90d23329e656662251a8f2faf9480321c65bccf"
+      }
+    ]
+  },
+  "token_totals": "Unavailable.",
+  "trace_limit": "Goal2 trace reveals match exactly. ON also reveals goal3 TRACE as a WriteReg PC event followed by tnil. OFF goal3 has no local TRACE binding and prints WPasm HIDDEN. The hidden OFF target trace cannot be compared from these records.",
+  "trace_reveals": {
+    "off": [
+      {
+        "binding_absent": true,
+        "ordinal": 1,
+        "sha256": null,
+        "trace_text": null
+      },
+      {
+        "binding_absent": false,
+        "ordinal": 2,
+        "sha256": "989bbc21fa402a5e41a037a4df65b03df1b111984b216a5db86d6d405b42cd53",
+        "trace_text": "(WriteReg \"PC\" [] (RVal_Bits LET) Mk_annot :t:\n tnil)\n"
+      },
+      {
+        "binding_absent": true,
+        "ordinal": 3,
+        "sha256": null,
+        "trace_text": null
+      }
+    ],
+    "on": [
+      {
+        "binding_absent": true,
+        "ordinal": 1,
+        "sha256": null,
+        "trace_text": null
+      },
+      {
+        "binding_absent": false,
+        "ordinal": 2,
+        "sha256": "989bbc21fa402a5e41a037a4df65b03df1b111984b216a5db86d6d405b42cd53",
+        "trace_text": "(WriteReg \"PC\" [] (RVal_Bits LET) Mk_annot :t:\n tnil)\n"
+      },
+      {
+        "binding_absent": false,
+        "ordinal": 3,
+        "sha256": "989bbc21fa402a5e41a037a4df65b03df1b111984b216a5db86d6d405b42cd53",
+        "trace_text": "(WriteReg \"PC\" [] (RVal_Bits LET) Mk_annot :t:\n tnil)\n"
+      }
+    ]
+  },
+  "unique_input_paths_checked": 7878
+}

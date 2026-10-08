@@ -1,0 +1,25 @@
+{
+  "archive_index": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-prerelease-archive-001/index.json",
+  "archive_index_sha256": "18f757010a5b1952c50aa98fb3e3b886ed82e12dbc2fd6523f639b63b7ff7359",
+  "CAS": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-prerelease-archive-001/cas",
+  "records_checked": 14364,
+  "unique_CAS_files_checked": 11352,
+  "all_hashes_and_sizes_match": true,
+  "frozen_inputs_checked": 14154,
+  "all_current_inputs_match": true,
+  "required_release_records_bound": true,
+  "known_secret_matches": 0,
+  "credential_pattern_matches": 0,
+  "private_environment_headers": 0,
+  "raw_Dune_traces_excluded": true,
+  "scrubbed_trace_files_checked": 1,
+  "literal_prefix_matches": {
+    "file": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/tools/dune_trace_guard.py",
+    "config_prefix_count": 1,
+    "env_prefix_count": 1,
+    "classification": "Source constants used to reject headers. These bytes are not captured environment headers."
+  },
+  "first_scan": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-prerelease-archive-001/scan-first-pass.json",
+  "first_scan_sha256": "d635af6e18286279edfe19fb7986a1f83518e035b92f450cfca82d39f6619bd1",
+  "native_executed": false
+}

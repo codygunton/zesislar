@@ -1,0 +1,215 @@
+{
+  "ARCHIVE-INDEX.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/aa/aadda5f4bf2aeaa589f99e7d5c4a7cdcf4273bd1534fe94095c1f9093ece9857",
+    "bytes": 3327913,
+    "sha256": "aadda5f4bf2aeaa589f99e7d5c4a7cdcf4273bd1534fe94095c1f9093ece9857"
+  },
+  "PACKAGE-INPUTS.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/b4/b4e9782e11a16a7a1eeb190ef25a8019d603f9e534eff22630b4b3f930d838ac",
+    "bytes": 1863098,
+    "sha256": "b4e9782e11a16a7a1eeb190ef25a8019d603f9e534eff22630b4b3f930d838ac"
+  },
+  "REPORT.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/d4/d474775be188d2d7516817104a084f2b4ce487d5867c10bac5d9a8cf174ae789",
+    "bytes": 1670,
+    "sha256": "d474775be188d2d7516817104a084f2b4ce487d5867c10bac5d9a8cf174ae789"
+  },
+  "SECURITY-ARCHIVE-AUDIT.json": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/9e/9eb181aa75a7388a4c3d09b47b9e2d3d9087de17cb6eebab4650d618f5e9f5ce",
+    "bytes": 213,
+    "sha256": "9eb181aa75a7388a4c3d09b47b9e2d3d9087de17cb6eebab4650d618f5e9f5ce"
+  },
+  "gate_records": {
+    "fast": {
+      "launcher_ref": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/87/87ff737115be6d84f8c5c73c52d934e1311055c1c21228231aed0dcababaac03",
+        "bytes": 2621,
+        "sha256": "87ff737115be6d84f8c5c73c52d934e1311055c1c21228231aed0dcababaac03"
+      },
+      "log_ref": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/fe/fe44cfa0572217369ca6d675921f15895227c4322847e573e9ed6d591d969cff",
+        "bytes": 179274,
+        "sha256": "fe44cfa0572217369ca6d675921f15895227c4322847e573e9ed6d591d969cff"
+      },
+      "result": {
+        "accounting_scope": "RUSAGE_CHILDREN covers wrapper children. Guarded compiler scopes can fall outside this accounting.",
+        "command": [
+          "make",
+          "check-fast",
+          "CHECK_AGENT=worker2-child-map-i48-return-rule35-evidence",
+          "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-evidence/_build/agents/worker2-child-map-i48-return-rule35-evidence",
+          "FAST_JOBS=6",
+          "AGENT_JOBS=6",
+          "STOCK_NATIVE_TRACE_CACHE_DIR=/home/cody/zesislar/_build/stock-zisk/native-trace-cache"
+        ],
+        "exit_code": 0,
+        "gate_class": "child",
+        "log_sha256": "fe44cfa0572217369ca6d675921f15895227c4322847e573e9ed6d591d969cff",
+        "machine_after": {
+          "MemAvailable_KiB": 165518284,
+          "cpu_ticks": [
+            147405812,
+            434133654,
+            57521316,
+            6710453907,
+            3116737,
+            6421948,
+            3145082,
+            0
+          ],
+          "load": [
+            2.93,
+            3.66,
+            2.93
+          ],
+          "logical_CPUs": 64,
+          "swap_used_KiB": 7798832
+        },
+        "machine_before": {
+          "MemAvailable_KiB": 167866404,
+          "cpu_ticks": [
+            147385362,
+            433950436,
+            57479267,
+            6706821613,
+            3115504,
+            6417126,
+            3142641,
+            0
+          ],
+          "load": [
+            1.25,
+            1.39,
+            1.89
+          ],
+          "logical_CPUs": 64,
+          "swap_used_KiB": 7798832
+        },
+        "native_trace_cache": "/home/cody/zesislar/_build/stock-zisk/native-trace-cache",
+        "package_hashes_match_after_gate": true,
+        "production_overlay": false,
+        "root": "e8fb293773dab5a4124f813634b3d2ccd1fff400",
+        "wall_seconds": 607.6466957090888,
+        "workers": 6,
+        "wrapper_children_CPU_seconds": 1643.411356,
+        "wrapper_children_peak_rss_KiB": 3037808
+      },
+      "result_ref": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/cf/cf2f6274d275f301a10fbd34fad38f3e6e53480b0d4743334262c4bb4dea7267",
+        "bytes": 1648,
+        "sha256": "cf2f6274d275f301a10fbd34fad38f3e6e53480b0d4743334262c4bb4dea7267"
+      },
+      "snapshot_ref": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/0e/0efb34613a98b0eebc2fe80ab0f2362ae543fe5e7eae3326b2089f7916f94005",
+        "bytes": 1411,
+        "sha256": "0efb34613a98b0eebc2fe80ab0f2362ae543fe5e7eae3326b2089f7916f94005"
+      }
+    },
+    "iris": {
+      "launcher_ref": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/5b/5b7fd34e33313b42a003299c61df812b7e825209f42c960979329dbd4d14e323",
+        "bytes": 2918,
+        "sha256": "5b7fd34e33313b42a003299c61df812b7e825209f42c960979329dbd4d14e323"
+      },
+      "log_ref": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/eb/ebb6b720979bb7cb22d6d0989e25d257f3e9b3d6b50ba3b27321cc5663f65659",
+        "bytes": 12858,
+        "sha256": "ebb6b720979bb7cb22d6d0989e25d257f3e9b3d6b50ba3b27321cc5663f65659"
+      },
+      "result": {
+        "accounting_scope": "RUSAGE_CHILDREN covers wrapper children. Guarded compiler scopes can fall outside this accounting.",
+        "command": [
+          "make",
+          "check-iris",
+          "CHECK_AGENT=worker2-child-map-i48-return-rule35-evidence",
+          "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker2-child-map-i48-return-rule35-evidence/_build/agents/worker2-child-map-i48-return-rule35-evidence",
+          "FAST_JOBS=6",
+          "AGENT_JOBS=6",
+          "STOCK_NATIVE_TRACE_CACHE_DIR=/home/cody/zesislar/_build/stock-zisk/native-trace-cache"
+        ],
+        "exit_code": 0,
+        "fast_result_sha256": "cf2f6274d275f301a10fbd34fad38f3e6e53480b0d4743334262c4bb4dea7267",
+        "gate_class": "child",
+        "log_sha256": "ebb6b720979bb7cb22d6d0989e25d257f3e9b3d6b50ba3b27321cc5663f65659",
+        "machine_after": {
+          "MemAvailable_KiB": 168295724,
+          "cpu_ticks": [
+            147463312,
+            434408043,
+            57673404,
+            6722484171,
+            3120335,
+            6436896,
+            3152186,
+            0
+          ],
+          "load": [
+            5.79,
+            4.28,
+            3.49
+          ],
+          "logical_CPUs": 64,
+          "swap_used_KiB": 7798832
+        },
+        "machine_before": {
+          "MemAvailable_KiB": 164783704,
+          "cpu_ticks": [
+            147408005,
+            434143800,
+            57522203,
+            6711082610,
+            3116894,
+            6422191,
+            3145221,
+            0
+          ],
+          "load": [
+            1.78,
+            3.02,
+            2.77
+          ],
+          "logical_CPUs": 64,
+          "swap_used_KiB": 7798832
+        },
+        "native_trace_cache": "/home/cody/zesislar/_build/stock-zisk/native-trace-cache",
+        "package_hashes_match_after_gate": true,
+        "production_overlay": false,
+        "root": "e8fb293773dab5a4124f813634b3d2ccd1fff400",
+        "wall_seconds": 1860.389082069043,
+        "workers": 6,
+        "wrapper_children_CPU_seconds": 3393.083802,
+        "wrapper_children_peak_rss_KiB": 1698092
+      },
+      "result_ref": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/11/1188448b3975a1c535ffec4388ac679e02c84ecf3541075e10ca879bf91c1fad",
+        "bytes": 1740,
+        "sha256": "1188448b3975a1c535ffec4388ac679e02c84ecf3541075e10ca879bf91c1fad"
+      },
+      "snapshot_ref": {
+        "archive_path": "/home/cody/zesislar-archive/sha256/0e/0efb34613a98b0eebc2fe80ab0f2362ae543fe5e7eae3326b2089f7916f94005",
+        "bytes": 1411,
+        "sha256": "0efb34613a98b0eebc2fe80ab0f2362ae543fe5e7eae3326b2089f7916f94005"
+      }
+    }
+  },
+  "package.py": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/6c/6c33ac12f17415494af1b05778847a651828adfb4735b9fd608e8adb17e6d1c4",
+    "bytes": 1717,
+    "sha256": "6c33ac12f17415494af1b05778847a651828adfb4735b9fd608e8adb17e6d1c4"
+  },
+  "post_fast_audit": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/2e/2e572501f465c5e798b72161654bd3f4a543687cedb5ad442123daaf8cb6ccbb",
+    "bytes": 2574,
+    "sha256": "2e572501f465c5e798b72161654bd3f4a543687cedb5ad442123daaf8cb6ccbb"
+  },
+  "post_gate_scan": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/9e/9ed87c27efbef179f1c3a0d72b1a2917e4e628ad8c77dec4fd89365ea64d28ab",
+    "bytes": 245,
+    "sha256": "9ed87c27efbef179f1c3a0d72b1a2917e4e628ad8c77dec4fd89365ea64d28ab"
+  },
+  "staging_repair": {
+    "archive_path": "/home/cody/zesislar-archive/sha256/54/54f1656ca31bb2d57f6fa370e428861bc2564b070a9cbd6c5be6ac414e3fb07c",
+    "bytes": 249,
+    "sha256": "54f1656ca31bb2d57f6fa370e428861bc2564b070a9cbd6c5be6ac414e3fb07c"
+  }
+}

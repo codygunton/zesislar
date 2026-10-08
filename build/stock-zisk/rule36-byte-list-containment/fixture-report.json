@@ -1,0 +1,1359 @@
+{
+  "root": "d582716e7b47cc150f4fbf0239d434d644d74f62",
+  "rule": 36,
+  "certificate_count": 15,
+  "verification_methods": {
+    "shared_defs": 1,
+    "module_m": 14
+  },
+  "all_assumptions_empty": true,
+  "all_final_groups_empty": true,
+  "certificates": [
+    {
+      "label": "folded_head",
+      "theorem": "rule36_folded_head",
+      "statement_sha256": "07d454e7884b9819f71ee0bcd68b8e9b77876e1484d7bfba42f6242ac4c5b18f",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/folded_head.v",
+      "source_sha256": "1709b1c51addfecb9854643d1ceb737458ab19a121f93f557c59b05673a37abc",
+      "problem": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/folded_headProblem.v",
+      "problem_sha256": "677ef88e1b247c0aa19e0138a1bbef1a04c49bee0dcd9743977d0cd3cfac8fd6",
+      "object": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/retained/folded_head.vo",
+      "object_sha256": "15d117c26679cde4876b643af0fdbfed3df0d02ad4b4cb4c4f66693bda667893",
+      "verification_method": "shared_defs",
+      "assumptions": [],
+      "final_groups_empty": true,
+      "failed_handler_exports_identical": false,
+      "before": {
+        "success": true,
+        "state_id": 1,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_1.json",
+        "sha256": "69eb84a040dacb48ac09dffe0a7d37920238745ac850162e3a7489625f60c6b4",
+        "bytes": 388,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "after": {
+        "success": true,
+        "state_id": 1,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_1.json",
+        "sha256": "69eb84a040dacb48ac09dffe0a7d37920238745ac850162e3a7489625f60c6b4",
+        "bytes": 388,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      }
+    },
+    {
+      "label": "reverse",
+      "theorem": "rule36_reverse",
+      "statement_sha256": "dd979438ea56efd549063c5ded53c9f99e5a17045b847f6d506c5edc3cfff731",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/reverse.v",
+      "source_sha256": "4ac391c07fad3bbed5a7d3fc556babd7ba017cec3bca4e7779c8019009110727",
+      "problem": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/reverseProblem.v",
+      "problem_sha256": "dd1aad8aa2b4a2c7fbc1e0f387c095593857269cb4ec11b498189a569daad08b",
+      "object": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/retained/reverse.vo",
+      "object_sha256": "0ed0db387558bf68fbbcaf1e5319751455f2cea2483ca24c5572a3890ef42abc",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "final_groups_empty": true,
+      "failed_handler_exports_identical": false,
+      "before": {
+        "success": true,
+        "state_id": 5,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_5.json",
+        "sha256": "5df178f1101d495bfb6dbb1ad9b0e87b07854dd3a772a2de2eec7877fcc68c7f",
+        "bytes": 292,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "after": {
+        "success": true,
+        "state_id": 5,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_5.json",
+        "sha256": "5df178f1101d495bfb6dbb1ad9b0e87b07854dd3a772a2de2eec7877fcc68c7f",
+        "bytes": 292,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      }
+    },
+    {
+      "label": "constructor_alias",
+      "theorem": "rule36_constructor_alias",
+      "statement_sha256": "9ee0fe80bd0735e82f87db1bc138f36d0db4326c2ddc406d61656e7e2f92c9f3",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/constructor_alias.v",
+      "source_sha256": "5769d2bd85c380174a488edc2b76e77f5422e873962bfc812bc0b13c0fb62744",
+      "problem": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/constructor_aliasProblem.v",
+      "problem_sha256": "63792471664b2ce49fa0b29718bfded8fc74a4d699f2315d3738f915be4c87a1",
+      "object": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/retained/constructor_alias.vo",
+      "object_sha256": "f5a28a840d3e275d0c1ed64c066b913cc06f18b027f024712017917dde348942",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "final_groups_empty": true,
+      "failed_handler_exports_identical": false,
+      "before": {
+        "success": true,
+        "state_id": 9,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_9.json",
+        "sha256": "78be54acdb66cb064b0712a7ac5382f2154599acf536f6ba8928cee6a32345c9",
+        "bytes": 310,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "after": {
+        "success": true,
+        "state_id": 9,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_9.json",
+        "sha256": "78be54acdb66cb064b0712a7ac5382f2154599acf536f6ba8928cee6a32345c9",
+        "bytes": 310,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      }
+    },
+    {
+      "label": "reverse_constructor_alias",
+      "theorem": "rule36_reverse_constructor_alias",
+      "statement_sha256": "8e4b29645b94e4e2c7ed3ce7144ff0e12cc8b84d1cdebdcab6e0e38c2d986dc3",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/reverse_constructor_alias.v",
+      "source_sha256": "f71c78c575f08b66d5feefd18d5a089e6fe6b744858554f64fed4bdf68c562c0",
+      "problem": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/reverse_constructor_aliasProblem.v",
+      "problem_sha256": "c9c93612174a4068b716b2deab0132d21e1aaa3e744489656b673e83eeb6ad26",
+      "object": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/retained/reverse_constructor_alias.vo",
+      "object_sha256": "97edc511e60fec91c6802d3ae65a0e8a11783693a7d36d8f12426c20c770befd",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "final_groups_empty": true,
+      "failed_handler_exports_identical": false,
+      "before": {
+        "success": true,
+        "state_id": 13,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_13.json",
+        "sha256": "63443c6409027bc3d873f163cfae734d6794b1a3aa27961430b571e8ee77c400",
+        "bytes": 310,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "after": {
+        "success": true,
+        "state_id": 13,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_13.json",
+        "sha256": "63443c6409027bc3d873f163cfae734d6794b1a3aa27961430b571e8ee77c400",
+        "bytes": 310,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      }
+    },
+    {
+      "label": "cached_on",
+      "theorem": "rule36_cached_on",
+      "statement_sha256": "af22d26d415f0c01826106d0708b2a898d1fc0b32c20bd0fc0824f47870cb93b",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/cached_on.v",
+      "source_sha256": "f3bc1a9210067c265ac367c5015b22d4615cf0b7345ccd4145486e7366e1007e",
+      "problem": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/cached_onProblem.v",
+      "problem_sha256": "4ec36c247ad215fa9822cd3d115dcf05d605c49b010279e289ef8a8586631495",
+      "object": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/retained/cached_on.vo",
+      "object_sha256": "f245aea3de83df40ae9b360f4d96668fe0e5d3def8947498eef85af290bd0bc4",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "final_groups_empty": true,
+      "failed_handler_exports_identical": false,
+      "before": {
+        "success": true,
+        "state_id": 18,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_18.json",
+        "sha256": "2c398d01bf123069e8314e9ef45ccbdf98a625d23f6564770d09b9e5f6b20135",
+        "bytes": 397,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "after": {
+        "success": true,
+        "state_id": 18,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_18.json",
+        "sha256": "2c398d01bf123069e8314e9ef45ccbdf98a625d23f6564770d09b9e5f6b20135",
+        "bytes": 397,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      }
+    },
+    {
+      "label": "nil_rejected",
+      "theorem": "rule36_nil_rejected",
+      "statement_sha256": "904febdf5044e0daa9a490270fc2445cf779f6c54d568169967600308a782eb0",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/nil_rejected.v",
+      "source_sha256": "968e041a24b1916e43ba223b670fb8b0423ae077e286324c91836be6de6368b5",
+      "problem": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/nil_rejectedProblem.v",
+      "problem_sha256": "23051755572f85247e3586e5a25131bf82cf04209dfdf64649aa13a8b89a08b9",
+      "object": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/retained/nil_rejected.vo",
+      "object_sha256": "5569e97e9ee3e1688fd0e03451ccb1da6489f8965281307bcb23f25a888acb88",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "final_groups_empty": true,
+      "failed_handler_exports_identical": true,
+      "before": {
+        "success": true,
+        "state_id": 22,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_22.json",
+        "sha256": "91472b082b9f0b1948c4a1213f59ac02897215895232da442fa08f9d4b2ea3d4",
+        "bytes": 213,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "after": {
+        "success": true,
+        "state_id": 23,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_23.json",
+        "sha256": "91472b082b9f0b1948c4a1213f59ac02897215895232da442fa08f9d4b2ea3d4",
+        "bytes": 213,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      }
+    },
+    {
+      "label": "nonmatching",
+      "theorem": "rule36_nonmatching",
+      "statement_sha256": "3a03cf98002f8c31d3ebfd750e40d7f0a27a19e6f6804039339af11cd827cbed",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/nonmatching.v",
+      "source_sha256": "0041bd7e0b6556edca9ee2229948a79e7be583f9b73352e53561226cca44d6c9",
+      "problem": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/nonmatchingProblem.v",
+      "problem_sha256": "229480039849347e26224d4ca25bc38f26d0be1c0669140f61b406b18b031095",
+      "object": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/retained/nonmatching.vo",
+      "object_sha256": "d3b1a590f65513551ca0a2998f60fb2a8ebb470302c8cef1428ee01ea733f1d9",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "final_groups_empty": true,
+      "failed_handler_exports_identical": true,
+      "before": {
+        "success": true,
+        "state_id": 27,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_27.json",
+        "sha256": "0f3b617beccb8b794f07254cd29f07fddc2e8b5a1b55bc9babb897986d5b465e",
+        "bytes": 348,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "after": {
+        "success": true,
+        "state_id": 28,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_28.json",
+        "sha256": "0f3b617beccb8b794f07254cd29f07fddc2e8b5a1b55bc9babb897986d5b465e",
+        "bytes": 348,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      }
+    },
+    {
+      "label": "off",
+      "theorem": "rule36_off",
+      "statement_sha256": "65d951383dad51eeca15a6d2ed70f629deb086ad6f4f630b4303b44702b4d4e6",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/off.v",
+      "source_sha256": "1b554e1eb141a12ea78b621c6344d2adc59743b859db093f7acc39f584c02968",
+      "problem": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/offProblem.v",
+      "problem_sha256": "e9da2d22ec49b4ffef163015cd4ac6e8304be097538674a912f2eac888848dbe",
+      "object": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/retained/off.vo",
+      "object_sha256": "fff4cf5562f6044b6e8372243eee4d6ae7270c69c04b6085425253dcadde5112",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "final_groups_empty": true,
+      "failed_handler_exports_identical": true,
+      "before": {
+        "success": true,
+        "state_id": 31,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_31.json",
+        "sha256": "24c8b32a75b3f918b2f1fa778514186e23593b86e16ee81d61ad2bb06fd3aa64",
+        "bytes": 307,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "after": {
+        "success": true,
+        "state_id": 32,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_32.json",
+        "sha256": "24c8b32a75b3f918b2f1fa778514186e23593b86e16ee81d61ad2bb06fd3aa64",
+        "bytes": 307,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      }
+    },
+    {
+      "label": "cached_off",
+      "theorem": "rule36_cached_off",
+      "statement_sha256": "798aa38dc84e5a8503496b933a50f0b4ec2b9371556f2650fde6df74a9dcb4e3",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/cached_off.v",
+      "source_sha256": "2859876d8171557e71a36ae184adc040ad1a662f23ad7a0346c4a6b7e2bdde1b",
+      "problem": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/cached_offProblem.v",
+      "problem_sha256": "bed0a14b337f528697b2cf2d161bb12dde0973e76445a67ad8458502c24ff550",
+      "object": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/retained/cached_off.vo",
+      "object_sha256": "188cfa3daeada92c59a20d8f9078fb2f632e98b970d20f773016208b48b85a30",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "final_groups_empty": true,
+      "failed_handler_exports_identical": true,
+      "before": {
+        "success": true,
+        "state_id": 39,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_39.json",
+        "sha256": "074a5006613c7a53160ddf30ed640f41bb0308e93a8903081367f3a28dcee583",
+        "bytes": 398,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "after": {
+        "success": true,
+        "state_id": 40,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_40.json",
+        "sha256": "074a5006613c7a53160ddf30ed640f41bb0308e93a8903081367f3a28dcee583",
+        "bytes": 398,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      }
+    },
+    {
+      "label": "shared_evar_rollback",
+      "theorem": "rule36_shared_evar_rollback",
+      "statement_sha256": "4cc20d3e319593083a707d2304fc213081ff7cb5c15ca9cdf67803498daa902f",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/shared_evar_rollback.v",
+      "source_sha256": "db76ee10942084770f8bedbbe7701febac02cf73167ddab2f2c223f6ea3de6ff",
+      "problem": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/shared_evar_rollbackProblem.v",
+      "problem_sha256": "533b92ae6072d298895aecf40e9b936d6ffcb8fd8223c1f23231e4811eae1bda",
+      "object": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/retained/shared_evar_rollback.vo",
+      "object_sha256": "eb4f19cf77139638852ecd27cca5db18f327af1d413af0d60935ba7fa985c559",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "final_groups_empty": true,
+      "failed_handler_exports_identical": true,
+      "before": {
+        "success": true,
+        "state_id": 4,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/exports/state_4.json",
+        "sha256": "92397af0ca665c3102bbce8b1770bb2850fc1e9472a58a97367622db0154f8c8",
+        "bytes": 658,
+        "active_goals": 2,
+        "stack_entries": 0,
+        "shelved_goals": 2,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "after": {
+        "success": true,
+        "state_id": 5,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/exports/state_5.json",
+        "sha256": "92397af0ca665c3102bbce8b1770bb2850fc1e9472a58a97367622db0154f8c8",
+        "bytes": 658,
+        "active_goals": 2,
+        "stack_entries": 0,
+        "shelved_goals": 2,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      }
+    },
+    {
+      "label": "self_rejected",
+      "theorem": "rule36_self_rejected",
+      "statement_sha256": "8df7ea0815b0cbe7040f00c5d0c154e6c3424c011d8249838b7b91902cdafee3",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/self_rejected.v",
+      "source_sha256": "749af1e22a092493ceb23bb47ee79a9b3a48602fc02b32b6301bb35bdb842f46",
+      "problem": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/self_rejectedProblem.v",
+      "problem_sha256": "203aba0e920d88b85cdbc9806a94dbe552053a347da70e8a2f29d0e71f32218e",
+      "object": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/retained/self_rejected.vo",
+      "object_sha256": "8cfd5a92f5cec72c9193ea6ef1e94d282c0e5e77312774b7f26b650d7564c468",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "final_groups_empty": true,
+      "failed_handler_exports_identical": true,
+      "before": {
+        "success": true,
+        "state_id": 11,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/exports/state_11.json",
+        "sha256": "5adcbd5103c70696eab55af737d6026e25a668ceba088be20e1126bc02d0d9aa",
+        "bytes": 223,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "after": {
+        "success": true,
+        "state_id": 12,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/exports/state_12.json",
+        "sha256": "5adcbd5103c70696eab55af737d6026e25a668ceba088be20e1126bc02d0d9aa",
+        "bytes": 223,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      }
+    },
+    {
+      "label": "unrelated_shared_evar",
+      "theorem": "rule36_unrelated_shared_evar",
+      "statement_sha256": "473e60b6e55973c6bcb4d21ed7228f246a04f44b8166c83800db312351ae75e3",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/unrelated_shared_evar.v",
+      "source_sha256": "73617c460a182bf8f67770c551f1357ecf3b43f72f113da6173a15666ec9f0ee",
+      "problem": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/unrelated_shared_evarProblem.v",
+      "problem_sha256": "9f6f8211466f5f2e07e732bd589bc049404ba102b6765182415b2880d5f69fd0",
+      "object": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/retained/unrelated_shared_evar.vo",
+      "object_sha256": "38c3ec69ddfc990202af018ba99d8ad41ab472b9523253175d9f0f4eb8398dfe",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "final_groups_empty": true,
+      "failed_handler_exports_identical": false,
+      "before": {
+        "success": true,
+        "state_id": 18,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/exports/state_18.json",
+        "sha256": "041760c6aa8567a41a5016fdfc4b99f4684b36e5f7f08ff8b3b3214be5baf76b",
+        "bytes": 1389,
+        "active_goals": 2,
+        "stack_entries": 0,
+        "shelved_goals": 2,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "after": {
+        "success": true,
+        "state_id": 19,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/exports/state_19.json",
+        "sha256": "dfede636fcca92c4c6db79ba039845fddb4a43e8c30ee63a3aaab0e83ec3a692",
+        "bytes": 1391,
+        "active_goals": 2,
+        "stack_entries": 0,
+        "shelved_goals": 2,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      }
+    },
+    {
+      "label": "exact_oracle",
+      "theorem": "i50_ordered_pure_range_input",
+      "statement_sha256": "218ea5523016cbcfe4b34c3fe25a4317e514c12b924d403103f4518211f859aa",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/exact_oracle.v",
+      "source_sha256": "de0cf8475fbb57ac411c11d467a493bc62c2e0abc9b00063a965bffc372f70b3",
+      "problem": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/exact_oracleProblem.v",
+      "problem_sha256": "f400d4640d1b2f6c67b7db9d1c3a8441d2883c01cffac1a333496351b0e226a4",
+      "object": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/retained/exact_oracle.vo",
+      "object_sha256": "95536f8fd761603d784164d9da0af077883e7ff9b4cc4be0a4b4ee1262932fb9",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "final_groups_empty": true,
+      "failed_handler_exports_identical": false,
+      "before": {
+        "success": true,
+        "state_id": 22,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/exports/state_22.json",
+        "sha256": "5e1a4b497d351cdea3100ded76eef8d0cf20d8ca50447c1469b48dca8b6dd991",
+        "bytes": 6560,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "after": {
+        "success": true,
+        "state_id": 22,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/exports/state_22.json",
+        "sha256": "5e1a4b497d351cdea3100ded76eef8d0cf20d8ca50447c1469b48dca8b6dd991",
+        "bytes": 6560,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      }
+    },
+    {
+      "label": "scope_off",
+      "theorem": "rule36_scope_off",
+      "statement_sha256": "48c7adf335194f9081c095313a9be77cb75c69849c59a8dc7a1168fc076340a5",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/scope_off.v",
+      "source_sha256": "abd23d791ef00a7c7e9885c2c6d794aeb638869ebb9f285fb476aa3be7a15d5f",
+      "problem": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/scope_offProblem.v",
+      "problem_sha256": "44c14e2e5b1b113a38e22ed3ca05b2a5d40292745a0309bf002108b93631c435",
+      "object": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/retained/scope_off.vo",
+      "object_sha256": "1fc6ea85112b8eeb09d6b491e3de0dcac6306e92f8def7f953b55e71b2cac5de",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "final_groups_empty": true,
+      "failed_handler_exports_identical": false,
+      "before": {
+        "success": true,
+        "state_id": 26,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/exports/state_26.json",
+        "sha256": "277b13c1d4419ee1e0b66dea798356952c275a21ce1ca22b6a65dc34f7a15058",
+        "bytes": 116,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "after": {
+        "success": true,
+        "state_id": 26,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/exports/state_26.json",
+        "sha256": "277b13c1d4419ee1e0b66dea798356952c275a21ce1ca22b6a65dc34f7a15058",
+        "bytes": 116,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      }
+    },
+    {
+      "label": "scope_on",
+      "theorem": "rule36_scope_on",
+      "statement_sha256": "edde5ba5bea2fed96c3855267fb175b8dbb7286f657c7ebfc24e7f2c6c058c78",
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/scope_on.v",
+      "source_sha256": "55db62153bbdf8c4eec9bb7561e20a2ffbbb00d13ba983aae2fdcbfe4e21804e",
+      "problem": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/scope_onProblem.v",
+      "problem_sha256": "4e40bcb2502485b7a5900f0c532e45cc4b03694793d9e80c399b51b40497178c",
+      "object": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/retained/scope_on.vo",
+      "object_sha256": "86fa85832665a5c14025e5d9aab7326d7f5c39fd6e6247335eee20432547a499",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "final_groups_empty": true,
+      "failed_handler_exports_identical": false,
+      "before": {
+        "success": true,
+        "state_id": 73,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/exports/state_73.json",
+        "sha256": "277b13c1d4419ee1e0b66dea798356952c275a21ce1ca22b6a65dc34f7a15058",
+        "bytes": 116,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      },
+      "after": {
+        "success": true,
+        "state_id": 73,
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/exports/state_73.json",
+        "sha256": "277b13c1d4419ee1e0b66dea798356952c275a21ce1ca22b6a65dc34f7a15058",
+        "bytes": 116,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      }
+    }
+  ],
+  "health_start_check_step_multi_Qed_compile_verify": true,
+  "shared_evar_positive": "Probe changed. All hypotheses, active suffix, shelves, stack, and given_up stayed identical. The unresolved pending term remained unresolved until auxiliary closure.",
+  "shared_evar_negative": "All complete exports stayed byte-identical after the selected guard failed.",
+  "ordered_oracle": "Exact local context and prepared range match retained exports after one goal identifier map. H6 is Z.ge and H7 is Z.le.",
+  "actual_retained_cache_activation": "zesu_switch_enabled ZesuStepByteListContainment passed under the retained24-entry cache. The complete export stayed identical.",
+  "scope": {
+    "baseline_switches": 26,
+    "ON_switches": 27,
+    "historical_exclusions": 17,
+    "umbrella_exports": 22,
+    "Rule35": "ON",
+    "Rule34": "ON",
+    "dispatch": "ON",
+    "I39": "absent"
+  },
+  "qualification": "The exact suffix follows alias preparation and15 finite stages. Explicit width normalization and H0 exposure are jointly optional. Native effect is unmeasured.",
+  "preserved_failures": [
+    "001 waiting-controller cancellation before MCP",
+    "002 generated MachineMap source audit",
+    "003 wrong plugin archive name before MCP",
+    "004 constructor alias retained after helper",
+    "005 two focused goals in negative fixture",
+    "006 missing Z scope in exact statement"
+  ],
+  "production_test_compilation": "pending separate actual-file compile audit",
+  "native_replay": false,
+  "native_released": false,
+  "bindings": [
+    {
+      "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/Ltac2/Ltac2.vo",
+      "sha256": "7dbba8ded3a86c0aeeeec73aee61a8c2bc8f05335c5e403a1c569163569fadf3"
+    },
+    {
+      "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/iris/proofmode/environments.vo",
+      "sha256": "f40d5291938041c5e8f4e541bd7eb335007c7e7ec675485d42e2aa214dc8e15a"
+    },
+    {
+      "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/riscv64/riscv64.vo",
+      "sha256": "23f9fa57a325ee629f851d46354cc8182644f8301e135a63e8428d5ae35bffc8"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Automation/Finish.v",
+      "sha256": "f9968dad7176f7c0c0cdb286e37037d60f9b3f7ff6a59c1c5185ae756f812c52"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Automation/Hooks.v",
+      "sha256": "3597847e0cf58a07849148b6a9554646371f9e7f6bdad2fed2eeb9badc5396af"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Automation/Switches/ByteListContainment.v",
+      "sha256": "7f419b79a67c9eaaa8890c4f2f4370cdcb0e8a056fc0ca14a9e5c549011b96ab"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Proofs/Tests/ByteListContainment.v",
+      "sha256": "cc72e6ed197ea10e23b41686b2e6a6060500e848ecac1e498659357bf1fecc39"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/ZesuSsz/Proofs/Tests/ByteListContainmentOff.v",
+      "sha256": "1b554e1eb141a12ea78b621c6344d2adc59743b859db093f7acc39f584c02968"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/MachineMap/Machine.vo",
+      "sha256": "102fc33e00f854a8ca10c3205565af708d763f0c926c42656b8c9b8e88367aea"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/All.vo",
+      "sha256": "8fc15507124a318a904bcd08c6f4e572385e2d32db5f540f1443977a3b7dee6e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/ArrayByteValues.vo",
+      "sha256": "619c2ce9b703123cbe0e998dd509b9b9a5f016a7a0819f2b10a7f48b38a5c205"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/ArrayLoadPreselect.vo",
+      "sha256": "283868a31790951a9e43ef7d1692cd11f097ca41ff20e54d6632cf0ba1f5e14a"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/ArrayLoadPriority.vo",
+      "sha256": "098ed0a908e09c08f16300592dd581fe9dd5c4063c004553931e7e0c0f586e8b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/ArraySlices.vo",
+      "sha256": "fb088939cfabe69c1dd920fbd6b9f88421f74166148a4e508cd4aebc1347940b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/BoundedArithmetic.vo",
+      "sha256": "1a4769a4032d5026cbc572e21e1dc70f3d8151a3a0c7e14435a4e9077c0986c0"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/ByteFold.vo",
+      "sha256": "a9de27304802e8656d54e1786bd5a7f9f11b9adabc274d46fee2c1a0007f8c6d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/CallReturn.vo",
+      "sha256": "0f5b36f857cbf6e5b2e0d346f8fe21b424fae15d434a0d80898503a73e531aa4"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/CallReturnSpecTable.vo",
+      "sha256": "a4f4196ce4463f60f2432038d2af65c045f529bacaa9e8c5b4de8214b3832d3e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/ConjunctMatch.vo",
+      "sha256": "508750f6f275586262c00d235a204a4e580a142a2205aee919b926df2e1873e9"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/ExistentialArrayRestore.vo",
+      "sha256": "ac7becd82d9d9efadde52509091bcd4189fa41fda138078aa045aafeed7e2572"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/InstrPreAddress.vo",
+      "sha256": "8fd8745a5681105d384489b9162669ea0fee5487c392dd45f8fec5cb0265e6f4"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/InteriorByteSlice.vo",
+      "sha256": "455a6296136f133d046bbff3c4b6c67036904b0f60cacd505f3dd2aa06309db6"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/LoadedTrace.vo",
+      "sha256": "5704bd2c621571dd0e04246493600f179106d2ddcf2097879b85c9da15f0cc7b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/LookupReduce.vo",
+      "sha256": "844a27fe044176dce8e794f1d8924ef5c83fde32a1d3cffd389dcb2fe17ddc85"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/NatBounds.vo",
+      "sha256": "6763c9a6a903c43e1239a6f6fbda62b2709f5e104be38db942f3a16abef024b6"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/OutcomeHandoff.vo",
+      "sha256": "f3c3e7c728e97ffdbed499c58b7a6c6d4750201f7ebe5a5f775002e197ee54f1"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/PackedWordValues.vo",
+      "sha256": "3fd0930332ae6e5280c06fc4e9e26480c6ff3d4342e88e79f2881cd13391bf70"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/PureFacts.vo",
+      "sha256": "5e8fdd3095e50370fac13613f05e81f2e9c14aee3262a080f88d295d8479b1f3"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/ReturnBundle.vo",
+      "sha256": "8606919bf5141347866e7de5eef2c083163777e10e8a2c2e78192ab6adf0f608"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/ReturnWand.vo",
+      "sha256": "f87f22b4c444281243389dccb5053dc1773688e9ccda2d2eb71bb6097ce0b811"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Rewrites.vo",
+      "sha256": "e0b0c421d1f3d58877f79871d1c37f42dc1bcf0b542bfbbc6f46503b47d417f5"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/SealedCoverage.vo",
+      "sha256": "12f91120b7cf05d7ef2a4254db7f983fcfd9cca385d5bb62793586d774154e97"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/SpecPrefix.vo",
+      "sha256": "d7eb1f0f89f4d048db31080584eee327e4255f9edbc4b5326b7f30056541cb7d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/StackArrayIndices.vo",
+      "sha256": "7ae14da33e54e12902fc6eb5b6921de0479d7f31ff1f6c4e5dafd956cf1feb21"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/SwitchDispatch.vo",
+      "sha256": "8a4e8625ce63ddc9274cefe3b995aab9094e88c1c15db312aa8788ad0be086fa"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/ArrayBounds.vo",
+      "sha256": "ea37a54902f5a11196f86f5438f6c3642d476288bf9426e9cb4bf0ee991a0e6e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/ArrayRegionBounds.vo",
+      "sha256": "63ffa5a056e8fb44f3139992cb0269170872b40dd83a480ac789cd1859dacc07"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/ByteListContainment.vo",
+      "sha256": "69387f7544343d3363fd6ae1ca1fb046eff7bb4c05c9dd22da45819f026b3bee"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/CanonicalAnchor.vo",
+      "sha256": "aa0614dafaaf5154889a08aefbbe3858474e5c0322fb41903eb8c7fada909dbd"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/CanonicalPureConjunction.vo",
+      "sha256": "0403f96806ecd1087070bf9a62087ae8c28f57b0cecfe61c03387f792759534d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/EvarImplicationGuard.vo",
+      "sha256": "ff1a68e4b5bb23a5f1648ce78084fb795e4118c6401b34a472f25712fb5dd5ac"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/EvarSideconditionGuard.vo",
+      "sha256": "bc01d66f80cd9dd84a2eada9a246587e7b76993286fb34c1a502e8b944fc8d17"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/InstructionLookup.vo",
+      "sha256": "d443f541488ee59f1cbec3365b81bededa4f6100acd46d91fda158af128f64bc"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/IntegerArrayAddress.vo",
+      "sha256": "bdf31598ae8d9a32ecbd2a0aa0c5129ce79b657a7ee4483483abfc5897c79b33"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/KnownPairWitness.vo",
+      "sha256": "0a8bc3541a816c59d4108d1b1ef9cb97914a983dbb73be250ba18cd6301597bb"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/ListWitness.vo",
+      "sha256": "8f00422ed5a400c6c3c70ee0fcaea96bceab279461def642425fa2f7f4ff8c35"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/LowMask.vo",
+      "sha256": "1e62d39ae5154b65ab7a60d9f756b47b0494a55f0bcf1428fb4488c1313c5d12"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/PureFactExistential.vo",
+      "sha256": "0221eae5caa8a3703659a3d97c553ae19c980767405bbaecb723a255b67e0593"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/PureFactHints.vo",
+      "sha256": "a2044d5cd088a4cf143972ca8f03a08e927e80efbe01a345c3cca7aadb38cd38"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/PureWitnessConstraints.vo",
+      "sha256": "23feb4e1fb811df83a403138958e693c8cca4d2f043b003228ec681863033423"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/RamFault.vo",
+      "sha256": "bcb5c872997f586c9c1b5098dd9647c2b2040cb81191d4fb2041364694f8f1c9"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/RecordWitness.vo",
+      "sha256": "805d958321ac67da3208e833be6909c55fd098090ab8192ad2950c74c705a73b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/RegionFault.vo",
+      "sha256": "2b9e5e7e96ffade386df4a42060a16f78dc078c435446bd28b70df25ec0b63e4"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/RegionFaultNormalization.vo",
+      "sha256": "0cd7037caf534ee87f2b7716bf0273b285e615fc8455799941688f83ba6573ff"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/RegisterCollectionSelection.vo",
+      "sha256": "e6299592837c8bc5963e9fd28f45018e409a7250091e501a45997fbcc8771ee4"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/ReturnBundle.vo",
+      "sha256": "cfdacd9073597e776a81107bb8a90c909b45325d1763b67a55d3937451868ccd"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/ReturnWand.vo",
+      "sha256": "f5c422049fc00e3747895bdbebc3f797104323d4997223a214068d7a8525c1f8"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/StackWrite.vo",
+      "sha256": "e7978164c63f25d1860674c47e35d13217e86e9988c4abd77028eb28f0578adb"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/StrictSigned.vo",
+      "sha256": "70037c57be946deee1e561a2fa39d7a2bc012885081062e8c632442241d99302"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/SwitchDispatch.vo",
+      "sha256": "32c99c784640ca19414d695a894d46d9115597d6f52b8a5a90165fb125925eca"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/TupleWitness.vo",
+      "sha256": "e43cbe95ff45f10c08bab86a24b68f7e6ef8fcb5bd83d37487d7399b95220447"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/Switches/WordArrayHandoff.vo",
+      "sha256": "1c254570e43b4b5e886762d6af070123d347555f6e120dc1785f0e9b04cd0436"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/TracePrefixTail.vo",
+      "sha256": "dc3b4c0daaeed924c0d042bbed4c14cacf8f6ee80bfefd4fd144630de2ca9b74"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Automation/V2Steps.vo",
+      "sha256": "736b32c5771a6584b8dae1b791851d64ff0808fea66f83f7481e9cc01eb7de45"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Compliance/DecodeItemBranchGuardFacts.vo",
+      "sha256": "4a055aa712ae78cdcc98dbf9cc3e8d0ac8e93cf5309d574697b395b0aaaabe84"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Compliance/DecodeItemHints.vo",
+      "sha256": "78c6c5aaf5260979f63efe3e819b09b7d6d950aa5894d71ebfb170cece81b88c"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Contracts/DecodeItemBranchEntries.vo",
+      "sha256": "0e03b38064aebccfc21718c95ecb5409532a604ebf0313b77cb8bad8f6de606b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Contracts/DecodeItemReturnFacts.vo",
+      "sha256": "76f4ce31d2c529894d11cb6e2eb14cce866b9d8ff5da07331d6e64a8f44451ba"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Contracts/DecodeItemSelected.vo",
+      "sha256": "248ff5f6600b2e916681534333bb503cb743f58df29d6e14ba76b49442e70fcb"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Contracts/IslarisMemory.vo",
+      "sha256": "ad787000cbf5b4cdbf70fe90e1e2859dffce4a62878461e0df5e7f0c478b6316"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Contracts/RlpDecodeItemContract.vo",
+      "sha256": "58c012ff9432b9af111f263d01d6a968f343a585d21f4241516691cb15ecdca4"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Evidence/GatesPlugin/signature_gates_plugin.cma",
+      "sha256": "a253d5bdce8194f436990ee49cd838c3587d9a90c57e8041692452ed44e6db92"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Evidence/GatesPlugin/signature_gates_plugin.cmxa",
+      "sha256": "6e10ec69d2f046cb09af5e184fb9ef6fc3d8ba28db9a627b830a9263213c0418"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/ZesuSsz/Evidence/GatesPlugin/signature_gates_plugin.cmxs",
+      "sha256": "e29096581d79b8a17028fb00a4194e9f784d81b476e965d77c33196723bf98b7"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/generated/isla-traces/stock-zisk/closure/index_decodeItem.vo",
+      "sha256": "11d953cda3fa804cf3258e362cd4e64d519320cedb30b14ace78c7128114f839"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/default/generated/sail-stdpp/MachineWord.vo",
+      "sha256": "c0fd702667a86afe299a857abe4e0ee4fb0013ba164632f3d5b79048f712001d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/agents/worker2-child-platform-rule36/install/default/lib/zesu-signature-gates/META",
+      "sha256": "c146b8f02181514a3cd46bd47de94a1de47c3b3189086315382ff0b8f229c80a"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-alias-diagnosis-mcp-001/audit.json",
+      "sha256": "69290a431e4455a34aeee04ebd52f75876d4e3c4a4b779bf922c2c58d3f3a964"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-dependencies-001/dependency-audit.json",
+      "sha256": "8ed5118492e7dda90db4b47ab410c3ed9f1861b978c86373d8a3324ac67cd392"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/assembly.json",
+      "sha256": "b4c7d35dd0be465fd5a57fde9592c9c43efef4631017b54becc181825fc98814"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/cached_off.v",
+      "sha256": "2859876d8171557e71a36ae184adc040ad1a662f23ad7a0346c4a6b7e2bdde1b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/cached_offProblem.v",
+      "sha256": "bed0a14b337f528697b2cf2d161bb12dde0973e76445a67ad8458502c24ff550"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/cached_on.v",
+      "sha256": "f3bc1a9210067c265ac367c5015b22d4615cf0b7345ccd4145486e7366e1007e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/cached_onProblem.v",
+      "sha256": "4ec36c247ad215fa9822cd3d115dcf05d605c49b010279e289ef8a8586631495"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/complete-artifact-preflight.json",
+      "sha256": "9bf57390c0057b2bb6fb62217e8168f858a08deb2278d6cc134d8688d12d2bed"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/constructor_alias.v",
+      "sha256": "5769d2bd85c380174a488edc2b76e77f5422e873962bfc812bc0b13c0fb62744"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/constructor_aliasProblem.v",
+      "sha256": "63792471664b2ce49fa0b29718bfded8fc74a4d699f2315d3738f915be4c87a1"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_1.json",
+      "sha256": "69eb84a040dacb48ac09dffe0a7d37920238745ac850162e3a7489625f60c6b4"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_11.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_13.json",
+      "sha256": "63443c6409027bc3d873f163cfae734d6794b1a3aa27961430b571e8ee77c400"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_15.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_17.json",
+      "sha256": "24c8b32a75b3f918b2f1fa778514186e23593b86e16ee81d61ad2bb06fd3aa64"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_18.json",
+      "sha256": "2c398d01bf123069e8314e9ef45ccbdf98a625d23f6564770d09b9e5f6b20135"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_20.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_22.json",
+      "sha256": "91472b082b9f0b1948c4a1213f59ac02897215895232da442fa08f9d4b2ea3d4"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_23.json",
+      "sha256": "91472b082b9f0b1948c4a1213f59ac02897215895232da442fa08f9d4b2ea3d4"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_25.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_27.json",
+      "sha256": "0f3b617beccb8b794f07254cd29f07fddc2e8b5a1b55bc9babb897986d5b465e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_28.json",
+      "sha256": "0f3b617beccb8b794f07254cd29f07fddc2e8b5a1b55bc9babb897986d5b465e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_29.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_3.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_31.json",
+      "sha256": "24c8b32a75b3f918b2f1fa778514186e23593b86e16ee81d61ad2bb06fd3aa64"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_32.json",
+      "sha256": "24c8b32a75b3f918b2f1fa778514186e23593b86e16ee81d61ad2bb06fd3aa64"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_36.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_38.json",
+      "sha256": "24c8b32a75b3f918b2f1fa778514186e23593b86e16ee81d61ad2bb06fd3aa64"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_39.json",
+      "sha256": "074a5006613c7a53160ddf30ed640f41bb0308e93a8903081367f3a28dcee583"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_40.json",
+      "sha256": "074a5006613c7a53160ddf30ed640f41bb0308e93a8903081367f3a28dcee583"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_44.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_5.json",
+      "sha256": "5df178f1101d495bfb6dbb1ad9b0e87b07854dd3a772a2de2eec7877fcc68c7f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_7.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/exports/state_9.json",
+      "sha256": "78be54acdb66cb064b0712a7ac5382f2154599acf536f6ba8928cee6a32345c9"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/folded_head.v",
+      "sha256": "1709b1c51addfecb9854643d1ceb737458ab19a121f93f557c59b05673a37abc"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/folded_headProblem.v",
+      "sha256": "677ef88e1b247c0aa19e0138a1bbef1a04c49bee0dcd9743977d0cd3cfac8fd6"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/nil_rejected.v",
+      "sha256": "968e041a24b1916e43ba223b670fb8b0423ae077e286324c91836be6de6368b5"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/nil_rejectedProblem.v",
+      "sha256": "23051755572f85247e3586e5a25131bf82cf04209dfdf64649aa13a8b89a08b9"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/nonmatching.v",
+      "sha256": "0041bd7e0b6556edca9ee2229948a79e7be583f9b73352e53561226cca44d6c9"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/nonmatchingProblem.v",
+      "sha256": "229480039849347e26224d4ca25bc38f26d0be1c0669140f61b406b18b031095"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/off.v",
+      "sha256": "1b554e1eb141a12ea78b621c6344d2adc59743b859db093f7acc39f584c02968"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/offProblem.v",
+      "sha256": "e9da2d22ec49b4ffef163015cd4ac6e8304be097538674a912f2eac888848dbe"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/raw-calls.json",
+      "sha256": "5a2c61c34cf2981107cd9281d3f488de83295264682f918232cab51bb8f6f584"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/results.json",
+      "sha256": "02405589d281ec5b8086e2d6054d4592c0a67ed973e0c79e782ebc7c841f0aad"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/retained/cached_off.vo",
+      "sha256": "188cfa3daeada92c59a20d8f9078fb2f632e98b970d20f773016208b48b85a30"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/retained/cached_on.vo",
+      "sha256": "f245aea3de83df40ae9b360f4d96668fe0e5d3def8947498eef85af290bd0bc4"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/retained/constructor_alias.vo",
+      "sha256": "f5a28a840d3e275d0c1ed64c066b913cc06f18b027f024712017917dde348942"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/retained/folded_head.vo",
+      "sha256": "15d117c26679cde4876b643af0fdbfed3df0d02ad4b4cb4c4f66693bda667893"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/retained/nil_rejected.vo",
+      "sha256": "5569e97e9ee3e1688fd0e03451ccb1da6489f8965281307bcb23f25a888acb88"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/retained/nonmatching.vo",
+      "sha256": "d3b1a590f65513551ca0a2998f60fb2a8ebb470302c8cef1428ee01ea733f1d9"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/retained/off.vo",
+      "sha256": "fff4cf5562f6044b6e8372243eee4d6ae7270c69c04b6085425253dcadde5112"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/retained/reverse.vo",
+      "sha256": "0ed0db387558bf68fbbcaf1e5319751455f2cea2483ca24c5572a3890ef42abc"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/retained/reverse_constructor_alias.vo",
+      "sha256": "97edc511e60fec91c6802d3ae65a0e8a11783693a7d36d8f12426c20c770befd"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/reverse.v",
+      "sha256": "4ac391c07fad3bbed5a7d3fc556babd7ba017cec3bca4e7779c8019009110727"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/reverseProblem.v",
+      "sha256": "dd1aad8aa2b4a2c7fbc1e0f387c095593857269cb4ec11b498189a569daad08b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/reverse_constructor_alias.v",
+      "sha256": "f71c78c575f08b66d5feefd18d5a089e6fe6b744858554f64fed4bdf68c562c0"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/reverse_constructor_aliasProblem.v",
+      "sha256": "c9c93612174a4068b716b2deab0132d21e1aaa3e744489656b673e83eeb6ad26"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/schemas.json",
+      "sha256": "7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-005/session-closure.json",
+      "sha256": "eda5d143c76a6e8a3c87d8ed13986c8f59f7f51965f0cc4cfc8c558d9d1bfa31"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/assembly.json",
+      "sha256": "82ede55aa6d32932eab008d2cb146ab48d84bdac7c90289ba194e7359d338646"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/exports/state_1.json",
+      "sha256": "ff26aa355531115c827dc126cf7288310bb3b1d6fa94f8c4a8558088b2385b03"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/exports/state_11.json",
+      "sha256": "5adcbd5103c70696eab55af737d6026e25a668ceba088be20e1126bc02d0d9aa"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/exports/state_12.json",
+      "sha256": "5adcbd5103c70696eab55af737d6026e25a668ceba088be20e1126bc02d0d9aa"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/exports/state_13.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/exports/state_15.json",
+      "sha256": "b93441241c5c66c4ec42499b02f5ac236338d1bd6997caa368e1a2fe2f715edc"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/exports/state_18.json",
+      "sha256": "041760c6aa8567a41a5016fdfc4b99f4684b36e5f7f08ff8b3b3214be5baf76b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/exports/state_19.json",
+      "sha256": "dfede636fcca92c4c6db79ba039845fddb4a43e8c30ee63a3aaab0e83ec3a692"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/exports/state_23.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/exports/state_4.json",
+      "sha256": "92397af0ca665c3102bbce8b1770bb2850fc1e9472a58a97367622db0154f8c8"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/exports/state_5.json",
+      "sha256": "92397af0ca665c3102bbce8b1770bb2850fc1e9472a58a97367622db0154f8c8"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/exports/state_9.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/raw-calls.json",
+      "sha256": "4b0a6db1b298d32d5af6f6e7f585c52b1e3e20f36518d1d525970b8471b3e5c4"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/results.json",
+      "sha256": "deec06589a8b0673583de6eb37b876c5f7ad58fa3bda2a0bc73c40a12b09cffa"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/retained/self_rejected.vo",
+      "sha256": "8cfd5a92f5cec72c9193ea6ef1e94d282c0e5e77312774b7f26b650d7564c468"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/retained/shared_evar_rollback.vo",
+      "sha256": "eb4f19cf77139638852ecd27cca5db18f327af1d413af0d60935ba7fa985c559"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/retained/unrelated_shared_evar.vo",
+      "sha256": "38c3ec69ddfc990202af018ba99d8ad41ab472b9523253175d9f0f4eb8398dfe"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/schemas.json",
+      "sha256": "7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/self_rejected.v",
+      "sha256": "749af1e22a092493ceb23bb47ee79a9b3a48602fc02b32b6301bb35bdb842f46"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/self_rejectedProblem.v",
+      "sha256": "203aba0e920d88b85cdbc9806a94dbe552053a347da70e8a2f29d0e71f32218e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/session-closure.json",
+      "sha256": "b288b18c504c7b4d6d3641c4a86514e7b2cb4b877d887820e0628f3855e838e1"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/shared_evar_rollback.v",
+      "sha256": "db76ee10942084770f8bedbbe7701febac02cf73167ddab2f2c223f6ea3de6ff"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/shared_evar_rollbackProblem.v",
+      "sha256": "533b92ae6072d298895aecf40e9b936d6ffcb8fd8223c1f23231e4811eae1bda"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/unrelated_shared_evar.v",
+      "sha256": "73617c460a182bf8f67770c551f1357ecf3b43f72f113da6173a15666ec9f0ee"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-006/unrelated_shared_evarProblem.v",
+      "sha256": "9f6f8211466f5f2e07e732bd589bc049404ba102b6765182415b2880d5f69fd0"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/assembly.json",
+      "sha256": "475976ddb6429e006f948eeea487fd49a35a8d55569b33bf373e18eb05b67dd6"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/exact_oracle.v",
+      "sha256": "de0cf8475fbb57ac411c11d467a493bc62c2e0abc9b00063a965bffc372f70b3"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/exact_oracleProblem.v",
+      "sha256": "f400d4640d1b2f6c67b7db9d1c3a8441d2883c01cffac1a333496351b0e226a4"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/exports/state_1.json",
+      "sha256": "8549babc1f5672a24493df2faf67418b5d8cc951dc16f65d7576ded2cf54d75e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/exports/state_118.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/exports/state_22.json",
+      "sha256": "5e1a4b497d351cdea3100ded76eef8d0cf20d8ca50447c1469b48dca8b6dd991"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/exports/state_24.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/exports/state_26.json",
+      "sha256": "277b13c1d4419ee1e0b66dea798356952c275a21ce1ca22b6a65dc34f7a15058"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/exports/state_71.json",
+      "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/exports/state_73.json",
+      "sha256": "277b13c1d4419ee1e0b66dea798356952c275a21ce1ca22b6a65dc34f7a15058"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/oracle-context-check.json",
+      "sha256": "a13894843c0aa53ef4553416f4f3bc69f6dbe4e168f1f43ae116a44f8530ea25"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/raw-calls.json",
+      "sha256": "d47667829e10d2a8b1faa2acaad40fd5e1cb46ff7327224eeef58153f9666104"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/results.json",
+      "sha256": "66e4efab1e645fa8d4d9a8eadfdec71f2c67b02d78adceae76087a95d3f4b897"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/retained/exact_oracle.vo",
+      "sha256": "95536f8fd761603d784164d9da0af077883e7ff9b4cc4be0a4b4ee1262932fb9"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/retained/scope_off.vo",
+      "sha256": "1fc6ea85112b8eeb09d6b491e3de0dcac6306e92f8def7f953b55e71b2cac5de"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/retained/scope_on.vo",
+      "sha256": "86fa85832665a5c14025e5d9aab7326d7f5c39fd6e6247335eee20432547a499"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/schemas.json",
+      "sha256": "7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/scope_off.v",
+      "sha256": "abd23d791ef00a7c7e9885c2c6d794aeb638869ebb9f285fb476aa3be7a15d5f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/scope_offProblem.v",
+      "sha256": "44c14e2e5b1b113a38e22ed3ca05b2a5d40292745a0309bf002108b93631c435"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/scope_on.v",
+      "sha256": "55db62153bbdf8c4eec9bb7561e20a2ffbbb00d13ba983aae2fdcbfe4e21804e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/scope_onProblem.v",
+      "sha256": "4e40bcb2502485b7a5900f0c532e45cc4b03694793d9e80c399b51b40497178c"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-rule36/_build/rule36-fixtures-mcp-007/session-closure.json",
+      "sha256": "c0e05b843a621fa180b691692bc14d3b8de5d67398fc3de6d288610cf6506108"
+    }
+  ]
+}
