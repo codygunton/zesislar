@@ -1,0 +1,67 @@
+{
+  "statement_changed": false,
+  "table_changed": false,
+  "changes": [
+    {
+      "file": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69a4.v",
+      "before_sha256": "da7a9628323e5416ea435a684d4bae00998afe222106f34bbd13a0554aef4dee",
+      "after_sha256": "ead429ecc82f743118975ba85bf5ea255cf62360a896410303ce24d1a3e1638b",
+      "wrapper_definition": "\n    `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte) : iProp Sigma :=\n  ((ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69a4 (args) (frameBytes) (x13) (inputPrefix) (rest)) \u2217\n   True)%I.\n",
+      "diff": "--- ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69a4.v\n+++ ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69a4.v\n@@ -35,6 +35,7 @@\n     iExact \"Hsuccessor\". }\n   iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n   iApply (\"Hnative\" with \"[Hentry]\").\n+  rewrite /Block800d69a4.DesignedEntry_800d69a4.\n   iFrame.\n Qed.\n Print Assumptions decodeItemSlotBody800d69a4.\n"
+    },
+    {
+      "file": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69d8.v",
+      "before_sha256": "815b205697357d1d2cf6f9f1a5dfa1d423071a42b1e8f06a4ac65d2794a06472",
+      "after_sha256": "06a7520917a3cf93df54cb929e3fceb0ec03e08e6bb160c332add8a59b3515ac",
+      "wrapper_definition": "\n    `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte) : iProp Sigma :=\n  ((ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8 (args) (frameBytes) (x13) (inputPrefix) (rest)) \u2217\n   True)%I.\n",
+      "diff": "--- ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69d8.v\n+++ ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69d8.v\n@@ -35,6 +35,7 @@\n     iExact \"Hsuccessor\". }\n   iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n   iApply (\"Hnative\" with \"[Hentry]\").\n+  rewrite /Block800d69d8.DesignedEntry_800d69d8.\n   iFrame.\n Qed.\n Print Assumptions decodeItemSlotBody800d69d8.\n"
+    },
+    {
+      "file": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69e0.v",
+      "before_sha256": "a5349ac9363e09d4ed715db020e6a58c527fac83b5434187f92d897df91e88ec",
+      "after_sha256": "c15a5b4c2c9bf647b2802b3ccb474bbb0cd11e928b10940e27933edc01f7c089",
+      "wrapper_definition": "\n    `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte) : iProp Sigma :=\n  ((ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0 (args) (frameBytes) (x13) (inputPrefix) (rest)) \u2217\n   True)%I.\n",
+      "diff": "--- ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69e0.v\n+++ ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69e0.v\n@@ -35,6 +35,7 @@\n     iExact \"Hsuccessor\". }\n   iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n   iApply (\"Hnative\" with \"[Hentry]\").\n+  rewrite /Block800d69e0.DesignedEntry_800d69e0.\n   iFrame.\n Qed.\n Print Assumptions decodeItemSlotBody800d69e0.\n"
+    },
+    {
+      "file": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a00.v",
+      "before_sha256": "ad0dc1010cd42c9fa5511979918d85f200331c3e8bdb6af7db7df691e851e8ab",
+      "after_sha256": "61c84cc921983192c96fb5e8cdeed5d8eca0736256d9fb8044e0efdc785c4fc7",
+      "wrapper_definition": "\n    `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte) : iProp Sigma :=\n  ((ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00 (args) (frameBytes) (x13) (inputPrefix) (rest)) \u2217\n   True)%I.\n",
+      "diff": "--- ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a00.v\n+++ ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a00.v\n@@ -35,6 +35,7 @@\n     iExact \"Hsuccessor\". }\n   iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n   iApply (\"Hnative\" with \"[Hentry]\").\n+  rewrite /Block800d6a00.DesignedEntry_800d6a00.\n   iFrame.\n Qed.\n Print Assumptions decodeItemSlotBody800d6a00.\n"
+    },
+    {
+      "file": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a14.v",
+      "before_sha256": "cd322fbc4f75bcf343b8430101dedadd24306c1ae2d104002a57065e4860f128",
+      "after_sha256": "73031f7cdbdca3d550376295e2fbf8d642f0a1da5203dd9abbcbe8cecffe7d1a",
+      "wrapper_definition": "\n    `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (oldAcc : bv 64) (oldCursor : bv 64) (loaded : bv 64) (inputPrefix : byte) (rest : list byte) : iProp Sigma :=\n  ((ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14 (args) (n) (payloadStart) (lengthBytes) (frameBytes) (oldAcc) (oldCursor) (loaded) (inputPrefix) (rest)) \u2217\n   True)%I.\n",
+      "diff": "--- ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a14.v\n+++ ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a14.v\n@@ -28,6 +28,7 @@\n     iExact \"Hsuccessor\". }\n   iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n   iApply (\"Hnative\" with \"[Hentry]\").\n+  rewrite /Block800d6a14.DesignedEntry_800d6a14.\n   iFrame.\n Qed.\n Print Assumptions decodeItemSlotBody800d6a14.\n"
+    },
+    {
+      "file": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a64.v",
+      "before_sha256": "404176ccb22de956828dab52a6b6f32892773dad0a49b1f146c0effb1513886c",
+      "after_sha256": "e39c1716d7202646d585a496d076ab43cffe00cb2433ce706e6104b26e4331ea",
+      "wrapper_definition": "\n    `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte) : iProp Sigma :=\n  ((ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64 (args) (frameBytes) (x13) (inputPrefix) (rest)) \u2217\n   True)%I.\n",
+      "diff": "--- ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a64.v\n+++ ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a64.v\n@@ -35,6 +35,7 @@\n     iExact \"Hsuccessor\". }\n   iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n   iApply (\"Hnative\" with \"[Hentry]\").\n+  rewrite /Block800d6a64.DesignedEntry_800d6a64.\n   iFrame.\n Qed.\n Print Assumptions decodeItemSlotBody800d6a64.\n"
+    },
+    {
+      "file": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a6c.v",
+      "before_sha256": "f4c3c6687dc0dc40f5cf4d9e9edeea88eaf4adb36d3a0014c9c323c24511831f",
+      "after_sha256": "5d206f5662264768e35a4de1382d1c62d4f615b25ee70b9e777655652004e69c",
+      "wrapper_definition": "\n    `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte) : iProp Sigma :=\n  ((ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c (args) (frameBytes) (x13) (inputPrefix) (rest)) \u2217\n   True)%I.\n",
+      "diff": "--- ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a6c.v\n+++ ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a6c.v\n@@ -35,6 +35,7 @@\n     iExact \"Hsuccessor\". }\n   iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n   iApply (\"Hnative\" with \"[Hentry]\").\n+  rewrite /Block800d6a6c.DesignedEntry_800d6a6c.\n   iFrame.\n Qed.\n Print Assumptions decodeItemSlotBody800d6a6c.\n"
+    },
+    {
+      "file": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ab4.v",
+      "before_sha256": "dc74ce6ff301baef609b49ceeb6c54dc93a6ba8236fad05510a5caa0e9e509a5",
+      "after_sha256": "e304e73a373e251438895d93c28f351eedf7b6f5a8fe85293f527593a9877f70",
+      "wrapper_definition": "\n    `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (oldAcc : bv 64) (oldCursor : bv 64) (loaded : bv 64) (inputPrefix : byte) (rest : list byte) : iProp Sigma :=\n  ((ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4 (args) (n) (payloadStart) (lengthBytes) (frameBytes) (oldAcc) (oldCursor) (loaded) (inputPrefix) (rest)) \u2217\n   True)%I.\n",
+      "diff": "--- ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ab4.v\n+++ ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ab4.v\n@@ -28,6 +28,7 @@\n     iExact \"Hsuccessor\". }\n   iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n   iApply (\"Hnative\" with \"[Hentry]\").\n+  rewrite /Block800d6ab4.DesignedEntry_800d6ab4.\n   iFrame.\n Qed.\n Print Assumptions decodeItemSlotBody800d6ab4.\n"
+    }
+  ],
+  "total_unfold_additions": 8,
+  "attempt002_export": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-002/exports/state_29.json",
+    "sha256": "106f157b086cde1888ceb5fb27ac6dd01bccc6ebc305756e035e2b7a4a8a7246"
+  }
+}

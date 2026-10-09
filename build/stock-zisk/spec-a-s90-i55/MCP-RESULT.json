@@ -1,0 +1,11 @@
+{
+  "root": "e27025eb3a6917c99b4de6220ec56bf0e85e772c",
+  "fresh_scope_certificates": 8,
+  "standalone_results": 16,
+  "complete_entry_states": 0,
+  "owned_transport_closed": true,
+  "work_completed": true,
+  "native_search_ran": false,
+  "whole_run_equivalence": false,
+  "prior_behavior_certificates": "I59 production modules retain their manifest identities."
+}

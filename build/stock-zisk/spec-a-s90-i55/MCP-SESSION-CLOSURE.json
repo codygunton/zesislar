@@ -1,0 +1,60 @@
+[
+  {
+    "phase": "interactive",
+    "owner": {
+      "success": true,
+      "server_pid": 3934542,
+      "server_start_ticks": 126133004,
+      "source": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/complete_goals_mcp.py",
+      "source_sha256": "0ad2fd1199c5dc82a4835ea88b96b4e5acac5257f835320fef7539cbb459e62f",
+      "ownership_method": "owned-stdio-response"
+    },
+    "owned_pet": {
+      "verified": true,
+      "pid": 3934705,
+      "ppid": 3934542,
+      "name": "pet",
+      "start_ticks": 126133106,
+      "rss_kib": 5987640,
+      "server_identity": {
+        "success": true,
+        "server_pid": 3934542,
+        "server_start_ticks": 126133004,
+        "source": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/complete_goals_mcp.py",
+        "source_sha256": "0ad2fd1199c5dc82a4835ea88b96b4e5acac5257f835320fef7539cbb459e62f",
+        "ownership_method": "owned-stdio-response"
+      }
+    },
+    "transport_closed_normally": true,
+    "server_exit_verified": true,
+    "Pet_exit_verified": true,
+    "standalone_Pet_absent": null,
+    "work_success": true,
+    "work_error": null,
+    "transport_error": null,
+    "cleanup_signals_sent": 0
+  },
+  {
+    "phase": "standalone",
+    "owner": {
+      "success": true,
+      "server_pid": 3936767,
+      "server_start_ticks": 126136580,
+      "source": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/complete_goals_mcp.py",
+      "source_sha256": "0ad2fd1199c5dc82a4835ea88b96b4e5acac5257f835320fef7539cbb459e62f",
+      "ownership_method": "owned-stdio-response"
+    },
+    "owned_pet": {
+      "verified": false,
+      "reason": "The health response has no live Pet identity."
+    },
+    "transport_closed_normally": true,
+    "server_exit_verified": true,
+    "Pet_exit_verified": null,
+    "standalone_Pet_absent": true,
+    "work_success": true,
+    "work_error": null,
+    "transport_error": null,
+    "cleanup_signals_sent": 0
+  }
+]
