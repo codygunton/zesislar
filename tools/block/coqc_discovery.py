@@ -16,6 +16,7 @@ import coqc_primary
 import discovery
 import entry_schema
 import gen_block
+import production_modules
 import successor_entailment
 
 
@@ -84,6 +85,12 @@ def native_import_targets(sources, root):
     return sorted(targets)
 
 
+def emit_native_production(records, sources, root):
+    """Emit current prepared sources only for certified native closures."""
+    return [production_modules.emit(sources[record['entry_pc']], 'native', root)
+            for record in records if record.get('block_closed')]
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('baseline', 'full-on', 'historical', 'design', 'cfg', 'binding-report', 'build-dir', 'out', 'measurement-root'):
@@ -94,6 +101,8 @@ def main():
     parser.add_argument('--additional-import', action='append', default=[])
     parser.add_argument('--profiles', type=Path)
     parser.add_argument('--prepare-only', action='store_true')
+    parser.add_argument('--emit-production', action='store_true',
+                        help='Emit named production modules for closed current native sources; compile them through Dune before promotion')
     parser.add_argument('--cpu-seconds', type=int, help='Explicit CPU completion mode; no wall cutoff')
     parser.add_argument('--module-limit', action='append', default=[], metavar='PC:CPU:GiB')
     args = parser.parse_args()
@@ -127,10 +136,12 @@ def main():
     if remember_recipe(Path(args.build_dir)) is None:
         raise ValueError('The focused build has no compiler recipe')
     jobs,reused,frozen=[],[],[]
+    production_sources = {}
     for row,block,state in ready:
         state['imports']=list(dict.fromkeys(state['imports']+historical['probe_imports']+full['on_additions']+args.additional_import))
         rendered=successor_entailment.native_boundary_source(state,block,design,root,
             terminal=discovery.designed_terminal(block,{'workspace':str(root),'terminal':'decodeItemReturnAddress args'}))
+        production_sources[row['entry_pc']] = rendered
         if not args.all:
             old=next(b for b in baseline['blocks'] if b['entry']==row['entry_pc'])
             bound=old['captures'][0]['native_evidence']
@@ -160,7 +171,7 @@ def main():
             coqc_primary.instrument(rendered)
             jobs.append((rendered,out/'profiles'/profile['pc'],Path(args.build_dir),previous['inherited_debts']))
     inputs={str(Path(p).resolve()):coqc_primary.digest(p) for p in [args.baseline,args.full_on,args.historical,args.design,args.cfg,args.binding_report,
-        __file__,coqc_primary.__file__,coqc_primary.coqc_certificate.__file__,successor_entailment.__file__,chain_root.__file__,entry_schema.__file__,
+        __file__,production_modules.__file__,coqc_primary.__file__,coqc_primary.coqc_certificate.__file__,successor_entailment.__file__,chain_root.__file__,entry_schema.__file__,
         'tools/coqc_scratch.sh',str(Path(args.build_dir)/'coqc_recipe.json'),coqc_primary.chain_goals.__file__,
         '/home/cody/islaris/_opam/bin/coqc']}
     for tree in (root/'ZesuSsz/Automation',root/'ZesuSsz/Contracts',root/'InstrSpecs',root/'ZesuStock'):
@@ -217,6 +228,10 @@ def main():
         'prepared_inputs':{'path':str(input_path),'sha256':coqc_primary.digest(input_path)},
         'blocks_closed':sum(bool(r.get('block_closed')) for r in reused+executed[:native_job_count]),'contract_closures':0,
         'closure_policy':'Exact compiled native Qed, empty assumptions, and no inherited debts certify a block. Missing diagnostic groups do not certify closure.'}
+    if args.emit_production:
+        result['production_modules'] = emit_native_production(
+            reused + executed[:native_job_count], production_sources, root)
+        result['production_module_status'] = 'Emitted source; current production compilation and exact verification remain required'
     result['classes']=dict(collections.Counter([r['outcome'] for r in result['coqc_results']]+[r['outcome'] for r in frozen]))
     path=out/'report.json';path.write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps({'report':str(path),'sha256':coqc_primary.digest(path),'classes':result['classes'],'blocks_closed':result['blocks_closed']}))

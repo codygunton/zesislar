@@ -225,3 +225,226 @@ class CompletionBudgetTests(unittest.TestCase):
         compiler['limits'].update(cpu_seconds=1200, rss_kib=12582912)
         self.assertTrue(coqc_certificate.valid_budget({'entry_pc': '0x800d698c', 'proof_budget': memory, 'primary_timeout': None}, compiler))
         self.assertFalse(coqc_certificate.valid_budget({'entry_pc': '0x800d6a24', 'proof_budget': memory, 'primary_timeout': None}, compiler))
+
+
+class DiagnosticProbeBudgetTests(unittest.TestCase):
+    rendered = CoqcPrimaryTests.rendered
+
+    def test_explicit_probe_policy_preserves_native_tactic(self):
+        policy = coqc_primary.budget_policy(memory_gib=64, diagnostic_probe=True)
+        self.assertEqual(policy, {'kind': 'probe', 'cpu_seconds': None,
+            'wall_seconds': None, 'memory_kib': 64*1024*1024,
+            'optimization_debt': 'issue#10'})
+        source = coqc_primary.instrument(self.rendered(), memory_gib=64, diagnostic_probe=True)
+        self.assertNotIn('Timeout ', source)
+        self.assertIn('\ntry zesu_block.\n', source)
+        for values in ({'memory_gib': 6}, {'memory_gib': 64, 'cpu_seconds': 14400}):
+            with self.assertRaises(ValueError):
+                coqc_primary.budget_policy(diagnostic_probe=True, **values)
+        with self.assertRaises(ValueError):
+            coqc_primary.budget_policy(memory_gib=64, cpu_seconds=1200)
+
+    def test_probe_environment_does_not_contaminate_default_policy(self):
+        environment = coqc_primary.completion_environment(
+            coqc_primary.budget_policy(memory_gib=64, diagnostic_probe=True))
+        self.assertEqual(environment['ZESU_PRIMARY_CPU_LIMIT'], 'none')
+        self.assertEqual(environment['ZESU_PROOF_CPU_LIMIT'], 'unlimited')
+        self.assertEqual(environment['ZESU_MODULE_LIMIT_GIB'], '64')
+        self.assertEqual(environment['ZESU_SCRATCH_WALL_SECONDS'], 'none')
+        default = coqc_primary.completion_environment(coqc_primary.budget_policy())
+        self.assertEqual(default['ZESU_DIAGNOSTIC_PROBE'], '0')
+        self.assertEqual(default['ZESU_PRIMARY_MEMORY_GIB'], '6')
+
+    def test_certificate_requires_measured_child_and_scope_limits(self):
+        policy = coqc_primary.budget_policy(memory_gib=64, diagnostic_probe=True)
+        evidence = {'proof_budget': policy, 'primary_timeout': None}
+        compiler = {'limits': {'cpu_seconds': None, 'module_seconds': None,
+            'rss_kib': 64*1024*1024}, 'actual_cpu_limits': {'soft': None, 'hard': None},
+            'actual_scope_limits': {'memory_max_bytes': 64*1024**3, 'memory_swap_max_bytes': 0}}
+        self.assertTrue(coqc_certificate.valid_budget(evidence, compiler))
+        for key, value in [('actual_cpu_limits', None),
+                ('actual_cpu_limits', {'soft': 1200, 'hard': 1200}),
+                ('actual_scope_limits', None),
+                ('actual_scope_limits', {'memory_max_bytes': 6*1024**3, 'memory_swap_max_bytes': 0})]:
+            self.assertFalse(coqc_certificate.valid_budget(evidence, {**compiler, key: value}))
+        self.assertFalse(coqc_certificate.valid_budget(
+            {**evidence, 'proof_budget': {**policy, 'optimization_debt': None}}, compiler))
+
+    def test_wrong_probe_scope_prevents_compiler_spawn(self):
+        environment = coqc_primary.completion_environment(
+            coqc_primary.budget_policy(memory_gib=64, diagnostic_probe=True))
+        with patch.dict(coqc_primary.os.environ, {**environment,
+                'ZESU_PRIMARY_COMPILER_RECORD': '/unused'}, clear=True), \
+                patch.object(coqc_primary, 'probe_scope_limits', return_value={
+                    'memory_max_bytes': 6*1024**3, 'memory_swap_max_bytes': 0}), \
+                patch.object(coqc_primary.subprocess, 'Popen') as spawn:
+            with self.assertRaisesRegex(ValueError, 'scope limits'):
+                coqc_primary.compiler_run([])
+            spawn.assert_not_called()
+
+    def test_scratch_policy_accepts_only_explicit_unlimited_probe(self):
+        import os
+        source = (Path(__file__).parent/'coqc_scratch.sh').read_text()
+        policy_code = source.split("<<'PY'\n", 1)[1].split('source = Path(sys.argv[1])', 1)[0]
+        environment = coqc_primary.completion_environment(
+            coqc_primary.budget_policy(memory_gib=64, diagnostic_probe=True))
+        with patch.dict(os.environ, environment, clear=True):
+            scope = {}
+            exec(policy_code, scope)
+            self.assertIsNone(scope['wall_limit'])
+            self.assertEqual(scope['memory_gib'], 64)
+        for change in [{'ZESU_IN_GATE': '1'}, {'ZESU_PRIMARY_CPU_LIMIT': '14400'},
+                {'ZESU_PROBE_ISSUE': ''}, {'ZESU_SCRATCH_MEMORY_GIB': '6'},
+                {'ZESU_SCRATCH_WALL_SECONDS': '300'}]:
+            with patch.dict(os.environ, {**environment, **change}, clear=True):
+                with self.assertRaises(SystemExit):
+                    exec(policy_code, {})
+
+    def test_child_limit_read_failure_stops_and_records_owned_child(self):
+        environment = coqc_primary.completion_environment(
+            coqc_primary.budget_policy(memory_gib=64, diagnostic_probe=True))
+        with tempfile.TemporaryDirectory() as directory:
+            record = Path(directory)/'compiler.json'
+            environment.update(ZESU_PRIMARY_COMPILER_RECORD=str(record),
+                               ZESU_PRIMARY_COMPILED_OBJECT=str(Path(directory)/'unused.vo'))
+            from unittest.mock import MagicMock
+            child = MagicMock()
+            child.pid = 123
+            child.poll.side_effect = [None]
+            child.wait.return_value = -15
+            scope = {'memory_max_bytes': 64*1024**3, 'memory_swap_max_bytes': 0}
+            with patch.dict(coqc_primary.os.environ, environment, clear=True), \
+                    patch.object(coqc_primary, 'probe_scope_limits', side_effect=[scope, ValueError('bad cgroup')]), \
+                    patch.object(coqc_primary.resource, 'prlimit', return_value=(-1, -1)), \
+                    patch.object(coqc_primary, 'probe_memory_events', return_value={'oom_kill': 0}), \
+                    patch.object(coqc_primary.subprocess, 'Popen', return_value=child):
+                self.assertEqual(coqc_primary.compiler_run([]), 1)
+            child.terminate.assert_called_once()
+            retained = json.loads(record.read_text())
+            self.assertEqual(retained['limit'], 'policy')
+            self.assertEqual(retained['policy_error'], 'bad cgroup')
+            self.assertEqual(retained['exit_code'], -15)
+
+    def test_probe_records_scope_oom_stop_without_cpu_limit(self):
+        environment = coqc_primary.completion_environment(
+            coqc_primary.budget_policy(memory_gib=64, diagnostic_probe=True))
+        with tempfile.TemporaryDirectory() as directory:
+            record = Path(directory)/'compiler.json'
+            environment.update(ZESU_PRIMARY_COMPILER_RECORD=str(record))
+            from unittest.mock import MagicMock
+            child = MagicMock()
+            child.pid = 123
+            child.poll.return_value = -9
+            child.wait.return_value = -9
+            scope = {'memory_max_bytes': 64*1024**3, 'memory_swap_max_bytes': 0}
+            with patch.dict(coqc_primary.os.environ, environment, clear=True), \
+                    patch.object(coqc_primary, 'probe_scope_limits', return_value=scope), \
+                    patch.object(coqc_primary, 'probe_memory_events', side_effect=[{'oom_kill': 0}, {'oom_kill': 1}]), \
+                    patch.object(coqc_primary.subprocess, 'Popen', return_value=child):
+                self.assertEqual(coqc_primary.compiler_run([]), 1)
+            retained = json.loads(record.read_text())
+            self.assertEqual(retained['limit'], 'memory')
+            self.assertIsNone(retained['limits']['cpu_seconds'])
+            self.assertEqual(retained['scope_memory_events_after']['oom_kill'], 1)
+            self.assertIsNone(retained['actual_cpu_limits'])
+            self.assertFalse(coqc_certificate.valid_budget(
+                {'proof_budget': coqc_primary.budget_policy(memory_gib=64, diagnostic_probe=True),
+                 'primary_timeout': None}, retained))
+
+    def test_exit_telemetry_failure_preserves_valid_limits_and_compiler_exit(self):
+        from types import SimpleNamespace
+        from unittest.mock import MagicMock
+        environment = coqc_primary.completion_environment(
+            coqc_primary.budget_policy(memory_gib=64, diagnostic_probe=True))
+        scope = {'memory_max_bytes': 64*1024**3, 'memory_swap_max_bytes': 0}
+        original_read = Path.read_text
+        for failure in ('missing_rss', 'missing_status', 'missing_stat'):
+            with self.subTest(failure=failure), tempfile.TemporaryDirectory() as directory:
+                record = Path(directory)/'compiler.json'
+                child = MagicMock()
+                child.pid = 123
+                child.poll.side_effect = [None, 1]
+                child.wait.return_value = 1
+                def read(path, *args, **kwargs):
+                    if str(path) == '/proc/123/status':
+                        if failure == 'missing_rss':
+                            return 'State:\tZ (zombie)\n'
+                        if failure == 'missing_status':
+                            raise FileNotFoundError()
+                        return 'VmRSS:\t100 kB\n'
+                    if str(path) == '/proc/123/stat':
+                        raise ProcessLookupError()
+                    return original_read(path, *args, **kwargs)
+                usage = [SimpleNamespace(ru_utime=0, ru_stime=0, ru_maxrss=0),
+                         SimpleNamespace(ru_utime=1, ru_stime=.25, ru_maxrss=1234),
+                         SimpleNamespace(ru_utime=1, ru_stime=.25, ru_maxrss=1234)]
+                with patch.dict(coqc_primary.os.environ, {**environment,
+                        'ZESU_PRIMARY_COMPILER_RECORD': str(record)}, clear=True), \
+                        patch.object(coqc_primary, 'probe_scope_limits', return_value=scope), \
+                        patch.object(coqc_primary.resource, 'prlimit', return_value=(-1, -1)), \
+                        patch.object(coqc_primary.resource, 'getrusage', side_effect=usage), \
+                        patch.object(coqc_primary, 'probe_memory_events', return_value={'oom_kill': 0}), \
+                        patch.object(coqc_primary.subprocess, 'Popen', return_value=child), \
+                        patch.object(coqc_primary.time, 'sleep'), \
+                        patch.object(Path, 'read_text', read):
+                    self.assertEqual(coqc_primary.compiler_run([]), 1)
+                child.terminate.assert_not_called()
+                child.kill.assert_not_called()
+                retained = json.loads(record.read_text())
+                self.assertEqual(retained['exit_code'], 1)
+                self.assertIsNone(retained['limit'])
+                self.assertIsNone(retained['policy_error'])
+                self.assertEqual(retained['telemetry_errors']['count'], 1)
+                self.assertEqual(retained['actual_cpu_limits'], {'soft': None, 'hard': None})
+                self.assertEqual(retained['actual_scope_limits'], scope)
+                self.assertEqual(retained['cpu_seconds'], 1.25)
+                self.assertEqual(retained['peak_rss_kib'], 1234)
+
+    def test_missing_actual_limit_query_still_stops_owned_child(self):
+        from unittest.mock import MagicMock
+        environment = coqc_primary.completion_environment(
+            coqc_primary.budget_policy(memory_gib=64, diagnostic_probe=True))
+        with tempfile.TemporaryDirectory() as directory:
+            record = Path(directory)/'compiler.json'
+            child = MagicMock()
+            child.pid = 123
+            child.poll.return_value = None
+            child.wait.return_value = -15
+            scope = {'memory_max_bytes': 64*1024**3, 'memory_swap_max_bytes': 0}
+            with patch.dict(coqc_primary.os.environ, {**environment,
+                    'ZESU_PRIMARY_COMPILER_RECORD': str(record)}, clear=True), \
+                    patch.object(coqc_primary, 'probe_scope_limits', return_value=scope), \
+                    patch.object(coqc_primary.resource, 'prlimit', side_effect=ProcessLookupError()), \
+                    patch.object(coqc_primary, 'probe_memory_events', return_value={'oom_kill': 0}), \
+                    patch.object(coqc_primary.subprocess, 'Popen', return_value=child):
+                self.assertEqual(coqc_primary.compiler_run([]), 1)
+            child.terminate.assert_called_once()
+            retained = json.loads(record.read_text())
+            self.assertEqual(retained['limit'], 'policy')
+            self.assertEqual(retained['policy_error'], 'The live diagnostic child limits are unavailable')
+            self.assertIsNone(retained['actual_cpu_limits'])
+
+    def test_changed_child_limits_still_stop_owned_child(self):
+        from unittest.mock import MagicMock
+        environment = coqc_primary.completion_environment(
+            coqc_primary.budget_policy(memory_gib=64, diagnostic_probe=True))
+        scope = {'memory_max_bytes': 64*1024**3, 'memory_swap_max_bytes': 0}
+        for cpu, child_scope in [((1200, 1200), scope),
+                ((-1, -1), {**scope, 'memory_max_bytes': 6*1024**3})]:
+            with self.subTest(cpu=cpu, scope=child_scope), tempfile.TemporaryDirectory() as directory:
+                record = Path(directory)/'compiler.json'
+                child = MagicMock()
+                child.pid = 123
+                child.poll.return_value = None
+                child.wait.return_value = -15
+                with patch.dict(coqc_primary.os.environ, {**environment,
+                        'ZESU_PRIMARY_COMPILER_RECORD': str(record)}, clear=True), \
+                        patch.object(coqc_primary, 'probe_scope_limits', side_effect=[scope, child_scope]), \
+                        patch.object(coqc_primary.resource, 'prlimit', return_value=cpu), \
+                        patch.object(coqc_primary, 'probe_memory_events', return_value={'oom_kill': 0}), \
+                        patch.object(coqc_primary.subprocess, 'Popen', return_value=child):
+                    self.assertEqual(coqc_primary.compiler_run([]), 1)
+                child.terminate.assert_called_once()
+                retained = json.loads(record.read_text())
+                self.assertEqual(retained['limit'], 'policy')
+                self.assertEqual(retained['policy_error'], 'The diagnostic child limits differ from the probe policy')

@@ -48,18 +48,40 @@ class PromotionTests(unittest.TestCase):
 
     def test_promoted_reference_has_the_exact_table_type(self):
         source = promote_table.render_slots(dict(proof_slots=[dict(
-            pc='0x1000', status='proved', proof_lemma='Proofs.ExactBody')]))
+            pc='0x1000', status='proved', proof_module='Proofs',
+            proof_lemma='Proofs.ExactBody')]))
         self.assertIn(promote_table.table_statement(0x1000), source)
         self.assertIn('  Proofs.ExactBody.', source)
+        self.assertIn('Require Import Proofs.', source)
         self.assertNotIn('Lemma', source)
 
     def evidence(self):
         proof = dict(compiled=True, verified=True, assumptions=[], inherited_debts=[],
                      goal_groups=dict(goals=[], stack=[], shelf=[], given_up=[]))
         native = dict(proof, entry_pc=0x1000, successors=[0x1008, 0x1004],
-                      scope='native designed boundary', block_closed=True, design_sha256='bound')
-        adapter = dict(proof, statement=promote_table.table_statement(0x1000), lemma='Proofs.ExactBody')
+                      scope='native designed boundary', block_closed=True, design_sha256='bound',
+                      module='Proofs.Native', lemma='Proofs.Native.native_body')
+        adapter = dict(proof, statement=promote_table.table_statement(0x1000),
+                       module='Proofs', lemma='Proofs.ExactBody')
         return native, adapter
+
+    def test_matching_module_names_are_required(self):
+        _, design, _ = self.fixture()
+        for kind in ('native', 'adapter'):
+            for module in (None, 'Boundary', 'Proofs.Other'):
+                native, adapter = self.evidence()
+                (native if kind == 'native' else adapter)['module'] = module
+                with self.assertRaisesRegex(ValueError, 'production module'):
+                    promote_table.validate_promotion(design['blocks'][0], native,
+                                                     adapter, design_sha256='bound')
+
+    def test_transfer_closure_cannot_replace_a_table_body(self):
+        _, design, _ = self.fixture()
+        native, adapter = self.evidence()
+        adapter['statement'] = '⊢ SupportingTransfer args'
+        with self.assertRaisesRegex(ValueError, 'table-body signature'):
+            promote_table.validate_promotion(design['blocks'][0], native, adapter,
+                                             design_sha256='bound')
 
     def test_certificate_shape_accepts_all_edges(self):
         _, design, _ = self.fixture()

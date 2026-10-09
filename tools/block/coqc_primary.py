@@ -24,7 +24,12 @@ def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def budget_policy(seconds=300, cpu_seconds=None, *, memory_gib=6, entry_pc=None):
+def budget_policy(seconds=300, cpu_seconds=None, *, memory_gib=6, entry_pc=None, diagnostic_probe=False):
+    if diagnostic_probe:
+        if cpu_seconds is not None or memory_gib != 64:
+            raise ValueError("A diagnostic probe requires unlimited CPU and 64 GiB")
+        return {"kind": "probe", "cpu_seconds": None, "wall_seconds": None,
+                "memory_kib": 64*1024*1024, "optimization_debt": "issue#10"}
     if memory_gib not in (6, 12):
         raise ValueError('The memory budget must be six or twelve GiB')
     if memory_gib == 12 and (entry_pc != '0x800d698c' or cpu_seconds is None):
@@ -44,7 +49,14 @@ def budget_policy(seconds=300, cpu_seconds=None, *, memory_gib=6, entry_pc=None)
 
 
 def completion_environment(policy):
-    return {'ZESU_PRIMARY_CPU_LIMIT': str(policy['cpu_seconds'] or 0),
+    if policy['kind'] == 'probe':
+        return {'ZESU_DIAGNOSTIC_PROBE': '1', 'ZESU_PROBE_ISSUE': '10',
+                'ZESU_PRIMARY_CPU_LIMIT': 'none', 'ZESU_PROOF_CPU_LIMIT': 'unlimited',
+                'ZESU_PRIMARY_WALL_LIMIT': 'none', 'ZESU_SCRATCH_WALL_SECONDS': 'none',
+                'ZESU_PRIMARY_MEMORY_GIB': '64', 'ZESU_SCRATCH_MEMORY_GIB': '64',
+                'ZESU_MODULE_LIMIT_GIB': '64'}
+    return {'ZESU_DIAGNOSTIC_PROBE': '0', 'ZESU_PROBE_ISSUE': '',
+            'ZESU_PRIMARY_CPU_LIMIT': str(policy['cpu_seconds'] or 0),
             'ZESU_PRIMARY_MEMORY_GIB': str(policy['memory_kib']//(1024*1024)),
             'ZESU_SCRATCH_MEMORY_GIB': str(policy['memory_kib']//(1024*1024)),
             'ZESU_COMPLETION_ENTRY': policy.get('completion_entry', ''),
@@ -54,8 +66,8 @@ def completion_environment(policy):
                if policy['cpu_seconds'] else {})}
 
 
-def instrument(rendered, seconds=300, *, cpu_seconds=None, memory_gib=6):
-    policy = budget_policy(seconds, cpu_seconds, memory_gib=memory_gib, entry_pc=rendered['entry_pc'])
+def instrument(rendered, seconds=300, *, cpu_seconds=None, memory_gib=6, diagnostic_probe=False):
+    policy = budget_policy(seconds, cpu_seconds, memory_gib=memory_gib, entry_pc=rendered['entry_pc'], diagnostic_probe=diagnostic_probe)
     source = rendered['source']
     marker = 'Lemma ' + rendered['lemma']
     start = source.index(marker)
@@ -73,7 +85,7 @@ def instrument(rendered, seconds=300, *, cpu_seconds=None, memory_gib=6):
     if 'Ltac chain_print_goal ' not in prefix:
         prefix += chain_goals.RECORDER + '\n'
     prefix += statement
-    tactic = 'try zesu_block.' if policy['kind'] == 'cpu' else f'Timeout {seconds} try zesu_block.'
+    tactic = 'try zesu_block.' if policy['kind'] in ('cpu', 'probe') else f'Timeout {seconds} try zesu_block.'
     instrumented = (prefix + '\nProof.\nidtac \"COQC-PRIMARY-BEGIN\".\n' + tactic + '\n'
                     'all: (chain_print_goal "active"; idtac "CHAIN-GOAL-END").\n'
                     'Show Existentials.\nQed.' + tail)
@@ -117,19 +129,56 @@ def diagnostic_active(output):
     return decode_active(output)
 
 
+def probe_scope_path(pid):
+    cgroup = next(line.split(':', 2)[2] for line in
+                  Path(f'/proc/{pid}/cgroup').read_text().splitlines()
+                  if line.startswith('0::'))
+    scope = Path('/sys/fs/cgroup') / cgroup.lstrip('/')
+    return scope
+
+
+def probe_scope_limits(pid):
+    scope = probe_scope_path(pid)
+    return {'memory_max_bytes': int((scope/'memory.max').read_text()),
+            'memory_swap_max_bytes': int((scope/'memory.swap.max').read_text())}
+
+
+def probe_memory_events(pid):
+    return dict((key, int(value)) for key, value in
+                (line.split() for line in (probe_scope_path(pid)/'memory.events').read_text().splitlines()))
+
+
 def compiler_run(arguments):
     record = Path(os.environ['ZESU_PRIMARY_COMPILER_RECORD'])
     command = ['/home/cody/islaris/_opam/bin/coqc', '-time', *arguments]
     started = time.monotonic()
-    cpu_limit = int(os.environ.get('ZESU_PRIMARY_CPU_LIMIT', '0')) or None
+    probe = os.environ.get('ZESU_DIAGNOSTIC_PROBE') == '1'
+    cpu_text = os.environ.get('ZESU_PRIMARY_CPU_LIMIT', '0')
+    if probe and (cpu_text != 'none' or
+            os.environ.get('ZESU_PRIMARY_WALL_LIMIT') != 'none' or
+            os.environ.get('ZESU_PRIMARY_MEMORY_GIB') != '64' or
+            os.environ.get('ZESU_PROBE_ISSUE') != '10' or os.environ.get('ZESU_IN_GATE')):
+        raise ValueError('A diagnostic probe requires issue10, 64 GiB, and unlimited CPU and wall time')
+    if probe and probe_scope_limits(os.getpid()) != {
+            'memory_max_bytes': 64*1024**3, 'memory_swap_max_bytes': 0}:
+        raise ValueError('The diagnostic scope limits differ from the probe policy')
+    cpu_limit = None if probe else int(cpu_text) or None
     wall_text = os.environ.get('ZESU_PRIMARY_WALL_LIMIT', '300')
     wall_limit = None if wall_text == 'none' else float(wall_text)
     memory_limit = int(os.environ.get('ZESU_PRIMARY_MEMORY_GIB', '6'))*1024*1024
+    before_memory_events = probe_memory_events(os.getpid()) if probe else None
+    after_memory_events = None
     before_cpu = resource.getrusage(resource.RUSAGE_CHILDREN)
     def set_cpu_limit():
-        if cpu_limit:
+        if probe:
+            resource.setrlimit(resource.RLIMIT_CPU, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
+        elif cpu_limit:
             resource.setrlimit(resource.RLIMIT_CPU, (cpu_limit, cpu_limit))
-    process = subprocess.Popen(command, preexec_fn=set_cpu_limit if cpu_limit else None)
+    process = subprocess.Popen(command, preexec_fn=set_cpu_limit if probe or cpu_limit else None)
+    actual_cpu_limits = None
+    actual_scope_limits = None
+    policy_error = None
+    telemetry_errors = {'count': 0, 'first': None, 'last': None}
     cpu_used = 0.0
     peak, limit, saved = 0, None, started
     def save(code=None, compiled=None):
@@ -138,19 +187,53 @@ def compiler_run(arguments):
             'exit_code': code, 'limit': limit, 'compiled_object': compiled,
             'measurement_complete': code is not None,
             'cpu_seconds': cpu_used,
+            'actual_cpu_limits': actual_cpu_limits, 'actual_scope_limits': actual_scope_limits,
+            'policy_error': policy_error,
+            'telemetry_errors': telemetry_errors,
+            'scope_memory_events_before': before_memory_events,
+            'scope_memory_events_after': after_memory_events,
             'limits': {'module_seconds': wall_limit, 'cpu_seconds': cpu_limit, 'rss_kib': memory_limit}}
         temporary = record.with_suffix('.tmp')
         temporary.write_text(json.dumps(value, indent=2)+'\n')
         temporary.replace(record)
     save()
     while process.poll() is None:
+        if probe and actual_cpu_limits is None:
+            try:
+                soft, hard = resource.prlimit(process.pid, resource.RLIMIT_CPU)
+                actual_cpu_limits = {'soft': None if soft == resource.RLIM_INFINITY else soft,
+                                     'hard': None if hard == resource.RLIM_INFINITY else hard}
+                actual_scope_limits = probe_scope_limits(process.pid)
+                if (actual_cpu_limits != {'soft': None, 'hard': None} or
+                        actual_scope_limits != {'memory_max_bytes': 64*1024**3, 'memory_swap_max_bytes': 0}):
+                    raise ValueError('The diagnostic child limits differ from the probe policy')
+            except (OSError, ValueError, StopIteration) as error:
+                if isinstance(error, (FileNotFoundError, ProcessLookupError, StopIteration)):
+                    policy_error = 'The live diagnostic child limits are unavailable'
+                else:
+                    policy_error = str(error)
         try:
             peak = max(peak, next(int(line.split()[1]) for line in
                 Path(f'/proc/{process.pid}/status').read_text().splitlines() if line.startswith('VmRSS:')))
             fields = Path(f'/proc/{process.pid}/stat').read_text().rsplit(')', 1)[1].split()
             cpu_used = (int(fields[11]) + int(fields[12])) / os.sysconf('SC_CLK_TCK')
-        except (FileNotFoundError, ProcessLookupError, StopIteration):
-            pass
+        except (OSError, ValueError, StopIteration) as error:
+            # A proc entry or VmRSS can disappear while the child exits.
+            sample = {'elapsed_seconds': time.monotonic()-started,
+                      'error_type': type(error).__name__}
+            telemetry_errors['count'] += 1
+            if telemetry_errors['first'] is None:
+                telemetry_errors['first'] = sample
+            telemetry_errors['last'] = sample
+        if policy_error is not None:
+            limit = 'policy'
+            process.terminate()
+            try:
+                process.wait(timeout=2)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait()
+            break
         if time.monotonic()-saved >= 1:
             save()
             saved = time.monotonic()
@@ -166,6 +249,10 @@ def compiler_run(arguments):
             break
         time.sleep(0.025)
     code = process.wait()
+    if probe:
+        after_memory_events = probe_memory_events(os.getpid())
+        if after_memory_events.get('oom_kill', 0) > before_memory_events.get('oom_kill', 0):
+            limit = 'memory'
     after_cpu = resource.getrusage(resource.RUSAGE_CHILDREN)
     cpu_used = after_cpu.ru_utime + after_cpu.ru_stime - before_cpu.ru_utime - before_cpu.ru_stime
     if cpu_limit and code in (-9, -24) and cpu_used >= cpu_limit - 1:
@@ -204,7 +291,7 @@ def compile_source(path, out, build, *, policy):
     return done, output, log, compiler, time.monotonic()-started
 
 
-def run_primary(rendered, out, build, *, inherited_debts, seconds=300, cpu_seconds=None, memory_gib=6):
+def run_primary(rendered, out, build, *, inherited_debts, seconds=300, cpu_seconds=None, memory_gib=6, diagnostic_probe=False):
     if not isinstance(inherited_debts, dict):
         raise ValueError('Inherited debts must be explicit')
     out, build = Path(out).resolve(), Path(build).resolve()
@@ -212,8 +299,8 @@ def run_primary(rendered, out, build, *, inherited_debts, seconds=300, cpu_secon
     if (out/'evidence.json').exists():
         raise ValueError('An existing native attempt must be reused, not repeated')
     path = out/'Boundary.v'
-    policy = budget_policy(seconds, cpu_seconds, memory_gib=memory_gib, entry_pc=rendered['entry_pc'])
-    source = instrument(rendered, seconds, cpu_seconds=cpu_seconds, memory_gib=memory_gib)
+    policy = budget_policy(seconds, cpu_seconds, memory_gib=memory_gib, entry_pc=rendered['entry_pc'], diagnostic_probe=diagnostic_probe)
+    source = instrument(rendered, seconds, cpu_seconds=cpu_seconds, memory_gib=memory_gib, diagnostic_probe=diagnostic_probe)
     path.write_text(source)
     done, output, log, compiler, total_wall = compile_source(path, out, build, policy=policy)
     capture_error = None
@@ -243,8 +330,10 @@ def run_primary(rendered, out, build, *, inherited_debts, seconds=300, cpu_secon
         'setup_path': 'approved coqc primary fallback; no Pet start', 'scratch_command': done.args,
         'primary_tactic': 'try zesu_block.', 'primary_timeout': policy['wall_seconds'],
         'proof_budget': policy,
-        'budget_policy': ('The compiler CPU limit applies to the whole module; no wall cutoff applies.'
-                          if cpu_seconds else 'The tactic wall limit and the outer module limit include recording.'),
+        'budget_policy': ('The diagnostic probe has unlimited CPU and no wall cutoff; issue#10 records its 64 GiB cap.'
+                          if diagnostic_probe else
+                          ('The compiler CPU limit applies to the whole module; no wall cutoff applies.'
+                           if cpu_seconds else 'The tactic wall limit and the outer module limit include recording.')),
         'primary_tactic_entered': 'COQC-PRIMARY-BEGIN' in output,
         'compiler': compiler, 'total_wall_seconds': total_wall,
         'coq_command_setup_seconds': setup_time, 'coq_primary_command_seconds': primary_time,
@@ -274,11 +363,15 @@ if __name__ == '__main__':
     parser.add_argument('--compile', type=Path, required=True)
     parser.add_argument('--build-dir', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
-    parser.add_argument('--cpu-seconds', type=int, required=True)
+    parser.add_argument('--cpu-seconds', type=int)
+    parser.add_argument('--diagnostic-probe', action='store_true', help='Issue10 probe: 64 GiB, unlimited CPU, no wall limit')
     parser.add_argument('--memory-gib', type=int, default=6)
     parser.add_argument('--entry-pc', help='Required for an authorized module exception')
     args = parser.parse_args()
-    policy = budget_policy(cpu_seconds=args.cpu_seconds, memory_gib=args.memory_gib, entry_pc=args.entry_pc)
+    if not args.diagnostic_probe and args.cpu_seconds is None:
+        parser.error('--cpu-seconds is required outside the diagnostic probe policy')
+    policy = budget_policy(cpu_seconds=args.cpu_seconds, memory_gib=args.memory_gib,
+                           entry_pc=args.entry_pc, diagnostic_probe=args.diagnostic_probe)
     args.out.mkdir(parents=True, exist_ok=True)
     retained = args.out / args.compile.name
     original_hash = digest(args.compile)
