@@ -208,9 +208,12 @@ def failures(name: str, counts: dict[str, int], baseline: dict) -> list[str]:
 def main() -> int:
     baseline = json.loads(BASELINE.read_text())
     paths = subprocess.check_output(
-        ["git", "ls-files", "ZesuSsz/*.v"], cwd=ROOT, text=True
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard",
+         "ZesuSsz/*.v"], cwd=ROOT, text=True
     ).splitlines()
-    texts = {name: (ROOT / name).read_text() for name in paths}
+    # Match the reviewable tree, including additions and pending deletions.
+    texts = {name: (ROOT / name).read_text() for name in set(paths)
+             if (ROOT / name).is_file()}
     unfolded = {target for source in texts.values()
                 for target in unfold_targets(source) if target is not None}
     global_opaque = {
