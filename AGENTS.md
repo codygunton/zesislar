@@ -157,6 +157,21 @@ The coordinator approves and records each bounded fallback.
 Continue independent preparation while the coordinator reviews that failure.
 Shell commands can build dependencies and run project gates.
 
+## Coordinator duties
+
+These apply to the coordinating session only.
+
+The coordinator is responsible for the workers never being blocked on it. Every dispatch names
+the next items the worker takes when the current item ends, stalls, or needs a ruling, so a
+pending ruling never empties a queue; those fallbacks are Phase 1 work, never later-phase work.
+Before dispatching, anticipate the forks in the road (a comparison that shows no effect, a gate
+that fails, a limit that stops an arm, a capture that lacks the expected stage, a root that
+changes, a premise that turns out missing) and state in the dispatch how the worker proceeds on
+each branch. A question that reaches the coordinator is a planning defect to fix in the next
+dispatch, not only a question to answer. Rulings reserved for the user (contract, proof
+boundary, architecture) are stated as such with the fallback the worker executes meanwhile.
+Check for idle workers at every turn and refill queues before anything else.
+
 ## Integration gates and rule threshold
 
 During the frozen-list repair phase, a track commit needs green `make check-fast`
