@@ -1,0 +1,91 @@
+{
+  "root": "8819ff9d7a69d21f68187651b04b8b5500f4dc64",
+  "result": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-evidence-gates-002/result.json",
+    "sha256": "297b6d014df1954025009d4d69754ebbded71fb9e2bc758310f4ab4dd9b9c224"
+  },
+  "seal": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-evidence-gates-002/inputs.json",
+    "sha256": "ea135e5c37e229b11933bdb4c54e2053a36e24173f4d6a93370cad5f1ab7a1fe",
+    "input_count": 27494,
+    "changed_inputs": []
+  },
+  "results": [
+    {
+      "target": "check-fast",
+      "root": "8819ff9d7a69d21f68187651b04b8b5500f4dc64",
+      "exit": 0,
+      "elapsed_seconds": 600.7722063639667,
+      "changed_inputs": [],
+      "seal_sha256": "ea135e5c37e229b11933bdb4c54e2053a36e24173f4d6a93370cad5f1ab7a1fe",
+      "FAST_JOBS": 6,
+      "AGENT_JOBS": 6,
+      "gate_class": "child",
+      "build_directory": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/agents/worker2-approved-rule37-i50-evidence-gate",
+      "Pet_admission": [
+        {
+          "stage": "before-lock",
+          "live_pets": [],
+          "fields": [
+            "comm",
+            "status"
+          ]
+        },
+        {
+          "stage": "inside-gate-lock",
+          "live_pets": [],
+          "decision": "admit",
+          "monotonic_seconds": 1231838.111675595
+        }
+      ],
+      "whole_make_locked": true,
+      "whole_make_batched": true,
+      "process_arguments_read": false,
+      "process_environments_read": false
+    },
+    {
+      "target": "check-iris",
+      "root": "8819ff9d7a69d21f68187651b04b8b5500f4dc64",
+      "exit": 0,
+      "elapsed_seconds": 1412.3315569141414,
+      "changed_inputs": [],
+      "seal_sha256": "ea135e5c37e229b11933bdb4c54e2053a36e24173f4d6a93370cad5f1ab7a1fe",
+      "FAST_JOBS": 6,
+      "AGENT_JOBS": 6,
+      "gate_class": "child",
+      "build_directory": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/agents/worker2-approved-rule37-i50-evidence-gate",
+      "Pet_admission": [
+        {
+          "stage": "before-lock",
+          "live_pets": [],
+          "fields": [
+            "comm",
+            "status"
+          ]
+        },
+        {
+          "stage": "inside-gate-lock",
+          "live_pets": [],
+          "decision": "admit",
+          "monotonic_seconds": 1232438.884986356
+        }
+      ],
+      "whole_make_locked": true,
+      "whole_make_batched": true,
+      "process_arguments_read": false,
+      "process_environments_read": false
+    }
+  ],
+  "result_bindings": {
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-evidence-gates-002/check-fast-result.json": "93a340ff2cef1f24f15fa24a3879392c3947861a0929972f57f3498b227099b2",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-evidence-gates-002/check-iris-result.json": "b150dfb9f7e140a7ea3dc8b2bb88654dc1293b3bc621134d363802f1266b9c3e"
+  },
+  "watcher_log": {
+    "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261009-035514-child-c-approved-rule37-evidence-gates002.log",
+    "sha256": "7ec5bc914ccaa0b485b2378a13e3ad00a65a324b23a1fa4904214d6c29eb8bc0"
+  },
+  "all_inputs_match": true,
+  "both_gates_passed": true,
+  "Pet_admission_passed": true,
+  "new_proofs_or_gates_started_by_audit": false
+}

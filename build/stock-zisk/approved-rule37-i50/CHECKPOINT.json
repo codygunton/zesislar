@@ -1,0 +1,127 @@
+{
+  "measured_root": "8819ff9d7a69d21f68187651b04b8b5500f4dc64",
+  "scope": "Baseline23, rules34 through37, and SwitchDispatch ON. DecodeItemHints exports 24 modules and 104 registration locations. The pass excludes 17 historical switch modules.",
+  "status": "The archive and both evidence gates passed. Parent commit review remains pending.",
+  "artifact_bindings": {
+    "ADAPTER.csv": {
+      "path": "build/stock-zisk/approved-rule37-i50/ADAPTER.csv",
+      "sha256": "5c6ba4fafebe4dcdd1f910cb27b1f4cb8e61c6834a48b6c82a86953aba86c4aa"
+    },
+    "ARCHIVE-MANIFEST.json": {
+      "path": "build/stock-zisk/approved-rule37-i50/ARCHIVE-MANIFEST.json",
+      "sha256": "1a7426d73eff64db01efc7b3725f111bfbce45fb6a0d32cac4c075fc61fe7db5"
+    },
+    "ARCHIVE.json": {
+      "path": "build/stock-zisk/approved-rule37-i50/ARCHIVE.json",
+      "sha256": "fb5502c76c6c754f002179d0d216d438c4015a41437153b645fcfd0631ca44fc"
+    },
+    "CALL-IDENTITIES.json": {
+      "path": "build/stock-zisk/approved-rule37-i50/CALL-IDENTITIES.json",
+      "sha256": "b171448735ca00412b6addf93a34e94522b9cd863dcf0088c905e0f11a4cfddb"
+    },
+    "CAPTURE-COMPARISON.json": {
+      "path": "build/stock-zisk/approved-rule37-i50/CAPTURE-COMPARISON.json",
+      "sha256": "816540a0892ba96987bb34e13e145eb43387e9088e590052e1bfec1b3fd82350"
+    },
+    "CAPTURES.json": {
+      "path": "build/stock-zisk/approved-rule37-i50/CAPTURES.json",
+      "sha256": "40a8faff3d8e8cb5b8e06f2ec691a1231091fe5b13305348fd9f3c4c7b66a3f1"
+    },
+    "FAILED-CERTIFICATE-SETUP.json": {
+      "path": "build/stock-zisk/approved-rule37-i50/FAILED-CERTIFICATE-SETUP.json",
+      "sha256": "89c7deba8370cfde59ee8df83245429da6378d78a77921a09f3a8d9caf0cd43e"
+    },
+    "GATES.json": {
+      "path": "build/stock-zisk/approved-rule37-i50/GATES.json",
+      "sha256": "bd18de3e9463251a50ad07b3ac0764440655ae6e261fa6777b1f74f2bd49dd41"
+    },
+    "I58-ENVIRONMENT.json": {
+      "path": "build/stock-zisk/approved-rule37-i50/I58-ENVIRONMENT.json",
+      "sha256": "7b9d8de57924298b2ba0b98a65ac9ec36655d4b96fee00c84f33b0a7e8191299"
+    },
+    "MCP.json": {
+      "path": "build/stock-zisk/approved-rule37-i50/MCP.json",
+      "sha256": "05a9662d7a40239d3febd115b99f80a31b73d5031ab3384ed71e3a7f70ebc185"
+    },
+    "METRICS.json": {
+      "path": "build/stock-zisk/approved-rule37-i50/METRICS.json",
+      "sha256": "81ee46d712dd0109fbf5de3c8a94c68f4f89bf2a23acec6924eb424ca91f362b"
+    },
+    "NATIVE-AUDIT.json": {
+      "path": "build/stock-zisk/approved-rule37-i50/NATIVE-AUDIT.json",
+      "sha256": "bce4cab071d62424d2837cc52934608dee2197027933700b10d350593980f133"
+    },
+    "NATIVE.csv": {
+      "path": "build/stock-zisk/approved-rule37-i50/NATIVE.csv",
+      "sha256": "0e1684670a938ca0b1c5ac08ce9778e881dbdc53a9dfc17ef8b90c68b9610299"
+    },
+    "POLICY-S97.json": {
+      "path": "build/stock-zisk/approved-rule37-i50/POLICY-S97.json",
+      "sha256": "84ceadc52196255b2da43d45fd7cb0bc965c60a588c8d8794b1f8e3ad82cb2e3"
+    },
+    "README.md": {
+      "path": "build/stock-zisk/approved-rule37-i50/README.md",
+      "sha256": "93d194330982cbddadf42ffa60b56de8befec20546bad72fbba163f0144de0fe"
+    },
+    "REGISTRATION-CONTEXTS.json": {
+      "path": "build/stock-zisk/approved-rule37-i50/REGISTRATION-CONTEXTS.json",
+      "sha256": "af895f713b1589955afd9d1651ed064c2930bd605045135bb603df2e3178afc4"
+    },
+    "REPORT.json": {
+      "path": "build/stock-zisk/approved-rule37-i50/REPORT.json",
+      "sha256": "88d86f4d4fdf62765e73376cb494333b2bd5baf13bc81e80d295083636634bf7"
+    }
+  },
+  "archive_audit": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-final-checkpoint-audit-001/ARCHIVE-AUDIT.json",
+    "sha256": "e0c6da4643afe3e5d839a69165531c2ceee0dd74fa4c36e89e140138762d98a4"
+  },
+  "archive_input_seal_sha256": "cefdd419d5ceedea0873764e5cf0ad6825c9352c435e2ed6f686b4dd5953256c",
+  "archive_source_records": 8738,
+  "native_closures": 8,
+  "adapter_closures": 7,
+  "new_adapter_closures": [
+    "decodeItemJoin6ae0From6a38",
+    "decodeItemJoin6ae0From6ad8"
+  ],
+  "MCP_certificates": 15,
+  "MCP_method": "module_m",
+  "MCP_assumptions": [],
+  "certificate_actual_groups": {
+    "goals": [],
+    "stack": [],
+    "shelf": [],
+    "given_up": []
+  },
+  "native_auxiliary_groups": "unavailable",
+  "verified_interactive_Pet_exits": 15,
+  "unavailable_standalone_or_preflight_Pet_exits": 30,
+  "gates": {
+    "fast_exit": 0,
+    "iris_exit": 0,
+    "workers": 6,
+    "class": "child",
+    "result_sha256": "297b6d014df1954025009d4d69754ebbded71fb9e2bc758310f4ab4dd9b9c224",
+    "input_count": 27494,
+    "changed_inputs": []
+  },
+  "cap_stops": "Eight incomplete searches.",
+  "native_body_replays": 0,
+  "shell_fallbacks": 0,
+  "Level1_closed": false,
+  "universal_table_slots_certified": 0,
+  "termination_proved": false,
+  "historical_status_note": "The archive preserves pre-final REPORT.json and README.md bytes. The staged final versions record archive success.",
+  "all_inherited_debts_empty": true,
+  "preserved_failures": [
+    "Certificate001 load-path setup failure.",
+    "MCP activation timeout and request scope failures.",
+    "Unlaunched gate001 admission defect.",
+    "Archive001 preparation scan race."
+  ],
+  "next_action": "The parent reviews the staged checkpoint before commit.",
+  "archived_preparation_sha256": {
+    "REPORT.json": "2a952b9160be9120b49ddb01d450cc92dd20898f34d2eb139f78285ae5cbc10a",
+    "README.md": "3751ea921e689bd2e937bca6958b058d8952c5b86bdf396aa7ba4c63db9fc7eb"
+  }
+}

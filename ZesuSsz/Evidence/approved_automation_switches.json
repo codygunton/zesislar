@@ -1,0 +1,111 @@
+{
+  "approved_modules": [
+    "ZesuSsz.Automation.Switches.InstructionLookup",
+    "ZesuSsz.Automation.Switches.StackWrite",
+    "ZesuSsz.Automation.Switches.RamFault",
+    "ZesuSsz.Automation.Switches.RegionFault",
+    "ZesuSsz.Automation.Switches.LowMask",
+    "ZesuSsz.Automation.Switches.IntegerArrayAddress",
+    "ZesuSsz.Automation.Switches.RecordWitness",
+    "ZesuSsz.Automation.Switches.ArrayBounds",
+    "ZesuSsz.Automation.Switches.WordArrayHandoff",
+    "ZesuSsz.Automation.Switches.ReturnBundle",
+    "ZesuSsz.Automation.Switches.ReturnWand",
+    "ZesuSsz.Automation.Switches.StrictSigned",
+    "ZesuSsz.Automation.Switches.ListWitness",
+    "ZesuSsz.Automation.Switches.TupleWitness",
+    "ZesuSsz.Automation.Switches.ArrayRegionBounds",
+    "ZesuSsz.Automation.Switches.PureFactHints",
+    "ZesuSsz.Automation.Switches.KnownPairWitness",
+    "ZesuSsz.Automation.Switches.PureWitnessConstraints",
+    "ZesuSsz.Automation.Switches.RegisterCollectionSelection",
+    "ZesuSsz.Automation.Switches.EvarSideconditionGuard",
+    "ZesuSsz.Automation.Switches.RegionFaultNormalization",
+    "ZesuSsz.Automation.Switches.CanonicalAnchor",
+    "ZesuSsz.Automation.Switches.EvarImplicationGuard",
+    "ZesuSsz.Automation.Switches.SwitchDispatch",
+    "ZesuSsz.Automation.Switches.PureFactExistential",
+    "ZesuSsz.Automation.Switches.CanonicalPureConjunction",
+    "ZesuSsz.Automation.Switches.ByteListContainment",
+    "ZesuSsz.Automation.Switches.RegionFaultCastHypotheses"
+  ],
+  "exclusions": [
+    {
+      "switch": "ArrayLoadPriority",
+      "class": "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepArrayLoadPriority"
+    },
+    {
+      "switch": "BoundedArithmetic",
+      "class": "ZesuSsz.Automation.BoundedArithmetic.ZesuStepBoundedArithmetic"
+    },
+    {
+      "switch": "ByteFold",
+      "class": "ZesuSsz.Automation.ByteFold.ZesuStepByteFold"
+    },
+    {
+      "switch": "CallReturn",
+      "class": "ZesuSsz.Automation.CallReturn.ZesuStepCallReturn"
+    },
+    {
+      "switch": "CallReturnSpecTable",
+      "class": "ZesuSsz.Automation.CallReturnSpecTable.ZesuStepCallReturnSpecTable"
+    },
+    {
+      "switch": "ConjunctMatch",
+      "class": "ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch"
+    },
+    {
+      "switch": "ExistentialArrayRestore",
+      "class": "ZesuSsz.Automation.ExistentialArrayRestore.ZesuStepExistentialArrayRestore"
+    },
+    {
+      "switch": "InstrPreAddress",
+      "class": "ZesuSsz.Automation.InstrPreAddress.ZesuStepInstrPreAddress"
+    },
+    {
+      "switch": "InteriorByteSlice",
+      "class": "ZesuSsz.Automation.InteriorByteSlice.ZesuStepInteriorByteSlice"
+    },
+    {
+      "switch": "LoadedTrace",
+      "class": "ZesuSsz.Automation.LoadedTrace.ZesuStepLoadedTrace"
+    },
+    {
+      "switch": "LookupReduce",
+      "class": "ZesuSsz.Automation.LookupReduce.ZesuStepLookupReduce"
+    },
+    {
+      "switch": "OutcomeHandoff",
+      "class": "ZesuSsz.Automation.OutcomeHandoff.ZesuStepOutcomeHandoff"
+    },
+    {
+      "switch": "SealedOpen",
+      "class": "ZesuSsz.Automation.SealedCoverage.ZesuStepSealedOpen"
+    },
+    {
+      "switch": "SpecTail",
+      "class": "ZesuSsz.Automation.SpecPrefix.ZesuStepSpecTail"
+    },
+    {
+      "switch": "TracePrefixTail",
+      "class": "ZesuSsz.Automation.TracePrefixTail.ZesuStepTracePrefixTail"
+    },
+    {
+      "switch": "WitnessArith",
+      "class": "ZesuSsz.Automation.PureFacts.ZesuStepWitnessArith"
+    },
+    {
+      "switch": "WordArrayLookup",
+      "class": "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepWordArrayLookup"
+    }
+  ],
+  "reference_pass_inventory": {
+    "root": "8819ff9d7a69d21f68187651b04b8b5500f4dc64",
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-preparation-001/inventory.json",
+    "sha256": "8726cfb5786e6371600846d6283e03e3d5bfa39109a3dbb42c47343cd67e0e20"
+  },
+  "policy": "New production proofs import Automation.All, Automation.Approved, and Compliance.DecodeItemHints.",
+  "candidate_exclusions": [
+    "Rule38"
+  ]
+}

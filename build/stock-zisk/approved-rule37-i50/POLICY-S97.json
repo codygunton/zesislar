@@ -1,0 +1,213 @@
+{
+  "root": "8819ff9d7a69d21f68187651b04b8b5500f4dc64",
+  "pass_report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/REPORT.json",
+    "sha256": "bce4cab071d62424d2837cc52934608dee2197027933700b10d350593980f133"
+  },
+  "table_bindings": {
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/native-table.csv": "0e1684670a938ca0b1c5ac08ce9778e881dbdc53a9dfc17ef8b90c68b9610299",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/adapter-table.csv": "5c6ba4fafebe4dcdd1f910cb27b1f4cb8e61c6834a48b6c82a86953aba86c4aa",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/capture-index.json": "40a8faff3d8e8cb5b8e06f2ec691a1231091fe5b13305348fd9f3c4c7b66a3f1",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/certificates-pending.json": "9936b3cc4361aeaf419320c709eab7c0d69080474d60abf1b4e49c8417c4d116"
+  },
+  "policy_annotation": "Preserve frozen caps. A cap-stopped arm records an incomplete search. Production goals are not diagnostic caps.",
+  "policy_source": "Parent relayed the user ruling at main37b2bf2e. No frozen command changes follow.",
+  "limit_annotations": [
+    {
+      "id": "block_0x800d697c",
+      "kind": "native",
+      "recorded_limit": "cpu",
+      "search_status": "incomplete_search",
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "frozen_limits_changed": false,
+      "search_completed": false,
+      "missing_fact_inferred": false,
+      "impossibility_inferred": false
+    },
+    {
+      "id": "block_0x800d69e8",
+      "kind": "native",
+      "recorded_limit": "cpu",
+      "search_status": "incomplete_search",
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "frozen_limits_changed": false,
+      "search_completed": false,
+      "missing_fact_inferred": false,
+      "impossibility_inferred": false
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "recorded_limit": "memory",
+      "search_status": "incomplete_search",
+      "CPU_budget_seconds": 2400,
+      "memory_budget_gib": 6,
+      "frozen_limits_changed": false,
+      "search_completed": false,
+      "missing_fact_inferred": false,
+      "impossibility_inferred": false
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "recorded_limit": "memory",
+      "search_status": "incomplete_search",
+      "CPU_budget_seconds": 2400,
+      "memory_budget_gib": 6,
+      "frozen_limits_changed": false,
+      "search_completed": false,
+      "missing_fact_inferred": false,
+      "impossibility_inferred": false
+    },
+    {
+      "id": "decodeItemJoin6ae0From6970",
+      "kind": "adapter",
+      "recorded_limit": "cpu",
+      "search_status": "incomplete_search",
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "frozen_limits_changed": false,
+      "search_completed": false,
+      "missing_fact_inferred": false,
+      "impossibility_inferred": false
+    },
+    {
+      "id": "decodeItemJoin6ae0From6a08",
+      "kind": "adapter",
+      "recorded_limit": "cpu",
+      "search_status": "incomplete_search",
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "frozen_limits_changed": false,
+      "search_completed": false,
+      "missing_fact_inferred": false,
+      "impossibility_inferred": false
+    },
+    {
+      "id": "decodeItemJoin6ae0From6a6c",
+      "kind": "adapter",
+      "recorded_limit": "cpu",
+      "search_status": "incomplete_search",
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "frozen_limits_changed": false,
+      "search_completed": false,
+      "missing_fact_inferred": false,
+      "impossibility_inferred": false
+    },
+    {
+      "id": "decodeItemJoin6ae0From6aa8",
+      "kind": "adapter",
+      "recorded_limit": "cpu",
+      "search_status": "incomplete_search",
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "frozen_limits_changed": false,
+      "search_completed": false,
+      "missing_fact_inferred": false,
+      "impossibility_inferred": false
+    }
+  ],
+  "compiler_closures": {
+    "native": 8,
+    "adapter": 7,
+    "retained_object_MCP_verification": "pending"
+  },
+  "residual_results": 14,
+  "capture_count": 70,
+  "Level1_closed": false,
+  "rollback_distinctions": [
+    {
+      "id": "block_0x800d69b0",
+      "residual_state": "residuals",
+      "active_records": 3,
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 136,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 138,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 136,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      }
+    },
+    {
+      "id": "block_0x800d6ae0",
+      "residual_state": "total_search_failure_after_rollback",
+      "active_records": 1,
+      "residual_classification": {
+        "state": "total_search_failure_after_rollback",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "restored_theorem_goal",
+            "whole_proposition_matches": true,
+            "initial_argument_names": [
+              "args",
+              "locals"
+            ],
+            "initial_context_size": 5,
+            "returned_context_size": 5,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      }
+    }
+  ],
+  "S97": {
+    "original_report": "/home/cody/zesislar/.worktrees/worker1-spec-c/build/stock-zisk/spec-c-s97/REPORT.json",
+    "copied_report": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-analysis-bindings-001/S97-REPORT.json",
+    "sha256": "073171e0083356e22637d015af7312296f839e1fb64b7343bae05ea6ed9c3db3",
+    "adapters": [
+      "decodeItemJoin6ae0From6a38",
+      "decodeItemJoin6ae0From6ad8"
+    ],
+    "finding": "Their S42 propositions differ only by theorem names, whitespace, and explicit args annotation.",
+    "claim_limit": "This read-only comparison supplies no new kernel conversion result or proof replay."
+  },
+  "native_auxiliary_groups": "unavailable",
+  "records_changed": false,
+  "compiler_or_MCP_execution": false
+}

@@ -1,0 +1,156 @@
+{
+  "root": "8819ff9d7a69d21f68187651b04b8b5500f4dc64",
+  "failed_attempt": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-certificates-001",
+  "input_seal_sha256": "0571f6181a005eaddf0f126bc35a880e93f9d5ff39c95a9dada7c4b0e2269685",
+  "launcher_result_sha256": "a94667dfd83a1869cc82b7dc43eeb28cd69dd636ae7b909e107fea0b601bdba9",
+  "MCP_result_sha256": "160c5ca7069ce75c44fa6d31a146ddb2a9749a9f57c620568a6dbb82b6e0d968",
+  "failed_response": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-certificates-001/mcp/block_0x800d69a4-initial-compile-response.json",
+    "sha256": "a0be93896f38c9c50a932bc5cf61fe93d656ae28662a8b2774d2331a545046f8",
+    "arguments": {
+      "workspace": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-certificates-preparation-001/block_0x800d69a4",
+      "file": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-certificates-preparation-001/block_0x800d69a4/Initial.v",
+      "mode": "full",
+      "keep_vo": true,
+      "timeout": 60,
+      "include_warnings": false
+    },
+    "result": {
+      "success": false,
+      "reason": "compile_error",
+      "error": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-certificates-preparation-001/block_0x800d69a4/Initial.v, line 1, characters 0-38:\n     1 | Require Import ZesuSsz.Automation.All.\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nError: Cannot find a physical path bound to logical path\nZesuSsz.Automation.All.",
+      "error_positions": [
+        {
+          "line": 0,
+          "character": 0,
+          "end_character": 38,
+          "message": "Error: Cannot find a physical path bound to logical path\nZesuSsz.Automation.All."
+        }
+      ],
+      "hint": "Use rocq_start(file=..., line=..., character=...) to start an interactive session at the error position, then rocq_check or rocq_step_multi to explore fixes.",
+      "state_capture_status": "outside_proof",
+      "errors": []
+    }
+  },
+  "installed_parser": {
+    "path": "/home/cody/.local/share/uv/tools/rocq-mcp/lib/python3.12/site-packages/rocq_mcp/server.py",
+    "sha256": "e1cdf9fb7fcf55c73e9a0e330cfe8a1672f11bb7b130f8424c79eaf55eb63bda",
+    "functions": [
+      " _check_path_containment",
+      "_parse_project_flags"
+    ]
+  },
+  "cause": "The parser resolves project directories through the artifact symlink. It rejects directories outside the certificate workspace.",
+  "rejected_mappings": [
+    {
+      "directive": "-Q _build/default/ZesuSsz ZesuSsz",
+      "resolved_directory": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/agents/worker2-approved-rule37-i50/default/ZesuSsz"
+    },
+    {
+      "directive": "-Q _build/default/ZesuStock ZesuStock",
+      "resolved_directory": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/agents/worker2-approved-rule37-i50/default/ZesuStock"
+    },
+    {
+      "directive": "-Q _build/default/InstrSpecs InstrSpecs",
+      "resolved_directory": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/agents/worker2-approved-rule37-i50/default/InstrSpecs"
+    },
+    {
+      "directive": "-Q _build/default/Scaffolding Scaffolding",
+      "resolved_directory": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/agents/worker2-approved-rule37-i50/default/Scaffolding"
+    },
+    {
+      "directive": "-Q _build/default/MachineMap ZesuMachineMap",
+      "resolved_directory": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/agents/worker2-approved-rule37-i50/default/MachineMap"
+    },
+    {
+      "directive": "-R _build/default/generated/isla-traces IslaTraces",
+      "resolved_directory": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/agents/worker2-approved-rule37-i50/default/generated/isla-traces"
+    },
+    {
+      "directive": "-Q _build/default/generated/isla-traces/stock-zisk/decodeItem ZesuSsz.Stock.DecodeItem",
+      "resolved_directory": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/agents/worker2-approved-rule37-i50/default/generated/isla-traces/stock-zisk/decodeItem"
+    },
+    {
+      "directive": "-Q _build/default/generated/isla-traces/stock-zisk/closure ZesuSsz.Stock.Closure",
+      "resolved_directory": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/agents/worker2-approved-rule37-i50/default/generated/isla-traces/stock-zisk/closure"
+    },
+    {
+      "directive": "-Q _build/default/generated/evm-sail-coq EvmSail",
+      "resolved_directory": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/agents/worker2-approved-rule37-i50/default/generated/evm-sail-coq"
+    },
+    {
+      "directive": "-Q _build/default/generated/evm-sail-coq/rlp EvmSailRlp",
+      "resolved_directory": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/agents/worker2-approved-rule37-i50/default/generated/evm-sail-coq/rlp"
+    },
+    {
+      "directive": "-Q _build/default/generated/sail-stdpp SailStdpp",
+      "resolved_directory": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/agents/worker2-approved-rule37-i50/default/generated/sail-stdpp"
+    }
+  ],
+  "old_parsed_directory_flags": [
+    "-Q",
+    ".",
+    "Certificates",
+    "-Q",
+    "RetainedObject",
+    "\"\""
+  ],
+  "All_vo_exists": true,
+  "session_closures": [
+    {
+      "phase": "block_0x800d69a4-preflight",
+      "pet_identity": {
+        "verified": true,
+        "pid": 1709859,
+        "ppid": 1709354,
+        "name": "pet",
+        "start_ticks": 122837331,
+        "rss_kib": 1421144,
+        "server_identity": {
+          "success": true,
+          "server_pid": 1709354,
+          "server_start_ticks": 122837060,
+          "source": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/complete_goals_mcp.py",
+          "source_sha256": "0ad2fd1199c5dc82a4835ea88b96b4e5acac5257f835320fef7539cbb459e62f",
+          "ownership_method": "owned-stdio-response"
+        }
+      },
+      "pet_exited": true,
+      "transport_closed_normally": true,
+      "closing_health": {
+        "success": true,
+        "ok": true,
+        "server_version": "0.3.1",
+        "switch": "islaris",
+        "switch_prefix": "/home/cody/islaris/_opam",
+        "switch_is_local": true,
+        "switch_source": "opam_env",
+        "toolchain": {
+          "coqc": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-i54-table-certificates/tools/block/certificate_coqc.py",
+            "version": "8.19.2+lsp 4.14.4"
+          },
+          "pet": {
+            "path": "/home/cody/islaris/_opam/bin/pet",
+            "version": "0.2.4-dev",
+            "pytanque_importable": true
+          }
+        },
+        "pet": {
+          "running": true,
+          "pid": 1709859
+        },
+        "warnings": []
+      },
+      "error": {
+        "type": "ValueError",
+        "message": "The MCP call failed: block_0x800d69a4-initial-compile"
+      }
+    }
+  ],
+  "inputs_unchanged": true,
+  "interactive_theorem_application": false,
+  "native_replay": false,
+  "shell_fallback": false,
+  "repair": "Materialize contained hardlinks from the same original private dependency view."
+}

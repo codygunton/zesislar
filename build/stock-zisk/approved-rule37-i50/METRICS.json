@@ -1,0 +1,16 @@
+{
+  "root": "8819ff9d7a69d21f68187651b04b8b5500f4dc64",
+  "native_count": 24,
+  "adapter_count": 13,
+  "native_table_sha256": "0e1684670a938ca0b1c5ac08ce9778e881dbdc53a9dfc17ef8b90c68b9610299",
+  "adapter_table_sha256": "5c6ba4fafebe4dcdd1f910cb27b1f4cb8e61c6834a48b6c82a86953aba86c4aa",
+  "primary_elapsed_seconds": 18823.79012262309,
+  "compiler_CPU_seconds_sum": 14279.603536999999,
+  "maximum_compiler_peak_RSS_KiB": 6291564,
+  "inherited_debts_empty_for_all_37": true,
+  "CPU_stop_count": 6,
+  "memory_stop_count": 2,
+  "cap_stopped_searches_incomplete": true,
+  "attribution": "Different roots and scopes prevent isolated rule-cost attribution.",
+  "accounting": "The table reports measured compiler CPU and RSS. Controller elapsed includes admission. No machine saturation claim follows."
+}
