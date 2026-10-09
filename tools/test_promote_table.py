@@ -43,6 +43,7 @@ class PromotionTests(unittest.TestCase):
     def test_pending_render_contains_no_proof_terms(self):
         report = promote_table.coverage(*self.fixture(), design_sha256='bound')
         source = promote_table.render_slots(report)
+        self.assertIn('Require Import ZesuSsz.Automation.BlockTable.', source)
         self.assertNotIn('Definition decodeItemPromotedBody', source)
         self.assertNotIn('Admitted', source)
 
@@ -51,6 +52,7 @@ class PromotionTests(unittest.TestCase):
             pc='0x1000', status='proved', proof_module='Proofs',
             proof_lemma='Proofs.ExactBody')]))
         self.assertIn(promote_table.table_statement(0x1000), source)
+        self.assertIn('Require Import ZesuSsz.Automation.BlockTable.', source)
         self.assertIn('  Proofs.ExactBody.', source)
         self.assertIn('Require Import Proofs.', source)
         self.assertNotIn('Lemma', source)

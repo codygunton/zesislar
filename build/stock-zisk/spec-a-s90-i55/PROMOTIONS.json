@@ -1,0 +1,82 @@
+{
+  "0x800d69a4": {
+    "native": {
+      "path": "native-800d69a4.json",
+      "sha256": "cb459aab5076d4af142e545862f5106fbe054dcb96cd7ac375ee35a6b700961d"
+    },
+    "adapter": {
+      "path": "adapter-800d69a4.json",
+      "sha256": "0360f5e98237863cf1fdd4162f7ad08d21908969155648c58575c881f4d3de91"
+    }
+  },
+  "0x800d69d8": {
+    "native": {
+      "path": "native-800d69d8.json",
+      "sha256": "9d49016a94e30b6c5c4e2de76020350f52fbfc3297f2f3843180c0bae95e6e48"
+    },
+    "adapter": {
+      "path": "adapter-800d69d8.json",
+      "sha256": "7697fa34845f48aba116dec6650935d56cfe84542d67e70f0082c8336521bcc1"
+    }
+  },
+  "0x800d69e0": {
+    "native": {
+      "path": "native-800d69e0.json",
+      "sha256": "c513b6012b755f46899775295de88b803008c142b40f907239abbc29ef6142ba"
+    },
+    "adapter": {
+      "path": "adapter-800d69e0.json",
+      "sha256": "12ab39bcbe4e81fa1ad9a1a1f984afe145793977dbb64ff635924b7a73ec4c98"
+    }
+  },
+  "0x800d6a00": {
+    "native": {
+      "path": "native-800d6a00.json",
+      "sha256": "9df51434b291f7125abacd0ed95a1f401494126a2c4cea3fa8844468c9d3afcd"
+    },
+    "adapter": {
+      "path": "adapter-800d6a00.json",
+      "sha256": "f3b589028a61649fc9336c1604c7afa12a34deb3bb49a07283d08896acab4b71"
+    }
+  },
+  "0x800d6a14": {
+    "native": {
+      "path": "native-800d6a14.json",
+      "sha256": "5944f64dbd806c1ca1c655cdc131448fc7e2180f1ed06df07648bdd90b15f3f7"
+    },
+    "adapter": {
+      "path": "adapter-800d6a14.json",
+      "sha256": "e23a2a7a2835fba8e3607237a75a63d70b98201de1e00ab5a1645146bbbc6446"
+    }
+  },
+  "0x800d6a64": {
+    "native": {
+      "path": "native-800d6a64.json",
+      "sha256": "f10ad9d6cb2718c2923e4ebd154a7992fd70ac3353b8104b2a912249b58d47c1"
+    },
+    "adapter": {
+      "path": "adapter-800d6a64.json",
+      "sha256": "ecda565bd894790f2ae0b086d9dc210d14a95c2007029e4bc5e17fad8e5da99f"
+    }
+  },
+  "0x800d6a6c": {
+    "native": {
+      "path": "native-800d6a6c.json",
+      "sha256": "5d9b98efbf47666f48e502f719d9e37e553f5a6f4aa108288b4c667a89422ff8"
+    },
+    "adapter": {
+      "path": "adapter-800d6a6c.json",
+      "sha256": "61e10a8658d752113835609c2a2c5928adb1662d639a4bd30e18d5964ceb7e31"
+    }
+  },
+  "0x800d6ab4": {
+    "native": {
+      "path": "native-800d6ab4.json",
+      "sha256": "c265181cf8e444642a4403bd4a78486c4202697c8c8efa05f5576566f2dc7c21"
+    },
+    "adapter": {
+      "path": "adapter-800d6ab4.json",
+      "sha256": "d4044839ee5eca9f3037fafa7cb85b4ecf3e1a7eb25f7e564766efe3b35fd7fb"
+    }
+  }
+}

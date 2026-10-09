@@ -1,0 +1,71 @@
+{
+  "design_sha256": "82e0777742ab731468282c72201cc285aeff5c46dc76a54cfdfd880df7aab221",
+  "entry_pc": 2148362660,
+  "successors": [
+    2148362712,
+    2148362672
+  ],
+  "compiled": true,
+  "verified": true,
+  "assumptions": [],
+  "inherited_debts": [],
+  "inherited_debt_basis": "Closed kernel theorem with assumptions []. No inherited proof premises outside its exact statement.",
+  "scope": "native designed boundary",
+  "block_closed": true,
+  "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69a4",
+  "lemma": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69a4.DesignedBoundary_800d69a4",
+  "source_binding": {
+    "path": "../../../ZesuSsz/Proofs/DecodeItem/Auto/Block800d69a4.v",
+    "sha256": "fb2b2826f7602a0a9d45915dac6eadde126ec21dcfc5294e7f9bbecb6e65f5e1"
+  },
+  "goal_groups": {
+    "given_up": [],
+    "goals": [],
+    "shelf": [],
+    "stack": []
+  },
+  "actual_group_export": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i59-production/_build/i59-production-certificate-preparation-002/interactive/exports/state_2.json",
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+  },
+  "certificate_report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i59-production/_build/i59-production-certificate-audit-002/REPORT.json",
+    "sha256": "f93633a0e07cdd5777eb8fd9576a391b714dbe562cb62d01f2f805501af2ada4"
+  },
+  "verification": {
+    "assumptions": [],
+    "success": true,
+    "verification_method": "module_m"
+  },
+  "compilation": {
+    "dune_build_warning": "dune could not build '_build/i59-production-certificate-preparation-002/ProductionObjectCheck.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead.",
+    "output": "Closed under the global context\n",
+    "success": true
+  },
+  "current_source_matches_i59": true,
+  "canonical_i59_locator": {
+    "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/i59-native-MCP-locators-001/REPORT.json",
+    "sha256": "e9ff1b3901b2f0d3830467cf6adb981ce97113da5dd6cf4caa4d4628dccd304f"
+  },
+  "canonical_i59_record": {
+    "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69a4",
+    "production_lemma": "DesignedBoundary_800d69a4",
+    "production_source": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i59-production/ZesuSsz/Proofs/DecodeItem/Auto/Block800d69a4.v",
+      "sha256": "fb2b2826f7602a0a9d45915dac6eadde126ec21dcfc5294e7f9bbecb6e65f5e1"
+    },
+    "raw_MCP_calls": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i59-production/_build/i59-production-certificate-preparation-002/raw-calls.json",
+      "sha256": "85fc9ce1644d4018005cda2014dc81f3e6417524dd30016beba040cbc1f2eca0"
+    },
+    "accepted_certificate_audit": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i59-production/_build/i59-production-certificate-audit-002/REPORT.json",
+      "sha256": "f93633a0e07cdd5777eb8fd9576a391b714dbe562cb62d01f2f805501af2ada4"
+    },
+    "certificate_source": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i59-production/_build/i59-production-certificate-preparation-002/ProductionObjectCheck.v",
+      "sha256": "12f23cea2bc50df18bc8bf18daece57a59f17b25fa1421f7f158ae1a542535a1",
+      "size": 1979
+    }
+  }
+}

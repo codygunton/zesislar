@@ -139,6 +139,7 @@ def render_slots(report):
              'Require Import ZesuSsz.Automation.Approved.',
              'Require Import ZesuSsz.Compliance.DecodeItemHints.',
              'Require Import isla.riscv64.riscv64.',
+             'Require Import ZesuSsz.Automation.BlockTable.',
              'Require Import ZesuSsz.Generated.DecodeItem.BlockTable.']
     lines.extend(f'Require Import {module}.' for module in modules)
     lines += ['', '(* Pending slots have no proof term. No composition theorem is generated. *)',

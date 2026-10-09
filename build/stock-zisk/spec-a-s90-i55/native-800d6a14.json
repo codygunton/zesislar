@@ -1,0 +1,103 @@
+{
+  "design_sha256": "82e0777742ab731468282c72201cc285aeff5c46dc76a54cfdfd880df7aab221",
+  "entry_pc": 2148362772,
+  "successors": [
+    2148362788
+  ],
+  "compiled": true,
+  "verified": true,
+  "assumptions": [],
+  "inherited_debts": [],
+  "inherited_debt_basis": "Closed kernel theorem with assumptions []. No inherited proof premises outside its exact statement.",
+  "scope": "native designed boundary",
+  "block_closed": true,
+  "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a14",
+  "lemma": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a14.DesignedBoundary_800d6a14",
+  "source_binding": {
+    "path": "../../../ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a14.v",
+    "sha256": "70ea8da3ab43b2599ceded151460709de0c4bfc8777f246038759835507d41ee"
+  },
+  "goal_groups": {
+    "given_up": [],
+    "goals": [],
+    "shelf": [],
+    "stack": []
+  },
+  "actual_group_export": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i59-production/_build/i59-production-certificate-Block800d6a14-preparation-003/interactive/exports/state_2.json",
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+  },
+  "certificate_report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i59-production/_build/i59-production-certificate-Block800d6a14-preparation-003/interactive-results.json",
+    "sha256": "f28631e0784259daaf1b7a2ef933f7fb2ee2fa56fbd9d81dbfe3ac03581c136d"
+  },
+  "verification": {
+    "success": true,
+    "verification_method": "module_m",
+    "assumptions": []
+  },
+  "compilation": {
+    "health": {
+      "success": true,
+      "ok": true,
+      "server_version": "0.3.1",
+      "switch": "islaris",
+      "switch_prefix": "/home/cody/islaris/_opam",
+      "switch_is_local": true,
+      "switch_source": "opam_env",
+      "toolchain": {
+        "coqc": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i59-production/tools/rocq_coqc_guarded.sh",
+          "version": "8.19.2+lsp 4.14.4"
+        },
+        "pet": {
+          "path": "/home/cody/islaris/_opam/bin/pet",
+          "version": "0.2.4-dev",
+          "pytanque_importable": true
+        }
+      },
+      "pet": {
+        "running": false,
+        "pid": null
+      },
+      "warnings": []
+    },
+    "result": {
+      "success": true,
+      "output": "Closed under the global context\n",
+      "dune_build_warning": "dune could not build '_build/i59-production-certificate-Block800d6a14-preparation-003/ProductionObjectCheck.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead."
+    },
+    "source": "/home/cody/zesislar/.worktrees/worker2-child-platform-i59-production/_build/i59-production-certificate-Block800d6a14-preparation-003/ProductionObjectCheck.v",
+    "source_sha256": "a43685fa03a353f7b2de4e908360cfc66add5eebfd6c764b39078050f3f756d2",
+    "generated_object": "/home/cody/zesislar/.worktrees/worker2-child-platform-i59-production/_build/default/_build/i59-production-certificate-Block800d6a14-preparation-003/ProductionObjectCheck.vo",
+    "retained_object": "/home/cody/zesislar/.worktrees/worker2-child-platform-i59-production/_build/i59-production-certificate-Block800d6a14-preparation-003/ProductionObjectCheck.certificate.vo",
+    "object_sha256": "5a8e1904be4129c1839c1e55c0666d7c004f0bbaeafe779b4be06fb7ee20d6e9",
+    "native_search": false
+  },
+  "current_source_matches_i59": true,
+  "canonical_i59_locator": {
+    "path": "/home/cody/zesislar/.worktrees/p0c-stock-target/_build/i59-native-MCP-locators-001/REPORT.json",
+    "sha256": "e9ff1b3901b2f0d3830467cf6adb981ce97113da5dd6cf4caa4d4628dccd304f"
+  },
+  "canonical_i59_record": {
+    "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a14",
+    "production_lemma": "DesignedBoundary_800d6a14",
+    "production_source": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i59-production/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a14.v",
+      "sha256": "70ea8da3ab43b2599ceded151460709de0c4bfc8777f246038759835507d41ee"
+    },
+    "raw_MCP_calls": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i59-production/_build/i59-production-certificate-Block800d6a14-preparation-003/raw-calls.json",
+      "sha256": "36a20dca7bd4ebe939251e4e0c1520a5d8575e4427f92929c43230f5a7d00da2"
+    },
+    "accepted_certificate_audit": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i59-production/_build/i59-fourteen-certificates-audit-001/REPORT.json",
+      "sha256": "d7989d3f06c0be2b54bd0978f829d6bc4817e287d975549d1e36b2b4e4891952"
+    },
+    "certificate_source": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i59-production/_build/i59-production-certificate-Block800d6a14-preparation-003/ProductionObjectCheck.v",
+      "sha256": "a43685fa03a353f7b2de4e908360cfc66add5eebfd6c764b39078050f3f756d2",
+      "size": 1785
+    }
+  }
+}

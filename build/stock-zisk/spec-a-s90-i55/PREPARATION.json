@@ -1,0 +1,148 @@
+{
+  "root": "e27025eb3a6917c99b4de6220ec56bf0e85e772c",
+  "scope": "composition only; no native tactic replay",
+  "s101_path": "/home/cody/zesislar/.worktrees/worker1-spec-b/build/stock-zisk/spec-b-s101/INSTANTIATIONS.json",
+  "s101_sha256": "0ce84653aa1c9703162a989658184c6128e4a653bdf8f9e7c5ddb995a84414d1",
+  "design_sha256": "82e0777742ab731468282c72201cc285aeff5c46dc76a54cfdfd880df7aab221",
+  "table_sha256": "e47ce415391abcfa24908272711ec15f8ebdb21006ee13fdc847284cfaf8d7aa",
+  "i59_manifest_sha256": "d34ac26478a0a2a497c74947d6ea1e66d529ce6b5f04c47db15b605e4f5df852",
+  "drafts": [
+    {
+      "entry_pc": "800d69a4",
+      "adapter_source": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69a4.v",
+      "adapter_sha256": "a422759745753d55ed46270f953241abb02f5d1eac108118747477af5d1df330",
+      "native_source": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d69a4.v",
+      "native_source_sha256": "fb2b2826f7602a0a9d45915dac6eadde126ec21dcfc5294e7f9bbecb6e65f5e1",
+      "native_lemma": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69a4.DesignedBoundary_800d69a4",
+      "hand_lines": 22,
+      "source_successor_slots": [
+        "800d69b0",
+        "800d69d8"
+      ]
+    },
+    {
+      "entry_pc": "800d69d8",
+      "adapter_source": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69d8.v",
+      "adapter_sha256": "cc72dfd71c93cb3cc5eb680b44bab275c8843f0689fdc00ab0a0b4c666dd21a8",
+      "native_source": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d69d8.v",
+      "native_source_sha256": "dba92683131b5c4697d52db787bb569b33cc8049ccfd7ebb2767bc2a71ab3be1",
+      "native_lemma": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69d8.DesignedBoundary_800d69d8",
+      "hand_lines": 22,
+      "source_successor_slots": [
+        "800d69e0",
+        "800d6a00"
+      ]
+    },
+    {
+      "entry_pc": "800d69e0",
+      "adapter_source": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69e0.v",
+      "adapter_sha256": "ac3012071686aa3e850e83ff8c15c72252e0ef97665821918bb0f119cff76817",
+      "native_source": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d69e0.v",
+      "native_source_sha256": "965212afed3fdce7dc86f114312e9f01f7b7d1b864a65ba7523944eda17269f4",
+      "native_lemma": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69e0.DesignedBoundary_800d69e0",
+      "hand_lines": 22,
+      "source_successor_slots": [
+        "800d69e8",
+        "800d6ae0"
+      ]
+    },
+    {
+      "entry_pc": "800d6a00",
+      "adapter_source": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a00.v",
+      "adapter_sha256": "a336997bcc57b34c0ffff60476b5cd35823df8efc13b4ee7d5b38bca2719bd10",
+      "native_source": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a00.v",
+      "native_source_sha256": "1bd70384f6a5c0da5e568c44784ee09ecf257698363460f0ec08e8ae2513fbdf",
+      "native_lemma": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a00.DesignedBoundary_800d6a00",
+      "hand_lines": 22,
+      "source_successor_slots": [
+        "800d6a08",
+        "800d6a64"
+      ]
+    },
+    {
+      "entry_pc": "800d6a14",
+      "adapter_source": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a14.v",
+      "adapter_sha256": "5309e24ce05ee638833cded4dc4bf515e0a3fa1361d5e4cd69de3f4a61a873ee",
+      "native_source": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a14.v",
+      "native_source_sha256": "70ea8da3ab43b2599ceded151460709de0c4bfc8777f246038759835507d41ee",
+      "native_lemma": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a14.DesignedBoundary_800d6a14",
+      "hand_lines": 15,
+      "source_successor_slots": [
+        "800d6a24"
+      ]
+    },
+    {
+      "entry_pc": "800d6a64",
+      "adapter_source": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a64.v",
+      "adapter_sha256": "d6c86e4904b2f3da31692e0211c051fb9febaa8ef07bfa2e217a4f8fd9ed8a7a",
+      "native_source": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a64.v",
+      "native_source_sha256": "38bffe264f180524e77970f58fa0a5cef6ff76edeeb2a9580a064d1bdc089aaa",
+      "native_lemma": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a64.DesignedBoundary_800d6a64",
+      "hand_lines": 22,
+      "source_successor_slots": [
+        "800d6a6c",
+        "800d6aa8"
+      ]
+    },
+    {
+      "entry_pc": "800d6a6c",
+      "adapter_source": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a6c.v",
+      "adapter_sha256": "f9b7608e2c3d05d9da2a22d93afcd20e2aed7edd768b69b201e59c2e9a4085e3",
+      "native_source": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a6c.v",
+      "native_source_sha256": "0363317d8a4cb2b61cecea5967f9d38222ddcc3a0b372eecac57bb72244fbf27",
+      "native_lemma": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a6c.DesignedBoundary_800d6a6c",
+      "hand_lines": 22,
+      "source_successor_slots": [
+        "800d6a78",
+        "800d6ae0"
+      ]
+    },
+    {
+      "entry_pc": "800d6ab4",
+      "adapter_source": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ab4.v",
+      "adapter_sha256": "d8e6c6ce740268bb69ca66195e61dabc2d14ceda3f707e8408150d4217a6eddb",
+      "native_source": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6ab4.v",
+      "native_source_sha256": "656fd312196618cf0c55a52aa0258d6eb923ddd15a699d18f83d2a967a5f89ed",
+      "native_lemma": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6ab4.DesignedBoundary_800d6ab4",
+      "hand_lines": 15,
+      "source_successor_slots": [
+        "800d6ac4"
+      ]
+    }
+  ],
+  "proof_status": "dependencies refreshed; MCP opportunity awaits coordination",
+  "admission_failures": [
+    {
+      "log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261009-113722-spec-a-s90-i55-dependencies.log",
+      "sha256": "8611dcc9aeb4973e9d4fb8544b4a66746384815393d72f08eb95a5f75b36980c",
+      "cause": "gate lock refused compiler confirmation",
+      "proof_failure": false
+    },
+    {
+      "log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261009-113825-spec-a-s90-i55-dependencies-locked.log",
+      "sha256": "dcb27608a51f304ff29049b71ac5add5bc955d12c6299ec1891369b6d103e968",
+      "cause": "locked wrapper refused lock acquisition",
+      "proof_failure": false
+    },
+    {
+      "log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261009-113933-spec-a-s90-i55-dependencies-admitted.log",
+      "sha256": "2d04247b221566335fcd9b7d3532e66caa19e9e9f010536add16400162506411",
+      "cause": "locked wrapper refused: Infra i55-cache holds gate lock",
+      "proof_failure": false
+    }
+  ],
+  "pet": {
+    "pid": 3748334,
+    "status": "zombie",
+    "rss_kib": 0,
+    "active_owned_session": false
+  },
+  "dependency_refresh": {
+    "log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261009-114046-spec-a-s90-i55-dependencies-reserved.log",
+    "sha256": "e4d70c9299e8124f65c45ff73a3edf1bcc7fa7ce3dc9702372ad52a16c37bd11",
+    "exit_code": 0,
+    "duration_seconds": 81,
+    "build_directory": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/agents/spec-a",
+    "workers": 6
+  }
+}

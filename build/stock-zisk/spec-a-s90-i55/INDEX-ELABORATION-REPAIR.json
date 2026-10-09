@@ -1,0 +1,63 @@
+{
+  "statement_changed": false,
+  "table_changed": false,
+  "changes": [
+    {
+      "file": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69a4.v",
+      "before_sha256": "a422759745753d55ed46270f953241abb02f5d1eac108118747477af5d1df330",
+      "after_sha256": "da7a9628323e5416ea435a684d4bae00998afe222106f34bbd13a0554aef4dee",
+      "literal_changes": 2,
+      "diff": "--- ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69a4.v\n+++ ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69a4.v\n@@ -20,10 +20,10 @@\n   iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n   iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d69b0 decodeItemState800d69b0\n     with \"Htable\") as \"#Hslot800d69b0\".\n-  { by apply elem_of_list_lookup_2 with 5. }\n+  { by apply elem_of_list_lookup_2 with 5%nat. }\n   iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d69d8 decodeItemState800d69d8\n     with \"Htable\") as \"#Hslot800d69d8\".\n-  { by apply elem_of_list_lookup_2 with 6. }\n+  { by apply elem_of_list_lookup_2 with 6%nat. }\n   iPoseProof (Block800d69a4.DesignedBoundary_800d69a4 args frameBytes x13 inputPrefix rest with \"[] [] Hcode\") as \"Hnative\".\n   { iApply (instr_pre_wand with \"Hslot800d69b0 []\"); [done|done|].\n     iIntros \"(%successor_locals & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n"
+    },
+    {
+      "file": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69d8.v",
+      "before_sha256": "cc72dfd71c93cb3cc5eb680b44bab275c8843f0689fdc00ab0a0b4c666dd21a8",
+      "after_sha256": "815b205697357d1d2cf6f9f1a5dfa1d423071a42b1e8f06a4ac65d2794a06472",
+      "literal_changes": 2,
+      "diff": "--- ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69d8.v\n+++ ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69d8.v\n@@ -20,10 +20,10 @@\n   iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n   iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d69e0 decodeItemState800d69e0\n     with \"Htable\") as \"#Hslot800d69e0\".\n-  { by apply elem_of_list_lookup_2 with 7. }\n+  { by apply elem_of_list_lookup_2 with 7%nat. }\n   iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6a00 decodeItemState800d6a00\n     with \"Htable\") as \"#Hslot800d6a00\".\n-  { by apply elem_of_list_lookup_2 with 9. }\n+  { by apply elem_of_list_lookup_2 with 9%nat. }\n   iPoseProof (Block800d69d8.DesignedBoundary_800d69d8 args frameBytes x13 inputPrefix rest with \"[] [] Hcode\") as \"Hnative\".\n   { iApply (instr_pre_wand with \"Hslot800d69e0 []\"); [done|done|].\n     iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n"
+    },
+    {
+      "file": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69e0.v",
+      "before_sha256": "ac3012071686aa3e850e83ff8c15c72252e0ef97665821918bb0f119cff76817",
+      "after_sha256": "a5349ac9363e09d4ed715db020e6a58c527fac83b5434187f92d897df91e88ec",
+      "literal_changes": 2,
+      "diff": "--- ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69e0.v\n+++ ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69e0.v\n@@ -20,10 +20,10 @@\n   iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n   iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d69e8 decodeItemState800d69e8\n     with \"Htable\") as \"#Hslot800d69e8\".\n-  { by apply elem_of_list_lookup_2 with 8. }\n+  { by apply elem_of_list_lookup_2 with 8%nat. }\n   iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6ae0 decodeItemState800d6ae0\n     with \"Htable\") as \"#Hslot800d6ae0\".\n-  { by apply elem_of_list_lookup_2 with 22. }\n+  { by apply elem_of_list_lookup_2 with 22%nat. }\n   iPoseProof (Block800d69e0.DesignedBoundary_800d69e0 args frameBytes x13 inputPrefix rest with \"[] [] Hcode\") as \"Hnative\".\n   { iApply (instr_pre_wand with \"Hslot800d69e8 []\"); [done|done|].\n     iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n"
+    },
+    {
+      "file": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a00.v",
+      "before_sha256": "a336997bcc57b34c0ffff60476b5cd35823df8efc13b4ee7d5b38bca2719bd10",
+      "after_sha256": "ad0dc1010cd42c9fa5511979918d85f200331c3e8bdb6af7db7df691e851e8ab",
+      "literal_changes": 2,
+      "diff": "--- ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a00.v\n+++ ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a00.v\n@@ -20,10 +20,10 @@\n   iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n   iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6a08 decodeItemState800d6a08\n     with \"Htable\") as \"#Hslot800d6a08\".\n-  { by apply elem_of_list_lookup_2 with 10. }\n+  { by apply elem_of_list_lookup_2 with 10%nat. }\n   iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6a64 decodeItemState800d6a64\n     with \"Htable\") as \"#Hslot800d6a64\".\n-  { by apply elem_of_list_lookup_2 with 15. }\n+  { by apply elem_of_list_lookup_2 with 15%nat. }\n   iPoseProof (Block800d6a00.DesignedBoundary_800d6a00 args frameBytes x13 inputPrefix rest with \"[] [] Hcode\") as \"Hnative\".\n   { iApply (instr_pre_wand with \"Hslot800d6a08 []\"); [done|done|].\n     iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n"
+    },
+    {
+      "file": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a14.v",
+      "before_sha256": "5309e24ce05ee638833cded4dc4bf515e0a3fa1361d5e4cd69de3f4a61a873ee",
+      "after_sha256": "cd322fbc4f75bcf343b8430101dedadd24306c1ae2d104002a57065e4860f128",
+      "literal_changes": 1,
+      "diff": "--- ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a14.v\n+++ ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a14.v\n@@ -20,7 +20,7 @@\n   iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n   iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6a24 decodeItemState800d6a24\n     with \"Htable\") as \"#Hslot800d6a24\".\n-  { by apply elem_of_list_lookup_2 with 12. }\n+  { by apply elem_of_list_lookup_2 with 12%nat. }\n   iPoseProof (Block800d6a14.DesignedBoundary_800d6a14 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded inputPrefix rest with \"[] Hcode\") as \"Hnative\".\n   { iApply (instr_pre_wand with \"Hslot800d6a24 []\"); [done|done|].\n     iIntros \"(%successor_inputPrefix & %successor_rest & Hsuccessor)\".\n"
+    },
+    {
+      "file": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a64.v",
+      "before_sha256": "d6c86e4904b2f3da31692e0211c051fb9febaa8ef07bfa2e217a4f8fd9ed8a7a",
+      "after_sha256": "404176ccb22de956828dab52a6b6f32892773dad0a49b1f146c0effb1513886c",
+      "literal_changes": 2,
+      "diff": "--- ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a64.v\n+++ ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a64.v\n@@ -20,10 +20,10 @@\n   iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n   iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6a6c decodeItemState800d6a6c\n     with \"Htable\") as \"#Hslot800d6a6c\".\n-  { by apply elem_of_list_lookup_2 with 16. }\n+  { by apply elem_of_list_lookup_2 with 16%nat. }\n   iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6aa8 decodeItemState800d6aa8\n     with \"Htable\") as \"#Hslot800d6aa8\".\n-  { by apply elem_of_list_lookup_2 with 18. }\n+  { by apply elem_of_list_lookup_2 with 18%nat. }\n   iPoseProof (Block800d6a64.DesignedBoundary_800d6a64 args frameBytes x13 inputPrefix rest with \"[] [] Hcode\") as \"Hnative\".\n   { iApply (instr_pre_wand with \"Hslot800d6a6c []\"); [done|done|].\n     iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n"
+    },
+    {
+      "file": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a6c.v",
+      "before_sha256": "f9b7608e2c3d05d9da2a22d93afcd20e2aed7edd768b69b201e59c2e9a4085e3",
+      "after_sha256": "f4c3c6687dc0dc40f5cf4d9e9edeea88eaf4adb36d3a0014c9c323c24511831f",
+      "literal_changes": 2,
+      "diff": "--- ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a6c.v\n+++ ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a6c.v\n@@ -20,10 +20,10 @@\n   iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n   iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6a78 decodeItemState800d6a78\n     with \"Htable\") as \"#Hslot800d6a78\".\n-  { by apply elem_of_list_lookup_2 with 17. }\n+  { by apply elem_of_list_lookup_2 with 17%nat. }\n   iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6ae0 decodeItemState800d6ae0\n     with \"Htable\") as \"#Hslot800d6ae0\".\n-  { by apply elem_of_list_lookup_2 with 22. }\n+  { by apply elem_of_list_lookup_2 with 22%nat. }\n   iPoseProof (Block800d6a6c.DesignedBoundary_800d6a6c args frameBytes x13 inputPrefix rest with \"[] [] Hcode\") as \"Hnative\".\n   { iApply (instr_pre_wand with \"Hslot800d6a78 []\"); [done|done|].\n     iIntros \"(%successor_locals & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n"
+    },
+    {
+      "file": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ab4.v",
+      "before_sha256": "d8e6c6ce740268bb69ca66195e61dabc2d14ceda3f707e8408150d4217a6eddb",
+      "after_sha256": "dc74ce6ff301baef609b49ceeb6c54dc93a6ba8236fad05510a5caa0e9e509a5",
+      "literal_changes": 1,
+      "diff": "--- ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ab4.v\n+++ ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ab4.v\n@@ -20,7 +20,7 @@\n   iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n   iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6ac4 decodeItemState800d6ac4\n     with \"Htable\") as \"#Hslot800d6ac4\".\n-  { by apply elem_of_list_lookup_2 with 20. }\n+  { by apply elem_of_list_lookup_2 with 20%nat. }\n   iPoseProof (Block800d6ab4.DesignedBoundary_800d6ab4 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded inputPrefix rest with \"[] Hcode\") as \"Hnative\".\n   { iApply (instr_pre_wand with \"Hslot800d6ac4 []\"); [done|done|].\n     iIntros \"(%successor_inputPrefix & %successor_rest & Hsuccessor)\".\n"
+    }
+  ],
+  "total_literal_changes": 14
+}
