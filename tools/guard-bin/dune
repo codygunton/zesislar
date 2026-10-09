@@ -1,4 +1,4 @@
 (rule
  (target coqc)
- (deps ../dune_coqc_guarded.sh ../resource_guard.sh)
+ (deps ../dune_coqc_guarded.sh ../resource_guard.sh ../coqc_findlib.py)
  (action (copy %{dep:../dune_coqc_guarded.sh} %{target})))
