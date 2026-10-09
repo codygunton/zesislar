@@ -1,0 +1,360 @@
+{
+  "task": "S90 first partial composition checkpoint",
+  "root": "e27025eb3a6917c99b4de6220ec56bf0e85e772c",
+  "parent_integration_base": "33b9a455",
+  "C_retirement_commit": "e119695bc6d5233f9391d775515fa6ae8fc77738",
+  "C_parent_integration": "3da3b204",
+  "source_bindings": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69a4.v",
+      "sha256": "ead429ecc82f743118975ba85bf5ea255cf62360a896410303ce24d1a3e1638b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69d8.v",
+      "sha256": "06a7520917a3cf93df54cb929e3fceb0ec03e08e6bb160c332add8a59b3515ac"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69e0.v",
+      "sha256": "c15a5b4c2c9bf647b2802b3ccb474bbb0cd11e928b10940e27933edc01f7c089"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a00.v",
+      "sha256": "61c84cc921983192c96fb5e8cdeed5d8eca0736256d9fb8044e0efdc785c4fc7"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a14.v",
+      "sha256": "73031f7cdbdca3d550376295e2fbf8d642f0a1da5203dd9abbcbe8cecffe7d1a"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a64.v",
+      "sha256": "e39c1716d7202646d585a496d076ab43cffe00cb2433ce706e6104b26e4331ea"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a6c.v",
+      "sha256": "5d206f5662264768e35a4de1382d1c62d4f615b25ee70b9e777655652004e69c"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ab4.v",
+      "sha256": "e304e73a373e251438895d93c28f351eedf7b6f5a8fe85293f527593a9877f70"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/ZesuSsz/Generated/DecodeItem/PromotedBodies.v",
+      "sha256": "6fe65273ce0c9987d668147138135fbecce779e462dfd0b91fe7552ba1ddaeab"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/ZesuSsz/Evidence/DecodeItemPromotedSlotFixtures.v",
+      "sha256": "7c64b5a4468c36817867791c0aa45a042610ccfa4dccffd4864e0084072bf1cf"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/tools/block/promote_table.py",
+      "sha256": "45612aa9522534ebdd75be7779c77c7b29e03d15127afa518335d376b8ff5323"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/tools/test_promote_table.py",
+      "sha256": "a7f8c36a4552a05d630263602309af7d6fc72186144421484e952b28bfbab1f6"
+    }
+  ],
+  "exact_statements": [
+    {
+      "pc": "0x800d69a4",
+      "statement": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 instr_body 0x800d69a4 decodeItemState800d69a4",
+      "lemma": "ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69a4.decodeItemSlotBody800d69a4"
+    },
+    {
+      "pc": "0x800d69d8",
+      "statement": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 instr_body 0x800d69d8 decodeItemState800d69d8",
+      "lemma": "ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69d8.decodeItemSlotBody800d69d8"
+    },
+    {
+      "pc": "0x800d69e0",
+      "statement": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 instr_body 0x800d69e0 decodeItemState800d69e0",
+      "lemma": "ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69e0.decodeItemSlotBody800d69e0"
+    },
+    {
+      "pc": "0x800d6a00",
+      "statement": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 instr_body 0x800d6a00 decodeItemState800d6a00",
+      "lemma": "ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a00.decodeItemSlotBody800d6a00"
+    },
+    {
+      "pc": "0x800d6a14",
+      "statement": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 instr_body 0x800d6a14 decodeItemState800d6a14",
+      "lemma": "ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a14.decodeItemSlotBody800d6a14"
+    },
+    {
+      "pc": "0x800d6a64",
+      "statement": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 instr_body 0x800d6a64 decodeItemState800d6a64",
+      "lemma": "ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a64.decodeItemSlotBody800d6a64"
+    },
+    {
+      "pc": "0x800d6a6c",
+      "statement": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 instr_body 0x800d6a6c decodeItemState800d6a6c",
+      "lemma": "ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a6c.decodeItemSlotBody800d6a6c"
+    },
+    {
+      "pc": "0x800d6ab4",
+      "statement": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 instr_body 0x800d6ab4 decodeItemState800d6ab4",
+      "lemma": "ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ab4.decodeItemSlotBody800d6ab4"
+    }
+  ],
+  "coverage": {
+    "proved_slots": 8,
+    "pending_slots": 16,
+    "proved_instructions": 22,
+    "pending_instructions": 94,
+    "root_bridge_excluded": true,
+    "pending_slot_addresses": [
+      "0x800d6960",
+      "0x800d6974",
+      "0x800d697c",
+      "0x800d698c",
+      "0x800d69b0",
+      "0x800d69e8",
+      "0x800d6a08",
+      "0x800d6a24",
+      "0x800d6a38",
+      "0x800d6a40",
+      "0x800d6a78",
+      "0x800d6aa8",
+      "0x800d6ac4",
+      "0x800d6ad8",
+      "0x800d6ae0",
+      "0x800d6b08"
+    ]
+  },
+  "preservation": {
+    "contract_changed": false,
+    "table_changed": false,
+    "selected_code_retained": true,
+    "source_witnesses": 8,
+    "successor_premises": 14,
+    "native_replay": false,
+    "kernel_export_or_object_relabeling": false,
+    "production_proof_scope": [
+      "Automation.All",
+      "Automation.Approved",
+      "Compliance.DecodeItemHints"
+    ]
+  },
+  "MCP": {
+    "health": true,
+    "start": true,
+    "step_multi": true,
+    "check": true,
+    "Qed": true,
+    "exact_adapter_audits": 8,
+    "verification_method": "module_m",
+    "assumptions": [],
+    "actual_final_groups_empty": true,
+    "rollback_checked": 8,
+    "standalone_compile_checks": 8,
+    "Pet_free_compiler_boundaries": 16,
+    "normal_owned_closures": 2,
+    "closed_Pet_rss_kib": 5987640,
+    "raw_calls": {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/RAW-CALLS.json",
+      "sha256": "91c6f689a0b30e86a74638738e16422e867af50fba7e6b17b9afaf99539b2aee"
+    },
+    "accepted_parent_review": {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-parent-result-review-003/REPORT.json",
+      "sha256": "e534cca47309ddcfe8fe39232ea250dd8de60c2df3b3d1111ef82a9db64528f2"
+    }
+  },
+  "supplemental_promotion_check": {
+    "theorem": "decodeItemPromotedSlot800d69a4_fixture",
+    "compile_success": true,
+    "verification_success": true,
+    "verification_method": "shared_defs",
+    "assumptions": [],
+    "actual_groups": "Unavailable; no export requested in this supplemental phase.",
+    "owned_fallback_Pet_closed": true,
+    "closed_Pet_rss_kib": 915592,
+    "controller_failed": "Controller required module_m; returned shared_defs.",
+    "tool_wall_seconds": 19.987318018916994,
+    "admission_wait_seconds_by_label": {
+      "standalone": 697.419835315086,
+      "rocq_compile_file:decodeItemPromotedSlot800d69a4_fixture": 6498.828452516114,
+      "rocq_verify:decodeItemPromotedSlot800d69a4_fixture": 0.171893369872123
+    },
+    "remaining_fixture_proof_basis": "Private Dune compiled all eight exact typed-reference fixtures and printed closed assumptions. Accepted adapter module_m certificates remain unchanged."
+  },
+  "generator": {
+    "real_generator": "tools/block/promote_table.py",
+    "repair": "Add Automation.BlockTable import to generated prelude.",
+    "focused_tests": 33,
+    "all_tests_passed": true,
+    "partial_coverage": {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/build/stock-zisk/spec-a-s90-i55/PARTIAL-TABLE.json",
+      "sha256": "07d40bba3bc0dc3358b32674455bf3d4505faed4bc6d67df6601b2841fa6e46e"
+    },
+    "promotions": {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/build/stock-zisk/spec-a-s90-i55/PROMOTIONS.json",
+      "sha256": "62d057af793bae9feeddd5265a443ba5e576f36b0d1734fef09ea5d4e8d95408"
+    },
+    "native_report": {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/build/stock-zisk/spec-a-s90-i55/NATIVE-REPORT.json",
+      "sha256": "b6431168b3ec9dfbe7a647502c36e27a9d36a29d90e2aff935ece3bc175eb6df"
+    }
+  },
+  "focused_Dune": {
+    "result": "pass",
+    "duration_seconds": 247,
+    "targets": [
+      "PromotedBodies.vo",
+      "DecodeItemPromotedSlotFixtures.vo"
+    ],
+    "assumptions": []
+  },
+  "metrics": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/build/stock-zisk/spec-a-s90-i55/METRICS.json",
+    "sha256": "98c70eec00f24f5369bc7cf7a45d375d206a8706244516635c771145e172f462"
+  },
+  "preserved_failures": [
+    {
+      "directory": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-001",
+      "artifacts": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-001/FAILURE.json",
+          "sha256": "0c920467174c37e9aba32acb95e99b4c76e37047bbe9d43e255eb77f4beeb886"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-001/RAW-CALLS.json",
+          "sha256": "f426f4b0ff5049ca6fa5db0a493188c78bf55dfae9378d0f92d442e674bd93de"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-001/SESSION-CLOSURE.json",
+          "sha256": "3174f4e17e49a902cdb14134d6a484a1580a8942e2c0c81a42454d89563cb262"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-001/calls.json",
+          "sha256": "e5414240ec909363c949f44ec1d772d4057710347ad27aee6cc5b6a5e05e0eca"
+        }
+      ]
+    },
+    {
+      "directory": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-002",
+      "artifacts": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-002/FAILURE.json",
+          "sha256": "0c920467174c37e9aba32acb95e99b4c76e37047bbe9d43e255eb77f4beeb886"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-002/RAW-CALLS.json",
+          "sha256": "980d13f650da1043c525b02c135b24964373417b758836ee576709a8055316f3"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-002/SESSION-CLOSURE.json",
+          "sha256": "c78ffe2ed2853595009de1e47640378c3dacac3e499ca01a3c74fa71696c8765"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-002/calls.json",
+          "sha256": "f1d67b356e100825047e313dfac4d30717cee6c7e52e5615ce4cf6ee6198b96d"
+        }
+      ]
+    },
+    {
+      "directory": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-promotion-mcp-final-001",
+      "artifacts": []
+    },
+    {
+      "directory": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-promotion-mcp-final-002",
+      "artifacts": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-promotion-mcp-final-002/FAILURE.json",
+          "sha256": "aff22da63a52fdef6ebce051694137c0aa4a82169bccb56c8be67128aca4a8b0"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-promotion-mcp-final-002/RAW-CALLS.json",
+          "sha256": "0437e249974f971371f66a8e0be235a3487771d379a65c372113cdf240a8d947"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-promotion-mcp-final-002/SESSION-CLOSURE.json",
+          "sha256": "2749f511d0c9e54ad0a1af0318e3dfda586b98ead2a9b8da6167323f3f9da747"
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-promotion-mcp-final-002/calls.json",
+          "sha256": "1ceea6df98cda0d6f3ebd07d756a9257126e17a6c3cb5e73a5a22c5177916565"
+        }
+      ]
+    }
+  ],
+  "job_logs": [
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261009-113722-spec-a-s90-i55-dependencies.log",
+      "sha256": "8611dcc9aeb4973e9d4fb8544b4a66746384815393d72f08eb95a5f75b36980c"
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261009-113825-spec-a-s90-i55-dependencies-locked.log",
+      "sha256": "dcb27608a51f304ff29049b71ac5add5bc955d12c6299ec1891369b6d103e968"
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261009-113933-spec-a-s90-i55-dependencies-admitted.log",
+      "sha256": "2d04247b221566335fcd9b7d3532e66caa19e9e9f010536add16400162506411"
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261009-114046-spec-a-s90-i55-dependencies-reserved.log",
+      "sha256": "e4d70c9299e8124f65c45ff73a3edf1bcc7fa7ce3dc9702372ad52a16c37bd11"
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261009-121128-spec-a-s90-slot-production-build.log",
+      "sha256": "3b0ba820ca3551ef5af46220bef7ca1bcff07476abf9dd317a34dbce3b1bf596"
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261009-121152-spec-a-s90-slot-production-queued.log",
+      "sha256": "ca2c607509e4346dc350278a494a497085e72977de07b382b9e70b0e2f398bc5"
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261009-121417-spec-a-s90-promotion-prelude-fixed.log",
+      "sha256": "c2aabc89d3b28199e3f542a8a18fd499be3ee4dd566ffa498a3c63b4d5914732"
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261009-121938-spec-a-s90-promotion-final-mcp.log",
+      "sha256": "6de14f4885d94a3dcd270768e162b9912f1439eb0d7e4ad1b7dbad3a0ef66b1d"
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261009-121950-spec-a-s90-promotion-final-mcp-fixed.log",
+      "sha256": "c6a5528b97e06feeab9ce9ab719d2a664f8cb223924de78d97ae665191050774"
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261009-155203-spec-a-s90-final-check-fast.log",
+      "sha256": "9e68a105408bfc03e1d607dd25e50ce238c854f74cd69a6578e5abe8a9730620"
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261009-114759-spec-a-s90-eight-slot-mcp001.log",
+      "sha256": "a2354016663e8b1e2b3addc82f8bc42decc90f8ae8aa2622e6768630be98007c"
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261009-120247-spec-a-s90-eight-slot-mcp002.log",
+      "sha256": "39a9c24b7cd964b7ca74d7b76bbc2657dd2aebf5acdaab732aaabfbfc689b62a"
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261009-120646-spec-a-s90-eight-slot-mcp003.log",
+      "sha256": "ea7d07775c55167101ed33796ba6e1b973c2062bcd5a0c664f496fb166f16fd4"
+    }
+  ],
+  "child_gate": {
+    "status": "pass",
+    "exit_code": 0,
+    "duration_seconds": 810,
+    "workers": 6,
+    "label": "spec-a-s90-final-check-fast",
+    "log": {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-1-20261009-155203-spec-a-s90-final-check-fast.log",
+      "sha256": "9e68a105408bfc03e1d607dd25e50ce238c854f74cd69a6578e5abe8a9730620"
+    },
+    "peak_memory": "Not measured for this gate.",
+    "command": "make FAST_JOBS=6 CHECK_AGENT=spec-a AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker1-spec-a/_build/agents/spec-a check-fast"
+  },
+  "parent_gate": {
+    "check_iris": "Required after parent integration; pending."
+  },
+  "limitations": [
+    "Eight partial table-body slots only.",
+    "Sixteen slots remain open.",
+    "No full Level 1 theorem or termination proof.",
+    "No native hint-consumption claim."
+  ],
+  "queue": [
+    "Parent combines C retirement and runs check-fast/check-iris."
+  ],
+  "worker_queue": "Empty after this reviewed composition checkpoint; parent gates remain pending."
+}

@@ -14,9 +14,11 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def tracked_rocq_files(root: Path) -> dict[str, str]:
     names = subprocess.check_output(
-        ["git", "ls-files", "*.v"], cwd=root, text=True
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard",
+         "*.v"], cwd=root, text=True
     ).splitlines()
-    return {name: (root / name).read_text() for name in names}
+    return {name: (root / name).read_text() for name in set(names)
+            if (root / name).is_file()}
 
 
 def is_new_style(name: str, text: str) -> bool:

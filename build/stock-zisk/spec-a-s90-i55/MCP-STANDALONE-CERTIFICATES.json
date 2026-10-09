@@ -1,0 +1,850 @@
+[
+  {
+    "fixture": {
+      "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/Adapter800d69a4.v",
+      "name": "decodeItemSlotBody800d69a4",
+      "proof_body": "  iIntros \"#Htable\".\n  rewrite instr_pre'_eq /instr_pre'_def /=.\n  iIntros \"(%args & %frameBytes & %x13 & %inputPrefix & %rest & Hentry)\".\n  iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d69b0 decodeItemState800d69b0\n    with \"Htable\") as \"#Hslot800d69b0\".\n  { by apply elem_of_list_lookup_2 with 5%nat. }\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d69d8 decodeItemState800d69d8\n    with \"Htable\") as \"#Hslot800d69d8\".\n  { by apply elem_of_list_lookup_2 with 6%nat. }\n  iPoseProof (Block800d69a4.DesignedBoundary_800d69a4 args frameBytes x13 inputPrefix rest with \"[] [] Hcode\") as \"Hnative\".\n  { iApply (instr_pre_wand with \"Hslot800d69b0 []\"); [done|done|].\n    iIntros \"(%successor_locals & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_locals, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  { iApply (instr_pre_wand with \"Hslot800d69d8 []\"); [done|done|].\n    iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_frameBytes, successor_x13, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n  iApply (\"Hnative\" with \"[Hentry]\").\n  rewrite /Block800d69a4.DesignedEntry_800d69a4.\n  iFrame."
+    },
+    "tool": "rocq_compile_file",
+    "result": {
+      "success": true,
+      "output": "Closed under the global context",
+      "timing": {
+        "total_sentences": 45,
+        "top_slowest": [
+          {
+            "line": 41,
+            "characters": [
+              2142,
+              2187
+            ],
+            "name": "Print~Assumptions~decodeItemSl...",
+            "duration_seconds": 1.132
+          },
+          {
+            "line": 1,
+            "characters": [
+              0,
+              38
+            ],
+            "name": "Require~Import~ZesuSsz.Automat...",
+            "duration_seconds": 0.455
+          },
+          {
+            "line": 40,
+            "characters": [
+              2137,
+              2141
+            ],
+            "name": "Qed.",
+            "duration_seconds": 0.116
+          },
+          {
+            "line": 37,
+            "characters": [
+              2042,
+              2077
+            ],
+            "name": "iApply~(\"Hnative\"~with~\"[Hentr...",
+            "duration_seconds": 0.107
+          },
+          {
+            "line": 4,
+            "characters": [
+              134,
+              170
+            ],
+            "name": "Require~Import~isla.riscv64.ri...",
+            "duration_seconds": 0.083
+          }
+        ],
+        "last_completed": {
+          "line": 41,
+          "characters": [
+            2142,
+            2187
+          ],
+          "name": "Print~Assumptions~decodeItemSl...",
+          "duration_seconds": 1.132
+        }
+      }
+    },
+    "Pet_absent_before_request": true,
+    "global_inventory_before_request": {
+      "used_gib": 114.51636505126953,
+      "available_gib": 136.66323471069336,
+      "scope_interpreter_limit": 2,
+      "compilers": [],
+      "gate_status": "no gate lock",
+      "normal_guard_hold": "none",
+      "reserved_first_slot": "A"
+    },
+    "global_Pet_absence_verified": true
+  },
+  {
+    "fixture": {
+      "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/Adapter800d69a4.v",
+      "name": "decodeItemSlotBody800d69a4",
+      "proof_body": "  iIntros \"#Htable\".\n  rewrite instr_pre'_eq /instr_pre'_def /=.\n  iIntros \"(%args & %frameBytes & %x13 & %inputPrefix & %rest & Hentry)\".\n  iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d69b0 decodeItemState800d69b0\n    with \"Htable\") as \"#Hslot800d69b0\".\n  { by apply elem_of_list_lookup_2 with 5%nat. }\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d69d8 decodeItemState800d69d8\n    with \"Htable\") as \"#Hslot800d69d8\".\n  { by apply elem_of_list_lookup_2 with 6%nat. }\n  iPoseProof (Block800d69a4.DesignedBoundary_800d69a4 args frameBytes x13 inputPrefix rest with \"[] [] Hcode\") as \"Hnative\".\n  { iApply (instr_pre_wand with \"Hslot800d69b0 []\"); [done|done|].\n    iIntros \"(%successor_locals & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_locals, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  { iApply (instr_pre_wand with \"Hslot800d69d8 []\"); [done|done|].\n    iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_frameBytes, successor_x13, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n  iApply (\"Hnative\" with \"[Hentry]\").\n  rewrite /Block800d69a4.DesignedEntry_800d69a4.\n  iFrame."
+    },
+    "tool": "rocq_verify",
+    "result": {
+      "success": true,
+      "verification_method": "module_m",
+      "assumptions": []
+    },
+    "Pet_absent_before_request": true,
+    "global_inventory_before_request": {
+      "used_gib": 114.54477310180664,
+      "available_gib": 136.63482666015625,
+      "scope_interpreter_limit": 2,
+      "compilers": [],
+      "gate_status": "no gate lock",
+      "normal_guard_hold": "none",
+      "reserved_first_slot": "A"
+    },
+    "global_Pet_absence_verified": true
+  },
+  {
+    "fixture": {
+      "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/Adapter800d69d8.v",
+      "name": "decodeItemSlotBody800d69d8",
+      "proof_body": "  iIntros \"#Htable\".\n  rewrite instr_pre'_eq /instr_pre'_def /=.\n  iIntros \"(%args & %frameBytes & %x13 & %inputPrefix & %rest & Hentry)\".\n  iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d69e0 decodeItemState800d69e0\n    with \"Htable\") as \"#Hslot800d69e0\".\n  { by apply elem_of_list_lookup_2 with 7%nat. }\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6a00 decodeItemState800d6a00\n    with \"Htable\") as \"#Hslot800d6a00\".\n  { by apply elem_of_list_lookup_2 with 9%nat. }\n  iPoseProof (Block800d69d8.DesignedBoundary_800d69d8 args frameBytes x13 inputPrefix rest with \"[] [] Hcode\") as \"Hnative\".\n  { iApply (instr_pre_wand with \"Hslot800d69e0 []\"); [done|done|].\n    iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_frameBytes, successor_x13, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  { iApply (instr_pre_wand with \"Hslot800d6a00 []\"); [done|done|].\n    iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_frameBytes, successor_x13, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n  iApply (\"Hnative\" with \"[Hentry]\").\n  rewrite /Block800d69d8.DesignedEntry_800d69d8.\n  iFrame."
+    },
+    "tool": "rocq_compile_file",
+    "result": {
+      "success": true,
+      "output": "Closed under the global context",
+      "timing": {
+        "total_sentences": 45,
+        "top_slowest": [
+          {
+            "line": 41,
+            "characters": [
+              2182,
+              2227
+            ],
+            "name": "Print~Assumptions~decodeItemSl...",
+            "duration_seconds": 1.131
+          },
+          {
+            "line": 1,
+            "characters": [
+              0,
+              38
+            ],
+            "name": "Require~Import~ZesuSsz.Automat...",
+            "duration_seconds": 0.453
+          },
+          {
+            "line": 40,
+            "characters": [
+              2177,
+              2181
+            ],
+            "name": "Qed.",
+            "duration_seconds": 0.124
+          },
+          {
+            "line": 33,
+            "characters": [
+              1786,
+              1893
+            ],
+            "name": "iIntros~~\"(%successor_frameByt...",
+            "duration_seconds": 0.122
+          },
+          {
+            "line": 4,
+            "characters": [
+              134,
+              170
+            ],
+            "name": "Require~Import~isla.riscv64.ri...",
+            "duration_seconds": 0.083
+          }
+        ],
+        "last_completed": {
+          "line": 41,
+          "characters": [
+            2182,
+            2227
+          ],
+          "name": "Print~Assumptions~decodeItemSl...",
+          "duration_seconds": 1.131
+        }
+      }
+    },
+    "Pet_absent_before_request": true,
+    "global_inventory_before_request": {
+      "used_gib": 114.64480209350586,
+      "available_gib": 136.53479766845703,
+      "scope_interpreter_limit": 2,
+      "compilers": [],
+      "gate_status": "no gate lock",
+      "normal_guard_hold": "none",
+      "reserved_first_slot": "A"
+    },
+    "global_Pet_absence_verified": true
+  },
+  {
+    "fixture": {
+      "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/Adapter800d69d8.v",
+      "name": "decodeItemSlotBody800d69d8",
+      "proof_body": "  iIntros \"#Htable\".\n  rewrite instr_pre'_eq /instr_pre'_def /=.\n  iIntros \"(%args & %frameBytes & %x13 & %inputPrefix & %rest & Hentry)\".\n  iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d69e0 decodeItemState800d69e0\n    with \"Htable\") as \"#Hslot800d69e0\".\n  { by apply elem_of_list_lookup_2 with 7%nat. }\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6a00 decodeItemState800d6a00\n    with \"Htable\") as \"#Hslot800d6a00\".\n  { by apply elem_of_list_lookup_2 with 9%nat. }\n  iPoseProof (Block800d69d8.DesignedBoundary_800d69d8 args frameBytes x13 inputPrefix rest with \"[] [] Hcode\") as \"Hnative\".\n  { iApply (instr_pre_wand with \"Hslot800d69e0 []\"); [done|done|].\n    iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_frameBytes, successor_x13, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  { iApply (instr_pre_wand with \"Hslot800d6a00 []\"); [done|done|].\n    iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_frameBytes, successor_x13, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n  iApply (\"Hnative\" with \"[Hentry]\").\n  rewrite /Block800d69d8.DesignedEntry_800d69d8.\n  iFrame."
+    },
+    "tool": "rocq_verify",
+    "result": {
+      "success": true,
+      "verification_method": "module_m",
+      "assumptions": []
+    },
+    "Pet_absent_before_request": true,
+    "global_inventory_before_request": {
+      "used_gib": 114.7250747680664,
+      "available_gib": 136.45452499389648,
+      "scope_interpreter_limit": 2,
+      "compilers": [],
+      "gate_status": "no gate lock",
+      "normal_guard_hold": "none",
+      "reserved_first_slot": "A"
+    },
+    "global_Pet_absence_verified": true
+  },
+  {
+    "fixture": {
+      "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/Adapter800d69e0.v",
+      "name": "decodeItemSlotBody800d69e0",
+      "proof_body": "  iIntros \"#Htable\".\n  rewrite instr_pre'_eq /instr_pre'_def /=.\n  iIntros \"(%args & %frameBytes & %x13 & %inputPrefix & %rest & Hentry)\".\n  iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d69e8 decodeItemState800d69e8\n    with \"Htable\") as \"#Hslot800d69e8\".\n  { by apply elem_of_list_lookup_2 with 8%nat. }\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6ae0 decodeItemState800d6ae0\n    with \"Htable\") as \"#Hslot800d6ae0\".\n  { by apply elem_of_list_lookup_2 with 22%nat. }\n  iPoseProof (Block800d69e0.DesignedBoundary_800d69e0 args frameBytes x13 inputPrefix rest with \"[] [] Hcode\") as \"Hnative\".\n  { iApply (instr_pre_wand with \"Hslot800d69e8 []\"); [done|done|].\n    iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_frameBytes, successor_x13, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  { iApply (instr_pre_wand with \"Hslot800d6ae0 []\"); [done|done|].\n    iIntros \"(%successor_locals & Hsuccessor)\".\n    iExists args, successor_locals.\n    iExact \"Hsuccessor\". }\n  iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n  iApply (\"Hnative\" with \"[Hentry]\").\n  rewrite /Block800d69e0.DesignedEntry_800d69e0.\n  iFrame."
+    },
+    "tool": "rocq_compile_file",
+    "result": {
+      "success": true,
+      "output": "Closed under the global context",
+      "timing": {
+        "total_sentences": 45,
+        "top_slowest": [
+          {
+            "line": 41,
+            "characters": [
+              2061,
+              2106
+            ],
+            "name": "Print~Assumptions~decodeItemSl...",
+            "duration_seconds": 1.147
+          },
+          {
+            "line": 1,
+            "characters": [
+              0,
+              38
+            ],
+            "name": "Require~Import~ZesuSsz.Automat...",
+            "duration_seconds": 0.46
+          },
+          {
+            "line": 40,
+            "characters": [
+              2056,
+              2060
+            ],
+            "name": "Qed.",
+            "duration_seconds": 0.166
+          },
+          {
+            "line": 4,
+            "characters": [
+              134,
+              170
+            ],
+            "name": "Require~Import~isla.riscv64.ri...",
+            "duration_seconds": 0.084
+          },
+          {
+            "line": 29,
+            "characters": [
+              1487,
+              1594
+            ],
+            "name": "iIntros~~\"(%successor_frameByt...",
+            "duration_seconds": 0.04
+          }
+        ],
+        "last_completed": {
+          "line": 41,
+          "characters": [
+            2061,
+            2106
+          ],
+          "name": "Print~Assumptions~decodeItemSl...",
+          "duration_seconds": 1.147
+        }
+      }
+    },
+    "Pet_absent_before_request": true,
+    "global_inventory_before_request": {
+      "used_gib": 114.50468444824219,
+      "available_gib": 136.6749153137207,
+      "scope_interpreter_limit": 2,
+      "compilers": [],
+      "gate_status": "no gate lock",
+      "normal_guard_hold": "none",
+      "reserved_first_slot": "A"
+    },
+    "global_Pet_absence_verified": true
+  },
+  {
+    "fixture": {
+      "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/Adapter800d69e0.v",
+      "name": "decodeItemSlotBody800d69e0",
+      "proof_body": "  iIntros \"#Htable\".\n  rewrite instr_pre'_eq /instr_pre'_def /=.\n  iIntros \"(%args & %frameBytes & %x13 & %inputPrefix & %rest & Hentry)\".\n  iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d69e8 decodeItemState800d69e8\n    with \"Htable\") as \"#Hslot800d69e8\".\n  { by apply elem_of_list_lookup_2 with 8%nat. }\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6ae0 decodeItemState800d6ae0\n    with \"Htable\") as \"#Hslot800d6ae0\".\n  { by apply elem_of_list_lookup_2 with 22%nat. }\n  iPoseProof (Block800d69e0.DesignedBoundary_800d69e0 args frameBytes x13 inputPrefix rest with \"[] [] Hcode\") as \"Hnative\".\n  { iApply (instr_pre_wand with \"Hslot800d69e8 []\"); [done|done|].\n    iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_frameBytes, successor_x13, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  { iApply (instr_pre_wand with \"Hslot800d6ae0 []\"); [done|done|].\n    iIntros \"(%successor_locals & Hsuccessor)\".\n    iExists args, successor_locals.\n    iExact \"Hsuccessor\". }\n  iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n  iApply (\"Hnative\" with \"[Hentry]\").\n  rewrite /Block800d69e0.DesignedEntry_800d69e0.\n  iFrame."
+    },
+    "tool": "rocq_verify",
+    "result": {
+      "success": true,
+      "verification_method": "module_m",
+      "assumptions": []
+    },
+    "Pet_absent_before_request": true,
+    "global_inventory_before_request": {
+      "used_gib": 114.63654708862305,
+      "available_gib": 136.54305267333984,
+      "scope_interpreter_limit": 2,
+      "compilers": [],
+      "gate_status": "no gate lock",
+      "normal_guard_hold": "none",
+      "reserved_first_slot": "A"
+    },
+    "global_Pet_absence_verified": true
+  },
+  {
+    "fixture": {
+      "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/Adapter800d6a00.v",
+      "name": "decodeItemSlotBody800d6a00",
+      "proof_body": "  iIntros \"#Htable\".\n  rewrite instr_pre'_eq /instr_pre'_def /=.\n  iIntros \"(%args & %frameBytes & %x13 & %inputPrefix & %rest & Hentry)\".\n  iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6a08 decodeItemState800d6a08\n    with \"Htable\") as \"#Hslot800d6a08\".\n  { by apply elem_of_list_lookup_2 with 10%nat. }\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6a64 decodeItemState800d6a64\n    with \"Htable\") as \"#Hslot800d6a64\".\n  { by apply elem_of_list_lookup_2 with 15%nat. }\n  iPoseProof (Block800d6a00.DesignedBoundary_800d6a00 args frameBytes x13 inputPrefix rest with \"[] [] Hcode\") as \"Hnative\".\n  { iApply (instr_pre_wand with \"Hslot800d6a08 []\"); [done|done|].\n    iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_frameBytes, successor_x13, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  { iApply (instr_pre_wand with \"Hslot800d6a64 []\"); [done|done|].\n    iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_frameBytes, successor_x13, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n  iApply (\"Hnative\" with \"[Hentry]\").\n  rewrite /Block800d6a00.DesignedEntry_800d6a00.\n  iFrame."
+    },
+    "tool": "rocq_compile_file",
+    "result": {
+      "success": true,
+      "output": "Closed under the global context",
+      "timing": {
+        "total_sentences": 45,
+        "top_slowest": [
+          {
+            "line": 41,
+            "characters": [
+              2184,
+              2229
+            ],
+            "name": "Print~Assumptions~decodeItemSl...",
+            "duration_seconds": 1.141
+          },
+          {
+            "line": 1,
+            "characters": [
+              0,
+              38
+            ],
+            "name": "Require~Import~ZesuSsz.Automat...",
+            "duration_seconds": 0.458
+          },
+          {
+            "line": 40,
+            "characters": [
+              2179,
+              2183
+            ],
+            "name": "Qed.",
+            "duration_seconds": 0.125
+          },
+          {
+            "line": 33,
+            "characters": [
+              1788,
+              1895
+            ],
+            "name": "iIntros~~\"(%successor_frameByt...",
+            "duration_seconds": 0.124
+          },
+          {
+            "line": 4,
+            "characters": [
+              134,
+              170
+            ],
+            "name": "Require~Import~isla.riscv64.ri...",
+            "duration_seconds": 0.085
+          }
+        ],
+        "last_completed": {
+          "line": 41,
+          "characters": [
+            2184,
+            2229
+          ],
+          "name": "Print~Assumptions~decodeItemSl...",
+          "duration_seconds": 1.141
+        }
+      }
+    },
+    "Pet_absent_before_request": true,
+    "global_inventory_before_request": {
+      "used_gib": 114.52836227416992,
+      "available_gib": 136.65123748779297,
+      "scope_interpreter_limit": 2,
+      "compilers": [],
+      "gate_status": "no gate lock",
+      "normal_guard_hold": "none",
+      "reserved_first_slot": "A"
+    },
+    "global_Pet_absence_verified": true
+  },
+  {
+    "fixture": {
+      "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/Adapter800d6a00.v",
+      "name": "decodeItemSlotBody800d6a00",
+      "proof_body": "  iIntros \"#Htable\".\n  rewrite instr_pre'_eq /instr_pre'_def /=.\n  iIntros \"(%args & %frameBytes & %x13 & %inputPrefix & %rest & Hentry)\".\n  iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6a08 decodeItemState800d6a08\n    with \"Htable\") as \"#Hslot800d6a08\".\n  { by apply elem_of_list_lookup_2 with 10%nat. }\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6a64 decodeItemState800d6a64\n    with \"Htable\") as \"#Hslot800d6a64\".\n  { by apply elem_of_list_lookup_2 with 15%nat. }\n  iPoseProof (Block800d6a00.DesignedBoundary_800d6a00 args frameBytes x13 inputPrefix rest with \"[] [] Hcode\") as \"Hnative\".\n  { iApply (instr_pre_wand with \"Hslot800d6a08 []\"); [done|done|].\n    iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_frameBytes, successor_x13, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  { iApply (instr_pre_wand with \"Hslot800d6a64 []\"); [done|done|].\n    iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_frameBytes, successor_x13, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n  iApply (\"Hnative\" with \"[Hentry]\").\n  rewrite /Block800d6a00.DesignedEntry_800d6a00.\n  iFrame."
+    },
+    "tool": "rocq_verify",
+    "result": {
+      "success": true,
+      "verification_method": "module_m",
+      "assumptions": []
+    },
+    "Pet_absent_before_request": true,
+    "global_inventory_before_request": {
+      "used_gib": 114.70957565307617,
+      "available_gib": 136.47002410888672,
+      "scope_interpreter_limit": 2,
+      "compilers": [],
+      "gate_status": "no gate lock",
+      "normal_guard_hold": "none",
+      "reserved_first_slot": "A"
+    },
+    "global_Pet_absence_verified": true
+  },
+  {
+    "fixture": {
+      "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/Adapter800d6a14.v",
+      "name": "decodeItemSlotBody800d6a14",
+      "proof_body": "  iIntros \"#Htable\".\n  rewrite instr_pre'_eq /instr_pre'_def /=.\n  iIntros \"(%args & %n & %payloadStart & %lengthBytes & %frameBytes & %oldAcc & %oldCursor & %loaded & %inputPrefix & %rest & Hentry)\".\n  iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6a24 decodeItemState800d6a24\n    with \"Htable\") as \"#Hslot800d6a24\".\n  { by apply elem_of_list_lookup_2 with 12%nat. }\n  iPoseProof (Block800d6a14.DesignedBoundary_800d6a14 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded inputPrefix rest with \"[] Hcode\") as \"Hnative\".\n  { iApply (instr_pre_wand with \"Hslot800d6a24 []\"); [done|done|].\n    iIntros \"(%successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n  iApply (\"Hnative\" with \"[Hentry]\").\n  rewrite /Block800d6a14.DesignedEntry_800d6a14.\n  iFrame."
+    },
+    "tool": "rocq_compile_file",
+    "result": {
+      "success": true,
+      "output": "Closed under the global context",
+      "timing": {
+        "total_sentences": 35,
+        "top_slowest": [
+          {
+            "line": 34,
+            "characters": [
+              1729,
+              1774
+            ],
+            "name": "Print~Assumptions~decodeItemSl...",
+            "duration_seconds": 1.033
+          },
+          {
+            "line": 1,
+            "characters": [
+              0,
+              38
+            ],
+            "name": "Require~Import~ZesuSsz.Automat...",
+            "duration_seconds": 0.461
+          },
+          {
+            "line": 4,
+            "characters": [
+              134,
+              170
+            ],
+            "name": "Require~Import~isla.riscv64.ri...",
+            "duration_seconds": 0.085
+          },
+          {
+            "line": 19,
+            "characters": [
+              791,
+              924
+            ],
+            "name": "iIntros~~\"(%args~&~%n~&~%paylo...",
+            "duration_seconds": 0.05
+          },
+          {
+            "line": 33,
+            "characters": [
+              1724,
+              1728
+            ],
+            "name": "Qed.",
+            "duration_seconds": 0.04
+          }
+        ],
+        "last_completed": {
+          "line": 34,
+          "characters": [
+            1729,
+            1774
+          ],
+          "name": "Print~Assumptions~decodeItemSl...",
+          "duration_seconds": 1.033
+        }
+      }
+    },
+    "Pet_absent_before_request": true,
+    "global_inventory_before_request": {
+      "used_gib": 114.70015335083008,
+      "available_gib": 136.4794464111328,
+      "scope_interpreter_limit": 2,
+      "compilers": [],
+      "gate_status": "no gate lock",
+      "normal_guard_hold": "none",
+      "reserved_first_slot": "A"
+    },
+    "global_Pet_absence_verified": true
+  },
+  {
+    "fixture": {
+      "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/Adapter800d6a14.v",
+      "name": "decodeItemSlotBody800d6a14",
+      "proof_body": "  iIntros \"#Htable\".\n  rewrite instr_pre'_eq /instr_pre'_def /=.\n  iIntros \"(%args & %n & %payloadStart & %lengthBytes & %frameBytes & %oldAcc & %oldCursor & %loaded & %inputPrefix & %rest & Hentry)\".\n  iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6a24 decodeItemState800d6a24\n    with \"Htable\") as \"#Hslot800d6a24\".\n  { by apply elem_of_list_lookup_2 with 12%nat. }\n  iPoseProof (Block800d6a14.DesignedBoundary_800d6a14 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded inputPrefix rest with \"[] Hcode\") as \"Hnative\".\n  { iApply (instr_pre_wand with \"Hslot800d6a24 []\"); [done|done|].\n    iIntros \"(%successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n  iApply (\"Hnative\" with \"[Hentry]\").\n  rewrite /Block800d6a14.DesignedEntry_800d6a14.\n  iFrame."
+    },
+    "tool": "rocq_verify",
+    "result": {
+      "success": true,
+      "verification_method": "module_m",
+      "assumptions": []
+    },
+    "Pet_absent_before_request": true,
+    "global_inventory_before_request": {
+      "used_gib": 114.59573745727539,
+      "available_gib": 136.5838623046875,
+      "scope_interpreter_limit": 2,
+      "compilers": [],
+      "gate_status": "no gate lock",
+      "normal_guard_hold": "none",
+      "reserved_first_slot": "A"
+    },
+    "global_Pet_absence_verified": true
+  },
+  {
+    "fixture": {
+      "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/Adapter800d6a64.v",
+      "name": "decodeItemSlotBody800d6a64",
+      "proof_body": "  iIntros \"#Htable\".\n  rewrite instr_pre'_eq /instr_pre'_def /=.\n  iIntros \"(%args & %frameBytes & %x13 & %inputPrefix & %rest & Hentry)\".\n  iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6a6c decodeItemState800d6a6c\n    with \"Htable\") as \"#Hslot800d6a6c\".\n  { by apply elem_of_list_lookup_2 with 16%nat. }\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6aa8 decodeItemState800d6aa8\n    with \"Htable\") as \"#Hslot800d6aa8\".\n  { by apply elem_of_list_lookup_2 with 18%nat. }\n  iPoseProof (Block800d6a64.DesignedBoundary_800d6a64 args frameBytes x13 inputPrefix rest with \"[] [] Hcode\") as \"Hnative\".\n  { iApply (instr_pre_wand with \"Hslot800d6a6c []\"); [done|done|].\n    iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_frameBytes, successor_x13, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  { iApply (instr_pre_wand with \"Hslot800d6aa8 []\"); [done|done|].\n    iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_frameBytes, successor_x13, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n  iApply (\"Hnative\" with \"[Hentry]\").\n  rewrite /Block800d6a64.DesignedEntry_800d6a64.\n  iFrame."
+    },
+    "tool": "rocq_compile_file",
+    "result": {
+      "success": true,
+      "output": "Closed under the global context",
+      "timing": {
+        "total_sentences": 45,
+        "top_slowest": [
+          {
+            "line": 41,
+            "characters": [
+              2184,
+              2229
+            ],
+            "name": "Print~Assumptions~decodeItemSl...",
+            "duration_seconds": 1.159
+          },
+          {
+            "line": 1,
+            "characters": [
+              0,
+              38
+            ],
+            "name": "Require~Import~ZesuSsz.Automat...",
+            "duration_seconds": 0.458
+          },
+          {
+            "line": 40,
+            "characters": [
+              2179,
+              2183
+            ],
+            "name": "Qed.",
+            "duration_seconds": 0.127
+          },
+          {
+            "line": 33,
+            "characters": [
+              1788,
+              1895
+            ],
+            "name": "iIntros~~\"(%successor_frameByt...",
+            "duration_seconds": 0.124
+          },
+          {
+            "line": 4,
+            "characters": [
+              134,
+              170
+            ],
+            "name": "Require~Import~isla.riscv64.ri...",
+            "duration_seconds": 0.085
+          }
+        ],
+        "last_completed": {
+          "line": 41,
+          "characters": [
+            2184,
+            2229
+          ],
+          "name": "Print~Assumptions~decodeItemSl...",
+          "duration_seconds": 1.159
+        }
+      }
+    },
+    "Pet_absent_before_request": true,
+    "global_inventory_before_request": {
+      "used_gib": 114.78266906738281,
+      "available_gib": 136.39693069458008,
+      "scope_interpreter_limit": 2,
+      "compilers": [],
+      "gate_status": "no gate lock",
+      "normal_guard_hold": "none",
+      "reserved_first_slot": "A"
+    },
+    "global_Pet_absence_verified": true
+  },
+  {
+    "fixture": {
+      "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/Adapter800d6a64.v",
+      "name": "decodeItemSlotBody800d6a64",
+      "proof_body": "  iIntros \"#Htable\".\n  rewrite instr_pre'_eq /instr_pre'_def /=.\n  iIntros \"(%args & %frameBytes & %x13 & %inputPrefix & %rest & Hentry)\".\n  iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6a6c decodeItemState800d6a6c\n    with \"Htable\") as \"#Hslot800d6a6c\".\n  { by apply elem_of_list_lookup_2 with 16%nat. }\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6aa8 decodeItemState800d6aa8\n    with \"Htable\") as \"#Hslot800d6aa8\".\n  { by apply elem_of_list_lookup_2 with 18%nat. }\n  iPoseProof (Block800d6a64.DesignedBoundary_800d6a64 args frameBytes x13 inputPrefix rest with \"[] [] Hcode\") as \"Hnative\".\n  { iApply (instr_pre_wand with \"Hslot800d6a6c []\"); [done|done|].\n    iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_frameBytes, successor_x13, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  { iApply (instr_pre_wand with \"Hslot800d6aa8 []\"); [done|done|].\n    iIntros \"(%successor_frameBytes & %successor_x13 & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_frameBytes, successor_x13, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n  iApply (\"Hnative\" with \"[Hentry]\").\n  rewrite /Block800d6a64.DesignedEntry_800d6a64.\n  iFrame."
+    },
+    "tool": "rocq_verify",
+    "result": {
+      "success": true,
+      "verification_method": "module_m",
+      "assumptions": []
+    },
+    "Pet_absent_before_request": true,
+    "global_inventory_before_request": {
+      "used_gib": 114.78908920288086,
+      "available_gib": 136.39051055908203,
+      "scope_interpreter_limit": 2,
+      "compilers": [],
+      "gate_status": "no gate lock",
+      "normal_guard_hold": "none",
+      "reserved_first_slot": "A"
+    },
+    "global_Pet_absence_verified": true
+  },
+  {
+    "fixture": {
+      "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/Adapter800d6a6c.v",
+      "name": "decodeItemSlotBody800d6a6c",
+      "proof_body": "  iIntros \"#Htable\".\n  rewrite instr_pre'_eq /instr_pre'_def /=.\n  iIntros \"(%args & %frameBytes & %x13 & %inputPrefix & %rest & Hentry)\".\n  iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6a78 decodeItemState800d6a78\n    with \"Htable\") as \"#Hslot800d6a78\".\n  { by apply elem_of_list_lookup_2 with 17%nat. }\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6ae0 decodeItemState800d6ae0\n    with \"Htable\") as \"#Hslot800d6ae0\".\n  { by apply elem_of_list_lookup_2 with 22%nat. }\n  iPoseProof (Block800d6a6c.DesignedBoundary_800d6a6c args frameBytes x13 inputPrefix rest with \"[] [] Hcode\") as \"Hnative\".\n  { iApply (instr_pre_wand with \"Hslot800d6a78 []\"); [done|done|].\n    iIntros \"(%successor_locals & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_locals, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  { iApply (instr_pre_wand with \"Hslot800d6ae0 []\"); [done|done|].\n    iIntros \"(%successor_locals & Hsuccessor)\".\n    iExists args, successor_locals.\n    iExact \"Hsuccessor\". }\n  iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n  iApply (\"Hnative\" with \"[Hentry]\").\n  rewrite /Block800d6a6c.DesignedEntry_800d6a6c.\n  iFrame."
+    },
+    "tool": "rocq_compile_file",
+    "result": {
+      "success": true,
+      "output": "Closed under the global context",
+      "timing": {
+        "total_sentences": 45,
+        "top_slowest": [
+          {
+            "line": 41,
+            "characters": [
+              2022,
+              2067
+            ],
+            "name": "Print~Assumptions~decodeItemSl...",
+            "duration_seconds": 1.169
+          },
+          {
+            "line": 1,
+            "characters": [
+              0,
+              38
+            ],
+            "name": "Require~Import~ZesuSsz.Automat...",
+            "duration_seconds": 0.458
+          },
+          {
+            "line": 40,
+            "characters": [
+              2017,
+              2021
+            ],
+            "name": "Qed.",
+            "duration_seconds": 0.162
+          },
+          {
+            "line": 4,
+            "characters": [
+              134,
+              170
+            ],
+            "name": "Require~Import~isla.riscv64.ri...",
+            "duration_seconds": 0.085
+          },
+          {
+            "line": 29,
+            "characters": [
+              1488,
+              1574
+            ],
+            "name": "iIntros~~\"(%successor_locals~&...",
+            "duration_seconds": 0.034
+          }
+        ],
+        "last_completed": {
+          "line": 41,
+          "characters": [
+            2022,
+            2067
+          ],
+          "name": "Print~Assumptions~decodeItemSl...",
+          "duration_seconds": 1.169
+        }
+      }
+    },
+    "Pet_absent_before_request": true,
+    "global_inventory_before_request": {
+      "used_gib": 114.71058654785156,
+      "available_gib": 136.46901321411133,
+      "scope_interpreter_limit": 2,
+      "compilers": [],
+      "gate_status": "no gate lock",
+      "normal_guard_hold": "none",
+      "reserved_first_slot": "A"
+    },
+    "global_Pet_absence_verified": true
+  },
+  {
+    "fixture": {
+      "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/Adapter800d6a6c.v",
+      "name": "decodeItemSlotBody800d6a6c",
+      "proof_body": "  iIntros \"#Htable\".\n  rewrite instr_pre'_eq /instr_pre'_def /=.\n  iIntros \"(%args & %frameBytes & %x13 & %inputPrefix & %rest & Hentry)\".\n  iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6a78 decodeItemState800d6a78\n    with \"Htable\") as \"#Hslot800d6a78\".\n  { by apply elem_of_list_lookup_2 with 17%nat. }\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6ae0 decodeItemState800d6ae0\n    with \"Htable\") as \"#Hslot800d6ae0\".\n  { by apply elem_of_list_lookup_2 with 22%nat. }\n  iPoseProof (Block800d6a6c.DesignedBoundary_800d6a6c args frameBytes x13 inputPrefix rest with \"[] [] Hcode\") as \"Hnative\".\n  { iApply (instr_pre_wand with \"Hslot800d6a78 []\"); [done|done|].\n    iIntros \"(%successor_locals & %successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_locals, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  { iApply (instr_pre_wand with \"Hslot800d6ae0 []\"); [done|done|].\n    iIntros \"(%successor_locals & Hsuccessor)\".\n    iExists args, successor_locals.\n    iExact \"Hsuccessor\". }\n  iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n  iApply (\"Hnative\" with \"[Hentry]\").\n  rewrite /Block800d6a6c.DesignedEntry_800d6a6c.\n  iFrame."
+    },
+    "tool": "rocq_verify",
+    "result": {
+      "success": true,
+      "verification_method": "module_m",
+      "assumptions": []
+    },
+    "Pet_absent_before_request": true,
+    "global_inventory_before_request": {
+      "used_gib": 114.74194717407227,
+      "available_gib": 136.43765258789062,
+      "scope_interpreter_limit": 2,
+      "compilers": [],
+      "gate_status": "no gate lock",
+      "normal_guard_hold": "none",
+      "reserved_first_slot": "A"
+    },
+    "global_Pet_absence_verified": true
+  },
+  {
+    "fixture": {
+      "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/Adapter800d6ab4.v",
+      "name": "decodeItemSlotBody800d6ab4",
+      "proof_body": "  iIntros \"#Htable\".\n  rewrite instr_pre'_eq /instr_pre'_def /=.\n  iIntros \"(%args & %n & %payloadStart & %lengthBytes & %frameBytes & %oldAcc & %oldCursor & %loaded & %inputPrefix & %rest & Hentry)\".\n  iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6ac4 decodeItemState800d6ac4\n    with \"Htable\") as \"#Hslot800d6ac4\".\n  { by apply elem_of_list_lookup_2 with 20%nat. }\n  iPoseProof (Block800d6ab4.DesignedBoundary_800d6ab4 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded inputPrefix rest with \"[] Hcode\") as \"Hnative\".\n  { iApply (instr_pre_wand with \"Hslot800d6ac4 []\"); [done|done|].\n    iIntros \"(%successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n  iApply (\"Hnative\" with \"[Hentry]\").\n  rewrite /Block800d6ab4.DesignedEntry_800d6ab4.\n  iFrame."
+    },
+    "tool": "rocq_compile_file",
+    "result": {
+      "success": true,
+      "output": "Closed under the global context",
+      "timing": {
+        "total_sentences": 35,
+        "top_slowest": [
+          {
+            "line": 34,
+            "characters": [
+              1729,
+              1774
+            ],
+            "name": "Print~Assumptions~decodeItemSl...",
+            "duration_seconds": 1.039
+          },
+          {
+            "line": 1,
+            "characters": [
+              0,
+              38
+            ],
+            "name": "Require~Import~ZesuSsz.Automat...",
+            "duration_seconds": 0.464
+          },
+          {
+            "line": 4,
+            "characters": [
+              134,
+              170
+            ],
+            "name": "Require~Import~isla.riscv64.ri...",
+            "duration_seconds": 0.09
+          },
+          {
+            "line": 19,
+            "characters": [
+              791,
+              924
+            ],
+            "name": "iIntros~~\"(%args~&~%n~&~%paylo...",
+            "duration_seconds": 0.067
+          },
+          {
+            "line": 33,
+            "characters": [
+              1724,
+              1728
+            ],
+            "name": "Qed.",
+            "duration_seconds": 0.041
+          }
+        ],
+        "last_completed": {
+          "line": 34,
+          "characters": [
+            1729,
+            1774
+          ],
+          "name": "Print~Assumptions~decodeItemSl...",
+          "duration_seconds": 1.039
+        }
+      }
+    },
+    "Pet_absent_before_request": true,
+    "global_inventory_before_request": {
+      "used_gib": 114.64721298217773,
+      "available_gib": 136.53238677978516,
+      "scope_interpreter_limit": 2,
+      "compilers": [],
+      "gate_status": "no gate lock",
+      "normal_guard_hold": "none",
+      "reserved_first_slot": "A"
+    },
+    "global_Pet_absence_verified": true
+  },
+  {
+    "fixture": {
+      "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/Adapter800d6ab4.v",
+      "name": "decodeItemSlotBody800d6ab4",
+      "proof_body": "  iIntros \"#Htable\".\n  rewrite instr_pre'_eq /instr_pre'_def /=.\n  iIntros \"(%args & %n & %payloadStart & %lengthBytes & %frameBytes & %oldAcc & %oldCursor & %loaded & %inputPrefix & %rest & Hentry)\".\n  iPoseProof (block_table_pre_code with \"Htable\") as \"#Hcode\".\n  iPoseProof (block_table_pre_lookup decodeItemBlockTable 0x800d6ac4 decodeItemState800d6ac4\n    with \"Htable\") as \"#Hslot800d6ac4\".\n  { by apply elem_of_list_lookup_2 with 20%nat. }\n  iPoseProof (Block800d6ab4.DesignedBoundary_800d6ab4 args n payloadStart lengthBytes frameBytes oldAcc oldCursor loaded inputPrefix rest with \"[] Hcode\") as \"Hnative\".\n  { iApply (instr_pre_wand with \"Hslot800d6ac4 []\"); [done|done|].\n    iIntros \"(%successor_inputPrefix & %successor_rest & Hsuccessor)\".\n    iExists args, successor_inputPrefix, successor_rest.\n    iExact \"Hsuccessor\". }\n  iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in \"Hnative\".\n  iApply (\"Hnative\" with \"[Hentry]\").\n  rewrite /Block800d6ab4.DesignedEntry_800d6ab4.\n  iFrame."
+    },
+    "tool": "rocq_verify",
+    "result": {
+      "success": true,
+      "verification_method": "module_m",
+      "assumptions": []
+    },
+    "Pet_absent_before_request": true,
+    "global_inventory_before_request": {
+      "used_gib": 114.62222290039062,
+      "available_gib": 136.55737686157227,
+      "scope_interpreter_limit": 2,
+      "compilers": [],
+      "gate_status": "no gate lock",
+      "normal_guard_hold": "none",
+      "reserved_first_slot": "A"
+    },
+    "global_Pet_absence_verified": true
+  }
+]

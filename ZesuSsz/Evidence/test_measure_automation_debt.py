@@ -2,15 +2,27 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from measure_automation_debt import (
     build_log_metrics,
     instr_body_proof_lines,
     measure,
+    tracked_rocq_files,
 )
 
 
 class MeasureAutomationDebtTests(unittest.TestCase):
+    def test_source_inventory_includes_additions_and_skips_deletions(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'Replacement.v').write_text('Lemma covered : True.')
+            with patch('measure_automation_debt.subprocess.check_output',
+                       return_value='Retired.v\nReplacement.v\n') as inventory:
+                self.assertEqual(tracked_rocq_files(root),
+                                 {'Replacement.v': 'Lemma covered : True.'})
+                self.assertIn('--others', inventory.call_args.args[0])
+
     def test_instr_body_proof_lines(self):
         source = """Lemma sample :
   instr_body 1 True%I.

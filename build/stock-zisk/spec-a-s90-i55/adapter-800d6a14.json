@@ -1,0 +1,122 @@
+{
+  "design_sha256": "82e0777742ab731468282c72201cc285aeff5c46dc76a54cfdfd880df7aab221",
+  "entry_pc": 2148362772,
+  "successors": [
+    2148362788
+  ],
+  "compiled": true,
+  "verified": true,
+  "assumptions": [],
+  "inherited_debts": [],
+  "inherited_debt_basis": "Closed kernel theorem with assumptions []. No inherited proof premises outside its exact statement.",
+  "statement": "\u22a2 block_table_pre decodeItemBlockTable -\u2217 instr_body 0x800d6a14 decodeItemState800d6a14",
+  "module": "ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a14",
+  "lemma": "ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a14.decodeItemSlotBody800d6a14",
+  "source_binding": {
+    "path": "../../../ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a14.v",
+    "sha256": "73031f7cdbdca3d550376295e2fbf8d642f0a1da5203dd9abbcbe8cecffe7d1a"
+  },
+  "goal_groups": {
+    "given_up": [],
+    "goals": [],
+    "shelf": [],
+    "stack": []
+  },
+  "actual_group_export": {
+    "success": true,
+    "state_id": 144,
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/exports/state_144.json",
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "active_goals": 0,
+    "stack_entries": 0,
+    "shelved_goals": 0,
+    "given_up_goals": 0,
+    "stack_frame_goal_counts": [],
+    "groups_are_actual": true,
+    "truncated": false,
+    "method": "Pet.complete_goals.to_json",
+    "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a",
+    "theorem": "decodeItemSlotBody800d6a14",
+    "source": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-preparation-003/Adapter800d6a14.v",
+    "source_sha256": "73031f7cdbdca3d550376295e2fbf8d642f0a1da5203dd9abbcbe8cecffe7d1a",
+    "proof_finished": true
+  },
+  "verification": {
+    "success": true,
+    "verification_method": "module_m",
+    "assumptions": []
+  },
+  "compilation": {
+    "success": true,
+    "output": "Closed under the global context",
+    "timing": {
+      "total_sentences": 35,
+      "top_slowest": [
+        {
+          "line": 34,
+          "characters": [
+            1729,
+            1774
+          ],
+          "name": "Print~Assumptions~decodeItemSl...",
+          "duration_seconds": 1.033
+        },
+        {
+          "line": 1,
+          "characters": [
+            0,
+            38
+          ],
+          "name": "Require~Import~ZesuSsz.Automat...",
+          "duration_seconds": 0.461
+        },
+        {
+          "line": 4,
+          "characters": [
+            134,
+            170
+          ],
+          "name": "Require~Import~isla.riscv64.ri...",
+          "duration_seconds": 0.085
+        },
+        {
+          "line": 19,
+          "characters": [
+            791,
+            924
+          ],
+          "name": "iIntros~~\"(%args~&~%n~&~%paylo...",
+          "duration_seconds": 0.05
+        },
+        {
+          "line": 33,
+          "characters": [
+            1724,
+            1728
+          ],
+          "name": "Qed.",
+          "duration_seconds": 0.04
+        }
+      ],
+      "last_completed": {
+        "line": 34,
+        "characters": [
+          1729,
+          1774
+        ],
+        "name": "Print~Assumptions~decodeItemSl...",
+        "duration_seconds": 1.033
+      }
+    }
+  },
+  "source_compilation_scope": "Exact production module compiled by focused Dune and the green six-worker child gate.",
+  "accepted_parent_result_review": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s90-owned-mcp-parent-result-review-003/REPORT.json",
+    "sha256": "e534cca47309ddcfe8fe39232ea250dd8de60c2df3b3d1111ef82a9db64528f2"
+  },
+  "production_object": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/agents/spec-a/default/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a14.vo",
+    "sha256": "eee979009bc7e271005959b75d1c1ca7b27fa3b2ea18b25cd2ae819a18985a4f"
+  }
+}

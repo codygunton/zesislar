@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 from check_proof_hygiene import (
     PLACEHOLDER,
+    retired_module_failures,
     forbidden_counts,
     proof_size_warnings,
     proof_size_ratchet_failures,
@@ -14,6 +15,29 @@ from check_proof_hygiene import (
 
 
 class ProofHygieneTests(unittest.TestCase):
+    def test_retired_hand_modules_cannot_return(self):
+        for name in ("From6a38", "From6ad8"):
+            path = f"ZesuSsz/Proofs/DecodeItem/Join6ae0/{name}.v"
+            self.assertTrue(retired_module_failures(path, ""))
+
+    def test_retired_full_and_relative_imports_fail(self):
+        for name in ("From6a38", "From6ad8"):
+            for source in (
+                f"Require Import ZesuSsz.Proofs.DecodeItem.Join6ae0.{name}.",
+                f"From ZesuSsz.Proofs.DecodeItem.Join6ae0 Require Export {name}.",
+            ):
+                self.assertTrue(retired_module_failures("New.v", source))
+
+    def test_retirement_preserves_contract_and_generated_modules(self):
+        source = ("Require Import ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.\n"
+                  "Require Import ZesuSsz.Proofs.DecodeItem.Auto.Join6ae0From6a38.\n"
+                  "Check decodeItemJoin6ae0From6a38.\n")
+        self.assertEqual(retired_module_failures("New.v", source), [])
+
+    def test_retired_module_comment_is_historical(self):
+        self.assertEqual(retired_module_failures(
+            "New.v", "(* ZesuSsz.Proofs.DecodeItem.Join6ae0.From6ad8 *)"), [])
+
     def test_rejects_proof_placeholders(self):
         for source in (
             "Admitted.",
