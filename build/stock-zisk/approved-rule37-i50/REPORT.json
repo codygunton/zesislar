@@ -1,0 +1,145 @@
+{
+  "root": "8819ff9d7a69d21f68187651b04b8b5500f4dc64",
+  "scope": "Baseline23, rules34 through37, and SwitchDispatch ON. DecodeItemHints exports 24 modules and 104 registration locations. The pass excludes 17 historical switch modules.",
+  "native_count": 24,
+  "adapter_count": 13,
+  "compiler_closures": {
+    "native": 8,
+    "adapter": 7
+  },
+  "residual_results": 14,
+  "cpu_stops": 6,
+  "memory_stops": 2,
+  "active_capture_count": 70,
+  "native_result_sha256": "6e3aafbe6b14b64bc65ce35fbc8552172a437920125f21e9ba19fb61705e337c",
+  "native_input_count": 15317,
+  "certificate_input_count": 26123,
+  "retained_certificate_count": 15,
+  "MCP_verification_methods": {
+    "module_m": 15
+  },
+  "MCP_assumptions": [],
+  "actual_empty_certificate_exports": 15,
+  "actual_certificate_groups": {
+    "goals": [],
+    "stack": [],
+    "shelf": [],
+    "given_up": []
+  },
+  "actual_group_scope": "Fresh retained-object Require/apply certificates before Qed.",
+  "original_native_auxiliary_groups": "unavailable",
+  "normal_transport_count": 45,
+  "verified_interactive_Pet_exits": 15,
+  "Pet_exit_unavailable_sessions": [
+    "block_0x800d69a4-preflight",
+    "block_0x800d69a4-standalone",
+    "block_0x800d69d8-preflight",
+    "block_0x800d69d8-standalone",
+    "block_0x800d69e0-preflight",
+    "block_0x800d69e0-standalone",
+    "block_0x800d6a00-preflight",
+    "block_0x800d6a00-standalone",
+    "block_0x800d6a14-preflight",
+    "block_0x800d6a14-standalone",
+    "block_0x800d6a64-preflight",
+    "block_0x800d6a64-standalone",
+    "block_0x800d6a6c-preflight",
+    "block_0x800d6a6c-standalone",
+    "block_0x800d6ab4-preflight",
+    "block_0x800d6ab4-standalone",
+    "decodeItemJoin698cFrom697c-preflight",
+    "decodeItemJoin698cFrom697c-standalone",
+    "decodeItemJoin698cFrom69e8-preflight",
+    "decodeItemJoin698cFrom69e8-standalone",
+    "decodeItemJoin6a24From6a14-preflight",
+    "decodeItemJoin6a24From6a14-standalone",
+    "decodeItemJoin6ac4From6ab4-preflight",
+    "decodeItemJoin6ac4From6ab4-standalone",
+    "decodeItemJoin6ae0From69e0-preflight",
+    "decodeItemJoin6ae0From69e0-standalone",
+    "decodeItemJoin6ae0From6a38-preflight",
+    "decodeItemJoin6ae0From6a38-standalone",
+    "decodeItemJoin6ae0From6ad8-preflight",
+    "decodeItemJoin6ae0From6ad8-standalone"
+  ],
+  "new_adapter_closures": [
+    "decodeItemJoin6ae0From6a38",
+    "decodeItemJoin6ae0From6ad8"
+  ],
+  "cap_stops_are_incomplete_searches": true,
+  "rollback_classification": {
+    "block_0x800d6ae0": "The search restored the whole theorem after rollback.",
+    "block_0x800d69b0": "The result retains three reduced contexts."
+  },
+  "goal_count_is_not_a_progress_measure": true,
+  "native_body_replays": 0,
+  "shell_fallbacks": 0,
+  "universal_table_slots_certified": 0,
+  "Level1_closed": false,
+  "termination_proved": false,
+  "cost_limit": "Changed roots and hint scopes do not establish isolated rule cost.",
+  "records": {
+    "NATIVE.csv": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-evidence-package-preparation-002/NATIVE.csv",
+      "sha256": "0e1684670a938ca0b1c5ac08ce9778e881dbdc53a9dfc17ef8b90c68b9610299"
+    },
+    "ADAPTER.csv": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-evidence-package-preparation-002/ADAPTER.csv",
+      "sha256": "5c6ba4fafebe4dcdd1f910cb27b1f4cb8e61c6834a48b6c82a86953aba86c4aa"
+    },
+    "CAPTURES.json": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-evidence-package-preparation-002/CAPTURES.json",
+      "sha256": "40a8faff3d8e8cb5b8e06f2ec691a1231091fe5b13305348fd9f3c4c7b66a3f1"
+    },
+    "POLICY-S97.json": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-evidence-package-preparation-002/POLICY-S97.json",
+      "sha256": "84ceadc52196255b2da43d45fd7cb0bc965c60a588c8d8794b1f8e3ad82cb2e3"
+    },
+    "I58-ENVIRONMENT.json": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-evidence-package-preparation-002/I58-ENVIRONMENT.json",
+      "sha256": "7b9d8de57924298b2ba0b98a65ac9ec36655d4b96fee00c84f33b0a7e8191299"
+    },
+    "CALL-IDENTITIES.json": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-evidence-package-preparation-002/CALL-IDENTITIES.json",
+      "sha256": "b171448735ca00412b6addf93a34e94522b9cd863dcf0088c905e0f11a4cfddb"
+    },
+    "FAILED-CERTIFICATE-SETUP.json": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-evidence-package-preparation-002/FAILED-CERTIFICATE-SETUP.json",
+      "sha256": "89c7deba8370cfde59ee8df83245429da6378d78a77921a09f3a8d9caf0cd43e"
+    },
+    "NATIVE-AUDIT.json": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-evidence-package-preparation-002/REPORT.json",
+      "sha256": "bce4cab071d62424d2837cc52934608dee2197027933700b10d350593980f133"
+    },
+    "MCP.json": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-certificate-audit-002/REPORT.json",
+      "sha256": "05a9662d7a40239d3febd115b99f80a31b73d5031ab3384ed71e3a7f70ebc185"
+    },
+    "GATES.json": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-evidence-gate-audit-002/REPORT.json",
+      "sha256": "bd18de3e9463251a50ad07b3ac0764440655ae6e261fa6777b1f74f2bd49dd41"
+    },
+    "METRICS.json": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-checkpoint-preparation-001/METRICS.json",
+      "sha256": "81ee46d712dd0109fbf5de3c8a94c68f4f89bf2a23acec6924eb424ca91f362b"
+    },
+    "CAPTURE-COMPARISON.json": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-checkpoint-preparation-001/CAPTURE-COMPARISON.json",
+      "sha256": "816540a0892ba96987bb34e13e145eb43387e9088e590052e1bfec1b3fd82350"
+    },
+    "REGISTRATION-CONTEXTS.json": {
+      "source": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-checkpoint-preparation-001/REGISTRATION-CONTEXTS.json",
+      "sha256": "af895f713b1589955afd9d1651ed064c2930bd605045135bb603df2e3178afc4"
+    }
+  },
+  "gate_status": "Both six-worker evidence gates passed.",
+  "archive_status": "The final archive passed all member hashes and safety scans.",
+  "historical_failure_preserved": "Certificate001 failed because the installed MCP parser rejected external artifact directories.",
+  "gate_result_sha256": "297b6d014df1954025009d4d69754ebbded71fb9e2bc758310f4ab4dd9b9c224",
+  "gate_audit_sha256": "bd18de3e9463251a50ad07b3ac0764440655ae6e261fa6777b1f74f2bd49dd41",
+  "gate_input_count": 27494,
+  "all_gate_inputs_unchanged": true,
+  "archive_sha256": "ac18c11cb69afcaedf104b7815b2c6d811b87a7ae96daed918fa51bcb7f9a3f7",
+  "archive_manifest_sha256": "1a7426d73eff64db01efc7b3725f111bfbce45fb6a0d32cac4c075fc61fe7db5",
+  "archived_preparation_bytes_preserved": true
+}

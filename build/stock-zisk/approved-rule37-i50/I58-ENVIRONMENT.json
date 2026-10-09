@@ -1,0 +1,1669 @@
+{
+  "task": "I58 read-only generated/hand environment comparison",
+  "current_measured_root": "8819ff9d7a69d21f68187651b04b8b5500f4dc64",
+  "S42_measured_root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+  "S96_reported_root": "8819ff9d7a69d21f68187651b04b8b5500f4dc64",
+  "preserved_S96_patch": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-c/build/stock-zisk/spec-c-s96/APPROVED-SCOPE.patch",
+    "sha256": "a0819a6da2651a58d0330be9956e2e69c6fb403d0e0455fe9a50ac6cebb95848"
+  },
+  "S97_report": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-c/build/stock-zisk/spec-c-s97/REPORT.json",
+    "sha256": "073171e0083356e22637d015af7312296f839e1fb64b7343bae05ea6ed9c3db3"
+  },
+  "environments": {
+    "S96_hand_22_switches_and_umbrella": {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-c/build/stock-zisk/spec-c-s96/From6a38Approved.v",
+      "sha256": "49a367a127349e1bfbeccdb7d2f570c75dd1a768583ee73a1d51ff730953a344",
+      "imports": [
+        {
+          "module": "ZesuSsz.Automation.All",
+          "line": 1,
+          "directive": "Require Import ZesuSsz.Automation.All."
+        },
+        {
+          "module": "ZesuSsz.Compliance.DecodeItemHints",
+          "line": 2,
+          "directive": "Require Import ZesuSsz.Compliance.DecodeItemHints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.InstructionLookup",
+          "line": 3,
+          "directive": "Require Import ZesuSsz.Automation.Switches.InstructionLookup."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RamFault",
+          "line": 4,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RamFault."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.EvarSideconditionGuard",
+          "line": 5,
+          "directive": "Require Import ZesuSsz.Automation.Switches.EvarSideconditionGuard."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureFactHints",
+          "line": 6,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureFactHints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.StackWrite",
+          "line": 7,
+          "directive": "Require Import ZesuSsz.Automation.Switches.StackWrite."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegionFault",
+          "line": 8,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegionFault."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.LowMask",
+          "line": 9,
+          "directive": "Require Import ZesuSsz.Automation.Switches.LowMask."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.IntegerArrayAddress",
+          "line": 10,
+          "directive": "Require Import ZesuSsz.Automation.Switches.IntegerArrayAddress."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RecordWitness",
+          "line": 11,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RecordWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ArrayBounds",
+          "line": 12,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ArrayBounds."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.WordArrayHandoff",
+          "line": 13,
+          "directive": "Require Import ZesuSsz.Automation.Switches.WordArrayHandoff."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ReturnBundle",
+          "line": 14,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ReturnBundle."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ReturnWand",
+          "line": 15,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ReturnWand."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.StrictSigned",
+          "line": 16,
+          "directive": "Require Import ZesuSsz.Automation.Switches.StrictSigned."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ListWitness",
+          "line": 17,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ListWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.TupleWitness",
+          "line": 18,
+          "directive": "Require Import ZesuSsz.Automation.Switches.TupleWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ArrayRegionBounds",
+          "line": 19,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ArrayRegionBounds."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.KnownPairWitness",
+          "line": 20,
+          "directive": "Require Import ZesuSsz.Automation.Switches.KnownPairWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureWitnessConstraints",
+          "line": 21,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureWitnessConstraints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegisterCollectionSelection",
+          "line": 22,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegisterCollectionSelection."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegionFaultNormalization",
+          "line": 23,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegionFaultNormalization."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.CanonicalAnchor",
+          "line": 24,
+          "directive": "Require Import ZesuSsz.Automation.Switches.CanonicalAnchor."
+        },
+        {
+          "module": "ZesuSsz.Automation.PureFacts",
+          "line": 25,
+          "directive": "Require Import ZesuSsz.Automation.PureFacts."
+        },
+        {
+          "module": "ZesuSsz.Compliance.DecodeItemFoldRejectionFacts",
+          "line": 26,
+          "directive": "Require Import ZesuSsz.Compliance.DecodeItemFoldRejectionFacts."
+        },
+        {
+          "module": "isla.riscv64.riscv64",
+          "line": 27,
+          "directive": "Require Import isla.riscv64.riscv64."
+        },
+        {
+          "module": "SailStdpp.MachineWord",
+          "line": 28,
+          "directive": "Require Import SailStdpp.MachineWord."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.InstructionLookup",
+          "line": 29,
+          "directive": "Require Import ZesuSsz.Automation.Switches.InstructionLookup."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RamFault",
+          "line": 30,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RamFault."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.LowMask",
+          "line": 31,
+          "directive": "Require Import ZesuSsz.Automation.Switches.LowMask."
+        },
+        {
+          "module": "ZesuSsz.Contracts.RlpDecodeItem",
+          "line": 32,
+          "directive": "Require Import ZesuSsz.Contracts.RlpDecodeItem."
+        },
+        {
+          "module": "ZesuSsz.Contracts.RlpDecodeItemContract",
+          "line": 33,
+          "directive": "Require Import ZesuSsz.Contracts.RlpDecodeItemContract."
+        },
+        {
+          "module": "ZesuSsz.Contracts.DecodeItemSelected",
+          "line": 34,
+          "directive": "Require Import ZesuSsz.Contracts.DecodeItemSelected."
+        },
+        {
+          "module": "ZesuSsz.Contracts.DecodeItemBranchEntries",
+          "line": 35,
+          "directive": "Require Import ZesuSsz.Contracts.DecodeItemBranchEntries."
+        },
+        {
+          "module": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries",
+          "line": 36,
+          "directive": "Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries."
+        },
+        {
+          "module": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers",
+          "line": 37,
+          "directive": "Require Import ZesuSsz.Contracts.RlpDecodeItemJoinTransfers."
+        },
+        {
+          "module": "iris.proofmode.environments",
+          "line": 38,
+          "directive": "From iris.proofmode Require Import environments."
+        },
+        {
+          "module": "ZesuSsz.Contracts.DecodeItemErrorBranch",
+          "line": 40,
+          "directive": "Require Import ZesuSsz.Contracts.DecodeItemErrorBranch."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RecordWitness",
+          "line": 41,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RecordWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ListWitness",
+          "line": 42,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ListWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureFactHints",
+          "line": 43,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureFactHints."
+        },
+        {
+          "module": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure",
+          "line": 45,
+          "directive": "Require Import ZesuSsz.Proofs.DecodeItem.ByteFoldPure."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.StrictSigned",
+          "line": 46,
+          "directive": "Require Import ZesuSsz.Automation.Switches.StrictSigned."
+        },
+        {
+          "module": "ZesuSsz.Contracts.DecodeItemReturnFacts",
+          "line": 47,
+          "directive": "Require Import ZesuSsz.Contracts.DecodeItemReturnFacts."
+        },
+        {
+          "module": "ZesuSsz.Compliance.DecodeItemSemanticIntroduction",
+          "line": 48,
+          "directive": "Require Import ZesuSsz.Compliance.DecodeItemSemanticIntroduction."
+        },
+        {
+          "module": "ZesuSsz.Compliance.DecodeItemSailIntroduction",
+          "line": 49,
+          "directive": "Require Import ZesuSsz.Compliance.DecodeItemSailIntroduction."
+        }
+      ],
+      "direct_switches_in_first_import_order": [
+        {
+          "module": "ZesuSsz.Automation.Switches.InstructionLookup",
+          "line": 3,
+          "directive": "Require Import ZesuSsz.Automation.Switches.InstructionLookup."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RamFault",
+          "line": 4,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RamFault."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.EvarSideconditionGuard",
+          "line": 5,
+          "directive": "Require Import ZesuSsz.Automation.Switches.EvarSideconditionGuard."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureFactHints",
+          "line": 6,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureFactHints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.StackWrite",
+          "line": 7,
+          "directive": "Require Import ZesuSsz.Automation.Switches.StackWrite."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegionFault",
+          "line": 8,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegionFault."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.LowMask",
+          "line": 9,
+          "directive": "Require Import ZesuSsz.Automation.Switches.LowMask."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.IntegerArrayAddress",
+          "line": 10,
+          "directive": "Require Import ZesuSsz.Automation.Switches.IntegerArrayAddress."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RecordWitness",
+          "line": 11,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RecordWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ArrayBounds",
+          "line": 12,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ArrayBounds."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.WordArrayHandoff",
+          "line": 13,
+          "directive": "Require Import ZesuSsz.Automation.Switches.WordArrayHandoff."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ReturnBundle",
+          "line": 14,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ReturnBundle."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ReturnWand",
+          "line": 15,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ReturnWand."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.StrictSigned",
+          "line": 16,
+          "directive": "Require Import ZesuSsz.Automation.Switches.StrictSigned."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ListWitness",
+          "line": 17,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ListWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.TupleWitness",
+          "line": 18,
+          "directive": "Require Import ZesuSsz.Automation.Switches.TupleWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ArrayRegionBounds",
+          "line": 19,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ArrayRegionBounds."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.KnownPairWitness",
+          "line": 20,
+          "directive": "Require Import ZesuSsz.Automation.Switches.KnownPairWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureWitnessConstraints",
+          "line": 21,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureWitnessConstraints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegisterCollectionSelection",
+          "line": 22,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegisterCollectionSelection."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegionFaultNormalization",
+          "line": 23,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegionFaultNormalization."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.CanonicalAnchor",
+          "line": 24,
+          "directive": "Require Import ZesuSsz.Automation.Switches.CanonicalAnchor."
+        }
+      ],
+      "direct_unique_switch_count": 22,
+      "duplicate_switch_imports": {
+        "ZesuSsz.Automation.Switches.InstructionLookup": 2,
+        "ZesuSsz.Automation.Switches.RamFault": 2,
+        "ZesuSsz.Automation.Switches.PureFactHints": 2,
+        "ZesuSsz.Automation.Switches.LowMask": 2,
+        "ZesuSsz.Automation.Switches.RecordWitness": 2,
+        "ZesuSsz.Automation.Switches.StrictSigned": 2,
+        "ZesuSsz.Automation.Switches.ListWitness": 2
+      },
+      "options": [
+        {
+          "line": 39,
+          "text": "Open Scope Z_scope."
+        }
+      ],
+      "preamble_definitions": [],
+      "prefix_sha256": "fa8040dd93c42283e83279afb61cd705552872f94c885f117b826d092b6205b2",
+      "theorem": "decodeItemJoin6ae0From6a38_correct",
+      "statement": "Lemma decodeItemJoin6ae0From6a38_correct `{!islaG Sigma} `{!threadG}\n args (n payloadStart : Z) (lengthBytes frameBytes : list byte) (loaded : bv 64)\n (inputPrefix : byte) (rest : list byte) :\n \u22a2 decodeItemJoin6ae0From6a38 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest.",
+      "statement_sha256": "f9acf9f8a1bbe58ed15b4dd52510808f8ddadfdad29d00f5eac4968a3c45d9ff",
+      "normalized_statement_sha256": "c7544aeeb2ef19db25f1b67f073ab155644610e5c43c6556f69b10eef4904238",
+      "proof_commands": "Proof. zesu_block. Qed."
+    },
+    "S97_hand_module": {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-c/ZesuSsz/Proofs/DecodeItem/Join6ae0/From6a38.v",
+      "sha256": "9eefa6ff759cc2b38f7e2754b44529da98e80022f624f6a5e208f3a43e93ab69",
+      "imports": [
+        {
+          "module": "ZesuSsz.Automation.All",
+          "line": 1,
+          "directive": "Require Import ZesuSsz.Automation.All."
+        },
+        {
+          "module": "ZesuSsz.Compliance.DecodeItemHints",
+          "line": 2,
+          "directive": "Require Import ZesuSsz.Compliance.DecodeItemHints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.InstructionLookup",
+          "line": 3,
+          "directive": "Require Import ZesuSsz.Automation.Switches.InstructionLookup."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RamFault",
+          "line": 4,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RamFault."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.EvarSideconditionGuard",
+          "line": 5,
+          "directive": "Require Import ZesuSsz.Automation.Switches.EvarSideconditionGuard."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureFactHints",
+          "line": 6,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureFactHints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.StackWrite",
+          "line": 7,
+          "directive": "Require Import ZesuSsz.Automation.Switches.StackWrite."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegionFault",
+          "line": 8,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegionFault."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.LowMask",
+          "line": 9,
+          "directive": "Require Import ZesuSsz.Automation.Switches.LowMask."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.IntegerArrayAddress",
+          "line": 10,
+          "directive": "Require Import ZesuSsz.Automation.Switches.IntegerArrayAddress."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RecordWitness",
+          "line": 11,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RecordWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ArrayBounds",
+          "line": 12,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ArrayBounds."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.WordArrayHandoff",
+          "line": 13,
+          "directive": "Require Import ZesuSsz.Automation.Switches.WordArrayHandoff."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ReturnBundle",
+          "line": 14,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ReturnBundle."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ReturnWand",
+          "line": 15,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ReturnWand."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.StrictSigned",
+          "line": 16,
+          "directive": "Require Import ZesuSsz.Automation.Switches.StrictSigned."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ListWitness",
+          "line": 17,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ListWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.TupleWitness",
+          "line": 18,
+          "directive": "Require Import ZesuSsz.Automation.Switches.TupleWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ArrayRegionBounds",
+          "line": 19,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ArrayRegionBounds."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.KnownPairWitness",
+          "line": 20,
+          "directive": "Require Import ZesuSsz.Automation.Switches.KnownPairWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureWitnessConstraints",
+          "line": 21,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureWitnessConstraints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegisterCollectionSelection",
+          "line": 22,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegisterCollectionSelection."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegionFaultNormalization",
+          "line": 23,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegionFaultNormalization."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.CanonicalAnchor",
+          "line": 24,
+          "directive": "Require Import ZesuSsz.Automation.Switches.CanonicalAnchor."
+        },
+        {
+          "module": "ZesuSsz.Automation.PureFacts",
+          "line": 25,
+          "directive": "Require Import ZesuSsz.Automation.PureFacts."
+        },
+        {
+          "module": "ZesuSsz.Compliance.DecodeItemFoldRejectionFacts",
+          "line": 26,
+          "directive": "Require Import ZesuSsz.Compliance.DecodeItemFoldRejectionFacts."
+        },
+        {
+          "module": "isla.riscv64.riscv64",
+          "line": 27,
+          "directive": "Require Import isla.riscv64.riscv64."
+        },
+        {
+          "module": "SailStdpp.MachineWord",
+          "line": 28,
+          "directive": "Require Import SailStdpp.MachineWord."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.InstructionLookup",
+          "line": 29,
+          "directive": "Require Import ZesuSsz.Automation.Switches.InstructionLookup."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RamFault",
+          "line": 30,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RamFault."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.LowMask",
+          "line": 31,
+          "directive": "Require Import ZesuSsz.Automation.Switches.LowMask."
+        },
+        {
+          "module": "ZesuSsz.Contracts.RlpDecodeItem",
+          "line": 32,
+          "directive": "Require Import ZesuSsz.Contracts.RlpDecodeItem."
+        },
+        {
+          "module": "ZesuSsz.Contracts.RlpDecodeItemContract",
+          "line": 33,
+          "directive": "Require Import ZesuSsz.Contracts.RlpDecodeItemContract."
+        },
+        {
+          "module": "ZesuSsz.Contracts.DecodeItemSelected",
+          "line": 34,
+          "directive": "Require Import ZesuSsz.Contracts.DecodeItemSelected."
+        },
+        {
+          "module": "ZesuSsz.Contracts.DecodeItemBranchEntries",
+          "line": 35,
+          "directive": "Require Import ZesuSsz.Contracts.DecodeItemBranchEntries."
+        },
+        {
+          "module": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries",
+          "line": 36,
+          "directive": "Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries."
+        },
+        {
+          "module": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers",
+          "line": 37,
+          "directive": "Require Import ZesuSsz.Contracts.RlpDecodeItemJoinTransfers."
+        },
+        {
+          "module": "iris.proofmode.environments",
+          "line": 38,
+          "directive": "From iris.proofmode Require Import environments."
+        },
+        {
+          "module": "ZesuSsz.Contracts.DecodeItemErrorBranch",
+          "line": 40,
+          "directive": "Require Import ZesuSsz.Contracts.DecodeItemErrorBranch."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RecordWitness",
+          "line": 41,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RecordWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ListWitness",
+          "line": 42,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ListWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureFactHints",
+          "line": 43,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureFactHints."
+        },
+        {
+          "module": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure",
+          "line": 45,
+          "directive": "Require Import ZesuSsz.Proofs.DecodeItem.ByteFoldPure."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.StrictSigned",
+          "line": 46,
+          "directive": "Require Import ZesuSsz.Automation.Switches.StrictSigned."
+        },
+        {
+          "module": "ZesuSsz.Contracts.DecodeItemReturnFacts",
+          "line": 47,
+          "directive": "Require Import ZesuSsz.Contracts.DecodeItemReturnFacts."
+        },
+        {
+          "module": "ZesuSsz.Compliance.DecodeItemSemanticIntroduction",
+          "line": 48,
+          "directive": "Require Import ZesuSsz.Compliance.DecodeItemSemanticIntroduction."
+        },
+        {
+          "module": "ZesuSsz.Compliance.DecodeItemSailIntroduction",
+          "line": 49,
+          "directive": "Require Import ZesuSsz.Compliance.DecodeItemSailIntroduction."
+        }
+      ],
+      "direct_switches_in_first_import_order": [
+        {
+          "module": "ZesuSsz.Automation.Switches.InstructionLookup",
+          "line": 3,
+          "directive": "Require Import ZesuSsz.Automation.Switches.InstructionLookup."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RamFault",
+          "line": 4,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RamFault."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.EvarSideconditionGuard",
+          "line": 5,
+          "directive": "Require Import ZesuSsz.Automation.Switches.EvarSideconditionGuard."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureFactHints",
+          "line": 6,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureFactHints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.StackWrite",
+          "line": 7,
+          "directive": "Require Import ZesuSsz.Automation.Switches.StackWrite."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegionFault",
+          "line": 8,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegionFault."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.LowMask",
+          "line": 9,
+          "directive": "Require Import ZesuSsz.Automation.Switches.LowMask."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.IntegerArrayAddress",
+          "line": 10,
+          "directive": "Require Import ZesuSsz.Automation.Switches.IntegerArrayAddress."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RecordWitness",
+          "line": 11,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RecordWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ArrayBounds",
+          "line": 12,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ArrayBounds."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.WordArrayHandoff",
+          "line": 13,
+          "directive": "Require Import ZesuSsz.Automation.Switches.WordArrayHandoff."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ReturnBundle",
+          "line": 14,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ReturnBundle."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ReturnWand",
+          "line": 15,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ReturnWand."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.StrictSigned",
+          "line": 16,
+          "directive": "Require Import ZesuSsz.Automation.Switches.StrictSigned."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ListWitness",
+          "line": 17,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ListWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.TupleWitness",
+          "line": 18,
+          "directive": "Require Import ZesuSsz.Automation.Switches.TupleWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ArrayRegionBounds",
+          "line": 19,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ArrayRegionBounds."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.KnownPairWitness",
+          "line": 20,
+          "directive": "Require Import ZesuSsz.Automation.Switches.KnownPairWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureWitnessConstraints",
+          "line": 21,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureWitnessConstraints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegisterCollectionSelection",
+          "line": 22,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegisterCollectionSelection."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegionFaultNormalization",
+          "line": 23,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegionFaultNormalization."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.CanonicalAnchor",
+          "line": 24,
+          "directive": "Require Import ZesuSsz.Automation.Switches.CanonicalAnchor."
+        }
+      ],
+      "direct_unique_switch_count": 22,
+      "duplicate_switch_imports": {
+        "ZesuSsz.Automation.Switches.InstructionLookup": 2,
+        "ZesuSsz.Automation.Switches.RamFault": 2,
+        "ZesuSsz.Automation.Switches.PureFactHints": 2,
+        "ZesuSsz.Automation.Switches.LowMask": 2,
+        "ZesuSsz.Automation.Switches.RecordWitness": 2,
+        "ZesuSsz.Automation.Switches.StrictSigned": 2,
+        "ZesuSsz.Automation.Switches.ListWitness": 2
+      },
+      "options": [
+        {
+          "line": 39,
+          "text": "Open Scope Z_scope."
+        }
+      ],
+      "preamble_definitions": [],
+      "prefix_sha256": "fa8040dd93c42283e83279afb61cd705552872f94c885f117b826d092b6205b2",
+      "theorem": "decodeItemJoin6ae0From6a38_correct",
+      "statement": "Lemma decodeItemJoin6ae0From6a38_correct `{!islaG Sigma} `{!threadG}\n args (n payloadStart : Z) (lengthBytes frameBytes : list byte) (loaded : bv 64)\n (inputPrefix : byte) (rest : list byte) :\n \u22a2 decodeItemJoin6ae0From6a38 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest.",
+      "statement_sha256": "f9acf9f8a1bbe58ed15b4dd52510808f8ddadfdad29d00f5eac4968a3c45d9ff",
+      "normalized_statement_sha256": "c7544aeeb2ef19db25f1b67f073ab155644610e5c43c6556f69b10eef4904238",
+      "proof_commands": "Proof.\n unfold decodeItemJoin6ae0From6a38, decodeItemJoinTransferObligation.\n iIntros \"Hcode\". iEval (unfold decodeItemSelectedCode) in \"Hcode\".\n iDestruct \"Hcode\" as \"#Hcode\".\n zesu_run_until ltac:(fun _ => lazymatch goal with\n |- envs_entails _ (WPasm a800d6a3c.a800d6a3c) => idtac end).\n match goal with Hfold : RlpDecodeItemByteFold.decodeItemByteFoldFacts _ _ _ _ _ |- _ =>\n   pose proof (decodeItem_fold_exit args n payloadStart lengthBytes Hfold) as [Hacc Hstart] end.\n assert (Hsum : LET0 = Z_to_bv 64 (bigEndian lengthBytes + n + 1)) by\n   (unLET; rewrite Hacc; bv_solve).\n match goal with Hfits : RlpDecodeItemByteFoldBlocks.decodeItemFoldLengthFits _ _ _ = false |- _ =>\n   pose proof Hfits as HfoldReject;\n   unfold RlpDecodeItemByteFoldBlocks.decodeItemFoldLengthFits in Hfits;\n   apply Z.leb_gt in Hfits; rewrite -Hsum in Hfits end.\n assert (Hsigned : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) < bv_signed (bv_zero_extend 128 LET0)) by bv_solve.\n zesu_run_until ltac:(fun _ => match goal with\n   Hno : ~ ?P, Hyes : ?P |- _ => exfalso; exact (Hno Hyes) end).\nUnshelve.\nall: try solve [exfalso; unLET;\n  match goal with Hbad : bv_extract _ _ _ = _ |- _ => vm_compute in Hbad; discriminate end].\nall: prepare_sidecond.\nall: try solve [zesu_finish | zesu_pure_fact_hints_if_enabled | reflexivity | bv_solve].\nQed."
+    },
+    "S42_generated_baseline23_rules34_36_dispatch": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-001/decodeItemJoin6ae0From6a38/Boundary.v",
+      "sha256": "96a9c92098b296c06af2e537f656d3d76172cc4f18f42beed9825af20e1212e4",
+      "imports": [
+        {
+          "module": "ZesuSsz.Automation.All",
+          "line": 1,
+          "directive": "Require Import ZesuSsz.Automation.All."
+        },
+        {
+          "module": "isla.riscv64.riscv64",
+          "line": 2,
+          "directive": "Require Import isla.riscv64.riscv64."
+        },
+        {
+          "module": "ZesuSsz.Contracts.RlpDecodeItemContract",
+          "line": 3,
+          "directive": "Require Import ZesuSsz.Contracts.RlpDecodeItemContract."
+        },
+        {
+          "module": "ZesuSsz.Contracts.DecodeItemSelected",
+          "line": 4,
+          "directive": "Require Import ZesuSsz.Contracts.DecodeItemSelected."
+        },
+        {
+          "module": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers",
+          "line": 5,
+          "directive": "Require Import ZesuSsz.Contracts.RlpDecodeItemJoinTransfers."
+        },
+        {
+          "module": "ZesuSsz.Automation.SealedCoverage",
+          "line": 6,
+          "directive": "Require Import ZesuSsz.Automation.SealedCoverage."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.InstructionLookup",
+          "line": 10,
+          "directive": "Require Import ZesuSsz.Automation.Switches.InstructionLookup."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.StackWrite",
+          "line": 11,
+          "directive": "Require Import ZesuSsz.Automation.Switches.StackWrite."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RamFault",
+          "line": 12,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RamFault."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegionFault",
+          "line": 13,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegionFault."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.LowMask",
+          "line": 14,
+          "directive": "Require Import ZesuSsz.Automation.Switches.LowMask."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.IntegerArrayAddress",
+          "line": 15,
+          "directive": "Require Import ZesuSsz.Automation.Switches.IntegerArrayAddress."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RecordWitness",
+          "line": 16,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RecordWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ArrayBounds",
+          "line": 17,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ArrayBounds."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.WordArrayHandoff",
+          "line": 18,
+          "directive": "Require Import ZesuSsz.Automation.Switches.WordArrayHandoff."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ReturnBundle",
+          "line": 19,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ReturnBundle."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ReturnWand",
+          "line": 20,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ReturnWand."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.StrictSigned",
+          "line": 21,
+          "directive": "Require Import ZesuSsz.Automation.Switches.StrictSigned."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ListWitness",
+          "line": 22,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ListWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.TupleWitness",
+          "line": 23,
+          "directive": "Require Import ZesuSsz.Automation.Switches.TupleWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ArrayRegionBounds",
+          "line": 24,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ArrayRegionBounds."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureFactHints",
+          "line": 25,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureFactHints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.KnownPairWitness",
+          "line": 26,
+          "directive": "Require Import ZesuSsz.Automation.Switches.KnownPairWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureWitnessConstraints",
+          "line": 27,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureWitnessConstraints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegisterCollectionSelection",
+          "line": 28,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegisterCollectionSelection."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.EvarSideconditionGuard",
+          "line": 29,
+          "directive": "Require Import ZesuSsz.Automation.Switches.EvarSideconditionGuard."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegionFaultNormalization",
+          "line": 30,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegionFaultNormalization."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.CanonicalAnchor",
+          "line": 31,
+          "directive": "Require Import ZesuSsz.Automation.Switches.CanonicalAnchor."
+        },
+        {
+          "module": "ZesuSsz.Compliance.DecodeItemHints",
+          "line": 32,
+          "directive": "Require Import ZesuSsz.Compliance.DecodeItemHints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.EvarImplicationGuard",
+          "line": 33,
+          "directive": "Require Import ZesuSsz.Automation.Switches.EvarImplicationGuard."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.SwitchDispatch",
+          "line": 34,
+          "directive": "Require Import ZesuSsz.Automation.Switches.SwitchDispatch."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureFactExistential",
+          "line": 35,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureFactExistential."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.CanonicalPureConjunction",
+          "line": 36,
+          "directive": "Require Import ZesuSsz.Automation.Switches.CanonicalPureConjunction."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ByteListContainment",
+          "line": 37,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ByteListContainment."
+        },
+        {
+          "module": "iris.proofmode.environments",
+          "line": 38,
+          "directive": "From iris.proofmode Require Import environments."
+        }
+      ],
+      "direct_switches_in_first_import_order": [
+        {
+          "module": "ZesuSsz.Automation.Switches.InstructionLookup",
+          "line": 10,
+          "directive": "Require Import ZesuSsz.Automation.Switches.InstructionLookup."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.StackWrite",
+          "line": 11,
+          "directive": "Require Import ZesuSsz.Automation.Switches.StackWrite."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RamFault",
+          "line": 12,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RamFault."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegionFault",
+          "line": 13,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegionFault."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.LowMask",
+          "line": 14,
+          "directive": "Require Import ZesuSsz.Automation.Switches.LowMask."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.IntegerArrayAddress",
+          "line": 15,
+          "directive": "Require Import ZesuSsz.Automation.Switches.IntegerArrayAddress."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RecordWitness",
+          "line": 16,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RecordWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ArrayBounds",
+          "line": 17,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ArrayBounds."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.WordArrayHandoff",
+          "line": 18,
+          "directive": "Require Import ZesuSsz.Automation.Switches.WordArrayHandoff."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ReturnBundle",
+          "line": 19,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ReturnBundle."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ReturnWand",
+          "line": 20,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ReturnWand."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.StrictSigned",
+          "line": 21,
+          "directive": "Require Import ZesuSsz.Automation.Switches.StrictSigned."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ListWitness",
+          "line": 22,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ListWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.TupleWitness",
+          "line": 23,
+          "directive": "Require Import ZesuSsz.Automation.Switches.TupleWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ArrayRegionBounds",
+          "line": 24,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ArrayRegionBounds."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureFactHints",
+          "line": 25,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureFactHints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.KnownPairWitness",
+          "line": 26,
+          "directive": "Require Import ZesuSsz.Automation.Switches.KnownPairWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureWitnessConstraints",
+          "line": 27,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureWitnessConstraints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegisterCollectionSelection",
+          "line": 28,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegisterCollectionSelection."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.EvarSideconditionGuard",
+          "line": 29,
+          "directive": "Require Import ZesuSsz.Automation.Switches.EvarSideconditionGuard."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegionFaultNormalization",
+          "line": 30,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegionFaultNormalization."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.CanonicalAnchor",
+          "line": 31,
+          "directive": "Require Import ZesuSsz.Automation.Switches.CanonicalAnchor."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.EvarImplicationGuard",
+          "line": 33,
+          "directive": "Require Import ZesuSsz.Automation.Switches.EvarImplicationGuard."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.SwitchDispatch",
+          "line": 34,
+          "directive": "Require Import ZesuSsz.Automation.Switches.SwitchDispatch."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureFactExistential",
+          "line": 35,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureFactExistential."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.CanonicalPureConjunction",
+          "line": 36,
+          "directive": "Require Import ZesuSsz.Automation.Switches.CanonicalPureConjunction."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ByteListContainment",
+          "line": 37,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ByteListContainment."
+        }
+      ],
+      "direct_unique_switch_count": 27,
+      "duplicate_switch_imports": {},
+      "options": [
+        {
+          "line": 7,
+          "text": "Open Scope Z_scope."
+        },
+        {
+          "line": 8,
+          "text": "Set Printing Width 200."
+        }
+      ],
+      "preamble_definitions": [
+        "chain_print_environment",
+        "chain_print_goal"
+      ],
+      "prefix_sha256": "8231ddfbfa4c0f40c422f76274426ff379eb16c2ac3c427cfc13bf0f3af549cc",
+      "theorem": "decodeItemJoin6ae0From6a38_automatic",
+      "statement": "Lemma decodeItemJoin6ae0From6a38_automatic `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (n payloadStart : Z)\n    (lengthBytes frameBytes : list byte) (loaded : bv 64)\n    (inputPrefix : byte) (rest : list byte) :\n  \u22a2 decodeItemJoin6ae0From6a38 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest.",
+      "statement_sha256": "28e27d4587196305ec299d358ff850b47768a15d2d118cd7aac731ac29931ff7",
+      "normalized_statement_sha256": "c7544aeeb2ef19db25f1b67f073ab155644610e5c43c6556f69b10eef4904238",
+      "proof_commands": "Proof.\n  idtac \"COQC-PRIMARY-BEGIN\".\n  try zesu_block.\n  all: (chain_print_goal \"active\"; idtac \"CHAIN-GOAL-END\").\n  Show Existentials.\nQed."
+    },
+    "I50_generated_baseline23_rules34_37_dispatch": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6a38/Boundary.v",
+      "sha256": "a7cc7eaa36a915f6a6e6b76f21c7609ab8319c5827cb0e6bc613918f28bdeeb7",
+      "imports": [
+        {
+          "module": "ZesuSsz.Automation.All",
+          "line": 1,
+          "directive": "Require Import ZesuSsz.Automation.All."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegionFaultCastHypotheses",
+          "line": 2,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegionFaultCastHypotheses."
+        },
+        {
+          "module": "isla.riscv64.riscv64",
+          "line": 3,
+          "directive": "Require Import isla.riscv64.riscv64."
+        },
+        {
+          "module": "ZesuSsz.Contracts.RlpDecodeItemContract",
+          "line": 4,
+          "directive": "Require Import ZesuSsz.Contracts.RlpDecodeItemContract."
+        },
+        {
+          "module": "ZesuSsz.Contracts.DecodeItemSelected",
+          "line": 5,
+          "directive": "Require Import ZesuSsz.Contracts.DecodeItemSelected."
+        },
+        {
+          "module": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers",
+          "line": 6,
+          "directive": "Require Import ZesuSsz.Contracts.RlpDecodeItemJoinTransfers."
+        },
+        {
+          "module": "ZesuSsz.Automation.SealedCoverage",
+          "line": 7,
+          "directive": "Require Import ZesuSsz.Automation.SealedCoverage."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.InstructionLookup",
+          "line": 11,
+          "directive": "Require Import ZesuSsz.Automation.Switches.InstructionLookup."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.StackWrite",
+          "line": 12,
+          "directive": "Require Import ZesuSsz.Automation.Switches.StackWrite."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RamFault",
+          "line": 13,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RamFault."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegionFault",
+          "line": 14,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegionFault."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.LowMask",
+          "line": 15,
+          "directive": "Require Import ZesuSsz.Automation.Switches.LowMask."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.IntegerArrayAddress",
+          "line": 16,
+          "directive": "Require Import ZesuSsz.Automation.Switches.IntegerArrayAddress."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RecordWitness",
+          "line": 17,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RecordWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ArrayBounds",
+          "line": 18,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ArrayBounds."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.WordArrayHandoff",
+          "line": 19,
+          "directive": "Require Import ZesuSsz.Automation.Switches.WordArrayHandoff."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ReturnBundle",
+          "line": 20,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ReturnBundle."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ReturnWand",
+          "line": 21,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ReturnWand."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.StrictSigned",
+          "line": 22,
+          "directive": "Require Import ZesuSsz.Automation.Switches.StrictSigned."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ListWitness",
+          "line": 23,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ListWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.TupleWitness",
+          "line": 24,
+          "directive": "Require Import ZesuSsz.Automation.Switches.TupleWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ArrayRegionBounds",
+          "line": 25,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ArrayRegionBounds."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureFactHints",
+          "line": 26,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureFactHints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.KnownPairWitness",
+          "line": 27,
+          "directive": "Require Import ZesuSsz.Automation.Switches.KnownPairWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureWitnessConstraints",
+          "line": 28,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureWitnessConstraints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegisterCollectionSelection",
+          "line": 29,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegisterCollectionSelection."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.EvarSideconditionGuard",
+          "line": 30,
+          "directive": "Require Import ZesuSsz.Automation.Switches.EvarSideconditionGuard."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegionFaultNormalization",
+          "line": 31,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegionFaultNormalization."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.CanonicalAnchor",
+          "line": 32,
+          "directive": "Require Import ZesuSsz.Automation.Switches.CanonicalAnchor."
+        },
+        {
+          "module": "ZesuSsz.Compliance.DecodeItemHints",
+          "line": 33,
+          "directive": "Require Import ZesuSsz.Compliance.DecodeItemHints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.EvarImplicationGuard",
+          "line": 34,
+          "directive": "Require Import ZesuSsz.Automation.Switches.EvarImplicationGuard."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.SwitchDispatch",
+          "line": 35,
+          "directive": "Require Import ZesuSsz.Automation.Switches.SwitchDispatch."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureFactExistential",
+          "line": 36,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureFactExistential."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.CanonicalPureConjunction",
+          "line": 37,
+          "directive": "Require Import ZesuSsz.Automation.Switches.CanonicalPureConjunction."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ByteListContainment",
+          "line": 38,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ByteListContainment."
+        },
+        {
+          "module": "iris.proofmode.environments",
+          "line": 39,
+          "directive": "From iris.proofmode Require Import environments."
+        }
+      ],
+      "direct_switches_in_first_import_order": [
+        {
+          "module": "ZesuSsz.Automation.Switches.RegionFaultCastHypotheses",
+          "line": 2,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegionFaultCastHypotheses."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.InstructionLookup",
+          "line": 11,
+          "directive": "Require Import ZesuSsz.Automation.Switches.InstructionLookup."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.StackWrite",
+          "line": 12,
+          "directive": "Require Import ZesuSsz.Automation.Switches.StackWrite."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RamFault",
+          "line": 13,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RamFault."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegionFault",
+          "line": 14,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegionFault."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.LowMask",
+          "line": 15,
+          "directive": "Require Import ZesuSsz.Automation.Switches.LowMask."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.IntegerArrayAddress",
+          "line": 16,
+          "directive": "Require Import ZesuSsz.Automation.Switches.IntegerArrayAddress."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RecordWitness",
+          "line": 17,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RecordWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ArrayBounds",
+          "line": 18,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ArrayBounds."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.WordArrayHandoff",
+          "line": 19,
+          "directive": "Require Import ZesuSsz.Automation.Switches.WordArrayHandoff."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ReturnBundle",
+          "line": 20,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ReturnBundle."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ReturnWand",
+          "line": 21,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ReturnWand."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.StrictSigned",
+          "line": 22,
+          "directive": "Require Import ZesuSsz.Automation.Switches.StrictSigned."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ListWitness",
+          "line": 23,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ListWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.TupleWitness",
+          "line": 24,
+          "directive": "Require Import ZesuSsz.Automation.Switches.TupleWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ArrayRegionBounds",
+          "line": 25,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ArrayRegionBounds."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureFactHints",
+          "line": 26,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureFactHints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.KnownPairWitness",
+          "line": 27,
+          "directive": "Require Import ZesuSsz.Automation.Switches.KnownPairWitness."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureWitnessConstraints",
+          "line": 28,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureWitnessConstraints."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegisterCollectionSelection",
+          "line": 29,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegisterCollectionSelection."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.EvarSideconditionGuard",
+          "line": 30,
+          "directive": "Require Import ZesuSsz.Automation.Switches.EvarSideconditionGuard."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.RegionFaultNormalization",
+          "line": 31,
+          "directive": "Require Import ZesuSsz.Automation.Switches.RegionFaultNormalization."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.CanonicalAnchor",
+          "line": 32,
+          "directive": "Require Import ZesuSsz.Automation.Switches.CanonicalAnchor."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.EvarImplicationGuard",
+          "line": 34,
+          "directive": "Require Import ZesuSsz.Automation.Switches.EvarImplicationGuard."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.SwitchDispatch",
+          "line": 35,
+          "directive": "Require Import ZesuSsz.Automation.Switches.SwitchDispatch."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.PureFactExistential",
+          "line": 36,
+          "directive": "Require Import ZesuSsz.Automation.Switches.PureFactExistential."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.CanonicalPureConjunction",
+          "line": 37,
+          "directive": "Require Import ZesuSsz.Automation.Switches.CanonicalPureConjunction."
+        },
+        {
+          "module": "ZesuSsz.Automation.Switches.ByteListContainment",
+          "line": 38,
+          "directive": "Require Import ZesuSsz.Automation.Switches.ByteListContainment."
+        }
+      ],
+      "direct_unique_switch_count": 28,
+      "duplicate_switch_imports": {},
+      "options": [
+        {
+          "line": 8,
+          "text": "Open Scope Z_scope."
+        },
+        {
+          "line": 9,
+          "text": "Set Printing Width 200."
+        }
+      ],
+      "preamble_definitions": [
+        "chain_print_environment",
+        "chain_print_goal"
+      ],
+      "prefix_sha256": "477440c8659b7da51db71685d85ed0486b7fb2598a676e40e94985f54401a695",
+      "theorem": "decodeItemJoin6ae0From6a38_automatic",
+      "statement": "Lemma decodeItemJoin6ae0From6a38_automatic `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (n payloadStart : Z)\n    (lengthBytes frameBytes : list byte) (loaded : bv 64)\n    (inputPrefix : byte) (rest : list byte) :\n  \u22a2 decodeItemJoin6ae0From6a38 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest.",
+      "statement_sha256": "28e27d4587196305ec299d358ff850b47768a15d2d118cd7aac731ac29931ff7",
+      "normalized_statement_sha256": "c7544aeeb2ef19db25f1b67f073ab155644610e5c43c6556f69b10eef4904238",
+      "proof_commands": "Proof.\n  idtac \"COQC-PRIMARY-BEGIN\".\n  try zesu_block.\n  all: (chain_print_goal \"active\"; idtac \"CHAIN-GOAL-END\").\n  Show Existentials.\nQed."
+    }
+  },
+  "comparisons": [
+    {
+      "generated_environment": "S42_generated_baseline23_rules34_36_dispatch",
+      "hand_environment": "S96_hand_22_switches_and_umbrella",
+      "switches_directly_imported_only_by_generated": [
+        "ZesuSsz.Automation.Switches.EvarImplicationGuard",
+        "ZesuSsz.Automation.Switches.SwitchDispatch",
+        "ZesuSsz.Automation.Switches.PureFactExistential",
+        "ZesuSsz.Automation.Switches.CanonicalPureConjunction",
+        "ZesuSsz.Automation.Switches.ByteListContainment"
+      ],
+      "switches_directly_imported_only_by_hand": [],
+      "common_switch_first_import_order_equal": false,
+      "generated_common_switch_order": [
+        "ZesuSsz.Automation.Switches.InstructionLookup",
+        "ZesuSsz.Automation.Switches.StackWrite",
+        "ZesuSsz.Automation.Switches.RamFault",
+        "ZesuSsz.Automation.Switches.RegionFault",
+        "ZesuSsz.Automation.Switches.LowMask",
+        "ZesuSsz.Automation.Switches.IntegerArrayAddress",
+        "ZesuSsz.Automation.Switches.RecordWitness",
+        "ZesuSsz.Automation.Switches.ArrayBounds",
+        "ZesuSsz.Automation.Switches.WordArrayHandoff",
+        "ZesuSsz.Automation.Switches.ReturnBundle",
+        "ZesuSsz.Automation.Switches.ReturnWand",
+        "ZesuSsz.Automation.Switches.StrictSigned",
+        "ZesuSsz.Automation.Switches.ListWitness",
+        "ZesuSsz.Automation.Switches.TupleWitness",
+        "ZesuSsz.Automation.Switches.ArrayRegionBounds",
+        "ZesuSsz.Automation.Switches.PureFactHints",
+        "ZesuSsz.Automation.Switches.KnownPairWitness",
+        "ZesuSsz.Automation.Switches.PureWitnessConstraints",
+        "ZesuSsz.Automation.Switches.RegisterCollectionSelection",
+        "ZesuSsz.Automation.Switches.EvarSideconditionGuard",
+        "ZesuSsz.Automation.Switches.RegionFaultNormalization",
+        "ZesuSsz.Automation.Switches.CanonicalAnchor"
+      ],
+      "hand_common_switch_order": [
+        "ZesuSsz.Automation.Switches.InstructionLookup",
+        "ZesuSsz.Automation.Switches.RamFault",
+        "ZesuSsz.Automation.Switches.EvarSideconditionGuard",
+        "ZesuSsz.Automation.Switches.PureFactHints",
+        "ZesuSsz.Automation.Switches.StackWrite",
+        "ZesuSsz.Automation.Switches.RegionFault",
+        "ZesuSsz.Automation.Switches.LowMask",
+        "ZesuSsz.Automation.Switches.IntegerArrayAddress",
+        "ZesuSsz.Automation.Switches.RecordWitness",
+        "ZesuSsz.Automation.Switches.ArrayBounds",
+        "ZesuSsz.Automation.Switches.WordArrayHandoff",
+        "ZesuSsz.Automation.Switches.ReturnBundle",
+        "ZesuSsz.Automation.Switches.ReturnWand",
+        "ZesuSsz.Automation.Switches.StrictSigned",
+        "ZesuSsz.Automation.Switches.ListWitness",
+        "ZesuSsz.Automation.Switches.TupleWitness",
+        "ZesuSsz.Automation.Switches.ArrayRegionBounds",
+        "ZesuSsz.Automation.Switches.KnownPairWitness",
+        "ZesuSsz.Automation.Switches.PureWitnessConstraints",
+        "ZesuSsz.Automation.Switches.RegisterCollectionSelection",
+        "ZesuSsz.Automation.Switches.RegionFaultNormalization",
+        "ZesuSsz.Automation.Switches.CanonicalAnchor"
+      ],
+      "imports_only_generated": [
+        "ZesuSsz.Automation.SealedCoverage",
+        "ZesuSsz.Automation.Switches.ByteListContainment",
+        "ZesuSsz.Automation.Switches.CanonicalPureConjunction",
+        "ZesuSsz.Automation.Switches.EvarImplicationGuard",
+        "ZesuSsz.Automation.Switches.PureFactExistential",
+        "ZesuSsz.Automation.Switches.SwitchDispatch"
+      ],
+      "imports_only_hand": [
+        "SailStdpp.MachineWord",
+        "ZesuSsz.Automation.PureFacts",
+        "ZesuSsz.Compliance.DecodeItemFoldRejectionFacts",
+        "ZesuSsz.Compliance.DecodeItemSailIntroduction",
+        "ZesuSsz.Compliance.DecodeItemSemanticIntroduction",
+        "ZesuSsz.Contracts.DecodeItemBranchEntries",
+        "ZesuSsz.Contracts.DecodeItemErrorBranch",
+        "ZesuSsz.Contracts.DecodeItemReturnFacts",
+        "ZesuSsz.Contracts.RlpDecodeItem",
+        "ZesuSsz.Contracts.RlpDecodeItemBlockEntries",
+        "ZesuSsz.Proofs.DecodeItem.ByteFoldPure"
+      ],
+      "options_equal": false,
+      "normalized_statement_equal": true,
+      "preamble_difference": {
+        "generated": [
+          "chain_print_environment",
+          "chain_print_goal"
+        ],
+        "hand": []
+      },
+      "diff_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/i58-generated-hand-environment-audit-001/S42_generated_baseline23_rules34_36_dispatch-vs-hand.diff",
+      "diff_sha256": "8899906c5309129da5fa38aceff9782f631eeeb5971226dd61439ab0624b5ce7",
+      "causal_isolation": false
+    },
+    {
+      "generated_environment": "I50_generated_baseline23_rules34_37_dispatch",
+      "hand_environment": "S96_hand_22_switches_and_umbrella",
+      "switches_directly_imported_only_by_generated": [
+        "ZesuSsz.Automation.Switches.RegionFaultCastHypotheses",
+        "ZesuSsz.Automation.Switches.EvarImplicationGuard",
+        "ZesuSsz.Automation.Switches.SwitchDispatch",
+        "ZesuSsz.Automation.Switches.PureFactExistential",
+        "ZesuSsz.Automation.Switches.CanonicalPureConjunction",
+        "ZesuSsz.Automation.Switches.ByteListContainment"
+      ],
+      "switches_directly_imported_only_by_hand": [],
+      "common_switch_first_import_order_equal": false,
+      "generated_common_switch_order": [
+        "ZesuSsz.Automation.Switches.InstructionLookup",
+        "ZesuSsz.Automation.Switches.StackWrite",
+        "ZesuSsz.Automation.Switches.RamFault",
+        "ZesuSsz.Automation.Switches.RegionFault",
+        "ZesuSsz.Automation.Switches.LowMask",
+        "ZesuSsz.Automation.Switches.IntegerArrayAddress",
+        "ZesuSsz.Automation.Switches.RecordWitness",
+        "ZesuSsz.Automation.Switches.ArrayBounds",
+        "ZesuSsz.Automation.Switches.WordArrayHandoff",
+        "ZesuSsz.Automation.Switches.ReturnBundle",
+        "ZesuSsz.Automation.Switches.ReturnWand",
+        "ZesuSsz.Automation.Switches.StrictSigned",
+        "ZesuSsz.Automation.Switches.ListWitness",
+        "ZesuSsz.Automation.Switches.TupleWitness",
+        "ZesuSsz.Automation.Switches.ArrayRegionBounds",
+        "ZesuSsz.Automation.Switches.PureFactHints",
+        "ZesuSsz.Automation.Switches.KnownPairWitness",
+        "ZesuSsz.Automation.Switches.PureWitnessConstraints",
+        "ZesuSsz.Automation.Switches.RegisterCollectionSelection",
+        "ZesuSsz.Automation.Switches.EvarSideconditionGuard",
+        "ZesuSsz.Automation.Switches.RegionFaultNormalization",
+        "ZesuSsz.Automation.Switches.CanonicalAnchor"
+      ],
+      "hand_common_switch_order": [
+        "ZesuSsz.Automation.Switches.InstructionLookup",
+        "ZesuSsz.Automation.Switches.RamFault",
+        "ZesuSsz.Automation.Switches.EvarSideconditionGuard",
+        "ZesuSsz.Automation.Switches.PureFactHints",
+        "ZesuSsz.Automation.Switches.StackWrite",
+        "ZesuSsz.Automation.Switches.RegionFault",
+        "ZesuSsz.Automation.Switches.LowMask",
+        "ZesuSsz.Automation.Switches.IntegerArrayAddress",
+        "ZesuSsz.Automation.Switches.RecordWitness",
+        "ZesuSsz.Automation.Switches.ArrayBounds",
+        "ZesuSsz.Automation.Switches.WordArrayHandoff",
+        "ZesuSsz.Automation.Switches.ReturnBundle",
+        "ZesuSsz.Automation.Switches.ReturnWand",
+        "ZesuSsz.Automation.Switches.StrictSigned",
+        "ZesuSsz.Automation.Switches.ListWitness",
+        "ZesuSsz.Automation.Switches.TupleWitness",
+        "ZesuSsz.Automation.Switches.ArrayRegionBounds",
+        "ZesuSsz.Automation.Switches.KnownPairWitness",
+        "ZesuSsz.Automation.Switches.PureWitnessConstraints",
+        "ZesuSsz.Automation.Switches.RegisterCollectionSelection",
+        "ZesuSsz.Automation.Switches.RegionFaultNormalization",
+        "ZesuSsz.Automation.Switches.CanonicalAnchor"
+      ],
+      "imports_only_generated": [
+        "ZesuSsz.Automation.SealedCoverage",
+        "ZesuSsz.Automation.Switches.ByteListContainment",
+        "ZesuSsz.Automation.Switches.CanonicalPureConjunction",
+        "ZesuSsz.Automation.Switches.EvarImplicationGuard",
+        "ZesuSsz.Automation.Switches.PureFactExistential",
+        "ZesuSsz.Automation.Switches.RegionFaultCastHypotheses",
+        "ZesuSsz.Automation.Switches.SwitchDispatch"
+      ],
+      "imports_only_hand": [
+        "SailStdpp.MachineWord",
+        "ZesuSsz.Automation.PureFacts",
+        "ZesuSsz.Compliance.DecodeItemFoldRejectionFacts",
+        "ZesuSsz.Compliance.DecodeItemSailIntroduction",
+        "ZesuSsz.Compliance.DecodeItemSemanticIntroduction",
+        "ZesuSsz.Contracts.DecodeItemBranchEntries",
+        "ZesuSsz.Contracts.DecodeItemErrorBranch",
+        "ZesuSsz.Contracts.DecodeItemReturnFacts",
+        "ZesuSsz.Contracts.RlpDecodeItem",
+        "ZesuSsz.Contracts.RlpDecodeItemBlockEntries",
+        "ZesuSsz.Proofs.DecodeItem.ByteFoldPure"
+      ],
+      "options_equal": false,
+      "normalized_statement_equal": true,
+      "preamble_difference": {
+        "generated": [
+          "chain_print_environment",
+          "chain_print_goal"
+        ],
+        "hand": []
+      },
+      "diff_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/i58-generated-hand-environment-audit-001/I50_generated_baseline23_rules34_37_dispatch-vs-hand.diff",
+      "diff_sha256": "cc7f8ca6009160a975802cef0e988f8b117be288f28434ba0286c6a03bfddb08",
+      "causal_isolation": false
+    }
+  ],
+  "differing_environment": "The generated driver imports a broader switch set than the S96 hand attempt. The first-import order also differs.",
+  "findings": [
+    "S42 imports EvarImplicationGuard, SwitchDispatch, PureFactExistential, CanonicalPureConjunction, and ByteListContainment directly. S96 hand does not.",
+    "I50 adds RegionFaultCastHypotheses to those five direct-import differences.",
+    "The generated driver sets Printing Width 200 and defines two capture Ltac procedures.",
+    "The hand preamble imports PureFacts, ByteFoldPure, and additional contract/introduction modules.",
+    "The hand runs zesu_block directly. The generated proof uses try zesu_block and capture commands.",
+    "Both normalized statements match under the S97 name/whitespace/args-annotation comparison."
+  ],
+  "activation_evidence_limit": "This report compares lexical import and option order. It does not run a new dynamic class lookup.",
+  "proof_replays": 0,
+  "compiler_or_MCP_execution": false,
+  "production_edits": false,
+  "limitations": [
+    "The differing environments prevent an unchanged-search equivalence claim.",
+    "The report does not attribute closure to one differing switch or import.",
+    "Import order does not establish helper consumption or internal solver lineage.",
+    "No new kernel conversion result follows from textual normalization."
+  ]
+}

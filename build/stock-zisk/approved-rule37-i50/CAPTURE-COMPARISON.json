@@ -1,0 +1,2972 @@
+{
+  "old_root": "0eff516d88d81c8547e926e9c1dd01f4b31cd142",
+  "current_root": "8819ff9d7a69d21f68187651b04b8b5500f4dc64",
+  "old_report_sha256": "9e2fdf3c1777874546c1c4ca7fe4c6dd2e88b20aa24b9380c0043115a22a8376",
+  "current_report_sha256": "bce4cab071d62424d2837cc52934608dee2197027933700b10d350593980f133",
+  "old_capture_index_sha256": "7b0008e8e7a76f68b916f7a2b1478ae87e5495f600dc1f0229ba07be2fdf45a6",
+  "current_capture_index_sha256": "40a8faff3d8e8cb5b8e06f2ec691a1231091fe5b13305348fd9f3c4c7b66a3f1",
+  "old_scope": {
+    "hint_count": 24,
+    "Rule37": "absent"
+  },
+  "current_scope": {
+    "hint_count": 24,
+    "Rule37": "ON"
+  },
+  "records": [
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "active_index": 0,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6960-000.json",
+      "capture_sha256": "4784a378fb3ca8e50a5b6c6ae66f481fd9f2e2cb2dfee2654c34c5b2df72def9",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6960-000.txt",
+      "raw_sha256": "f6219d275109815a4234f895e3d4e83879216966abf202b0caa6f9a7223c8bfa",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6960/primary/compiler.log",
+      "compiler_log_sha256": "7276185670af1a427c577d9315c9227bbddd55db27a7c4d360f8270b4af0a007",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 0,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-000.json",
+          "old_capture_sha256": "4784a378fb3ca8e50a5b6c6ae66f481fd9f2e2cb2dfee2654c34c5b2df72def9",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-000.txt",
+          "old_raw_sha256": "f6219d275109815a4234f895e3d4e83879216966abf202b0caa6f9a7223c8bfa",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "active_index": 1,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6960-001.json",
+      "capture_sha256": "aad534d8907284853b3129f555b042c5f802d90671e893501af6736ea237340a",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6960-001.txt",
+      "raw_sha256": "10b495c8df8c1eb240e0c9dcb5c38c30335c49bf83fcf8d547fb9eadaadb4ec8",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6960/primary/compiler.log",
+      "compiler_log_sha256": "7276185670af1a427c577d9315c9227bbddd55db27a7c4d360f8270b4af0a007",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 1,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-001.json",
+          "old_capture_sha256": "aad534d8907284853b3129f555b042c5f802d90671e893501af6736ea237340a",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-001.txt",
+          "old_raw_sha256": "10b495c8df8c1eb240e0c9dcb5c38c30335c49bf83fcf8d547fb9eadaadb4ec8",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        },
+        {
+          "old_active_index": 3,
+          "same_active_index": false,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-003.json",
+          "old_capture_sha256": "aad534d8907284853b3129f555b042c5f802d90671e893501af6736ea237340a",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-003.txt",
+          "old_raw_sha256": "10b495c8df8c1eb240e0c9dcb5c38c30335c49bf83fcf8d547fb9eadaadb4ec8",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "active_index": 2,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6960-002.json",
+      "capture_sha256": "f95aa1dbc47363e3fdc11f193a7af4356f234b28061f59b7f0e1ef2c49ae6e08",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6960-002.txt",
+      "raw_sha256": "2f9b282f8fbce35df859e8a2015257024b9bd63861a00a7e17019dd41d4f85bf",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6960/primary/compiler.log",
+      "compiler_log_sha256": "7276185670af1a427c577d9315c9227bbddd55db27a7c4d360f8270b4af0a007",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 2,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-002.json",
+          "old_capture_sha256": "f95aa1dbc47363e3fdc11f193a7af4356f234b28061f59b7f0e1ef2c49ae6e08",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-002.txt",
+          "old_raw_sha256": "2f9b282f8fbce35df859e8a2015257024b9bd63861a00a7e17019dd41d4f85bf",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "active_index": 3,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6960-003.json",
+      "capture_sha256": "aad534d8907284853b3129f555b042c5f802d90671e893501af6736ea237340a",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6960-003.txt",
+      "raw_sha256": "10b495c8df8c1eb240e0c9dcb5c38c30335c49bf83fcf8d547fb9eadaadb4ec8",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6960/primary/compiler.log",
+      "compiler_log_sha256": "7276185670af1a427c577d9315c9227bbddd55db27a7c4d360f8270b4af0a007",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 1,
+          "same_active_index": false,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-001.json",
+          "old_capture_sha256": "aad534d8907284853b3129f555b042c5f802d90671e893501af6736ea237340a",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-001.txt",
+          "old_raw_sha256": "10b495c8df8c1eb240e0c9dcb5c38c30335c49bf83fcf8d547fb9eadaadb4ec8",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        },
+        {
+          "old_active_index": 3,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-003.json",
+          "old_capture_sha256": "aad534d8907284853b3129f555b042c5f802d90671e893501af6736ea237340a",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-003.txt",
+          "old_raw_sha256": "10b495c8df8c1eb240e0c9dcb5c38c30335c49bf83fcf8d547fb9eadaadb4ec8",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "active_index": 4,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6960-004.json",
+      "capture_sha256": "6674507a9f11af1a20c23d49bc3ef7bcc5723ff5902a1c4a945dd4f849c27f85",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6960-004.txt",
+      "raw_sha256": "4a8b872a13a2d59905e5225a90bd2908157d3c1641ff76e11e5fcd0c1616df2a",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6960/primary/compiler.log",
+      "compiler_log_sha256": "7276185670af1a427c577d9315c9227bbddd55db27a7c4d360f8270b4af0a007",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 4,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-004.json",
+          "old_capture_sha256": "6674507a9f11af1a20c23d49bc3ef7bcc5723ff5902a1c4a945dd4f849c27f85",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-004.txt",
+          "old_raw_sha256": "4a8b872a13a2d59905e5225a90bd2908157d3c1641ff76e11e5fcd0c1616df2a",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "active_index": 5,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6960-005.json",
+      "capture_sha256": "d355e764d8ab92bc60f96237893f9a20944789102a7b48a9e4584e4ed580351c",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6960-005.txt",
+      "raw_sha256": "02fcc331686d695d97ab06fd9059bbfabdc4644da6f4d9da7b121f41c96cb978",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6960/primary/compiler.log",
+      "compiler_log_sha256": "7276185670af1a427c577d9315c9227bbddd55db27a7c4d360f8270b4af0a007",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 5,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-005.json",
+          "old_capture_sha256": "d355e764d8ab92bc60f96237893f9a20944789102a7b48a9e4584e4ed580351c",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-005.txt",
+          "old_raw_sha256": "02fcc331686d695d97ab06fd9059bbfabdc4644da6f4d9da7b121f41c96cb978",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "active_index": 6,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6960-006.json",
+      "capture_sha256": "ab243fb7c83d5df2009be74e065debd71c1f641bc8244564eb65e69a71beb7ec",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6960-006.txt",
+      "raw_sha256": "a1541b7c996423a210107eeb23ee7aa666f363683b2bac48fce72907172c02ea",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6960/primary/compiler.log",
+      "compiler_log_sha256": "7276185670af1a427c577d9315c9227bbddd55db27a7c4d360f8270b4af0a007",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 6,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-006.json",
+          "old_capture_sha256": "ab243fb7c83d5df2009be74e065debd71c1f641bc8244564eb65e69a71beb7ec",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6960-006.txt",
+          "old_raw_sha256": "a1541b7c996423a210107eeb23ee7aa666f363683b2bac48fce72907172c02ea",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 0,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-000.json",
+      "capture_sha256": "ede1d5dda93895535d8fa9960eca4701c31f9b38324aa06d5d22a878a2393d2c",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-000.txt",
+      "raw_sha256": "94be79b28eccbd46f9e89f127192154138e230e5510e618b0bb34af389ced71d",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 0,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-000.json",
+          "old_capture_sha256": "ede1d5dda93895535d8fa9960eca4701c31f9b38324aa06d5d22a878a2393d2c",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-000.txt",
+          "old_raw_sha256": "94be79b28eccbd46f9e89f127192154138e230e5510e618b0bb34af389ced71d",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 1,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-001.json",
+      "capture_sha256": "9300270ab442b77614c2e08e57c00a7b266d33f8da14083a7d7cabf6fc4327a3",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-001.txt",
+      "raw_sha256": "c5edc79ee929c6a6ac4b2ee2e1d960821875539c55bb74042a27c668c3ee8699",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 1,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-001.json",
+          "old_capture_sha256": "9300270ab442b77614c2e08e57c00a7b266d33f8da14083a7d7cabf6fc4327a3",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-001.txt",
+          "old_raw_sha256": "c5edc79ee929c6a6ac4b2ee2e1d960821875539c55bb74042a27c668c3ee8699",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 2,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-002.json",
+      "capture_sha256": "5a25ba8475a1ae76499811db0901b7272b4641b7e01a13b129e322c51f7d7e07",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-002.txt",
+      "raw_sha256": "f2098e7b47308de91f83e547557d45de4c50352c0abac349b97697e746302ef7",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 2,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-002.json",
+          "old_capture_sha256": "5a25ba8475a1ae76499811db0901b7272b4641b7e01a13b129e322c51f7d7e07",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-002.txt",
+          "old_raw_sha256": "f2098e7b47308de91f83e547557d45de4c50352c0abac349b97697e746302ef7",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 3,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-003.json",
+      "capture_sha256": "160433b19b7cb3d62ab7faf4aaf673c153a84f863240c701963408cc91b3a514",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-003.txt",
+      "raw_sha256": "43e67a8599f5c5e1b5f2dd3954edb054f76f4bbfd8b5132fd8263f0abf1a4820",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 3,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-003.json",
+          "old_capture_sha256": "160433b19b7cb3d62ab7faf4aaf673c153a84f863240c701963408cc91b3a514",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-003.txt",
+          "old_raw_sha256": "43e67a8599f5c5e1b5f2dd3954edb054f76f4bbfd8b5132fd8263f0abf1a4820",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 4,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-004.json",
+      "capture_sha256": "e5428e3cc9b8ab82ce5bc3ff0598735d3103adb45e5755ea053d0ca4e6591fb7",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-004.txt",
+      "raw_sha256": "97db78585a8c4d3dafe82205eb27c3f3ed8ce33102690838066dc27c6d0d7dde",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 4,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-004.json",
+          "old_capture_sha256": "e5428e3cc9b8ab82ce5bc3ff0598735d3103adb45e5755ea053d0ca4e6591fb7",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-004.txt",
+          "old_raw_sha256": "97db78585a8c4d3dafe82205eb27c3f3ed8ce33102690838066dc27c6d0d7dde",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 5,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-005.json",
+      "capture_sha256": "3ff2ed6c515b3157dc69ec25fd007d46dccba2de7c548ece3e5e141592db9824",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-005.txt",
+      "raw_sha256": "f534475ea0b4950f6fd58d837b9f4de59d792e8c2121c7d47f0f1ad33d637f6c",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 5,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-005.json",
+          "old_capture_sha256": "3ff2ed6c515b3157dc69ec25fd007d46dccba2de7c548ece3e5e141592db9824",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-005.txt",
+          "old_raw_sha256": "f534475ea0b4950f6fd58d837b9f4de59d792e8c2121c7d47f0f1ad33d637f6c",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 6,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-006.json",
+      "capture_sha256": "bb90d4b6c203523c6166780cb9b3ea5be3da0a3b153161221e4a2d6c9479770a",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-006.txt",
+      "raw_sha256": "199aec0023b7a94a9cb85d7184222baedd0c3fc257c7a9900dda3d4b86db2a24",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 6,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-006.json",
+          "old_capture_sha256": "bb90d4b6c203523c6166780cb9b3ea5be3da0a3b153161221e4a2d6c9479770a",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-006.txt",
+          "old_raw_sha256": "199aec0023b7a94a9cb85d7184222baedd0c3fc257c7a9900dda3d4b86db2a24",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 7,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-007.json",
+      "capture_sha256": "5047af1ac1631af7cb68d801487bc8fc5e5e79af3d3ae45969a0c11c7a5ec3a4",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-007.txt",
+      "raw_sha256": "0ffc01431df72bfb6ef7447cb10df7e190fd5fe63ad4832ffe73b93bfb056e14",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 7,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-007.json",
+          "old_capture_sha256": "5047af1ac1631af7cb68d801487bc8fc5e5e79af3d3ae45969a0c11c7a5ec3a4",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-007.txt",
+          "old_raw_sha256": "0ffc01431df72bfb6ef7447cb10df7e190fd5fe63ad4832ffe73b93bfb056e14",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 8,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-008.json",
+      "capture_sha256": "e793a885948f0d7f62dfc786a339053697632818be7cb2d89f16cf53e66420fd",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-008.txt",
+      "raw_sha256": "9c0ed21e4b0c41f9c36efbb0059d9a35356e19dab5c02fdd1daa11fe5055b9f6",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 8,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-008.json",
+          "old_capture_sha256": "e793a885948f0d7f62dfc786a339053697632818be7cb2d89f16cf53e66420fd",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-008.txt",
+          "old_raw_sha256": "9c0ed21e4b0c41f9c36efbb0059d9a35356e19dab5c02fdd1daa11fe5055b9f6",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 9,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-009.json",
+      "capture_sha256": "2100c7ead7f290c5dc7da429427df02425e7b7f62fd0f36ff88ed31fc2966328",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-009.txt",
+      "raw_sha256": "fed50e6608ec9d669bd5a1ba2b3126146282bcceaf413b0a7eb66ecaa8517db8",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 9,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-009.json",
+          "old_capture_sha256": "2100c7ead7f290c5dc7da429427df02425e7b7f62fd0f36ff88ed31fc2966328",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-009.txt",
+          "old_raw_sha256": "fed50e6608ec9d669bd5a1ba2b3126146282bcceaf413b0a7eb66ecaa8517db8",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 10,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-010.json",
+      "capture_sha256": "283b6d5c958091ce7098f19db5af61ee89a2c1a5f86431c6c4b970666263ebaf",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-010.txt",
+      "raw_sha256": "6be32b0412d786eadc0edf867ac8ab48050dadb9e4e2eb16f77570c85a6c66b4",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 10,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-010.json",
+          "old_capture_sha256": "283b6d5c958091ce7098f19db5af61ee89a2c1a5f86431c6c4b970666263ebaf",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-010.txt",
+          "old_raw_sha256": "6be32b0412d786eadc0edf867ac8ab48050dadb9e4e2eb16f77570c85a6c66b4",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 11,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-011.json",
+      "capture_sha256": "1cdaa94216e7887fd819ae8cb281b20ab6e32928becf1bdbab0d854400a26a8e",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-011.txt",
+      "raw_sha256": "f41a7aa2f07b88e1d7fad772fd53d07f9c00ee6c324a8cc1a0e8f3292a6bede2",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 11,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-011.json",
+          "old_capture_sha256": "1cdaa94216e7887fd819ae8cb281b20ab6e32928becf1bdbab0d854400a26a8e",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-011.txt",
+          "old_raw_sha256": "f41a7aa2f07b88e1d7fad772fd53d07f9c00ee6c324a8cc1a0e8f3292a6bede2",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 12,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-012.json",
+      "capture_sha256": "08bfd9bbe77204d4c25a055bf44056d9940f04cac99c83a9ec9ec17680055434",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-012.txt",
+      "raw_sha256": "d504a89e2cd4ea8bb1820a65ff262364a1d23308e61021027ab4b0b4585c1c38",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 12,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-012.json",
+          "old_capture_sha256": "08bfd9bbe77204d4c25a055bf44056d9940f04cac99c83a9ec9ec17680055434",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-012.txt",
+          "old_raw_sha256": "d504a89e2cd4ea8bb1820a65ff262364a1d23308e61021027ab4b0b4585c1c38",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 13,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-013.json",
+      "capture_sha256": "abbd6544fce0e6f434b36b87bb1c9172629b504f93d122f079430e981a7b5206",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-013.txt",
+      "raw_sha256": "b45f5f7d2d3bf31de9a031eb213afeb0b5596305299c3261f1fa3cf7ba8902a0",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 13,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-013.json",
+          "old_capture_sha256": "abbd6544fce0e6f434b36b87bb1c9172629b504f93d122f079430e981a7b5206",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-013.txt",
+          "old_raw_sha256": "b45f5f7d2d3bf31de9a031eb213afeb0b5596305299c3261f1fa3cf7ba8902a0",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 14,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-014.json",
+      "capture_sha256": "face677633be593289045bb886a6d715b54fa878b62b3b37641975a20ca3eac0",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-014.txt",
+      "raw_sha256": "b06178cd184213e7935e4ee5fcbc889c28187775e62feee681b83c6025664d2a",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 14,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-014.json",
+          "old_capture_sha256": "face677633be593289045bb886a6d715b54fa878b62b3b37641975a20ca3eac0",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-014.txt",
+          "old_raw_sha256": "b06178cd184213e7935e4ee5fcbc889c28187775e62feee681b83c6025664d2a",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 15,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-015.json",
+      "capture_sha256": "c27d06103ed9d4e11d64ff1e33fb33dfe8fc5d2fbaaf0094ac5b174d1e3ef1e8",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-015.txt",
+      "raw_sha256": "adca49d0aaa5e2f3baa3a56594b829e6bd14d6f6420f6d0016db0c9711e61235",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 15,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-015.json",
+          "old_capture_sha256": "c27d06103ed9d4e11d64ff1e33fb33dfe8fc5d2fbaaf0094ac5b174d1e3ef1e8",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-015.txt",
+          "old_raw_sha256": "adca49d0aaa5e2f3baa3a56594b829e6bd14d6f6420f6d0016db0c9711e61235",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 16,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-016.json",
+      "capture_sha256": "90901794f3b31f9be40c334e43ed32b41da2dee1a782c18dc692a0808d9250ed",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-016.txt",
+      "raw_sha256": "3ebd3fe9434e7cd00368d14ddbc551be8295319145e3c04810b95af0d74df07e",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 16,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-016.json",
+          "old_capture_sha256": "90901794f3b31f9be40c334e43ed32b41da2dee1a782c18dc692a0808d9250ed",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-016.txt",
+          "old_raw_sha256": "3ebd3fe9434e7cd00368d14ddbc551be8295319145e3c04810b95af0d74df07e",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 17,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-017.json",
+      "capture_sha256": "aac1df76d33baf9aa51ef354c6f08663a95911166712d4bb0c21c78a1c8cd09e",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-017.txt",
+      "raw_sha256": "88acba603abdf83777577b0b2140ac5bb94c93a47e596e0489026ea36fcd65ee",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 17,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-017.json",
+          "old_capture_sha256": "aac1df76d33baf9aa51ef354c6f08663a95911166712d4bb0c21c78a1c8cd09e",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-017.txt",
+          "old_raw_sha256": "88acba603abdf83777577b0b2140ac5bb94c93a47e596e0489026ea36fcd65ee",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 18,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-018.json",
+      "capture_sha256": "75f493b7798f7c5d2edbd3d6b4e3ebbb7e387c8bfcf02bcdad75eef47ebb071b",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-018.txt",
+      "raw_sha256": "13dc9a98538dbcdc5c6e24b1e931e6759a9ef92462745e3e96c9f48b03b82555",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 18,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-018.json",
+          "old_capture_sha256": "75f493b7798f7c5d2edbd3d6b4e3ebbb7e387c8bfcf02bcdad75eef47ebb071b",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-018.txt",
+          "old_raw_sha256": "13dc9a98538dbcdc5c6e24b1e931e6759a9ef92462745e3e96c9f48b03b82555",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 19,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-019.json",
+      "capture_sha256": "2b69ea1c39d25a142f16bfe6fb05d387d78249f287be276a4b0b3656e936450b",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-019.txt",
+      "raw_sha256": "7d901f01357d56a040e99a1d0307e86bf16d728afcd130e3a5e02b60af6f2e04",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 19,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-019.json",
+          "old_capture_sha256": "2b69ea1c39d25a142f16bfe6fb05d387d78249f287be276a4b0b3656e936450b",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-019.txt",
+          "old_raw_sha256": "7d901f01357d56a040e99a1d0307e86bf16d728afcd130e3a5e02b60af6f2e04",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "active_index": 20,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-020.json",
+      "capture_sha256": "de17310bf940c0e3ae1d3432653976f97e561c9598d9aef9a26f79a5636fbc0f",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6974-020.txt",
+      "raw_sha256": "b4f276f8e4403f8a18e7d4ac84ef502532c32974305a1cd157bdb6fe62ce2d97",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log",
+      "compiler_log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 20,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-020.json",
+          "old_capture_sha256": "de17310bf940c0e3ae1d3432653976f97e561c9598d9aef9a26f79a5636fbc0f",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6974-020.txt",
+          "old_raw_sha256": "b4f276f8e4403f8a18e7d4ac84ef502532c32974305a1cd157bdb6fe62ce2d97",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d698c",
+      "kind": "native",
+      "active_index": 0,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d698c-000.json",
+      "capture_sha256": "2af0ef2bb299227b74bedd53d9444eba04750a5b9b17150981f1f84c2140b8ab",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d698c-000.txt",
+      "raw_sha256": "e91e32a2d34fd641fc71b1ff7cb2fb777073c148bedd3f40668b626daeacd05f",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d698c/primary/compiler.log",
+      "compiler_log_sha256": "25bea041d85f2f5f1626007fc2dccce59d3158b3f010a356786fbd3ff78af550",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 0,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d698c-000.json",
+          "old_capture_sha256": "2af0ef2bb299227b74bedd53d9444eba04750a5b9b17150981f1f84c2140b8ab",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d698c-000.txt",
+          "old_raw_sha256": "e91e32a2d34fd641fc71b1ff7cb2fb777073c148bedd3f40668b626daeacd05f",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d698c",
+      "kind": "native",
+      "active_index": 1,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d698c-001.json",
+      "capture_sha256": "7465b3fe2aa91774824e7b23c6c165594f38aa37ec37459270e856607f219e82",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d698c-001.txt",
+      "raw_sha256": "4dac772c0e0426187e630cbd47e273efedcaf11d981640111343bcac1c1be035",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d698c/primary/compiler.log",
+      "compiler_log_sha256": "25bea041d85f2f5f1626007fc2dccce59d3158b3f010a356786fbd3ff78af550",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 1,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d698c-001.json",
+          "old_capture_sha256": "7465b3fe2aa91774824e7b23c6c165594f38aa37ec37459270e856607f219e82",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d698c-001.txt",
+          "old_raw_sha256": "4dac772c0e0426187e630cbd47e273efedcaf11d981640111343bcac1c1be035",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d698c",
+      "kind": "native",
+      "active_index": 2,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d698c-002.json",
+      "capture_sha256": "448e1d66bb44f70e953ba3ec3d1d567385c16b9fca6b7ae2f64059bf74a41e33",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d698c-002.txt",
+      "raw_sha256": "dcca8d762bb820a58218ad666a29a60c8306d24146a95c4ab62563afdbbac35e",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d698c/primary/compiler.log",
+      "compiler_log_sha256": "25bea041d85f2f5f1626007fc2dccce59d3158b3f010a356786fbd3ff78af550",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 2,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d698c-002.json",
+          "old_capture_sha256": "448e1d66bb44f70e953ba3ec3d1d567385c16b9fca6b7ae2f64059bf74a41e33",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d698c-002.txt",
+          "old_raw_sha256": "dcca8d762bb820a58218ad666a29a60c8306d24146a95c4ab62563afdbbac35e",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d69b0",
+      "kind": "native",
+      "active_index": 0,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d69b0-000.json",
+      "capture_sha256": "e7b923bc0afd6e870ee9746f46ef9a8b6b008ce271592d83ea44227c70b6511e",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d69b0-000.txt",
+      "raw_sha256": "eab588178d13ff653f560e5ddd111433e208733820123274fb145d3b3f242bd7",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69b0/primary/compiler.log",
+      "compiler_log_sha256": "34e13cfde4ea2def4875988a4a64aa416cad01d2e982562baa7e8951d2cf1a5b",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 0,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d69b0-000.json",
+          "old_capture_sha256": "e7b923bc0afd6e870ee9746f46ef9a8b6b008ce271592d83ea44227c70b6511e",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d69b0-000.txt",
+          "old_raw_sha256": "eab588178d13ff653f560e5ddd111433e208733820123274fb145d3b3f242bd7",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d69b0",
+      "kind": "native",
+      "active_index": 1,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d69b0-001.json",
+      "capture_sha256": "5a8ee5464efef8919349a1b0c5cc821574eb61059d151e9665bdb8b290e03499",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d69b0-001.txt",
+      "raw_sha256": "5e15b587e5077a9806b0dca24b0d321775736f5d4b5c91ae98ba130ffd19694f",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69b0/primary/compiler.log",
+      "compiler_log_sha256": "34e13cfde4ea2def4875988a4a64aa416cad01d2e982562baa7e8951d2cf1a5b",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 1,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d69b0-001.json",
+          "old_capture_sha256": "5a8ee5464efef8919349a1b0c5cc821574eb61059d151e9665bdb8b290e03499",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d69b0-001.txt",
+          "old_raw_sha256": "5e15b587e5077a9806b0dca24b0d321775736f5d4b5c91ae98ba130ffd19694f",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d69b0",
+      "kind": "native",
+      "active_index": 2,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d69b0-002.json",
+      "capture_sha256": "2e9e568e011904de6972e850169bafaf6f10d45a05d991f330079015bc6e286b",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d69b0-002.txt",
+      "raw_sha256": "cb01a0e41b6460b4c586b915a88d1bab5578207ba085b855cb8bfbc6d3d56a71",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69b0/primary/compiler.log",
+      "compiler_log_sha256": "34e13cfde4ea2def4875988a4a64aa416cad01d2e982562baa7e8951d2cf1a5b",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 2,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d69b0-002.json",
+          "old_capture_sha256": "2e9e568e011904de6972e850169bafaf6f10d45a05d991f330079015bc6e286b",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d69b0-002.txt",
+          "old_raw_sha256": "cb01a0e41b6460b4c586b915a88d1bab5578207ba085b855cb8bfbc6d3d56a71",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6a08",
+      "kind": "native",
+      "active_index": 0,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a08-000.json",
+      "capture_sha256": "3b5651977c1682bcee3c175d7bd61cacadc9040a35ffde527b9c68d7be718cfa",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a08-000.txt",
+      "raw_sha256": "fbfa042821133d127c7115be362f31cbcfdfc15965f97355021715ff1b94543e",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a08/primary/compiler.log",
+      "compiler_log_sha256": "62619ae85993d9567be31fe11c83cef9b0ddb3b542e7fdba23dd23bb4872fe11",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 0,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a08-000.json",
+          "old_capture_sha256": "3b5651977c1682bcee3c175d7bd61cacadc9040a35ffde527b9c68d7be718cfa",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a08-000.txt",
+          "old_raw_sha256": "fbfa042821133d127c7115be362f31cbcfdfc15965f97355021715ff1b94543e",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        },
+        {
+          "old_active_index": 1,
+          "same_active_index": false,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a08-001.json",
+          "old_capture_sha256": "3b5651977c1682bcee3c175d7bd61cacadc9040a35ffde527b9c68d7be718cfa",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a08-001.txt",
+          "old_raw_sha256": "fbfa042821133d127c7115be362f31cbcfdfc15965f97355021715ff1b94543e",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6a08",
+      "kind": "native",
+      "active_index": 1,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a08-001.json",
+      "capture_sha256": "3b5651977c1682bcee3c175d7bd61cacadc9040a35ffde527b9c68d7be718cfa",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a08-001.txt",
+      "raw_sha256": "fbfa042821133d127c7115be362f31cbcfdfc15965f97355021715ff1b94543e",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a08/primary/compiler.log",
+      "compiler_log_sha256": "62619ae85993d9567be31fe11c83cef9b0ddb3b542e7fdba23dd23bb4872fe11",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 0,
+          "same_active_index": false,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a08-000.json",
+          "old_capture_sha256": "3b5651977c1682bcee3c175d7bd61cacadc9040a35ffde527b9c68d7be718cfa",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a08-000.txt",
+          "old_raw_sha256": "fbfa042821133d127c7115be362f31cbcfdfc15965f97355021715ff1b94543e",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        },
+        {
+          "old_active_index": 1,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a08-001.json",
+          "old_capture_sha256": "3b5651977c1682bcee3c175d7bd61cacadc9040a35ffde527b9c68d7be718cfa",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a08-001.txt",
+          "old_raw_sha256": "fbfa042821133d127c7115be362f31cbcfdfc15965f97355021715ff1b94543e",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6a08",
+      "kind": "native",
+      "active_index": 2,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a08-002.json",
+      "capture_sha256": "f215782a52aaa9bb729eb5abd2dc0b99528738064be05e0ccfbdfedab03714b3",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a08-002.txt",
+      "raw_sha256": "e7e20080e6d47636d7d21548c965add4550dea3dfa31ce1c31eb3d1955ea4d9a",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a08/primary/compiler.log",
+      "compiler_log_sha256": "62619ae85993d9567be31fe11c83cef9b0ddb3b542e7fdba23dd23bb4872fe11",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 2,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a08-002.json",
+          "old_capture_sha256": "f215782a52aaa9bb729eb5abd2dc0b99528738064be05e0ccfbdfedab03714b3",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a08-002.txt",
+          "old_raw_sha256": "e7e20080e6d47636d7d21548c965add4550dea3dfa31ce1c31eb3d1955ea4d9a",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6a08",
+      "kind": "native",
+      "active_index": 3,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a08-003.json",
+      "capture_sha256": "d8e7af8c84c31156931a38fc97683ef9601f226addc9e6e72ac85ef09d3c300c",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a08-003.txt",
+      "raw_sha256": "cc704ba1299b9cd62c19f939b982ff21f72bd74e3bed436006615e06d2596a9e",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a08/primary/compiler.log",
+      "compiler_log_sha256": "62619ae85993d9567be31fe11c83cef9b0ddb3b542e7fdba23dd23bb4872fe11",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 3,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a08-003.json",
+          "old_capture_sha256": "d8e7af8c84c31156931a38fc97683ef9601f226addc9e6e72ac85ef09d3c300c",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a08-003.txt",
+          "old_raw_sha256": "cc704ba1299b9cd62c19f939b982ff21f72bd74e3bed436006615e06d2596a9e",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "active_index": 0,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a24-000.json",
+      "capture_sha256": "71c390735d875bc845ef0229d0a47d791e4f1d16a646068b94608ccd9c534e34",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a24-000.txt",
+      "raw_sha256": "5d11dd61beb320e8a6d21d0cde7b5bf7e858c0f5f5bc95fc9374d46d6e667b16",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a24/primary/compiler.log",
+      "compiler_log_sha256": "f2a6e48a242ec3667ce9c496f388fed92eed88315eb45bfb5326430eef7fe84b",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 0,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a24-000.json",
+          "old_capture_sha256": "71c390735d875bc845ef0229d0a47d791e4f1d16a646068b94608ccd9c534e34",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a24-000.txt",
+          "old_raw_sha256": "5d11dd61beb320e8a6d21d0cde7b5bf7e858c0f5f5bc95fc9374d46d6e667b16",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "active_index": 1,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a24-001.json",
+      "capture_sha256": "94d6c44a7c94bffa1f5855bb1b05776a866b5ed3310fe8b25f88ddab592eca99",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a24-001.txt",
+      "raw_sha256": "3d97059343408720adb1608583d92288b6c0e6d142767e07731257254def6426",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a24/primary/compiler.log",
+      "compiler_log_sha256": "f2a6e48a242ec3667ce9c496f388fed92eed88315eb45bfb5326430eef7fe84b",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 1,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a24-001.json",
+          "old_capture_sha256": "94d6c44a7c94bffa1f5855bb1b05776a866b5ed3310fe8b25f88ddab592eca99",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a24-001.txt",
+          "old_raw_sha256": "3d97059343408720adb1608583d92288b6c0e6d142767e07731257254def6426",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "active_index": 2,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a24-002.json",
+      "capture_sha256": "4d9ad06f6fa08db52a90b95adbded12f28aa6462c2129d31ca6b903850373101",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a24-002.txt",
+      "raw_sha256": "d3665f53adc80d103c0e43a9c54fdac06c1fb77bdc798bab55605e311be6ecb5",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a24/primary/compiler.log",
+      "compiler_log_sha256": "f2a6e48a242ec3667ce9c496f388fed92eed88315eb45bfb5326430eef7fe84b",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 2,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a24-002.json",
+          "old_capture_sha256": "4d9ad06f6fa08db52a90b95adbded12f28aa6462c2129d31ca6b903850373101",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a24-002.txt",
+          "old_raw_sha256": "d3665f53adc80d103c0e43a9c54fdac06c1fb77bdc798bab55605e311be6ecb5",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "active_index": 3,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a24-003.json",
+      "capture_sha256": "f3c0eebd32b0e7756226e71dabaf27ef7a05671c5ec9575e7d1fae5bca5d92c2",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a24-003.txt",
+      "raw_sha256": "f11c155c88b7755fb0c8a096bcc61476b07bb0843048cf6968618871b7ef7c1a",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a24/primary/compiler.log",
+      "compiler_log_sha256": "f2a6e48a242ec3667ce9c496f388fed92eed88315eb45bfb5326430eef7fe84b",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 3,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a24-003.json",
+          "old_capture_sha256": "f3c0eebd32b0e7756226e71dabaf27ef7a05671c5ec9575e7d1fae5bca5d92c2",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a24-003.txt",
+          "old_raw_sha256": "f11c155c88b7755fb0c8a096bcc61476b07bb0843048cf6968618871b7ef7c1a",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "active_index": 4,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a24-004.json",
+      "capture_sha256": "2f9692f8677fd82e28f6472611e6eac3b5a19d12d521648c8d3f713e4ac8dc3f",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a24-004.txt",
+      "raw_sha256": "96f3b53583fb2607112cd13fb6ac488227dd793112752b696320316c3588f5bf",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a24/primary/compiler.log",
+      "compiler_log_sha256": "f2a6e48a242ec3667ce9c496f388fed92eed88315eb45bfb5326430eef7fe84b",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 4,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a24-004.json",
+          "old_capture_sha256": "2f9692f8677fd82e28f6472611e6eac3b5a19d12d521648c8d3f713e4ac8dc3f",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a24-004.txt",
+          "old_raw_sha256": "96f3b53583fb2607112cd13fb6ac488227dd793112752b696320316c3588f5bf",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "active_index": 5,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a24-005.json",
+      "capture_sha256": "01204ea00045a542cae2b70005eae785aecb5ff48a43346aeac19f61cad9b7fd",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a24-005.txt",
+      "raw_sha256": "8834575f74105fde04ad96877b4ab8938c4f6d7f7c5d62c3f001d026279017b8",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a24/primary/compiler.log",
+      "compiler_log_sha256": "f2a6e48a242ec3667ce9c496f388fed92eed88315eb45bfb5326430eef7fe84b",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 5,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a24-005.json",
+          "old_capture_sha256": "01204ea00045a542cae2b70005eae785aecb5ff48a43346aeac19f61cad9b7fd",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a24-005.txt",
+          "old_raw_sha256": "8834575f74105fde04ad96877b4ab8938c4f6d7f7c5d62c3f001d026279017b8",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "active_index": 6,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a24-006.json",
+      "capture_sha256": "fc51e9baf19368efe1091c394e18d5c01efa6bb512aaa73027711032c3eb19f6",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a24-006.txt",
+      "raw_sha256": "2cab5f979f201f5c580b905d7a6538916b04151acec745f95975789cc21cf290",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a24/primary/compiler.log",
+      "compiler_log_sha256": "f2a6e48a242ec3667ce9c496f388fed92eed88315eb45bfb5326430eef7fe84b",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 6,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a24-006.json",
+          "old_capture_sha256": "fc51e9baf19368efe1091c394e18d5c01efa6bb512aaa73027711032c3eb19f6",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a24-006.txt",
+          "old_raw_sha256": "2cab5f979f201f5c580b905d7a6538916b04151acec745f95975789cc21cf290",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "active_index": 7,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a24-007.json",
+      "capture_sha256": "a3898e1a187966f8e85c64a05600870ee67900ff65fa8013ecfc73ce38df7581",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a24-007.txt",
+      "raw_sha256": "238e6a39cd66e2f77991b89347744936a06f89c1f1f62a885af56c5952ad1165",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a24/primary/compiler.log",
+      "compiler_log_sha256": "f2a6e48a242ec3667ce9c496f388fed92eed88315eb45bfb5326430eef7fe84b",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 7,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a24-007.json",
+          "old_capture_sha256": "a3898e1a187966f8e85c64a05600870ee67900ff65fa8013ecfc73ce38df7581",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a24-007.txt",
+          "old_raw_sha256": "238e6a39cd66e2f77991b89347744936a06f89c1f1f62a885af56c5952ad1165",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6a38",
+      "kind": "native",
+      "active_index": 0,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a38-000.json",
+      "capture_sha256": "9bfd9c0db4ac299c42ee0b86fe248a66d9a863ea596acb9cbbb47596752184cd",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a38-000.txt",
+      "raw_sha256": "532c125dcf450d3bde2e446edbe1983bd011661f8f2f7ef27ff5502b15b49345",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a38/primary/compiler.log",
+      "compiler_log_sha256": "e6520a4d89f2f0c9b03db006a043d6964f8aa34cdb91441081222389d7abf351",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 0,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a38-000.json",
+          "old_capture_sha256": "9bfd9c0db4ac299c42ee0b86fe248a66d9a863ea596acb9cbbb47596752184cd",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a38-000.txt",
+          "old_raw_sha256": "532c125dcf450d3bde2e446edbe1983bd011661f8f2f7ef27ff5502b15b49345",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6a40",
+      "kind": "native",
+      "active_index": 0,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a40-000.json",
+      "capture_sha256": "0cbefeca91c7a71c7f4b00ab1d351fc4476d09274345e050b8efd41761de680b",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a40-000.txt",
+      "raw_sha256": "afa63e23df42147a628a4f357e3f7a613097286bfc4da8b5d283b7fd3ac69fa9",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a40/primary/compiler.log",
+      "compiler_log_sha256": "59cbe934c84ac302e6f4e7f713a3d6afa432b9a6f5e78b32a6fa3bd41ec7331f",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 0,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a40-000.json",
+          "old_capture_sha256": "0cbefeca91c7a71c7f4b00ab1d351fc4476d09274345e050b8efd41761de680b",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a40-000.txt",
+          "old_raw_sha256": "afa63e23df42147a628a4f357e3f7a613097286bfc4da8b5d283b7fd3ac69fa9",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6a40",
+      "kind": "native",
+      "active_index": 1,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a40-001.json",
+      "capture_sha256": "77b1314ec13c46e25902b9c822f9ebb45aee36dc3793d72a5e3b734c16e47521",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a40-001.txt",
+      "raw_sha256": "d180378e8c8f85104d40e9265a339edce24fcd4b5306f946aa0eb297a3490ae8",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a40/primary/compiler.log",
+      "compiler_log_sha256": "59cbe934c84ac302e6f4e7f713a3d6afa432b9a6f5e78b32a6fa3bd41ec7331f",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 1,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a40-001.json",
+          "old_capture_sha256": "77b1314ec13c46e25902b9c822f9ebb45aee36dc3793d72a5e3b734c16e47521",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a40-001.txt",
+          "old_raw_sha256": "d180378e8c8f85104d40e9265a339edce24fcd4b5306f946aa0eb297a3490ae8",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6a40",
+      "kind": "native",
+      "active_index": 2,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a40-002.json",
+      "capture_sha256": "dbc92fa123f971c2a8944423c56d3254eea38db4fac62e213b496559ab709cb5",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a40-002.txt",
+      "raw_sha256": "a190f232d90a5425918cae87ba19d598be166f906598d19d06e0282bec1fddd6",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a40/primary/compiler.log",
+      "compiler_log_sha256": "59cbe934c84ac302e6f4e7f713a3d6afa432b9a6f5e78b32a6fa3bd41ec7331f",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 2,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a40-002.json",
+          "old_capture_sha256": "dbc92fa123f971c2a8944423c56d3254eea38db4fac62e213b496559ab709cb5",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a40-002.txt",
+          "old_raw_sha256": "a190f232d90a5425918cae87ba19d598be166f906598d19d06e0282bec1fddd6",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6a78",
+      "kind": "native",
+      "active_index": 0,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a78-000.json",
+      "capture_sha256": "b83ccf0971de5955c3c6a252fc67d12c03812f02250731f16eb7e15d06976793",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a78-000.txt",
+      "raw_sha256": "acc895d15a6019b2b71f8584149c3dcd0dc25f26ce42dee59e0d16eba53645f1",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a78/primary/compiler.log",
+      "compiler_log_sha256": "d69e3ae8c5e406ce67886520582d7959a605a20cd8abb71aafa8d67c94a65919",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 0,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a78-000.json",
+          "old_capture_sha256": "b83ccf0971de5955c3c6a252fc67d12c03812f02250731f16eb7e15d06976793",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a78-000.txt",
+          "old_raw_sha256": "acc895d15a6019b2b71f8584149c3dcd0dc25f26ce42dee59e0d16eba53645f1",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6a78",
+      "kind": "native",
+      "active_index": 1,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a78-001.json",
+      "capture_sha256": "3c6d696d986bd0542c088e4dec201ec9ba6e16ba239636ace5cfd8d90fe4df02",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a78-001.txt",
+      "raw_sha256": "65fe573a7935c27c780d84cec0e60e9d6bae00909bf448b80ed2bad1a09c25e1",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a78/primary/compiler.log",
+      "compiler_log_sha256": "d69e3ae8c5e406ce67886520582d7959a605a20cd8abb71aafa8d67c94a65919",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 1,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a78-001.json",
+          "old_capture_sha256": "3c6d696d986bd0542c088e4dec201ec9ba6e16ba239636ace5cfd8d90fe4df02",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a78-001.txt",
+          "old_raw_sha256": "65fe573a7935c27c780d84cec0e60e9d6bae00909bf448b80ed2bad1a09c25e1",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6a78",
+      "kind": "native",
+      "active_index": 2,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a78-002.json",
+      "capture_sha256": "12fbf0243170ba2296d0fa91afdfe777701b7dfbb704bdd2f2b8a87e509bab2c",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6a78-002.txt",
+      "raw_sha256": "c2d574a03f4149594580e8dbbb6770ef75680ed6f57f6e75f36e681b8ed19153",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a78/primary/compiler.log",
+      "compiler_log_sha256": "d69e3ae8c5e406ce67886520582d7959a605a20cd8abb71aafa8d67c94a65919",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 2,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a78-002.json",
+          "old_capture_sha256": "12fbf0243170ba2296d0fa91afdfe777701b7dfbb704bdd2f2b8a87e509bab2c",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6a78-002.txt",
+          "old_raw_sha256": "c2d574a03f4149594580e8dbbb6770ef75680ed6f57f6e75f36e681b8ed19153",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6aa8",
+      "kind": "native",
+      "active_index": 0,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6aa8-000.json",
+      "capture_sha256": "1196f6d68abb6682ab475c49d23b3377ce117077150e004969a856035ac44bb5",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6aa8-000.txt",
+      "raw_sha256": "5caddc8b65eba363cd49f8189a7f02c1ba6fcee62aed58647d4401a5e6a28978",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6aa8/primary/compiler.log",
+      "compiler_log_sha256": "b9f5f181131735f2e5048a8e1484d32b0e19ada44c9c26c11550e9a8107964d2",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 0,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6aa8-000.json",
+          "old_capture_sha256": "1196f6d68abb6682ab475c49d23b3377ce117077150e004969a856035ac44bb5",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6aa8-000.txt",
+          "old_raw_sha256": "5caddc8b65eba363cd49f8189a7f02c1ba6fcee62aed58647d4401a5e6a28978",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        },
+        {
+          "old_active_index": 1,
+          "same_active_index": false,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6aa8-001.json",
+          "old_capture_sha256": "1196f6d68abb6682ab475c49d23b3377ce117077150e004969a856035ac44bb5",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6aa8-001.txt",
+          "old_raw_sha256": "5caddc8b65eba363cd49f8189a7f02c1ba6fcee62aed58647d4401a5e6a28978",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6aa8",
+      "kind": "native",
+      "active_index": 1,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6aa8-001.json",
+      "capture_sha256": "1196f6d68abb6682ab475c49d23b3377ce117077150e004969a856035ac44bb5",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6aa8-001.txt",
+      "raw_sha256": "5caddc8b65eba363cd49f8189a7f02c1ba6fcee62aed58647d4401a5e6a28978",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6aa8/primary/compiler.log",
+      "compiler_log_sha256": "b9f5f181131735f2e5048a8e1484d32b0e19ada44c9c26c11550e9a8107964d2",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 0,
+          "same_active_index": false,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6aa8-000.json",
+          "old_capture_sha256": "1196f6d68abb6682ab475c49d23b3377ce117077150e004969a856035ac44bb5",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6aa8-000.txt",
+          "old_raw_sha256": "5caddc8b65eba363cd49f8189a7f02c1ba6fcee62aed58647d4401a5e6a28978",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        },
+        {
+          "old_active_index": 1,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6aa8-001.json",
+          "old_capture_sha256": "1196f6d68abb6682ab475c49d23b3377ce117077150e004969a856035ac44bb5",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6aa8-001.txt",
+          "old_raw_sha256": "5caddc8b65eba363cd49f8189a7f02c1ba6fcee62aed58647d4401a5e6a28978",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6aa8",
+      "kind": "native",
+      "active_index": 2,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6aa8-002.json",
+      "capture_sha256": "4105f9146d36bd47cff578e03fd204bafdaf46da64d05169c984dc4fccb57244",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6aa8-002.txt",
+      "raw_sha256": "550f92f8c807a29a6a788f657108f87800d4e609c8302b2180b0fad770c05195",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6aa8/primary/compiler.log",
+      "compiler_log_sha256": "b9f5f181131735f2e5048a8e1484d32b0e19ada44c9c26c11550e9a8107964d2",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 2,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6aa8-002.json",
+          "old_capture_sha256": "4105f9146d36bd47cff578e03fd204bafdaf46da64d05169c984dc4fccb57244",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6aa8-002.txt",
+          "old_raw_sha256": "550f92f8c807a29a6a788f657108f87800d4e609c8302b2180b0fad770c05195",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6aa8",
+      "kind": "native",
+      "active_index": 3,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6aa8-003.json",
+      "capture_sha256": "03cc6c03e459b32eec3e9f9af132a766a2f2efce4bec7fca4cd1141827acd74b",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6aa8-003.txt",
+      "raw_sha256": "54cf6b06a5423ff600655a7ea7710be6f5bd937b80a813b1a7617f67f68b1f1e",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6aa8/primary/compiler.log",
+      "compiler_log_sha256": "b9f5f181131735f2e5048a8e1484d32b0e19ada44c9c26c11550e9a8107964d2",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 3,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6aa8-003.json",
+          "old_capture_sha256": "03cc6c03e459b32eec3e9f9af132a766a2f2efce4bec7fca4cd1141827acd74b",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6aa8-003.txt",
+          "old_raw_sha256": "54cf6b06a5423ff600655a7ea7710be6f5bd937b80a813b1a7617f67f68b1f1e",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "active_index": 0,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ac4-000.json",
+      "capture_sha256": "5f44eeecac533a123f5e0f6397609be1e71fa5a5fa09343201357feb7f7b8700",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ac4-000.txt",
+      "raw_sha256": "8c843ab5577de987c916f014499ef1562550ae6c6034bb0d4e6e47ffd0282ca3",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ac4/primary/compiler.log",
+      "compiler_log_sha256": "97df42662e2b2cddf919981a7af350c892631814d49048e2a4b84e6c242c0a01",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 0,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ac4-000.json",
+          "old_capture_sha256": "5f44eeecac533a123f5e0f6397609be1e71fa5a5fa09343201357feb7f7b8700",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ac4-000.txt",
+          "old_raw_sha256": "8c843ab5577de987c916f014499ef1562550ae6c6034bb0d4e6e47ffd0282ca3",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "active_index": 1,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ac4-001.json",
+      "capture_sha256": "17e5d041f1014ccfec837a2103cac1ec20dc8834024176337034be37ac1728f3",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ac4-001.txt",
+      "raw_sha256": "12ea22e56637b21e9d78b11422b3d36b33460241fdbef90f8d28ac4df66ec3fb",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ac4/primary/compiler.log",
+      "compiler_log_sha256": "97df42662e2b2cddf919981a7af350c892631814d49048e2a4b84e6c242c0a01",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 1,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ac4-001.json",
+          "old_capture_sha256": "17e5d041f1014ccfec837a2103cac1ec20dc8834024176337034be37ac1728f3",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ac4-001.txt",
+          "old_raw_sha256": "12ea22e56637b21e9d78b11422b3d36b33460241fdbef90f8d28ac4df66ec3fb",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "active_index": 2,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ac4-002.json",
+      "capture_sha256": "22614d5af943119e2538cc0ef71d96389b4ba479587cae5032578c5b68ea5999",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ac4-002.txt",
+      "raw_sha256": "1cc4432491213ac4ed3831481c08fde0b542b0342a855ad88205b3ab30a4c109",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ac4/primary/compiler.log",
+      "compiler_log_sha256": "97df42662e2b2cddf919981a7af350c892631814d49048e2a4b84e6c242c0a01",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 2,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ac4-002.json",
+          "old_capture_sha256": "22614d5af943119e2538cc0ef71d96389b4ba479587cae5032578c5b68ea5999",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ac4-002.txt",
+          "old_raw_sha256": "1cc4432491213ac4ed3831481c08fde0b542b0342a855ad88205b3ab30a4c109",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "active_index": 3,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ac4-003.json",
+      "capture_sha256": "a036532d578033faedf37ba5eb54445d81c215cbca03dedde42ed04400d2f55e",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ac4-003.txt",
+      "raw_sha256": "045c6aa1e99f267315e005bf354c1f446ae96085f3a9831024c2c4e6b57dfd0b",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ac4/primary/compiler.log",
+      "compiler_log_sha256": "97df42662e2b2cddf919981a7af350c892631814d49048e2a4b84e6c242c0a01",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 3,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ac4-003.json",
+          "old_capture_sha256": "a036532d578033faedf37ba5eb54445d81c215cbca03dedde42ed04400d2f55e",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ac4-003.txt",
+          "old_raw_sha256": "045c6aa1e99f267315e005bf354c1f446ae96085f3a9831024c2c4e6b57dfd0b",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "active_index": 4,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ac4-004.json",
+      "capture_sha256": "7ca5909bd7f007ddb471da77c87ede30aa9248672136bd03288698e85badfa0f",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ac4-004.txt",
+      "raw_sha256": "ac8b6263c5bbf1a65838d5b17a306490e8f07d84f9cfbc5c6315aebe47ce6672",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ac4/primary/compiler.log",
+      "compiler_log_sha256": "97df42662e2b2cddf919981a7af350c892631814d49048e2a4b84e6c242c0a01",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 4,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ac4-004.json",
+          "old_capture_sha256": "7ca5909bd7f007ddb471da77c87ede30aa9248672136bd03288698e85badfa0f",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ac4-004.txt",
+          "old_raw_sha256": "ac8b6263c5bbf1a65838d5b17a306490e8f07d84f9cfbc5c6315aebe47ce6672",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "active_index": 5,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ac4-005.json",
+      "capture_sha256": "d7dba87f0f153d406606721dc8bbc3ad6f3906041638817fa70530e83b13f1a4",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ac4-005.txt",
+      "raw_sha256": "cebb218c515bb17d4c40db877b80320571e1cc998fdb8e908e922603839cc19d",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ac4/primary/compiler.log",
+      "compiler_log_sha256": "97df42662e2b2cddf919981a7af350c892631814d49048e2a4b84e6c242c0a01",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 5,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ac4-005.json",
+          "old_capture_sha256": "d7dba87f0f153d406606721dc8bbc3ad6f3906041638817fa70530e83b13f1a4",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ac4-005.txt",
+          "old_raw_sha256": "cebb218c515bb17d4c40db877b80320571e1cc998fdb8e908e922603839cc19d",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "active_index": 6,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ac4-006.json",
+      "capture_sha256": "c442a8ba2b52e63c6825a30d1978cc13996ce1a5f0e81305b814df75ab47146c",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ac4-006.txt",
+      "raw_sha256": "6722be11660aebc917fbc65ab9e353c8cce35e826e6e96bc74d393f75691f05e",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ac4/primary/compiler.log",
+      "compiler_log_sha256": "97df42662e2b2cddf919981a7af350c892631814d49048e2a4b84e6c242c0a01",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 6,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ac4-006.json",
+          "old_capture_sha256": "c442a8ba2b52e63c6825a30d1978cc13996ce1a5f0e81305b814df75ab47146c",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ac4-006.txt",
+          "old_raw_sha256": "6722be11660aebc917fbc65ab9e353c8cce35e826e6e96bc74d393f75691f05e",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "active_index": 7,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ac4-007.json",
+      "capture_sha256": "3fcbde06cb7a9648363d72fa03a22997561207de74965007c8c4b62677d4c5d3",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ac4-007.txt",
+      "raw_sha256": "a86bad3f1c5c6ff2d1b854b02e9d6b71f79cf6aa9073f29096ad22511efecd8f",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ac4/primary/compiler.log",
+      "compiler_log_sha256": "97df42662e2b2cddf919981a7af350c892631814d49048e2a4b84e6c242c0a01",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 7,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ac4-007.json",
+          "old_capture_sha256": "3fcbde06cb7a9648363d72fa03a22997561207de74965007c8c4b62677d4c5d3",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ac4-007.txt",
+          "old_raw_sha256": "a86bad3f1c5c6ff2d1b854b02e9d6b71f79cf6aa9073f29096ad22511efecd8f",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6ad8",
+      "kind": "native",
+      "active_index": 0,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ad8-000.json",
+      "capture_sha256": "055e8fd8fb9514b7e3dd2b4482df9c364994146c6ba391894e42a07135ec5cd2",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ad8-000.txt",
+      "raw_sha256": "9a02ac241d1268f98e41513ad27db992ae8b668152ec3f68f999754834c0c802",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ad8/primary/compiler.log",
+      "compiler_log_sha256": "60dcf4b091971068e7c2a3d5d1705d7a462107a69348a92d94b987e75c0d19c9",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 0,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ad8-000.json",
+          "old_capture_sha256": "055e8fd8fb9514b7e3dd2b4482df9c364994146c6ba391894e42a07135ec5cd2",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ad8-000.txt",
+          "old_raw_sha256": "9a02ac241d1268f98e41513ad27db992ae8b668152ec3f68f999754834c0c802",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6ae0",
+      "kind": "native",
+      "active_index": 0,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ae0-000.json",
+      "capture_sha256": "326969d0331ac0b9c76bdd0fd3ead855c0dc0f3214ce4034fe71485690b1bd07",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6ae0-000.txt",
+      "raw_sha256": "f54daeb5894fbf7b6d4a3179e9126fd5f5a598241bf9fd79cf0355c2335973a7",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ae0/primary/compiler.log",
+      "compiler_log_sha256": "4fd8f55141838db808f0244faa8dcd870d6f8fe90b326b70447cc371e2b4629d",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 0,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ae0-000.json",
+          "old_capture_sha256": "326969d0331ac0b9c76bdd0fd3ead855c0dc0f3214ce4034fe71485690b1bd07",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6ae0-000.txt",
+          "old_raw_sha256": "f54daeb5894fbf7b6d4a3179e9126fd5f5a598241bf9fd79cf0355c2335973a7",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6b08",
+      "kind": "native",
+      "active_index": 0,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6b08-000.json",
+      "capture_sha256": "3db5d55ea3e0da703defa2f9fbb51bd316e00b99ae92422c18091357fa0b972a",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6b08-000.txt",
+      "raw_sha256": "779b3a721744e25a7bd17d4a2a1b3389bcdaaa6b3c67216ad9d9fa5b59fdebf8",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6b08/primary/compiler.log",
+      "compiler_log_sha256": "6423475e19ccfdabc117b939e805b146ca26cc68dd8b4896c200600a41309a57",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 0,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6b08-000.json",
+          "old_capture_sha256": "3db5d55ea3e0da703defa2f9fbb51bd316e00b99ae92422c18091357fa0b972a",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6b08-000.txt",
+          "old_raw_sha256": "779b3a721744e25a7bd17d4a2a1b3389bcdaaa6b3c67216ad9d9fa5b59fdebf8",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6b08",
+      "kind": "native",
+      "active_index": 1,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6b08-001.json",
+      "capture_sha256": "160bffecabd7406b7557c529430e513b846223e4f939072546ce39de80e5d269",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6b08-001.txt",
+      "raw_sha256": "265cc00ca7eb730b44b172a4c203a0734703631cf2b9142b5753b693cf5a8691",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6b08/primary/compiler.log",
+      "compiler_log_sha256": "6423475e19ccfdabc117b939e805b146ca26cc68dd8b4896c200600a41309a57",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 1,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6b08-001.json",
+          "old_capture_sha256": "160bffecabd7406b7557c529430e513b846223e4f939072546ce39de80e5d269",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6b08-001.txt",
+          "old_raw_sha256": "265cc00ca7eb730b44b172a4c203a0734703631cf2b9142b5753b693cf5a8691",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    },
+    {
+      "id": "block_0x800d6b08",
+      "kind": "native",
+      "active_index": 2,
+      "capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6b08-002.json",
+      "capture_sha256": "cb7931d43df6f2b119d3014d0fad822c58a1f7c13ad2d16c83196195ac2be704",
+      "raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-audit-001/captures/block_0x800d6b08-002.txt",
+      "raw_sha256": "bcf259e1107cf9fce2559c25db01681a226507300c4667bc02940d5fb7fb7d08",
+      "compiler_log": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6b08/primary/compiler.log",
+      "compiler_log_sha256": "6423475e19ccfdabc117b939e805b146ca26cc68dd8b4896c200600a41309a57",
+      "scope": "Returned active goal only. Shelf, stack, and given-up groups are unavailable.",
+      "comparisons": [
+        {
+          "old_active_index": 2,
+          "same_active_index": true,
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6b08-002.json",
+          "old_capture_sha256": "cb7931d43df6f2b119d3014d0fad822c58a1f7c13ad2d16c83196195ac2be704",
+          "old_raw_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule36-s42/_build/approved-rule36-pass-audit-001/captures/block_0x800d6b08-002.txt",
+          "old_raw_sha256": "bcf259e1107cf9fce2559c25db01681a226507300c4667bc02940d5fb7fb7d08",
+          "equal_fields": {
+            "conclusion": true,
+            "coq": true,
+            "spatial": true,
+            "persistent": true,
+            "local_values": true
+          },
+          "exact_context_match": true,
+          "raw_bytes_equal": true
+        }
+      ],
+      "exact_prior_context_exists": true
+    }
+  ],
+  "outcome_pairs": [
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "old_outcome": "residual",
+      "current_outcome": "residual",
+      "old_residual_state": "residuals",
+      "current_residual_state": "residuals",
+      "old_active_records": 7,
+      "current_active_records": 7,
+      "old_CPU_seconds": 26.477971,
+      "current_CPU_seconds": 27.204286,
+      "old_peak_rss_kib": 1523548,
+      "current_peak_rss_kib": 1513136,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "old_outcome": "residual",
+      "current_outcome": "residual",
+      "old_residual_state": "residuals",
+      "current_residual_state": "residuals",
+      "old_active_records": 32,
+      "current_active_records": 21,
+      "old_CPU_seconds": 992.425392,
+      "current_CPU_seconds": 451.76160600000003,
+      "old_peak_rss_kib": 3086160,
+      "current_peak_rss_kib": 2815980,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d697c",
+      "kind": "native",
+      "old_outcome": "cpu-limit",
+      "current_outcome": "cpu-limit",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": null,
+      "current_active_records": null,
+      "old_CPU_seconds": 1199.875069,
+      "current_CPU_seconds": 1199.8425449999997,
+      "old_peak_rss_kib": 3458892,
+      "current_peak_rss_kib": 3481488,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d698c",
+      "kind": "native",
+      "old_outcome": "residual",
+      "current_outcome": "residual",
+      "old_residual_state": "residuals",
+      "current_residual_state": "residuals",
+      "old_active_records": 3,
+      "current_active_records": 3,
+      "old_CPU_seconds": 165.18855200000002,
+      "current_CPU_seconds": 166.31385400000002,
+      "old_peak_rss_kib": 2667576,
+      "current_peak_rss_kib": 2703944,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d69a4",
+      "kind": "native",
+      "old_outcome": "native-closure",
+      "current_outcome": "native-closure",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": 0,
+      "current_active_records": 0,
+      "old_CPU_seconds": 9.382062000000001,
+      "current_CPU_seconds": 9.690233999999998,
+      "old_peak_rss_kib": 1185708,
+      "current_peak_rss_kib": 1185508,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d69b0",
+      "kind": "native",
+      "old_outcome": "residual",
+      "current_outcome": "residual",
+      "old_residual_state": "residuals",
+      "current_residual_state": "residuals",
+      "old_active_records": 3,
+      "current_active_records": 3,
+      "old_CPU_seconds": 386.640989,
+      "current_CPU_seconds": 392.51807799999995,
+      "old_peak_rss_kib": 4284388,
+      "current_peak_rss_kib": 4120604,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d69d8",
+      "kind": "native",
+      "old_outcome": "native-closure",
+      "current_outcome": "native-closure",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": 0,
+      "current_active_records": 0,
+      "old_CPU_seconds": 13.389638000000001,
+      "current_CPU_seconds": 14.040332,
+      "old_peak_rss_kib": 1177580,
+      "current_peak_rss_kib": 1177248,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d69e0",
+      "kind": "native",
+      "old_outcome": "native-closure",
+      "current_outcome": "native-closure",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": 0,
+      "current_active_records": 0,
+      "old_CPU_seconds": 15.70702,
+      "current_CPU_seconds": 15.843983,
+      "old_peak_rss_kib": 1287672,
+      "current_peak_rss_kib": 1278424,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d69e8",
+      "kind": "native",
+      "old_outcome": "cpu-limit",
+      "current_outcome": "cpu-limit",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": null,
+      "current_active_records": null,
+      "old_CPU_seconds": 1199.853591,
+      "current_CPU_seconds": 1199.8568710000002,
+      "old_peak_rss_kib": 3649304,
+      "current_peak_rss_kib": 3708352,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d6a00",
+      "kind": "native",
+      "old_outcome": "native-closure",
+      "current_outcome": "native-closure",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": 0,
+      "current_active_records": 0,
+      "old_CPU_seconds": 17.056949,
+      "current_CPU_seconds": 17.608824999999996,
+      "old_peak_rss_kib": 1305724,
+      "current_peak_rss_kib": 1307036,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d6a08",
+      "kind": "native",
+      "old_outcome": "residual",
+      "current_outcome": "residual",
+      "old_residual_state": "residuals",
+      "current_residual_state": "residuals",
+      "old_active_records": 4,
+      "current_active_records": 4,
+      "old_CPU_seconds": 16.921718000000002,
+      "current_CPU_seconds": 17.414553,
+      "old_peak_rss_kib": 1238588,
+      "current_peak_rss_kib": 1238580,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d6a14",
+      "kind": "native",
+      "old_outcome": "native-closure",
+      "current_outcome": "native-closure",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": 0,
+      "current_active_records": 0,
+      "old_CPU_seconds": 5.914422,
+      "current_CPU_seconds": 6.141704000000001,
+      "old_peak_rss_kib": 1124384,
+      "current_peak_rss_kib": 1126324,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "old_outcome": "residual",
+      "current_outcome": "residual",
+      "old_residual_state": "residuals",
+      "current_residual_state": "residuals",
+      "old_active_records": 8,
+      "current_active_records": 8,
+      "old_CPU_seconds": 805.3644259999999,
+      "current_CPU_seconds": 830.365804,
+      "old_peak_rss_kib": 2910164,
+      "current_peak_rss_kib": 2920328,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d6a38",
+      "kind": "native",
+      "old_outcome": "residual",
+      "current_outcome": "residual",
+      "old_residual_state": "residuals",
+      "current_residual_state": "residuals",
+      "old_active_records": 1,
+      "current_active_records": 1,
+      "old_CPU_seconds": 26.266263,
+      "current_CPU_seconds": 28.363775,
+      "old_peak_rss_kib": 1220220,
+      "current_peak_rss_kib": 1228384,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d6a40",
+      "kind": "native",
+      "old_outcome": "residual",
+      "current_outcome": "residual",
+      "old_residual_state": "residuals",
+      "current_residual_state": "residuals",
+      "old_active_records": 3,
+      "current_active_records": 3,
+      "old_CPU_seconds": 450.91253900000004,
+      "current_CPU_seconds": 435.359761,
+      "old_peak_rss_kib": 4376468,
+      "current_peak_rss_kib": 4374324,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d6a64",
+      "kind": "native",
+      "old_outcome": "native-closure",
+      "current_outcome": "native-closure",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": 0,
+      "current_active_records": 0,
+      "old_CPU_seconds": 17.189759,
+      "current_CPU_seconds": 17.12672,
+      "old_peak_rss_kib": 1310644,
+      "current_peak_rss_kib": 1308352,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d6a6c",
+      "kind": "native",
+      "old_outcome": "native-closure",
+      "current_outcome": "native-closure",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": 0,
+      "current_active_records": 0,
+      "old_CPU_seconds": 23.704967,
+      "current_CPU_seconds": 23.930740999999998,
+      "old_peak_rss_kib": 1407160,
+      "current_peak_rss_kib": 1401096,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d6a78",
+      "kind": "native",
+      "old_outcome": "residual",
+      "current_outcome": "residual",
+      "old_residual_state": "residuals",
+      "current_residual_state": "residuals",
+      "old_active_records": 3,
+      "current_active_records": 3,
+      "old_CPU_seconds": 532.5869369999999,
+      "current_CPU_seconds": 537.651525,
+      "old_peak_rss_kib": 4829180,
+      "current_peak_rss_kib": 4849640,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d6aa8",
+      "kind": "native",
+      "old_outcome": "residual",
+      "current_outcome": "residual",
+      "old_residual_state": "residuals",
+      "current_residual_state": "residuals",
+      "old_active_records": 4,
+      "current_active_records": 4,
+      "old_CPU_seconds": 16.856226,
+      "current_CPU_seconds": 16.935776999999998,
+      "old_peak_rss_kib": 1236588,
+      "current_peak_rss_kib": 1236564,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d6ab4",
+      "kind": "native",
+      "old_outcome": "native-closure",
+      "current_outcome": "native-closure",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": 0,
+      "current_active_records": 0,
+      "old_CPU_seconds": 5.872728,
+      "current_CPU_seconds": 5.872973999999999,
+      "old_peak_rss_kib": 1127880,
+      "current_peak_rss_kib": 1126116,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "old_outcome": "residual",
+      "current_outcome": "residual",
+      "old_residual_state": "residuals",
+      "current_residual_state": "residuals",
+      "old_active_records": 8,
+      "current_active_records": 8,
+      "old_CPU_seconds": 810.5184150000001,
+      "current_CPU_seconds": 809.3806700000001,
+      "old_peak_rss_kib": 2910116,
+      "current_peak_rss_kib": 2930536,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d6ad8",
+      "kind": "native",
+      "old_outcome": "residual",
+      "current_outcome": "residual",
+      "old_residual_state": "residuals",
+      "current_residual_state": "residuals",
+      "old_active_records": 1,
+      "current_active_records": 1,
+      "old_CPU_seconds": 56.903227,
+      "current_CPU_seconds": 57.926196,
+      "old_peak_rss_kib": 1488376,
+      "current_peak_rss_kib": 1479972,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d6ae0",
+      "kind": "native",
+      "old_outcome": "residual",
+      "current_outcome": "residual",
+      "old_residual_state": "total_search_failure_after_rollback",
+      "current_residual_state": "total_search_failure_after_rollback",
+      "old_active_records": 1,
+      "current_active_records": 1,
+      "old_CPU_seconds": 590.771295,
+      "current_CPU_seconds": 583.760473,
+      "old_peak_rss_kib": 5771120,
+      "current_peak_rss_kib": 5791740,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "block_0x800d6b08",
+      "kind": "native",
+      "old_outcome": "residual",
+      "current_outcome": "residual",
+      "old_residual_state": "residuals",
+      "current_residual_state": "residuals",
+      "old_active_records": 3,
+      "current_active_records": 3,
+      "old_CPU_seconds": 487.104992,
+      "current_CPU_seconds": 482.21815599999996,
+      "old_peak_rss_kib": 4837256,
+      "current_peak_rss_kib": 4658772,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "decodeItemJoin698cFrom697c",
+      "kind": "adapter",
+      "old_outcome": "adapter-closure",
+      "current_outcome": "adapter-closure",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": 0,
+      "current_active_records": 0,
+      "old_CPU_seconds": 102.87792800000001,
+      "current_CPU_seconds": 102.643347,
+      "old_peak_rss_kib": 2402712,
+      "current_peak_rss_kib": 2400932,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "decodeItemJoin698cFrom69e8",
+      "kind": "adapter",
+      "old_outcome": "adapter-closure",
+      "current_outcome": "adapter-closure",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": 0,
+      "current_active_records": 0,
+      "old_CPU_seconds": 126.03891499999999,
+      "current_CPU_seconds": 126.95828800000001,
+      "old_peak_rss_kib": 2477552,
+      "current_peak_rss_kib": 2487080,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "decodeItemJoin6a24From6a14",
+      "kind": "adapter",
+      "old_outcome": "adapter-closure",
+      "current_outcome": "adapter-closure",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": 0,
+      "current_active_records": 0,
+      "old_CPU_seconds": 5.5274779999999994,
+      "current_CPU_seconds": 5.514849000000001,
+      "old_peak_rss_kib": 1111940,
+      "current_peak_rss_kib": 1118180,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "old_outcome": "memory-limit",
+      "current_outcome": "memory-limit",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": null,
+      "current_active_records": null,
+      "old_CPU_seconds": 763.9861,
+      "current_CPU_seconds": 431.61675199999996,
+      "old_peak_rss_kib": 6295448,
+      "current_peak_rss_kib": 6291480,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "decodeItemJoin6ac4From6ab4",
+      "kind": "adapter",
+      "old_outcome": "adapter-closure",
+      "current_outcome": "adapter-closure",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": 0,
+      "current_active_records": 0,
+      "old_CPU_seconds": 5.7127300000000005,
+      "current_CPU_seconds": 5.534907,
+      "old_peak_rss_kib": 1115964,
+      "current_peak_rss_kib": 1113996,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "old_outcome": "memory-limit",
+      "current_outcome": "memory-limit",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": null,
+      "current_active_records": null,
+      "old_CPU_seconds": 1340.4854,
+      "current_CPU_seconds": 1337.8996909999998,
+      "old_peak_rss_kib": 6293488,
+      "current_peak_rss_kib": 6291564,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "decodeItemJoin6ae0From6970",
+      "kind": "adapter",
+      "old_outcome": "cpu-limit",
+      "current_outcome": "cpu-limit",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": null,
+      "current_active_records": null,
+      "old_CPU_seconds": 1199.866466,
+      "current_CPU_seconds": 1199.846111,
+      "old_peak_rss_kib": 3070028,
+      "current_peak_rss_kib": 3100468,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "decodeItemJoin6ae0From69e0",
+      "kind": "adapter",
+      "old_outcome": "adapter-closure",
+      "current_outcome": "adapter-closure",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": 0,
+      "current_active_records": 0,
+      "old_CPU_seconds": 7.765098,
+      "current_CPU_seconds": 7.855229,
+      "old_peak_rss_kib": 1151028,
+      "current_peak_rss_kib": 1159144,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "decodeItemJoin6ae0From6a08",
+      "kind": "adapter",
+      "old_outcome": "cpu-limit",
+      "current_outcome": "cpu-limit",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": null,
+      "current_active_records": null,
+      "old_CPU_seconds": 1199.8315650000002,
+      "current_CPU_seconds": 1199.8400470000001,
+      "old_peak_rss_kib": 2672516,
+      "current_peak_rss_kib": 2660324,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "decodeItemJoin6ae0From6a38",
+      "kind": "adapter",
+      "old_outcome": "adapter-closure",
+      "current_outcome": "adapter-closure",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": 0,
+      "current_active_records": 0,
+      "old_CPU_seconds": 47.381027,
+      "current_CPU_seconds": 47.498574000000005,
+      "old_peak_rss_kib": 1900736,
+      "current_peak_rss_kib": 1906768,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "decodeItemJoin6ae0From6a6c",
+      "kind": "adapter",
+      "old_outcome": "cpu-limit",
+      "current_outcome": "cpu-limit",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": null,
+      "current_active_records": null,
+      "old_CPU_seconds": 1199.8662389999997,
+      "current_CPU_seconds": 1199.843312,
+      "old_peak_rss_kib": 3256432,
+      "current_peak_rss_kib": 3264364,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "decodeItemJoin6ae0From6aa8",
+      "kind": "adapter",
+      "old_outcome": "cpu-limit",
+      "current_outcome": "cpu-limit",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": null,
+      "current_active_records": null,
+      "old_CPU_seconds": 1199.8333760000003,
+      "current_CPU_seconds": 1199.8781219999998,
+      "old_peak_rss_kib": 2643796,
+      "current_peak_rss_kib": 2672416,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    },
+    {
+      "id": "decodeItemJoin6ae0From6ad8",
+      "kind": "adapter",
+      "old_outcome": "adapter-closure",
+      "current_outcome": "adapter-closure",
+      "old_residual_state": "no_returned_active_records",
+      "current_residual_state": "no_returned_active_records",
+      "old_active_records": 0,
+      "current_active_records": 0,
+      "old_CPU_seconds": 70.24464900000001,
+      "current_CPU_seconds": 67.544865,
+      "old_peak_rss_kib": 2202176,
+      "current_peak_rss_kib": 2206840,
+      "causal_cost_attribution": "unavailable across changed roots",
+      "progress_rank": null
+    }
+  ],
+  "priority_capture_ids": [
+    "block_0x800d6974",
+    "block_0x800d6a24",
+    "block_0x800d6ac4"
+  ],
+  "rollback_check_ids": [
+    "block_0x800d6ae0",
+    "block_0x800d69b0"
+  ],
+  "scope": "Returned active goals only.",
+  "limitations": [
+    "Goal counts do not rank proof progress.",
+    "Identical final contexts do not establish helper consumption or solver lineage.",
+    "Changed roots do not isolate Rule37 cost.",
+    "Native stack, shelf, and given_up groups remain unavailable.",
+    "Retained-object certificates will export their own actual groups."
+  ],
+  "comparison_source_sha256": "0ac16f12c6996890ca3899875db197e7a466723cda9b4b923974958e03935cfe"
+}
