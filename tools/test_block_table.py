@@ -159,7 +159,7 @@ class BlockTableTests(unittest.TestCase):
         design["table_convention"] = {
             "entry_type": "(Z * iProp Sigma)",
             "pc_ownership": "instr_pre pc state supplies PC; entry predicates do not own PC",
-            "universal_binders": "Each row's binders, in their listed order",
+            "existential_binders": "Each row's binders, in their listed order",
             "resource_application": "Apply resource_predicate to arguments in order",
             "code_persistence": "block_table_pre boxes the supplied code resource",
             "code_resource": "Contracts.Code.fixtureCode",
@@ -178,8 +178,9 @@ class BlockTableTests(unittest.TestCase):
         design["blocks"][0]["arguments"] = ["frameBytes", "args"]
         source = generate_table.render_table(design, report)
         self.assertTrue(source.startswith("Require Import ZesuSsz.Automation.All.\n"))
-        self.assertIn("∀ (args : FixtureArgs) (frameBytes : list byte), "
+        self.assertIn("∃ (args : FixtureArgs) (frameBytes : list byte), "
                       "ZesuSsz.Contracts.Fixture.entry1000 (frameBytes) (args)", source)
+        self.assertNotIn("∀ (args : FixtureArgs)", source)
         self.assertEqual(source.count("Definition decodeItemState"), 3)
         self.assertIn("block_table_complete decodeItemBlockTable.", source)
         self.assertIn("(0x1000, 0x1008)", source)
@@ -187,6 +188,14 @@ class BlockTableTests(unittest.TestCase):
         self.assertNotIn("Lemma ", source)
         self.assertNotIn("Axiom ", source)
         self.assertNotIn("Admitted", source)
+
+    def test_rendering_leaves_parameter_free_entries_unquantified(self):
+        design, report = self.executable_fixture()
+        design["blocks"][0]["binders"] = []
+        design["blocks"][0]["arguments"] = []
+        source = generate_table.render_table(design, report)
+        self.assertIn("(ZesuSsz.Contracts.Fixture.entry1000)%I.", source)
+        self.assertNotIn("∃ ,", source)
 
     def test_rendering_imports_bound_argument_types(self):
         design, report = self.executable_fixture()
@@ -246,7 +255,14 @@ class BlockTableTests(unittest.TestCase):
 
     def test_unknown_table_convention_is_rejected(self):
         design, report = self.executable_fixture()
-        design["table_convention"]["universal_binders"] = "Invented locals"
+        design["table_convention"]["existential_binders"] = "Invented locals"
+        with self.assertRaisesRegex(ValueError, "approved convention"):
+            generate_table.render_table(design, report)
+
+    def test_universal_state_convention_is_rejected(self):
+        design, report = self.executable_fixture()
+        convention = design["table_convention"]
+        convention["universal_binders"] = convention.pop("existential_binders")
         with self.assertRaisesRegex(ValueError, "approved convention"):
             generate_table.render_table(design, report)
 

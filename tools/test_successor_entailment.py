@@ -171,7 +171,7 @@ class SuccessorValidationTests(unittest.TestCase):
         root = dict(self.block, entry_pc='0x10')
         second = dict(self.block, entry_pc='0x30')
         design = {'entry_pc': '0x10', 'blocks': [root, self.block, second],
-                  'table_convention': {'universal_binders': "Each row's binders, in their listed order"}}
+                  'table_convention': {'existential_binders': "Each row's binders, in their listed order"}}
         state = {'root_provenance': {k: root[k] for k in ('entry_definition', 'resource_predicate', 'binders', 'arguments', 'source_hashes')},
                  'binders': '`{!islaG Sigma} `{!threadG} (args : Args)',
                  'coq': [], 'spatial': ['Contracts.Entry.successor (args)']}
