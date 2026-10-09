@@ -1,0 +1,78 @@
+{
+  "checkpoint": "I53 exact six-goal replay and focused index constraint.",
+  "root": "e8fb293773dab5a4124f813634b3d2ccd1fff400",
+  "entry": "0x800d6ae0",
+  "scope": {
+    "switches": 26,
+    "hints": 22,
+    "exclusions": 17
+  },
+  "caps": {
+    "CPU_seconds": 1200,
+    "RSS_gib": 6,
+    "wall_limit": null
+  },
+  "statement_sha256": "a173e2a65b54c347008f8cf26a95353b8eca2a9a91f5e0c0d03d6f3d66f7a530",
+  "body_sha256": "a2c2caee98ea2860d4b1f9033880e5f1a4f0059cd88eb110cda7989f37dc3dbb",
+  "accepted_result_audit_sha256": "72b68d0ac0236e0aa7aea932d4317846031e4557a6bd1723b19be7c945d70ba7",
+  "accepted_parent_review_sha256": "26283774af93e1bd9bd9b8e13cfb77561cc4995181a112cf0ce001b5fe07d206",
+  "kernel_constraint": {
+    "tactic": "3: (unshelve_sidecond; refine (Z2Nat.id _ _); lia).",
+    "result": "The shared natural witness and equality closed.",
+    "before_actual_groups": [
+      6,
+      0,
+      0,
+      0
+    ],
+    "after_actual_groups": [
+      4,
+      0,
+      0,
+      0
+    ],
+    "candidate_export_sha256": "8a8ee5cf9d64826e406234dca3ff4ca6c82090312e80545f10d49d22bf1625a4",
+    "check_time_ms": 1
+  },
+  "baseline_trials": "Index, extent, and selection baseline probes failed before the index constraint. The selected-array helper succeeded nonadvancing afterward. Extent still failed.",
+  "original_branch_preserved": true,
+  "remaining_actual_goals": [
+    "Memory descriptor witness.",
+    "Index extent.",
+    "Selected-array resource.",
+    "Memory descriptor continuation."
+  ],
+  "session": {
+    "normal_transport_closed": true,
+    "owned_Pet_exit_verified": true,
+    "cleanup_signals": 0,
+    "admission_seconds": 1.4159798230975866,
+    "Pet_CPU_before": 1.43,
+    "Pet_CPU_after": 500.77,
+    "Pet_CPU_delta": 499.34,
+    "initial_ownership_RSS_kib": 800344,
+    "final_or_peak_RSS": null
+  },
+  "accounting_limit": "Cumulative Pet CPU includes imports, replay, queries, and probes. The initial RSS snapshot does not measure final or peak memory.",
+  "archive_index": "/home/cody/zesislar/.worktrees/worker2-child-map-i53-marker-recorder-2048/_build/i53-focused-evidence-package-001/ARCHIVE-INDEX.json",
+  "archive_index_sha256": "8747bef74eefdfd8cc32eb0197bf8236716ecb91596f4a50494b1d74ddda3ed9",
+  "package_inputs": "/home/cody/zesislar/.worktrees/worker2-child-map-i53-marker-recorder-2048/_build/i53-focused-evidence-package-001/PACKAGE-INPUTS.json",
+  "package_inputs_sha256": "113baa83955e47ca83d7f76d3f53767edd54644ad0b1ff1543d4d5bcc88a0fc3",
+  "archived_path_records": 10504,
+  "unique_content_records": 9691,
+  "archive_scan": {
+    "checked_path_records": 10504,
+    "credential_content_matches": 0,
+    "Dune_environment_headers": 0
+  },
+  "limits": [
+    "No whole-contract closure follows.",
+    "Nonadvancing displays do not provide complete returned groups.",
+    "Complete printed exports can hide terms and do not certify the global evar graph.",
+    "Local returns and rollback records do not certify surviving branches.",
+    "The original single theorem capture records total rollback, not near closure.",
+    "The generic rule remains proposed. The second compatible site is pending.",
+    "This package does not claim project gates or a commit."
+  ],
+  "production_changed": false
+}

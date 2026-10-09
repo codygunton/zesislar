@@ -1,0 +1,12 @@
+{
+  "report_sha256": "57e477b99fd86fe4d93029888b46cd130c90fdbee524599aa15dec61768cc49a",
+  "archive_index_sha256": "8747bef74eefdfd8cc32eb0197bf8236716ecb91596f4a50494b1d74ddda3ed9",
+  "package_inputs_sha256": "113baa83955e47ca83d7f76d3f53767edd54644ad0b1ff1543d4d5bcc88a0fc3",
+  "archive_paths": 10504,
+  "unique_contents": 9691,
+  "archive_bytes_unique": 878753257,
+  "source_package": "/home/cody/zesislar/.worktrees/worker2-child-map-i53-marker-recorder-2048/_build/i53-focused-evidence-package-001",
+  "production_root": "e8fb293773dab5a4124f813634b3d2ccd1fff400",
+  "evidence_root": "dc003f577eecc9e5c060e7b85d7913540f2966ce",
+  "scope": "Evidence only. No production guard or rule is included."
+}
