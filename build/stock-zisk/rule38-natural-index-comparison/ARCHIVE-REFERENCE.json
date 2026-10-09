@@ -1,0 +1,12 @@
+{
+  "archive_index": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-gate-bb/_build/rule38-four-arm-evidence-package-002/archive/INDEX.json",
+  "archive_index_sha256": "fb7b0b033146cdfb27c8ebf3dc57b05bbe5a982ff1cdee5509b82dad6ae32d1e",
+  "path_count": 44751,
+  "unique_content_count": 10630,
+  "credential_scan": {
+    "checked_file_count": 44751,
+    "match_count": 0,
+    "known_retained_credential_checked": true,
+    "environment_headers_rejected": true
+  }
+}

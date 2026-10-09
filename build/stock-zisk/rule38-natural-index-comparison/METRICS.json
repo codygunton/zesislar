@@ -1,0 +1,111 @@
+{
+  "comparison_root": "494521999948f878ea4c56b276d2a5de95c92b8f",
+  "arms": [
+    {
+      "entry_pc": "0x800d6ae0",
+      "arm": "off",
+      "outcome": "named-Qed-incomplete-proof",
+      "compiler_exit": 1,
+      "named_Qed_compiled": false,
+      "compiled_object_present": false,
+      "limit": null,
+      "policy_error": null,
+      "telemetry_errors": {
+        "count": 1,
+        "first": {
+          "elapsed_seconds": 606.1116180371027,
+          "error_type": "StopIteration"
+        },
+        "last": {
+          "elapsed_seconds": 606.1116180371027,
+          "error_type": "StopIteration"
+        }
+      },
+      "cpu_seconds": 604.5681050000001,
+      "peak_rss_kib": 5857164,
+      "compiler_elapsed_seconds": 606.1368755099829,
+      "wrapper_wall_seconds": 607.641877256101,
+      "admission_wait_seconds": 3.519534414866939,
+      "active_capture_count": 1,
+      "actual_goal_groups": "Unavailable. These are printed active records, not MCP goal exports."
+    },
+    {
+      "entry_pc": "0x800d6ae0",
+      "arm": "on",
+      "outcome": "named-Qed-incomplete-proof",
+      "compiler_exit": 1,
+      "named_Qed_compiled": false,
+      "compiled_object_present": false,
+      "limit": null,
+      "policy_error": null,
+      "telemetry_errors": {
+        "count": 1,
+        "first": {
+          "elapsed_seconds": 960.2932454110123,
+          "error_type": "StopIteration"
+        },
+        "last": {
+          "elapsed_seconds": 960.2932454110123,
+          "error_type": "StopIteration"
+        }
+      },
+      "cpu_seconds": 957.902172,
+      "peak_rss_kib": 8802348,
+      "compiler_elapsed_seconds": 960.318456301,
+      "wrapper_wall_seconds": 961.9364873110317,
+      "admission_wait_seconds": 3.5179218819830567,
+      "active_capture_count": 6,
+      "actual_goal_groups": "Unavailable. These are printed active records, not MCP goal exports."
+    },
+    {
+      "entry_pc": "0x800d69b0",
+      "arm": "off",
+      "outcome": "named-Qed-incomplete-proof",
+      "compiler_exit": 1,
+      "named_Qed_compiled": false,
+      "compiled_object_present": false,
+      "limit": null,
+      "policy_error": null,
+      "telemetry_errors": {
+        "count": 1,
+        "first": {
+          "elapsed_seconds": 389.6965841730125,
+          "error_type": "StopIteration"
+        },
+        "last": {
+          "elapsed_seconds": 389.6965841730125,
+          "error_type": "StopIteration"
+        }
+      },
+      "cpu_seconds": 388.64107199999995,
+      "peak_rss_kib": 4157568,
+      "compiler_elapsed_seconds": 389.7219526460394,
+      "wrapper_wall_seconds": 391.41109657497145,
+      "admission_wait_seconds": 3.5321916330140084,
+      "active_capture_count": 3,
+      "actual_goal_groups": "Unavailable. These are printed active records, not MCP goal exports."
+    },
+    {
+      "entry_pc": "0x800d69b0",
+      "arm": "on",
+      "outcome": "named-Qed-incomplete-proof",
+      "compiler_exit": 1,
+      "named_Qed_compiled": false,
+      "compiled_object_present": false,
+      "limit": null,
+      "policy_error": null,
+      "telemetry_errors": {
+        "count": 0,
+        "first": null,
+        "last": null
+      },
+      "cpu_seconds": 394.103416,
+      "peak_rss_kib": 4505432,
+      "compiler_elapsed_seconds": 395.1776973369997,
+      "wrapper_wall_seconds": 396.6884457550477,
+      "admission_wait_seconds": 3.510826792102307,
+      "active_capture_count": 5,
+      "actual_goal_groups": "Unavailable. These are printed active records, not MCP goal exports."
+    }
+  ]
+}
