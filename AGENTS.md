@@ -77,15 +77,17 @@ Do not describe the machine as CPU-bound from one process measurement.
 Check total CPU use, per-process CPU use, load, available memory, and swap use.
 State that a proof is single-thread bound when one process uses one core and the machine remains idle.
 
-Treat a proof module as too large when it takes more than 300 seconds or uses more than 6 GiB.
-These limits follow section 6 of the active plan and override the retired 90-second limit.
-Limits are exploratory, not sacred: when a proof needs more, raise the cap (the guard's
-`ZESU_PROOF_CPU_LIMIT`, currently 1200 seconds) and open a tracked issue to bring it back
-down; run the proof to completion and optimize the measured cost. Never split a basic block,
-cut a proof, or weaken a contract to fit a cap.
-Treat other modules as too large when they take more than 60 seconds or use more than 2 GiB.
-Stop repeated work on that module.
-Split it at sound proof-state boundaries before further full compilation.
+The 300-second and 6 GiB figures are production goals for a finished proof module, not limits
+on search. During development, first bound the problem: run a search or a proof to completion
+with whatever memory and time it needs (the machine has 256 GiB; a 64 GiB cap and no CPU cap are
+normal for a probe), record its peak memory, CPU, and residual goals, and optimize afterwards
+from that measurement. A run that stops at a cap mid-search has measured nothing. Record each
+raised cap on issue #10 as a probe. The guard's `ZESU_PROOF_CPU_LIMIT` (1200 seconds default)
+applies to gates, not to diagnostics. Never split a basic block, cut a proof, or weaken a
+contract to fit a cap; bring a finished proof under the production goal by optimizing the rule
+cost, as the Prologue went from 435 to 218 seconds.
+Treat a non-proof module as over its production goal when it takes more than 60 seconds or uses
+more than 2 GiB; measure it to completion first, then split it at sound proof-state boundaries.
 If no sound split exists, report the exact dependency that prevents parallel work.
 
 Compile independent modules together with Dune.
@@ -107,8 +109,9 @@ Do not print generated traces or complete build logs unless the error requires t
 Never block a turn on a build. Use your own build directory
 `_build/agents/<name>` with `--cache=enabled` and `-j32`. Test one lemma
 with `tools/coqc_scratch.sh`, never by compiling a whole module. Run
-`make check-fast` before every commit. Module limits are 300 seconds and
-6 GiB for proofs. Module limits are 60 seconds and 2 GiB elsewhere.
+`make check-fast` before every commit. Production goals are 300 seconds and
+6 GiB for proof modules, 60 seconds and 2 GiB elsewhere; they are goals for
+finished modules, not caps on search.
 
 ## Proof workflow
 
