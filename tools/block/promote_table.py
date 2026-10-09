@@ -23,6 +23,18 @@ def table_statement(pc):
             f"instr_body {hex(pc)} decodeItemState{pc:x}")
 
 
+def proof_module(proof):
+    """Use the checked production module name, never a frozen Boundary name."""
+    module, lemma = proof.get('module'), proof.get('lemma')
+    identifier = r"[A-Za-z_][A-Za-z0-9_']*"
+    if (not isinstance(module, str) or
+            not re.fullmatch(identifier + r'(?:\.' + identifier + r')*', module) or
+            'Boundary' in module.split('.') or not isinstance(lemma, str) or
+            not re.fullmatch(re.escape(module) + r'\.' + identifier, lemma)):
+        raise ValueError('The proof lacks a matching production module and lemma name.')
+    return module
+
+
 def validate_promotion(block, evidence, adapter, *, design_sha256):
     """Reject partial edges, diagnostic results, debts, and unrelated proofs."""
     pc = generate_table.address(block['entry_pc'])
@@ -44,6 +56,7 @@ def validate_promotion(block, evidence, adapter, *, design_sha256):
             raise ValueError('The proof has unavailable or nonempty goal groups.')
         if proof.get('inherited_debts') != []:
             raise ValueError('The proof has unavailable or nonempty inherited debts.')
+        proof_module(proof)
     if adapter.get('statement') != table_statement(pc):
         raise ValueError('The proof has a different table-body signature.')
     if not isinstance(adapter.get('lemma'), str) or not re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)+', adapter['lemma']):
@@ -76,7 +89,9 @@ def coverage(cfg, design, native_report, promotions=None, *, design_sha256):
             pass
         status = 'proved' if lemma else 'pending'
         slots.append(dict(pc=hex(pc), entry_definition=block.get('entry_definition'),
-                          proof_lemma=lemma, status=status,
+                          proof_lemma=lemma,
+                          proof_module=proposal['adapter']['module'] if lemma else None,
+                          status=status,
                           native_outcomes=native.get('outcomes', [])))
         for instruction in range(pc, generate_table.address(block['end_pc_exclusive']), 4):
             instructions.append(dict(pc=hex(instruction), block=hex(pc), status=status))
@@ -118,8 +133,11 @@ def load_promotions(path):
 def render_slots(report):
     """Generate typed references only. Pending slots introduce no proposition."""
     slots = [slot for slot in report['proof_slots'] if slot['status'] == 'proved']
-    modules = sorted({slot['proof_lemma'].rsplit('.', 1)[0] for slot in slots})
+    modules = sorted({proof_module({'module': slot['proof_module'],
+                                   'lemma': slot['proof_lemma']}) for slot in slots})
     lines = ['Require Import ZesuSsz.Automation.All.',
+             'Require Import ZesuSsz.Automation.Approved.',
+             'Require Import ZesuSsz.Compliance.DecodeItemHints.',
              'Require Import isla.riscv64.riscv64.',
              'Require Import ZesuSsz.Generated.DecodeItem.BlockTable.']
     lines.extend(f'Require Import {module}.' for module in modules)

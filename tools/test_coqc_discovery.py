@@ -7,9 +7,29 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent/'block'))
 import coqc_discovery
+from tools import test_production_modules
 
 
 class CoqcDiscoveryTests(unittest.TestCase):
+    def test_closed_native_results_emit_exact_current_production_modules(self):
+        fixture = test_production_modules.ProductionModuleTests().fixture()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            rows = coqc_discovery.emit_native_production(
+                [{'entry_pc': '0x1000', 'block_closed': True},
+                 {'entry_pc': '0x2000', 'block_closed': False}],
+                {'0x1000': fixture}, root)
+            self.assertEqual(len(rows), 1)
+            row = rows[0]
+            self.assertEqual(row['module'], 'ZesuSsz.Proofs.DecodeItem.Auto.Block1000')
+            self.assertEqual(row['dune_target'], row['module'].replace('.', '/') + '.vo')
+            emitted = root / row['source']
+            self.assertEqual(coqc_discovery.production_modules.statement(
+                emitted.read_text(), fixture['lemma']),
+                coqc_discovery.production_modules.statement(fixture['source'], fixture['lemma']))
+            self.assertIn('\n  zesu_block.\nQed.', emitted.read_text())
+            self.assertFalse((emitted.parent / 'Block2000.v').exists())
+
     def test_import_targets_keep_qualified_names_and_reject_empty_selection(self):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory)

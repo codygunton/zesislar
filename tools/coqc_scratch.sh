@@ -25,23 +25,33 @@ import time
 from pathlib import Path
 
 
+probe = os.environ.get("ZESU_DIAGNOSTIC_PROBE", "0")
+if probe not in ("0", "1"):
+    raise SystemExit("the diagnostic probe flag must be zero or one")
 wall_text = os.environ.get("ZESU_SCRATCH_WALL_SECONDS", "300")
-if wall_text == "none":
-    if not 0 < int(os.environ.get("ZESU_PRIMARY_CPU_LIMIT", "0")) <= 2400:
-        raise SystemExit("an unlimited wall budget requires an explicit CPU budget")
-    cpu = int(os.environ["ZESU_PRIMARY_CPU_LIMIT"])
-    if cpu > 1200 and os.environ.get("ZESU_COMPLETION_ENTRY") not in ("0x800d6a24", "0x800d6ac4"):
-        raise SystemExit("the CPU exception requires an authorized completion entry")
+memory_gib = int(os.environ.get("ZESU_SCRATCH_MEMORY_GIB", "6"))
+if probe == "1":
+    if (wall_text != "none" or os.environ.get("ZESU_PRIMARY_CPU_LIMIT") != "none" or
+            os.environ.get("ZESU_PROOF_CPU_LIMIT") != "unlimited" or memory_gib != 64 or
+            os.environ.get("ZESU_PROBE_ISSUE") != "10" or os.environ.get("ZESU_IN_GATE")):
+        raise SystemExit("the diagnostic probe requires issue10, 64 GiB, and unlimited CPU and wall time")
     wall_limit = None
 else:
-    wall_limit = float(wall_text)
-    if not 0 < wall_limit <= 300:
-        raise SystemExit("the scratch wall budget must be between zero and 300 seconds")
+    if wall_text == "none":
+        if not 0 < int(os.environ.get("ZESU_PRIMARY_CPU_LIMIT", "0")) <= 2400:
+            raise SystemExit("an unlimited wall budget requires an explicit CPU budget")
+        cpu = int(os.environ["ZESU_PRIMARY_CPU_LIMIT"])
+        if cpu > 1200 and os.environ.get("ZESU_COMPLETION_ENTRY") not in ("0x800d6a24", "0x800d6ac4"):
+            raise SystemExit("the CPU exception requires an authorized completion entry")
+        wall_limit = None
+    else:
+        wall_limit = float(wall_text)
+        if not 0 < wall_limit <= 300:
+            raise SystemExit("the scratch wall budget must be between zero and 300 seconds")
 
-memory_gib = int(os.environ.get("ZESU_SCRATCH_MEMORY_GIB", "6"))
-if memory_gib not in (6, 12) or (memory_gib == 12 and
-        (wall_limit is not None or os.environ.get("ZESU_COMPLETION_ENTRY") != "0x800d698c")):
-    raise SystemExit("the memory exception requires completion entry0x800d698c")
+    if memory_gib not in (6, 12) or (memory_gib == 12 and
+            (wall_limit is not None or os.environ.get("ZESU_COMPLETION_ENTRY") != "0x800d698c")):
+        raise SystemExit("the memory exception requires completion entry0x800d698c")
 
 source = Path(sys.argv[1])
 build_dir = Path(sys.argv[2])

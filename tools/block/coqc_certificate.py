@@ -12,10 +12,23 @@ def valid_budget(evidence, compiler):
     if policy is None or policy.get('kind') == 'wall':
         return evidence.get('primary_timeout') == 300
     limits = compiler.get('limits', {})
+    if policy.get('kind') == 'probe':
+        return (policy.get('optimization_debt') == 'issue#10' and
+                policy.get('cpu_seconds') is None and policy.get('wall_seconds') is None and
+                policy.get('memory_kib') == 64*1024*1024 and
+                evidence.get('primary_timeout') is None and
+                limits.get('cpu_seconds') is None and limits.get('module_seconds') is None and
+                limits.get('rss_kib') == 64*1024*1024 and
+                compiler.get('actual_cpu_limits') == {'soft': None, 'hard': None} and
+                compiler.get('actual_scope_limits') ==
+                    {'memory_max_bytes': 64*1024**3, 'memory_swap_max_bytes': 0})
     entry = evidence.get('entry_pc')
     maximum = 2400 if entry in ('0x800d6a24', '0x800d6ac4') else 1200
     memory = policy.get('memory_kib')
-    exception = policy.get('cpu_seconds', 0) > 1200 or memory == 12*1024*1024
+    cpu = policy.get('cpu_seconds')
+    if not isinstance(cpu, int):
+        return False
+    exception = cpu > 1200 or memory == 12*1024*1024
     return (policy.get('kind') == 'cpu' and
             (not exception or (policy.get('completion_entry') == entry and
                                policy.get('optimization_debt') == 'issue#10')) and

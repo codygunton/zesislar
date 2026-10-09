@@ -1235,6 +1235,52 @@ class GuardLockTest(unittest.TestCase):
         self.assertEqual(result.returncode, 2)
         self.assertIn("invalid CPU limit", result.stderr)
 
+    def probe_environment(self):
+        return {'ZESU_DIAGNOSTIC_PROBE': '1', 'ZESU_PROBE_ISSUE': '10',
+                'ZESU_MODULE_LIMIT_GIB': '64', 'ZESU_PROOF_CPU_LIMIT': 'unlimited'}
+
+    def test_probe_scope_uses_64_gib_fence_and_unlimited_cpu(self):
+        self.environment.update(self.probe_environment())
+        result = self.guard('scope', 'probe', '--', 'true')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('MemoryMax=64G', result.stdout)
+        self.assertIn('MemorySwapMax=0', result.stdout)
+
+    def test_probe_scope_exec_has_unlimited_soft_and_hard_cpu(self):
+        self.environment.update(self.probe_environment())
+        token = self.guard('reserve-coqc', str(os.getpid())).stdout.strip()
+        try:
+            result = self.guard('scope-exec', token, '--', 'bash', '-c',
+                                'ulimit -St; ulimit -Ht')
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(result.stdout.splitlines(), ['unlimited', 'unlimited'])
+        finally:
+            self.guard('release-coqc', token)
+
+    def test_probe_scope_rejects_finite_cpu_and_gate_inheritance(self):
+        for change in ({'ZESU_IN_GATE': '1'}, {'ZESU_MODULE_LIMIT_GIB': '6'},
+                       {'ZESU_PROOF_CPU_LIMIT': '1200'}, {'ZESU_PROBE_ISSUE': ''},
+                       {'ZESU_DIAGNOSTIC_PROBE': 'invalid'}):
+            with self.subTest(change=change):
+                self.environment.update(self.probe_environment())
+                self.environment.pop('ZESU_IN_GATE', None)
+                self.environment.update(change)
+                result = self.guard('scope', 'probe', '--', 'true')
+                self.assertEqual(result.returncode, 2, result.stderr)
+        self.environment.pop('ZESU_IN_GATE', None)
+        self.environment.update(self.probe_environment())
+        result = self.guard('scope', 'probe', '--cpu', '14400', '--', 'true')
+        self.assertEqual(result.returncode, 2, result.stderr)
+
+
+    def test_probe_scope_exec_rejects_finite_cpu_before_child(self):
+        self.environment.update(self.probe_environment())
+        self.environment['ZESU_SCOPE_CPU'] = '1200'
+        result = self.guard('scope-exec', 'unused', '--', 'true')
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertIn('probe CPU must be unlimited', result.stderr)
+
+
 
 class PromTest(unittest.TestCase):
     def test_window_renders_peak_and_p90(self):

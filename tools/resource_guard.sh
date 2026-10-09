@@ -950,11 +950,30 @@ aggregate_slice() {
   echo "$slice"
 }
 
+# Probe limits are explicit and do not change gate defaults.
+validate_probe_scope() {
+  case "${ZESU_DIAGNOSTIC_PROBE:-0}" in
+    0) return 0 ;;
+    1)
+      if [ -n "${ZESU_IN_GATE:-}" ] || [ "$MODULE_LIMIT_GIB" != 64 ] ||
+         [ "${ZESU_PROOF_CPU_LIMIT:-}" != unlimited ] || [ "${ZESU_PROBE_ISSUE:-}" != 10 ]; then
+        echo "resource guard: diagnostic probe requires issue10, 64 GiB, and unlimited CPU outside gates" >&2
+        return 2
+      fi ;;
+    *) echo "resource guard: invalid diagnostic probe flag" >&2; return 2 ;;
+  esac
+}
+
 run_scope() {
   local name=$1 cpu=${ZESU_PROOF_CPU_LIMIT:-1200}; shift
+  validate_probe_scope || return $?
   if [ "${1:-}" = "--cpu" ]; then
     cpu=${2:-}; shift 2
-    [[ "$cpu" =~ ^[1-9][0-9]*$ ]] || { echo "resource guard: invalid CPU limit" >&2; return 2; }
+    if [ "${ZESU_DIAGNOSTIC_PROBE:-0}" = 1 ]; then
+      [ "$cpu" = unlimited ] || { echo "resource guard: probe CPU must be unlimited" >&2; return 2; }
+    else
+      [[ "$cpu" =~ ^[1-9][0-9]*$ ]] || { echo "resource guard: invalid CPU limit" >&2; return 2; }
+    fi
   fi
   [ "${1:-}" = "--" ] && shift
   # An admitted launch must drain before a later gate can acquire its lock.
@@ -1118,12 +1137,16 @@ case "${1:-report}" in
   watch)  guard_watch ;;
   scope)  shift; run_scope "$@" ;;
   scope-exec)
+    validate_probe_scope || exit $?
+    if [ "${ZESU_DIAGNOSTIC_PROBE:-0}" = 1 ] && [ "${ZESU_SCOPE_CPU:-unlimited}" != unlimited ]; then
+      echo "resource guard: probe CPU must be unlimited" >&2; exit 2
+    fi
     token=$2; shift 2; [ "${1:-}" = -- ] && shift
     [ -z "${ZESU_SCOPE_UNIT:-}" ] || register_scope "$ZESU_SCOPE_UNIT"
     confirm_coqc "$token" || exit $?
     mark_coqc "$token" $$ || exit $?
     export ZESU_COQC_RESERVATION="$token" ZESU_COQC_SCOPE="$token"
-    ulimit -t "${ZESU_SCOPE_CPU:-${ZESU_PROOF_CPU_LIMIT:-1200}}"
+    ulimit -t "${ZESU_SCOPE_CPU:-${ZESU_PROOF_CPU_LIMIT:-1200}}" || exit $?
     exec "$@" ;;
   batch)  shift; run_batch "$@" ;;
   locked) shift; run_locked "$@" ;;
