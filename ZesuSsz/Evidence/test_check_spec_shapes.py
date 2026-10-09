@@ -22,6 +22,22 @@ from check_spec_shapes import (
 
 
 class SpecShapeTests(unittest.TestCase):
+    def test_main_checks_added_replacement_and_skips_deleted_source(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            replacement = 'ZesuSsz/Proofs/DecodeItem/Auto/Join6ae0From6a38.v'
+            retired = 'ZesuSsz/Proofs/DecodeItem/Join6ae0/From6a38.v'
+            (root / replacement).parent.mkdir(parents=True)
+            (root / replacement).write_text('Lemma covered : True. Proof. exact I. Qed.')
+            baseline = root / 'baseline.json'
+            baseline.write_text('{}')
+            with patch.object(check_spec_shapes, 'ROOT', root), \
+                 patch.object(check_spec_shapes, 'BASELINE', baseline), \
+                 patch.object(check_spec_shapes.subprocess, 'check_output',
+                              return_value=retired + '\n' + replacement + '\n') as inventory:
+                self.assertEqual(check_spec_shapes.main(), 0)
+                self.assertIn('--others', inventory.call_args.args[0])
+
     def test_untyped_existential_binders_are_counted(self):
         spec = ('Definition exact : iProp Sigma := '
                 '(∃ ret bytes, "x1" ↦ᵣ RVal_Bits ret ∗ '

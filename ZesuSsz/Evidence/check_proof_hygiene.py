@@ -78,6 +78,25 @@ A2_PATTERNS = (
 )
 A2_EXCEPTIONS = {"WriteSuccessWithdrawalsIterationBody.v"}
 CP1_ENFORCED = True
+RETIRED_PROOF_MODULES = (
+    "ZesuSsz.Proofs.DecodeItem.Join6ae0.From6a38",
+    "ZesuSsz.Proofs.DecodeItem.Join6ae0.From6ad8",
+)
+
+
+def retired_module_failures(name: str, text: str) -> list[str]:
+    """Prevent superseded hand modules and their imports from returning."""
+    failures = []
+    code = re.sub(r"\(\*.*?\*\)", "", text, flags=re.S)
+    for module in RETIRED_PROOF_MODULES:
+        if name == module.replace(".", "/") + ".v":
+            failures.append(f"retired proof module remains: {name}")
+        prefix, short = module.rsplit(".", 1)
+        relative = (rf"\bFrom\s+{re.escape(prefix)}\s+Require\s+"
+                    rf"(?:Import|Export)\s+[^.]*\b{short}\b")
+        if module in code or re.search(relative, code):
+            failures.append(f"imports retired proof module: {name}: {module}")
+    return failures
 
 
 def tracked_files() -> list[str]:
@@ -226,6 +245,7 @@ def main() -> None:
         text = path.read_text()
         lines = text.splitlines()
         failures.extend(generated_hand_line_failures(name, text))
+        failures.extend(retired_module_failures(name, text))
 
         # Generated Sail interfaces contain upstream Axiom declarations.
         # Reviewed proof files remain subject to the complete placeholder check.
