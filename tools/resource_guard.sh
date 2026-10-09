@@ -14,6 +14,7 @@
 #   jobs                 the concurrency a batch may use right now
 #   gate-jobs [TARGET]   the concurrency a gate may use: 24
 #   coqc-count [nonwriter] count actual compilers, excluding shell wrappers
+#   native-limit         read the native admission limit without changing state
 #   wait                 block until one more job may start
 #   reserve-coqc PID     request a compiler launch without holding a slot
 #   confirm-coqc TOKEN   admit a compiler launch atomically
@@ -52,6 +53,14 @@
 # otherwise they fill the width as slots free up.
 
 set -uo pipefail
+
+# Controllers query this policy before normal resource admission. Keep this
+# branch before registry setup so the query does not create or prune state.
+if [ "${1:-}" = native-limit ]; then
+  [ "$#" -eq 1 ] || { echo "resource guard: native-limit takes no arguments" >&2; exit 2; }
+  printf '%s\n' 4
+  exit 0
+fi
 
 # The hard per-job cap: what one `coqc` scope may use before the kernel
 # kills it. This is the module limit and does not change.
@@ -1135,5 +1144,5 @@ case "${1:-report}" in
   hold)   r=$(hold_reason) || exit $?; echo "${r:-none}" ;;
   window) shift; python3 "$PROM" window "$@" ;;
   report) report ;;
-  *) echo "usage: $0 {jobs|gate-jobs [TARGET]|wait|reserve-coqc PID|confirm-coqc TOKEN|mark-coqc TOKEN PID|release-coqc TOKEN|watch|scope NAME [--cpu SECONDS] -- CMD|batch NAME -- CMD|locked NAME -- CMD|lock-status|lock-want PID HOLDER|lock-hold PID|lock-release PID|hold|report|window ARGS|peak|reset-peak}" >&2; exit 2 ;;
+  *) echo "usage: $0 {jobs|gate-jobs [TARGET]|native-limit|wait|reserve-coqc PID|confirm-coqc TOKEN|mark-coqc TOKEN PID|release-coqc TOKEN|watch|scope NAME [--cpu SECONDS] -- CMD|batch NAME -- CMD|locked NAME -- CMD|lock-status|lock-want PID HOLDER|lock-hold PID|lock-release PID|hold|report|window ARGS|peak|reset-peak}" >&2; exit 2 ;;
 esac
