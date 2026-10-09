@@ -36,7 +36,7 @@ Print Assumptions decodeItemRootCallerContinuation.
 
 Lemma decodeItemRootTableResources `{!islaG Sigma} `{!threadG} :
   decodeItemState800d6960 =
-    (∀ (returnAddress : Z) (args : DecodeItemArgs),
+    (∃ (returnAddress : Z) (args : DecodeItemArgs),
       decodeItemEntryResources
         (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗
       decodeItemBranchContinuationAt args returnAddress)%I.

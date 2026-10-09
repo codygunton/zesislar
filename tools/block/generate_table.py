@@ -56,12 +56,12 @@ def entry_source_hashes(design, root=ROOT):
 
 
 def table_convention(design):
-    """Accept the published PC-free, universal-inside-iProp convention."""
+    """Accept entry families with existential parameters inside each state."""
     convention = design.get("table_convention")
     expected = {
         "entry_type": "(Z * iProp Sigma)",
         "pc_ownership": "instr_pre pc state supplies PC; entry predicates do not own PC",
-        "universal_binders": "Each row's binders, in their listed order",
+        "existential_binders": "Each row's binders, in their listed order",
         "resource_application": "Apply resource_predicate to arguments in order",
         "code_persistence": "block_table_pre boxes the supplied code resource",
     }
@@ -283,7 +283,7 @@ def render_table(design, report):
         typed = " ".join(f"({binder['name']} : {binder['type']})" for binder in binders)
         arguments = " ".join(f"({argument})" for argument in block["arguments"])
         application = f"{predicate} {arguments}".rstrip()
-        body = f"∀ {typed}, {application}" if typed else application
+        body = f"∃ {typed}, {application}" if typed else application
         name = f"decodeItemState{address(block['entry_pc']):x}"
         states.append((block, name, body))
     lines = ["Require Import ZesuSsz.Automation.All.",
