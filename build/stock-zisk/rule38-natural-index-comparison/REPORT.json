@@ -1,0 +1,344 @@
+{
+  "comparison_root": "494521999948f878ea4c56b276d2a5de95c92b8f",
+  "gate_root": "bb99449d6f03bbc56bc9e5bb5c9be74bf85e032d",
+  "archive_index_sha256": "fb7b0b033146cdfb27c8ebf3dc57b05bbe5a982ff1cdee5509b82dad6ae32d1e",
+  "arms": [
+    {
+      "site": "6ae0",
+      "arm": "off",
+      "audit": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-6ae0-off-result-audit-001/REPORT.json",
+        "sha256": "65cbe95e126811ab1ce7dbb42ab6613942ee6dff427b5f0980e3a1e5908c5910"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-launch-preparation-001/6ae0/off/result.json",
+        "sha256": "3afdc002996388aad665616bf12406dd30f612db6314bba34c1fb85210ec5211"
+      },
+      "parent_acceptance": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-6ae0-off-parent-acceptance-001/REPORT.json",
+        "sha256": "86636be06babbe97d5f4461ca3df81493c99fe5b928cb31c607150285d0fb1c9"
+      }
+    },
+    {
+      "site": "6ae0",
+      "arm": "on",
+      "audit": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-6ae0-on-result-audit-001/REPORT.json",
+        "sha256": "985ca2a0b716074da90a16de6d57d1a1c64a0b4a5718700842ef7db606df5e33"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-launch-preparation-001/6ae0/on/result.json",
+        "sha256": "252ea36cce8af11cb9048883435315a602e5ea2b6b19741aec426ea2fcfbb68e"
+      },
+      "parent_acceptance": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-6ae0-on-parent-acceptance-001/REPORT.json",
+        "sha256": "55eb1e33a0e9dd5d39df5504fa60ecfc99ed09cc3bcbf8dd1869754c441ec75c"
+      }
+    },
+    {
+      "site": "69b0",
+      "arm": "off",
+      "audit": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-off-result-audit-001/REPORT.json",
+        "sha256": "f8a70692382a334336c8c698426b3f5c3f6aeafc584696820243c3060d2b49f9"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-launch-preparation-001/69b0/off/result.json",
+        "sha256": "1d90c65ea12c631390a467fc5a3670aa4c65d94ad89a89a7ee9d544f484f99d6"
+      },
+      "parent_acceptance": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-off-parent-acceptance-001/REPORT.json",
+        "sha256": "f66779340f0613e8c53cbd505bd56fe852c877665cfe5c27ddad88b8baef4050"
+      }
+    },
+    {
+      "site": "69b0",
+      "arm": "on",
+      "audit": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-on-result-audit-001/REPORT.json",
+        "sha256": "c685bc9e27be446c65ad87459b626423c1c2202e91137160a1cf92940f828c49"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-launch-preparation-001/69b0/on/result.json",
+        "sha256": "16be39c990eb79701089a955c50538acaeb43622c19aa463ce933ff88a9d364c"
+      },
+      "parent_acceptance": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-on-parent-acceptance-001/REPORT.json",
+        "sha256": "869529604fd4ad3314595eeea1b51bd68f7e784a01a4e347b5b2faec70fa67c1"
+      }
+    }
+  ],
+  "captures": [
+    {
+      "entry_pc": "0x800d6ae0",
+      "arm": "off",
+      "captures": [
+        {
+          "ordinal": 0,
+          "classification": "retained-theorem-goal-after-rollback",
+          "parsed": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-6ae0-off-result-audit-001/active-000.json",
+            "sha256": "c346b72ed026c95c9d3ae3a106d934f41a6dd2b7ab37b18fdb6ac915f7506202"
+          },
+          "raw": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-6ae0-off-result-audit-001/active-000.txt",
+            "sha256": "ce1852747d3564e5ef2a0969445197c85cc99e33d3d406c25a25396caef6465c"
+          },
+          "conclusion_sha256": "853529909f0c39859391e11b7e96568a74db3caf2712e6aff0852cbf5b8621da",
+          "printer_ellipsis": false,
+          "hidden_terms": false
+        }
+      ]
+    },
+    {
+      "entry_pc": "0x800d6ae0",
+      "arm": "on",
+      "captures": [
+        {
+          "ordinal": 0,
+          "classification": "progressed-printed-residual",
+          "parsed": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-6ae0-on-result-audit-001/active-000.json",
+            "sha256": "5dc505e75fe8fec4e564a325fd4fafe277127594c74864e6f0fe86a693a212f5"
+          },
+          "raw": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-6ae0-on-result-audit-001/active-000.txt",
+            "sha256": "7e02d0f5c601ff4a107d2f0ea8a1aa431e84b727489b7214e6f93ce1d925f02e"
+          },
+          "conclusion_sha256": "810f9b1f39c97c6727c208cd8069082bff0e683aeb52abe07674c1cd246c368e",
+          "printer_ellipsis": false,
+          "hidden_terms": false
+        },
+        {
+          "ordinal": 1,
+          "classification": "progressed-printed-residual",
+          "parsed": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-6ae0-on-result-audit-001/active-001.json",
+            "sha256": "c5fdf1a2c9421f317cb0f3b2fbf7b109129a5353a82711b683853c20c1743e2a"
+          },
+          "raw": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-6ae0-on-result-audit-001/active-001.txt",
+            "sha256": "fcfecce4953e26d68cea701425597aeee3347f600be33a37a9d4c644b4ee4f3b"
+          },
+          "conclusion_sha256": "c1a7b5d067dd26f4956fdcc6aa74a5d9e97a180772109d6e5f3c9e542ff32fb0",
+          "printer_ellipsis": true,
+          "hidden_terms": false
+        },
+        {
+          "ordinal": 2,
+          "classification": "unresolved-memory-kind",
+          "parsed": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-6ae0-on-result-audit-001/active-002.json",
+            "sha256": "74ad24c443aa5b8606e30bc72f5ce342c982596eef22cba99f5b3cc36c09f97b"
+          },
+          "raw": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-6ae0-on-result-audit-001/active-002.txt",
+            "sha256": "3bba93bf9556b8398ac8bc42587d3a793970af1b0e515490f2b1299622e90b4f"
+          },
+          "conclusion_sha256": "4665937937c423013d36f3fdda158c4f77f83d1d71ea21456f16d7698a34452b",
+          "printer_ellipsis": true,
+          "hidden_terms": false
+        },
+        {
+          "ordinal": 3,
+          "classification": "progressed-printed-residual",
+          "parsed": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-6ae0-on-result-audit-001/active-003.json",
+            "sha256": "77ac5c40221e9d348edc8210ec4371fa1e8c101e5fa697ff71ff227958f85847"
+          },
+          "raw": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-6ae0-on-result-audit-001/active-003.txt",
+            "sha256": "e5af8095c10f8a414b5b94be0c479e27ac7914b9f0cefdc227530dc82a59c13d"
+          },
+          "conclusion_sha256": "12b46d17739c8240842f398a5d5cc72e19f4733d0e68c282b713766427c0b46c",
+          "printer_ellipsis": true,
+          "hidden_terms": false
+        },
+        {
+          "ordinal": 4,
+          "classification": "selection-request",
+          "parsed": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-6ae0-on-result-audit-001/active-004.json",
+            "sha256": "ff97e0199681e414189a46279cee3f9d1a65c1b37b9733b134509a2e8fe060e7"
+          },
+          "raw": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-6ae0-on-result-audit-001/active-004.txt",
+            "sha256": "30222e2969a15b4ddd1c6f600afcd2f9e2247f07527b962b0460c4e963c27601"
+          },
+          "conclusion_sha256": "633e326b8179eb3d1ec26adbb24ffdd167cf58f7c1882259bb4d366de5960204",
+          "printer_ellipsis": true,
+          "hidden_terms": true
+        },
+        {
+          "ordinal": 5,
+          "classification": "unresolved-kind-match-continuation",
+          "parsed": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-6ae0-on-result-audit-001/active-005.json",
+            "sha256": "b25ae1d8caace6350ef972f97589412548eddeea376273901c40ceb72fd831e5"
+          },
+          "raw": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-6ae0-on-result-audit-001/active-005.txt",
+            "sha256": "7994b56d072e0638f10c2833664ddd9ad930426b5360dbfe1ca74e418f15a570"
+          },
+          "conclusion_sha256": "ebe9cca48056873ae88949f4298399b0044a4e437915e33adc350d3ab0b06f45",
+          "printer_ellipsis": true,
+          "hidden_terms": true
+        }
+      ]
+    },
+    {
+      "entry_pc": "0x800d69b0",
+      "arm": "off",
+      "captures": [
+        {
+          "ordinal": 0,
+          "classification": "unresolved-memory-kind",
+          "parsed": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-off-result-audit-001/active-000.json",
+            "sha256": "dc7e58083fb777ea3aeb631b014933175abd28c995e2cd8c7f3ebaf4eae0bbeb"
+          },
+          "raw": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-off-result-audit-001/active-000.txt",
+            "sha256": "7ad6d476a6d15d94988108a7c08c224bc0783a35b1ea48e7aa67e28ed4122cee"
+          },
+          "conclusion_sha256": "4665937937c423013d36f3fdda158c4f77f83d1d71ea21456f16d7698a34452b",
+          "printer_ellipsis": true,
+          "hidden_terms": false
+        },
+        {
+          "ordinal": 1,
+          "classification": "selection-request",
+          "parsed": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-off-result-audit-001/active-001.json",
+            "sha256": "3521e7f5659bdbef4fc1bf5cadff29f82dd72786092e4b3fb72793ea282f0fb7"
+          },
+          "raw": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-off-result-audit-001/active-001.txt",
+            "sha256": "396f9377ea97ece3ffb126d4954ab8ee7c17f8631e2abb451e3e9d0602e3f22f"
+          },
+          "conclusion_sha256": "4eacaa0893854e044e99646dd143dc72eda7a78fe34c22f77df83e39391376fe",
+          "printer_ellipsis": true,
+          "hidden_terms": true
+        },
+        {
+          "ordinal": 2,
+          "classification": "unresolved-kind-match-continuation",
+          "parsed": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-off-result-audit-001/active-002.json",
+            "sha256": "f5447c0d7cdfe5a9477f753b9a939063bd38d899844ea7d73f89890a55f995f9"
+          },
+          "raw": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-off-result-audit-001/active-002.txt",
+            "sha256": "9799738afeef27df8227620ab7717c009b4cdd2261d29671a968a8508e0c4987"
+          },
+          "conclusion_sha256": "59acd3c4c93ac498b56758cc10dcbfb21e4808d872ad6f0f9b0d7d90b8e32716",
+          "printer_ellipsis": true,
+          "hidden_terms": true
+        }
+      ]
+    },
+    {
+      "entry_pc": "0x800d69b0",
+      "arm": "on",
+      "captures": [
+        {
+          "ordinal": 0,
+          "classification": "progressed-printed-residual",
+          "parsed": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-on-result-audit-001/active-000.json",
+            "sha256": "27974068b6a824d5d70a4ccdc7d7dce0915130e539a3a96ed855eac929c3a24e"
+          },
+          "raw": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-on-result-audit-001/active-000.txt",
+            "sha256": "cc6f54ba052f8a50658d21746369d7d338c773a645c4effcd52bcc7951afad32"
+          },
+          "conclusion_sha256": "13760f021c28364026f6d2b528c27d5d59fd8e9771ebffa611cf22ce3aa418b7",
+          "printer_ellipsis": false,
+          "hidden_terms": false
+        },
+        {
+          "ordinal": 1,
+          "classification": "unresolved-memory-kind",
+          "parsed": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-on-result-audit-001/active-001.json",
+            "sha256": "e3840e9e996f0fc1b84d4d6e8e00995a04bbe4c59072341f3c0e11d33d8d4bfa"
+          },
+          "raw": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-on-result-audit-001/active-001.txt",
+            "sha256": "78e4acc6ca07ad9b6379d61d588c5284b32cadd80e903ebfe0e6ded5a3b1c3bd"
+          },
+          "conclusion_sha256": "4665937937c423013d36f3fdda158c4f77f83d1d71ea21456f16d7698a34452b",
+          "printer_ellipsis": false,
+          "hidden_terms": false
+        },
+        {
+          "ordinal": 2,
+          "classification": "progressed-printed-residual",
+          "parsed": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-on-result-audit-001/active-002.json",
+            "sha256": "eb4e30868370fcde8025e3ce7bed94ccce2f83552927e72329c1251ef374171b"
+          },
+          "raw": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-on-result-audit-001/active-002.txt",
+            "sha256": "68a938e8a5d36e5c625c233a11c4223dbb1569c4673485ff686ba3259f44d72f"
+          },
+          "conclusion_sha256": "3a61488162e71657306e0d9c8722efdb660a58d32e7100c8d1ce2563d980a999",
+          "printer_ellipsis": false,
+          "hidden_terms": false
+        },
+        {
+          "ordinal": 3,
+          "classification": "selection-request",
+          "parsed": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-on-result-audit-001/active-003.json",
+            "sha256": "a7bd7aeb78ccad1c9d4d7da96e34f45faab476c50a937697cddaa80ba850a39b"
+          },
+          "raw": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-on-result-audit-001/active-003.txt",
+            "sha256": "8268c93ef7d4c1f7b87c334f75951a5f45a3afa1c30e42ecde4b830275bb4869"
+          },
+          "conclusion_sha256": "49053e9bf3b6b515a7fe8cf0cede5342b81a44787dad4a6a7cf092453e70b506",
+          "printer_ellipsis": false,
+          "hidden_terms": true
+        },
+        {
+          "ordinal": 4,
+          "classification": "unresolved-kind-match-continuation",
+          "parsed": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-on-result-audit-001/active-004.json",
+            "sha256": "794b73a65fddf46f59196e4b0df4fad1f86027c0a443d0eb02ba3ff2792d769e"
+          },
+          "raw": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-map-rule38-native-comparisons-494/_build/rule38-native-69b0-on-result-audit-001/active-004.txt",
+            "sha256": "f5191998cd1533fef3c7d7cec56c5d021462cecc460ba86640f4f9f7a1db9e23"
+          },
+          "conclusion_sha256": "b0b8997b38dda57c1b6af43c4bf23cbcc546cf4a0b470277cc6ab13de5194275",
+          "printer_ellipsis": false,
+          "hidden_terms": true
+        }
+      ]
+    }
+  ],
+  "findings": [
+    "All four native searches completed. All four named Qed attempts failed. No object or resource-limit stop occurred.",
+    "The 6ae0 OFF result retains the theorem goal after rollback. ON retains three extents, a memory-kind request, a selection request, and an unresolved-kind match.",
+    "The 69b0 OFF result retains three resource-search captures. ON retains two array bounds and three resource-search captures.",
+    "Each pair has identical statement, body, recipe, and limits. Only the Rule38 switch import differs.",
+    "The first retained final captures differ at both sites. The earliest internal divergence remains unmeasured.",
+    "Spec identifies three visible 6ae0 extent candidates and three resource-rule gaps. Spec establishes no contract gap.",
+    "Rule38 remains a switched candidate. This package adds no Approved activation."
+  ],
+  "limits": [
+    "Native captures are printed active records. Shelf, stack, given-up, and the global evar graph remain unavailable.",
+    "Printed ellipses and HIDDEN terms remain unavailable. Raw text equality does not establish kernel state equality.",
+    "OFF rollback does not identify the last internal failure or a near-closed proof.",
+    "The pair varies only Rule38. Individual timing differences do not measure exclusive rule cost.",
+    "Three arms retain a StopIteration telemetry event. No such event changed the compiler exit.",
+    "Thirteen behavior certificates and four scope certificates retain their original root494 source and artifact provenance.",
+    "Fresh focused verification on the gate root remains pending.",
+    "The scanner must reject retained credential values and raw Dune environment headers before archiving each input."
+  ],
+  "preserved_failure_count": 195,
+  "native_replayed": false,
+  "production_activation_added": false
+}

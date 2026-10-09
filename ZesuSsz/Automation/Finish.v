@@ -356,6 +356,7 @@ Ltac zesu_finish_v2 :=
   zesu_finish_dispatch.
 
 Ltac zesu_finish :=
+  try solve [zesu_natural_index_constraint_if_enabled];
   try solve [zesu_array_region_selection_if_enabled];
   tryif zesu_defer_unresolved_sidecondition_if_enabled then idtac else (
   try solve [zesu_list_cons_witness_if_enabled |
@@ -560,6 +561,7 @@ Ltac zesu_search_switches := constr:([
   ZesuSsz.Automation.Hooks.ZesuStepRegionFaultNormalization; ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup;
   ZesuSsz.Automation.Hooks.ZesuStepStackWrite; ZesuSsz.Automation.Hooks.ZesuStepRamFault; ZesuSsz.Automation.Hooks.ZesuStepRegionFault;
   ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask; ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress; ZesuSsz.Automation.Hooks.ZesuStepRecordWitness;
+  ZesuSsz.Automation.Hooks.ZesuStepNaturalIndexConstraint;
   ZesuSsz.Automation.Hooks.ZesuStepArrayBounds; ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff; ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle;
   ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand; ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned; ZesuSsz.Automation.Hooks.ZesuStepListWitness;
   ZesuSsz.Automation.Hooks.ZesuStepTupleWitness; ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds; ZesuSsz.Automation.Hooks.ZesuStepPureFactHints;

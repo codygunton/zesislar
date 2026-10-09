@@ -1591,6 +1591,27 @@ Ltac zesu_integer_array_facts :=
       progress zesu_integer_array_emit_facts H
   end.
 
+Class ZesuStepNaturalIndexConstraint : Prop := {}.
+
+(* A retained integer constraint determines one shared natural witness.
+   Prove the range before assigning the witness. Failed attempts roll back. *)
+Ltac zesu_natural_index_constraint_if_enabled :=
+  zesu_switch_enabled constr:(ZesuStepNaturalIndexConstraint);
+  solve [
+    lazymatch goal with
+    | |- SHELVED_SIDECOND _ => unshelve_sidecond
+    | _ => idtac
+    end;
+    lazymatch goal with
+    | |- Z.of_nat ?index = ?delta =>
+        let unresolved := eval hnf in index in
+        is_evar unresolved;
+        assert_fails (zesu_condition_has_unresolved_evar delta);
+        let Hnonnegative := fresh "HindexNonnegative" in
+        assert (Hnonnegative : 0 <= delta) by lia;
+        exact (Z2Nat.id delta Hnonnegative)
+    end].
+
 Class ZesuStepArrayBounds : Prop :=
   zesu_step_array_bounds : True.
 
