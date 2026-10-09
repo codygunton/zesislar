@@ -9,5 +9,4 @@ if [[ $# -eq 1 && $1 == --version ]]; then
 fi
 export ZESU_MODULE_LIMIT_GIB=6 ZESU_HOLD_GIB=180
 guard=${ZESU_RESOURCE_GUARD:-$tools_dir/resource_guard.sh}
-"$guard" wait
-exec "$guard" scope rocq-mcp-coqc -- "$coqc_binary" "$@"
+exec python3 "$tools_dir/coqc_findlib.py" guarded --guard "$guard" -- "$coqc_binary" "$@"

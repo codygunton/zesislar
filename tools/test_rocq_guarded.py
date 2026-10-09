@@ -21,7 +21,7 @@ class RocqGuardedTests(unittest.TestCase):
         self.root = Path(self.directory.name)
         self.environment = fixture_environment( PATH=f"{self.root}:{os.environ['PATH']}",
                                 TEST_RECORD=str(self.root / "record.jsonl"))
-        for name in ("rocq_mcp_guarded.sh", "rocq_coqc_guarded.sh"):
+        for name in ("rocq_mcp_guarded.sh", "rocq_coqc_guarded.sh", "coqc_findlib.py"):
             shutil.copy2(TOOLS / name, self.root / name)
 
     def executable(self, name, body):

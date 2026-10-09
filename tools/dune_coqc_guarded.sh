@@ -24,6 +24,9 @@ case "$*" in
     exec "$coqc_binary" "$@" ;;
 esac
 
+# Preserve only the findlib path from this exact private Dune recipe.
+python3 "$tools_dir/coqc_findlib.py" record --tools-directory "$tools_dir"
+
 # The scope borrows an existing scratch token or owns one new token.
 # A compiler already inside the same job scope does not create another scope.
 "$guard" scope dune-coqc -- "$coqc_binary" "$@" &

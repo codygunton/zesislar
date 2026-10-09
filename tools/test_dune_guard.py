@@ -342,7 +342,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
         tools = self.root / "tools"
         (tools / "guard-bin").mkdir(parents=True)
         for name in ("resource_guard.sh", "dune_coqc_guarded.sh", "coqc_scratch.sh",
-                     "coqc_recipe.py", "guard-bin/dune"):
+                     "coqc_recipe.py", "coqc_findlib.py", "guard-bin/dune"):
             shutil.copy2(TOOLS / name, tools / name)
         self.wrapper = tools / "guard-bin/coqc"
         shutil.copy2(TOOLS / "dune_coqc_guarded.sh", self.wrapper)
@@ -360,7 +360,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
             "source=next((pathlib.Path(x) for x in args if x.endswith('.v')),None)\n"
             "if source is None: sys.exit(0)\n"
             "fd=os.open(os.environ['FAKE_COMPILER_EVENTS'],os.O_WRONLY|os.O_CREAT|os.O_APPEND,0o600)\n"
-            "os.write(fd,(json.dumps({'source':str(source),'args':args,'token':os.environ.get('ZESU_COQC_RESERVATION'),'scope':os.environ.get('ZESU_COQC_SCOPE'),'slots':len(list(pathlib.Path(os.environ['ZESU_GUARD_STATE'],'coqc-reservations').iterdir())),'cpu':resource.getrlimit(resource.RLIMIT_CPU)[0]})+'\\n').encode());os.close(fd)\n"
+            "os.write(fd,(json.dumps({'source':str(source),'args':args,'OCAMLPATH':os.environ.get('OCAMLPATH'),'token':os.environ.get('ZESU_COQC_RESERVATION'),'scope':os.environ.get('ZESU_COQC_SCOPE'),'slots':len(list(pathlib.Path(os.environ['ZESU_GUARD_STATE'],'coqc-reservations').iterdir())),'cpu':resource.getrlimit(resource.RLIMIT_CPU)[0]})+'\\n').encode());os.close(fd)\n"
             "for suffix in ['.vo','.glob','.vos','.vok']: source.with_suffix(suffix).write_text('fixture')\n"
             "if os.environ.get('FAKE_BLOCK_AFTER_FIRST')=='1' and source.stem=='First':\n"
             " pathlib.Path(os.environ['GUARD_TEST_BLOCKED_COUNT']).write_text('17\\n')\n")
@@ -578,6 +578,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
         shutil.copy2(TOOLS / "resource_guard.sh", updated)
         mcp_wrapper = self.root / "rocq_coqc_guarded.sh"
         shutil.copy2(TOOLS / "rocq_coqc_guarded.sh", mcp_wrapper)
+        shutil.copy2(TOOLS / "coqc_findlib.py", self.root / "coqc_findlib.py")
         scope_log = self.root / "scope.log"
         systemd = self.fixture.bin / "systemd-run"
         systemd.write_text(
@@ -740,6 +741,13 @@ class DuneCompilerGuardTest(unittest.TestCase):
             _, stderr = process.communicate(timeout=10)
             self.assertEqual(process.returncode, 0, stderr)
             self.assertEqual(len(self.compiler_events()), 2)
+            record = json.loads((self.root / "_build/coqc-ocamlpath.json").read_text())
+            self.assertEqual(record["workspace"], str(self.root.resolve()))
+            self.assertEqual(record["private_build"], str((self.root / "_build").resolve()))
+            self.assertEqual((self.root / "_build/default").resolve(),
+                             self.root / "_build/default")
+            self.assertTrue(all(event["OCAMLPATH"] == record["OCAMLPATH"]
+                                for event in self.compiler_events()))
             self.assertTrue(self.fixture.lock.exists())
             recipe = compiler_recipe((self.root / "_build/trace.csexp").read_bytes())
             self.assertIsNotNone(recipe)
