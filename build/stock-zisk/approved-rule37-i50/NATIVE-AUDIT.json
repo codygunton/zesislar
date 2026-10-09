@@ -1,0 +1,2884 @@
+{
+  "root": "8819ff9d7a69d21f68187651b04b8b5500f4dc64",
+  "pass_result_sha256": "6e3aafbe6b14b64bc65ce35fbc8552172a437920125f21e9ba19fb61705e337c",
+  "seal_sha256": "ffa4d432fc526c9310ac83d477369614ab529406519910713d2ba1d2e6ee0f52",
+  "input_count": 15317,
+  "changed_inputs": [],
+  "recipe_sha256": "0bb175feb99571a15f9457ce86444ce70049cc79e5a47213aedddb927f6c5736",
+  "admission_runner_sha256": "6c6b4bddd15055507a4230de3dff8e4adb6dca6129e03241791c0d7141d81474",
+  "release_record_sha256": "e811b8a974e3caca392932be2b0674d2b23fb3d898573b90a8966c2c43f52417",
+  "native_count": 24,
+  "adapter_count": 13,
+  "hint_scope": [
+    "DecodeItemBranchGuardFacts",
+    "DecodeItemCanonicalAnchors",
+    "DecodeItemCompletedFoldFacts",
+    "DecodeItemCorrectedWitnessSelections",
+    "DecodeItemDataWitnessFacts",
+    "DecodeItemEntryByteIndexFacts",
+    "DecodeItemEntryGuardFacts",
+    "DecodeItemFoldBackEdgeWitnesses",
+    "DecodeItemFoldExitFacts",
+    "DecodeItemFoldInitializationWitnesses",
+    "DecodeItemFoldRejectionFacts",
+    "DecodeItemFoldSuccessorWitnesses",
+    "DecodeItemFoldZeroFacts",
+    "DecodeItemHeaderWitnessFacts",
+    "DecodeItemInitializationPureFacts",
+    "DecodeItemInputHeadWordFacts",
+    "DecodeItemOutcomeWitnessFacts",
+    "DecodeItemOutputBaseWitnessFacts",
+    "DecodeItemOutputWitnessSelections",
+    "DecodeItemRawOutputFacts",
+    "DecodeItemS40GuardFacts",
+    "DecodeItemSavedFrameWitnesses",
+    "DecodeItemShortListHandoffFacts",
+    "DecodeItemStringSuccessorWitnesses"
+  ],
+  "hint_count": 24,
+  "approved_classes": {
+    "ArrayBounds": "ZesuSsz.Automation.Hooks.ZesuStepArrayBounds",
+    "ArrayRegionBounds": "ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds",
+    "CanonicalAnchor": "ZesuSsz.Automation.Hooks.ZesuStepCanonicalAnchor",
+    "EvarImplicationGuard": "ZesuSsz.Automation.Hooks.ZesuStepEvarImplicationGuard",
+    "EvarSideconditionGuard": "ZesuSsz.Automation.Hooks.ZesuStepEvarSideconditionGuard",
+    "InstructionLookup": "ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup",
+    "IntegerArrayAddress": "ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress",
+    "KnownPairWitness": "ZesuSsz.Automation.Hooks.ZesuStepKnownPairWitness",
+    "ListWitness": "ZesuSsz.Automation.Hooks.ZesuStepListWitness",
+    "LowMask": "ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask",
+    "PureFactHints": "ZesuSsz.Automation.Hooks.ZesuStepPureFactHints",
+    "PureWitnessConstraints": "ZesuSsz.Automation.Hooks.ZesuStepPureWitnessConstraints",
+    "RamFault": "ZesuSsz.Automation.Hooks.ZesuStepRamFault",
+    "RecordWitness": "ZesuSsz.Automation.Hooks.ZesuStepRecordWitness",
+    "RegionFault": "ZesuSsz.Automation.Hooks.ZesuStepRegionFault",
+    "RegionFaultNormalization": "ZesuSsz.Automation.Hooks.ZesuStepRegionFaultNormalization",
+    "RegisterCollectionSelection": "ZesuSsz.Automation.Hooks.ZesuStepRegisterCollectionSelection",
+    "ReturnBundle": "ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle",
+    "ReturnWand": "ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand",
+    "StackWrite": "ZesuSsz.Automation.Hooks.ZesuStepStackWrite",
+    "StrictSigned": "ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned",
+    "TupleWitness": "ZesuSsz.Automation.Hooks.ZesuStepTupleWitness",
+    "WordArrayHandoff": "ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff"
+  },
+  "excluded_classes": [
+    {
+      "class": "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepArrayLoadPriority",
+      "switch": "ArrayLoadPriority"
+    },
+    {
+      "class": "ZesuSsz.Automation.BoundedArithmetic.ZesuStepBoundedArithmetic",
+      "switch": "BoundedArithmetic"
+    },
+    {
+      "class": "ZesuSsz.Automation.ByteFold.ZesuStepByteFold",
+      "switch": "ByteFold"
+    },
+    {
+      "class": "ZesuSsz.Automation.CallReturn.ZesuStepCallReturn",
+      "switch": "CallReturn"
+    },
+    {
+      "class": "ZesuSsz.Automation.CallReturnSpecTable.ZesuStepCallReturnSpecTable",
+      "switch": "CallReturnSpecTable"
+    },
+    {
+      "class": "ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch",
+      "switch": "ConjunctMatch"
+    },
+    {
+      "class": "ZesuSsz.Automation.ExistentialArrayRestore.ZesuStepExistentialArrayRestore",
+      "switch": "ExistentialArrayRestore"
+    },
+    {
+      "class": "ZesuSsz.Automation.InstrPreAddress.ZesuStepInstrPreAddress",
+      "switch": "InstrPreAddress"
+    },
+    {
+      "class": "ZesuSsz.Automation.InteriorByteSlice.ZesuStepInteriorByteSlice",
+      "switch": "InteriorByteSlice"
+    },
+    {
+      "class": "ZesuSsz.Automation.LoadedTrace.ZesuStepLoadedTrace",
+      "switch": "LoadedTrace"
+    },
+    {
+      "class": "ZesuSsz.Automation.LookupReduce.ZesuStepLookupReduce",
+      "switch": "LookupReduce"
+    },
+    {
+      "class": "ZesuSsz.Automation.OutcomeHandoff.ZesuStepOutcomeHandoff",
+      "switch": "OutcomeHandoff"
+    },
+    {
+      "class": "ZesuSsz.Automation.SealedCoverage.ZesuStepSealedOpen",
+      "switch": "SealedOpen"
+    },
+    {
+      "class": "ZesuSsz.Automation.SpecPrefix.ZesuStepSpecTail",
+      "switch": "SpecTail"
+    },
+    {
+      "class": "ZesuSsz.Automation.TracePrefixTail.ZesuStepTracePrefixTail",
+      "switch": "TracePrefixTail"
+    },
+    {
+      "class": "ZesuSsz.Automation.PureFacts.ZesuStepWitnessArith",
+      "switch": "WitnessArith"
+    },
+    {
+      "class": "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepWordArrayLookup",
+      "switch": "WordArrayLookup"
+    }
+  ],
+  "Rule34": "ON",
+  "SwitchDispatch": "ON",
+  "Rule35": "ON",
+  "Rule36": "ON",
+  "Rule37": "ON",
+  "counts": {
+    "residual": 14,
+    "cpu-limit": 6,
+    "native-closure": 8,
+    "adapter-closure": 7,
+    "memory-limit": 2
+  },
+  "capture_count": 70,
+  "native_capture_count": 70,
+  "adapter_capture_count": 0,
+  "rows": [
+    {
+      "id": "block_0x800d6960",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 27.204286,
+      "peak_rss_kib": 1513136,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 7,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "returnAddress",
+              "args"
+            ],
+            "initial_context_size": 5,
+            "returned_context_size": 44,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "returnAddress",
+              "args"
+            ],
+            "initial_context_size": 5,
+            "returned_context_size": 44,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "returnAddress",
+              "args"
+            ],
+            "initial_context_size": 5,
+            "returned_context_size": 44,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 3,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "returnAddress",
+              "args"
+            ],
+            "initial_context_size": 5,
+            "returned_context_size": 44,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 4,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "returnAddress",
+              "args"
+            ],
+            "initial_context_size": 5,
+            "returned_context_size": 49,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 5,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "returnAddress",
+              "args"
+            ],
+            "initial_context_size": 5,
+            "returned_context_size": 45,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 6,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "returnAddress",
+              "args"
+            ],
+            "initial_context_size": 5,
+            "returned_context_size": 45,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6960",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "e4237432b518e461c93dae472acf9111f44f8452b7b9a991a0e8a021caae9ead",
+      "log_sha256": "7276185670af1a427c577d9315c9227bbddd55db27a7c4d360f8270b4af0a007",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6974",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 451.76160600000003,
+      "peak_rss_kib": 2815980,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 21,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 66,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 66,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 66,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 3,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 66,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 4,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 66,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 5,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 66,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 6,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 66,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 7,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 67,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 8,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 67,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 9,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 67,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 10,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 67,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 11,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 67,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 12,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 67,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 13,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 67,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 14,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 69,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 15,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 69,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 16,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 69,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 17,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 69,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 18,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 69,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 19,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 69,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 20,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 69,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6974",
+      "statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "2ddcc58c3f8d409fabd739dc771bbd707674fe173ebc368cf64c7ea05039eb23",
+      "log_sha256": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d697c",
+      "kind": "native",
+      "outcome": "cpu-limit",
+      "cpu_seconds": 1199.8425449999997,
+      "peak_rss_kib": 3481488,
+      "exit_code": -9,
+      "limit": "cpu",
+      "active_records": null,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d697c",
+      "statement_sha256": "4416a8f35e49ca7dce03358b8f4b4d354f056c0e475248816df61c27ad0ef6f0",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "3a99e50b6dc578bbfc30a5d071f756207b53a3034ab64cf9a1bbe94e3cf275cf",
+      "log_sha256": "e6ff4e4b014dc7fa8105b51863eb9c0934487c362ff24c12454cf77b668f33e4",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "limit-stop",
+      "group_coverage": {
+        "goals": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d698c",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 166.31385400000002,
+      "peak_rss_kib": 2703944,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 3,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "pointerBytes",
+              "lengthBytes",
+              "inputPrefix",
+              "rest",
+              "isLiteral"
+            ],
+            "initial_context_size": 10,
+            "returned_context_size": 82,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "pointerBytes",
+              "lengthBytes",
+              "inputPrefix",
+              "rest",
+              "isLiteral"
+            ],
+            "initial_context_size": 10,
+            "returned_context_size": 82,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "pointerBytes",
+              "lengthBytes",
+              "inputPrefix",
+              "rest",
+              "isLiteral"
+            ],
+            "initial_context_size": 10,
+            "returned_context_size": 82,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d698c",
+      "statement_sha256": "6624de3c1a1e012af027f5aa9afd4c7e519f9bec28752700eaeabd7b7fd3fead",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "0e4f01e5005d31a1112a12178d9d6759ad829d85da3ad6afb252df5702ee09e7",
+      "log_sha256": "25bea041d85f2f5f1626007fc2dccce59d3158b3f010a356786fbd3ff78af550",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 12,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d69a4",
+      "kind": "native",
+      "outcome": "native-closure",
+      "cpu_seconds": 9.690233999999998,
+      "peak_rss_kib": 1185508,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d69a4",
+      "statement_sha256": "d3cf1dc28a76ce7896cb2a474ba6293904253f905cc3a0e0f20ddaadf5a29e65",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "59c8cabbbaea9b8f8ea570c79a2d5ac1f14095a3ad06511f3fccb2f2a2bf9435",
+      "log_sha256": "abf6f7df3720f247386c75121474925e04935ef6844cdee1bfbd86465187b8cc",
+      "object_sha256": "7e6c30f58d94ca827030210226d09abbbb9b2595b96fbb315c3843cd6323fdcc",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-boundary-closed",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d69b0",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 392.51807799999995,
+      "peak_rss_kib": 4120604,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 3,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 136,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 138,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 136,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d69b0",
+      "statement_sha256": "a31c1250082926f364182f6cd1fe25f157ae943c78039f2b2fba10e61997f795",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "5cc1cf68227851b770e089008d6cded476f41ee73f06a4fa7bedc73c5878b49e",
+      "log_sha256": "34e13cfde4ea2def4875988a4a64aa416cad01d2e982562baa7e8951d2cf1a5b",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d69d8",
+      "kind": "native",
+      "outcome": "native-closure",
+      "cpu_seconds": 14.040332,
+      "peak_rss_kib": 1177248,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d69d8",
+      "statement_sha256": "b294c17a822648ee71de41f30e5bde7e9d78be4f54e628d6ef3d0e76b216a668",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "69256fef6c5e677001822b2c6742c4683796332c3a5e0273b9b741155273d187",
+      "log_sha256": "d42f0d7f21a5324ad2f30122198efc99a49c27eb9354317246b641c5e39f5f0d",
+      "object_sha256": "c518ddac025139531d3b0302e1c43621390bfc8d63f76b8942b7b1e81ece8902",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-boundary-closed",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d69e0",
+      "kind": "native",
+      "outcome": "native-closure",
+      "cpu_seconds": 15.843983,
+      "peak_rss_kib": 1278424,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d69e0",
+      "statement_sha256": "c0613d6a425c33bc56f14a4111a4649511a277b5a888bbe41dd501155e23b271",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "7404afccfff1114f37bab9352469b257e70b651d3463870d99cbdbbdca7353c1",
+      "log_sha256": "bf327fe2a9094af3014f411ade250fe01d7678fafeb754099d93ff533fa1b41e",
+      "object_sha256": "30b5c612cf081f7fe1adeed9418f4fd6783ff96b9b34d0cdc5d451e68d6b217c",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-boundary-closed",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d69e8",
+      "kind": "native",
+      "outcome": "cpu-limit",
+      "cpu_seconds": 1199.8568710000002,
+      "peak_rss_kib": 3708352,
+      "exit_code": -9,
+      "limit": "cpu",
+      "active_records": null,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d69e8",
+      "statement_sha256": "3b68710d40940010dfd36b1dd533142e87af5bf79dd8cc4086b6242b88ddc3ae",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "4a00b58b583b04b20b0ab283bd75a04230e97a0a7f0a23f23ad2f33137e8a3fa",
+      "log_sha256": "5e56f6d24e45812b73aa18efdfd22f978ae06b803130be83f44c15d03635f699",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "limit-stop",
+      "group_coverage": {
+        "goals": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a00",
+      "kind": "native",
+      "outcome": "native-closure",
+      "cpu_seconds": 17.608824999999996,
+      "peak_rss_kib": 1307036,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6a00",
+      "statement_sha256": "9cc28faf4111fdb126d37c3e6212af69a35755b85dc6032024c995a58267193c",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "1eb54b901d182c0b8b4aad561269e669ef1776a594de13139f8272c8f2bc7336",
+      "log_sha256": "bb35e73cb1d72aedefee7960f9d0635e191dbfdc78f2d3fa1402e7c574d12508",
+      "object_sha256": "fb9113b71a03afa2259fb6a80489262047fa4ab99ebe4019d3430bd098c43c7a",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-boundary-closed",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a08",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 17.414553,
+      "peak_rss_kib": 1238580,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 4,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "x13",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 8,
+            "returned_context_size": 32,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "x13",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 8,
+            "returned_context_size": 32,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "x13",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 8,
+            "returned_context_size": 32,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 3,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "x13",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 8,
+            "returned_context_size": 38,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6a08",
+      "statement_sha256": "1f4da2e5a4e2c860d3d742809c7b5110a077d54dbf15c3a851b930cf79a0d42f",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "59c96f970271d00ee345a56a3a565a8f4103949f4b898b1e6432749ee26ebef3",
+      "log_sha256": "62619ae85993d9567be31fe11c83cef9b0ddb3b542e7fdba23dd23bb4872fe11",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a14",
+      "kind": "native",
+      "outcome": "native-closure",
+      "cpu_seconds": 6.141704000000001,
+      "peak_rss_kib": 1126324,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6a14",
+      "statement_sha256": "a58a51bcede39919116652c6768070bc7b9d134f36fffa177cdce592d3e3089b",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "87aebf5beb35a756e579d0294ac7bf9428420c0f8578762d4f4518ac3cf0d6e4",
+      "log_sha256": "3aa37a5112c33487261df1249d887c3dd530c3a833c05ad0a96e4b55a9d18625",
+      "object_sha256": "df87a79867f0b6d0266cd8a4655eb580e7801e2e698a2925e482871b0310305d",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-boundary-closed",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a24",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 830.365804,
+      "peak_rss_kib": 2920328,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 8,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 90,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 90,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 90,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 3,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 90,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 4,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 93,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 5,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 93,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 6,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 93,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 7,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 93,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [
+        {
+          "active_index": 2,
+          "old_goal": 3,
+          "selected_constant": "decodeItemFoldExitAccumulator",
+          "conclusion_matches": true,
+          "required_context_matches": true,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "scheduling_failure",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6a24-002.json",
+          "old_capture_sha256": "4d9ad06f6fa08db52a90b95adbded12f28aa6462c2129d31ca6b903850373101",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 2,
+          "old_goal": 7,
+          "selected_constant": "decodeItemFoldExitAccumulator",
+          "conclusion_matches": true,
+          "required_context_matches": false,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "matching_guard_with_changed_context_requires_review",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6a24-006.json",
+          "old_capture_sha256": "fc51e9baf19368efe1091c394e18d5c01efa6bb512aaa73027711032c3eb19f6",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 3,
+          "old_goal": 4,
+          "selected_constant": "decodeItemCompletedFoldFacts",
+          "conclusion_matches": true,
+          "required_context_matches": true,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "scheduling_failure",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6a24-003.json",
+          "old_capture_sha256": "f3c0eebd32b0e7756226e71dabaf27ef7a05671c5ec9575e7d1fae5bca5d92c2",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 3,
+          "old_goal": 8,
+          "selected_constant": "decodeItemCompletedFoldFacts",
+          "conclusion_matches": true,
+          "required_context_matches": false,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "matching_guard_with_changed_context_requires_review",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6a24-007.json",
+          "old_capture_sha256": "a3898e1a187966f8e85c64a05600870ee67900ff65fa8013ecfc73ce38df7581",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 6,
+          "old_goal": 3,
+          "selected_constant": "decodeItemFoldExitAccumulator",
+          "conclusion_matches": true,
+          "required_context_matches": false,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "matching_guard_with_changed_context_requires_review",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6a24-002.json",
+          "old_capture_sha256": "4d9ad06f6fa08db52a90b95adbded12f28aa6462c2129d31ca6b903850373101",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 6,
+          "old_goal": 7,
+          "selected_constant": "decodeItemFoldExitAccumulator",
+          "conclusion_matches": true,
+          "required_context_matches": true,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "scheduling_failure",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6a24-006.json",
+          "old_capture_sha256": "fc51e9baf19368efe1091c394e18d5c01efa6bb512aaa73027711032c3eb19f6",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 7,
+          "old_goal": 4,
+          "selected_constant": "decodeItemCompletedFoldFacts",
+          "conclusion_matches": true,
+          "required_context_matches": false,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "matching_guard_with_changed_context_requires_review",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6a24-003.json",
+          "old_capture_sha256": "f3c0eebd32b0e7756226e71dabaf27ef7a05671c5ec9575e7d1fae5bca5d92c2",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 7,
+          "old_goal": 8,
+          "selected_constant": "decodeItemCompletedFoldFacts",
+          "conclusion_matches": true,
+          "required_context_matches": true,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "scheduling_failure",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6a24-007.json",
+          "old_capture_sha256": "a3898e1a187966f8e85c64a05600870ee67900ff65fa8013ecfc73ce38df7581",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        }
+      ],
+      "lemma": "DesignedBoundary_800d6a24",
+      "statement_sha256": "668333abd8c294ac9c21f89c05abf9dfb1e59978bb6aa9ccc6eb1509d8bb62d8",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "b7ae7a7839a2028eea35dd657be718b71e8d3cc59e069622cbe2153c7ff8be87",
+      "log_sha256": "f2a6e48a242ec3667ce9c496f388fed92eed88315eb45bfb5326430eef7fe84b",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 2400,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a38",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 28.363775,
+      "peak_rss_kib": 1228384,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 1,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "n",
+              "payloadStart",
+              "lengthBytes",
+              "frameBytes",
+              "loaded",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 11,
+            "returned_context_size": 26,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6a38",
+      "statement_sha256": "970e0d014336a47cea2d5e19f49a159199f396c663c462ee9e0131bc4d329fa6",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "c9a0533c43d5ecd44fce9e47a649db9da8aea07803e2cc5cc45bd6ebf44672b0",
+      "log_sha256": "e6520a4d89f2f0c9b03db006a043d6964f8aa34cdb91441081222389d7abf351",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a40",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 435.359761,
+      "peak_rss_kib": 4374324,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 3,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest",
+              "headerLength",
+              "payloadLength"
+            ],
+            "initial_context_size": 9,
+            "returned_context_size": 134,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest",
+              "headerLength",
+              "payloadLength"
+            ],
+            "initial_context_size": 9,
+            "returned_context_size": 136,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest",
+              "headerLength",
+              "payloadLength"
+            ],
+            "initial_context_size": 9,
+            "returned_context_size": 134,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6a40",
+      "statement_sha256": "446283b03c50624d81511f102d78c88d91241baec7c0c056eb466a8de79a0ddf",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "dd3d1f3240cfde2410727d9e576c72eb1b2375ed77c3c3c5f4c47b0ac5427158",
+      "log_sha256": "59cbe934c84ac302e6f4e7f713a3d6afa432b9a6f5e78b32a6fa3bd41ec7331f",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a64",
+      "kind": "native",
+      "outcome": "native-closure",
+      "cpu_seconds": 17.12672,
+      "peak_rss_kib": 1308352,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6a64",
+      "statement_sha256": "65b503d390be6994296a68b0597dde532b4bdcd8ea583ef02408aae3e302b61f",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "495af277f77fec9e42cdffc93b1c94fa32ed2c423480e9aaec444342fbb28551",
+      "log_sha256": "a7fbae45bc542e8ac3ecfe73d0e94288aae8a34fe11b2598c6074f292d8b164e",
+      "object_sha256": "b8ac4412a63257ff8f35fd817a30749f2078f5ab7e2b34e680f5fd5e60788642",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-boundary-closed",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a6c",
+      "kind": "native",
+      "outcome": "native-closure",
+      "cpu_seconds": 23.930740999999998,
+      "peak_rss_kib": 1401096,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6a6c",
+      "statement_sha256": "ea9491d8148d8cdf9209c48b3ad087ec81572553273ada1ca3b147ee5bdf1b83",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "88dd98ea877bb468d3238c0fd362e6275cf796f9c2a545a35835b23b906bdf70",
+      "log_sha256": "bf3e690d7ce8cfde6947a0267efcbe042c47fc4b48f373489f56360df569116b",
+      "object_sha256": "3b7e597dc612099a368d718b34456343d10ab33f3cad6f36021d6a20dc2913d2",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-boundary-closed",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6a78",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 537.651525,
+      "peak_rss_kib": 4849640,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 3,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 150,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 152,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 7,
+            "returned_context_size": 150,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6a78",
+      "statement_sha256": "6a9b7fe601eeecca8c04fee785e3456580f7a8f15199aa95c386c3fd22f74da2",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "85abcfa035b3576b777b73e55cc4c853d5a3b95c771e33534f77d4949eed247c",
+      "log_sha256": "d69e3ae8c5e406ce67886520582d7959a605a20cd8abb71aafa8d67c94a65919",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6aa8",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 16.935776999999998,
+      "peak_rss_kib": 1236564,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 4,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "x13",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 8,
+            "returned_context_size": 32,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "x13",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 8,
+            "returned_context_size": 32,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "x13",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 8,
+            "returned_context_size": 32,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 3,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "frameBytes",
+              "x13",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 8,
+            "returned_context_size": 38,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6aa8",
+      "statement_sha256": "3beb68118ad4cb18d4aad5e439553ae393e5ed7e4114b21ff84cbc5430ccb19c",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "4384cc7ad05d2ee6e42cf002054f6d29f6320fe37c260860f0b6dddc04826468",
+      "log_sha256": "b9f5f181131735f2e5048a8e1484d32b0e19ada44c9c26c11550e9a8107964d2",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ab4",
+      "kind": "native",
+      "outcome": "native-closure",
+      "cpu_seconds": 5.872973999999999,
+      "peak_rss_kib": 1126116,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6ab4",
+      "statement_sha256": "101f4543034625b1a94f38fe469f721cbf8ddb537ef3482e8463cb848c61bdd6",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "455481baaf3490e4d327513ff212dd010fd7fd0ca19de659759370e0402ad56a",
+      "log_sha256": "04ca962a577cf25033bcabb149a39505f851c824703544ec84902bc4dedb71d2",
+      "object_sha256": "c83686c80f5ee5ee379ab67c8d7481a9085537b46118f1d8bd18b36e54f0662b",
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-boundary-closed",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ac4",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 809.3806700000001,
+      "peak_rss_kib": 2930536,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 8,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 90,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 90,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 90,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 3,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 90,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 4,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 93,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 5,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 93,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 6,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 93,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 7,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 6,
+            "returned_context_size": 93,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [
+        {
+          "active_index": 2,
+          "old_goal": 3,
+          "selected_constant": "decodeItemFoldExitAccumulator",
+          "conclusion_matches": true,
+          "required_context_matches": true,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "scheduling_failure",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6ac4-002.json",
+          "old_capture_sha256": "22614d5af943119e2538cc0ef71d96389b4ba479587cae5032578c5b68ea5999",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 2,
+          "old_goal": 7,
+          "selected_constant": "decodeItemFoldExitAccumulator",
+          "conclusion_matches": true,
+          "required_context_matches": false,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "matching_guard_with_changed_context_requires_review",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6ac4-006.json",
+          "old_capture_sha256": "c442a8ba2b52e63c6825a30d1978cc13996ce1a5f0e81305b814df75ab47146c",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 3,
+          "old_goal": 4,
+          "selected_constant": "decodeItemCompletedFoldFacts",
+          "conclusion_matches": true,
+          "required_context_matches": true,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "scheduling_failure",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6ac4-003.json",
+          "old_capture_sha256": "a036532d578033faedf37ba5eb54445d81c215cbca03dedde42ed04400d2f55e",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 3,
+          "old_goal": 8,
+          "selected_constant": "decodeItemCompletedFoldFacts",
+          "conclusion_matches": true,
+          "required_context_matches": false,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "matching_guard_with_changed_context_requires_review",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6ac4-007.json",
+          "old_capture_sha256": "3fcbde06cb7a9648363d72fa03a22997561207de74965007c8c4b62677d4c5d3",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 6,
+          "old_goal": 3,
+          "selected_constant": "decodeItemFoldExitAccumulator",
+          "conclusion_matches": true,
+          "required_context_matches": false,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "matching_guard_with_changed_context_requires_review",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6ac4-002.json",
+          "old_capture_sha256": "22614d5af943119e2538cc0ef71d96389b4ba479587cae5032578c5b68ea5999",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 6,
+          "old_goal": 7,
+          "selected_constant": "decodeItemFoldExitAccumulator",
+          "conclusion_matches": true,
+          "required_context_matches": true,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "scheduling_failure",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6ac4-006.json",
+          "old_capture_sha256": "c442a8ba2b52e63c6825a30d1978cc13996ce1a5f0e81305b814df75ab47146c",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 7,
+          "old_goal": 4,
+          "selected_constant": "decodeItemCompletedFoldFacts",
+          "conclusion_matches": true,
+          "required_context_matches": false,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "matching_guard_with_changed_context_requires_review",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6ac4-003.json",
+          "old_capture_sha256": "a036532d578033faedf37ba5eb54445d81c215cbca03dedde42ed04400d2f55e",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        },
+        {
+          "active_index": 7,
+          "old_goal": 8,
+          "selected_constant": "decodeItemCompletedFoldFacts",
+          "conclusion_matches": true,
+          "required_context_matches": true,
+          "resources_equal": true,
+          "local_values_equal": true,
+          "classification": "scheduling_failure",
+          "basis": "Orch ruling plus the exact S87 registration certificate.",
+          "old_capture_path": "/home/cody/zesislar/.worktrees/worker2-child-approved-rule35-i46/_build/approved-rule35-pass-audit-001/captures/block_0x800d6ac4-007.json",
+          "old_capture_sha256": "3fcbde06cb7a9648363d72fa03a22997561207de74965007c8c4b62677d4c5d3",
+          "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+          "new_premises_added": false
+        }
+      ],
+      "lemma": "DesignedBoundary_800d6ac4",
+      "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "f7555d7a66efdfa243fe23491e213a300b9ca4961025b8045fb5cf8e7fe30197",
+      "log_sha256": "97df42662e2b2cddf919981a7af350c892631814d49048e2a4b84e6c242c0a01",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 2400,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ad8",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 57.926196,
+      "peak_rss_kib": 1479972,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 1,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "n",
+              "payloadStart",
+              "lengthBytes",
+              "frameBytes",
+              "loaded",
+              "inputPrefix",
+              "rest"
+            ],
+            "initial_context_size": 11,
+            "returned_context_size": 26,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6ad8",
+      "statement_sha256": "145487ee42b96d1f2528deb974822761f8c072f7cba3d04cd206ed148cc5e2e1",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "5337379e1d9caf32cdc3ec8d72e28ee1b701d0c5af7ef40042f15f78b6b2a10a",
+      "log_sha256": "60dcf4b091971068e7c2a3d5d1705d7a462107a69348a92d94b987e75c0d19c9",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6ae0",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 583.760473,
+      "peak_rss_kib": 5791740,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 1,
+      "residual_state": "total_search_failure_after_rollback",
+      "residual_classification": {
+        "state": "total_search_failure_after_rollback",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "restored_theorem_goal",
+            "whole_proposition_matches": true,
+            "initial_argument_names": [
+              "args",
+              "locals"
+            ],
+            "initial_context_size": 5,
+            "returned_context_size": 5,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6ae0",
+      "statement_sha256": "a173e2a65b54c347008f8cf26a95353b8eca2a9a91f5e0c0d03d6f3d66f7a530",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "466f14f48a1641ea95885bbb4e365e56563cbd79a103abcdaa9f78f95ce5b84b",
+      "log_sha256": "4fd8f55141838db808f0244faa8dcd870d6f8fe90b326b70447cc371e2b4629d",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "block_0x800d6b08",
+      "kind": "native",
+      "outcome": "residual",
+      "cpu_seconds": 482.21815599999996,
+      "peak_rss_kib": 4658772,
+      "exit_code": 1,
+      "limit": null,
+      "active_records": 3,
+      "residual_state": "residuals",
+      "residual_classification": {
+        "state": "residuals",
+        "records": [
+          {
+            "active_index": 0,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest",
+              "headerLength",
+              "payloadLength"
+            ],
+            "initial_context_size": 9,
+            "returned_context_size": 140,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 1,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest",
+              "headerLength",
+              "payloadLength"
+            ],
+            "initial_context_size": 9,
+            "returned_context_size": 142,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          },
+          {
+            "active_index": 2,
+            "state": "reduced_residual",
+            "whole_proposition_matches": false,
+            "initial_argument_names": [
+              "args",
+              "locals",
+              "inputPrefix",
+              "rest",
+              "headerLength",
+              "payloadLength"
+            ],
+            "initial_context_size": 9,
+            "returned_context_size": 140,
+            "normalization": "Whitespace, hexadecimal numerals, and complete outer parentheses only."
+          }
+        ],
+        "goal_count_is_not_a_progress_measure": true
+      },
+      "registered_guard_classification": [],
+      "lemma": "DesignedBoundary_800d6b08",
+      "statement_sha256": "7ebddc1f3223074613cd624d751d15feecbb4925d111a39c5d5e5e815ee80fdd",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "015f7f371acdb2c368bee3f54b3abf6237e9bad6c6771e3ecc0f21084952a825",
+      "log_sha256": "6423475e19ccfdabc117b939e805b146ca26cc68dd8b4896c200600a41309a57",
+      "object_sha256": null,
+      "inherited_debts": {
+        "pending_goals": [],
+        "shelved_goals": []
+      },
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": "native-residual",
+      "group_coverage": {
+        "goals": "Coq pretty-printed active goals",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom697c",
+      "kind": "adapter",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 102.643347,
+      "peak_rss_kib": 2400932,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin698cFrom697c_automatic",
+      "statement_sha256": "4879e08d4cebc0762556813ba4f7d5db1d6807572976706aed539ef81cfdb61e",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "b4a9f242a1ffcff9fb4bee6c560349b787f85d2b3dfed40e841a444ea8cfe394",
+      "log_sha256": "b335ef7c4060d413bbab09d69b716cb63d73b060d15c935448527dcf2fb93aeb",
+      "object_sha256": "a672959f1414c8e7d2d1da70c505c6d566394a3efedb9abe5c1b3f31bfebff03",
+      "inherited_debts": {},
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin698cFrom69e8",
+      "kind": "adapter",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 126.95828800000001,
+      "peak_rss_kib": 2487080,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin698cFrom69e8_automatic",
+      "statement_sha256": "4ecbd43a542dd185752264ca572016870ea8a50aed40e57d4fd2e97bb9c3852c",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "ec1e2a1d731a3bd82e4e0fe28d3d37980d5dc83ad8d67e76a70d8948fdb9d713",
+      "log_sha256": "22b30482793b0bc6ed571bc2a65e807362d5acdaf1a32ef969f5243ffdaf0289",
+      "object_sha256": "89c6ef0ce430ef7599fea49e0b660ab76f5d0666ed41ee1f52adb2e40477dd6a",
+      "inherited_debts": {},
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24From6a14",
+      "kind": "adapter",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 5.514849000000001,
+      "peak_rss_kib": 1118180,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6a24From6a14_automatic",
+      "statement_sha256": "638fa0e3af0b1c2c61469e6f1549072450099a1369dd51fc9a738e0593f47609",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "a3f8eb0be9b032f9a3e628cf6b6685bce6ecddae5bf785efb3db93da8264278a",
+      "log_sha256": "c2cd52a8195497cc1f1125251864c4de6c47a624861e37b0fe4d3722c0115cc2",
+      "object_sha256": "787e60ef51dda815ff4dcc9e3910432c84963f7f7ce0df0b4de90b6333b1435c",
+      "inherited_debts": {},
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6a24Backedge",
+      "kind": "adapter",
+      "outcome": "memory-limit",
+      "cpu_seconds": 431.61675199999996,
+      "peak_rss_kib": 6291480,
+      "exit_code": -15,
+      "limit": "memory",
+      "active_records": null,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6a24Backedge_automatic",
+      "statement_sha256": "92fe966b6e014d122d5365c6da99a5076ce6417591d4993f39e0cde51746a1ec",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "a9f68ff2a2e98c76b18a5cbf506e33ccde498996e07c823d7c2974863edaafca",
+      "log_sha256": "b1b1dfae7a36c748e6ca342ebb4f50b089cef75221b3a34b7b3b8fa7fcc4bc10",
+      "object_sha256": null,
+      "inherited_debts": {},
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 2400,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4From6ab4",
+      "kind": "adapter",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 5.534907,
+      "peak_rss_kib": 1113996,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6ac4From6ab4_automatic",
+      "statement_sha256": "226f81c4661ae1e5d964225375b010672e39a0f29c31010a698495abe7efdb6b",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "82ea41e64bbdf5f02721a2e29a8e15173ded31a9d2e5824387613bd5ca76777b",
+      "log_sha256": "b93a766a9609dadfb97aac3f087f96aa262dcb1b1c85e794cc90019a266447c5",
+      "object_sha256": "e6d14f921e85b6c5751ffe4c6f8b9860ad65758a83fab0b5c2f64e1541ee62f2",
+      "inherited_debts": {},
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ac4Backedge",
+      "kind": "adapter",
+      "outcome": "memory-limit",
+      "cpu_seconds": 1337.8996909999998,
+      "peak_rss_kib": 6291564,
+      "exit_code": -15,
+      "limit": "memory",
+      "active_records": null,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6ac4Backedge_automatic",
+      "statement_sha256": "cab4cadfddd7e8f225fb677b87319425d8471c116a8d388bac366fe08802a2ae",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "c4c00d79ca33154c9a8712fb6fd2251e5b0f4a04007d48564a55e25d0326847c",
+      "log_sha256": "4114694a3ef90718fee89b1c6832cc82578b48e5bf22068009ccfca9921e9f9c",
+      "object_sha256": null,
+      "inherited_debts": {},
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 2400,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ae0From6970",
+      "kind": "adapter",
+      "outcome": "cpu-limit",
+      "cpu_seconds": 1199.846111,
+      "peak_rss_kib": 3100468,
+      "exit_code": -9,
+      "limit": "cpu",
+      "active_records": null,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6ae0From6970_automatic",
+      "statement_sha256": "b9e41c14b74359819751ffb1f792326381a08e7c60bd136105ee0b5271d60e8d",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "d1f3a17a0722d4168ff0216db6a5a2f98eb1916e4f8ccf1dcb871d47f5548278",
+      "log_sha256": "1c01eb80a521a8ffb1965da0dc1d186723b7d9a0a155ff24525ece7955bf7d10",
+      "object_sha256": null,
+      "inherited_debts": {},
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ae0From69e0",
+      "kind": "adapter",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 7.855229,
+      "peak_rss_kib": 1159144,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6ae0From69e0_automatic",
+      "statement_sha256": "7fe36da0a1ba819ea72ca87fb40e70e9c38e70487015495ef4b9fde2eab7ec63",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "2bf0d44535fde609170b4455bcde18ae5a4a1d3c0eba70e54dec6c35af410ffb",
+      "log_sha256": "9f461b52a457b91ec2ef518d6c1212dd037677dc886e92fc2da74e96fc277fc1",
+      "object_sha256": "0be05afc20e131c29134483702f6787c1dca0ea0ea7130d42d4ea33c2adeacec",
+      "inherited_debts": {},
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ae0From6a08",
+      "kind": "adapter",
+      "outcome": "cpu-limit",
+      "cpu_seconds": 1199.8400470000001,
+      "peak_rss_kib": 2660324,
+      "exit_code": -9,
+      "limit": "cpu",
+      "active_records": null,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6ae0From6a08_automatic",
+      "statement_sha256": "5ffa808d7f5a94ace32b4e0c9d8f74597089784733e3e18aa286c372f991d10b",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "72abe705dcbdd39f74bed7c8d6e95b55747fc6a5d25a8b193ec99c5ea540b2ad",
+      "log_sha256": "36551ac6669688d08259376dae471279e026e6b2eb2994ccd1fa14784d17559a",
+      "object_sha256": null,
+      "inherited_debts": {},
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ae0From6a38",
+      "kind": "adapter",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 47.498574000000005,
+      "peak_rss_kib": 1906768,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6ae0From6a38_automatic",
+      "statement_sha256": "28e27d4587196305ec299d358ff850b47768a15d2d118cd7aac731ac29931ff7",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "a7cc7eaa36a915f6a6e6b76f21c7609ab8319c5827cb0e6bc613918f28bdeeb7",
+      "log_sha256": "6677a57fea5e23bf063cd4fc6e7a2fb6c85d1f94b8ff4c30aa4ba8a9b54564cd",
+      "object_sha256": "d12b60e793152fa159d12d9a5f52bd1e36fa65304472c229c81016d5c5bb7b78",
+      "inherited_debts": {},
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ae0From6a6c",
+      "kind": "adapter",
+      "outcome": "cpu-limit",
+      "cpu_seconds": 1199.843312,
+      "peak_rss_kib": 3264364,
+      "exit_code": -9,
+      "limit": "cpu",
+      "active_records": null,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6ae0From6a6c_automatic",
+      "statement_sha256": "38cd7dbcf951f6e7431a555afb219d92884e399b5cfba5cbdb5220fba0064ca8",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "48dc2111b259617437d122572423d2bbdfb6ab19c6aa780616f8868c10dc2ed6",
+      "log_sha256": "630a7266949f93e04f60b0f723d8f9c1d360c3937ae4085a0ebdf9d116abef12",
+      "object_sha256": null,
+      "inherited_debts": {},
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ae0From6aa8",
+      "kind": "adapter",
+      "outcome": "cpu-limit",
+      "cpu_seconds": 1199.8781219999998,
+      "peak_rss_kib": 2672416,
+      "exit_code": -9,
+      "limit": "cpu",
+      "active_records": null,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6ae0From6aa8_automatic",
+      "statement_sha256": "d8ba332f2867563f9c395c24597238d38841cf83ed88feab6990efeab80cb7af",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "aa84dad4aa949683b2a179f1d6426e4cc568f7ddebd398244a6389a9497eab26",
+      "log_sha256": "b7f3a0f81b935f891c7490e99a246748ee2e8b9063eb27b24fae54b321570f83",
+      "object_sha256": null,
+      "inherited_debts": {},
+      "assumptions_verified": false,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "unavailable",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    },
+    {
+      "id": "decodeItemJoin6ae0From6ad8",
+      "kind": "adapter",
+      "outcome": "adapter-closure",
+      "cpu_seconds": 67.544865,
+      "peak_rss_kib": 2206840,
+      "exit_code": 0,
+      "limit": null,
+      "active_records": 0,
+      "residual_state": "no_returned_active_records",
+      "residual_classification": {
+        "state": "no_returned_active_records",
+        "records": []
+      },
+      "registered_guard_classification": [],
+      "lemma": "decodeItemJoin6ae0From6ad8_automatic",
+      "statement_sha256": "14e43a64fcd03e0afba600442d0583dc5d94b877bde8f1b5f56df77f92b87f38",
+      "selected_body_sha256": "6347391095c809d5f1665b931730ece34847f67e943ade94a5a10e8ecf615dbc",
+      "source_sha256": "30f82eab33302364159f16394f87e856dce5c901baeb913ee3e7e1203b4146dd",
+      "log_sha256": "82697c77ac106c5a2d641c9419af52ddb670137cda9dd0820452dc3a8a750121",
+      "object_sha256": "30d13250b35e98d8a595d135a42a8b32f2f17c46f4af0912160a76986b228933",
+      "inherited_debts": {},
+      "assumptions_verified": true,
+      "CPU_budget_seconds": 1200,
+      "memory_budget_gib": 6,
+      "reported_outcome": null,
+      "group_coverage": {
+        "active": "Coq text",
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      }
+    }
+  ],
+  "object_log_evidence_bindings": {
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6960/primary/Boundary.v": "e4237432b518e461c93dae472acf9111f44f8452b7b9a991a0e8a021caae9ead",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6960/primary/compiler.log": "7276185670af1a427c577d9315c9227bbddd55db27a7c4d360f8270b4af0a007",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6960/primary/evidence.json": "8c0617e8aad605cc83884a8cb4584b2b5bafaf5c5cee309e345f536e42ea9d53",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6960/primary/compiler.json": "3f27233faeeb7d90891f8e10e4ffea0ed10a3decfb1aa011ee6a70dc4eb7bb8d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/Boundary.v": "2ddcc58c3f8d409fabd739dc771bbd707674fe173ebc368cf64c7ea05039eb23",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.log": "ee09388c43c4d701ce0d1ccbd1c8ce40a6d00ada3ebd70901794b716072ff407",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/evidence.json": "e91997cfb6e28506f0eb632d4c9c408e3cfaab7bbe381a4f2c345cbae1068218",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6974/primary/compiler.json": "c186f9690ec74b0150cf7b5703bcbebd77bb813f5a0be131814cd23ac72af97c",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d697c/primary/Boundary.v": "3a99e50b6dc578bbfc30a5d071f756207b53a3034ab64cf9a1bbe94e3cf275cf",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d697c/primary/compiler.log": "e6ff4e4b014dc7fa8105b51863eb9c0934487c362ff24c12454cf77b668f33e4",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d697c/primary/evidence.json": "bd53d73ac75e33f6a5e864a1af881672660ffe2afe4aebb8eef3a5679be37278",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d697c/primary/compiler.json": "7d910f25528fba3def0d3b53be0d862b6de4c55986c4b613160e5def96c7f719",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d698c/primary/Boundary.v": "0e4f01e5005d31a1112a12178d9d6759ad829d85da3ad6afb252df5702ee09e7",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d698c/primary/compiler.log": "25bea041d85f2f5f1626007fc2dccce59d3158b3f010a356786fbd3ff78af550",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d698c/primary/evidence.json": "40353f59d324d72f30aa14fc923fb5269f2894716c7a7b6086104ab92d3bdf2b",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d698c/primary/compiler.json": "8cd2d80cf0ab210bfed67e4e46a72a4bac3417fc75deba0366272b2462b1d113",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69a4/primary/Boundary.v": "59c8cabbbaea9b8f8ea570c79a2d5ac1f14095a3ad06511f3fccb2f2a2bf9435",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69a4/primary/compiler.log": "abf6f7df3720f247386c75121474925e04935ef6844cdee1bfbd86465187b8cc",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69a4/primary/evidence.json": "54837f24df6249f8ddbc27148382341323142f84f67811f48068b93d130e92ca",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69a4/primary/compiler.json": "c473b6c5c60fb857cc809b83ae4d95d6aae26776704e6879be0ea98870eef755",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69a4/primary/Boundary.vo": "7e6c30f58d94ca827030210226d09abbbb9b2595b96fbb315c3843cd6323fdcc",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69b0/primary/Boundary.v": "5cc1cf68227851b770e089008d6cded476f41ee73f06a4fa7bedc73c5878b49e",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69b0/primary/compiler.log": "34e13cfde4ea2def4875988a4a64aa416cad01d2e982562baa7e8951d2cf1a5b",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69b0/primary/evidence.json": "3686a0b25edcbf213cd983a921a3ad5e6923ab5767d007b7e9d10cf39c591ce8",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69b0/primary/compiler.json": "174afa786e54f1136949367a6dc3d789beefed9e7c1e0bd988c59bfd73828f82",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69d8/primary/Boundary.v": "69256fef6c5e677001822b2c6742c4683796332c3a5e0273b9b741155273d187",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69d8/primary/compiler.log": "d42f0d7f21a5324ad2f30122198efc99a49c27eb9354317246b641c5e39f5f0d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69d8/primary/evidence.json": "997081058e79a565e8d3f89cd0fc09e9ffdb2aeec3047ca183fe3f91fa456692",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69d8/primary/compiler.json": "f2eda44f4c96ba6436fe708c123a8053781c53a0f097ab8f5270cbf6f5f1a2c5",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69d8/primary/Boundary.vo": "c518ddac025139531d3b0302e1c43621390bfc8d63f76b8942b7b1e81ece8902",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69e0/primary/Boundary.v": "7404afccfff1114f37bab9352469b257e70b651d3463870d99cbdbbdca7353c1",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69e0/primary/compiler.log": "bf327fe2a9094af3014f411ade250fe01d7678fafeb754099d93ff533fa1b41e",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69e0/primary/evidence.json": "dd69fcdb1bd4c3f7300db393cf8b7f7e18d018e109804f634582a1715dfe7aa3",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69e0/primary/compiler.json": "47ff11fa4d6f137c2c496269808819cd302ce449e5893894576dab50a78bfd3d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69e0/primary/Boundary.vo": "30b5c612cf081f7fe1adeed9418f4fd6783ff96b9b34d0cdc5d451e68d6b217c",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69e8/primary/Boundary.v": "4a00b58b583b04b20b0ab283bd75a04230e97a0a7f0a23f23ad2f33137e8a3fa",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69e8/primary/compiler.log": "5e56f6d24e45812b73aa18efdfd22f978ae06b803130be83f44c15d03635f699",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69e8/primary/evidence.json": "19903e291ae7777eaaf738b15376bf06fd46cd6539e64849d57d651d3c76f94e",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d69e8/primary/compiler.json": "0a1c2197692a56f5a3cd268f3148c85fb62156ec3a9db1f87e4e5bb526187640",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a00/primary/Boundary.v": "1eb54b901d182c0b8b4aad561269e669ef1776a594de13139f8272c8f2bc7336",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a00/primary/compiler.log": "bb35e73cb1d72aedefee7960f9d0635e191dbfdc78f2d3fa1402e7c574d12508",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a00/primary/evidence.json": "9845c2f32cc3c5b1796df060647651ca1f45c2ea3a6d09df450f1664e8388a90",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a00/primary/compiler.json": "bcf300366841b1a30fa58dd36d5b15fb76e8246f13fad00b120c3ecf6b092e11",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a00/primary/Boundary.vo": "fb9113b71a03afa2259fb6a80489262047fa4ab99ebe4019d3430bd098c43c7a",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a08/primary/Boundary.v": "59c96f970271d00ee345a56a3a565a8f4103949f4b898b1e6432749ee26ebef3",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a08/primary/compiler.log": "62619ae85993d9567be31fe11c83cef9b0ddb3b542e7fdba23dd23bb4872fe11",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a08/primary/evidence.json": "e3e4082e4c8c88fd8501aa264acd6e2cd396fd18a2d4afe4dca603b476a9acea",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a08/primary/compiler.json": "9404f67b00bbcf735fa3a51fb3407c44a31ae8452c3421304718a29edb581db8",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a14/primary/Boundary.v": "87aebf5beb35a756e579d0294ac7bf9428420c0f8578762d4f4518ac3cf0d6e4",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a14/primary/compiler.log": "3aa37a5112c33487261df1249d887c3dd530c3a833c05ad0a96e4b55a9d18625",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a14/primary/evidence.json": "18277e17d3e32889cb27d8da7f19b31173189d6877f71368307d56e551826428",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a14/primary/compiler.json": "ed6e1287bc7ca4612c3a6db90925cdb4b174b47fce64375b32fd6f69650851b4",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a14/primary/Boundary.vo": "df87a79867f0b6d0266cd8a4655eb580e7801e2e698a2925e482871b0310305d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a24/primary/Boundary.v": "b7ae7a7839a2028eea35dd657be718b71e8d3cc59e069622cbe2153c7ff8be87",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a24/primary/compiler.log": "f2a6e48a242ec3667ce9c496f388fed92eed88315eb45bfb5326430eef7fe84b",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a24/primary/evidence.json": "127668d504ee8693d2f9ca2262b03d0f18ba1d998f700620971293820348dcab",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a24/primary/compiler.json": "78ba2244a6ff7376a20ca8462c39738ac261dfd9ddf5bbdde25305cc50eb182d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a38/primary/Boundary.v": "c9a0533c43d5ecd44fce9e47a649db9da8aea07803e2cc5cc45bd6ebf44672b0",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a38/primary/compiler.log": "e6520a4d89f2f0c9b03db006a043d6964f8aa34cdb91441081222389d7abf351",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a38/primary/evidence.json": "ceb1dfe5cc5f19f702043297919c8ea469dcae7f8743fcb57775a7872c6e24f1",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a38/primary/compiler.json": "6ec7323304e0ce05b2eab2b2929f0d2228bdd18dffd9c2755ee1586723ecc941",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a40/primary/Boundary.v": "dd3d1f3240cfde2410727d9e576c72eb1b2375ed77c3c3c5f4c47b0ac5427158",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a40/primary/compiler.log": "59cbe934c84ac302e6f4e7f713a3d6afa432b9a6f5e78b32a6fa3bd41ec7331f",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a40/primary/evidence.json": "65b62bc78fce7febbdc8c88d36829ad249e13af4735ba76204c445634ee426e6",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a40/primary/compiler.json": "a2a3e07f8e1e6519bd33b5e3f81d91b02d3ccc30d55cb9d236320cd8d28aa4a5",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a64/primary/Boundary.v": "495af277f77fec9e42cdffc93b1c94fa32ed2c423480e9aaec444342fbb28551",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a64/primary/compiler.log": "a7fbae45bc542e8ac3ecfe73d0e94288aae8a34fe11b2598c6074f292d8b164e",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a64/primary/evidence.json": "dabb52a7af7fb5c69e0690b230fac83b927e2c088993c1a0a840cd85c01518fb",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a64/primary/compiler.json": "288147738ad7c39fa5f35b225b509c992dff88e0e625ca09723957fbd89c7d74",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a64/primary/Boundary.vo": "b8ac4412a63257ff8f35fd817a30749f2078f5ab7e2b34e680f5fd5e60788642",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a6c/primary/Boundary.v": "88dd98ea877bb468d3238c0fd362e6275cf796f9c2a545a35835b23b906bdf70",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a6c/primary/compiler.log": "bf3e690d7ce8cfde6947a0267efcbe042c47fc4b48f373489f56360df569116b",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a6c/primary/evidence.json": "d336f87772648738b813407d419a9fd99c6c1439e09ee32880716c88fe97e840",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a6c/primary/compiler.json": "989d19f9e8b0d80ff3b0f51b494ae736f7cec0b6114d0d75d84fda1bda188098",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a6c/primary/Boundary.vo": "3b7e597dc612099a368d718b34456343d10ab33f3cad6f36021d6a20dc2913d2",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a78/primary/Boundary.v": "85abcfa035b3576b777b73e55cc4c853d5a3b95c771e33534f77d4949eed247c",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a78/primary/compiler.log": "d69e3ae8c5e406ce67886520582d7959a605a20cd8abb71aafa8d67c94a65919",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a78/primary/evidence.json": "0129ea5b41fa9b862df0c99884407937093d4e688ec9ab3c97468d1f2ffd8b4b",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6a78/primary/compiler.json": "3605373fb42a97db72f95108011599b8553d80ae1eff62a6e210bd882479b3a5",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6aa8/primary/Boundary.v": "4384cc7ad05d2ee6e42cf002054f6d29f6320fe37c260860f0b6dddc04826468",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6aa8/primary/compiler.log": "b9f5f181131735f2e5048a8e1484d32b0e19ada44c9c26c11550e9a8107964d2",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6aa8/primary/evidence.json": "0be078431a64ff89b9101eead92fff20e79532c90ae0879af5736101970b33ba",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6aa8/primary/compiler.json": "c9d920be056e452067412b8348c93f7a87a1428acf857eca85b1338ab494f34b",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ab4/primary/Boundary.v": "455481baaf3490e4d327513ff212dd010fd7fd0ca19de659759370e0402ad56a",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ab4/primary/compiler.log": "04ca962a577cf25033bcabb149a39505f851c824703544ec84902bc4dedb71d2",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ab4/primary/evidence.json": "882c2b1477581467f256ae4189d23d08c6dd41bb5dbf198c81300fdc0693f937",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ab4/primary/compiler.json": "ec8b5b994eff07ad0d3afa1d354adb0cc45b4c99e15fdcf189ccece114fb4829",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ab4/primary/Boundary.vo": "c83686c80f5ee5ee379ab67c8d7481a9085537b46118f1d8bd18b36e54f0662b",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ac4/primary/Boundary.v": "f7555d7a66efdfa243fe23491e213a300b9ca4961025b8045fb5cf8e7fe30197",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ac4/primary/compiler.log": "97df42662e2b2cddf919981a7af350c892631814d49048e2a4b84e6c242c0a01",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ac4/primary/evidence.json": "6b15b89eba80cebf16a8a6c49a7eac08971b4d2db01ef2c78eade6ea941eef80",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ac4/primary/compiler.json": "681f0d4e3ff0d717887ce0cd7adeb53ebae650bbcf81cc403deaecf801a49de0",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ad8/primary/Boundary.v": "5337379e1d9caf32cdc3ec8d72e28ee1b701d0c5af7ef40042f15f78b6b2a10a",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ad8/primary/compiler.log": "60dcf4b091971068e7c2a3d5d1705d7a462107a69348a92d94b987e75c0d19c9",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ad8/primary/evidence.json": "bf7c73a4363ac25649e651efe5349ac85fee18c2cd68dd263a799686f8735d79",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ad8/primary/compiler.json": "07503a7fd94292a17d6354f80bd667c4cf6bfb4fbf3633238537b8370368e77b",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ae0/primary/Boundary.v": "466f14f48a1641ea95885bbb4e365e56563cbd79a103abcdaa9f78f95ce5b84b",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ae0/primary/compiler.log": "4fd8f55141838db808f0244faa8dcd870d6f8fe90b326b70447cc371e2b4629d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ae0/primary/evidence.json": "888d8e55d0cd7b3cb3b6c0874c56af83eb764c103b00eef034ab1f80778a3697",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6ae0/primary/compiler.json": "8db6e929e53efba69177859ed180dedbdd11fffc6221b752e856a6a86cf64ee9",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6b08/primary/Boundary.v": "015f7f371acdb2c368bee3f54b3abf6237e9bad6c6771e3ecc0f21084952a825",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6b08/primary/compiler.log": "6423475e19ccfdabc117b939e805b146ca26cc68dd8b4896c200600a41309a57",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6b08/primary/evidence.json": "9f1013ad08cd380d29a46a2128d51197ee0236e2179f1b3165a373a41ecc6b47",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/block_0x800d6b08/primary/compiler.json": "e35b84e765eff7754eceec10d7fd6335862dac9be93104d53c83b31d00222473",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin698cFrom697c/Boundary.v": "b4a9f242a1ffcff9fb4bee6c560349b787f85d2b3dfed40e841a444ea8cfe394",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin698cFrom697c/primary/compiler.log": "b335ef7c4060d413bbab09d69b716cb63d73b060d15c935448527dcf2fb93aeb",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin698cFrom697c/primary/evidence.json": "13a27b2eb257029695a457bf3b59f766762af54854ff1deacbc7638fbd5e6fdd",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin698cFrom697c/primary/compiler.json": "a9206adfeee0ceba88c222610d7f82d33ed85723af19adbb7be4a7f4621d980b",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin698cFrom697c/primary/Boundary.vo": "a672959f1414c8e7d2d1da70c505c6d566394a3efedb9abe5c1b3f31bfebff03",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin698cFrom69e8/Boundary.v": "ec1e2a1d731a3bd82e4e0fe28d3d37980d5dc83ad8d67e76a70d8948fdb9d713",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin698cFrom69e8/primary/compiler.log": "22b30482793b0bc6ed571bc2a65e807362d5acdaf1a32ef969f5243ffdaf0289",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin698cFrom69e8/primary/evidence.json": "7ffe477d637406427c946628888fa8d7f4a6eefe9ae318da8024cb0c20dd71f1",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin698cFrom69e8/primary/compiler.json": "eb1997ae306c41b1b876dc8bb0c39bf670882a9fbaaa9a50cbf6e8f7da7f6f2e",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin698cFrom69e8/primary/Boundary.vo": "89c6ef0ce430ef7599fea49e0b660ab76f5d0666ed41ee1f52adb2e40477dd6a",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6a24From6a14/Boundary.v": "a3f8eb0be9b032f9a3e628cf6b6685bce6ecddae5bf785efb3db93da8264278a",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6a24From6a14/primary/compiler.log": "c2cd52a8195497cc1f1125251864c4de6c47a624861e37b0fe4d3722c0115cc2",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6a24From6a14/primary/evidence.json": "4de69a387df628ce20374062b642c2c81f6751066128d200a0b68283d488f341",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6a24From6a14/primary/compiler.json": "f5f105a3846fd2a75b38c9f089759b164d7f4f8e9c0dd8e31db3da1454c439fb",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6a24From6a14/primary/Boundary.vo": "787e60ef51dda815ff4dcc9e3910432c84963f7f7ce0df0b4de90b6333b1435c",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6a24Backedge/Boundary.v": "a9f68ff2a2e98c76b18a5cbf506e33ccde498996e07c823d7c2974863edaafca",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6a24Backedge/primary/compiler.log": "b1b1dfae7a36c748e6ca342ebb4f50b089cef75221b3a34b7b3b8fa7fcc4bc10",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6a24Backedge/primary/evidence.json": "8f5c8477b89084744f8301b0b3a94585c63b4ca0bc12636c6c2ee275feb4bf24",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6a24Backedge/primary/compiler.json": "8f32458c9eb9b76453c09f9c311007d05a5c6ae2e5ed37f50db3529a7ddc720b",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ac4From6ab4/Boundary.v": "82ea41e64bbdf5f02721a2e29a8e15173ded31a9d2e5824387613bd5ca76777b",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ac4From6ab4/primary/compiler.log": "b93a766a9609dadfb97aac3f087f96aa262dcb1b1c85e794cc90019a266447c5",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ac4From6ab4/primary/evidence.json": "f50a95224253e122a65e27b87c84b69f9eaa0a236c7dbf7b01a872c8840fe708",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ac4From6ab4/primary/compiler.json": "c7394d083f30e2318ca16255f66d8b8a511aa31817e674092ef39353e749c192",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ac4From6ab4/primary/Boundary.vo": "e6d14f921e85b6c5751ffe4c6f8b9860ad65758a83fab0b5c2f64e1541ee62f2",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ac4Backedge/Boundary.v": "c4c00d79ca33154c9a8712fb6fd2251e5b0f4a04007d48564a55e25d0326847c",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ac4Backedge/primary/compiler.log": "4114694a3ef90718fee89b1c6832cc82578b48e5bf22068009ccfca9921e9f9c",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ac4Backedge/primary/evidence.json": "220ed2473c3336e77d11e758ff60ed2f3206105e60ca79b9b8f706c22c606038",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ac4Backedge/primary/compiler.json": "ebd6e7f72e2b065722b8d8b41063f43ea6f7c123dbb658ee92dce21bf60af6d6",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6970/Boundary.v": "d1f3a17a0722d4168ff0216db6a5a2f98eb1916e4f8ccf1dcb871d47f5548278",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6970/primary/compiler.log": "1c01eb80a521a8ffb1965da0dc1d186723b7d9a0a155ff24525ece7955bf7d10",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6970/primary/evidence.json": "8549ffb7cf85eed9f335711d5564f7428609c6e7d8694452b90b192223e1f445",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6970/primary/compiler.json": "3c59f4a87490cc6fcc7d2e206997807474e16987dcc206a93df16acf855c2d0a",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From69e0/Boundary.v": "2bf0d44535fde609170b4455bcde18ae5a4a1d3c0eba70e54dec6c35af410ffb",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From69e0/primary/compiler.log": "9f461b52a457b91ec2ef518d6c1212dd037677dc886e92fc2da74e96fc277fc1",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From69e0/primary/evidence.json": "6cfa5709808362f6fb0044e32b893a42a7634c6bc1ca97ed5244f631b0f4cf57",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From69e0/primary/compiler.json": "93a25615e9f37dc12239a824bd5ba0882a2a45a8043dc61995701b67843ab701",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From69e0/primary/Boundary.vo": "0be05afc20e131c29134483702f6787c1dca0ea0ea7130d42d4ea33c2adeacec",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6a08/Boundary.v": "72abe705dcbdd39f74bed7c8d6e95b55747fc6a5d25a8b193ec99c5ea540b2ad",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6a08/primary/compiler.log": "36551ac6669688d08259376dae471279e026e6b2eb2994ccd1fa14784d17559a",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6a08/primary/evidence.json": "136bacdd4c3d8c04a66ec7426dcde6ac98fc03a83cac3cda3f929a92a6f5049e",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6a08/primary/compiler.json": "e903399a22c406ad9cde48f7af4f1d482a2bd0e2314174770ee5e75e631b8d7d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6a38/Boundary.v": "a7cc7eaa36a915f6a6e6b76f21c7609ab8319c5827cb0e6bc613918f28bdeeb7",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6a38/primary/compiler.log": "6677a57fea5e23bf063cd4fc6e7a2fb6c85d1f94b8ff4c30aa4ba8a9b54564cd",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6a38/primary/evidence.json": "67a8bdf899e693d58c39cc9bd4a57a01db2eb703024e4690a0ff2313e0209c3c",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6a38/primary/compiler.json": "bd378628af901987fe732e3aef403763eac2deacc41bdc6957ae5dad08ff4fb9",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6a38/primary/Boundary.vo": "d12b60e793152fa159d12d9a5f52bd1e36fa65304472c229c81016d5c5bb7b78",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6a6c/Boundary.v": "48dc2111b259617437d122572423d2bbdfb6ab19c6aa780616f8868c10dc2ed6",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6a6c/primary/compiler.log": "630a7266949f93e04f60b0f723d8f9c1d360c3937ae4085a0ebdf9d116abef12",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6a6c/primary/evidence.json": "48aa955dfd6f79335a949954655cff942316cb3aca3b22de553d3f2a61407f98",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6a6c/primary/compiler.json": "34c44652c988dc8d996b907156d85dcc9086a50af869c6380b8aede041337987",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6aa8/Boundary.v": "aa84dad4aa949683b2a179f1d6426e4cc568f7ddebd398244a6389a9497eab26",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6aa8/primary/compiler.log": "b7f3a0f81b935f891c7490e99a246748ee2e8b9063eb27b24fae54b321570f83",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6aa8/primary/evidence.json": "2246d41353cc08b660bd306ee3ce0ab52065faeb456ec284386d21d914a860fd",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6aa8/primary/compiler.json": "2e0aebe0f17353f9e634eeacf5e25b47b82305402842609c38a03bf0775e755d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6ad8/Boundary.v": "30f82eab33302364159f16394f87e856dce5c901baeb913ee3e7e1203b4146dd",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6ad8/primary/compiler.log": "82697c77ac106c5a2d641c9419af52ddb670137cda9dd0820452dc3a8a750121",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6ad8/primary/evidence.json": "5ba2ad087f2bfb33c8562c42c35d8e7f7733726a011dbd46be787b83bdc2912d",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6ad8/primary/compiler.json": "02b43ce040347348de323d37d17651003b8d3d07e32c4cae9488f7ee056b147f",
+    "/home/cody/zesislar/.worktrees/worker2-child-approved-rule37-i50/_build/approved-rule37-pass-001/decodeItemJoin6ae0From6ad8/primary/Boundary.vo": "30d13250b35e98d8a595d135a42a8b32f2f17c46f4af0912160a76986b228933"
+  },
+  "native_table_sha256": "0e1684670a938ca0b1c5ac08ce9778e881dbdc53a9dfc17ef8b90c68b9610299",
+  "adapter_table_sha256": "5c6ba4fafebe4dcdd1f910cb27b1f4cb8e61c6834a48b6c82a86953aba86c4aa",
+  "capture_index_sha256": "40a8faff3d8e8cb5b8e06f2ec691a1231091fe5b13305348fd9f3c4c7b66a3f1",
+  "certificate_manifest_sha256": "9936b3cc4361aeaf419320c709eab7c0d69080474d60abf1b4e49c8417c4d116",
+  "MCP_certificates_pending": 15,
+  "preflight_count": 37,
+  "activation_method": "rocq_compile_file",
+  "activation_compilation_reused": true,
+  "elapsed_seconds": 18823.79012262309,
+  "Level1_closed": false,
+  "goal_count_is_not_a_progress_measure": true,
+  "S87_report_sha256": "d6a7dd4b6eed0a374f23e8d11e8ac248db17238551fb9d58b7b1768238043dbb",
+  "S87_classification_sha256": "62fc46c64343848cdfb619b2591f58d36c4e9493bad872875aafb02d2e3649f8",
+  "limitations": [
+    "This pass uses DecodeItemHints with 24 exported modules and 104 registration locations. It includes Rule34 through Rule37 and S82 registrations.",
+    "Only returned active goals are captured. Auxiliary proof groups are unavailable.",
+    "Compiler CPU and memory limits are distinct from residual results. The audit uses the exact compiler limit field.",
+    "Native and adapter closures need retained-object MCP final checks. No primary will run again.",
+    "Changed roots and hint scopes do not support isolated Rule34, Rule35, Rule36, or Rule37 cost attribution."
+  ]
+}
