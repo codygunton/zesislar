@@ -65,29 +65,24 @@ Proof.
   iApply ("Hblocks" $! address state with "[] Htable"). done.
 Qed.
 
-(* Every native witness must support every table binder. *)
-Lemma successor_state_support_from_each {A B : Type}
-    (native : A -> iProp Sigma) (universal : B -> iProp Sigma) :
-  (forall native_witness table_binder,
-     native native_witness ⊢ universal table_binder) ->
-  (∃ native_witness, native native_witness) ⊢
-    ∀ table_binder, universal table_binder.
+(* Consume the selected witness with its matching continuation. *)
+Lemma successor_state_existential_consume {A : Type}
+    (P : A -> iProp Sigma) (Q : iProp Sigma) :
+  ((∃ witness, P witness) ∗ (∀ parameter, P parameter -∗ Q))%I ⊢ Q.
 Proof.
-  intros Hsupport. iIntros "[%witness Hnative]" (binder).
-  iApply (Hsupport witness binder with "Hnative").
+  iIntros "[[%witness HP] Hnext]".
+  iApply ("Hnext" $! witness with "HP").
 Qed.
 
-(* Continuations require the state entailment in the reverse direction. *)
-Lemma instr_pre_successor_support {A B : Type} (pc : Z)
-    (native : A -> iProp Sigma) (universal : B -> iProp Sigma) :
-  ((∃ native_witness, native native_witness) ⊢
-     ∀ table_binder, universal table_binder) ->
-  instr_pre pc (∀ table_binder, universal table_binder) -∗
-  instr_pre pc (∃ native_witness, native native_witness).
+(* Quantify entry parameters outside the instruction precondition. *)
+Lemma instr_pre_existential_instantiation {A : Type}
+    (guarded : bool) (pc : Z) (state : A -> iProp Sigma) :
+  instr_pre' guarded pc (∃ witness, state witness)%I ⊣⊢
+    (∀ parameter, instr_pre' guarded pc (state parameter))%I.
 Proof.
-  intros Hsupport. iIntros "Huniversal".
-  iApply (instr_pre_wand with "Huniversal []"); [done|done|].
-  iIntros "Hnative". iApply (Hsupport with "Hnative").
+  destruct guarded;
+    rewrite !instr_pre'_eq /instr_pre'_def /= bi.exist_wand_forall;
+    [rewrite bi.later_forall |]; done.
 Qed.
 
 End block_table.
@@ -95,5 +90,5 @@ Print Assumptions block_table_pre_code.
 Print Assumptions block_table_pre_lookup.
 Print Assumptions block_table_complete.
 Print Assumptions block_table_body.
-Print Assumptions successor_state_support_from_each.
-Print Assumptions instr_pre_successor_support.
+Print Assumptions successor_state_existential_consume.
+Print Assumptions instr_pre_existential_instantiation.

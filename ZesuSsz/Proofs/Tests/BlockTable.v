@@ -42,6 +42,27 @@ Proof.
   - iApply ("Hsecond" with "HfirstPre").
 Qed.
 
+(* A successor continuation accepts the selected entry parameter. *)
+Lemma block_table_selected_continuation {A : Type} (pc : Z)
+    (state : A -> iProp Sigma) (selected : A) :
+  instr_pre pc (∃ parameter, state parameter)%I -∗ instr_pre pc (state selected).
+Proof.
+  rewrite instr_pre_existential_instantiation.
+  iIntros "Hnext". iApply ("Hnext" $! selected).
+Qed.
+
+(* The table body eliminates its entry witness through the native family. *)
+Lemma block_table_existential_body {A : Type} (pc : Z)
+    (state : A -> iProp Sigma) :
+  (∀ parameter, instr_body pc (state parameter)) -∗
+    instr_body pc (∃ parameter, state parameter)%I.
+Proof.
+  rewrite instr_pre_existential_instantiation.
+  iIntros "Hbody". iExact "Hbody".
+Qed.
+
 End tests.
 Print Assumptions block_table_two_blocks.
 Print Assumptions block_table_two_bodies.
+Print Assumptions block_table_selected_continuation.
+Print Assumptions block_table_existential_body.

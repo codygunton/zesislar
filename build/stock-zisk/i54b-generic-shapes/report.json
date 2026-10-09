@@ -1,0 +1,328 @@
+{
+  "status": "verified_generic_checkpoint",
+  "root": "dc003f577eecc9e5c060e7b85d7913540f2966ce",
+  "source_tree": "5caca49d2c880255744be71ad87e20c30f6a64b1",
+  "changed_sources": {
+    "ZesuSsz/Automation/BlockTable.v": "d0d4b21522ac72f564c38640f19199a1d5ce18d5a278ba818c78dfc31c1a9870",
+    "ZesuSsz/Proofs/Tests/BlockTable.v": "6e2f296db1ca80933e24973963749aa5efd1c6dbde850ad23dc5a422754c8a40"
+  },
+  "result": "Two generic lemmas replace unused helpers that required existential-to-universal state support. Two tests check selected successor specialization and existential body conversion.",
+  "generic_certificates": 2,
+  "production_certificates": 5,
+  "all_certificate_assumptions": [],
+  "all_final_groups_empty": true,
+  "generated_binders_changed": false,
+  "record_signature_changed": false,
+  "selected_code_changed": false,
+  "native_execution": false,
+  "Level1_closed": false,
+  "termination_closed": false,
+  "adapter_status": "The concrete slot obligation remains unproved pending generated state placement approval.",
+  "fast_gate": {
+    "target": "check-fast",
+    "result": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-003/check-fast-result.json",
+    "result_sha256": "680a2ea13d570a0d05d72955dd4107b82051347eba26542fb13b5a2bd63bf01b",
+    "exit_code": 0,
+    "workers": 6,
+    "elapsed_seconds": 603.6662583351135,
+    "children_cpu_seconds": 1599.255907,
+    "peak_children_rss_kib": 3036416,
+    "log": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-003/check-fast.log",
+    "log_sha256": "24fdbe06f58691e5d298fc9ae59d5f7349ddcece36c084d53d5d2da2826fc3fb"
+  },
+  "Iris_gate": {
+    "target": "check-iris",
+    "result": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-003/check-iris-result.json",
+    "result_sha256": "03462af7595ec2f6798c1a565dd4be7b1a0536b6387152acbb30dc893268589e",
+    "exit_code": 0,
+    "workers": 6,
+    "elapsed_seconds": 1470.9901294708252,
+    "children_cpu_seconds": 3406.457946,
+    "peak_children_rss_kib": 1694944,
+    "log": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-003/check-iris.log",
+    "log_sha256": "24fff97e3a4c8e61dd1156ec7d981fe85e9d12cf3f8b18f0f0aea49135ff4a39"
+  },
+  "refs": {
+    "generic": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/REPORT.json",
+      "sha256": "bb29e8b6b7e218e7b4748bff5875794f715dcbda9f48de6a488a966461644a42"
+    },
+    "production": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-result-audit-001/REPORT.json",
+      "sha256": "7db8cc35f66a0d9ed83f273b9db5998394d0e7634e54e9b19387565ec3f8221d"
+    },
+    "preservation": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-preservation-audit-001/REPORT.json",
+      "sha256": "f5cfc8df0b3722efdbe7940768d50d9982de9c6713c75d324f72a56e3a840515"
+    },
+    "baseline_artifact": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-preserved-baseline-artifact-001/REPORT.json",
+      "sha256": "508c66daaa1acdacfaf9ab5716fd7284c0c225c573f2d94f48c8b14f08b04aff"
+    },
+    "placement": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-artifact-placement-001/REPORT.json",
+      "sha256": "03e7d2cce5de9f7e2ea631061ab7a8e3ab0302bc46250316729860eeb9ae494d"
+    },
+    "manifest_check": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-artifact-placement-001/MANIFEST-CHECK.json",
+      "sha256": "1594449722216f09c2b5f587a65e004304d33e91fa4fc31f0d488c417e3322af"
+    },
+    "source": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-preparation-001/SOURCE-AUDIT.json",
+      "sha256": "3b5d9bb4c7f615a41ef804f3a8a31f35ac92bbb2de2474645a8759de81fb4e4c"
+    },
+    "slot_obligation": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-slot-adapter-preparation-001/SPEC-OBLIGATION.json",
+      "sha256": "8c0579d3077ba41510ee9217992d0cdffaf1b9802a4db709c060d6fcb84e202f"
+    },
+    "failed_fast": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-002/check-fast-result.json",
+      "sha256": "afecbdae5747a086492cb0b6d62c06ac1d9044f01c2e54b5707abc4c0ddd6c33"
+    },
+    "gate_seal": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-003/gate-input-seal.json",
+      "sha256": "a9e026847354e51ef7d253fb91c7f9cadc4d7cede0de8f2c1dd5db8296ffb72a"
+    },
+    "final_audit": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-audit-001/REPORT.json",
+      "sha256": "e2cf8707f14b4d08ef6fb8b79d7d738324d07d3c9189669a78a32e74481c7f03"
+    }
+  },
+  "preserved_failures": [
+    "generic001 compiler reservation writer mismatch",
+    "generic002 unlaunched writer variant",
+    "production001 missing wand introduction",
+    "gate001 unlaunched",
+    "fast002 external trace symlink rejected by manifest root policy"
+  ],
+  "qualification": "The old mutable BlockTable.vo dependency has an exact preserved copy. Production compilation timing is unavailable separately from session and admission time.",
+  "next_authorized_step": "The placement repair follows this checkpoint. It will change generated entry families and verify the concrete adapter.",
+  "archive": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/archive-index.json",
+    "sha256": "1b8b01a551ac55f09236bd1e374fa0ce21c908e649d97ffaccad49d90dc2a05b",
+    "records": 218,
+    "unique_cas_files": 166,
+    "all_hashes_and_sizes_match": true
+  },
+  "proof_statements": [
+    {
+      "name": "successor_state_existential_consume",
+      "statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nFrom Coq Require Import List ZArith.\nFrom Ltac2 Require Import Ltac2.\nSet Default Proof Mode \"Classic\".\nOpen Scope Z_scope.\nDisable Notation \"'HIDDEN'\" (all).\nSet Printing Depth 1000000.\n\nLemma successor_state_existential_consume `{!islaG Sigma} {A : Type}\n    (P : A -> iProp Sigma) (Q : iProp Sigma) :\n  ((\u2203 witness, P witness) \u2217 (\u2200 parameter, P parameter -\u2217 Q))%I \u22a2 Q.",
+      "source_sha256": "583f5542c8e723eecaf370bc31ed0d840b65f360d04c576a0d36d75d79a102cd",
+      "object_sha256": "40f209c3dae0484ba7e717251f7ef29f52e4dcd0397f37d0e9e659b9ae4604ab",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "groups": {
+        "before": {
+          "active_goals": 1,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        },
+        "after": {
+          "active_goals": 0,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        },
+        "final": {
+          "active_goals": 0,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        }
+      }
+    },
+    {
+      "name": "instr_pre_existential_instantiation",
+      "statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nFrom Coq Require Import List ZArith.\nFrom Ltac2 Require Import Ltac2.\nSet Default Proof Mode \"Classic\".\nOpen Scope Z_scope.\nDisable Notation \"'HIDDEN'\" (all).\nSet Printing Depth 1000000.\n\nLemma instr_pre_existential_instantiation `{!islaG Sigma} `{!threadG}\n    {A : Type} (guarded : bool) (pc : Z) (state : A -> iProp Sigma) :\n  instr_pre' guarded pc (\u2203 witness, state witness)%I \u22a3\u22a2\n    (\u2200 parameter, instr_pre' guarded pc (state parameter))%I.",
+      "source_sha256": "fb41bf4b4324e123435a9ff759a34385549da1d214e696fc978f2623ee710a95",
+      "object_sha256": "16e43d3ca07f1d21f4de1f48b1f9b718fbdc67096c2bab2c78a6fe7d2b5c8f88",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "groups": {
+        "before": {
+          "active_goals": 1,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        },
+        "after": {
+          "active_goals": 0,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        },
+        "final": {
+          "active_goals": 0,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        }
+      }
+    },
+    {
+      "name": "i54b_existential_body_repair",
+      "statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Automation.BlockTable.\nFrom Coq Require Import List ZArith.\nFrom Ltac2 Require Import Ltac2.\nSet Default Proof Mode \"Classic\".\nOpen Scope Z_scope.\n\nLemma i54b_existential_body_repair `{!islaG Sigma} `{!threadG}\n    {A : Type} (pc : Z) (state : A -> iProp Sigma) :\n  (\u2200 parameter, instr_body pc (state parameter)) -\u2217\n    instr_body pc (\u2203 parameter, state parameter)%I.",
+      "source_sha256": "7181ef1e597ea16a5773d0bfce42ee37d9ebb5c89fd1804a9e3daf49eb6ef2e3",
+      "object_sha256": "b20f55911b43abadf3a201d735160ff1243475f7fcd784cdeebff381772e17af",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "groups": {
+        "before": {
+          "active_goals": 1,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        },
+        "after": {
+          "active_goals": 0,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        },
+        "final": {
+          "active_goals": 0,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        }
+      }
+    },
+    {
+      "name": "i54b_production_consume",
+      "statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Automation.BlockTable.\nRequire Import ZesuSsz.Proofs.Tests.BlockTable.\nFrom Coq Require Import List ZArith.\nFrom Ltac2 Require Import Ltac2.\nSet Default Proof Mode \"Classic\".\nOpen Scope Z_scope.\n\nLemma i54b_production_consume `{!islaG Sigma} {A : Type}\n    (P : A -> iProp Sigma) (Q : iProp Sigma) :\n  ((\u2203 witness, P witness) \u2217 (\u2200 parameter, P parameter -\u2217 Q))%I \u22a2 Q.",
+      "source_sha256": "779583b085cea0d2e7ec682818dba00ed8d175c670543f0b7672950b13b5e8ec",
+      "object_sha256": "e447218e8000e98a3b8dd623952e44bef5bad55325e1751e4b0523d83aae2bb9",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "groups": {
+        "before": {
+          "active_goals": 1,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        },
+        "after": {
+          "active_goals": 0,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        },
+        "final": {
+          "active_goals": 0,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        }
+      }
+    },
+    {
+      "name": "i54b_production_conversion",
+      "statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Automation.BlockTable.\nRequire Import ZesuSsz.Proofs.Tests.BlockTable.\nFrom Coq Require Import List ZArith.\nFrom Ltac2 Require Import Ltac2.\nSet Default Proof Mode \"Classic\".\nOpen Scope Z_scope.\n\nLemma i54b_production_conversion `{!islaG Sigma} `{!threadG}\n    {A : Type} (guarded : bool) (pc : Z) (state : A -> iProp Sigma) :\n  instr_pre' guarded pc (\u2203 witness, state witness)%I \u22a3\u22a2\n    (\u2200 parameter, instr_pre' guarded pc (state parameter))%I.",
+      "source_sha256": "b827d32a2ad8a6b5023595262439aab885c9418a023bd0da515565cccab5abc4",
+      "object_sha256": "f6ed0365e8d8fee15e28be239734de350da4ff45b310c4aef598bd5721dff518",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "groups": {
+        "before": {
+          "active_goals": 1,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        },
+        "after": {
+          "active_goals": 0,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        },
+        "final": {
+          "active_goals": 0,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        }
+      }
+    },
+    {
+      "name": "i54b_selected_continuation",
+      "statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Automation.BlockTable.\nRequire Import ZesuSsz.Proofs.Tests.BlockTable.\nFrom Coq Require Import List ZArith.\nFrom Ltac2 Require Import Ltac2.\nSet Default Proof Mode \"Classic\".\nOpen Scope Z_scope.\n\nLemma i54b_selected_continuation `{!islaG Sigma} `{!threadG}\n    {A : Type} (pc : Z) (state : A -> iProp Sigma) (selected : A) :\n  instr_pre pc (\u2203 parameter, state parameter)%I -\u2217 instr_pre pc (state selected).",
+      "source_sha256": "cf6ac883d453b6410fe7676e18a550a5c0ff6b09aa4ac73ebbd7882db8ea131d",
+      "object_sha256": "deea86526b6358a6e7d2b97fec4a439d11727d8e9fc9430ba1294b3459fb2b75",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "groups": {
+        "before": {
+          "active_goals": 1,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        },
+        "after": {
+          "active_goals": 0,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        },
+        "final": {
+          "active_goals": 0,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        }
+      }
+    },
+    {
+      "name": "i54b_existential_body",
+      "statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Automation.BlockTable.\nRequire Import ZesuSsz.Proofs.Tests.BlockTable.\nFrom Coq Require Import List ZArith.\nFrom Ltac2 Require Import Ltac2.\nSet Default Proof Mode \"Classic\".\nOpen Scope Z_scope.\n\nLemma i54b_existential_body `{!islaG Sigma} `{!threadG}\n    {A : Type} (pc : Z) (state : A -> iProp Sigma) :\n  (\u2200 parameter, instr_body pc (state parameter)) -\u2217\n    instr_body pc (\u2203 parameter, state parameter)%I.",
+      "source_sha256": "f47a6a76c5680e0905d814322cc8855b9e79e32b93096500dd4aba9581655a7c",
+      "object_sha256": "9f046fca0357193257a44532bad7dcc174c89ad3f82a7eeed4c36fdd42090e95",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "groups": {
+        "before": {
+          "active_goals": 1,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        },
+        "after": {
+          "active_goals": 0,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        },
+        "final": {
+          "active_goals": 0,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0
+        }
+      }
+    }
+  ],
+  "verification": {
+    "health": true,
+    "interactive_checks": true,
+    "compilation": true,
+    "statement_verification": true,
+    "certificate_count": 7,
+    "assumptions": [],
+    "all_final_groups_empty": true,
+    "owned_transports_closed": true,
+    "one_interactive_proof_reused_from_failed_compile_attempt": true
+  },
+  "preservation": {
+    "frozen_unique_inputs": 12694,
+    "generated_inputs": 9321,
+    "local_trace_files": 9265,
+    "unique_checked_inputs": 21959,
+    "all_current_hashes_match": true
+  },
+  "final_secret_scan": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/build/stock-zisk/i54b-generic-shapes/secret-scan.json",
+    "sha256": "911c4acb72a3eebf9a4c5be3fdf964b039ae8a6d16056c9f6b3e8361ae6c63aa",
+    "match_count": 0
+  }
+}

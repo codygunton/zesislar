@@ -1,0 +1,1311 @@
+{
+  "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/riscv64/riscv64.vo#23f9fa57a325ee629f851d46354cc8182644f8301e135a63e8428d5ae35bffc8": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/23/23f9fa57a325ee629f851d46354cc8182644f8301e135a63e8428d5ae35bffc8",
+    "bytes": 36231,
+    "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/riscv64/riscv64.vo",
+    "sha256": "23f9fa57a325ee629f851d46354cc8182644f8301e135a63e8428d5ae35bffc8"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/ZesuSsz/Automation/BlockTable.v#d0d4b21522ac72f564c38640f19199a1d5ce18d5a278ba818c78dfc31c1a9870": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/d0/d0d4b21522ac72f564c38640f19199a1d5ce18d5a278ba818c78dfc31c1a9870",
+    "bytes": 3754,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/ZesuSsz/Automation/BlockTable.v",
+    "sha256": "d0d4b21522ac72f564c38640f19199a1d5ce18d5a278ba818c78dfc31c1a9870"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/ZesuSsz/Generated/DecodeItem/BlockTable.v#7f495aa9feea5ee2a61ef4b7571bdf27d6e5569d58c2b6a7776d69c427fca163": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/7f/7f495aa9feea5ee2a61ef4b7571bdf27d6e5569d58c2b6a7776d69c427fca163",
+    "bytes": 15178,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/ZesuSsz/Generated/DecodeItem/BlockTable.v",
+    "sha256": "7f495aa9feea5ee2a61ef4b7571bdf27d6e5569d58c2b6a7776d69c427fca163"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/ZesuSsz/Proofs/Tests/BlockTable.v#6e2f296db1ca80933e24973963749aa5efd1c6dbde850ad23dc5a422754c8a40": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/6e/6e2f296db1ca80933e24973963749aa5efd1c6dbde850ad23dc5a422754c8a40",
+    "bytes": 2663,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/ZesuSsz/Proofs/Tests/BlockTable.v",
+    "sha256": "6e2f296db1ca80933e24973963749aa5efd1c6dbde850ad23dc5a422754c8a40"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_RocqProject#93874f9cac9013507fec5ceaa92964c4a70d0511da738623220f0d012a8f85a3": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/93/93874f9cac9013507fec5ceaa92964c4a70d0511da738623220f0d012a8f85a3",
+    "bytes": 702,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_RocqProject",
+    "sha256": "93874f9cac9013507fec5ceaa92964c4a70d0511da738623220f0d012a8f85a3"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/agents/worker2-child-platform-i54b/default/ZesuSsz/Automation/All.vo#1695eb67d1183be61c9fb87539213e4af1b87737a6a155951a9b99b1276c070d": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/16/1695eb67d1183be61c9fb87539213e4af1b87737a6a155951a9b99b1276c070d",
+    "bytes": 118702,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/agents/worker2-child-platform-i54b/default/ZesuSsz/Automation/All.vo",
+    "sha256": "1695eb67d1183be61c9fb87539213e4af1b87737a6a155951a9b99b1276c070d"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/agents/worker2-child-platform-i54b/default/ZesuSsz/Automation/BlockTable.vo#260abe320e8ba225c6f7ddb60e523a09c6824dcc12679deaf8d2768ca409f281": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/26/260abe320e8ba225c6f7ddb60e523a09c6824dcc12679deaf8d2768ca409f281",
+    "bytes": 152816,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/agents/worker2-child-platform-i54b/default/ZesuSsz/Automation/BlockTable.vo",
+    "retained_source": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-preserved-baseline-artifact-001/BlockTable.vo",
+    "sha256": "260abe320e8ba225c6f7ddb60e523a09c6824dcc12679deaf8d2768ca409f281"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/agents/worker2-child-platform-i54b/default/ZesuSsz/Evidence/GatesPlugin/signature_gates_plugin.cma#a253d5bdce8194f436990ee49cd838c3587d9a90c57e8041692452ed44e6db92": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/a2/a253d5bdce8194f436990ee49cd838c3587d9a90c57e8041692452ed44e6db92",
+    "bytes": 20030,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/agents/worker2-child-platform-i54b/default/ZesuSsz/Evidence/GatesPlugin/signature_gates_plugin.cma",
+    "sha256": "a253d5bdce8194f436990ee49cd838c3587d9a90c57e8041692452ed44e6db92"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/agents/worker2-child-platform-i54b/default/ZesuSsz/Evidence/GatesPlugin/signature_gates_plugin.cmxs#e29096581d79b8a17028fb00a4194e9f784d81b476e965d77c33196723bf98b7": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/e2/e29096581d79b8a17028fb00a4194e9f784d81b476e965d77c33196723bf98b7",
+    "bytes": 46000,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/agents/worker2-child-platform-i54b/default/ZesuSsz/Evidence/GatesPlugin/signature_gates_plugin.cmxs",
+    "sha256": "e29096581d79b8a17028fb00a4194e9f784d81b476e965d77c33196723bf98b7"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/agents/worker2-child-platform-i54b/install/default/lib/zesu-signature-gates/META#c146b8f02181514a3cd46bd47de94a1de47c3b3189086315382ff0b8f229c80a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/c1/c146b8f02181514a3cd46bd47de94a1de47c3b3189086315382ff0b8f229c80a",
+    "bytes": 308,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/agents/worker2-child-platform-i54b/install/default/lib/zesu-signature-gates/META",
+    "sha256": "c146b8f02181514a3cd46bd47de94a1de47c3b3189086315382ff0b8f229c80a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-Iris-result-parent-review-003/REPORT.json#78e723cf169be69269659087eb97a4247e7ddfad86706d806696981a57ffce18": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/78/78e723cf169be69269659087eb97a4247e7ddfad86706d806696981a57ffce18",
+    "bytes": 713,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-Iris-result-parent-review-003/REPORT.json",
+    "sha256": "78e723cf169be69269659087eb97a4247e7ddfad86706d806696981a57ffce18"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-artifact-placement-001/MANIFEST-CHECK.json#1594449722216f09c2b5f587a65e004304d33e91fa4fc31f0d488c417e3322af": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/15/1594449722216f09c2b5f587a65e004304d33e91fa4fc31f0d488c417e3322af",
+    "bytes": 653,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-artifact-placement-001/MANIFEST-CHECK.json",
+    "sha256": "1594449722216f09c2b5f587a65e004304d33e91fa4fc31f0d488c417e3322af"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-artifact-placement-001/REPORT.json#03e7d2cce5de9f7e2ea631061ab7a8e3ab0302bc46250316729860eeb9ae494d": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/03/03e7d2cce5de9f7e2ea631061ab7a8e3ab0302bc46250316729860eeb9ae494d",
+    "bytes": 998033,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-artifact-placement-001/REPORT.json",
+    "sha256": "03e7d2cce5de9f7e2ea631061ab7a8e3ab0302bc46250316729860eeb9ae494d"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-artifact-placement-001/manifest-preflight.log#6eae38d6500e5f2172409341202388d83f199f98769957e5757e30fc446aa44f": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/6e/6eae38d6500e5f2172409341202388d83f199f98769957e5757e30fc446aa44f",
+    "bytes": 221,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-artifact-placement-001/manifest-preflight.log",
+    "sha256": "6eae38d6500e5f2172409341202388d83f199f98769957e5757e30fc446aa44f"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-artifact-placement-001/repair-placement.py#5fe85d49db4cb3b390a64e61bbe8240dba7eff539ef99fb8ad70639380ef87bc": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/5f/5fe85d49db4cb3b390a64e61bbe8240dba7eff539ef99fb8ad70639380ef87bc",
+    "bytes": 2456,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-artifact-placement-001/repair-placement.py",
+    "sha256": "5fe85d49db4cb3b390a64e61bbe8240dba7eff539ef99fb8ad70639380ef87bc"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-base-dependencies-001/dependency-launcher.py#cfdad4ea60abccd45226965ef3508c04b242824408ba874125fa7354a55a57be": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/cf/cfdad4ea60abccd45226965ef3508c04b242824408ba874125fa7354a55a57be",
+    "bytes": 1719,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-base-dependencies-001/dependency-launcher.py",
+    "sha256": "cfdad4ea60abccd45226965ef3508c04b242824408ba874125fa7354a55a57be"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-base-dependencies-001/dependency-result.json#2f3cce45b44cd5a8d15b313b29c95ab0812aaa7886fd9890a56e9f5aa6336816": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/2f/2f3cce45b44cd5a8d15b313b29c95ab0812aaa7886fd9890a56e9f5aa6336816",
+    "bytes": 1084,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-base-dependencies-001/dependency-result.json",
+    "sha256": "2f3cce45b44cd5a8d15b313b29c95ab0812aaa7886fd9890a56e9f5aa6336816"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-base-dependencies-001/generated-input-seals.json#8e66c98b2c50fbe94acf11637e9d3d8ed5827bdca0b25a1ffff7e32c6863d6f6": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/8e/8e66c98b2c50fbe94acf11637e9d3d8ed5827bdca0b25a1ffff7e32c6863d6f6",
+    "bytes": 1943679,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-base-dependencies-001/generated-input-seals.json",
+    "sha256": "8e66c98b2c50fbe94acf11637e9d3d8ed5827bdca0b25a1ffff7e32c6863d6f6"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-base-dependencies-001/inventory.json#c28108ff1ebcec6fbe625987cc421fa54517bdb601df61247a4040b354f89076": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/c2/c28108ff1ebcec6fbe625987cc421fa54517bdb601df61247a4040b354f89076",
+    "bytes": 190,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-base-dependencies-001/inventory.json",
+    "sha256": "c28108ff1ebcec6fbe625987cc421fa54517bdb601df61247a4040b354f89076"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-base-dependencies-001/preflight.json#895aa7e94372ce1e61e77cbe6cc424c391fd9fcb79834280139e12239b593650": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/89/895aa7e94372ce1e61e77cbe6cc424c391fd9fcb79834280139e12239b593650",
+    "bytes": 400,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-base-dependencies-001/preflight.json",
+    "sha256": "895aa7e94372ce1e61e77cbe6cc424c391fd9fcb79834280139e12239b593650"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-checkpoint-preparation-001/REPORT-draft.md#78da4a26a3d37b7dd0c25fb7cad967d197216c5850b568a6ddd4482dc5fa148f": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/78/78da4a26a3d37b7dd0c25fb7cad967d197216c5850b568a6ddd4482dc5fa148f",
+    "bytes": 870,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-checkpoint-preparation-001/REPORT-draft.md",
+    "sha256": "78da4a26a3d37b7dd0c25fb7cad967d197216c5850b568a6ddd4482dc5fa148f"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-checkpoint-preparation-001/archive-after-gates.py#82d2c9b5c72558314de045392e96d40f5f21d074e45d756ca6b92a95d044d1d9": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/82/82d2c9b5c72558314de045392e96d40f5f21d074e45d756ca6b92a95d044d1d9",
+    "bytes": 3150,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-checkpoint-preparation-001/archive-after-gates.py",
+    "sha256": "82d2c9b5c72558314de045392e96d40f5f21d074e45d756ca6b92a95d044d1d9"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-checkpoint-preparation-001/report-draft.json#771317b9704a3b9e7df151d07dba59e49a22cb20c1b55db5b6ded71bb1a39fcc": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/77/771317b9704a3b9e7df151d07dba59e49a22cb20c1b55db5b6ded71bb1a39fcc",
+    "bytes": 4196,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-checkpoint-preparation-001/report-draft.json",
+    "sha256": "771317b9704a3b9e7df151d07dba59e49a22cb20c1b55db5b6ded71bb1a39fcc"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-checkpoint-preparation-001/secret-scan.py#6e48dc80c51fe0ce2bb4667e6615f515fdadc71f0bbaf82c69561edf65aa8391": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/6e/6e48dc80c51fe0ce2bb4667e6615f515fdadc71f0bbaf82c69561edf65aa8391",
+    "bytes": 2467,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-checkpoint-preparation-001/secret-scan.py",
+    "sha256": "6e48dc80c51fe0ce2bb4667e6615f515fdadc71f0bbaf82c69561edf65aa8391"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-fast-audit-003/REPORT.json#0ba14d64ff27869c3d48f3d67a630ac1c2760dcf33ba8b88eb3fe23de0e30e6b": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/0b/0ba14d64ff27869c3d48f3d67a630ac1c2760dcf33ba8b88eb3fe23de0e30e6b",
+    "bytes": 1457,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-fast-audit-003/REPORT.json",
+    "sha256": "0ba14d64ff27869c3d48f3d67a630ac1c2760dcf33ba8b88eb3fe23de0e30e6b"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-fast-result-parent-review-003/REPORT.json#faa0526626d1b74731b8de4e8a375cb4aa29a137fedad877448bd9261a54e35a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/fa/faa0526626d1b74731b8de4e8a375cb4aa29a137fedad877448bd9261a54e35a",
+    "bytes": 612,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-fast-result-parent-review-003/REPORT.json",
+    "sha256": "faa0526626d1b74731b8de4e8a375cb4aa29a137fedad877448bd9261a54e35a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-audit-001/REPORT.json#e2cf8707f14b4d08ef6fb8b79d7d738324d07d3c9189669a78a32e74481c7f03": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/e2/e2cf8707f14b4d08ef6fb8b79d7d738324d07d3c9189669a78a32e74481c7f03",
+    "bytes": 2600,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-audit-001/REPORT.json",
+    "sha256": "e2cf8707f14b4d08ef6fb8b79d7d738324d07d3c9189669a78a32e74481c7f03"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-001/LAUNCHER-REVIEW.json#8aed8b33a5a7436a8184c31634c92e79154fa190a7812bc222cc0eaea7a043a8": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/8a/8aed8b33a5a7436a8184c31634c92e79154fa190a7812bc222cc0eaea7a043a8",
+    "bytes": 345,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-001/LAUNCHER-REVIEW.json",
+    "sha256": "8aed8b33a5a7436a8184c31634c92e79154fa190a7812bc222cc0eaea7a043a8"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-001/gate-input-seal.json#a613ee92098f897d20c14b790d1da81a824ac26523974edd47ca1ca4106e0bdb": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/a6/a613ee92098f897d20c14b790d1da81a824ac26523974edd47ca1ca4106e0bdb",
+    "bytes": 2501,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-001/gate-input-seal.json",
+    "sha256": "a613ee92098f897d20c14b790d1da81a824ac26523974edd47ca1ca4106e0bdb"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-001/gate-launcher.py#b58aa63d3916327f328ed916e85988af4e11a0eacaf1172a150e62a55d3e4e1c": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/b5/b58aa63d3916327f328ed916e85988af4e11a0eacaf1172a150e62a55d3e4e1c",
+    "bytes": 3963,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-001/gate-launcher.py",
+    "sha256": "b58aa63d3916327f328ed916e85988af4e11a0eacaf1172a150e62a55d3e4e1c"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-002/LAUNCHER-REVIEW.json#a28edf5ecc0635791ffcb58f06855833f452a1da16a6333a8918c5899fdcfbe3": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/a2/a28edf5ecc0635791ffcb58f06855833f452a1da16a6333a8918c5899fdcfbe3",
+    "bytes": 706,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-002/LAUNCHER-REVIEW.json",
+    "sha256": "a28edf5ecc0635791ffcb58f06855833f452a1da16a6333a8918c5899fdcfbe3"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-002/check-fast-result.json#afecbdae5747a086492cb0b6d62c06ac1d9044f01c2e54b5707abc4c0ddd6c33": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/af/afecbdae5747a086492cb0b6d62c06ac1d9044f01c2e54b5707abc4c0ddd6c33",
+    "bytes": 4272,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-002/check-fast-result.json",
+    "sha256": "afecbdae5747a086492cb0b6d62c06ac1d9044f01c2e54b5707abc4c0ddd6c33"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-002/check-fast.log#58649868c717cfb523135001b899a1bc099da5a7419b9457bc1cbb1b8bc0cceb": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/58/58649868c717cfb523135001b899a1bc099da5a7419b9457bc1cbb1b8bc0cceb",
+    "bytes": 4022,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-002/check-fast.log",
+    "sha256": "58649868c717cfb523135001b899a1bc099da5a7419b9457bc1cbb1b8bc0cceb"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-002/gate-input-seal.json#928804609f669da9983934c1a485ea0c1a26e92a30dba21ae51b1b251dcc7d59": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/92/928804609f669da9983934c1a485ea0c1a26e92a30dba21ae51b1b251dcc7d59",
+    "bytes": 2634,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-002/gate-input-seal.json",
+    "sha256": "928804609f669da9983934c1a485ea0c1a26e92a30dba21ae51b1b251dcc7d59"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-002/gate-launcher.py#1845f0d469adfdd6b0c384fbb363e2803840e89a7090caf12d5a1dedb478366e": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/18/1845f0d469adfdd6b0c384fbb363e2803840e89a7090caf12d5a1dedb478366e",
+    "bytes": 3991,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-002/gate-launcher.py",
+    "sha256": "1845f0d469adfdd6b0c384fbb363e2803840e89a7090caf12d5a1dedb478366e"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-003/LAUNCHER-REVIEW.json#adb72e698700fff08a59a239c9944c98a5717ad74efa187f44c22c89b8b2244e": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/ad/adb72e698700fff08a59a239c9944c98a5717ad74efa187f44c22c89b8b2244e",
+    "bytes": 1497,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-003/LAUNCHER-REVIEW.json",
+    "sha256": "adb72e698700fff08a59a239c9944c98a5717ad74efa187f44c22c89b8b2244e"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-003/check-fast-result.json#680a2ea13d570a0d05d72955dd4107b82051347eba26542fb13b5a2bd63bf01b": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/68/680a2ea13d570a0d05d72955dd4107b82051347eba26542fb13b5a2bd63bf01b",
+    "bytes": 4535,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-003/check-fast-result.json",
+    "sha256": "680a2ea13d570a0d05d72955dd4107b82051347eba26542fb13b5a2bd63bf01b"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-003/check-fast.log#24fdbe06f58691e5d298fc9ae59d5f7349ddcece36c084d53d5d2da2826fc3fb": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/24/24fdbe06f58691e5d298fc9ae59d5f7349ddcece36c084d53d5d2da2826fc3fb",
+    "bytes": 181194,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-003/check-fast.log",
+    "sha256": "24fdbe06f58691e5d298fc9ae59d5f7349ddcece36c084d53d5d2da2826fc3fb"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-003/check-iris-result.json#03462af7595ec2f6798c1a565dd4be7b1a0536b6387152acbb30dc893268589e": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/03/03462af7595ec2f6798c1a565dd4be7b1a0536b6387152acbb30dc893268589e",
+    "bytes": 4535,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-003/check-iris-result.json",
+    "sha256": "03462af7595ec2f6798c1a565dd4be7b1a0536b6387152acbb30dc893268589e"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-003/check-iris.log#24fff97e3a4c8e61dd1156ec7d981fe85e9d12cf3f8b18f0f0aea49135ff4a39": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/24/24fff97e3a4c8e61dd1156ec7d981fe85e9d12cf3f8b18f0f0aea49135ff4a39",
+    "bytes": 12825,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-003/check-iris.log",
+    "sha256": "24fff97e3a4c8e61dd1156ec7d981fe85e9d12cf3f8b18f0f0aea49135ff4a39"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-003/gate-input-seal.json#a9e026847354e51ef7d253fb91c7f9cadc4d7cede0de8f2c1dd5db8296ffb72a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/a9/a9e026847354e51ef7d253fb91c7f9cadc4d7cede0de8f2c1dd5db8296ffb72a",
+    "bytes": 3253,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-003/gate-input-seal.json",
+    "sha256": "a9e026847354e51ef7d253fb91c7f9cadc4d7cede0de8f2c1dd5db8296ffb72a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-003/gate-launcher.py#490801f3f2bd7a770dbed8dcc606a66641b6fee7b95b0ff45656b0992ef54178": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/49/490801f3f2bd7a770dbed8dcc606a66641b6fee7b95b0ff45656b0992ef54178",
+    "bytes": 4668,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-003/gate-launcher.py",
+    "sha256": "490801f3f2bd7a770dbed8dcc606a66641b6fee7b95b0ff45656b0992ef54178"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-parent-review-002/REPORT.json#191e4ed33984cb7f56df339a6c05073edf20f741e3d38200a3379fe102e7709c": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/19/191e4ed33984cb7f56df339a6c05073edf20f741e3d38200a3379fe102e7709c",
+    "bytes": 836,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-parent-review-002/REPORT.json",
+    "sha256": "191e4ed33984cb7f56df339a6c05073edf20f741e3d38200a3379fe102e7709c"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-parent-review-003/REPORT.json#f046c88f927508a52313d7bd121597e6ee5793b4411dc1096c5de8aea0050ce3": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/f0/f046c88f927508a52313d7bd121597e6ee5793b4411dc1096c5de8aea0050ce3",
+    "bytes": 812,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-gates-parent-review-003/REPORT.json",
+    "sha256": "f046c88f927508a52313d7bd121597e6ee5793b4411dc1096c5de8aea0050ce3"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-parent-review-001/REPORT.json#52bd9ae9a1dcf6c15ffb93393f1e6271b6c497414b8d7ba95347abf8ff0078f0": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/52/52bd9ae9a1dcf6c15ffb93393f1e6271b6c497414b8d7ba95347abf8ff0078f0",
+    "bytes": 2289,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-parent-review-001/REPORT.json",
+    "sha256": "52bd9ae9a1dcf6c15ffb93393f1e6271b6c497414b8d7ba95347abf8ff0078f0"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/artifact-preflight.json#597a87cfe456fdddb2de503db83c2646cfccd8d8ae2761c083bfcf94e39608e9": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/59/597a87cfe456fdddb2de503db83c2646cfccd8d8ae2761c083bfcf94e39608e9",
+    "bytes": 5422,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/artifact-preflight.json",
+    "sha256": "597a87cfe456fdddb2de503db83c2646cfccd8d8ae2761c083bfcf94e39608e9"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/cases.json#38b7f6cfd517143ec2fd27446dddbf1bf619c67c7b864281870f7455797b20dc": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/38/38b7f6cfd517143ec2fd27446dddbf1bf619c67c7b864281870f7455797b20dc",
+    "bytes": 1084,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/cases.json",
+    "sha256": "38b7f6cfd517143ec2fd27446dddbf1bf619c67c7b864281870f7455797b20dc"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/controller.py#5d5b2de46fdaf07ac40eacc81fe47cb334fe84d9da790037dd1a7cc1cf3c872f": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/5d/5d5b2de46fdaf07ac40eacc81fe47cb334fe84d9da790037dd1a7cc1cf3c872f",
+    "bytes": 2846,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/controller.py",
+    "sha256": "5d5b2de46fdaf07ac40eacc81fe47cb334fe84d9da790037dd1a7cc1cf3c872f"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/instr_pre_existential_instantiation.v#fb41bf4b4324e123435a9ff759a34385549da1d214e696fc978f2623ee710a95": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/fb/fb41bf4b4324e123435a9ff759a34385549da1d214e696fc978f2623ee710a95",
+    "bytes": 659,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/instr_pre_existential_instantiation.v",
+    "sha256": "fb41bf4b4324e123435a9ff759a34385549da1d214e696fc978f2623ee710a95"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/mcp-client.py#beecdf7230590a39b84dabd11b587818f99d451864f5f8f5bc0449b6b266ed9a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/be/beecdf7230590a39b84dabd11b587818f99d451864f5f8f5bc0449b6b266ed9a",
+    "bytes": 10538,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/mcp-client.py",
+    "sha256": "beecdf7230590a39b84dabd11b587818f99d451864f5f8f5bc0449b6b266ed9a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/observer_records.py#47c91c2361166079964679ff7900efa5b4b3c4ead9a82a5a6586b1730d1ab26b": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/47/47c91c2361166079964679ff7900efa5b4b3c4ead9a82a5a6586b1730d1ab26b",
+    "bytes": 4998,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/observer_records.py",
+    "sha256": "47c91c2361166079964679ff7900efa5b4b3c4ead9a82a5a6586b1730d1ab26b"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/parser-tests.json#f41fade4ee8ebdf033bdf45c546e54c898f27e69d366bbe371f31d88117cdb1d": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/f4/f41fade4ee8ebdf033bdf45c546e54c898f27e69d366bbe371f31d88117cdb1d",
+    "bytes": 76,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/parser-tests.json",
+    "sha256": "f41fade4ee8ebdf033bdf45c546e54c898f27e69d366bbe371f31d88117cdb1d"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/preparation-audit.json#29a40ff3a5ed18ca1da5da4baaa96cdc128d70ac4271d2bd986e1a9b9e4eaccb": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/29/29a40ff3a5ed18ca1da5da4baaa96cdc128d70ac4271d2bd986e1a9b9e4eaccb",
+    "bytes": 1486,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/preparation-audit.json",
+    "sha256": "29a40ff3a5ed18ca1da5da4baaa96cdc128d70ac4271d2bd986e1a9b9e4eaccb"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/raw-calls.json#c9a5931ff9ba9ff8443508b818d269a355888812320611b7a5595c51e457c4ee": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/c9/c9a5931ff9ba9ff8443508b818d269a355888812320611b7a5595c51e457c4ee",
+    "bytes": 11997,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/raw-calls.json",
+    "sha256": "c9a5931ff9ba9ff8443508b818d269a355888812320611b7a5595c51e457c4ee"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/successor_state_existential_consume.v#583f5542c8e723eecaf370bc31ed0d840b65f360d04c576a0d36d75d79a102cd": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/58/583f5542c8e723eecaf370bc31ed0d840b65f360d04c576a0d36d75d79a102cd",
+    "bytes": 542,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/successor_state_existential_consume.v",
+    "sha256": "583f5542c8e723eecaf370bc31ed0d840b65f360d04c576a0d36d75d79a102cd"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/successor_state_existential_consume/client-error.json#91b77881bc57471c18c9677e20b6578bfaedd7457ed1b908015faeb1bd5757fd": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/91/91b77881bc57471c18c9677e20b6578bfaedd7457ed1b908015faeb1bd5757fd",
+    "bytes": 613,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/successor_state_existential_consume/client-error.json",
+    "sha256": "91b77881bc57471c18c9677e20b6578bfaedd7457ed1b908015faeb1bd5757fd"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/successor_state_existential_consume/exports/state_1.json#c0d6d43c059e09d1808e9b3a57e02330d8291372c0a7947008058ff7ca224c22": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/c0/c0d6d43c059e09d1808e9b3a57e02330d8291372c0a7947008058ff7ca224c22",
+    "bytes": 388,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/successor_state_existential_consume/exports/state_1.json",
+    "sha256": "c0d6d43c059e09d1808e9b3a57e02330d8291372c0a7947008058ff7ca224c22"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/successor_state_existential_consume/exports/state_3.json#c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/successor_state_existential_consume/exports/state_3.json",
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/successor_state_existential_consume/observed-output.txt#01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/01/01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "bytes": 1,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/successor_state_existential_consume/observed-output.txt",
+    "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/successor_state_existential_consume/observer-records.json#277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/27/277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18",
+    "bytes": 196,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/successor_state_existential_consume/observer-records.json",
+    "sha256": "277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/successor_state_existential_consume/schemas.json#7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/7a/7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a",
+    "bytes": 18498,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/successor_state_existential_consume/schemas.json",
+    "sha256": "7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/successor_state_existential_consume/session-closure.json#780888647ca7b65ba047d49125062320ffb2059efe495bd32727a5bd387fbff9": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/78/780888647ca7b65ba047d49125062320ffb2059efe495bd32727a5bd387fbff9",
+    "bytes": 152,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-001/successor_state_existential_consume/session-closure.json",
+    "sha256": "780888647ca7b65ba047d49125062320ffb2059efe495bd32727a5bd387fbff9"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-002/PREPARATION.json#8dbd222302753d1cb3f6710868e696737a4c3e7eaaf2e32f95b02662d1c93837": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/8d/8dbd222302753d1cb3f6710868e696737a4c3e7eaaf2e32f95b02662d1c93837",
+    "bytes": 1002,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-002/PREPARATION.json",
+    "sha256": "8dbd222302753d1cb3f6710868e696737a4c3e7eaaf2e32f95b02662d1c93837"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-002/SOURCE-ENV.diff#54ff46c08bdf4463c2cfc1feb70525b8b07b7fc3c1065020a87f54e349fd30d8": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/54/54ff46c08bdf4463c2cfc1feb70525b8b07b7fc3c1065020a87f54e349fd30d8",
+    "bytes": 4735,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-002/SOURCE-ENV.diff",
+    "sha256": "54ff46c08bdf4463c2cfc1feb70525b8b07b7fc3c1065020a87f54e349fd30d8"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-002/cases.json#7212e359e7a0b5b2082028c6f723227023c4a7f00360865e9158d3474720a4ce": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/72/7212e359e7a0b5b2082028c6f723227023c4a7f00360865e9158d3474720a4ce",
+    "bytes": 1250,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-002/cases.json",
+    "sha256": "7212e359e7a0b5b2082028c6f723227023c4a7f00360865e9158d3474720a4ce"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-002/controller.py#845759e4cb185898e40065cc8e289ead791af252ac27f5e97060c112180fe510": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/84/845759e4cb185898e40065cc8e289ead791af252ac27f5e97060c112180fe510",
+    "bytes": 2842,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-002/controller.py",
+    "sha256": "845759e4cb185898e40065cc8e289ead791af252ac27f5e97060c112180fe510"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-002/instr_pre_existential_instantiation.v#fb41bf4b4324e123435a9ff759a34385549da1d214e696fc978f2623ee710a95": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/fb/fb41bf4b4324e123435a9ff759a34385549da1d214e696fc978f2623ee710a95",
+    "bytes": 659,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-002/instr_pre_existential_instantiation.v",
+    "sha256": "fb41bf4b4324e123435a9ff759a34385549da1d214e696fc978f2623ee710a95"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-002/mcp-client.py#d02a4ebdb11e37a1dd84b199a1b91569d28d7b3529140c85469b2b192041e996": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/d0/d02a4ebdb11e37a1dd84b199a1b91569d28d7b3529140c85469b2b192041e996",
+    "bytes": 12649,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-002/mcp-client.py",
+    "sha256": "d02a4ebdb11e37a1dd84b199a1b91569d28d7b3529140c85469b2b192041e996"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-002/observer_records.py#47c91c2361166079964679ff7900efa5b4b3c4ead9a82a5a6586b1730d1ab26b": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/47/47c91c2361166079964679ff7900efa5b4b3c4ead9a82a5a6586b1730d1ab26b",
+    "bytes": 4998,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-002/observer_records.py",
+    "sha256": "47c91c2361166079964679ff7900efa5b4b3c4ead9a82a5a6586b1730d1ab26b"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-002/successor_state_existential_consume.v#583f5542c8e723eecaf370bc31ed0d840b65f360d04c576a0d36d75d79a102cd": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/58/583f5542c8e723eecaf370bc31ed0d840b65f360d04c576a0d36d75d79a102cd",
+    "bytes": 542,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-002/successor_state_existential_consume.v",
+    "sha256": "583f5542c8e723eecaf370bc31ed0d840b65f360d04c576a0d36d75d79a102cd"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/ADMISSION-TESTS.json#ccf3c0c0223c8dcfb075c9b28c4f1e5aabe054ed98c8d02a84d3ac9ed74b98cb": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/cc/ccf3c0c0223c8dcfb075c9b28c4f1e5aabe054ed98c8d02a84d3ac9ed74b98cb",
+    "bytes": 179,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/ADMISSION-TESTS.json",
+    "sha256": "ccf3c0c0223c8dcfb075c9b28c4f1e5aabe054ed98c8d02a84d3ac9ed74b98cb"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/PREPARATION.json#a2a3c5c9fcc15b048654823bbacee2fd9d807742fdbed02a8977bf506a7ea93c": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/a2/a2a3c5c9fcc15b048654823bbacee2fd9d807742fdbed02a8977bf506a7ea93c",
+    "bytes": 3805,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/PREPARATION.json",
+    "sha256": "a2a3c5c9fcc15b048654823bbacee2fd9d807742fdbed02a8977bf506a7ea93c"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/REPORT.json#bb29e8b6b7e218e7b4748bff5875794f715dcbda9f48de6a488a966461644a42": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/bb/bb29e8b6b7e218e7b4748bff5875794f715dcbda9f48de6a488a966461644a42",
+    "bytes": 15975,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/REPORT.json",
+    "sha256": "bb29e8b6b7e218e7b4748bff5875794f715dcbda9f48de6a488a966461644a42"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/SOURCE-ENV.diff#157abce9ada4a2c33a71c8fcd2f310779a2b6d6ac50addeb547baf00c7c79837": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/15/157abce9ada4a2c33a71c8fcd2f310779a2b6d6ac50addeb547baf00c7c79837",
+    "bytes": 2276,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/SOURCE-ENV.diff",
+    "sha256": "157abce9ada4a2c33a71c8fcd2f310779a2b6d6ac50addeb547baf00c7c79837"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/admission-tests.json#ccf3c0c0223c8dcfb075c9b28c4f1e5aabe054ed98c8d02a84d3ac9ed74b98cb": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/cc/ccf3c0c0223c8dcfb075c9b28c4f1e5aabe054ed98c8d02a84d3ac9ed74b98cb",
+    "bytes": 179,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/admission-tests.json",
+    "sha256": "ccf3c0c0223c8dcfb075c9b28c4f1e5aabe054ed98c8d02a84d3ac9ed74b98cb"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/admission.py#02bc3a8f5c0b3ed875da39dffdbff4740d6a1fc2cdc5a34a7776bfae169ff02c": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/02/02bc3a8f5c0b3ed875da39dffdbff4740d6a1fc2cdc5a34a7776bfae169ff02c",
+    "bytes": 2474,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/admission.py",
+    "sha256": "02bc3a8f5c0b3ed875da39dffdbff4740d6a1fc2cdc5a34a7776bfae169ff02c"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/artifact-preflight.json#d99ac3d22a5fe8d99d725d805d90faa6a713c52b01bc6f74fdf3da7999761b8a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/d9/d99ac3d22a5fe8d99d725d805d90faa6a713c52b01bc6f74fdf3da7999761b8a",
+    "bytes": 5818,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/artifact-preflight.json",
+    "sha256": "d99ac3d22a5fe8d99d725d805d90faa6a713c52b01bc6f74fdf3da7999761b8a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/cases.json#a960ebc2c4e1d5d6aa9e3d6a2f5ecad6babd243cd94aa4a23a2034287bce1ce5": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/a9/a960ebc2c4e1d5d6aa9e3d6a2f5ecad6babd243cd94aa4a23a2034287bce1ce5",
+    "bytes": 1350,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/cases.json",
+    "sha256": "a960ebc2c4e1d5d6aa9e3d6a2f5ecad6babd243cd94aa4a23a2034287bce1ce5"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/controller-result.json#69a43356dc4d2aa48bc0066dbb54e5ab54baba714f2329bd42b9e4dd9fd8be27": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/69/69a43356dc4d2aa48bc0066dbb54e5ab54baba714f2329bd42b9e4dd9fd8be27",
+    "bytes": 147,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/controller-result.json",
+    "sha256": "69a43356dc4d2aa48bc0066dbb54e5ab54baba714f2329bd42b9e4dd9fd8be27"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/controller.py#bf58810bb4ac5d47b81adfe8a6f7843233b40b004aaadd112900422eb3ecbb12": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/bf/bf58810bb4ac5d47b81adfe8a6f7843233b40b004aaadd112900422eb3ecbb12",
+    "bytes": 2914,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/controller.py",
+    "sha256": "bf58810bb4ac5d47b81adfe8a6f7843233b40b004aaadd112900422eb3ecbb12"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation.v#fb41bf4b4324e123435a9ff759a34385549da1d214e696fc978f2623ee710a95": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/fb/fb41bf4b4324e123435a9ff759a34385549da1d214e696fc978f2623ee710a95",
+    "bytes": 659,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation.v",
+    "sha256": "fb41bf4b4324e123435a9ff759a34385549da1d214e696fc978f2623ee710a95"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation/admission.json#91541e3d4f7c2f8a8f3be4189cdc28051890a19f9017b7bff3c5749dce249f49": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/91/91541e3d4f7c2f8a8f3be4189cdc28051890a19f9017b7bff3c5749dce249f49",
+    "bytes": 206,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation/admission.json",
+    "sha256": "91541e3d4f7c2f8a8f3be4189cdc28051890a19f9017b7bff3c5749dce249f49"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation/exports/state_1.json#b1cae2bb468eb339dbf516a16c68c3aeee2f3add565e6e9740b89d77d1a1df72": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/b1/b1cae2bb468eb339dbf516a16c68c3aeee2f3add565e6e9740b89d77d1a1df72",
+    "bytes": 488,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation/exports/state_1.json",
+    "sha256": "b1cae2bb468eb339dbf516a16c68c3aeee2f3add565e6e9740b89d77d1a1df72"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation/exports/state_2.json#c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation/exports/state_2.json",
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation/observed-output.txt#01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/01/01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "bytes": 1,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation/observed-output.txt",
+    "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation/observer-records.json#277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/27/277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18",
+    "bytes": 196,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation/observer-records.json",
+    "sha256": "277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation/schemas.json#7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/7a/7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a",
+    "bytes": 18498,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation/schemas.json",
+    "sha256": "7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation/session-closure.json#15b4bd0ffd1f665d523d7a1e14b45d63861bf1912cb1b31d823c0b33a609b878": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/15/15b4bd0ffd1f665d523d7a1e14b45d63861bf1912cb1b31d823c0b33a609b878",
+    "bytes": 151,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation/session-closure.json",
+    "sha256": "15b4bd0ffd1f665d523d7a1e14b45d63861bf1912cb1b31d823c0b33a609b878"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation/statement.txt#02c9c1a4e6169028a886b2bbeaed03e1f7e2b11570cd1985c22d420dafb51323": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/02/02c9c1a4e6169028a886b2bbeaed03e1f7e2b11570cd1985c22d420dafb51323",
+    "bytes": 530,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation/statement.txt",
+    "sha256": "02c9c1a4e6169028a886b2bbeaed03e1f7e2b11570cd1985c22d420dafb51323"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation/verified-object.vo#16e43d3ca07f1d21f4de1f48b1f9b718fbdc67096c2bab2c78a6fe7d2b5c8f88": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/16/16e43d3ca07f1d21f4de1f48b1f9b718fbdc67096c2bab2c78a6fe7d2b5c8f88",
+    "bytes": 128651,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/instr_pre_existential_instantiation/verified-object.vo",
+    "sha256": "16e43d3ca07f1d21f4de1f48b1f9b718fbdc67096c2bab2c78a6fe7d2b5c8f88"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/mcp-client.py#7941d0f18d6095378001d440cc1c43e2731e7289ae55f5342021a1e3263d561a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/79/7941d0f18d6095378001d440cc1c43e2731e7289ae55f5342021a1e3263d561a",
+    "bytes": 12882,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/mcp-client.py",
+    "sha256": "7941d0f18d6095378001d440cc1c43e2731e7289ae55f5342021a1e3263d561a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/observer_records.py#47c91c2361166079964679ff7900efa5b4b3c4ead9a82a5a6586b1730d1ab26b": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/47/47c91c2361166079964679ff7900efa5b4b3c4ead9a82a5a6586b1730d1ab26b",
+    "bytes": 4998,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/observer_records.py",
+    "sha256": "47c91c2361166079964679ff7900efa5b4b3c4ead9a82a5a6586b1730d1ab26b"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/parser-tests.json#f41fade4ee8ebdf033bdf45c546e54c898f27e69d366bbe371f31d88117cdb1d": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/f4/f41fade4ee8ebdf033bdf45c546e54c898f27e69d366bbe371f31d88117cdb1d",
+    "bytes": 76,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/parser-tests.json",
+    "sha256": "f41fade4ee8ebdf033bdf45c546e54c898f27e69d366bbe371f31d88117cdb1d"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/raw-calls.json#8eeb58fc149021c8e9c646bc05b3f8ae7de3b763301a6341e155b76d11fad2ec": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/8e/8eeb58fc149021c8e9c646bc05b3f8ae7de3b763301a6341e155b76d11fad2ec",
+    "bytes": 21493,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/raw-calls.json",
+    "sha256": "8eeb58fc149021c8e9c646bc05b3f8ae7de3b763301a6341e155b76d11fad2ec"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/results.json#830a50f755a9052a376055a234f8383a132a00ca26155f4f699546c41a951f05": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/83/830a50f755a9052a376055a234f8383a132a00ca26155f4f699546c41a951f05",
+    "bytes": 7934,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/results.json",
+    "sha256": "830a50f755a9052a376055a234f8383a132a00ca26155f4f699546c41a951f05"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/successor_state_existential_consume.v#583f5542c8e723eecaf370bc31ed0d840b65f360d04c576a0d36d75d79a102cd": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/58/583f5542c8e723eecaf370bc31ed0d840b65f360d04c576a0d36d75d79a102cd",
+    "bytes": 542,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/successor_state_existential_consume.v",
+    "sha256": "583f5542c8e723eecaf370bc31ed0d840b65f360d04c576a0d36d75d79a102cd"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/successor_state_existential_consume/admission.json#642f1ad5f40136007c8afd6af2827bab3ccf38f0f06b70bf147702fe9bc5cb5f": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/64/642f1ad5f40136007c8afd6af2827bab3ccf38f0f06b70bf147702fe9bc5cb5f",
+    "bytes": 234,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/successor_state_existential_consume/admission.json",
+    "sha256": "642f1ad5f40136007c8afd6af2827bab3ccf38f0f06b70bf147702fe9bc5cb5f"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/successor_state_existential_consume/schemas.json#7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/7a/7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a",
+    "bytes": 18498,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/successor_state_existential_consume/schemas.json",
+    "sha256": "7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/successor_state_existential_consume/statement.txt#d21e1429784e850bb4f4bd452a4d70eb71ef21afda92dc2f525b752a8d7aad4a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/d2/d21e1429784e850bb4f4bd452a4d70eb71ef21afda92dc2f525b752a8d7aad4a",
+    "bytes": 458,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/successor_state_existential_consume/statement.txt",
+    "sha256": "d21e1429784e850bb4f4bd452a4d70eb71ef21afda92dc2f525b752a8d7aad4a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/successor_state_existential_consume/verified-object.vo#40f209c3dae0484ba7e717251f7ef29f52e4dcd0397f37d0e9e659b9ae4604ab": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/40/40f209c3dae0484ba7e717251f7ef29f52e4dcd0397f37d0e9e659b9ae4604ab",
+    "bytes": 126253,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-generic-shapes-mcp-003/successor_state_existential_consume/verified-object.vo",
+    "sha256": "40f209c3dae0484ba7e717251f7ef29f52e4dcd0397f37d0e9e659b9ae4604ab"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-preservation-audit-001/REPORT.json#f5cfc8df0b3722efdbe7940768d50d9982de9c6713c75d324f72a56e3a840515": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/f5/f5cfc8df0b3722efdbe7940768d50d9982de9c6713c75d324f72a56e3a840515",
+    "bytes": 1735,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-preservation-audit-001/REPORT.json",
+    "sha256": "f5cfc8df0b3722efdbe7940768d50d9982de9c6713c75d324f72a56e3a840515"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-preserved-baseline-artifact-001/BlockTable.vo#260abe320e8ba225c6f7ddb60e523a09c6824dcc12679deaf8d2768ca409f281": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/26/260abe320e8ba225c6f7ddb60e523a09c6824dcc12679deaf8d2768ca409f281",
+    "bytes": 152816,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-preserved-baseline-artifact-001/BlockTable.vo",
+    "sha256": "260abe320e8ba225c6f7ddb60e523a09c6824dcc12679deaf8d2768ca409f281"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-preserved-baseline-artifact-001/REPORT.json#508c66daaa1acdacfaf9ab5716fd7284c0c225c573f2d94f48c8b14f08b04aff": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/50/508c66daaa1acdacfaf9ab5716fd7284c0c225c573f2d94f48c8b14f08b04aff",
+    "bytes": 765,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-preserved-baseline-artifact-001/REPORT.json",
+    "sha256": "508c66daaa1acdacfaf9ab5716fd7284c0c225c573f2d94f48c8b14f08b04aff"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/PREPARATION.json#17b2687b551717f828dfb189e463959c9dac31aa638e24c02212cdcd9e9baa7a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/17/17b2687b551717f828dfb189e463959c9dac31aa638e24c02212cdcd9e9baa7a",
+    "bytes": 3039,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/PREPARATION.json",
+    "sha256": "17b2687b551717f828dfb189e463959c9dac31aa638e24c02212cdcd9e9baa7a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/ZesuSsz__Automation__BlockTable.v.vo#db3bbd6e90f28b8a43d874c9d7b2856fa5cb95fa801e8818d658a06e1bac3d67": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/db/db3bbd6e90f28b8a43d874c9d7b2856fa5cb95fa801e8818d658a06e1bac3d67",
+    "bytes": 153916,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/ZesuSsz__Automation__BlockTable.v.vo",
+    "sha256": "db3bbd6e90f28b8a43d874c9d7b2856fa5cb95fa801e8818d658a06e1bac3d67"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/admission-tests.json#ccf3c0c0223c8dcfb075c9b28c4f1e5aabe054ed98c8d02a84d3ac9ed74b98cb": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/cc/ccf3c0c0223c8dcfb075c9b28c4f1e5aabe054ed98c8d02a84d3ac9ed74b98cb",
+    "bytes": 179,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/admission-tests.json",
+    "sha256": "ccf3c0c0223c8dcfb075c9b28c4f1e5aabe054ed98c8d02a84d3ac9ed74b98cb"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/admission.py#02bc3a8f5c0b3ed875da39dffdbff4740d6a1fc2cdc5a34a7776bfae169ff02c": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/02/02bc3a8f5c0b3ed875da39dffdbff4740d6a1fc2cdc5a34a7776bfae169ff02c",
+    "bytes": 2474,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/admission.py",
+    "sha256": "02bc3a8f5c0b3ed875da39dffdbff4740d6a1fc2cdc5a34a7776bfae169ff02c"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/artifact-preflight.json#3374c0a186f0be1e51bc5a4ed3ec46f24e90f9e5bfc437cf7d8305d700bf4bb0": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/33/3374c0a186f0be1e51bc5a4ed3ec46f24e90f9e5bfc437cf7d8305d700bf4bb0",
+    "bytes": 6558,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/artifact-preflight.json",
+    "sha256": "3374c0a186f0be1e51bc5a4ed3ec46f24e90f9e5bfc437cf7d8305d700bf4bb0"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/cases.json#b823c268ded66636d9c8378256a27f08a8e5662fd429b91013c4bb6772ed1b34": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/b8/b823c268ded66636d9c8378256a27f08a8e5662fd429b91013c4bb6772ed1b34",
+    "bytes": 1958,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/cases.json",
+    "sha256": "b823c268ded66636d9c8378256a27f08a8e5662fd429b91013c4bb6772ed1b34"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/controller-result.json#41424a40b0ea8fa411d08a4be260648e9123565bb441a7cacd98679e390c3284": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/41/41424a40b0ea8fa411d08a4be260648e9123565bb441a7cacd98679e390c3284",
+    "bytes": 146,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/controller-result.json",
+    "sha256": "41424a40b0ea8fa411d08a4be260648e9123565bb441a7cacd98679e390c3284"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/controller.py#b52d6fb3cd64a8661ad1bf76fc1e603274e38990d83f69ef23114c28b49dcb42": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/b5/b52d6fb3cd64a8661ad1bf76fc1e603274e38990d83f69ef23114c28b49dcb42",
+    "bytes": 3152,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/controller.py",
+    "sha256": "b52d6fb3cd64a8661ad1bf76fc1e603274e38990d83f69ef23114c28b49dcb42"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/i54b_existential_body.v#f47a6a76c5680e0905d814322cc8855b9e79e32b93096500dd4aba9581655a7c": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/f4/f47a6a76c5680e0905d814322cc8855b9e79e32b93096500dd4aba9581655a7c",
+    "bytes": 594,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/i54b_existential_body.v",
+    "sha256": "f47a6a76c5680e0905d814322cc8855b9e79e32b93096500dd4aba9581655a7c"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/i54b_production_consume.v#779583b085cea0d2e7ec682818dba00ed8d175c670543f0b7672950b13b5e8ec": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/77/779583b085cea0d2e7ec682818dba00ed8d175c670543f0b7672950b13b5e8ec",
+    "bytes": 562,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/i54b_production_consume.v",
+    "sha256": "779583b085cea0d2e7ec682818dba00ed8d175c670543f0b7672950b13b5e8ec"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/i54b_production_consume/admission.json#5d5982650dd9e992bb7ebd4e3b3b3de66ed231d59834da6453284f21ff6e5468": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/5d/5d5982650dd9e992bb7ebd4e3b3b3de66ed231d59834da6453284f21ff6e5468",
+    "bytes": 206,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/i54b_production_consume/admission.json",
+    "sha256": "5d5982650dd9e992bb7ebd4e3b3b3de66ed231d59834da6453284f21ff6e5468"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/i54b_production_consume/client-error.json#18f5e7e6088c5f43c9e6a3da1edd06580b191aecd959ed12be993e80d9eb98d3": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/18/18f5e7e6088c5f43c9e6a3da1edd06580b191aecd959ed12be993e80d9eb98d3",
+    "bytes": 1529,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/i54b_production_consume/client-error.json",
+    "sha256": "18f5e7e6088c5f43c9e6a3da1edd06580b191aecd959ed12be993e80d9eb98d3"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/i54b_production_consume/schemas.json#7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/7a/7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a",
+    "bytes": 18498,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/i54b_production_consume/schemas.json",
+    "sha256": "7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/i54b_production_consume/session-closure.json#16d2e47e92410137f3658569f161324092dad0a930570020dca392625ae6a74c": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/16/16d2e47e92410137f3658569f161324092dad0a930570020dca392625ae6a74c",
+    "bytes": 152,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/i54b_production_consume/session-closure.json",
+    "sha256": "16d2e47e92410137f3658569f161324092dad0a930570020dca392625ae6a74c"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/i54b_production_conversion.v#b827d32a2ad8a6b5023595262439aab885c9418a023bd0da515565cccab5abc4": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/b8/b827d32a2ad8a6b5023595262439aab885c9418a023bd0da515565cccab5abc4",
+    "bytes": 637,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/i54b_production_conversion.v",
+    "sha256": "b827d32a2ad8a6b5023595262439aab885c9418a023bd0da515565cccab5abc4"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/i54b_selected_continuation.v#cf6ac883d453b6410fe7676e18a550a5c0ff6b09aa4ac73ebbd7882db8ea131d": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/cf/cf6ac883d453b6410fe7676e18a550a5c0ff6b09aa4ac73ebbd7882db8ea131d",
+    "bytes": 595,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/i54b_selected_continuation.v",
+    "sha256": "cf6ac883d453b6410fe7676e18a550a5c0ff6b09aa4ac73ebbd7882db8ea131d"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/mcp-client.py#bc63a379177a264169f289f3cfcbc04616e00b2d311e497d2f42189cf226e517": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/bc/bc63a379177a264169f289f3cfcbc04616e00b2d311e497d2f42189cf226e517",
+    "bytes": 14068,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/mcp-client.py",
+    "sha256": "bc63a379177a264169f289f3cfcbc04616e00b2d311e497d2f42189cf226e517"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/observer_records.py#47c91c2361166079964679ff7900efa5b4b3c4ead9a82a5a6586b1730d1ab26b": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/47/47c91c2361166079964679ff7900efa5b4b3c4ead9a82a5a6586b1730d1ab26b",
+    "bytes": 4998,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/observer_records.py",
+    "sha256": "47c91c2361166079964679ff7900efa5b4b3c4ead9a82a5a6586b1730d1ab26b"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/parser-tests.json#f41fade4ee8ebdf033bdf45c546e54c898f27e69d366bbe371f31d88117cdb1d": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/f4/f41fade4ee8ebdf033bdf45c546e54c898f27e69d366bbe371f31d88117cdb1d",
+    "bytes": 76,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/parser-tests.json",
+    "sha256": "f41fade4ee8ebdf033bdf45c546e54c898f27e69d366bbe371f31d88117cdb1d"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/production-compilations-pending.json#885648980b31cc6762bf83b23dc6ee2dd4a989f2c4bec27bfd5004cee9aa9328": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/88/885648980b31cc6762bf83b23dc6ee2dd4a989f2c4bec27bfd5004cee9aa9328",
+    "bytes": 942,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/production-compilations-pending.json",
+    "sha256": "885648980b31cc6762bf83b23dc6ee2dd4a989f2c4bec27bfd5004cee9aa9328"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/production-inputs.json#3ca1c46e975ac0178b48ee6c6bf9d25053cfd6ad11d6a5f9e6b5e8340007262a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/3c/3ca1c46e975ac0178b48ee6c6bf9d25053cfd6ad11d6a5f9e6b5e8340007262a",
+    "bytes": 215,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/production-inputs.json",
+    "sha256": "3ca1c46e975ac0178b48ee6c6bf9d25053cfd6ad11d6a5f9e6b5e8340007262a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/raw-calls.json#24ea861b38167ca30cb9f8d8b4788e5a7bede4553804e1bfcdb5a5312c56b190": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/24/24ea861b38167ca30cb9f8d8b4788e5a7bede4553804e1bfcdb5a5312c56b190",
+    "bytes": 6188,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-001/raw-calls.json",
+    "sha256": "24ea861b38167ca30cb9f8d8b4788e5a7bede4553804e1bfcdb5a5312c56b190"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/BlockTable.failed-tests.v#17e8ecb60e99862280b82681d99aa8fe43cbf63c805829f0f0b6837c41024ca1": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/17/17e8ecb60e99862280b82681d99aa8fe43cbf63c805829f0f0b6837c41024ca1",
+    "bytes": 2632,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/BlockTable.failed-tests.v",
+    "sha256": "17e8ecb60e99862280b82681d99aa8fe43cbf63c805829f0f0b6837c41024ca1"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/PREPARATION.json#50d475edc164ba6418e8027b436d72720ec77783244f412251e1023d35839035": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/50/50d475edc164ba6418e8027b436d72720ec77783244f412251e1023d35839035",
+    "bytes": 4182,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/PREPARATION.json",
+    "sha256": "50d475edc164ba6418e8027b436d72720ec77783244f412251e1023d35839035"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/TEST-REPAIR.diff#d0188149a59742dacad28423974e8fd7182f06d0f1c0ef3a327281a951ea2502": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/d0/d0188149a59742dacad28423974e8fd7182f06d0f1c0ef3a327281a951ea2502",
+    "bytes": 440,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/TEST-REPAIR.diff",
+    "sha256": "d0188149a59742dacad28423974e8fd7182f06d0f1c0ef3a327281a951ea2502"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/ZesuSsz__Proofs__Tests__BlockTable.v.vo#8c6c0fd4948ea1a6bf630f942be8eb941aac8a062314f45677e7b6724698fac0": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/8c/8c6c0fd4948ea1a6bf630f942be8eb941aac8a062314f45677e7b6724698fac0",
+    "bytes": 146507,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/ZesuSsz__Proofs__Tests__BlockTable.v.vo",
+    "sha256": "8c6c0fd4948ea1a6bf630f942be8eb941aac8a062314f45677e7b6724698fac0"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/admission-tests.json#ccf3c0c0223c8dcfb075c9b28c4f1e5aabe054ed98c8d02a84d3ac9ed74b98cb": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/cc/ccf3c0c0223c8dcfb075c9b28c4f1e5aabe054ed98c8d02a84d3ac9ed74b98cb",
+    "bytes": 179,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/admission-tests.json",
+    "sha256": "ccf3c0c0223c8dcfb075c9b28c4f1e5aabe054ed98c8d02a84d3ac9ed74b98cb"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/admission.py#02bc3a8f5c0b3ed875da39dffdbff4740d6a1fc2cdc5a34a7776bfae169ff02c": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/02/02bc3a8f5c0b3ed875da39dffdbff4740d6a1fc2cdc5a34a7776bfae169ff02c",
+    "bytes": 2474,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/admission.py",
+    "sha256": "02bc3a8f5c0b3ed875da39dffdbff4740d6a1fc2cdc5a34a7776bfae169ff02c"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/artifact-preflight.json#4004a0daeaef55894ab487a793232706773ca9f4c6bf6ffec8a7b3cb9ebbf855": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/40/4004a0daeaef55894ab487a793232706773ca9f4c6bf6ffec8a7b3cb9ebbf855",
+    "bytes": 6982,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/artifact-preflight.json",
+    "sha256": "4004a0daeaef55894ab487a793232706773ca9f4c6bf6ffec8a7b3cb9ebbf855"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/cases.json#075d490b3ff1fbf71fbb504fc493fad4ec889e195f302f15ffee6661a10a8db3": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/07/075d490b3ff1fbf71fbb504fc493fad4ec889e195f302f15ffee6661a10a8db3",
+    "bytes": 2465,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/cases.json",
+    "sha256": "075d490b3ff1fbf71fbb504fc493fad4ec889e195f302f15ffee6661a10a8db3"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/controller-result.json#7d9f48a8b582443f006e0e152ea2d8b0d10fd70787e76c69fa47a6c4118b8f2b": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/7d/7d9f48a8b582443f006e0e152ea2d8b0d10fd70787e76c69fa47a6c4118b8f2b",
+    "bytes": 146,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/controller-result.json",
+    "sha256": "7d9f48a8b582443f006e0e152ea2d8b0d10fd70787e76c69fa47a6c4118b8f2b"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/controller.py#b52d6fb3cd64a8661ad1bf76fc1e603274e38990d83f69ef23114c28b49dcb42": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/b5/b52d6fb3cd64a8661ad1bf76fc1e603274e38990d83f69ef23114c28b49dcb42",
+    "bytes": 3152,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/controller.py",
+    "sha256": "b52d6fb3cd64a8661ad1bf76fc1e603274e38990d83f69ef23114c28b49dcb42"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body.v#f47a6a76c5680e0905d814322cc8855b9e79e32b93096500dd4aba9581655a7c": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/f4/f47a6a76c5680e0905d814322cc8855b9e79e32b93096500dd4aba9581655a7c",
+    "bytes": 594,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body.v",
+    "sha256": "f47a6a76c5680e0905d814322cc8855b9e79e32b93096500dd4aba9581655a7c"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/admission.json#4c09a4b39f66649454fd26e6adf4ee79f4338659f675adb0c7b06e2bb24b138f": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/4c/4c09a4b39f66649454fd26e6adf4ee79f4338659f675adb0c7b06e2bb24b138f",
+    "bytes": 205,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/admission.json",
+    "sha256": "4c09a4b39f66649454fd26e6adf4ee79f4338659f675adb0c7b06e2bb24b138f"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/exports/state_1.json#736fd4b3750169209b8f4e086c897bb17d1e5e00f6adf047306cff0ad4f2fe23": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/73/736fd4b3750169209b8f4e086c897bb17d1e5e00f6adf047306cff0ad4f2fe23",
+    "bytes": 439,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/exports/state_1.json",
+    "sha256": "736fd4b3750169209b8f4e086c897bb17d1e5e00f6adf047306cff0ad4f2fe23"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/exports/state_2.json#c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/exports/state_2.json",
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/observed-output.txt#01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/01/01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "bytes": 1,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/observed-output.txt",
+    "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/observer-records.json#277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/27/277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18",
+    "bytes": 196,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/observer-records.json",
+    "sha256": "277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/request-admission-106/admission.json#f8595d893ab1acd61c17dc4ca653459534e2a54da4b18f7fb8a135a0346044a1": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/f8/f8595d893ab1acd61c17dc4ca653459534e2a54da4b18f7fb8a135a0346044a1",
+    "bytes": 234,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/request-admission-106/admission.json",
+    "sha256": "f8595d893ab1acd61c17dc4ca653459534e2a54da4b18f7fb8a135a0346044a1"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/request-admission-108/admission.json#a32c7eb458284f7e9e5a71f3ad5e8b347fa1ee1d110d929c0913c6b32744fd7a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/a3/a32c7eb458284f7e9e5a71f3ad5e8b347fa1ee1d110d929c0913c6b32744fd7a",
+    "bytes": 234,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/request-admission-108/admission.json",
+    "sha256": "a32c7eb458284f7e9e5a71f3ad5e8b347fa1ee1d110d929c0913c6b32744fd7a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/schemas.json#7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/7a/7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a",
+    "bytes": 18498,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/schemas.json",
+    "sha256": "7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/session-closure.json#8eefc36a2a84fe8e733f78f1dd724f84976f1f3018af0f7f66c14787ce09da21": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/8e/8eefc36a2a84fe8e733f78f1dd724f84976f1f3018af0f7f66c14787ce09da21",
+    "bytes": 151,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/session-closure.json",
+    "sha256": "8eefc36a2a84fe8e733f78f1dd724f84976f1f3018af0f7f66c14787ce09da21"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/verified-object.vo#9f046fca0357193257a44532bad7dcc174c89ad3f82a7eeed4c36fdd42090e95": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/9f/9f046fca0357193257a44532bad7dcc174c89ad3f82a7eeed4c36fdd42090e95",
+    "bytes": 123810,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body/verified-object.vo",
+    "sha256": "9f046fca0357193257a44532bad7dcc174c89ad3f82a7eeed4c36fdd42090e95"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair.v#7181ef1e597ea16a5773d0bfce42ee37d9ebb5c89fd1804a9e3daf49eb6ef2e3": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/71/7181ef1e597ea16a5773d0bfce42ee37d9ebb5c89fd1804a9e3daf49eb6ef2e3",
+    "bytes": 563,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair.v",
+    "sha256": "7181ef1e597ea16a5773d0bfce42ee37d9ebb5c89fd1804a9e3daf49eb6ef2e3"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/admission.json#2139f8e80f5bed6299cd43866e635e0d834c8fe983fa08ad4e4635e6c46d8e37": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/21/2139f8e80f5bed6299cd43866e635e0d834c8fe983fa08ad4e4635e6c46d8e37",
+    "bytes": 232,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/admission.json",
+    "sha256": "2139f8e80f5bed6299cd43866e635e0d834c8fe983fa08ad4e4635e6c46d8e37"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/exports/state_1.json#736fd4b3750169209b8f4e086c897bb17d1e5e00f6adf047306cff0ad4f2fe23": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/73/736fd4b3750169209b8f4e086c897bb17d1e5e00f6adf047306cff0ad4f2fe23",
+    "bytes": 439,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/exports/state_1.json",
+    "sha256": "736fd4b3750169209b8f4e086c897bb17d1e5e00f6adf047306cff0ad4f2fe23"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/exports/state_4.json#c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/exports/state_4.json",
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/observed-output.txt#01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/01/01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "bytes": 1,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/observed-output.txt",
+    "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/observer-records.json#277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/27/277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18",
+    "bytes": 196,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/observer-records.json",
+    "sha256": "277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/request-admission-16/admission.json#6f9f04cae92b7b7747edb4834c13657e3e8b06a60b7268e0008035bf0c240037": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/6f/6f9f04cae92b7b7747edb4834c13657e3e8b06a60b7268e0008035bf0c240037",
+    "bytes": 16583,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/request-admission-16/admission.json",
+    "sha256": "6f9f04cae92b7b7747edb4834c13657e3e8b06a60b7268e0008035bf0c240037"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/request-admission-18/admission.json#4bf7813b94587bda67aac3f2c17c640f3e0e00ed0ecdc1458f114ac0be48a9aa": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/4b/4bf7813b94587bda67aac3f2c17c640f3e0e00ed0ecdc1458f114ac0be48a9aa",
+    "bytes": 234,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/request-admission-18/admission.json",
+    "sha256": "4bf7813b94587bda67aac3f2c17c640f3e0e00ed0ecdc1458f114ac0be48a9aa"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/schemas.json#7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/7a/7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a",
+    "bytes": 18498,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/schemas.json",
+    "sha256": "7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/session-closure.json#aa300590ed23510197ec54ce2ab7ce22fe754fd1b1c156e51cb2ac8a24bb018c": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/aa/aa300590ed23510197ec54ce2ab7ce22fe754fd1b1c156e51cb2ac8a24bb018c",
+    "bytes": 151,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/session-closure.json",
+    "sha256": "aa300590ed23510197ec54ce2ab7ce22fe754fd1b1c156e51cb2ac8a24bb018c"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/verified-object.vo#b20f55911b43abadf3a201d735160ff1243475f7fcd784cdeebff381772e17af": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/b2/b20f55911b43abadf3a201d735160ff1243475f7fcd784cdeebff381772e17af",
+    "bytes": 126538,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_existential_body_repair/verified-object.vo",
+    "sha256": "b20f55911b43abadf3a201d735160ff1243475f7fcd784cdeebff381772e17af"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume.v#779583b085cea0d2e7ec682818dba00ed8d175c670543f0b7672950b13b5e8ec": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/77/779583b085cea0d2e7ec682818dba00ed8d175c670543f0b7672950b13b5e8ec",
+    "bytes": 562,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume.v",
+    "sha256": "779583b085cea0d2e7ec682818dba00ed8d175c670543f0b7672950b13b5e8ec"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/admission.json#f6cf84e103f6f459bfd4005f14c360e9d576d8ce127112d0b589f9239b71c14d": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/f6/f6cf84e103f6f459bfd4005f14c360e9d576d8ce127112d0b589f9239b71c14d",
+    "bytes": 205,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/admission.json",
+    "sha256": "f6cf84e103f6f459bfd4005f14c360e9d576d8ce127112d0b589f9239b71c14d"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/exports/state_1.json#c0d6d43c059e09d1808e9b3a57e02330d8291372c0a7947008058ff7ca224c22": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/c0/c0d6d43c059e09d1808e9b3a57e02330d8291372c0a7947008058ff7ca224c22",
+    "bytes": 388,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/exports/state_1.json",
+    "sha256": "c0d6d43c059e09d1808e9b3a57e02330d8291372c0a7947008058ff7ca224c22"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/exports/state_2.json#c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/exports/state_2.json",
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/observed-output.txt#01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/01/01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "bytes": 1,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/observed-output.txt",
+    "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/observer-records.json#277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/27/277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18",
+    "bytes": 196,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/observer-records.json",
+    "sha256": "277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/request-admission-24/admission.json#32dffd483b3508a741d7a06848c77c977fbf8cb120e1af4be347f8c7c87e6f0f": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/32/32dffd483b3508a741d7a06848c77c977fbf8cb120e1af4be347f8c7c87e6f0f",
+    "bytes": 204,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/request-admission-24/admission.json",
+    "sha256": "32dffd483b3508a741d7a06848c77c977fbf8cb120e1af4be347f8c7c87e6f0f"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/request-admission-40/admission.json#dc8a99d0b5cefd25f820775af979208dec70da52f25857ae44a3c65f7efbbf9b": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/dc/dc8a99d0b5cefd25f820775af979208dec70da52f25857ae44a3c65f7efbbf9b",
+    "bytes": 234,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/request-admission-40/admission.json",
+    "sha256": "dc8a99d0b5cefd25f820775af979208dec70da52f25857ae44a3c65f7efbbf9b"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/request-admission-42/admission.json#3a130fed5d515bb40c95a55f1f26a585f861f55b91837d32db300f389c91410c": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/3a/3a130fed5d515bb40c95a55f1f26a585f861f55b91837d32db300f389c91410c",
+    "bytes": 234,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/request-admission-42/admission.json",
+    "sha256": "3a130fed5d515bb40c95a55f1f26a585f861f55b91837d32db300f389c91410c"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/schemas.json#7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/7a/7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a",
+    "bytes": 18498,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/schemas.json",
+    "sha256": "7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/session-closure.json#bc8b3f7b57bfaa3d32f5655012321f341566470f717dba103a02a4caf36207a0": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/bc/bc8b3f7b57bfaa3d32f5655012321f341566470f717dba103a02a4caf36207a0",
+    "bytes": 151,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/session-closure.json",
+    "sha256": "bc8b3f7b57bfaa3d32f5655012321f341566470f717dba103a02a4caf36207a0"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/verified-object.vo#e447218e8000e98a3b8dd623952e44bef5bad55325e1751e4b0523d83aae2bb9": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/e4/e447218e8000e98a3b8dd623952e44bef5bad55325e1751e4b0523d83aae2bb9",
+    "bytes": 123558,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_consume/verified-object.vo",
+    "sha256": "e447218e8000e98a3b8dd623952e44bef5bad55325e1751e4b0523d83aae2bb9"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion.v#b827d32a2ad8a6b5023595262439aab885c9418a023bd0da515565cccab5abc4": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/b8/b827d32a2ad8a6b5023595262439aab885c9418a023bd0da515565cccab5abc4",
+    "bytes": 637,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion.v",
+    "sha256": "b827d32a2ad8a6b5023595262439aab885c9418a023bd0da515565cccab5abc4"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/admission.json#c818d3b9e6e9930a9057da72b55e5001f3114627bcf36b6d6e2ff5fb3d91065e": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/c8/c818d3b9e6e9930a9057da72b55e5001f3114627bcf36b6d6e2ff5fb3d91065e",
+    "bytes": 206,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/admission.json",
+    "sha256": "c818d3b9e6e9930a9057da72b55e5001f3114627bcf36b6d6e2ff5fb3d91065e"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/exports/state_1.json#b1cae2bb468eb339dbf516a16c68c3aeee2f3add565e6e9740b89d77d1a1df72": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/b1/b1cae2bb468eb339dbf516a16c68c3aeee2f3add565e6e9740b89d77d1a1df72",
+    "bytes": 488,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/exports/state_1.json",
+    "sha256": "b1cae2bb468eb339dbf516a16c68c3aeee2f3add565e6e9740b89d77d1a1df72"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/exports/state_2.json#c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/exports/state_2.json",
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/observed-output.txt#01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/01/01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "bytes": 1,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/observed-output.txt",
+    "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/observer-records.json#277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/27/277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18",
+    "bytes": 196,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/observer-records.json",
+    "sha256": "277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/request-admission-62/admission.json#7f5ae39838ed676808fb4ee1b656b621fe9db7fe4842219fee6e1a366883dd2b": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/7f/7f5ae39838ed676808fb4ee1b656b621fe9db7fe4842219fee6e1a366883dd2b",
+    "bytes": 234,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/request-admission-62/admission.json",
+    "sha256": "7f5ae39838ed676808fb4ee1b656b621fe9db7fe4842219fee6e1a366883dd2b"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/request-admission-64/admission.json#250c0601cf912ece8cb97a7754c59aff7388783e9cf9f6eff4c2d74db70a1da6": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/25/250c0601cf912ece8cb97a7754c59aff7388783e9cf9f6eff4c2d74db70a1da6",
+    "bytes": 233,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/request-admission-64/admission.json",
+    "sha256": "250c0601cf912ece8cb97a7754c59aff7388783e9cf9f6eff4c2d74db70a1da6"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/schemas.json#7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/7a/7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a",
+    "bytes": 18498,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/schemas.json",
+    "sha256": "7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/session-closure.json#b0c76bffba60eeb68e604d3d8240c44010d1bd3d4b1186ba0805a076858dc307": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/b0/b0c76bffba60eeb68e604d3d8240c44010d1bd3d4b1186ba0805a076858dc307",
+    "bytes": 151,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/session-closure.json",
+    "sha256": "b0c76bffba60eeb68e604d3d8240c44010d1bd3d4b1186ba0805a076858dc307"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/verified-object.vo#f6ed0365e8d8fee15e28be239734de350da4ff45b310c4aef598bd5721dff518": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/f6/f6ed0365e8d8fee15e28be239734de350da4ff45b310c4aef598bd5721dff518",
+    "bytes": 124037,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_production_conversion/verified-object.vo",
+    "sha256": "f6ed0365e8d8fee15e28be239734de350da4ff45b310c4aef598bd5721dff518"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation.v#cf6ac883d453b6410fe7676e18a550a5c0ff6b09aa4ac73ebbd7882db8ea131d": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/cf/cf6ac883d453b6410fe7676e18a550a5c0ff6b09aa4ac73ebbd7882db8ea131d",
+    "bytes": 595,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation.v",
+    "sha256": "cf6ac883d453b6410fe7676e18a550a5c0ff6b09aa4ac73ebbd7882db8ea131d"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/admission.json#547aa3431764dad109a22010a7a1312fdb0543d8844532cb52c3a8661ae82ce1": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/54/547aa3431764dad109a22010a7a1312fdb0543d8844532cb52c3a8661ae82ce1",
+    "bytes": 206,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/admission.json",
+    "sha256": "547aa3431764dad109a22010a7a1312fdb0543d8844532cb52c3a8661ae82ce1"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/exports/state_1.json#a855791658282424518b3f8486fb537d5c15b956b266366e1d7b1566d8c159e6": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/a8/a855791658282424518b3f8486fb537d5c15b956b266366e1d7b1566d8c159e6",
+    "bytes": 444,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/exports/state_1.json",
+    "sha256": "a855791658282424518b3f8486fb537d5c15b956b266366e1d7b1566d8c159e6"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/exports/state_2.json#c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/c3/c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e",
+    "bytes": 49,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/exports/state_2.json",
+    "sha256": "c39806a0d18fc41dce6e1a46de657631d963cee1e774b7f87b5e1cd45548114e"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/observed-output.txt#01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/01/01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "bytes": 1,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/observed-output.txt",
+    "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/observer-records.json#277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/27/277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18",
+    "bytes": 196,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/observer-records.json",
+    "sha256": "277955ff24000bf2c3f8e0897d99de8d21072c8ef2e0b1929074157f36fb3c18"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/request-admission-84/admission.json#31db4e9a71ebe8be8f58949266c646c7ffef2730f301925b38bdd2f6e28f995a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/31/31db4e9a71ebe8be8f58949266c646c7ffef2730f301925b38bdd2f6e28f995a",
+    "bytes": 233,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/request-admission-84/admission.json",
+    "sha256": "31db4e9a71ebe8be8f58949266c646c7ffef2730f301925b38bdd2f6e28f995a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/request-admission-86/admission.json#895762e50a20301c5a32c27cd5bf7e27f22740da23a3ef79a893bf5762d5f158": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/89/895762e50a20301c5a32c27cd5bf7e27f22740da23a3ef79a893bf5762d5f158",
+    "bytes": 234,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/request-admission-86/admission.json",
+    "sha256": "895762e50a20301c5a32c27cd5bf7e27f22740da23a3ef79a893bf5762d5f158"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/schemas.json#7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/7a/7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a",
+    "bytes": 18498,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/schemas.json",
+    "sha256": "7a3b99d282d97e1e9bee8260a917c4da63c3c589e54d89669c73d468256bf46a"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/session-closure.json#2b848fdf8bc28fb22a441f298490c0f25f8980aca2ef52658e88eb2c47b45491": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/2b/2b848fdf8bc28fb22a441f298490c0f25f8980aca2ef52658e88eb2c47b45491",
+    "bytes": 151,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/session-closure.json",
+    "sha256": "2b848fdf8bc28fb22a441f298490c0f25f8980aca2ef52658e88eb2c47b45491"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/verified-object.vo#deea86526b6358a6e7d2b97fec4a439d11727d8e9fc9430ba1294b3459fb2b75": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/de/deea86526b6358a6e7d2b97fec4a439d11727d8e9fc9430ba1294b3459fb2b75",
+    "bytes": 123834,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/i54b_selected_continuation/verified-object.vo",
+    "sha256": "deea86526b6358a6e7d2b97fec4a439d11727d8e9fc9430ba1294b3459fb2b75"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/mcp-client.py#8c509172808b922ef62a65a6f938f38f7cfab3cd20525a3f0a7c2bd68beb2787": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/8c/8c509172808b922ef62a65a6f938f38f7cfab3cd20525a3f0a7c2bd68beb2787",
+    "bytes": 14799,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/mcp-client.py",
+    "sha256": "8c509172808b922ef62a65a6f938f38f7cfab3cd20525a3f0a7c2bd68beb2787"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/observer_records.py#47c91c2361166079964679ff7900efa5b4b3c4ead9a82a5a6586b1730d1ab26b": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/47/47c91c2361166079964679ff7900efa5b4b3c4ead9a82a5a6586b1730d1ab26b",
+    "bytes": 4998,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/observer_records.py",
+    "sha256": "47c91c2361166079964679ff7900efa5b4b3c4ead9a82a5a6586b1730d1ab26b"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/parser-tests.json#f41fade4ee8ebdf033bdf45c546e54c898f27e69d366bbe371f31d88117cdb1d": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/f4/f41fade4ee8ebdf033bdf45c546e54c898f27e69d366bbe371f31d88117cdb1d",
+    "bytes": 76,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/parser-tests.json",
+    "sha256": "f41fade4ee8ebdf033bdf45c546e54c898f27e69d366bbe371f31d88117cdb1d"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/production-compilations-pending.json#47089c554376212ee471c7a4a289577e6402a9a2127742355ce423471a594061": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/47/47089c554376212ee471c7a4a289577e6402a9a2127742355ce423471a594061",
+    "bytes": 1822,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/production-compilations-pending.json",
+    "sha256": "47089c554376212ee471c7a4a289577e6402a9a2127742355ce423471a594061"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/production-compilations.json#47089c554376212ee471c7a4a289577e6402a9a2127742355ce423471a594061": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/47/47089c554376212ee471c7a4a289577e6402a9a2127742355ce423471a594061",
+    "bytes": 1822,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/production-compilations.json",
+    "sha256": "47089c554376212ee471c7a4a289577e6402a9a2127742355ce423471a594061"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/production-inputs.json#17ca4704b1091d3f84d706fa00ac3131e17a99e58b7f0a17ef62642757d12cbb": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/17/17ca4704b1091d3f84d706fa00ac3131e17a99e58b7f0a17ef62642757d12cbb",
+    "bytes": 215,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/production-inputs.json",
+    "sha256": "17ca4704b1091d3f84d706fa00ac3131e17a99e58b7f0a17ef62642757d12cbb"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/raw-calls.json#1ebc972e09179e546f431a7e6001f7f97b4c84a70c4829de3b055ede5142f903": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/1e/1ebc972e09179e546f431a7e6001f7f97b4c84a70c4829de3b055ede5142f903",
+    "bytes": 71368,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/raw-calls.json",
+    "sha256": "1ebc972e09179e546f431a7e6001f7f97b4c84a70c4829de3b055ede5142f903"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/results.json#421565ce670fbd3939105ae8cdd835ef65a5d5e60a2fd962bd04ccf17d3737b0": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/42/421565ce670fbd3939105ae8cdd835ef65a5d5e60a2fd962bd04ccf17d3737b0",
+    "bytes": 18741,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/results.json",
+    "sha256": "421565ce670fbd3939105ae8cdd835ef65a5d5e60a2fd962bd04ccf17d3737b0"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/reused-production-compilation.json#3cc301581b8d093b51f90693c1913fda79389f1bc1dcf7ab32be321082c6744c": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/3c/3cc301581b8d093b51f90693c1913fda79389f1bc1dcf7ab32be321082c6744c",
+    "bytes": 1438,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-mcp-002/reused-production-compilation.json",
+    "sha256": "3cc301581b8d093b51f90693c1913fda79389f1bc1dcf7ab32be321082c6744c"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-parent-review-001/REPORT.json#969282cc75ed3d335e3c6fea7215e905529e43a4b0651a2a3cbf1eac266c9c4c": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/96/969282cc75ed3d335e3c6fea7215e905529e43a4b0651a2a3cbf1eac266c9c4c",
+    "bytes": 847,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-parent-review-001/REPORT.json",
+    "sha256": "969282cc75ed3d335e3c6fea7215e905529e43a4b0651a2a3cbf1eac266c9c4c"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-parent-review-002/REPORT.json#7542d00ba8618a11d83addab320230d801dfa5f4b44e25fe4ae84c2b295ded99": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/75/7542d00ba8618a11d83addab320230d801dfa5f4b44e25fe4ae84c2b295ded99",
+    "bytes": 793,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-parent-review-002/REPORT.json",
+    "sha256": "7542d00ba8618a11d83addab320230d801dfa5f4b44e25fe4ae84c2b295ded99"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-preparation-001/BlockTable.original.v#a77c8c3dfb2b7a2deff753004d8f7b82b0855906653d6bf98344c879969618ab": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/a7/a77c8c3dfb2b7a2deff753004d8f7b82b0855906653d6bf98344c879969618ab",
+    "bytes": 4046,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-preparation-001/BlockTable.original.v",
+    "sha256": "a77c8c3dfb2b7a2deff753004d8f7b82b0855906653d6bf98344c879969618ab"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-preparation-001/BlockTable.tests.original.v#f2bd9e87fd74fb480012086df7d3e7116158052f1dcd4880de46b63d08dfa003": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/f2/f2bd9e87fd74fb480012086df7d3e7116158052f1dcd4880de46b63d08dfa003",
+    "bytes": 1820,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-preparation-001/BlockTable.tests.original.v",
+    "sha256": "f2bd9e87fd74fb480012086df7d3e7116158052f1dcd4880de46b63d08dfa003"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-preparation-001/CANDIDATE.diff#f54afb6df8f339ca9a21be051280c78cfeeb08ceaaff8ab099e1ea3f9f26c898": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/f5/f54afb6df8f339ca9a21be051280c78cfeeb08ceaaff8ab099e1ea3f9f26c898",
+    "bytes": 2417,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-preparation-001/CANDIDATE.diff",
+    "sha256": "f54afb6df8f339ca9a21be051280c78cfeeb08ceaaff8ab099e1ea3f9f26c898"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-preparation-001/SOURCE-AUDIT.json#3b5d9bb4c7f615a41ef804f3a8a31f35ac92bbb2de2474645a8759de81fb4e4c": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/3b/3b5d9bb4c7f615a41ef804f3a8a31f35ac92bbb2de2474645a8759de81fb4e4c",
+    "bytes": 1212,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-preparation-001/SOURCE-AUDIT.json",
+    "sha256": "3b5d9bb4c7f615a41ef804f3a8a31f35ac92bbb2de2474645a8759de81fb4e4c"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-preparation-001/TESTS.diff#f32d2d04e81ccfa1397c870fe4221d59af364089695d660964178d91ddf62c03": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/f3/f32d2d04e81ccfa1397c870fe4221d59af364089695d660964178d91ddf62c03",
+    "bytes": 1077,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-preparation-001/TESTS.diff",
+    "sha256": "f32d2d04e81ccfa1397c870fe4221d59af364089695d660964178d91ddf62c03"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-result-audit-001/REPORT.json#7db8cc35f66a0d9ed83f273b9db5998394d0e7634e54e9b19387565ec3f8221d": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/7d/7db8cc35f66a0d9ed83f273b9db5998394d0e7634e54e9b19387565ec3f8221d",
+    "bytes": 40921,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-result-audit-001/REPORT.json",
+    "sha256": "7db8cc35f66a0d9ed83f273b9db5998394d0e7634e54e9b19387565ec3f8221d"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-result-audit-001/audit.py#2df172baf8308a7c661f68ed9e42bda62e65ba70a5999bf2ef7ee946b12ffccd": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/2d/2df172baf8308a7c661f68ed9e42bda62e65ba70a5999bf2ef7ee946b12ffccd",
+    "bytes": 3805,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-result-audit-001/audit.py",
+    "sha256": "2df172baf8308a7c661f68ed9e42bda62e65ba70a5999bf2ef7ee946b12ffccd"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-result-parent-review-002/REPORT.json#d33e166125beea9c0048c6b6e73005b2de4c82edb96a2f25e586f291f7752aec": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/d3/d33e166125beea9c0048c6b6e73005b2de4c82edb96a2f25e586f291f7752aec",
+    "bytes": 395,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-production-result-parent-review-002/REPORT.json",
+    "sha256": "d33e166125beea9c0048c6b6e73005b2de4c82edb96a2f25e586f291f7752aec"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-slot-adapter-preparation-001/AdapterPrepared.v#b0ab154a006304c5fae99d09e2c885c7d2bc6efbc023c16a4410c3acbc065e49": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/b0/b0ab154a006304c5fae99d09e2c885c7d2bc6efbc023c16a4410c3acbc065e49",
+    "bytes": 1300,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-slot-adapter-preparation-001/AdapterPrepared.v",
+    "sha256": "b0ab154a006304c5fae99d09e2c885c7d2bc6efbc023c16a4410c3acbc065e49"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-slot-adapter-preparation-001/DESIGN.json#cb7bd80a78baf6eee692202d18a544676436e17817744fa0c4b0f0dbe835f32c": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/cb/cb7bd80a78baf6eee692202d18a544676436e17817744fa0c4b0f0dbe835f32c",
+    "bytes": 1449,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-slot-adapter-preparation-001/DESIGN.json",
+    "sha256": "cb7bd80a78baf6eee692202d18a544676436e17817744fa0c4b0f0dbe835f32c"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-slot-adapter-preparation-001/SPEC-OBLIGATION.json#8c0579d3077ba41510ee9217992d0cdffaf1b9802a4db709c060d6fcb84e202f": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/8c/8c0579d3077ba41510ee9217992d0cdffaf1b9802a4db709c060d6fcb84e202f",
+    "bytes": 2077,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-slot-adapter-preparation-001/SPEC-OBLIGATION.json",
+    "sha256": "8c0579d3077ba41510ee9217992d0cdffaf1b9802a4db709c060d6fcb84e202f"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-slot-adapter-preparation-001/UniversalSlot69e8.v#98a7904b9353db2c5fb324298ffdb42bbb2ca399de45b9751e7c78d312790b37": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/98/98a7904b9353db2c5fb324298ffdb42bbb2ca399de45b9751e7c78d312790b37",
+    "bytes": 767,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-slot-adapter-preparation-001/UniversalSlot69e8.v",
+    "sha256": "98a7904b9353db2c5fb324298ffdb42bbb2ca399de45b9751e7c78d312790b37"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-slot-adapter-preparation-001/retained-native-statement.txt#90176d8cfa5c4fcbf19b1efce1edd0100297876229b1670a4641b9590805143f": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/90/90176d8cfa5c4fcbf19b1efce1edd0100297876229b1670a4641b9590805143f",
+    "bytes": 738,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-slot-adapter-preparation-001/retained-native-statement.txt",
+    "sha256": "90176d8cfa5c4fcbf19b1efce1edd0100297876229b1670a4641b9590805143f"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/tools/resource_guard.sh#f33b926f30d96a558d872c1a59d324e7c4831928db61c3d2f51adc25a51da319": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/f3/f33b926f30d96a558d872c1a59d324e7c4831928db61c3d2f51adc25a51da319",
+    "bytes": 42300,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/tools/resource_guard.sh",
+    "sha256": "f33b926f30d96a558d872c1a59d324e7c4831928db61c3d2f51adc25a51da319"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/tools/rocq_coqc_guarded.sh#9cb0b297ff91924f3c23d7aab8eecc8776987b43f47e5f7bcb8b46850e536541": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/9c/9cb0b297ff91924f3c23d7aab8eecc8776987b43f47e5f7bcb8b46850e536541",
+    "bytes": 498,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/tools/rocq_coqc_guarded.sh",
+    "sha256": "9cb0b297ff91924f3c23d7aab8eecc8776987b43f47e5f7bcb8b46850e536541"
+  },
+  "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/tools/rocq_mcp_guarded.sh#3dba1644640fda0441f39b41ee03c260c1dc9d26e7c49988f32024ce35d677d8": {
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/_build/i54b-final-archive-001/cas/3d/3dba1644640fda0441f39b41ee03c260c1dc9d26e7c49988f32024ce35d677d8",
+    "bytes": 821,
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i54b-successor-instantiation/tools/rocq_mcp_guarded.sh",
+    "sha256": "3dba1644640fda0441f39b41ee03c260c1dc9d26e7c49988f32024ce35d677d8"
+  }
+}
