@@ -382,7 +382,15 @@ class DuneCompilerGuardTest(unittest.TestCase):
         return [json.loads(line) for line in self.events.read_text().splitlines()] \
             if self.events.exists() else []
 
+    def prepare_recordless_private_build(self):
+        (self.root / "dune-project").write_text("(lang dune 3.17)\n")
+        private = self.root / "_build/agents/private"
+        (private / "default").mkdir(parents=True)
+        (self.root / "_build/default").symlink_to(private / "default")
+        self.assertFalse((private / "coqc-ocamlpath.json").exists())
+
     def test_failed_snapshot_prevents_every_compiler_route(self):
+        self.prepare_recordless_private_build()
         source = self.root / "Probe.v"
         source.write_text("(* Fake compiler input. *)\n")
         build = self.root / "build"
@@ -400,16 +408,21 @@ class DuneCompilerGuardTest(unittest.TestCase):
                   [str(self.root / "tools/rocq_coqc_guarded.sh"), str(source)])
         for status in (2, 3):
             (self.fixture.bin / "pgrep").write_text(f"#!/bin/sh\nexit {status}\n")
-            for route in routes:
-                with self.subTest(status=status, route=route):
-                    result = subprocess.run(route, env=self.environment, capture_output=True,
-                                            text=True, timeout=5)
-                    self.assertNotEqual(result.returncode, 0)
-                    self.assertIn("compiler snapshot failed", result.stderr)
-                    self.assertEqual(self.compiler_events(), [])
-                    self.assertFalse(self.scope_log.exists())
-                    reservations = Path(self.environment["ZESU_GUARD_STATE"]) / "coqc-reservations"
-                    self.assertEqual(list(reservations.iterdir()), [])
+            for ambient in (None, str(self.root / "ambient/lib")):
+                environment = dict(self.environment)
+                environment.pop("OCAMLPATH", None)
+                if ambient is not None:
+                    environment["OCAMLPATH"] = ambient
+                for route in routes:
+                    with self.subTest(status=status, ambient=ambient, route=route):
+                        result = subprocess.run(route, cwd=self.root, env=environment,
+                                                capture_output=True, text=True, timeout=5)
+                        self.assertNotEqual(result.returncode, 0)
+                        self.assertIn("compiler snapshot failed", result.stderr)
+                        self.assertEqual(self.compiler_events(), [])
+                        self.assertFalse(self.scope_log.exists())
+                        reservations = Path(environment["ZESU_GUARD_STATE"]) / "coqc-reservations"
+                        self.assertEqual(list(reservations.iterdir()), [])
 
     def test_actual_coqc_wrapper_tree_counts_once_with_16_writer_slots(self):
         # sleep is an ELF executable. Renaming it creates a fake compiler PID.
@@ -574,6 +587,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
                 subprocess.run([str(guard), "release-coqc", token], env=self.environment, check=True)
 
     def test_mcp_writer_route_keeps_scope_fence_under_gate(self):
+        self.prepare_recordless_private_build()
         updated = self.root / "updated-guard.sh"
         shutil.copy2(TOOLS / "resource_guard.sh", updated)
         mcp_wrapper = self.root / "rocq_coqc_guarded.sh"
@@ -590,7 +604,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
         for state in ("wanted", "held"):
             self.fixture.lock.write_text(f"state={state} holder=fixture pid={os.getpid()} start=x\n")
             result = subprocess.run([str(mcp_wrapper), str(source)],
-                                    env={**self.environment, "ZESU_WRITER_ID": "tf2",
+                                    cwd=self.root, env={**self.environment, "ZESU_WRITER_ID": "tf2",
                                          "ZESU_RESOURCE_GUARD": str(updated),
                                          "FAKE_SCOPE_LOG": str(scope_log)},
                                     capture_output=True, text=True, timeout=5)

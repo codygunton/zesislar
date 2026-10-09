@@ -43,9 +43,11 @@ class CompilerFindlibTests(unittest.TestCase):
         self.assertEqual(record["workspace"], str(self.root))
         self.assertEqual(record["private_build"], str(self.build))
 
-    def test_missing_private_record_is_an_explicit_setup_error(self):
-        with self.assertRaisesRegex(ValueError, "lacks its compiler findlib record"):
-            compiler_environment(self.root, {})
+    def test_missing_private_record_preserves_ambient_environment(self):
+        for environment in ({}, {"OCAMLPATH": "/ambient/private/lib", "OTHER": "kept"}):
+            with self.subTest(environment=environment):
+                self.assertEqual(compiler_environment(self.root, environment), environment)
+                self.assertFalse(self.record.exists())
 
     def test_no_private_build_preserves_ordinary_environment(self):
         (self.root / "_build/default").unlink()
@@ -146,7 +148,6 @@ class CompilerFindlibTests(unittest.TestCase):
         self.assertFalse(self.record.exists())
 
     def test_guard_wait_failure_preserves_status_without_starting_scope(self):
-        self.write_record()
         guard = self.root / "guard"
         guard.write_text("#!/bin/sh\n[ \"$1\" = wait ] && exit 75\nexit 99\n")
         guard.chmod(0o755)

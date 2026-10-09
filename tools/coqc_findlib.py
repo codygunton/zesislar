@@ -91,8 +91,9 @@ def compiler_environment(start, environment):
     if build is None:
         return result
     path = build / RECORD_NAME
-    if not path.is_file():
-        raise ValueError("The active private build lacks its compiler findlib record")
+    if not path.exists() and not path.is_symlink():
+        # A fresh build has no recorded compiler environment yet.
+        return result
     try:
         record = json.loads(path.read_text())
     except (ValueError, UnicodeError) as error:
