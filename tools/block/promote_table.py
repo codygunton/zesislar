@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Bind proved or pending instruction coverage to native boundary evidence.
 
-A native boundary alone does not supply the universal-inside-iProp table body.
+A native boundary alone does not supply the existential-family table body.
 Promotion also requires a compiled adapter with the exact table-body statement.
 """
 from __future__ import annotations

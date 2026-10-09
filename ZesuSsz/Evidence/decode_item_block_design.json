@@ -13,7 +13,7 @@
   "table_convention": {
     "entry_type": "(Z * iProp Sigma)",
     "pc_ownership": "instr_pre pc state supplies PC; entry predicates do not own PC",
-    "universal_binders": "Each row's binders, in their listed order",
+    "existential_binders": "Each row's binders, in their listed order",
     "resource_application": "Apply resource_predicate to arguments in order",
     "internal_existentials": {
       "entry_pcs": [
@@ -85,7 +85,7 @@
         "x16"
       ]
     },
-    "other_entries": "Listed table binders are universal; unlisted write-register values can be existential inside entry predicates",
+    "other_entries": "Each table state stores existential entry parameters. Instruction preconditions convert these families to universal continuations.",
     "continuations": "Outcome existentials inside shared continuations are not table locals",
     "code_persistence": "block_table_pre boxes the supplied code resource",
     "code_resource": "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedCode",

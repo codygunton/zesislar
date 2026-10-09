@@ -26,110 +26,110 @@ Open Scope Z_scope.
 (* Source: ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v; SHA-256: 7b22b45607725212a23b90a195c8d94471a952ea00ba5ea6a7e1b2e8541b5dbe. *)
 (* Source: ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v; SHA-256: 9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2. *)
 (* Source: ZesuSsz/Contracts/RlpDecodeItemReturnImages.v; SHA-256: 16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d. *)
-(* Source: ZesuSsz/Evidence/decode_item_block_design.json; SHA-256: 1b0e480fb3bfffb8b9b37c93ed12fd9234c73cca90af9aa6e45b52612e848160. *)
+(* Source: ZesuSsz/Evidence/decode_item_block_design.json; SHA-256: 82e0777742ab731468282c72201cc285aeff5c46dc76a54cfdfd880df7aab221. *)
 (* Source: build/stock-zisk/cfg.json; SHA-256: 98c4614e6ff7b6e1cb85bdc3b9e600dd85eccd5afacda8b1c5b75ff66db16fc2. *)
 (* Source: build/stock-zisk/decodeItem.raw.dump; SHA-256: 411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a. *)
 (* Source: build/stock-zisk/inventory.json; SHA-256: 7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d. *)
-(* Source: tools/block/generate_table.py; SHA-256: bc2b26ffdf1a3bff6af3d5211eb53e791b1790853aab055e7ebaf5807911a7f7. *)
+(* Source: tools/block/generate_table.py; SHA-256: b877ecc8288b828f85b5066d6db8d8cdc568b1315842f34e0182edb0e9d87f61. *)
 
 Section decode_item_block_table.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* Entry: ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6960. Body proof: pending. *)
 Definition decodeItemState800d6960 : iProp Sigma :=
-  (∀ (returnAddress : Z) (args : DecodeItemArgs), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6960 (returnAddress) (args))%I.
+  (∃ (returnAddress : Z) (args : DecodeItemArgs), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6960 (returnAddress) (args))%I.
 
 (* Entry: ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974. Body proof: pending. *)
 Definition decodeItemState800d6974 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (frameBytes : list byte) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974 (args) (frameBytes) (inputPrefix) (rest))%I.
+  (∃ (args : DecodeItemArgs) (frameBytes : list byte) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974 (args) (frameBytes) (inputPrefix) (rest))%I.
 
 (* Entry: ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d697c. Body proof: pending. *)
 Definition decodeItemState800d697c : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d697c (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
+  (∃ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d697c (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
 
 (* Entry: ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c. Body proof: pending. *)
 Definition decodeItemState800d698c : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (pointerBytes : list byte) (lengthBytes : list byte) (inputPrefix : byte) (rest : list byte) (isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (locals) (pointerBytes) (lengthBytes) (inputPrefix) (rest) (isLiteral))%I.
+  (∃ (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (pointerBytes : list byte) (lengthBytes : list byte) (inputPrefix : byte) (rest : list byte) (isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (locals) (pointerBytes) (lengthBytes) (inputPrefix) (rest) (isLiteral))%I.
 
 (* Entry: ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69a4. Body proof: pending. *)
 Definition decodeItemState800d69a4 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69a4 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
+  (∃ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69a4 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
 
 (* Entry: ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0. Body proof: pending. *)
 Definition decodeItemState800d69b0 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0 (args) (locals) (inputPrefix) (rest))%I.
+  (∃ (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0 (args) (locals) (inputPrefix) (rest))%I.
 
 (* Entry: ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8. Body proof: pending. *)
 Definition decodeItemState800d69d8 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
+  (∃ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
 
 (* Entry: ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0. Body proof: pending. *)
 Definition decodeItemState800d69e0 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
+  (∃ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
 
 (* Entry: ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e8. Body proof: pending. *)
 Definition decodeItemState800d69e8 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e8 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
+  (∃ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e8 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
 
 (* Entry: ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00. Body proof: pending. *)
 Definition decodeItemState800d6a00 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
+  (∃ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
 
 (* Entry: ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a08. Body proof: pending. *)
 Definition decodeItemState800d6a08 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a08 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
+  (∃ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a08 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
 
 (* Entry: ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14. Body proof: pending. *)
 Definition decodeItemState800d6a14 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (oldAcc : bv 64) (oldCursor : bv 64) (loaded : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14 (args) (n) (payloadStart) (lengthBytes) (frameBytes) (oldAcc) (oldCursor) (loaded) (inputPrefix) (rest))%I.
+  (∃ (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (oldAcc : bv 64) (oldCursor : bv 64) (loaded : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14 (args) (n) (payloadStart) (lengthBytes) (frameBytes) (oldAcc) (oldCursor) (loaded) (inputPrefix) (rest))%I.
 
 (* Entry: ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24. Body proof: pending. *)
 Definition decodeItemState800d6a24 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24 (args) (inputPrefix) (rest))%I.
+  (∃ (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24 (args) (inputPrefix) (rest))%I.
 
 (* Entry: ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a38. Body proof: pending. *)
 Definition decodeItemState800d6a38 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a38 (args) (n) (payloadStart) (lengthBytes) (frameBytes) (loaded) (inputPrefix) (rest))%I.
+  (∃ (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a38 (args) (n) (payloadStart) (lengthBytes) (frameBytes) (loaded) (inputPrefix) (rest))%I.
 
 (* Entry: ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a40. Body proof: pending. *)
 Definition decodeItemState800d6a40 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a40 (args) (locals) (inputPrefix) (rest) (headerLength) (payloadLength))%I.
+  (∃ (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a40 (args) (locals) (inputPrefix) (rest) (headerLength) (payloadLength))%I.
 
 (* Entry: ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64. Body proof: pending. *)
 Definition decodeItemState800d6a64 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
+  (∃ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
 
 (* Entry: ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c. Body proof: pending. *)
 Definition decodeItemState800d6a6c : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
+  (∃ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
 
 (* Entry: ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78. Body proof: pending. *)
 Definition decodeItemState800d6a78 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78 (args) (locals) (inputPrefix) (rest))%I.
+  (∃ (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78 (args) (locals) (inputPrefix) (rest))%I.
 
 (* Entry: ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6aa8. Body proof: pending. *)
 Definition decodeItemState800d6aa8 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6aa8 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
+  (∃ (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6aa8 (args) (frameBytes) (x13) (inputPrefix) (rest))%I.
 
 (* Entry: ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4. Body proof: pending. *)
 Definition decodeItemState800d6ab4 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (oldAcc : bv 64) (oldCursor : bv 64) (loaded : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4 (args) (n) (payloadStart) (lengthBytes) (frameBytes) (oldAcc) (oldCursor) (loaded) (inputPrefix) (rest))%I.
+  (∃ (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (oldAcc : bv 64) (oldCursor : bv 64) (loaded : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4 (args) (n) (payloadStart) (lengthBytes) (frameBytes) (oldAcc) (oldCursor) (loaded) (inputPrefix) (rest))%I.
 
 (* Entry: ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4. Body proof: pending. *)
 Definition decodeItemState800d6ac4 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4 (args) (inputPrefix) (rest))%I.
+  (∃ (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4 (args) (inputPrefix) (rest))%I.
 
 (* Entry: ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8. Body proof: pending. *)
 Definition decodeItemState800d6ad8 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8 (args) (n) (payloadStart) (lengthBytes) (frameBytes) (loaded) (inputPrefix) (rest))%I.
+  (∃ (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8 (args) (n) (payloadStart) (lengthBytes) (frameBytes) (loaded) (inputPrefix) (rest))%I.
 
 (* Entry: ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0. Body proof: pending. *)
 Definition decodeItemState800d6ae0 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (locals))%I.
+  (∃ (args : DecodeItemArgs) (locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (locals))%I.
 
 (* Entry: ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08. Body proof: pending. *)
 Definition decodeItemState800d6b08 : iProp Sigma :=
-  (∀ (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08 (args) (locals) (inputPrefix) (rest) (headerLength) (payloadLength))%I.
+  (∃ (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08 (args) (locals) (inputPrefix) (rest) (headerLength) (payloadLength))%I.
 
 Definition decodeItemBlockTable : blockTable Sigma :=
   {| block_table_code := ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedCode;

@@ -183,7 +183,7 @@ def native_boundary_source(state, block, design, root, *, enabled=True,
     entries = {chain_root.gen_block.address(row['entry_pc']): row
                for row in design['blocks']}
     convention = design.get('table_convention', {})
-    if convention.get('universal_binders') != "Each row's binders, in their listed order":
+    if convention.get('existential_binders') != "Each row's binders, in their listed order":
         raise ValueError('Unavailable published binder convention')
     root_entry = chain_root.gen_block.address(design['entry_pc'])
     root_parameters = [binder['name'] for binder in entries[root_entry]['binders']]
