@@ -774,5 +774,52 @@ class DuneCompilerGuardTest(unittest.TestCase):
             process.communicate(timeout=3)
 
 
+class McpThresholdTest(unittest.TestCase):
+    def test_mcp_wrappers_preserve_explicit_hold_and_fixed_fence(self):
+        self.check_wrappers("215")
+
+    def test_mcp_wrappers_retain_default_hold_and_fixed_fence(self):
+        self.check_wrappers(None)
+
+    def check_wrappers(self, hold):
+        import tempfile
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            binary = root / "bin"
+            binary.mkdir()
+            events = root / "events.jsonl"
+            stub = ("#!/usr/bin/env python3\nimport json,os,sys\n"
+                    "with open(os.environ['WRAPPER_EVENTS'],'a') as f:\n"
+                    " f.write(json.dumps({'hold':os.environ.get('ZESU_HOLD_GIB'),"
+                    "'memory':os.environ.get('ZESU_MODULE_LIMIT_GIB'),"
+                    "'arguments':sys.argv[1:]})+'\\n')\n")
+            for name in ("systemd-run", "guard", "coqc", "rocq-mcp"):
+                path = binary / name
+                path.write_text(stub)
+                path.chmod(0o755)
+            env = dict(os.environ)
+            env.pop("ZESU_HOLD_GIB", None)
+            env.update(PATH=str(binary) + ":" + env.get("PATH", ""),
+                       WRAPPER_EVENTS=str(events), ZESU_MODULE_LIMIT_GIB="99",
+                       ZESU_RESOURCE_GUARD=str(binary / "guard"),
+                       ZESU_ROCQ_MCP_BINARY=str(binary / "rocq-mcp"),
+                       ZESU_ROCQ_COQC_BINARY=str(binary / "coqc"))
+            if hold is not None:
+                env["ZESU_HOLD_GIB"] = hold
+            for name in ("rocq_mcp_guarded.sh", "rocq_coqc_guarded.sh"):
+                events.unlink(missing_ok=True)
+                result = subprocess.run([str(TOOLS / name), "Fixture.v"],
+                                        cwd=root, env=env, capture_output=True,
+                                        text=True, timeout=5)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                rows = [json.loads(line) for line in events.read_text().splitlines()]
+                self.assertTrue(rows)
+                self.assertTrue(all(row["hold"] == (hold or "180") for row in rows))
+                self.assertTrue(all(row["memory"] == "6" for row in rows))
+                if name == "rocq_mcp_guarded.sh":
+                    self.assertIn("MemoryMax=6G", rows[0]["arguments"])
+                    self.assertIn("MemorySwapMax=0", rows[0]["arguments"])
+
+
 if __name__ == "__main__":
     unittest.main()

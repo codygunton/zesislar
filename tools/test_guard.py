@@ -376,10 +376,10 @@ class GuardLockTest(unittest.TestCase):
     def test_writer_does_not_bypass_memory_blocked_or_machine_limits(self):
         counter = self.writer_fixture()
         self.environment["ZESU_WRITER_ID"] = "tf2"
-        self.environment["GUARD_TEST_USED_GIB"] = "150"
+        self.environment["GUARD_TEST_USED_GIB"] = "226"
         request = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
         self.assert_launch_waits(["confirm-coqc", request], self.environment,
-                                 "memory 150 GiB")
+                                 "memory available 25 GiB")
         self.environment["GUARD_TEST_USED_GIB"] = "40"
         Path(self.environment["GUARD_TEST_BLOCKED_COUNT"]).write_text("17\n")
         request = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
@@ -454,8 +454,8 @@ class GuardLockTest(unittest.TestCase):
             Path(self.environment["GUARD_TEST_BLOCKED_COUNT"]).write_text("17\n")
             self.assert_launch_waits(["confirm-coqc", token], self.environment, "blocked 17")
             Path(self.environment["GUARD_TEST_BLOCKED_COUNT"]).write_text("16\n")
-            self.environment["GUARD_TEST_USED_GIB"] = "150"
-            self.assert_launch_waits(["confirm-coqc", token], self.environment, "memory 150 GiB")
+            self.environment["GUARD_TEST_USED_GIB"] = "226"
+            self.assert_launch_waits(["confirm-coqc", token], self.environment, "memory available 25 GiB")
             self.environment["GUARD_TEST_USED_GIB"] = "40"
             self.assertEqual(self.guard("confirm-coqc", token).returncode, 0)
         finally:
@@ -993,11 +993,11 @@ class GuardLockTest(unittest.TestCase):
         self.assertEqual(int(self.guard("gate-jobs").stdout), 24)
         self.assertEqual(int(self.guard("gate-jobs", "check-fast").stdout), 24)
 
-    def test_absolute_memory_thresholds(self):
-        for used, expected in ((149, None), (150, "launch line 150"),
-                               (179, "launch line 150"),
-                               (180, "at the 180 GiB hold"),
-                               (200, "at the 180 GiB hold")):
+    def test_available_memory_thresholds(self):
+        for used, expected in ((225, None), (226, "requires 26 GiB"),
+                               (231, "requires 26 GiB"),
+                               (232, "below the 20 GiB hold"),
+                               (241, "below the 20 GiB hold")):
             with self.subTest(used=used):
                 self.environment["GUARD_TEST_USED_GIB"] = str(used)
                 result = self.guard("hold")
@@ -1147,7 +1147,7 @@ class GuardLockTest(unittest.TestCase):
         self.assertEqual(list((Path(self.environment["ZESU_GUARD_STATE"]) / "launches").iterdir()), [])
 
     def test_direct_batch_waits_at_launch_limit(self):
-        self.environment["GUARD_TEST_USED_GIB"] = "150"
+        self.environment["GUARD_TEST_USED_GIB"] = "226"
         result = subprocess.run(
             ["timeout", "0.2", str(GUARD), "batch", "test", "--", "true"],
             capture_output=True, text=True, env=self.environment)
@@ -1160,7 +1160,7 @@ class GuardLockTest(unittest.TestCase):
         gate = (TOOLS / "det" / "gate.sh").read_text()
         self.assertIn("ZESU_BATCH_LIMIT=120G $guard batch", gate)
 
-    def test_watch_kills_youngest_scope_at_200_gib(self):
+    def test_watch_kills_youngest_scope_at_10_gib_available(self):
         state = Path(self.environment["ZESU_GUARD_STATE"])
         state.mkdir(exist_ok=True)
         (state / "scopes").write_text("old.scope\nyoung.scope\n")
@@ -1169,11 +1169,11 @@ class GuardLockTest(unittest.TestCase):
         self.environment["GUARD_TEST_LIVE_SCOPES"] = str(live)
         log = Path(self.environment["GUARD_TEST_SYSTEMCTL_LOG"])
         self.environment["ZESU_GUARD_POLL"] = "0.05"
-        self.environment["GUARD_TEST_USED_GIB"] = "199"
+        self.environment["GUARD_TEST_USED_GIB"] = "240"
         subprocess.run(["timeout", "0.2", str(GUARD), "watch"],
                        capture_output=True, env=self.environment)
         self.assertFalse(log.exists())
-        self.environment["GUARD_TEST_USED_GIB"] = "200"
+        self.environment["GUARD_TEST_USED_GIB"] = "241"
         # Delay the mock action beyond the former fixed timeout.
         systemctl = self.bin / "systemctl"
         systemctl.write_text(systemctl.read_text().replace(
