@@ -462,7 +462,7 @@ def build() -> dict:
         "table_convention": {
             "entry_type": "(Z * iProp Sigma)",
             "pc_ownership": "instr_pre pc state supplies PC; entry predicates do not own PC",
-            "universal_binders": "Each row's binders, in their listed order",
+            "existential_binders": "Each row's binders, in their listed order",
             "resource_application": "Apply resource_predicate to arguments in order",
             "internal_existentials": {
                 "entry_pcs": [address(pc) for pc in sorted(FOLD_PCS)],
@@ -478,8 +478,14 @@ def build() -> dict:
                     0x800D69D8, 0x800D69E0, 0x800D69E8, 0x800D6A00,
                     0x800D6A08, 0x800D6A64, 0x800D6A6C, 0x800D6AA8})},
             },
-            "other_entries": "Listed table binders are universal; unlisted write-register values can be existential inside entry predicates",
+            "other_entries": "Each table state stores existential entry parameters. Instruction preconditions convert these families to universal continuations.",
             "continuations": "Outcome existentials inside shared continuations are not table locals",
+            "code_persistence": "block_table_pre boxes the supplied code resource",
+            "code_resource": "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedCode",
+            "code_source_hashes": {
+                "ZesuSsz/Contracts/DecodeItemSelected.v": sha256(
+                    ROOT / "ZesuSsz/Contracts/DecodeItemSelected.v"),
+            },
         },
         "edge_condition_scope": "register values before the source block's final instruction",
         "condition_ops": {"eq": "equal bits", "ne": "unequal bits",
