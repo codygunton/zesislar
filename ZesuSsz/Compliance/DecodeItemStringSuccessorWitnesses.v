@@ -111,3 +111,52 @@ Print Assumptions decodeItemStringSuccessorNamed.
       exact (@decodeItemStringSuccessorNamed Sigma _ _ args prefix rest n i
         payloadStart lengthBytes next)
   end : typeclass_instances.
+
+Lemma decodeItemStringFlagUnitIntroduction `{!islaG Sigma} `{!threadG}
+    (b : bv 64) (remaining : isla_trace) :
+  Z.land (bv_unsigned b) 131072 = 0 ->
+  @ZesuPureFactIntro Sigma
+    (∃ _ : unit,
+      ⌜Val_Bool (bool_decide (bv_and b 131072 = 0%bv)) = Val_Bool true⌝ ∗
+      wp_asm remaining)%I
+    (wp_asm remaining).
+Proof.
+  intros Hflag. unfold ZesuPureFactIntro.
+  assert (Hbits : bv_and b 131072 = 0%bv).
+  { apply bv_eq. rewrite bv_and_unsigned. change (Z.land (bv_unsigned b) 131072 = 0). exact Hflag. }
+  rewrite bool_decide_true; [|exact Hbits].
+  iIntros "Hremaining". iExists tt. iFrame. done.
+Qed.
+Print Assumptions decodeItemStringFlagUnitIntroduction.
+
+#[export] Hint Extern 1 (@ZesuPureFactIntro ?Sigma ?target _) =>
+  lazymatch target with
+  | @bi_exist _ unit ?body =>
+      let value := eval cbv beta zeta delta [LET_ID] in (body tt) in
+      let product := lazymatch value with
+        | (?left ∗ ?right)%I => constr:(value)
+        | ?alias ?argument =>
+            let local_alias_check := constr:(ltac:(is_var alias; exact I) : True) in
+            let exposed := eval cbv delta [alias] in value in
+            eval cbv beta zeta delta [LET_ID] in exposed
+        end in
+      lazymatch product with
+      | (⌜Val_Bool (bool_decide (bv_and ?b 131072 = 0%bv)) = Val_Bool true⌝ ∗ ?rest)%I =>
+          let remainder := lazymatch rest with
+            | wp_asm ?remaining => constr:(rest)
+            | ?alias ?argument =>
+                let local_alias_check := constr:(ltac:(is_var alias; exact I) : True) in
+                let exposed := eval cbv delta [alias] in rest in
+                eval cbv beta zeta delta [LET_ID] in exposed
+            end in
+          lazymatch remainder with
+          | wp_asm ?remaining =>
+              match goal with
+              | Hflag : Z.land (bv_unsigned ?owned_b) 131072 = 0 |- _ =>
+                  unify owned_b b;
+                  exact (@decodeItemStringFlagUnitIntroduction Sigma _ _ b remaining Hflag)
+              end
+          end
+      end
+  end : typeclass_instances.
+
