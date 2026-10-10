@@ -1,5 +1,6 @@
 """Check structural refusal without adding semantic proof assumptions."""
 from copy import deepcopy
+import importlib.util
 import json
 from pathlib import Path
 import sys
@@ -258,6 +259,19 @@ class BlockTableTests(unittest.TestCase):
         design["table_convention"]["existential_binders"] = "Invented locals"
         with self.assertRaisesRegex(ValueError, "approved convention"):
             generate_table.render_table(design, report)
+
+    def test_design_generator_uses_approved_table_convention(self):
+        root = Path(__file__).resolve().parents[1]
+        path = root / "ZesuSsz/Evidence/generate_decode_item_block_design.py"
+        spec = importlib.util.spec_from_file_location("decode_item_block_design", path)
+        generator = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(generator)
+        design = generator.build()
+        convention = generate_table.table_convention(design)
+        self.assertNotIn("universal_binders", convention)
+        source_hashes = generate_table.entry_source_hashes(design, root)
+        for path, expected in convention["code_source_hashes"].items():
+            self.assertEqual(source_hashes[path], expected)
 
     def test_universal_state_convention_is_rejected(self):
         design, report = self.executable_fixture()
