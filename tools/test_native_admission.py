@@ -109,11 +109,11 @@ class NativeAdmission(unittest.TestCase):
 
     def test_existing_memory_hold_and_compiler_cap(self):
         fixture = test_resource_guard.ResourceGuard()
-        script = 'used_gib() { echo 181; }; coqc_count() { echo 0; }; load_five() { echo 0; }; blocked_count() { echo 0; }; hold_reason'
+        script = 'available_gib() { echo 25; }; coqc_count() { echo 0; }; load_five() { echo 0; }; blocked_count() { echo 0; }; hold_reason'
         memory = fixture.run_guard(script)
         self.assertEqual(memory.returncode, 0, memory.stderr)
         self.assertIn('memory', memory.stdout)
-        script = 'used_gib() { echo 0; }; coqc_count() { echo 48; }; load_five() { echo 0; }; blocked_count() { echo 0; }; hold_reason'
+        script = 'available_gib() { echo 26; }; coqc_count() { echo 48; }; load_five() { echo 0; }; blocked_count() { echo 0; }; hold_reason'
         compilers = fixture.run_guard(script)
         self.assertEqual(compilers.returncode, 0, compilers.stderr)
         self.assertIn('coqc 48', compilers.stdout)

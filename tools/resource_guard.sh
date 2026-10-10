@@ -18,7 +18,7 @@
 #   wait                 block until one more job may start
 #   reserve-coqc PID     request a compiler launch without holding a slot
 #   confirm-coqc TOKEN   admit a compiler launch atomically
-#   watch                the polling loop; kills the youngest scope at 90 %
+#   watch                the polling loop; kills the youngest scope at its memory boundary
 #   scope NAME [--cpu SECONDS] -- CMD    run CMD in its own 6 GiB scope, registered
 #   batch NAME -- CMD    run CMD in the batch scope, 150 GiB (a gate 120), swap off
 #   locked NAME -- CMD   run CMD holding the gate lock
@@ -31,16 +31,15 @@
 #   report               one line of guard state and Prometheus figures
 #   window ARGS          `tools/det/prom.py window ARGS`
 #
-# Memory budget (user rule 2026-09-22 21:00): 48 GiB of the 251 stay free
-# for other users. In absolute terms, machine-wide used memory: launch
-# below 150 GiB, hold at 180, kill the youngest job scope at 200. Fences:
-# batch scope 150G, gate scope 120G, each `coqc` 6G, swap off.
-#
-# A job may start when all of these hold, checked machine-wide:
-#   memory used below 150 GiB;
-#   at most 48 `coqc` processes, counted for every agent, not only ours;
-#   load5 at most 80 and at most 16 blocked processes;
-#   no gate holds or wants /tmp/zesu-gate.lock.
+# Memory admission uses MemAvailable. Each launch needs its job limit
+# plus 20 GiB. Hold below 20 GiB available; kill at or below 10 GiB available.
+# Ordinary proofs use 6 GiB; issue-10 probes use 64 GiB and require 84 GiB
+# available. No more than two probes may hold admitted slots.
+# The temporary used-memory policy is explicit: launch below 200 GiB,
+# hold at 215 GiB, and kill at 230 GiB. It does not change scope fences.
+# Memory limits remain 150G for batches and 120G for gates, with no swap.
+# Other launch checks retain 48 compiler slots, load5 <= 80, blocked <= 16,
+# and the gate lock. The interim controller may restrict compiler slots.
 # Named writers may continue through a gate with two compilers each.
 # A live gate leaves 16 of the 48 slots for writers.
 # A gate has priority over new batches (plan section 4 item 4, amended
@@ -48,6 +47,8 @@
 # and no new arm, batch, scope, or probe starts while the lock exists in
 # either state. Jobs inside a running batch go on, so a running arm
 # completes; the gate waits for it and then marks the lock `held`.
+# Validated issue-10 probes continue beside gates. They retain compiler
+# and memory accounting, with at most two admitted probes machine-wide.
 # While an arm populates its build directory, or while a disk is more than
 # 80 % busy, launches also keep a ramp of two per second across guards;
 # otherwise they fill the width as slots free up.
@@ -68,15 +69,19 @@ MODULE_LIMIT_GIB=${ZESU_MODULE_LIMIT_GIB:-6}
 # What a job actually costs, which is what the job count should be sized
 # against. Measured 2026-09-20: a clean `check-iris` at 25 jobs peaks at
 # 75 GiB, so 3.0 GiB per job; on 2026-09-22 batches 48 wide peaked at
-# about 74 GiB, so 1.5. At 3 GiB the formula allows 48 whenever 180 GiB
-# is available.
+# about 74 GiB, so 1.5. At 3 GiB the 70-percent formula allows 42
+# workers when 180 GiB is available.
 JOB_GIB=${ZESU_JOB_GIB:-3}
 BATCH_LIMIT=${ZESU_BATCH_LIMIT:-150G}
 GATE_LIMIT=${ZESU_GATE_LIMIT:-120G}
 MAX_JOBS=${ZESU_MAX_JOBS:-48}
-LAUNCH_GIB=${ZESU_LAUNCH_GIB:-150}
-HOLD_GIB=${ZESU_HOLD_GIB:-180}
-KILL_GIB=${ZESU_KILL_GIB:-200}
+MEMORY_POLICY=${ZESU_MEMORY_POLICY:-available}
+case "$MEMORY_POLICY" in available|used) ;; *) echo "resource guard: invalid memory policy" >&2; exit 2 ;; esac
+LAUNCH_GIB=${ZESU_LAUNCH_GIB:-200}
+HOLD_GIB=${ZESU_HOLD_GIB:-215}
+KILL_GIB=${ZESU_KILL_GIB:-230}
+MEMORY_HEADROOM_GIB=20
+MEMORY_KILL_AVAILABLE_GIB=10
 DISK_BUSY_PERCENT=${ZESU_DISK_BUSY_PERCENT:-80}
 # An arm's build writes a marker `<prefix>.<pid>` while it populates its
 # build directory from the Dune cache; the ramp applies while one is live.
@@ -129,6 +134,39 @@ used_gib() {
   local total available
   read -r total _ available < <(memory)
   echo $(( (total - available) / GIB ))
+}
+
+available_gib() {
+  local total used available
+  read -r total used available < <(memory)
+  echo $(( available / GIB ))
+}
+
+memory_hold_reason() {
+  local available used required
+  if [ "$MEMORY_POLICY" = available ]; then
+    available=$(available_gib)
+    required=$(( MODULE_LIMIT_GIB + MEMORY_HEADROOM_GIB ))
+    if (( available < MEMORY_HEADROOM_GIB )); then
+      echo "memory available $available GiB, below the 20 GiB hold"
+    elif (( available < required )); then
+      echo "memory available $available GiB, requires $required GiB for a $MODULE_LIMIT_GIB GiB job"
+    fi
+  else
+    used=$(used_gib)
+    if (( used >= HOLD_GIB )); then echo "memory ${used} GiB, at the ${HOLD_GIB} GiB hold"
+    elif (( used >= LAUNCH_GIB )); then echo "memory ${used} GiB, launch line ${LAUNCH_GIB}"; fi
+  fi
+}
+
+memory_kill_required() {
+  if [ "$MEMORY_POLICY" = available ]; then
+    local total used available
+    read -r total used available < <(memory)
+    (( available <= MEMORY_KILL_AVAILABLE_GIB * GIB ))
+  else
+    (( $(used_gib) >= KILL_GIB ))
+  fi
 }
 
 # Dune's executable remains named coqc. Its Bash wrapper is not a compiler.
@@ -333,7 +371,7 @@ lock_hold() {
   local pid=$1 limit=${ZESU_GATE_SCOPE_WAIT:-14400} start=$SECONDS live
   local noted=""
   # A registered launch can precede its systemd scope. Wait for both.
-  while live=$(( $(live_scopes | wc -l) + $(live_launches | wc -l) + $(gate_reservations | wc -l) )); (( live > 0 )); do
+  while live=$(( $(gate_scopes | wc -l) + $(gate_launches | wc -l) + $(gate_reservations | wc -l) )); (( live > 0 )); do
     if (( SECONDS - start >= limit )); then
       echo "refusing: $live job scopes or launches still alive after $(( SECONDS - start )) s" >&2
       lock_release "$pid"; return 3
@@ -449,10 +487,85 @@ nonwriter_coqc_count() {
 }
 
 gate_reservations() {
-  local marker
+  local marker state
   while IFS= read -r marker; do
+    read -r state < "$marker" || continue
+    # Old pending requests hold no slot and must yield to a gate.
+    [ "$state" != pending ] || continue
+    probe_record "$marker" && continue
     [ -n "$(reservation_writer "$marker")" ] || echo "$marker"
   done < <(live_reservations)
+}
+
+# A probe tag binds validated limits to the reservation owner's identity.
+# These records remain in live_reservations and compiler admission counts.
+process_start() {
+  local stat
+  IFS= read -r stat < "$PROC_ROOT/$1/stat" 2>/dev/null || return 1
+  stat=${stat##*) }
+  set -- $stat
+  [ "$#" -ge 20 ] || return 1
+  printf '%s\n' "${20}"
+}
+
+probe_record() {
+  local marker=$1 owner start
+  grep -Fxq 'probe=issue10' "$marker" || return 1
+  grep -Fxq 'memory_gib=64' "$marker" || return 1
+  grep -Fxq 'cpu=unlimited' "$marker" || return 1
+  owner=${marker##*/}; owner=${owner%%.*}
+  start=$(sed -n 's/^owner_start=//p' "$marker")
+  [ -n "$start" ] && [ "$start" = "$(process_start "$owner")" ]
+}
+
+probe_count() {
+  local marker count=0
+  while IFS= read -r marker; do
+    probe_record "$marker" && count=$(( count + 1 ))
+  done < <(live_reservations)
+  echo "$count"
+}
+
+# Only gate draining ignores validated probes. Resource holds do not.
+gate_scopes() {
+  local unit marker probe
+  while IFS= read -r unit; do
+    probe=0
+    while IFS= read -r marker; do
+      if probe_record "$marker" && grep -Fxq "scope=$unit" "$marker"; then
+        probe=1; break
+      fi
+    done < <(live_reservations)
+    [ "$probe" = 1 ] || printf '%s\n' "$unit"
+  done < <(live_scopes)
+}
+
+gate_launches() {
+  local marker
+  while IFS= read -r marker; do
+    probe_record "$marker" || printf '%s\n' "$marker"
+  done < <(live_launches)
+}
+
+# Associate an admitted probe's scope before systemd starts the compiler.
+mark_probe_scope() {
+  local marker=$1 unit=$2 replacement
+  exec 7>>"$GATE_MUTEX"
+  flock 7
+  if ! reservation_path "$marker" || ! probe_record "$marker"; then
+    flock -u 7; exec 7>&-; return 2
+  fi
+  replacement=$(mktemp "$STATE_DIR/probe-scope.XXXXXXXX") || {
+    flock -u 7; exec 7>&-; return 2
+  }
+  if ! sed '/^scope=/d' "$marker" > "$replacement" \
+     || ! printf 'scope=%s\n' "$unit" >> "$replacement" \
+     || ! touch -r "$marker" "$replacement" \
+     || ! mv -f -- "$replacement" "$marker"; then
+    rm -f -- "$replacement"
+    flock -u 7; exec 7>&-; return 2
+  fi
+  flock -u 7; exec 7>&-
 }
 
 # This runs under the gate mutex. Use one PID snapshot for both counts.
@@ -489,7 +602,8 @@ compiler_admission_reason() {
     fi
   elif lock_live_unlocked >/dev/null 2>&1; then
     nonwriter_limit=$(( MAX_COQC - WRITER_RESERVED ))
-    (( nonwriter_limit < 0 )) && nonwriter_limit=0
+    # A reduced total cap cannot reserve sixteen writer slots.
+    (( MAX_COQC > WRITER_RESERVED )) || nonwriter_limit=$MAX_COQC
     if (( count - counted_writers + pending - pending_writers + 1 - confirming > nonwriter_limit )); then
       echo "nonwriter compiler limit $nonwriter_limit; $WRITER_RESERVED slots reserved for writers"
     fi
@@ -546,6 +660,7 @@ confirmed_reservation() {
 # can confirm again without waiting for admission while it holds its slot.
 confirm_coqc() {
   local marker=$1 reason holder admission owner status state replacement aggregate held=""
+  validate_probe_scope || return $?
   confirmed_reservation "$marker" && return 0
   while :; do
     exec 7>>"$GATE_MUTEX"
@@ -587,6 +702,9 @@ confirm_coqc() {
       status=$?; echo "resource guard: confirmation admission check failed ($status)" >&2
       flock -u 7; exec 7>&-; return "$status"
     }
+    if [ "${ZESU_DIAGNOSTIC_PROBE:-0}" = 1 ] && (( $(probe_count) >= 2 )); then
+      admission="issue10 probes at their two-probe limit"
+    fi
     if [ -z "$reason$holder$admission" ]; then
       replacement=$(mktemp "$STATE_DIR/coqc-confirm.XXXXXXXX") || {
         echo "resource guard: cannot create confirmation file" >&2
@@ -594,8 +712,17 @@ confirm_coqc() {
       }
       aggregate=""
       [ -n "$WRITER_ID" ] || aggregate="${ZESU_AGGREGATE_SLICE:-}"
-      if ! printf 'confirmed\nwriter=%s\naggregate=%s\n' "$WRITER_ID" "$aggregate" > "$replacement" \
-         || ! mv -f -- "$replacement" "$marker"; then
+      if ! printf 'confirmed\nwriter=%s\naggregate=%s\n' "$WRITER_ID" "$aggregate" > "$replacement"; then
+        rm -f -- "$replacement"
+        flock -u 7; exec 7>&-; return 2
+      fi
+      if [ "${ZESU_DIAGNOSTIC_PROBE:-0}" = 1 ]; then
+        if ! printf 'probe=issue10\nmemory_gib=64\ncpu=unlimited\nowner_start=%s\n' "$(process_start "$owner")" >> "$replacement"; then
+          rm -f -- "$replacement"
+          flock -u 7; exec 7>&-; return 2
+        fi
+      fi
+      if ! mv -f -- "$replacement" "$marker"; then
         echo "resource guard: cannot publish reservation: $marker" >&2
         rm -f -- "$replacement"
         flock -u 7; exec 7>&-; return 2
@@ -627,6 +754,8 @@ mark_coqc() {
   aggregate=$(sed -n '3s/^aggregate=//p' "$marker")
   replacement=$(mktemp "$STATE_DIR/coqc-mark.XXXXXXXX")
   printf '%s\nwriter=%s\naggregate=%s\n' "$child" "$writer" "$aggregate" > "$replacement"
+  # Preserve the validated probe tag and scope association.
+  sed -n '4,$p' "$marker" >> "$replacement"
   # Marking the child must not restart the confirmation's launch window.
   touch -r "$marker" "$replacement"
   mv -f -- "$replacement" "$marker"
@@ -730,12 +859,18 @@ ramp() {
   exec 9>&-
 }
 
-# jobs = min(MAX_JOBS, floor((hold line - used) / job size)), at least 1:
-# the jobs a batch starts now must fit under the 180 GiB hold, so the
-# 48 GiB reserved for other users is never reached by a full batch.
+# Keep the memory headroom when choosing the batch width.
 guard_jobs() {
-  local limit
-  limit=$(( (HOLD_GIB - $(used_gib)) / JOB_GIB ))
+  local limit available budget headroom
+  available=$(available_gib)
+  budget=$(( available * 70 / 100 ))
+  headroom=$(( available - MEMORY_HEADROOM_GIB ))
+  (( budget <= headroom )) || budget=$headroom
+  if [ "$MEMORY_POLICY" = used ]; then
+    headroom=$(( HOLD_GIB - $(used_gib) ))
+    (( budget <= headroom )) || budget=$headroom
+  fi
+  limit=$(( budget / JOB_GIB ))
   (( limit < 1 )) && limit=1
   (( limit > MAX_JOBS )) && limit=$MAX_JOBS
   echo "$limit"
@@ -843,12 +978,11 @@ kill_youngest() {
 # Why the guard would hold a launch now, or nothing. A gate's own jobs
 # are not held by its own lock.
 hold_reason() {
-  local used coqc load blocked holder
-  used=$(used_gib)
+  local memory_reason coqc load blocked holder
+  memory_reason=$(memory_hold_reason)
   coqc=$(coqc_count) || return $?
   load=$(load_five); blocked=$(blocked_count)
-  if (( used >= HOLD_GIB )); then echo "memory ${used} GiB, at the ${HOLD_GIB} GiB hold"
-  elif (( used >= LAUNCH_GIB )); then echo "memory ${used} GiB, launch line ${LAUNCH_GIB}"
+  if [ -n "$memory_reason" ]; then echo "$memory_reason"
   elif (( coqc >= MAX_COQC )); then echo "coqc $coqc machine-wide"
   elif (( load > MAX_LOAD )); then echo "load5 $load"
   elif (( blocked > MAX_BLOCKED )); then echo "blocked $blocked"
@@ -864,7 +998,7 @@ hold_reason() {
 guard_wait() {
   local reason held="" since
   while :; do
-    (( $(used_gib) >= KILL_GIB )) && kill_youngest > /dev/null
+    memory_kill_required && kill_youngest > /dev/null
     reason=$(hold_reason) || return $?
     if [ -z "$reason" ]; then
       [ -n "$held" ] && note "RESUME after $(( $(date +%s) - since )) s: $held"
@@ -889,15 +1023,15 @@ record_peak() {
 }
 
 guard_watch() {
-  local used held=""
-  note "watch start: total $(free -g | awk '/^Mem:/{print $2}') GiB"
+  local reason held=""
+  note "watch start: total $(free -g | awk '/^Mem:/{print $2}') GiB policy=$MEMORY_POLICY"
   while :; do
-    used=$(used_gib)
     record_peak
-    if (( used >= HOLD_GIB )) && [ -z "$held" ]; then
-      note "HOLD memory $used GiB at the $HOLD_GIB GiB hold"; held=1
-    elif (( used < LAUNCH_GIB )); then held=""; fi
-    (( used >= KILL_GIB )) && kill_youngest > /dev/null
+    reason=$(memory_hold_reason)
+    if [ -n "$reason" ] && [ "$reason" != "$held" ]; then
+      note "HOLD $reason"; held=$reason
+    elif [ -z "$reason" ]; then held=""; fi
+    memory_kill_required && kill_youngest > /dev/null
     sleep "$POLL_SECONDS"
   done
 }
@@ -918,15 +1052,16 @@ wait_for_gate() {
 # Legacy memory-only wait. Scope and batch launches use guard_wait so
 # load, blocked processes, and the compiler count also apply.
 wait_for_memory_budget() {
-  local used held=""
+  local reason held=""
   while :; do
-    used=$(used_gib)
-    (( used >= KILL_GIB )) && kill_youngest > /dev/null
-    if (( used < LAUNCH_GIB )); then
-      [ -n "$held" ] && note "RESUME memory launch at $used GiB"
+    memory_kill_required && kill_youngest > /dev/null
+    reason=$(memory_hold_reason)
+    if [ -z "$reason" ]; then
+      [ -n "$held" ] && note "RESUME memory launch"
       return 0
     fi
-    [ -z "$held" ] && note "HOLD memory launch at $used GiB" && held=1
+    [ "$reason" = "$held" ] || note "HOLD $reason"
+    held=$reason
     sleep "$POLL_SECONDS"
   done
 }
@@ -962,7 +1097,11 @@ aggregate_slice() {
 # Probe limits are explicit and do not change gate defaults.
 validate_probe_scope() {
   case "${ZESU_DIAGNOSTIC_PROBE:-0}" in
-    0) return 0 ;;
+    0)
+      if [ "$MODULE_LIMIT_GIB" != 6 ]; then
+        echo "resource guard: ordinary compiler scopes require 6 GiB" >&2; return 2
+      fi
+      return 0 ;;
     1)
       if [ -n "${ZESU_IN_GATE:-}" ] || [ "$MODULE_LIMIT_GIB" != 64 ] ||
          [ "${ZESU_PROOF_CPU_LIMIT:-}" != unlimited ] || [ "${ZESU_PROBE_ISSUE:-}" != 10 ]; then
@@ -1016,6 +1155,12 @@ run_scope() {
   local unit="${SCOPE_PREFIX}-${name}-$$-${RANDOM}"
   if [ -n "$WRITER_ID" ]; then
     unit="${SCOPE_PREFIX}-writer-${WRITER_ID}-${name}-$$-${RANDOM}"
+  fi
+  if [ "${ZESU_DIAGNOSTIC_PROBE:-0}" = 1 ]; then
+    if ! mark_probe_scope "$reservation" "$unit.scope"; then
+      [ "$owned" = 0 ] || release_coqc "$reservation"
+      return 2
+    fi
   fi
   cleanup_scope() {
     if [ -n "$child" ] && kill -0 "$child" 2>/dev/null; then
@@ -1121,8 +1266,8 @@ report() {
   coqc=$(coqc_count) || return $?
   peak=$(cat "$PEAK" 2>/dev/null); peak=${peak:-0}
   holder=$(lock_live 2>/dev/null) || holder=none
-  printf 'guard: used %s GiB (launch <%s, hold %s, kill %s); coqc %s machine-wide; load5 %s; blocked %s; jobs %s; batch peak %d GiB; gate lock %s; holds %s; guard kills %s\n' \
-    "$(used_gib)" "$LAUNCH_GIB" "$HOLD_GIB" "$KILL_GIB" "$coqc" "$(load_five)" "$(blocked_count)" "$(guard_jobs)" \
+  printf 'guard: policy %s; available %s GiB; job %s GiB; used %s GiB (used-policy launch <%s, hold %s, kill %s); coqc %s machine-wide; load5 %s; blocked %s; jobs %s; batch peak %d GiB; gate lock %s; holds %s; guard kills %s\n' \
+    "$MEMORY_POLICY" "$(available_gib)" "$MODULE_LIMIT_GIB" "$(used_gib)" "$LAUNCH_GIB" "$HOLD_GIB" "$KILL_GIB" "$coqc" "$(load_five)" "$(blocked_count)" "$(guard_jobs)" \
     $(( peak / GIB )) "$holder" \
     "$(grep -c ' HOLD ' "$LOG" 2>/dev/null | head -1)" \
     "$(grep -c ' KILL ' "$LOG" 2>/dev/null | head -1)"

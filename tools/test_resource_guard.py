@@ -12,6 +12,218 @@ LIBRARY = GUARD.read_text().split("\nprune_scope_registry\n\ncase ", 1)[0]
 
 
 class ResourceGuard(unittest.TestCase):
+    def test_worker_count_uses_70_percent_and_preserves_headroom(self):
+        result = self.run_guard(r"""
+JOB_GIB=3
+available_gib() { echo 180; }
+[ "$(guard_jobs)" = 42 ] || exit 91
+available_gib() { echo 26; }
+[ "$(guard_jobs)" = 2 ] || exit 92
+available_gib() { echo 250; }
+[ "$(guard_jobs)" = 48 ] || exit 93
+MEMORY_POLICY=used
+available_gib() { echo 180; }
+used_gib() { echo 71; }
+[ "$(guard_jobs)" = 42 ]
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_interim_six_slot_gate_admits_an_ordinary_compiler(self):
+        result = self.run_guard(r"""
+hold_reason() { :; }
+compiler_pids() { echo 123; }
+printf 'state=held holder=fixture pid=%s start=x\n' "$$" > "$GATE_LOCK"
+request=$(reserve_coqc $$)
+sleep() { echo unexpected-cap-wait >&2; exit 91; }
+confirm_coqc "$request" || exit 92
+[ "$(head -n 1 "$request")" = confirmed ]
+""", ZESU_MAX_COQC="6", ZESU_IN_GATE="1")
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_available_memory_launch_boundaries(self):
+        for limit, available, allowed in ((6, 26, True), (6, 25, False),
+                                          (64, 84, True), (64, 83, False)):
+            with self.subTest(limit=limit, available=available):
+                result = self.run_guard(r"""
+available_gib() { echo "$TEST_AVAILABLE"; }
+memory_hold_reason
+""", ZESU_MODULE_LIMIT_GIB=str(limit), TEST_AVAILABLE=str(available))
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(not result.stdout.strip(), allowed)
+
+    def test_available_memory_hold_and_kill_boundaries(self):
+        for available, held, killed in ((20, False, False), (19, True, False),
+                                        (11, True, False), (10, True, True), (9, True, True)):
+            with self.subTest(available=available):
+                result = self.run_guard(r"""
+available_gib() { echo "$TEST_AVAILABLE"; }
+memory() { echo "0 0 $(( TEST_AVAILABLE * GIB ))"; }
+case "$(memory_hold_reason)" in *'20 GiB hold') echo held ;; esac
+if memory_kill_required; then echo killed; fi
+""", TEST_AVAILABLE=str(available))
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual("held" in result.stdout.splitlines(), held)
+                self.assertEqual("killed" in result.stdout.splitlines(), killed)
+
+    def test_kill_boundary_compares_exact_available_bytes(self):
+        for difference, killed in ((-1, True), (0, True), (1, False)):
+            with self.subTest(difference=difference):
+                result = self.run_guard(r"""
+memory() { echo "0 0 $((10 * GIB + TEST_DIFFERENCE))"; }
+if memory_kill_required; then echo killed; fi
+""", TEST_DIFFERENCE=str(difference))
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual("killed" in result.stdout.splitlines(), killed)
+
+    def test_available_policy_ignores_retired_used_thresholds(self):
+        result = self.run_guard(r"""
+available_gib() { echo 26; }
+used_gib() { echo 230; }
+memory() { echo "0 0 $((26 * GIB))"; }
+[ -z "$(memory_hold_reason)" ] || exit 91
+if memory_kill_required; then exit 92; fi
+JOB_GIB=6
+[ "$(guard_jobs)" = 1 ]
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_interim_used_memory_policy_is_explicit(self):
+        for used, admitted, killed in ((199, True, False), (200, False, False),
+                                       (215, False, False), (229, False, False),
+                                       (230, False, True)):
+            with self.subTest(used=used):
+                result = self.run_guard(r"""
+used_gib() { echo "$TEST_USED"; }
+available_gib() { echo 0; }
+[ -n "$(memory_hold_reason)" ] || echo admitted
+if memory_kill_required; then echo killed; fi
+""", ZESU_MEMORY_POLICY="used", ZESU_LAUNCH_GIB="200",
+                                         ZESU_HOLD_GIB="215", ZESU_KILL_GIB="230",
+                                         TEST_USED=str(used))
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual("admitted" in result.stdout.splitlines(), admitted)
+                self.assertEqual("killed" in result.stdout.splitlines(), killed)
+
+    def test_probe_confirmation_requires_84_gib_available(self):
+        result = self.run_guard(r"""
+available_gib() { echo 83; }
+coqc_count() { echo 0; }
+compiler_pids() { :; }
+load_five() { echo 0; }
+blocked_count() { echo 0; }
+request=$(reserve_coqc $$)
+sleep() { [ ! -e "$request" ] || exit 92; exit 91; }
+confirm_coqc "$request"
+""", ZESU_DIAGNOSTIC_PROBE="1", ZESU_PROBE_ISSUE="10",
+                                ZESU_MODULE_LIMIT_GIB="64",
+                                ZESU_PROOF_CPU_LIMIT="unlimited")
+        self.assertEqual(result.returncode, 91, result.stderr)
+
+    def test_running_probe_yields_to_gate_but_keeps_resource_accounting(self):
+        result = self.run_guard(r"""
+fixture_marker="$COQC_RESERVATIONS/$$.probe"
+printf '123\nwriter=\naggregate=\nprobe=issue10\nmemory_gib=64\ncpu=unlimited\nowner_start=%s\nscope=fixture-probe.scope\n' "$(process_start $$)" > "$fixture_marker"
+mark_probe_scope "$fixture_marker" fixture-probe.scope || exit 90
+live_reservations() { echo "$fixture_marker"; }
+live_scopes() { echo fixture-probe.scope; }
+live_launches() { :; }
+compiler_pids() { echo 123; }
+reservation_compiler() { echo 123; }
+printf 'state=wanted holder=fixture pid=%s start=x\n' "$$" > "$GATE_LOCK"
+sleep() { echo unexpected-gate-wait >&2; exit 91; }
+lock_hold $$ || exit 92
+grep -q '^state=held ' "$GATE_LOCK" || exit 93
+[ "$(probe_count)" = 1 ] || exit 94
+[ "$(nonwriter_coqc_count)" = 1 ] || exit 95
+MAX_COQC=1
+[ -n "$(compiler_admission_reason)" ] || exit 96
+available_gib() { echo 25; }
+[ "$(hold_reason)" = 'memory available 25 GiB, requires 26 GiB for a 6 GiB job' ] || exit 97
+mark_coqc "$fixture_marker" $$ || exit 98
+probe_record "$fixture_marker" || exit 99
+grep -Fxq 'scope=fixture-probe.scope' "$fixture_marker"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_gate_still_drains_ordinary_scopes_and_launches(self):
+        result = self.run_guard(r"""
+live_reservations() { :; }
+live_scopes() { [ -f "$STATE_DIR/drained" ] || echo ordinary.scope; }
+live_launches() { [ -f "$STATE_DIR/drained" ] || echo "$LAUNCHES/ordinary"; }
+printf 'confirmed\nwriter=\n' > "$LAUNCHES/ordinary"
+printf 'state=wanted holder=fixture pid=%s start=x\n' "$$" > "$GATE_LOCK"
+sleep() { echo drained-ordinary; touch "$STATE_DIR/drained"; }
+lock_hold $$
+grep -q '^state=held ' "$GATE_LOCK"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "drained-ordinary")
+
+    def test_probe_tag_rejects_wrong_limits_and_reused_owner(self):
+        for memory, cpu, start in (("6", "unlimited", "actual"),
+                                   ("64", "1200", "actual"),
+                                   ("64", "unlimited", "0")):
+            with self.subTest(memory=memory, cpu=cpu, start=start):
+                result = self.run_guard(r"""
+marker="$COQC_RESERVATIONS/$$.probe"
+start="$TEST_START"
+[ "$start" != actual ] || start=$(process_start $$)
+printf 'confirmed\nwriter=\naggregate=\nprobe=issue10\nmemory_gib=%s\ncpu=%s\nowner_start=%s\n' "$TEST_MEMORY" "$TEST_CPU" "$start" > "$marker"
+if probe_record "$marker"; then exit 91; fi
+[ "$(gate_reservations)" = "$marker" ]
+""", TEST_MEMORY=memory, TEST_CPU=cpu, TEST_START=start)
+                self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_two_probe_slots_are_atomic_across_simultaneous_requests(self):
+        result = self.run_guard(r"""
+hold_reason() { :; }
+compiler_pids() { :; }
+POLL_SECONDS=0.01
+worker() {
+  local owner=$BASHPID marker
+  marker=$(reserve_coqc "$owner") || return
+  confirm_coqc "$marker" || return
+  confirm_coqc "$marker" || return
+  printf 'start %s\n' "$owner" >> "$STATE_DIR/events"
+  sleep 0.08
+  printf 'end %s\n' "$owner" >> "$STATE_DIR/events"
+  release_coqc "$marker"
+}
+pids=""
+for _ in 1 2 3 4 5 6; do worker & pids="$pids $!"; done
+for pid in $pids; do wait "$pid" || exit 91; done
+cat "$STATE_DIR/events"
+[ "$(probe_count)" = 0 ]
+""", ZESU_DIAGNOSTIC_PROBE="1", ZESU_PROBE_ISSUE="10",
+                                     ZESU_MODULE_LIMIT_GIB="64",
+                                     ZESU_PROOF_CPU_LIMIT="unlimited")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        active = set()
+        peak = 0
+        starts = 0
+        for line in result.stdout.splitlines():
+            event, pid = line.split()
+            if event == "start":
+                active.add(pid)
+                starts += 1
+                peak = max(peak, len(active))
+            else:
+                active.remove(pid)
+        self.assertEqual(starts, 6)
+        self.assertEqual(peak, 2)
+        self.assertFalse(active)
+
+    def test_scope_fences_require_six_gib_or_valid_issue10_probe(self):
+        cases = (({}, 0), ({"ZESU_MODULE_LIMIT_GIB": "64"}, 2),
+                 ({"ZESU_MODULE_LIMIT_GIB": "12"}, 2),
+                 ({"ZESU_DIAGNOSTIC_PROBE": "1", "ZESU_PROBE_ISSUE": "10",
+                   "ZESU_MODULE_LIMIT_GIB": "64",
+                   "ZESU_PROOF_CPU_LIMIT": "unlimited"}, 0))
+        for variables, expected in cases:
+            with self.subTest(variables=variables):
+                result = self.run_guard("validate_probe_scope", **variables)
+                self.assertEqual(result.returncode, expected, result.stderr)
+
     def test_gate_acquires_lock_after_empty_scope_cleanup(self):
         result = self.run_guard('''
 fixture_unit="${SCOPE_PREFIX}-dune-coqc-2147483647-92.scope"
@@ -69,6 +281,51 @@ live_scopes
                                **variables)
             return subprocess.run(["bash"], input=LIBRARY + "\n" + script,
                                   text=True, capture_output=True, env=environment, timeout=20)
+
+    def test_gate_does_not_wait_for_unadmitted_probe_request(self):
+        result = self.run_guard(r"""
+marker="$COQC_RESERVATIONS/$$.probe"
+printf 'pending\nwriter=\naggregate=\n' > "$marker"
+printf 'state=wanted holder=fixture pid=%s start=x\n' "$$" > "$GATE_LOCK"
+live_scopes() { :; }
+live_launches() { :; }
+# Any sleep means the gate queued behind the unstarted request.
+sleep() { echo unexpected-gate-wait >&2; exit 91; }
+lock_hold $$ || exit 92
+grep -q '^state=held ' "$GATE_LOCK" || exit 93
+[ -f "$marker" ] || exit 94
+# The old request must still respect the gate when it tries to confirm.
+confirm_coqc "$marker"; status=$?
+[ "$status" = 3 ] || exit 95
+[ ! -f "$marker" ] || exit 96
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("confirmation refused by gate lock", result.stderr)
+        self.assertNotIn("unexpected-gate-wait", result.stderr)
+
+    def test_gate_still_waits_for_confirmed_and_running_launches(self):
+        for state in ("confirmed", "123"):
+            with self.subTest(state=state):
+                result = self.run_guard(r"""
+marker="$COQC_RESERVATIONS/$$.probe"
+printf '%s\nwriter=\naggregate=\n' "$TEST_RESERVATION_STATE" > "$marker"
+printf 'state=wanted holder=fixture pid=%s start=x\n' "$$" > "$GATE_LOCK"
+live_scopes() { :; }
+live_launches() { :; }
+# Keep the fake compiler present without reading any process environment.
+live_reservations() {
+  [ ! -f "$COQC_RESERVATIONS/$$.probe" ] || echo "$COQC_RESERVATIONS/$$.probe"
+}
+sleep() {
+  grep -q '^state=wanted ' "$GATE_LOCK" || exit 91
+  echo waited-for-admitted-launch
+  rm "$marker"
+}
+lock_hold $$ || exit 92
+grep -q '^state=held ' "$GATE_LOCK"
+""", TEST_RESERVATION_STATE=state)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(result.stdout.strip(), "waited-for-admitted-launch")
 
     def test_configured_limit_changes_writer_admission(self):
         script = '''
