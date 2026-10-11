@@ -23,3 +23,4 @@ Require Export ZesuSsz.Compliance.DecodeItemS40GuardFacts.
 Require Export ZesuSsz.Compliance.DecodeItemSavedFrameWitnesses.
 Require Export ZesuSsz.Compliance.DecodeItemShortListHandoffFacts.
 Require Export ZesuSsz.Compliance.DecodeItemStringSuccessorWitnesses.
+Require Export ZesuSsz.Compliance.DecodeItemEntryWitnessIntroductions.
