@@ -1,4 +1,4 @@
-"""Check actual native route-repair certificates against the frozen nine-site set."""
+"""Check linked native certificates for the route-repair and array-store classes."""
 import argparse
 import hashlib
 import json
@@ -431,14 +431,241 @@ def acceptance(index, bundle, root=ROOT):
     return results
 
 
+
+ARRAY_STORE_INDEX = ROOT / "ZesuSsz/Evidence/array_store/INDEX.json"
+ARRAY_STORE_SITES = ["6a40", "6a78", "69b0", "6ae0", "698c", "6b08"]
+ARRAY_STORE_CONTROLS = ["S152a", "S152b"]
+ARRAY_STORE_IDENTITY = {
+    "module": "ZesuSsz.Automation.Switches.ArrayStoreSelection",
+    "class": "ZesuStepArrayStoreSelection",
+    "instance": "zesu_switch_array_store_selection",
+}
+
+def array_store_schema(index):
+    require(index.get("version") == 1, "The array-store index version must be one.")
+    require([case.get("block") for case in index.get("cases", [])] == ARRAY_STORE_SITES,
+                   "The array-store inventory must contain all six exact sites.")
+    require([case.get("id") for case in index.get("controls", [])] == ARRAY_STORE_CONTROLS,
+                   "Both S152 correct-selection controls are required.")
+    identity = index.get("repair_identity")
+    require(isinstance(identity, dict), "The switch identity is required.")
+    require(identity.get("status") in ("placeholder", "reserved"),
+                   "The switch reservation status is invalid.")
+    if identity["status"] == "reserved":
+        require({key: identity.get(key) for key in ARRAY_STORE_IDENTITY} == ARRAY_STORE_IDENTITY,
+                       "The switch differs from the reserved array-store identity.")
+    else:
+        require(all(identity.get(key) is None for key in ARRAY_STORE_IDENTITY),
+                       "A placeholder must not name an accepting switch.")
+    return index
+
+
+def array_store_missing(index):
+    array_store_schema(index)
+    result = []
+    if index["repair_identity"]["status"] == "placeholder":
+        result.append("reserved switch identity")
+    for case in index["cases"]:
+        for key in ("native_theorem", "native_statement", "native_source", "capture",
+                    "source_root", "capture_scope", "capture_provenance"):
+            if case.get(key) is None:
+                result.append(case["block"] + ": " + key)
+    for control in index["controls"]:
+        if control.get("eligible_as_exact_native_selection_control") is not True:
+            result.append(control["id"] + ": exact selection eligibility")
+        for key in ("theorem", "source", "statement", "reviewed_certificate"):
+            if control.get(key) is None:
+                result.append(control["id"] + ": " + key)
+    return result
+
+
+def array_store_capture_inventory(index, root=ROOT):
+    array_store_schema(index)
+    for key in ("reservation", "reviewed_locator_package", "reviewed_locator_audit"):
+        if key in index:
+            bound_file(index[key], root)
+    for record in index.get("separate_review_reports", []):
+        bound_file(record["report"], root)
+    for support in index.get("supporting_certificates", []):
+        require(support.get("eligible_as_exact_native_selection_control") is False,
+                       "Supporting facts must remain non-eligible selection controls.")
+        bound_file(support["report"], root)
+        for row in support["declarations"]:
+            _, source = bound_file(row["source"], root)
+            _, statement = bound_file(row["statement"], root)
+            require(declaration(source.decode(), row["theorem"]) ==
+                           statement.decode().strip(), "A supporting declaration changed.")
+    for case in index["cases"]:
+        require(all(case.get(key) is not None for key in
+                       ("native_statement", "native_source", "capture", "capture_provenance")),
+                       "An exact capture identity is missing.")
+        _, statement = bound_file(case["native_statement"], root)
+        _, source = bound_file(case["native_source"], root)
+        require(declaration(source.decode(), case["native_theorem"]) ==
+                       statement.decode().strip(), "An exact native statement changed.")
+        if "compiled_native_source" in case:
+            _, compiled_source = bound_file(case["compiled_native_source"], root)
+            require(declaration(compiled_source.decode(), case["native_theorem"]) ==
+                           statement.decode().strip(), "The compiled native declaration changed.")
+        if "native_evidence" in case:
+            bound_file(case["native_evidence"], root)
+        bound_file(case["capture"], root)
+        bound_file(case["capture_provenance"], root)
+        require(case.get("retained_captures"), "The retained capture list is required.")
+        for reference in case["retained_captures"]:
+            bound_file(reference, root)
+        require(isinstance(case["capture_scope"], dict) and case["capture_scope"],
+                       "The exact captured scope is required.")
+        require(isinstance(case["source_root"], str) and
+                       re.fullmatch(r"[0-9a-f]{40}", case["source_root"]),
+                       "The exact frozen source root is required.")
+        for role in ("approved", "hints"):
+            bound_file(case["capture_scope"][role], root)
+
+
+def array_store_inventory(index, root=ROOT):
+    pending = array_store_missing(index)
+    require(not pending, "Acceptance dependencies are missing: " + ", ".join(pending))
+    array_store_capture_inventory(index, root)
+    for control in index["controls"]:
+        _, source = bound_file(control["source"], root)
+        _, statement = bound_file(control["statement"], root)
+        require(declaration(source.decode(), control["theorem"]) ==
+                       statement.decode().strip(), "An S152 control statement changed.")
+        bound_file(control["reviewed_certificate"], root)
+
+
+def array_store_acceptance(index, bundle, root=ROOT):
+    array_store_inventory(index, root)
+    require(bundle.get("version") == 2, "The linked version-two bundle is required.")
+    require(bundle.get("repair_identity") == ARRAY_STORE_IDENTITY,
+                   "The array-store switch identity differs.")
+    cases = bundle.get("native_cases", [])
+    controls = bundle.get("rejections", [])
+    require([row.get("block") for row in cases] == ARRAY_STORE_SITES,
+                   "All six actual native certificates are required.")
+    require([row.get("control_id") for row in controls] == ARRAY_STORE_CONTROLS,
+                   "Both exact S152 correct-selection certificates are required.")
+    switch, switch_bytes = bound_file(bundle["switch_source"], root)
+    require(same_path(switch, root / (ARRAY_STORE_IDENTITY["module"].replace(".", "/") + ".v"), root),
+                   "The candidate source is not the reserved switch module.")
+    require(all(ARRAY_STORE_IDENTITY[key] in switch_bytes.decode() for key in ("class", "instance")),
+                   "The candidate lacks its reserved activation identity.")
+    sources = [bound_file(row["proof_source"], root)[0] for row in cases + controls]
+    input_provenance(bundle, sources, root)
+    _, seal = bound_json(bundle["input_index"], root)
+    session_map = sessions(bundle, root)
+    results = []
+    for case, record in zip(index["cases"], cases):
+        expected = {key: case[key] for key in
+                    ("capture", "native_source", "source_root", "capture_scope", "capture_provenance", "retained_captures")}
+        require(record.get("captured_state_provenance") == expected,
+                       "A native result belongs to a different captured state or scope.")
+        for role in ("approved", "hints"):
+            require(seal["roles"][role]["sha256"] == case["capture_scope"][role]["sha256"],
+                           "The candidate changed the captured approved scope or hints.")
+        results.append(native_case(case, record, index, root, session_map, bundle["input_index"]))
+    for control, record in zip(index["controls"], controls):
+        require(record.get("reviewed_certificate") == control["reviewed_certificate"],
+                       "An S152 rejection control has a different reviewed certificate.")
+        require(record.get("theorem") == control["theorem"],
+                       "An S152 rejection control names a different theorem.")
+        source, data = bound_file(record["proof_source"], root)
+        _, statement = bound_file(control["statement"], root)
+        expected = statement.decode().strip()
+        require(declaration(data.decode(), control["theorem"]) == expected,
+                       "An S152 correct-selection declaration changed.")
+        proof_trace(record, source, control["theorem"], session_map, root)
+        certificate(record, source, control["theorem"], expected,
+                           session_map, bundle["input_index"], root)
+    require(all(session["used"] for session in session_map.values()),
+                   "An unrelated owned session was supplied.")
+    return results
+
+
+
+ENTRY_NORMALIZATION_INDEX = ROOT / "ZesuSsz/Evidence/route_repair/ENTRY_NORMALIZATION.json"
+ENTRY_NORMALIZATION_IDENTITY = {
+    "module": "ZesuSsz.Automation.Switches.EntryNormalization",
+    "class": "ZesuStepEntryNormalization",
+    "instance": "zesu_switch_entry_normalization",
+}
+
+
+def entry_normalization_binding(index, root=ROOT):
+    require(index.get("repair_identity") == ENTRY_NORMALIZATION_IDENTITY,
+            "The entry-normalization switch identity differs.")
+    baseline = json.loads((root / "ZesuSsz/Evidence/route_repair/INDEX.json").read_text())
+    for key in ("cases", "reject_controls", "control_module", "reviewed_terminal_package",
+                "checked_module_source"):
+        require(index.get(key) == baseline[key],
+                "The entry-normalization binding changed the retained " + key + ".")
+    expected_imports = [ENTRY_NORMALIZATION_IDENTITY["module"]
+                        if name == baseline["repair_identity"]["module"] else name
+                        for name in baseline["ON_imports"]]
+    require(index.get("ON_imports") == expected_imports,
+            "The entry-normalization binding changed the approved imports.")
+    _, preparation = bound_json(index["reviewed_preparation"], root)
+    require(preparation.get("identity") == ENTRY_NORMALIZATION_IDENTITY and
+            preparation.get("source_proposal_applied") is False and
+            preparation.get("proof_execution") is False,
+            "The reviewed entry-normalization preparation differs.")
+    inventory(index, root)
+
+
+def entry_normalization_acceptance(index, bundle, root=ROOT):
+    entry_normalization_binding(index, root)
+    return acceptance(index, bundle, root)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--results", type=Path,
                         help="The hash-bound actual ON native proof bundle.")
+    classes = parser.add_mutually_exclusive_group()
+    classes.add_argument("--entry-normalization", action="store_true",
+                         help="Check the reserved nine-site entry-normalization identity.")
+    classes.add_argument("--array-store", action="store_true",
+                        help="Check the separate six-site array-store acceptance class.")
+    parser.add_argument("--index", type=Path)
+    parser.add_argument("--check-schema", action="store_true")
+    parser.add_argument("--check-captures", action="store_true")
     parser.add_argument("--check-inventory", action="store_true",
-                        help="Check capture identities only. This does not accept the repair.")
+                        help="Check identities only. This does not accept the repair.")
     args = parser.parse_args()
-    index = json.loads(INDEX.read_text())
+    index_path = args.index or (ENTRY_NORMALIZATION_INDEX if args.entry_normalization else
+                               ARRAY_STORE_INDEX if args.array_store else INDEX)
+    index = json.loads(index_path.read_text())
+    if args.entry_normalization:
+        entry_normalization_binding(index)
+        require(not args.check_schema and not args.check_captures,
+                "Entry normalization uses the nine-site inventory check.")
+        if args.check_inventory:
+            print("Nine entry-normalization identities checked. Native acceptance did not run.")
+            return 0
+        require(args.results is not None, "The actual nine-native proof bundle is required.")
+        result = entry_normalization_acceptance(index, json.loads(args.results.read_text()))
+        print(json.dumps({"accepted": True, "native_cases": result, "S119_rejections": 2}, indent=2))
+        return 0
+    if args.array_store:
+        if args.check_schema:
+            print(json.dumps({"schema_checked": True, "accepted": False,
+                              "pending": array_store_missing(index)}, indent=2))
+            return 0
+        if args.check_captures:
+            array_store_capture_inventory(index)
+            print("Six frozen capture sets checked. Native acceptance did not run.")
+            return 0
+        if args.check_inventory:
+            array_store_inventory(index)
+            print("Six capture identities checked. Native acceptance did not run.")
+            return 0
+        require(args.results is not None, "The six-native linked proof bundle is required.")
+        result = array_store_acceptance(index, json.loads(args.results.read_text()))
+        print(json.dumps({"accepted": True, "native_cases": result, "S152_rejections": 2}, indent=2))
+        return 0
+    require(not args.check_schema and not args.check_captures,
+            "Schema and capture checks require the array-store class.")
     if args.check_inventory:
         inventory(index)
         print("Nine capture identities checked. Native acceptance did not run.")

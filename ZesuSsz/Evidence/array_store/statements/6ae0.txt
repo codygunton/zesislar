@@ -1,0 +1,4 @@
+Lemma DesignedBoundary_800d6ae0 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (locals : DecodeItemReturnLocals)  :
+  decodeItemSelectedCode -∗
+  instr_body 0x800d6ae0
+    (DesignedEntry_800d6ae0 args locals).

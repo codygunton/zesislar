@@ -22,3 +22,12 @@ The native source must preserve the captured declaration environment and exact t
 The S119 calls must verify the exact wrong-commitment rejection statements. They prove necessary-condition incompatibility. They do not prove that a retained native context is inconsistent.
 
 `--check-inventory` checks the capture and statement hashes. It does not accept the repair. The three I75 terminal captures do not identify a precommitment assignment. The two I67 block-form captures have unavailable auxiliary groups. The four older precommitment captures retain their separate historical scopes. An actual ON proof must supply complete current groups for every site.
+
+The same checker also binds the private `EntryNormalization` identity.
+Use `--entry-normalization --check-inventory` to check its nine retained sites.
+`ENTRY_NORMALIZATION.json` preserves the original statements, controls, and loop provenance.
+The binding substitutes only the explicit switch import.
+The proposed helper runs `zesu_integer_array_facts; simplify_eq` before the existing block dispatcher.
+The source proposal did not run.
+The checker requires the same linked certificates before acceptance.
+Missing implementation or native certificates cannot establish acceptance.
