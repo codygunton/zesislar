@@ -56,7 +56,7 @@ class LoadedEntryRetryTests(unittest.TestCase):
             record = {'outcome': 'setup-error', 'pending_goals': [], 'shelved_goals': []}
             with patch.dict(sys.modules, modules), \
                     patch.object(discovery.setup_fallback, 'run_one', side_effect=load), \
-                    patch.object(discovery.chain_root, 'render_probe', return_value='Proof.\ntry zesu_block.\nAbort.\n'), \
+                    patch.object(discovery.chain_root, 'render_probe', return_value='Lemma infer_boundary : True.\nProof.\ntry zesu_block.\nAbort.\n'), \
                     patch.object(discovery.chain_root, 'parse_probe', return_value=[record]):
                 result = asyncio.run(discovery.probe_block(
                     {'entry_pc': '0x10', 'entry_class': 'join'},

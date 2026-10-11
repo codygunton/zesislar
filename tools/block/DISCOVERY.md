@@ -26,6 +26,9 @@ opam exec --switch=/home/cody/islaris -- \
 
 Each worker starts an isolated, guarded Rocq MCP server.
 The driver calls `rocq_health`, `rocq_start`, and `rocq_check`.
+Every start loads a separate source whose proof contains only `Proof.` and `Abort.`.
+The full source remains separate for explicit proof requests and final compilation.
+The report binds both sources. Document loading cannot run the generated block tactic.
 The existing chain renderer supplies each diagnostic source.
 The existing recorder retains active goals and shelved goals separately.
 The server uses a 6-GiB memory limit without swap.

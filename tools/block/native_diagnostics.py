@@ -94,6 +94,12 @@ async def _diagnose(path, options, report):
     from mcp import ClientSession, StdioServerParameters
     from mcp.client.stdio import stdio_client
     from discovery import data
+    from setup_fallback import write_interactive_source
+    interactive_path = write_interactive_source(path)
+    report['source'] = str(path.resolve())
+    report['source_sha256'] = hashlib.sha256(path.read_bytes()).hexdigest()
+    report['interactive_source'] = str(interactive_path.resolve())
+    report['interactive_source_sha256'] = hashlib.sha256(interactive_path.read_bytes()).hexdigest()
     env = {**os.environ, 'ROCQ_WORKSPACE': options['workspace'],
            'ROCQ_PET_TIMEOUT': str(options['seconds'])}
     if options.get('complete_goals'):
@@ -106,7 +112,7 @@ async def _diagnose(path, options, report):
             await session.initialize()
             report['health'] = data(await session.call_tool('rocq_health', {}))
             opened = await measured_call(session, 'rocq_start', {
-                'workspace': options['workspace'], 'file': str(path.resolve()),
+                'workspace': options['workspace'], 'file': str(interactive_path.resolve()),
                 'theorem': 'infer_boundary', 'timeout': 60}, report['steps'], label='diagnostic-start')
             report['calls'].append(opened)
             if not opened.get('success'):
