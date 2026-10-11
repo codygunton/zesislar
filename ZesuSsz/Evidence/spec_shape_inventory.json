@@ -26,6 +26,12 @@
       "disjunctive_specs": 0,
       "frame_parameters_in_closed_specs": 0
     },
+    "ZesuSsz/Evidence/DecodeItemI79PureParts.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
     "ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v": {
       "uninferable_existentials": 0,
       "predicates_without_unfold": 0,
@@ -63,6 +69,150 @@
       "frame_parameters_in_closed_specs": 0
     },
     "ZesuSsz/Evidence/DecodeItemRouteRepairAcceptance.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS152Entry698c.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS152Entry6ae0.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS152Entry6b08.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS152Selected698c.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS152Selected6b08.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS152ShelvedConcreteHigh.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS152ShelvedConcreteZero.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS152ShelvedFlag.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS152StageBAddress32.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS152StageBLiteralShape.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS152StageBSplice32.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS152StageBWidth.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS152StageDIndex32.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS159Conversion0.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS159Conversion1.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS159Conversion2.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS159Conversion3.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS159EntryBranches.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS159FoldBranches.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS159FrameProjection.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS159HeadProjection.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS159HeadRoute.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS159LoadedGuards.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemS159WordGuard.v": {
       "uninferable_existentials": 0,
       "predicates_without_unfold": 0,
       "disjunctive_specs": 0,
