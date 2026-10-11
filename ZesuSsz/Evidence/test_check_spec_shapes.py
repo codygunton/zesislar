@@ -1,6 +1,7 @@
 import contextlib
 import io
 import json
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -22,6 +23,28 @@ from check_spec_shapes import (
 
 
 class SpecShapeTests(unittest.TestCase):
+    def test_inventory_rejects_a_newly_staged_module(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(["git", "init", "-q", str(root)], check=True)
+            subprocess.run(["git", "-c", "user.name=Test", "-c", "user.email=test@example.com",
+                            "commit", "-q", "--allow-empty", "-m", "Base"],
+                           cwd=root, check=True)
+            base = subprocess.check_output(["git", "rev-parse", "HEAD"],
+                                           cwd=root, text=True).strip()
+            name = "ZesuSsz/Evidence/Staged.v"
+            source = root / name
+            source.parent.mkdir(parents=True)
+            source.write_text("Lemma staged : True. Proof. exact I. Qed.")
+            subprocess.run(["git", "add", name], cwd=root, check=True)
+            with patch.object(check_spec_shapes, "ROOT", root):
+                errors = check_spec_shapes.scoped_inventory_errors(
+                    {"base_commit": base, "modules": {}}, {name: source.read_text()})
+                self.assertEqual(errors, ["Missing shape inventory: " + name])
+                self.assertEqual(check_spec_shapes.scoped_inventory_errors(
+                    {"base_commit": base, "modules": {name: {}}},
+                    {name: source.read_text()}), [])
+
     def test_main_checks_added_replacement_and_skips_deleted_source(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -31,12 +54,52 @@ class SpecShapeTests(unittest.TestCase):
             (root / replacement).write_text('Lemma covered : True. Proof. exact I. Qed.')
             baseline = root / 'baseline.json'
             baseline.write_text('{}')
+            inventory_file = root / 'inventory.json'
+            inventory_file.write_text(json.dumps({'base_commit': 'base', 'modules': {}}))
             with patch.object(check_spec_shapes, 'ROOT', root), \
                  patch.object(check_spec_shapes, 'BASELINE', baseline), \
+                 patch.object(check_spec_shapes, 'INVENTORY', inventory_file), \
                  patch.object(check_spec_shapes.subprocess, 'check_output',
                               return_value=retired + '\n' + replacement + '\n') as inventory:
                 self.assertEqual(check_spec_shapes.main(), 0)
                 self.assertIn('--others', inventory.call_args.args[0])
+
+    def test_inventory_checks_all_four_shapes_in_both_scopes(self):
+        for scope in ("Evidence", "Compliance"):
+            with self.subTest(scope=scope), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                name = "ZesuSsz/" + scope + "/Added.v"
+                source = root / name
+                source.parent.mkdir(parents=True)
+                source.write_text("Definition badCallSpec (P : iProp Sigma) : iProp Sigma := "
+                                  "(∃ (x : Z), ⌜x = 0⌝ ∗ True ∨ P)%I.")
+                baseline = root / "baseline.json"
+                baseline.write_text("{}")
+                inventory = root / "inventory.json"
+                inventory.write_text(json.dumps({"base_commit": "base", "modules": {name: {}}}))
+                with patch.object(check_spec_shapes, "ROOT", root), \
+                     patch.object(check_spec_shapes, "BASELINE", baseline), \
+                     patch.object(check_spec_shapes, "INVENTORY", inventory), \
+                     patch.object(check_spec_shapes.subprocess, "check_output", return_value=name), \
+                     contextlib.redirect_stderr(io.StringIO()) as errors:
+                    self.assertEqual(check_spec_shapes.main(), 1)
+                for metric in ("uninferable_existentials", "predicates_without_unfold",
+                               "disjunctive_specs", "frame_parameters_in_closed_specs"):
+                    self.assertIn(metric + ": 1 > 0", errors.getvalue())
+
+    def test_inventory_rejects_a_missing_added_module(self):
+        name = "ZesuSsz/Evidence/New.v"
+        with patch.object(check_spec_shapes.subprocess, "check_output", side_effect=[name, ""]):
+            errors = check_spec_shapes.scoped_inventory_errors(
+                {"base_commit": "base", "modules": {}}, {name: ""})
+        self.assertEqual(errors, ["Missing shape inventory: " + name])
+
+    def test_inventory_keeps_preexisting_modules_outside_scope(self):
+        old = "ZesuSsz/Evidence/Old.v"
+        with patch.object(check_spec_shapes.subprocess, "check_output", side_effect=["", ""]):
+            errors = check_spec_shapes.scoped_inventory_errors(
+                {"base_commit": "base", "modules": {}}, {old: ""})
+        self.assertEqual(errors, [])
 
     def test_untyped_existential_binders_are_counted(self):
         spec = ('Definition exact : iProp Sigma := '
@@ -217,8 +280,11 @@ class SpecShapeTests(unittest.TestCase):
             (root / opacity).parent.mkdir(parents=True)
             baseline = root / 'baseline.json'
             baseline.write_text(json.dumps({}))
+            inventory_file = root / 'inventory.json'
+            inventory_file.write_text(json.dumps({'base_commit': 'base', 'modules': {}}))
             with patch.object(check_spec_shapes, 'ROOT', root), \
                  patch.object(check_spec_shapes, 'BASELINE', baseline), \
+                 patch.object(check_spec_shapes, 'INVENTORY', inventory_file), \
                  patch.object(check_spec_shapes.subprocess, 'check_output',
                               return_value=automation + '\n' + opacity + '\n'):
                 for target in ('callSpec', 'ZesuSsz.Contracts.Opacity.callSpec'):

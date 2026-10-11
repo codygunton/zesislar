@@ -10,6 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 BASELINE = Path(__file__).with_name("spec_shape_baseline.json")
+INVENTORY = Path(__file__).with_name("spec_shape_inventory.json")
 METRICS = (
     "uninferable_existentials",
     "predicates_without_unfold",
@@ -205,8 +206,25 @@ def failures(name: str, counts: dict[str, int], baseline: dict) -> list[str]:
             for metric, count in counts.items() if count > allowed.get(metric, 0)]
 
 
+def scoped_inventory_errors(inventory: dict, texts: dict[str, str]) -> list[str]:
+    added = subprocess.check_output(
+        ["git", "diff", "--diff-filter=A", "--name-only", inventory["base_commit"],
+         "--", "ZesuSsz/Evidence", "ZesuSsz/Compliance"],
+        cwd=ROOT, text=True).splitlines()
+    pending = subprocess.check_output(
+        ["git", "ls-files", "--others", "--exclude-standard",
+         "ZesuSsz/Evidence/*.v", "ZesuSsz/Compliance/*.v"],
+        cwd=ROOT, text=True).splitlines()
+    required = {name for name in added + pending if name.endswith(".v") and name in texts
+                and name.startswith(("ZesuSsz/Evidence/", "ZesuSsz/Compliance/"))}
+    recorded = set(inventory["modules"])
+    return (["Missing shape inventory: " + name for name in sorted(required - recorded)] +
+            ["Stale shape inventory: " + name for name in sorted(recorded - required)])
+
+
 def main() -> int:
     baseline = json.loads(BASELINE.read_text())
+    inventory = json.loads(INVENTORY.read_text())
     paths = subprocess.check_output(
         ["git", "ls-files", "--cached", "--others", "--exclude-standard",
          "ZesuSsz/*.v"], cwd=ROOT, text=True
@@ -222,15 +240,17 @@ def main() -> int:
         for name, source in texts.items()
         for constant in typeclasses_opaque(source, global_only=True)
     }
-    errors = []
+    errors = scoped_inventory_errors(inventory, texts)
     for name, source in texts.items():
         counts = (shape_counts(source, unfolded)
                   if name.startswith(("ZesuSsz/Contracts/", "ZesuSsz/Proofs/"))
+                  or name in inventory["modules"]
                   else dict.fromkeys(METRICS, 0))
         counts["unfold_without_typeclasses_opaque"] = unfold_opacity_count(
             source, global_opaque | typeclasses_opaque(source)
         )
-        errors.extend(failures(name, counts, baseline))
+        allowances = (inventory["modules"] if name in inventory["modules"] else baseline)
+        errors.extend(failures(name, counts, allowances))
     for error in errors:
         print(error, file=sys.stderr)
     return int(bool(errors))
