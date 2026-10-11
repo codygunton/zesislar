@@ -583,11 +583,49 @@ def array_store_acceptance(index, bundle, root=ROOT):
     return results
 
 
+
+ENTRY_NORMALIZATION_INDEX = ROOT / "ZesuSsz/Evidence/route_repair/ENTRY_NORMALIZATION.json"
+ENTRY_NORMALIZATION_IDENTITY = {
+    "module": "ZesuSsz.Automation.Switches.EntryNormalization",
+    "class": "ZesuStepEntryNormalization",
+    "instance": "zesu_switch_entry_normalization",
+}
+
+
+def entry_normalization_binding(index, root=ROOT):
+    require(index.get("repair_identity") == ENTRY_NORMALIZATION_IDENTITY,
+            "The entry-normalization switch identity differs.")
+    baseline = json.loads((root / "ZesuSsz/Evidence/route_repair/INDEX.json").read_text())
+    for key in ("cases", "reject_controls", "control_module", "reviewed_terminal_package",
+                "checked_module_source"):
+        require(index.get(key) == baseline[key],
+                "The entry-normalization binding changed the retained " + key + ".")
+    expected_imports = [ENTRY_NORMALIZATION_IDENTITY["module"]
+                        if name == baseline["repair_identity"]["module"] else name
+                        for name in baseline["ON_imports"]]
+    require(index.get("ON_imports") == expected_imports,
+            "The entry-normalization binding changed the approved imports.")
+    _, preparation = bound_json(index["reviewed_preparation"], root)
+    require(preparation.get("identity") == ENTRY_NORMALIZATION_IDENTITY and
+            preparation.get("source_proposal_applied") is False and
+            preparation.get("proof_execution") is False,
+            "The reviewed entry-normalization preparation differs.")
+    inventory(index, root)
+
+
+def entry_normalization_acceptance(index, bundle, root=ROOT):
+    entry_normalization_binding(index, root)
+    return acceptance(index, bundle, root)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--results", type=Path,
                         help="The hash-bound actual ON native proof bundle.")
-    parser.add_argument("--array-store", action="store_true",
+    classes = parser.add_mutually_exclusive_group()
+    classes.add_argument("--entry-normalization", action="store_true",
+                         help="Check the reserved nine-site entry-normalization identity.")
+    classes.add_argument("--array-store", action="store_true",
                         help="Check the separate six-site array-store acceptance class.")
     parser.add_argument("--index", type=Path)
     parser.add_argument("--check-schema", action="store_true")
@@ -595,8 +633,20 @@ def main():
     parser.add_argument("--check-inventory", action="store_true",
                         help="Check identities only. This does not accept the repair.")
     args = parser.parse_args()
-    index_path = args.index or (ARRAY_STORE_INDEX if args.array_store else INDEX)
+    index_path = args.index or (ENTRY_NORMALIZATION_INDEX if args.entry_normalization else
+                               ARRAY_STORE_INDEX if args.array_store else INDEX)
     index = json.loads(index_path.read_text())
+    if args.entry_normalization:
+        entry_normalization_binding(index)
+        require(not args.check_schema and not args.check_captures,
+                "Entry normalization uses the nine-site inventory check.")
+        if args.check_inventory:
+            print("Nine entry-normalization identities checked. Native acceptance did not run.")
+            return 0
+        require(args.results is not None, "The actual nine-native proof bundle is required.")
+        result = entry_normalization_acceptance(index, json.loads(args.results.read_text()))
+        print(json.dumps({"accepted": True, "native_cases": result, "S119_rejections": 2}, indent=2))
+        return 0
     if args.array_store:
         if args.check_schema:
             print(json.dumps({"schema_checked": True, "accepted": False,
