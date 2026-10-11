@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "file": {
+      "type": "object",
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    }
+  },
+  "type": "object",
+  "required": [
+    "repair_identity",
+    "verification_root",
+    "switch_source",
+    "input_index",
+    "native_cases",
+    "rejections"
+  ],
+  "properties": {
+    "switch_source": {
+      "$ref": "#/$defs/file"
+    },
+    "input_index": {
+      "$ref": "#/$defs/file"
+    },
+    "native_cases": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "type": "object",
+        "required": [
+          "block",
+          "proof_source",
+          "compiled_object",
+          "raw_calls",
+          "actual_final",
+          "owned_closures"
+        ],
+        "properties": {
+          "proof_source": {
+            "$ref": "#/$defs/file"
+          },
+          "compiled_object": {
+            "$ref": "#/$defs/file"
+          },
+          "raw_calls": {
+            "$ref": "#/$defs/file"
+          },
+          "owned_closures": {
+            "$ref": "#/$defs/file"
+          }
+        }
+      }
+    },
+    "rejections": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "required": [
+          "theorem",
+          "raw_calls"
+        ],
+        "properties": {
+          "raw_calls": {
+            "$ref": "#/$defs/file"
+          }
+        }
+      }
+    }
+  }
+}

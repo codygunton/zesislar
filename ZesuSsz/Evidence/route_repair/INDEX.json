@@ -1,0 +1,302 @@
+{
+  "version": 1,
+  "checked_module": "ZesuSsz.Evidence.DecodeItemRouteRepairAcceptance",
+  "repair_identity": {
+    "module": "ZesuSsz.Automation.Switches.ResourceFirstIntroduction",
+    "class": "ZesuStepResourceFirstIntroduction",
+    "instance": "zesu_switch_resource_first_introduction",
+    "status": "reserved; implementation not present"
+  },
+  "ON_imports": [
+    "ZesuSsz.Automation.All",
+    "ZesuSsz.Automation.Approved",
+    "ZesuSsz.Compliance.DecodeItemHints",
+    "ZesuSsz.Automation.Switches.ResourceFirstIntroduction"
+  ],
+  "cases": [
+    {
+      "block": "6960",
+      "native_theorem": "DesignedBoundary_800d6960",
+      "checked_obligation": "decodeItemOpenNativeClosure6960",
+      "native_statement": {
+        "path": "ZesuSsz/Evidence/route_repair/6960.statement.txt",
+        "sha256": "5a6968e0f9983675e6739264336653f3fe3e656c4fa6a3e4ef53c271e9c86588"
+      },
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/6960/Source.v.txt",
+        "sha256": "5f0f26bebf26a5c9a6357f30b5824e743a997cbc714ab8094fa4c4316e91a554"
+      },
+      "native_source_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-final-native-three-sites-080/block-6960/exports/state_39.json",
+        "sha256": "bf0a5b4e6f5fcfb79124d73c422889164e27a1124033f5f85c48d761ed44d70b"
+      },
+      "capture_kind": "reviewed terminal state; precommitment assignment unestablished",
+      "captured_groups": {
+        "active": 7,
+        "stack": 0,
+        "shelf": 17,
+        "given_up": 0
+      },
+      "capture_scope": "The three released native diagnostics use the reviewed final driver and frozen e17 declarations."
+    },
+    {
+      "block": "697c",
+      "native_theorem": "DesignedBoundary_800d697c",
+      "checked_obligation": "decodeItemOpenNativeClosure697c",
+      "native_statement": {
+        "path": "ZesuSsz/Evidence/route_repair/697c.statement.txt",
+        "sha256": "a2e514a21a496ba600fcbdeeedea4899f7e339dffa454ca80ee10f32f3c53983"
+      },
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/697c/Source.v.txt",
+        "sha256": "6b3c2cb70bfa0199d226b5c25e3c2a3d260f6ccf4ff8a5f48021b8f5d1831bce"
+      },
+      "native_source_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-final-native-three-sites-080/block-697c/exports/state_39.json",
+        "sha256": "e714eed98defc4c284092dea8583525923566698dddea2afc6fd2dc88984ebd6"
+      },
+      "capture_kind": "reviewed terminal state; precommitment assignment unestablished",
+      "captured_groups": {
+        "active": 1,
+        "stack": 0,
+        "shelf": 16,
+        "given_up": 0
+      },
+      "capture_scope": "The three released native diagnostics use the reviewed final driver and frozen e17 declarations."
+    },
+    {
+      "block": "69e8",
+      "native_theorem": "DesignedBoundary_800d69e8",
+      "checked_obligation": "decodeItemOpenNativeClosure69e8",
+      "native_statement": {
+        "path": "ZesuSsz/Evidence/route_repair/69e8.statement.txt",
+        "sha256": "90176d8cfa5c4fcbf19b1efce1edd0100297876229b1670a4641b9590805143f"
+      },
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/69e8/Source.v.txt",
+        "sha256": "505410cb4f82a2a8445a48b91081284b7d2bd3dd0a44ccc0a4ffdc575ebfd01c"
+      },
+      "native_source_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-final-native-three-sites-080/block-69e8/exports/state_39.json",
+        "sha256": "d2f309224f081eaeb6d5b52a824e28f30968c693ba72978f24be25dc465f5706"
+      },
+      "capture_kind": "reviewed terminal state; precommitment assignment unestablished",
+      "captured_groups": {
+        "active": 2,
+        "stack": 0,
+        "shelf": 19,
+        "given_up": 0
+      },
+      "capture_scope": "The three released native diagnostics use the reviewed final driver and frozen e17 declarations."
+    },
+    {
+      "block": "6a08",
+      "native_theorem": "DesignedBoundary_800d6a08",
+      "checked_obligation": "decodeItemOpenNativeClosure6a08",
+      "native_statement": {
+        "path": "ZesuSsz/Evidence/route_repair/6a08.statement.txt",
+        "sha256": "0648c7413d638af24b17e37c60c3afbd20c87db5b6c9acd05cd7ee48480d86f2"
+      },
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6a08/Source.v",
+        "sha256": "45fe5c2c28f79f2a6627624e6289af0fa32236be71c186fd87c617e8256b7160"
+      },
+      "native_source_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s130/ZesuSsz/Evidence/precommitment/6a08.json",
+        "sha256": "3b25c4a4a6603fd365fa66f41523fb96360c2981366a7f0c81d94107ca6aae62"
+      },
+      "capture_kind": "retained precommitment state; scope differs from I67 source",
+      "captured_groups": {
+        "active": 3,
+        "stack": 0,
+        "shelf": 5,
+        "given_up": 0
+      },
+      "capture_scope": {
+        "input_index_sha256": "c302ab4d77ab541036a2ed27c96b7b3b25e39332a1575584becfc072edf17e2e",
+        "fixture_copies": [
+          {
+            "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/Replay6a08.v"
+          },
+          {
+            "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/Replay6aa8.v"
+          }
+        ],
+        "measured_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+        "measured_scope": "28 switches, 25 hint modules",
+        "scope_limit": "Exact I67 statement. Owned current private artifacts. Scheduling equality with frozen I67 is not established.",
+        "changed_steps": "Restore successful individual-step recovery. Apply existing S43 lemmas explicitly. Capture application groups even after failure."
+      }
+    },
+    {
+      "block": "6a38",
+      "native_theorem": "DesignedBoundary_800d6a38",
+      "checked_obligation": "decodeItemOpenNativeClosure6a38",
+      "native_statement": {
+        "path": "ZesuSsz/Evidence/route_repair/6a38.statement.txt",
+        "sha256": "29da6707b7255633c890e4c576142fe7ffe1f1f660a478824cbf817e21f08ddf"
+      },
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6a38/Source.v",
+        "sha256": "0c6fe3db92d219dd5d3a32594d1a4679209bf279ec2c9fc61f1d4cc7128ed0d0"
+      },
+      "native_source_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s130/ZesuSsz/Evidence/precommitment/6a38.json",
+        "sha256": "e3196ab655f9afd5d52b70a22f64bd7a740a4bf43d7de933879950947b1184be"
+      },
+      "capture_kind": "retained precommitment state; scope differs from I67 source",
+      "captured_groups": {
+        "active": 3,
+        "stack": 0,
+        "shelf": 4,
+        "given_up": 0
+      },
+      "capture_scope": "Exact retained I62 native statements on owned current artifacts. Historical33b9a455 plus four Rule38 overlays differs from the current28-switch scope."
+    },
+    {
+      "block": "6aa8",
+      "native_theorem": "DesignedBoundary_800d6aa8",
+      "checked_obligation": "decodeItemOpenNativeClosure6aa8",
+      "native_statement": {
+        "path": "ZesuSsz/Evidence/route_repair/6aa8.statement.txt",
+        "sha256": "5299bf83c4292ebef06acdb15206191456f866eb66e32ff7e3a0001dda527343"
+      },
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6aa8/Source.v",
+        "sha256": "a559054334fe1331b6ae9520fa1de51c6109686a908b1210fcf184e4213cf12c"
+      },
+      "native_source_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s130/ZesuSsz/Evidence/precommitment/6aa8.json",
+        "sha256": "40e1d37a1b9b7560dc805bc568a9b8f070a421797ababe18b2f328e9b3e71bc9"
+      },
+      "capture_kind": "retained precommitment state; scope differs from I67 source",
+      "captured_groups": {
+        "active": 3,
+        "stack": 0,
+        "shelf": 5,
+        "given_up": 0
+      },
+      "capture_scope": {
+        "input_index_sha256": "c302ab4d77ab541036a2ed27c96b7b3b25e39332a1575584becfc072edf17e2e",
+        "fixture_copies": [
+          {
+            "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/Replay6a08.v"
+          },
+          {
+            "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/Replay6aa8.v"
+          }
+        ],
+        "measured_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+        "measured_scope": "28 switches, 25 hint modules",
+        "scope_limit": "Exact I67 statement. Owned current private artifacts. Scheduling equality with frozen I67 is not established.",
+        "changed_steps": "Restore successful individual-step recovery. Apply existing S43 lemmas explicitly. Capture application groups even after failure."
+      }
+    },
+    {
+      "block": "6ad8",
+      "native_theorem": "DesignedBoundary_800d6ad8",
+      "checked_obligation": "decodeItemOpenNativeClosure6ad8",
+      "native_statement": {
+        "path": "ZesuSsz/Evidence/route_repair/6ad8.statement.txt",
+        "sha256": "5ec86bb04c9678dd2e0a414c0421e7c8bfa5b9607103a84dc06410640f1f0fe5"
+      },
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6ad8/Source.v",
+        "sha256": "811319ca442862e1d64243bc6cd0713475b52899f240cdcaec94a8f5a23fbe08"
+      },
+      "native_source_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s130/ZesuSsz/Evidence/precommitment/6ad8.json",
+        "sha256": "df24287b5055eabf9d6f6985c139a59c29f90e8075ba36d793863d032a3c693c"
+      },
+      "capture_kind": "retained precommitment state; scope differs from I67 source",
+      "captured_groups": {
+        "active": 3,
+        "stack": 0,
+        "shelf": 4,
+        "given_up": 0
+      },
+      "capture_scope": "Exact retained I62 native statements on owned current artifacts. Historical33b9a455 plus four Rule38 overlays differs from the current28-switch scope."
+    },
+    {
+      "block": "6a24",
+      "native_theorem": "DesignedBoundary_800d6a24",
+      "checked_obligation": "decodeItemOpenNativeClosure6a24",
+      "native_statement": {
+        "path": "ZesuSsz/Evidence/route_repair/6a24.statement.txt",
+        "sha256": "9f8ff7a9b2b99cd0315b2c26317722b193e2c101e457223e96fe6ec7c664c6ba"
+      },
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6a24/Source.v",
+        "sha256": "e90569e69fe61d9873fbf75976566c5583b1548f1a1e676089fcc7b665b40cbc"
+      },
+      "native_source_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a24-000.json",
+        "sha256": "20bf2fb1db204d6e2a6af283657ceee7f2286f508ec241b972c93a9390ed3eaf"
+      },
+      "capture_kind": "block-form printed residual; not live kernel state",
+      "captured_groups": {
+        "printed_active": 8,
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "capture_scope": "I67 e17; Approved28; umbrella25"
+    },
+    {
+      "block": "6ac4",
+      "native_theorem": "DesignedBoundary_800d6ac4",
+      "checked_obligation": "decodeItemOpenNativeClosure6ac4",
+      "native_statement": {
+        "path": "ZesuSsz/Evidence/route_repair/6ac4.statement.txt",
+        "sha256": "4925682a79f9358cba68fd8abfe3e87d451108799f2c1168f0c641c51591a503"
+      },
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6ac4/Source.v",
+        "sha256": "ad56ba6f74168244b161d5fb8f95f171f145764f0f028a19f1018aa9a4199945"
+      },
+      "native_source_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-015/captures/block_0x800d6ac4-000.json",
+        "sha256": "b28664e0843e437dfc6d17bf769e7a61dc9e58c867de464e0ce796f3ab9d96a2"
+      },
+      "capture_kind": "block-form printed residual; not live kernel state",
+      "captured_groups": {
+        "printed_active": 8,
+        "stack": "unavailable",
+        "shelf": "unavailable",
+        "given_up": "unavailable"
+      },
+      "capture_scope": "I67 e17; Approved28; umbrella25"
+    }
+  ],
+  "reject_controls": [
+    "s119_literal_committed_witness_conflict",
+    "s119_successor_committed_witness_conflict"
+  ],
+  "control_module": {
+    "path": "ZesuSsz/Evidence/DecodeItemPrecommitmentWitnessFixtures.v",
+    "sha256": "fcc6cabee1bc6df0d743a26ce47a2a086cf10738bb3a8862d2a4aaeca050ae96"
+  },
+  "reviewed_terminal_package": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/REPORT.json",
+    "sha256": "f1e794b433637b620bf32c1884a052456e6981911d5afc29bbca5fa33eec07d8"
+  },
+  "limits": [
+    "No ON native closure is currently asserted.",
+    "Three terminal captures do not identify precommitment assignment or first-global chronology.",
+    "Original loop capture auxiliary groups are unavailable.",
+    "Actual nine native closure certificates are mandatory at acceptance."
+  ],
+  "checked_module_source": {
+    "path": "ZesuSsz/Evidence/DecodeItemRouteRepairAcceptance.v",
+    "sha256": "4d451f0daeda89c2f7f0096ecd339f5d2b5803a359f2ce0123094505d62fcba9"
+  }
+}
