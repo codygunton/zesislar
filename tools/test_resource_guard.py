@@ -1,5 +1,6 @@
 """Check writer admission limits and reservation classes in isolation."""
 
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -181,6 +182,9 @@ compiler_pids() { :; }
 POLL_SECONDS=0.01
 worker() {
   local owner=$BASHPID marker
+  if (( $1 % 2 )); then
+    ZESU_DIAGNOSTIC_PROBE=cpu-only; MODULE_LIMIT_GIB=6
+  fi
   marker=$(reserve_coqc "$owner") || return
   confirm_coqc "$marker" || return
   confirm_coqc "$marker" || return
@@ -190,7 +194,7 @@ worker() {
   release_coqc "$marker"
 }
 pids=""
-for _ in 1 2 3 4 5 6; do worker & pids="$pids $!"; done
+for n in 1 2 3 4 5 6; do worker "$n" & pids="$pids $!"; done
 for pid in $pids; do wait "$pid" || exit 91; done
 cat "$STATE_DIR/events"
 [ "$(probe_count)" = 0 ]
@@ -212,6 +216,135 @@ cat "$STATE_DIR/events"
         self.assertEqual(starts, 6)
         self.assertEqual(peak, 2)
         self.assertFalse(active)
+
+    def test_cpu_only_probe_uses_six_gib_and_the_shared_probe_slot(self):
+        result = self.run_guard(r"""
+available_gib() { echo 26; }
+load_five() { echo 0; }
+blocked_count() { echo 0; }
+compiler_pids() { :; }
+[ -z "$(memory_hold_reason)" ] || exit 90
+marker=$(reserve_coqc $$)
+confirm_coqc "$marker" || exit 91
+grep -Fxq 'probe=issue10-cpu-only' "$marker" || exit 92
+grep -Fxq 'memory_gib=6' "$marker" || exit 93
+[ "$(probe_count)" = 1 ] || exit 94
+mark_probe_scope "$marker" fixture-cpu-only.scope || exit 95
+live_scopes() { echo fixture-cpu-only.scope; }
+[ -z "$(gate_scopes)" ] || exit 96
+available_gib() { echo 25; }
+[ -n "$(memory_hold_reason)" ] || exit 97
+release_coqc "$marker"
+""", ZESU_DIAGNOSTIC_PROBE="cpu-only", ZESU_PROBE_ISSUE="10",
+                                     ZESU_MODULE_LIMIT_GIB="6",
+                                     ZESU_PROOF_CPU_LIMIT="unlimited")
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_cpu_only_probe_rejects_incoherent_fences(self):
+        baseline = {"ZESU_DIAGNOSTIC_PROBE": "cpu-only", "ZESU_PROBE_ISSUE": "10",
+                    "ZESU_MODULE_LIMIT_GIB": "6", "ZESU_PROOF_CPU_LIMIT": "unlimited"}
+        for change in ({"ZESU_MODULE_LIMIT_GIB": "64"}, {"ZESU_PROBE_ISSUE": ""},
+                       {"ZESU_PROOF_CPU_LIMIT": "1200"}, {"ZESU_IN_GATE": "1"}):
+            with self.subTest(change=change):
+                result = self.run_guard("validate_probe_scope", **{**baseline, **change})
+                self.assertEqual(result.returncode, 2, result.stderr)
+
+    def test_cpu_only_probe_tag_keeps_owner_and_memory_validation(self):
+        for memory, start in (("64", "$(process_start $$)"), ("6", "0")):
+            result = self.run_guard(f"""
+marker="$COQC_RESERVATIONS/$$.probe"
+printf 'confirmed\nprobe=issue10-cpu-only\nmemory_gib={memory}\ncpu=unlimited\nowner_start=%s\n' "{start}" > "$marker"
+if probe_record "$marker"; then exit 91; fi
+""")
+            self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_memory_kill_records_owned_identity_before_signal(self):
+        result = self.run_guard(r"""
+PROC_ROOT="$STATE_DIR/proc"
+CGROUP_ROOT="$STATE_DIR/cgroup"
+mkdir -p "$PROC_ROOT/123" "$CGROUP_ROOT/fixture.scope"
+printf '123 (coqc) R 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 456 0\n' > "$PROC_ROOT/123/stat"
+printf '0::/fixture.scope\n' > "$PROC_ROOT/123/cgroup"
+printf '123\n' > "$CGROUP_ROOT/fixture.scope/cgroup.procs"
+youngest_scope() { echo fixture.scope; }
+systemctl() {
+  case "$2" in
+    show) printf 'ControlGroup=/fixture.scope\nKillSignal=15\n' ;;
+    kill) [ -s "$STATE_DIR/terminations.jsonl" ] || return 91
+          rm "$PROC_ROOT/123/stat"; printf '' > "$CGROUP_ROOT/fixture.scope/cgroup.procs" ;;
+    stop) : ;;
+  esac
+}
+kill_youngest >/dev/null || exit 92
+cat "$STATE_DIR/terminations.jsonl"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        records = [json.loads(line) for line in result.stdout.splitlines()]
+        first = records[0]
+        self.assertEqual((first["pid"], first["start_ticks"], first["scope"]),
+                         (123, 456, "fixture.scope"))
+        self.assertEqual((first["signal"], first["cause"], first["phase"]),
+                         ("SIGKILL", "memory-boundary", "before-request"))
+        self.assertEqual(records[1]["cause"], "memory-boundary-cleanup")
+
+    def test_aggregate_stop_records_each_descendant_scope(self):
+        result = self.run_guard(r"""
+PROC_ROOT="$STATE_DIR/proc"
+CGROUP_ROOT="$STATE_DIR/cgroup"
+for pid in 123 124; do
+  mkdir -p "$PROC_ROOT/$pid" "$CGROUP_ROOT/fixture.slice/job-$pid.scope"
+  printf '%s (coqc) R 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 456 0\n' "$pid" > "$PROC_ROOT/$pid/stat"
+  printf '0::/fixture.slice/job-%s.scope\n' "$pid" > "$PROC_ROOT/$pid/cgroup"
+  printf '%s\n' "$pid" > "$CGROUP_ROOT/fixture.slice/job-$pid.scope/cgroup.procs"
+done
+mkdir -p "$CGROUP_ROOT/fixture.slice/empty.scope"
+: > "$CGROUP_ROOT/fixture.slice/empty.scope/cgroup.procs"
+systemctl() {
+  case "$2" in
+    show) printf 'ControlGroup=/fixture.slice\nKillSignal=15\n' ;;
+    stop) [ -s "$STATE_DIR/terminations.jsonl" ] ;;
+  esac
+}
+stop_scope fixture.slice aggregate-cleanup || exit 91
+cat "$STATE_DIR/terminations.jsonl"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        records = [json.loads(line) for line in result.stdout.splitlines()]
+        self.assertEqual([(r["pid"], r["scope"]) for r in records],
+                         [(123, "job-123.scope"), (124, "job-124.scope"), (None, "empty.scope")])
+        self.assertTrue(all(r["signal"] == "SIGTERM" and
+                            r["cause"] == "aggregate-cleanup" and
+                            r["requested_unit"] == "fixture.slice" for r in records))
+
+    def test_changed_cgroup_does_not_attribute_a_foreign_scope(self):
+        result = self.run_guard(r"""
+PROC_ROOT="$STATE_DIR/proc"
+CGROUP_ROOT="$STATE_DIR/cgroup"
+mkdir -p "$PROC_ROOT/123" "$CGROUP_ROOT/fixture.scope"
+printf '123 (coqc) R 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 456 0\n' > "$PROC_ROOT/123/stat"
+printf '0::/foreign.scope\n' > "$PROC_ROOT/123/cgroup"
+printf '123\n' > "$CGROUP_ROOT/fixture.scope/cgroup.procs"
+systemctl() { printf 'ControlGroup=/fixture.scope\nKillSignal=15\n'; }
+record_scope_termination fixture.scope SIGKILL memory-boundary
+cat "$STATE_DIR/terminations.jsonl"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        record = json.loads(result.stdout)
+        self.assertEqual(record["scope"], "fixture.scope")
+        self.assertEqual(record["identity_error"], "cgroup-changed")
+
+    def test_empty_stop_records_unavailable_pid_and_signal(self):
+        result = self.run_guard(r"""
+systemctl() { :; }
+stop_scope fixture.scope empty-scope
+cat "$STATE_DIR/terminations.jsonl"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        record = json.loads(result.stdout)
+        self.assertIsNone(record["pid"])
+        self.assertIsNone(record["signal"])
+        self.assertEqual(record["scope"], "fixture.scope")
+        self.assertEqual(record["cause"], "empty-scope")
 
     def test_scope_fences_require_six_gib_or_valid_issue10_probe(self):
         cases = (({}, 0), ({"ZESU_MODULE_LIMIT_GIB": "64"}, 2),

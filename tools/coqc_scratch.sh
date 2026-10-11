@@ -26,15 +26,15 @@ from pathlib import Path
 
 
 probe = os.environ.get("ZESU_DIAGNOSTIC_PROBE", "0")
-if probe not in ("0", "1"):
-    raise SystemExit("the diagnostic probe flag must be zero or one")
+if probe not in ("0", "1", "cpu-only"):
+    raise SystemExit("the diagnostic probe flag must be zero, one, or cpu-only")
 wall_text = os.environ.get("ZESU_SCRATCH_WALL_SECONDS", "300")
 memory_gib = int(os.environ.get("ZESU_SCRATCH_MEMORY_GIB", "6"))
-if probe == "1":
+if probe in ("1", "cpu-only"):
     if (wall_text != "none" or os.environ.get("ZESU_PRIMARY_CPU_LIMIT") != "none" or
-            os.environ.get("ZESU_PROOF_CPU_LIMIT") != "unlimited" or memory_gib != 64 or
+            os.environ.get("ZESU_PROOF_CPU_LIMIT") != "unlimited" or memory_gib != (6 if probe == "cpu-only" else 64) or
             os.environ.get("ZESU_PROBE_ISSUE") != "10" or os.environ.get("ZESU_IN_GATE")):
-        raise SystemExit("the diagnostic probe requires issue10, 64 GiB, and unlimited CPU and wall time")
+        raise SystemExit("the diagnostic probe requires issue10, its declared memory fence, and unlimited CPU and wall time")
     wall_limit = None
 else:
     if wall_text == "none":

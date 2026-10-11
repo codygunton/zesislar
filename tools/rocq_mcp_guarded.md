@@ -70,3 +70,29 @@ It releases the private lock when admission changes.
 The normal batch guard checks memory, compiler slots, and actual gate holds.
 The root, child, and preview gate classes remain unchanged.
 Use the full Make lock for project gates.
+
+## CPU-only issue-10 probes
+
+Set `ZESU_DIAGNOSTIC_PROBE=cpu-only`, `ZESU_PROBE_ISSUE=10`, and
+`ZESU_PROOF_CPU_LIMIT=unlimited` for a CPU-only probe. Keep
+`ZESU_MODULE_LIMIT_GIB=6`. This probe needs 26 GiB available.
+It shares the two atomic probe slots with 64 GiB probes.
+It keeps its compiler and memory accounting. Gate draining ignores its
+validated probe record. Gates cannot use either probe flag.
+
+For `tools/coqc_scratch.sh`, also set `ZESU_PRIMARY_CPU_LIMIT=none`,
+`ZESU_SCRATCH_WALL_SECONDS=none`, and `ZESU_SCRATCH_MEMORY_GIB=6`.
+Record the raised CPU limit on issue 10 before the run.
+
+The guard writes termination requests to
+`$ZESU_GUARD_STATE/terminations.jsonl`, or the default guard state directory.
+Each record contains the PID, scope, signal, and cause.
+It also retains the process start ticks and the actor PID.
+An aggregate stop records each descendant scope.
+An empty scope gets an explicit `null` PID.
+The guard reads cgroup membership and process identities only.
+It does not read process arguments or environments.
+
+Records precede the signal request. They do not prove kernel delivery.
+A missing process or signal remains explicit as `null`.
+A failed identity capture remains explicit in the record.
