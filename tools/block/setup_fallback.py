@@ -23,6 +23,19 @@ def load_slice(source):
     return source.split(marker)[0] + marker + 'Abort.\n'
 
 
+def write_interactive_source(source):
+    """Keep document loading separate from the explicit proof request."""
+    source = Path(source)
+    target = source.with_name(source.stem + '_interactive.v')
+    contents = load_slice(source.read_text())
+    if target.exists():
+        if target.read_text() != contents:
+            raise ValueError('The retained interactive source has different contents')
+    else:
+        target.write_text(contents)
+    return target
+
+
 def compiler_run(arguments):
     record = Path(os.environ['ZESU_FALLBACK_COMPILER_RECORD'])
     command = ['/home/cody/islaris/_opam/bin/coqc', *arguments]
