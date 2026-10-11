@@ -1,0 +1,206 @@
+"""Compile every generated module and check its exact exported statements."""
+import argparse
+import asyncio
+from datetime import datetime, timezone
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import shutil
+import subprocess
+import sys
+
+from successor_entailment import _result
+
+HERE = Path(__file__).resolve().parent
+
+
+def digest(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def statements(source, pc):
+    """Retain exact declarations, including earlier definitions and scopes."""
+    result = []
+    for match in re.finditer(r'^Lemma\s+([A-Za-z_][A-Za-z0-9_\']*)\b', source, re.M):
+        end = source.index('Proof.', match.end())
+        result.append((match[1], source[:end], source))
+    # PromotedBodies exports typed definitions inside an Iris section.
+    name = f'decodeItemPromotedBody{pc:x}'
+    match = re.search(r'Definition ' + name + r'\s*:\s*(.*?)\s*:=', source, re.S)
+    if match:
+        imports = source.split('Section promoted_block_bodies.', 1)[0]
+        declaration = f'Lemma promotion_{pc:x} `{{!islaG Sigma}} `{{!threadG}} :\n  {match[1]}.\n'
+        proof = source + '\n' + declaration + f'Proof. exact {name}. Qed.\n'
+        result.append((f'promotion_{pc:x}', imports + declaration, proof))
+    if not result:
+        raise ValueError('The generated module has no supported statement check.')
+    return result
+
+
+def source_artifacts(source):
+    source = Path(source)
+    return [source.with_suffix(s) for s in ('.vo', '.vos', '.vok', '.glob')] + [
+        source.with_name('.' + source.stem + '.aux')]
+
+
+def require_clean_source(source):
+    present = [str(p) for p in source_artifacts(source) if p.exists()]
+    if present:
+        raise ValueError('Compiler artifacts exist in the source tree: ' + repr(present))
+
+
+def live(identity):
+    if not identity:
+        return False
+    try:
+        fields = (Path('/proc') / str(identity['pid']) / 'stat').read_text().rsplit(')', 1)[1].split()
+        return fields[0] not in ('Z', 'X') and int(fields[19]) == identity['start_ticks']
+    except FileNotFoundError:
+        return False
+
+
+def owned_pet(health, owner):
+    pet = health.get('pet', {})
+    if not pet.get('running'):
+        return None
+    pid = pet['pid']
+    fields = (Path('/proc') / str(pid) / 'stat').read_text().rsplit(')', 1)[1].split()
+    if int(fields[1]) != owner['pid'] or not live(owner):
+        raise ValueError('The Pet identity does not belong to this transport.')
+    return {'pid': pid, 'start_ticks': int(fields[19])}
+
+
+async def verify(workspace, sources, pc, directory, timeout=600):
+    from mcp import ClientSession, StdioServerParameters
+    from mcp.client.stdio import stdio_client
+    directory = Path(directory)
+    directory.mkdir(parents=True, exist_ok=False)
+    private = (workspace / '_build/default').resolve()
+    if not private.is_dir() or not private.is_relative_to(workspace.resolve()):
+        raise ValueError('The owned private artifact directory is unavailable.')
+    report = {'private_artifact_directory': str(private), 'success': False, 'calls': [], 'closures': [], 'sources': [], 'checks': []}
+
+    def save():
+        (directory / 'RESULT.json').write_text(json.dumps(report, indent=2) + '\n')
+
+    async def operation(label, tool, arguments):
+        owner = pet = None
+        normal = False
+        env = dict(os.environ)
+        env.update(ROCQ_WORKSPACE=str(workspace), ROCQ_DUNE_BUILD='1',
+                   ZESU_ROCQ_COQC_WRAPPER=str(workspace / 'tools/rocq_coqc_guarded.sh'))
+        # The existing compiler wrapper supplies normal guarded admission.
+        command = directory / (label + '.sh')
+        command.write_text('#!/bin/sh\nset -eu\nexec "$ZESU_MCP_PYTHON" "$ZESU_PROMOTION_SERVER"\n')
+        command.chmod(0o755)
+        env.update(ZESU_MCP_PYTHON=sys.executable,
+                   ZESU_PROMOTION_SERVER=str(HERE / 'promotion_verify_server.py'),
+                   ZESU_ROCQ_MCP_BINARY=str(command))
+        parameters = StdioServerParameters(command=str(workspace / 'tools/rocq_mcp_guarded.sh'), env=env)
+        result = None
+        try:
+            async with stdio_client(parameters) as streams:
+                async with ClientSession(*streams) as session:
+                    await session.initialize()
+
+                    async def call(name, args):
+                        record = {'tool': name, 'arguments': args,
+                                  'request_UTC': datetime.now(timezone.utc).isoformat()}
+                        report['calls'].append(record); save()
+                        response = await session.call_tool(name, args)
+                        record['raw_response'] = response.model_dump(mode='json')
+                        record['result'] = _result(response); save()
+                        return record['result']
+
+                    health = await call('rocq_health', {})
+                    if not health.get('ok'):
+                        raise ValueError('Rocq MCP health failed.')
+                    owner = await call('rocq_promotion_owner', {})
+                    if not owner.get('success') or not live(owner):
+                        raise ValueError('The MCP server identity is unavailable.')
+                    if health.get('pet', {}).get('running'):
+                        raise ValueError('A fresh compilation transport has an active Pet.')
+                    try:
+                        result = await call(tool, arguments)
+                    finally:
+                        pet = owned_pet(await call('rocq_health', {}), owner)
+            normal = True
+        finally:
+            for _ in range(50):
+                if not live(owner) and not live(pet):
+                    break
+                await asyncio.sleep(.1)
+            closure = {'operation': label, 'owner': owner, 'owned_pet': pet,
+                       'transport_closed_normally': normal,
+                       'server_exited': owner is not None and not live(owner),
+                       'owned_Pet_absent': not live(pet)}
+            report['closures'].append(closure); save()
+        if not all(closure[k] for k in ('transport_closed_normally', 'server_exited', 'owned_Pet_absent')):
+            raise ValueError('The owned verification transport did not close normally.')
+        if not result or not result.get('success'):
+            raise ValueError(f'{tool} failed. Inspect {directory / "RESULT.json"}.')
+        return result
+
+    try:
+        for index, source in enumerate(sources):
+            source = Path(source)
+            require_clean_source(source)
+            copy = directory / f'{index:02d}-{source.name}'
+            copy.write_bytes(source.read_bytes())
+            report['sources'].append({'path': str(source), 'sha256': digest(source),
+                                      'snapshot': str(copy), 'snapshot_sha256': digest(copy)})
+            compiled = await operation(f'compile-{index}', 'rocq_compile_file',
+                {'workspace': str(workspace), 'file': str(source), 'timeout': timeout, 'timing': True, 'keep_vo': True})
+            require_clean_source(source)
+            artifact = private / source.relative_to(workspace).with_suffix('.vo')
+            if not artifact.is_file():
+                raise ValueError('The compiler did not retain the private module artifact.')
+            report['checks'].append({'source': str(source), 'compile_file': compiled,
+                                    'private_artifact': str(artifact), 'private_artifact_sha256': digest(artifact),
+                                    'source_tree_clean': True, 'statements': []})
+            for number, (name, statement, proof) in enumerate(statements(copy.read_text(), pc)):
+                checked = await operation(f'verify-{index}-{number}', 'rocq_verify',
+                    {'workspace': str(workspace), 'problem_statement': statement,
+                     'proof': proof, 'problem_name': name, 'timeout': timeout})
+                if checked.get('assumptions') != []:
+                    raise ValueError('The generated statement has assumptions or unavailable assumptions.')
+                report['checks'][-1]['statements'].append(
+                    {'name': name, 'exact_statement': statement, 'verification': checked})
+                save()
+            if digest(source) != report['sources'][-1]['sha256']:
+                raise ValueError('A generated source changed during verification.')
+        report['success'] = True
+        save()
+        return report
+    except BaseException as error:
+        report['error'] = {'type': type(error).__name__, 'message': str(error)}
+        save()
+        raise
+
+
+def verify_generated(workspace, sources, pc, directory, python=None):
+    """Use the pinned MCP Python, never a shell compiler fallback."""
+    if not os.environ.get('OPAM_SWITCH_PREFIX') or not shutil.which('pet'):
+        raise ValueError('Run complete promotion under the pinned opam environment with pet on PATH.')
+    python = python or os.environ.get('ZESU_MCP_PYTHON') or sys.executable
+    manifest = Path(str(directory) + '.inputs.json')
+    manifest.parent.mkdir(parents=True, exist_ok=True)
+    if manifest.exists() or Path(directory).exists():
+        raise ValueError('The verification output already exists. Preserve that attempt.')
+    manifest.write_text(json.dumps({'workspace': str(workspace), 'sources': list(map(str, sources)),
+                                    'pc': pc, 'directory': str(directory)}, indent=2) + '\n')
+    subprocess.run([python, str(Path(__file__).resolve()), '--inputs', str(manifest)], check=True)
+    result = json.loads((Path(directory) / 'RESULT.json').read_text())
+    if result.get('success') is not True:
+        raise ValueError('The generated promotion failed verification.')
+    return result
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--inputs', type=Path, required=True)
+    args = parser.parse_args()
+    inputs = json.loads(args.inputs.read_text())
+    asyncio.run(verify(Path(inputs['workspace']), inputs['sources'], inputs['pc'], inputs['directory']))

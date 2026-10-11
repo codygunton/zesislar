@@ -19,7 +19,8 @@ def binding(path):
             "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
 
 
-def generate(table_path):
+def generate(table_path, *, workspace=None, status_root=None, productions=None):
+    workspace = Path(workspace) if workspace is not None else ROOT
     table_binding = binding(table_path)
     if table_binding["sha256"] != I67_SHA256:
         raise ValueError("The retained I67 table hash differs.")
@@ -28,13 +29,13 @@ def generate(table_path):
     measurement_workspace = table_path.parents[2]
     if table["root"] != MEASUREMENT_ROOT:
         raise ValueError("The measurement root differs.")
-    source = ROOT / "ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v"
+    source = workspace / "ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v"
     text = source.read_text()
     record = re.search(r"Record DecodeItemOpenNativeHypotheses : Prop := \{(.*?)\}\.",
                        text, re.S).group(1)
     fields = re.findall(r"native800d([0-9a-f]{4})\s*:\s*(\w+)", record)
-    if len(fields) != 15 or any(site == "6974" for site, _ in fields):
-        raise ValueError("The open record must contain fifteen fields without 6974.")
+    if len({site for site, _ in fields}) != len(fields):
+        raise ValueError("The open record must contain unique closure fields.")
     measurements = {row["block"]: row for row in table["rows"]}
     count_body = re.search(r"Definition decodeItemI67NativeResidualCounts.*?:=\s*(.*?)\]\.", text, re.S).group(1)
     checked_counts = {"0x800d" + site: int(count) if count else None
@@ -65,14 +66,26 @@ def generate(table_path):
                      "statement_sha256": measured["statement_sha256"],
                      "source": source_binding, "captures": captures,
                      "auxiliary_groups": "unavailable"})
-    production = ROOT / "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v"
-    return {"status_root": STATUS_ROOT, "measurement_root": MEASUREMENT_ROOT,
+    closed = {}
+    productions = productions or {}
+    definitions = re.findall(r"Definition decodeItemOpenNativeClosure([0-9a-f]{4})\s*:", text)
+    for site in sorted(set(definitions) - {site for site, _ in fields}):
+        module, theorem = productions.get(site, (
+            "ZesuSsz.Proofs.DecodeItem.Auto.Block800d" + site,
+            "DesignedBoundary_800d" + site))
+        production = workspace / (module.replace(".", "/") + ".v")
+        production_text = production.read_text()
+        if not re.search(r"Lemma " + re.escape(theorem) + r"\b", production_text):
+            raise ValueError("The named production theorem is unavailable: " + site)
+        closed[site] = {"theorem": module + "." + theorem, "source": binding(production),
+                        "successor_premises": sorted(set(re.findall(
+                            r"instr_pre (0x[0-9a-f]+)", production_text)))}
+    # Keep the existing 6974 field for readers of the first status schema.
+    return {"status_root": status_root or STATUS_ROOT, "measurement_root": MEASUREMENT_ROOT,
             "approved_switches": table["approved_switches"],
-            "hint_modules": table["hint_modules"], "open_closures": 15,
+            "hint_modules": table["hint_modules"], "open_closures": len(fields),
             "open_record": binding(source), "measurement_table": table_binding,
-            "closed_6974": {"theorem": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.DesignedBoundary_800d6974",
-                            "source": binding(production),
-                            "successor_premises": ["0x800d697c", "0x800d69a4"]},
+            "closed_native": closed, "closed_6974": closed.get("6974"),
             "rows": rows,
             "limits": ["Counts measure printed active records on e17, not current Root proof states.",
                        "A null count means the final active count is unavailable.",
