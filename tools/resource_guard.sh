@@ -960,8 +960,19 @@ if path:
                                 "scope": unit, "identity_error": "cgroup-changed"})
                 continue
             scopes = [part for part in membership.split("/") if part.endswith(".scope")]
-            records.append({"pid": pid, "start_ticks": int(fields[19]),
-                            "scope": scopes[-1] if scopes else unit})
+            record = {"pid": pid, "start_ticks": int(fields[19]),
+                      "scope": scopes[-1] if scopes else unit}
+            try:
+                limit_lines = (Path(proc) / str(pid) / "limits").read_text().splitlines()
+                stack_line = next(line for line in limit_lines if line.startswith("Max stack size"))
+                soft, hard, units = stack_line.split()[-3:]
+                record.update(stack_limits={"soft_bytes": None if soft == "unlimited" else int(soft),
+                                            "hard_bytes": None if hard == "unlimited" else int(hard)},
+                              stack_limits_available=True)
+            except (OSError, ValueError, IndexError, StopIteration) as error:
+                record.update(stack_limits=None, stack_limits_available=False,
+                              stack_limit_error=type(error).__name__)
+            records.append(record)
         except (OSError, ValueError, IndexError, StopIteration) as error:
             records.append({"pid": pid, "start_ticks": None, "scope": unit,
                             "identity_error": type(error).__name__})
@@ -970,6 +981,8 @@ for empty_scope in sorted(scopes_in_group - {record["scope"] for record in recor
 if not records:
     records.append({"pid": None, "start_ticks": None, "scope": unit})
 for record in records:
+    record.setdefault("stack_limits", None)
+    record.setdefault("stack_limits_available", False)
     record.update(utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                   actor_pid=int(actor), requested_unit=unit, signal=kill_signal,
                   action=requested, cause=cause, phase="before-request",
@@ -1361,6 +1374,12 @@ report() {
   python3 "$PROM" now || echo "prometheus unavailable; no machine figures"
 }
 
+# Apply proof limits inside the admitted scope, before the command starts.
+apply_scope_limits() {
+  ulimit -s unlimited || return $?
+  ulimit -t "${ZESU_SCOPE_CPU:-${ZESU_PROOF_CPU_LIMIT:-1200}}" || return $?
+}
+
 prune_scope_registry
 
 case "${1:-report}" in
@@ -1387,7 +1406,7 @@ case "${1:-report}" in
     confirm_coqc "$token" || exit $?
     mark_coqc "$token" $$ || exit $?
     export ZESU_COQC_RESERVATION="$token" ZESU_COQC_SCOPE="$token"
-    ulimit -t "${ZESU_SCOPE_CPU:-${ZESU_PROOF_CPU_LIMIT:-1200}}" || exit $?
+    apply_scope_limits || exit $?
     exec "$@" ;;
   batch)  shift; run_batch "$@" ;;
   locked) shift; run_locked "$@" ;;

@@ -10,9 +10,72 @@ import unittest
 
 GUARD = Path(__file__).with_name("resource_guard.sh")
 LIBRARY = GUARD.read_text().split("\nprune_scope_registry\n\ncase ", 1)[0]
+DISPATCH = "case " + GUARD.read_text().split("\nprune_scope_registry\n\ncase ", 1)[1]
 
 
 class ResourceGuard(unittest.TestCase):
+    def test_admitted_scope_sets_unlimited_stack_and_preserves_cpu_limit(self):
+        for cpu, expected_cpu in (("1200", 1200), ("unlimited", -1)):
+            with self.subTest(cpu=cpu):
+                result = self.run_guard(r"""
+ulimit -S -s 8192
+apply_scope_limits || exit 91
+python3 - <<'PY_LIMITS'
+import json, resource
+print(json.dumps({"stack": resource.getrlimit(resource.RLIMIT_STACK),
+                  "cpu": resource.getrlimit(resource.RLIMIT_CPU)}))
+PY_LIMITS
+""", ZESU_SCOPE_CPU=cpu)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                limits = json.loads(result.stdout)
+                self.assertEqual(limits["stack"], [-1, -1])
+                self.assertEqual(limits["cpu"], [expected_cpu, expected_cpu])
+
+    def test_scope_exec_applies_limits_for_arms_and_both_probe_types(self):
+        cases = (({}, 1200),
+                 ({"ZESU_DIAGNOSTIC_PROBE": "1", "ZESU_MODULE_LIMIT_GIB": "64",
+                   "ZESU_PROOF_CPU_LIMIT": "unlimited", "ZESU_SCOPE_CPU": "unlimited",
+                   "ZESU_PROBE_ISSUE": "10"}, -1),
+                 ({"ZESU_DIAGNOSTIC_PROBE": "cpu-only", "ZESU_MODULE_LIMIT_GIB": "6",
+                   "ZESU_PROOF_CPU_LIMIT": "unlimited", "ZESU_SCOPE_CPU": "unlimited",
+                   "ZESU_PROBE_ISSUE": "10"}, -1))
+        for variables, cpu in cases:
+            with self.subTest(variables=variables):
+                # Replace admission in this private fixture. Keep the real dispatch.
+                result = self.run_guard(r"""
+confirm_coqc() { :; }
+mark_coqc() { :; }
+ulimit -S -s 8192
+set -- scope-exec fixture -- python3 -c 'import json, resource; print(json.dumps({"stack":resource.getrlimit(resource.RLIMIT_STACK), "cpu":resource.getrlimit(resource.RLIMIT_CPU)}))'
+""" + DISPATCH, **variables)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                limits = json.loads(result.stdout)
+                self.assertEqual(limits["stack"], [-1, -1])
+                self.assertEqual(limits["cpu"], [cpu, cpu])
+
+    def test_termination_record_retains_actual_stack_limits(self):
+        for soft, hard, expected in (("8388608", "unlimited", [8388608, None]),
+                                     ("unlimited", "unlimited", [None, None])):
+            with self.subTest(soft=soft, hard=hard):
+                result = self.run_guard(r"""
+PROC_ROOT="$STATE_DIR/proc"
+CGROUP_ROOT="$STATE_DIR/cgroup"
+mkdir -p "$PROC_ROOT/123" "$CGROUP_ROOT/fixture.scope"
+printf '123 (coqc) R 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 456 0\n' > "$PROC_ROOT/123/stat"
+printf '0::/fixture.scope\n' > "$PROC_ROOT/123/cgroup"
+printf 'Max stack size            %s              %s            bytes\n' "$TEST_SOFT" "$TEST_HARD" > "$PROC_ROOT/123/limits"
+printf '123\n' > "$CGROUP_ROOT/fixture.scope/cgroup.procs"
+systemctl() { printf 'ControlGroup=/fixture.scope\nKillSignal=15\n'; }
+record_scope_termination fixture.scope SIGKILL memory-boundary
+cat "$STATE_DIR/terminations.jsonl"
+""", TEST_SOFT=soft, TEST_HARD=hard)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                record = json.loads(result.stdout)
+                self.assertEqual(record["pid"], 123)
+                self.assertTrue(record["stack_limits_available"])
+                self.assertEqual([record["stack_limits"]["soft_bytes"],
+                                  record["stack_limits"]["hard_bytes"]], expected)
+
     def test_worker_count_uses_70_percent_and_preserves_headroom(self):
         result = self.run_guard(r"""
 JOB_GIB=3
@@ -283,6 +346,10 @@ cat "$STATE_DIR/terminations.jsonl"
         first = records[0]
         self.assertEqual((first["pid"], first["start_ticks"], first["scope"]),
                          (123, 456, "fixture.scope"))
+        self.assertEqual(first["pid"], 123)
+        self.assertFalse(first["stack_limits_available"])
+        self.assertIsNone(first["stack_limits"])
+        self.assertEqual(first["stack_limit_error"], "FileNotFoundError")
         self.assertEqual((first["signal"], first["cause"], first["phase"]),
                          ("SIGKILL", "memory-boundary", "before-request"))
         self.assertEqual(records[1]["cause"], "memory-boundary-cleanup")
@@ -345,6 +412,8 @@ cat "$STATE_DIR/terminations.jsonl"
         self.assertIsNone(record["signal"])
         self.assertEqual(record["scope"], "fixture.scope")
         self.assertEqual(record["cause"], "empty-scope")
+        self.assertIsNone(record["stack_limits"])
+        self.assertFalse(record["stack_limits_available"])
 
     def test_scope_fences_require_six_gib_or_valid_issue10_probe(self):
         cases = (({}, 0), ({"ZESU_MODULE_LIMIT_GIB": "64"}, 2),
