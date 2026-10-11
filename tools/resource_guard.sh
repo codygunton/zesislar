@@ -84,6 +84,10 @@ KILL_GIB=${ZESU_KILL_GIB:-230}
 MEMORY_HEADROOM_GIB=20
 MEMORY_KILL_AVAILABLE_GIB=10
 DISK_BUSY_PERCENT=${ZESU_DISK_BUSY_PERCENT:-80}
+# Disk thresholds use decimal GB. Maintenance never removes worktree files.
+DISK_TRIM_BELOW_BYTES=60000000000
+DISK_PROBE_MIN_BYTES=20000000000
+DUNE_CACHE_TRIM_BIN=/home/cody/islaris/_opam/bin/dune
 # An arm's build writes a marker `<prefix>.<pid>` while it populates its
 # build directory from the Dune cache; the ramp applies while one is live.
 POPULATING_PREFIX=${ZESU_POPULATING_PREFIX:-/tmp/zesu-populating}
@@ -127,6 +131,38 @@ touch "$REGISTRY" "$LOG" "$PEAK"
 GIB=$((1024 * 1024 * 1024))
 
 note() { printf '%s %s\n' "$(date -Is)" "$*" >> "$LOG"; }
+
+home_free_bytes() { df -B1 --output=avail /home | awk 'NR == 2 {print $1}'; }
+
+# Dune trims only unused, single-link cache artifacts. Keep maintenance outside
+# the admission mutex so existing scopes can release their compiler slots.
+cache_disk_admission() {
+  local free status=0 maintenance_lock
+  free=$(home_free_bytes) || return 2
+  [[ "$free" =~ ^[0-9]+$ ]] || { echo "resource guard: cannot read /home free bytes" >&2; return 2; }
+  (( free < DISK_TRIM_BELOW_BYTES )) || return 0
+  exec {maintenance_lock}>>"$STATE_DIR/cache-maintenance.mutex" || return 2
+  flock "$maintenance_lock" || { exec {maintenance_lock}>&-; return 2; }
+  free=$(home_free_bytes)
+  if ! [[ "$free" =~ ^[0-9]+$ ]]; then
+    flock -u "$maintenance_lock"; exec {maintenance_lock}>&-
+    echo "resource guard: cannot read /home free bytes" >&2; return 2
+  fi
+  if (( free < DISK_TRIM_BELOW_BYTES )); then
+    note "CACHE_TRIM start pid=$BASHPID free_bytes=$free root=/home/cody/.cache/dune trimmed_size=20GiB"
+    DUNE_CACHE_ROOT=/home/cody/.cache/dune "$DUNE_CACHE_TRIM_BIN" cache trim --trimmed-size=20GiB \
+      >>"$STATE_DIR/cache-trim.log" 2>&1 || status=$?
+    free=$(home_free_bytes)
+    note "CACHE_TRIM end pid=$BASHPID status=$status free_bytes=$free"
+  fi
+  flock -u "$maintenance_lock"; exec {maintenance_lock}>&-
+  [[ "$free" =~ ^[0-9]+$ ]] || { echo "resource guard: cannot read /home free bytes" >&2; return 2; }
+  if diagnostic_probe && (( free < DISK_PROBE_MIN_BYTES )); then
+    note "REFUSE probe launch: /home free_bytes=$free requires=$DISK_PROBE_MIN_BYTES"
+    echo "resource guard: probe refused: /home has $free free bytes, requires $DISK_PROBE_MIN_BYTES" >&2
+    return 3
+  fi
+}
 
 memory() { free -b | awk '/^Mem:/ {print $2, $3, $7}'; }
 
@@ -668,6 +704,7 @@ confirm_coqc() {
   validate_probe_scope || return $?
   confirmed_reservation "$marker" && return 0
   while :; do
+    cache_disk_admission || return $?
     exec 7>>"$GATE_MUTEX"
     flock 7 || { echo "resource guard: confirmation mutex failed" >&2; return 2; }
     owner=${marker##*/}; owner=${owner%%.*}
@@ -1092,6 +1129,7 @@ hold_reason() {
 guard_wait() {
   local reason held="" since
   while :; do
+    cache_disk_admission || return $?
     memory_kill_required && kill_youngest > /dev/null
     reason=$(hold_reason) || return $?
     if [ -z "$reason" ]; then

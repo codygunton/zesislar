@@ -87,6 +87,10 @@ class GuardLockTest(unittest.TestCase):
             "\"$(((251 - GUARD_TEST_USED_GIB) * 1073741824))\"\n"
         )
         fake_free.chmod(0o755)
+        # Guard fixtures must not inspect or trim the shared host cache.
+        fake_df = self.bin / "df"
+        fake_df.write_text("#!/bin/sh\nprintf 'Avail\\n60000000000\\n'\n")
+        fake_df.chmod(0o755)
         fake_systemd = self.bin / "systemd-run"
         fake_systemd.write_text("#!/bin/sh\nprintf '%s\\n' \"$@\"\n")
         fake_systemd.chmod(0o755)

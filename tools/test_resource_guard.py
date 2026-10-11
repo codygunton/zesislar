@@ -14,6 +14,123 @@ DISPATCH = "case " + GUARD.read_text().split("\nprune_scope_registry\n\ncase ", 
 
 
 class ResourceGuard(unittest.TestCase):
+    def test_disk_trim_threshold_uses_decimal_bytes(self):
+        for free, trimmed in ((60000000000, False), (59999999999, True)):
+            with self.subTest(free=free):
+                result = self.run_guard(r"""
+home_free_bytes() { echo "$TEST_FREE"; }
+DUNE_CACHE_TRIM_BIN="$STATE_DIR/dune"
+cat > "$DUNE_CACHE_TRIM_BIN" <<'SH_TRIM'
+#!/usr/bin/env bash
+[ "$DUNE_CACHE_ROOT" = /home/cody/.cache/dune ] || exit 91
+[ "$*" = 'cache trim --trimmed-size=20GiB' ] || exit 92
+echo fixture-trim-output
+SH_TRIM
+chmod +x "$DUNE_CACHE_TRIM_BIN"
+cache_disk_admission || exit $?
+cat "$LOG"
+""", TEST_FREE=str(free))
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual("CACHE_TRIM start" in result.stdout, trimmed)
+                self.assertEqual("CACHE_TRIM end" in result.stdout, trimmed)
+
+    def test_disk_probe_refusal_rechecks_after_trim(self):
+        for flag, memory in (("1", "64"), ("cpu-only", "6")):
+            for after, allowed in ((20000000000, True), (19999999999, False)):
+                with self.subTest(flag=flag, after=after):
+                    result = self.run_guard(r"""
+echo 10000000000 > "$STATE_DIR/free"
+home_free_bytes() { cat "$STATE_DIR/free"; }
+DUNE_CACHE_TRIM_BIN="$STATE_DIR/dune"
+cat > "$DUNE_CACHE_TRIM_BIN" <<'SH_TRIM'
+#!/usr/bin/env bash
+echo "$TEST_AFTER" > "$ZESU_GUARD_STATE/free"
+SH_TRIM
+chmod +x "$DUNE_CACHE_TRIM_BIN"
+hold_reason() { :; }
+compiler_pids() { :; }
+marker=$(reserve_coqc $$)
+confirm_coqc "$marker"; status=$?
+cat "$LOG"
+exit "$status"
+""", TEST_AFTER=str(after), ZESU_DIAGNOSTIC_PROBE=flag,
+                                            ZESU_MODULE_LIMIT_GIB=memory,
+                                            ZESU_PROOF_CPU_LIMIT="unlimited", ZESU_PROBE_ISSUE="10")
+                    self.assertEqual(result.returncode, 0 if allowed else 3, result.stderr)
+                    self.assertIn(f"free_bytes={after}", result.stdout)
+                    self.assertEqual("REFUSE probe launch" in result.stdout, not allowed)
+
+    def test_disk_trim_failure_retains_output_and_rechecks_free_space(self):
+        result = self.run_guard(r"""
+home_free_bytes() { echo 30000000000; }
+DUNE_CACHE_TRIM_BIN="$STATE_DIR/dune"
+printf '#!/usr/bin/env bash\necho fixture-trim-error >&2\nexit 7\n' > "$DUNE_CACHE_TRIM_BIN"
+chmod +x "$DUNE_CACHE_TRIM_BIN"
+cache_disk_admission || exit $?
+cat "$LOG" "$STATE_DIR/cache-trim.log"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("status=7 free_bytes=30000000000", result.stdout)
+        self.assertIn("fixture-trim-error", result.stdout)
+
+    def test_cache_maintenance_is_serialized(self):
+        result = self.run_guard(r"""
+home_free_bytes() { echo 59000000000; }
+DUNE_CACHE_TRIM_BIN="$STATE_DIR/dune"
+cat > "$DUNE_CACHE_TRIM_BIN" <<'SH_TRIM'
+#!/usr/bin/env bash
+echo start >> "$ZESU_GUARD_STATE/events"
+sleep 0.05
+echo end >> "$ZESU_GUARD_STATE/events"
+SH_TRIM
+chmod +x "$DUNE_CACHE_TRIM_BIN"
+cache_disk_admission & one=$!
+cache_disk_admission & two=$!
+wait "$one" || exit 91
+wait "$two" || exit 92
+cat "$STATE_DIR/events"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.splitlines(), ["start", "end", "start", "end"])
+
+    def test_waiter_rechecks_space_after_serialized_maintenance(self):
+        result = self.run_guard(r"""
+echo 59000000000 > "$STATE_DIR/free"
+home_free_bytes() { cat "$STATE_DIR/free"; }
+DUNE_CACHE_TRIM_BIN="$STATE_DIR/dune"
+cat > "$DUNE_CACHE_TRIM_BIN" <<'SH_TRIM'
+#!/usr/bin/env bash
+echo trim >> "$ZESU_GUARD_STATE/events"
+sleep 0.05
+echo 60000000000 > "$ZESU_GUARD_STATE/free"
+SH_TRIM
+chmod +x "$DUNE_CACHE_TRIM_BIN"
+cache_disk_admission & one=$!
+cache_disk_admission & two=$!
+wait "$one" || exit 91
+wait "$two" || exit 92
+cat "$STATE_DIR/events"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "trim")
+
+    def test_confirmed_scope_keeps_its_admission_on_low_disk(self):
+        result = self.run_guard(r"""
+home_free_bytes() { echo 0; }
+marker="$COQC_RESERVATIONS/$$.confirmed"
+printf 'confirmed\nwriter=\naggregate=\n' > "$marker"
+confirm_coqc "$marker" || exit $?
+[ ! -e "$STATE_DIR/cache-trim.log" ] || exit 91
+[ "$(head -n 1 "$marker")" = confirmed ] || exit 92
+""", ZESU_DIAGNOSTIC_PROBE="cpu-only", ZESU_MODULE_LIMIT_GIB="6",
+                                ZESU_PROOF_CPU_LIMIT="unlimited", ZESU_PROBE_ISSUE="10")
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_invalid_disk_measurement_refuses_launch(self):
+        result = self.run_guard('home_free_bytes() { echo unavailable; }; cache_disk_admission')
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertIn("cannot read /home free bytes", result.stderr)
+
     def test_admitted_scope_sets_unlimited_stack_and_preserves_cpu_limit(self):
         for cpu, expected_cpu in (("1200", 1200), ("unlimited", -1)):
             with self.subTest(cpu=cpu):
@@ -481,7 +598,9 @@ live_scopes
             environment.update(ZESU_GUARD_STATE=directory,
                                ZESU_GATE_LOCK=str(Path(directory) / "gate.lock"),
                                **variables)
-            return subprocess.run(["bash"], input=LIBRARY + "\n" + script,
+            # Legacy fixtures never inspect or trim the shared host cache.
+            prefix = "\nhome_free_bytes() { echo 60000000000; }\n"
+            return subprocess.run(["bash"], input=LIBRARY + prefix + script,
                                   text=True, capture_output=True, env=environment, timeout=20)
 
     def test_gate_does_not_wait_for_unadmitted_probe_request(self):
