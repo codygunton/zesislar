@@ -14,16 +14,98 @@
         "sha256": {
           "type": "string",
           "pattern": "^[0-9a-f]{64}$"
+        },
+        "kind": {
+          "enum": [
+            "semantic_change",
+            "frozen_generated_input"
+          ]
+        }
+      }
+    },
+    "link": {
+      "type": "object",
+      "required": [
+        "session_id",
+        "health_call",
+        "call"
+      ],
+      "properties": {
+        "session_id": {
+          "type": "string"
+        },
+        "health_call": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "call": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "trace": {
+      "type": "object",
+      "required": [
+        "session_id",
+        "health_call",
+        "start_call",
+        "steps",
+        "exports",
+        "qed_call",
+        "export_attributions"
+      ],
+      "properties": {
+        "session_id": {
+          "type": "string"
+        },
+        "health_call": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "start_call": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "qed_call": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "exports": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "export_attributions": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/file"
+          }
         }
       }
     }
   },
   "type": "object",
   "required": [
+    "version",
     "repair_identity",
     "verification_root",
+    "candidate_delta",
     "switch_source",
     "input_index",
+    "sessions",
     "native_cases",
     "rejections"
   ],
@@ -44,9 +126,9 @@
           "block",
           "proof_source",
           "compiled_object",
-          "raw_calls",
-          "actual_final",
-          "owned_closures"
+          "proof_trace",
+          "compilation",
+          "verification"
         ],
         "properties": {
           "proof_source": {
@@ -55,11 +137,28 @@
           "compiled_object": {
             "$ref": "#/$defs/file"
           },
-          "raw_calls": {
-            "$ref": "#/$defs/file"
+          "proof_trace": {
+            "$ref": "#/$defs/trace"
           },
-          "owned_closures": {
-            "$ref": "#/$defs/file"
+          "compilation": {
+            "allOf": [
+              {
+                "$ref": "#/$defs/link"
+              },
+              {
+                "required": [
+                  "object_attribution"
+                ],
+                "properties": {
+                  "object_attribution": {
+                    "$ref": "#/$defs/file"
+                  }
+                }
+              }
+            ]
+          },
+          "verification": {
+            "$ref": "#/$defs/link"
           }
         }
       }
@@ -72,10 +171,135 @@
         "type": "object",
         "required": [
           "theorem",
-          "raw_calls"
+          "proof_source",
+          "compiled_object",
+          "proof_trace",
+          "compilation",
+          "verification"
         ],
         "properties": {
+          "proof_source": {
+            "$ref": "#/$defs/file"
+          },
+          "compiled_object": {
+            "$ref": "#/$defs/file"
+          },
+          "proof_trace": {
+            "$ref": "#/$defs/trace"
+          },
+          "compilation": {
+            "allOf": [
+              {
+                "$ref": "#/$defs/link"
+              },
+              {
+                "required": [
+                  "object_attribution"
+                ],
+                "properties": {
+                  "object_attribution": {
+                    "$ref": "#/$defs/file"
+                  }
+                }
+              }
+            ]
+          },
+          "verification": {
+            "$ref": "#/$defs/link"
+          }
+        }
+      }
+    },
+    "version": {
+      "const": 2
+    },
+    "verification_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "candidate_delta": {
+      "type": "object",
+      "required": [
+        "base_root",
+        "source_overlays"
+      ],
+      "properties": {
+        "base_root": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "source_overlays": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/file"
+          }
+        },
+        "frozen_generation": {
+          "type": "object",
+          "required": [
+            "manifest",
+            "source_index"
+          ],
+          "properties": {
+            "manifest": {
+              "$ref": "#/$defs/file"
+            },
+            "source_index": {
+              "$ref": "#/$defs/file"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "sessions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "workspace",
+          "verification_root",
+          "owner",
+          "raw_calls",
+          "closure"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "workspace": {
+            "type": "string"
+          },
+          "verification_root": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "owner": {
+            "type": "object",
+            "required": [
+              "pid",
+              "start_ticks"
+            ],
+            "properties": {
+              "pid": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "start_ticks": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "additionalProperties": false
+          },
           "raw_calls": {
+            "$ref": "#/$defs/file"
+          },
+          "closure": {
             "$ref": "#/$defs/file"
           }
         }
