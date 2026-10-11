@@ -300,6 +300,24 @@ class DiagnosticProbeBudgetTests(unittest.TestCase):
                 with self.assertRaises(SystemExit):
                     exec(policy_code, {})
 
+    def test_scratch_cpu_only_probe_preserves_the_six_gib_fence(self):
+        import os
+        source = (Path(__file__).parent/'coqc_scratch.sh').read_text()
+        policy_code = source.split("<<'PY'\n", 1)[1].split('source = Path(sys.argv[1])', 1)[0]
+        environment = {"ZESU_DIAGNOSTIC_PROBE": "cpu-only", "ZESU_PROBE_ISSUE": "10",
+                       "ZESU_PROOF_CPU_LIMIT": "unlimited", "ZESU_PRIMARY_CPU_LIMIT": "none",
+                       "ZESU_SCRATCH_MEMORY_GIB": "6", "ZESU_SCRATCH_WALL_SECONDS": "none"}
+        with patch.dict(os.environ, environment, clear=True):
+            scope = {}
+            exec(policy_code, scope)
+            self.assertIsNone(scope['wall_limit'])
+            self.assertEqual(scope['memory_gib'], 6)
+        for change in ({"ZESU_SCRATCH_MEMORY_GIB": "64"}, {"ZESU_PROBE_ISSUE": ""},
+                       {"ZESU_PRIMARY_CPU_LIMIT": "1200"}, {"ZESU_IN_GATE": "1"}):
+            with self.subTest(change=change), patch.dict(os.environ, {**environment, **change}, clear=True):
+                with self.assertRaises(SystemExit):
+                    exec(policy_code, {})
+
     def test_child_limit_read_failure_stops_and_records_owned_child(self):
         environment = coqc_primary.completion_environment(
             coqc_primary.budget_policy(memory_gib=64, diagnostic_probe=True))
