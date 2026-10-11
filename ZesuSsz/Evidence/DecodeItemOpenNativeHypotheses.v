@@ -13,7 +13,7 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Proofs.DecodeItem.Composition.CompleteFamily.
 From Coq Require Import List ZArith.
 Open Scope Z_scope.
-Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6974Conditional.
+Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.
 Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d697cConditional.
 Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d698cConditional.
 Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69b0Conditional.
@@ -160,7 +160,6 @@ Definition decodeItemOpenNativeClosure6b08 : Prop :=
 
 Record DecodeItemOpenNativeHypotheses : Prop := {
   native800d6960 : decodeItemOpenNativeClosure6960;
-  native800d6974 : decodeItemOpenNativeClosure6974;
   native800d697c : decodeItemOpenNativeClosure697c;
   native800d698c : decodeItemOpenNativeClosure698c;
   native800d69b0 : decodeItemOpenNativeClosure69b0;
@@ -178,19 +177,19 @@ Record DecodeItemOpenNativeHypotheses : Prop := {
 }.
 
 Definition decodeItemOpenNativeBlocks : list Z :=
-  [0x800d6960; 0x800d6974; 0x800d697c; 0x800d698c; 0x800d69b0; 0x800d69e8; 0x800d6a08; 0x800d6a24; 0x800d6a38; 0x800d6a40; 0x800d6a78; 0x800d6aa8; 0x800d6ac4; 0x800d6ad8; 0x800d6ae0; 0x800d6b08].
+  [0x800d6960; 0x800d697c; 0x800d698c; 0x800d69b0; 0x800d69e8; 0x800d6a08; 0x800d6a24; 0x800d6a38; 0x800d6a40; 0x800d6a78; 0x800d6aa8; 0x800d6ac4; 0x800d6ad8; 0x800d6ae0; 0x800d6b08].
 
-Lemma decodeItemOpenNativeBlockCount : length decodeItemOpenNativeBlocks = 16%nat.
+Lemma decodeItemOpenNativeBlockCount : length decodeItemOpenNativeBlocks = 15%nat.
 Proof. reflexivity. Qed.
 
 Lemma decodeItemOpenNativeHypothesesTable `{!islaG Sigma} `{!threadG}
   (Hopen : DecodeItemOpenNativeHypotheses) :
   □ decodeItemSelectedCode -∗ block_table_pre decodeItemBlockTable.
 Proof.
-  destruct Hopen as [H6960 H6974 H697c H698c H69b0 H69e8 H6a08 H6a24 H6a38 H6a40 H6a78 H6aa8 H6ac4 H6ad8 H6ae0 H6b08].
+  destruct Hopen as [H6960 H697c H698c H69b0 H69e8 H6a08 H6a24 H6a38 H6a40 H6a78 H6aa8 H6ac4 H6ad8 H6ae0 H6b08].
   exact (@ZesuSsz.Proofs.DecodeItem.Composition.CompleteNativeFamily.decodeItemBlockTable_complete_native_family Sigma islaG0 H
     (@ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6960Conditional.decodeItemSlotBody800d6960Conditional Sigma islaG0 H (H6960 Sigma islaG0 H))
-    (H6974 Sigma islaG0 H)
+    (@ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.DesignedBoundary_800d6974 Sigma islaG0 H)
     (H697c Sigma islaG0 H)
     (H698c Sigma islaG0 H)
     (H69b0 Sigma islaG0 H)
@@ -227,3 +226,34 @@ Definition decodeItemI62NativeResidualCounts : list (Z * nat) :=
    (0x800d6ad8, 1%nat);
    (0x800d6ae0, 4%nat);
    (0x800d6b08, 5%nat)].
+
+(* I67 measured e17a8888. None records an unavailable active count.
+   These printed active counts are not complete kernel goal groups. *)
+Definition decodeItemI67NativeResidualCounts : list (Z * option nat) :=
+  [(0x800d6960, Some 7%nat);
+   (0x800d697c, None);
+   (0x800d698c, Some 3%nat);
+   (0x800d69b0, Some 3%nat);
+   (0x800d69e8, None);
+   (0x800d6a08, Some 4%nat);
+   (0x800d6a24, Some 8%nat);
+   (0x800d6a38, Some 1%nat);
+   (0x800d6a40, Some 3%nat);
+   (0x800d6a78, Some 3%nat);
+   (0x800d6aa8, Some 4%nat);
+   (0x800d6ac4, Some 8%nat);
+   (0x800d6ad8, Some 1%nat);
+   (0x800d6ae0, Some 1%nat);
+   (0x800d6b08, Some 3%nat)].
+
+Lemma decodeItemI67StatusMatchesOpenBlocks :
+  map fst decodeItemI67NativeResidualCounts = decodeItemOpenNativeBlocks.
+Proof. reflexivity. Qed.
+
+Lemma decodeItemProduction6974Closed : decodeItemOpenNativeClosure6974.
+Proof.
+  intros Sigma HG HT.
+  exact (@ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.DesignedBoundary_800d6974 Sigma HG HT).
+Qed.
+Print Assumptions decodeItemI67StatusMatchesOpenBlocks.
+Print Assumptions decodeItemProduction6974Closed.
