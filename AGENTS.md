@@ -172,6 +172,19 @@ dispatch, not only a question to answer. Rulings reserved for the user (contract
 boundary, architecture) are stated as such with the fallback the worker executes meanwhile.
 Check for idle workers at every turn and refill queues before anything else.
 
+Liveness is measured, not reported. At every turn, and on a timer when no mail arrives, the
+coordinator checks the process list and the job logs: a child counts as working only when a
+proof command (a native arm, an oracle replay, a scratch lemma, a module compile) started within
+the last 30 minutes; a parent's "watched", "waits on", "prepares", or "queue nonempty" is not
+evidence of work. The throughput that matters is proof commands started per child-hour; the
+coordinator records it in `docs/ai/STATUS.md` each round and treats a round with none as an
+incident. Waiting is not a state: a child blocked more than 15 minutes on a lock, gate, barrier,
+verifier route, or another worker starts its next item and leaves the wait in the background.
+Ceremony is capped: one certificate or audit per result, no audit of an audit, no preparation
+item longer than 20 minutes without a proof command. A child idle at two consecutive checks gets
+its item re-dispatched with the exact first command. Probes run in the background and occupy no
+child. The coordinator never ends a turn with "nothing owed" while a child is idle.
+
 ## Integration gates and rule threshold
 
 During the frozen-list repair phase, a track commit needs green `make check-fast`

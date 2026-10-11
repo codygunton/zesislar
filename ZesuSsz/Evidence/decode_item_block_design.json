@@ -113,7 +113,7 @@
     "byte_fold_blocks_sha256": "a504dfa090e1ec91f709ad3c3b5c7df1823dc64159b0b53960a0606a5ffe92a9",
     "byte_fold_pure_sha256": "08d52fba8768788836c98b6247db523070d3e614f6b7d816ea0f0600ec24c0c7",
     "byte_fold_machine_obligations_sha256": "e7d0144db5007b2755bd07c632b336d7f05408a78e8f7a79b7272a0ac6981c0e",
-    "generator_sha256": "5e2a74637fba6d76f146dd5a7c469dd77264ab66127800db4dab88f0c7a9965c"
+    "generator_sha256": "2cc815e9163b115cb8fcdbb955b190b9757fc552b9759decc01b53c54d9ed886"
   },
   "blocks": [
     {
