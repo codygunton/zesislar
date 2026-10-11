@@ -1,0 +1,179 @@
+{
+  "version": 1,
+  "production_root": "30199dc4aa2e7bb2bb2f11f82e7b400c1eb6657a",
+  "module": "DecodeItemPrecommitmentWitnessFixtures.v",
+  "module_sha256": "fcc6cabee1bc6df0d743a26ce47a2a086cf10738bb3a8862d2a4aaeca050ae96",
+  "theorem_sha256": {
+    "s124_6a08_canonical_witnesses": "34788efc74216ec89a6df602fb619f9df52c1976edff9d4c086b8df90dc81a5a",
+    "s124_6a38_canonical_witnesses": "ddda20ea8eee0f6b4990c7be5f85f364c896d58e52034f430e5d5b18457fcbf9",
+    "s124_6aa8_canonical_witnesses": "858e43383666a95312a93172c23882239eead0dee5214a859702676f7126bdf1",
+    "s124_6ad8_canonical_witnesses": "362fc0992cb96cf416a762bda0baaba3ec32f3004995a6b25c73b1e861cb0dd1",
+    "s119_literal_committed_witness_conflict": "4057d24932e060b7af164056c48dad7924310bf0061de37a53a06349e07e67cd",
+    "s119_successor_committed_witness_conflict": "d1eab17a46c3207e3701abd00310b4ac719588168780c8e64fc6da85c7a82b75"
+  },
+  "captures": [
+    {
+      "block": "6a08",
+      "capture": "precommitment/6a08.json",
+      "capture_sha256": "3b25c4a4a6603fd365fa66f41523fb96360c2981366a7f0c81d94107ca6aae62",
+      "capture_export": {
+        "success": true,
+        "state_id": 334,
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/exports/state_334.json",
+        "sha256": "3b25c4a4a6603fd365fa66f41523fb96360c2981366a7f0c81d94107ca6aae62",
+        "bytes": 16608,
+        "active_goals": 3,
+        "stack_entries": 0,
+        "shelved_goals": 5,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a",
+        "theorem": "DesignedBoundary_800d6a08",
+        "source": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/Replay6a08.v",
+        "source_sha256": "35f05a4b0e094fbf7f275d4dc64bb3c97a0a215785804473b7ebab03de522e7b",
+        "proof_finished": false
+      },
+      "selected_goal_one_based": 3,
+      "retained_scope": {
+        "input_index_sha256": "c302ab4d77ab541036a2ed27c96b7b3b25e39332a1575584becfc072edf17e2e",
+        "fixture_copies": [
+          {
+            "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/Replay6a08.v"
+          },
+          {
+            "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/Replay6aa8.v"
+          }
+        ],
+        "measured_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+        "measured_scope": "28 switches, 25 hint modules",
+        "scope_limit": "Exact I67 statement. Owned current private artifacts. Scheduling equality with frozen I67 is not established.",
+        "changed_steps": "Restore successful individual-step recovery. Apply existing S43 lemmas explicitly. Capture application groups even after failure."
+      },
+      "origin_report_sha256": "cc43987d4c311e8f0acb2d5b7f836a39e8d497f0dbd19b8438d75d9c9d38b56b",
+      "origin_report": "/home/cody/zesislar/.worktrees/worker1-spec-a/build/stock-zisk/spec-a-s117/EXPLICIT-S43-005.json",
+      "witness_theorem": "s124_6a08_canonical_witnesses",
+      "source_limits": "Captured proof state stays open. Pure theorem uses the verified retained premise subset. No repaired native closure asserted."
+    },
+    {
+      "block": "6a38",
+      "capture": "precommitment/6a38.json",
+      "capture_sha256": "e3196ab655f9afd5d52b70a22f64bd7a740a4bf43d7de933879950947b1184be",
+      "capture_export": {
+        "success": true,
+        "state_id": 28,
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s115-precommit-s43-application-005/exports/state_28.json",
+        "sha256": "e3196ab655f9afd5d52b70a22f64bd7a740a4bf43d7de933879950947b1184be",
+        "bytes": 19959,
+        "active_goals": 3,
+        "stack_entries": 0,
+        "shelved_goals": 4,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a",
+        "theorem": "DesignedBoundary_800d6a38",
+        "source": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s115-precommit-s43-application-005/Replay6a38.v",
+        "source_sha256": "cc5205109467654a52deb8a4e69c71209815d22442c59e18be59a7c7f4359d7d",
+        "proof_finished": false
+      },
+      "selected_goal_one_based": 2,
+      "retained_scope": "Exact retained I62 native statements on owned current artifacts. Historical33b9a455 plus four Rule38 overlays differs from the current28-switch scope.",
+      "origin_report_sha256": "a420690601eb14f439d1c28ad5f660fe147669f37f22f118f1bbff10ebfe3442",
+      "origin_report": "/home/cody/zesislar/.worktrees/worker1-spec-a/build/stock-zisk/spec-a-s115/PRECOMMIT-005-REPORT.json",
+      "witness_theorem": "s124_6a38_canonical_witnesses",
+      "source_limits": "Captured proof state stays open. Pure theorem uses the verified retained premise subset. No repaired native closure asserted."
+    },
+    {
+      "block": "6aa8",
+      "capture": "precommitment/6aa8.json",
+      "capture_sha256": "40e1d37a1b9b7560dc805bc568a9b8f070a421797ababe18b2f328e9b3e71bc9",
+      "capture_export": {
+        "success": true,
+        "state_id": 671,
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/exports/state_671.json",
+        "sha256": "40e1d37a1b9b7560dc805bc568a9b8f070a421797ababe18b2f328e9b3e71bc9",
+        "bytes": 16606,
+        "active_goals": 3,
+        "stack_entries": 0,
+        "shelved_goals": 5,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a",
+        "theorem": "DesignedBoundary_800d6aa8",
+        "source": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/Replay6aa8.v",
+        "source_sha256": "dab2fddf92bb0b3abae4014419d08d2c9c99bed69dbe33f1d6fdd78f9643e343",
+        "proof_finished": false
+      },
+      "selected_goal_one_based": 3,
+      "retained_scope": {
+        "input_index_sha256": "c302ab4d77ab541036a2ed27c96b7b3b25e39332a1575584becfc072edf17e2e",
+        "fixture_copies": [
+          {
+            "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/Replay6a08.v"
+          },
+          {
+            "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/Replay6aa8.v"
+          }
+        ],
+        "measured_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+        "measured_scope": "28 switches, 25 hint modules",
+        "scope_limit": "Exact I67 statement. Owned current private artifacts. Scheduling equality with frozen I67 is not established.",
+        "changed_steps": "Restore successful individual-step recovery. Apply existing S43 lemmas explicitly. Capture application groups even after failure."
+      },
+      "origin_report_sha256": "cc43987d4c311e8f0acb2d5b7f836a39e8d497f0dbd19b8438d75d9c9d38b56b",
+      "origin_report": "/home/cody/zesislar/.worktrees/worker1-spec-a/build/stock-zisk/spec-a-s117/EXPLICIT-S43-005.json",
+      "witness_theorem": "s124_6aa8_canonical_witnesses",
+      "source_limits": "Captured proof state stays open. Pure theorem uses the verified retained premise subset. No repaired native closure asserted."
+    },
+    {
+      "block": "6ad8",
+      "capture": "precommitment/6ad8.json",
+      "capture_sha256": "df24287b5055eabf9d6f6985c139a59c29f90e8075ba36d793863d032a3c693c",
+      "capture_export": {
+        "success": true,
+        "state_id": 76,
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s115-precommit-s43-application-005/exports/state_76.json",
+        "sha256": "df24287b5055eabf9d6f6985c139a59c29f90e8075ba36d793863d032a3c693c",
+        "bytes": 19711,
+        "active_goals": 3,
+        "stack_entries": 0,
+        "shelved_goals": 4,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a",
+        "theorem": "DesignedBoundary_800d6ad8",
+        "source": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s115-precommit-s43-application-005/Replay6ad8.v",
+        "source_sha256": "03d042264e2348a5681b45b0aeb74715a4645c46a322f0519484b0d55714de31",
+        "proof_finished": false
+      },
+      "selected_goal_one_based": 1,
+      "retained_scope": "Exact retained I62 native statements on owned current artifacts. Historical33b9a455 plus four Rule38 overlays differs from the current28-switch scope.",
+      "origin_report_sha256": "a420690601eb14f439d1c28ad5f660fe147669f37f22f118f1bbff10ebfe3442",
+      "origin_report": "/home/cody/zesislar/.worktrees/worker1-spec-a/build/stock-zisk/spec-a-s115/PRECOMMIT-005-REPORT.json",
+      "witness_theorem": "s124_6ad8_canonical_witnesses",
+      "source_limits": "Captured proof state stays open. Pure theorem uses the verified retained premise subset. No repaired native closure asserted."
+    }
+  ],
+  "conflict_certificates": {
+    "697c": "s119_literal_committed_witness_conflict",
+    "69e8": "s119_successor_committed_witness_conflict"
+  },
+  "pending_precommit_states": [
+    "6960",
+    "697c",
+    "69e8"
+  ],
+  "repair_ON": "unavailable; no closure acceptance test executes before verified route arrives",
+  "boundary": "Pure retained-context regressions. Conflicts prove necessary-condition incompatibility, not retained-context inconsistency."
+}
