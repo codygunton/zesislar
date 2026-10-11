@@ -50,7 +50,11 @@ Ltac2 zesu_cleanup_search_goals (cache : Ltac1.t) (tactic : Ltac1.t) :=
     Control.enter (fun () => count.(contents) := Int.add (count.(contents)) 1);
     noop) in
   ltac1:(run |- unshelve (run ltac:(idtac))) run;
-  let clean := fun () => ltac1:(cache |- clear cache) cache in
+  let clean := fun () =>
+    ltac1:(cache |-
+      tryif let value := type of cache in idtac
+      then clear cache
+      else idtac) cache in
   Control.extend [] (fun () => clean (); Control.shelve ())
     (zesu_active_cache_cleanup (count.(contents)) clean).
 

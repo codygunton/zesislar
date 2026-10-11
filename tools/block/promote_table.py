@@ -156,13 +156,33 @@ def render_slots(report):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--recipe', type=Path, default=generate_table.ROOT / 'build/stock-zisk/build-recipe.json')
-    parser.add_argument('--cfg', type=Path, required=True)
-    parser.add_argument('--design', type=Path, required=True)
-    parser.add_argument('--native-report', type=Path, required=True)
+    parser.add_argument('--cfg', type=Path)
+    parser.add_argument('--design', type=Path)
+    parser.add_argument('--native-report', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--rocq-output', type=Path)
     parser.add_argument('--promotions', type=Path, help='Hash-bound kernel certificates; diagnostic captures are not certificates.')
+    parser.add_argument('--complete-native', type=lambda value: int(value, 0),
+                        help='Generate all consumers of this named production closure.')
+    parser.add_argument('--workspace', type=Path, default=generate_table.ROOT)
+    parser.add_argument('--production-module')
+    parser.add_argument('--production-lemma')
+    parser.add_argument('--native-status-table', type=Path)
+    parser.add_argument('--dry-run', action='store_true', help='Emit complete-promotion sources without verification or a success claim.')
+    parser.add_argument('--verification-directory', type=Path)
+    parser.add_argument('--mcp-python', help='Pinned Python interpreter with the rocq-mcp package.')
     args = parser.parse_args()
+    if args.complete_native is not None:
+        if not all((args.production_module, args.production_lemma, args.native_status_table)):
+            parser.error('Complete promotion requires the named production module, lemma, and status table.')
+        from complete_promotion import complete
+        complete(args.workspace, args.complete_native, args.production_module,
+                 args.production_lemma, args.output, args.native_status_table,
+                 dry_run=args.dry_run, verification_directory=args.verification_directory,
+                 mcp_python=args.mcp_python)
+        return
+    if not all((args.cfg, args.design, args.native_report)):
+        parser.error('Coverage generation requires --cfg, --design, and --native-report.')
     promotions, promotion_hashes = load_promotions(args.promotions) if args.promotions else ({}, {})
     report = coverage(*(json.loads(path.read_text()) for path in
                         (args.cfg, args.design, args.native_report)), promotions=promotions, design_sha256=digest(args.design))

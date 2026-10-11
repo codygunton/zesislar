@@ -1,0 +1,4 @@
+Lemma decodeItemReturnEntryOutput24Selection `{!islaG Sigma} `{!threadG}
+    (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) :
+  decodeItemReturnEntryCore args locals ⊢
+    ⌜decodeItemOutput24Selection args (returnStorage locals)⌝.

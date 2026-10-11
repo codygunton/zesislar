@@ -351,6 +351,7 @@ async def probe_block(row, block, state, options):
                     'block_' + row['entry_pc'] + '_' + chain_root.boundary_label(successor) + '.v')
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text(source)
+                interactive_path = setup_fallback.write_interactive_source(path)
                 started = time.monotonic()
                 deadline = started + options['seconds'] + 60
                 def remaining():
@@ -379,7 +380,7 @@ async def probe_block(row, block, state, options):
                         complete_exports.append({'success': False, 'checkpoint': label,
                             'coverage': 'unavailable', 'scope': scope,
                             'native_post_call_debts': 'unavailable without a valid successful returned state',
-                            'source_sha256': digest(path), 'source': str(path.resolve()),
+                            'source_sha256': digest(interactive_path), 'source': str(interactive_path.resolve()),
                             'session_directory': options['complete_dir'],
                             'failed_response_sha256': hashlib.sha256(json.dumps(current, sort_keys=True).encode()).hexdigest()})
                         return
@@ -392,7 +393,7 @@ async def probe_block(row, block, state, options):
                         exported = {'success': False, 'error': str(error), 'state_id': current['state_id']}
                     complete_exports.append({**exported, 'checkpoint': label,
                         'coverage': 'complete' if exported.get('success') else 'unavailable', 'scope': scope,
-                        'source_sha256': digest(path), 'source': str(path.resolve()),
+                        'source_sha256': digest(interactive_path), 'source': str(interactive_path.resolve()),
                         'session_directory': options['complete_dir'],
                         'owned_pet_pid': pet_pids[-1] if pet_pids else None})
 
@@ -414,7 +415,7 @@ async def probe_block(row, block, state, options):
                         if load_result['outcome'] != 'entry-elaborated':
                             raise RuntimeError('The shell LOAD failed before the authorized fresh start')
                     opened = await native_diagnostics.measured_call(session, 'rocq_start', {
-                        'workspace': options['workspace'], 'file': str(path.resolve()),
+                        'workspace': options['workspace'], 'file': str(interactive_path.resolve()),
                         'theorem': 'infer_boundary', 'timeout': 60}, steps)
                     calls.append(opened)
                     if not opened.get('success') and opened.get('reason') == 'timeout' and not options.get('load_before_start'):
@@ -518,6 +519,8 @@ async def probe_block(row, block, state, options):
                     record['rss_uses_unique_processes'] = True
                     record['mcp_health'] = health
                     record['source_sha256'] = digest(path)
+                    record['interactive_source'] = str(interactive_path.resolve())
+                    record['interactive_source_sha256'] = digest(interactive_path)
                     record['measurement_scope'] = 'worker descendants plus the MCP-reported Pet process; 0.1-second samples and MCP peak measurements'
                     record['elapsed_seconds'] = elapsed
                     record['cpu_seconds'] = max(0, max(sample[1] for sample in samples) - initial_cpu)

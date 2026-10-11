@@ -34,6 +34,50 @@ class NativeDiagnosticTests(unittest.TestCase):
         self.assertFalse(row['goals_after']['available'])
         self.assertGreaterEqual(row['elapsed_seconds'], 0)
 
+    def test_diagnostic_start_loads_only_the_declaration(self):
+        import asyncio
+        from contextlib import asynccontextmanager
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        import tempfile
+        from native_diagnostics import diagnose
+        loaded = []
+
+        class Session:
+            async def __aenter__(self):
+                return self
+
+            async def __aexit__(self, *args):
+                pass
+
+            async def initialize(self):
+                pass
+
+            async def call_tool(self, name, arguments):
+                if name == 'rocq_start':
+                    loaded.append(Path(arguments['file']).read_text())
+                    return SimpleNamespace(structuredContent={'success': False, 'reason': 'fixture-stop'})
+                return SimpleNamespace(structuredContent={'ok': True})
+
+        @asynccontextmanager
+        async def stdio(parameters):
+            yield None, None
+
+        modules = {'mcp': SimpleNamespace(ClientSession=lambda *args: Session(),
+                    StdioServerParameters=lambda **kwargs: kwargs),
+                   'mcp.client': SimpleNamespace(),
+                   'mcp.client.stdio': SimpleNamespace(stdio_client=stdio)}
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / 'Boundary.v'
+            original = 'Lemma infer_boundary : True.\nProof.\ntry zesu_block.\nAbort.\n'
+            source.write_text(original)
+            with patch.dict(sys.modules, modules):
+                result = asyncio.run(diagnose(source, {'workspace': directory,
+                    'seconds': 300, 'mcp_command': 'fake'}))
+            self.assertEqual(loaded, ['Lemma infer_boundary : True.\nProof.\nAbort.\n'])
+            self.assertEqual(source.read_text(), original)
+            self.assertEqual(result['stop'], 'diagnostic-setup-failure')
+
     def test_transport_failure_preserves_exact_call_arguments(self):
         import asyncio
         from native_diagnostics import measured_call

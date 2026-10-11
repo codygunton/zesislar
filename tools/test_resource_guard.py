@@ -10,9 +10,189 @@ import unittest
 
 GUARD = Path(__file__).with_name("resource_guard.sh")
 LIBRARY = GUARD.read_text().split("\nprune_scope_registry\n\ncase ", 1)[0]
+DISPATCH = "case " + GUARD.read_text().split("\nprune_scope_registry\n\ncase ", 1)[1]
 
 
 class ResourceGuard(unittest.TestCase):
+    def test_disk_trim_threshold_uses_decimal_bytes(self):
+        for free, trimmed in ((60000000000, False), (59999999999, True)):
+            with self.subTest(free=free):
+                result = self.run_guard(r"""
+home_free_bytes() { echo "$TEST_FREE"; }
+DUNE_CACHE_TRIM_BIN="$STATE_DIR/dune"
+cat > "$DUNE_CACHE_TRIM_BIN" <<'SH_TRIM'
+#!/usr/bin/env bash
+[ "$DUNE_CACHE_ROOT" = /home/cody/.cache/dune ] || exit 91
+[ "$*" = 'cache trim --trimmed-size=20GiB' ] || exit 92
+echo fixture-trim-output
+SH_TRIM
+chmod +x "$DUNE_CACHE_TRIM_BIN"
+cache_disk_admission || exit $?
+cat "$LOG"
+""", TEST_FREE=str(free))
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual("CACHE_TRIM start" in result.stdout, trimmed)
+                self.assertEqual("CACHE_TRIM end" in result.stdout, trimmed)
+
+    def test_disk_probe_refusal_rechecks_after_trim(self):
+        for flag, memory in (("1", "64"), ("cpu-only", "6")):
+            for after, allowed in ((20000000000, True), (19999999999, False)):
+                with self.subTest(flag=flag, after=after):
+                    result = self.run_guard(r"""
+echo 10000000000 > "$STATE_DIR/free"
+home_free_bytes() { cat "$STATE_DIR/free"; }
+DUNE_CACHE_TRIM_BIN="$STATE_DIR/dune"
+cat > "$DUNE_CACHE_TRIM_BIN" <<'SH_TRIM'
+#!/usr/bin/env bash
+echo "$TEST_AFTER" > "$ZESU_GUARD_STATE/free"
+SH_TRIM
+chmod +x "$DUNE_CACHE_TRIM_BIN"
+hold_reason() { :; }
+compiler_pids() { :; }
+marker=$(reserve_coqc $$)
+confirm_coqc "$marker"; status=$?
+cat "$LOG"
+exit "$status"
+""", TEST_AFTER=str(after), ZESU_DIAGNOSTIC_PROBE=flag,
+                                            ZESU_MODULE_LIMIT_GIB=memory,
+                                            ZESU_PROOF_CPU_LIMIT="unlimited", ZESU_PROBE_ISSUE="10")
+                    self.assertEqual(result.returncode, 0 if allowed else 3, result.stderr)
+                    self.assertIn(f"free_bytes={after}", result.stdout)
+                    self.assertEqual("REFUSE probe launch" in result.stdout, not allowed)
+
+    def test_disk_trim_failure_retains_output_and_rechecks_free_space(self):
+        result = self.run_guard(r"""
+home_free_bytes() { echo 30000000000; }
+DUNE_CACHE_TRIM_BIN="$STATE_DIR/dune"
+printf '#!/usr/bin/env bash\necho fixture-trim-error >&2\nexit 7\n' > "$DUNE_CACHE_TRIM_BIN"
+chmod +x "$DUNE_CACHE_TRIM_BIN"
+cache_disk_admission || exit $?
+cat "$LOG" "$STATE_DIR/cache-trim.log"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("status=7 free_bytes=30000000000", result.stdout)
+        self.assertIn("fixture-trim-error", result.stdout)
+
+    def test_cache_maintenance_is_serialized(self):
+        result = self.run_guard(r"""
+home_free_bytes() { echo 59000000000; }
+DUNE_CACHE_TRIM_BIN="$STATE_DIR/dune"
+cat > "$DUNE_CACHE_TRIM_BIN" <<'SH_TRIM'
+#!/usr/bin/env bash
+echo start >> "$ZESU_GUARD_STATE/events"
+sleep 0.05
+echo end >> "$ZESU_GUARD_STATE/events"
+SH_TRIM
+chmod +x "$DUNE_CACHE_TRIM_BIN"
+cache_disk_admission & one=$!
+cache_disk_admission & two=$!
+wait "$one" || exit 91
+wait "$two" || exit 92
+cat "$STATE_DIR/events"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.splitlines(), ["start", "end", "start", "end"])
+
+    def test_waiter_rechecks_space_after_serialized_maintenance(self):
+        result = self.run_guard(r"""
+echo 59000000000 > "$STATE_DIR/free"
+home_free_bytes() { cat "$STATE_DIR/free"; }
+DUNE_CACHE_TRIM_BIN="$STATE_DIR/dune"
+cat > "$DUNE_CACHE_TRIM_BIN" <<'SH_TRIM'
+#!/usr/bin/env bash
+echo trim >> "$ZESU_GUARD_STATE/events"
+sleep 0.05
+echo 60000000000 > "$ZESU_GUARD_STATE/free"
+SH_TRIM
+chmod +x "$DUNE_CACHE_TRIM_BIN"
+cache_disk_admission & one=$!
+cache_disk_admission & two=$!
+wait "$one" || exit 91
+wait "$two" || exit 92
+cat "$STATE_DIR/events"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "trim")
+
+    def test_confirmed_scope_keeps_its_admission_on_low_disk(self):
+        result = self.run_guard(r"""
+home_free_bytes() { echo 0; }
+marker="$COQC_RESERVATIONS/$$.confirmed"
+printf 'confirmed\nwriter=\naggregate=\n' > "$marker"
+confirm_coqc "$marker" || exit $?
+[ ! -e "$STATE_DIR/cache-trim.log" ] || exit 91
+[ "$(head -n 1 "$marker")" = confirmed ] || exit 92
+""", ZESU_DIAGNOSTIC_PROBE="cpu-only", ZESU_MODULE_LIMIT_GIB="6",
+                                ZESU_PROOF_CPU_LIMIT="unlimited", ZESU_PROBE_ISSUE="10")
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_invalid_disk_measurement_refuses_launch(self):
+        result = self.run_guard('home_free_bytes() { echo unavailable; }; cache_disk_admission')
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertIn("cannot read /home free bytes", result.stderr)
+
+    def test_admitted_scope_sets_unlimited_stack_and_preserves_cpu_limit(self):
+        for cpu, expected_cpu in (("1200", 1200), ("unlimited", -1)):
+            with self.subTest(cpu=cpu):
+                result = self.run_guard(r"""
+ulimit -S -s 8192
+apply_scope_limits || exit 91
+python3 - <<'PY_LIMITS'
+import json, resource
+print(json.dumps({"stack": resource.getrlimit(resource.RLIMIT_STACK),
+                  "cpu": resource.getrlimit(resource.RLIMIT_CPU)}))
+PY_LIMITS
+""", ZESU_SCOPE_CPU=cpu)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                limits = json.loads(result.stdout)
+                self.assertEqual(limits["stack"], [-1, -1])
+                self.assertEqual(limits["cpu"], [expected_cpu, expected_cpu])
+
+    def test_scope_exec_applies_limits_for_arms_and_both_probe_types(self):
+        cases = (({}, 1200),
+                 ({"ZESU_DIAGNOSTIC_PROBE": "1", "ZESU_MODULE_LIMIT_GIB": "64",
+                   "ZESU_PROOF_CPU_LIMIT": "unlimited", "ZESU_SCOPE_CPU": "unlimited",
+                   "ZESU_PROBE_ISSUE": "10"}, -1),
+                 ({"ZESU_DIAGNOSTIC_PROBE": "cpu-only", "ZESU_MODULE_LIMIT_GIB": "6",
+                   "ZESU_PROOF_CPU_LIMIT": "unlimited", "ZESU_SCOPE_CPU": "unlimited",
+                   "ZESU_PROBE_ISSUE": "10"}, -1))
+        for variables, cpu in cases:
+            with self.subTest(variables=variables):
+                # Replace admission in this private fixture. Keep the real dispatch.
+                result = self.run_guard(r"""
+confirm_coqc() { :; }
+mark_coqc() { :; }
+ulimit -S -s 8192
+set -- scope-exec fixture -- python3 -c 'import json, resource; print(json.dumps({"stack":resource.getrlimit(resource.RLIMIT_STACK), "cpu":resource.getrlimit(resource.RLIMIT_CPU)}))'
+""" + DISPATCH, **variables)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                limits = json.loads(result.stdout)
+                self.assertEqual(limits["stack"], [-1, -1])
+                self.assertEqual(limits["cpu"], [cpu, cpu])
+
+    def test_termination_record_retains_actual_stack_limits(self):
+        for soft, hard, expected in (("8388608", "unlimited", [8388608, None]),
+                                     ("unlimited", "unlimited", [None, None])):
+            with self.subTest(soft=soft, hard=hard):
+                result = self.run_guard(r"""
+PROC_ROOT="$STATE_DIR/proc"
+CGROUP_ROOT="$STATE_DIR/cgroup"
+mkdir -p "$PROC_ROOT/123" "$CGROUP_ROOT/fixture.scope"
+printf '123 (coqc) R 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 456 0\n' > "$PROC_ROOT/123/stat"
+printf '0::/fixture.scope\n' > "$PROC_ROOT/123/cgroup"
+printf 'Max stack size            %s              %s            bytes\n' "$TEST_SOFT" "$TEST_HARD" > "$PROC_ROOT/123/limits"
+printf '123\n' > "$CGROUP_ROOT/fixture.scope/cgroup.procs"
+systemctl() { printf 'ControlGroup=/fixture.scope\nKillSignal=15\n'; }
+record_scope_termination fixture.scope SIGKILL memory-boundary
+cat "$STATE_DIR/terminations.jsonl"
+""", TEST_SOFT=soft, TEST_HARD=hard)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                record = json.loads(result.stdout)
+                self.assertEqual(record["pid"], 123)
+                self.assertTrue(record["stack_limits_available"])
+                self.assertEqual([record["stack_limits"]["soft_bytes"],
+                                  record["stack_limits"]["hard_bytes"]], expected)
+
     def test_worker_count_uses_70_percent_and_preserves_headroom(self):
         result = self.run_guard(r"""
 JOB_GIB=3
@@ -283,6 +463,10 @@ cat "$STATE_DIR/terminations.jsonl"
         first = records[0]
         self.assertEqual((first["pid"], first["start_ticks"], first["scope"]),
                          (123, 456, "fixture.scope"))
+        self.assertEqual(first["pid"], 123)
+        self.assertFalse(first["stack_limits_available"])
+        self.assertIsNone(first["stack_limits"])
+        self.assertEqual(first["stack_limit_error"], "FileNotFoundError")
         self.assertEqual((first["signal"], first["cause"], first["phase"]),
                          ("SIGKILL", "memory-boundary", "before-request"))
         self.assertEqual(records[1]["cause"], "memory-boundary-cleanup")
@@ -345,6 +529,8 @@ cat "$STATE_DIR/terminations.jsonl"
         self.assertIsNone(record["signal"])
         self.assertEqual(record["scope"], "fixture.scope")
         self.assertEqual(record["cause"], "empty-scope")
+        self.assertIsNone(record["stack_limits"])
+        self.assertFalse(record["stack_limits_available"])
 
     def test_scope_fences_require_six_gib_or_valid_issue10_probe(self):
         cases = (({}, 0), ({"ZESU_MODULE_LIMIT_GIB": "64"}, 2),
@@ -412,7 +598,9 @@ live_scopes
             environment.update(ZESU_GUARD_STATE=directory,
                                ZESU_GATE_LOCK=str(Path(directory) / "gate.lock"),
                                **variables)
-            return subprocess.run(["bash"], input=LIBRARY + "\n" + script,
+            # Legacy fixtures never inspect or trim the shared host cache.
+            prefix = "\nhome_free_bytes() { echo 60000000000; }\n"
+            return subprocess.run(["bash"], input=LIBRARY + prefix + script,
                                   text=True, capture_output=True, env=environment, timeout=20)
 
     def test_gate_does_not_wait_for_unadmitted_probe_request(self):

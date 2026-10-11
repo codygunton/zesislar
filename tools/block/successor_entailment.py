@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 
 import entry_schema
 import chain_root
+import setup_fallback
 from chain_state import normalize_successor, render_successor
 
 GROUPS = ('goals', 'stack', 'shelf', 'given_up')
@@ -348,7 +349,8 @@ async def check_boundary(session, rendered, path, workspace, *, inherited_debts,
             raise ValueError('Unavailable complete goal export: ' + label)
         groups = debt_groups(json.loads(Path(exported['path']).read_text()))
         record['exports'].append({**exported, 'checkpoint': label, 'debt_groups': groups,
-                                  'source_sha256': record['source_sha256'],
+                                  'source_sha256': record['interactive_source_sha256'],
+                                  'source': record['interactive_source'],
                                   'state_id': current['state_id'],
                                   'session_directory': str(Path(exported['path']).parent),
                                   'session_identity': deepcopy(session_identity)})
@@ -363,10 +365,13 @@ async def check_boundary(session, rendered, path, workspace, *, inherited_debts,
                     hashlib.sha256(statement.encode()).hexdigest() != rendered.get('statement_sha256') or
                     not re.search(r'\binstr_body\s+' + re.escape(rendered['entry_pc']) + r'\b', statement)):
                 raise ValueError('Unavailable native boundary signature')
+        interactive_path = setup_fallback.write_interactive_source(path)
+        record['interactive_source'] = str(interactive_path)
+        record['interactive_source_sha256'] = digest(interactive_path)
         health = await call('rocq_health', {})
         if not health.get('ok'):
             return dict(record, residual_class='toolchain_unavailable')
-        opened = await call('rocq_start', {'workspace': str(workspace), 'file': str(path),
+        opened = await call('rocq_start', {'workspace': str(workspace), 'file': str(interactive_path),
                             'theorem': rendered['lemma'], 'timeout': 60})
         if not opened.get('success'):
             return dict(record, residual_class='entry_unavailable')

@@ -1,0 +1,30 @@
+{
+  "report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-stage-E-kernel-ownership-recovery-001/REPORT.json",
+    "sha256": "da15558c76b2c8fa797f9fa1586f377fe0c6f12dcce2509ed6675712a19d0dbf"
+  },
+  "original_export": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-priority-stage-E-mcp-001/6ae0/exports/state_13.json",
+    "sha256": "7e3aabb9a9cf1904d1c591eb3f83d2982348be3349ff4ce5c12b59daca705115"
+  },
+  "source": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-priority-stage-E-mcp-001/Capture6ae0.v",
+    "sha256": "2b81b5d0d4e92f82dd96882b7e56df22746425890fdd831addb308f17b5137e6"
+  },
+  "statement": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-priority-stage-E-mcp-001/6ae0.statement.v",
+    "sha256": "a173e2a65b54c347008f8cf26a95353b8eca2a9a91f5e0c0d03d6f3d66f7a530"
+  },
+  "verification_root": "dc832abbf6291a9008dfb949ef8638bcdfc4b490",
+  "declaration_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+  "activation": "Approved 28 and root hints 26. Historical declarations retain e17 provenance.",
+  "fixture_sha256": "932c6e9db94a4f447e0c1d8663b051b3b69010ffb3843cca269c4f46553359ca",
+  "actual_groups": [
+    5,
+    0,
+    10,
+    0
+  ],
+  "proof_replayed": false,
+  "global_evar_graph_available": false
+}

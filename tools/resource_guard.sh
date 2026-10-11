@@ -84,6 +84,10 @@ KILL_GIB=${ZESU_KILL_GIB:-230}
 MEMORY_HEADROOM_GIB=20
 MEMORY_KILL_AVAILABLE_GIB=10
 DISK_BUSY_PERCENT=${ZESU_DISK_BUSY_PERCENT:-80}
+# Disk thresholds use decimal GB. Maintenance never removes worktree files.
+DISK_TRIM_BELOW_BYTES=60000000000
+DISK_PROBE_MIN_BYTES=20000000000
+DUNE_CACHE_TRIM_BIN=/home/cody/islaris/_opam/bin/dune
 # An arm's build writes a marker `<prefix>.<pid>` while it populates its
 # build directory from the Dune cache; the ramp applies while one is live.
 POPULATING_PREFIX=${ZESU_POPULATING_PREFIX:-/tmp/zesu-populating}
@@ -127,6 +131,38 @@ touch "$REGISTRY" "$LOG" "$PEAK"
 GIB=$((1024 * 1024 * 1024))
 
 note() { printf '%s %s\n' "$(date -Is)" "$*" >> "$LOG"; }
+
+home_free_bytes() { df -B1 --output=avail /home | awk 'NR == 2 {print $1}'; }
+
+# Dune trims only unused, single-link cache artifacts. Keep maintenance outside
+# the admission mutex so existing scopes can release their compiler slots.
+cache_disk_admission() {
+  local free status=0 maintenance_lock
+  free=$(home_free_bytes) || return 2
+  [[ "$free" =~ ^[0-9]+$ ]] || { echo "resource guard: cannot read /home free bytes" >&2; return 2; }
+  (( free < DISK_TRIM_BELOW_BYTES )) || return 0
+  exec {maintenance_lock}>>"$STATE_DIR/cache-maintenance.mutex" || return 2
+  flock "$maintenance_lock" || { exec {maintenance_lock}>&-; return 2; }
+  free=$(home_free_bytes)
+  if ! [[ "$free" =~ ^[0-9]+$ ]]; then
+    flock -u "$maintenance_lock"; exec {maintenance_lock}>&-
+    echo "resource guard: cannot read /home free bytes" >&2; return 2
+  fi
+  if (( free < DISK_TRIM_BELOW_BYTES )); then
+    note "CACHE_TRIM start pid=$BASHPID free_bytes=$free root=/home/cody/.cache/dune trimmed_size=20GiB"
+    DUNE_CACHE_ROOT=/home/cody/.cache/dune "$DUNE_CACHE_TRIM_BIN" cache trim --trimmed-size=20GiB \
+      >>"$STATE_DIR/cache-trim.log" 2>&1 || status=$?
+    free=$(home_free_bytes)
+    note "CACHE_TRIM end pid=$BASHPID status=$status free_bytes=$free"
+  fi
+  flock -u "$maintenance_lock"; exec {maintenance_lock}>&-
+  [[ "$free" =~ ^[0-9]+$ ]] || { echo "resource guard: cannot read /home free bytes" >&2; return 2; }
+  if diagnostic_probe && (( free < DISK_PROBE_MIN_BYTES )); then
+    note "REFUSE probe launch: /home free_bytes=$free requires=$DISK_PROBE_MIN_BYTES"
+    echo "resource guard: probe refused: /home has $free free bytes, requires $DISK_PROBE_MIN_BYTES" >&2
+    return 3
+  fi
+}
 
 memory() { free -b | awk '/^Mem:/ {print $2, $3, $7}'; }
 
@@ -668,6 +704,7 @@ confirm_coqc() {
   validate_probe_scope || return $?
   confirmed_reservation "$marker" && return 0
   while :; do
+    cache_disk_admission || return $?
     exec 7>>"$GATE_MUTEX"
     flock 7 || { echo "resource guard: confirmation mutex failed" >&2; return 2; }
     owner=${marker##*/}; owner=${owner%%.*}
@@ -960,8 +997,19 @@ if path:
                                 "scope": unit, "identity_error": "cgroup-changed"})
                 continue
             scopes = [part for part in membership.split("/") if part.endswith(".scope")]
-            records.append({"pid": pid, "start_ticks": int(fields[19]),
-                            "scope": scopes[-1] if scopes else unit})
+            record = {"pid": pid, "start_ticks": int(fields[19]),
+                      "scope": scopes[-1] if scopes else unit}
+            try:
+                limit_lines = (Path(proc) / str(pid) / "limits").read_text().splitlines()
+                stack_line = next(line for line in limit_lines if line.startswith("Max stack size"))
+                soft, hard, units = stack_line.split()[-3:]
+                record.update(stack_limits={"soft_bytes": None if soft == "unlimited" else int(soft),
+                                            "hard_bytes": None if hard == "unlimited" else int(hard)},
+                              stack_limits_available=True)
+            except (OSError, ValueError, IndexError, StopIteration) as error:
+                record.update(stack_limits=None, stack_limits_available=False,
+                              stack_limit_error=type(error).__name__)
+            records.append(record)
         except (OSError, ValueError, IndexError, StopIteration) as error:
             records.append({"pid": pid, "start_ticks": None, "scope": unit,
                             "identity_error": type(error).__name__})
@@ -970,6 +1018,8 @@ for empty_scope in sorted(scopes_in_group - {record["scope"] for record in recor
 if not records:
     records.append({"pid": None, "start_ticks": None, "scope": unit})
 for record in records:
+    record.setdefault("stack_limits", None)
+    record.setdefault("stack_limits_available", False)
     record.update(utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                   actor_pid=int(actor), requested_unit=unit, signal=kill_signal,
                   action=requested, cause=cause, phase="before-request",
@@ -1079,6 +1129,7 @@ hold_reason() {
 guard_wait() {
   local reason held="" since
   while :; do
+    cache_disk_admission || return $?
     memory_kill_required && kill_youngest > /dev/null
     reason=$(hold_reason) || return $?
     if [ -z "$reason" ]; then
@@ -1361,6 +1412,12 @@ report() {
   python3 "$PROM" now || echo "prometheus unavailable; no machine figures"
 }
 
+# Apply proof limits inside the admitted scope, before the command starts.
+apply_scope_limits() {
+  ulimit -s unlimited || return $?
+  ulimit -t "${ZESU_SCOPE_CPU:-${ZESU_PROOF_CPU_LIMIT:-1200}}" || return $?
+}
+
 prune_scope_registry
 
 case "${1:-report}" in
@@ -1387,7 +1444,7 @@ case "${1:-report}" in
     confirm_coqc "$token" || exit $?
     mark_coqc "$token" $$ || exit $?
     export ZESU_COQC_RESERVATION="$token" ZESU_COQC_SCOPE="$token"
-    ulimit -t "${ZESU_SCOPE_CPU:-${ZESU_PROOF_CPU_LIMIT:-1200}}" || exit $?
+    apply_scope_limits || exit $?
     exec "$@" ;;
   batch)  shift; run_batch "$@" ;;
   locked) shift; run_locked "$@" ;;

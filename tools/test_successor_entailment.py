@@ -203,6 +203,11 @@ class SuccessorValidationTests(unittest.TestCase):
                 class Session:
                     async def call_tool(inner, name, arguments):
                         calls.append((name, arguments))
+                        if name == 'rocq_start':
+                            interactive = Path(arguments['file'])
+                            self.assertNotEqual(interactive, self.root / 'Checker.v')
+                            self.assertEqual(interactive.read_text(), statement + '\nProof.\nAbort.\n')
+                            self.assertEqual((self.root / 'Checker.v').read_text(), rendered['source'])
                         if name == 'rocq_health':
                             return {'ok': True}
                         if name == 'rocq_diag':
@@ -231,7 +236,45 @@ class SuccessorValidationTests(unittest.TestCase):
                 if primary:
                     recorded = next(call for call in result['calls'] if call['tool'] == 'rocq_check')
                     self.assertEqual(recorded['sentence_budgets'][0]['effective_timeout_seconds'],
-                                     300 if defect == 'clamp' else 1200)
+                                      300 if defect == 'clamp' else 1200)
+
+    def test_session_start_does_not_execute_the_block_body(self):
+        executed = []
+        export_path = self.root / 'startup_goals.json'
+        export_path.write_text(json.dumps({'goals': [{'ty': 'entry'}],
+                                          'stack': [], 'shelf': [], 'given_up': []}))
+        statement = 'Lemma boundary : instr_body 0x10 Entry.'
+        rendered = {'source': statement + '\nProof.\ntry zesu_block.\nQed.\n',
+                    'lemma': 'boundary', 'scope': 'unproved native designed boundary',
+                    'entry_pc': '0x10', 'entry_definition': 'Entry',
+                    'statement_sha256': hashlib.sha256(statement.encode()).hexdigest()}
+
+        class Session:
+            async def call_tool(inner, name, arguments):
+                if name == 'rocq_health':
+                    return {'ok': True}
+                if name == 'rocq_diag':
+                    return {'pet': {'pid': 123}}
+                if name == 'rocq_start':
+                    # The pinned server checks the complete document before start.
+                    loaded = Path(arguments['file']).read_text()
+                    if 'try zesu_block.' in loaded:
+                        executed.append('document-load')
+                    self.assertEqual(executed, [])
+                    return {'success': True, 'state_id': 1}
+                if name == 'rocq_complete_goals':
+                    return {'success': True, 'path': str(export_path), 'sha256': digest(export_path)}
+                if name == 'rocq_check':
+                    self.assertEqual(arguments['body'], 'try zesu_block.')
+                    executed.append('explicit-proof-request')
+                    return {'success': False, 'reason': 'tactic_failed'}
+                self.fail('An incomplete block must not reach certificate tools')
+
+        result = asyncio.run(check_boundary(Session(), rendered, self.root / 'Startup.v',
+                                           self.root, inherited_debts={}))
+        self.assertEqual(executed, ['explicit-proof-request'])
+        self.assertEqual(result['residual_class'], 'native_automation')
+        self.assertEqual((self.root / 'Startup.v').read_text(), rendered['source'])
 
     def test_checker_rejects_budgets_outside_the_current_policy(self):
         for seconds in (0, 1201):

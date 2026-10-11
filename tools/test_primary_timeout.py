@@ -86,7 +86,7 @@ class PrimaryTimeoutTests(unittest.TestCase):
         async def stdio(parameters):
             yield None, None
 
-        source = 'Proof.\nidtac.\ntry zesu_block.\nidtac.\nAbort.\n'
+        source = 'Lemma infer_boundary : True.\nProof.\nidtac.\ntry zesu_block.\nidtac.\nAbort.\n'
         with tempfile.TemporaryDirectory() as temporary:
             modules = {'mcp': SimpleNamespace(ClientSession=Session,
                 StdioServerParameters=lambda **kwargs: kwargs),
@@ -105,6 +105,11 @@ class PrimaryTimeoutTests(unittest.TestCase):
                     {'entry_pc': '0x10', 'entry_class': 'root'},
                     {'successors': ['0x20']}, original_state, options))
                 self.assertIs(parse.call_args.args[1], original_state)
+            opened = next(arguments for name, arguments in events if name == 'rocq_start')
+            interactive_source = Path(opened['file'])
+            self.assertEqual(interactive_source.read_text(), 'Lemma infer_boundary : True.\nProof.\nAbort.\n')
+            self.assertEqual(next(path for path in Path(temporary).glob('probes/*.v')
+                                  if path != interactive_source).read_text(), source)
             calls = [arguments for name, arguments in events if name == 'rocq_check']
             heavy = [call for call in calls if 'try zesu_block.' in call['body']]
             self.assertEqual(len(heavy), 1)
@@ -136,7 +141,7 @@ class PrimaryTimeoutTests(unittest.TestCase):
                     self.assertEqual(value['shelved_goals'], 1)
                     self.assertEqual(value['given_up_goals'], 1)
                 self.assertEqual(value['primary_capture_sha256'], discovery.digest(next(Path(temporary).glob('probes/*.mcp.json'))))
-                self.assertEqual(value['source_sha256'], discovery.digest(next(Path(temporary).glob('probes/*.v'))))
+                self.assertEqual(value['source_sha256'], discovery.digest(next(Path(temporary).glob('probes/*_interactive.v'))))
             if not export_failure:
                 self.assertEqual([value['state_id'] for value in exports], returned_states)
             self.observed_calls = events

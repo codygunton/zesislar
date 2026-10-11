@@ -1,0 +1,6 @@
+Lemma decodeItemOutput24UpdatedExtent (before head : list byte)
+    (a b value : byte) :
+  List.length before = 40%nat -> List.length head = 16%nat ->
+  (24 + N.to_nat 8 <= List.length
+    (head ++ <[0%nat:=value]>
+      (drop 8 (drop 8 (take 32 before ++ a :: b :: drop 34 before)))))%nat.
