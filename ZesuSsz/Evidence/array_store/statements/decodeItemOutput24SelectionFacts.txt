@@ -1,0 +1,6 @@
+Lemma decodeItemOutput24SelectionFacts (args : DecodeItemArgs)
+    (storage : list byte) :
+  List.length storage = 40%nat ->
+  0 <= decodeItemOutputPointer args ->
+  decodeItemOutputPointer args + 40 < RlpDecodeItem.word64Modulus ->
+  decodeItemOutput24Selection args storage.

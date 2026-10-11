@@ -1,0 +1,14 @@
+Lemma s152b_entry_698c_output_facts `{!islaG Sigma} `{!threadG}
+ (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (pointerBytes lengthBytes : list byte) (prefix : byte) (rest : list byte) (isLiteral : bool) :
+ decodeItemEntryAt800d698c args locals pointerBytes lengthBytes prefix rest isLiteral ⊢
+ ⌜let base := decodeItemOutputPointer args in
+ let address := bv_unsigned (bv_add (Z_to_bv 64 base) 24) in
+ length (returnStorage locals) = 40%nat /\
+ address = Z.add base 24 /\
+ Z.of_nat 24 = Z.sub address base /\
+ Z.modulo (Z.sub address base) 8 = 0 /\
+ Z.of_nat 3 = Z.div (Z.sub address base) 8 /\
+ (24 + N.to_nat 8 <= length (returnStorage locals))%nat /\
+ length (<[16%nat := Z_to_bv 8 0]> (returnStorage locals)) = 40%nat /\
+ (24 + N.to_nat 8 <= length (<[16%nat := Z_to_bv 8 0]> (returnStorage locals)))%nat /\
+ (Z.le base address /\ Z.lt address (Z.add base (Z.of_nat (length (<[16%nat := Z_to_bv 8 0]> (returnStorage locals))))))⌝.

@@ -1,0 +1,5 @@
+Lemma decodeItemEntry6a40Output24Selection `{!islaG Sigma} `{!threadG}
+    (args : DecodeItemArgs) (locals : DecodeItemReturnLocals)
+    (inputPrefix : byte) (rest : list byte) (headerLength payloadLength : Z) :
+  decodeItemEntryAt800d6a40 args locals inputPrefix rest headerLength payloadLength ⊢
+    ⌜decodeItemOutput24Selection args (returnStorage locals)⌝.

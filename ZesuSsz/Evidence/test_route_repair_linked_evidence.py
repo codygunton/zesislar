@@ -13,11 +13,11 @@ from check_decode_item_route_repair import SITES, acceptance, closed_groups, imp
 class SyntheticEvidence:
     """A complete fictional bundle for parser and attribution mutation tests."""
 
-    def __init__(self, root):
+    def __init__(self, root, sites=SITES, repair_identity=None, control_names=None):
         self.root = root
         self.files = {}
         self.empty = {"goals": [], "stack": [], "shelf": [], "given_up": []}
-        identity = {"module": "ZesuSsz.Automation.Switches.ResourceFirstIntroduction",
+        identity = repair_identity or {"module": "ZesuSsz.Automation.Switches.ResourceFirstIntroduction",
                     "class": "ZesuStepResourceFirstIntroduction",
                     "instance": "zesu_switch_resource_first_introduction"}
         imports = ["ZesuSsz.Automation.All", "ZesuSsz.Automation.Approved",
@@ -41,12 +41,12 @@ class SyntheticEvidence:
         self.bundle["candidate_delta"] = {"base_root": commit,
                                             "source_overlays": [self.bundle["switch_source"]]}
         prefix = "".join("Require Import " + module + ".\n" for module in imports[:-1])
-        controls = ["s119_literal_committed_witness_conflict", "s119_successor_committed_witness_conflict"]
+        controls = control_names or ["s119_literal_committed_witness_conflict", "s119_successor_committed_witness_conflict"]
         self.index = {"repair_identity": identity, "ON_imports": imports, "cases": [],
                       "reject_controls": controls,
                       "checked_module_source": self.write("checked.v", "(* fixture *)"),
                       "reviewed_terminal_package": self.write("terminal.json", "{}")}
-        for site in SITES:
+        for site in sites:
             theorem = "DesignedBoundary_800d" + site
             statement = "Lemma " + theorem + " : True."
             original = prefix + statement + "\nProof. exact I. Qed.\n"

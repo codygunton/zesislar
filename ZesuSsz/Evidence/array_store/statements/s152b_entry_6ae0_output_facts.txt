@@ -1,0 +1,8 @@
+Lemma s152b_entry_6ae0_output_facts `{!islaG Sigma} `{!threadG}
+ (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) :
+ decodeItemEntryAt800d6ae0 args locals ⊢
+ ⌜length (returnStorage locals) = 40%nat /\
+ 0 <= decodeItemOutputPointer args /\
+ decodeItemOutputPointer args + 40 < RlpDecodeItem.word64Modulus /\
+ decodeItemRejectedFacts args /\
+ returnStorage locals = decodeItemBeforeStorage args⌝.
