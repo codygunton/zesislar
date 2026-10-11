@@ -1,0 +1,425 @@
+{
+  "version": 1,
+  "frozen_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+  "checkpoint_root": "70ce5811fdd1b1a16af8ca5615a921a37dc5bcbb",
+  "scope": {
+    "approved_switches": 28,
+    "hint_modules": 25,
+    "Rule38_Approved": false
+  },
+  "main_record": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-consolidated-evidence-checkpoint-113/REPORT.json",
+    "sha256": "3a6ffaea2ad61010400edd4353ba6d01aba7b3b714dfdac84c84a8eeb18eaf0d",
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/3a/3a6ffaea2ad61010400edd4353ba6d01aba7b3b714dfdac84c84a8eeb18eaf0d",
+    "bytes": 803131
+  },
+  "context_correction": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-discarded-root-context-inspection-112/REPORT.json",
+    "sha256": "755923fd7742aa98bfc5b36258acb5d73dac431e1760553663245db106001161",
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/75/755923fd7742aa98bfc5b36258acb5d73dac431e1760553663245db106001161",
+    "bytes": 12157
+  },
+  "S132_inventory": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-s132-nine-site-source-inventory-114/REPORT.json",
+    "sha256": "218ea869c1df45f3767ba426fb3b419216eb45cfdf12f62cee8fbdd2e5abef2e",
+    "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/21/218ea869c1df45f3767ba426fb3b419216eb45cfdf12f62cee8fbdd2e5abef2e",
+    "bytes": 33750
+  },
+  "archive_index": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/INDEX.json",
+    "sha256": "aa2ebbcb6ac801aec70bba397bdba422a4ade6eba320a35fda5ffd82dbd2cc30"
+  },
+  "archive_scan": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/_build/i75-runtime-archive-preparation-001/SCAN.json",
+    "sha256": "d590ea8b935fbfa1ff6440e518a39f0a2691d9762544091f274f7d73a07d8cb2"
+  },
+  "diagnostic_cases": [
+    {
+      "attempt": "i75-final-native-result-audit-080",
+      "block": "6960",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "actual_groups": {
+        "active": 7,
+        "stack": 0,
+        "shelf": 17,
+        "given_up": 0
+      },
+      "stopped": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-final-native-three-sites-080/Capture6960.v",
+        "sha256": "5f0f26bebf26a5c9a6357f30b5824e743a997cbc714ab8094fa4c4316e91a554",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/5f/5f0f26bebf26a5c9a6357f30b5824e743a997cbc714ab8094fa4c4316e91a554",
+        "bytes": 40334
+      },
+      "final_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-final-native-three-sites-080/block-6960/exports/state_39.json",
+        "sha256": "bf0a5b4e6f5fcfb79124d73c422889164e27a1124033f5f85c48d761ed44d70b",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/bf/bf0a5b4e6f5fcfb79124d73c422889164e27a1124033f5f85c48d761ed44d70b",
+        "bytes": 8903577
+      }
+    },
+    {
+      "attempt": "i75-final-native-result-audit-080",
+      "block": "697c",
+      "statement_sha256": "4416a8f35e49ca7dce03358b8f4b4d354f056c0e475248816df61c27ad0ef6f0",
+      "actual_groups": {
+        "active": 1,
+        "stack": 0,
+        "shelf": 16,
+        "given_up": 0
+      },
+      "stopped": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-final-native-three-sites-080/Capture697c.v",
+        "sha256": "6b3c2cb70bfa0199d226b5c25e3c2a3d260f6ccf4ff8a5f48021b8f5d1831bce",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/6b/6b3c2cb70bfa0199d226b5c25e3c2a3d260f6ccf4ff8a5f48021b8f5d1831bce",
+        "bytes": 40608
+      },
+      "final_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-final-native-three-sites-080/block-697c/exports/state_39.json",
+        "sha256": "e714eed98defc4c284092dea8583525923566698dddea2afc6fd2dc88984ebd6",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/e7/e714eed98defc4c284092dea8583525923566698dddea2afc6fd2dc88984ebd6",
+        "bytes": 1679782
+      }
+    },
+    {
+      "attempt": "i75-final-native-result-audit-080",
+      "block": "69e8",
+      "statement_sha256": "3b68710d40940010dfd36b1dd533142e87af5bf79dd8cc4086b6242b88ddc3ae",
+      "actual_groups": {
+        "active": 2,
+        "stack": 0,
+        "shelf": 19,
+        "given_up": 0
+      },
+      "stopped": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-final-native-three-sites-080/Capture69e8.v",
+        "sha256": "505410cb4f82a2a8445a48b91081284b7d2bd3dd0a44ccc0a4ffdc575ebfd01c",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/50/505410cb4f82a2a8445a48b91081284b7d2bd3dd0a44ccc0a4ffdc575ebfd01c",
+        "bytes": 40608
+      },
+      "final_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-final-native-three-sites-080/block-69e8/exports/state_39.json",
+        "sha256": "d2f309224f081eaeb6d5b52a824e28f30968c693ba72978f24be25dc465f5706",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/d2/d2f309224f081eaeb6d5b52a824e28f30968c693ba72978f24be25dc465f5706",
+        "bytes": 3656751
+      }
+    },
+    {
+      "attempt": "i75-labelled-native-result-audit-092",
+      "block": "6960",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "actual_groups": {
+        "active": 7,
+        "stack": 0,
+        "shelf": 17,
+        "given_up": 0
+      },
+      "stopped": null,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-labelled-native-three-sites-092/Capture6960.v",
+        "sha256": "2da034854d40ecb2114d5b6d1ba70b7dccd43217663074353c4bd29add2d8a85",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/2d/2da034854d40ecb2114d5b6d1ba70b7dccd43217663074353c4bd29add2d8a85",
+        "bytes": 45205
+      },
+      "final_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-labelled-native-three-sites-092/block-6960/exports/state_42.json",
+        "sha256": "bf0a5b4e6f5fcfb79124d73c422889164e27a1124033f5f85c48d761ed44d70b",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/bf/bf0a5b4e6f5fcfb79124d73c422889164e27a1124033f5f85c48d761ed44d70b",
+        "bytes": 8903577
+      }
+    },
+    {
+      "attempt": "i75-labelled-native-result-audit-092",
+      "block": "697c",
+      "statement_sha256": "4416a8f35e49ca7dce03358b8f4b4d354f056c0e475248816df61c27ad0ef6f0",
+      "actual_groups": {
+        "active": 1,
+        "stack": 0,
+        "shelf": 11,
+        "given_up": 0
+      },
+      "stopped": null,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-labelled-native-three-sites-092/Capture697c.v",
+        "sha256": "85007d20af5dd6d27255bfb4adce8ce8cecc97702f0963728d72ae74706dc3b5",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/85/85007d20af5dd6d27255bfb4adce8ce8cecc97702f0963728d72ae74706dc3b5",
+        "bytes": 45479
+      },
+      "final_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-labelled-native-three-sites-092/block-697c/exports/state_42.json",
+        "sha256": "3b36b897eabcd2f564be75f9d9312df25b4a91ec2674c7f4aa507ad5e238c6c8",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/3b/3b36b897eabcd2f564be75f9d9312df25b4a91ec2674c7f4aa507ad5e238c6c8",
+        "bytes": 1193040
+      }
+    },
+    {
+      "attempt": "i75-labelled-native-result-audit-092",
+      "block": "69e8",
+      "statement_sha256": "3b68710d40940010dfd36b1dd533142e87af5bf79dd8cc4086b6242b88ddc3ae",
+      "actual_groups": {
+        "active": 2,
+        "stack": 0,
+        "shelf": 14,
+        "given_up": 0
+      },
+      "stopped": null,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-labelled-native-three-sites-092/Capture69e8.v",
+        "sha256": "665a2ad52ff004e7c2c5ad52e7dc441d5ade958b0c4ebf9f06c62bd5c6999acd",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/66/665a2ad52ff004e7c2c5ad52e7dc441d5ade958b0c4ebf9f06c62bd5c6999acd",
+        "bytes": 45479
+      },
+      "final_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-labelled-native-three-sites-092/block-69e8/exports/state_42.json",
+        "sha256": "df6260125bfaa2b087eed7fddf14ca7b59b8c87a2601b54f230e1333a0931f28",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/df/df6260125bfaa2b087eed7fddf14ca7b59b8c87a2601b54f230e1333a0931f28",
+        "bytes": 3084379
+      }
+    },
+    {
+      "attempt": "i75-labelled-native-result-audit-094",
+      "block": "6960",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "actual_groups": {
+        "active": 7,
+        "stack": 0,
+        "shelf": 17,
+        "given_up": 0
+      },
+      "stopped": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-labelled-full-feedback-094/Capture6960.v",
+        "sha256": "0d77aca23c0cfc5c6d9220228b65d43a9df8d53b83afaab20773bdb516db86ab",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/0d/0d77aca23c0cfc5c6d9220228b65d43a9df8d53b83afaab20773bdb516db86ab",
+        "bytes": 45084
+      },
+      "final_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-labelled-full-feedback-094/block-6960/exports/state_42.json",
+        "sha256": "bf0a5b4e6f5fcfb79124d73c422889164e27a1124033f5f85c48d761ed44d70b",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/bf/bf0a5b4e6f5fcfb79124d73c422889164e27a1124033f5f85c48d761ed44d70b",
+        "bytes": 8903577
+      }
+    },
+    {
+      "attempt": "i75-labelled-native-result-audit-094",
+      "block": "697c",
+      "statement_sha256": "4416a8f35e49ca7dce03358b8f4b4d354f056c0e475248816df61c27ad0ef6f0",
+      "actual_groups": {
+        "active": 1,
+        "stack": 0,
+        "shelf": 11,
+        "given_up": 0
+      },
+      "stopped": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-labelled-full-feedback-094/Capture697c.v",
+        "sha256": "83b18d2ee03274d837c5378a0550c3476a8cb5548c52fadce7cbf5e213c96f90",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/83/83b18d2ee03274d837c5378a0550c3476a8cb5548c52fadce7cbf5e213c96f90",
+        "bytes": 45358
+      },
+      "final_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-labelled-full-feedback-094/block-697c/exports/state_42.json",
+        "sha256": "3b36b897eabcd2f564be75f9d9312df25b4a91ec2674c7f4aa507ad5e238c6c8",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/3b/3b36b897eabcd2f564be75f9d9312df25b4a91ec2674c7f4aa507ad5e238c6c8",
+        "bytes": 1193040
+      }
+    },
+    {
+      "attempt": "i75-labelled-native-result-audit-094",
+      "block": "69e8",
+      "statement_sha256": "3b68710d40940010dfd36b1dd533142e87af5bf79dd8cc4086b6242b88ddc3ae",
+      "actual_groups": {
+        "active": 2,
+        "stack": 0,
+        "shelf": 14,
+        "given_up": 0
+      },
+      "stopped": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-labelled-full-feedback-094/Capture69e8.v",
+        "sha256": "41e2dd504a0f333d8eb38fdc4897dba8965f2c310b05780fa8f0427658afcadb",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/41/41e2dd504a0f333d8eb38fdc4897dba8965f2c310b05780fa8f0427658afcadb",
+        "bytes": 45358
+      },
+      "final_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-labelled-full-feedback-094/block-69e8/exports/state_42.json",
+        "sha256": "df6260125bfaa2b087eed7fddf14ca7b59b8c87a2601b54f230e1333a0931f28",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/df/df6260125bfaa2b087eed7fddf14ca7b59b8c87a2601b54f230e1333a0931f28",
+        "bytes": 3084379
+      }
+    },
+    {
+      "attempt": "i75-record-nonstopping-result-audit-096",
+      "block": "6960",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "actual_groups": {
+        "active": 7,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "stopped": false,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-record-nonstopping-native-096/Capture6960.v",
+        "sha256": "0bd7d6709c4bca9b44bcdc223565c840c0fafd62e78fe49175aa12e33a39ecc7",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/0b/0bd7d6709c4bca9b44bcdc223565c840c0fafd62e78fe49175aa12e33a39ecc7",
+        "bytes": 46008
+      },
+      "final_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-record-nonstopping-native-096/block-6960/exports/state_42.json",
+        "sha256": "0bc3210af855a08a4cb871404fa33cbd7c6f70ccacc1ee5d2abfb20b3f4e6006",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/0b/0bc3210af855a08a4cb871404fa33cbd7c6f70ccacc1ee5d2abfb20b3f4e6006",
+        "bytes": 409244
+      }
+    },
+    {
+      "attempt": "i75-record-nonstopping-result-audit-096",
+      "block": "697c",
+      "statement_sha256": "4416a8f35e49ca7dce03358b8f4b4d354f056c0e475248816df61c27ad0ef6f0",
+      "actual_groups": {
+        "active": 1,
+        "stack": 0,
+        "shelf": 15,
+        "given_up": 0
+      },
+      "stopped": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-record-nonstopping-native-096/Capture697c.v",
+        "sha256": "24e96891e4b6bf62deee45340b3f80d365a5cd8245df0a0393678bdd24b16f7f",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/24/24e96891e4b6bf62deee45340b3f80d365a5cd8245df0a0393678bdd24b16f7f",
+        "bytes": 46282
+      },
+      "final_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-record-nonstopping-native-096/block-697c/exports/state_42.json",
+        "sha256": "c61bc5bd220ba30f94a8beacd7df296d541094ca7787ecbf57e76dcb1eb56d95",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/c6/c61bc5bd220ba30f94a8beacd7df296d541094ca7787ecbf57e76dcb1eb56d95",
+        "bytes": 1586225
+      }
+    },
+    {
+      "attempt": "i75-record-nonstopping-result-audit-096",
+      "block": "69e8",
+      "statement_sha256": "3b68710d40940010dfd36b1dd533142e87af5bf79dd8cc4086b6242b88ddc3ae",
+      "actual_groups": {
+        "active": 2,
+        "stack": 0,
+        "shelf": 18,
+        "given_up": 0
+      },
+      "stopped": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-record-nonstopping-native-096/Capture69e8.v",
+        "sha256": "663a5f0e774bcef13ad5492dec29d87dd7a012253edea36276cc40d7d1afdbbd",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/66/663a5f0e774bcef13ad5492dec29d87dd7a012253edea36276cc40d7d1afdbbd",
+        "bytes": 46282
+      },
+      "final_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-record-nonstopping-native-096/block-69e8/exports/state_42.json",
+        "sha256": "dabe8c5493e9fc963fe4a37527874234b44cde710ed62f484e3a93f212123065",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/da/dabe8c5493e9fc963fe4a37527874234b44cde710ed62f484e3a93f212123065",
+        "bytes": 3546116
+      }
+    },
+    {
+      "attempt": "i75-retained-root-result-audit-104",
+      "block": "6960",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "actual_groups": {
+        "active": 7,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "stopped": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-6960-retained-root-continuation-104/Capture6960.v",
+        "sha256": "65754aeb531392eaee476821347f57208334e954d0c43395491761c5c9fffcf8",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/65/65754aeb531392eaee476821347f57208334e954d0c43395491761c5c9fffcf8",
+        "bytes": 49153
+      },
+      "final_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-6960-retained-root-continuation-104/block-6960/exports/state_45.json",
+        "sha256": "0bc3210af855a08a4cb871404fa33cbd7c6f70ccacc1ee5d2abfb20b3f4e6006",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/0b/0bc3210af855a08a4cb871404fa33cbd7c6f70ccacc1ee5d2abfb20b3f4e6006",
+        "bytes": 409244
+      }
+    },
+    {
+      "attempt": "i75-closed-target-attribution-result-audit-107",
+      "block": "6960",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "actual_groups": {
+        "active": 7,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "stopped": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-6960-closed-target-attribution-107/Capture6960.v",
+        "sha256": "adc3e8754f4f1e30a4e6fb38914886a15398839814ae0aefffbf7119c5ef0f3c",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/ad/adc3e8754f4f1e30a4e6fb38914886a15398839814ae0aefffbf7119c5ef0f3c",
+        "bytes": 49226
+      },
+      "final_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-6960-closed-target-attribution-107/block-6960/exports/state_45.json",
+        "sha256": "0bc3210af855a08a4cb871404fa33cbd7c6f70ccacc1ee5d2abfb20b3f4e6006",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/0b/0bc3210af855a08a4cb871404fa33cbd7c6f70ccacc1ee5d2abfb20b3f4e6006",
+        "bytes": 409244
+      }
+    },
+    {
+      "attempt": "i75-discarded-root-attribution-result-audit-111",
+      "block": "6960",
+      "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+      "actual_groups": {
+        "active": 7,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "stopped": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-6960-discarded-root-attribution-111/Capture6960.v",
+        "sha256": "be47e3738c811caad642d658ba2eae03803cde3306085b5e9822b0dc05ed21b9",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/be/be47e3738c811caad642d658ba2eae03803cde3306085b5e9822b0dc05ed21b9",
+        "bytes": 49594
+      },
+      "final_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-6960-discarded-root-attribution-111/block-6960/exports/state_45.json",
+        "sha256": "0bc3210af855a08a4cb871404fa33cbd7c6f70ccacc1ee5d2abfb20b3f4e6006",
+        "archive_path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/0b/0bc3210af855a08a4cb871404fa33cbd7c6f70ccacc1ee5d2abfb20b3f4e6006",
+        "bytes": 409244
+      }
+    }
+  ],
+  "latest_priority_attempts": {
+    "6960": "i75-discarded-root-attribution-result-audit-111",
+    "697c": "i75-record-nonstopping-result-audit-096",
+    "69e8": "i75-record-nonstopping-result-audit-096"
+  },
+  "preservation": {
+    "records": 44033,
+    "unique_objects": 15508,
+    "failed_attempts_preserved": true,
+    "historical_reports_rewritten": false
+  },
+  "native_closure_claim": false,
+  "first_global_chronology_claim": false,
+  "concrete_6960_witness_claim": false,
+  "repair_ON": "pending B's verified repair",
+  "limits": [
+    "No native Qed, closure certificate, or assumptions check follows from these captures.",
+    "Opaque liFindInContext assignments and other unmonitored helper operations remain coverage limits.",
+    "No first-global witness chronology follows.",
+    "Complete inner pre-operation exports and global evar maps remain unavailable.",
+    "MCP configured budgets do not establish unretained runtime cgroup fences.",
+    "The eight-site S118 set remains separate from the three priority sites. Its earlier instruction stops do not establish contract commitments.",
+    "Synthetic controls establish their tested rollback, registry, and callback behavior. They do not establish native state identity.",
+    "075/076 exported targets, contexts, and groups match across sessions. Four evar identifiers differ. Whole-export or global identity remains unestablished.",
+    "109 and 110 distinguish syntax. A non-evar top constructor does not establish a concrete value.",
+    "Compound unresolved leaves remain outside the tested recursive root coverage."
+  ]
+}
