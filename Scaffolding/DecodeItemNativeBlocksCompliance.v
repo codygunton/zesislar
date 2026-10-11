@@ -35,6 +35,7 @@ Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import Scaffolding.DecodeItemComplianceStatement.
 Require Import Scaffolding.DecodeItemSignatureGates.
+Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.
 
 Lemma decodeItemNativeBlocksSelectedCompliance
   (native800d6960 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (returnAddress : Z) (args : DecodeItemArgs),
@@ -43,20 +44,6 @@ Lemma decodeItemNativeBlocksSelectedCompliance
   decodeItemSelectedCode -∗
   instr_body 0x800d6960
     (decodeItemEntryAt800d6960 returnAddress args ∗ True))
-  (native800d6974 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte)
-      (inputPrefix : byte) (rest : list byte),
-    instr_pre 0x800d697c
-      (∃ (successor_frameBytes : list byte) (successor_x13 : bv 64)
-         (successor_inputPrefix : byte) (successor_rest : list byte),
-        decodeItemEntryAt800d697c args successor_frameBytes successor_x13
-          successor_inputPrefix successor_rest) -∗
-    instr_pre 0x800d69a4
-      (∃ (successor_frameBytes : list byte) (successor_x13 : bv 64)
-         (successor_inputPrefix : byte) (successor_rest : list byte),
-        decodeItemEntryAt800d69a4 args successor_frameBytes successor_x13
-          successor_inputPrefix successor_rest) -∗
-    decodeItemSelectedCode -∗ instr_body 0x800d6974
-      (decodeItemEntryAt800d6974 args frameBytes inputPrefix rest ∗ True))
   (native800d697c : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),
   instr_pre 0x800d698c (∃ (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -∗
   decodeItemSelectedCode -∗
@@ -138,7 +125,7 @@ Proof.
   iIntros "#Hcode" (args).
   iPoseProof (decodeItemBlockTable_complete_native_family
     (decodeItemSlotBody800d6960Conditional (native800d6960 Sigma HG HT))
-    (native800d6974 Sigma HG HT)
+    (@DesignedBoundary_800d6974 Sigma HG HT)
     (native800d697c Sigma HG HT)
     (native800d698c Sigma HG HT)
     (native800d69b0 Sigma HG HT)
