@@ -311,3 +311,77 @@ Proof.
   exact O.
 Qed.
 Print Assumptions wrapper_run_shared_on.
+
+Lemma cache_present_certificate : True.
+Proof.
+  zesu_scope_switch_table (@nil (Prop * bool)) ltac:(fun _ => idtac).
+  fixture_no_marker.
+  exact I.
+Qed.
+Print Assumptions cache_present_certificate.
+
+Lemma cache_absent_certificate : True.
+Proof.
+  zesu_scope_switch_table (@nil (Prop * bool)) ltac:(fun _ =>
+    lazymatch goal with H : ZesuSwitchDispatchCache _ |- _ => clear H end).
+  fixture_no_marker.
+  exact I.
+Qed.
+Print Assumptions cache_absent_certificate.
+
+Lemma cache_closed_certificate : True.
+Proof.
+  zesu_scope_switch_table (@nil (Prop * bool)) ltac:(fun _ => exact I).
+Qed.
+Print Assumptions cache_closed_certificate.
+
+Lemma cache_dependent_clear_failure : True.
+Proof.
+  assert_fails (zesu_scope_switch_table (@nil (Prop * bool)) ltac:(fun _ =>
+    lazymatch goal with H : ZesuSwitchDispatchCache _ |- _ =>
+      pose proof (eq_refl H) as dependent end)).
+  fixture_no_marker.
+  exact I.
+Qed.
+Print Assumptions cache_dependent_clear_failure.
+
+Lemma cache_action_failure_rollback : True.
+Proof.
+  assert_fails (zesu_scope_switch_table (@nil (Prop * bool)) ltac:(fun _ =>
+    evar (inside : nat); fail 0 "The fixture action failed")).
+  fixture_no_marker.
+  exact I.
+Qed.
+Print Assumptions cache_action_failure_rollback.
+
+Lemma cache_absent_with_existing_shelf : True /\ True.
+Proof.
+  split; [shelve | idtac].
+  zesu_scope_switch_table (@nil (Prop * bool)) ltac:(fun _ =>
+    lazymatch goal with H : ZesuSwitchDispatchCache _ |- _ => clear H end).
+  fixture_no_marker; exact I.
+  Unshelve.
+  fixture_no_marker; exact I.
+Qed.
+Print Assumptions cache_absent_with_existing_shelf.
+
+Lemma cache_nested_present : True.
+Proof.
+  zesu_scope_switch_table (@nil (Prop * bool)) ltac:(fun _ =>
+    zesu_scope_switch_table (@nil (Prop * bool)) ltac:(fun _ => idtac);
+    lazymatch goal with _ : ZesuSwitchDispatchCache _ |- _ => idtac end).
+  fixture_no_marker.
+  exact I.
+Qed.
+Print Assumptions cache_nested_present.
+
+Lemma cache_nested_absent : True.
+Proof.
+  zesu_scope_switch_table (@nil (Prop * bool)) ltac:(fun _ =>
+    zesu_scope_switch_table (@nil (Prop * bool)) ltac:(fun _ =>
+      lazymatch goal with H : ZesuSwitchDispatchCache _ |- _ => clear H end);
+    lazymatch goal with _ : ZesuSwitchDispatchCache _ |- _ => idtac end).
+  fixture_no_marker.
+  exact I.
+Qed.
+Print Assumptions cache_nested_absent.
