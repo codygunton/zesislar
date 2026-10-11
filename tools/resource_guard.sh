@@ -34,7 +34,8 @@
 # Memory admission uses MemAvailable. Each launch needs its job limit
 # plus 20 GiB. Hold below 20 GiB available; kill at or below 10 GiB available.
 # Ordinary proofs use 6 GiB; issue-10 probes use 64 GiB and require 84 GiB
-# available. No more than two probes may hold admitted slots.
+# available. CPU-only issue-10 probes use 6 GiB and require 26 GiB available.
+# Both probe types share the same two admitted slots.
 # The temporary used-memory policy is explicit: launch below 200 GiB,
 # hold at 215 GiB, and kill at 230 GiB. It does not change scope fences.
 # Memory limits remain 150G for batches and 120G for gates, with no swap.
@@ -88,6 +89,7 @@ DISK_BUSY_PERCENT=${ZESU_DISK_BUSY_PERCENT:-80}
 POPULATING_PREFIX=${ZESU_POPULATING_PREFIX:-/tmp/zesu-populating}
 MAX_COQC=${ZESU_MAX_COQC:-48}
 PROC_ROOT=${ZESU_PROC_ROOT:-/proc}
+CGROUP_ROOT=${ZESU_CGROUP_ROOT:-/sys/fs/cgroup}
 MAX_LOAD=${ZESU_MAX_LOAD:-80}
 MAX_BLOCKED=${ZESU_MAX_BLOCKED:-16}
 # Two launches per second, shared by every guard of every agent.
@@ -510,8 +512,11 @@ process_start() {
 
 probe_record() {
   local marker=$1 owner start
-  grep -Fxq 'probe=issue10' "$marker" || return 1
-  grep -Fxq 'memory_gib=64' "$marker" || return 1
+  if grep -Fxq 'probe=issue10' "$marker"; then
+    grep -Fxq 'memory_gib=64' "$marker" || return 1
+  elif grep -Fxq 'probe=issue10-cpu-only' "$marker"; then
+    grep -Fxq 'memory_gib=6' "$marker" || return 1
+  else return 1; fi
   grep -Fxq 'cpu=unlimited' "$marker" || return 1
   owner=${marker##*/}; owner=${owner%%.*}
   start=$(sed -n 's/^owner_start=//p' "$marker")
@@ -702,7 +707,7 @@ confirm_coqc() {
       status=$?; echo "resource guard: confirmation admission check failed ($status)" >&2
       flock -u 7; exec 7>&-; return "$status"
     }
-    if [ "${ZESU_DIAGNOSTIC_PROBE:-0}" = 1 ] && (( $(probe_count) >= 2 )); then
+    if diagnostic_probe && (( $(probe_count) >= 2 )); then
       admission="issue10 probes at their two-probe limit"
     fi
     if [ -z "$reason$holder$admission" ]; then
@@ -716,8 +721,11 @@ confirm_coqc() {
         rm -f -- "$replacement"
         flock -u 7; exec 7>&-; return 2
       fi
-      if [ "${ZESU_DIAGNOSTIC_PROBE:-0}" = 1 ]; then
-        if ! printf 'probe=issue10\nmemory_gib=64\ncpu=unlimited\nowner_start=%s\n' "$(process_start "$owner")" >> "$replacement"; then
+      if diagnostic_probe; then
+        local probe_tag=issue10
+        [ "${ZESU_DIAGNOSTIC_PROBE:-0}" != cpu-only ] || probe_tag=issue10-cpu-only
+        if ! printf 'probe=%s\nmemory_gib=%s\ncpu=unlimited\nowner_start=%s\n' \
+            "$probe_tag" "$MODULE_LIMIT_GIB" "$(process_start "$owner")" >> "$replacement"; then
           rm -f -- "$replacement"
           flock -u 7; exec 7>&-; return 2
         fi
@@ -907,6 +915,78 @@ gate_jobs() {
   echo "$allowed"
 }
 
+# Retain identities before a guard requests scope termination. No arguments
+# or environments are read. A stop request can produce several signals.
+record_scope_termination() {
+  local unit=$1 requested=$2 cause=$3 properties
+  properties=$(systemctl --user show "$unit" -p ControlGroup -p KillSignal 2>/dev/null) || properties=""
+  python3 - "$STATE_DIR/terminations.jsonl" "$PROC_ROOT" "$CGROUP_ROOT" \
+    "$unit" "$requested" "$cause" "$properties" "$BASHPID" <<'PY_TERMINATION'
+from pathlib import Path
+import datetime, fcntl, json, signal, sys
+output, proc, root, unit, requested, cause, properties, actor = sys.argv[1:]
+values = dict(line.split("=", 1) for line in properties.splitlines() if "=" in line)
+kill_signal = requested
+if requested == "systemd-stop":
+    try:
+        kill_signal = signal.Signals(int(values["KillSignal"])).name
+    except (KeyError, ValueError):
+        kill_signal = None
+records = []
+errors = []
+scopes_in_group = set()
+path = values.get("ControlGroup", "")
+if path:
+    group = Path(root) / path.lstrip("/")
+    if Path(root).resolve() not in group.resolve().parents:
+        raise SystemExit("resource guard: termination cgroup leaves its root")
+    try:
+        scopes_in_group = {q.name for q in group.rglob("*")
+                           if q.is_dir() and q.name.endswith(".scope")}
+        if unit.endswith(".scope"):
+            scopes_in_group.add(unit)
+        members = {int(pid) for q in group.rglob("cgroup.procs") for pid in q.read_text().split()}
+    except OSError as error:
+        members = set()
+        errors.append(type(error).__name__)
+    for pid in sorted(members):
+        try:
+            fields = (Path(proc) / str(pid) / "stat").read_text().rsplit(")", 1)[1].split()
+            cgroup = (Path(proc) / str(pid) / "cgroup").read_text()
+            membership = next(line.split(":", 2)[2] for line in cgroup.splitlines()
+                              if line.startswith("0::"))
+            if membership != path and not membership.startswith(path.rstrip("/") + "/"):
+                records.append({"pid": pid, "start_ticks": int(fields[19]),
+                                "scope": unit, "identity_error": "cgroup-changed"})
+                continue
+            scopes = [part for part in membership.split("/") if part.endswith(".scope")]
+            records.append({"pid": pid, "start_ticks": int(fields[19]),
+                            "scope": scopes[-1] if scopes else unit})
+        except (OSError, ValueError, IndexError, StopIteration) as error:
+            records.append({"pid": pid, "start_ticks": None, "scope": unit,
+                            "identity_error": type(error).__name__})
+for empty_scope in sorted(scopes_in_group - {record["scope"] for record in records}):
+    records.append({"pid": None, "start_ticks": None, "scope": empty_scope})
+if not records:
+    records.append({"pid": None, "start_ticks": None, "scope": unit})
+for record in records:
+    record.update(utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                  actor_pid=int(actor), requested_unit=unit, signal=kill_signal,
+                  action=requested, cause=cause, phase="before-request",
+                  capture_errors=errors)
+with open(output, "a") as stream:
+    fcntl.flock(stream, fcntl.LOCK_EX)
+    for record in records:
+        stream.write(json.dumps(record, sort_keys=True) + "\n")
+    stream.flush()
+PY_TERMINATION
+}
+
+stop_scope() {
+  record_scope_termination "$1" systemd-stop "$2" || note "termination record failed: $1"
+  systemctl --user stop "$1"
+}
+
 release_empty_registered_scope() {
   local unit=$1 launcher tasks
   grep -Fxq -- "$unit" "$REGISTRY" || return 1
@@ -918,7 +998,7 @@ release_empty_registered_scope() {
   kill -0 "$launcher" 2>/dev/null && return 1
   tasks=$(systemctl --user show "$unit" -p TasksCurrent --value 2>/dev/null) || return 1
   [ "$tasks" = 0 ] || return 1
-  systemctl --user stop "$unit" 2>/dev/null || return 1
+  stop_scope "$unit" empty-scope 2>/dev/null || return 1
   note "STALE empty scope released: $unit launcher $launcher"
 }
 
@@ -969,8 +1049,9 @@ kill_youngest() {
   unit=$(youngest_scope)
   if [ -n "$unit" ]; then
     note "KILL $unit at $(used_gib) GiB used"
+    record_scope_termination "$unit" SIGKILL memory-boundary || note "termination record failed: $unit"
     systemctl --user kill --signal=SIGKILL "$unit" 2>/dev/null
-    systemctl --user stop "$unit" 2>/dev/null
+    stop_scope "$unit" memory-boundary-cleanup 2>/dev/null
     echo "$unit"
   fi
 }
@@ -1095,6 +1176,10 @@ aggregate_slice() {
 }
 
 # Probe limits are explicit and do not change gate defaults.
+diagnostic_probe() {
+  case "${ZESU_DIAGNOSTIC_PROBE:-0}" in 1|cpu-only) return 0 ;; *) return 1 ;; esac
+}
+
 validate_probe_scope() {
   case "${ZESU_DIAGNOSTIC_PROBE:-0}" in
     0)
@@ -1102,10 +1187,12 @@ validate_probe_scope() {
         echo "resource guard: ordinary compiler scopes require 6 GiB" >&2; return 2
       fi
       return 0 ;;
-    1)
-      if [ -n "${ZESU_IN_GATE:-}" ] || [ "$MODULE_LIMIT_GIB" != 64 ] ||
+    1|cpu-only)
+      local memory=64
+      [ "${ZESU_DIAGNOSTIC_PROBE:-0}" != cpu-only ] || memory=6
+      if [ -n "${ZESU_IN_GATE:-}" ] || [ "$MODULE_LIMIT_GIB" != "$memory" ] ||
          [ "${ZESU_PROOF_CPU_LIMIT:-}" != unlimited ] || [ "${ZESU_PROBE_ISSUE:-}" != 10 ]; then
-        echo "resource guard: diagnostic probe requires issue10, 64 GiB, and unlimited CPU outside gates" >&2
+        echo "resource guard: probe requires issue10, its declared memory fence, and unlimited CPU outside gates" >&2
         return 2
       fi ;;
     *) echo "resource guard: invalid diagnostic probe flag" >&2; return 2 ;;
@@ -1117,7 +1204,7 @@ run_scope() {
   validate_probe_scope || return $?
   if [ "${1:-}" = "--cpu" ]; then
     cpu=${2:-}; shift 2
-    if [ "${ZESU_DIAGNOSTIC_PROBE:-0}" = 1 ]; then
+    if diagnostic_probe; then
       [ "$cpu" = unlimited ] || { echo "resource guard: probe CPU must be unlimited" >&2; return 2; }
     else
       [[ "$cpu" =~ ^[1-9][0-9]*$ ]] || { echo "resource guard: invalid CPU limit" >&2; return 2; }
@@ -1156,7 +1243,7 @@ run_scope() {
   if [ -n "$WRITER_ID" ]; then
     unit="${SCOPE_PREFIX}-writer-${WRITER_ID}-${name}-$$-${RANDOM}"
   fi
-  if [ "${ZESU_DIAGNOSTIC_PROBE:-0}" = 1 ]; then
+  if diagnostic_probe; then
     if ! mark_probe_scope "$reservation" "$unit.scope"; then
       [ "$owned" = 0 ] || release_coqc "$reservation"
       return 2
@@ -1164,7 +1251,7 @@ run_scope() {
   fi
   cleanup_scope() {
     if [ -n "$child" ] && kill -0 "$child" 2>/dev/null; then
-      systemctl --user stop "$unit.scope" 2>/dev/null || true
+      stop_scope "$unit.scope" controller-cleanup 2>/dev/null || true
       kill "$child" 2>/dev/null || true
       wait "$child" 2>/dev/null || true
     fi
@@ -1210,14 +1297,14 @@ run_batch() {
   if [ -n "${ZESU_IN_GATE:-}" ] || [ "${ZESU_IO:-batch}" = gate ]; then limit=$GATE_LIMIT; fi
   # Cap the aggregate before either its parent or a compiler starts.
   if ! systemctl --user set-property --runtime "$slice" "MemoryMax=$limit" MemorySwapMax=0; then
-    systemctl --user stop "$slice" 2>/dev/null || true
+    stop_scope "$slice" aggregate-setup-failure 2>/dev/null || true
     systemctl --user revert "$slice" 2>/dev/null || true
     [ -z "$marker" ] || rm -f "$marker"
     return 2
   fi
   cleanup_batch() {
     local stopped=0
-    if systemctl --user stop "$slice" 2>/dev/null; then
+    if stop_scope "$slice" aggregate-cleanup 2>/dev/null; then
       stopped=1
       release_aggregate_reservations "$slice"
     fi
@@ -1292,7 +1379,7 @@ case "${1:-report}" in
   scope)  shift; run_scope "$@" ;;
   scope-exec)
     validate_probe_scope || exit $?
-    if [ "${ZESU_DIAGNOSTIC_PROBE:-0}" = 1 ] && [ "${ZESU_SCOPE_CPU:-unlimited}" != unlimited ]; then
+    if diagnostic_probe && [ "${ZESU_SCOPE_CPU:-unlimited}" != unlimited ]; then
       echo "resource guard: probe CPU must be unlimited" >&2; exit 2
     fi
     token=$2; shift 2; [ "${1:-}" = -- ] && shift
