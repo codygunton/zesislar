@@ -53,7 +53,8 @@ class RocqGuardedTests(unittest.TestCase):
         self.executable("resource_guard.sh", "import json,os,sys\n"
                         "with open(os.environ['TEST_RECORD'],'a') as f: f.write(json.dumps(sys.argv[1:])+'\\n')\n")
         subprocess.run([str(self.root / "rocq_coqc_guarded.sh"), "-Q", "a", "b", "proof.v"],
-                       env=dict(self.environment, ZESU_ROCQ_COQC_BINARY="/test/coqc"), check=True)
+                       env=dict(self.environment, ZESU_ROCQ_COQC_BINARY="/test/coqc"), check=True,
+                       cwd=self.root)
         self.assertEqual(self.records(), [["wait"], ["scope", "rocq-mcp-coqc", "--",
                           "/test/coqc", "-Q", "a", "b", "proof.v"]])
 

@@ -1,0 +1,72 @@
+{
+  "base_commit": "7b6f9453401d554c7075797b37fd14364e0168cc",
+  "base_checkpoint": "cp-p1-s45",
+  "modules": {
+    "ZesuSsz/Compliance/DecodeItemEntryWitnessIntroductions.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItem6960ConditionalSlotFixtures.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemCompleteNativeFamilyFixtures.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemEntryWitnessIntroductionFixtures.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemOpenNativeHypothesesFixtures.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemPrecommitmentLedger.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemPrecommitmentWitnessFixtures.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemPromoted6974Fixtures.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemRouteRepairAcceptance.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    },
+    "ZesuSsz/Evidence/DecodeItemStringFlagUnitFixtures.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0
+    }
+  }
+}
