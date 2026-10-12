@@ -466,7 +466,7 @@ if probe_record "$marker"; then exit 91; fi
 """, TEST_MEMORY=memory, TEST_CPU=cpu, TEST_START=start)
                 self.assertEqual(result.returncode, 0, result.stderr)
 
-    def test_two_probe_slots_are_atomic_across_simultaneous_requests(self):
+    def test_six_probe_slots_are_atomic_across_simultaneous_requests(self):
         result = self.run_guard(r"""
 hold_reason() { :; }
 compiler_pids() { :; }
@@ -480,12 +480,19 @@ worker() {
   confirm_coqc "$marker" || return
   confirm_coqc "$marker" || return
   printf 'start %s\n' "$owner" >> "$STATE_DIR/events"
+  while [ ! -e "$STATE_DIR/release" ]; do sleep 0.01; done
   sleep 0.08
   printf 'end %s\n' "$owner" >> "$STATE_DIR/events"
   release_coqc "$marker"
 }
 pids=""
-for n in 1 2 3 4 5 6; do worker "$n" & pids="$pids $!"; done
+for n in 1 2 3 4 5 6 7 8 9 10 11 12; do worker "$n" & pids="$pids $!"; done
+for attempt in {1..200}; do
+  [ "$(probe_count)" -eq 6 ] && break
+  sleep 0.01
+done
+[ "$(probe_count)" -eq 6 ] || exit 92
+touch "$STATE_DIR/release"
 for pid in $pids; do wait "$pid" || exit 91; done
 cat "$STATE_DIR/events"
 [ "$(probe_count)" = 0 ]
@@ -504,8 +511,8 @@ cat "$STATE_DIR/events"
                 peak = max(peak, len(active))
             else:
                 active.remove(pid)
-        self.assertEqual(starts, 6)
-        self.assertEqual(peak, 2)
+        self.assertEqual(starts, 12)
+        self.assertEqual(peak, 6)
         self.assertFalse(active)
 
     def test_cpu_only_probe_uses_six_gib_and_the_shared_probe_slot(self):

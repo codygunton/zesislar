@@ -60,7 +60,7 @@ set -uo pipefail
 # branch before registry setup so the query does not create or prune state.
 if [ "${1:-}" = native-limit ]; then
   [ "$#" -eq 1 ] || { echo "resource guard: native-limit takes no arguments" >&2; exit 2; }
-  printf '%s\n' 4
+  printf '%s\n' 8
   exit 0
 fi
 
@@ -752,8 +752,8 @@ confirm_coqc() {
       status=$?; echo "resource guard: confirmation admission check failed ($status)" >&2
       flock -u 7; exec 7>&-; return "$status"
     }
-    if diagnostic_probe && (( $(probe_count) >= 2 )); then
-      admission="issue10 probes at their two-probe limit"
+    if diagnostic_probe && (( $(probe_count) >= 6 )); then
+      admission="issue10 probes at their six-probe limit"
     fi
     if [ -z "$reason$holder$admission" ]; then
       replacement=$(mktemp "$STATE_DIR/coqc-confirm.XXXXXXXX") || {
