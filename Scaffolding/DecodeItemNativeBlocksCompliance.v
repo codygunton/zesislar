@@ -39,6 +39,7 @@ Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d697c.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d69e8.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a08.
+Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a38.
 
 Lemma decodeItemNativeBlocksSelectedCompliance
   (native800d6960 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (returnAddress : Z) (args : DecodeItemArgs),
@@ -61,12 +62,6 @@ Lemma decodeItemNativeBlocksSelectedCompliance
   decodeItemSelectedCode -∗
   instr_body 0x800d6a24
     (decodeItemEntryAt800d6a24 args inputPrefix rest ∗ True))
-  (native800d6a38 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte),
-  instr_pre 0x800d6a40 (∃ (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_headerLength : Z) (successor_payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a40 (args) (successor_locals) (successor_inputPrefix) (successor_rest) (successor_headerLength) (successor_payloadLength))%I -∗
-  instr_pre 0x800d6ae0 (∃ (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -∗
-  decodeItemSelectedCode -∗
-  instr_body 0x800d6a38
-    (decodeItemEntryAt800d6a38 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest ∗ True))
   (native800d6a40 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z),
   decodeItemSelectedCode -∗
   instr_body 0x800d6a40
@@ -119,7 +114,7 @@ Proof.
     (@DesignedBoundary_800d69e8 Sigma HG HT)
     (@DesignedBoundary_800d6a08 Sigma HG HT)
     (native800d6a24 Sigma HG HT)
-    (native800d6a38 Sigma HG HT)
+    (@DesignedBoundary_800d6a38 Sigma HG HT)
     (native800d6a40 Sigma HG HT)
     (native800d6a78 Sigma HG HT)
     (native800d6aa8 Sigma HG HT)
