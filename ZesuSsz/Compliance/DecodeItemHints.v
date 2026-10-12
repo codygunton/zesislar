@@ -25,3 +25,4 @@ Require Export ZesuSsz.Compliance.DecodeItemShortListHandoffFacts.
 Require Export ZesuSsz.Compliance.DecodeItemStringSuccessorWitnesses.
 Require Export ZesuSsz.Compliance.DecodeItemEntryWitnessIntroductions.
 Require Export ZesuSsz.Compliance.DecodeItemStoreSelectionIntroductions.
+Require Export ZesuSsz.Compliance.DecodeItemMaskedReturnFacts.
