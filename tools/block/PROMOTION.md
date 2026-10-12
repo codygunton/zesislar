@@ -54,3 +54,19 @@ The dry-run report sets `success` to `false` and `status` to `dry_run`.
 A failed verification restores the previous source files and records the failure.
 A successful report sets `success` to `true` and `status` to `verified`.
 The final project gate remains required before a commit.
+
+## Hand gate preparation
+
+Complete MCP compilation and exact verification before this gate.
+The gate launcher does not verify a native proof.
+Record the measured size with explicit `--record-size` after the dispatched Hand size review.
+The command rejects proofs above 80 physical lines from `Proof` through `Qed`.
+It preserves the other baseline entries.
+It removes session writer and probe settings from the gate environment.
+Hand sessions still require their writer identity.
+
+```sh
+ai-coord watch --label hand-698c-check-fast -- python3 tools/block/prepare_hand_gate.py \
+  --module ZesuSsz/Proofs/DecodeItem/Hand/Block800d698c.v \
+  --agent spec-a --jobs 6 --record-size --check-fast
+```
