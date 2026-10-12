@@ -108,3 +108,41 @@ Proof.
   exact I.
 Qed.
 
+Lemma decodeItemOutput16ByteStoreIntroductionRegistered `{!islaG Sigma}
+    args locals (continuation : nat -> iProp Sigma) :
+  @ZesuPureFactIntro Sigma
+    (⌜(decodeItemOutputPointer args + 16 - decodeItemOutputPointer args) mod 1 = 0⌝ ∗
+      ∃ index : nat,
+        ⌜Z.of_nat index = (decodeItemOutputPointer args + 16 - decodeItemOutputPointer args) / 1⌝ ∗
+        ⌜(index < length (returnStorage locals))%nat⌝ ∗ continuation index)%I
+    (⌜length (returnStorage locals) = 40%nat⌝ ∗ continuation 16%nat)%I.
+Proof. typeclasses eauto. Qed.
+
+Lemma decodeItemOutput16ByteStoreIntroductionMissingLength `{!islaG Sigma}
+    (args : DecodeItemArgs) (locals : DecodeItemReturnLocals)
+    (continuation : nat -> iProp Sigma) : True.
+Proof.
+  let target := constr:(@ZesuPureFactIntro Sigma
+    (⌜(decodeItemOutputPointer args + 16 - decodeItemOutputPointer args) mod 1 = 0⌝ ∗
+      ∃ index : nat,
+        ⌜Z.of_nat index = (decodeItemOutputPointer args + 16 - decodeItemOutputPointer args) / 1⌝ ∗
+        ⌜(index < length (returnStorage locals))%nat⌝ ∗ continuation index)%I
+    (continuation 16%nat)%I) in
+  assert_fails (assert target by typeclasses eauto).
+  exact I.
+Qed.
+
+Lemma decodeItemOutput16ByteStoreIntroductionWrongOffset `{!islaG Sigma}
+    (args : DecodeItemArgs) (locals : DecodeItemReturnLocals)
+    (continuation : nat -> iProp Sigma) : True.
+Proof.
+  let target := constr:(@ZesuPureFactIntro Sigma
+    (⌜(decodeItemOutputPointer args + 24 - decodeItemOutputPointer args) mod 1 = 0⌝ ∗
+      ∃ index : nat,
+        ⌜Z.of_nat index = (decodeItemOutputPointer args + 24 - decodeItemOutputPointer args) / 1⌝ ∗
+        ⌜(index < length (returnStorage locals))%nat⌝ ∗ continuation index)%I
+    (⌜length (returnStorage locals) = 40%nat⌝ ∗ continuation 16%nat)%I) in
+  assert_fails (assert target by typeclasses eauto).
+  exact I.
+Qed.
+

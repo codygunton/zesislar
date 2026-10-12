@@ -63,3 +63,21 @@ Qed.
 Print Assumptions decodeItemOutput24StoreIntroduction.
 Print Assumptions decodeItemOutput32WordStoreIntroduction.
 Print Assumptions decodeItemOutput32ShortStoreIntroduction.
+
+#[export] Instance decodeItemOutput16ByteStoreIntroduction `{!islaG Sigma}
+    args locals (continuation : nat -> iProp Sigma) :
+  @ZesuPureFactIntro Sigma
+    (⌜(decodeItemOutputPointer args + 16 - decodeItemOutputPointer args) mod 1 = 0⌝ ∗
+      ∃ index : nat,
+        ⌜Z.of_nat index = (decodeItemOutputPointer args + 16 - decodeItemOutputPointer args) / 1⌝ ∗
+        ⌜(index < length (returnStorage locals))%nat⌝ ∗ continuation index)%I
+    (⌜length (returnStorage locals) = 40%nat⌝ ∗ continuation 16%nat)%I.
+Proof.
+  unfold ZesuPureFactIntro. iIntros "(%Hlength & Hcontinuation)".
+  iSplit; first (iPureIntro; apply Z.mod_1_r).
+  iExists 16%nat. iFrame. iSplit; iPureIntro.
+  - rewrite Z.div_1_r. cbn. lia.
+  - rewrite Hlength. lia.
+Qed.
+
+Print Assumptions decodeItemOutput16ByteStoreIntroduction.
