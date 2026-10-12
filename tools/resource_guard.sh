@@ -137,10 +137,9 @@ home_free_bytes() { df -B1 --output=avail /home | awk 'NR == 2 {print $1}'; }
 # Dune trims only unused, single-link cache artifacts. Keep maintenance outside
 # the admission mutex so existing scopes can release their compiler slots.
 cache_disk_admission() {
-  local free status=0 maintenance_lock
+  local free status=0 maintenance_lock low_marker="$STATE_DIR/cache-low-space"
   free=$(home_free_bytes) || return 2
   [[ "$free" =~ ^[0-9]+$ ]] || { echo "resource guard: cannot read /home free bytes" >&2; return 2; }
-  (( free < DISK_TRIM_BELOW_BYTES )) || return 0
   exec {maintenance_lock}>>"$STATE_DIR/cache-maintenance.mutex" || return 2
   flock "$maintenance_lock" || { exec {maintenance_lock}>&-; return 2; }
   free=$(home_free_bytes)
@@ -148,12 +147,21 @@ cache_disk_admission() {
     flock -u "$maintenance_lock"; exec {maintenance_lock}>&-
     echo "resource guard: cannot read /home free bytes" >&2; return 2
   fi
-  if (( free < DISK_TRIM_BELOW_BYTES )); then
+  if (( free >= DISK_TRIM_BELOW_BYTES )); then
+    rm -f "$low_marker"
+  elif [[ ! -e "$low_marker" ]] || { diagnostic_probe && (( free < DISK_PROBE_MIN_BYTES )); }; then
     note "CACHE_TRIM start pid=$BASHPID free_bytes=$free root=/home/cody/.cache/dune trimmed_size=20GiB"
     DUNE_CACHE_ROOT=/home/cody/.cache/dune "$DUNE_CACHE_TRIM_BIN" cache trim --trimmed-size=20GiB \
       >>"$STATE_DIR/cache-trim.log" 2>&1 || status=$?
     free=$(home_free_bytes)
     note "CACHE_TRIM end pid=$BASHPID status=$status free_bytes=$free"
+    if [[ "$free" =~ ^[0-9]+$ ]]; then
+      if (( free >= DISK_TRIM_BELOW_BYTES )); then
+        rm -f "$low_marker"
+      elif (( status == 0 )); then
+        : > "$low_marker"
+      fi
+    fi
   fi
   flock -u "$maintenance_lock"; exec {maintenance_lock}>&-
   [[ "$free" =~ ^[0-9]+$ ]] || { echo "resource guard: cannot read /home free bytes" >&2; return 2; }

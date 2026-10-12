@@ -91,7 +91,7 @@ wait "$two" || exit 92
 cat "$STATE_DIR/events"
 """)
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(result.stdout.splitlines(), ["start", "end", "start", "end"])
+        self.assertEqual(result.stdout.splitlines(), ["start", "end"])
 
     def test_waiter_rechecks_space_after_serialized_maintenance(self):
         result = self.run_guard(r"""
@@ -130,6 +130,117 @@ confirm_coqc "$marker" || exit $?
         result = self.run_guard('home_free_bytes() { echo unavailable; }; cache_disk_admission')
         self.assertEqual(result.returncode, 2, result.stderr)
         self.assertIn("cannot read /home free bytes", result.stderr)
+
+    def test_concurrent_low_interval_trims_once(self):
+        result = self.run_guard(r"""
+home_free_bytes() { echo 54000000000; }
+DUNE_CACHE_TRIM_BIN="$STATE_DIR/dune"
+printf '#!/usr/bin/env bash\necho trim >> "$ZESU_GUARD_STATE/events"\nsleep 0.05\n' > "$DUNE_CACHE_TRIM_BIN"
+chmod +x "$DUNE_CACHE_TRIM_BIN"
+pids=()
+for i in {1..10}; do cache_disk_admission & pids+=("$!"); done
+for pid in "${pids[@]}"; do wait "$pid" || exit 91; done
+cache_disk_admission || exit 92
+[ -e "$STATE_DIR/cache-low-space" ] || exit 93
+cat "$STATE_DIR/events"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.splitlines(), ["trim"])
+
+    def test_new_low_crossing_trims_again(self):
+        result = self.run_guard(r"""
+echo 54000000000 > "$STATE_DIR/free"
+home_free_bytes() { cat "$STATE_DIR/free"; }
+DUNE_CACHE_TRIM_BIN="$STATE_DIR/dune"
+printf '#!/usr/bin/env bash\necho trim >> "$ZESU_GUARD_STATE/events"\n' > "$DUNE_CACHE_TRIM_BIN"
+chmod +x "$DUNE_CACHE_TRIM_BIN"
+cache_disk_admission || exit 91
+cache_disk_admission || exit 92
+[ -e "$STATE_DIR/cache-low-space" ] || exit 93
+echo 60000000000 > "$STATE_DIR/free"
+cache_disk_admission || exit 94
+[ ! -e "$STATE_DIR/cache-low-space" ] || exit 95
+echo 59999999999 > "$STATE_DIR/free"
+cache_disk_admission || exit 96
+cat "$STATE_DIR/events"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.splitlines(), ["trim", "trim"])
+
+    def test_probe_below_twenty_retrims_despite_low_marker(self):
+        for flag in ("1", "cpu-only"):
+            for after in (19999999999, 20000000000):
+                with self.subTest(flag=flag, after=after):
+                    result = self.run_guard(r"""
+echo 19999999999 > "$STATE_DIR/free"
+: > "$STATE_DIR/cache-low-space"
+home_free_bytes() { cat "$STATE_DIR/free"; }
+DUNE_CACHE_TRIM_BIN="$STATE_DIR/dune"
+cat > "$DUNE_CACHE_TRIM_BIN" <<'SH_TRIM'
+#!/usr/bin/env bash
+echo trim >> "$ZESU_GUARD_STATE/events"
+echo "$TEST_AFTER" > "$ZESU_GUARD_STATE/free"
+SH_TRIM
+chmod +x "$DUNE_CACHE_TRIM_BIN"
+cache_disk_admission; status=$?
+cat "$STATE_DIR/events"
+exit "$status"
+""", ZESU_DIAGNOSTIC_PROBE=flag, TEST_AFTER=str(after))
+                    self.assertEqual(result.returncode, 3 if after < 20000000000 else 0,
+                                     result.stderr)
+                    self.assertEqual(result.stdout.splitlines(), ["trim"])
+
+    def test_each_probe_below_twenty_retries_and_refuses(self):
+        result = self.run_guard(r"""
+home_free_bytes() { echo 19000000000; }
+: > "$STATE_DIR/cache-low-space"
+DUNE_CACHE_TRIM_BIN="$STATE_DIR/dune"
+printf '#!/usr/bin/env bash\necho trim >> "$ZESU_GUARD_STATE/events"\n' > "$DUNE_CACHE_TRIM_BIN"
+chmod +x "$DUNE_CACHE_TRIM_BIN"
+cache_disk_admission; [ "$?" = 3 ] || exit 91
+cache_disk_admission; [ "$?" = 3 ] || exit 92
+cat "$STATE_DIR/events"
+""", ZESU_DIAGNOSTIC_PROBE="cpu-only")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.splitlines(), ["trim", "trim"])
+
+    def test_probe_at_twenty_keeps_low_interval_marker(self):
+        result = self.run_guard(r"""
+home_free_bytes() { echo 20000000000; }
+: > "$STATE_DIR/cache-low-space"
+DUNE_CACHE_TRIM_BIN="$STATE_DIR/not-a-real-dune"
+cache_disk_admission || exit 91
+[ -e "$STATE_DIR/cache-low-space" ] || exit 92
+[ ! -e "$STATE_DIR/cache-trim.log" ] || exit 93
+""", ZESU_DIAGNOSTIC_PROBE="cpu-only")
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_failed_trim_does_not_mark_interval_complete(self):
+        result = self.run_guard(r"""
+home_free_bytes() { echo 30000000000; }
+DUNE_CACHE_TRIM_BIN="$STATE_DIR/dune"
+printf '#!/usr/bin/env bash\necho failure >> "$ZESU_GUARD_STATE/events"\nexit 7\n' > "$DUNE_CACHE_TRIM_BIN"
+chmod +x "$DUNE_CACHE_TRIM_BIN"
+cache_disk_admission || exit 91
+[ ! -e "$STATE_DIR/cache-low-space" ] || exit 92
+cache_disk_admission || exit 93
+[ ! -e "$STATE_DIR/cache-low-space" ] || exit 94
+cat "$STATE_DIR/events"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.splitlines(), ["failure", "failure"])
+
+    def test_invalid_measurement_after_trim_does_not_mark_interval(self):
+        result = self.run_guard(r"""
+echo 59000000000 > "$STATE_DIR/free"
+home_free_bytes() { cat "$STATE_DIR/free"; }
+DUNE_CACHE_TRIM_BIN="$STATE_DIR/dune"
+printf '#!/usr/bin/env bash\necho invalid > "$ZESU_GUARD_STATE/free"\n' > "$DUNE_CACHE_TRIM_BIN"
+chmod +x "$DUNE_CACHE_TRIM_BIN"
+cache_disk_admission; [ "$?" = 2 ] || exit 91
+[ ! -e "$STATE_DIR/cache-low-space" ] || exit 92
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_admitted_scope_sets_unlimited_stack_and_preserves_cpu_limit(self):
         for cpu, expected_cpu in (("1200", 1200), ("unlimited", -1)):
