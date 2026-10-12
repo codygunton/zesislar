@@ -303,5 +303,123 @@
   "reviewed_preparation": {
     "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-entry-normalization-arm-preparation-001/REPORT.json",
     "sha256": "c1894bd9dba2cb628861985953d1195bb651d6a7f1f0e2fd906af862a77fb6bb"
-  }
+  },
+  "loop_negative_controls": [
+    {
+      "control_id": "s170_6a24_committed_cursor_application",
+      "header": "6a24",
+      "theorem": "S165_6a24_old1_S131",
+      "certificate_name": "S131_6a24_01",
+      "trial_body": "exact (f_equal (fun x : bv 64 => RVal_Bits x) (S131_6a24_01 args inputPrefix i H5)).",
+      "target": {
+        "path": "ZesuSsz/Evidence/route_repair/6a24.old-cursor.kernel.txt",
+        "sha256": "572eec32cfd5313a5c957d0229190be2dbf9613e9281844ca8c1bb3686a5a327"
+      },
+      "certificate_statement": {
+        "path": "ZesuSsz/Evidence/route_repair/6a24.successor-cursor.statement.txt",
+        "sha256": "ac02219c1039e80431780a57ac0b9ac542a23939004dd88b489e4e1fe1aeb4d9"
+      },
+      "negative_report": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/REPORT.json",
+        "sha256": "e28885c86e0e87f0c90e86b6cc8bc337d28e980c9dada6e36e9a323405d530c1"
+      },
+      "call_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/calls.json",
+        "sha256": "ed7cd91b24c736d624e1dc1fffc334137ccdb4ad6c1a134796c91f429af4af9a"
+      },
+      "raw_calls": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/RAW-CALLS.json",
+        "sha256": "1d3934dc3678096d73f70e6e1230f6f0891fa241ecbe55b8fbf52bb38808a397"
+      },
+      "input_index": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/INPUTS.json",
+        "sha256": "a07e1555d49146ea84fa0df3f91ff8ae7c3c846ba0ecce724b88fe3f415a3a20"
+      },
+      "closures": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/SESSION-CLOSURE.json",
+        "sha256": "336b9fa1e50b929861a7447fa17add4b4765793ffd7d56d3357aebbbd4cb86a0"
+      },
+      "captured_context": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-supported-shelf-focus-005/6a24-OLD-VALUE-1-CONTEXT.json",
+        "sha256": "c38b02b78afa5e61e52cb89ecf5cf3418c65678ba4f98d487c6e94b5f47b8b57"
+      },
+      "proof_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old1_S131.v",
+        "sha256": "295f2a6294cc2a5d884a2f25510a6705b30230e61d6ae5e62c54cf22d850553e"
+      },
+      "certificate_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s130/_build/s131-correct-successors-001/S131_6a24_01.v",
+        "sha256": "96f3a3f94aef9cdf2c204857b8e97bd370acc13d95a322cf14ed22ed281b7f9e"
+      },
+      "successor_report": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s130/build/stock-zisk/spec-a-s131/CORRECT-SUCCESSOR-CERTIFICATES-001.json",
+        "sha256": "a61caf0621a76edbabc6a39f9419c308625ee5a13bafec254f2d74f99e4b7d0c"
+      },
+      "scope": {
+        "frozen_root": "f2033b63f8f785efcacf8c06fbba1107fe9a7f7e",
+        "artifact_scope": "Unchanged owned I76 artifact overlay. This is a faithful residual reconstruction, not a saved native state or a Root verification.",
+        "successor_root": "1081277a535ad7488dcd841978e16527e89fd90c",
+        "successor_measurement_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e"
+      },
+      "kind": "negative_application; not a False proof or a closed certificate"
+    },
+    {
+      "control_id": "s170_6ac4_committed_cursor_application",
+      "header": "6ac4",
+      "theorem": "S165_6ac4_old1_S131",
+      "certificate_name": "S131_6ac4_01",
+      "trial_body": "exact (f_equal (fun x : bv 64 => RVal_Bits x) (S131_6ac4_01 args inputPrefix i H5)).",
+      "target": {
+        "path": "ZesuSsz/Evidence/route_repair/6ac4.old-cursor.kernel.txt",
+        "sha256": "572eec32cfd5313a5c957d0229190be2dbf9613e9281844ca8c1bb3686a5a327"
+      },
+      "certificate_statement": {
+        "path": "ZesuSsz/Evidence/route_repair/6ac4.successor-cursor.statement.txt",
+        "sha256": "d6d035856c0234f6162d1909d3a7fed0d4a00b4833aa68cf09b0a6d21fb15200"
+      },
+      "negative_report": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/REPORT.json",
+        "sha256": "e28885c86e0e87f0c90e86b6cc8bc337d28e980c9dada6e36e9a323405d530c1"
+      },
+      "call_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/calls.json",
+        "sha256": "ed7cd91b24c736d624e1dc1fffc334137ccdb4ad6c1a134796c91f429af4af9a"
+      },
+      "raw_calls": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/RAW-CALLS.json",
+        "sha256": "1d3934dc3678096d73f70e6e1230f6f0891fa241ecbe55b8fbf52bb38808a397"
+      },
+      "input_index": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/INPUTS.json",
+        "sha256": "a07e1555d49146ea84fa0df3f91ff8ae7c3c846ba0ecce724b88fe3f415a3a20"
+      },
+      "closures": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/SESSION-CLOSURE.json",
+        "sha256": "336b9fa1e50b929861a7447fa17add4b4765793ffd7d56d3357aebbbd4cb86a0"
+      },
+      "captured_context": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-supported-shelf-focus-005/6ac4-OLD-VALUE-1-CONTEXT.json",
+        "sha256": "3f627b23188427fa827031da25f5a80275f0b1594d65b2b1790ed433e2caeeec"
+      },
+      "proof_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old1_S131.v",
+        "sha256": "0757206a5054007715840edcbd83694805c4f4d3c787229e704d7c7c9d05427a"
+      },
+      "certificate_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s130/_build/s131-correct-successors-001/S131_6ac4_01.v",
+        "sha256": "53d5cb1c66b15159768f7f228a2137cb8c63bc09012f0296c1c09f7a2373be04"
+      },
+      "successor_report": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s130/build/stock-zisk/spec-a-s131/CORRECT-SUCCESSOR-CERTIFICATES-001.json",
+        "sha256": "a61caf0621a76edbabc6a39f9419c308625ee5a13bafec254f2d74f99e4b7d0c"
+      },
+      "scope": {
+        "frozen_root": "f2033b63f8f785efcacf8c06fbba1107fe9a7f7e",
+        "artifact_scope": "Unchanged owned I76 artifact overlay. This is a faithful residual reconstruction, not a saved native state or a Root verification.",
+        "successor_root": "1081277a535ad7488dcd841978e16527e89fd90c",
+        "successor_measurement_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e"
+      },
+      "kind": "negative_application; not a False proof or a closed certificate"
+    }
+  ]
 }

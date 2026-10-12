@@ -1,0 +1,4 @@
+Lemma S131_6ac4_01 (args : DecodeItemArgs) (inputPrefix : bv 8) (i : Z) :
+decodeItemByteFoldFacts args (Z.sub (bv_unsigned inputPrefix) 247) i (Z.add (decodeItemInputPointer args) 1) (take (Z.to_nat (Z.sub (bv_unsigned inputPrefix) 247)) (drop 1 (decodeItemInputBytes args))) ->
+((Z_to_bv 64 (Z.add (Z.add (decodeItemInputPointer args) 1) i) + 1)%bv = Z_to_bv 64 (Z.add (Z.add (decodeItemInputPointer args) 1) (Z.add i 1))).
+

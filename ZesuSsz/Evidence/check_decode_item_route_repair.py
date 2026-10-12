@@ -108,6 +108,14 @@ def inventory(index, root=ROOT):
     bound_file(index["checked_module_source"], root)
     bound_file(index["control_module"], root)
     bound_file(index["reviewed_terminal_package"], root)
+    controls = index.get("loop_negative_controls", [])
+    require([case.get("control_id") for case in controls] == LOOP_NEGATIVE_IDS,
+            "Both loop negative identities are required.")
+    for case in controls:
+        for key in ("target", "certificate_statement", "negative_report", "call_log", "raw_calls",
+                    "input_index", "closures", "captured_context", "proof_source", "certificate_source",
+                    "successor_report"):
+            bound_file(case[key], root)
 
 
 
@@ -463,6 +471,105 @@ def native_case(case, record, index, root=ROOT, session_map=None, seal_reference
             "object_attribution": "controller_post_compile_hash"}
 
 
+
+LOOP_NEGATIVE_IDS = ["s170_6a24_committed_cursor_application",
+                     "s170_6ac4_committed_cursor_application"]
+
+
+def loop_negative_controls(index, records, root=ROOT):
+    """Check failed applications. These records are not closed certificates."""
+    cases = index.get("loop_negative_controls", [])
+    require([case.get("control_id") for case in cases] == LOOP_NEGATIVE_IDS,
+            "Both exact loop negative controls are required in the inventory.")
+    require([record.get("control_id") for record in records] == LOOP_NEGATIVE_IDS,
+            "Both linked loop negative applications are required.")
+    results = []
+    for case, record in zip(cases, records):
+        require(record.get("negative_report") == case["negative_report"],
+                "A loop negative report differs from the reviewed binding.")
+        _, report = bound_json(record["negative_report"], root)
+        for path, sha in report["bindings"].items():
+            bound_file({"path": path, "sha256": sha}, root)
+        require(report.get("frozen_root") == case["scope"]["frozen_root"] and
+                report.get("artifact_scope") == case["scope"]["artifact_scope"],
+                "The loop negative scope changed.")
+        rows = [row for row in report["rows"] if row["fixture"]["name"] == case["theorem"]]
+        require(len(rows) == 1, "The exact loop negative row is missing or duplicated.")
+        row = rows[0]
+        source, source_bytes = bound_file(case["proof_source"], root)
+        _, captured = bound_json(case["captured_context"], root)
+        _, target = bound_file(case["target"], root)
+        _, expected_certificate = bound_file(case["certificate_statement"], root)
+        _, certificate_source = bound_file(case["certificate_source"], root)
+        fixture = row["fixture"]
+        require(fixture["site"] == case["header"] and fixture["original_index"] == 1 and
+                same_path(fixture["file"], source, root) and
+                fixture["certificate_name"] == case["certificate_name"],
+                "The loop target or selected certificate changed.")
+        require(fixture["target"] == captured["kernel_goal"]["ty"] == target.decode().rstrip("\n"),
+                "The committed-i kernel target changed.")
+        require(row["exact_certificate_statement"].strip() == expected_certificate.decode().strip() and
+                declaration(source_bytes.decode(), case["certificate_name"]) ==
+                declaration(certificate_source.decode(), case["certificate_name"]),
+                "The certified-i+1 statement changed.")
+        _, successor_report = bound_json(case["successor_report"], root)
+        require(successor_report["production_root"] == case["scope"]["successor_root"] and
+                successor_report["measurement_root"] == case["scope"]["successor_measurement_root"],
+                "The successor certificate scope changed.")
+        successors = [r for r in successor_report["rows"] if r["theorem"] == case["certificate_name"]]
+        require(len(successors) == 1 and successors[0]["verification"]["success"] and
+                successors[0]["verification"]["assumptions"] == [] and
+                successors[0]["advancing_Qed"] and successors[0]["compiled_closed_assumptions"],
+                "The successor fact lacks its verified certificate.")
+        _, seal = bound_json(case["input_index"], root)
+        require(seal["root"] == case["scope"]["frozen_root"] and
+                seal["inputs"].get(str(source)) == case["proof_source"]["sha256"],
+                "The negative source is not in its frozen input seal.")
+        _, calls = bound_json(case["call_log"], root)
+        _, raw_calls = bound_json(case["raw_calls"], root)
+        require(len(calls) == len(raw_calls), "The raw negative call log is incomplete.")
+        for call, raw in zip(calls, raw_calls):
+            require(call["tool"] == raw["tool"] and call["arguments"] == raw["arguments"] and
+                    call["result"] == response(raw), "A negative call disagrees with its raw response.")
+        phase = "exact-" + case["theorem"]
+        selected = [call for call in calls if call["phase"] == phase]
+        require(any(c["tool"] == "rocq_health" and c["result"].get("success") for c in selected) and
+                any(c["tool"] == "rocq_start" and c["arguments"].get("theorem") == case["theorem"] and
+                    same_path(c["arguments"]["file"], source, root) and c["result"].get("success")
+                    for c in selected), "The negative application lacks health or its exact start.")
+        trials = [c for c in selected if c["tool"] == "rocq_step_multi"]
+        trial = row["trial"]
+        require(len(trials) == 1 and trials[0]["arguments"]["tactics"] == [case["trial_body"]] and
+                trials[0]["result"] == trial and len(trial.get("results", [])) == 1,
+                "The exact failed loop application changed.")
+        outcome = trial["results"][0]
+        require(outcome.get("success") is False and outcome.get("reason") == "tactic_failed" and
+                outcome.get("error") and row["advancement"] is None and
+                row["native_assignment_executed"] is False,
+                "The negative control is not an unchanged failed application.")
+        before = row["operations"][-1]["after"]
+        require(before["state_id"] == trials[0]["arguments"]["from_state"] and
+                before["sha256"] == row["rollback"]["sha256"] == row["final"]["sha256"],
+                "The loop rollback changed the committed target.")
+        for exported in (before, row["rollback"], row["final"]):
+            _, groups = bound_json(exported, root)
+            require(exported.get("groups_are_actual") is True and exported.get("truncated") is False and
+                    [exported[k] for k in ("active_goals", "stack_entries", "shelved_goals", "given_up_goals")] == [1, 0, 0, 0],
+                    "The loop negative groups are missing, truncated, or changed.")
+            actual_groups({key: groups[key] for key in ("goals", "stack", "shelf", "given_up")})
+            require(len(groups["goals"]) == len(groups["kernel_groups"]["goals"]) == 1 and
+                    not groups["stack"] and not groups["shelf"] and not groups["given_up"],
+                    "The complete loop negative groups changed.")
+        _, closures = bound_json(case["closures"], root)
+        owned = [c for c in closures if c["phase"] == phase]
+        require(len(owned) == 1 and all(owned[0][key] is True for key in
+                ("transport_closed_normally", "server_exit_verified", "Pet_exit_verified", "work_success")) and
+                owned[0]["cleanup_signals_sent"] == 0, "The negative transport did not close normally.")
+        results.append({"control_id": case["control_id"], "kind": "negative_application",
+                        "actual_groups": [1, 0, 0, 0], "closed_certificate": False})
+    return results
+
+
 def acceptance(index, bundle, root=ROOT):
     inventory(index, root)
     require(bundle.get("version") == 2, "The linked version-2 evidence bundle is required.")
@@ -477,6 +584,7 @@ def acceptance(index, bundle, root=ROOT):
             index["repair_identity"]["class"] in switch_bytes.decode(), "The reserved switch identity is missing.")
     require([row["theorem"] for row in bundle["rejections"]] == index["reject_controls"],
             "Both exact S119 control certificates are required.")
+    loop_negative_controls(index, bundle.get("loop_negative_controls", []), root)
     records = bundle["native_cases"] + bundle["rejections"]
     sources = proof_sources(records, root)
     modules = input_provenance(bundle, sources, root)
@@ -661,7 +769,7 @@ def entry_normalization_binding(index, root=ROOT):
             "The entry-normalization switch identity differs.")
     baseline = json.loads((root / "ZesuSsz/Evidence/route_repair/INDEX.json").read_text())
     for key in ("cases", "reject_controls", "control_module", "reviewed_terminal_package",
-                "checked_module_source"):
+                "checked_module_source", "loop_negative_controls"):
         require(index.get(key) == baseline[key],
                 "The entry-normalization binding changed the retained " + key + ".")
     expected_imports = [ENTRY_NORMALIZATION_IDENTITY["module"]
@@ -710,12 +818,16 @@ def dry_run(index, root=ROOT, *, switch_source=None, bundle=None, array_store=Fa
                 "The dry bundle switch lacks its reserved identity.")
         source_reference = bundle["switch_source"]
     sites = [case["block"] for case in index["cases"]]
+    loop_controls = ([] if array_store else
+                     [row["control_id"] for row in index.get("loop_negative_controls", [])])
     checked = []
     # A stub or an incomplete bundle supplies no closure certificate.
     complete = bundle is not None and not pending and (
         [row.get("block") for row in bundle.get("native_cases", [])] == sites and
         [row.get("control_id" if array_store else "theorem")
-         for row in bundle.get("rejections", [])] == controls)
+         for row in bundle.get("rejections", [])] == controls and
+        (array_store or [row.get("control_id") for row in bundle.get("loop_negative_controls", [])]
+         == loop_controls))
     if complete:
         require(switch_source is None, "A bundle cannot substitute a dry switch source.")
         checker = array_store_acceptance if array_store else acceptance
@@ -725,7 +837,8 @@ def dry_run(index, root=ROOT, *, switch_source=None, bundle=None, array_store=Fa
             "switch_source": source_reference, "runtime_activation_checked": bool(checked),
             "checked_native_cases": checked,
             "missing_certificates": ([] if complete else
-                ["native: " + site for site in sites] + ["control: " + name for name in controls]),
+                ["native: " + site for site in sites] + ["control: " + name for name in controls] +
+                ["control: " + name for name in loop_controls]),
             "pending_inventory": pending,
             "limits": "A source identity check does not prove switch typing, runtime activation, or native closure."}
 
@@ -773,7 +886,7 @@ def main():
             return 0
         require(args.results is not None, "The actual nine-native proof bundle is required.")
         result = entry_normalization_acceptance(index, json.loads(args.results.read_text()), root)
-        print(json.dumps({"accepted": True, "native_cases": result, "S119_rejections": 2}, indent=2))
+        print(json.dumps({"accepted": True, "native_cases": result, "S119_rejections": 2, "loop_negative_applications": 2}, indent=2))
         return 0
     if args.array_store:
         if args.check_schema:
@@ -800,7 +913,7 @@ def main():
         return 0
     require(args.results is not None, "The actual nine-native proof bundle is required.")
     result = acceptance(index, json.loads(args.results.read_text()), root)
-    print(json.dumps({"accepted": True, "native_cases": result, "S119_rejections": 2}, indent=2))
+    print(json.dumps({"accepted": True, "native_cases": result, "S119_rejections": 2, "loop_negative_applications": 2}, indent=2))
     return 0
 
 

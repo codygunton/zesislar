@@ -107,7 +107,8 @@
     "input_index",
     "sessions",
     "native_cases",
-    "rejections"
+    "rejections",
+    "loop_negative_controls"
   ],
   "properties": {
     "switch_source": {
@@ -303,6 +304,30 @@
             "$ref": "#/$defs/file"
           }
         }
+      }
+    },
+    "loop_negative_controls": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "required": [
+          "control_id",
+          "negative_report"
+        ],
+        "properties": {
+          "control_id": {
+            "enum": [
+              "s170_6a24_committed_cursor_application",
+              "s170_6ac4_committed_cursor_application"
+            ]
+          },
+          "negative_report": {
+            "$ref": "#/$defs/file"
+          }
+        },
+        "additionalProperties": false
       }
     }
   }

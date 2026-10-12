@@ -1,7 +1,7 @@
 """Keep native acceptance separate from inventory and pure certificates."""
 import json
 import unittest
-from check_decode_item_route_repair import (INDEX, SITES, acceptance, closed_groups,
+from check_decode_item_route_repair import (INDEX, SITES, LOOP_NEGATIVE_IDS, acceptance, closed_groups,
                                            declaration, response)
 
 
@@ -9,6 +9,7 @@ class RouteRepairAcceptanceTests(unittest.TestCase):
     def test_exact_nine_site_inventory(self):
         index = json.loads(INDEX.read_text())
         self.assertEqual([case["block"] for case in index["cases"]], SITES)
+        self.assertEqual([r["control_id"] for r in index["loop_negative_controls"]], LOOP_NEGATIVE_IDS)
         self.assertEqual(sum("terminal" in case["capture_kind"] for case in index["cases"]), 3)
         self.assertEqual(index["reject_controls"],
                          ["s119_literal_committed_witness_conflict",
