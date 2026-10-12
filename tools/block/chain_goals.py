@@ -18,6 +18,7 @@ ENV = "CHAIN-GOAL-ENV"
 # The environment traversal preserves both Iris contexts without selecting
 # or consuming any resource. Each field has its own terminator.
 RECORDER = r'''Ltac chain_print_environment marker environment :=
+  let environment := eval hnf in environment in
   lazymatch environment with
   | environments.Enil => idtac
   | environments.Esnoc ?rest ?name ?resource =>

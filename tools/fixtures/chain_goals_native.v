@@ -3,6 +3,7 @@ Require Import isla.riscv64.riscv64.
 From iris.proofmode Require Import environments.
 Set Printing Width 200. Set Printing Depth 100000.
 Ltac chain_print_environment marker environment :=
+  let environment := eval hnf in environment in
   lazymatch environment with
   | environments.Enil => idtac
   | environments.Esnoc ?rest ?name ?resource =>

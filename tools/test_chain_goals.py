@@ -83,6 +83,19 @@ class ChainGoalsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unresolved native local definitions"):
             chain_goals.parse_goals(output)
 
+    def test_folded_environment_preserves_ordered_resources(self):
+        fixture = ROOT / "fixtures/chain_goals_folded_environment.v"
+        self.assertIn(chain_goals.RECORDER, fixture.read_text())
+        unfolded, folded = chain_goals.parse_goals(
+            fixture.with_suffix(".log").read_text(), allow_local_definitions=True)
+        self.assertEqual(unfolded["persistent"], folded["persistent"])
+        self.assertEqual(unfolded["spatial"], folded["spatial"])
+        self.assertEqual(unfolded["conclusion"], folded["conclusion"])
+        self.assertEqual(len(folded["persistent"]), 1)
+        self.assertEqual(len(folded["spatial"]), 1)
+        self.assertIn("mmio_range", folded["persistent"][0])
+        self.assertEqual(folded["local_values"]["foldedEnvironment"], "HIDDEN")
+
     def test_native_local_alias_is_rejected(self):
         output = (ROOT / "fixtures/chain_goals_alias.log").read_text()
         with self.assertRaisesRegex(ValueError, "unresolved native local definitions"):

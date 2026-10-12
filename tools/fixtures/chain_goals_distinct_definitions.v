@@ -3,6 +3,7 @@ From iris.proofmode Require Import environments.
 From Coq Require Import Arith String.
 Open Scope string_scope.
 Ltac chain_print_environment marker environment :=
+  let environment := eval hnf in environment in
   lazymatch environment with
   | environments.Enil => idtac
   | environments.Esnoc ?rest ?name ?resource =>
