@@ -3,10 +3,11 @@
 Controllers supply their existing verified server-owner records. This helper
 does not register jobs or reserve slots. Controllers must call the normal
 guard wait, then take a fresh snapshot before launch. The standing policy
-permits four arms and one owned MCP session per child.
+permits eight native slots and one owned MCP session per child.
 """
 
 import os
+import re
 from pathlib import Path
 import subprocess
 
@@ -79,20 +80,26 @@ def clean_environment(environment):
 def snapshot(guard, child, owned_sessions, *, proc=Path('/proc'), environment=None):
     if not child:
         raise ValueError('The controller must supply its child identity.')
-    env = clean_environment(os.environ if environment is None else environment)
+    original_env = os.environ if environment is None else environment
+    env = clean_environment(original_env)
+    writer = original_env.get('ZESU_WRITER_ID', '')
+    if writer:
+        if not re.fullmatch(r'[a-zA-Z0-9._-]+', writer):
+            raise ValueError('The writer identity is invalid.')
+        env['ZESU_WRITER_ID'] = writer
 
     def query(command):
         return subprocess.check_output([str(guard), command], env=env, text=True).strip()
 
     limit = int(query('native-limit'))
-    if limit != 4:
-        raise ValueError('The native admission policy differs from four arms.')
+    if limit != 8:
+        raise ValueError('The native admission policy differs from eight arms.')
     processes = inventory(proc)
     # The caller obtains these records through the certificate owner RPC. Do
     # not infer a child identity from process arguments or environment values.
     sessions = [owner for owner in owned_sessions if owner['child'] == child
                 and owned_session_live(owner, proc)]
-    return {'child': child, 'native_limit': limit, 'live_interpreters': processes,
+    return {'child': child, 'writer_identity': writer, 'native_limit': limit, 'live_interpreters': processes,
             'owned_sessions_for_child': sessions, 'compiler_count': int(query('coqc-count')),
             'normal_guard_hold': query('hold'), 'gate_status': query('lock-status')}
 
@@ -129,14 +136,14 @@ def reason(observed, *, kind, requested_memory_bytes=DEFAULT_MEMORY_LIMIT, budge
         return policy_reason
     if observed['normal_guard_hold'] != 'none':
         return observed['normal_guard_hold']
-    if observed['gate_status'] != 'no gate lock':
+    if observed['gate_status'] != 'no gate lock' and not observed.get('writer_identity'):
         return 'The gate holds admission.'
     if observed['compiler_count'] < 0 or observed['compiler_count'] >= COMPILER_LIMIT:
         return 'The forty-eight compiler limit holds admission.'
-    if observed['native_limit'] != 4:
-        raise ValueError('The native admission policy differs from four arms.')
+    if observed['native_limit'] != 8:
+        raise ValueError('The native admission policy differs from eight arms.')
     if len(unique_processes(observed['live_interpreters'])) >= observed['native_limit']:
-        return 'The four native slots are occupied.'
+        return 'The eight native slots are occupied.'
     if kind == 'mcp' and observed['owned_sessions_for_child']:
         return 'The child already owns an MCP session.'
     return None

@@ -25,7 +25,7 @@ def process(root, pid, name, state='S', *, directory=None, start=42):
 
 
 def observed(count=0):
-    return {'child': 'B', 'native_limit': 4,
+    return {'child': 'B', 'native_limit': 8,
             'live_interpreters': [{'pid': index + 1, 'comm': 'coqc', 'state': 'S'}
                                   for index in range(count)],
             'owned_sessions_for_child': [], 'compiler_count': count,
@@ -45,7 +45,7 @@ class NativeAdmission(unittest.TestCase):
             result = subprocess.run([str(GUARD), 'native-limit'], env=env,
                                     capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertEqual(result.stdout, '4\n')
+            self.assertEqual(result.stdout, '8\n')
             self.assertFalse(state.exists())
 
     def test_limit_query_rejects_arguments_without_writes(self):
@@ -93,10 +93,10 @@ class NativeAdmission(unittest.TestCase):
         with self.assertRaises(ValueError):
             admission.reason(snapshot, kind='native', requested_memory_bytes=6 * admission.GIB)
 
-    def test_four_arm_limit(self):
-        for count in (0, 1, 2, 3):
+    def test_eight_arm_limit(self):
+        for count in range(8):
             self.assertIsNone(admission.reason(observed(count), kind='native', requested_memory_bytes=6 * admission.GIB))
-        self.assertIn('four native', admission.reason(observed(4), kind='native', requested_memory_bytes=6 * admission.GIB))
+        self.assertIn('eight native', admission.reason(observed(8), kind='native', requested_memory_bytes=6 * admission.GIB))
 
     def test_memory_holds_and_gate_lock_remain_effective(self):
         snapshot = observed()
@@ -173,7 +173,7 @@ class NativeAdmission(unittest.TestCase):
         snapshot['gate_status'] = 'no gate lock'
         snapshot['compiler_count'] = 48
         self.assertIn('forty-eight', decision(snapshot))
-        self.assertIn('four native', decision(observed(4)))
+        self.assertIn('eight native', decision(observed(8)))
         snapshot = observed()
         snapshot['owned_sessions_for_child'] = [{'server_pid': 9}]
         self.assertIn('already owns', decision(snapshot, 'mcp'))
@@ -183,6 +183,32 @@ class NativeAdmission(unittest.TestCase):
         snapshot['owned_sessions_for_child'] = [{'server_pid': 9}]
         self.assertIn('already owns', admission.reason(snapshot, kind='mcp', requested_memory_bytes=6 * admission.GIB))
         self.assertIsNone(admission.reason(snapshot, kind='native', requested_memory_bytes=6 * admission.GIB))
+
+    def test_named_writer_single_pet_is_admitted_during_gate(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            proc = root / 'proc'
+            proc.mkdir()
+            process(proc, 1, 'pet')
+            guard = root / 'guard'
+            guard.write_text('#!/bin/sh\n[ "$ZESU_WRITER_ID" = worker-build-2 ] || exit 9\n'
+                             '[ -z "${ZESU_IN_GATE-}${ROCQ_WORKSPACE-}" ] || exit 10\n'
+                             'case "$1" in native-limit) echo 8;; coqc-count) echo 1;; '
+                             'hold) echo none;; lock-status) echo "state=held";; esac\n')
+            guard.chmod(0o755)
+            snapshot = admission.snapshot(guard, 'B', [], proc=proc, environment={
+                'PATH': '/usr/bin:/bin', 'ZESU_WRITER_ID': 'worker-build-2',
+                'ZESU_IN_GATE': '1', 'ROCQ_WORKSPACE': 'fixture'})
+        self.assertIsNone(admission.reason(snapshot, kind='mcp'))
+        snapshot['normal_guard_hold'] = 'memory 181GiB'
+        self.assertEqual(admission.reason(snapshot, kind='mcp'), 'memory 181GiB')
+        snapshot['normal_guard_hold'] = 'none'
+        snapshot['compiler_count'] = 48
+        self.assertIn('forty-eight', admission.reason(snapshot, kind='mcp'))
+
+    def test_snapshot_rejects_invalid_writer_identity(self):
+        with self.assertRaisesRegex(ValueError, 'writer identity is invalid'):
+            admission.snapshot(GUARD, 'B', [], environment={'ZESU_WRITER_ID': 'invalid writer'})
 
     def test_owned_session_identity_rejects_stale_or_zombie_owner(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -195,19 +221,20 @@ class NativeAdmission(unittest.TestCase):
             self.assertFalse(admission.owned_session_live(owner, root))
             self.assertFalse(admission.owned_session_live({**owner, 'server_pid': 99}, root))
 
-    def test_snapshot_clears_overrides_and_filters_other_children(self):
+    def test_snapshot_keeps_writer_and_filters_other_overrides_and_children(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             proc = root / 'proc'
             proc.mkdir()
             process(proc, 1, 'python', start=42)
             guard = root / 'guard'
-            guard.write_text('#!/bin/sh\n[ -z "${ZESU_IN_GATE-}${ROCQ_WORKSPACE-}${ZESU_WRITER_ID-}" ] || exit 9\ncase "$1" in native-limit) echo 4;; coqc-count) echo 0;; hold) echo none;; lock-status) echo "no gate lock";; esac\n')
+            guard.write_text('#!/bin/sh\n[ -z "${ZESU_IN_GATE-}${ROCQ_WORKSPACE-}" ] || exit 9\ncase "$1" in native-limit) echo 8;; coqc-count) echo 0;; hold) echo none;; lock-status) echo "no gate lock";; esac\n')
             guard.chmod(0o755)
             owners = [{'child': 'A', 'server_pid': 1, 'server_start_ticks': 42}]
             snapshot = admission.snapshot(guard, 'B', owners, proc=proc,
                 environment={'PATH': '/usr/bin:/bin', 'ZESU_IN_GATE': '1', 'ROCQ_WORKSPACE': 'fixture', 'ZESU_WRITER_ID': 'writer'})
             self.assertEqual(snapshot['owned_sessions_for_child'], [])
+            self.assertEqual(snapshot['writer_identity'], 'writer')
             owners[0]['child'] = 'B'
             snapshot = admission.snapshot(guard, 'B', owners, proc=proc,
                 environment={'PATH': '/usr/bin:/bin'})
