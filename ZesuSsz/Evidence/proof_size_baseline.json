@@ -15,6 +15,10 @@
     "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ad8.v": {
       "long_proofs": 1,
       "max_proof_lines": 66
+    },
+    "ZesuSsz/Proofs/DecodeItem/Hand/Block800d698c.v": {
+      "long_proofs": 1,
+      "max_proof_lines": 78
     }
   }
 }
