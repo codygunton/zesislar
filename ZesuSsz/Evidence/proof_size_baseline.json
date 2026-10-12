@@ -1,33 +1,37 @@
 {
   "files": {
     "ZesuSsz/Proofs/DecodeItem/Hand/Block800d697c.v": {
-      "max_proof_lines": 68,
-      "long_proofs": 1
+      "long_proofs": 1,
+      "max_proof_lines": 68
     },
     "ZesuSsz/Proofs/DecodeItem/Hand/Block800d69e8.v": {
-      "max_proof_lines": 68,
-      "long_proofs": 1
+      "long_proofs": 1,
+      "max_proof_lines": 68
     },
     "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a08.v": {
-      "max_proof_lines": 49,
-      "long_proofs": 1
+      "long_proofs": 1,
+      "max_proof_lines": 49
     },
     "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ad8.v": {
-      "max_proof_lines": 66,
-      "long_proofs": 1
+      "long_proofs": 1,
+      "max_proof_lines": 66
     },
     "ZesuSsz/Proofs/DecodeItem/Hand/Block800d698c.v": {
-      "max_proof_lines": 78,
-      "long_proofs": 1
+      "long_proofs": 1,
+      "max_proof_lines": 78
     },
     "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ae0.v": {
-      "max_proof_lines": 49,
-      "long_proofs": 1
+      "long_proofs": 1,
+      "max_proof_lines": 49
     },
     "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ac4.v": {
       "long_proofs": 1,
       "max_proof_lines": 169
     },
-    "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6aa8.v": {}
+    "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6aa8.v": {},
+    "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6960.v": {
+      "long_proofs": 1,
+      "max_proof_lines": 66
+    }
   }
 }
