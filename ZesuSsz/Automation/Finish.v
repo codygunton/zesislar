@@ -498,7 +498,7 @@ Ltac zesu_finish_initialized_array_read :=
    of its own tactics in `timeout`. *)
 Ltac zesu_run_pass_steps :=
   first
-    [zesu_target_registered_intro_if_enabled |
+    [zesu_registered_array_fact_if_enabled | zesu_target_registered_intro_if_enabled |
      zesu_open_requested_instr_bundle |
      zesu_open_requested_struct_sys_package |
      zesu_open_requested_saved_x9_package |
@@ -515,7 +515,7 @@ Ltac zesu_run_pass_v1 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [zesu_target_registered_intro_if_enabled |
+    [zesu_registered_array_fact_if_enabled | zesu_target_registered_intro_if_enabled |
      zesu_open_requested_instr_bundle |
      zesu_open_requested_struct_sys_package |
      zesu_open_requested_saved_x9_package |
@@ -535,7 +535,7 @@ Ltac zesu_run_pass_v2 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps]; liShow;
+    [zesu_registered_array_fact_if_enabled | zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps]; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
