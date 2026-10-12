@@ -1,5 +1,6 @@
 """Check complete promotion against the accepted 6974 source history."""
 import json
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -61,6 +62,35 @@ class CompletePromotionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'named production theorem'):
             complete_promotion.plan(self.workspace, 0x800d6974, MODULE, MODULE + '.Missing')
         self.assertEqual(before, {name: (self.workspace / name).read_bytes() for name in INPUTS})
+
+    def test_generated_dependencies_precede_their_consumers(self):
+        outputs, _ = complete_promotion.plan(self.workspace, 0x800d6974, MODULE, LEMMA)
+        positions = {name[:-2].replace('/', '.'): index
+                     for index, name in enumerate(outputs)}
+        for index, (name, source) in enumerate(outputs.items()):
+            for module in re.findall(r'^Require Import ([A-Za-z0-9_.]+)\.', source, re.M):
+                if module in positions:
+                    self.assertLess(positions[module], index, (name, module))
+
+    def test_promoted_imports_follow_recorded_proof_modules(self):
+        module = 'ZesuSsz.Proofs.DecodeItem.TableSlots.RecordedAdapter'
+        original = ('Require Import Unrelated.Module.\n'
+                    'Definition decodeItemPromotedBody800d6974 :\n'
+                    '  True :=\n  ' + module + '.recordedProof.\n')
+        source = complete_promotion.update_promoted(original, 0x800d6b08)
+        imports = set(re.findall(r'^Require Import ([A-Za-z0-9_.]+)\.', source, re.M))
+        common = set(re.findall(r'^Require Import ([A-Za-z0-9_.]+)\.',
+                                complete_promotion.PREFIX, re.M))
+        self.assertEqual(imports, common | {module,
+            'ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6b08'})
+        self.assertIn(module + '.recordedProof.', source)
+        terms = re.findall(r':=\s*([A-Za-z0-9_.]+)\.\s', source)
+        self.assertEqual({term.rsplit('.', 1)[0] for term in terms}, imports - common)
+
+    def test_unavailable_recorded_proof_term_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, 'recorded promoted proof terms'):
+            complete_promotion.update_promoted(
+                'Definition decodeItemPromotedBody800d6974 : True := I.\n', 0x800d6b08)
 
     def test_execution_capture_is_not_a_named_module(self):
         with self.assertRaises(ValueError):

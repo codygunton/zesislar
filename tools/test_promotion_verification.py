@@ -13,6 +13,50 @@ import promotion_verification as verification
 
 
 class PromotionVerificationTests(unittest.TestCase):
+    def test_retained_compile_requires_exact_source_and_private_object(self):
+        with tempfile.TemporaryDirectory() as temp:
+            source, artifact = Path(temp) / 'Source.v', Path(temp) / 'Source.vo'
+            source.write_text('Lemma kept : True. Proof. exact I. Qed.')
+            artifact.write_bytes(b'owned object')
+            retained = {'source': str(source), 'source_sha256': verification.digest(source),
+                        'private_artifact': str(artifact),
+                        'private_artifact_sha256': verification.digest(artifact),
+                        'compile_file': {'success': True}}
+            self.assertEqual(verification.retained_compile_result(source, artifact, retained),
+                             {'success': True})
+            for field, value in [('source', str(source) + '.other'),
+                                 ('source_sha256', 'wrong'),
+                                 ('private_artifact', str(artifact) + '.other'),
+                                 ('private_artifact_sha256', 'wrong'),
+                                 ('compile_file', {'success': False})]:
+                with self.subTest(field=field), self.assertRaisesRegex(ValueError, 'identity differs'):
+                    verification.retained_compile_result(source, artifact, {**retained, field: value})
+
+    def test_changed_import_refreshes_transitive_prerequisites(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            modules = {
+                'Changed': '',
+                'Stable': '',
+                'Composition': 'Require Import Changed Stable.\n',
+                'NativeComposition': 'Require Import Composition.\n',
+                'Consumer': 'Require Import NativeComposition Changed.\n',
+            }
+            for name, source in modules.items():
+                (root / (name + '.v')).write_text(source)
+            self.assertEqual(verification.compilation_sources(root,
+                [root / 'Consumer.v', root / 'Changed.v']),
+                [root / (name + '.v') for name in
+                 ['Changed', 'Composition', 'NativeComposition', 'Consumer']])
+
+    def test_import_cycle_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / 'A.v').write_text('Require Import B.\n')
+            (root / 'B.v').write_text('Require Import A.\n')
+            with self.assertRaisesRegex(ValueError, 'import graph contains a cycle'):
+                verification.compilation_sources(root, [root / 'A.v'])
+
     def test_each_lemma_keeps_prior_scope_and_exact_header(self):
         source = 'Definition kept := 3.\nLemma first : kept = 3.\nProof. reflexivity. Qed.\nLemma second : True.\nProof. exact I. Qed.\n'
         checks = verification.statements(source, 0x800d6974)
@@ -20,6 +64,26 @@ class PromotionVerificationTests(unittest.TestCase):
         self.assertEqual(checks[0][1], 'Definition kept := 3.\nLemma first : kept = 3.\n')
         self.assertTrue(checks[1][1].endswith('Lemma second : True.\n'))
         self.assertTrue(all(x[2] == source for x in checks))
+
+    def test_multiline_proof_using_uses_exact_compiled_section_type(self):
+        source = ('Section kept.\nContext (premise : True).\nLemma result : True.\n'
+                  'Proof using\n  premise.\nexact premise. Qed.\nEnd kept.\n')
+        self.assertEqual(verification.statements(source, 0x800d6b08, 'Project.Module'),
+                         [('result', 'Require Import Project.Module.\nLemma result :\n'
+                           '  ltac:(let statement := type of @Project.Module.result in exact statement).\n', source + '\nArguments result : clear implicits.\n')])
+
+    def test_unused_section_context_is_not_added_to_expected_type(self):
+        source = ('Section kept.\nContext (unused : False).\n'
+                  'Lemma result : True.\nProof. exact I. Qed.\nEnd kept.\n')
+        statement = verification.statements(source, 0x800d6b08, 'Project.Module')[0][1]
+        self.assertNotIn('unused', statement)
+        self.assertNotIn('False', statement)
+        self.assertIn('type of @Project.Module.result', statement)
+        proof = verification.statements(source, 0x800d6b08, 'Project.Module')[0][2]
+        self.assertTrue(proof.startswith(source))
+        self.assertTrue(proof.endswith('Arguments result : clear implicits.\n'))
+        with self.assertRaisesRegex(ValueError, 'compiled logical module'):
+            verification.statements(source, 0x800d6b08)
 
     def test_promoted_definition_gets_its_exact_table_signature(self):
         source = ('Require Import isla.riscv64.riscv64.\nSection promoted_block_bodies.\n'

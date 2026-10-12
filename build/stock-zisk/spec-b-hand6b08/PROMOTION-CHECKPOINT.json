@@ -1,0 +1,112 @@
+{
+  "block": "0x800d6b08",
+  "proof_module": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6b08",
+  "proof_lines": 57,
+  "base_root": "919c457ec4ef54a11eae7fcc321fceef1000af09",
+  "assumptions": [],
+  "verification_method": "module_m",
+  "proof_compilation": "_build/hand6b08-production-final007/COMPILE.json",
+  "proof_verification": "_build/hand6b08-production-verify008/VERIFY.json",
+  "consumer_reports": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-promotion005/verification/RESULT.json",
+      "sha256": "154516b03b93947b1ba027a12abc711438588abe1593694cbca9a4d22e5f1a58"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-promotion008/verification/RESULT.json",
+      "sha256": "789257dd58267c1670ff6246adb591b0f98e16b38852802aa7e04f61628da7ed"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-promotion010/verification/RESULT.json",
+      "sha256": "729135f431ad1cdd87eb2345f430aafea63f3afb07a70be7159b700128f1d7ae"
+    }
+  ],
+  "exact_section_queries": "_build/hand6b08-promotion010/verification/RESULT.json",
+  "regressions": 26,
+  "changed_files": [
+    {
+      "path": "Scaffolding/DecodeItemNativeBlocksCompliance.v",
+      "sha256": "434a3d8516558794afc7561ce454066f85d9f6d66edc82cca175658a7f90b644"
+    },
+    {
+      "path": "Scaffolding/DecodeItemNativeBlocksComplianceFixtures.v",
+      "sha256": "e62ba35387874bc6207a7af04f1540bfb6b019e1cf08523bb1dd4304c53f301e"
+    },
+    {
+      "path": "ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v",
+      "sha256": "eb6bf95066fc4eafe1274b4dfe96cad26f7f5bdaeba11f76dacde0dfc07669c4"
+    },
+    {
+      "path": "ZesuSsz/Evidence/DecodeItemOpenNativeHypothesesFixtures.v",
+      "sha256": "bfe81087c54a209d6a3b9aa7fa8f54571c7a56458a4ee7f221a8355896a8269c"
+    },
+    {
+      "path": "ZesuSsz/Generated/DecodeItem/PromotedBodies.v",
+      "sha256": "f947ee87e9722ac53b16eb757df0b97360137c934b47bb1222b360856793102a"
+    },
+    {
+      "path": "tools/block/complete_promotion.py",
+      "sha256": "f7fed90bbaabd585c70f99b25f11fad95f2bdcad6581c2925deae5b8f5b2e741"
+    },
+    {
+      "path": "tools/block/promotion_verification.py",
+      "sha256": "2f3289bbc90276f727a3c08f10886cc3b7c02f5ba269994d7fd99035c8b029d1"
+    },
+    {
+      "path": "tools/test_complete_promotion.py",
+      "sha256": "594f3fbe670f009d9c6bdf0b8dc6c406c2d8818831fbdd7b566a16113dc19dd9"
+    },
+    {
+      "path": "tools/test_promotion_verification.py",
+      "sha256": "d63146a3a9a42cb78c3cb812b284d025b4ca72ac4744635b881b1f0538d99813"
+    },
+    {
+      "path": "ZesuSsz/Evidence/DecodeItemPromoted6b08Fixtures.v",
+      "sha256": "5e2fda9fd518336ea84b0886daa3dd41774039bd2a0a799b5e3b6de445e239eb"
+    },
+    {
+      "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6b08.v",
+      "sha256": "127457c178148275e46bda57390457e6251e889f289046247fc86b773c7b0b8a"
+    },
+    {
+      "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
+      "sha256": "ea79fab270582e2aebbefc235b594708b4ea2ed789a4c7365073159ce78cb762"
+    }
+  ],
+  "preserved_attempts": [
+    "promotion001",
+    "promotion002",
+    "promotion003",
+    "promotion004",
+    "promotion005",
+    "promotion006",
+    "promotion007",
+    "promotion009"
+  ],
+  "Iris_owner": "Root",
+  "gate_result_pending": false,
+  "gates": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-promotion011/CHECK-FAST.json",
+      "sha256": "ed38b32c88fc07fe35367c94cccc3be38586f940109daf58d97094d2f35fe768"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-promotion012/CHECK-FAST.json",
+      "sha256": "1b143bd268a5eaec66f8c3262fd145f2a57caf45cc49a96fed1c4722a7962132"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-promotion013/CHECK-FAST.json",
+      "sha256": "dec84bd05ad7ebcc8c67d5d7a700baa07a2ecdc82dffb5992028fcd05d7cbd8e"
+    }
+  ],
+  "tool_defect_report": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/build/stock-zisk/spec-b-hand6b08/PROMOTION-TOOL-DEFECTS.json",
+    "sha256": "83754441c81d932717373c13bad9c0640e3d177c3033e5335ca6df50ca73d9d4"
+  },
+  "limits": [
+    "The 57-line Hand proof retains its accepted compilation and verification.",
+    "Final Section queries use the exact compiled constant types.",
+    "Promotion removes only the 6b08 native hypothesis.",
+    "Root owns Iris."
+  ]
+}
