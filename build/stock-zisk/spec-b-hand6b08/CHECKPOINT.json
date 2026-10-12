@@ -1,0 +1,109 @@
+{
+  "block": "0x800d6b08",
+  "theorem": "DesignedBoundary_800d6b08",
+  "proof_base": "c7f7e29f20cc91b37584666bdecdd5784bb269a1",
+  "physical_lines": 57,
+  "final_groups": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "Qed": true,
+  "full_compilation": true,
+  "verification_method": "module_m",
+  "assumptions": [],
+  "references": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.v",
+      "sha256": "7d65f61e8da4db2fc9b7d35265432c632ca87c51d2e1e53fefaf88774f494424"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-production-mcp006/021-normal-Qed-RESULT.json",
+      "sha256": "e79159fe703e55e3d645f285e7023da860ce19ad592683e10255324c56532a9a"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-production-mcp006/interactive-6b08/exports/state_75.json",
+      "sha256": "9364991b81442d7737e232376a72172c164e3491d6d68872c02e83d27157a97f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-production-mcp006/interactive-6b08/session-closure.json",
+      "sha256": "22f0a7cfd109e19bc43efc422391960d1b2cc0d1707c8e47a9cfe33287912a57"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-production-final007/COMPILE.json",
+      "sha256": "64c410fc16c8e78610570804792c2c1755e79101217191ef8b647992d8c7b41e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-production-final007/final-6b08/session-closure.json",
+      "sha256": "3603e8415cebd20902ef74b849555fb9be6c5c53c5bbd3ad68ac02a2e95d04e6"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-production-verify008/VERIFY.json",
+      "sha256": "c33a2dc2fc8b91b8c7d1cecf04cce8986e2ae4b200fce20b52ad00eb2bfe3f0f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-production-verify008/final-6b08/session-closure.json",
+      "sha256": "e544c4d2d0cd20273e228b0dee6d73df89fcbc8aafcfa62b4903403e5c50eeae"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-checkpoint009/CHECK-FAST.json",
+      "sha256": "afc749cc0a0689f7912a5c27c901036c97150bb6218159cf17af2e3bc451a1e7"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-checkpoint009/PROMOTION-CALL-002.json",
+      "sha256": "fcbc94918bf9f3e50f6fb0e85e8b6cf61c536bacb31d08441a0586063d4515c9"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-checkpoint009/PROMOTION-SOURCE-PRESERVATION.json",
+      "sha256": "f71e08eb26e15a1eda94602ac54f2bd64ff911988769a80c054eb09d472051e7"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/build/stock-zisk/spec-b-hand6b08/PROMOTION-DRY-RUN.json",
+      "sha256": "5cee38027d8834962543ef5fa2bc278fa98711a3a82b6291570282ce980fcc0c"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-checkpoint010/SETUP-REPAIR.json",
+      "sha256": "f638d018c64de023469919ebb05ce7aa258f0ac31f0033bfc941e595ac5b5e66"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-checkpoint010/CHECK-FAST.json",
+      "sha256": "b06d278ce25204495e59302ef8e022ef4fa3004bfef694a513b3154cb3b23f42"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-checkpoint011/SETUP-CORRECTION.json",
+      "sha256": "c704c93f8c07673a25bb0fc45970f8ddc0e4ac345a8ae78f542e71a90b15f7cf"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/hand6b08-checkpoint011/CHECK-FAST.json",
+      "sha256": "3de2f5a2c901fa28be864560871822c4bca517b489a2675ae0cac860d1e770c4"
+    }
+  ],
+  "limits": [
+    "Root owns Iris and production promotion.",
+    "Promotion dry run supplies generated proposals only.",
+    "Seven proposals remain preserved outside this commit.",
+    "The 69b0 prototype and _RocqProject are excluded."
+  ],
+  "preserved_failures": [
+    "Post-Qed no-proof-scope export is a controller error after successful Qed.",
+    "Final007 stale four-slot admission failed after successful full compilation.",
+    "Check-fast009 lacked the pinned checkout link.",
+    "Check-fast010 rejected the excluded 69b0 Abort prototype. Its bytes remain preserved outside the proof directory."
+  ],
+  "check_fast": {
+    "command": [
+      "make",
+      "check-fast",
+      "CHECK_AGENT=spec-b",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/_build/agents/spec-b",
+      "FAST_JOBS=6",
+      "GUARD=/home/cody/zesislar/tools/resource_guard.sh"
+    ],
+    "start_UTC": "2026-10-12T18:56:43.154945+00:00",
+    "end_UTC": "2026-10-12T19:04:23.282206+00:00",
+    "elapsed_seconds": 460.12726684403606,
+    "exit": 0,
+    "scope": "Hand proof checkpoint. Root owns Iris."
+  }
+}
