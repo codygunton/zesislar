@@ -1,0 +1,732 @@
+{
+  "entry_pc": "0x800d6b08",
+  "production": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.v",
+    "sha256": "7d65f61e8da4db2fc9b7d35265432c632ca87c51d2e1e53fefaf88774f494424"
+  },
+  "conditional_adapter": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6b08Conditional.v",
+    "sha256": "8c63a972f02a6ca81f0fd9c396a728030ebba6b0ee89f82538932ff922377cbf"
+  },
+  "production_module": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6b08",
+  "production_lemma": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6b08.DesignedBoundary_800d6b08",
+  "native_hypothesis_removed": "native800d6b08",
+  "remaining_native_hypotheses": [
+    "native800d6960",
+    "native800d697c",
+    "native800d698c",
+    "native800d69b0",
+    "native800d69e8",
+    "native800d6a08",
+    "native800d6a24",
+    "native800d6a38",
+    "native800d6a40",
+    "native800d6a78",
+    "native800d6aa8",
+    "native800d6ac4",
+    "native800d6ad8",
+    "native800d6ae0"
+  ],
+  "previous_sources": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/ZesuSsz/Generated/DecodeItem/PromotedBodies.v",
+      "sha256": "de401cfc08c2cd2d9716fe778b11aa36177ffeb5023f3b4a1bb2b727e32de0df"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/Scaffolding/DecodeItemNativeBlocksCompliance.v",
+      "sha256": "96de52cd194454a13f925c19d9325c7fac3a799eed3cfa770836cc4233e9a375"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/Scaffolding/DecodeItemNativeBlocksComplianceFixtures.v",
+      "sha256": "b872cf8a5ed466fbc612b7eecad05a613c5b196f1f49911bbc78b96386ac1e9c"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v",
+      "sha256": "2a3a6639e7897d9dae392f24bbda1044bbccf74f49700afecd373e43abbdbc75"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/ZesuSsz/Evidence/DecodeItemOpenNativeHypothesesFixtures.v",
+      "sha256": "46c627fea11e648413cea3c08140855815e92723db61e4b1a62037d64b2091f0"
+    }
+  ],
+  "generated_sources": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6b08.v",
+      "sha256": "127457c178148275e46bda57390457e6251e889f289046247fc86b773c7b0b8a"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/ZesuSsz/Evidence/DecodeItemPromoted6b08Fixtures.v",
+      "sha256": "5e2fda9fd518336ea84b0886daa3dd41774039bd2a0a799b5e3b6de445e239eb"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/ZesuSsz/Generated/DecodeItem/PromotedBodies.v",
+      "sha256": "bda4e78b1e0117acdad22c66388c262716e067c142240f448b35360d54153124"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/Scaffolding/DecodeItemNativeBlocksCompliance.v",
+      "sha256": "f07e7aca9df79a02920f2ed2626ff2a781b04c50a974257f0d37a4b8123b37d2"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/Scaffolding/DecodeItemNativeBlocksComplianceFixtures.v",
+      "sha256": "972d44bf1c955798770ce971f77f097214701c7b68b44052f69396940fa58d14"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v",
+      "sha256": "1d0b0cf0f71b7217bd3535e66c3c2bce9612634e19bd2fba19960c9b881ab924"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/ZesuSsz/Evidence/DecodeItemOpenNativeHypothesesFixtures.v",
+      "sha256": "87032d47098cacf5b8a732b5353475af2dc4b5fd6d631bcf7d2202b3ea90e472"
+    }
+  ],
+  "native_status": {
+    "status_root": "c7f7e29f20cc91b37584666bdecdd5784bb269a1",
+    "measurement_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+    "approved_switches": 28,
+    "hint_modules": 25,
+    "open_closures": 14,
+    "open_record": {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v",
+      "sha256": "1d0b0cf0f71b7217bd3535e66c3c2bce9612634e19bd2fba19960c9b881ab924"
+    },
+    "measurement_table": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-e17-default-results.json",
+      "sha256": "e56b6babca8856a093fcbaec03346d044b8eda8ab601f6f5229efd3e7fc96082"
+    },
+    "closed_native": {
+      "6974": {
+        "theorem": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.DesignedBoundary_800d6974",
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v",
+          "sha256": "ca7fb94a835a783c2d62c0a24e1e0d552ce2a76f65cd6ee7d277df32dfea9d6e"
+        },
+        "successor_premises": [
+          "0x800d697c",
+          "0x800d69a4"
+        ]
+      },
+      "6b08": {
+        "theorem": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6b08.DesignedBoundary_800d6b08",
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.v",
+          "sha256": "7d65f61e8da4db2fc9b7d35265432c632ca87c51d2e1e53fefaf88774f494424"
+        },
+        "successor_premises": []
+      }
+    },
+    "closed_6974": {
+      "theorem": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.DesignedBoundary_800d6974",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand-production-c7f7e29f/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v",
+        "sha256": "ca7fb94a835a783c2d62c0a24e1e0d552ce2a76f65cd6ee7d277df32dfea9d6e"
+      },
+      "successor_premises": [
+        "0x800d697c",
+        "0x800d69a4"
+      ]
+    },
+    "rows": [
+      {
+        "block": "0x800d6960",
+        "closure": "open",
+        "definition": "decodeItemOpenNativeClosure6960",
+        "record_field": "native800d6960",
+        "printed_active_count": 7,
+        "measurement_outcome": "native-residual",
+        "statement_sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6960/Source.v",
+          "sha256": "792ebdb9fa341afb3328e3980f3393590829b1636f6b715dfe03a0995fce3b0a"
+        },
+        "captures": [
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d6960-000.json",
+            "sha256": "0908c72240805431d9e301813adf70a348faf8b423f7753325395c1fb6d85eb3"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d6960-000.txt",
+            "sha256": "f6219d275109815a4234f895e3d4e83879216966abf202b0caa6f9a7223c8bfa"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d6960-001.json",
+            "sha256": "2849b1c728a824732049b35d90f6f167f18797ced12afbf7d436c55ba2fb760c"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d6960-001.txt",
+            "sha256": "10b495c8df8c1eb240e0c9dcb5c38c30335c49bf83fcf8d547fb9eadaadb4ec8"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d6960-002.json",
+            "sha256": "f9d8727daa2ef1fbd98554ca2b8f6a52fead1e3abe9448434cbf601eeb25244d"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d6960-002.txt",
+            "sha256": "2f9b282f8fbce35df859e8a2015257024b9bd63861a00a7e17019dd41d4f85bf"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d6960-003.json",
+            "sha256": "2849b1c728a824732049b35d90f6f167f18797ced12afbf7d436c55ba2fb760c"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d6960-003.txt",
+            "sha256": "10b495c8df8c1eb240e0c9dcb5c38c30335c49bf83fcf8d547fb9eadaadb4ec8"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d6960-004.json",
+            "sha256": "c86c3b55ecbe678a2ac1df7c9a4bf21c9ec655f2f6f6eb2ddfdbf405c675bf23"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d6960-004.txt",
+            "sha256": "4a8b872a13a2d59905e5225a90bd2908157d3c1641ff76e11e5fcd0c1616df2a"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d6960-005.json",
+            "sha256": "9ae6faf8d4cd952947fc423c461f15ca7d04322fb21ecdbcc4411acfb2614b44"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d6960-005.txt",
+            "sha256": "02fcc331686d695d97ab06fd9059bbfabdc4644da6f4d9da7b121f41c96cb978"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d6960-006.json",
+            "sha256": "a2294469352e1ff66b844fc6676f50f623d1a223d02c343b62455c34ff8a1873"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d6960-006.txt",
+            "sha256": "a1541b7c996423a210107eeb23ee7aa666f363683b2bac48fce72907172c02ea"
+          }
+        ],
+        "auxiliary_groups": "unavailable"
+      },
+      {
+        "block": "0x800d697c",
+        "closure": "open",
+        "definition": "decodeItemOpenNativeClosure697c",
+        "record_field": "native800d697c",
+        "printed_active_count": null,
+        "measurement_outcome": "limit-stop",
+        "statement_sha256": "4416a8f35e49ca7dce03358b8f4b4d354f056c0e475248816df61c27ad0ef6f0",
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d697c/Source.v",
+          "sha256": "614694415dd0e48234b0ea50a26b524f6f00f93f750259f8585e6e41d171d200"
+        },
+        "captures": [],
+        "auxiliary_groups": "unavailable"
+      },
+      {
+        "block": "0x800d698c",
+        "closure": "open",
+        "definition": "decodeItemOpenNativeClosure698c",
+        "record_field": "native800d698c",
+        "printed_active_count": 3,
+        "measurement_outcome": "native-residual",
+        "statement_sha256": "6624de3c1a1e012af027f5aa9afd4c7e519f9bec28752700eaeabd7b7fd3fead",
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d698c/Source.v",
+          "sha256": "5a10c5984543cef63827cda501b1bac82d4470132772ac38418a47545d136ba5"
+        },
+        "captures": [
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d698c-000.json",
+            "sha256": "e25eb5f89a36b7ee8d50986435ec703813af46307ee1a1ffb8ae0c603280d15e"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d698c-000.txt",
+            "sha256": "e91e32a2d34fd641fc71b1ff7cb2fb777073c148bedd3f40668b626daeacd05f"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d698c-001.json",
+            "sha256": "171a719b4bd2ae3cbd4bc2a5e3406a6105605e9c17248369286b30fd0015ce01"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d698c-001.txt",
+            "sha256": "4dac772c0e0426187e630cbd47e273efedcaf11d981640111343bcac1c1be035"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d698c-002.json",
+            "sha256": "a985f69e428d68acb78785b97977684543d66642097ca49a58badbf46343f383"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d698c-002.txt",
+            "sha256": "dcca8d762bb820a58218ad666a29a60c8306d24146a95c4ab62563afdbbac35e"
+          }
+        ],
+        "auxiliary_groups": "unavailable"
+      },
+      {
+        "block": "0x800d69b0",
+        "closure": "open",
+        "definition": "decodeItemOpenNativeClosure69b0",
+        "record_field": "native800d69b0",
+        "printed_active_count": 3,
+        "measurement_outcome": "native-residual",
+        "statement_sha256": "a31c1250082926f364182f6cd1fe25f157ae943c78039f2b2fba10e61997f795",
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d69b0/Source.v",
+          "sha256": "cc00e25c31423968640a1053d5d7a19c0cb5ca26dc4c6c3409f57cd1de8e7ee0"
+        },
+        "captures": [
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-004/captures/block_0x800d69b0-000.json",
+            "sha256": "dc7e58083fb777ea3aeb631b014933175abd28c995e2cd8c7f3ebaf4eae0bbeb"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-004/captures/block_0x800d69b0-000.txt",
+            "sha256": "eab588178d13ff653f560e5ddd111433e208733820123274fb145d3b3f242bd7"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-004/captures/block_0x800d69b0-001.json",
+            "sha256": "3521e7f5659bdbef4fc1bf5cadff29f82dd72786092e4b3fb72793ea282f0fb7"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-004/captures/block_0x800d69b0-001.txt",
+            "sha256": "5e15b587e5077a9806b0dca24b0d321775736f5d4b5c91ae98ba130ffd19694f"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-004/captures/block_0x800d69b0-002.json",
+            "sha256": "f5447c0d7cdfe5a9477f753b9a939063bd38d899844ea7d73f89890a55f995f9"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-004/captures/block_0x800d69b0-002.txt",
+            "sha256": "cb01a0e41b6460b4c586b915a88d1bab5578207ba085b855cb8bfbc6d3d56a71"
+          }
+        ],
+        "auxiliary_groups": "unavailable"
+      },
+      {
+        "block": "0x800d69e8",
+        "closure": "open",
+        "definition": "decodeItemOpenNativeClosure69e8",
+        "record_field": "native800d69e8",
+        "printed_active_count": null,
+        "measurement_outcome": "coqc-primary-unavailable",
+        "statement_sha256": "3b68710d40940010dfd36b1dd533142e87af5bf79dd8cc4086b6242b88ddc3ae",
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d69e8/Source.v",
+          "sha256": "14a57536d79646410b04242c5931e03ddb555c6ff9211ca0272c0aa761642e57"
+        },
+        "captures": [],
+        "auxiliary_groups": "unavailable"
+      },
+      {
+        "block": "0x800d6a08",
+        "closure": "open",
+        "definition": "decodeItemOpenNativeClosure6a08",
+        "record_field": "native800d6a08",
+        "printed_active_count": 4,
+        "measurement_outcome": "native-residual",
+        "statement_sha256": "1f4da2e5a4e2c860d3d742809c7b5110a077d54dbf15c3a851b930cf79a0d42f",
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6a08/Source.v",
+          "sha256": "45fe5c2c28f79f2a6627624e6289af0fa32236be71c186fd87c617e8256b7160"
+        },
+        "captures": [
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-007/captures/block_0x800d6a08-000.json",
+            "sha256": "1e067abb24fa82890c7a3c5fa703ab8cd0458b0a3c9536caa4d40f3b817cda54"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-007/captures/block_0x800d6a08-000.txt",
+            "sha256": "fbfa042821133d127c7115be362f31cbcfdfc15965f97355021715ff1b94543e"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-007/captures/block_0x800d6a08-001.json",
+            "sha256": "1e067abb24fa82890c7a3c5fa703ab8cd0458b0a3c9536caa4d40f3b817cda54"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-007/captures/block_0x800d6a08-001.txt",
+            "sha256": "fbfa042821133d127c7115be362f31cbcfdfc15965f97355021715ff1b94543e"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-007/captures/block_0x800d6a08-002.json",
+            "sha256": "ea622b46a2a05cf2b0c50fa5c1b6a69299fcfd6267f906b3bef664a1c7addd1c"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-007/captures/block_0x800d6a08-002.txt",
+            "sha256": "e7e20080e6d47636d7d21548c965add4550dea3dfa31ce1c31eb3d1955ea4d9a"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-007/captures/block_0x800d6a08-003.json",
+            "sha256": "95bd145ec24f8b283419385fd23c44be469f80948376dd53d6fd846082b34ff2"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-007/captures/block_0x800d6a08-003.txt",
+            "sha256": "cc704ba1299b9cd62c19f939b982ff21f72bd74e3bed436006615e06d2596a9e"
+          }
+        ],
+        "auxiliary_groups": "unavailable"
+      },
+      {
+        "block": "0x800d6a24",
+        "closure": "open",
+        "definition": "decodeItemOpenNativeClosure6a24",
+        "record_field": "native800d6a24",
+        "printed_active_count": 8,
+        "measurement_outcome": "native-residual",
+        "statement_sha256": "668333abd8c294ac9c21f89c05abf9dfb1e59978bb6aa9ccc6eb1509d8bb62d8",
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6a24/Source.v",
+          "sha256": "e90569e69fe61d9873fbf75976566c5583b1548f1a1e676089fcc7b665b40cbc"
+        },
+        "captures": [
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a24-000.json",
+            "sha256": "20bf2fb1db204d6e2a6af283657ceee7f2286f508ec241b972c93a9390ed3eaf"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a24-000.txt",
+            "sha256": "5d11dd61beb320e8a6d21d0cde7b5bf7e858c0f5f5bc95fc9374d46d6e667b16"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a24-001.json",
+            "sha256": "bc05ab7c0fc264b17a90a5a4bb32bce074e89f5e4cd3eb3525a5ea6bff27b930"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a24-001.txt",
+            "sha256": "3d97059343408720adb1608583d92288b6c0e6d142767e07731257254def6426"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a24-002.json",
+            "sha256": "17adc610f61c48f657d6c899b2d0a0ad46d13888a33da73c6d8e4381a79dae4e"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a24-002.txt",
+            "sha256": "d3665f53adc80d103c0e43a9c54fdac06c1fb77bdc798bab55605e311be6ecb5"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a24-003.json",
+            "sha256": "c697230870a1d1f8581b35a648900a63d8430007831d544f0a353a85c693c3e4"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a24-003.txt",
+            "sha256": "f11c155c88b7755fb0c8a096bcc61476b07bb0843048cf6968618871b7ef7c1a"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a24-004.json",
+            "sha256": "659244d06ef9c77416024931da3d0c4b97d17ac241226f49b2ef1d7e8d1a6e7b"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a24-004.txt",
+            "sha256": "96f3b53583fb2607112cd13fb6ac488227dd793112752b696320316c3588f5bf"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a24-005.json",
+            "sha256": "b4d8114ea249be7dba2971ed6c1eaa6be43b6636030e1f84d01d94e06a08e9e3"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a24-005.txt",
+            "sha256": "8834575f74105fde04ad96877b4ab8938c4f6d7f7c5d62c3f001d026279017b8"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a24-006.json",
+            "sha256": "fc1d11920cd491b94e930ff5116fca7a01dfedec52c66a6d702a4c4812eb6c6f"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a24-006.txt",
+            "sha256": "2cab5f979f201f5c580b905d7a6538916b04151acec745f95975789cc21cf290"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a24-007.json",
+            "sha256": "7ca3d86cb1576adf020983875a589333cf3f6c0d052b15a256a2f3586073d794"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a24-007.txt",
+            "sha256": "238e6a39cd66e2f77991b89347744936a06f89c1f1f62a885af56c5952ad1165"
+          }
+        ],
+        "auxiliary_groups": "unavailable"
+      },
+      {
+        "block": "0x800d6a38",
+        "closure": "open",
+        "definition": "decodeItemOpenNativeClosure6a38",
+        "record_field": "native800d6a38",
+        "printed_active_count": 1,
+        "measurement_outcome": "native-residual",
+        "statement_sha256": "970e0d014336a47cea2d5e19f49a159199f396c663c462ee9e0131bc4d329fa6",
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6a38/Source.v",
+          "sha256": "0c6fe3db92d219dd5d3a32594d1a4679209bf279ec2c9fc61f1d4cc7128ed0d0"
+        },
+        "captures": [
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-008/captures/block_0x800d6a38-000.json",
+            "sha256": "1e1314c68edce09db3f471d0300e6ca63737baa57aa0b58116dc775fe8913133"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-008/captures/block_0x800d6a38-000.txt",
+            "sha256": "532c125dcf450d3bde2e446edbe1983bd011661f8f2f7ef27ff5502b15b49345"
+          }
+        ],
+        "auxiliary_groups": "unavailable"
+      },
+      {
+        "block": "0x800d6a40",
+        "closure": "open",
+        "definition": "decodeItemOpenNativeClosure6a40",
+        "record_field": "native800d6a40",
+        "printed_active_count": 3,
+        "measurement_outcome": "native-residual",
+        "statement_sha256": "446283b03c50624d81511f102d78c88d91241baec7c0c056eb466a8de79a0ddf",
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6a40/Source.v",
+          "sha256": "e823cacff76c503967539c5a3baf0d3c1f395d78a6009cc9e4cc76f25bba70de"
+        },
+        "captures": [
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a40-000.json",
+            "sha256": "a1b09ba7df897c0d637a4c046a6b67162a1211948543e6153466d1e8eb514243"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a40-000.txt",
+            "sha256": "afa63e23df42147a628a4f357e3f7a613097286bfc4da8b5d283b7fd3ac69fa9"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a40-001.json",
+            "sha256": "f282a95fa3ac419eb5805cef2b7a7199e139b11af97c0f91a46435294dd3bf0d"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a40-001.txt",
+            "sha256": "d180378e8c8f85104d40e9265a339edce24fcd4b5306f946aa0eb297a3490ae8"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a40-002.json",
+            "sha256": "458d98c34a850dc21e1dc49d685b592b5a677835ab2aafac17e2931b1fa75723"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a40-002.txt",
+            "sha256": "a190f232d90a5425918cae87ba19d598be166f906598d19d06e0282bec1fddd6"
+          }
+        ],
+        "auxiliary_groups": "unavailable"
+      },
+      {
+        "block": "0x800d6a78",
+        "closure": "open",
+        "definition": "decodeItemOpenNativeClosure6a78",
+        "record_field": "native800d6a78",
+        "printed_active_count": 3,
+        "measurement_outcome": "native-residual",
+        "statement_sha256": "6a9b7fe601eeecca8c04fee785e3456580f7a8f15199aa95c386c3fd22f74da2",
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6a78/Source.v",
+          "sha256": "aa49c78429562adcebd1219a7a833c42a50b76d7f48b514ff1a7ae2fe487dfc1"
+        },
+        "captures": [
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-013/captures/block_0x800d6a78-000.json",
+            "sha256": "66be4023ec3193f72ddd685ba0b05443e54b4ca6ecaac2aa635e842c59840806"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-013/captures/block_0x800d6a78-000.txt",
+            "sha256": "acc895d15a6019b2b71f8584149c3dcd0dc25f26ce42dee59e0d16eba53645f1"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-013/captures/block_0x800d6a78-001.json",
+            "sha256": "02efcae5ad2ebedb4fd2d32b58bba04bed15d3494450bc8420963a5bfccf4f1c"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-013/captures/block_0x800d6a78-001.txt",
+            "sha256": "65fe573a7935c27c780d84cec0e60e9d6bae00909bf448b80ed2bad1a09c25e1"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-013/captures/block_0x800d6a78-002.json",
+            "sha256": "6e5dff046149a57500b0ad6d21ced796946eea830ef1c6684aa4c4c7b3c63f03"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-013/captures/block_0x800d6a78-002.txt",
+            "sha256": "c2d574a03f4149594580e8dbbb6770ef75680ed6f57f6e75f36e681b8ed19153"
+          }
+        ],
+        "auxiliary_groups": "unavailable"
+      },
+      {
+        "block": "0x800d6aa8",
+        "closure": "open",
+        "definition": "decodeItemOpenNativeClosure6aa8",
+        "record_field": "native800d6aa8",
+        "printed_active_count": 4,
+        "measurement_outcome": "native-residual",
+        "statement_sha256": "3beb68118ad4cb18d4aad5e439553ae393e5ed7e4114b21ff84cbc5430ccb19c",
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6aa8/Source.v",
+          "sha256": "a559054334fe1331b6ae9520fa1de51c6109686a908b1210fcf184e4213cf12c"
+        },
+        "captures": [
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-011/captures/block_0x800d6aa8-000.json",
+            "sha256": "1b655bdd959345c6f38489a16e7482af0e214993957ca880f3100333d6130f61"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-011/captures/block_0x800d6aa8-000.txt",
+            "sha256": "5caddc8b65eba363cd49f8189a7f02c1ba6fcee62aed58647d4401a5e6a28978"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-011/captures/block_0x800d6aa8-001.json",
+            "sha256": "1b655bdd959345c6f38489a16e7482af0e214993957ca880f3100333d6130f61"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-011/captures/block_0x800d6aa8-001.txt",
+            "sha256": "5caddc8b65eba363cd49f8189a7f02c1ba6fcee62aed58647d4401a5e6a28978"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-011/captures/block_0x800d6aa8-002.json",
+            "sha256": "c55e691a08f7ce1682b2667542b84fb867f19ed02151fd1faedf9b2ba6bffa30"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-011/captures/block_0x800d6aa8-002.txt",
+            "sha256": "550f92f8c807a29a6a788f657108f87800d4e609c8302b2180b0fad770c05195"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-011/captures/block_0x800d6aa8-003.json",
+            "sha256": "a156ad06031e26f1936ce87f2237862514c5f71c326ed43caa419129438524a7"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-011/captures/block_0x800d6aa8-003.txt",
+            "sha256": "54cf6b06a5423ff600655a7ea7710be6f5bd937b80a813b1a7617f67f68b1f1e"
+          }
+        ],
+        "auxiliary_groups": "unavailable"
+      },
+      {
+        "block": "0x800d6ac4",
+        "closure": "open",
+        "definition": "decodeItemOpenNativeClosure6ac4",
+        "record_field": "native800d6ac4",
+        "printed_active_count": 8,
+        "measurement_outcome": "native-residual",
+        "statement_sha256": "1edc921197b3dea200a0c32b8f09bd906a6b93522efb3f59648616fc0a2db1ed",
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6ac4/Source.v",
+          "sha256": "ad56ba6f74168244b161d5fb8f95f171f145764f0f028a19f1018aa9a4199945"
+        },
+        "captures": [
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-015/captures/block_0x800d6ac4-000.json",
+            "sha256": "b28664e0843e437dfc6d17bf769e7a61dc9e58c867de464e0ce796f3ab9d96a2"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-015/captures/block_0x800d6ac4-000.txt",
+            "sha256": "8c843ab5577de987c916f014499ef1562550ae6c6034bb0d4e6e47ffd0282ca3"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-015/captures/block_0x800d6ac4-001.json",
+            "sha256": "67357dc3e0e719a4a9af506b38043f320ed0a44fb42a337abc8383d226007b2c"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-015/captures/block_0x800d6ac4-001.txt",
+            "sha256": "12ea22e56637b21e9d78b11422b3d36b33460241fdbef90f8d28ac4df66ec3fb"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-015/captures/block_0x800d6ac4-002.json",
+            "sha256": "3bff9a3eed108243ba906ad76b2416da6c0d7a7a4902a34469352348616390b9"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-015/captures/block_0x800d6ac4-002.txt",
+            "sha256": "1cc4432491213ac4ed3831481c08fde0b542b0342a855ad88205b3ab30a4c109"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-015/captures/block_0x800d6ac4-003.json",
+            "sha256": "0701fd3d1529ee2a95f12eea31241761b9c14764222dceefdd6ff8fef6489bbb"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-015/captures/block_0x800d6ac4-003.txt",
+            "sha256": "045c6aa1e99f267315e005bf354c1f446ae96085f3a9831024c2c4e6b57dfd0b"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-015/captures/block_0x800d6ac4-004.json",
+            "sha256": "bde88f330785c65c1b6d12292d791abecf6669c5fc00befd21a181e3938dcc79"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-015/captures/block_0x800d6ac4-004.txt",
+            "sha256": "ac8b6263c5bbf1a65838d5b17a306490e8f07d84f9cfbc5c6315aebe47ce6672"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-015/captures/block_0x800d6ac4-005.json",
+            "sha256": "cabd820b70ac4c232c851af29e67974db2ae919031d6162ee18ace5acc7e28b8"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-015/captures/block_0x800d6ac4-005.txt",
+            "sha256": "cebb218c515bb17d4c40db877b80320571e1cc998fdb8e908e922603839cc19d"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-015/captures/block_0x800d6ac4-006.json",
+            "sha256": "f4ee7f949e629b01366a316c9bce1bbd22f5b7b9ac67d7c016a03fbd77ddbc2d"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-015/captures/block_0x800d6ac4-006.txt",
+            "sha256": "6722be11660aebc917fbc65ab9e353c8cce35e826e6e96bc74d393f75691f05e"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-015/captures/block_0x800d6ac4-007.json",
+            "sha256": "a69508ab0ba4da8490abab410f871b8097e7b7deb17692612dc48a9d3afcf74d"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-015/captures/block_0x800d6ac4-007.txt",
+            "sha256": "a86bad3f1c5c6ff2d1b854b02e9d6b71f79cf6aa9073f29096ad22511efecd8f"
+          }
+        ],
+        "auxiliary_groups": "unavailable"
+      },
+      {
+        "block": "0x800d6ad8",
+        "closure": "open",
+        "definition": "decodeItemOpenNativeClosure6ad8",
+        "record_field": "native800d6ad8",
+        "printed_active_count": 1,
+        "measurement_outcome": "native-residual",
+        "statement_sha256": "145487ee42b96d1f2528deb974822761f8c072f7cba3d04cd206ed148cc5e2e1",
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6ad8/Source.v",
+          "sha256": "811319ca442862e1d64243bc6cd0713475b52899f240cdcaec94a8f5a23fbe08"
+        },
+        "captures": [
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-014/captures/block_0x800d6ad8-000.json",
+            "sha256": "4a9887b0f5edb4d7643d6efd04667e347f08016f4519236e4faa269211da6882"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-014/captures/block_0x800d6ad8-000.txt",
+            "sha256": "9a02ac241d1268f98e41513ad27db992ae8b668152ec3f68f999754834c0c802"
+          }
+        ],
+        "auxiliary_groups": "unavailable"
+      },
+      {
+        "block": "0x800d6ae0",
+        "closure": "open",
+        "definition": "decodeItemOpenNativeClosure6ae0",
+        "record_field": "native800d6ae0",
+        "printed_active_count": 1,
+        "measurement_outcome": "native-residual",
+        "statement_sha256": "a173e2a65b54c347008f8cf26a95353b8eca2a9a91f5e0c0d03d6f3d66f7a530",
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6ae0/Source.v",
+          "sha256": "12bb074246087b2ba1af3dd5fb97ffd3f747b7ddf72da1f9d737c9e77d0b3754"
+        },
+        "captures": [
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-016/captures/block_0x800d6ae0-000.json",
+            "sha256": "c346b72ed026c95c9d3ae3a106d934f41a6dd2b7ab37b18fdb6ac915f7506202"
+          },
+          {
+            "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-016/captures/block_0x800d6ae0-000.txt",
+            "sha256": "f54daeb5894fbf7b6d4a3179e9126fd5f5a598241bf9fd79cf0355c2335973a7"
+          }
+        ],
+        "auxiliary_groups": "unavailable"
+      }
+    ],
+    "limits": [
+      "Counts measure printed active records on e17, not current Root proof states.",
+      "A null count means the final active count is unavailable.",
+      "The inventory supplies no native closure for the fifteen open statements."
+    ]
+  },
+  "status": "dry_run",
+  "success": false,
+  "limits": [
+    "Execution evidence supplies no proof premise.",
+    "Dry-run emitted sources without verification or a promotion success claim."
+  ]
+}
