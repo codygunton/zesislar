@@ -9,6 +9,7 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[2]
 INDEX = ROOT / "ZesuSsz/Evidence/route_repair/INDEX.json"
 SITES = ["6960", "697c", "69e8", "6a08", "6a38", "6aa8", "6ad8", "6a24", "6ac4"]
+GROUP_KEYS = {"goals", "stack", "shelf", "given_up"}
 
 
 def require(condition, message):
@@ -48,17 +49,51 @@ def response(call):
 
 def closed_groups(data):
     actual_groups(data)
-    require(all(data[key] == [] for key in data), "An actual native group remains open.")
+    require(all(data[key] == [] for key in GROUP_KEYS), "An actual native group remains open.")
 
 
 def actual_groups(data):
-    require(isinstance(data, dict) and set(data) == {"goals", "stack", "shelf", "given_up"},
+    require(isinstance(data, dict) and GROUP_KEYS <= set(data) and
+            set(data) <= GROUP_KEYS | {"kernel_groups", "local_definition_export"},
             "The export does not contain all four actual groups.")
-    require(all(type(value) is list for value in data.values()),
+    require(all(type(data[key]) is list for key in GROUP_KEYS),
             "Each actual group must be an array, including empty groups.")
     require(all(type(frame) is list and len(frame) == 2 and
                 all(type(side) is list for side in frame) for frame in data["stack"]),
             "A focus frame must contain two arrays.")
+    if "kernel_groups" in data:
+        kernel = data["kernel_groups"]
+        require(isinstance(kernel, dict) and set(kernel) == GROUP_KEYS,
+                "The kernel export must contain the same four groups.")
+        actual_groups(kernel)
+        def ordered_groups(groups):
+            yield groups["goals"]
+            for left, right in groups["stack"]:
+                yield left
+                yield right
+            yield groups["shelf"]
+            yield groups["given_up"]
+        ordinary_groups, kernel_groups = list(ordered_groups(data)), list(ordered_groups(kernel))
+        require(len(ordinary_groups) == len(kernel_groups), "The kernel focus frames differ.")
+        for ordinary, full in zip(ordinary_groups, kernel_groups):
+            require(len(ordinary) == len(full), "The kernel group count differs.")
+            for goal, kernel_goal in zip(ordinary, full):
+                require(goal.get("info") == kernel_goal.get("info") and
+                        [hyp["names"] for hyp in goal["hyps"]] ==
+                        [hyp["names"] for hyp in kernel_goal["hyps"]],
+                        "The kernel goal identity or ordered context differs.")
+                terms = [kernel_goal["ty"]]
+                for hyp, kernel_hyp in zip(goal["hyps"], kernel_goal["hyps"]):
+                    body = kernel_hyp.get("def")
+                    require((hyp.get("def") is None) == (body is None),
+                            "The kernel local definition identity differs.")
+                    terms.append(kernel_hyp["ty"])
+                    if body is not None:
+                        require(body.strip() != "HIDDEN", "A kernel definition remains hidden.")
+                        terms.append(body)
+                require(all("..." not in term for term in terms), "A kernel term is truncated.")
+    require("local_definition_export" not in data or "kernel_groups" in data,
+            "The definition metadata lacks its kernel groups.")
 
 
 def inventory(index, root=ROOT):
@@ -197,7 +232,36 @@ def exported(session, position, state, source, theorem, attribution_reference, r
     return result, groups
 
 
+def startup_source(record, source, theorem, root):
+    if "interactive_source" not in record:
+        return source
+    startup, data = bound_file(record["interactive_source"], root)
+    marker = re.search(r"\bLemma " + re.escape(theorem) + r"\b", data.decode())
+    require(marker is not None, "The startup theorem is missing.")
+    prefix, proof, tail = data.decode()[marker.start():].partition("\nProof.")
+    final = source.read_bytes().decode()
+    final_marker = re.search(r"\bLemma " + re.escape(theorem) + r"\b", final)
+    require(final_marker is not None, "The final theorem is missing.")
+    final_declaration, final_proof, _ = final[final_marker.start():].partition("\nProof.")
+    require(proof and final_proof and prefix == final_declaration,
+            "The startup and final declarations differ.")
+    require(data.decode()[:marker.start()] == final[:final_marker.start()],
+            "The startup and final pre-proof prefixes differ.")
+    require(tail.strip() == "Abort.", "The startup source must retain an empty Proof/Abort body.")
+    return startup
+
+
+def proof_sources(records, root):
+    sources = []
+    for record in records:
+        sources.append(bound_file(record["proof_source"], root)[0])
+        if "interactive_source" in record:
+            sources.append(bound_file(record["interactive_source"], root)[0])
+    return sources
+
+
 def proof_trace(record, source, theorem, session_map, root, activation=None):
+    source = startup_source(record, source, theorem, root)
     trace = record["proof_trace"]
     session = session_map[trace["session_id"]]
     tool_call(session, trace["health_call"], "rocq_health")
@@ -414,8 +478,8 @@ def acceptance(index, bundle, root=ROOT):
     require([row["theorem"] for row in bundle["rejections"]] == index["reject_controls"],
             "Both exact S119 control certificates are required.")
     records = bundle["native_cases"] + bundle["rejections"]
-    proof_sources = [bound_file(row["proof_source"], root)[0] for row in records]
-    modules = input_provenance(bundle, proof_sources, root)
+    sources = proof_sources(records, root)
+    modules = input_provenance(bundle, sources, root)
     session_map = sessions(bundle, root)
     results = [native_case(case, record, index, root, session_map, bundle["input_index"])
                for case, record in zip(index["cases"], bundle["native_cases"])]
@@ -551,7 +615,7 @@ def array_store_acceptance(index, bundle, root=ROOT):
                    "The candidate source is not the reserved switch module.")
     require(all(ARRAY_STORE_IDENTITY[key] in switch_bytes.decode() for key in ("class", "instance")),
                    "The candidate lacks its reserved activation identity.")
-    sources = [bound_file(row["proof_source"], root)[0] for row in cases + controls]
+    sources = proof_sources(cases + controls, root)
     input_provenance(bundle, sources, root)
     _, seal = bound_json(bundle["input_index"], root)
     session_map = sessions(bundle, root)
@@ -618,10 +682,64 @@ def entry_normalization_acceptance(index, bundle, root=ROOT):
     return acceptance(index, bundle, root)
 
 
+def dry_run(index, root=ROOT, *, switch_source=None, bundle=None, array_store=False):
+    """Check retained inputs and candidate identity without accepting a repair."""
+    if array_store:
+        array_store_capture_inventory(index, root)
+        pending = array_store_missing(index)
+        controls = [control["id"] for control in index["controls"]]
+    else:
+        inventory(index, root)
+        pending = []
+        controls = index["reject_controls"]
+    identity = {key: index["repair_identity"][key] for key in ("module", "class", "instance")}
+    source_reference = None
+    if switch_source is not None:
+        source = Path(switch_source).resolve()
+        data = source.read_bytes()
+        require(source.name == identity["module"].split(".")[-1] + ".v",
+                "The dry switch source has a different module name.")
+        require(all(identity[key] in data.decode() for key in ("class", "instance")),
+                "The dry switch source lacks its reserved identity.")
+        source_reference = {"path": str(source), "sha256": hashlib.sha256(data).hexdigest()}
+    elif bundle is not None:
+        _, data = bound_file(bundle["switch_source"], root)
+        require(bundle.get("repair_identity") == identity,
+                "The dry bundle has a different switch identity.")
+        require(all(identity[key] in data.decode() for key in ("class", "instance")),
+                "The dry bundle switch lacks its reserved identity.")
+        source_reference = bundle["switch_source"]
+    sites = [case["block"] for case in index["cases"]]
+    checked = []
+    # A stub or an incomplete bundle supplies no closure certificate.
+    complete = bundle is not None and not pending and (
+        [row.get("block") for row in bundle.get("native_cases", [])] == sites and
+        [row.get("control_id" if array_store else "theorem")
+         for row in bundle.get("rejections", [])] == controls)
+    if complete:
+        require(switch_source is None, "A bundle cannot substitute a dry switch source.")
+        checker = array_store_acceptance if array_store else acceptance
+        checked = checker(index, bundle, root)
+    return {"mode": "dry_run", "accepted": False, "workspace": str(root.resolve()),
+            "repair_identity": identity, "inventory_checked": True,
+            "switch_source": source_reference, "runtime_activation_checked": bool(checked),
+            "checked_native_cases": checked,
+            "missing_certificates": ([] if complete else
+                ["native: " + site for site in sites] + ["control: " + name for name in controls]),
+            "pending_inventory": pending,
+            "limits": "A source identity check does not prove switch typing, runtime activation, or native closure."}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--results", type=Path,
                         help="The hash-bound actual ON native proof bundle.")
+    parser.add_argument("--workspace", type=Path, default=ROOT,
+                        help="The actual candidate workspace recorded by the owned sessions.")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="Check inputs and switch identity. Always report accepted=false.")
+    parser.add_argument("--switch-source", type=Path,
+                        help="An uncompiled switch source for dry mode only.")
     classes = parser.add_mutually_exclusive_group()
     classes.add_argument("--entry-normalization", action="store_true",
                          help="Check the reserved nine-site entry-normalization identity.")
@@ -633,18 +751,28 @@ def main():
     parser.add_argument("--check-inventory", action="store_true",
                         help="Check identities only. This does not accept the repair.")
     args = parser.parse_args()
+    root = args.workspace.resolve()
     index_path = args.index or (ENTRY_NORMALIZATION_INDEX if args.entry_normalization else
                                ARRAY_STORE_INDEX if args.array_store else INDEX)
     index = json.loads(index_path.read_text())
+    require(args.switch_source is None or args.dry_run, "A switch source override requires dry mode.")
+    if args.dry_run:
+        require(not args.entry_normalization, "Dry mode does not support entry normalization.")
+        require(not (args.check_schema or args.check_captures or args.check_inventory),
+                "Dry mode cannot combine with a separate inventory mode.")
+        bundle = json.loads(args.results.read_text()) if args.results else None
+        print(json.dumps(dry_run(index, root, switch_source=args.switch_source,
+                                 bundle=bundle, array_store=args.array_store), indent=2))
+        return 0
     if args.entry_normalization:
-        entry_normalization_binding(index)
+        entry_normalization_binding(index, root)
         require(not args.check_schema and not args.check_captures,
                 "Entry normalization uses the nine-site inventory check.")
         if args.check_inventory:
             print("Nine entry-normalization identities checked. Native acceptance did not run.")
             return 0
         require(args.results is not None, "The actual nine-native proof bundle is required.")
-        result = entry_normalization_acceptance(index, json.loads(args.results.read_text()))
+        result = entry_normalization_acceptance(index, json.loads(args.results.read_text()), root)
         print(json.dumps({"accepted": True, "native_cases": result, "S119_rejections": 2}, indent=2))
         return 0
     if args.array_store:
@@ -653,25 +781,25 @@ def main():
                               "pending": array_store_missing(index)}, indent=2))
             return 0
         if args.check_captures:
-            array_store_capture_inventory(index)
+            array_store_capture_inventory(index, root)
             print("Six frozen capture sets checked. Native acceptance did not run.")
             return 0
         if args.check_inventory:
-            array_store_inventory(index)
+            array_store_inventory(index, root)
             print("Six capture identities checked. Native acceptance did not run.")
             return 0
         require(args.results is not None, "The six-native linked proof bundle is required.")
-        result = array_store_acceptance(index, json.loads(args.results.read_text()))
+        result = array_store_acceptance(index, json.loads(args.results.read_text()), root)
         print(json.dumps({"accepted": True, "native_cases": result, "S152_rejections": 2}, indent=2))
         return 0
     require(not args.check_schema and not args.check_captures,
             "Schema and capture checks require the array-store class.")
     if args.check_inventory:
-        inventory(index)
+        inventory(index, root)
         print("Nine capture identities checked. Native acceptance did not run.")
         return 0
     require(args.results is not None, "The actual nine-native proof bundle is required.")
-    result = acceptance(index, json.loads(args.results.read_text()))
+    result = acceptance(index, json.loads(args.results.read_text()), root)
     print(json.dumps({"accepted": True, "native_cases": result, "S119_rejections": 2}, indent=2))
     return 0
 

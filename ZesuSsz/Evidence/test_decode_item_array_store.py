@@ -9,6 +9,7 @@ from check_decode_item_route_repair import (
     ARRAY_STORE_INDEX as INDEX, ARRAY_STORE_SITES as SITES,
     array_store_acceptance as acceptance, array_store_missing as missing,
     array_store_schema as schema,
+    dry_run,
 )
 from test_route_repair_linked_evidence import SyntheticEvidence
 
@@ -50,6 +51,17 @@ class ArrayStoreAcceptanceTests(unittest.TestCase):
 
     def test_complete_fictional_bundle(self):
         self.assertEqual([row["block"] for row in self.check()], SITES)
+
+    def test_complete_fictional_dry_bundle_stays_nonaccepting(self):
+        report = dry_run(self.index, self.root, bundle=self.bundle, array_store=True)
+        self.assertFalse(report["accepted"])
+        self.assertEqual([row["block"] for row in report["checked_native_cases"]], SITES)
+        self.assertEqual(report["missing_certificates"], [])
+
+    def test_dry_mode_keeps_the_actual_control_requirements(self):
+        self.bundle["rejections"][0].pop("compilation")
+        with self.assertRaises(KeyError):
+            dry_run(self.index, self.root, bundle=self.bundle, array_store=True)
 
     def test_placeholder_cannot_accept(self):
         self.index["repair_identity"] = {**dict.fromkeys(IDENTITY), "status": "placeholder"}
