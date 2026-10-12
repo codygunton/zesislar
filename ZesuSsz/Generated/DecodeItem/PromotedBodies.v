@@ -9,6 +9,7 @@ Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d697c.
 Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69a4.
 Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69d8.
 Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69e0.
+Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69e8.
 Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a00.
 Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a14.
 Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a64.
@@ -39,6 +40,10 @@ Definition decodeItemPromotedBody800d69e0 :
   ⊢ block_table_pre decodeItemBlockTable -∗ instr_body 0x800d69e0 decodeItemState800d69e0 :=
   ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69e0.decodeItemSlotBody800d69e0.
 
+Definition decodeItemPromotedBody800d69e8 :
+  ⊢ block_table_pre decodeItemBlockTable -∗ instr_body 0x800d69e8 decodeItemState800d69e8 :=
+  ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69e8.decodeItemSlotBody800d69e8.
+
 Definition decodeItemPromotedBody800d6a00 :
   ⊢ block_table_pre decodeItemBlockTable -∗ instr_body 0x800d6a00 decodeItemState800d6a00 :=
   ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a00.decodeItemSlotBody800d6a00.
@@ -66,6 +71,7 @@ Print Assumptions decodeItemPromotedBody800d697c.
 Print Assumptions decodeItemPromotedBody800d69a4.
 Print Assumptions decodeItemPromotedBody800d69d8.
 Print Assumptions decodeItemPromotedBody800d69e0.
+Print Assumptions decodeItemPromotedBody800d69e8.
 Print Assumptions decodeItemPromotedBody800d6a00.
 Print Assumptions decodeItemPromotedBody800d6a14.
 Print Assumptions decodeItemPromotedBody800d6a64.

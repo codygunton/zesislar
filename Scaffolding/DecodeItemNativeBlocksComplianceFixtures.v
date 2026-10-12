@@ -53,11 +53,6 @@ Lemma decodeItemNativeBlocksSignatureFixture
   decodeItemSelectedCode -∗
   instr_body 0x800d69b0
     (decodeItemEntryAt800d69b0 args locals inputPrefix rest ∗ True))
-  (native800d69e8 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),
-  instr_pre 0x800d698c (∃ (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -∗
-  decodeItemSelectedCode -∗
-  instr_body 0x800d69e8
-    (decodeItemEntryAt800d69e8 args frameBytes x13 inputPrefix rest ∗ True))
   (native800d6a08 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),
   instr_pre 0x800d6a14 (∃ (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_oldAcc : bv 64) (successor_oldCursor : bv 64) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_oldAcc) (successor_oldCursor) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -∗
   instr_pre 0x800d6ae0 (∃ (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -∗
@@ -112,7 +107,7 @@ Lemma decodeItemNativeBlocksSignatureFixture
     (decodeItemEntryAt800d6b08 args locals inputPrefix rest headerLength payloadLength ∗ True)) :
   ReviewedDecodeItemComplianceType.
 Proof.
-  exact (decodeItemNativeBlocksSelectedCompliance native800d6960 native800d698c native800d69b0 native800d69e8 native800d6a08 native800d6a24 native800d6a38 native800d6a40 native800d6a78 native800d6aa8 native800d6ac4 native800d6ad8 native800d6ae0 native800d6b08).
+  exact (decodeItemNativeBlocksSelectedCompliance native800d6960 native800d698c native800d69b0 native800d6a08 native800d6a24 native800d6a38 native800d6a40 native800d6a78 native800d6aa8 native800d6ac4 native800d6ad8 native800d6ae0 native800d6b08).
 Qed.
 Print Assumptions decodeItemNativeBlocksSignatureFixture.
 
@@ -131,11 +126,6 @@ Lemma decodeItemNativeBlocksMissingRootRejected
   decodeItemSelectedCode -∗
   instr_body 0x800d69b0
     (decodeItemEntryAt800d69b0 args locals inputPrefix rest ∗ True))
-  (native800d69e8 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),
-  instr_pre 0x800d698c (∃ (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -∗
-  decodeItemSelectedCode -∗
-  instr_body 0x800d69e8
-    (decodeItemEntryAt800d69e8 args frameBytes x13 inputPrefix rest ∗ True))
   (native800d6a08 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),
   instr_pre 0x800d6a14 (∃ (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_oldAcc : bv 64) (successor_oldCursor : bv 64) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_oldAcc) (successor_oldCursor) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -∗
   instr_pre 0x800d6ae0 (∃ (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -∗
@@ -190,7 +180,7 @@ Lemma decodeItemNativeBlocksMissingRootRejected
     (decodeItemEntryAt800d6b08 args locals inputPrefix rest headerLength payloadLength ∗ True)) :
   ReviewedDecodeItemComplianceType.
 Proof.
-  Fail exact (decodeItemNativeBlocksSelectedCompliance native800d698c native800d69b0 native800d69e8 native800d6a08 native800d6a24 native800d6a38 native800d6a40 native800d6a78 native800d6aa8 native800d6ac4 native800d6ad8 native800d6ae0 native800d6b08).
-  exact (decodeItemNativeBlocksSelectedCompliance native800d6960 native800d698c native800d69b0 native800d69e8 native800d6a08 native800d6a24 native800d6a38 native800d6a40 native800d6a78 native800d6aa8 native800d6ac4 native800d6ad8 native800d6ae0 native800d6b08).
+  Fail exact (decodeItemNativeBlocksSelectedCompliance native800d698c native800d69b0 native800d6a08 native800d6a24 native800d6a38 native800d6a40 native800d6a78 native800d6aa8 native800d6ac4 native800d6ad8 native800d6ae0 native800d6b08).
+  exact (decodeItemNativeBlocksSelectedCompliance native800d6960 native800d698c native800d69b0 native800d6a08 native800d6a24 native800d6a38 native800d6a40 native800d6a78 native800d6aa8 native800d6ac4 native800d6ad8 native800d6ae0 native800d6b08).
 Qed.
 Print Assumptions decodeItemNativeBlocksMissingRootRejected.

@@ -59,6 +59,33 @@ class NativeStatusTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "measured source hash differs"):
             self.generate()
 
+    def test_closed_hand_module_uses_recorded_adapter_import(self):
+        source = self.root / "ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v"
+        source.write_text(source.read_text().replace("native800d697c : closure697c;\n", "") +
+                          "Definition decodeItemOpenNativeClosure697c : Prop := True.\n")
+        module = "ZesuSsz.Proofs.DecodeItem.Hand.Block800d697c"
+        production = self.root / (module.replace(".", "/") + ".v")
+        production.parent.mkdir(parents=True)
+        production.write_text("Lemma DesignedBoundary_800d697c : True. Proof. exact I. Qed.\n")
+        adapter = self.root / "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d697c.v"
+        adapter.parent.mkdir(parents=True)
+        adapter.write_text("Require Import " + module + ".\n")
+        result = self.generate()
+        self.assertEqual(result["open_closures"], 14)
+        closed = result["closed_native"]["697c"]
+        self.assertEqual(closed["theorem"], module + ".DesignedBoundary_800d697c")
+        self.assertEqual(closed["source"], status.binding(production))
+
+    def test_unrecorded_production_keeps_auto_lookup(self):
+        self.assertEqual(status.production_identity(self.root, "6974", {}),
+                         ("ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974",
+                          "DesignedBoundary_800d6974"))
+
+    def test_explicit_production_overrides_recorded_lookup(self):
+        identity = ("ZesuSsz.Proofs.DecodeItem.Hand.Custom", "custom_theorem")
+        self.assertEqual(status.production_identity(self.root, "697c", {"697c": identity}),
+                         identity)
+
 
 if __name__ == "__main__":
     unittest.main()

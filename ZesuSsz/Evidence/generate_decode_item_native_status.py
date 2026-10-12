@@ -19,6 +19,28 @@ def binding(path):
             "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
 
 
+def production_identity(workspace, site, productions):
+    if site in productions:
+        return productions[site]
+    theorem = "DesignedBoundary_800d" + site
+    adapter = workspace / ("ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d" + site + ".v")
+    if adapter.exists():
+        recorded = []
+        for imports in re.findall(r"Require Import\s+([^\n]+)\.", adapter.read_text()):
+            for module in imports.split():
+                if not module.startswith("ZesuSsz.Proofs.DecodeItem."):
+                    continue
+                source = workspace / (module.replace(".", "/") + ".v")
+                if source.exists() and re.search(r"Lemma " + theorem + r"\b", source.read_text()):
+                    recorded.append(module)
+        recorded = sorted(set(recorded))
+        if len(recorded) > 1:
+            raise ValueError("The recorded production module is ambiguous: " + site)
+        if recorded:
+            return recorded[0], theorem
+    return "ZesuSsz.Proofs.DecodeItem.Auto.Block800d" + site, theorem
+
+
 def generate(table_path, *, workspace=None, status_root=None, productions=None):
     workspace = Path(workspace) if workspace is not None else ROOT
     table_binding = binding(table_path)
@@ -70,9 +92,7 @@ def generate(table_path, *, workspace=None, status_root=None, productions=None):
     productions = productions or {}
     definitions = re.findall(r"Definition decodeItemOpenNativeClosure([0-9a-f]{4})\s*:", text)
     for site in sorted(set(definitions) - {site for site, _ in fields}):
-        module, theorem = productions.get(site, (
-            "ZesuSsz.Proofs.DecodeItem.Auto.Block800d" + site,
-            "DesignedBoundary_800d" + site))
+        module, theorem = production_identity(workspace, site, productions)
         production = workspace / (module.replace(".", "/") + ".v")
         production_text = production.read_text()
         if not re.search(r"Lemma " + re.escape(theorem) + r"\b", production_text):
