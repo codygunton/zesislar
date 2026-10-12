@@ -97,13 +97,19 @@ def render_signature(pc):
 
 def update_promoted(text, pc):
     from promote_table import render_slots
-    pcs = {int(x, 16) for x in re.findall(r"Definition decodeItemPromotedBody([0-9a-f]+)\s*:", text)}
-    pcs.add(pc)
-    return render_slots({"proof_slots": [
-        {"pc": hex(address), "status": "proved",
-         "proof_module": f"ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter{address:x}",
-         "proof_lemma": f"ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter{address:x}.decodeItemSlotBody{address:x}"}
-        for address in sorted(pcs)]})
+    declarations = re.findall(r"Definition decodeItemPromotedBody([0-9a-f]+)\s*:", text)
+    recorded = re.findall(
+        r"Definition decodeItemPromotedBody([0-9a-f]+)\s*:.*?:=\s*"
+        r"([A-Za-z_][A-Za-z0-9_.]+)\.\s", text, re.S)
+    if len(recorded) != len(declarations) or len(set(declarations)) != len(declarations):
+        raise ValueError("The recorded promoted proof terms are unavailable or ambiguous.")
+    slots = {int(address, 16): {"pc": hex(int(address, 16)), "status": "proved",
+                              "proof_module": lemma.rsplit('.', 1)[0], "proof_lemma": lemma}
+             for address, lemma in recorded}
+    slots[pc] = {"pc": hex(pc), "status": "proved",
+                 "proof_module": f"ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter{pc:x}",
+                 "proof_lemma": f"ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter{pc:x}.decodeItemSlotBody{pc:x}"}
+    return render_slots({"proof_slots": [slots[address] for address in sorted(slots)]})
 
 
 def refresh_counts(text, table):
@@ -145,9 +151,10 @@ def plan(workspace, pc, module, lemma, table=None):
     adapter = f"ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter{pc:x}.v"
     outputs[adapter] = render_adapter(pc, module, theorem, args)
     signature = f"ZesuSsz/Evidence/DecodeItemPromoted{short}Fixtures.v"
-    outputs[signature] = render_signature(pc)
     promoted = "ZesuSsz/Generated/DecodeItem/PromotedBodies.v"
     outputs[promoted] = update_promoted((workspace / promoted).read_text(), pc)
+    # The signature fixture imports the generated promoted bodies.
+    outputs[signature] = render_signature(pc)
     compliance = "Scaffolding/DecodeItemNativeBlocksCompliance.v"
     original = (workspace / compliance).read_text()
     remaining = re.findall(r"^  \((native[0-9a-f]+)\s*:", original, re.M)

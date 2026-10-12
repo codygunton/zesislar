@@ -20,12 +20,98 @@ def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def statements(source, pc):
+def retained_compile_result(source, artifact, retained):
+    if (retained['source'] != str(source) or
+            Path(retained['private_artifact']).resolve() != artifact.resolve() or
+            retained['source_sha256'] != digest(source) or
+            retained['compile_file'].get('success') is not True or
+            digest(artifact) != retained['private_artifact_sha256']):
+        raise ValueError('The retained compilation identity differs.')
+    return retained['compile_file']
+
+
+def compilation_sources(workspace, sources):
+    """Refresh project prerequisites that import a changed generated module."""
+    workspace = Path(workspace).resolve()
+    changed = {Path(source).resolve() for source in sources}
+    dependencies = {}
+
+    def inspect(source):
+        if source in dependencies:
+            return
+        dependencies[source] = []
+        for imports in re.findall(r'^Require Import\s+([^\n]+)\.', source.read_text(), re.M):
+            for module in imports.split():
+                dependency = workspace / (module.replace('.', '/') + '.v')
+                if dependency.is_file():
+                    dependencies[source].append(dependency)
+                    inspect(dependency)
+
+    for source in sources:
+        inspect(Path(source).resolve())
+    affected, visiting = {}, set()
+
+    def needs_refresh(source):
+        if source in affected:
+            return affected[source]
+        if source in visiting:
+            raise ValueError('The project import graph contains a cycle.')
+        visiting.add(source)
+        results = [needs_refresh(dependency) for dependency in dependencies[source]]
+        visiting.remove(source)
+        affected[source] = source in changed or any(results)
+        return affected[source]
+
+    for source in dependencies:
+        needs_refresh(source)
+    ordered, emitted = [], set()
+
+    def emit(source):
+        if source in emitted:
+            return
+        for dependency in dependencies[source]:
+            emit(dependency)
+        emitted.add(source)
+        if affected[source]:
+            ordered.append(source)
+
+    for source in sources:
+        emit(Path(source).resolve())
+    return ordered
+
+
+def restated_statement(source, match, end, module=None):
+    """Use the compiled constant's kernel type outside an active Section."""
+    sections = []
+    for command in re.finditer(r'^(Section|End)\s+([A-Za-z_][A-Za-z0-9_\']*)\.',
+                               source[:match.start()], re.M):
+        if command[1] == 'Section':
+            sections.append(command[2])
+        elif sections and sections[-1] == command[2]:
+            sections.pop()
+    if not sections:
+        return source[:end]
+    if module is None or not re.fullmatch(r'[A-Za-z_][A-Za-z0-9_\']*(?:\.[A-Za-z_][A-Za-z0-9_\']*)*', module):
+        raise ValueError('A Section statement needs its compiled logical module.')
+    return (f'Require Import {module}.\n'
+            f'Lemma {match[1]} :\n'
+            f'  ltac:(let statement := type of @{module}.{match[1]} in exact statement).\n')
+
+
+def statements(source, pc, module=None):
     """Retain exact declarations, including earlier definitions and scopes."""
     result = []
     for match in re.finditer(r'^Lemma\s+([A-Za-z_][A-Za-z0-9_\']*)\b', source, re.M):
-        end = source.index('Proof.', match.end())
-        result.append((match[1], source[:end], source))
+        opening = re.search(r'\bProof(?:\s+using\b[^.]*?)?\s*\.', source[match.end():])
+        if opening is None:
+            raise ValueError('The named lemma has no supported proof opening: ' + match[1])
+        end = match.end() + opening.start()
+        statement = restated_statement(source, match, end, module)
+        proof = source
+        if statement != source[:end]:
+            # The verifier bridge uses the constant without an explicit @.
+            proof += f'\nArguments {match[1]} : clear implicits.\n'
+        result.append((match[1], statement, proof))
     # PromotedBodies exports typed definitions inside an Iris section.
     name = f'decodeItemPromotedBody{pc:x}'
     match = re.search(r'Definition ' + name + r'\s*:\s*(.*?)\s*:=', source, re.S)
@@ -72,7 +158,7 @@ def owned_pet(health, owner):
     return {'pid': pid, 'start_ticks': int(fields[19])}
 
 
-async def verify(workspace, sources, pc, directory, timeout=600):
+async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_checks=None):
     from mcp import ClientSession, StdioServerParameters
     from mcp.client.stdio import stdio_client
     directory = Path(directory)
@@ -144,23 +230,29 @@ async def verify(workspace, sources, pc, directory, timeout=600):
         return result
 
     try:
-        for index, source in enumerate(sources):
+        report['requested_sources'] = list(map(str, sources))
+        for index, source in enumerate(compilation_sources(workspace, sources)):
             source = Path(source)
             require_clean_source(source)
             copy = directory / f'{index:02d}-{source.name}'
             copy.write_bytes(source.read_bytes())
             report['sources'].append({'path': str(source), 'sha256': digest(source),
                                       'snapshot': str(copy), 'snapshot_sha256': digest(copy)})
-            compiled = await operation(f'compile-{index}', 'rocq_compile_file',
-                {'workspace': str(workspace), 'file': str(source), 'timeout': timeout, 'timing': True, 'keep_vo': True})
-            require_clean_source(source)
+            retained = (compiled_checks or {}).get(str(source))
             artifact = private / source.relative_to(workspace).with_suffix('.vo')
+            if retained is not None:
+                compiled = retained_compile_result(source, artifact, retained)
+                report.setdefault('reused_compilations', []).append(retained)
+            else:
+                compiled = await operation(f'compile-{index}', 'rocq_compile_file',
+                    {'workspace': str(workspace), 'file': str(source), 'timeout': timeout, 'timing': True, 'keep_vo': True})
+            require_clean_source(source)
             if not artifact.is_file():
                 raise ValueError('The compiler did not retain the private module artifact.')
             report['checks'].append({'source': str(source), 'compile_file': compiled,
                                     'private_artifact': str(artifact), 'private_artifact_sha256': digest(artifact),
                                     'source_tree_clean': True, 'statements': []})
-            for number, (name, statement, proof) in enumerate(statements(copy.read_text(), pc)):
+            for number, (name, statement, proof) in enumerate(statements(copy.read_text(), pc, '.'.join(source.relative_to(workspace).with_suffix('').parts))):
                 checked = await operation(f'verify-{index}-{number}', 'rocq_verify',
                     {'workspace': str(workspace), 'problem_statement': statement,
                      'proof': proof, 'problem_name': name, 'timeout': timeout})
