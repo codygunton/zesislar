@@ -113,6 +113,53 @@ let constraint_root_occurrence local_env sigma wanted term =
     (Some found, !count)
   with Unknown_occurrence -> (None, !count)
      | Not_found -> (None, !count)
+(* A positive raw occurrence admits the pointer candidate. A negative or
+   uncertain scan must use the unchanged reducing traversal. *)
+let pointer_raw_occurrence pointer_env local_env sigma wanted term =
+  let count = ref 0 in
+  let rec local_alias env fuel term =
+    if fuel <= 0 then raise Unknown_occurrence;
+    match EConstr.kind sigma term with
+    | Constr.Var name ->
+        begin match Context.Named.Declaration.get_value (EConstr.lookup_named name env) with
+        | Some body -> local_alias env (fuel - 1) body
+        | None -> term
+        end
+    | Constr.Rel index ->
+        begin match Context.Rel.Declaration.get_value (EConstr.lookup_rel index env) with
+        | Some body -> local_alias env (fuel - 1) (EConstr.Vars.lift index body)
+        | None -> term
+        end
+    | Constr.Meta _ -> raise Unknown_occurrence
+    | _ -> term
+  in
+  try
+    let expanded_wanted = local_alias pointer_env 32 wanted in
+    let same depth candidate =
+      EConstr.eq_constr sigma (EConstr.Vars.lift depth wanted) candidate ||
+      EConstr.eq_constr sigma (EConstr.Vars.lift depth expanded_wanted) candidate
+    in
+    let rec scan env depth term =
+      if !count >= 512 then raise Unknown_occurrence;
+      incr count;
+      if same depth term then true
+      else
+        let term = local_alias env 32 term in
+        let found = ref (same depth term) in
+        if not !found then
+          EConstr.iter_with_full_binders env sigma
+            (fun declaration (child_env, child_depth) ->
+              (EConstr.push_rel declaration child_env, child_depth + 1))
+            (fun (child_env, child_depth) child ->
+              if not !found then found := scan child_env child_depth child)
+            (env, depth) term;
+        !found
+    in
+    (Some (scan local_env 0 term), !count)
+  with Unknown_occurrence -> (None, !count)
+     | Not_found -> (None, !count)
+     | error when CErrors.noncritical error -> (None, !count)
+
 (* Read only the native index's exact shelved equality at the owned pointer.
    The caller proves that equality through the existing fact registry. *)
 let array_index_constraints pointer index sidecondition equality env sigma =
@@ -141,7 +188,11 @@ let array_index_constraints pointer index sidecondition equality env sigma =
         | Constr.App (head, [|_type; _left; _right|]) when EConstr.eq_constr_nounivs sigma head equality ->
             let occurrence, _ = constraint_root_occurrence local_env sigma index fact in
             occurrence <> Some false &&
-            contains local_env 0 index fact && contains local_env 0 pointer fact
+            contains local_env 0 index fact &&
+            (let pointer_occurrence, _ =
+               pointer_raw_occurrence env local_env sigma pointer fact in
+             pointer_occurrence = Some true ||
+             contains local_env 0 pointer fact)
         | _ -> false
         end
     | _ -> false) (Evd.shelf sigma)
