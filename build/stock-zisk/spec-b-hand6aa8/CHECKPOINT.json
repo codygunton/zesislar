@@ -1,0 +1,178 @@
+{
+  "block": "0x800d6aa8",
+  "theorem": "DesignedBoundary_800d6aa8",
+  "module": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6aa8",
+  "compilation_root": "32e92453fe3b3f9973dd3a766311f906422a5fad",
+  "gate_root": "3df2ff22ef71a8b41c8a511c2b8c0edf0daeaf98",
+  "source": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6aa8.v",
+    "sha256": "6dfb6795059ac58a79376e2b9ffe45724bbaeb6a720a326d4a639ac7cb531671",
+    "bytes": 6718
+  },
+  "exact_original_statement": true,
+  "statement_sha256": "5299bf83c4292ebef06acdb15206191456f866eb66e32ff7e3a0001dda527343",
+  "whole_file_physical_lines": 59,
+  "Proof_through_Qed_physical_lines": 26,
+  "actual_pre_Qed_groups": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "Qed": {
+    "success": true,
+    "from_state": 49,
+    "state": 50,
+    "evidence": {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/_build/hand6aa8-mcp002/012-qed-RESULT.json",
+      "sha256": "5079a94b546747b6c6d8e1559f85e4e380fbef2c7b67e7a47b9c0fc9ef09c022",
+      "bytes": 4963
+    }
+  },
+  "full_compilation": {
+    "success": true,
+    "elapsed_seconds": 66.77721603796817,
+    "evidence": {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/_build/hand6aa8-final005/COMPILE.json",
+      "sha256": "69a60227c71414ce203337a640501af7f8d0d882ae76f343a1518d663355be9d",
+      "bytes": 769
+    }
+  },
+  "exact_verification": {
+    "success": true,
+    "verification_method": "module_m",
+    "assumptions": []
+  },
+  "verification_evidence": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/_build/hand6aa8-final005/VERIFY.json",
+    "sha256": "c33a2dc2fc8b91b8c7d1cecf04cce8986e2ae4b200fce20b52ad00eb2bfe3f0f",
+    "bytes": 80
+  },
+  "raw_calls": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/_build/hand6aa8-final005/raw-calls.json",
+    "sha256": "c011ca73a50a926bff642c52a0b79ec99ca071b89762ce22db1468505d19c557",
+    "bytes": 40577
+  },
+  "pre_Qed_export": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/_build/hand6aa8-mcp002/interactive-6aa8/exports/state_49.json",
+    "sha256": "9364991b81442d7737e232376a72172c164e3491d6d68872c02e83d27157a97f",
+    "bytes": 215
+  },
+  "check_fast": {
+    "command": [
+      "python3",
+      "tools/block/prepare_hand_gate.py",
+      "--workspace",
+      "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453",
+      "--module",
+      "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6aa8.v",
+      "--agent",
+      "spec-b",
+      "--jobs",
+      "6",
+      "--check-fast"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 2168.4621604941785,
+    "Iris_owner": "Root"
+  },
+  "gate_record": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/_build/hand6aa8-checkpoint004/CHECK-FAST.json",
+    "sha256": "92268f8cd5e7ed7d54a27c322277afd01a1d9670e7cbcef2aaeec69691aa0301",
+    "bytes": 387
+  },
+  "gate_log": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/_build/hand6aa8-checkpoint004/CHECK-FAST.log",
+    "sha256": "352eaf119384675ee193d1db643ac599b80eacaf5294c9f369f3fc8f4c5b2cf2",
+    "bytes": 149446
+  },
+  "promotion_dry_run": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/_build/hand6aa8-checkpoint004/PROMOTION-DRY-RUN.json",
+    "sha256": "b5ee2dbf4ebaf57c3b44b090b2640295d24eec88c98aef4a4d164269dc4ad6c9",
+    "bytes": 35996
+  },
+  "promotion_proposals": [
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6aa8.v",
+      "preserved_path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/_build/hand6aa8-checkpoint004/promotion-sources/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6aa8.v",
+      "sha256": "41871b30314691eb77fdf30f308979906c2ad8b8a5600bb8f3ac621cf36513bc"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/ZesuSsz/Generated/DecodeItem/PromotedBodies.v",
+      "preserved_path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/_build/hand6aa8-checkpoint004/promotion-sources/ZesuSsz/Generated/DecodeItem/PromotedBodies.v",
+      "sha256": "fbff9beb341f22cd5a0e12982ebad36b12aabc06f6f6cb172dec4b72653b828f"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/ZesuSsz/Evidence/DecodeItemPromoted6aa8Fixtures.v",
+      "preserved_path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/_build/hand6aa8-checkpoint004/promotion-sources/ZesuSsz/Evidence/DecodeItemPromoted6aa8Fixtures.v",
+      "sha256": "956f53e786e6f84f7f0c8fcd8a92693311d97417206a13ac94dbdb9f6b67cb50"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/Scaffolding/DecodeItemNativeBlocksCompliance.v",
+      "preserved_path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/_build/hand6aa8-checkpoint004/promotion-sources/Scaffolding/DecodeItemNativeBlocksCompliance.v",
+      "sha256": "2621c0fed29e651d9fe20e08c62f88d4999324106aaee570e7586339ba01faf6"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/Scaffolding/DecodeItemNativeBlocksComplianceFixtures.v",
+      "preserved_path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/_build/hand6aa8-checkpoint004/promotion-sources/Scaffolding/DecodeItemNativeBlocksComplianceFixtures.v",
+      "sha256": "a377263a40377e05fdfb8a0d2a395811e771aa98af6ec55f243f873a41571b03"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v",
+      "preserved_path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/_build/hand6aa8-checkpoint004/promotion-sources/ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v",
+      "sha256": "36572da09916c5d949d34ee90b7d8fec12a43dca81e8ed80e33be0782edfdf8d"
+    },
+    {
+      "original_path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/ZesuSsz/Evidence/DecodeItemOpenNativeHypothesesFixtures.v",
+      "preserved_path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/_build/hand6aa8-checkpoint004/promotion-sources/ZesuSsz/Evidence/DecodeItemOpenNativeHypothesesFixtures.v",
+      "sha256": "3dbe9b6b725bdd698a13771d246ef1352d98aed3d2a84bb998a7d232d1aafc85"
+    }
+  ],
+  "owned_closures": [
+    {
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/_build/hand6aa8-mcp002/interactive-6aa8/session-closure.json",
+        "sha256": "d5f6d18880a67d934103853c305d53187a5f36309fb47505d064db70e4d753ac",
+        "bytes": 1161
+      },
+      "owned_server_exited": true,
+      "owned_pet_exited": true,
+      "client_cleanup_signals": 0,
+      "stdio_termination_fallback_calls": 0
+    },
+    {
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/_build/hand6aa8-final005/compile-6aa8/session-closure.json",
+        "sha256": "8f27aa14d1846580692f18211f6b90f0139a07627949dcb9931745c87796fe80",
+        "bytes": 973
+      },
+      "owned_server_exited": true,
+      "owned_pet_exited": true,
+      "client_cleanup_signals": 0,
+      "stdio_termination_fallback_calls": 0
+    },
+    {
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-32e92453/_build/hand6aa8-final005/verify-6aa8/session-closure.json",
+        "sha256": "c317954479fd7e26f3972b0fa1fed099c07bbc5723c914c80af254cb679bb7db",
+        "bytes": 973
+      },
+      "owned_server_exited": true,
+      "owned_pet_exited": true,
+      "client_cleanup_signals": 0,
+      "stdio_termination_fallback_calls": 0
+    }
+  ],
+  "preserved_attempts": [
+    "mcp001: invalid CPU limit before MCP requests",
+    "mcp002: successful Qed followed by no-proof-scope exporter result",
+    "final003: unqualified arithmetic parsed in nat_scope",
+    "final004: position-based start returned theorem entry, so LET2 was absent"
+  ],
+  "correction": "Local Open Scope Z_scope. The exact theorem and all accepted proof commands remain unchanged.",
+  "limits": [
+    "Root owns Iris and production promotion.",
+    "Dry-run proposals supply no consumer verification or promotion claim.",
+    "Standalone pure facts do not establish automatic witness assignment."
+  ]
+}
