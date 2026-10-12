@@ -3,6 +3,10 @@
     "ZesuSsz/Proofs/DecodeItem/Hand/Block800d697c.v": {
       "long_proofs": 1,
       "max_proof_lines": 68
+    },
+    "ZesuSsz/Proofs/DecodeItem/Hand/Block800d69e8.v": {
+      "long_proofs": 1,
+      "max_proof_lines": 68
     }
   }
 }
