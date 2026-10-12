@@ -45,11 +45,6 @@ Lemma decodeItemNativeBlocksSignatureFixture
   decodeItemSelectedCode -∗
   instr_body 0x800d6960
     (decodeItemEntryAt800d6960 returnAddress args ∗ True))
-  (native800d697c : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),
-  instr_pre 0x800d698c (∃ (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -∗
-  decodeItemSelectedCode -∗
-  instr_body 0x800d697c
-    (decodeItemEntryAt800d697c args frameBytes x13 inputPrefix rest ∗ True))
   (native800d698c : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (pointerBytes : list byte) (lengthBytes : list byte) (inputPrefix : byte) (rest : list byte) (isLiteral : bool),
   decodeItemSelectedCode -∗
   instr_body 0x800d698c
@@ -117,7 +112,7 @@ Lemma decodeItemNativeBlocksSignatureFixture
     (decodeItemEntryAt800d6b08 args locals inputPrefix rest headerLength payloadLength ∗ True)) :
   ReviewedDecodeItemComplianceType.
 Proof.
-  exact (decodeItemNativeBlocksSelectedCompliance native800d6960 native800d697c native800d698c native800d69b0 native800d69e8 native800d6a08 native800d6a24 native800d6a38 native800d6a40 native800d6a78 native800d6aa8 native800d6ac4 native800d6ad8 native800d6ae0 native800d6b08).
+  exact (decodeItemNativeBlocksSelectedCompliance native800d6960 native800d698c native800d69b0 native800d69e8 native800d6a08 native800d6a24 native800d6a38 native800d6a40 native800d6a78 native800d6aa8 native800d6ac4 native800d6ad8 native800d6ae0 native800d6b08).
 Qed.
 Print Assumptions decodeItemNativeBlocksSignatureFixture.
 
@@ -128,11 +123,6 @@ Lemma decodeItemNativeBlocksMissingRootRejected
   decodeItemSelectedCode -∗
   instr_body 0x800d6960
     (decodeItemEntryAt800d6960 returnAddress args ∗ True))
-  (native800d697c : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),
-  instr_pre 0x800d698c (∃ (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -∗
-  decodeItemSelectedCode -∗
-  instr_body 0x800d697c
-    (decodeItemEntryAt800d697c args frameBytes x13 inputPrefix rest ∗ True))
   (native800d698c : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (pointerBytes : list byte) (lengthBytes : list byte) (inputPrefix : byte) (rest : list byte) (isLiteral : bool),
   decodeItemSelectedCode -∗
   instr_body 0x800d698c
@@ -200,7 +190,7 @@ Lemma decodeItemNativeBlocksMissingRootRejected
     (decodeItemEntryAt800d6b08 args locals inputPrefix rest headerLength payloadLength ∗ True)) :
   ReviewedDecodeItemComplianceType.
 Proof.
-  Fail exact (decodeItemNativeBlocksSelectedCompliance native800d697c native800d698c native800d69b0 native800d69e8 native800d6a08 native800d6a24 native800d6a38 native800d6a40 native800d6a78 native800d6aa8 native800d6ac4 native800d6ad8 native800d6ae0 native800d6b08).
-  exact (decodeItemNativeBlocksSelectedCompliance native800d6960 native800d697c native800d698c native800d69b0 native800d69e8 native800d6a08 native800d6a24 native800d6a38 native800d6a40 native800d6a78 native800d6aa8 native800d6ac4 native800d6ad8 native800d6ae0 native800d6b08).
+  Fail exact (decodeItemNativeBlocksSelectedCompliance native800d698c native800d69b0 native800d69e8 native800d6a08 native800d6a24 native800d6a38 native800d6a40 native800d6a78 native800d6aa8 native800d6ac4 native800d6ad8 native800d6ae0 native800d6b08).
+  exact (decodeItemNativeBlocksSelectedCompliance native800d6960 native800d698c native800d69b0 native800d69e8 native800d6a08 native800d6a24 native800d6a38 native800d6a40 native800d6a78 native800d6aa8 native800d6ac4 native800d6ad8 native800d6ae0 native800d6b08).
 Qed.
 Print Assumptions decodeItemNativeBlocksMissingRootRejected.
