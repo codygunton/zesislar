@@ -36,7 +36,7 @@ class EntryNormalizationAcceptanceTests(unittest.TestCase):
                     entry_normalization_binding(candidate)
 
     def test_import_or_control_change_rejected(self):
-        for key in ('ON_imports', 'reject_controls', 'control_module'):
+        for key in ('ON_imports', 'reject_controls', 'control_module', 'loop_negative_controls'):
             candidate = copy.deepcopy(self.index)
             candidate[key] = []
             with self.subTest(key=key), self.assertRaises(ValueError):

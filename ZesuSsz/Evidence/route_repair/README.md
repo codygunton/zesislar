@@ -1,4 +1,5 @@
 The acceptance command requires nine actual native closure certificates and two S119 rejection certificates.
+The command also requires two linked loop negative applications.
 
 ```sh
 python ZesuSsz/Evidence/check_decode_item_route_repair.py --results <ON-proof-bundle.json>
@@ -67,3 +68,11 @@ The proposed helper runs `zesu_integer_array_facts; simplify_eq` before the exis
 The source proposal did not run.
 The checker requires the same linked certificates before acceptance.
 Missing implementation or native certificates cannot establish acceptance.
+
+The loop controls bind the committed cursor at `i` to the certified successor fact at `i+1`.
+Each control records an exact failed S131 application and unchanged actual rollback groups `1/0/0/0`.
+These controls are not False proofs or closed certificates.
+Their frozen f203 scope and S131 verification scope remain separate from the candidate native scope.
+Copy `loop_negative_controls` from `LOOP-NEGATIVE-RESULTS.json` into the completed ON bundle.
+The checker validates raw calls, exact source and target hashes, scope, verified successor facts, and normal closure.
+The nine native closures and both S119 certificates remain mandatory.

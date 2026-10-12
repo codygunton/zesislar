@@ -8,6 +8,7 @@ import tempfile
 import unittest
 
 from check_decode_item_route_repair import SITES, acceptance, closed_groups, import_modules
+from test_loop_negative_controls import synthetic_loop_controls
 
 
 class SyntheticEvidence:
@@ -79,6 +80,7 @@ class SyntheticEvidence:
         self.bundle["input_index"] = self.write("seal.json", {"root": commit, "workspace": str(root),
                                                     "inputs": inputs, "roles": roles, "modules": self.modules})
         self.refresh_attributions()
+        self.index["loop_negative_controls"], self.bundle["loop_negative_controls"] = synthetic_loop_controls(root)
 
     def write(self, name, value):
         path = self.root / name

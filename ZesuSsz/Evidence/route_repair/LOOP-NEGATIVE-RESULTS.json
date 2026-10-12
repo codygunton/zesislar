@@ -1,0 +1,18 @@
+{
+  "loop_negative_controls": [
+    {
+      "control_id": "s170_6a24_committed_cursor_application",
+      "negative_report": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/REPORT.json",
+        "sha256": "e28885c86e0e87f0c90e86b6cc8bc337d28e980c9dada6e36e9a323405d530c1"
+      }
+    },
+    {
+      "control_id": "s170_6ac4_committed_cursor_application",
+      "negative_report": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/REPORT.json",
+        "sha256": "e28885c86e0e87f0c90e86b6cc8bc337d28e980c9dada6e36e9a323405d530c1"
+      }
+    }
+  ]
+}

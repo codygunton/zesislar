@@ -34,7 +34,7 @@ class AcceptanceCommandTests(unittest.TestCase):
         report = json.loads(result.stdout)
         self.assertFalse(report["accepted"])
         self.assertFalse(report["runtime_activation_checked"])
-        self.assertEqual(len(report["missing_certificates"]), 11)
+        self.assertEqual(len(report["missing_certificates"]), 13)
         self.assertEqual(report["checked_native_cases"], [])
         self.assertEqual(report["workspace"], str(self.root))
 
@@ -50,6 +50,23 @@ class AcceptanceCommandTests(unittest.TestCase):
         self.assertFalse(report["accepted"])
         self.assertEqual(len(report["checked_native_cases"]), 9)
         self.assertEqual(report["missing_certificates"], [])
+
+    def test_missing_loop_application_stays_incomplete_in_dry_mode(self):
+        for count in (0, 1):
+            with self.subTest(count=count):
+                bundle = copy.deepcopy(self.fixture.bundle)
+                bundle["loop_negative_controls"] = bundle["loop_negative_controls"][:count]
+                report = dry_run(self.fixture.index, self.root, bundle=bundle)
+                self.assertFalse(report["accepted"])
+                self.assertFalse(report["runtime_activation_checked"])
+                for case in self.fixture.index["loop_negative_controls"]:
+                    self.assertIn("control: " + case["control_id"], report["missing_certificates"])
+
+    def test_altered_loop_id_stays_incomplete_in_dry_mode(self):
+        self.fixture.bundle["loop_negative_controls"][0]["control_id"] = "altered"
+        report = dry_run(self.fixture.index, self.root, bundle=self.fixture.bundle)
+        self.assertFalse(report["accepted"])
+        self.assertEqual(report["checked_native_cases"], [])
 
     def test_invalid_complete_bundle_fails_in_dry_mode(self):
         self.fixture.bundle["native_cases"][0].pop("verification")

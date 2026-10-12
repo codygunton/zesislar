@@ -94,3 +94,11 @@ The checker follows Require imports transitively, including From imports and nes
 An unrelated seal containing only the switch cannot pass.
 The collector must bind the actual runtime mapping, findlib record, plugin artifacts, and recipe.
 Hash coverage alone does not attest that an omitted runtime dependency was loaded.
+
+The bundle also contains `loop_negative_controls` in header order `6a24`, `6ac4`.
+Each record contains `control_id` and the fixed `negative_report` file reference.
+The inventory binds each exact cursor kernel target, certified successor declaration, source, input seal, and frozen scope.
+The report links the failed `rocq_step_multi` request to its raw response and unchanged complete rollback export.
+Each export retains actual groups `1/0/0/0` and complete kernel types.
+Truncated, missing, changed, or successful application records cannot satisfy these negative controls.
+The reports end with Abort and establish no False proof, native assignment, or native closure.

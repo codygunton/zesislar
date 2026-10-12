@@ -1,0 +1,8 @@
+SHELVED_SIDECOND
+  (@eq valu
+     (RegVal_Base
+        (Val_Bits
+           (@bv_to_bvn (Npos (xO (xO (xO (xO (xO (xO xH)))))))
+              (@bv_add (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Z_to_bv (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Z.add (Z.add (decodeItemInputPointer args) (Zpos xH)) i))
+                 (@BV (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Zpos xH) I)))))
+     (RegVal_Base (Val_Bits (@bv_to_bvn (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Z_to_bv (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Z.add (Z.add (decodeItemInputPointer args) (Zpos xH)) i))))))
