@@ -68,3 +68,90 @@ let () =
            mltac_tactic = "target_registration" }
     (Tac2ffi.constr @-> tac Tac2ffi.unit)
     target_registration
+
+(* Reject only a proved absence of the native root. Preserve uncertain
+   scans for the existing exact checks and registered proof application. *)
+exception Unknown_occurrence
+let constraint_root_occurrence local_env sigma wanted term =
+  let count = ref 0 in
+  let rec local_alias env fuel term =
+    if fuel <= 0 then raise Unknown_occurrence;
+    match EConstr.kind sigma term with
+    | Constr.Var name ->
+        begin match Context.Named.Declaration.get_value (EConstr.lookup_named name env) with
+        | Some body -> local_alias env (fuel - 1) body
+        | None -> term
+        end
+    | Constr.Rel index ->
+        begin match Context.Rel.Declaration.get_value (EConstr.lookup_rel index env) with
+        | Some body -> local_alias env (fuel - 1) (EConstr.Vars.lift index body)
+        | None -> term
+        end
+    | _ -> term
+  in
+  try
+    let wanted = local_alias local_env 32 wanted in
+    let root = match EConstr.kind sigma wanted with
+      | Constr.Evar (key, _) -> key
+      | _ -> raise Unknown_occurrence in
+    let rec scan env term =
+      if !count >= 512 then raise Unknown_occurrence;
+      incr count;
+      let term = local_alias env 32 term in
+      match EConstr.kind sigma term with
+      | Constr.Evar (key, _) when Evar.equal key root -> true
+      | Constr.Meta _ -> raise Unknown_occurrence
+      | _ ->
+          let found = ref false in
+          EConstr.iter_with_full_binders env sigma
+            (fun declaration child_env -> EConstr.push_rel declaration child_env)
+            (fun child_env child -> if not !found then found := scan child_env child)
+            env term;
+          !found
+    in
+    let found = scan local_env term in
+    (Some found, !count)
+  with Unknown_occurrence -> (None, !count)
+     | Not_found -> (None, !count)
+(* Read only the native index's exact shelved equality at the owned pointer.
+   The caller proves that equality through the existing fact registry. *)
+let array_index_constraints pointer index sidecondition equality env sigma =
+  let same left right = EConstr.eq_constr sigma left right in
+  let rec contains local_env depth wanted term =
+    let wanted = Reductionops.whd_all env sigma wanted in
+    let term = Reductionops.whd_all local_env sigma term in
+    let found = ref (same (EConstr.Vars.lift depth wanted) term) in
+    if not !found then
+      EConstr.iter_with_full_binders local_env sigma
+        (fun declaration (child_env, child_depth) ->
+          (EConstr.push_rel declaration child_env, child_depth + 1))
+        (fun (child_env, child_depth) child ->
+          if not !found then
+            found := contains child_env child_depth wanted child)
+        (local_env, depth) term;
+    !found
+  in
+  List.filter (fun key ->
+    let info = Evd.find_undefined sigma key in
+    let local_env = Evd.evar_filtered_env env info in
+    let conclusion = Evd.evar_concl info in
+    match EConstr.kind sigma conclusion with
+    | Constr.App (wrapper, [|fact|]) when same wrapper sidecondition ->
+        begin match EConstr.kind sigma fact with
+        | Constr.App (head, [|_type; _left; _right|]) when EConstr.eq_constr_nounivs sigma head equality ->
+            let occurrence, _ = constraint_root_occurrence local_env sigma index fact in
+            occurrence <> Some false &&
+            contains local_env 0 index fact && contains local_env 0 pointer fact
+        | _ -> false
+        end
+    | _ -> false) (Evd.shelf sigma)
+
+let () =
+  let open Tac2externals in
+  define { Tac2expr.mltac_plugin = "zesu-signature-gates.plugin";
+           mltac_tactic = "array_index_constraints" }
+    (Tac2ffi.constr @-> Tac2ffi.constr @-> Tac2ffi.constr @->
+     Tac2ffi.constr @-> gret (Tac2ffi.list Tac2ffi.evar))
+    (fun pointer index sidecondition equality goal ->
+      array_index_constraints pointer index sidecondition equality
+        (Proofview.Goal.env goal) (Proofview.Goal.sigma goal))
