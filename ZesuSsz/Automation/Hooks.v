@@ -897,6 +897,65 @@ Ltac zesu_condition_has_unresolved_evar condition :=
               end
           end ].
 
+
+Class ZesuStepResourceFirstIntroduction : Prop := {}.
+Class ZesuStepArrayStoreSelection : Prop := {}.
+
+Ltac2 @ external zesu_array_index_constraints :
+  constr -> constr -> constr -> constr -> evar list :=
+  "zesu-signature-gates.plugin" "array_index_constraints".
+
+(* A registered equality determines the existing index. Other shelf entries
+   remain untouched. Failed lookup rolls back the complete alternative. *)
+Ltac2 zesu_assign_registered_array_index (pointer : constr) (index : constr) :=
+  let constraints := zesu_array_index_constraints pointer index
+    constr:(SHELVED_SIDECOND) constr:(@eq) in
+  let rec attempt entries :=
+    match entries with
+    | [] => Control.zero (Tactic_failure None)
+    | key :: rest =>
+      Control.plus (fun () =>
+        Control.new_goal key;
+        Control.focus 2 2 (fun () =>
+          ltac1:(repeat multimatch goal with
+            | local := _ : _ |- _ =>
+                lazymatch goal with
+                | |- context[local] => unfold local
+                end
+            end;
+            lazymatch goal with
+            | |- SHELVED_SIDECOND ?fact =>
+                let evidence := zesu_registered_pure_fact fact in
+                let statement := type of evidence in
+                assert_fails (zesu_condition_has_unresolved_evar evidence);
+                assert_fails (zesu_condition_has_unresolved_evar statement);
+                unfold SHELVED_SIDECOND; exact evidence
+            end));
+        ltac1:(index |- assert_fails (has_evar index))
+          (Ltac1.of_constr index))
+        (fun _ => attempt rest)
+    end
+  in attempt constraints.
+
+Ltac zesu_registered_array_fact_if_enabled :=
+  first [zesu_switch_enabled constr:(ZesuStepResourceFirstIntroduction)
+        | zesu_switch_enabled constr:(ZesuStepArrayStoreSelection)];
+  zesu_expose_environment_alias;
+  iMatchHyp ltac:(fun name owned =>
+    lazymatch owned with
+    | (?pointer ↦ₘ∗ ?image)%I =>
+        assert_fails (zesu_condition_has_unresolved_evar pointer);
+        lazymatch image with
+        | context[List.firstn ?index _] =>
+            let native := eval hnf in index in
+            is_evar native;
+            let assign := ltac2:(pointer index |-
+              zesu_assign_registered_array_index
+                (Option.get (Ltac1.to_constr pointer)) (Option.get (Ltac1.to_constr index))) in
+            assign pointer native
+        end
+    end).
+
 Ltac zesu_defer_unresolved_sidecondition_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepEvarSideconditionGuard);
   lazymatch goal with
@@ -1746,7 +1805,8 @@ Ltac zesu_liAStep :=
  try progress (unfold TRACE_LET);
  try liAIntroduceLetInGoal;
  first [
-    zesu_expose_instruction_lookup
+    zesu_registered_array_fact_if_enabled
+  | zesu_expose_instruction_lookup
   | zesu_region_fault_if_enabled
   | zesu_ram_fault_if_enabled
   | zesu_signed_address_if_enabled
