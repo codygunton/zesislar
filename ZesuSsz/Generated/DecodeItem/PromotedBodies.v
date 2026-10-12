@@ -16,6 +16,7 @@ Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a14.
 Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a64.
 Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a6c.
 Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ab4.
+Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ad8.
 
 (* Pending slots have no proof term. No composition theorem is generated. *)
 Section promoted_block_bodies.
@@ -69,6 +70,10 @@ Definition decodeItemPromotedBody800d6ab4 :
   ⊢ block_table_pre decodeItemBlockTable -∗ instr_body 0x800d6ab4 decodeItemState800d6ab4 :=
   ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ab4.decodeItemSlotBody800d6ab4.
 
+Definition decodeItemPromotedBody800d6ad8 :
+  ⊢ block_table_pre decodeItemBlockTable -∗ instr_body 0x800d6ad8 decodeItemState800d6ad8 :=
+  ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ad8.decodeItemSlotBody800d6ad8.
+
 End promoted_block_bodies.
 
 Print Assumptions decodeItemPromotedBody800d6974.
@@ -83,3 +88,4 @@ Print Assumptions decodeItemPromotedBody800d6a14.
 Print Assumptions decodeItemPromotedBody800d6a64.
 Print Assumptions decodeItemPromotedBody800d6a6c.
 Print Assumptions decodeItemPromotedBody800d6ab4.
+Print Assumptions decodeItemPromotedBody800d6ad8.
