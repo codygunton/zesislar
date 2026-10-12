@@ -1,0 +1,118 @@
+_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)
+--------------------------------------□
+_ : "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 183)
+_ : "x15" ↦ᵣ RVal_Bits x15
+_ : "x16" ↦ᵣ RVal_Bits x16
+_ : "x2" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes))
+_ : "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args))
+_ : "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args))
+_ : decodeItemInputPointer args ↦ₘ∗ decodeItemInputBytes args
+_ : (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) ↦ₘ∗ frameBytes
+_ : instr_pre (decodeItemReturnAddress args)
+      (∃ outcome : DecodeItemOutcome, ⌜decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗ decodeItemExitResources args outcome)
+_ : "x12" ↦ᵣ RVal_Bits (x13 + 1)%bv
+_ : "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args) + 1)%bv
+_ : "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args))
+_ : "x13" ↦ᵣ RVal_Bits x13
+_ : decodeItemOutputPointer args
+    ↦ₘ∗ (take ?n
+           (Z_to_bv 8 (Z.land (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args) + 1)) (Z.ones 8))
+            :: Z_to_bv 8 (Z.land (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args) + 1) ≫ 8) (Z.ones 8))
+               :: Z_to_bv 8 (Z.land ((bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args) + 1) ≫ 8) ≫ 8) (Z.ones 8))
+                  :: Z_to_bv 8 (Z.land (((bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args) + 1) ≫ 8) ≫ 8) ≫ 8) (Z.ones 8))
+                     :: Z_to_bv 8 (Z.land ((((bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args) + 1) ≫ 8) ≫ 8) ≫ 8) ≫ 8) (Z.ones 8))
+                        :: Z_to_bv 8 (Z.land (((((bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args) + 1) ≫ 8) ≫ 8) ≫ 8) ≫ 8) ≫ 8) (Z.ones 8))
+                           :: Z_to_bv 8 (Z.land ((((((bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args) + 1) ≫ 8) ≫ 8) ≫ 8) ≫ 8) ≫ 8) ≫ 8) (Z.ones 8))
+                              :: Z_to_bv 8 (Z.land (((((((bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args) + 1) ≫ 8) ≫ 8) ≫ 8) ≫ 8) ≫ 8) ≫ 8) ≫ 8) (Z.ones 8))
+                                 :: drop (N.to_nat 8)
+                                      (take 32 (decodeItemBeforeStorage args) ++
+                                       Z_to_bv 8 (Z.land (bv_unsigned 0) (Z.ones 8))
+                                       :: Z_to_bv 8 (Z.land (bv_unsigned 0 ≫ 8) (Z.ones 8))
+                                          :: drop (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (N.to_nat 2)))))))))))))))))))))))))))))))))
+                                               (decodeItemBeforeStorage args))) ++
+         Z_to_bv 8 (Z.land (bv_unsigned x13) (Z.ones 8))
+         :: Z_to_bv 8 (Z.land (bv_unsigned x13 ≫ 8) (Z.ones 8))
+            :: Z_to_bv 8 (Z.land ((bv_unsigned x13 ≫ 8) ≫ 8) (Z.ones 8))
+               :: Z_to_bv 8 (Z.land (((bv_unsigned x13 ≫ 8) ≫ 8) ≫ 8) (Z.ones 8))
+                  :: Z_to_bv 8 (Z.land ((((bv_unsigned x13 ≫ 8) ≫ 8) ≫ 8) ≫ 8) (Z.ones 8))
+                     :: Z_to_bv 8 (Z.land (((((bv_unsigned x13 ≫ 8) ≫ 8) ≫ 8) ≫ 8) ≫ 8) (Z.ones 8))
+                        :: Z_to_bv 8 (Z.land ((((((bv_unsigned x13 ≫ 8) ≫ 8) ≫ 8) ≫ 8) ≫ 8) ≫ 8) (Z.ones 8))
+                           :: Z_to_bv 8 (Z.land (((((((bv_unsigned x13 ≫ 8) ≫ 8) ≫ 8) ≫ 8) ≫ 8) ≫ 8) ≫ 8) (Z.ones 8))
+                              :: drop (?n + N.to_nat 8)
+                                   (Z_to_bv 8 (Z.land (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args) + 1)) (Z.ones 8))
+                                    :: Z_to_bv 8 (Z.land (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args) + 1) ≫ 8) (Z.ones 8))
+                                       :: Z_to_bv 8 (Z.land ((bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args) + 1) ≫ 8) ≫ 8) (Z.ones 8))
+                                          :: Z_to_bv 8 (Z.land (((bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args) + 1) ≫ 8) ≫ 8) ≫ 8) (Z.ones 8))
+                                             :: Z_to_bv 8 (Z.land ((((bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args) + 1) ≫ 8) ≫ 8) ≫ 8) ≫ 8) (Z.ones 8))
+                                                :: Z_to_bv 8 (Z.land (((((bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args) + 1) ≫ 8) ≫ 8) ≫ 8) ≫ 8) ≫ 8) (Z.ones 8))
+                                                   :: Z_to_bv 8 (Z.land ((((((bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args) + 1) ≫ 8) ≫ 8) ≫ 8) ≫ 8) ≫ 8) ≫ 8) (Z.ones 8))
+                                                      :: Z_to_bv 8 (Z.land (((((((bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args) + 1) ≫ 8) ≫ 8) ≫ 8) ≫ 8) ≫ 8) ≫ 8) ≫ 8) (Z.ones 8))
+                                                         :: drop (N.to_nat 8)
+                                                              (take 32 (decodeItemBeforeStorage args) ++
+                                                               Z_to_bv 8 (Z.land (bv_unsigned 0) (Z.ones 8))
+                                                               :: Z_to_bv 8 (Z.land (bv_unsigned 0 ≫ 8) (Z.ones 8))
+                                                                  :: drop
+                                                                       (S
+                                                                          (S
+                                                                             (S
+                                                                                (S
+                                                                                   (S
+                                                                                      (S
+                                                                                         (S
+                                                                                            (S
+                                                                                               (S
+                                                                                                  (S
+                                                                                                     (S
+                                                                                                        (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (N.to_nat 2)))))))))))))))))))))))))))))))))
+                                                                       (decodeItemBeforeStorage args))))
+_ : reg_col (decodeItemSysRegs args)
+--------------------------------------∗
+decodeItemReturnEntryCore args
+  {| returnA1 := ?Goal5; returnA2 := ?Goal6; returnA3 := ?Goal7; returnA4 := ?Goal8; returnA5 := ?Goal9; returnA6 := ?Goal10; returnStorage := ?Goal11; returnFrame := ?Goal12 |} ∗
+⌜decodeItemInputHead args ?b ?l1
+ ∧ (if ?b0 then bv_unsigned ?b ≤ 127 else 129 ≤ bv_unsigned ?b ≤ 183)
+   ∧ bv_unsigned
+       (returnA1 {| returnA1 := ?Goal5; returnA2 := ?Goal6; returnA3 := ?Goal7; returnA4 := ?Goal8; returnA5 := ?Goal9; returnA6 := ?Goal10; returnStorage := ?Goal11; returnFrame := ?Goal12 |}) =
+     (decodeItemInputPointer args + (if ?b0 then 0 else 1))%Z
+     ∧ RlpDecodeItem.littleEndian ?l0 = (if ?b0 then 1 else bv_unsigned ?b - 128)
+       ∧ bv_unsigned
+           (returnA2 {| returnA1 := ?Goal5; returnA2 := ?Goal6; returnA3 := ?Goal7; returnA4 := ?Goal8; returnA5 := ?Goal9; returnA6 := ?Goal10; returnStorage := ?Goal11; returnFrame := ?Goal12 |}) =
+         (if ?b0 then 1 else (1 + (bv_unsigned ?b - 128))%Z)
+         ∧ decodeItemAcceptedFacts args false (if ?b0 then 0 else 1) (if ?b0 then 1 else bv_unsigned ?b - 128)
+           ∧ ResultImage.fieldImage
+               (returnStorage
+                  {| returnA1 := ?Goal5; returnA2 := ?Goal6; returnA3 := ?Goal7; returnA4 := ?Goal8; returnA5 := ?Goal9; returnA6 := ?Goal10; returnStorage := ?Goal11; returnFrame := ?Goal12 |}) 0 
+               ?l
+             ∧ ResultImage.fieldImage
+                 (returnStorage
+                    {| returnA1 := ?Goal5; returnA2 := ?Goal6; returnA3 := ?Goal7; returnA4 := ?Goal8; returnA5 := ?Goal9; returnA6 := ?Goal10; returnStorage := ?Goal11; returnFrame := ?Goal12 |}) 8
+                 ?l0
+               ∧ ResultImage.fieldImage
+                   (returnStorage
+                      {| returnA1 := ?Goal5; returnA2 := ?Goal6; returnA3 := ?Goal7; returnA4 := ?Goal8; returnA5 := ?Goal9; returnA6 := ?Goal10; returnStorage := ?Goal11; returnFrame := ?Goal12 |})
+                   32 [Z_to_bv 8 0; Z_to_bv 8 0]
+                 ∧ ?l =
+                   AbiBytes.word64Bytes
+                     (bv_unsigned
+                        (returnA1
+                           {|
+                             returnA1 := ?Goal5; returnA2 := ?Goal6; returnA3 := ?Goal7; returnA4 := ?Goal8; returnA5 := ?Goal9; returnA6 := ?Goal10; returnStorage := ?Goal11; returnFrame := ?Goal12
+                           |}))
+                   ∧ length ?l0 = 8%nat
+                     ∧ ResultImage.preservedImage (decodeItemBeforeStorage args)
+                         (returnStorage
+                            {|
+                              returnA1 := ?Goal5; returnA2 := ?Goal6; returnA3 := ?Goal7; returnA4 := ?Goal8; returnA5 := ?Goal9; returnA6 := ?Goal10; returnStorage := ?Goal11; returnFrame := ?Goal12
+                            |}) 17 7
+                       ∧ ResultImage.preservedImage (decodeItemBeforeStorage args)
+                           (returnStorage
+                              {|
+                                returnA1 := ?Goal5;
+                                returnA2 := ?Goal6;
+                                returnA3 := ?Goal7;
+                                returnA4 := ?Goal8;
+                                returnA5 := ?Goal9;
+                                returnA6 := ?Goal10;
+                                returnStorage := ?Goal11;
+                                returnFrame := ?Goal12
+                              |}) 34 6⌝

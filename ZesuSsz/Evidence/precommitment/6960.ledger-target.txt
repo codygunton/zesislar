@@ -1,0 +1,2 @@
+envs_entails IPM_JANNO
+  (∃ x : (), ⌜RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600)%bv = RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes))⌝ ∗ LET_GOAL x)

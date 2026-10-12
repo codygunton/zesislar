@@ -1,0 +1,22 @@
+_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)
+--------------------------------------□
+_ : instr_pre 2148362976 (∃ successor_locals : DecodeItemReturnLocals, decodeItemEntryAt800d6ae0 args successor_locals)
+_ : "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args))
+_ : "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + n))
+_ : "x15" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + n))
+_ : "x16" ↦ᵣ RVal_Bits loaded
+_ : "x2" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes))
+_ : "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args))
+_ : "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args))
+_ : decodeItemInputPointer args ↦ₘ∗ decodeItemInputBytes args
+_ : decodeItemOutputPointer args ↦ₘ∗ decodeItemBeforeStorage args
+_ : (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) ↦ₘ∗ frameBytes
+_ : instr_pre (decodeItemReturnAddress args)
+      (∃ outcome : DecodeItemOutcome, ⌜decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ∧ DecodeMeaningModuloKnownBugs args outcome⌝ ∗ decodeItemExitResources args outcome)
+_ : "x13" ↦ᵣ RVal_Bits (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat n) lengthBytes)))
+_ : reg_col (decodeItemSysRegs args)
+_ : "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args))
+_ : "x14" ↦ᵣ RVal_Bits LET0
+--------------------------------------∗
+∃ (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : bv 8) (successor_rest : list (bv 8)) (successor_headerLength successor_payloadLength : Z),
+  decodeItemEntryAt800d6a40 args successor_locals successor_inputPrefix successor_rest successor_headerLength successor_payloadLength

@@ -1,0 +1,1753 @@
+{
+  "version": 1,
+  "production_root": "64beb5e7",
+  "rows": [
+    {
+      "block": "6960",
+      "status": "MonitoredOperationRecorded",
+      "operation": "liExist",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/6960/Source.v.txt",
+        "sha256": "5f0f26bebf26a5c9a6357f30b5824e743a997cbc714ab8094fa4c4316e91a554"
+      },
+      "statement": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/6960/Statement.v.txt",
+        "sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a"
+      },
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-final-native-three-sites-080/block-6960/exports/state_39.json",
+        "sha256": "bf0a5b4e6f5fcfb79124d73c422889164e27a1124033f5f85c48d761ed44d70b"
+      },
+      "classification": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/6960/CLASSIFICATION.json",
+        "sha256": "a679a3c60d77d0767604df91488d06919ebd7061cb37210f2481575ed6fd7c13"
+      },
+      "report": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/REPORT.json",
+        "sha256": "f1e794b433637b620bf32c1884a052456e6981911d5afc29bbca5fa33eec07d8"
+      },
+      "retained_scope": {
+        "root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+        "activation": {
+          "inventory_bindings": [
+            {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/INVENTORY.json",
+              "sha256": "684a05dc346bb95b244ef723204b80bb430177716974ad7dfd5d2dad9a7dc985"
+            },
+            {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-002/INVENTORY.json",
+              "sha256": "684a05dc346bb95b244ef723204b80bb430177716974ad7dfd5d2dad9a7dc985"
+            }
+          ],
+          "approved_switches": 28,
+          "hint_modules": 25,
+          "Rule38": "OUT"
+        },
+        "actual_cache_scope": "Each state retains twenty-seven queried entries. Twenty-six are enabled. Rule38 is disabled. This query set differs from the twenty-eight Approved module inventory."
+      },
+      "groups": {
+        "active": 7,
+        "stack": 0,
+        "shelf": 17,
+        "given_up": 0
+      },
+      "rollback": "The monitor restores the pre-operation state.",
+      "required_assignment": "Requested head/rest/length values and their assignment boundary remain unavailable.",
+      "limits": {
+        "monitor_result": "At least one registered root changes during a marked operation. The monitor restores the pre-operation state.",
+        "changed_root_keys": "unavailable: the accepted observer emits no changed-key list.",
+        "assigned_values": "unavailable: the successful assignment branch rolls back before export.",
+        "specific_assignment_order": "unavailable",
+        "first_global_commitment": "unavailable: opaque liFindInContext contains unmonitored assignments.",
+        "last_marked_helper": "liExist",
+        "record_scope": "The record constructor precedes this stop. The exact changed field is not reported."
+      },
+      "native_closure_claim": false,
+      "target": {
+        "path": "ZesuSsz/Evidence/precommitment/6960.ledger-target.txt",
+        "sha256": "db9656746c98cff59a49ab3ec81c5955f4a96266b5b062ba98a522edc4ce4241"
+      }
+    },
+    {
+      "block": "697c",
+      "status": "MonitoredOperationRecorded",
+      "operation": "ZesuSsz.Automation.Hooks.zesu_pure_witness_constraints_if_enabled",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/697c/Source.v.txt",
+        "sha256": "6b3c2cb70bfa0199d226b5c25e3c2a3d260f6ccf4ff8a5f48021b8f5d1831bce"
+      },
+      "statement": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/697c/Statement.v.txt",
+        "sha256": "4416a8f35e49ca7dce03358b8f4b4d354f056c0e475248816df61c27ad0ef6f0"
+      },
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-final-native-three-sites-080/block-697c/exports/state_39.json",
+        "sha256": "e714eed98defc4c284092dea8583525923566698dddea2afc6fd2dc88984ebd6"
+      },
+      "classification": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/697c/CLASSIFICATION.json",
+        "sha256": "3f7967104946a8a692f7503ed1c8ceffb609bb4748788ff5dca069c7389430a8"
+      },
+      "report": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/REPORT.json",
+        "sha256": "f1e794b433637b620bf32c1884a052456e6981911d5afc29bbca5fa33eec07d8"
+      },
+      "retained_scope": {
+        "root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+        "activation": {
+          "inventory_bindings": [
+            {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/INVENTORY.json",
+              "sha256": "684a05dc346bb95b244ef723204b80bb430177716974ad7dfd5d2dad9a7dc985"
+            },
+            {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-002/INVENTORY.json",
+              "sha256": "684a05dc346bb95b244ef723204b80bb430177716974ad7dfd5d2dad9a7dc985"
+            }
+          ],
+          "approved_switches": 28,
+          "hint_modules": 25,
+          "Rule38": "OUT"
+        },
+        "actual_cache_scope": "Each state retains twenty-seven queried entries. Twenty-six are enabled. Rule38 is disabled. This query set differs from the twenty-eight Approved module inventory."
+      },
+      "groups": {
+        "active": 1,
+        "stack": 0,
+        "shelf": 16,
+        "given_up": 0
+      },
+      "rollback": "The monitor restores the pre-operation state.",
+      "required_assignment": "Requested head/rest/length values and their assignment boundary remain unavailable.",
+      "limits": {
+        "monitor_result": "At least one registered root changes during a marked operation. The monitor restores the pre-operation state.",
+        "changed_root_keys": "unavailable: the accepted observer emits no changed-key list.",
+        "assigned_values": "unavailable: the successful assignment branch rolls back before export.",
+        "specific_assignment_order": "unavailable",
+        "first_global_commitment": "unavailable: opaque liFindInContext contains unmonitored assignments.",
+        "last_marked_helper": "ZesuSsz.Automation.Hooks.zesu_pure_witness_constraints_if_enabled",
+        "source_supported_candidates": [
+          "The requested input-head fact can unify its head and rest with H0.",
+          "The requested saved-frame fact can unify the returnFrame root with an owned saved-frame fact.",
+          "The retained output does not identify which of these roots changed."
+        ],
+        "specific_head_tail_length_assignment": "unestablished: no changed-key or assigned-value event is retained.",
+        "owned_input_head_fact": {
+          "names": [
+            "H0"
+          ],
+          "type": "decodeItemInputHead args inputPrefix rest"
+        }
+      },
+      "native_closure_claim": false,
+      "target": {
+        "path": "ZesuSsz/Evidence/precommitment/697c.ledger-target.txt",
+        "sha256": "e634fcd2142f1a94d49e675c766611ab0d3383b72058b08eb3cdc9a429cdaf76"
+      }
+    },
+    {
+      "block": "698c",
+      "status": "ArraySelectionRecorded",
+      "operation": "1: liFindInContext.",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-mcp-001/Capture698c.v",
+        "sha256": "43670ebdf59f0127ed2fa52ed17579907112b782d16be91229c9b1457be99056"
+      },
+      "statement": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-mcp-001/698c.statement.v",
+        "sha256": "0271fee75312dda7e09f70629c47b8425c3ec3ae2f3b121055c50039fbe564b3"
+      },
+      "report": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-audit-001/REPORT.json",
+        "sha256": "7b9562694174c7e79a401efd320cb1e9f2f4ff89449ba31be07e550aaa0bd0bd"
+      },
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-mcp-001/698c/exports/state_36.json",
+        "sha256": "29628ddd7d5187eb56eca31f9e2af796024b0ed113290b97cac0a4ef109b0408"
+      },
+      "groups": [
+        3,
+        0,
+        3,
+        0
+      ],
+      "retained_scope": {
+        "verification_root": "dc832abbf6291a9008dfb949ef8638bcdfc4b490",
+        "declaration_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+        "activation": "Current dc832 Approved28/root hints26. Frozen declarations retain e17 historical28/25."
+      },
+      "pre_search": {
+        "groups": [
+          3,
+          0,
+          3,
+          0
+        ],
+        "export": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-mcp-001/698c/exports/state_11.json",
+          "sha256": "0777df521dd6d7183c6f0e9ff1c9a30ffef889f1271c75eeb3d33c670abb357f"
+        }
+      },
+      "selected_resource": "Initialized output array at decodeItemOutputPointer args with image returnStorage locals.",
+      "required_assignment": "At STAGE-D, retain the initialized output array at decodeItemOutputPointer args, width8. Resolve index16 from the exact address equation and prove the retained 1-byte bound. Preserve the updated-resource wand and caller. This is a repair requirement, not a measured assignment.",
+      "later_operation": null,
+      "limits": "Unavailable. Individual compiler CPU/RSS unavailable.",
+      "native_closure_claim": false,
+      "target": {
+        "path": "ZesuSsz/Evidence/precommitment/698c.ledger-target.txt",
+        "sha256": "e97d1b15062f2815d186279ba19a7ada25795f27b761a6c6ccb0a900fb650d11"
+      },
+      "required_selection": {
+        "boundary": "STAGE-D after original liFindInContext; before index commitment and updated-resource consumption",
+        "region": "Initialized output array",
+        "base": "decodeItemOutputPointer args",
+        "current_image": "returnStorage locals",
+        "element_width": "8%N",
+        "index_equation": "Z.of_nat i = (decodeItemOutputPointer args + 16 - decodeItemOutputPointer args) / 1",
+        "index_solution": "16",
+        "store_bytes": 1,
+        "bound": "i < List.length (returnStorage locals)",
+        "assignment_limit": "The equation determines the pure index. The ledger does not assign a native evar or prove the updated-resource continuation."
+      }
+    },
+    {
+      "block": "69b0",
+      "status": "ArraySelectionRecorded",
+      "operation": "1: liFindInContext.",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/Capture69b0.v",
+        "sha256": "404ac20e15a71c38622bd9318d13d0c4ae86d4f48d49e485daa57366c51489ef"
+      },
+      "statement": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/69b0.statement.v",
+        "sha256": "8171c09103807a8fce25145ffed0f47860d52883a15e4431e87aa6202017b843"
+      },
+      "report": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/REPORT.json",
+        "sha256": "ab55dd2c0e7438250207163915b8946e3c85449aba8c9c2206111e9e37efb2fc"
+      },
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/69b0/exports/state_36.json",
+        "sha256": "46e3b2edcb21df9055d16084a1faba1baf950a13b8401777a655133cc8a072c6"
+      },
+      "groups": [
+        3,
+        0,
+        3,
+        0
+      ],
+      "retained_scope": {
+        "verification_root": "dc832abbf6291a9008dfb949ef8638bcdfc4b490",
+        "declaration_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+        "activation": "Current dc832 Approved28/root hints26. Frozen e17 declarations retain historical28/25."
+      },
+      "pre_search": {
+        "groups": [
+          3,
+          0,
+          3,
+          0
+        ],
+        "export": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/69b0/exports/state_11.json",
+          "sha256": "036420c51e08ef9c4139db61d9261be7b926f9e43ac04673bac7ba52bcba0f06"
+        },
+        "targets": [
+          {
+            "group": "goals",
+            "index": 0,
+            "kernel_target_context": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-goals000.kernel.json",
+              "sha256": "558f0d817cef9993b4c2ea2da10cf3cc0aef0190a6427b5f907c43d5e3ef2157"
+            }
+          },
+          {
+            "group": "goals",
+            "index": 1,
+            "kernel_target_context": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-goals001.kernel.json",
+              "sha256": "4d21537fa44574fcf38d3c10aa4df6d5e3b7c3fe85850766ca52061e79132377"
+            }
+          },
+          {
+            "group": "goals",
+            "index": 2,
+            "kernel_target_context": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-goals002.kernel.json",
+              "sha256": "5cdefabbcb0ffa3db7718ed8eb6807f13c839b84e94e14ce11b520bac86b27d6"
+            }
+          },
+          {
+            "group": "shelf",
+            "index": 0,
+            "kernel_target_context": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-shelf000.kernel.json",
+              "sha256": "9fc6dc25d809662363146cc570b704d1c8ec2ed840cdaee8405adcabde34d1b9"
+            }
+          },
+          {
+            "group": "shelf",
+            "index": 1,
+            "kernel_target_context": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-shelf001.kernel.json",
+              "sha256": "1a428549279b9960c42e030f72ca95651b1fcb31eaaca9d140ff82cbe404ee71"
+            }
+          },
+          {
+            "group": "shelf",
+            "index": 2,
+            "kernel_target_context": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-shelf002.kernel.json",
+              "sha256": "a2a34e7f2d1d329153371c76a1cdfe2cc05caa82b430e78e7abc0c53824dfc04"
+            }
+          }
+        ]
+      },
+      "selected_resource": "Original whole-helper selection chooses the initialized output array. Its returned target contains an index and the updated-resource wand.",
+      "required_assignment": "At STAGE-D, retain the initialized output array at decodeItemOutputPointer args, width8. Resolve index32 from the exact address equation and prove the retained 2-byte bound. Preserve the updated-resource wand and caller. This is a repair requirement, not a measured assignment.",
+      "later_operation": "1: i80_resume_to_region.",
+      "limits": "The controller chooses no index, kind, region, or proof witness.",
+      "native_closure_claim": false,
+      "target": {
+        "path": "ZesuSsz/Evidence/precommitment/69b0.ledger-target.txt",
+        "sha256": "4dd78cae1969eee8d1fbb4ec7dd3ede2b4fbee5e85123dc91c1528c0ba2c7c70"
+      },
+      "required_selection": {
+        "boundary": "STAGE-D after original liFindInContext; before index commitment and updated-resource consumption",
+        "region": "Initialized output array",
+        "base": "decodeItemOutputPointer args",
+        "current_image": "returnStorage locals",
+        "element_width": "8%N",
+        "index_equation": "Z.of_nat i = decodeItemOutputPointer args + 32 - decodeItemOutputPointer args",
+        "index_solution": "32",
+        "store_bytes": 2,
+        "bound": "i + 2 <= List.length (returnStorage locals)",
+        "assignment_limit": "The equation determines the pure index. The ledger does not assign a native evar or prove the updated-resource continuation."
+      }
+    },
+    {
+      "block": "69e8",
+      "status": "MonitoredOperationRecorded",
+      "operation": "ZesuSsz.Automation.Hooks.zesu_pure_witness_constraints_if_enabled",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/69e8/Source.v.txt",
+        "sha256": "505410cb4f82a2a8445a48b91081284b7d2bd3dd0a44ccc0a4ffdc575ebfd01c"
+      },
+      "statement": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/69e8/Statement.v.txt",
+        "sha256": "3b68710d40940010dfd36b1dd533142e87af5bf79dd8cc4086b6242b88ddc3ae"
+      },
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-final-native-three-sites-080/block-69e8/exports/state_39.json",
+        "sha256": "d2f309224f081eaeb6d5b52a824e28f30968c693ba72978f24be25dc465f5706"
+      },
+      "classification": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/69e8/CLASSIFICATION.json",
+        "sha256": "58fb8950e06822b734b23e7a30a74e31a17234d5f6f437cc7cdb0574863cacb2"
+      },
+      "report": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/REPORT.json",
+        "sha256": "f1e794b433637b620bf32c1884a052456e6981911d5afc29bbca5fa33eec07d8"
+      },
+      "retained_scope": {
+        "root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+        "activation": {
+          "inventory_bindings": [
+            {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/INVENTORY.json",
+              "sha256": "684a05dc346bb95b244ef723204b80bb430177716974ad7dfd5d2dad9a7dc985"
+            },
+            {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-002/INVENTORY.json",
+              "sha256": "684a05dc346bb95b244ef723204b80bb430177716974ad7dfd5d2dad9a7dc985"
+            }
+          ],
+          "approved_switches": 28,
+          "hint_modules": 25,
+          "Rule38": "OUT"
+        },
+        "actual_cache_scope": "Each state retains twenty-seven queried entries. Twenty-six are enabled. Rule38 is disabled. This query set differs from the twenty-eight Approved module inventory."
+      },
+      "groups": {
+        "active": 2,
+        "stack": 0,
+        "shelf": 19,
+        "given_up": 0
+      },
+      "rollback": "The monitor restores the pre-operation state.",
+      "required_assignment": "Requested head/rest/length values and their assignment boundary remain unavailable.",
+      "limits": {
+        "monitor_result": "At least one registered root changes during a marked operation. The monitor restores the pre-operation state.",
+        "changed_root_keys": "unavailable: the accepted observer emits no changed-key list.",
+        "assigned_values": "unavailable: the successful assignment branch rolls back before export.",
+        "specific_assignment_order": "unavailable",
+        "first_global_commitment": "unavailable: opaque liFindInContext contains unmonitored assignments.",
+        "last_marked_helper": "ZesuSsz.Automation.Hooks.zesu_pure_witness_constraints_if_enabled",
+        "source_supported_candidates": [
+          "The requested input-head fact can unify its head and rest with H0.",
+          "The requested saved-frame fact can unify the returnFrame root with an owned saved-frame fact.",
+          "The retained output does not identify which of these roots changed."
+        ],
+        "specific_head_tail_length_assignment": "unestablished: no changed-key or assigned-value event is retained.",
+        "owned_input_head_fact": {
+          "names": [
+            "H0"
+          ],
+          "type": "decodeItemInputHead args inputPrefix rest"
+        }
+      },
+      "native_closure_claim": false,
+      "target": {
+        "path": "ZesuSsz/Evidence/precommitment/69e8.ledger-target.txt",
+        "sha256": "f2c6d5b00e1a75fb8504949cf5d4ff0a169dd4821ec19909449a98fab2327af7"
+      }
+    },
+    {
+      "block": "6a08",
+      "status": "ExplicitIntroductionApplied",
+      "operation": "decodeItemStringSliceWitness",
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s173/ZesuSsz/Evidence/precommitment/6a08.json",
+        "sha256": "3b25c4a4a6603fd365fa66f41523fb96360c2981366a7f0c81d94107ca6aae62"
+      },
+      "source": {
+        "success": true,
+        "state_id": 334,
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/exports/state_334.json",
+        "sha256": "3b25c4a4a6603fd365fa66f41523fb96360c2981366a7f0c81d94107ca6aae62",
+        "bytes": 16608,
+        "active_goals": 3,
+        "stack_entries": 0,
+        "shelved_goals": 5,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a",
+        "theorem": "DesignedBoundary_800d6a08",
+        "source": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/Replay6a08.v",
+        "source_sha256": "35f05a4b0e094fbf7f275d4dc64bb3c97a0a215785804473b7ebab03de522e7b",
+        "proof_finished": false
+      },
+      "retained_scope": {
+        "input_index_sha256": "c302ab4d77ab541036a2ed27c96b7b3b25e39332a1575584becfc072edf17e2e",
+        "fixture_copies": [
+          {
+            "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/Replay6a08.v"
+          },
+          {
+            "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/Replay6aa8.v"
+          }
+        ],
+        "measured_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+        "measured_scope": "28 switches, 25 hint modules",
+        "scope_limit": "Exact I67 statement. Owned current private artifacts. Scheduling equality with frozen I67 is not established.",
+        "changed_steps": "Restore successful individual-step recovery. Apply existing S43 lemmas explicitly. Capture application groups even after failure."
+      },
+      "report": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/build/stock-zisk/spec-a-s117/EXPLICIT-S43-005.json",
+        "sha256": "cc43987d4c311e8f0acb2d5b7f836a39e8d497f0dbd19b8438d75d9c9d38b56b"
+      },
+      "required_assignment": "Use the registered canonical witness before commitment; discharge the unchanged resource source.",
+      "limits": "Captured proof state stays open. Pure theorem uses the verified retained premise subset. No repaired native closure asserted.",
+      "target": {
+        "path": "ZesuSsz/Evidence/precommitment/6a08.ledger-target.txt",
+        "sha256": "1f84bf4c10a883ac99038d78b2e232d63ee25e5bf51aff784c189389b9d014b6"
+      },
+      "pure_witness_certificate": "s124_6a08_canonical_witnesses"
+    },
+    {
+      "block": "6a24",
+      "status": "CommittedSuccessorMismatch",
+      "operation": "exact (f_equal (fun x : bv 64 => RVal_Bits x) (S131_6a24_01 args inputPrefix i H5)).",
+      "certificate_statement": "Lemma S131_6a24_01 (args : DecodeItemArgs) (inputPrefix : bv 8) (i : Z) :\ndecodeItemByteFoldFacts args (Z.sub (bv_unsigned inputPrefix) 183) i (Z.add (decodeItemInputPointer args) 1) (take (Z.to_nat (Z.sub (bv_unsigned inputPrefix) 183)) (drop 1 (decodeItemInputBytes args))) ->\n((Z_to_bv 64 (Z.add (Z.add (decodeItemInputPointer args) 1) i) + 1)%bv = Z_to_bv 64 (Z.add (Z.add (decodeItemInputPointer args) 1) (Z.add i 1))).\n",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old1_S131.v",
+        "sha256": "295f2a6294cc2a5d884a2f25510a6705b30230e61d6ae5e62c54cf22d850553e"
+      },
+      "context": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-supported-shelf-focus-005/6a24-OLD-VALUE-1-CONTEXT.json",
+        "sha256": "c38b02b78afa5e61e52cb89ecf5cf3418c65678ba4f98d487c6e94b5f47b8b57"
+      },
+      "report": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/REPORT.json",
+        "sha256": "e28885c86e0e87f0c90e86b6cc8bc337d28e980c9dada6e36e9a323405d530c1"
+      },
+      "retained_scope": {
+        "frozen_root": "f2033b63f8f785efcacf8c06fbba1107fe9a7f7e",
+        "artifact_scope": "Unchanged owned I76 artifact overlay. This is a faithful residual reconstruction, not a saved native state or a Root verification."
+      },
+      "measured_applications": [
+        {
+          "fixture": {
+            "name": "S165_6a24_old0_S131",
+            "site": "6a24",
+            "original_index": 0,
+            "file": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old0_S131.v",
+            "context": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-supported-shelf-focus-005/6a24-OLD-VALUE-0-CONTEXT.json",
+            "introduction_body": "intros Sigma islaG0 H args inputPrefix rest i frameBytes H0 H1 H2 H3 H4 H5 n0 b H6 H7 H9 H8 vmem HarrayFact0 HarrayFact HarrayAddressRange HarrayFact2 HarrayFact1 HarrayFact3 HarrayFact8 HarrayFact7 HarrayFact4 HarrayFact9 HarrayFact10 HarrayFact11 HarrayFact13 HarrayFact14 HarrayFact15 HarrayFact16 HarrayFact17 HarrayFact18 HarrayFact19 HarrayFact20 HarrayFact21 HarrayFact22 HarrayFact23 HarrayFact24 HarrayFact25 HarrayFact26 HarrayFact27 HarrayFact28 HarrayFact29 HarrayFact30 HarrayFact31 HarrayFact32 HarrayFact33 HarrayFact34 HarrayFact35 HarrayFact36 HarrayFact37 HarrayFact38 HarrayFact39 HarrayFact40 HarrayFact41 H10 H11 b0 H12 b1 H13 b2 H14 n H15 H16 H17 H18 H19 H20 H21 H22 H23 H24 H25 H26 H27 H28 H29 H30 b3 H31 LET LET0 LET1 H32 LET2 LET3 IPM_JANNO H33 LET_GOAL.",
+            "certificate": "/home/cody/zesislar/.worktrees/worker1-spec-a-s130/_build/s131-correct-successors-001/S131_6a24_00.v",
+            "certificate_name": "S131_6a24_00",
+            "application_body": "exact (f_equal (fun x : bv 64 => RVal_Bits x) (S131_6a24_00 args inputPrefix i vmem H5 H0 H10)).",
+            "target": "SHELVED_SIDECOND\n  (@eq valu\n     (RegVal_Base\n        (Val_Bits\n           (@bv_to_bvn (Npos (xO (xO (xO (xO (xO (xO xH)))))))\n              (@bv_or (Npos (xO (xO (xO (xO (xO (xO xH)))))))\n                 (@bv_shiftl (Npos (xO (xO (xO (xO (xO (xO xH)))))))\n                    (Z_to_bv (Npos (xO (xO (xO (xO (xO (xO xH)))))))\n                       (RlpDecodeItem.bigEndian\n                          (@firstn (bv (Npos (xO (xO (xO xH))))) (Z.to_nat i)\n                             (@firstn (bv (Npos (xO (xO (xO xH))))) (Z.to_nat (Z.sub (@bv_unsigned (Npos (xO (xO (xO xH)))) inputPrefix) (Zpos (xI (xI (xI (xO (xI (xI (xO xH))))))))))\n                                (@skipn (bv (Npos (xO (xO (xO xH))))) (S O) (decodeItemInputBytes args)))))) (@BV (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Zpos (xO (xO (xO xH)))) I))\n                 (@bv_zero_extend (Npos (xO (xO (xO xH)))) (Npos (xO (xO (xO (xO (xO (xO xH))))))) vmem)))))\n     (RegVal_Base\n        (Val_Bits\n           (@bv_to_bvn (Npos (xO (xO (xO (xO (xO (xO xH)))))))\n              (Z_to_bv (Npos (xO (xO (xO (xO (xO (xO xH)))))))\n                 (RlpDecodeItem.bigEndian\n                    (@firstn (bv (Npos (xO (xO (xO xH))))) (Z.to_nat i)\n                       (@firstn (bv (Npos (xO (xO (xO xH))))) (Z.to_nat (Z.sub (@bv_unsigned (Npos (xO (xO (xO xH)))) inputPrefix) (Zpos (xI (xI (xI (xO (xI (xI (xO xH))))))))))\n                          (@skipn (bv (Npos (xO (xO (xO xH))))) (S O) (decodeItemInputBytes args))))))))))",
+            "native_assignment_limit": "The exported target binds i. No assignable successor existential or global native evar map is available."
+          },
+          "exact_certificate_statement": "Lemma S131_6a24_00 (args : DecodeItemArgs) (inputPrefix : bv 8) (i : Z) (vmem : bv 8) :\ndecodeItemByteFoldFacts args (Z.sub (bv_unsigned inputPrefix) 183) i (Z.add (decodeItemInputPointer args) 1) (take (Z.to_nat (Z.sub (bv_unsigned inputPrefix) 183)) (drop 1 (decodeItemInputBytes args))) ->\nZ.lt i (Z.sub (bv_unsigned inputPrefix) 183) ->\ndecodeItemInputBytes args !! Z.to_nat (Z.add 1 i) = Some vmem ->\n(bv_or (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) (take (Z.to_nat (Z.sub (bv_unsigned inputPrefix) 183)) (drop 1 (decodeItemInputBytes args))))) \u226a 8) (bv_zero_extend 64 vmem) =\n Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat (Z.add i 1)) (take (Z.to_nat (Z.sub (bv_unsigned inputPrefix) 183)) (drop 1 (decodeItemInputBytes args)))))).\n",
+          "operations": [
+            {
+              "body": "intros Sigma islaG0 H args inputPrefix rest i frameBytes H0 H1 H2 H3 H4 H5 n0 b H6 H7 H9 H8 vmem HarrayFact0 HarrayFact HarrayAddressRange HarrayFact2 HarrayFact1 HarrayFact3 HarrayFact8 HarrayFact7 HarrayFact4 HarrayFact9 HarrayFact10 HarrayFact11 HarrayFact13 HarrayFact14 HarrayFact15 HarrayFact16 HarrayFact17 HarrayFact18 HarrayFact19 HarrayFact20 HarrayFact21 HarrayFact22 HarrayFact23 HarrayFact24 HarrayFact25 HarrayFact26 HarrayFact27 HarrayFact28 HarrayFact29 HarrayFact30 HarrayFact31 HarrayFact32 HarrayFact33 HarrayFact34 HarrayFact35 HarrayFact36 HarrayFact37 HarrayFact38 HarrayFact39 HarrayFact40 HarrayFact41 H10 H11 b0 H12 b1 H13 b2 H14 n H15 H16 H17 H18 H19 H20 H21 H22 H23 H24 H25 H26 H27 H28 H29 H30 b3 H31 LET LET0 LET1 H32 LET2 LET3 IPM_JANNO H33 LET_GOAL.",
+              "response": {
+                "success": true,
+                "goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\ninputPrefix : bv 8\nrest : list (bv 8)\ni : Z\nframeBytes : list (bv 8)\nH0 : i < bv_unsigned inputPrefix - 183\nH1 : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args\nH2 : decodeItemSavedFrameFacts args frameBytes\nH3 : decodeItemFoldProvenance args false inputPrefix rest (bv_unsigned inputPrefix - 183) (decodeItemInputPointer args + 1)\n  (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args)))\nH4 : base.length frameBytes = 16%nat\nH5 : decodeItemByteFoldFacts args (bv_unsigned inputPrefix - 183) i (decodeItemInputPointer args + 1) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args)))\nn0, b : bv 64\nH6 : Z.land (bv_unsigned b) 131072 = 0\nH7 : Z.land (bvn_unsigned n0) 131072 = 0\nH9 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0) + 1) <= bv_signed 3221225472\nH8 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0)) >= bv_signed 2684354560\nvmem : bv 8\nHarrayFact0 : decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0\nHarrayAddressRange : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact2 : bv_unsigned inputPrefix - 183 <= 8\nHarrayFact1 : 1 <= bv_unsigned inputPrefix - 183\nHarrayFact3 : 0 <= i\nHarrayFact8 : decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 183) <= decodeItemInputPointer args + decodeItemInputLength args\nHarrayFact7 : base.length (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))) = bv_unsigned inputPrefix - 183\nHarrayFact4 : i <= bv_unsigned inputPrefix - 183\nHarrayFact9 : decodeItemInputHead args inputPrefix rest\nHarrayFact10 : 184 <= bv_unsigned inputPrefix\nHarrayFact11 : bv_unsigned inputPrefix <= 191\nHarrayFact13 : take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args)) = take (Z.to_nat (bv_unsigned inputPrefix - 183)) rest\nHarrayFact14 : base.length (take 8 (drop 0 frameBytes)) = 8%nat\nHarrayFact15 : littleEndian (take 8 (drop 0 frameBytes)) = bv_unsigned (decodeItemSavedFramePointer args)\nHarrayFact16 : base.length (take 8 (drop 8 frameBytes)) = 8%nat\nHarrayFact17 : littleEndian (take 8 (drop 8 frameBytes)) = decodeItemReturnAddress args\nHarrayFact18 : decodeItemReturnAddress args = decodeItemReturnAddress args\nHarrayFact19 : decodeItemInputLength args = base.length (decodeItemInputBytes args)\nHarrayFact20 : base.length (decodeItemBeforeStorage args) = 40%nat\nHarrayFact21 : 0 <= decodeItemInputPointer args\nHarrayFact22 : 0 <= decodeItemInputLength args\nHarrayFact23 : decodeItemInputPointer args + decodeItemInputLength args < word64Modulus\nHarrayFact24 : 0 <= decodeItemOutputPointer args\nHarrayFact25 : decodeItemOutputPointer args + 40 < word64Modulus\nHarrayFact26 : decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact27 : decodeItemStackPointer args < word64Modulus\nHarrayFact28 : mapRamBase defaultMap + decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact29 : decodeItemStackPointer args <= machineRamEnd defaultMap\nHarrayFact30 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemOutputPointer args) 40\nHarrayFact31 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact32 : separateRanges (decodeItemOutputPointer args) 40 (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact33 : 0 <= decodeItemReturnAddress args\nHarrayFact34 : decodeItemReturnAddress args < word64Modulus\nHarrayFact35 : decodeItemReturnAddress args mod 4 = 0\nHarrayFact36 : mapInputBufferAddress defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= mapInputBufferAddress defaultMap + mapInputCapacity defaultMap\n\u2228 mapRamBase defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= machineRamEnd defaultMap\nHarrayFact37 : mapRamBase defaultMap <= decodeItemOutputPointer args\nHarrayFact38 : decodeItemOutputPointer args + 40 <= machineRamEnd defaultMap\nHarrayFact39 : 0 <= decodeItemInputEnd args\nHarrayFact40 : decodeItemInputEnd args < word64Modulus\nHarrayFact41 : decodeItemInputPointer args + decodeItemInputLength args <= decodeItemInputEnd args\nH10 : decodeItemInputBytes args !! Z.to_nat (1 + i) = Some vmem\nH11 : (Z.to_nat (1 + i) < base.length (decodeItemInputBytes args))%nat\nb0 : bv 64\nH12 : Z.land (bv_unsigned b0) 131072 = 0\nb1 : bv 64\nH13 : Z.land (bv_unsigned b1) 131072 = 0\nb2 : bv 64\nH14 : Z.land (bv_unsigned b2) 131072 = 0\nn : bv 64\nH15 : -1 < bv_unsigned n < bv_modulus 64\nH16 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n < bv_half_modulus 64\nH17 : -1 < bv_unsigned b2 < bv_modulus 64\nH18 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b2 < bv_half_modulus 64\nH19 : -1 < bv_unsigned b1 < bv_modulus 64\nH20 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b1 < bv_half_modulus 64\nH21 : -1 < bv_unsigned b0 < bv_modulus 64\nH22 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b0 < bv_half_modulus 64\nH23 : -1 < bv_unsigned vmem < bv_modulus 8\nH24 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed vmem < bv_half_modulus 8\nH25 : -1 < bv_unsigned b < bv_modulus 64\nH26 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b < bv_half_modulus 64\nH27 : -1 < bv_unsigned n0 < bv_modulus 64\nH28 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n0 < bv_half_modulus 64\nH29 : -1 < bv_unsigned inputPrefix < bv_modulus 8\nH30 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed inputPrefix < bv_half_modulus 8\nb3 : bv 64\nH31 : Z.land (bv_unsigned b3) 131072 = 0\nLET := (Z_to_bv 64 2148362804 + 4)%bv : bv 64\nLET0 := negb (bool_decide ((Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 183)))) : bool\nLET1 := (Z_to_bv 64 2148362804 + 18446744073709551600)%bv : bv 64\nH32 : (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv \u2260 Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 183))\nLET2 := bv_extract 0 1 (LET1 \u226b 1) : bv 1\nLET3 := negb (bool_decide (LET2 = 1%bv)) : bool\nIPM_JANNO := HIDDEN : envs (iPropI Sigma)\nH33 : decodeItemSavedFrameFacts args (bv_to_little_endian 8 8 (bv_unsigned (decodeItemSavedFramePointer args)) ++ bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))))\nLET_GOAL := HIDDEN : () \u2192 iPropI Sigma\n|-SHELVED_SIDECOND\n  (RVal_Bits (bv_or (Z_to_bv 64 (bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))))) \u226a 8) (bv_zero_extend 64 vmem)) =\n   RVal_Bits (Z_to_bv 64 (bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args)))))))",
+                "proof_finished": false,
+                "commands_run": 1,
+                "check_time_ms": 4,
+                "state_id": 2,
+                "from_state_id": 1,
+                "focus_depth": 0
+              },
+              "before": {
+                "success": true,
+                "state_id": 1,
+                "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6a24_old0_S131/state_1.json",
+                "sha256": "21f3c306d7a2ce326a7276d32d2efc64376bc384dff5dbb3cbd9d2f3c65aef90",
+                "bytes": 68268,
+                "active_goals": 1,
+                "stack_entries": 0,
+                "shelved_goals": 0,
+                "given_up_goals": 0,
+                "stack_frame_goal_counts": [],
+                "groups_are_actual": true,
+                "truncated": false,
+                "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+                "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+                "theorem": "S165_6a24_old0_S131",
+                "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old0_S131.v",
+                "source_sha256": "ee294c64bd263d5b26a1be479dd5f6889ebd7f35ad2e6cda81dc81a7c3ee5b23",
+                "proof_finished": false
+              },
+              "after": {
+                "success": true,
+                "state_id": 2,
+                "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6a24_old0_S131/state_2.json",
+                "sha256": "2a6079e1f7b3b4e75822e077c132cfb8b43916e4f33088d9cb18132c6772a939",
+                "bytes": 51421,
+                "active_goals": 1,
+                "stack_entries": 0,
+                "shelved_goals": 0,
+                "given_up_goals": 0,
+                "stack_frame_goal_counts": [],
+                "groups_are_actual": true,
+                "truncated": false,
+                "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+                "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+                "theorem": "S165_6a24_old0_S131",
+                "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old0_S131.v",
+                "source_sha256": "ee294c64bd263d5b26a1be479dd5f6889ebd7f35ad2e6cda81dc81a7c3ee5b23",
+                "proof_finished": false
+              }
+            },
+            {
+              "body": "unfold SHELVED_SIDECOND.",
+              "response": {
+                "success": true,
+                "goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\ninputPrefix : bv 8\nrest : list (bv 8)\ni : Z\nframeBytes : list (bv 8)\nH0 : i < bv_unsigned inputPrefix - 183\nH1 : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args\nH2 : decodeItemSavedFrameFacts args frameBytes\nH3 : decodeItemFoldProvenance args false inputPrefix rest (bv_unsigned inputPrefix - 183) (decodeItemInputPointer args + 1)\n  (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args)))\nH4 : base.length frameBytes = 16%nat\nH5 : decodeItemByteFoldFacts args (bv_unsigned inputPrefix - 183) i (decodeItemInputPointer args + 1) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args)))\nn0, b : bv 64\nH6 : Z.land (bv_unsigned b) 131072 = 0\nH7 : Z.land (bvn_unsigned n0) 131072 = 0\nH9 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0) + 1) <= bv_signed 3221225472\nH8 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0)) >= bv_signed 2684354560\nvmem : bv 8\nHarrayFact0 : decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0\nHarrayAddressRange : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact2 : bv_unsigned inputPrefix - 183 <= 8\nHarrayFact1 : 1 <= bv_unsigned inputPrefix - 183\nHarrayFact3 : 0 <= i\nHarrayFact8 : decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 183) <= decodeItemInputPointer args + decodeItemInputLength args\nHarrayFact7 : base.length (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))) = bv_unsigned inputPrefix - 183\nHarrayFact4 : i <= bv_unsigned inputPrefix - 183\nHarrayFact9 : decodeItemInputHead args inputPrefix rest\nHarrayFact10 : 184 <= bv_unsigned inputPrefix\nHarrayFact11 : bv_unsigned inputPrefix <= 191\nHarrayFact13 : take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args)) = take (Z.to_nat (bv_unsigned inputPrefix - 183)) rest\nHarrayFact14 : base.length (take 8 (drop 0 frameBytes)) = 8%nat\nHarrayFact15 : littleEndian (take 8 (drop 0 frameBytes)) = bv_unsigned (decodeItemSavedFramePointer args)\nHarrayFact16 : base.length (take 8 (drop 8 frameBytes)) = 8%nat\nHarrayFact17 : littleEndian (take 8 (drop 8 frameBytes)) = decodeItemReturnAddress args\nHarrayFact18 : decodeItemReturnAddress args = decodeItemReturnAddress args\nHarrayFact19 : decodeItemInputLength args = base.length (decodeItemInputBytes args)\nHarrayFact20 : base.length (decodeItemBeforeStorage args) = 40%nat\nHarrayFact21 : 0 <= decodeItemInputPointer args\nHarrayFact22 : 0 <= decodeItemInputLength args\nHarrayFact23 : decodeItemInputPointer args + decodeItemInputLength args < word64Modulus\nHarrayFact24 : 0 <= decodeItemOutputPointer args\nHarrayFact25 : decodeItemOutputPointer args + 40 < word64Modulus\nHarrayFact26 : decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact27 : decodeItemStackPointer args < word64Modulus\nHarrayFact28 : mapRamBase defaultMap + decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact29 : decodeItemStackPointer args <= machineRamEnd defaultMap\nHarrayFact30 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemOutputPointer args) 40\nHarrayFact31 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact32 : separateRanges (decodeItemOutputPointer args) 40 (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact33 : 0 <= decodeItemReturnAddress args\nHarrayFact34 : decodeItemReturnAddress args < word64Modulus\nHarrayFact35 : decodeItemReturnAddress args mod 4 = 0\nHarrayFact36 : mapInputBufferAddress defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= mapInputBufferAddress defaultMap + mapInputCapacity defaultMap\n\u2228 mapRamBase defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= machineRamEnd defaultMap\nHarrayFact37 : mapRamBase defaultMap <= decodeItemOutputPointer args\nHarrayFact38 : decodeItemOutputPointer args + 40 <= machineRamEnd defaultMap\nHarrayFact39 : 0 <= decodeItemInputEnd args\nHarrayFact40 : decodeItemInputEnd args < word64Modulus\nHarrayFact41 : decodeItemInputPointer args + decodeItemInputLength args <= decodeItemInputEnd args\nH10 : decodeItemInputBytes args !! Z.to_nat (1 + i) = Some vmem\nH11 : (Z.to_nat (1 + i) < base.length (decodeItemInputBytes args))%nat\nb0 : bv 64\nH12 : Z.land (bv_unsigned b0) 131072 = 0\nb1 : bv 64\nH13 : Z.land (bv_unsigned b1) 131072 = 0\nb2 : bv 64\nH14 : Z.land (bv_unsigned b2) 131072 = 0\nn : bv 64\nH15 : -1 < bv_unsigned n < bv_modulus 64\nH16 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n < bv_half_modulus 64\nH17 : -1 < bv_unsigned b2 < bv_modulus 64\nH18 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b2 < bv_half_modulus 64\nH19 : -1 < bv_unsigned b1 < bv_modulus 64\nH20 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b1 < bv_half_modulus 64\nH21 : -1 < bv_unsigned b0 < bv_modulus 64\nH22 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b0 < bv_half_modulus 64\nH23 : -1 < bv_unsigned vmem < bv_modulus 8\nH24 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed vmem < bv_half_modulus 8\nH25 : -1 < bv_unsigned b < bv_modulus 64\nH26 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b < bv_half_modulus 64\nH27 : -1 < bv_unsigned n0 < bv_modulus 64\nH28 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n0 < bv_half_modulus 64\nH29 : -1 < bv_unsigned inputPrefix < bv_modulus 8\nH30 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed inputPrefix < bv_half_modulus 8\nb3 : bv 64\nH31 : Z.land (bv_unsigned b3) 131072 = 0\nLET := (Z_to_bv 64 2148362804 + 4)%bv : bv 64\nLET0 := negb (bool_decide ((Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 183)))) : bool\nLET1 := (Z_to_bv 64 2148362804 + 18446744073709551600)%bv : bv 64\nH32 : (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv \u2260 Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 183))\nLET2 := bv_extract 0 1 (LET1 \u226b 1) : bv 1\nLET3 := negb (bool_decide (LET2 = 1%bv)) : bool\nIPM_JANNO := HIDDEN : envs (iPropI Sigma)\nH33 : decodeItemSavedFrameFacts args (bv_to_little_endian 8 8 (bv_unsigned (decodeItemSavedFramePointer args)) ++ bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))))\nLET_GOAL := HIDDEN : () \u2192 iPropI Sigma\n|-RVal_Bits (bv_or (Z_to_bv 64 (bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))))) \u226a 8) (bv_zero_extend 64 vmem)) =\nRVal_Bits (Z_to_bv 64 (bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))))))",
+                "proof_finished": false,
+                "commands_run": 1,
+                "check_time_ms": 0,
+                "state_id": 3,
+                "from_state_id": 2,
+                "focus_depth": 0
+              },
+              "before": {
+                "success": true,
+                "state_id": 2,
+                "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6a24_old0_S131/state_2.json",
+                "sha256": "2a6079e1f7b3b4e75822e077c132cfb8b43916e4f33088d9cb18132c6772a939",
+                "bytes": 51421,
+                "active_goals": 1,
+                "stack_entries": 0,
+                "shelved_goals": 0,
+                "given_up_goals": 0,
+                "stack_frame_goal_counts": [],
+                "groups_are_actual": true,
+                "truncated": false,
+                "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+                "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+                "theorem": "S165_6a24_old0_S131",
+                "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old0_S131.v",
+                "source_sha256": "ee294c64bd263d5b26a1be479dd5f6889ebd7f35ad2e6cda81dc81a7c3ee5b23",
+                "proof_finished": false
+              },
+              "after": {
+                "success": true,
+                "state_id": 3,
+                "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6a24_old0_S131/state_3.json",
+                "sha256": "493df6bc18cfd6798be49bc87c36e0b292dc4587d77f87f75d2fd52ee7d75a8f",
+                "bytes": 51317,
+                "active_goals": 1,
+                "stack_entries": 0,
+                "shelved_goals": 0,
+                "given_up_goals": 0,
+                "stack_frame_goal_counts": [],
+                "groups_are_actual": true,
+                "truncated": false,
+                "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+                "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+                "theorem": "S165_6a24_old0_S131",
+                "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old0_S131.v",
+                "source_sha256": "ee294c64bd263d5b26a1be479dd5f6889ebd7f35ad2e6cda81dc81a7c3ee5b23",
+                "proof_finished": false
+              }
+            }
+          ],
+          "trial": {
+            "success": true,
+            "results": [
+              {
+                "tactic": "exact (f_equal (fun x : bv 64 => RVal_Bits x) (S131_6a24_00 args inputPrefix i vmem H5 H0 H10)).",
+                "success": false,
+                "reason": "tactic_failed",
+                "error": "Coq: In environment\nSigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\ninputPrefix : bv 8\nrest : list (bv 8)\ni : Z\nframeBytes : list (bv 8)\nH0 : i < bv_unsigned inputPrefix - 183\nH1 : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args\nH2 : decodeItemSavedFrameFacts args frameBytes\nH3 : decodeItemFoldProvenance args false inputPrefix rest (bv_unsigned inputPrefix - 183) (decodeItemInputPointer args + 1)\n       (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args)))\nH4 : base.length frameBytes = 16%nat\nH5 : decodeItemByteFoldFacts args (bv_unsigned inputPrefix - 183) i (decodeItemInputPointer args + 1) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args)))\nn0, b : bv 64\nH6 : Z.land (bv_unsigned b) 131072 = 0\nH7 : Z.land (bvn_unsigned n0) 131072 = 0\nH9 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0) + 1) <= bv_signed 3221225472\nH8 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0)) >= bv_signed 2684354560\nvmem : bv 8\nHarrayFact0 : decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0\nHarrayAddressRange : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact2 : bv_unsigned inputPrefix - 183 <= 8\nHarrayFact1 : 1 <= bv_unsigned inputPrefix - 183\nHarrayFact3 : 0 <= i\nHarrayFact8 : decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 183) <= decodeItemInputPointer args + decodeItemInputLength args\nHarrayFact7 : base.length (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))) = bv_unsigned inputPrefix - 183\nHarrayFact4 : i <= bv_unsigned inputPrefix - 183\nHarrayFact9 : decodeItemInputHead args inputPrefix rest\nHarrayFact10 : 184 <= bv_unsigned inputPrefix\nHarrayFact11 : bv_unsigned inputPrefix <= 191\nHarrayFact13 : take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args)) = take (Z.to_nat (bv_unsigned inputPrefix - 183)) rest\nHarrayFact14 : base.length (take 8 (drop 0 frameBytes)) = 8%nat\nHarrayFact15 : littleEndian (take 8 (drop 0 frameBytes)) = bv_unsigned (decodeItemSavedFramePointer args)\nHarrayFact16 : base.length (take 8 (drop 8 frameBytes)) = 8%nat\nHarrayFact17 : littleEndian (take 8 (drop 8 frameBytes)) = decodeItemReturnAddress args\nHarrayFact18 : decodeItemReturnAddress args = decodeItemReturnAddress args\nHarrayFact19 : decodeItemInputLength args = base.length (decodeItemInputBytes args)\nHarrayFact20 : base.length (decodeItemBeforeStorage args) = 40%nat\nHarrayFact21 : 0 <= decodeItemInputPointer args\nHarrayFact22 : 0 <= decodeItemInputLength args\nHarrayFact23 : decodeItemInputPointer args + decodeItemInputLength args < word64Modulus\nHarrayFact24 : 0 <= decodeItemOutputPointer args\nHarrayFact25 : decodeItemOutputPointer args + 40 < word64Modulus\nHarrayFact26 : decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact27 : decodeItemStackPointer args < word64Modulus\nHarrayFact28 : mapRamBase defaultMap + decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact29 : decodeItemStackPointer args <= machineRamEnd defaultMap\nHarrayFact30 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemOutputPointer args) 40\nHarrayFact31 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact32 : separateRanges (decodeItemOutputPointer args) 40 (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact33 : 0 <= decodeItemReturnAddress args\nHarrayFact34 : decodeItemReturnAddress args < word64Modulus\nHarrayFact35 : decodeItemReturnAddress args mod 4 = 0\nHarrayFact36 : mapInputBufferAddress defaultMap <= decodeItemInputPointer args\n               \u2227 decodeItemInputPointer args + decodeItemInputLength args <= mapInputBufferAddress defaultMap + mapInputCapacity defaultMap\n               \u2228 mapRamBase defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= machineRamEnd defaultMap\nHarrayFact37 : mapRamBase defaultMap <= decodeItemOutputPointer args\nHarrayFact38 : decodeItemOutputPointer args + 40 <= machineRamEnd defaultMap\nHarrayFact39 : 0 <= decodeItemInputEnd args\nHarrayFact40 : decodeItemInputEnd args < word64Modulus\nHarrayFact41 : decodeItemInputPointer args + decodeItemInputLength args <= decodeItemInputEnd args\nH10 : decodeItemInputBytes args !! Z.to_nat (1 + i) = Some vmem\nH11 : (Z.to_nat (1 + i) < base.length (decodeItemInputBytes args))%nat\nb0 : bv 64\nH12 : Z.land (bv_unsigned b0) 131072 = 0\nb1 : bv 64\nH13 : Z.land (bv_unsigned b1) 131072 = 0\nb2 : bv 64\nH14 : Z.land (bv_unsigned b2) 131072 = 0\nn : bv 64\nH15 : -1 < bv_unsigned n < bv_modulus 64\nH16 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n < bv_half_modulus 64\nH17 : -1 < bv_unsigned b2 < bv_modulus 64\nH18 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b2 < bv_half_modulus 64\nH19 : -1 < bv_unsigned b1 < bv_modulus 64\nH20 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b1 < bv_half_modulus 64\nH21 : -1 < bv_unsigned b0 < bv_modulus 64\nH22 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b0 < bv_half_modulus 64\nH23 : -1 < bv_unsigned vmem < bv_modulus 8\nH24 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed vmem < bv_half_modulus 8\nH25 : -1 < bv_unsigned b < bv_modulus 64\nH26 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b < bv_half_modulus 64\nH27 : -1 < bv_unsigned n0 < bv_modulus 64\nH28 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n0 < bv_half_modulus 64\nH29 : -1 < bv_unsigned inputPrefix < bv_modulus 8\nH30 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed inputPrefix < bv_half_modulus 8\nb3 : bv 64\nH31 : Z.land (bv_unsigned b3) 131072 = 0\nLET := (Z_to_bv 64 2148362804 + 4)%bv : bv 64\nLET0 := negb (bool_decide ((Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 183)))) : bool\nLET1 := (Z_to_bv 64 2148362804 + 18446744073709551600)%bv : bv 64\nH32 : (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv \u2260 Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 183))\nLET2 := bv_extract 0 1 (LET1 \u226b 1) : bv 1\nLET3 := negb (bool_decide (LET2 = 1%bv)) : bool\nIPM_JANNO := HIDDEN : envs (iPropI Sigma)\nH33 : decodeItemSavedFrameFacts args (bv_to_little_endian 8 8 (bv_unsigned (decodeItemSavedFramePointer args)) ++ bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))))\nLET_GOAL := HIDDEN : () \u2192 iPropI Sigma\nThe term \"f_equal (\u03bb x : bv 64, RVal_Bits x) (S131_6a24_00 args inputPrefix i vmem H5 H0 H10)\" has type\n \"RVal_Bits (bv_or (Z_to_bv 64 (bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))))) \u226a 8) (bv_zero_extend 64 vmem)) =\n  RVal_Bits (Z_to_bv 64 (bigEndian (take (Z.to_nat (i + 1)) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))))))\" while it is expected to have type\n \"RVal_Bits (bv_or (Z_to_bv 64 (bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))))) \u226a 8) (bv_zero_extend 64 vmem)) =\n  RVal_Bits (Z_to_bv 64 (bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))))))\"."
+              }
+            ],
+            "from_state_id": 3
+          },
+          "rollback": {
+            "success": true,
+            "state_id": 3,
+            "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6a24_old0_S131/state_3.json",
+            "sha256": "493df6bc18cfd6798be49bc87c36e0b292dc4587d77f87f75d2fd52ee7d75a8f",
+            "bytes": 51317,
+            "active_goals": 1,
+            "stack_entries": 0,
+            "shelved_goals": 0,
+            "given_up_goals": 0,
+            "stack_frame_goal_counts": [],
+            "groups_are_actual": true,
+            "truncated": false,
+            "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+            "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+            "theorem": "S165_6a24_old0_S131",
+            "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old0_S131.v",
+            "source_sha256": "ee294c64bd263d5b26a1be479dd5f6889ebd7f35ad2e6cda81dc81a7c3ee5b23",
+            "proof_finished": false
+          },
+          "advancement": null,
+          "final": {
+            "success": true,
+            "state_id": 3,
+            "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6a24_old0_S131/state_3.json",
+            "sha256": "493df6bc18cfd6798be49bc87c36e0b292dc4587d77f87f75d2fd52ee7d75a8f",
+            "bytes": 51317,
+            "active_goals": 1,
+            "stack_entries": 0,
+            "shelved_goals": 0,
+            "given_up_goals": 0,
+            "stack_frame_goal_counts": [],
+            "groups_are_actual": true,
+            "truncated": false,
+            "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+            "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+            "theorem": "S165_6a24_old0_S131",
+            "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old0_S131.v",
+            "source_sha256": "ee294c64bd263d5b26a1be479dd5f6889ebd7f35ad2e6cda81dc81a7c3ee5b23",
+            "proof_finished": false
+          },
+          "native_assignment_executed": false,
+          "native_assignment_limit": "The exported target binds i. No assignable successor existential or global native evar map is available."
+        },
+        {
+          "fixture": {
+            "name": "S165_6a24_old1_S131",
+            "site": "6a24",
+            "original_index": 1,
+            "file": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old1_S131.v",
+            "context": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-supported-shelf-focus-005/6a24-OLD-VALUE-1-CONTEXT.json",
+            "introduction_body": "intros Sigma islaG0 H args inputPrefix rest i frameBytes H0 H1 H2 H3 H4 H5 n0 b H6 H7 H9 H8 vmem HarrayFact0 HarrayFact HarrayAddressRange HarrayFact2 HarrayFact1 HarrayFact3 HarrayFact8 HarrayFact7 HarrayFact4 HarrayFact9 HarrayFact10 HarrayFact11 HarrayFact13 HarrayFact14 HarrayFact15 HarrayFact16 HarrayFact17 HarrayFact18 HarrayFact19 HarrayFact20 HarrayFact21 HarrayFact22 HarrayFact23 HarrayFact24 HarrayFact25 HarrayFact26 HarrayFact27 HarrayFact28 HarrayFact29 HarrayFact30 HarrayFact31 HarrayFact32 HarrayFact33 HarrayFact34 HarrayFact35 HarrayFact36 HarrayFact37 HarrayFact38 HarrayFact39 HarrayFact40 HarrayFact41 H10 H11 b0 H12 b1 H13 b2 H14 n H15 H16 H17 H18 H19 H20 H21 H22 H23 H24 H25 H26 H27 H28 H29 H30 b3 H31 LET LET0 LET1 H32 LET2 LET3 H33 IPM_JANNO LET_GOAL.",
+            "certificate": "/home/cody/zesislar/.worktrees/worker1-spec-a-s130/_build/s131-correct-successors-001/S131_6a24_01.v",
+            "certificate_name": "S131_6a24_01",
+            "application_body": "exact (f_equal (fun x : bv 64 => RVal_Bits x) (S131_6a24_01 args inputPrefix i H5)).",
+            "target": "SHELVED_SIDECOND\n  (@eq valu\n     (RegVal_Base\n        (Val_Bits\n           (@bv_to_bvn (Npos (xO (xO (xO (xO (xO (xO xH)))))))\n              (@bv_add (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Z_to_bv (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Z.add (Z.add (decodeItemInputPointer args) (Zpos xH)) i))\n                 (@BV (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Zpos xH) I)))))\n     (RegVal_Base (Val_Bits (@bv_to_bvn (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Z_to_bv (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Z.add (Z.add (decodeItemInputPointer args) (Zpos xH)) i))))))",
+            "native_assignment_limit": "The exported target binds i. No assignable successor existential or global native evar map is available."
+          },
+          "exact_certificate_statement": "Lemma S131_6a24_01 (args : DecodeItemArgs) (inputPrefix : bv 8) (i : Z) :\ndecodeItemByteFoldFacts args (Z.sub (bv_unsigned inputPrefix) 183) i (Z.add (decodeItemInputPointer args) 1) (take (Z.to_nat (Z.sub (bv_unsigned inputPrefix) 183)) (drop 1 (decodeItemInputBytes args))) ->\n((Z_to_bv 64 (Z.add (Z.add (decodeItemInputPointer args) 1) i) + 1)%bv = Z_to_bv 64 (Z.add (Z.add (decodeItemInputPointer args) 1) (Z.add i 1))).\n",
+          "operations": [
+            {
+              "body": "intros Sigma islaG0 H args inputPrefix rest i frameBytes H0 H1 H2 H3 H4 H5 n0 b H6 H7 H9 H8 vmem HarrayFact0 HarrayFact HarrayAddressRange HarrayFact2 HarrayFact1 HarrayFact3 HarrayFact8 HarrayFact7 HarrayFact4 HarrayFact9 HarrayFact10 HarrayFact11 HarrayFact13 HarrayFact14 HarrayFact15 HarrayFact16 HarrayFact17 HarrayFact18 HarrayFact19 HarrayFact20 HarrayFact21 HarrayFact22 HarrayFact23 HarrayFact24 HarrayFact25 HarrayFact26 HarrayFact27 HarrayFact28 HarrayFact29 HarrayFact30 HarrayFact31 HarrayFact32 HarrayFact33 HarrayFact34 HarrayFact35 HarrayFact36 HarrayFact37 HarrayFact38 HarrayFact39 HarrayFact40 HarrayFact41 H10 H11 b0 H12 b1 H13 b2 H14 n H15 H16 H17 H18 H19 H20 H21 H22 H23 H24 H25 H26 H27 H28 H29 H30 b3 H31 LET LET0 LET1 H32 LET2 LET3 H33 IPM_JANNO LET_GOAL.",
+              "response": {
+                "success": true,
+                "goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\ninputPrefix : bv 8\nrest : list (bv 8)\ni : Z\nframeBytes : list (bv 8)\nH0 : i < bv_unsigned inputPrefix - 183\nH1 : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args\nH2 : decodeItemSavedFrameFacts args frameBytes\nH3 : decodeItemFoldProvenance args false inputPrefix rest (bv_unsigned inputPrefix - 183) (decodeItemInputPointer args + 1)\n  (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args)))\nH4 : base.length frameBytes = 16%nat\nH5 : decodeItemByteFoldFacts args (bv_unsigned inputPrefix - 183) i (decodeItemInputPointer args + 1) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args)))\nn0, b : bv 64\nH6 : Z.land (bv_unsigned b) 131072 = 0\nH7 : Z.land (bvn_unsigned n0) 131072 = 0\nH9 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0) + 1) <= bv_signed 3221225472\nH8 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0)) >= bv_signed 2684354560\nvmem : bv 8\nHarrayFact0 : decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0\nHarrayAddressRange : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact2 : bv_unsigned inputPrefix - 183 <= 8\nHarrayFact1 : 1 <= bv_unsigned inputPrefix - 183\nHarrayFact3 : 0 <= i\nHarrayFact8 : decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 183) <= decodeItemInputPointer args + decodeItemInputLength args\nHarrayFact7 : base.length (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))) = bv_unsigned inputPrefix - 183\nHarrayFact4 : i <= bv_unsigned inputPrefix - 183\nHarrayFact9 : decodeItemInputHead args inputPrefix rest\nHarrayFact10 : 184 <= bv_unsigned inputPrefix\nHarrayFact11 : bv_unsigned inputPrefix <= 191\nHarrayFact13 : take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args)) = take (Z.to_nat (bv_unsigned inputPrefix - 183)) rest\nHarrayFact14 : base.length (take 8 (drop 0 frameBytes)) = 8%nat\nHarrayFact15 : littleEndian (take 8 (drop 0 frameBytes)) = bv_unsigned (decodeItemSavedFramePointer args)\nHarrayFact16 : base.length (take 8 (drop 8 frameBytes)) = 8%nat\nHarrayFact17 : littleEndian (take 8 (drop 8 frameBytes)) = decodeItemReturnAddress args\nHarrayFact18 : decodeItemReturnAddress args = decodeItemReturnAddress args\nHarrayFact19 : decodeItemInputLength args = base.length (decodeItemInputBytes args)\nHarrayFact20 : base.length (decodeItemBeforeStorage args) = 40%nat\nHarrayFact21 : 0 <= decodeItemInputPointer args\nHarrayFact22 : 0 <= decodeItemInputLength args\nHarrayFact23 : decodeItemInputPointer args + decodeItemInputLength args < word64Modulus\nHarrayFact24 : 0 <= decodeItemOutputPointer args\nHarrayFact25 : decodeItemOutputPointer args + 40 < word64Modulus\nHarrayFact26 : decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact27 : decodeItemStackPointer args < word64Modulus\nHarrayFact28 : mapRamBase defaultMap + decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact29 : decodeItemStackPointer args <= machineRamEnd defaultMap\nHarrayFact30 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemOutputPointer args) 40\nHarrayFact31 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact32 : separateRanges (decodeItemOutputPointer args) 40 (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact33 : 0 <= decodeItemReturnAddress args\nHarrayFact34 : decodeItemReturnAddress args < word64Modulus\nHarrayFact35 : decodeItemReturnAddress args mod 4 = 0\nHarrayFact36 : mapInputBufferAddress defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= mapInputBufferAddress defaultMap + mapInputCapacity defaultMap\n\u2228 mapRamBase defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= machineRamEnd defaultMap\nHarrayFact37 : mapRamBase defaultMap <= decodeItemOutputPointer args\nHarrayFact38 : decodeItemOutputPointer args + 40 <= machineRamEnd defaultMap\nHarrayFact39 : 0 <= decodeItemInputEnd args\nHarrayFact40 : decodeItemInputEnd args < word64Modulus\nHarrayFact41 : decodeItemInputPointer args + decodeItemInputLength args <= decodeItemInputEnd args\nH10 : decodeItemInputBytes args !! Z.to_nat (1 + i) = Some vmem\nH11 : (Z.to_nat (1 + i) < base.length (decodeItemInputBytes args))%nat\nb0 : bv 64\nH12 : Z.land (bv_unsigned b0) 131072 = 0\nb1 : bv 64\nH13 : Z.land (bv_unsigned b1) 131072 = 0\nb2 : bv 64\nH14 : Z.land (bv_unsigned b2) 131072 = 0\nn : bv 64\nH15 : -1 < bv_unsigned n < bv_modulus 64\nH16 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n < bv_half_modulus 64\nH17 : -1 < bv_unsigned b2 < bv_modulus 64\nH18 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b2 < bv_half_modulus 64\nH19 : -1 < bv_unsigned b1 < bv_modulus 64\nH20 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b1 < bv_half_modulus 64\nH21 : -1 < bv_unsigned b0 < bv_modulus 64\nH22 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b0 < bv_half_modulus 64\nH23 : -1 < bv_unsigned vmem < bv_modulus 8\nH24 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed vmem < bv_half_modulus 8\nH25 : -1 < bv_unsigned b < bv_modulus 64\nH26 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b < bv_half_modulus 64\nH27 : -1 < bv_unsigned n0 < bv_modulus 64\nH28 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n0 < bv_half_modulus 64\nH29 : -1 < bv_unsigned inputPrefix < bv_modulus 8\nH30 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed inputPrefix < bv_half_modulus 8\nb3 : bv 64\nH31 : Z.land (bv_unsigned b3) 131072 = 0\nLET := (Z_to_bv 64 2148362804 + 4)%bv : bv 64\nLET0 := negb (bool_decide ((Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 183)))) : bool\nLET1 := (Z_to_bv 64 2148362804 + 18446744073709551600)%bv : bv 64\nH32 : (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv \u2260 Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 183))\nLET2 := bv_extract 0 1 (LET1 \u226b 1) : bv 1\nLET3 := negb (bool_decide (LET2 = 1%bv)) : bool\nH33 : decodeItemSavedFrameFacts args (bv_to_little_endian 8 8 (bv_unsigned (decodeItemSavedFramePointer args)) ++ bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))))\nIPM_JANNO := HIDDEN : envs (iPropI Sigma)\nLET_GOAL := HIDDEN : () \u2192 iPropI Sigma\n|-SHELVED_SIDECOND (RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args + 1 + i)))",
+                "proof_finished": false,
+                "commands_run": 1,
+                "check_time_ms": 4,
+                "state_id": 2,
+                "from_state_id": 1,
+                "focus_depth": 0
+              },
+              "before": {
+                "success": true,
+                "state_id": 1,
+                "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6a24_old1_S131/state_1.json",
+                "sha256": "563240957d2f4674063e609aa1298825a24f547127f6b3d2cb573754167b4042",
+                "bytes": 60427,
+                "active_goals": 1,
+                "stack_entries": 0,
+                "shelved_goals": 0,
+                "given_up_goals": 0,
+                "stack_frame_goal_counts": [],
+                "groups_are_actual": true,
+                "truncated": false,
+                "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+                "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+                "theorem": "S165_6a24_old1_S131",
+                "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old1_S131.v",
+                "source_sha256": "295f2a6294cc2a5d884a2f25510a6705b30230e61d6ae5e62c54cf22d850553e",
+                "proof_finished": false
+              },
+              "after": {
+                "success": true,
+                "state_id": 2,
+                "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6a24_old1_S131/state_2.json",
+                "sha256": "ac4c2d41d2c88a5d2d1083a476bb15f3b12a554faf472fb8bab938f8c2f58f34",
+                "bytes": 46681,
+                "active_goals": 1,
+                "stack_entries": 0,
+                "shelved_goals": 0,
+                "given_up_goals": 0,
+                "stack_frame_goal_counts": [],
+                "groups_are_actual": true,
+                "truncated": false,
+                "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+                "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+                "theorem": "S165_6a24_old1_S131",
+                "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old1_S131.v",
+                "source_sha256": "295f2a6294cc2a5d884a2f25510a6705b30230e61d6ae5e62c54cf22d850553e",
+                "proof_finished": false
+              }
+            },
+            {
+              "body": "unfold SHELVED_SIDECOND.",
+              "response": {
+                "success": true,
+                "goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\ninputPrefix : bv 8\nrest : list (bv 8)\ni : Z\nframeBytes : list (bv 8)\nH0 : i < bv_unsigned inputPrefix - 183\nH1 : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args\nH2 : decodeItemSavedFrameFacts args frameBytes\nH3 : decodeItemFoldProvenance args false inputPrefix rest (bv_unsigned inputPrefix - 183) (decodeItemInputPointer args + 1)\n  (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args)))\nH4 : base.length frameBytes = 16%nat\nH5 : decodeItemByteFoldFacts args (bv_unsigned inputPrefix - 183) i (decodeItemInputPointer args + 1) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args)))\nn0, b : bv 64\nH6 : Z.land (bv_unsigned b) 131072 = 0\nH7 : Z.land (bvn_unsigned n0) 131072 = 0\nH9 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0) + 1) <= bv_signed 3221225472\nH8 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0)) >= bv_signed 2684354560\nvmem : bv 8\nHarrayFact0 : decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0\nHarrayAddressRange : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact2 : bv_unsigned inputPrefix - 183 <= 8\nHarrayFact1 : 1 <= bv_unsigned inputPrefix - 183\nHarrayFact3 : 0 <= i\nHarrayFact8 : decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 183) <= decodeItemInputPointer args + decodeItemInputLength args\nHarrayFact7 : base.length (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))) = bv_unsigned inputPrefix - 183\nHarrayFact4 : i <= bv_unsigned inputPrefix - 183\nHarrayFact9 : decodeItemInputHead args inputPrefix rest\nHarrayFact10 : 184 <= bv_unsigned inputPrefix\nHarrayFact11 : bv_unsigned inputPrefix <= 191\nHarrayFact13 : take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args)) = take (Z.to_nat (bv_unsigned inputPrefix - 183)) rest\nHarrayFact14 : base.length (take 8 (drop 0 frameBytes)) = 8%nat\nHarrayFact15 : littleEndian (take 8 (drop 0 frameBytes)) = bv_unsigned (decodeItemSavedFramePointer args)\nHarrayFact16 : base.length (take 8 (drop 8 frameBytes)) = 8%nat\nHarrayFact17 : littleEndian (take 8 (drop 8 frameBytes)) = decodeItemReturnAddress args\nHarrayFact18 : decodeItemReturnAddress args = decodeItemReturnAddress args\nHarrayFact19 : decodeItemInputLength args = base.length (decodeItemInputBytes args)\nHarrayFact20 : base.length (decodeItemBeforeStorage args) = 40%nat\nHarrayFact21 : 0 <= decodeItemInputPointer args\nHarrayFact22 : 0 <= decodeItemInputLength args\nHarrayFact23 : decodeItemInputPointer args + decodeItemInputLength args < word64Modulus\nHarrayFact24 : 0 <= decodeItemOutputPointer args\nHarrayFact25 : decodeItemOutputPointer args + 40 < word64Modulus\nHarrayFact26 : decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact27 : decodeItemStackPointer args < word64Modulus\nHarrayFact28 : mapRamBase defaultMap + decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact29 : decodeItemStackPointer args <= machineRamEnd defaultMap\nHarrayFact30 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemOutputPointer args) 40\nHarrayFact31 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact32 : separateRanges (decodeItemOutputPointer args) 40 (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact33 : 0 <= decodeItemReturnAddress args\nHarrayFact34 : decodeItemReturnAddress args < word64Modulus\nHarrayFact35 : decodeItemReturnAddress args mod 4 = 0\nHarrayFact36 : mapInputBufferAddress defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= mapInputBufferAddress defaultMap + mapInputCapacity defaultMap\n\u2228 mapRamBase defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= machineRamEnd defaultMap\nHarrayFact37 : mapRamBase defaultMap <= decodeItemOutputPointer args\nHarrayFact38 : decodeItemOutputPointer args + 40 <= machineRamEnd defaultMap\nHarrayFact39 : 0 <= decodeItemInputEnd args\nHarrayFact40 : decodeItemInputEnd args < word64Modulus\nHarrayFact41 : decodeItemInputPointer args + decodeItemInputLength args <= decodeItemInputEnd args\nH10 : decodeItemInputBytes args !! Z.to_nat (1 + i) = Some vmem\nH11 : (Z.to_nat (1 + i) < base.length (decodeItemInputBytes args))%nat\nb0 : bv 64\nH12 : Z.land (bv_unsigned b0) 131072 = 0\nb1 : bv 64\nH13 : Z.land (bv_unsigned b1) 131072 = 0\nb2 : bv 64\nH14 : Z.land (bv_unsigned b2) 131072 = 0\nn : bv 64\nH15 : -1 < bv_unsigned n < bv_modulus 64\nH16 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n < bv_half_modulus 64\nH17 : -1 < bv_unsigned b2 < bv_modulus 64\nH18 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b2 < bv_half_modulus 64\nH19 : -1 < bv_unsigned b1 < bv_modulus 64\nH20 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b1 < bv_half_modulus 64\nH21 : -1 < bv_unsigned b0 < bv_modulus 64\nH22 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b0 < bv_half_modulus 64\nH23 : -1 < bv_unsigned vmem < bv_modulus 8\nH24 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed vmem < bv_half_modulus 8\nH25 : -1 < bv_unsigned b < bv_modulus 64\nH26 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b < bv_half_modulus 64\nH27 : -1 < bv_unsigned n0 < bv_modulus 64\nH28 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n0 < bv_half_modulus 64\nH29 : -1 < bv_unsigned inputPrefix < bv_modulus 8\nH30 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed inputPrefix < bv_half_modulus 8\nb3 : bv 64\nH31 : Z.land (bv_unsigned b3) 131072 = 0\nLET := (Z_to_bv 64 2148362804 + 4)%bv : bv 64\nLET0 := negb (bool_decide ((Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 183)))) : bool\nLET1 := (Z_to_bv 64 2148362804 + 18446744073709551600)%bv : bv 64\nH32 : (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv \u2260 Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 183))\nLET2 := bv_extract 0 1 (LET1 \u226b 1) : bv 1\nLET3 := negb (bool_decide (LET2 = 1%bv)) : bool\nH33 : decodeItemSavedFrameFacts args (bv_to_little_endian 8 8 (bv_unsigned (decodeItemSavedFramePointer args)) ++ bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))))\nIPM_JANNO := HIDDEN : envs (iPropI Sigma)\nLET_GOAL := HIDDEN : () \u2192 iPropI Sigma\n|-RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args + 1 + i))",
+                "proof_finished": false,
+                "commands_run": 1,
+                "check_time_ms": 1,
+                "state_id": 3,
+                "from_state_id": 2,
+                "focus_depth": 0
+              },
+              "before": {
+                "success": true,
+                "state_id": 2,
+                "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6a24_old1_S131/state_2.json",
+                "sha256": "ac4c2d41d2c88a5d2d1083a476bb15f3b12a554faf472fb8bab938f8c2f58f34",
+                "bytes": 46681,
+                "active_goals": 1,
+                "stack_entries": 0,
+                "shelved_goals": 0,
+                "given_up_goals": 0,
+                "stack_frame_goal_counts": [],
+                "groups_are_actual": true,
+                "truncated": false,
+                "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+                "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+                "theorem": "S165_6a24_old1_S131",
+                "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old1_S131.v",
+                "source_sha256": "295f2a6294cc2a5d884a2f25510a6705b30230e61d6ae5e62c54cf22d850553e",
+                "proof_finished": false
+              },
+              "after": {
+                "success": true,
+                "state_id": 3,
+                "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6a24_old1_S131/state_3.json",
+                "sha256": "9164c432e48099c2c259637d1f5920d4700020e67765513d452f063e66d00732",
+                "bytes": 46622,
+                "active_goals": 1,
+                "stack_entries": 0,
+                "shelved_goals": 0,
+                "given_up_goals": 0,
+                "stack_frame_goal_counts": [],
+                "groups_are_actual": true,
+                "truncated": false,
+                "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+                "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+                "theorem": "S165_6a24_old1_S131",
+                "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old1_S131.v",
+                "source_sha256": "295f2a6294cc2a5d884a2f25510a6705b30230e61d6ae5e62c54cf22d850553e",
+                "proof_finished": false
+              }
+            }
+          ],
+          "trial": {
+            "success": true,
+            "results": [
+              {
+                "tactic": "exact (f_equal (fun x : bv 64 => RVal_Bits x) (S131_6a24_01 args inputPrefix i H5)).",
+                "success": false,
+                "reason": "tactic_failed",
+                "error": "Coq: In environment\nSigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\ninputPrefix : bv 8\nrest : list (bv 8)\ni : Z\nframeBytes : list (bv 8)\nH0 : i < bv_unsigned inputPrefix - 183\nH1 : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args\nH2 : decodeItemSavedFrameFacts args frameBytes\nH3 : decodeItemFoldProvenance args false inputPrefix rest (bv_unsigned inputPrefix - 183) (decodeItemInputPointer args + 1)\n       (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args)))\nH4 : base.length frameBytes = 16%nat\nH5 : decodeItemByteFoldFacts args (bv_unsigned inputPrefix - 183) i (decodeItemInputPointer args + 1) (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args)))\nn0, b : bv 64\nH6 : Z.land (bv_unsigned b) 131072 = 0\nH7 : Z.land (bvn_unsigned n0) 131072 = 0\nH9 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0) + 1) <= bv_signed 3221225472\nH8 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0)) >= bv_signed 2684354560\nvmem : bv 8\nHarrayFact0 : decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0\nHarrayAddressRange : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact2 : bv_unsigned inputPrefix - 183 <= 8\nHarrayFact1 : 1 <= bv_unsigned inputPrefix - 183\nHarrayFact3 : 0 <= i\nHarrayFact8 : decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 183) <= decodeItemInputPointer args + decodeItemInputLength args\nHarrayFact7 : base.length (take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args))) = bv_unsigned inputPrefix - 183\nHarrayFact4 : i <= bv_unsigned inputPrefix - 183\nHarrayFact9 : decodeItemInputHead args inputPrefix rest\nHarrayFact10 : 184 <= bv_unsigned inputPrefix\nHarrayFact11 : bv_unsigned inputPrefix <= 191\nHarrayFact13 : take (Z.to_nat (bv_unsigned inputPrefix - 183)) (drop 1 (decodeItemInputBytes args)) = take (Z.to_nat (bv_unsigned inputPrefix - 183)) rest\nHarrayFact14 : base.length (take 8 (drop 0 frameBytes)) = 8%nat\nHarrayFact15 : littleEndian (take 8 (drop 0 frameBytes)) = bv_unsigned (decodeItemSavedFramePointer args)\nHarrayFact16 : base.length (take 8 (drop 8 frameBytes)) = 8%nat\nHarrayFact17 : littleEndian (take 8 (drop 8 frameBytes)) = decodeItemReturnAddress args\nHarrayFact18 : decodeItemReturnAddress args = decodeItemReturnAddress args\nHarrayFact19 : decodeItemInputLength args = base.length (decodeItemInputBytes args)\nHarrayFact20 : base.length (decodeItemBeforeStorage args) = 40%nat\nHarrayFact21 : 0 <= decodeItemInputPointer args\nHarrayFact22 : 0 <= decodeItemInputLength args\nHarrayFact23 : decodeItemInputPointer args + decodeItemInputLength args < word64Modulus\nHarrayFact24 : 0 <= decodeItemOutputPointer args\nHarrayFact25 : decodeItemOutputPointer args + 40 < word64Modulus\nHarrayFact26 : decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact27 : decodeItemStackPointer args < word64Modulus\nHarrayFact28 : mapRamBase defaultMap + decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact29 : decodeItemStackPointer args <= machineRamEnd defaultMap\nHarrayFact30 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemOutputPointer args) 40\nHarrayFact31 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact32 : separateRanges (decodeItemOutputPointer args) 40 (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact33 : 0 <= decodeItemReturnAddress args\nHarrayFact34 : decodeItemReturnAddress args < word64Modulus\nHarrayFact35 : decodeItemReturnAddress args mod 4 = 0\nHarrayFact36 : mapInputBufferAddress defaultMap <= decodeItemInputPointer args\n               \u2227 decodeItemInputPointer args + decodeItemInputLength args <= mapInputBufferAddress defaultMap + mapInputCapacity defaultMap\n               \u2228 mapRamBase defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= machineRamEnd defaultMap\nHarrayFact37 : mapRamBase defaultMap <= decodeItemOutputPointer args\nHarrayFact38 : decodeItemOutputPointer args + 40 <= machineRamEnd defaultMap\nHarrayFact39 : 0 <= decodeItemInputEnd args\nHarrayFact40 : decodeItemInputEnd args < word64Modulus\nHarrayFact41 : decodeItemInputPointer args + decodeItemInputLength args <= decodeItemInputEnd args\nH10 : decodeItemInputBytes args !! Z.to_nat (1 + i) = Some vmem\nH11 : (Z.to_nat (1 + i) < base.length (decodeItemInputBytes args))%nat\nb0 : bv 64\nH12 : Z.land (bv_unsigned b0) 131072 = 0\nb1 : bv 64\nH13 : Z.land (bv_unsigned b1) 131072 = 0\nb2 : bv 64\nH14 : Z.land (bv_unsigned b2) 131072 = 0\nn : bv 64\nH15 : -1 < bv_unsigned n < bv_modulus 64\nH16 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n < bv_half_modulus 64\nH17 : -1 < bv_unsigned b2 < bv_modulus 64\nH18 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b2 < bv_half_modulus 64\nH19 : -1 < bv_unsigned b1 < bv_modulus 64\nH20 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b1 < bv_half_modulus 64\nH21 : -1 < bv_unsigned b0 < bv_modulus 64\nH22 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b0 < bv_half_modulus 64\nH23 : -1 < bv_unsigned vmem < bv_modulus 8\nH24 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed vmem < bv_half_modulus 8\nH25 : -1 < bv_unsigned b < bv_modulus 64\nH26 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b < bv_half_modulus 64\nH27 : -1 < bv_unsigned n0 < bv_modulus 64\nH28 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n0 < bv_half_modulus 64\nH29 : -1 < bv_unsigned inputPrefix < bv_modulus 8\nH30 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed inputPrefix < bv_half_modulus 8\nb3 : bv 64\nH31 : Z.land (bv_unsigned b3) 131072 = 0\nLET := (Z_to_bv 64 2148362804 + 4)%bv : bv 64\nLET0 := negb (bool_decide ((Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 183)))) : bool\nLET1 := (Z_to_bv 64 2148362804 + 18446744073709551600)%bv : bv 64\nH32 : (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv \u2260 Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 183))\nLET2 := bv_extract 0 1 (LET1 \u226b 1) : bv 1\nLET3 := negb (bool_decide (LET2 = 1%bv)) : bool\nH33 : decodeItemSavedFrameFacts args (bv_to_little_endian 8 8 (bv_unsigned (decodeItemSavedFramePointer args)) ++ bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))))\nIPM_JANNO := HIDDEN : envs (iPropI Sigma)\nLET_GOAL := HIDDEN : () \u2192 iPropI Sigma\nThe term \"f_equal (\u03bb x : bv 64, RVal_Bits x) (S131_6a24_01 args inputPrefix i H5)\" has type\n \"RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args + 1 + (i + 1)))\" while it is expected to have type\n \"RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args + 1 + i))\"."
+              }
+            ],
+            "from_state_id": 3
+          },
+          "rollback": {
+            "success": true,
+            "state_id": 3,
+            "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6a24_old1_S131/state_3.json",
+            "sha256": "9164c432e48099c2c259637d1f5920d4700020e67765513d452f063e66d00732",
+            "bytes": 46622,
+            "active_goals": 1,
+            "stack_entries": 0,
+            "shelved_goals": 0,
+            "given_up_goals": 0,
+            "stack_frame_goal_counts": [],
+            "groups_are_actual": true,
+            "truncated": false,
+            "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+            "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+            "theorem": "S165_6a24_old1_S131",
+            "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old1_S131.v",
+            "source_sha256": "295f2a6294cc2a5d884a2f25510a6705b30230e61d6ae5e62c54cf22d850553e",
+            "proof_finished": false
+          },
+          "advancement": null,
+          "final": {
+            "success": true,
+            "state_id": 3,
+            "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6a24_old1_S131/state_3.json",
+            "sha256": "9164c432e48099c2c259637d1f5920d4700020e67765513d452f063e66d00732",
+            "bytes": 46622,
+            "active_goals": 1,
+            "stack_entries": 0,
+            "shelved_goals": 0,
+            "given_up_goals": 0,
+            "stack_frame_goal_counts": [],
+            "groups_are_actual": true,
+            "truncated": false,
+            "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+            "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+            "theorem": "S165_6a24_old1_S131",
+            "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old1_S131.v",
+            "source_sha256": "295f2a6294cc2a5d884a2f25510a6705b30230e61d6ae5e62c54cf22d850553e",
+            "proof_finished": false
+          },
+          "native_assignment_executed": false,
+          "native_assignment_limit": "The exported target binds i. No assignable successor existential or global native evar map is available."
+        }
+      ],
+      "required_assignment": "Before commitment, assign the stepped accumulator and cursor at i+1 from S131. The committed old-i targets reject these certificates and stay unchanged.",
+      "limits": "Reconstructed exact residual applications; no global native evar map or assignment. No full header closure.",
+      "native_closure_claim": false,
+      "target": {
+        "path": "ZesuSsz/Evidence/precommitment/6a24.ledger-target.txt",
+        "sha256": "572eec32cfd5313a5c957d0229190be2dbf9613e9281844ca8c1bb3686a5a327"
+      }
+    },
+    {
+      "block": "6a38",
+      "status": "ExplicitIntroductionApplied",
+      "operation": "decodeItemStringReturnLengthWitness",
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s173/ZesuSsz/Evidence/precommitment/6a38.json",
+        "sha256": "e3196ab655f9afd5d52b70a22f64bd7a740a4bf43d7de933879950947b1184be"
+      },
+      "source": {
+        "success": true,
+        "state_id": 28,
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s115-precommit-s43-application-005/exports/state_28.json",
+        "sha256": "e3196ab655f9afd5d52b70a22f64bd7a740a4bf43d7de933879950947b1184be",
+        "bytes": 19959,
+        "active_goals": 3,
+        "stack_entries": 0,
+        "shelved_goals": 4,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a",
+        "theorem": "DesignedBoundary_800d6a38",
+        "source": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s115-precommit-s43-application-005/Replay6a38.v",
+        "source_sha256": "cc5205109467654a52deb8a4e69c71209815d22442c59e18be59a7c7f4359d7d",
+        "proof_finished": false
+      },
+      "retained_scope": "Exact retained I62 native statements on owned current artifacts. Historical33b9a455 plus four Rule38 overlays differs from the current28-switch scope.",
+      "report": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/build/stock-zisk/spec-a-s115/PRECOMMIT-005-REPORT.json",
+        "sha256": "a420690601eb14f439d1c28ad5f660fe147669f37f22f118f1bbff10ebfe3442"
+      },
+      "required_assignment": "Use the registered canonical witness before commitment; discharge the unchanged resource source.",
+      "limits": "Captured proof state stays open. Pure theorem uses the verified retained premise subset. No repaired native closure asserted.",
+      "target": {
+        "path": "ZesuSsz/Evidence/precommitment/6a38.ledger-target.txt",
+        "sha256": "3ed2e75fe7e69b101c129aa7e481a475b699861411dea9a1fbaeff49ab11edfb"
+      },
+      "pure_witness_certificate": "s124_6a38_canonical_witnesses"
+    },
+    {
+      "block": "6a40",
+      "status": "ArraySelectionRecorded",
+      "operation": "1: liFindInContext.",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/Capture6a40.v",
+        "sha256": "a85dbcdb24f9bb424c62191044ea0bd5e9332870905f2c771957cf7a58eb7f5d"
+      },
+      "statement": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/6a40.statement.v",
+        "sha256": "624ac8a4c331478dbc8a2d38023485bf6a21d7fc39eeeda2c48497f896ed422e"
+      },
+      "report": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/REPORT.json",
+        "sha256": "ab55dd2c0e7438250207163915b8946e3c85449aba8c9c2206111e9e37efb2fc"
+      },
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/6a40/exports/state_36.json",
+        "sha256": "bfe14856b2aeb6e0dd7f5001e7d86802c662efb518842282f9c704e36f9b0f39"
+      },
+      "groups": [
+        3,
+        0,
+        3,
+        0
+      ],
+      "retained_scope": {
+        "verification_root": "dc832abbf6291a9008dfb949ef8638bcdfc4b490",
+        "declaration_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+        "activation": "Current dc832 Approved28/root hints26. Frozen e17 declarations retain historical28/25."
+      },
+      "pre_search": {
+        "groups": [
+          3,
+          0,
+          3,
+          0
+        ],
+        "export": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/6a40/exports/state_11.json",
+          "sha256": "bd7ec2a2256fd73f36ca4a1622d0ec6b0562e444372ab4dcdbbb07e459cb189e"
+        },
+        "targets": [
+          {
+            "group": "goals",
+            "index": 0,
+            "kernel_target_context": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-goals000.kernel.json",
+              "sha256": "2db2a4ae84db18c11a934199f692f46234a8507a9287a69d241b8d3e3a2571ca"
+            }
+          },
+          {
+            "group": "goals",
+            "index": 1,
+            "kernel_target_context": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-goals001.kernel.json",
+              "sha256": "c99a551aa5c03592c1dd8152a133885e73307b5ea9719ff4cae4e1315239e634"
+            }
+          },
+          {
+            "group": "goals",
+            "index": 2,
+            "kernel_target_context": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-goals002.kernel.json",
+              "sha256": "28719d68b835125bc51c6fbc9826592adc6946f3d0617965916f395ae40c08b3"
+            }
+          },
+          {
+            "group": "shelf",
+            "index": 0,
+            "kernel_target_context": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-shelf000.kernel.json",
+              "sha256": "0c995a8c8c82d8a3e301b9ac63b1c9134ef1e6bf16d6bd2bb8e10ae572ee176d"
+            }
+          },
+          {
+            "group": "shelf",
+            "index": 1,
+            "kernel_target_context": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-shelf001.kernel.json",
+              "sha256": "860621cc4be430da93ce9095fc3490fafa3772a2750dc05de91f98e53827c132"
+            }
+          },
+          {
+            "group": "shelf",
+            "index": 2,
+            "kernel_target_context": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-shelf002.kernel.json",
+              "sha256": "e564f49de8d3eeb3bfb16895dc1b35f1bb86f313affee0309dc60522ea5cbe4b"
+            }
+          }
+        ]
+      },
+      "selected_resource": "Original whole-helper selection chooses the initialized output array. Its returned target contains an index and the updated-resource wand.",
+      "required_assignment": "At STAGE-D, retain the initialized output array at decodeItemOutputPointer args, width8. Resolve index32 from the exact address equation and prove the retained 2-byte bound. Preserve the updated-resource wand and caller. This is a repair requirement, not a measured assignment.",
+      "later_operation": "1: i80_resume_to_region.",
+      "limits": "The controller chooses no index, kind, region, or proof witness.",
+      "native_closure_claim": false,
+      "target": {
+        "path": "ZesuSsz/Evidence/precommitment/6a40.ledger-target.txt",
+        "sha256": "1752b28b0a69bd55f32e5781dd2b91462163a201a6f5ed446c28e63610ae52f5"
+      },
+      "required_selection": {
+        "boundary": "STAGE-D after original liFindInContext; before index commitment and updated-resource consumption",
+        "region": "Initialized output array",
+        "base": "decodeItemOutputPointer args",
+        "current_image": "returnStorage locals",
+        "element_width": "8%N",
+        "index_equation": "Z.of_nat i = decodeItemOutputPointer args + 32 - decodeItemOutputPointer args",
+        "index_solution": "32",
+        "store_bytes": 2,
+        "bound": "i + 2 <= List.length (returnStorage locals)",
+        "assignment_limit": "The equation determines the pure index. The ledger does not assign a native evar or prove the updated-resource continuation."
+      }
+    },
+    {
+      "block": "6a78",
+      "status": "ArraySelectionRecorded",
+      "operation": "1: liFindInContext.",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/Capture6a78.v",
+        "sha256": "cd1b5daab9e89dce5f6105334d787f3bba8f428e37cc01c6b53744b3e2a2abf7"
+      },
+      "statement": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/6a78.statement.v",
+        "sha256": "4bb8faa217ebf0b1219dca178f67140e17266c05cdcdbde48a83608f3a0e0b95"
+      },
+      "report": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/REPORT.json",
+        "sha256": "ab55dd2c0e7438250207163915b8946e3c85449aba8c9c2206111e9e37efb2fc"
+      },
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/6a78/exports/state_38.json",
+        "sha256": "942bed6eaad7df051655c3574b781eaee457d3e8fd07beb3bbb9298d53841d49"
+      },
+      "groups": [
+        3,
+        0,
+        4,
+        0
+      ],
+      "retained_scope": {
+        "verification_root": "dc832abbf6291a9008dfb949ef8638bcdfc4b490",
+        "declaration_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+        "activation": "Current dc832 Approved28/root hints26. Frozen e17 declarations retain historical28/25."
+      },
+      "pre_search": {
+        "groups": [
+          3,
+          0,
+          4,
+          0
+        ],
+        "export": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/6a78/exports/state_11.json",
+          "sha256": "a06c812cf7fbb5a9901f93540658595f57b0613cc3d9ec9e3c7425e78eb4096c"
+        },
+        "targets": [
+          {
+            "group": "goals",
+            "index": 0,
+            "kernel_target_context": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-goals000.kernel.json",
+              "sha256": "e6c28a39f3158ba2f4b679b437bee3027b67cefbdb309eaaa74582bd916d7b41"
+            }
+          },
+          {
+            "group": "goals",
+            "index": 1,
+            "kernel_target_context": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-goals001.kernel.json",
+              "sha256": "2e2bad7da34367594d487dad8ab8571a9e964ca4692b6d60f38d964db8b8fcfb"
+            }
+          },
+          {
+            "group": "goals",
+            "index": 2,
+            "kernel_target_context": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-goals002.kernel.json",
+              "sha256": "2f6301277045b8adb6d585a2fa7ad16c362f29eb57b10fce4dd5bffc385662f1"
+            }
+          },
+          {
+            "group": "shelf",
+            "index": 0,
+            "kernel_target_context": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-shelf000.kernel.json",
+              "sha256": "7cdcf4f260c2c552d230cc4bd146fb2a2e9660e181d70d9c7d68dc0805a4f768"
+            }
+          },
+          {
+            "group": "shelf",
+            "index": 1,
+            "kernel_target_context": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-shelf001.kernel.json",
+              "sha256": "fd6a5ee4da7c5eaa337f57a57c9ee3330b1652435abbc2fb240f7b56da29e1e9"
+            }
+          },
+          {
+            "group": "shelf",
+            "index": 2,
+            "kernel_target_context": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-shelf002.kernel.json",
+              "sha256": "18296b7326dc9cb65e140bfb490dd60a1f2a9ece78450f34fd49be305ef30c22"
+            }
+          },
+          {
+            "group": "shelf",
+            "index": 3,
+            "kernel_target_context": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-shelf003.kernel.json",
+              "sha256": "a30add1d7aac9ef798a88916ae041836bbc3edeee6100f4f71ec225247340625"
+            }
+          }
+        ]
+      },
+      "selected_resource": "Original whole-helper selection chooses the initialized output array. Its returned target contains an index and the updated-resource wand.",
+      "required_assignment": "At STAGE-D, retain the initialized output array at decodeItemOutputPointer args, width8. Resolve index32 from the exact address equation and prove the retained 2-byte bound. Preserve the updated-resource wand and caller. This is a repair requirement, not a measured assignment.",
+      "later_operation": "1: i80_resume_to_region.",
+      "limits": "The controller chooses no index, kind, region, or proof witness.",
+      "native_closure_claim": false,
+      "target": {
+        "path": "ZesuSsz/Evidence/precommitment/6a78.ledger-target.txt",
+        "sha256": "388788b95b5a7040e0ab935cdb73997384f27a4f7ffce2181b810df90366d488"
+      },
+      "required_selection": {
+        "boundary": "STAGE-D after original liFindInContext; before index commitment and updated-resource consumption",
+        "region": "Initialized output array",
+        "base": "decodeItemOutputPointer args",
+        "current_image": "returnStorage locals",
+        "element_width": "8%N",
+        "index_equation": "Z.of_nat i = decodeItemOutputPointer args + 32 - decodeItemOutputPointer args",
+        "index_solution": "32",
+        "store_bytes": 2,
+        "bound": "i + 2 <= List.length (returnStorage locals)",
+        "assignment_limit": "The equation determines the pure index. The ledger does not assign a native evar or prove the updated-resource continuation."
+      }
+    },
+    {
+      "block": "6aa8",
+      "status": "ExplicitIntroductionApplied",
+      "operation": "decodeItemListSliceWitness",
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s173/ZesuSsz/Evidence/precommitment/6aa8.json",
+        "sha256": "40e1d37a1b9b7560dc805bc568a9b8f070a421797ababe18b2f328e9b3e71bc9"
+      },
+      "source": {
+        "success": true,
+        "state_id": 671,
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/exports/state_671.json",
+        "sha256": "40e1d37a1b9b7560dc805bc568a9b8f070a421797ababe18b2f328e9b3e71bc9",
+        "bytes": 16606,
+        "active_goals": 3,
+        "stack_entries": 0,
+        "shelved_goals": 5,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a",
+        "theorem": "DesignedBoundary_800d6aa8",
+        "source": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/Replay6aa8.v",
+        "source_sha256": "dab2fddf92bb0b3abae4014419d08d2c9c99bed69dbe33f1d6fdd78f9643e343",
+        "proof_finished": false
+      },
+      "retained_scope": {
+        "input_index_sha256": "c302ab4d77ab541036a2ed27c96b7b3b25e39332a1575584becfc072edf17e2e",
+        "fixture_copies": [
+          {
+            "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/Replay6a08.v"
+          },
+          {
+            "file": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/Replay6aa8.v"
+          }
+        ],
+        "measured_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+        "measured_scope": "28 switches, 25 hint modules",
+        "scope_limit": "Exact I67 statement. Owned current private artifacts. Scheduling equality with frozen I67 is not established.",
+        "changed_steps": "Restore successful individual-step recovery. Apply existing S43 lemmas explicitly. Capture application groups even after failure."
+      },
+      "report": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/build/stock-zisk/spec-a-s117/EXPLICIT-S43-005.json",
+        "sha256": "cc43987d4c311e8f0acb2d5b7f836a39e8d497f0dbd19b8438d75d9c9d38b56b"
+      },
+      "required_assignment": "Use the registered canonical witness before commitment; discharge the unchanged resource source.",
+      "limits": "Captured proof state stays open. Pure theorem uses the verified retained premise subset. No repaired native closure asserted.",
+      "target": {
+        "path": "ZesuSsz/Evidence/precommitment/6aa8.ledger-target.txt",
+        "sha256": "7c873cba673836c8db4bc7e04087fd326e5313a1047d015f0f0cb1e15ca7f46e"
+      },
+      "pure_witness_certificate": "s124_6aa8_canonical_witnesses"
+    },
+    {
+      "block": "6ac4",
+      "status": "CommittedSuccessorMismatch",
+      "operation": "exact (f_equal (fun x : bv 64 => RVal_Bits x) (S131_6ac4_01 args inputPrefix i H5)).",
+      "certificate_statement": "Lemma S131_6ac4_01 (args : DecodeItemArgs) (inputPrefix : bv 8) (i : Z) :\ndecodeItemByteFoldFacts args (Z.sub (bv_unsigned inputPrefix) 247) i (Z.add (decodeItemInputPointer args) 1) (take (Z.to_nat (Z.sub (bv_unsigned inputPrefix) 247)) (drop 1 (decodeItemInputBytes args))) ->\n((Z_to_bv 64 (Z.add (Z.add (decodeItemInputPointer args) 1) i) + 1)%bv = Z_to_bv 64 (Z.add (Z.add (decodeItemInputPointer args) 1) (Z.add i 1))).\n",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old1_S131.v",
+        "sha256": "0757206a5054007715840edcbd83694805c4f4d3c787229e704d7c7c9d05427a"
+      },
+      "context": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-supported-shelf-focus-005/6ac4-OLD-VALUE-1-CONTEXT.json",
+        "sha256": "3f627b23188427fa827031da25f5a80275f0b1594d65b2b1790ed433e2caeeec"
+      },
+      "report": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/REPORT.json",
+        "sha256": "e28885c86e0e87f0c90e86b6cc8bc337d28e980c9dada6e36e9a323405d530c1"
+      },
+      "retained_scope": {
+        "frozen_root": "f2033b63f8f785efcacf8c06fbba1107fe9a7f7e",
+        "artifact_scope": "Unchanged owned I76 artifact overlay. This is a faithful residual reconstruction, not a saved native state or a Root verification."
+      },
+      "measured_applications": [
+        {
+          "fixture": {
+            "name": "S165_6ac4_old0_S131",
+            "site": "6ac4",
+            "original_index": 0,
+            "file": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old0_S131.v",
+            "context": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-supported-shelf-focus-005/6ac4-OLD-VALUE-0-CONTEXT.json",
+            "introduction_body": "intros Sigma islaG0 H args inputPrefix rest i frameBytes H0 H1 H2 H3 H4 H5 n0 b H6 H7 H9 H8 vmem HarrayFact0 HarrayFact HarrayAddressRange HarrayFact2 HarrayFact1 HarrayFact3 HarrayFact8 HarrayFact7 HarrayFact4 HarrayFact9 HarrayFact10 HarrayFact11 HarrayFact13 HarrayFact14 HarrayFact15 HarrayFact16 HarrayFact17 HarrayFact18 HarrayFact19 HarrayFact20 HarrayFact21 HarrayFact22 HarrayFact23 HarrayFact24 HarrayFact25 HarrayFact26 HarrayFact27 HarrayFact28 HarrayFact29 HarrayFact30 HarrayFact31 HarrayFact32 HarrayFact33 HarrayFact34 HarrayFact35 HarrayFact36 HarrayFact37 HarrayFact38 HarrayFact39 HarrayFact40 HarrayFact41 H10 H11 b0 H12 b1 H13 b2 H14 n H15 H16 H17 H18 H19 H20 H21 H22 H23 H24 H25 H26 H27 H28 H29 H30 b3 H31 LET LET0 LET1 H32 LET2 LET3 IPM_JANNO H33 LET_GOAL.",
+            "certificate": "/home/cody/zesislar/.worktrees/worker1-spec-a-s130/_build/s131-correct-successors-001/S131_6ac4_00.v",
+            "certificate_name": "S131_6ac4_00",
+            "application_body": "exact (f_equal (fun x : bv 64 => RVal_Bits x) (S131_6ac4_00 args inputPrefix i vmem H5 H0 H10)).",
+            "target": "SHELVED_SIDECOND\n  (@eq valu\n     (RegVal_Base\n        (Val_Bits\n           (@bv_to_bvn (Npos (xO (xO (xO (xO (xO (xO xH)))))))\n              (@bv_or (Npos (xO (xO (xO (xO (xO (xO xH)))))))\n                 (@bv_shiftl (Npos (xO (xO (xO (xO (xO (xO xH)))))))\n                    (Z_to_bv (Npos (xO (xO (xO (xO (xO (xO xH)))))))\n                       (RlpDecodeItem.bigEndian\n                          (@firstn (bv (Npos (xO (xO (xO xH))))) (Z.to_nat i)\n                             (@firstn (bv (Npos (xO (xO (xO xH))))) (Z.to_nat (Z.sub (@bv_unsigned (Npos (xO (xO (xO xH)))) inputPrefix) (Zpos (xI (xI (xI (xO (xI (xI (xI xH))))))))))\n                                (@skipn (bv (Npos (xO (xO (xO xH))))) (S O) (decodeItemInputBytes args)))))) (@BV (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Zpos (xO (xO (xO xH)))) I))\n                 (@bv_zero_extend (Npos (xO (xO (xO xH)))) (Npos (xO (xO (xO (xO (xO (xO xH))))))) vmem)))))\n     (RegVal_Base\n        (Val_Bits\n           (@bv_to_bvn (Npos (xO (xO (xO (xO (xO (xO xH)))))))\n              (Z_to_bv (Npos (xO (xO (xO (xO (xO (xO xH)))))))\n                 (RlpDecodeItem.bigEndian\n                    (@firstn (bv (Npos (xO (xO (xO xH))))) (Z.to_nat i)\n                       (@firstn (bv (Npos (xO (xO (xO xH))))) (Z.to_nat (Z.sub (@bv_unsigned (Npos (xO (xO (xO xH)))) inputPrefix) (Zpos (xI (xI (xI (xO (xI (xI (xI xH))))))))))\n                          (@skipn (bv (Npos (xO (xO (xO xH))))) (S O) (decodeItemInputBytes args))))))))))",
+            "native_assignment_limit": "The exported target binds i. No assignable successor existential or global native evar map is available."
+          },
+          "exact_certificate_statement": "Lemma S131_6ac4_00 (args : DecodeItemArgs) (inputPrefix : bv 8) (i : Z) (vmem : bv 8) :\ndecodeItemByteFoldFacts args (Z.sub (bv_unsigned inputPrefix) 247) i (Z.add (decodeItemInputPointer args) 1) (take (Z.to_nat (Z.sub (bv_unsigned inputPrefix) 247)) (drop 1 (decodeItemInputBytes args))) ->\nZ.lt i (Z.sub (bv_unsigned inputPrefix) 247) ->\ndecodeItemInputBytes args !! Z.to_nat (Z.add 1 i) = Some vmem ->\n(bv_or (Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat i) (take (Z.to_nat (Z.sub (bv_unsigned inputPrefix) 247)) (drop 1 (decodeItemInputBytes args))))) \u226a 8) (bv_zero_extend 64 vmem) =\n Z_to_bv 64 (RlpDecodeItem.bigEndian (take (Z.to_nat (Z.add i 1)) (take (Z.to_nat (Z.sub (bv_unsigned inputPrefix) 247)) (drop 1 (decodeItemInputBytes args)))))).\n",
+          "operations": [
+            {
+              "body": "intros Sigma islaG0 H args inputPrefix rest i frameBytes H0 H1 H2 H3 H4 H5 n0 b H6 H7 H9 H8 vmem HarrayFact0 HarrayFact HarrayAddressRange HarrayFact2 HarrayFact1 HarrayFact3 HarrayFact8 HarrayFact7 HarrayFact4 HarrayFact9 HarrayFact10 HarrayFact11 HarrayFact13 HarrayFact14 HarrayFact15 HarrayFact16 HarrayFact17 HarrayFact18 HarrayFact19 HarrayFact20 HarrayFact21 HarrayFact22 HarrayFact23 HarrayFact24 HarrayFact25 HarrayFact26 HarrayFact27 HarrayFact28 HarrayFact29 HarrayFact30 HarrayFact31 HarrayFact32 HarrayFact33 HarrayFact34 HarrayFact35 HarrayFact36 HarrayFact37 HarrayFact38 HarrayFact39 HarrayFact40 HarrayFact41 H10 H11 b0 H12 b1 H13 b2 H14 n H15 H16 H17 H18 H19 H20 H21 H22 H23 H24 H25 H26 H27 H28 H29 H30 b3 H31 LET LET0 LET1 H32 LET2 LET3 IPM_JANNO H33 LET_GOAL.",
+              "response": {
+                "success": true,
+                "goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\ninputPrefix : bv 8\nrest : list (bv 8)\ni : Z\nframeBytes : list (bv 8)\nH0 : i < bv_unsigned inputPrefix - 247\nH1 : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args\nH2 : decodeItemSavedFrameFacts args frameBytes\nH3 : decodeItemFoldProvenance args true inputPrefix rest (bv_unsigned inputPrefix - 247) (decodeItemInputPointer args + 1)\n  (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)))\nH4 : base.length frameBytes = 16%nat\nH5 : decodeItemByteFoldFacts args (bv_unsigned inputPrefix - 247) i (decodeItemInputPointer args + 1) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)))\nn0, b : bv 64\nH6 : Z.land (bv_unsigned b) 131072 = 0\nH7 : Z.land (bvn_unsigned n0) 131072 = 0\nH9 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0) + 1) <= bv_signed 3221225472\nH8 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0)) >= bv_signed 2684354560\nvmem : bv 8\nHarrayFact0 : decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0\nHarrayAddressRange : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact2 : bv_unsigned inputPrefix - 247 <= 8\nHarrayFact1 : 1 <= bv_unsigned inputPrefix - 247\nHarrayFact3 : 0 <= i\nHarrayFact8 : decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 247) <= decodeItemInputPointer args + decodeItemInputLength args\nHarrayFact7 : base.length (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))) = bv_unsigned inputPrefix - 247\nHarrayFact4 : i <= bv_unsigned inputPrefix - 247\nHarrayFact9 : decodeItemInputHead args inputPrefix rest\nHarrayFact10 : 248 <= bv_unsigned inputPrefix\nHarrayFact11 : bv_unsigned inputPrefix <= 255\nHarrayFact13 : take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)) = take (Z.to_nat (bv_unsigned inputPrefix - 247)) rest\nHarrayFact14 : base.length (take 8 (drop 0 frameBytes)) = 8%nat\nHarrayFact15 : littleEndian (take 8 (drop 0 frameBytes)) = bv_unsigned (decodeItemSavedFramePointer args)\nHarrayFact16 : base.length (take 8 (drop 8 frameBytes)) = 8%nat\nHarrayFact17 : littleEndian (take 8 (drop 8 frameBytes)) = decodeItemReturnAddress args\nHarrayFact18 : decodeItemReturnAddress args = decodeItemReturnAddress args\nHarrayFact19 : decodeItemInputLength args = base.length (decodeItemInputBytes args)\nHarrayFact20 : base.length (decodeItemBeforeStorage args) = 40%nat\nHarrayFact21 : 0 <= decodeItemInputPointer args\nHarrayFact22 : 0 <= decodeItemInputLength args\nHarrayFact23 : decodeItemInputPointer args + decodeItemInputLength args < word64Modulus\nHarrayFact24 : 0 <= decodeItemOutputPointer args\nHarrayFact25 : decodeItemOutputPointer args + 40 < word64Modulus\nHarrayFact26 : decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact27 : decodeItemStackPointer args < word64Modulus\nHarrayFact28 : mapRamBase defaultMap + decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact29 : decodeItemStackPointer args <= machineRamEnd defaultMap\nHarrayFact30 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemOutputPointer args) 40\nHarrayFact31 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact32 : separateRanges (decodeItemOutputPointer args) 40 (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact33 : 0 <= decodeItemReturnAddress args\nHarrayFact34 : decodeItemReturnAddress args < word64Modulus\nHarrayFact35 : decodeItemReturnAddress args mod 4 = 0\nHarrayFact36 : mapInputBufferAddress defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= mapInputBufferAddress defaultMap + mapInputCapacity defaultMap\n\u2228 mapRamBase defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= machineRamEnd defaultMap\nHarrayFact37 : mapRamBase defaultMap <= decodeItemOutputPointer args\nHarrayFact38 : decodeItemOutputPointer args + 40 <= machineRamEnd defaultMap\nHarrayFact39 : 0 <= decodeItemInputEnd args\nHarrayFact40 : decodeItemInputEnd args < word64Modulus\nHarrayFact41 : decodeItemInputPointer args + decodeItemInputLength args <= decodeItemInputEnd args\nH10 : decodeItemInputBytes args !! Z.to_nat (1 + i) = Some vmem\nH11 : (Z.to_nat (1 + i) < base.length (decodeItemInputBytes args))%nat\nb0 : bv 64\nH12 : Z.land (bv_unsigned b0) 131072 = 0\nb1 : bv 64\nH13 : Z.land (bv_unsigned b1) 131072 = 0\nb2 : bv 64\nH14 : Z.land (bv_unsigned b2) 131072 = 0\nn : bv 64\nH15 : -1 < bv_unsigned n < bv_modulus 64\nH16 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n < bv_half_modulus 64\nH17 : -1 < bv_unsigned b2 < bv_modulus 64\nH18 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b2 < bv_half_modulus 64\nH19 : -1 < bv_unsigned b1 < bv_modulus 64\nH20 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b1 < bv_half_modulus 64\nH21 : -1 < bv_unsigned b0 < bv_modulus 64\nH22 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b0 < bv_half_modulus 64\nH23 : -1 < bv_unsigned vmem < bv_modulus 8\nH24 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed vmem < bv_half_modulus 8\nH25 : -1 < bv_unsigned b < bv_modulus 64\nH26 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b < bv_half_modulus 64\nH27 : -1 < bv_unsigned n0 < bv_modulus 64\nH28 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n0 < bv_half_modulus 64\nH29 : -1 < bv_unsigned inputPrefix < bv_modulus 8\nH30 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed inputPrefix < bv_half_modulus 8\nb3 : bv 64\nH31 : Z.land (bv_unsigned b3) 131072 = 0\nLET := (Z_to_bv 64 2148362964 + 4)%bv : bv 64\nLET0 := negb (bool_decide ((Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 247)))) : bool\nLET1 := (Z_to_bv 64 2148362964 + 18446744073709551600)%bv : bv 64\nH32 : (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv \u2260 Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 247))\nLET2 := bv_extract 0 1 (LET1 \u226b 1) : bv 1\nLET3 := negb (bool_decide (LET2 = 1%bv)) : bool\nIPM_JANNO := HIDDEN : envs (iPropI Sigma)\nH33 : decodeItemSavedFrameFacts args (bv_to_little_endian 8 8 (bv_unsigned (decodeItemSavedFramePointer args)) ++ bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))))\nLET_GOAL := HIDDEN : () \u2192 iPropI Sigma\n|-SHELVED_SIDECOND\n  (RVal_Bits (bv_or (Z_to_bv 64 (bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))))) \u226a 8) (bv_zero_extend 64 vmem)) =\n   RVal_Bits (Z_to_bv 64 (bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)))))))",
+                "proof_finished": false,
+                "commands_run": 1,
+                "check_time_ms": 4,
+                "state_id": 2,
+                "from_state_id": 1,
+                "focus_depth": 0
+              },
+              "before": {
+                "success": true,
+                "state_id": 1,
+                "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6ac4_old0_S131/state_1.json",
+                "sha256": "0bec267cb011016748cbdbfd5fe0cd75cb9e8c7ee7bf2471c104c1b45b6dcf3f",
+                "bytes": 68266,
+                "active_goals": 1,
+                "stack_entries": 0,
+                "shelved_goals": 0,
+                "given_up_goals": 0,
+                "stack_frame_goal_counts": [],
+                "groups_are_actual": true,
+                "truncated": false,
+                "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+                "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+                "theorem": "S165_6ac4_old0_S131",
+                "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old0_S131.v",
+                "source_sha256": "ecf369ae2e84c888a5c294f8f4df59393eb3fb28cb75be6e0c1ad5caf61fb130",
+                "proof_finished": false
+              },
+              "after": {
+                "success": true,
+                "state_id": 2,
+                "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6ac4_old0_S131/state_2.json",
+                "sha256": "253c74d53c7b9ba98273b8a64a2e4335ce146c86c0fabacd3eacf0b81e855ce8",
+                "bytes": 51419,
+                "active_goals": 1,
+                "stack_entries": 0,
+                "shelved_goals": 0,
+                "given_up_goals": 0,
+                "stack_frame_goal_counts": [],
+                "groups_are_actual": true,
+                "truncated": false,
+                "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+                "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+                "theorem": "S165_6ac4_old0_S131",
+                "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old0_S131.v",
+                "source_sha256": "ecf369ae2e84c888a5c294f8f4df59393eb3fb28cb75be6e0c1ad5caf61fb130",
+                "proof_finished": false
+              }
+            },
+            {
+              "body": "unfold SHELVED_SIDECOND.",
+              "response": {
+                "success": true,
+                "goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\ninputPrefix : bv 8\nrest : list (bv 8)\ni : Z\nframeBytes : list (bv 8)\nH0 : i < bv_unsigned inputPrefix - 247\nH1 : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args\nH2 : decodeItemSavedFrameFacts args frameBytes\nH3 : decodeItemFoldProvenance args true inputPrefix rest (bv_unsigned inputPrefix - 247) (decodeItemInputPointer args + 1)\n  (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)))\nH4 : base.length frameBytes = 16%nat\nH5 : decodeItemByteFoldFacts args (bv_unsigned inputPrefix - 247) i (decodeItemInputPointer args + 1) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)))\nn0, b : bv 64\nH6 : Z.land (bv_unsigned b) 131072 = 0\nH7 : Z.land (bvn_unsigned n0) 131072 = 0\nH9 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0) + 1) <= bv_signed 3221225472\nH8 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0)) >= bv_signed 2684354560\nvmem : bv 8\nHarrayFact0 : decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0\nHarrayAddressRange : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact2 : bv_unsigned inputPrefix - 247 <= 8\nHarrayFact1 : 1 <= bv_unsigned inputPrefix - 247\nHarrayFact3 : 0 <= i\nHarrayFact8 : decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 247) <= decodeItemInputPointer args + decodeItemInputLength args\nHarrayFact7 : base.length (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))) = bv_unsigned inputPrefix - 247\nHarrayFact4 : i <= bv_unsigned inputPrefix - 247\nHarrayFact9 : decodeItemInputHead args inputPrefix rest\nHarrayFact10 : 248 <= bv_unsigned inputPrefix\nHarrayFact11 : bv_unsigned inputPrefix <= 255\nHarrayFact13 : take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)) = take (Z.to_nat (bv_unsigned inputPrefix - 247)) rest\nHarrayFact14 : base.length (take 8 (drop 0 frameBytes)) = 8%nat\nHarrayFact15 : littleEndian (take 8 (drop 0 frameBytes)) = bv_unsigned (decodeItemSavedFramePointer args)\nHarrayFact16 : base.length (take 8 (drop 8 frameBytes)) = 8%nat\nHarrayFact17 : littleEndian (take 8 (drop 8 frameBytes)) = decodeItemReturnAddress args\nHarrayFact18 : decodeItemReturnAddress args = decodeItemReturnAddress args\nHarrayFact19 : decodeItemInputLength args = base.length (decodeItemInputBytes args)\nHarrayFact20 : base.length (decodeItemBeforeStorage args) = 40%nat\nHarrayFact21 : 0 <= decodeItemInputPointer args\nHarrayFact22 : 0 <= decodeItemInputLength args\nHarrayFact23 : decodeItemInputPointer args + decodeItemInputLength args < word64Modulus\nHarrayFact24 : 0 <= decodeItemOutputPointer args\nHarrayFact25 : decodeItemOutputPointer args + 40 < word64Modulus\nHarrayFact26 : decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact27 : decodeItemStackPointer args < word64Modulus\nHarrayFact28 : mapRamBase defaultMap + decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact29 : decodeItemStackPointer args <= machineRamEnd defaultMap\nHarrayFact30 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemOutputPointer args) 40\nHarrayFact31 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact32 : separateRanges (decodeItemOutputPointer args) 40 (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact33 : 0 <= decodeItemReturnAddress args\nHarrayFact34 : decodeItemReturnAddress args < word64Modulus\nHarrayFact35 : decodeItemReturnAddress args mod 4 = 0\nHarrayFact36 : mapInputBufferAddress defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= mapInputBufferAddress defaultMap + mapInputCapacity defaultMap\n\u2228 mapRamBase defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= machineRamEnd defaultMap\nHarrayFact37 : mapRamBase defaultMap <= decodeItemOutputPointer args\nHarrayFact38 : decodeItemOutputPointer args + 40 <= machineRamEnd defaultMap\nHarrayFact39 : 0 <= decodeItemInputEnd args\nHarrayFact40 : decodeItemInputEnd args < word64Modulus\nHarrayFact41 : decodeItemInputPointer args + decodeItemInputLength args <= decodeItemInputEnd args\nH10 : decodeItemInputBytes args !! Z.to_nat (1 + i) = Some vmem\nH11 : (Z.to_nat (1 + i) < base.length (decodeItemInputBytes args))%nat\nb0 : bv 64\nH12 : Z.land (bv_unsigned b0) 131072 = 0\nb1 : bv 64\nH13 : Z.land (bv_unsigned b1) 131072 = 0\nb2 : bv 64\nH14 : Z.land (bv_unsigned b2) 131072 = 0\nn : bv 64\nH15 : -1 < bv_unsigned n < bv_modulus 64\nH16 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n < bv_half_modulus 64\nH17 : -1 < bv_unsigned b2 < bv_modulus 64\nH18 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b2 < bv_half_modulus 64\nH19 : -1 < bv_unsigned b1 < bv_modulus 64\nH20 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b1 < bv_half_modulus 64\nH21 : -1 < bv_unsigned b0 < bv_modulus 64\nH22 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b0 < bv_half_modulus 64\nH23 : -1 < bv_unsigned vmem < bv_modulus 8\nH24 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed vmem < bv_half_modulus 8\nH25 : -1 < bv_unsigned b < bv_modulus 64\nH26 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b < bv_half_modulus 64\nH27 : -1 < bv_unsigned n0 < bv_modulus 64\nH28 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n0 < bv_half_modulus 64\nH29 : -1 < bv_unsigned inputPrefix < bv_modulus 8\nH30 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed inputPrefix < bv_half_modulus 8\nb3 : bv 64\nH31 : Z.land (bv_unsigned b3) 131072 = 0\nLET := (Z_to_bv 64 2148362964 + 4)%bv : bv 64\nLET0 := negb (bool_decide ((Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 247)))) : bool\nLET1 := (Z_to_bv 64 2148362964 + 18446744073709551600)%bv : bv 64\nH32 : (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv \u2260 Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 247))\nLET2 := bv_extract 0 1 (LET1 \u226b 1) : bv 1\nLET3 := negb (bool_decide (LET2 = 1%bv)) : bool\nIPM_JANNO := HIDDEN : envs (iPropI Sigma)\nH33 : decodeItemSavedFrameFacts args (bv_to_little_endian 8 8 (bv_unsigned (decodeItemSavedFramePointer args)) ++ bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))))\nLET_GOAL := HIDDEN : () \u2192 iPropI Sigma\n|-RVal_Bits (bv_or (Z_to_bv 64 (bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))))) \u226a 8) (bv_zero_extend 64 vmem)) =\nRVal_Bits (Z_to_bv 64 (bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))))))",
+                "proof_finished": false,
+                "commands_run": 1,
+                "check_time_ms": 0,
+                "state_id": 3,
+                "from_state_id": 2,
+                "focus_depth": 0
+              },
+              "before": {
+                "success": true,
+                "state_id": 2,
+                "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6ac4_old0_S131/state_2.json",
+                "sha256": "253c74d53c7b9ba98273b8a64a2e4335ce146c86c0fabacd3eacf0b81e855ce8",
+                "bytes": 51419,
+                "active_goals": 1,
+                "stack_entries": 0,
+                "shelved_goals": 0,
+                "given_up_goals": 0,
+                "stack_frame_goal_counts": [],
+                "groups_are_actual": true,
+                "truncated": false,
+                "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+                "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+                "theorem": "S165_6ac4_old0_S131",
+                "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old0_S131.v",
+                "source_sha256": "ecf369ae2e84c888a5c294f8f4df59393eb3fb28cb75be6e0c1ad5caf61fb130",
+                "proof_finished": false
+              },
+              "after": {
+                "success": true,
+                "state_id": 3,
+                "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6ac4_old0_S131/state_3.json",
+                "sha256": "73148910be4d36ccb8b25603f0ad880f2facdb90b09813e749159e8f6b2b78e7",
+                "bytes": 51315,
+                "active_goals": 1,
+                "stack_entries": 0,
+                "shelved_goals": 0,
+                "given_up_goals": 0,
+                "stack_frame_goal_counts": [],
+                "groups_are_actual": true,
+                "truncated": false,
+                "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+                "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+                "theorem": "S165_6ac4_old0_S131",
+                "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old0_S131.v",
+                "source_sha256": "ecf369ae2e84c888a5c294f8f4df59393eb3fb28cb75be6e0c1ad5caf61fb130",
+                "proof_finished": false
+              }
+            }
+          ],
+          "trial": {
+            "success": true,
+            "results": [
+              {
+                "tactic": "exact (f_equal (fun x : bv 64 => RVal_Bits x) (S131_6ac4_00 args inputPrefix i vmem H5 H0 H10)).",
+                "success": false,
+                "reason": "tactic_failed",
+                "error": "Coq: In environment\nSigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\ninputPrefix : bv 8\nrest : list (bv 8)\ni : Z\nframeBytes : list (bv 8)\nH0 : i < bv_unsigned inputPrefix - 247\nH1 : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args\nH2 : decodeItemSavedFrameFacts args frameBytes\nH3 : decodeItemFoldProvenance args true inputPrefix rest (bv_unsigned inputPrefix - 247) (decodeItemInputPointer args + 1)\n       (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)))\nH4 : base.length frameBytes = 16%nat\nH5 : decodeItemByteFoldFacts args (bv_unsigned inputPrefix - 247) i (decodeItemInputPointer args + 1) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)))\nn0, b : bv 64\nH6 : Z.land (bv_unsigned b) 131072 = 0\nH7 : Z.land (bvn_unsigned n0) 131072 = 0\nH9 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0) + 1) <= bv_signed 3221225472\nH8 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0)) >= bv_signed 2684354560\nvmem : bv 8\nHarrayFact0 : decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0\nHarrayAddressRange : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact2 : bv_unsigned inputPrefix - 247 <= 8\nHarrayFact1 : 1 <= bv_unsigned inputPrefix - 247\nHarrayFact3 : 0 <= i\nHarrayFact8 : decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 247) <= decodeItemInputPointer args + decodeItemInputLength args\nHarrayFact7 : base.length (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))) = bv_unsigned inputPrefix - 247\nHarrayFact4 : i <= bv_unsigned inputPrefix - 247\nHarrayFact9 : decodeItemInputHead args inputPrefix rest\nHarrayFact10 : 248 <= bv_unsigned inputPrefix\nHarrayFact11 : bv_unsigned inputPrefix <= 255\nHarrayFact13 : take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)) = take (Z.to_nat (bv_unsigned inputPrefix - 247)) rest\nHarrayFact14 : base.length (take 8 (drop 0 frameBytes)) = 8%nat\nHarrayFact15 : littleEndian (take 8 (drop 0 frameBytes)) = bv_unsigned (decodeItemSavedFramePointer args)\nHarrayFact16 : base.length (take 8 (drop 8 frameBytes)) = 8%nat\nHarrayFact17 : littleEndian (take 8 (drop 8 frameBytes)) = decodeItemReturnAddress args\nHarrayFact18 : decodeItemReturnAddress args = decodeItemReturnAddress args\nHarrayFact19 : decodeItemInputLength args = base.length (decodeItemInputBytes args)\nHarrayFact20 : base.length (decodeItemBeforeStorage args) = 40%nat\nHarrayFact21 : 0 <= decodeItemInputPointer args\nHarrayFact22 : 0 <= decodeItemInputLength args\nHarrayFact23 : decodeItemInputPointer args + decodeItemInputLength args < word64Modulus\nHarrayFact24 : 0 <= decodeItemOutputPointer args\nHarrayFact25 : decodeItemOutputPointer args + 40 < word64Modulus\nHarrayFact26 : decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact27 : decodeItemStackPointer args < word64Modulus\nHarrayFact28 : mapRamBase defaultMap + decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact29 : decodeItemStackPointer args <= machineRamEnd defaultMap\nHarrayFact30 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemOutputPointer args) 40\nHarrayFact31 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact32 : separateRanges (decodeItemOutputPointer args) 40 (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact33 : 0 <= decodeItemReturnAddress args\nHarrayFact34 : decodeItemReturnAddress args < word64Modulus\nHarrayFact35 : decodeItemReturnAddress args mod 4 = 0\nHarrayFact36 : mapInputBufferAddress defaultMap <= decodeItemInputPointer args\n               \u2227 decodeItemInputPointer args + decodeItemInputLength args <= mapInputBufferAddress defaultMap + mapInputCapacity defaultMap\n               \u2228 mapRamBase defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= machineRamEnd defaultMap\nHarrayFact37 : mapRamBase defaultMap <= decodeItemOutputPointer args\nHarrayFact38 : decodeItemOutputPointer args + 40 <= machineRamEnd defaultMap\nHarrayFact39 : 0 <= decodeItemInputEnd args\nHarrayFact40 : decodeItemInputEnd args < word64Modulus\nHarrayFact41 : decodeItemInputPointer args + decodeItemInputLength args <= decodeItemInputEnd args\nH10 : decodeItemInputBytes args !! Z.to_nat (1 + i) = Some vmem\nH11 : (Z.to_nat (1 + i) < base.length (decodeItemInputBytes args))%nat\nb0 : bv 64\nH12 : Z.land (bv_unsigned b0) 131072 = 0\nb1 : bv 64\nH13 : Z.land (bv_unsigned b1) 131072 = 0\nb2 : bv 64\nH14 : Z.land (bv_unsigned b2) 131072 = 0\nn : bv 64\nH15 : -1 < bv_unsigned n < bv_modulus 64\nH16 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n < bv_half_modulus 64\nH17 : -1 < bv_unsigned b2 < bv_modulus 64\nH18 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b2 < bv_half_modulus 64\nH19 : -1 < bv_unsigned b1 < bv_modulus 64\nH20 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b1 < bv_half_modulus 64\nH21 : -1 < bv_unsigned b0 < bv_modulus 64\nH22 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b0 < bv_half_modulus 64\nH23 : -1 < bv_unsigned vmem < bv_modulus 8\nH24 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed vmem < bv_half_modulus 8\nH25 : -1 < bv_unsigned b < bv_modulus 64\nH26 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b < bv_half_modulus 64\nH27 : -1 < bv_unsigned n0 < bv_modulus 64\nH28 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n0 < bv_half_modulus 64\nH29 : -1 < bv_unsigned inputPrefix < bv_modulus 8\nH30 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed inputPrefix < bv_half_modulus 8\nb3 : bv 64\nH31 : Z.land (bv_unsigned b3) 131072 = 0\nLET := (Z_to_bv 64 2148362964 + 4)%bv : bv 64\nLET0 := negb (bool_decide ((Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 247)))) : bool\nLET1 := (Z_to_bv 64 2148362964 + 18446744073709551600)%bv : bv 64\nH32 : (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv \u2260 Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 247))\nLET2 := bv_extract 0 1 (LET1 \u226b 1) : bv 1\nLET3 := negb (bool_decide (LET2 = 1%bv)) : bool\nIPM_JANNO := HIDDEN : envs (iPropI Sigma)\nH33 : decodeItemSavedFrameFacts args (bv_to_little_endian 8 8 (bv_unsigned (decodeItemSavedFramePointer args)) ++ bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))))\nLET_GOAL := HIDDEN : () \u2192 iPropI Sigma\nThe term \"f_equal (\u03bb x : bv 64, RVal_Bits x) (S131_6ac4_00 args inputPrefix i vmem H5 H0 H10)\" has type\n \"RVal_Bits (bv_or (Z_to_bv 64 (bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))))) \u226a 8) (bv_zero_extend 64 vmem)) =\n  RVal_Bits (Z_to_bv 64 (bigEndian (take (Z.to_nat (i + 1)) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))))))\" while it is expected to have type\n \"RVal_Bits (bv_or (Z_to_bv 64 (bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))))) \u226a 8) (bv_zero_extend 64 vmem)) =\n  RVal_Bits (Z_to_bv 64 (bigEndian (take (Z.to_nat i) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))))))\"."
+              }
+            ],
+            "from_state_id": 3
+          },
+          "rollback": {
+            "success": true,
+            "state_id": 3,
+            "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6ac4_old0_S131/state_3.json",
+            "sha256": "73148910be4d36ccb8b25603f0ad880f2facdb90b09813e749159e8f6b2b78e7",
+            "bytes": 51315,
+            "active_goals": 1,
+            "stack_entries": 0,
+            "shelved_goals": 0,
+            "given_up_goals": 0,
+            "stack_frame_goal_counts": [],
+            "groups_are_actual": true,
+            "truncated": false,
+            "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+            "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+            "theorem": "S165_6ac4_old0_S131",
+            "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old0_S131.v",
+            "source_sha256": "ecf369ae2e84c888a5c294f8f4df59393eb3fb28cb75be6e0c1ad5caf61fb130",
+            "proof_finished": false
+          },
+          "advancement": null,
+          "final": {
+            "success": true,
+            "state_id": 3,
+            "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6ac4_old0_S131/state_3.json",
+            "sha256": "73148910be4d36ccb8b25603f0ad880f2facdb90b09813e749159e8f6b2b78e7",
+            "bytes": 51315,
+            "active_goals": 1,
+            "stack_entries": 0,
+            "shelved_goals": 0,
+            "given_up_goals": 0,
+            "stack_frame_goal_counts": [],
+            "groups_are_actual": true,
+            "truncated": false,
+            "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+            "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+            "theorem": "S165_6ac4_old0_S131",
+            "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old0_S131.v",
+            "source_sha256": "ecf369ae2e84c888a5c294f8f4df59393eb3fb28cb75be6e0c1ad5caf61fb130",
+            "proof_finished": false
+          },
+          "native_assignment_executed": false,
+          "native_assignment_limit": "The exported target binds i. No assignable successor existential or global native evar map is available."
+        },
+        {
+          "fixture": {
+            "name": "S165_6ac4_old1_S131",
+            "site": "6ac4",
+            "original_index": 1,
+            "file": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old1_S131.v",
+            "context": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-supported-shelf-focus-005/6ac4-OLD-VALUE-1-CONTEXT.json",
+            "introduction_body": "intros Sigma islaG0 H args inputPrefix rest i frameBytes H0 H1 H2 H3 H4 H5 n0 b H6 H7 H9 H8 vmem HarrayFact0 HarrayFact HarrayAddressRange HarrayFact2 HarrayFact1 HarrayFact3 HarrayFact8 HarrayFact7 HarrayFact4 HarrayFact9 HarrayFact10 HarrayFact11 HarrayFact13 HarrayFact14 HarrayFact15 HarrayFact16 HarrayFact17 HarrayFact18 HarrayFact19 HarrayFact20 HarrayFact21 HarrayFact22 HarrayFact23 HarrayFact24 HarrayFact25 HarrayFact26 HarrayFact27 HarrayFact28 HarrayFact29 HarrayFact30 HarrayFact31 HarrayFact32 HarrayFact33 HarrayFact34 HarrayFact35 HarrayFact36 HarrayFact37 HarrayFact38 HarrayFact39 HarrayFact40 HarrayFact41 H10 H11 b0 H12 b1 H13 b2 H14 n H15 H16 H17 H18 H19 H20 H21 H22 H23 H24 H25 H26 H27 H28 H29 H30 b3 H31 LET LET0 LET1 H32 LET2 LET3 H33 IPM_JANNO LET_GOAL.",
+            "certificate": "/home/cody/zesislar/.worktrees/worker1-spec-a-s130/_build/s131-correct-successors-001/S131_6ac4_01.v",
+            "certificate_name": "S131_6ac4_01",
+            "application_body": "exact (f_equal (fun x : bv 64 => RVal_Bits x) (S131_6ac4_01 args inputPrefix i H5)).",
+            "target": "SHELVED_SIDECOND\n  (@eq valu\n     (RegVal_Base\n        (Val_Bits\n           (@bv_to_bvn (Npos (xO (xO (xO (xO (xO (xO xH)))))))\n              (@bv_add (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Z_to_bv (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Z.add (Z.add (decodeItemInputPointer args) (Zpos xH)) i))\n                 (@BV (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Zpos xH) I)))))\n     (RegVal_Base (Val_Bits (@bv_to_bvn (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Z_to_bv (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Z.add (Z.add (decodeItemInputPointer args) (Zpos xH)) i))))))",
+            "native_assignment_limit": "The exported target binds i. No assignable successor existential or global native evar map is available."
+          },
+          "exact_certificate_statement": "Lemma S131_6ac4_01 (args : DecodeItemArgs) (inputPrefix : bv 8) (i : Z) :\ndecodeItemByteFoldFacts args (Z.sub (bv_unsigned inputPrefix) 247) i (Z.add (decodeItemInputPointer args) 1) (take (Z.to_nat (Z.sub (bv_unsigned inputPrefix) 247)) (drop 1 (decodeItemInputBytes args))) ->\n((Z_to_bv 64 (Z.add (Z.add (decodeItemInputPointer args) 1) i) + 1)%bv = Z_to_bv 64 (Z.add (Z.add (decodeItemInputPointer args) 1) (Z.add i 1))).\n",
+          "operations": [
+            {
+              "body": "intros Sigma islaG0 H args inputPrefix rest i frameBytes H0 H1 H2 H3 H4 H5 n0 b H6 H7 H9 H8 vmem HarrayFact0 HarrayFact HarrayAddressRange HarrayFact2 HarrayFact1 HarrayFact3 HarrayFact8 HarrayFact7 HarrayFact4 HarrayFact9 HarrayFact10 HarrayFact11 HarrayFact13 HarrayFact14 HarrayFact15 HarrayFact16 HarrayFact17 HarrayFact18 HarrayFact19 HarrayFact20 HarrayFact21 HarrayFact22 HarrayFact23 HarrayFact24 HarrayFact25 HarrayFact26 HarrayFact27 HarrayFact28 HarrayFact29 HarrayFact30 HarrayFact31 HarrayFact32 HarrayFact33 HarrayFact34 HarrayFact35 HarrayFact36 HarrayFact37 HarrayFact38 HarrayFact39 HarrayFact40 HarrayFact41 H10 H11 b0 H12 b1 H13 b2 H14 n H15 H16 H17 H18 H19 H20 H21 H22 H23 H24 H25 H26 H27 H28 H29 H30 b3 H31 LET LET0 LET1 H32 LET2 LET3 H33 IPM_JANNO LET_GOAL.",
+              "response": {
+                "success": true,
+                "goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\ninputPrefix : bv 8\nrest : list (bv 8)\ni : Z\nframeBytes : list (bv 8)\nH0 : i < bv_unsigned inputPrefix - 247\nH1 : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args\nH2 : decodeItemSavedFrameFacts args frameBytes\nH3 : decodeItemFoldProvenance args true inputPrefix rest (bv_unsigned inputPrefix - 247) (decodeItemInputPointer args + 1)\n  (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)))\nH4 : base.length frameBytes = 16%nat\nH5 : decodeItemByteFoldFacts args (bv_unsigned inputPrefix - 247) i (decodeItemInputPointer args + 1) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)))\nn0, b : bv 64\nH6 : Z.land (bv_unsigned b) 131072 = 0\nH7 : Z.land (bvn_unsigned n0) 131072 = 0\nH9 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0) + 1) <= bv_signed 3221225472\nH8 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0)) >= bv_signed 2684354560\nvmem : bv 8\nHarrayFact0 : decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0\nHarrayAddressRange : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact2 : bv_unsigned inputPrefix - 247 <= 8\nHarrayFact1 : 1 <= bv_unsigned inputPrefix - 247\nHarrayFact3 : 0 <= i\nHarrayFact8 : decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 247) <= decodeItemInputPointer args + decodeItemInputLength args\nHarrayFact7 : base.length (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))) = bv_unsigned inputPrefix - 247\nHarrayFact4 : i <= bv_unsigned inputPrefix - 247\nHarrayFact9 : decodeItemInputHead args inputPrefix rest\nHarrayFact10 : 248 <= bv_unsigned inputPrefix\nHarrayFact11 : bv_unsigned inputPrefix <= 255\nHarrayFact13 : take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)) = take (Z.to_nat (bv_unsigned inputPrefix - 247)) rest\nHarrayFact14 : base.length (take 8 (drop 0 frameBytes)) = 8%nat\nHarrayFact15 : littleEndian (take 8 (drop 0 frameBytes)) = bv_unsigned (decodeItemSavedFramePointer args)\nHarrayFact16 : base.length (take 8 (drop 8 frameBytes)) = 8%nat\nHarrayFact17 : littleEndian (take 8 (drop 8 frameBytes)) = decodeItemReturnAddress args\nHarrayFact18 : decodeItemReturnAddress args = decodeItemReturnAddress args\nHarrayFact19 : decodeItemInputLength args = base.length (decodeItemInputBytes args)\nHarrayFact20 : base.length (decodeItemBeforeStorage args) = 40%nat\nHarrayFact21 : 0 <= decodeItemInputPointer args\nHarrayFact22 : 0 <= decodeItemInputLength args\nHarrayFact23 : decodeItemInputPointer args + decodeItemInputLength args < word64Modulus\nHarrayFact24 : 0 <= decodeItemOutputPointer args\nHarrayFact25 : decodeItemOutputPointer args + 40 < word64Modulus\nHarrayFact26 : decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact27 : decodeItemStackPointer args < word64Modulus\nHarrayFact28 : mapRamBase defaultMap + decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact29 : decodeItemStackPointer args <= machineRamEnd defaultMap\nHarrayFact30 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemOutputPointer args) 40\nHarrayFact31 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact32 : separateRanges (decodeItemOutputPointer args) 40 (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact33 : 0 <= decodeItemReturnAddress args\nHarrayFact34 : decodeItemReturnAddress args < word64Modulus\nHarrayFact35 : decodeItemReturnAddress args mod 4 = 0\nHarrayFact36 : mapInputBufferAddress defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= mapInputBufferAddress defaultMap + mapInputCapacity defaultMap\n\u2228 mapRamBase defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= machineRamEnd defaultMap\nHarrayFact37 : mapRamBase defaultMap <= decodeItemOutputPointer args\nHarrayFact38 : decodeItemOutputPointer args + 40 <= machineRamEnd defaultMap\nHarrayFact39 : 0 <= decodeItemInputEnd args\nHarrayFact40 : decodeItemInputEnd args < word64Modulus\nHarrayFact41 : decodeItemInputPointer args + decodeItemInputLength args <= decodeItemInputEnd args\nH10 : decodeItemInputBytes args !! Z.to_nat (1 + i) = Some vmem\nH11 : (Z.to_nat (1 + i) < base.length (decodeItemInputBytes args))%nat\nb0 : bv 64\nH12 : Z.land (bv_unsigned b0) 131072 = 0\nb1 : bv 64\nH13 : Z.land (bv_unsigned b1) 131072 = 0\nb2 : bv 64\nH14 : Z.land (bv_unsigned b2) 131072 = 0\nn : bv 64\nH15 : -1 < bv_unsigned n < bv_modulus 64\nH16 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n < bv_half_modulus 64\nH17 : -1 < bv_unsigned b2 < bv_modulus 64\nH18 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b2 < bv_half_modulus 64\nH19 : -1 < bv_unsigned b1 < bv_modulus 64\nH20 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b1 < bv_half_modulus 64\nH21 : -1 < bv_unsigned b0 < bv_modulus 64\nH22 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b0 < bv_half_modulus 64\nH23 : -1 < bv_unsigned vmem < bv_modulus 8\nH24 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed vmem < bv_half_modulus 8\nH25 : -1 < bv_unsigned b < bv_modulus 64\nH26 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b < bv_half_modulus 64\nH27 : -1 < bv_unsigned n0 < bv_modulus 64\nH28 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n0 < bv_half_modulus 64\nH29 : -1 < bv_unsigned inputPrefix < bv_modulus 8\nH30 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed inputPrefix < bv_half_modulus 8\nb3 : bv 64\nH31 : Z.land (bv_unsigned b3) 131072 = 0\nLET := (Z_to_bv 64 2148362964 + 4)%bv : bv 64\nLET0 := negb (bool_decide ((Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 247)))) : bool\nLET1 := (Z_to_bv 64 2148362964 + 18446744073709551600)%bv : bv 64\nH32 : (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv \u2260 Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 247))\nLET2 := bv_extract 0 1 (LET1 \u226b 1) : bv 1\nLET3 := negb (bool_decide (LET2 = 1%bv)) : bool\nH33 : decodeItemSavedFrameFacts args (bv_to_little_endian 8 8 (bv_unsigned (decodeItemSavedFramePointer args)) ++ bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))))\nIPM_JANNO := HIDDEN : envs (iPropI Sigma)\nLET_GOAL := HIDDEN : () \u2192 iPropI Sigma\n|-SHELVED_SIDECOND (RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args + 1 + i)))",
+                "proof_finished": false,
+                "commands_run": 1,
+                "check_time_ms": 5,
+                "state_id": 2,
+                "from_state_id": 1,
+                "focus_depth": 0
+              },
+              "before": {
+                "success": true,
+                "state_id": 1,
+                "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6ac4_old1_S131/state_1.json",
+                "sha256": "802b5fd79701f1ca66a3a875fd76a25ef8d08528bc671b74d3bea8434d51e1f0",
+                "bytes": 60425,
+                "active_goals": 1,
+                "stack_entries": 0,
+                "shelved_goals": 0,
+                "given_up_goals": 0,
+                "stack_frame_goal_counts": [],
+                "groups_are_actual": true,
+                "truncated": false,
+                "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+                "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+                "theorem": "S165_6ac4_old1_S131",
+                "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old1_S131.v",
+                "source_sha256": "0757206a5054007715840edcbd83694805c4f4d3c787229e704d7c7c9d05427a",
+                "proof_finished": false
+              },
+              "after": {
+                "success": true,
+                "state_id": 2,
+                "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6ac4_old1_S131/state_2.json",
+                "sha256": "3d4d0947bd3436b1f0d57cc5705145c073b4825128b6fd8d78188031d2d47690",
+                "bytes": 46679,
+                "active_goals": 1,
+                "stack_entries": 0,
+                "shelved_goals": 0,
+                "given_up_goals": 0,
+                "stack_frame_goal_counts": [],
+                "groups_are_actual": true,
+                "truncated": false,
+                "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+                "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+                "theorem": "S165_6ac4_old1_S131",
+                "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old1_S131.v",
+                "source_sha256": "0757206a5054007715840edcbd83694805c4f4d3c787229e704d7c7c9d05427a",
+                "proof_finished": false
+              }
+            },
+            {
+              "body": "unfold SHELVED_SIDECOND.",
+              "response": {
+                "success": true,
+                "goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\ninputPrefix : bv 8\nrest : list (bv 8)\ni : Z\nframeBytes : list (bv 8)\nH0 : i < bv_unsigned inputPrefix - 247\nH1 : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args\nH2 : decodeItemSavedFrameFacts args frameBytes\nH3 : decodeItemFoldProvenance args true inputPrefix rest (bv_unsigned inputPrefix - 247) (decodeItemInputPointer args + 1)\n  (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)))\nH4 : base.length frameBytes = 16%nat\nH5 : decodeItemByteFoldFacts args (bv_unsigned inputPrefix - 247) i (decodeItemInputPointer args + 1) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)))\nn0, b : bv 64\nH6 : Z.land (bv_unsigned b) 131072 = 0\nH7 : Z.land (bvn_unsigned n0) 131072 = 0\nH9 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0) + 1) <= bv_signed 3221225472\nH8 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0)) >= bv_signed 2684354560\nvmem : bv 8\nHarrayFact0 : decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0\nHarrayAddressRange : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact2 : bv_unsigned inputPrefix - 247 <= 8\nHarrayFact1 : 1 <= bv_unsigned inputPrefix - 247\nHarrayFact3 : 0 <= i\nHarrayFact8 : decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 247) <= decodeItemInputPointer args + decodeItemInputLength args\nHarrayFact7 : base.length (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))) = bv_unsigned inputPrefix - 247\nHarrayFact4 : i <= bv_unsigned inputPrefix - 247\nHarrayFact9 : decodeItemInputHead args inputPrefix rest\nHarrayFact10 : 248 <= bv_unsigned inputPrefix\nHarrayFact11 : bv_unsigned inputPrefix <= 255\nHarrayFact13 : take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)) = take (Z.to_nat (bv_unsigned inputPrefix - 247)) rest\nHarrayFact14 : base.length (take 8 (drop 0 frameBytes)) = 8%nat\nHarrayFact15 : littleEndian (take 8 (drop 0 frameBytes)) = bv_unsigned (decodeItemSavedFramePointer args)\nHarrayFact16 : base.length (take 8 (drop 8 frameBytes)) = 8%nat\nHarrayFact17 : littleEndian (take 8 (drop 8 frameBytes)) = decodeItemReturnAddress args\nHarrayFact18 : decodeItemReturnAddress args = decodeItemReturnAddress args\nHarrayFact19 : decodeItemInputLength args = base.length (decodeItemInputBytes args)\nHarrayFact20 : base.length (decodeItemBeforeStorage args) = 40%nat\nHarrayFact21 : 0 <= decodeItemInputPointer args\nHarrayFact22 : 0 <= decodeItemInputLength args\nHarrayFact23 : decodeItemInputPointer args + decodeItemInputLength args < word64Modulus\nHarrayFact24 : 0 <= decodeItemOutputPointer args\nHarrayFact25 : decodeItemOutputPointer args + 40 < word64Modulus\nHarrayFact26 : decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact27 : decodeItemStackPointer args < word64Modulus\nHarrayFact28 : mapRamBase defaultMap + decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact29 : decodeItemStackPointer args <= machineRamEnd defaultMap\nHarrayFact30 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemOutputPointer args) 40\nHarrayFact31 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact32 : separateRanges (decodeItemOutputPointer args) 40 (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact33 : 0 <= decodeItemReturnAddress args\nHarrayFact34 : decodeItemReturnAddress args < word64Modulus\nHarrayFact35 : decodeItemReturnAddress args mod 4 = 0\nHarrayFact36 : mapInputBufferAddress defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= mapInputBufferAddress defaultMap + mapInputCapacity defaultMap\n\u2228 mapRamBase defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= machineRamEnd defaultMap\nHarrayFact37 : mapRamBase defaultMap <= decodeItemOutputPointer args\nHarrayFact38 : decodeItemOutputPointer args + 40 <= machineRamEnd defaultMap\nHarrayFact39 : 0 <= decodeItemInputEnd args\nHarrayFact40 : decodeItemInputEnd args < word64Modulus\nHarrayFact41 : decodeItemInputPointer args + decodeItemInputLength args <= decodeItemInputEnd args\nH10 : decodeItemInputBytes args !! Z.to_nat (1 + i) = Some vmem\nH11 : (Z.to_nat (1 + i) < base.length (decodeItemInputBytes args))%nat\nb0 : bv 64\nH12 : Z.land (bv_unsigned b0) 131072 = 0\nb1 : bv 64\nH13 : Z.land (bv_unsigned b1) 131072 = 0\nb2 : bv 64\nH14 : Z.land (bv_unsigned b2) 131072 = 0\nn : bv 64\nH15 : -1 < bv_unsigned n < bv_modulus 64\nH16 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n < bv_half_modulus 64\nH17 : -1 < bv_unsigned b2 < bv_modulus 64\nH18 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b2 < bv_half_modulus 64\nH19 : -1 < bv_unsigned b1 < bv_modulus 64\nH20 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b1 < bv_half_modulus 64\nH21 : -1 < bv_unsigned b0 < bv_modulus 64\nH22 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b0 < bv_half_modulus 64\nH23 : -1 < bv_unsigned vmem < bv_modulus 8\nH24 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed vmem < bv_half_modulus 8\nH25 : -1 < bv_unsigned b < bv_modulus 64\nH26 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b < bv_half_modulus 64\nH27 : -1 < bv_unsigned n0 < bv_modulus 64\nH28 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n0 < bv_half_modulus 64\nH29 : -1 < bv_unsigned inputPrefix < bv_modulus 8\nH30 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed inputPrefix < bv_half_modulus 8\nb3 : bv 64\nH31 : Z.land (bv_unsigned b3) 131072 = 0\nLET := (Z_to_bv 64 2148362964 + 4)%bv : bv 64\nLET0 := negb (bool_decide ((Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 247)))) : bool\nLET1 := (Z_to_bv 64 2148362964 + 18446744073709551600)%bv : bv 64\nH32 : (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv \u2260 Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 247))\nLET2 := bv_extract 0 1 (LET1 \u226b 1) : bv 1\nLET3 := negb (bool_decide (LET2 = 1%bv)) : bool\nH33 : decodeItemSavedFrameFacts args (bv_to_little_endian 8 8 (bv_unsigned (decodeItemSavedFramePointer args)) ++ bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))))\nIPM_JANNO := HIDDEN : envs (iPropI Sigma)\nLET_GOAL := HIDDEN : () \u2192 iPropI Sigma\n|-RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args + 1 + i))",
+                "proof_finished": false,
+                "commands_run": 1,
+                "check_time_ms": 0,
+                "state_id": 3,
+                "from_state_id": 2,
+                "focus_depth": 0
+              },
+              "before": {
+                "success": true,
+                "state_id": 2,
+                "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6ac4_old1_S131/state_2.json",
+                "sha256": "3d4d0947bd3436b1f0d57cc5705145c073b4825128b6fd8d78188031d2d47690",
+                "bytes": 46679,
+                "active_goals": 1,
+                "stack_entries": 0,
+                "shelved_goals": 0,
+                "given_up_goals": 0,
+                "stack_frame_goal_counts": [],
+                "groups_are_actual": true,
+                "truncated": false,
+                "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+                "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+                "theorem": "S165_6ac4_old1_S131",
+                "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old1_S131.v",
+                "source_sha256": "0757206a5054007715840edcbd83694805c4f4d3c787229e704d7c7c9d05427a",
+                "proof_finished": false
+              },
+              "after": {
+                "success": true,
+                "state_id": 3,
+                "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6ac4_old1_S131/state_3.json",
+                "sha256": "7c00598208786d7715a56701da344d837688df3982fd59e989c2fd91d0aaf39e",
+                "bytes": 46620,
+                "active_goals": 1,
+                "stack_entries": 0,
+                "shelved_goals": 0,
+                "given_up_goals": 0,
+                "stack_frame_goal_counts": [],
+                "groups_are_actual": true,
+                "truncated": false,
+                "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+                "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+                "theorem": "S165_6ac4_old1_S131",
+                "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old1_S131.v",
+                "source_sha256": "0757206a5054007715840edcbd83694805c4f4d3c787229e704d7c7c9d05427a",
+                "proof_finished": false
+              }
+            }
+          ],
+          "trial": {
+            "success": true,
+            "results": [
+              {
+                "tactic": "exact (f_equal (fun x : bv 64 => RVal_Bits x) (S131_6ac4_01 args inputPrefix i H5)).",
+                "success": false,
+                "reason": "tactic_failed",
+                "error": "Coq: In environment\nSigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\nargs : DecodeItemArgs\ninputPrefix : bv 8\nrest : list (bv 8)\ni : Z\nframeBytes : list (bv 8)\nH0 : i < bv_unsigned inputPrefix - 247\nH1 : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args\nH2 : decodeItemSavedFrameFacts args frameBytes\nH3 : decodeItemFoldProvenance args true inputPrefix rest (bv_unsigned inputPrefix - 247) (decodeItemInputPointer args + 1)\n       (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)))\nH4 : base.length frameBytes = 16%nat\nH5 : decodeItemByteFoldFacts args (bv_unsigned inputPrefix - 247) i (decodeItemInputPointer args + 1) (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)))\nn0, b : bv 64\nH6 : Z.land (bv_unsigned b) 131072 = 0\nH7 : Z.land (bvn_unsigned n0) 131072 = 0\nH9 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0) + 1) <= bv_signed 3221225472\nH8 : bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 0)) >= bv_signed 2684354560\nvmem : bv 8\nHarrayFact0 : decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0\nHarrayAddressRange : decodeItemInputPointer args <= decodeItemInputPointer args + 1 + i + 0 < decodeItemInputPointer args + base.length (decodeItemInputBytes args) * Z.of_N (8 / 8)\nHarrayFact2 : bv_unsigned inputPrefix - 247 <= 8\nHarrayFact1 : 1 <= bv_unsigned inputPrefix - 247\nHarrayFact3 : 0 <= i\nHarrayFact8 : decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 247) <= decodeItemInputPointer args + decodeItemInputLength args\nHarrayFact7 : base.length (take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args))) = bv_unsigned inputPrefix - 247\nHarrayFact4 : i <= bv_unsigned inputPrefix - 247\nHarrayFact9 : decodeItemInputHead args inputPrefix rest\nHarrayFact10 : 248 <= bv_unsigned inputPrefix\nHarrayFact11 : bv_unsigned inputPrefix <= 255\nHarrayFact13 : take (Z.to_nat (bv_unsigned inputPrefix - 247)) (drop 1 (decodeItemInputBytes args)) = take (Z.to_nat (bv_unsigned inputPrefix - 247)) rest\nHarrayFact14 : base.length (take 8 (drop 0 frameBytes)) = 8%nat\nHarrayFact15 : littleEndian (take 8 (drop 0 frameBytes)) = bv_unsigned (decodeItemSavedFramePointer args)\nHarrayFact16 : base.length (take 8 (drop 8 frameBytes)) = 8%nat\nHarrayFact17 : littleEndian (take 8 (drop 8 frameBytes)) = decodeItemReturnAddress args\nHarrayFact18 : decodeItemReturnAddress args = decodeItemReturnAddress args\nHarrayFact19 : decodeItemInputLength args = base.length (decodeItemInputBytes args)\nHarrayFact20 : base.length (decodeItemBeforeStorage args) = 40%nat\nHarrayFact21 : 0 <= decodeItemInputPointer args\nHarrayFact22 : 0 <= decodeItemInputLength args\nHarrayFact23 : decodeItemInputPointer args + decodeItemInputLength args < word64Modulus\nHarrayFact24 : 0 <= decodeItemOutputPointer args\nHarrayFact25 : decodeItemOutputPointer args + 40 < word64Modulus\nHarrayFact26 : decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact27 : decodeItemStackPointer args < word64Modulus\nHarrayFact28 : mapRamBase defaultMap + decodeItemStackBytes <= decodeItemStackPointer args\nHarrayFact29 : decodeItemStackPointer args <= machineRamEnd defaultMap\nHarrayFact30 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemOutputPointer args) 40\nHarrayFact31 : separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact32 : separateRanges (decodeItemOutputPointer args) 40 (decodeItemStackPointer args - decodeItemStackBytes) decodeItemStackBytes\nHarrayFact33 : 0 <= decodeItemReturnAddress args\nHarrayFact34 : decodeItemReturnAddress args < word64Modulus\nHarrayFact35 : decodeItemReturnAddress args mod 4 = 0\nHarrayFact36 : mapInputBufferAddress defaultMap <= decodeItemInputPointer args\n               \u2227 decodeItemInputPointer args + decodeItemInputLength args <= mapInputBufferAddress defaultMap + mapInputCapacity defaultMap\n               \u2228 mapRamBase defaultMap <= decodeItemInputPointer args \u2227 decodeItemInputPointer args + decodeItemInputLength args <= machineRamEnd defaultMap\nHarrayFact37 : mapRamBase defaultMap <= decodeItemOutputPointer args\nHarrayFact38 : decodeItemOutputPointer args + 40 <= machineRamEnd defaultMap\nHarrayFact39 : 0 <= decodeItemInputEnd args\nHarrayFact40 : decodeItemInputEnd args < word64Modulus\nHarrayFact41 : decodeItemInputPointer args + decodeItemInputLength args <= decodeItemInputEnd args\nH10 : decodeItemInputBytes args !! Z.to_nat (1 + i) = Some vmem\nH11 : (Z.to_nat (1 + i) < base.length (decodeItemInputBytes args))%nat\nb0 : bv 64\nH12 : Z.land (bv_unsigned b0) 131072 = 0\nb1 : bv 64\nH13 : Z.land (bv_unsigned b1) 131072 = 0\nb2 : bv 64\nH14 : Z.land (bv_unsigned b2) 131072 = 0\nn : bv 64\nH15 : -1 < bv_unsigned n < bv_modulus 64\nH16 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n < bv_half_modulus 64\nH17 : -1 < bv_unsigned b2 < bv_modulus 64\nH18 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b2 < bv_half_modulus 64\nH19 : -1 < bv_unsigned b1 < bv_modulus 64\nH20 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b1 < bv_half_modulus 64\nH21 : -1 < bv_unsigned b0 < bv_modulus 64\nH22 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b0 < bv_half_modulus 64\nH23 : -1 < bv_unsigned vmem < bv_modulus 8\nH24 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed vmem < bv_half_modulus 8\nH25 : -1 < bv_unsigned b < bv_modulus 64\nH26 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed b < bv_half_modulus 64\nH27 : -1 < bv_unsigned n0 < bv_modulus 64\nH28 : 64%N \u2260 0%N \u2192 - bv_half_modulus 64 <= bv_signed n0 < bv_half_modulus 64\nH29 : -1 < bv_unsigned inputPrefix < bv_modulus 8\nH30 : 8%N \u2260 0%N \u2192 - bv_half_modulus 8 <= bv_signed inputPrefix < bv_half_modulus 8\nb3 : bv 64\nH31 : Z.land (bv_unsigned b3) 131072 = 0\nLET := (Z_to_bv 64 2148362964 + 4)%bv : bv 64\nLET0 := negb (bool_decide ((Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 247)))) : bool\nLET1 := (Z_to_bv 64 2148362964 + 18446744073709551600)%bv : bv 64\nH32 : (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv \u2260 Z_to_bv 64 (decodeItemInputPointer args + 1 + (bv_unsigned inputPrefix - 247))\nLET2 := bv_extract 0 1 (LET1 \u226b 1) : bv 1\nLET3 := negb (bool_decide (LET2 = 1%bv)) : bool\nH33 : decodeItemSavedFrameFacts args (bv_to_little_endian 8 8 (bv_unsigned (decodeItemSavedFramePointer args)) ++ bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))))\nIPM_JANNO := HIDDEN : envs (iPropI Sigma)\nLET_GOAL := HIDDEN : () \u2192 iPropI Sigma\nThe term \"f_equal (\u03bb x : bv 64, RVal_Bits x) (S131_6ac4_01 args inputPrefix i H5)\" has type\n \"RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args + 1 + (i + 1)))\" while it is expected to have type\n \"RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args + 1 + i) + 1)%bv = RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args + 1 + i))\"."
+              }
+            ],
+            "from_state_id": 3
+          },
+          "rollback": {
+            "success": true,
+            "state_id": 3,
+            "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6ac4_old1_S131/state_3.json",
+            "sha256": "7c00598208786d7715a56701da344d837688df3982fd59e989c2fd91d0aaf39e",
+            "bytes": 46620,
+            "active_goals": 1,
+            "stack_entries": 0,
+            "shelved_goals": 0,
+            "given_up_goals": 0,
+            "stack_frame_goal_counts": [],
+            "groups_are_actual": true,
+            "truncated": false,
+            "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+            "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+            "theorem": "S165_6ac4_old1_S131",
+            "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old1_S131.v",
+            "source_sha256": "0757206a5054007715840edcbd83694805c4f4d3c787229e704d7c7c9d05427a",
+            "proof_finished": false
+          },
+          "advancement": null,
+          "final": {
+            "success": true,
+            "state_id": 3,
+            "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/exports/exact-S165_6ac4_old1_S131/state_3.json",
+            "sha256": "7c00598208786d7715a56701da344d837688df3982fd59e989c2fd91d0aaf39e",
+            "bytes": 46620,
+            "active_goals": 1,
+            "stack_entries": 0,
+            "shelved_goals": 0,
+            "given_up_goals": 0,
+            "stack_frame_goal_counts": [],
+            "groups_are_actual": true,
+            "truncated": false,
+            "method": "Pet.complete_goals.to_json with discarded printing-all branch",
+            "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160",
+            "theorem": "S165_6ac4_old1_S131",
+            "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old1_S131.v",
+            "source_sha256": "0757206a5054007715840edcbd83694805c4f4d3c787229e704d7c7c9d05427a",
+            "proof_finished": false
+          },
+          "native_assignment_executed": false,
+          "native_assignment_limit": "The exported target binds i. No assignable successor existential or global native evar map is available."
+        }
+      ],
+      "required_assignment": "Before commitment, assign the stepped accumulator and cursor at i+1 from S131. The committed old-i targets reject these certificates and stay unchanged.",
+      "limits": "Reconstructed exact residual applications; no global native evar map or assignment. No full header closure.",
+      "native_closure_claim": false,
+      "target": {
+        "path": "ZesuSsz/Evidence/precommitment/6ac4.ledger-target.txt",
+        "sha256": "572eec32cfd5313a5c957d0229190be2dbf9613e9281844ca8c1bb3686a5a327"
+      }
+    },
+    {
+      "block": "6ad8",
+      "status": "ExplicitIntroductionApplied",
+      "operation": "decodeItemListReturnLengthWitness",
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s173/ZesuSsz/Evidence/precommitment/6ad8.json",
+        "sha256": "df24287b5055eabf9d6f6985c139a59c29f90e8075ba36d793863d032a3c693c"
+      },
+      "source": {
+        "success": true,
+        "state_id": 76,
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s115-precommit-s43-application-005/exports/state_76.json",
+        "sha256": "df24287b5055eabf9d6f6985c139a59c29f90e8075ba36d793863d032a3c693c",
+        "bytes": 19711,
+        "active_goals": 3,
+        "stack_entries": 0,
+        "shelved_goals": 4,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": [],
+        "groups_are_actual": true,
+        "truncated": false,
+        "method": "Pet.complete_goals.to_json",
+        "workspace": "/home/cody/zesislar/.worktrees/worker1-spec-a",
+        "theorem": "DesignedBoundary_800d6ad8",
+        "source": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s115-precommit-s43-application-005/Replay6ad8.v",
+        "source_sha256": "03d042264e2348a5681b45b0aeb74715a4645c46a322f0519484b0d55714de31",
+        "proof_finished": false
+      },
+      "retained_scope": "Exact retained I62 native statements on owned current artifacts. Historical33b9a455 plus four Rule38 overlays differs from the current28-switch scope.",
+      "report": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/build/stock-zisk/spec-a-s115/PRECOMMIT-005-REPORT.json",
+        "sha256": "a420690601eb14f439d1c28ad5f660fe147669f37f22f118f1bbff10ebfe3442"
+      },
+      "required_assignment": "Use the registered canonical witness before commitment; discharge the unchanged resource source.",
+      "limits": "Captured proof state stays open. Pure theorem uses the verified retained premise subset. No repaired native closure asserted.",
+      "target": {
+        "path": "ZesuSsz/Evidence/precommitment/6ad8.ledger-target.txt",
+        "sha256": "cf192ea7298b08ab610908b50cb3dcf9a6dee1af2cdb015680edb84798ece965"
+      },
+      "pure_witness_certificate": "s124_6ad8_canonical_witnesses"
+    },
+    {
+      "block": "6ae0",
+      "status": "ArraySelectionRecorded",
+      "operation": "1: liFindInContext.",
+      "statement": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-native-store-capture-mcp-006/STATEMENT.v",
+        "sha256": "a173e2a65b54c347008f8cf26a95353b8eca2a9a91f5e0c0d03d6f3d66f7a530"
+      },
+      "report": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-native-store-capture-audit-006/REPORT.json",
+        "sha256": "74a2639c43b480082e8ad1a999fe772c91ee1ec9331d70f1a0a27211c4b88a69"
+      },
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-native-store-capture-mcp-006/6ae0/exports/state_37.json",
+        "sha256": "5fc98da21f7d1b36164d1f532d3754179ae6e5fb52b3ed8a7e794354a15995eb"
+      },
+      "groups": [
+        3,
+        0,
+        4,
+        0
+      ],
+      "retained_scope": {
+        "verification_root": "dc832abbf6291a9008dfb949ef8638bcdfc4b490",
+        "declaration_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+        "activation": "Current dc832 sources and objects, Approved28 and root hints26. The statement comes from frozen e17 Approved28/hints25."
+      },
+      "selected_resource": {
+        "request_address": "decodeItemOutputPointer args + 32",
+        "resource": "decodeItemOutputPointer args memory array returnStorage locals",
+        "region": "Initialized array branch",
+        "base": "decodeItemOutputPointer args",
+        "element_width": "8 : N",
+        "current_image": "returnStorage locals",
+        "value_width": "64 : N",
+        "store_bytes": "8 : N",
+        "index": "Existential i : nat remains unresolved. The target retains Z.of_nat i = outputPointer + 32 - outputPointer.",
+        "source_of_selection": "Actual original liFindInContext returned target and resources. The candidate snapshots alone do not establish selection.",
+        "shared_evars": "Actual shelf records and all complete kernel group exports are retained. The global evar graph is unavailable."
+      },
+      "required_assignment": "At STAGE-D, retain the initialized output array at decodeItemOutputPointer args, width8. Resolve index32 from the exact address equation and prove the retained 8-byte bound. Preserve the updated-resource wand and caller. This is a repair requirement, not a measured assignment.",
+      "limits": [
+        "Only the first observed 6ae0 store is captured. Other static stores and sites remain pending.",
+        "Snapshots retain provisional typeclass branches. The first seventeen use FICSyntactic and the next seven use ZesuMemRegionSearch.",
+        "The input counter permits 512 attempts. Search completes after twenty-four attempts.",
+        "The tool exports actual groups and complete local definitions. It does not export a global evar graph or proof term.",
+        "No Qed, compiled theorem object, assumptions check, native closure, or selected index certificate follows.",
+        "Opaque helper internals remain unavailable.",
+        "RESULT.json retains the older broad remaining-stages list. The dedicated candidate result and this audit classify actual C/D evidence.",
+        "Capture005 and both006 preparation validation records remain preserved."
+      ],
+      "native_closure_claim": false,
+      "target": {
+        "path": "ZesuSsz/Evidence/precommitment/6ae0.ledger-target.txt",
+        "sha256": "957a2c7976aba8f2e89ee6492bb90d4db913f6c51df35963ffdf14a783e665b7"
+      },
+      "required_selection": {
+        "boundary": "STAGE-D after original liFindInContext; before index commitment and updated-resource consumption",
+        "region": "Initialized output array",
+        "base": "decodeItemOutputPointer args",
+        "current_image": "returnStorage locals",
+        "element_width": "8%N",
+        "index_equation": "Z.of_nat i = decodeItemOutputPointer args + 32 - decodeItemOutputPointer args",
+        "index_solution": "32",
+        "store_bytes": 8,
+        "bound": "i + 8 <= List.length (returnStorage locals)",
+        "assignment_limit": "The equation determines the pure index. The ledger does not assign a native evar or prove the updated-resource continuation."
+      }
+    },
+    {
+      "block": "6b08",
+      "status": "ArraySelectionRecorded",
+      "operation": "1: liFindInContext.",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-mcp-001/Capture6b08.v",
+        "sha256": "25c80d1f03d333969c602311f7afd9eb3122d3ba889be8ee4ca9d8f20ea5db90"
+      },
+      "statement": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-mcp-001/6b08.statement.v",
+        "sha256": "fd497456cf685e8f4810147e6d30f40b63c6b3cf766c857ddd52686bcc9d73b7"
+      },
+      "report": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-audit-001/REPORT.json",
+        "sha256": "7b9562694174c7e79a401efd320cb1e9f2f4ff89449ba31be07e550aaa0bd0bd"
+      },
+      "capture": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-mcp-001/6b08/exports/state_36.json",
+        "sha256": "07380311e3ed1b5d97cfb0368e2fb87ed3bdb4951cebbb58339d7d9e8b01a897"
+      },
+      "groups": [
+        3,
+        0,
+        3,
+        0
+      ],
+      "retained_scope": {
+        "verification_root": "dc832abbf6291a9008dfb949ef8638bcdfc4b490",
+        "declaration_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
+        "activation": "Current dc832 Approved28/root hints26. Frozen declarations retain e17 historical28/25."
+      },
+      "pre_search": {
+        "groups": [
+          3,
+          0,
+          3,
+          0
+        ],
+        "export": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-mcp-001/6b08/exports/state_11.json",
+          "sha256": "426ec7d4643589163253057c760a2cb07473c41a9a60b1b2e72fa78c607e16e6"
+        }
+      },
+      "selected_resource": "Initialized output array at decodeItemOutputPointer args with image returnStorage locals.",
+      "required_assignment": "At STAGE-D, retain the initialized output array at decodeItemOutputPointer args, width8. Resolve index32 from the exact address equation and prove the retained 2-byte bound. Preserve the updated-resource wand and caller. This is a repair requirement, not a measured assignment.",
+      "later_operation": null,
+      "limits": "Unavailable. Individual compiler CPU/RSS unavailable.",
+      "native_closure_claim": false,
+      "target": {
+        "path": "ZesuSsz/Evidence/precommitment/6b08.ledger-target.txt",
+        "sha256": "54c2be6622b4763eba3fe9bc7526873a7420f8faf1ae8eb25182e0e3a5535586"
+      },
+      "required_selection": {
+        "boundary": "STAGE-D after original liFindInContext; before index commitment and updated-resource consumption",
+        "region": "Initialized output array",
+        "base": "decodeItemOutputPointer args",
+        "current_image": "returnStorage locals",
+        "element_width": "8%N",
+        "index_equation": "Z.of_nat i = decodeItemOutputPointer args + 32 - decodeItemOutputPointer args",
+        "index_solution": "32",
+        "store_bytes": 2,
+        "bound": "i + 2 <= List.length (returnStorage locals)",
+        "assignment_limit": "The equation determines the pure index. The ledger does not assign a native evar or prove the updated-resource continuation."
+      }
+    }
+  ],
+  "limits": [
+    "Measured operation is separate from native assignment.",
+    "I75 stops do not establish requested head/rest/length commitment.",
+    "No native closure or new resource premise follows from this inventory."
+  ]
+}
