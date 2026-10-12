@@ -36,6 +36,7 @@ Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import Scaffolding.DecodeItemComplianceStatement.
 Require Import Scaffolding.DecodeItemSignatureGates.
 Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.
+Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d697c.
 
 Lemma decodeItemNativeBlocksSelectedCompliance
   (native800d6960 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (returnAddress : Z) (args : DecodeItemArgs),
@@ -44,11 +45,6 @@ Lemma decodeItemNativeBlocksSelectedCompliance
   decodeItemSelectedCode -∗
   instr_body 0x800d6960
     (decodeItemEntryAt800d6960 returnAddress args ∗ True))
-  (native800d697c : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),
-  instr_pre 0x800d698c (∃ (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -∗
-  decodeItemSelectedCode -∗
-  instr_body 0x800d697c
-    (decodeItemEntryAt800d697c args frameBytes x13 inputPrefix rest ∗ True))
   (native800d698c : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (pointerBytes : list byte) (lengthBytes : list byte) (inputPrefix : byte) (rest : list byte) (isLiteral : bool),
   decodeItemSelectedCode -∗
   instr_body 0x800d698c
@@ -126,7 +122,7 @@ Proof.
   iPoseProof (decodeItemBlockTable_complete_native_family
     (decodeItemSlotBody800d6960Conditional (native800d6960 Sigma HG HT))
     (@DesignedBoundary_800d6974 Sigma HG HT)
-    (native800d697c Sigma HG HT)
+    (@DesignedBoundary_800d697c Sigma HG HT)
     (native800d698c Sigma HG HT)
     (native800d69b0 Sigma HG HT)
     (native800d69e8 Sigma HG HT)
