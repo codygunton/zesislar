@@ -59,17 +59,10 @@ end).
 1: liFindInContext.
 1: hand697c_recover 3.
 1: iSplit; [iPureIntro; lazymatch goal with |- ?P => let evidence := ZesuSsz.Automation.Hooks.zesu_registered_pure_fact P in exact evidence end | ].
-1: iSplit.
-1: iPureIntro.
-1: rewrite !length_drop !length_app !length_take !HarrayFact3.
-1: cbn [length N.to_nat].
-1: rewrite length_drop HarrayFact3.
-1: cbn.
-1: lia.
+1: iSplit; [iPureIntro; solve [zesu_finish] | ].
 1: hand697c_recover 5.
 1: unfold TRACE.
 1: hand697c_recover 6.
-1: assert (Hliteral : bool_decide (bv_unsigned inputPrefix <= 127) = true) by (apply bool_decide_true; exact H1).
 1: liExist.
 1: do 5 liExist.
 1: liInst (fun x => x.1ₗ = true).
@@ -78,7 +71,25 @@ end).
 1: liExInst.
 1: liInst (fun x => x.3ₗ = bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)))).
 1: liExInst.
-1: zesu_block.
+1: iMatchHyp ltac:(fun H P => lazymatch P with
+  (decodeItemOutputPointer args ↦ₘ∗ ?storage)%I =>
+  liInst (fun x => x.3ₗ = {| returnA1 := Z_to_bv 64 (decodeItemInputPointer args);
+    returnA2 := Z_to_bv 64 1; returnA3 := Z_to_bv 64 (bv_signed inputPrefix);
+    returnA4 := x14; returnA5 := x15; returnA6 := x16;
+    returnStorage := storage; returnFrame := frameBytes |}); liExInst end).
+1: liInst (fun x => x.2ₗ = inputPrefix); liExInst.
+1: liInst (fun x => x.1ₗ = rest); liExInst.
+1: unfold decodeItemEntryAt800d698c, decodeItemReturnEntryCore;
+   cbn [returnA1 returnA2 returnA3 returnA4 returnA5 returnA6 returnStorage returnFrame].
+1: iFrame.
+1: iExists tt.
+1: unfold decodeItemBranchContinuation, decodeItemBranchContinuationAt; iFrame.
+1: iSplit.
+1: replace (Z_to_bv 64 1) with (1%bv : bv 64) by (apply bv_eq; reflexivity).
+1: iFrame.
+1: iPureIntro; repeat split; try assumption.
+1: repeat first [progress rewrite length_drop | progress rewrite length_app |
+ progress rewrite length_take | progress rewrite HarrayFact3 | progress cbn]; lia.
 1: iPureIntro.
 1: repeat (first [assumption | split]).
 1: apply decodeItemRawInputPointer; assumption.
@@ -96,9 +107,6 @@ all: unfold lithium.proof_state.SHELVED_SIDECOND.
 all: try reflexivity.
 1: f_equal; f_equal; f_equal; apply bv_eq; reflexivity.
 all: try (lazymatch goal with |- @eq valu _ _ => f_equal; f_equal; f_equal; apply bv_eq; reflexivity end).
-1: f_equal.
-1: apply bool_decide_true.
-1: bv_solve.
-1: rewrite HarrayFact3; cbn; lia.
+2: rewrite HarrayFact3; cbn; lia.
 all: f_equal; apply bool_decide_true; bv_solve.
 Qed.
