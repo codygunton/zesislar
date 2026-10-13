@@ -47,14 +47,10 @@ Lemma decodeItemNativeBlocksSignatureFixture
   decodeItemSelectedCode -∗
   instr_body 0x800d6a40
     (decodeItemEntryAt800d6a40 args locals inputPrefix rest headerLength payloadLength ∗ True))
-  (native800d6a78 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),
-  decodeItemSelectedCode -∗
-  instr_body 0x800d6a78
-    (decodeItemEntryAt800d6a78 args locals inputPrefix rest ∗ True))
  :
   ReviewedDecodeItemComplianceType.
 Proof.
-  exact (decodeItemNativeBlocksSelectedCompliance native800d69b0 native800d6a40 native800d6a78).
+  exact (decodeItemNativeBlocksSelectedCompliance native800d69b0 native800d6a40).
 Qed.
 Print Assumptions decodeItemNativeBlocksSignatureFixture.
 
@@ -67,14 +63,10 @@ Lemma decodeItemNativeBlocksMissing69b0Rejected
   decodeItemSelectedCode -∗
   instr_body 0x800d6a40
     (decodeItemEntryAt800d6a40 args locals inputPrefix rest headerLength payloadLength ∗ True))
-  (native800d6a78 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),
-  decodeItemSelectedCode -∗
-  instr_body 0x800d6a78
-    (decodeItemEntryAt800d6a78 args locals inputPrefix rest ∗ True))
  :
   ReviewedDecodeItemComplianceType.
 Proof.
-  Fail exact (decodeItemNativeBlocksSelectedCompliance native800d6a40 native800d6a78).
-  exact (decodeItemNativeBlocksSelectedCompliance native800d69b0 native800d6a40 native800d6a78).
+  Fail exact (decodeItemNativeBlocksSelectedCompliance native800d6a40).
+  exact (decodeItemNativeBlocksSelectedCompliance native800d69b0 native800d6a40).
 Qed.
 Print Assumptions decodeItemNativeBlocksMissing69b0Rejected.
