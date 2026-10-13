@@ -47,6 +47,7 @@ Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ae0.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ac4.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6aa8.
+Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ad8.
 
 Lemma decodeItemNativeBlocksSelectedCompliance
   (native800d69b0 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),
@@ -61,12 +62,6 @@ Lemma decodeItemNativeBlocksSelectedCompliance
   decodeItemSelectedCode -∗
   instr_body 0x800d6a78
     (decodeItemEntryAt800d6a78 args locals inputPrefix rest ∗ True))
-  (native800d6ad8 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte),
-  instr_pre 0x800d6ae0 (∃ (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -∗
-  instr_pre 0x800d6b08 (∃ (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_headerLength : Z) (successor_payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08 (args) (successor_locals) (successor_inputPrefix) (successor_rest) (successor_headerLength) (successor_payloadLength))%I -∗
-  decodeItemSelectedCode -∗
-  instr_body 0x800d6ad8
-    (decodeItemEntryAt800d6ad8 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest ∗ True))
  :
   ReviewedDecodeItemComplianceType.
 Proof.
@@ -91,7 +86,7 @@ Proof.
     (native800d6a78 Sigma HG HT)
     (@DesignedBoundary_800d6aa8 Sigma HG HT)
     (@DesignedBoundary_800d6ac4 Sigma HG HT)
-    (native800d6ad8 Sigma HG HT)
+    (@DesignedBoundary_800d6ad8 Sigma HG HT)
     (@DesignedBoundary_800d6ae0 Sigma HG HT)
     (@DesignedBoundary_800d6b08 Sigma HG HT) with "Hcode") as "#Htable".
   iPoseProof (decodeItemSlotBody800d6960Conditional (@DesignedBoundary_800d6960 Sigma HG HT) with "Htable") as "Hbody".

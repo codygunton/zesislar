@@ -1,0 +1,282 @@
+{
+  "entry_pc": "0x800d6ad8",
+  "verification_root": "38db88a1dcbac6cf11ff3eba12b39bf2a8f06692",
+  "production_module": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ad8",
+  "production_lemma": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ad8.DesignedBoundary_800d6ad8",
+  "scope": "Promotion of the existing accepted Hand theorem. The Hand proof and contract remain unchanged.",
+  "full_compiles": 9,
+  "fresh_compiles": 8,
+  "exact_statements": 15,
+  "fresh_exact_statements": 14,
+  "verification_methods": {
+    "module_m": 14,
+    "shared_defs": 1
+  },
+  "assumptions": [],
+  "normal_owned_closures": 24,
+  "fresh_normal_closures": 22,
+  "health_checks": 44,
+  "health_ok": true,
+  "prior_promoted_slots": 20,
+  "promoted_slots": 21,
+  "remaining_native_hypotheses": [
+    "native800d69b0",
+    "native800d6a40",
+    "native800d6a78"
+  ],
+  "prior_verification_roots": [
+    "98134d3fe06ec443c1708b500d2086d1b09144fb",
+    "c853befc922eb4565ad81c7c88d6a9046f419d28"
+  ],
+  "limits": [
+    "Compilation and exact statement verification supply the promotion certificate.",
+    "Generated consumers have no recorded interactive goal groups.",
+    "The reused adapter retains its accepted c853befc verification and identical source/object identities.",
+    "Root owns Iris and integration.",
+    "Historical I67 execution evidence supplies no proof premise."
+  ],
+  "bindings": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/ZesuSsz/Generated/DecodeItem/PromotedBodies.v",
+      "sha256": "9870ca68d2b6d03f82000c948e92c245ae9377558a754bce36bbcbbbea34556c"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/agents/spec-b/default/ZesuSsz/Generated/DecodeItem/PromotedBodies.vo",
+      "sha256": "d90710ee7e2804a2ce6457a6eaaa27da9c6bb53a137f5b71e6c4351a86f1cf99"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/ZesuSsz/Evidence/DecodeItemPromoted6ad8Fixtures.v",
+      "sha256": "db9448e4b54c9ba12b25a0aaec03470b77af7114beabc97d9e856614b506d46d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/agents/spec-b/default/ZesuSsz/Evidence/DecodeItemPromoted6ad8Fixtures.vo",
+      "sha256": "2b58a2b14de50fa8bdbf4ca48715c39e2be644f99fbc5c8655d0fdef10bc7183"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/ZesuSsz/Proofs/DecodeItem/Composition/CompleteFamily.v",
+      "sha256": "0d3e73a3c0674c84b9bb212cc5543d87822f5b58a459d8c570b85039c68815f0"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/agents/spec-b/default/ZesuSsz/Proofs/DecodeItem/Composition/CompleteFamily.vo",
+      "sha256": "c8c16cc27ea306f07143722920065a03159d983251a3c13d8e3cc06d2d37e90b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/ZesuSsz/Proofs/DecodeItem/Composition/CompleteNativeFamily.v",
+      "sha256": "33eafab6894e876f06325f996d8ab34a731fd53380dd67f2e2d66277229331d4"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/agents/spec-b/default/ZesuSsz/Proofs/DecodeItem/Composition/CompleteNativeFamily.vo",
+      "sha256": "fc3ac4a3bbad3a75209fca29e51ec4f40340b1643252023dcde1dc0d485a0d67"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/Scaffolding/DecodeItemNativeBlocksCompliance.v",
+      "sha256": "ae2f457578464e8128a343184b7bfa9658f65c2b9b0275846087e479ececfde6"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/agents/spec-b/default/Scaffolding/DecodeItemNativeBlocksCompliance.vo",
+      "sha256": "28071ce5789b55f8695d8f97ab27cb9c8992e5e4078d65959b3e847fd8f12262"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/Scaffolding/DecodeItemNativeBlocksComplianceFixtures.v",
+      "sha256": "8e3fa11683720d42604abf036b6bbf810a133549d11699a296a478d83af61b42"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/agents/spec-b/default/Scaffolding/DecodeItemNativeBlocksComplianceFixtures.vo",
+      "sha256": "d171dc901e8f47eff33bdf5e112a9e1a354920a951961b8fade5640ebe226505"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v",
+      "sha256": "376b35b888aa08b9a0e3a31965a242f1d3fb0ad7aec9a35598a2fe473de0b6af"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/agents/spec-b/default/ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.vo",
+      "sha256": "03be2d5e3bd3ffdf7520e98fd71864e3baef07dcc5ee3d74c43e2eafda269eb2"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/ZesuSsz/Evidence/DecodeItemOpenNativeHypothesesFixtures.v",
+      "sha256": "a80622daad445b0e89fda505482d6ce2757948e994d68ef7e7727ebd71cc1c2a"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/agents/spec-b/default/ZesuSsz/Evidence/DecodeItemOpenNativeHypothesesFixtures.vo",
+      "sha256": "6e596699783a7f81e9c7afd10cf32bb68c341906b292cf0b3873c3574ccc8d30"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ad8.v",
+      "sha256": "1b8b09eef2325ae63e0f179287f9fbedfbb8863de94208a8eae804f08081e723"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/agents/spec-b/default/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ad8.vo",
+      "sha256": "adfd8d4484a3a670a7eb397e9485d783112ea2ce00276132e6c4cb554a6b5183"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion003/PROMOTION.json",
+      "sha256": "3dc7e0cca6651e97ff394d4d5411375d73ad68a0c7d0ccde95b9afd37ca6ef52"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion003/verification/RESULT.json",
+      "sha256": "f5ecc0ce3b8775a3a4b66ff33addc3b7ebfc33ac584880eede869556c4ebe887"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion003/verification/RESULT-WITH-REUSE.json",
+      "sha256": "80c27507a271994f1d0c9c86be459a237ca41c26af5b063017bce6794b39c423"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion003/AUDIT.json",
+      "sha256": "bcbc13cf88511746bf7f0e5a3b05a2807f86463bbd5d2604626bbb74cc877e99"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion001/AUDIT.json",
+      "sha256": "4bd24689e2c0b0afea98043bd6706737e16dca9b6a71b2f535683b7e64a6e571"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion002/AUDIT.json",
+      "sha256": "f44224232db2b2bea6f90d4b0b7286634175ddbfd3766c7a409ec13a62feeac5"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion001/FROZEN-IDENTITIES.json",
+      "sha256": "c92854bde10b5dd8da9d9bee045baedd480ca19cfc22478ffc9a753a187a6b59"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion001/FROZEN-GENERATED-INPUTS.json",
+      "sha256": "36a410f0823fa87af6c05bd4c090870d9fa6fd7913a25c418eac5c446bca8b49"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion-preparation001/DRY-RUN.json",
+      "sha256": "065f8552aedd4ab509d6d87b588ba385ad1acde1ffd135d81026282ea0485fbc"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion-preparation001/ARTIFACT-AUDIT.json",
+      "sha256": "eff2d28805ea472f5fa52bb397d13ae02f4e1b03e163444ab9b83cd7653542d1"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion-preparation001/COMMAND.json",
+      "sha256": "7b4bd21062d28b793464db929b12b2d09335f3cb68c03737ff0031b7d58010ef"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion-preparation001/EFFECTIVE-ENVIRONMENT.json",
+      "sha256": "256d1306530067c0dc566d87f41fce771a9dc2b8f843074e3923d5e6da94af7b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion-preparation002/DRY-RUN.json",
+      "sha256": "0f94009ac752dad378fd04101ac8a9608f5990ce88737146fd72cd17a35d21bd"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion-preparation002/ARTIFACT-AUDIT.json",
+      "sha256": "26875fa9f11d4fcc692dea23d461f5880fbaf81d2f6b85d35dae8610e5074231"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion-preparation002/COMMAND.json",
+      "sha256": "7b4bd21062d28b793464db929b12b2d09335f3cb68c03737ff0031b7d58010ef"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion-preparation002/EFFECTIVE-ENVIRONMENT.json",
+      "sha256": "256d1306530067c0dc566d87f41fce771a9dc2b8f843074e3923d5e6da94af7b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion-preparation003/DRY-RUN.json",
+      "sha256": "d7f224f3defc21a661b72481fa0dbba96d94daebc29a9afdcb3705afa8b59612"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion-preparation003/ARTIFACT-AUDIT.json",
+      "sha256": "68747e0a646cf24e81c9894e2efbf6db8d67ca0b1c8296e54006f294b8393c3d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion-preparation003/COMMAND.json",
+      "sha256": "7b4bd21062d28b793464db929b12b2d09335f3cb68c03737ff0031b7d58010ef"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion-preparation003/EFFECTIVE-ENVIRONMENT.json",
+      "sha256": "256d1306530067c0dc566d87f41fce771a9dc2b8f843074e3923d5e6da94af7b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/ZesuSsz/Automation/Hooks.v",
+      "sha256": "2a75b93761ed9e318766f134e39803634375958b1b0529539a551bfdaa10c79e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/ZesuSsz/Proofs/DecodeItem/Hand/Block800d697c.v",
+      "sha256": "a68592f9b3e15c399948c94d643ae5dcd9e3f2483807d6c39752863950c011b2"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ad8.v",
+      "sha256": "e83ba5f332fcdfa5d708593615d066e827b48473995b1050b48f1f8b0adf8299"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/ZesuSsz/Evidence/spec_shape_inventory.json",
+      "sha256": "2d29e6af3be886345202d442b3c3cf5f641b5899cd8687e98e2669636fc40c57"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion002/CHECK-FAST.json",
+      "sha256": "34cccc26a241b6022e24520470dfc23cacdfed852a2195b500cfe12fd94d04e7"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion002/CHECK-FAST.log",
+      "sha256": "844cdf265d960781822cabdd8ae2ff73b8e8cfb928f833e22018e162e4f31669"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion004/CHECK-FAST.json",
+      "sha256": "543fd1998f155e6ff6909de3b0b7579a0c9ed46ac3d4aa4845ea16b0a89dd72e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion004/CHECK-FAST.log",
+      "sha256": "d42ec0570fcdeaa587b8700c615007f6450b99b49a2a625daf040fa758a48db9"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion004/PINNED-CHECKOUT-REPAIR.json",
+      "sha256": "99ffc7bbd41b1ca15a897330a7d4796620dc9008c3ff8b44f70a71041e49a8b5"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/hand6ad8-promotion-preparation003/SOURCE-COMPARISON.json",
+      "sha256": "3753771b3c53a21d5de89a5b654f17a9506b7a23a523ff0316849461e3d463ed"
+    }
+  ],
+  "parent": "38db88a1dcbac6cf11ff3eba12b39bf2a8f06692",
+  "checkpoint_UTC": "2026-10-13T08:34:02.817146+00:00",
+  "check_fast": {
+    "command": [
+      "make",
+      "check-fast",
+      "CHECK_AGENT=spec-b",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker1-spec-b-hand6ad8-promotion-s79/_build/agents/spec-b",
+      "FAST_JOBS=6",
+      "GUARD=/home/cody/zesislar/tools/resource_guard.sh"
+    ],
+    "start_UTC": "2026-10-13T08:26:22.459207+00:00",
+    "end_UTC": "2026-10-13T08:33:07.437648+00:00",
+    "elapsed_seconds": 404.978451958159,
+    "exit": 0,
+    "scope": "6ad8 promotion checkpoint. Root owns Iris."
+  },
+  "failed_gate": {
+    "exit": 2,
+    "elapsed_seconds": 76.52787511609495,
+    "first_error": "fatal: cannot change to '_build/stock-zisk/sources/zisk': No such file or directory",
+    "correction": "Restore the owned sources link. Check all pinned commits, trees, and tracked patches."
+  },
+  "hand_proof_lines": 68,
+  "preserved_slots": [
+    "800d6960",
+    "800d6974",
+    "800d697c",
+    "800d698c",
+    "800d69a4",
+    "800d69d8",
+    "800d69e0",
+    "800d69e8",
+    "800d6a00",
+    "800d6a08",
+    "800d6a14",
+    "800d6a24",
+    "800d6a38",
+    "800d6a64",
+    "800d6a6c",
+    "800d6aa8",
+    "800d6ab4",
+    "800d6ac4",
+    "800d6ae0",
+    "800d6b08"
+  ],
+  "added_slot": "800d6ad8",
+  "shape_inventory": "The new fixture has zero allowances. Existing allowances remain unchanged.",
+  "iris_owner": "Root",
+  "binding_count": 48
+}
