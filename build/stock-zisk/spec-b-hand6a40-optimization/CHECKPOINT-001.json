@@ -1,0 +1,167 @@
+{
+  "root": "cddbcacce594d6492c313f4729c4403f93711199",
+  "statement_unchanged": true,
+  "baseline": {
+    "CPU_seconds": 1335.084441,
+    "wall_seconds": 1340.330539447954,
+    "peak_RSS_KiB": 7007868,
+    "exit": 0
+  },
+  "optimized": {
+    "CPU_seconds": 109.164128,
+    "wall_seconds": 109.47881185403094,
+    "peak_RSS_KiB": 3040756,
+    "exit": 0
+  },
+  "proof_lines_before": 65,
+  "proof_lines_after": 62,
+  "measurement_limit": "Owned guarded compiler process and its descendants, including admission/setup.",
+  "verification": {
+    "success": true,
+    "verification_method": "module_m",
+    "assumptions": []
+  },
+  "verification_request_wall_seconds": 114.97182992706075,
+  "pre_Qed_groups": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "Qed_check_seconds": 41.618,
+  "closure": {
+    "owner": {
+      "success": true,
+      "pid": 3790150,
+      "start_ticks": 161480318
+    },
+    "owned_pet": null,
+    "server_exited": true,
+    "owned_Pet_absent": true
+  },
+  "bindings": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a40.v",
+      "sha256": "f008583f9236ef3886affb0a2ef0a04fa8850860d7c8345733ff9a8b0781ce78"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-final003/INPUTS.json",
+      "sha256": "f9601033c267352da632f6dd1784ff27a9c66c6cd999e69ea9d07e85e3a67f30"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-final003/RESULT.json",
+      "sha256": "e46be173c4ea297c755cf5dc289eac4b782270ec58892bd66d25902adec0368e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-final003/compiler-3790352.json",
+      "sha256": "4de3758e188e23eb2b26497a0d8d83d2a7beae76f8ebce7c2245efde593c478f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-final003/SAMPLED-COMPILERS.json",
+      "sha256": "22858c3fc4327f31e635242729f17c70807341fa501ea9650248e99bb93613aa"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-final003/MONITOR-CLOSED.json",
+      "sha256": "f494bee5c6b3d94583df48b4681aadca484b27e8afaf7c7afd56d05d8fc11f14"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-final003/OPTIMIZED.vo",
+      "sha256": "f217f757d266e6e41e155ed885a1717ec233bddd7f18ec6cdbf3446726c4e748"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-baseline002/BASELINE-SEALED.json",
+      "sha256": "4cf55320a8a0679c29297c95b1970132f4b7fe79091f4857c691ca5c96b85a71"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-baseline002/BASELINE.v",
+      "sha256": "02c04d97c1c3ac2c81281c361bee28a594a333ae8cce9ec7bf858ad28113b08c"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-baseline002/BASELINE.vo",
+      "sha256": "3eff5c87bc4387c39ae7e34c3f6d5fdc71b8fce0a114b14b27112e8809454f7d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-baseline002/RESULT.json",
+      "sha256": "12fe1cb0c0a9a91d764aafc585c9b977258e3f3d50a86184e39e034822cb6fce"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-baseline002/compiler-3712515.json",
+      "sha256": "06bc1228e95847674587e701f263052bc1f864a4d35a39e47cbda204ad98fecc"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-live002/ACTUAL-QED.json",
+      "sha256": "f92beb423e98cefceb2510a0b4cc9e48609cc555d989a1dd9c9f2c7e3cb02e0c"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-live002/RESULT.json",
+      "sha256": "2045d36fa6a174ed0f029e9ce9ca324c7cedc26155a9d053e71fd6ad75610af5"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-live002/exports/state_122.json",
+      "sha256": "a64cd08ba25b75e26cbed775c005a9565f976fdb28845c07adda969be4d56944"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-live001/OBSERVER-CORRECTION.json",
+      "sha256": "b8c4ff54dd54232a6dcfd3dc0c04d65157380d2f89a58f3e665c7be1f86af478"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-fast003/CHECK-FAST.json",
+      "sha256": "455d7f9e008989e55ffeb3e0c9aedaf761895c9a81f552bdc7ba2a228faec59c"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/ZesuSsz/Evidence/proof_size_baseline.json",
+      "sha256": "55e457c90a12ba69b0a59ccf5985df5c986771d0927cb24b97f8222865ce1173"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-fast003/SIZE.json",
+      "sha256": "f924b7f5388a6106e17c6304b4a8a877c8f03ee37898936fa6862ad9c591f76f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-final003/REBASE.json",
+      "sha256": "17f484fd96bb968af6097585aa381801ec23a2d51ae5a4a4bb22597a9e78eb9a"
+    }
+  ],
+  "parent": "34c81192f5d9fd5b7d4b2f868aa49f43ec0445e8",
+  "gate": {
+    "command": [
+      "make",
+      "check-fast",
+      "CHECK_AGENT=spec-b",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/agents/spec-b",
+      "FAST_JOBS=6",
+      "GUARD=/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/tools/resource_guard.sh"
+    ],
+    "root": "cddbcacce594d6492c313f4729c4403f93711199",
+    "start_UTC": "2026-10-13T18:23:05.322733+00:00",
+    "end_UTC": "2026-10-13T18:28:24.624183+00:00",
+    "elapsed_seconds": 319.3014623420313,
+    "exit": 0,
+    "policy": {
+      "ZESU_GATE_MODULE_LIMIT_GIB": 32,
+      "ZESU_PROOF_CPU_LIMIT": 4000
+    },
+    "scope": "Post-closure 6a40 optimization. Root owns Iris."
+  },
+  "iris_owner": "Root",
+  "scope": "Only the 6a40 Hand proof and its size record change. The exact contract and all promoted consumers remain unchanged.",
+  "preserved_attempts": [
+    {
+      "directory": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-baseline001",
+      "result": "No compilation; missing /usr/bin/time."
+    },
+    {
+      "directory": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-rebase-s85/_build/hand6a40-opt-live001",
+      "result": "Solved tactics, but no Qed or complete final export. Replaced by the changed live002 controller."
+    }
+  ],
+  "verification_root": "cddbcacce594d6492c313f4729c4403f93711199",
+  "integration_root": "34c81192f5d9fd5b7d4b2f868aa49f43ec0445e8",
+  "rebase": {
+    "proof_source_unchanged": true,
+    "changed_root_sources": [
+      "ZesuSsz/Proofs/DecodeItem/Hand/Block800d69b0.v",
+      "ZesuSsz/Evidence/proof_size_baseline.json"
+    ],
+    "gate_reuse": "Root changed only the unrelated 69b0 proof and its size record. The 6a40 proof and imports retain tested bytes."
+  }
+}
