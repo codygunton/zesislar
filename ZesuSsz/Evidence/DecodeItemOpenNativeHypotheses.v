@@ -159,12 +159,11 @@ Definition decodeItemOpenNativeClosure6b08 : Prop :=
     (decodeItemEntryAt800d6b08 args locals inputPrefix rest headerLength payloadLength ∗ True).
 
 Record DecodeItemOpenNativeHypotheses : Prop := {
-  native800d69b0 : decodeItemOpenNativeClosure69b0;
   native800d6a40 : decodeItemOpenNativeClosure6a40
 }.
 
 Definition decodeItemOpenNativeBlocks : list Z :=
-  [0x800d69b0; 0x800d6a40].
+  [0x800d6a40].
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d697c.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d69e8.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a08.
@@ -178,21 +177,22 @@ Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6aa8.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ad8.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a78.
+Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d69b0.
 
-Lemma decodeItemOpenNativeBlockCount : length decodeItemOpenNativeBlocks = 2%nat.
+Lemma decodeItemOpenNativeBlockCount : length decodeItemOpenNativeBlocks = 1%nat.
 Proof. reflexivity. Qed.
 
 Lemma decodeItemOpenNativeHypothesesTable `{!islaG Sigma} `{!threadG}
   (Hopen : DecodeItemOpenNativeHypotheses) :
   □ decodeItemSelectedCode -∗ block_table_pre decodeItemBlockTable.
 Proof.
-  destruct Hopen as [H69b0 H6a40].
+  destruct Hopen as [H6a40].
   exact (@ZesuSsz.Proofs.DecodeItem.Composition.CompleteNativeFamily.decodeItemBlockTable_complete_native_family Sigma islaG0 H
     (@ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6960Conditional.decodeItemSlotBody800d6960Conditional Sigma islaG0 H (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6960.DesignedBoundary_800d6960 Sigma islaG0 H))
     (@ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.DesignedBoundary_800d6974 Sigma islaG0 H)
     (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d697c.DesignedBoundary_800d697c Sigma islaG0 H)
     (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d698c.DesignedBoundary_800d698c Sigma islaG0 H)
-    (H69b0 Sigma islaG0 H)
+    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d69b0.DesignedBoundary_800d69b0 Sigma islaG0 H)
     (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d69e8.DesignedBoundary_800d69e8 Sigma islaG0 H)
     (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a08.DesignedBoundary_800d6a08 Sigma islaG0 H)
     (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24.DesignedBoundary_800d6a24 Sigma islaG0 H)
@@ -230,8 +230,7 @@ Definition decodeItemI62NativeResidualCounts : list (Z * nat) :=
 (* I67 measured e17a8888. None records an unavailable active count.
    These printed active counts are not complete kernel goal groups. *)
 Definition decodeItemI67NativeResidualCounts : list (Z * option nat) :=
-  [(0x800d69b0, Some 3%nat);
-   (0x800d6a40, Some 3%nat)].
+  [(0x800d6a40, Some 3%nat)].
 
 Lemma decodeItemI67StatusMatchesOpenBlocks :
   map fst decodeItemI67NativeResidualCounts = decodeItemOpenNativeBlocks.

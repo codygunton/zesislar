@@ -210,18 +210,17 @@ def plan(workspace, pc, module, lemma, table=None):
     text = text.replace(" H" + short, "")
     # The record fixture deliberately lacks a hypothesis, unlike the
     # compliance fixture that tests an omitted application argument.
-    if short == "6960" or not remaining:
-        text = re.sub(r"\nLemma decodeItemOpenNativeMissing[0-9a-f]+Rejected\b.*?Qed\.\n", "\n", text, flags=re.S)
-        text = re.sub(r"Print Assumptions decodeItemOpenNativeMissing[0-9a-f]+Rejected\.\n", "", text)
-        if remaining:
-            missing = remaining[0][10:]
-            declarations = [f"  (H{name[10:]} : decodeItemOpenNativeClosure{name[10:]})"
-                            for name in remaining[1:]]
-            text += (f"\nLemma decodeItemOpenNativeMissing{missing}Rejected\n" +
-                     "\n".join(declarations) + " : True.\nProof.\n"
-                     "  Fail assert (Hopen : DecodeItemOpenNativeHypotheses) by (constructor; assumption).\n"
-                     "  exact I.\nQed.\n" +
-                     f"Print Assumptions decodeItemOpenNativeMissing{missing}Rejected.\n")
+    text = re.sub(r"\nLemma decodeItemOpenNativeMissing[0-9a-f]+Rejected\b.*?Qed\.\n", "\n", text, flags=re.S)
+    text = re.sub(r"Print Assumptions decodeItemOpenNativeMissing[0-9a-f]+Rejected\.\n", "", text)
+    if remaining:
+        missing = remaining[0][10:]
+        declarations = [f"  (H{name[10:]} : decodeItemOpenNativeClosure{name[10:]})"
+                        for name in remaining[1:]]
+        text += (f"\nLemma decodeItemOpenNativeMissing{missing}Rejected\n" +
+                 "\n".join(declarations) + " : True.\nProof.\n"
+                 "  Fail assert (Hopen : DecodeItemOpenNativeHypotheses) by (constructor; assumption).\n"
+                 "  exact I.\nQed.\n" +
+                 f"Print Assumptions decodeItemOpenNativeMissing{missing}Rejected.\n")
     outputs[status_fixtures] = text
     return outputs, {"production": binding(production), "conditional_adapter": binding(conditional),
                      "production_module": module, "production_lemma": lemma,
