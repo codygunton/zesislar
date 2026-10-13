@@ -1,0 +1,294 @@
+{
+  "block": "0x800d6a40",
+  "parent": "c30321a74dc2640e8bb46a001de88a165c0ae1fe",
+  "native_statement": "DesignedBoundary_800d6a40; original exact contract unchanged",
+  "source_sha256": "02c04d97c1c3ac2c81281c361bee28a594a333ae8cce9ec7bf858ad28113b08c",
+  "proof_through_Qed_lines": 65,
+  "health": "Passed; exact responses retained in both raw-call records.",
+  "interactive": {
+    "groups": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pre_Qed_state": 128,
+    "actual_Qed_state": 129,
+    "Qed_seconds": 74.23
+  },
+  "MCP_compilation": {
+    "success": true,
+    "scope": "22e60ea513c58b1752ae9c027e64629db4ebfd5f",
+    "method": "rocq_compile_file full coqc"
+  },
+  "MCP_verification": {
+    "success": true,
+    "verification_method": "module_m",
+    "assumptions": []
+  },
+  "registered_fact": {
+    "name": "decodeItemLongStringOutputMeaningDerived",
+    "lemma": "decodeItemLongStringMachineOutputMeaning",
+    "import_correction": "Remove unnecessary hint umbrella import, add explicit umbrella export. Definition and proof unchanged.",
+    "groups": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "actual_Qed": "48 to49",
+    "verification": {
+      "success": true,
+      "verification_method": "module_m",
+      "assumptions": []
+    }
+  },
+  "measured_costs": {
+    "rocq_compile_file": {
+      "request_UTC": "2026-10-13T10:49:53.889386+00:00",
+      "next_request_UTC": "2026-10-13T11:07:50.050574+00:00",
+      "interval_seconds": 1076.161188,
+      "method": "Request-to-next-request upper bound, not compiler CPU or exact module time."
+    },
+    "rocq_verify": {
+      "request_UTC": "2026-10-13T11:07:54.353245+00:00",
+      "next_request_UTC": "2026-10-13T11:32:11.297310+00:00",
+      "interval_seconds": 1456.944065,
+      "method": "Request-to-next-request upper bound, not compiler CPU or exact module time."
+    }
+  },
+  "measurement_limits": {
+    "CPU": "unlimited",
+    "stack": "unlimited",
+    "scope_memory_max_bytes": 68719476736,
+    "compiler_CPU_seconds": "unavailable",
+    "compiler_peak_RSS": "unavailable",
+    "verification_time_separate": true,
+    "gate": "Passed with32GiB and4000seconds.",
+    "promotion": "Prepared next; not claimed."
+  },
+  "owned_closures": 6,
+  "cleanup_signals": 0,
+  "termination_fallbacks": 0,
+  "gate": {
+    "command": [
+      "make",
+      "check-fast",
+      "CHECK_AGENT=spec-b",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/agents/spec-b",
+      "FAST_JOBS=6",
+      "GUARD=/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/tools/resource_guard.sh"
+    ],
+    "root": "c22604fe22dad02666d3a915d9f193c7c62f5661",
+    "start_UTC": "2026-10-13T12:39:14.445597+00:00",
+    "end_UTC": "2026-10-13T12:53:10.033453+00:00",
+    "elapsed_seconds": 835.5878636338748,
+    "exit": 0,
+    "policy": {
+      "ZESU_GATE_MODULE_LIMIT_GIB": 32,
+      "ZESU_PROOF_CPU_LIMIT": 4000
+    },
+    "scope": "6a40 Hand checkpoint. Root owns Iris."
+  },
+  "rebase": {
+    "tested_gate_root": "c22604fe22dad02666d3a915d9f193c7c62f5661",
+    "current_parent": "c30321a74dc2640e8bb46a001de88a165c0ae1fe",
+    "changed_upstream_files": [
+      "Block800d698c.v",
+      "Block800d6ae0.v",
+      "proof_size_baseline.json"
+    ],
+    "proof_and_imports_unchanged": true,
+    "baseline_entries_preserved": true
+  },
+  "preserved_gate_failures": {
+    "013": "Missing hint export",
+    "015": "Wrong expanded expected root argument; no gate operation ran",
+    "016": "Missing zero-count shape inventory"
+  },
+  "Iris_owner": "Root",
+  "promotion": "Next owner task; not yet claimed. All22existing slots retained.",
+  "references": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a40.v",
+      "sha256": "02c04d97c1c3ac2c81281c361bee28a594a333ae8cce9ec7bf858ad28113b08c",
+      "bytes": 12889
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/ZesuSsz/Compliance/DecodeItemLongStringOutputMeaning.v",
+      "sha256": "88a045363864980ed368bb2eae47b334868a112c225cf77036cf9546596de592",
+      "bytes": 3850
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/ZesuSsz/Compliance/DecodeItemHints.v",
+      "sha256": "1f6df1014fb292b3b90e528f786009dd68d27a9e4a60985520f373f97f2abe54",
+      "bytes": 2032
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/ZesuSsz/Evidence/proof_size_baseline.json",
+      "sha256": "bf4589cc3f16f35ef7b41344e8757e04f1328b58acdb6570d97c0b5f89e8996e",
+      "bytes": 1345
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/ZesuSsz/Evidence/spec_shape_inventory.json",
+      "sha256": "de8bbc1b1311b7fbfe50e3116ba5c67a9ad451b893b2d511beec2f86cb564e0b",
+      "bytes": 13655
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-production012/Candidate.v",
+      "sha256": "9506348ada719a4f0471b1e1ddfc242864e0bc33f199088fc8ff0ca3842a9105",
+      "bytes": 1881
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-production012/PREPARATION.json",
+      "sha256": "b8caabc8cd2bfef56f33055cd8047b1d570b0003e6e4960b25a7c98b953332cb",
+      "bytes": 5790
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-production012/raw-calls.json",
+      "sha256": "e5dd3b32d023d49a83310da842ab9c6243fbc4eeab420f79bb1b9134bae72825",
+      "bytes": 3549391
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-production012/PRE-QED-GROUPS.json",
+      "sha256": "ad4ec582add343841955bd0cee56304a2aa2bef24a3043df7f7262eee8cb8e46",
+      "bytes": 487
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-production012/ACTUAL-QED.json",
+      "sha256": "896e8b05a8ce198a0bcd32f07db1f3ddbe0e0ec20de12ea320fb1c5003e49617",
+      "bytes": 12556
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-production012/COMPILE.json",
+      "sha256": "3c0c1004968c152809cfa8f2dfa366a38377c4e4df70f2f32a82d80bacbb0b59",
+      "bytes": 2266
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-production012/VERIFY.json",
+      "sha256": "c33a2dc2fc8b91b8c7d1cecf04cce8986e2ae4b200fce20b52ad00eb2bfe3f0f",
+      "bytes": 80
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-production012/inspect-return/session-closure.json",
+      "sha256": "ca4f1b94db0aada73fba0869e156901fc66e6349d583f967a2345be70eeacbc5",
+      "bytes": 1169
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-production012/compile-production/session-closure.json",
+      "sha256": "5bc660a52f68c69fce21bf95e75f113c7e6eafcd620b4e54c754977b65e16a38",
+      "bytes": 978
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-production012/verify-fact/session-closure.json",
+      "sha256": "04e0ed300b6ff1bfbf2a1a71e9444972d19c0162d09601ddd37973c57dee5867",
+      "bytes": 978
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-meaning-fact014/PREPARATION.json",
+      "sha256": "d75adeb1f31fde97971b31281e174d89bd1d6d68f4c57b3171d3b320e39e315d",
+      "bytes": 4965
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-meaning-fact014/raw-calls.json",
+      "sha256": "b2018194b521088b3838695fafba601b2346c374cd1c32bc84be7e7cf3c5f9d7",
+      "bytes": 104846
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-meaning-fact014/COMPILE.json",
+      "sha256": "e34102a376cd7560b96d9d980a5eae61267ace47bef594e6efc4404764a36105",
+      "bytes": 245
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-meaning-fact014/PRE-QED-GROUPS.json",
+      "sha256": "f5ea1140d366690b09adef029dfde173b82af2d75e725173302a548d58289257",
+      "bytes": 487
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-meaning-fact014/ACTUAL-QED.json",
+      "sha256": "9452332ac42ccb0f2c1937b92a2264edd5188383f1357ea1442e6526f1f8959e",
+      "bytes": 2075
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-meaning-fact014/VERIFY.json",
+      "sha256": "c33a2dc2fc8b91b8c7d1cecf04cce8986e2ae4b200fce20b52ad00eb2bfe3f0f",
+      "bytes": 80
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-meaning-fact014/PRESERVED-FACT-BEFORE-EXPORT-REPAIR.v",
+      "sha256": "e91bc1242b4f2b0586646255ace4ddd2b030ff3e2da17cd90333d7e8a25275fb",
+      "bytes": 3901
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-meaning-fact014/inspect-return/session-closure.json",
+      "sha256": "bb6a9d7c10b7946cd811f292d58d9aaf9b48bc4b02cae6895d58e7195f608ad5",
+      "bytes": 1162
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-meaning-fact014/compile-fact/session-closure.json",
+      "sha256": "18d02f2043c9e410429776758acd1e4814303c9d92450ea0137706c31d384b90",
+      "bytes": 977
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-meaning-fact014/verify-fact/session-closure.json",
+      "sha256": "567844c55d9da1240451281c1df753ad7d5ff227ecdb47d4182fc980991c9820",
+      "bytes": 977
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-gate017/run-check-fast.py",
+      "sha256": "8c32671fccc6434a749b229537ad0c186c053b0d23d66df1b3cc95f00de17e5b",
+      "bytes": 1694
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-gate017/CHECK-FAST.json",
+      "sha256": "1743cb059580884b06b71e6a1c4e08425003deec4635fe1652e3c737a8620d5d",
+      "bytes": 655
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-gate017/CHECK-FAST.log",
+      "sha256": "a3e4c78aa38b3730df86675b9d00c8812b436e219a96953c4258262756a234bb",
+      "bytes": 195753
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-gate017/SIZE.json",
+      "sha256": "a7a4e8335e6e2874d0ab1a3b3b7e332f03f94445284df821d071d17a2b5a1cca",
+      "bytes": 251
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-gate017/CORRECTION.json",
+      "sha256": "3209b3c1ef7bc16b1ab1a403561968d0f15aaa76b27ddab7e733768a12e514a2",
+      "bytes": 397
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-gate013/CHECK-FAST.json",
+      "sha256": "1b2b32ecaece27557df3710caeba055c8f44079c1415cc5af8b1b9a63dae2074",
+      "bytes": 655
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-gate013/CHECK-FAST.log",
+      "sha256": "935bba91658916c5f86ae6deb7746b8d3b4e3de3370d4e0f8d20cb897b26b189",
+      "bytes": 5076
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-gate016/CHECK-FAST.json",
+      "sha256": "c8262f61d6d8dc5bd99e24b40f5e9f5142d598d7059ce02a25ce0339167803e0",
+      "bytes": 655
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-gate016/CHECK-FAST.log",
+      "sha256": "ff7516ee46177e42918fc10ceb88549334bc013fb3d0d037b2e9a25964bcb7a1",
+      "bytes": 4414
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-gate015/run-check-fast.py",
+      "sha256": "8c32671fccc6434a749b229537ad0c186c053b0d23d66df1b3cc95f00de17e5b",
+      "bytes": 1694
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6a40-38db88a1/_build/hand6a40-gate016/LAUNCHER-CORRECTION.json",
+      "sha256": "c4c17bc69d8d35d3aa8adeaa8679055051107ee3e8b3efda54d1e93be854a44b",
+      "bytes": 272
+    }
+  ],
+  "binding_count": 36
+}
