@@ -1,0 +1,128 @@
+{
+  "kind": "verified return-loop optimization checkpoint",
+  "block": "0x800d6b08",
+  "lemma": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6b08.DesignedBoundary_800d6b08",
+  "verification_root": "3df2ff22ef71a8b41c8a511c2b8c0edf0daeaf98",
+  "gate_root": "86eb4a46d81c3c48bc8f77f1aac1ed3f90c0d047",
+  "source_sha256": "3aa309196904433913e70cf6d793fabb793c439560b47d35c39a2aacf574f7e8",
+  "unchanged_declaration_sha256": "a6130569847b877d0d682fb20fae9e792a3f410af61dede61b9c0e3bffaace82",
+  "declaration_identical_to_baseline": true,
+  "whole_file_physical_lines": 57,
+  "proof_through_qed_physical_lines": 22,
+  "change": "Derive retained restoration facts once. Use the existing guarded runner at the masked-return boundary.",
+  "compilation": {
+    "full_compile_success": true,
+    "Qed_checked_by_full_compiler": true,
+    "baseline_seconds": 1480,
+    "vo_compile_time_seconds": 1017.2,
+    "proof_build_time_seconds": 962.98,
+    "proof_check_time_seconds": 41.987,
+    "MCP_wall_seconds": 1022.3629266910721,
+    "reduction_percent": 31.270270270270267,
+    "above_300_second_goal": true,
+    "leaf_CPU_seconds": null,
+    "leaf_peak_RSS_KiB": null,
+    "individual_return_loop_seconds": null,
+    "historical_return_loop_seconds": 715.031
+  },
+  "verification": {
+    "success": true,
+    "verification_method": "module_m",
+    "assumptions": [],
+    "approximate_request_to_response_file_write_seconds": 976.8646967411041,
+    "measurement_limit": "The response-file interval is not leaf compiler CPU or wall time."
+  },
+  "interactive_limit": "This changed candidate used full compilation and exact statement verification. No new actual-group export was collected. Prior native closure remains separate.",
+  "owned_closure": {
+    "both_transports_normal": true,
+    "client_signals": 0,
+    "fallback_calls": 0,
+    "Pet_identity_not_recorded_by_compile_and_verify": true
+  },
+  "gate": {
+    "command": [
+      "python3",
+      "tools/block/prepare_hand_gate.py",
+      "--workspace",
+      "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22",
+      "--module",
+      "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.v",
+      "--agent",
+      "spec-b",
+      "--jobs",
+      "6",
+      "--check-fast"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1699.4846225399524,
+    "Iris_owner": "Root"
+  },
+  "preserved_failures": {
+    "deps001": "Ignored generated Dune theory input was missing. The corrected dependency build passed.",
+    "mcp001": "The wrapper imposed 6 GiB while the controller requested a 64 GiB probe. The guard rejected the mismatch before compilation.",
+    "correction": "Use the authorized ordinary 6 GiB policy with unlimited CPU and stack."
+  },
+  "bindings": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.v",
+      "sha256": "3aa309196904433913e70cf6d793fabb793c439560b47d35c39a2aacf574f7e8",
+      "bytes": 9763
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt-mcp002/COMPILE.json",
+      "sha256": "12d483269b964d4e8786f8a0003ac4a341d7c9599a6c58674d3247e7e378f4e9",
+      "bytes": 2156
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt-mcp002/VERIFY.json",
+      "sha256": "c33a2dc2fc8b91b8c7d1cecf04cce8986e2ae4b200fce20b52ad00eb2bfe3f0f",
+      "bytes": 80
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt-mcp002/PREPARATION.json",
+      "sha256": "11486a6220b50547d28f6c25f6083e21c6a0359eaad7a69ba5415bb34f77519c",
+      "bytes": 870
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt-mcp002/raw-calls.json",
+      "sha256": "95a62cb7c32c4f2982c5cc38e75be2c3a4dd562bc71663c1d00cf64bd4eb58f2",
+      "bytes": 49817
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt-mcp002/compile-6b08-opt/session-closure.json",
+      "sha256": "92d6fa180815535ea30e7d1a76ac2a90714f435612905539020d7a274774f94f",
+      "bytes": 976
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt-mcp002/verify-6b08-opt/session-closure.json",
+      "sha256": "f4807de1d1529039cf54d180c0176ad65944913bd6d0163c6329db790387e882",
+      "bytes": 976
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt-checkpoint001/CHECK-FAST.json",
+      "sha256": "889109ef1493f2d10382d3000e6ad238f355ca6f3fb2296073b673bc16d22c32",
+      "bytes": 391
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt-checkpoint001/CHECK-FAST.log",
+      "sha256": "bbabc74ecfe1f2f70c7cd034ea2560a66b63bf24db41338d5038fd1c7b9c7369",
+      "bytes": 150670
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt-checkpoint001/ARTIFACTS.json",
+      "sha256": "8a0712ed0305fdf88242e5dd73bf742674e309cd7fd9990196fb53b797f1541c",
+      "bytes": 2545
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt-checkpoint001/compiled-artifacts/.Block800d6b08.aux",
+      "sha256": "4915d99ec60f143ab535c63cbd8a258bb320fdf8ed2a446e6192ef3f1bac41ab",
+      "bytes": 1947
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt-deps001/Original.v",
+      "sha256": "7d65f61e8da4db2fc9b7d35265432c632ca87c51d2e1e53fefaf88774f494424",
+      "bytes": 9652
+    }
+  ],
+  "remaining_work": "Inspect exact entry framing and explicit witnesses for the next changed return-loop optimization. The 6aa8 promotion waits for its serial release."
+}
