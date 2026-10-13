@@ -837,13 +837,51 @@ Ltac zesu_select_plain_register_collection r hypotheses :=
   | Esnoc ?rest _ _ => zesu_select_plain_register_collection r rest
   end.
 
+Lemma zesu_register_shape_collection `{!islaG Sigma} `{!threadG} register shape :
+  (∃ value : valu, ⌜valu_has_shape value shape⌝ ∗ register ↦ᵣ value)%I -∗
+  reg_col [(KindReg register, shape)].
+Proof.
+  rewrite reg_col_cons reg_col_nil. iIntros "Hregister". iFrame.
+Qed.
+
+Lemma zesu_register_exact_collection `{!islaG Sigma} `{!threadG} register value :
+  (register ↦ᵣ value)%I -∗ reg_col [(KindReg register, ExactShape value)].
+Proof.
+  rewrite reg_col_cons reg_col_nil. iIntros "Hregister".
+  iSplitL; [iExists value; iFrame; done | done].
+Qed.
+
+(* Restore an owned collection cell after search exposes its existential. *)
+Ltac zesu_restore_register_collection r f :=
+  iMatchHyp ltac:(fun H body =>
+    lazymatch body with
+    | (∃ value : valu, ⌜valu_has_shape value ?shape⌝ ∗ ?register ↦ᵣ value)%I =>
+        constr_eq register r;
+        assert_fails (has_evar shape);
+        let selected := eval cbv in
+          (regcol_lookup_field r f [(KindReg r, shape)]) in
+        lazymatch selected with
+        | Some _ => iDestruct (zesu_register_shape_collection r shape with H) as H
+        end
+    | (?register ↦ᵣ ?value)%I =>
+        constr_eq register r;
+        assert_fails (has_evar value);
+        let selected := eval cbv in
+          (regcol_lookup_field r f [(KindReg r, ExactShape value)]) in
+        lazymatch selected with
+        | Some _ => iDestruct (zesu_register_exact_collection r value with H) as H
+        end
+    end).
+
 Ltac zesu_register_collection_selection_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepRegisterCollectionSelection);
   lazymatch goal with
   | |- envs_entails (Envs ?persistent ?spatial _)
       (find_in_context (FindStructRegMapsTo ?r ?f) _) =>
       first [zesu_select_register_collection r f spatial |
-             zesu_select_register_collection r f persistent]
+             zesu_select_register_collection r f persistent |
+             zesu_restore_register_collection r f;
+             zesu_register_collection_selection_if_enabled]
   | |- envs_entails (Envs ?persistent ?spatial _)
       (find_in_context (FindRegMapsTo ?r) _) =>
       first [zesu_select_plain_register_collection r spatial |
