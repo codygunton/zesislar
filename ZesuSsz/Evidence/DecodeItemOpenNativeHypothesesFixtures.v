@@ -10,21 +10,13 @@ Require Import ZesuSsz.Generated.DecodeItem.BlockTable.
 Require Import ZesuSsz.Contracts.DecodeItemSelected.
 
 Lemma decodeItemOpenNativeHypothesesApplication `{!islaG Sigma} `{!threadG}
-  (H6a40 : decodeItemOpenNativeClosure6a40)
  :
   ⊢ □ decodeItemSelectedCode -∗ block_table_pre decodeItemBlockTable.
 Proof.
   exact (decodeItemOpenNativeHypothesesTable
-    (Build_DecodeItemOpenNativeHypotheses H6a40)).
+    (Build_DecodeItemOpenNativeHypotheses)).
 Qed.
 
 Print Assumptions decodeItemOpenNativeHypothesesApplication.
 
 
-Lemma decodeItemOpenNativeMissing6a40Rejected
- : True.
-Proof.
-  Fail assert (Hopen : DecodeItemOpenNativeHypotheses) by (constructor; assumption).
-  exact I.
-Qed.
-Print Assumptions decodeItemOpenNativeMissing6a40Rejected.

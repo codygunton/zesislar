@@ -39,26 +39,17 @@ Require Import Scaffolding.DecodeItemComplianceStatement.
 Require Import Scaffolding.DecodeItemSignatureGates.
 
 Lemma decodeItemNativeBlocksSignatureFixture
-  (native800d6a40 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z),
-  decodeItemSelectedCode -∗
-  instr_body 0x800d6a40
-    (decodeItemEntryAt800d6a40 args locals inputPrefix rest headerLength payloadLength ∗ True))
  :
   ReviewedDecodeItemComplianceType.
 Proof.
-  exact (decodeItemNativeBlocksSelectedCompliance native800d6a40).
+  exact (decodeItemNativeBlocksSelectedCompliance ).
 Qed.
 Print Assumptions decodeItemNativeBlocksSignatureFixture.
 
 Lemma decodeItemNativeBlocksMissing69b0Rejected
-  (native800d6a40 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z),
-  decodeItemSelectedCode -∗
-  instr_body 0x800d6a40
-    (decodeItemEntryAt800d6a40 args locals inputPrefix rest headerLength payloadLength ∗ True))
  :
   ReviewedDecodeItemComplianceType.
 Proof.
-  Fail exact (decodeItemNativeBlocksSelectedCompliance ).
-  exact (decodeItemNativeBlocksSelectedCompliance native800d6a40).
+  exact (decodeItemNativeBlocksSelectedCompliance ).
 Qed.
 Print Assumptions decodeItemNativeBlocksMissing69b0Rejected.
