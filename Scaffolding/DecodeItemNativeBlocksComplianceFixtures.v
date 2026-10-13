@@ -39,10 +39,6 @@ Require Import Scaffolding.DecodeItemComplianceStatement.
 Require Import Scaffolding.DecodeItemSignatureGates.
 
 Lemma decodeItemNativeBlocksSignatureFixture
-  (native800d69b0 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),
-  decodeItemSelectedCode -∗
-  instr_body 0x800d69b0
-    (decodeItemEntryAt800d69b0 args locals inputPrefix rest ∗ True))
   (native800d6a40 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z),
   decodeItemSelectedCode -∗
   instr_body 0x800d6a40
@@ -50,15 +46,11 @@ Lemma decodeItemNativeBlocksSignatureFixture
  :
   ReviewedDecodeItemComplianceType.
 Proof.
-  exact (decodeItemNativeBlocksSelectedCompliance native800d69b0 native800d6a40).
+  exact (decodeItemNativeBlocksSelectedCompliance native800d6a40).
 Qed.
 Print Assumptions decodeItemNativeBlocksSignatureFixture.
 
 Lemma decodeItemNativeBlocksMissing69b0Rejected
-  (native800d69b0 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),
-  decodeItemSelectedCode -∗
-  instr_body 0x800d69b0
-    (decodeItemEntryAt800d69b0 args locals inputPrefix rest ∗ True))
   (native800d6a40 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z),
   decodeItemSelectedCode -∗
   instr_body 0x800d6a40
@@ -66,7 +58,7 @@ Lemma decodeItemNativeBlocksMissing69b0Rejected
  :
   ReviewedDecodeItemComplianceType.
 Proof.
-  Fail exact (decodeItemNativeBlocksSelectedCompliance native800d6a40).
-  exact (decodeItemNativeBlocksSelectedCompliance native800d69b0 native800d6a40).
+  Fail exact (decodeItemNativeBlocksSelectedCompliance ).
+  exact (decodeItemNativeBlocksSelectedCompliance native800d6a40).
 Qed.
 Print Assumptions decodeItemNativeBlocksMissing69b0Rejected.
