@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Compliance.DecodeItemCompliance.
 Require Import ZesuSsz.Automation.All.
 Require Import Scaffolding.DecodeItemNativeBlocksCompliance.
 Require Import ZesuSsz.Automation.All.

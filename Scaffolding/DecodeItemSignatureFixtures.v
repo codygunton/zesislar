@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Compliance.DecodeItemCompliance.
 From Coq Require Import ZArith.
 Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Contracts.Level1.
@@ -139,9 +140,5 @@ Fail Check (@fixtureHiddenEvaluator : ReviewedDecodeItemComplianceType).
 
 Require Import Scaffolding.DecodeItemSemanticEntryFixtures.
 
-Section signature_fixture.
-Context (Hcomposed : forall returnAddress,
-  IslarisContractCorrect decodeItemEntry returnAddress
-    (decodeItemComposedC1BModel returnAddress)).
-Check (decodeItemC1BSelectedCompliance Hcomposed : ReviewedDecodeItemComplianceType).
-End signature_fixture.
+Check (decodeItemSelectedCompliance : ReviewedDecodeItemComplianceType).
+Print Assumptions decodeItemSelectedCompliance.
