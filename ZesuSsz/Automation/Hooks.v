@@ -873,6 +873,16 @@ Ltac zesu_restore_register_collection r f :=
         end
     end).
 
+(* Restore a complete register cell before plain register lookup. *)
+Ltac zesu_restore_plain_register_collection r :=
+  iMatchHyp ltac:(fun H body =>
+    lazymatch body with
+    | (∃ value : valu, ⌜valu_has_shape value ?shape⌝ ∗ ?register ↦ᵣ value)%I =>
+        constr_eq register r;
+        assert_fails (has_evar shape);
+        iDestruct (zesu_register_shape_collection r shape with H) as H
+    end).
+
 Ltac zesu_register_collection_selection_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepRegisterCollectionSelection);
   lazymatch goal with
@@ -885,7 +895,9 @@ Ltac zesu_register_collection_selection_if_enabled :=
   | |- envs_entails (Envs ?persistent ?spatial _)
       (find_in_context (FindRegMapsTo ?r) _) =>
       first [zesu_select_plain_register_collection r spatial |
-             zesu_select_plain_register_collection r persistent]
+             zesu_select_plain_register_collection r persistent |
+             zesu_restore_plain_register_collection r;
+             zesu_register_collection_selection_if_enabled]
   | Hlocal := (Envs _ _ _) |-
       envs_entails ?environment (find_in_context (FindStructRegMapsTo _ _) _) =>
       constr_eq environment Hlocal;
