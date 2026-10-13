@@ -13,13 +13,12 @@ Lemma decodeItemOpenNativeHypothesesApplication `{!islaG Sigma} `{!threadG}
   (H69b0 : decodeItemOpenNativeClosure69b0)
   (H6a40 : decodeItemOpenNativeClosure6a40)
   (H6a78 : decodeItemOpenNativeClosure6a78)
-  (H6aa8 : decodeItemOpenNativeClosure6aa8)
   (H6ad8 : decodeItemOpenNativeClosure6ad8)
  :
   ⊢ □ decodeItemSelectedCode -∗ block_table_pre decodeItemBlockTable.
 Proof.
   exact (decodeItemOpenNativeHypothesesTable
-    (Build_DecodeItemOpenNativeHypotheses H69b0 H6a40 H6a78 H6aa8 H6ad8)).
+    (Build_DecodeItemOpenNativeHypotheses H69b0 H6a40 H6a78 H6ad8)).
 Qed.
 
 Print Assumptions decodeItemOpenNativeHypothesesApplication.
@@ -27,7 +26,6 @@ Print Assumptions decodeItemOpenNativeHypothesesApplication.
 Lemma decodeItemOpenNativeMissing69b0Rejected
   (H6a40 : decodeItemOpenNativeClosure6a40)
   (H6a78 : decodeItemOpenNativeClosure6a78)
-  (H6aa8 : decodeItemOpenNativeClosure6aa8)
   (H6ad8 : decodeItemOpenNativeClosure6ad8)
  : True.
 Proof.
