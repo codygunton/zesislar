@@ -42,6 +42,7 @@ Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a08.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6b08.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d698c.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a38.
+Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ae0.
 
 Lemma decodeItemNativeBlocksSelectedCompliance
   (native800d6960 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (returnAddress : Z) (args : DecodeItemArgs),
@@ -86,10 +87,6 @@ Lemma decodeItemNativeBlocksSelectedCompliance
   decodeItemSelectedCode -∗
   instr_body 0x800d6ad8
     (decodeItemEntryAt800d6ad8 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest ∗ True))
-  (native800d6ae0 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals),
-  decodeItemSelectedCode -∗
-  instr_body 0x800d6ae0
-    (decodeItemEntryAt800d6ae0 args locals ∗ True))
  :
   ReviewedDecodeItemComplianceType.
 Proof.
@@ -115,7 +112,7 @@ Proof.
     (native800d6aa8 Sigma HG HT)
     (native800d6ac4 Sigma HG HT)
     (native800d6ad8 Sigma HG HT)
-    (native800d6ae0 Sigma HG HT)
+    (@DesignedBoundary_800d6ae0 Sigma HG HT)
     (@DesignedBoundary_800d6b08 Sigma HG HT) with "Hcode") as "#Htable".
   iPoseProof (decodeItemSlotBody800d6960Conditional (native800d6960 Sigma HG HT) with "Htable") as "Hbody".
   iApply (instr_pre_wand with "Hbody []"); [done|done|].
