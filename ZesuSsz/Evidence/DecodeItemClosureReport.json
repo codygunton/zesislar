@@ -1,0 +1,131 @@
+{
+  "root": "31050a149d7b1fa7d085184f5f3eff62f107e327",
+  "production_module": "ZesuSsz.Compliance.DecodeItemCompliance",
+  "production_theorem": "decodeItemSelectedCompliance",
+  "reviewed_type_old_location": "Scaffolding/DecodeItemSignatureGates.v",
+  "reviewed_type_new_location": "ZesuSsz/Compliance/DecodeItemCompliance.v",
+  "reviewed_type_sha256": "5b485f886fc945504a03e059e2b70f39164d51b282c72e55e5517e8d83762206",
+  "proof_body_sha256": "c2d48d5f8b2f88f7322eda16630064c1a2e3c73f0fbaccf4de188417ba331ed8",
+  "reviewed_type_bytes_unchanged": true,
+  "proof_body_bytes_unchanged": true,
+  "exact_Level1_statement": "forall returnAddress,\n    IslarisContractCorrect decodeItemEntry returnAddress\n      (decodeItemSelectedModel returnAddress).",
+  "actual_typed_promotions": 24,
+  "remaining_native_premises": [],
+  "scratch_axioms": [],
+  "assumptions": [],
+  "verification_method": "module_m",
+  "gate_policy": {
+    "ZESU_GATE_MODULE_LIMIT_GIB": "32",
+    "ZESU_PROOF_CPU_LIMIT": "4000"
+  },
+  "accepted_findlib_record": {
+    "OCAMLPATH": "/home/cody/zesislar/.worktrees/worker2-child-phase1-final-closure/_build/agents/return_fresh/install/default/lib:/home/cody/zesislar/.worktrees/worker2-child-phase1-final-closure/_build/agents/return_fresh/install/default/lib",
+    "private_build": "/home/cody/zesislar/.worktrees/worker2-child-phase1-final-closure/_build/agents/return_fresh",
+    "schema_version": 1,
+    "workspace": "/home/cody/zesislar/.worktrees/worker2-child-phase1-final-closure"
+  },
+  "source_bindings": [
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemCompliance.v",
+      "sha256": "97c189c8f5d6369aaee7e690e4724149790d614e5731cc71e82692f75860d03b"
+    },
+    {
+      "path": "Scaffolding/DecodeItemNativeBlocksCompliance.v",
+      "sha256": "8379af63473f69e15ca558d14e895e06d2ec448b18678831dc82993ee42f272e"
+    },
+    {
+      "path": "Scaffolding/DecodeItemSignatureGates.v",
+      "sha256": "834f4410dd46ce82ef67db33bb9f26b816064ac8bf235ed10c3a3a051518746f"
+    },
+    {
+      "path": "Scaffolding/DecodeItemSignatureFixtures.v",
+      "sha256": "5aca13a9cec77e705a2491d2a8ddb9972e4de9c3a8c776aa07bb8d35cb2601f8"
+    },
+    {
+      "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
+      "sha256": "cf6b3c0b83c3a175d8f769c76058467ee23841260a981f7d8338b7ada87341de"
+    },
+    {
+      "path": "Scaffolding/DecodeItemNativeBlocksComplianceFixtures.v",
+      "sha256": "28b9a8e2651b4d3724a7f1e6f5b094ec0b6d30b6f739985bd7794b5e00dfbb36"
+    }
+  ],
+  "verification_binding": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-phase1-closure-s79/_build/phase1-production-closure-438/mcp/RESULT.json",
+    "sha256": "ea191025722cf58f384d0a1a67756e87e8bbb9f8f55ac3e51cdc4bb1cc329f4c"
+  },
+  "historical_readiness_scope": "Readiness423 compiled with four scratch axioms. That historical result supplies no production proof premise.",
+  "gates": [
+    {
+      "stage": "check-fast",
+      "command": [
+        "make",
+        "check-fast",
+        "CHECK_AGENT=return_fresh",
+        "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker2-child-phase1-final-closure/_build/agents/return_fresh",
+        "FAST_JOBS=32"
+      ],
+      "exit": 0,
+      "wall_seconds": 91.69562645698898,
+      "module_memory_GiB": 32,
+      "CPU_seconds": 4000
+    },
+    {
+      "stage": "check-iris",
+      "command": [
+        "make",
+        "check-iris",
+        "CHECK_AGENT=return_fresh",
+        "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker2-child-phase1-final-closure/_build/agents/return_fresh",
+        "AGENT_JOBS=32"
+      ],
+      "exit": 0,
+      "wall_seconds": 141.57378640794195,
+      "module_memory_GiB": 32,
+      "CPU_seconds": 4000
+    }
+  ],
+  "gate_bindings": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-phase1-closure-s79/_build/phase1-production-closure-fixture-gates-440/check-fast.log",
+      "sha256": "f9bc7b2b8cf38c94d457ccff88c8113ef192f766f35466dcaf961b090ec3cc58"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-phase1-closure-s79/_build/phase1-production-closure-fixture-gates-440/check-iris.log",
+      "sha256": "ec6ceb2a978b04ca8febb05039455229d2e5b78968a3ba43bb0157a2dab5e9b9"
+    }
+  ],
+  "changed_fixture_MCP_binding": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-phase1-closure-s79/_build/phase1-production-closure-fixture-gates-440/mcp/RESULT.json",
+    "sha256": "f003e0dc68d116a0e630bcbf66cc2cd9dfb4406e31239e132b8fda24f5eb301b"
+  },
+  "fixture_import_correction": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-phase1-closure-s79/_build/phase1-production-closure-fixture-gates-440/SOURCE-CHANGE.json",
+    "sha256": "5acf2239da8283a8ed08c09537f53934a6e4fcae11e88ec8475caa4146cdad3c"
+  },
+  "prior_failed_gates": [
+    {
+      "record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-phase1-closure-s79/_build/phase1-production-closure-438/STAGES.json",
+        "sha256": "7bde118789983a186aeb48264a06aeaecbf3d571a7848842f7133fa5d28f937d"
+      },
+      "cause": "missing pinned source mappings; production proof checks passed"
+    },
+    {
+      "record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-child-phase1-closure-s79/_build/phase1-production-closure-gates-439/STAGES.json",
+        "sha256": "6f92b719c0afc8367f65039222ee2622ad80e80a15bc4228651a41e8fdb1f503"
+      },
+      "cause": "native compliance fixture lacked direct production type import"
+    }
+  ],
+  "gate_setup_binding": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-phase1-closure-s79/_build/phase1-production-closure-gates-439/SETUP.json",
+    "sha256": "9f80db19d9d933aa8ac65c1fa50c44219f39439c6225553ebdb5f5773112c27c"
+  },
+  "dependency436_accounting_binding": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-phase1-closure-s79/_build/phase1-production-closure-gates-439/DEPENDENCY436-ACCOUNTING.json",
+    "sha256": "f524e212d9c0dee715a9893f063c38430eecc32f95200daead6edbcbc591b473"
+  },
+  "dependency436_issue_comment": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6151001488"
+}

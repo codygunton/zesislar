@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Compliance.DecodeItemCompliance.
 From Coq Require Import ZArith.
 Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Contracts.Level1.
@@ -31,11 +32,7 @@ Definition ReviewedDecodeItemEntryLayout (inputPointer inputLength resultPointer
 
 Check (eq_refl : decodeItemEntryLayout = ReviewedDecodeItemEntryLayout).
 
-(* Pending gate: no implementation theorem exists for this statement yet. *)
-Definition ReviewedDecodeItemComplianceType : Prop :=
-  forall returnAddress,
-    IslarisContractCorrect decodeItemEntry returnAddress
-      (decodeItemSelectedModel returnAddress).
+
 
 Check (@DecodeItemComplianceStatement : Prop).
 Check (eq_refl : DecodeItemComplianceStatement =
