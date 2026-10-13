@@ -661,6 +661,36 @@ cat "$STATE_DIR/terminations.jsonl"
                 result = self.run_guard("validate_probe_scope", **variables)
                 self.assertEqual(result.returncode, expected, result.stderr)
 
+    def test_ordinary_scope_accepts_every_configured_gate_limit(self):
+        for memory in range(6, 33):
+            with self.subTest(memory=memory):
+                result = self.run_guard("validate_probe_scope", ZESU_IN_GATE="1",
+                                        ZESU_GATE_MODULE_LIMIT_GIB=str(memory),
+                                        ZESU_MODULE_LIMIT_GIB=str(memory))
+                self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_ordinary_scope_rejects_invalid_or_mismatched_gate_limits(self):
+        cases = [(limit, limit) for limit in
+                 ("", "0", "5", "33", "64", "-6", "6.5", "invalid")]
+        cases.extend((("32", "6"), ("6", "32"), ("16", "invalid")))
+        for configured, module in cases:
+            with self.subTest(configured=configured, module=module):
+                result = self.run_guard("validate_probe_scope",
+                                        ZESU_GATE_MODULE_LIMIT_GIB=configured,
+                                        ZESU_MODULE_LIMIT_GIB=module)
+                self.assertEqual(result.returncode, 2, result.stderr)
+
+    def test_configured_gate_limit_preserves_diagnostic_probe_fences(self):
+        for flag, memory in (("1", "64"), ("cpu-only", "6")):
+            with self.subTest(flag=flag):
+                result = self.run_guard("validate_probe_scope",
+                                        ZESU_GATE_MODULE_LIMIT_GIB="32",
+                                        ZESU_DIAGNOSTIC_PROBE=flag,
+                                        ZESU_MODULE_LIMIT_GIB=memory,
+                                        ZESU_PROOF_CPU_LIMIT="unlimited",
+                                        ZESU_PROBE_ISSUE="10")
+                self.assertEqual(result.returncode, 0, result.stderr)
+
     def test_gate_acquires_lock_after_empty_scope_cleanup(self):
         result = self.run_guard('''
 fixture_unit="${SCOPE_PREFIX}-dune-coqc-2147483647-92.scope"
