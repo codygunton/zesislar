@@ -36,3 +36,30 @@ Proof.
   iIntros "Hreturned". iExact "Hreturned".
 Qed.
 
+
+Lemma registerCollectionRestorationPlainShape `{!islaG Sigma} `{!threadG} :
+  ⊢ ((∃ value : valu, ⌜valu_has_shape value (BitsShape 64)⌝ ∗ "satp" ↦ᵣ value)%I -∗
+    find_in_context (FindRegMapsTo "satp")
+      (λ kind, match kind with
+      | RKCol registers => reg_col registers -∗ reg_col [(KindReg "satp", BitsShape 64)]
+      | _ => False
+      end))%I.
+Proof.
+  iIntros "Hregister". zesu_register_collection_selection_if_enabled.
+  iIntros "Hreturned". iExact "Hreturned".
+Qed.
+
+Lemma registerCollectionRestorationPlainDirect `{!islaG Sigma} `{!threadG}
+    (register : string) (value : valu) :
+  ⊢ (register ↦ᵣ value -∗
+    find_in_context (FindRegMapsTo register)
+      (λ kind, match kind with
+      | RKMapsTo found => register ↦ᵣ found -∗
+          register ↦ᵣ found ∗ ⌜found = value⌝ ∗ True
+      | _ => False
+      end))%I.
+Proof.
+  iIntros "Hregister".
+  Fail zesu_register_collection_selection_if_enabled.
+  zesu_block.
+Qed.
