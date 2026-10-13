@@ -34,7 +34,12 @@ Local Ltac hand69e8_index :=
   | |- lithium.proof_state.SHELVED_SIDECOND _ => shelve
   | |- nat => shelve
   end].
-Local Tactic Notation "hand69e8_recover" integer(count) := do count zesu_liAStep.
+Local Ltac hand69e8_step :=
+  first [lazymatch goal with
+  | |- envs_entails _ (wp_a_exp _ _) => liEnsureInvariant; try progress (unfold TRACE_LET);
+    try liAIntroduceLetInGoal; liAExp; liSimpl
+  end | zesu_liAStep].
+Local Tactic Notation "hand69e8_recover" integer(count) := do count hand69e8_step.
 
 Lemma DesignedBoundary_800d69e8 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte)  :
   instr_pre 0x800d698c (∃ (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -∗
@@ -97,7 +102,16 @@ all: try hand69e8_index.
 1: liInst (fun x => x.1ₗ = false); liExInst.
 1: liInst (fun x => x.3ₗ = bv_to_little_endian 8 8 (bv_unsigned x13)); liExInst.
 1: liInst (fun x => x.3ₗ = bv_to_little_endian 8 8 (bv_unsigned LET5)); liExInst.
-1: zesu_block.
+1: iMatchHyp ltac:(fun H P => lazymatch P with (decodeItemOutputPointer args ↦ₘ∗ ?storage)%I => liInst (fun x => x.3ₗ = {| returnA1 := LET5; returnA2 := LET0; returnA3 := x13; returnA4 := Z_to_bv 64 183; returnA5 := x15; returnA6 := x16; returnStorage := storage; returnFrame := frameBytes |}); liExInst end).
+1: liInst (fun x => x.2ₗ = inputPrefix); liExInst.
+1: liInst (fun x => x.1ₗ = rest); liExInst.
+1: unfold decodeItemEntryAt800d698c, decodeItemReturnEntryCore; cbn [returnA1 returnA2 returnA3 returnA4 returnA5 returnA6 returnStorage returnFrame].
+1: iFrame.
+1: iExists tt.
+1: unfold decodeItemBranchContinuation, decodeItemBranchContinuationAt; iFrame.
+1: iSplit.
+1: iPureIntro; repeat split; try assumption.
+1: repeat first [progress rewrite length_drop | progress rewrite length_app | progress rewrite length_take | progress rewrite HarrayFact3 | progress cbn]; lia.
 1: iPureIntro; repeat (first [assumption | split]).
 1: apply (decodeItemRawInputSuccessor args inputPrefix rest); assumption.
 1: change (RlpDecodeItem.littleEndian (bv_to_little_endian 8 8 (bv_unsigned x13)) = bv_unsigned inputPrefix - 128); rewrite decodeItemStoredWordValue; exact H3.
