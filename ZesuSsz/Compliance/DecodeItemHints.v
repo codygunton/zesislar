@@ -27,3 +27,4 @@ Require Export ZesuSsz.Compliance.DecodeItemEntryWitnessIntroductions.
 Require Export ZesuSsz.Compliance.DecodeItemStoreSelectionIntroductions.
 Require Export ZesuSsz.Compliance.DecodeItemMaskedReturnFacts.
 Require Export ZesuSsz.Compliance.DecodeItemReturnRestorationFacts.
+Require Export ZesuSsz.Compliance.DecodeItemShortListOutputMeaning.
