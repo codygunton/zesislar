@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Proofs.DecodeItem.Hand.Common.
 Require Import ZesuSsz.Automation.Approved.
 Require Import ZesuSsz.Compliance.DecodeItemHints.
 Require Import ZesuSsz.Compliance.DecodeItemReturnExitResources.
@@ -37,40 +38,43 @@ zesu_expose_code_lists.
 repeat first [progress iIntros (?) | progress iIntros "#?" | progress iIntros "?"].
 zesu_reduce_introduced_code_lists.
 repeat iDestruct select (_ ∗ _)%I as "[? ?]".
-zesu_run_until ltac:(fun _ => lazymatch goal with |- iris.proofmode.environments.envs_entails _ (@iris.bi.interface.bi_exist _ nat _) => idtac end).
-iExists 16%nat.
+zesu_run_until ltac:(fun _ => lazymatch goal with |- envs_entails _ (find_in_context (FindMemMapsTo _) _) => idtac end).
+zesu_expose_environment_alias.
+iMatchHyp ltac:(fun name resource => lazymatch resource with | (?base ↦ₘ∗ ?values)%I => constr_eq base (decodeItemOutputPointer args); iApply find_in_context_mem_mapsto_semantic; iExists (MKArray 8%N base values); cbn [mem_mapsto_kind_prop]; iFrameHyp name; cbn [N.eqb Pos.eqb] end).
 iSplitR; first (iPureIntro; cbn; lia).
+iExists 16%nat.
+iSplitR; first (iPureIntro; unLET; zesu_integer_array_facts; unfold RlpDecodeItem.word64Modulus in *; bv_solve).
 iSplitR; first (iPureIntro; rewrite H2; lia).
 iExists eq_refl.
 zesu_expose_environment_alias.
 iIntros "HselectedOutput".
-zesu_run_until ltac:(fun _ => lazymatch goal with |- iris.proofmode.environments.envs_entails _ (@iris.bi.interface.bi_exist _ nat _) => idtac end).
-unLET.
-assert (Hstore24Address : bv_unsigned (bv_add (Z_to_bv 64%N (decodeItemOutputPointer args)) (24%bv : bv 64%N)) = (decodeItemOutputPointer args + 24)%Z) by bv_solve.
-rewrite Hstore24Address.
-notypeclasses refine (tac_find_in_context (ZesuMemRegionSearch (decodeItemOutputPointer args + 24)) (find_mem_region_inst (decodeItemOutputPointer args + 24)) _).
-simpl; repeat liExist false.
+zesu_run_until ltac:(fun _ => lazymatch goal with |- envs_entails _ (find_in_context (FindMemMapsTo _) _) => idtac end).
 zesu_expose_environment_alias.
-iMatchHyp ltac:(fun name resource => lazymatch resource with | (?base ↦ₘ∗ ?values)%I => constr_eq base (decodeItemOutputPointer args); notypeclasses refine (tac_find_hyp_equal (ZesuMemRegionSearch (decodeItemOutputPointer args + 24)) resource _ _ _ _ _) end).
-1: apply find_mem_region_array.
-1: left.
-1: rewrite length_insert.
-1: bv_solve.
-1: iFrame "HselectedOutput".
-1: cbn [N.eqb].
-1: iSplitR; first done.
-1: iExists 24%nat.
-1: iSplitR; first (iPureIntro; cbn; lia).
-1: iSplitR; first (iPureIntro; rewrite length_insert H2; cbn; lia).
+iMatchHyp ltac:(fun name resource => lazymatch resource with | (?base ↦ₘ∗ ?values)%I => constr_eq base (decodeItemOutputPointer args); iApply find_in_context_mem_mapsto_semantic; iExists (MKArray 8%N base values); cbn [mem_mapsto_kind_prop]; iFrameHyp name; cbn [N.eqb Pos.eqb] end).
+iSplitR; first done.
+iExists 24%nat.
+iSplitR; first (iPureIntro; unLET; zesu_integer_array_facts; unfold RlpDecodeItem.word64Modulus in *; bv_solve).
+iSplitR; first (iPureIntro; rewrite length_insert H2; cbn; lia).
 zesu_expose_environment_alias.
 iIntros "Hstored24".
-zesu_run_until ltac:(fun _ => lazymatch goal with |- iris.proofmode.environments.envs_entails _ (@iris.bi.interface.bi_exist _ nat _) => idtac end).
+zesu_run_until ltac:(fun _ => lazymatch goal with |- envs_entails _ (find_in_context (FindMemMapsTo _) _) => idtac end).
+zesu_expose_environment_alias.
+iMatchHyp ltac:(fun name resource => lazymatch resource with | (?base ↦ₘ∗ ?values)%I => unify base ((decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)%Z); iApply find_in_context_mem_mapsto_semantic; iExists (MKArray 8%N base values); cbn [mem_mapsto_kind_prop]; iFrameHyp name; cbn [N.eqb Pos.eqb] end).
+iSplitR; first done.
 iExists 8%nat.
-zesu_run_until ltac:(fun _ => lazymatch goal with |- iris.proofmode.environments.envs_entails _ (@iris.bi.interface.bi_exist _ nat _) => idtac end).
+iSplitR; first (iPureIntro; unLET; zesu_integer_array_facts; unfold RlpDecodeItem.word64Modulus, RlpDecodeItem.decodeItemStackBytes in *; bv_solve).
+iSplitR; first (iPureIntro; zesu_integer_array_facts; cbn [N.to_nat]; lia).
+zesu_run_until ltac:(fun _ => lazymatch goal with |- envs_entails _ (find_in_context (FindMemMapsTo _) _) => idtac end).
+zesu_expose_environment_alias.
+iMatchHyp ltac:(fun name resource => lazymatch resource with | (?base ↦ₘ∗ ?values)%I => unify base ((decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)%Z); iApply find_in_context_mem_mapsto_semantic; iExists (MKArray 8%N base values); cbn [mem_mapsto_kind_prop]; iFrameHyp name; cbn [N.eqb Pos.eqb] end).
+iSplitR; first done.
 iExists 0%nat.
+iSplitR; first (iPureIntro; unLET; zesu_integer_array_facts; unfold RlpDecodeItem.word64Modulus, RlpDecodeItem.decodeItemStackBytes in *; bv_solve).
+iSplitR; first (iPureIntro; zesu_integer_array_facts; cbn [N.to_nat]; lia).
 pose proof (decodeItemSavedReturnDecoder args (returnFrame locals) H1) as HreturnWord.
 replace (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes + 8 - (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes))%Z with 8%Z in HreturnWord by lia.
 change (Z_to_bv 64%N (little_endian_to_bv 8%N (take 8%nat (drop 8%nat (returnFrame locals)))) = Z_to_bv 64%N (decodeItemReturnAddress args)) in HreturnWord.
+zesu_integer_array_facts.
 assert (HreturnAligned : bv_extract 0%N 1%N (Z_to_bv 64%N (decodeItemReturnAddress args)) = BV 1%N 0%Z) by bv_solve.
 zesu_expose_environment_alias.
 unLET.
@@ -82,20 +86,17 @@ zesu_run_until ltac:(fun _ => lazymatch goal with |- iris.proofmode.environments
 1: notypeclasses refine (tac_li_tactic _ _ (normalize_instr_addr_hint (decodeItemReturnAddress args) (decodeItemReturnAddress args) eq_refl) _ _).
 1: cbn [li_tactic_P normalize_instr_addr_hint].
 1: liFindInContext.
-1: assert (HframeWord : Z_to_bv 64%N (little_endian_to_bv 8%N (take 8%nat (drop 0%nat (returnFrame locals)))) = decodeItemSavedFramePointer args) by (rewrite <- decodeItemByteDecoderBridge; rewrite HarrayFact5; apply Z_to_bv_bv_unsigned).
+1: assert (HframeWord : Z_to_bv 64%N (little_endian_to_bv 8%N (take 8%nat (drop 0%nat (returnFrame locals)))) = decodeItemSavedFramePointer args) by (pose proof (decodeItemSavedFramePointerDecoder args (returnFrame locals) H1) as Hdecoder; replace (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes + 0 - (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes))%Z with 0%Z in Hdecoder by lia; exact Hdecoder).
 1: rewrite HframeWord (decodeItemStackEpilogueRestored args).
 1: zesu_expose_environment_alias.
 1: iMatchHyp ltac:(fun name resource => lazymatch resource with | (?base ↦ₘ∗ ?values)%I => constr_eq base (decodeItemOutputPointer args); iExists values end).
 1: iSplitR.
-2: rewrite /decodeItemExitResources.
-2: iFrame.
-2: zesu_expose_environment_alias.
-2: iRename select ((decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) ↦ₘ∗ _)%I into "HframeBytes".
-2: iDestruct (IslarisMemory.mem_mapsto_byte_array_to_mapsto_len 16 with "HframeBytes") as "Hframe"; first exact HarrayFact3.
-2: (iSplitL "Hframe"; last done).
-2: iApply (ghost_state.mem_mapsto_mapsto_to_uninit with "Hframe").
-2: assert (HreturnSecondBit : bv_extract 0%N 1%N (bv_shiftr (bv_or (bv_and (bv_add (Z_to_bv 64%N (decodeItemReturnAddress args)) (BV 64%N 0%Z)) (BV 64%N 18446744073709551614%Z)) (BV 64%N 0%Z)) (BV 64%N 1%Z)) = BV 1%N 0%Z) by (clear -HarrayFact23 HarrayFact24 HarrayFact25; unfold RlpDecodeItem.word64Modulus in *; bv_simplify_arith; assert (Hlow : bv_extract 0%N 1%N (Z_to_bv 64%N (decodeItemReturnAddress args)) = BV 1%N 0%Z) by bv_solve; pose proof (decodeItemMaskedReturnAddress (Z_to_bv 64%N (decodeItemReturnAddress args)) Hlow) as Hmask; bv_simplify_arith Hmask; rewrite Z.add_0_r Hmask (bv_wrap_small 64%N (decodeItemReturnAddress args)); last (change (0 <= decodeItemReturnAddress args < 2^64)%Z; lia); change ((decodeItemReturnAddress args / 2) mod 2 = 0)%Z; assert (Hmultiple : (decodeItemReturnAddress args = (decodeItemReturnAddress args / 4 * 2) * 2)%Z) by (pose proof (Z.div_mod (decodeItemReturnAddress args) 4%Z ltac:(lia)); lia); rewrite Hmultiple Z.div_mul; last lia; apply Z.mod_mul; lia).
-2: (unLET; rewrite HreturnSecondBit in H33; discriminate).
+2: hand_return_exit_resources ltac:(unfold decodeItemExitResources; rewrite (bi.sep_comm ((decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) ↦ₘ? RlpDecodeItem.decodeItemStackBytes)%I True%I)) (proj1 H1).
+2: match goal with Hpin : ?T |- _ => let expected := constr:((0 <= decodeItemReturnAddress args)%Z) in unify T expected; rename Hpin into HreturnNonnegative end.
+2: match goal with Hpin : ?T |- _ => let expected := constr:((decodeItemReturnAddress args < RlpDecodeItem.word64Modulus)%Z) in unify T expected; rename Hpin into HreturnUpperBound end.
+2: match goal with Hpin : ?T |- _ => let expected := constr:((decodeItemReturnAddress args mod 4 = 0)%Z) in unify T expected; rename Hpin into HreturnAddressAligned end.
+2: assert (HreturnSecondBit : bv_extract 0%N 1%N (bv_shiftr (bv_or (bv_and (bv_add (Z_to_bv 64%N (decodeItemReturnAddress args)) (BV 64%N 0%Z)) (BV 64%N 18446744073709551614%Z)) (BV 64%N 0%Z)) (BV 64%N 1%Z)) = BV 1%N 0%Z) by (clear -HreturnNonnegative HreturnUpperBound HreturnAddressAligned; unfold RlpDecodeItem.word64Modulus in *; bv_simplify_arith; assert (Hlow : bv_extract 0%N 1%N (Z_to_bv 64%N (decodeItemReturnAddress args)) = BV 1%N 0%Z) by bv_solve; pose proof (decodeItemMaskedReturnAddress (Z_to_bv 64%N (decodeItemReturnAddress args)) Hlow) as Hmask; bv_simplify_arith Hmask; rewrite Z.add_0_r Hmask (bv_wrap_small 64%N (decodeItemReturnAddress args)); last (change (0 <= decodeItemReturnAddress args < 2^64)%Z; lia); change ((decodeItemReturnAddress args / 2) mod 2 = 0)%Z; assert (Hmultiple : (decodeItemReturnAddress args = (decodeItemReturnAddress args / 4 * 2) * 2)%Z) by (pose proof (Z.div_mod (decodeItemReturnAddress args) 4%Z ltac:(lia)); lia); rewrite Hmultiple Z.div_mul; last lia; apply Z.mod_mul; lia).
+2: (unLET; match goal with Hpin : ?T |- _ => let expected := constr:(bv_extract 0%N 1%N (bv_shiftr (bv_or (bv_and (bv_add (Z_to_bv 64%N (decodeItemReturnAddress args)) (BV 64%N 0%Z)) (BV 64%N 18446744073709551614%Z)) (BV 64%N 0%Z)) (BV 64%N 1%Z)) = BV 1%N 1%Z) in unify T expected; rename Hpin into HreturnFaultBit; rewrite HreturnSecondBit in HreturnFaultBit; discriminate end).
 1: (iPureIntro; split; first exact H0).
 1: pose proof (ResultImage.fieldImage_slice _ _ _ H9 : take 8%nat (drop 0%nat (returnStorage locals)) = AbiBytes.word64Bytes (bv_unsigned (returnA1 locals))) as HpointerSlice.
 1: pose proof (ResultImage.fieldImage_slice _ _ _ H10) as HlengthSlice; rewrite H12 in HlengthSlice.
