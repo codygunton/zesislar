@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Proofs.DecodeItem.Hand.Common.
 Require Import ZesuSsz.Automation.Approved.
 Require Import ZesuSsz.Compliance.DecodeItemHints.
 Require Import ZesuSsz.Compliance.DecodeItemReturnExitResources.
@@ -95,13 +96,7 @@ zesu_run_until ltac:(fun _ => lazymatch goal with |- iris.proofmode.environments
 1: iMatchHyp ltac:(fun name resource => lazymatch resource with | (?base ↦ₘ∗ ?values)%I => constr_eq base (decodeItemOutputPointer args); iExists values end).
 1: iSplitR.
 1: (iPureIntro; split; first exact H0; lazymatch goal with |- DecodeMeaningModuloKnownBugs args ?after => assert (HerrorImage : after = RlpDecodeItemSchema.errorEncoding) by (generalize H2; generalize (returnStorage locals); intros before Hlength; do 40 (destruct before as [|? before]; [discriminate |]); destruct before; [unfold RlpDecodeItemSchema.errorEncoding; cbn [Z_to_bv N.to_nat take drop firstn skipn list_fmap fmap]; reflexivity | cbn in Hlength; lia]) end; rewrite HerrorImage; eapply decodeItemErrorPostMeaning; [exact (proj2 H0) | exact H3 | exact (proj1 errorReturnImage) | apply (proj2 errorReturnImage)]).
-1: rewrite /decodeItemExitResources.
-1: iFrame.
-1: zesu_expose_environment_alias.
-1: iRename select ((decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) ↦ₘ∗ _)%I into "HframeBytes".
-1: iDestruct (IslarisMemory.mem_mapsto_byte_array_to_mapsto_len 16 with "HframeBytes") as "Hframe"; first exact HframeLength.
-1: (iSplitL "Hframe"; last done).
-1: iApply (ghost_state.mem_mapsto_mapsto_to_uninit with "Hframe").
+1: hand_return_exit_resources ltac:(unfold decodeItemExitResources; rewrite (bi.sep_comm ((decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) ↦ₘ? RlpDecodeItem.decodeItemStackBytes)%I True%I)) HframeLength.
 1: assert (HreturnSecondBit : bv_extract 0%N 1%N (bv_shiftr (bv_or (bv_and (bv_add (Z_to_bv 64%N (decodeItemReturnAddress args)) (BV 64%N 0%Z)) (BV 64%N 18446744073709551614%Z)) (BV 64%N 0%Z)) (BV 64%N 1%Z)) = BV 1%N 0%Z) by (clear -HreturnNonnegative HreturnUpperBound HreturnAddressAligned; unfold RlpDecodeItem.word64Modulus in *; bv_simplify_arith; assert (Hlow : bv_extract 0%N 1%N (Z_to_bv 64%N (decodeItemReturnAddress args)) = BV 1%N 0%Z) by bv_solve; pose proof (decodeItemMaskedReturnAddress (Z_to_bv 64%N (decodeItemReturnAddress args)) Hlow) as Hmask; bv_simplify_arith Hmask; rewrite Z.add_0_r Hmask (bv_wrap_small 64%N (decodeItemReturnAddress args)); last (change (0 <= decodeItemReturnAddress args < 2^64)%Z; lia); change ((decodeItemReturnAddress args / 2) mod 2 = 0)%Z; assert (Hmultiple : (decodeItemReturnAddress args = (decodeItemReturnAddress args / 4 * 2) * 2)%Z) by (pose proof (Z.div_mod (decodeItemReturnAddress args) 4%Z ltac:(lia)); lia); rewrite Hmultiple Z.div_mul; last lia; apply Z.mod_mul; lia).
 1: (unLET; rewrite HreturnSecondBit in H36; discriminate).
 Unshelve.
