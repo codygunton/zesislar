@@ -40,6 +40,7 @@ Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d697c.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d69e8.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a08.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6b08.
+Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d698c.
 
 Lemma decodeItemNativeBlocksSelectedCompliance
   (native800d6960 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (returnAddress : Z) (args : DecodeItemArgs),
@@ -48,10 +49,6 @@ Lemma decodeItemNativeBlocksSelectedCompliance
   decodeItemSelectedCode -∗
   instr_body 0x800d6960
     (decodeItemEntryAt800d6960 returnAddress args ∗ True))
-  (native800d698c : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (pointerBytes : list byte) (lengthBytes : list byte) (inputPrefix : byte) (rest : list byte) (isLiteral : bool),
-  decodeItemSelectedCode -∗
-  instr_body 0x800d698c
-    (decodeItemEntryAt800d698c args locals pointerBytes lengthBytes inputPrefix rest isLiteral ∗ True))
   (native800d69b0 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),
   decodeItemSelectedCode -∗
   instr_body 0x800d69b0
@@ -112,7 +109,7 @@ Proof.
     (decodeItemSlotBody800d6960Conditional (native800d6960 Sigma HG HT))
     (@DesignedBoundary_800d6974 Sigma HG HT)
     (@DesignedBoundary_800d697c Sigma HG HT)
-    (native800d698c Sigma HG HT)
+    (@DesignedBoundary_800d698c Sigma HG HT)
     (native800d69b0 Sigma HG HT)
     (@DesignedBoundary_800d69e8 Sigma HG HT)
     (@DesignedBoundary_800d6a08 Sigma HG HT)
