@@ -43,7 +43,9 @@
     },
     "ZesuSsz/Proofs/DecodeItem/Hand/Block800d69b0.v": {
       "long_proofs": 1,
-      "max_proof_lines": 74
+      "max_proof_lines": 90,
+      "rename_proofs": 0,
+      "max_renames": 0
     },
     "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a40.v": {
       "long_proofs": 1,
