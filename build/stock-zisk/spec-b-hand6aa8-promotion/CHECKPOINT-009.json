@@ -1,0 +1,775 @@
+{
+  "status": "verified promotion; check-fast passed",
+  "block": "0x800d6aa8",
+  "production_module": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6aa8",
+  "production_lemma": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6aa8.DesignedBoundary_800d6aa8",
+  "production": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6aa8.v",
+    "sha256": "6dfb6795059ac58a79376e2b9ffe45724bbaeb6a720a326d4a639ac7cb531671"
+  },
+  "verification_root": "a38417c19ba989f58bea0d1ffcec7af6dff55a36",
+  "gate_root": "08583358fc066c6c415f999e89877e2bf264aa77",
+  "integration_parent": "4403b5ff748b1459d5f4da95bcd99de8d97abf6e",
+  "preserved_promoted_slots": 19,
+  "resulting_promoted_slots": 20,
+  "native_hypothesis_removed": "native800d6aa8",
+  "remaining_native_hypotheses": [
+    "native800d69b0",
+    "native800d6a40",
+    "native800d6a78",
+    "native800d6ad8"
+  ],
+  "whole_Hand_file_lines": 59,
+  "Hand_Proof_through_Qed_lines": 26,
+  "full_module_compilations": 9,
+  "fresh_compilations": 8,
+  "reused_compilations": 1,
+  "exact_statement_checks": 15,
+  "verification_methods": {
+    "module_m": 14,
+    "shared_defs": 1
+  },
+  "assumptions": [],
+  "checks": [
+    {
+      "source": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/ZesuSsz/Generated/DecodeItem/PromotedBodies.v",
+      "full_compile_success": true,
+      "retained_artifact": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/ZesuSsz/Generated/DecodeItem/PromotedBodies.vo",
+      "retained_artifact_sha256": "1b3579af04b61f33974feb06daf353730b6541b7b4a11f922e35dd20e5604064",
+      "statements": [
+        {
+          "name": "promotion_800d6aa8",
+          "exact_statement": "Require Import ZesuSsz.Automation.All.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Compliance.DecodeItemHints.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Automation.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.BlockTable.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6960.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6974.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d697c.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d698c.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69a4.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69d8.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69e0.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69e8.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a00.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a08.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a14.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a24.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a38.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a64.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a6c.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6aa8.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ab4.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ac4.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ae0.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6b08.\n\n(* Pending slots have no proof term. No composition theorem is generated. *)\nLemma promotion_800d6aa8 `{!islaG Sigma} `{!threadG} :\n  \u22a2 block_table_pre decodeItemBlockTable -\u2217 instr_body 0x800d6aa8 decodeItemState800d6aa8.\n",
+          "verification": {
+            "success": true,
+            "verification_method": "module_m",
+            "assumptions": []
+          }
+        }
+      ],
+      "reused": false
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/ZesuSsz/Evidence/DecodeItemPromoted6aa8Fixtures.v",
+      "full_compile_success": true,
+      "retained_artifact": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/ZesuSsz/Evidence/DecodeItemPromoted6aa8Fixtures.vo",
+      "retained_artifact_sha256": "60ddd2bf7d8209f646e66ddfcc8e0158e8a0d510881860bad3f87239c31e4ca5",
+      "statements": [
+        {
+          "name": "decodeItemPromoted6aa8ExactSignature",
+          "exact_statement": "Require Import ZesuSsz.Automation.All.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Compliance.DecodeItemHints.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Automation.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.PromotedBodies.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6aa8.\n\nLemma decodeItemPromoted6aa8ExactSignature `{!islaG Sigma} `{!threadG} :\n  \u22a2 block_table_pre decodeItemBlockTable -\u2217\n    instr_body 0x800d6aa8 decodeItemState800d6aa8.\n",
+          "verification": {
+            "success": true,
+            "verification_method": "module_m",
+            "assumptions": []
+          }
+        }
+      ],
+      "reused": false
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/ZesuSsz/Proofs/DecodeItem/Composition/CompleteFamily.v",
+      "full_compile_success": true,
+      "retained_artifact": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/ZesuSsz/Proofs/DecodeItem/Composition/CompleteFamily.vo",
+      "retained_artifact_sha256": "ce3628b0ddaf019144c82ed8fab65d8439b75f1011da576c6ad105f22cb26a0b",
+      "statements": [
+        {
+          "name": "decodeItemBlockTable_body_family",
+          "exact_statement": "Require Import ZesuSsz.Proofs.DecodeItem.Composition.CompleteFamily.\nLemma decodeItemBlockTable_body_family :\n  ltac:(let statement := type of @ZesuSsz.Proofs.DecodeItem.Composition.CompleteFamily.decodeItemBlockTable_body_family in exact statement).\n",
+          "verification": {
+            "success": true,
+            "verification_method": "module_m",
+            "assumptions": []
+          }
+        },
+        {
+          "name": "decodeItemBlockTable_complete_family",
+          "exact_statement": "Require Import ZesuSsz.Proofs.DecodeItem.Composition.CompleteFamily.\nLemma decodeItemBlockTable_complete_family :\n  ltac:(let statement := type of @ZesuSsz.Proofs.DecodeItem.Composition.CompleteFamily.decodeItemBlockTable_complete_family in exact statement).\n",
+          "verification": {
+            "success": true,
+            "verification_method": "module_m",
+            "assumptions": []
+          }
+        }
+      ],
+      "reused": false
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/ZesuSsz/Proofs/DecodeItem/Composition/CompleteNativeFamily.v",
+      "full_compile_success": true,
+      "retained_artifact": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/ZesuSsz/Proofs/DecodeItem/Composition/CompleteNativeFamily.vo",
+      "retained_artifact_sha256": "150cf77ab51fc1fc81e909e59c24ded9173a01b3711bbf2569612fa6fba56131",
+      "statements": [
+        {
+          "name": "decodeItemBlockTable_complete_native_family",
+          "exact_statement": "Require Import ZesuSsz.Automation.All.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Compliance.DecodeItemHints.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Automation.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.PromotedBodies.\nRequire Import ZesuSsz.Contracts.DecodeItemSelected.\nRequire Import ZesuSsz.Contracts.DecodeItemBranchEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemFoldEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Proofs.DecodeItem.Composition.CompleteFamily.\nFrom Coq Require Import List ZArith.\nOpen Scope Z_scope.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6974Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d697cConditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d698cConditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69b0Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69e8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a08Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a24Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a38Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a40Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a78Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6aa8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ac4Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ad8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ae0Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6b08Conditional.\n\nLemma decodeItemBlockTable_complete_native_family `{!islaG Sigma} `{!threadG}\n  (pending800d6960 :\n    \u22a2 block_table_pre decodeItemBlockTable -\u2217 instr_body 0x800d6960 decodeItemState800d6960)\n  (native800d6974 : forall (args : DecodeItemArgs) (frameBytes : list byte)\n      (inputPrefix : byte) (rest : list byte),\n    instr_pre 0x800d697c\n      (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64)\n         (successor_inputPrefix : byte) (successor_rest : list byte),\n        decodeItemEntryAt800d697c args successor_frameBytes successor_x13\n          successor_inputPrefix successor_rest) -\u2217\n    instr_pre 0x800d69a4\n      (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64)\n         (successor_inputPrefix : byte) (successor_rest : list byte),\n        decodeItemEntryAt800d69a4 args successor_frameBytes successor_x13\n          successor_inputPrefix successor_rest) -\u2217\n    decodeItemSelectedCode -\u2217 instr_body 0x800d6974\n      (decodeItemEntryAt800d6974 args frameBytes inputPrefix rest \u2217 True))\n  (native800d697c : forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d698c (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d697c\n    (decodeItemEntryAt800d697c args frameBytes x13 inputPrefix rest \u2217 True))\n  (native800d698c : forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (pointerBytes : list byte) (lengthBytes : list byte) (inputPrefix : byte) (rest : list byte) (isLiteral : bool),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d698c\n    (decodeItemEntryAt800d698c args locals pointerBytes lengthBytes inputPrefix rest isLiteral \u2217 True))\n  (native800d69b0 : forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69b0\n    (decodeItemEntryAt800d69b0 args locals inputPrefix rest \u2217 True))\n  (native800d69e8 : forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d698c (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69e8\n    (decodeItemEntryAt800d69e8 args frameBytes x13 inputPrefix rest \u2217 True))\n  (native800d6a08 : forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6a14 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_oldAcc : bv 64) (successor_oldCursor : bv 64) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_oldAcc) (successor_oldCursor) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a08\n    (decodeItemEntryAt800d6a08 args frameBytes x13 inputPrefix rest \u2217 True))\n  (native800d6a24 : forall (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6a38 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a38 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6a24 (\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24 (args) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a24\n    (decodeItemEntryAt800d6a24 args inputPrefix rest \u2217 True))\n  (native800d6a38 : forall (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6a40 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_headerLength : Z) (successor_payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a40 (args) (successor_locals) (successor_inputPrefix) (successor_rest) (successor_headerLength) (successor_payloadLength))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a38\n    (decodeItemEntryAt800d6a38 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest \u2217 True))\n  (native800d6a40 : forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a40\n    (decodeItemEntryAt800d6a40 args locals inputPrefix rest headerLength payloadLength \u2217 True))\n  (native800d6a78 : forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a78\n    (decodeItemEntryAt800d6a78 args locals inputPrefix rest \u2217 True))\n  (native800d6aa8 : forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6ab4 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_oldAcc : bv 64) (successor_oldCursor : bv 64) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_oldAcc) (successor_oldCursor) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6aa8\n    (decodeItemEntryAt800d6aa8 args frameBytes x13 inputPrefix rest \u2217 True))\n  (native800d6ac4 : forall (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6ad8 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ac4 (\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4 (args) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ac4\n    (decodeItemEntryAt800d6ac4 args inputPrefix rest \u2217 True))\n  (native800d6ad8 : forall (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  instr_pre 0x800d6b08 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_headerLength : Z) (successor_payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08 (args) (successor_locals) (successor_inputPrefix) (successor_rest) (successor_headerLength) (successor_payloadLength))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ad8\n    (decodeItemEntryAt800d6ad8 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest \u2217 True))\n  (native800d6ae0 : forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ae0\n    (decodeItemEntryAt800d6ae0 args locals \u2217 True))\n  (native800d6b08 : forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6b08\n    (decodeItemEntryAt800d6b08 args locals inputPrefix rest headerLength payloadLength \u2217 True)) :\n  \u25a1 decodeItemSelectedCode -\u2217 block_table_pre decodeItemBlockTable.\n",
+          "verification": {
+            "success": true,
+            "verification_method": "module_m",
+            "assumptions": []
+          }
+        }
+      ],
+      "reused": false
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/Scaffolding/DecodeItemNativeBlocksCompliance.v",
+      "full_compile_success": true,
+      "retained_artifact": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/Scaffolding/DecodeItemNativeBlocksCompliance.vo",
+      "retained_artifact_sha256": "13e3fb4d51d12336380323b43951b43a70ce08b1f4d1cf6c1e2aeecdd6573f9a",
+      "statements": [
+        {
+          "name": "decodeItemNativeBlocksSelectedCompliance",
+          "exact_statement": "Require Import ZesuSsz.Automation.All.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Compliance.DecodeItemHints.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Automation.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.PromotedBodies.\nRequire Import ZesuSsz.Contracts.DecodeItemSelected.\nRequire Import ZesuSsz.Contracts.DecodeItemBranchEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemFoldEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Proofs.DecodeItem.Composition.CompleteFamily.\nFrom Coq Require Import List ZArith.\nOpen Scope Z_scope.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6974Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d697cConditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d698cConditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69b0Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69e8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a08Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a24Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a38Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a40Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a78Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6aa8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ac4Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ad8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ae0Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6b08Conditional.\n\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6960Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.Composition.CompleteNativeFamily.\nRequire Import ZesuSsz.Contracts.Level1.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\nRequire Import Scaffolding.DecodeItemComplianceStatement.\nRequire Import Scaffolding.DecodeItemSignatureGates.\nRequire Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d697c.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d69e8.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a08.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6b08.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d698c.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a38.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6960.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ae0.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ac4.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6aa8.\n\nLemma decodeItemNativeBlocksSelectedCompliance\n  (native800d69b0 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69b0\n    (decodeItemEntryAt800d69b0 args locals inputPrefix rest \u2217 True))\n  (native800d6a40 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a40\n    (decodeItemEntryAt800d6a40 args locals inputPrefix rest headerLength payloadLength \u2217 True))\n  (native800d6a78 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a78\n    (decodeItemEntryAt800d6a78 args locals inputPrefix rest \u2217 True))\n  (native800d6ad8 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  instr_pre 0x800d6b08 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_headerLength : Z) (successor_payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08 (args) (successor_locals) (successor_inputPrefix) (successor_rest) (successor_headerLength) (successor_payloadLength))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ad8\n    (decodeItemEntryAt800d6ad8 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest \u2217 True))\n :\n  ReviewedDecodeItemComplianceType.\n",
+          "verification": {
+            "success": true,
+            "verification_method": "module_m",
+            "assumptions": []
+          }
+        }
+      ],
+      "reused": false
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/Scaffolding/DecodeItemNativeBlocksComplianceFixtures.v",
+      "full_compile_success": true,
+      "retained_artifact": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/Scaffolding/DecodeItemNativeBlocksComplianceFixtures.vo",
+      "retained_artifact_sha256": "70ba1c271788bb0dd25db7c3c3388108375e6c688c3a20180d10ec9494cced8e",
+      "statements": [
+        {
+          "name": "decodeItemNativeBlocksSignatureFixture",
+          "exact_statement": "Require Import ZesuSsz.Automation.All.\nRequire Import Scaffolding.DecodeItemNativeBlocksCompliance.\nRequire Import ZesuSsz.Automation.All.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Compliance.DecodeItemHints.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Automation.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.PromotedBodies.\nRequire Import ZesuSsz.Contracts.DecodeItemSelected.\nRequire Import ZesuSsz.Contracts.DecodeItemBranchEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemFoldEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Proofs.DecodeItem.Composition.CompleteFamily.\nFrom Coq Require Import List ZArith.\nOpen Scope Z_scope.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6974Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d697cConditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d698cConditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69b0Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69e8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a08Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a24Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a38Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a40Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a78Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6aa8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ac4Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ad8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ae0Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6b08Conditional.\n\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6960Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.Composition.CompleteNativeFamily.\nRequire Import ZesuSsz.Contracts.Level1.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\nRequire Import Scaffolding.DecodeItemComplianceStatement.\nRequire Import Scaffolding.DecodeItemSignatureGates.\n\nLemma decodeItemNativeBlocksSignatureFixture\n  (native800d69b0 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69b0\n    (decodeItemEntryAt800d69b0 args locals inputPrefix rest \u2217 True))\n  (native800d6a40 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a40\n    (decodeItemEntryAt800d6a40 args locals inputPrefix rest headerLength payloadLength \u2217 True))\n  (native800d6a78 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a78\n    (decodeItemEntryAt800d6a78 args locals inputPrefix rest \u2217 True))\n  (native800d6ad8 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  instr_pre 0x800d6b08 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_headerLength : Z) (successor_payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08 (args) (successor_locals) (successor_inputPrefix) (successor_rest) (successor_headerLength) (successor_payloadLength))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ad8\n    (decodeItemEntryAt800d6ad8 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest \u2217 True))\n :\n  ReviewedDecodeItemComplianceType.\n",
+          "verification": {
+            "success": true,
+            "verification_method": "module_m",
+            "assumptions": []
+          }
+        },
+        {
+          "name": "decodeItemNativeBlocksMissing69b0Rejected",
+          "exact_statement": "Require Import ZesuSsz.Automation.All.\nRequire Import Scaffolding.DecodeItemNativeBlocksCompliance.\nRequire Import ZesuSsz.Automation.All.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Compliance.DecodeItemHints.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Automation.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.PromotedBodies.\nRequire Import ZesuSsz.Contracts.DecodeItemSelected.\nRequire Import ZesuSsz.Contracts.DecodeItemBranchEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemFoldEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Proofs.DecodeItem.Composition.CompleteFamily.\nFrom Coq Require Import List ZArith.\nOpen Scope Z_scope.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6974Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d697cConditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d698cConditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69b0Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69e8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a08Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a24Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a38Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a40Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a78Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6aa8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ac4Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ad8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ae0Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6b08Conditional.\n\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6960Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.Composition.CompleteNativeFamily.\nRequire Import ZesuSsz.Contracts.Level1.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\nRequire Import Scaffolding.DecodeItemComplianceStatement.\nRequire Import Scaffolding.DecodeItemSignatureGates.\n\nLemma decodeItemNativeBlocksSignatureFixture\n  (native800d69b0 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69b0\n    (decodeItemEntryAt800d69b0 args locals inputPrefix rest \u2217 True))\n  (native800d6a40 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a40\n    (decodeItemEntryAt800d6a40 args locals inputPrefix rest headerLength payloadLength \u2217 True))\n  (native800d6a78 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a78\n    (decodeItemEntryAt800d6a78 args locals inputPrefix rest \u2217 True))\n  (native800d6ad8 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  instr_pre 0x800d6b08 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_headerLength : Z) (successor_payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08 (args) (successor_locals) (successor_inputPrefix) (successor_rest) (successor_headerLength) (successor_payloadLength))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ad8\n    (decodeItemEntryAt800d6ad8 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest \u2217 True))\n :\n  ReviewedDecodeItemComplianceType.\nProof.\n  exact (decodeItemNativeBlocksSelectedCompliance native800d69b0 native800d6a40 native800d6a78 native800d6ad8).\nQed.\nPrint Assumptions decodeItemNativeBlocksSignatureFixture.\n\nLemma decodeItemNativeBlocksMissing69b0Rejected\n  (native800d69b0 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69b0\n    (decodeItemEntryAt800d69b0 args locals inputPrefix rest \u2217 True))\n  (native800d6a40 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a40\n    (decodeItemEntryAt800d6a40 args locals inputPrefix rest headerLength payloadLength \u2217 True))\n  (native800d6a78 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a78\n    (decodeItemEntryAt800d6a78 args locals inputPrefix rest \u2217 True))\n  (native800d6ad8 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  instr_pre 0x800d6b08 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_headerLength : Z) (successor_payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08 (args) (successor_locals) (successor_inputPrefix) (successor_rest) (successor_headerLength) (successor_payloadLength))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ad8\n    (decodeItemEntryAt800d6ad8 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest \u2217 True))\n :\n  ReviewedDecodeItemComplianceType.\n",
+          "verification": {
+            "success": true,
+            "verification_method": "module_m",
+            "assumptions": []
+          }
+        }
+      ],
+      "reused": false
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v",
+      "full_compile_success": true,
+      "retained_artifact": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.vo",
+      "retained_artifact_sha256": "acdb857cef3554f5f4a2bc7bbe85bfe2f35b1675028695eaf049735a8a1ed9de",
+      "statements": [
+        {
+          "name": "decodeItemOpenNativeBlockCount",
+          "exact_statement": "Require Import ZesuSsz.Automation.All.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Compliance.DecodeItemHints.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Automation.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.PromotedBodies.\nRequire Import ZesuSsz.Contracts.DecodeItemSelected.\nRequire Import ZesuSsz.Contracts.DecodeItemBranchEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemFoldEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Proofs.DecodeItem.Composition.CompleteFamily.\nFrom Coq Require Import List ZArith.\nOpen Scope Z_scope.\nRequire Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d697cConditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d698cConditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69b0Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69e8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a08Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a24Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a38Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a40Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a78Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6aa8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ac4Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ad8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ae0Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6b08Conditional.\n\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6960Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.Composition.CompleteNativeFamily.\nRequire Import ZesuSsz.Contracts.Level1.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\n\nImport ListNotations.\n\nDefinition decodeItemOpenNativeClosure6960 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (returnAddress : Z) (args : DecodeItemArgs),\n  instr_pre 0x800d6974 (\u2203 (successor_frameBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974 (args) (successor_frameBytes) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6960\n    (decodeItemEntryAt800d6960 returnAddress args \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6974 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte)\n      (inputPrefix : byte) (rest : list byte),\n    instr_pre 0x800d697c\n      (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64)\n         (successor_inputPrefix : byte) (successor_rest : list byte),\n        decodeItemEntryAt800d697c args successor_frameBytes successor_x13\n          successor_inputPrefix successor_rest) -\u2217\n    instr_pre 0x800d69a4\n      (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64)\n         (successor_inputPrefix : byte) (successor_rest : list byte),\n        decodeItemEntryAt800d69a4 args successor_frameBytes successor_x13\n          successor_inputPrefix successor_rest) -\u2217\n    decodeItemSelectedCode -\u2217 instr_body 0x800d6974\n      (decodeItemEntryAt800d6974 args frameBytes inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure697c : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d698c (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d697c\n    (decodeItemEntryAt800d697c args frameBytes x13 inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure698c : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (pointerBytes : list byte) (lengthBytes : list byte) (inputPrefix : byte) (rest : list byte) (isLiteral : bool),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d698c\n    (decodeItemEntryAt800d698c args locals pointerBytes lengthBytes inputPrefix rest isLiteral \u2217 True).\n\nDefinition decodeItemOpenNativeClosure69b0 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69b0\n    (decodeItemEntryAt800d69b0 args locals inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure69e8 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d698c (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69e8\n    (decodeItemEntryAt800d69e8 args frameBytes x13 inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a08 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6a14 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_oldAcc : bv 64) (successor_oldCursor : bv 64) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_oldAcc) (successor_oldCursor) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a08\n    (decodeItemEntryAt800d6a08 args frameBytes x13 inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a24 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6a38 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a38 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6a24 (\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24 (args) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a24\n    (decodeItemEntryAt800d6a24 args inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a38 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6a40 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_headerLength : Z) (successor_payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a40 (args) (successor_locals) (successor_inputPrefix) (successor_rest) (successor_headerLength) (successor_payloadLength))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a38\n    (decodeItemEntryAt800d6a38 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a40 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a40\n    (decodeItemEntryAt800d6a40 args locals inputPrefix rest headerLength payloadLength \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a78 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a78\n    (decodeItemEntryAt800d6a78 args locals inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6aa8 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6ab4 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_oldAcc : bv 64) (successor_oldCursor : bv 64) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_oldAcc) (successor_oldCursor) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6aa8\n    (decodeItemEntryAt800d6aa8 args frameBytes x13 inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6ac4 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6ad8 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ac4 (\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4 (args) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ac4\n    (decodeItemEntryAt800d6ac4 args inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6ad8 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  instr_pre 0x800d6b08 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_headerLength : Z) (successor_payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08 (args) (successor_locals) (successor_inputPrefix) (successor_rest) (successor_headerLength) (successor_payloadLength))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ad8\n    (decodeItemEntryAt800d6ad8 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6ae0 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ae0\n    (decodeItemEntryAt800d6ae0 args locals \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6b08 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6b08\n    (decodeItemEntryAt800d6b08 args locals inputPrefix rest headerLength payloadLength \u2217 True).\n\nRecord DecodeItemOpenNativeHypotheses : Prop := {\n  native800d69b0 : decodeItemOpenNativeClosure69b0;\n  native800d6a40 : decodeItemOpenNativeClosure6a40;\n  native800d6a78 : decodeItemOpenNativeClosure6a78;\n  native800d6ad8 : decodeItemOpenNativeClosure6ad8\n}.\n\nDefinition decodeItemOpenNativeBlocks : list Z :=\n  [0x800d69b0; 0x800d6a40; 0x800d6a78; 0x800d6ad8].\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d697c.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d69e8.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a08.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6b08.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d698c.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a38.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6960.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ae0.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ac4.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6aa8.\n\nLemma decodeItemOpenNativeBlockCount : length decodeItemOpenNativeBlocks = 4%nat.\n",
+          "verification": {
+            "success": true,
+            "verification_method": "module_m",
+            "assumptions": []
+          }
+        },
+        {
+          "name": "decodeItemOpenNativeHypothesesTable",
+          "exact_statement": "Require Import ZesuSsz.Automation.All.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Compliance.DecodeItemHints.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Automation.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.PromotedBodies.\nRequire Import ZesuSsz.Contracts.DecodeItemSelected.\nRequire Import ZesuSsz.Contracts.DecodeItemBranchEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemFoldEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Proofs.DecodeItem.Composition.CompleteFamily.\nFrom Coq Require Import List ZArith.\nOpen Scope Z_scope.\nRequire Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d697cConditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d698cConditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69b0Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69e8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a08Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a24Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a38Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a40Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a78Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6aa8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ac4Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ad8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ae0Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6b08Conditional.\n\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6960Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.Composition.CompleteNativeFamily.\nRequire Import ZesuSsz.Contracts.Level1.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\n\nImport ListNotations.\n\nDefinition decodeItemOpenNativeClosure6960 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (returnAddress : Z) (args : DecodeItemArgs),\n  instr_pre 0x800d6974 (\u2203 (successor_frameBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974 (args) (successor_frameBytes) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6960\n    (decodeItemEntryAt800d6960 returnAddress args \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6974 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte)\n      (inputPrefix : byte) (rest : list byte),\n    instr_pre 0x800d697c\n      (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64)\n         (successor_inputPrefix : byte) (successor_rest : list byte),\n        decodeItemEntryAt800d697c args successor_frameBytes successor_x13\n          successor_inputPrefix successor_rest) -\u2217\n    instr_pre 0x800d69a4\n      (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64)\n         (successor_inputPrefix : byte) (successor_rest : list byte),\n        decodeItemEntryAt800d69a4 args successor_frameBytes successor_x13\n          successor_inputPrefix successor_rest) -\u2217\n    decodeItemSelectedCode -\u2217 instr_body 0x800d6974\n      (decodeItemEntryAt800d6974 args frameBytes inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure697c : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d698c (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d697c\n    (decodeItemEntryAt800d697c args frameBytes x13 inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure698c : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (pointerBytes : list byte) (lengthBytes : list byte) (inputPrefix : byte) (rest : list byte) (isLiteral : bool),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d698c\n    (decodeItemEntryAt800d698c args locals pointerBytes lengthBytes inputPrefix rest isLiteral \u2217 True).\n\nDefinition decodeItemOpenNativeClosure69b0 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69b0\n    (decodeItemEntryAt800d69b0 args locals inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure69e8 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d698c (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69e8\n    (decodeItemEntryAt800d69e8 args frameBytes x13 inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a08 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6a14 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_oldAcc : bv 64) (successor_oldCursor : bv 64) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_oldAcc) (successor_oldCursor) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a08\n    (decodeItemEntryAt800d6a08 args frameBytes x13 inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a24 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6a38 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a38 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6a24 (\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24 (args) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a24\n    (decodeItemEntryAt800d6a24 args inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a38 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6a40 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_headerLength : Z) (successor_payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a40 (args) (successor_locals) (successor_inputPrefix) (successor_rest) (successor_headerLength) (successor_payloadLength))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a38\n    (decodeItemEntryAt800d6a38 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a40 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a40\n    (decodeItemEntryAt800d6a40 args locals inputPrefix rest headerLength payloadLength \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a78 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a78\n    (decodeItemEntryAt800d6a78 args locals inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6aa8 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6ab4 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_oldAcc : bv 64) (successor_oldCursor : bv 64) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_oldAcc) (successor_oldCursor) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6aa8\n    (decodeItemEntryAt800d6aa8 args frameBytes x13 inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6ac4 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6ad8 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ac4 (\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4 (args) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ac4\n    (decodeItemEntryAt800d6ac4 args inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6ad8 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  instr_pre 0x800d6b08 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_headerLength : Z) (successor_payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08 (args) (successor_locals) (successor_inputPrefix) (successor_rest) (successor_headerLength) (successor_payloadLength))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ad8\n    (decodeItemEntryAt800d6ad8 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6ae0 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ae0\n    (decodeItemEntryAt800d6ae0 args locals \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6b08 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6b08\n    (decodeItemEntryAt800d6b08 args locals inputPrefix rest headerLength payloadLength \u2217 True).\n\nRecord DecodeItemOpenNativeHypotheses : Prop := {\n  native800d69b0 : decodeItemOpenNativeClosure69b0;\n  native800d6a40 : decodeItemOpenNativeClosure6a40;\n  native800d6a78 : decodeItemOpenNativeClosure6a78;\n  native800d6ad8 : decodeItemOpenNativeClosure6ad8\n}.\n\nDefinition decodeItemOpenNativeBlocks : list Z :=\n  [0x800d69b0; 0x800d6a40; 0x800d6a78; 0x800d6ad8].\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d697c.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d69e8.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a08.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6b08.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d698c.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a38.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6960.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ae0.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ac4.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6aa8.\n\nLemma decodeItemOpenNativeBlockCount : length decodeItemOpenNativeBlocks = 4%nat.\nProof. reflexivity. Qed.\n\nLemma decodeItemOpenNativeHypothesesTable `{!islaG Sigma} `{!threadG}\n  (Hopen : DecodeItemOpenNativeHypotheses) :\n  \u25a1 decodeItemSelectedCode -\u2217 block_table_pre decodeItemBlockTable.\n",
+          "verification": {
+            "success": true,
+            "verification_method": "shared_defs",
+            "assumptions": [],
+            "note": "Verified using shared-definitions template (definitions placed outside Module M for type compatibility)."
+          }
+        },
+        {
+          "name": "decodeItemI67StatusMatchesOpenBlocks",
+          "exact_statement": "Require Import ZesuSsz.Automation.All.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Compliance.DecodeItemHints.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Automation.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.PromotedBodies.\nRequire Import ZesuSsz.Contracts.DecodeItemSelected.\nRequire Import ZesuSsz.Contracts.DecodeItemBranchEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemFoldEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Proofs.DecodeItem.Composition.CompleteFamily.\nFrom Coq Require Import List ZArith.\nOpen Scope Z_scope.\nRequire Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d697cConditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d698cConditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69b0Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69e8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a08Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a24Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a38Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a40Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a78Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6aa8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ac4Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ad8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ae0Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6b08Conditional.\n\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6960Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.Composition.CompleteNativeFamily.\nRequire Import ZesuSsz.Contracts.Level1.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\n\nImport ListNotations.\n\nDefinition decodeItemOpenNativeClosure6960 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (returnAddress : Z) (args : DecodeItemArgs),\n  instr_pre 0x800d6974 (\u2203 (successor_frameBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974 (args) (successor_frameBytes) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6960\n    (decodeItemEntryAt800d6960 returnAddress args \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6974 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte)\n      (inputPrefix : byte) (rest : list byte),\n    instr_pre 0x800d697c\n      (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64)\n         (successor_inputPrefix : byte) (successor_rest : list byte),\n        decodeItemEntryAt800d697c args successor_frameBytes successor_x13\n          successor_inputPrefix successor_rest) -\u2217\n    instr_pre 0x800d69a4\n      (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64)\n         (successor_inputPrefix : byte) (successor_rest : list byte),\n        decodeItemEntryAt800d69a4 args successor_frameBytes successor_x13\n          successor_inputPrefix successor_rest) -\u2217\n    decodeItemSelectedCode -\u2217 instr_body 0x800d6974\n      (decodeItemEntryAt800d6974 args frameBytes inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure697c : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d698c (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d697c\n    (decodeItemEntryAt800d697c args frameBytes x13 inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure698c : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (pointerBytes : list byte) (lengthBytes : list byte) (inputPrefix : byte) (rest : list byte) (isLiteral : bool),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d698c\n    (decodeItemEntryAt800d698c args locals pointerBytes lengthBytes inputPrefix rest isLiteral \u2217 True).\n\nDefinition decodeItemOpenNativeClosure69b0 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69b0\n    (decodeItemEntryAt800d69b0 args locals inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure69e8 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d698c (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69e8\n    (decodeItemEntryAt800d69e8 args frameBytes x13 inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a08 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6a14 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_oldAcc : bv 64) (successor_oldCursor : bv 64) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_oldAcc) (successor_oldCursor) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a08\n    (decodeItemEntryAt800d6a08 args frameBytes x13 inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a24 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6a38 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a38 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6a24 (\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24 (args) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a24\n    (decodeItemEntryAt800d6a24 args inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a38 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6a40 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_headerLength : Z) (successor_payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a40 (args) (successor_locals) (successor_inputPrefix) (successor_rest) (successor_headerLength) (successor_payloadLength))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a38\n    (decodeItemEntryAt800d6a38 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a40 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a40\n    (decodeItemEntryAt800d6a40 args locals inputPrefix rest headerLength payloadLength \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a78 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a78\n    (decodeItemEntryAt800d6a78 args locals inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6aa8 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6ab4 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_oldAcc : bv 64) (successor_oldCursor : bv 64) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_oldAcc) (successor_oldCursor) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6aa8\n    (decodeItemEntryAt800d6aa8 args frameBytes x13 inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6ac4 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6ad8 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ac4 (\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4 (args) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ac4\n    (decodeItemEntryAt800d6ac4 args inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6ad8 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  instr_pre 0x800d6b08 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_headerLength : Z) (successor_payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08 (args) (successor_locals) (successor_inputPrefix) (successor_rest) (successor_headerLength) (successor_payloadLength))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ad8\n    (decodeItemEntryAt800d6ad8 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6ae0 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ae0\n    (decodeItemEntryAt800d6ae0 args locals \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6b08 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6b08\n    (decodeItemEntryAt800d6b08 args locals inputPrefix rest headerLength payloadLength \u2217 True).\n\nRecord DecodeItemOpenNativeHypotheses : Prop := {\n  native800d69b0 : decodeItemOpenNativeClosure69b0;\n  native800d6a40 : decodeItemOpenNativeClosure6a40;\n  native800d6a78 : decodeItemOpenNativeClosure6a78;\n  native800d6ad8 : decodeItemOpenNativeClosure6ad8\n}.\n\nDefinition decodeItemOpenNativeBlocks : list Z :=\n  [0x800d69b0; 0x800d6a40; 0x800d6a78; 0x800d6ad8].\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d697c.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d69e8.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a08.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6b08.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d698c.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a38.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6960.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ae0.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ac4.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6aa8.\n\nLemma decodeItemOpenNativeBlockCount : length decodeItemOpenNativeBlocks = 4%nat.\nProof. reflexivity. Qed.\n\nLemma decodeItemOpenNativeHypothesesTable `{!islaG Sigma} `{!threadG}\n  (Hopen : DecodeItemOpenNativeHypotheses) :\n  \u25a1 decodeItemSelectedCode -\u2217 block_table_pre decodeItemBlockTable.\nProof.\n  destruct Hopen as [H69b0 H6a40 H6a78 H6ad8].\n  exact (@ZesuSsz.Proofs.DecodeItem.Composition.CompleteNativeFamily.decodeItemBlockTable_complete_native_family Sigma islaG0 H\n    (@ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6960Conditional.decodeItemSlotBody800d6960Conditional Sigma islaG0 H (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6960.DesignedBoundary_800d6960 Sigma islaG0 H))\n    (@ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.DesignedBoundary_800d6974 Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d697c.DesignedBoundary_800d697c Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d698c.DesignedBoundary_800d698c Sigma islaG0 H)\n    (H69b0 Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d69e8.DesignedBoundary_800d69e8 Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a08.DesignedBoundary_800d6a08 Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24.DesignedBoundary_800d6a24 Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a38.DesignedBoundary_800d6a38 Sigma islaG0 H)\n    (H6a40 Sigma islaG0 H)\n    (H6a78 Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6aa8.DesignedBoundary_800d6aa8 Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ac4.DesignedBoundary_800d6ac4 Sigma islaG0 H)\n    (H6ad8 Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ae0.DesignedBoundary_800d6ae0 Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6b08.DesignedBoundary_800d6b08 Sigma islaG0 H)).\nQed.\nPrint Assumptions decodeItemOpenNativeBlockCount.\nPrint Assumptions decodeItemOpenNativeHypothesesTable.\n\n(* Retained I62 measurements at 33b9a455; these counts are not proof premises. *)\nDefinition decodeItemI62NativeResidualCounts : list (Z * nat) :=\n  [(0x800d6960, 7%nat);\n   (0x800d6974, 0%nat);\n   (0x800d697c, 3%nat);\n   (0x800d698c, 3%nat);\n   (0x800d69b0, 5%nat);\n   (0x800d69e8, 3%nat);\n   (0x800d6a08, 4%nat);\n   (0x800d6a24, 8%nat);\n   (0x800d6a38, 1%nat);\n   (0x800d6a40, 5%nat);\n   (0x800d6a78, 5%nat);\n   (0x800d6aa8, 4%nat);\n   (0x800d6ac4, 8%nat);\n   (0x800d6ad8, 1%nat);\n   (0x800d6ae0, 4%nat);\n   (0x800d6b08, 5%nat)].\n\n(* I67 measured e17a8888. None records an unavailable active count.\n   These printed active counts are not complete kernel goal groups. *)\nDefinition decodeItemI67NativeResidualCounts : list (Z * option nat) :=\n  [(0x800d69b0, Some 3%nat);\n   (0x800d6a40, Some 3%nat);\n   (0x800d6a78, Some 3%nat);\n   (0x800d6ad8, Some 1%nat)].\n\nLemma decodeItemI67StatusMatchesOpenBlocks :\n  map fst decodeItemI67NativeResidualCounts = decodeItemOpenNativeBlocks.\n",
+          "verification": {
+            "success": true,
+            "verification_method": "module_m",
+            "assumptions": []
+          }
+        },
+        {
+          "name": "decodeItemProduction6974Closed",
+          "exact_statement": "Require Import ZesuSsz.Automation.All.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Compliance.DecodeItemHints.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Automation.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.PromotedBodies.\nRequire Import ZesuSsz.Contracts.DecodeItemSelected.\nRequire Import ZesuSsz.Contracts.DecodeItemBranchEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemFoldEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Proofs.DecodeItem.Composition.CompleteFamily.\nFrom Coq Require Import List ZArith.\nOpen Scope Z_scope.\nRequire Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d697cConditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d698cConditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69b0Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69e8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a08Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a24Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a38Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a40Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6a78Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6aa8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ac4Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ad8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6ae0Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6b08Conditional.\n\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6960Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.Composition.CompleteNativeFamily.\nRequire Import ZesuSsz.Contracts.Level1.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\n\nImport ListNotations.\n\nDefinition decodeItemOpenNativeClosure6960 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (returnAddress : Z) (args : DecodeItemArgs),\n  instr_pre 0x800d6974 (\u2203 (successor_frameBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974 (args) (successor_frameBytes) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6960\n    (decodeItemEntryAt800d6960 returnAddress args \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6974 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte)\n      (inputPrefix : byte) (rest : list byte),\n    instr_pre 0x800d697c\n      (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64)\n         (successor_inputPrefix : byte) (successor_rest : list byte),\n        decodeItemEntryAt800d697c args successor_frameBytes successor_x13\n          successor_inputPrefix successor_rest) -\u2217\n    instr_pre 0x800d69a4\n      (\u2203 (successor_frameBytes : list byte) (successor_x13 : bv 64)\n         (successor_inputPrefix : byte) (successor_rest : list byte),\n        decodeItemEntryAt800d69a4 args successor_frameBytes successor_x13\n          successor_inputPrefix successor_rest) -\u2217\n    decodeItemSelectedCode -\u2217 instr_body 0x800d6974\n      (decodeItemEntryAt800d6974 args frameBytes inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure697c : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d698c (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d697c\n    (decodeItemEntryAt800d697c args frameBytes x13 inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure698c : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (pointerBytes : list byte) (lengthBytes : list byte) (inputPrefix : byte) (rest : list byte) (isLiteral : bool),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d698c\n    (decodeItemEntryAt800d698c args locals pointerBytes lengthBytes inputPrefix rest isLiteral \u2217 True).\n\nDefinition decodeItemOpenNativeClosure69b0 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69b0\n    (decodeItemEntryAt800d69b0 args locals inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure69e8 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d698c (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d69e8\n    (decodeItemEntryAt800d69e8 args frameBytes x13 inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a08 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6a14 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_oldAcc : bv 64) (successor_oldCursor : bv 64) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_oldAcc) (successor_oldCursor) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a08\n    (decodeItemEntryAt800d6a08 args frameBytes x13 inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a24 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6a38 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a38 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6a24 (\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24 (args) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a24\n    (decodeItemEntryAt800d6a24 args inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a38 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6a40 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_headerLength : Z) (successor_payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a40 (args) (successor_locals) (successor_inputPrefix) (successor_rest) (successor_headerLength) (successor_payloadLength))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a38\n    (decodeItemEntryAt800d6a38 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a40 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a40\n    (decodeItemEntryAt800d6a40 args locals inputPrefix rest headerLength payloadLength \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6a78 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6a78\n    (decodeItemEntryAt800d6a78 args locals inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6aa8 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6ab4 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_oldAcc : bv 64) (successor_oldCursor : bv 64) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_oldAcc) (successor_oldCursor) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6aa8\n    (decodeItemEntryAt800d6aa8 args frameBytes x13 inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6ac4 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6ad8 (\u2203 (successor_n : Z) (successor_payloadStart : Z) (successor_lengthBytes : list byte) (successor_frameBytes : list byte) (successor_loaded : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8 (args) (successor_n) (successor_payloadStart) (successor_lengthBytes) (successor_frameBytes) (successor_loaded) (successor_inputPrefix) (successor_rest))%I -\u2217\n  instr_pre 0x800d6ac4 (\u2203 (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4 (args) (successor_inputPrefix) (successor_rest))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ac4\n    (decodeItemEntryAt800d6ac4 args inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6ad8 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (n : Z) (payloadStart : Z) (lengthBytes : list byte) (frameBytes : list byte) (loaded : bv 64) (inputPrefix : byte) (rest : list byte),\n  instr_pre 0x800d6ae0 (\u2203 (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -\u2217\n  instr_pre 0x800d6b08 (\u2203 (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_headerLength : Z) (successor_payloadLength : Z), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08 (args) (successor_locals) (successor_inputPrefix) (successor_rest) (successor_headerLength) (successor_payloadLength))%I -\u2217\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ad8\n    (decodeItemEntryAt800d6ad8 args n payloadStart lengthBytes frameBytes loaded inputPrefix rest \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6ae0 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6ae0\n    (decodeItemEntryAt800d6ae0 args locals \u2217 True).\n\nDefinition decodeItemOpenNativeClosure6b08 : Prop :=\n  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) (headerLength : Z) (payloadLength : Z),\n  decodeItemSelectedCode -\u2217\n  instr_body 0x800d6b08\n    (decodeItemEntryAt800d6b08 args locals inputPrefix rest headerLength payloadLength \u2217 True).\n\nRecord DecodeItemOpenNativeHypotheses : Prop := {\n  native800d69b0 : decodeItemOpenNativeClosure69b0;\n  native800d6a40 : decodeItemOpenNativeClosure6a40;\n  native800d6a78 : decodeItemOpenNativeClosure6a78;\n  native800d6ad8 : decodeItemOpenNativeClosure6ad8\n}.\n\nDefinition decodeItemOpenNativeBlocks : list Z :=\n  [0x800d69b0; 0x800d6a40; 0x800d6a78; 0x800d6ad8].\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d697c.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d69e8.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a08.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6b08.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d698c.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a38.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6960.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ae0.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ac4.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6aa8.\n\nLemma decodeItemOpenNativeBlockCount : length decodeItemOpenNativeBlocks = 4%nat.\nProof. reflexivity. Qed.\n\nLemma decodeItemOpenNativeHypothesesTable `{!islaG Sigma} `{!threadG}\n  (Hopen : DecodeItemOpenNativeHypotheses) :\n  \u25a1 decodeItemSelectedCode -\u2217 block_table_pre decodeItemBlockTable.\nProof.\n  destruct Hopen as [H69b0 H6a40 H6a78 H6ad8].\n  exact (@ZesuSsz.Proofs.DecodeItem.Composition.CompleteNativeFamily.decodeItemBlockTable_complete_native_family Sigma islaG0 H\n    (@ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6960Conditional.decodeItemSlotBody800d6960Conditional Sigma islaG0 H (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6960.DesignedBoundary_800d6960 Sigma islaG0 H))\n    (@ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.DesignedBoundary_800d6974 Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d697c.DesignedBoundary_800d697c Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d698c.DesignedBoundary_800d698c Sigma islaG0 H)\n    (H69b0 Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d69e8.DesignedBoundary_800d69e8 Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a08.DesignedBoundary_800d6a08 Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24.DesignedBoundary_800d6a24 Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a38.DesignedBoundary_800d6a38 Sigma islaG0 H)\n    (H6a40 Sigma islaG0 H)\n    (H6a78 Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6aa8.DesignedBoundary_800d6aa8 Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ac4.DesignedBoundary_800d6ac4 Sigma islaG0 H)\n    (H6ad8 Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ae0.DesignedBoundary_800d6ae0 Sigma islaG0 H)\n    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6b08.DesignedBoundary_800d6b08 Sigma islaG0 H)).\nQed.\nPrint Assumptions decodeItemOpenNativeBlockCount.\nPrint Assumptions decodeItemOpenNativeHypothesesTable.\n\n(* Retained I62 measurements at 33b9a455; these counts are not proof premises. *)\nDefinition decodeItemI62NativeResidualCounts : list (Z * nat) :=\n  [(0x800d6960, 7%nat);\n   (0x800d6974, 0%nat);\n   (0x800d697c, 3%nat);\n   (0x800d698c, 3%nat);\n   (0x800d69b0, 5%nat);\n   (0x800d69e8, 3%nat);\n   (0x800d6a08, 4%nat);\n   (0x800d6a24, 8%nat);\n   (0x800d6a38, 1%nat);\n   (0x800d6a40, 5%nat);\n   (0x800d6a78, 5%nat);\n   (0x800d6aa8, 4%nat);\n   (0x800d6ac4, 8%nat);\n   (0x800d6ad8, 1%nat);\n   (0x800d6ae0, 4%nat);\n   (0x800d6b08, 5%nat)].\n\n(* I67 measured e17a8888. None records an unavailable active count.\n   These printed active counts are not complete kernel goal groups. *)\nDefinition decodeItemI67NativeResidualCounts : list (Z * option nat) :=\n  [(0x800d69b0, Some 3%nat);\n   (0x800d6a40, Some 3%nat);\n   (0x800d6a78, Some 3%nat);\n   (0x800d6ad8, Some 1%nat)].\n\nLemma decodeItemI67StatusMatchesOpenBlocks :\n  map fst decodeItemI67NativeResidualCounts = decodeItemOpenNativeBlocks.\nProof. reflexivity. Qed.\n\nLemma decodeItemProduction6974Closed : decodeItemOpenNativeClosure6974.\n",
+          "verification": {
+            "success": true,
+            "verification_method": "module_m",
+            "assumptions": []
+          }
+        }
+      ],
+      "reused": false
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/ZesuSsz/Evidence/DecodeItemOpenNativeHypothesesFixtures.v",
+      "full_compile_success": true,
+      "retained_artifact": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/ZesuSsz/Evidence/DecodeItemOpenNativeHypothesesFixtures.vo",
+      "retained_artifact_sha256": "4811bf64d7f0531d79e8e711752ee17bbf8bed0f8939b6f44def634e77711b29",
+      "statements": [
+        {
+          "name": "decodeItemOpenNativeHypothesesApplication",
+          "exact_statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nFrom iris.bi Require Import bi.\nOpen Scope bi_scope.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Compliance.DecodeItemHints.\nRequire Import ZesuSsz.Evidence.DecodeItemOpenNativeHypotheses.\nRequire Import ZesuSsz.Automation.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.BlockTable.\nRequire Import ZesuSsz.Contracts.DecodeItemSelected.\n\nLemma decodeItemOpenNativeHypothesesApplication `{!islaG Sigma} `{!threadG}\n  (H69b0 : decodeItemOpenNativeClosure69b0)\n  (H6a40 : decodeItemOpenNativeClosure6a40)\n  (H6a78 : decodeItemOpenNativeClosure6a78)\n  (H6ad8 : decodeItemOpenNativeClosure6ad8)\n :\n  \u22a2 \u25a1 decodeItemSelectedCode -\u2217 block_table_pre decodeItemBlockTable.\n",
+          "verification": {
+            "success": true,
+            "verification_method": "module_m",
+            "assumptions": []
+          }
+        },
+        {
+          "name": "decodeItemOpenNativeMissing69b0Rejected",
+          "exact_statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nFrom iris.bi Require Import bi.\nOpen Scope bi_scope.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Compliance.DecodeItemHints.\nRequire Import ZesuSsz.Evidence.DecodeItemOpenNativeHypotheses.\nRequire Import ZesuSsz.Automation.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.BlockTable.\nRequire Import ZesuSsz.Contracts.DecodeItemSelected.\n\nLemma decodeItemOpenNativeHypothesesApplication `{!islaG Sigma} `{!threadG}\n  (H69b0 : decodeItemOpenNativeClosure69b0)\n  (H6a40 : decodeItemOpenNativeClosure6a40)\n  (H6a78 : decodeItemOpenNativeClosure6a78)\n  (H6ad8 : decodeItemOpenNativeClosure6ad8)\n :\n  \u22a2 \u25a1 decodeItemSelectedCode -\u2217 block_table_pre decodeItemBlockTable.\nProof.\n  exact (decodeItemOpenNativeHypothesesTable\n    (Build_DecodeItemOpenNativeHypotheses H69b0 H6a40 H6a78 H6ad8)).\nQed.\n\nPrint Assumptions decodeItemOpenNativeHypothesesApplication.\n\nLemma decodeItemOpenNativeMissing69b0Rejected\n  (H6a40 : decodeItemOpenNativeClosure6a40)\n  (H6a78 : decodeItemOpenNativeClosure6a78)\n  (H6ad8 : decodeItemOpenNativeClosure6ad8)\n : True.\n",
+          "verification": {
+            "success": true,
+            "verification_method": "module_m",
+            "assumptions": []
+          }
+        }
+      ],
+      "reused": false
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6aa8.v",
+      "full_compile_success": true,
+      "retained_artifact": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6aa8.vo",
+      "retained_artifact_sha256": "bd09d653916c4086a623a08f16848c95e917748bd585422dce7aa6b211c3fd7f",
+      "statements": [
+        {
+          "name": "decodeItemSlotBody800d6aa8",
+          "exact_statement": "Require Import ZesuSsz.Automation.All.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Compliance.DecodeItemHints.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Automation.BlockTable.\nRequire Import ZesuSsz.Generated.DecodeItem.BlockTable.\nRequire Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6aa8Conditional.\nRequire Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6aa8.\n\nLemma decodeItemSlotBody800d6aa8 `{!islaG Sigma} `{!threadG} :\n  \u22a2 block_table_pre decodeItemBlockTable -\u2217\n    instr_body 0x800d6aa8 decodeItemState800d6aa8.\n",
+          "verification": {
+            "success": true,
+            "verification_method": "module_m",
+            "assumptions": []
+          }
+        }
+      ],
+      "reused": true
+    }
+  ],
+  "health": {
+    "success": true,
+    "method": "rocq_health through each owned compile and verification transport",
+    "recorded_successes": 44
+  },
+  "normal_owned_closures": [
+    {
+      "operation": "compile-0",
+      "owner": {
+        "success": true,
+        "pid": 2490603,
+        "start_ticks": 156704393
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "verify-0-0",
+      "owner": {
+        "success": true,
+        "pid": 2491812,
+        "start_ticks": 156707901
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "compile-1",
+      "owner": {
+        "success": true,
+        "pid": 2493005,
+        "start_ticks": 156711708
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "verify-1-0",
+      "owner": {
+        "success": true,
+        "pid": 2493584,
+        "start_ticks": 156712552
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "compile-2",
+      "owner": {
+        "success": true,
+        "pid": 2494291,
+        "start_ticks": 156713408
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "verify-2-0",
+      "owner": {
+        "success": true,
+        "pid": 2494911,
+        "start_ticks": 156714480
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "verify-2-1",
+      "owner": {
+        "success": true,
+        "pid": 2502455,
+        "start_ticks": 156715943
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "compile-3",
+      "owner": {
+        "success": true,
+        "pid": 2508523,
+        "start_ticks": 156717277
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "verify-3-0",
+      "owner": {
+        "success": true,
+        "pid": 2514930,
+        "start_ticks": 156718452
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "compile-4",
+      "owner": {
+        "success": true,
+        "pid": 2522270,
+        "start_ticks": 156719946
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "verify-4-0",
+      "owner": {
+        "success": true,
+        "pid": 2533930,
+        "start_ticks": 156722402
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "compile-5",
+      "owner": {
+        "success": true,
+        "pid": 2552695,
+        "start_ticks": 156726332
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "verify-5-0",
+      "owner": {
+        "success": true,
+        "pid": 2571002,
+        "start_ticks": 156730174
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "verify-5-1",
+      "owner": {
+        "success": true,
+        "pid": 2597226,
+        "start_ticks": 156735735
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "compile-6",
+      "owner": {
+        "success": true,
+        "pid": 2643880,
+        "start_ticks": 156742861
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "verify-6-0",
+      "owner": {
+        "success": true,
+        "pid": 2668645,
+        "start_ticks": 156745551
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "verify-6-1",
+      "owner": {
+        "success": true,
+        "pid": 2682780,
+        "start_ticks": 156748227
+      },
+      "owned_pet": {
+        "pid": 2689976,
+        "start_ticks": 156750306
+      },
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "verify-6-2",
+      "owner": {
+        "success": true,
+        "pid": 2719214,
+        "start_ticks": 156754471
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "verify-6-3",
+      "owner": {
+        "success": true,
+        "pid": 2737674,
+        "start_ticks": 156758543
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "compile-7",
+      "owner": {
+        "success": true,
+        "pid": 2742044,
+        "start_ticks": 156762700
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "verify-7-0",
+      "owner": {
+        "success": true,
+        "pid": 2744326,
+        "start_ticks": 156764945
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "verify-7-1",
+      "owner": {
+        "success": true,
+        "pid": 2746525,
+        "start_ticks": 156768558
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "compile-0",
+      "owner": {
+        "success": true,
+        "pid": 1413524,
+        "start_ticks": 156395541
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    },
+    {
+      "operation": "verify-0-0",
+      "owner": {
+        "success": true,
+        "pid": 1431808,
+        "start_ticks": 156398405
+      },
+      "owned_pet": null,
+      "transport_closed_normally": true,
+      "server_exited": true,
+      "owned_Pet_absent": true
+    }
+  ],
+  "gate": {
+    "command": [
+      "make",
+      "check-fast",
+      "CHECK_AGENT=spec-b",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/agents/spec-b",
+      "FAST_JOBS=6",
+      "GUARD=/home/cody/zesislar/tools/resource_guard.sh"
+    ],
+    "start_UTC": "2026-10-13T05:17:37.548013+00:00",
+    "end_UTC": "2026-10-13T05:27:54.057833+00:00",
+    "elapsed_seconds": 616.5098280289676,
+    "exit": 0,
+    "scope": "6aa8 promotion checkpoint. Root owns Iris."
+  },
+  "Iris_owner": "Root",
+  "shape_inventory": "The new fixture has zero allowances. No existing allowance changed.",
+  "scope_limits": [
+    "No Hand statement or proof changed.",
+    "The current Root changed only accepted Hand optimizations and measured size records after consumer verification. All generated source bytes remain unchanged.",
+    "The native-status measurement table retains frozen e17 scope. It does not supply current proof groups.",
+    "The old a384 native source identities resolve through the frozen source index. No historical report is relabeled.",
+    "The promotion consumer checks use full compilation and exact verification. They supply no new interactive group export."
+  ],
+  "preserved_attempts": [
+    "promotion006 passed on 4c1e0321 before 6ac4 promotion.",
+    "promotion007 passed on bc33754f before 6a24 promotion.",
+    "promotion008 passed on a38417c1.",
+    "check-fast008 failed on the missing new fixture inventory.",
+    "check-fast009 passed after adding its measured zero allowances."
+  ],
+  "bindings": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6aa8.v",
+      "sha256": "41871b30314691eb77fdf30f308979906c2ad8b8a5600bb8f3ac621cf36513bc"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/ZesuSsz/Generated/DecodeItem/PromotedBodies.v",
+      "sha256": "6c44e2b3d726fea79a5057d99d94a8877f1cab72d0d5a932c6f89fb271b02cc3"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/ZesuSsz/Evidence/DecodeItemPromoted6aa8Fixtures.v",
+      "sha256": "956f53e786e6f84f7f0c8fcd8a92693311d97417206a13ac94dbdb9f6b67cb50"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/Scaffolding/DecodeItemNativeBlocksCompliance.v",
+      "sha256": "e1827994ae9723a68002d1dc984cbd3b79a1f7cabbbf928ac67f0bbadedad58d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/Scaffolding/DecodeItemNativeBlocksComplianceFixtures.v",
+      "sha256": "06d21bf7e87a8b776b0a6b373b707d1e3b9e7d305e6402c0c83e5117abed27f1"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v",
+      "sha256": "a547bdec277c61f27f6cc84fee45b0dbfd222c58d105eb1d441b9679cd0f96c9"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/ZesuSsz/Evidence/DecodeItemOpenNativeHypothesesFixtures.v",
+      "sha256": "c4214b005f770e1de391a7ed0ca671ee56b515226c17ff05144ea686036c81b1"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6aa8.v",
+      "sha256": "6dfb6795059ac58a79376e2b9ffe45724bbaeb6a720a326d4a639ac7cb531671"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/ZesuSsz/Evidence/spec_shape_inventory.json",
+      "sha256": "4e65090c444f841823a7768297422fb339d62115a0ce70673053959c74943f53"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/PROMOTION.json",
+      "sha256": "c2e8ca543d38dd8be67195621a377107907432d3bcbd654ea92b56452b9bfd65"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/verification/RESULT.json",
+      "sha256": "fac7ff0f3a9b0b699e8868060660277f8ddd7600f4f767c311ba4da6a4b817c4"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/FROZEN-NATIVE-SOURCE-INDEX.json",
+      "sha256": "91eb5073357137d9c491be355e0a3bf2c02ef406d80848a3e1026a98deb51345"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion-preparation008/ARTIFACT-AUDIT.json",
+      "sha256": "9dad020cd4402ea54d36c771259f6fe82225928d987a41f19abc2cd38dbe46f1"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion009/GATE-CORRECTION.json",
+      "sha256": "792819306068e5f1867dfef04b1c1e5447db2c83ca59682bc21de28b844ffa32"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion009/FINAL-REBASE.json",
+      "sha256": "82125fbc287d1d7ba85e49cee453bffd78a0f9e47cb97153f817e26c4f939969"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion009/REBASE-FOCUSED-CHECKS.log",
+      "sha256": "3dfa1b9617755b275519997dea976933bd8fbf10f37f9540f5193c2b8c071057"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion009/CHECK-FAST.json",
+      "sha256": "8726a579bac41e55d54b2fbf72c32f1ef40b8f7b9baeeadd72278fc29f30ec49"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/CHECK-FAST.json",
+      "sha256": "cea7a765bb7bea7cd61f6e9ac5d47cdf7e2bd034900fbe422651ca85c4482e34"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/Scaffolding/DecodeItemNativeBlocksCompliance.vo",
+      "sha256": "13e3fb4d51d12336380323b43951b43a70ce08b1f4d1cf6c1e2aeecdd6573f9a"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/Scaffolding/DecodeItemNativeBlocksComplianceFixtures.vo",
+      "sha256": "70ba1c271788bb0dd25db7c3c3388108375e6c688c3a20180d10ec9494cced8e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/ZesuSsz/Evidence/DecodeItemPromoted6aa8Fixtures.vo",
+      "sha256": "60ddd2bf7d8209f646e66ddfcc8e0158e8a0d510881860bad3f87239c31e4ca5"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.vo",
+      "sha256": "acdb857cef3554f5f4a2bc7bbe85bfe2f35b1675028695eaf049735a8a1ed9de"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/ZesuSsz/Evidence/DecodeItemOpenNativeHypothesesFixtures.vo",
+      "sha256": "4811bf64d7f0531d79e8e711752ee17bbf8bed0f8939b6f44def634e77711b29"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/ZesuSsz/Proofs/DecodeItem/Composition/CompleteFamily.vo",
+      "sha256": "ce3628b0ddaf019144c82ed8fab65d8439b75f1011da576c6ad105f22cb26a0b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/ZesuSsz/Proofs/DecodeItem/Composition/CompleteNativeFamily.vo",
+      "sha256": "150cf77ab51fc1fc81e909e59c24ded9173a01b3711bbf2569612fa6fba56131"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6aa8.vo",
+      "sha256": "bd09d653916c4086a623a08f16848c95e917748bd585422dce7aa6b211c3fd7f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/ZesuSsz/Generated/DecodeItem/PromotedBodies.vo",
+      "sha256": "1b3579af04b61f33974feb06daf353730b6541b7b4a11f922e35dd20e5604064"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/sources/Scaffolding/DecodeItemNativeBlocksCompliance.v",
+      "sha256": "e1827994ae9723a68002d1dc984cbd3b79a1f7cabbbf928ac67f0bbadedad58d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/sources/Scaffolding/DecodeItemNativeBlocksComplianceFixtures.v",
+      "sha256": "06d21bf7e87a8b776b0a6b373b707d1e3b9e7d305e6402c0c83e5117abed27f1"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/sources/ZesuSsz/Evidence/DecodeItemPromoted6aa8Fixtures.v",
+      "sha256": "956f53e786e6f84f7f0c8fcd8a92693311d97417206a13ac94dbdb9f6b67cb50"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/sources/ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v",
+      "sha256": "a547bdec277c61f27f6cc84fee45b0dbfd222c58d105eb1d441b9679cd0f96c9"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/sources/ZesuSsz/Evidence/DecodeItemOpenNativeHypothesesFixtures.v",
+      "sha256": "c4214b005f770e1de391a7ed0ca671ee56b515226c17ff05144ea686036c81b1"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/sources/ZesuSsz/Proofs/DecodeItem/Composition/CompleteFamily.v",
+      "sha256": "0d3e73a3c0674c84b9bb212cc5543d87822f5b58a459d8c570b85039c68815f0"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/sources/ZesuSsz/Proofs/DecodeItem/Composition/CompleteNativeFamily.v",
+      "sha256": "33eafab6894e876f06325f996d8ab34a731fd53380dd67f2e2d66277229331d4"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/sources/ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6aa8.v",
+      "sha256": "41871b30314691eb77fdf30f308979906c2ad8b8a5600bb8f3ac621cf36513bc"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/accepted-artifacts/sources/ZesuSsz/Generated/DecodeItem/PromotedBodies.v",
+      "sha256": "6c44e2b3d726fea79a5057d99d94a8877f1cab72d0d5a932c6f89fb271b02cc3"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/frozen-base-inputs/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6960.v",
+      "sha256": "464777e080f5f17e72a9ecb4c57c18181e0f22208161842afef9a5b16a38c491"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/frozen-base-inputs/ZesuSsz/Proofs/DecodeItem/Hand/Block800d697c.v",
+      "sha256": "effa841f47f43cd6f1c109291598fc8f3b30ad56c31cd6aee6d30c4170772465"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/frozen-base-inputs/ZesuSsz/Proofs/DecodeItem/Hand/Block800d698c.v",
+      "sha256": "d94333a699e679c369a7a8281c7ea9f8ef996640e5be93f4addfa84bc0c8bdae"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/frozen-base-inputs/ZesuSsz/Proofs/DecodeItem/Hand/Block800d69e8.v",
+      "sha256": "883a7f0607514883d3aa731a21b3e99a2d2348283401d5fcff2df3d6fff91d39"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/frozen-base-inputs/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a08.v",
+      "sha256": "61c90b77a3a5e3e42f927a80511463c136aee10fc47f2ff7ef9adc3ff468a6c8"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/frozen-base-inputs/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a24.v",
+      "sha256": "ef70b799d664cfaf7fd888a01fa919d903946fc6b390d9e810b9ab40aa82c061"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/frozen-base-inputs/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a38.v",
+      "sha256": "3430f5a0d4e5d6c6847237abe56a89157eb45567f23e80581a734cf605195c80"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/frozen-base-inputs/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6aa8.v",
+      "sha256": "6dfb6795059ac58a79376e2b9ffe45724bbaeb6a720a326d4a639ac7cb531671"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/frozen-base-inputs/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ac4.v",
+      "sha256": "5f974bbeedcd29bdb803679dd9ee5bb1d3e3aaa3044df5775dd40d350a3161be"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/frozen-base-inputs/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ae0.v",
+      "sha256": "7af33fbf5dd9bd881f5f54469b5b8bd2f591067d7478315b9bebeb32bcded3f2"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/frozen-base-inputs/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.v",
+      "sha256": "3dabd65879a22bb7fe7a519a07055c5d1d4a3522ff94eb13ef843e43e035b70b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6aa8-promotion-86eb4a46/_build/hand6aa8-promotion008/frozen-base-inputs/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v",
+      "sha256": "ca7fb94a835a783c2d62c0a24e1e0d552ce2a76f65cd6ee7d277df32dfea9d6e"
+    }
+  ]
+}
