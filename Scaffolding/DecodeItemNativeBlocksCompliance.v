@@ -42,14 +42,9 @@ Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a08.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6b08.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d698c.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a38.
+Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6960.
 
 Lemma decodeItemNativeBlocksSelectedCompliance
-  (native800d6960 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (returnAddress : Z) (args : DecodeItemArgs),
-  instr_pre 0x800d6974 (∃ (successor_frameBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974 (args) (successor_frameBytes) (successor_inputPrefix) (successor_rest))%I -∗
-  instr_pre 0x800d6ae0 (∃ (successor_locals : DecodeItemReturnLocals), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0 (args) (successor_locals))%I -∗
-  decodeItemSelectedCode -∗
-  instr_body 0x800d6960
-    (decodeItemEntryAt800d6960 returnAddress args ∗ True))
   (native800d69b0 : forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),
   decodeItemSelectedCode -∗
   instr_body 0x800d69b0
@@ -101,7 +96,7 @@ Proof.
   rewrite /decodeItemSelectedCode.
   iIntros "#Hcode" (args).
   iPoseProof (decodeItemBlockTable_complete_native_family
-    (decodeItemSlotBody800d6960Conditional (native800d6960 Sigma HG HT))
+    (decodeItemSlotBody800d6960Conditional (@DesignedBoundary_800d6960 Sigma HG HT))
     (@DesignedBoundary_800d6974 Sigma HG HT)
     (@DesignedBoundary_800d697c Sigma HG HT)
     (@DesignedBoundary_800d698c Sigma HG HT)
@@ -117,7 +112,7 @@ Proof.
     (native800d6ad8 Sigma HG HT)
     (native800d6ae0 Sigma HG HT)
     (@DesignedBoundary_800d6b08 Sigma HG HT) with "Hcode") as "#Htable".
-  iPoseProof (decodeItemSlotBody800d6960Conditional (native800d6960 Sigma HG HT) with "Htable") as "Hbody".
+  iPoseProof (decodeItemSlotBody800d6960Conditional (@DesignedBoundary_800d6960 Sigma HG HT) with "Htable") as "Hbody".
   iApply (instr_pre_wand with "Hbody []"); [done|done|].
   iIntros "[Hentry Hreturn]". iExists returnAddress, args.
   unfold decodeItemEntryAt800d6960, decodeItemBranchContinuationAt.

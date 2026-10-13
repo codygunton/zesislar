@@ -63,6 +63,46 @@ class CompletePromotionTests(unittest.TestCase):
             complete_promotion.plan(self.workspace, 0x800d6974, MODULE, MODULE + '.Missing')
         self.assertEqual(before, {name: (self.workspace / name).read_bytes() for name in INPUTS})
 
+    def test_record_fields_and_destruct_names_match_after_each_removal(self):
+        status = 'ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v'
+        compliance = 'Scaffolding/DecodeItemNativeBlocksCompliance.v'
+        originals = {name: (self.workspace / name).read_text() for name in INPUTS}
+        sites = re.findall(r'^  native800d([0-9a-f]+)\s*:', originals[status], re.M)
+        cases = [('first', sites[0], sites), ('middle', sites[len(sites) // 2], sites),
+                 ('last', sites[-1], sites), ('final', sites[0], sites[:1])]
+        for label, selected, open_sites in cases:
+            with self.subTest(removal=label):
+                for name, source in originals.items():
+                    (self.workspace / name).write_text(source)
+                if label == 'final':
+                    text = originals[status]
+                    record = ('Record DecodeItemOpenNativeHypotheses : Prop := {\n'
+                              f'  native800d{selected} : decodeItemOpenNativeClosure{selected}\n}}.')
+                    text = re.sub(r'Record DecodeItemOpenNativeHypotheses : Prop := \{.*?\n\}\.',
+                                  record, text, flags=re.S)
+                    text = re.sub(r'  destruct Hopen as \[[^\]]*\]\.',
+                                  f'  destruct Hopen as [H{selected}].', text)
+                    (self.workspace / status).write_text(text)
+                    text = originals[compliance]
+                    for site in sites[1:]:
+                        text = complete_promotion.remove_binders(text, 'native800d' + site)
+                    (self.workspace / compliance).write_text(text)
+                pc = int('800d' + selected, 16)
+                production = self.workspace / INPUTS[0]
+                production.write_text(originals[INPUTS[0]].replace('instr_body 0x800d6974',
+                                                                  'instr_body ' + hex(pc)))
+                conditional = self.workspace / f'ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter{pc:x}Conditional.v'
+                conditional.write_text(originals[INPUTS[1]])
+                outputs, provenance = complete_promotion.plan(self.workspace, pc, MODULE, LEMMA)
+                remaining = [site for site in open_sites if site != selected]
+                text = outputs[status]
+                self.assertEqual(re.findall(r'^  native800d([0-9a-f]+)\s*:', text, re.M), remaining)
+                names = re.search(r'  destruct Hopen as \[([^\]]*)\]\.', text)[1].split()
+                self.assertEqual(names, ['H' + site for site in remaining])
+                self.assertNotRegex(text, r'\(H' + selected + r' Sigma islaG0 H\)')
+                self.assertEqual(provenance['remaining_native_hypotheses'],
+                                 ['native800d' + site for site in remaining])
+
     def test_generated_dependencies_precede_their_consumers(self):
         outputs, _ = complete_promotion.plan(self.workspace, 0x800d6974, MODULE, LEMMA)
         positions = {name[:-2].replace('/', '.'): index

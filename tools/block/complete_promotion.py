@@ -187,7 +187,15 @@ def plan(workspace, pc, module, lemma, table=None):
                   lambda m: m[1] + "[" + "; ".join(x for x in m[2].split("; ")
                                                   if x != hex(pc)) + "].", text)
     text = text.replace(";\n}.\n", "\n}.\n")
-    text = text.replace(f" H{short}", "", 1)
+    record = re.search(r"Record DecodeItemOpenNativeHypotheses : Prop := \{(.*?)\n\}\.",
+                       text, re.S)
+    if not record:
+        raise ValueError("The open native hypothesis record is unavailable.")
+    fields = re.findall(r"^  native800d([0-9a-f]+)\s*:", record[1], re.M)
+    pattern = "  destruct Hopen as [" + " ".join("H" + field for field in fields) + "]."
+    text, replacements = re.subn(r"^  destruct Hopen as \[[^\]]*\]\.", pattern, text, flags=re.M)
+    if replacements != 1:
+        raise ValueError("The open native hypothesis destruct pattern is unavailable or ambiguous.")
     text = text.replace(f"(H{short} Sigma islaG0 H)", f"(@{lemma} Sigma islaG0 H)")
     count = len(remaining)
     text = re.sub(r"(length decodeItemOpenNativeBlocks = )\d+%nat", rf"\g<1>{count}%nat", text)
