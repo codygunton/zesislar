@@ -1,0 +1,193 @@
+{
+  "status": "verified and check-fast passed",
+  "source": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.v",
+  "source_sha256": "8cfaa1707943ea596b54f8698d9e26ac6666b1772b846bc3c65d1bab3e1dec28",
+  "statement_sha256": "a6130569847b877d0d682fb20fae9e792a3f410af61dede61b9c0e3bffaace82",
+  "exact_statement_unchanged": true,
+  "whole_file_lines": 58,
+  "Proof_through_Qed_lines": 23,
+  "measured_input_root": "c38c948a2c2e6d4121646ba2054c9a0aa6e76263",
+  "measured_input_parent": "bc33754fe3caec0f9e16083b9b838076f2e03543",
+  "gate_parent": "a38417c19ba989f58bea0d1ffcec7af6dff55a36",
+  "interactive": {
+    "preQed_state": 120,
+    "actual_groups": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "Qed_state": 121,
+    "proof_finished": true,
+    "Qed_seconds": 53.03,
+    "post_Qed_export": "no-proof-scope after successful Qed"
+  },
+  "compile": {
+    "vo_compile_time": 280.809,
+    "proof_build_time": 242.993,
+    "proof_check_time": 32.56,
+    "request_wall_seconds": 307.35823416593485,
+    "tool": "rocq_compile_file",
+    "warning": "dune could not build 'ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.vo' (the file is not part of a dune stanza); compiled it directly with coqc into _build/default instead."
+  },
+  "verification": {
+    "success": true,
+    "verification_method": "module_m",
+    "assumptions": []
+  },
+  "comparison": {
+    "original_module_seconds": 1480,
+    "first_improvement_seconds": 1017.2,
+    "previous_improvement_seconds": 434.129,
+    "candidate_compiler_seconds": 280.809,
+    "target_seconds": 300,
+    "scope": "Compiler .aux timing. MCP request wall time includes setup. Verification cost remains separate."
+  },
+  "sampled_compilers": [
+    {
+      "pid": 2165703,
+      "start_ticks": "156598953",
+      "command": "/home/cody/islaris/_opam/bin/coqc -Q _build/default/ZesuSsz ZesuSsz -Q _build/default/ZesuStock ZesuStock -Q _build/default/InstrSpecs InstrSpecs -Q _build/default/Scaffolding Scaffolding -Q _build/default/MachineMap ZesuMachineMap -R _build/default/generated/isla-traces IslaTraces -Q _build/default/generated/isla-traces/stock-zisk/decodeItem ZesuSsz.Stock.DecodeItem -Q _build/default/generated/isla-traces/stock-zisk/closure ZesuSsz.Stock.Closure -Q _build/default/generated/evm-sail-coq EvmSail -Q _build/default/generated/evm-sail-coq/rlp EvmSailRlp -Q _build/default/generated/sail-stdpp SailStdpp -w -arg -notation-overridden -w -arg -redundant-canonical-projection -o /home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/default/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.vo /home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.v ",
+      "limits": "Limit                     Soft Limit           Hard Limit           Units     \nMax cpu time              unlimited            unlimited            seconds   \nMax file size             unlimited            unlimited            bytes     \nMax data size             unlimited            unlimited            bytes     \nMax stack size            unlimited            unlimited            bytes     \nMax core file size        unlimited            unlimited            bytes     \nMax resident set          unlimited            unlimited            bytes     \nMax processes             1028348              1028348              processes \nMax open files            524288               524288               files     \nMax locked memory         131072000000         131072000000         bytes     \nMax address space         unlimited            unlimited            bytes     \nMax file locks            unlimited            unlimited            locks     \nMax pending signals       1028348              1028348              signals   \nMax msgqueue size         819200               819200               bytes     \nMax nice priority         0                    0                    \nMax realtime priority     0                    0                    \nMax realtime timeout      unlimited            unlimited            us        \n",
+      "first_observed_UTC": "2026-10-13T04:44:28.925674+00:00",
+      "ownership": "Observed descendant of this watch-run owner.",
+      "sampled_CPU_seconds": 278.42,
+      "peak_RSS_KiB": 4458416,
+      "last_observed_UTC": "2026-10-13T04:49:07.391857+00:00"
+    },
+    {
+      "pid": 2275432,
+      "start_ticks": "156627618",
+      "command": "/home/cody/islaris/_opam/bin/coqc -Q _build/default/ZesuSsz ZesuSsz -Q _build/default/ZesuStock ZesuStock -Q _build/default/InstrSpecs InstrSpecs -Q _build/default/Scaffolding Scaffolding -Q _build/default/MachineMap ZesuMachineMap -R _build/default/generated/isla-traces IslaTraces -Q _build/default/generated/isla-traces/stock-zisk/decodeItem ZesuSsz.Stock.DecodeItem -Q _build/default/generated/isla-traces/stock-zisk/closure ZesuSsz.Stock.Closure -Q _build/default/generated/evm-sail-coq EvmSail -Q _build/default/generated/evm-sail-coq/rlp EvmSailRlp -Q _build/default/generated/sail-stdpp SailStdpp -w -arg -notation-overridden -w -arg -redundant-canonical-projection /home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/tmpzsa31hvd.v ",
+      "limits": "Limit                     Soft Limit           Hard Limit           Units     \nMax cpu time              unlimited            unlimited            seconds   \nMax file size             unlimited            unlimited            bytes     \nMax data size             unlimited            unlimited            bytes     \nMax stack size            unlimited            unlimited            bytes     \nMax core file size        unlimited            unlimited            bytes     \nMax resident set          unlimited            unlimited            bytes     \nMax processes             1028348              1028348              processes \nMax open files            524288               524288               files     \nMax locked memory         131072000000         131072000000         bytes     \nMax address space         unlimited            unlimited            bytes     \nMax file locks            unlimited            unlimited            locks     \nMax pending signals       1028348              1028348              signals   \nMax msgqueue size         819200               819200               bytes     \nMax nice priority         0                    0                    \nMax realtime priority     0                    0                    \nMax realtime timeout      unlimited            unlimited            us        \n",
+      "first_observed_UTC": "2026-10-13T04:49:15.555110+00:00",
+      "ownership": "Observed descendant of this watch-run owner.",
+      "sampled_CPU_seconds": 308.96,
+      "peak_RSS_KiB": 4644500,
+      "last_observed_UTC": "2026-10-13T04:54:24.340337+00:00"
+    }
+  ],
+  "measurement_limit": "The monitor records samples. Exact leaf wait totals are unavailable.",
+  "normal_closures": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-live007/inspect-return/session-closure.json",
+      "sha256": "5578480a3dc72a0436fd7596be7fc7bf83260ac3e43cbaed0507901549a5732a"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-final008/compile-6b08-opt4/session-closure.json",
+      "sha256": "4920307572d796c39eda28a724386c4bb1283634c0f950b3cb1fe7e6193fbef7"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-final008/verify-6b08-opt4/session-closure.json",
+      "sha256": "196125318e9213d08a5918b96d650ea5fab651fec78d2faff45585d998ea7125"
+    }
+  ],
+  "preserved_failures": [
+    "The decoder rewrite failed before arithmetic normalization.",
+    "The first Qed observer watched command018 and received an owned stop.",
+    "The proof controller failed exporting after Qed removed the proof scope."
+  ],
+  "bindings": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.v",
+      "sha256": "8cfaa1707943ea596b54f8698d9e26ac6666b1772b846bc3c65d1bab3e1dec28"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-final008/PREPARATION.json",
+      "sha256": "be648e0bfe586a8bdef5f028f62262b5c18d1a685ee8dc2afa71af85fc03e44a"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-final008/COMPILE.json",
+      "sha256": "0436c0379aec9003b1b0d4022fe290ee3b434ab70ab669fbf02f820379314f46"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-final008/VERIFY.json",
+      "sha256": "c33a2dc2fc8b91b8c7d1cecf04cce8986e2ae4b200fce20b52ad00eb2bfe3f0f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-final008/raw-calls.json",
+      "sha256": "f0ff84d8b6bf1f45f92106eea55e9150fe988585484a8e099bd552c629bad7f2"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-final008/SAMPLED-COMPILERS.json",
+      "sha256": "169989735546ad0260592674762dd9b8ffe18ec5db7c2e0cc6aba35c2751962c"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-live007/inspect-return/exports/state_120.json",
+      "sha256": "9364991b81442d7737e232376a72172c164e3491d6d68872c02e83d27157a97f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-live007/COMMAND-009-RESULT.json",
+      "sha256": "c0fa7c6039c246aa3ee557d3e9047612e7ebc95744ce23a6d070d7f8d7871e7b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-live007/COMMAND-006-RESULT.json",
+      "sha256": "03481db632eb07d38ae1237c57f88c82dd0a2d0e414dd0228f8acddec42a49e8"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-live007/COMMAND-007-RESULT.json",
+      "sha256": "a8ff1069d556bea0fc8a334b94a49915ad362676b790e1fd10caf872c2e4a56c"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-live007/QED-WATCHER-CORRECTION.json",
+      "sha256": "8b8bb663a3185d3e3a65943e7c7e564e78c13282413218554061516b2c394612"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-live007/ACTUAL-PET-LIMITS.json",
+      "sha256": "5bd272fa9c31e6ec4a3be8e90e66abf1548b37782f861a7790b0528e8fdc2421"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-checkpoint008/REBASE.json",
+      "sha256": "73797f40f0384272d2195649b5ee2fdba4fde7c65f9e723cc4242ed805ca6d3f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-checkpoint008/compiled-artifacts/Block800d6b08.v",
+      "sha256": "8cfaa1707943ea596b54f8698d9e26ac6666b1772b846bc3c65d1bab3e1dec28"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-checkpoint008/compiled-artifacts/Block800d6b08.vo",
+      "sha256": "ad4e6df451104bcbbbbea4c73ec20125387ca92844a2b594f55a4dd83d9e4419"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-checkpoint008/compiled-artifacts/.Block800d6b08.aux",
+      "sha256": "4f25133971a9b39c2bea9ba085ad7b9dee220a9a5c274e48d747e387bbe337ce"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-checkpoint008/MEASURED-RESULT.json",
+      "sha256": "5927e9bc9484c823afa9f22477d7080411541498dcdd64efaeb22b754866a49b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-checkpoint008/CHECK-FAST.json",
+      "sha256": "74007288ce8cea4e77c2f55eaeda3aad0fd19c4ea633511aafc79b6b8d749267"
+    }
+  ],
+  "integration_parent": "a38417c19ba989f58bea0d1ffcec7af6dff55a36",
+  "gate": {
+    "command": [
+      "python3",
+      "tools/block/prepare_hand_gate.py",
+      "--workspace",
+      "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22",
+      "--module",
+      "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.v",
+      "--agent",
+      "spec-b",
+      "--jobs",
+      "6",
+      "--check-fast"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 90.92441610316746,
+    "Iris_owner": "Root"
+  },
+  "health": {
+    "success": true,
+    "method": "rocq_health in the recorded compile and verification transports",
+    "raw_records": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt4-final008/raw-calls.json"
+  },
+  "limits": {
+    "interactive": "Owned Pet limits confirm unlimited CPU and stack with a 64 GiB diagnostic cap.",
+    "compile_and_verification": "Owned compiler /proc records confirm unlimited CPU and stack. The controller requests the 6 GiB compiler policy.",
+    "unavailable": "The samples do not establish the exact leaf wait status or leaf cgroup memory limit."
+  }
+}
