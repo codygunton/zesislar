@@ -8,7 +8,11 @@ tools_dir=$(dirname "$(realpath "$0")")
 if [[ "$(basename "$tools_dir")" == guard-bin ]]; then
   tools_dir=$(dirname "$tools_dir")
 fi
-export ZESU_MODULE_LIMIT_GIB=6
+export ZESU_MODULE_LIMIT_GIB=${ZESU_GATE_MODULE_LIMIT_GIB-6}
+if [[ ! "$ZESU_MODULE_LIMIT_GIB" =~ ^([6-9]|[12][0-9]|3[0-2])$ ]]; then
+  echo "compiler gate memory limit must be an integer from 6 through 32 GiB" >&2
+  exit 2
+fi
 switch_prefix=${OPAM_SWITCH_PREFIX:-${ISLARIS_REPO:-$HOME/islaris}/_opam}
 coqc_binary="$switch_prefix/bin/coqc"
 if [[ "$(realpath "$coqc_binary")" == "$(realpath "$0")" ]]; then

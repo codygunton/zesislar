@@ -360,7 +360,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
             "source=next((pathlib.Path(x) for x in args if x.endswith('.v')),None)\n"
             "if source is None: sys.exit(0)\n"
             "fd=os.open(os.environ['FAKE_COMPILER_EVENTS'],os.O_WRONLY|os.O_CREAT|os.O_APPEND,0o600)\n"
-            "os.write(fd,(json.dumps({'source':str(source),'args':args,'OCAMLPATH':os.environ.get('OCAMLPATH'),'token':os.environ.get('ZESU_COQC_RESERVATION'),'scope':os.environ.get('ZESU_COQC_SCOPE'),'slots':len(list(pathlib.Path(os.environ['ZESU_GUARD_STATE'],'coqc-reservations').iterdir())),'cpu':resource.getrlimit(resource.RLIMIT_CPU)[0]})+'\\n').encode());os.close(fd)\n"
+            "os.write(fd,(json.dumps({'source':str(source),'args':args,'OCAMLPATH':os.environ.get('OCAMLPATH'),'token':os.environ.get('ZESU_COQC_RESERVATION'),'scope':os.environ.get('ZESU_COQC_SCOPE'),'slots':len(list(pathlib.Path(os.environ['ZESU_GUARD_STATE'],'coqc-reservations').iterdir())),'cpu':resource.getrlimit(resource.RLIMIT_CPU)[0],'memory':os.environ.get('ZESU_MODULE_LIMIT_GIB')})+'\\n').encode());os.close(fd)\n"
             "for suffix in ['.vo','.glob','.vos','.vok']: source.with_suffix(suffix).write_text('fixture')\n"
             "if os.environ.get('FAKE_BLOCK_AFTER_FIRST')=='1' and source.stem=='First':\n"
             " pathlib.Path(os.environ['GUARD_TEST_BLOCKED_COUNT']).write_text('17\\n')\n")
@@ -381,6 +381,37 @@ class DuneCompilerGuardTest(unittest.TestCase):
     def compiler_events(self):
         return [json.loads(line) for line in self.events.read_text().splitlines()] \
             if self.events.exists() else []
+
+    def test_dune_wrapper_propagates_the_configured_gate_fence(self):
+        self.prepare_recordless_private_build()
+        source = self.root / "Configured.v"
+        source.write_text("(* Fake compiler input. *)\n")
+        for limit in (None, "6", "16", "32"):
+            with self.subTest(limit=limit):
+                environment = {**self.environment, "ZESU_MODULE_LIMIT_GIB": "99"}
+                if limit is not None:
+                    environment["ZESU_GATE_MODULE_LIMIT_GIB"] = limit
+                result = subprocess.run([str(self.wrapper), str(source)],
+                                        cwd=self.root, env=environment,
+                                        capture_output=True, text=True, timeout=5)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                memory = limit or "6"
+                self.assertEqual(self.compiler_events()[-1]["memory"], memory)
+                scopes = [json.loads(line) for line in self.scope_log.read_text().splitlines()]
+                self.assertIn(f"MemoryMax={memory}G", scopes[-1])
+                self.assertIn("MemorySwapMax=0", scopes[-1])
+
+    def test_dune_wrapper_rejects_invalid_gate_fences_before_admission(self):
+        for limit in ("", "5", "33", "64", "-6", "6.5", "invalid"):
+            with self.subTest(limit=limit):
+                environment = {**self.environment, "ZESU_GATE_MODULE_LIMIT_GIB": limit}
+                result = subprocess.run([str(self.wrapper), "Fixture.v"],
+                                        cwd=self.root, env=environment,
+                                        capture_output=True, text=True, timeout=5)
+                self.assertEqual(result.returncode, 2, result.stderr)
+                self.assertIn("integer from 6 through 32", result.stderr)
+                self.assertEqual(self.compiler_events(), [])
+                self.assertFalse(self.scope_log.exists())
 
     def prepare_recordless_private_build(self):
         (self.root / "dune-project").write_text("(lang dune 3.17)\n")
@@ -775,13 +806,23 @@ class DuneCompilerGuardTest(unittest.TestCase):
 
 
 class McpThresholdTest(unittest.TestCase):
-    def test_mcp_wrappers_preserve_explicit_hold_and_fixed_fence(self):
+    def test_mcp_wrappers_preserve_explicit_hold_and_default_fence(self):
         self.check_wrappers("215")
 
-    def test_mcp_wrappers_retain_default_hold_and_fixed_fence(self):
+    def test_mcp_wrappers_retain_default_hold_and_default_fence(self):
         self.check_wrappers(None)
 
-    def check_wrappers(self, hold):
+    def test_mcp_wrappers_propagate_the_configured_gate_fence(self):
+        for limit in ("6", "16", "32"):
+            with self.subTest(limit=limit):
+                self.check_wrappers(None, limit)
+
+    def test_mcp_wrappers_reject_invalid_gate_fences_before_launch(self):
+        for limit in ("", "5", "33", "64", "-6", "6.5", "invalid"):
+            with self.subTest(limit=limit):
+                self.check_wrappers(None, limit, accepted=False)
+
+    def check_wrappers(self, hold, limit=None, accepted=True):
         import tempfile
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -792,13 +833,13 @@ class McpThresholdTest(unittest.TestCase):
                     "with open(os.environ['WRAPPER_EVENTS'],'a') as f:\n"
                     " f.write(json.dumps({'hold':os.environ.get('ZESU_HOLD_GIB'),"
                     "'memory':os.environ.get('ZESU_MODULE_LIMIT_GIB'),"
+                    "'pet_rss_mb':os.environ.get('ROCQ_MAX_PET_RSS_MB'),"
                     "'arguments':sys.argv[1:]})+'\\n')\n")
             for name in ("systemd-run", "guard", "coqc", "rocq-mcp"):
                 path = binary / name
                 path.write_text(stub)
                 path.chmod(0o755)
-            env = dict(os.environ)
-            env.pop("ZESU_HOLD_GIB", None)
+            env = test_guard.fixture_environment()
             env.update(PATH=str(binary) + ":" + env.get("PATH", ""),
                        WRAPPER_EVENTS=str(events), ZESU_MODULE_LIMIT_GIB="99",
                        ZESU_RESOURCE_GUARD=str(binary / "guard"),
@@ -806,19 +847,29 @@ class McpThresholdTest(unittest.TestCase):
                        ZESU_ROCQ_COQC_BINARY=str(binary / "coqc"))
             if hold is not None:
                 env["ZESU_HOLD_GIB"] = hold
+            if limit is not None:
+                env["ZESU_GATE_MODULE_LIMIT_GIB"] = limit
             for name in ("rocq_mcp_guarded.sh", "rocq_coqc_guarded.sh"):
                 events.unlink(missing_ok=True)
                 result = subprocess.run([str(TOOLS / name), "Fixture.v"],
                                         cwd=root, env=env, capture_output=True,
                                         text=True, timeout=5)
+                if not accepted:
+                    self.assertEqual(result.returncode, 2, result.stderr)
+                    self.assertIn("integer from 6 through 32", result.stderr)
+                    self.assertFalse(events.exists())
+                    continue
                 self.assertEqual(result.returncode, 0, result.stderr)
                 rows = [json.loads(line) for line in events.read_text().splitlines()]
                 self.assertTrue(rows)
                 self.assertTrue(all(row["hold"] == (hold or "180") for row in rows))
-                self.assertTrue(all(row["memory"] == "6" for row in rows))
+                memory = limit or "6"
+                self.assertTrue(all(row["memory"] == memory for row in rows))
                 if name == "rocq_mcp_guarded.sh":
-                    self.assertIn("MemoryMax=6G", rows[0]["arguments"])
+                    self.assertIn(f"MemoryMax={memory}G", rows[0]["arguments"])
                     self.assertIn("MemorySwapMax=0", rows[0]["arguments"])
+                    self.assertTrue(all(row["pet_rss_mb"] == str(int(memory) * 1024)
+                                        for row in rows))
 
 
 if __name__ == "__main__":

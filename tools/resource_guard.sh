@@ -65,8 +65,9 @@ if [ "${1:-}" = native-limit ]; then
 fi
 
 # The hard per-job cap: what one `coqc` scope may use before the kernel
-# kills it. This is the module limit and does not change.
+# kills it. Ordinary wrappers use the configured gate module limit.
 MODULE_LIMIT_GIB=${ZESU_MODULE_LIMIT_GIB:-6}
+GATE_MODULE_LIMIT_GIB=${ZESU_GATE_MODULE_LIMIT_GIB-6}
 # What a job actually costs, which is what the job count should be sized
 # against. Measured 2026-09-20: a clean `check-iris` at 25 jobs peaks at
 # 75 GiB, so 3.0 GiB per job; on 2026-09-22 batches 48 wide peaked at
@@ -1242,8 +1243,13 @@ diagnostic_probe() {
 validate_probe_scope() {
   case "${ZESU_DIAGNOSTIC_PROBE:-0}" in
     0)
-      if [ "$MODULE_LIMIT_GIB" != 6 ]; then
-        echo "resource guard: ordinary compiler scopes require 6 GiB" >&2; return 2
+      if [[ ! "$GATE_MODULE_LIMIT_GIB" =~ ^([6-9]|[12][0-9]|3[0-2])$ ]]; then
+        echo "resource guard: gate module limit must be an integer from 6 through 32 GiB" >&2
+        return 2
+      fi
+      if [ "$MODULE_LIMIT_GIB" != "$GATE_MODULE_LIMIT_GIB" ]; then
+        echo "resource guard: ordinary compiler scopes require the configured ${GATE_MODULE_LIMIT_GIB} GiB limit" >&2
+        return 2
       fi
       return 0 ;;
     1|cpu-only)
