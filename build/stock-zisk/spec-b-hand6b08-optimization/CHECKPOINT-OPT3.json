@@ -1,0 +1,413 @@
+{
+  "status": "Verified optimization; check-fast passed; ready to push",
+  "source": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.v",
+  "source_sha256": "3dabd65879a22bb7fe7a519a07055c5d1d4a3522ff94eb13ef843e43e035b70b",
+  "statement_sha256": "a6130569847b877d0d682fb20fae9e792a3f410af61dede61b9c0e3bffaace82",
+  "whole_file_lines": 64,
+  "Proof_through_Qed_lines": 29,
+  "original_input_root": "3df2ff22ef71a8b41c8a511c2b8c0edf0daeaf98",
+  "artifact_root_before_gate": "86eb4a46d81c3c48bc8f77f1aac1ed3f90c0d047",
+  "gate_root": "4c1e0321443db8e7abf8aa752e10ff3173adb8a6",
+  "interactive": {
+    "preQed_state": 97,
+    "actual_groups": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "Qed": {
+      "success": true,
+      "goals": "No goals remaining.",
+      "proof_finished": true,
+      "commands_run": 1,
+      "check_time_ms": 46091,
+      "state_id": 98,
+      "from_state_id": 97,
+      "feedback": [
+        [
+          "Qed.",
+          "DesignedBoundary_800d6b08 is defined"
+        ]
+      ],
+      "proof_tactics": [
+        "iStartProof.",
+        "zesu_expose_code_lists.",
+        "repeat first [progress iIntros (?) | progress iIntros \"#?\" | progress iIntros \"?\"].",
+        "zesu_reduce_introduced_code_lists.",
+        "repeat iDestruct select (_ ∗ _)%I as \"[? ?]\".",
+        "1: time \"output-index32\" (zesu_run_until ltac:(fun _ => lazymatch goal with | |- envs_entails _ (@iris.bi.interface.bi_exist _ nat _) => idtac end)).",
+        "1: iExists 32%nat.",
+        "1: time \"output-index0\" (zesu_run_until ltac:(fun _ => lazymatch goal with | |- envs_entails _ (@iris.bi.interface.bi_exist _ nat _) => idtac end)).",
+        "1: iExists 0%nat.",
+        "1: time \"output-index8\" (zesu_run_until ltac:(fun _ => lazymatch goal with | |- envs_entails _ (@iris.bi.interface.bi_exist _ nat _) => idtac end)).",
+        "1: iExists 8%nat.",
+        "1: time \"output-index16\" (zesu_run_until ltac:(fun _ => lazymatch goal with | |- envs_entails _ (@iris.bi.interface.bi_exist _ nat _) => idtac end)).",
+        "1: iExists 16%nat.",
+        "1: time \"output-index24-boundary\" (zesu_run_until ltac:(fun _ => lazymatch goal with | |- envs_entails _ (@iris.bi.interface.bi_exist _ nat _) => idtac end)).",
+        "1: unLET; assert (Hstore24Address : bv_unsigned (bv_add (Z_to_bv 64 (decodeItemOutputPointer args)) (24%bv : bv 64)) = (decodeItemOutputPointer args + 24)%Z) by (clear -HarrayFact14 HarrayFact15; unfold RlpDecodeItem.word64Modulus in *; bv_solve).",
+        "1: rewrite Hstore24Address.",
+        "1: notypeclasses refine (tac_find_in_context (ZesuMemRegionSearch (decodeItemOutputPointer args + 24)) (find_mem_region_inst (decodeItemOutputPointer args + 24)) _).",
+        "1: simpl; repeat liExist false.",
+        "1: zesu_expose_environment_alias.",
+        "1: iRename select ((decodeItemOutputPointer args) ↦ₘ∗ _)%I into \"HselectedOutput\".",
+        "1: iMatchHyp ltac:(fun name resource => lazymatch resource with | (?base ↦ₘ∗ ?values)%I => constr_eq base (decodeItemOutputPointer args); notypeclasses refine (tac_find_hyp_equal (ZesuMemRegionSearch (decodeItemOutputPointer args + 24)) resource _ _ _ _ _) end).",
+        "1: apply find_mem_region_array.",
+        "1: left; cbn [length]; rewrite length_insert !length_drop !length_app !length_take H2; cbn [N.to_nat]; lia.",
+        "1: iFrame \"HselectedOutput\".",
+        "1: cbn [N.eqb Pos.eqb]; iSplitR; [iPureIntro; reflexivity | idtac].",
+        "1: iExists 24%nat; iSplitR; [iPureIntro; cbn; lia | idtac].",
+        "1: iSplitR; [iPureIntro; cbn [length]; rewrite length_insert !length_drop !length_app !length_take H2; cbn; lia | idtac].",
+        "1: iIntros \"HselectedOutput\".",
+        "1: pose proof (decodeItemReturnRestorationFacts args (returnFrame locals) H1) as Hrestoration; unfold decodeItemReturnRestoration, decodeItemFrameAndStackRestoration in Hrestoration; destruct Hrestoration as (HreturnReady & HframeReady & HstackReady).",
+        "1: time \"return-frame-index8\" (zesu_run_until ltac:(fun _ => lazymatch goal with | |- envs_entails _ (@iris.bi.interface.bi_exist _ nat _) => idtac end)).",
+        "1: iExists 8%nat.",
+        "1: iSplitR; [iPureIntro; cbn; lia | idtac].",
+        "1: iSplitR; [iPureIntro; rewrite HarrayFact3; cbn; lia | idtac].",
+        "1: zesu_expose_environment_alias.",
+        "1: iIntros (vmem) \"%HframeRead8 %HframeReg8 HframeReturned\".",
+        "1: time \"return-frame-index0\" (zesu_run_until ltac:(fun _ => lazymatch goal with | |- envs_entails _ (@iris.bi.interface.bi_exist _ nat _) => idtac end)).",
+        "1: iExists 0%nat.",
+        "1: iSplitR; [iPureIntro; cbn; lia | idtac].",
+        "1: iSplitR; [iPureIntro; rewrite HarrayFact3; cbn; lia | idtac].",
+        "1: zesu_expose_environment_alias.",
+        "1: iIntros (vmem0) \"%HframeRead0 %HframeReg0 HframeReturned0\".",
+        "1: time \"return-masked-handoff\" (zesu_run_until ltac:(fun _ => lazymatch goal with | |- envs_entails _ (li_tactic (normalize_instr_addr _) _) => unLET; lazymatch goal with | |- envs_entails _ (li_tactic (normalize_instr_addr (bv_unsigned (bv_or _ _))) _) => idtac end end)).",
+        "1: unLET.",
+        "1: replace (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes + 8 - (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)) with 8 in HreturnReady by lia.",
+        "1: replace (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes + 0 - (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)) with 0 in HframeReady by lia.",
+        "1: cbn [N.to_nat] in HreturnReady.",
+        "1: cbn [N.to_nat] in HframeReady.",
+        "1: zesu_expose_environment_alias; rewrite HreturnReady HframeReady.",
+        "1: assert (HreturnLowBit : bv_extract 0 1 (Z_to_bv 64 (decodeItemReturnAddress args)) = BV 1 0) by (clear -HarrayFact23 HarrayFact24 HarrayFact25; unfold RlpDecodeItem.word64Modulus in *; bv_solve).",
+        "1: pose (decodeItemMaskedReturnAddress _ HreturnLowBit) as HmaskedReturn.",
+        "1: assert (HreturnAddZero : bv_add (Z_to_bv 64 (decodeItemReturnAddress args)) (BV 64 0) = Z_to_bv 64 (decodeItemReturnAddress args)) by bv_solve.",
+        "1: rewrite HreturnAddZero HmaskedReturn Z_to_bv_unsigned bv_wrap_small; last (unfold bv_modulus; change (0 <= decodeItemReturnAddress args < RlpDecodeItem.word64Modulus); lia).",
+        "1: notypeclasses refine (tac_li_tactic _ _ (normalize_instr_addr_hint (decodeItemReturnAddress args) (decodeItemReturnAddress args) eq_refl) _ _).",
+        "1: cbn [li_tactic_P normalize_instr_addr_hint].",
+        "1: liFindInContext.",
+        "1: iMatchHyp ltac:(fun name resource => lazymatch resource with | (?base ↦ₘ∗ ?values)%I => constr_eq base (decodeItemOutputPointer args); iExists values end).",
+        "1: iSplitR.",
+        "1: rename select (length (returnStorage locals) = _) into HstorageLength.",
+        "1: rename select (decodeItemLongAcceptedFacts args _ _ _) into Haccepted.",
+        "1: rename select (returnStorage locals = _) into HstorageBefore.",
+        "1: rename select (bv_unsigned (returnA1 locals) = _) into HreturnA1.",
+        "1: rename select (bv_unsigned (returnA3 locals) = _) into HreturnA3.",
+        "1: rename select (bv_unsigned (returnA4 locals) = _) into HreturnA4.",
+        "1: rename select (0 <= RlpDecodeItem.bigEndian _) into HpayloadNonnegative.",
+        "1: iPureIntro; split; [exact H0 | idtac].",
+        "1: lazymatch goal with |- DecodeMeaningModuloKnownBugs args ?after => assert (HcanonicalImage : after = decodeItemOkBytes (returnStorage locals) (bv_to_little_endian 8 8 (bv_unsigned (returnA1 locals))) (bv_to_little_endian 8 8 (bv_unsigned (returnA3 locals))) (bv_to_little_endian 8 8 (bv_unsigned (returnA4 locals))) true) by (generalize HstorageLength; generalize (returnStorage locals); intros before Hlength; clear -before Hlength locals; do 40 (destruct before as [|? before]; [discriminate |]); destruct before; [unfold decodeItemOkBytes, bv_to_little_endian, Z_to_little_endian; cbn [Z.iter Pos.iter Z.of_N N.to_nat take drop firstn skipn list_fmap fmap insert]; repeat (rewrite Z.land_ones; last lia); repeat (rewrite Z.shiftr_div_pow2; last lia); reflexivity | cbn in Hlength; lia]) end.",
+        "1: rewrite HcanonicalImage.",
+        "1: eapply (decodeItemLongListPostMeaning args _ (1 + (bv_unsigned inputPrefix - 247)) (RlpDecodeItem.bigEndian (take (Z.to_nat (bv_unsigned inputPrefix - 247)) rest))).",
+        "1: exact (proj2 H0).",
+        "1: exact Haccepted.",
+        "1: rewrite <- HstorageBefore; apply decodeItemOkBytes_encodeSuccess.",
+        "1: exact HstorageLength.",
+        "1-3: apply length_bv_to_little_endian; compute; discriminate.",
+        "1: rewrite (littleEndian_machine_bytes 8); last (change (0 <= bv_unsigned (returnA1 locals) < bv_modulus 64); apply bv_unsigned_in_range).",
+        "1: rewrite HreturnA1; unfold RlpDecodeItemSchema.itemPayloadPointer; rewrite H3; cbn; assert (Hpneq : (bv_unsigned inputPrefix =? 128) = false) by (apply Z.eqb_neq; lia); rewrite Hpneq; reflexivity.",
+        "1: rewrite (littleEndian_machine_bytes 8); [exact HreturnA3 | change (0 <= bv_unsigned (returnA3 locals) < bv_modulus 64); apply bv_unsigned_in_range].",
+        "1: rewrite (littleEndian_machine_bytes 8); [exact HreturnA4 | change (0 <= bv_unsigned (returnA4 locals) < bv_modulus 64); apply bv_unsigned_in_range].",
+        "1: lia.",
+        "1: exact HpayloadNonnegative.",
+        "1: pose proof (decodeItemStackEpilogueRestored args) as HstackRestored.",
+        "1: rename select (length (returnFrame locals) = _) into HframeLength.",
+        "1: unfold decodeItemExitResources; rewrite HstackRestored; iFrame.",
+        "1: iRename select ((decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) ↦ₘ∗ _)%I into \"HframeBytes\".",
+        "1: iDestruct (IslarisMemory.mem_mapsto_byte_array_to_mapsto_len 16 with \"HframeBytes\") as \"Hframe\"; first exact HframeLength.",
+        "1: iSplitL \"Hframe\"; last done.",
+        "1: iApply (ghost_state.mem_mapsto_mapsto_to_uninit with \"Hframe\").",
+        "1: unLET.",
+        "1: assert (HreturnSecondBit : bv_extract 0 1 (bv_shiftr (bv_or (bv_and (bv_add (Z_to_bv 64 (decodeItemReturnAddress args)) (BV 64 0)) (BV 64 18446744073709551614)) (BV 64 0)) (BV 64 1)) = BV 1 0) by (clear -HarrayFact23 HarrayFact24 HarrayFact25; unfold RlpDecodeItem.word64Modulus in *; bv_simplify_arith; assert (Hlow : bv_extract 0 1 (Z_to_bv 64 (decodeItemReturnAddress args)) = BV 1 0) by bv_solve; pose proof (decodeItemMaskedReturnAddress (Z_to_bv 64 (decodeItemReturnAddress args)) Hlow) as Hmask; bv_simplify_arith Hmask; rewrite Z.add_0_r Hmask (bv_wrap_small 64 (decodeItemReturnAddress args)); last (change (0 <= decodeItemReturnAddress args < 2^64); lia); change ((decodeItemReturnAddress args / 2) mod 2 = 0); assert (Hmultiple : decodeItemReturnAddress args = (decodeItemReturnAddress args / 4 * 2) * 2) by (pose proof (Z.div_mod (decodeItemReturnAddress args) 4 ltac:(lia)); lia); rewrite Hmultiple Z.div_mul; last lia; apply Z.mod_mul; lia).",
+        "1: replace (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes + 8 - (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)) with 8 in HreturnReady by lia.",
+        "1: cbn [N.to_nat] in HreturnReady.",
+        "1: rewrite HreturnReady HreturnSecondBit in H44; discriminate.",
+        "Unshelve.",
+        "all: try solve [lazymatch goal with |- SHELVED_SIDECOND _ => unshelve_sidecond end; repeat f_equal; first [reflexivity | apply proof_irrel | apply bool_decide_true; bv_solve | cbn [N.to_nat]; lia]].",
+        "all: unshelve_sidecond.",
+        "all: repeat rewrite length_app; repeat rewrite length_cons; repeat rewrite length_drop; repeat rewrite length_take.",
+        "all: repeat first [rewrite length_app | rewrite length_cons | rewrite length_drop | rewrite length_take]; rewrite H2; cbn [N.to_nat]; lia.",
+        "Qed."
+      ],
+      "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+    },
+    "postQed_export": "no-proof-scope; raw Qed success preserved",
+    "normal_closure": {
+      "normal_transport_context_exited": true,
+      "owned_start_identities": {
+        "server": {
+          "pid": 334517,
+          "comm": "python",
+          "parent": 333811,
+          "start_ticks": 155840060,
+          "state": "S",
+          "rss_kib": 82172,
+          "peak_rss_kib": 82172
+        },
+        "pet": {
+          "pid": 335147,
+          "comm": "pet",
+          "parent": 334517,
+          "start_ticks": 155840177,
+          "state": "S",
+          "rss_kib": 5163372,
+          "peak_rss_kib": 5163372
+        },
+        "owner_RPC": {
+          "success": true,
+          "server_pid": 334517,
+          "server_start_ticks": 155840060,
+          "source": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt3-live005/complete_goals_mcp.py",
+          "source_sha256": "930256d175ca36ec4b3866d692e98791636380e1b886b619c328ead8c3829ff8",
+          "ownership_method": "owned-stdio-response"
+        }
+      },
+      "owned_server_exited": true,
+      "owned_pet_exited": true,
+      "client_cleanup_signals": 0,
+      "stdio_termination_fallback_calls": 0,
+      "server_internal_cleanup_signals_observed": false,
+      "original_error_preserved": true,
+      "owned_pet_RSS_before_close_kib": 5163372,
+      "owned_pet_peak_RSS_kib": 5163372
+    }
+  },
+  "compile": {
+    "success": true,
+    "vo_compile_time_seconds": 434.129,
+    "MCP_wall_seconds": 438.7250494780019,
+    "proof_build_time_seconds": 396.445,
+    "proof_check_time_seconds": 32.309,
+    "owned_sample": {
+      "pid": 1080184,
+      "start_ticks": "156281258",
+      "command": "/home/cody/islaris/_opam/bin/coqc -Q _build/default/ZesuSsz ZesuSsz -Q _build/default/ZesuStock ZesuStock -Q _build/default/InstrSpecs InstrSpecs -Q _build/default/Scaffolding Scaffolding -Q _build/default/MachineMap ZesuMachineMap -R _build/default/generated/isla-traces IslaTraces -Q _build/default/generated/isla-traces/stock-zisk/decodeItem ZesuSsz.Stock.DecodeItem -Q _build/default/generated/isla-traces/stock-zisk/closure ZesuSsz.Stock.Closure -Q _build/default/generated/evm-sail-coq EvmSail -Q _build/default/generated/evm-sail-coq/rlp EvmSailRlp -Q _build/default/generated/sail-stdpp SailStdpp -w -arg -notation-overridden -w -arg -redundant-canonical-projection -o /home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/default/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.vo /home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.v ",
+      "limits": "Limit                     Soft Limit           Hard Limit           Units     \nMax cpu time              unlimited            unlimited            seconds   \nMax file size             unlimited            unlimited            bytes     \nMax data size             unlimited            unlimited            bytes     \nMax stack size            unlimited            unlimited            bytes     \nMax core file size        unlimited            unlimited            bytes     \nMax resident set          unlimited            unlimited            bytes     \nMax processes             1028348              1028348              processes \nMax open files            524288               524288               files     \nMax locked memory         131072000000         131072000000         bytes     \nMax address space         unlimited            unlimited            bytes     \nMax file locks            unlimited            unlimited            locks     \nMax pending signals       1028348              1028348              signals   \nMax msgqueue size         819200               819200               bytes     \nMax nice priority         0                    0                    \nMax realtime priority     0                    0                    \nMax realtime timeout      unlimited            unlimited            us        \n",
+      "first_observed_UTC": "2026-10-13T03:52:25.098441+00:00",
+      "ownership": "Observed descendant of this watch-run owner.",
+      "sampled_CPU_seconds": 430.92,
+      "peak_RSS_KiB": 4505392,
+      "last_observed_UTC": "2026-10-13T03:58:43.396912+00:00"
+    },
+    "sample_limit": "CPU/RSS are observed samples. No child wait-attributed CPU total is retained."
+  },
+  "verification": {
+    "result": {
+      "success": true,
+      "verification_method": "module_m",
+      "assumptions": []
+    },
+    "request_UTC": "2026-10-13T03:58:49.643847+00:00",
+    "request_to_saved_response_interval_seconds": 394.45934772491455,
+    "interval_limit": "The interval uses response-file mtime. It is not a leaf compiler measurement.",
+    "owned_sample": {
+      "pid": 1131238,
+      "start_ticks": "156325190",
+      "command": "/home/cody/islaris/_opam/bin/coqc -Q _build/default/ZesuSsz ZesuSsz -Q _build/default/ZesuStock ZesuStock -Q _build/default/InstrSpecs InstrSpecs -Q _build/default/Scaffolding Scaffolding -Q _build/default/MachineMap ZesuMachineMap -R _build/default/generated/isla-traces IslaTraces -Q _build/default/generated/isla-traces/stock-zisk/decodeItem ZesuSsz.Stock.DecodeItem -Q _build/default/generated/isla-traces/stock-zisk/closure ZesuSsz.Stock.Closure -Q _build/default/generated/evm-sail-coq EvmSail -Q _build/default/generated/evm-sail-coq/rlp EvmSailRlp -Q _build/default/generated/sail-stdpp SailStdpp -w -arg -notation-overridden -w -arg -redundant-canonical-projection /home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/tmpsyntia3s.v ",
+      "limits": "Limit                     Soft Limit           Hard Limit           Units     \nMax cpu time              unlimited            unlimited            seconds   \nMax file size             unlimited            unlimited            bytes     \nMax data size             unlimited            unlimited            bytes     \nMax stack size            unlimited            unlimited            bytes     \nMax core file size        unlimited            unlimited            bytes     \nMax resident set          unlimited            unlimited            bytes     \nMax processes             1028348              1028348              processes \nMax open files            524288               524288               files     \nMax locked memory         131072000000         131072000000         bytes     \nMax address space         unlimited            unlimited            bytes     \nMax file locks            unlimited            unlimited            locks     \nMax pending signals       1028348              1028348              signals   \nMax msgqueue size         819200               819200               bytes     \nMax nice priority         0                    0                    \nMax realtime priority     0                    0                    \nMax realtime timeout      unlimited            unlimited            us        \n",
+      "first_observed_UTC": "2026-10-13T03:58:51.553532+00:00",
+      "ownership": "Observed descendant of this watch-run owner.",
+      "sampled_CPU_seconds": 392.09,
+      "peak_RSS_KiB": 4680992,
+      "last_observed_UTC": "2026-10-13T04:05:23.421798+00:00"
+    }
+  },
+  "comparison": {
+    "original_baseline_seconds": 1480,
+    "accepted_intermediate_seconds": 1017.2,
+    "candidate_seconds": 434.129,
+    "target_seconds": 300,
+    "target_reached": false,
+    "improvement_from_intermediate_percent": 57.321175776641766,
+    "remaining_expensive_commands": [
+      {
+        "command": "output-index24-boundary: zesu_run_until nat existential",
+        "seconds": 120.202
+      },
+      {
+        "command": "return-frame-index8: zesu_run_until nat existential",
+        "seconds": 103.505
+      },
+      {
+        "command": "return-frame-index0: zesu_run_until nat existential",
+        "seconds": 66.667
+      }
+    ],
+    "command_limit": "Labeled sentence times are separate from module compilation."
+  },
+  "normal_closures": [
+    {
+      "normal_transport_context_exited": true,
+      "owned_start_identities": {
+        "server": {
+          "pid": 1079342,
+          "comm": "python",
+          "parent": 1079125,
+          "start_ticks": 156280698,
+          "state": "S",
+          "rss_kib": 82336,
+          "peak_rss_kib": 82336
+        },
+        "pet": null,
+        "owner_RPC": {
+          "success": true,
+          "server_pid": 1079342,
+          "server_start_ticks": 156280698,
+          "source": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt3-final006/complete_goals_mcp.py",
+          "source_sha256": "930256d175ca36ec4b3866d692e98791636380e1b886b619c328ead8c3829ff8",
+          "ownership_method": "owned-stdio-response"
+        }
+      },
+      "owned_server_exited": true,
+      "owned_pet_exited": true,
+      "client_cleanup_signals": 0,
+      "stdio_termination_fallback_calls": 0,
+      "server_internal_cleanup_signals_observed": false,
+      "original_error_preserved": false,
+      "owned_pet_RSS_before_close_kib": 0,
+      "owned_pet_peak_RSS_kib": 0
+    },
+    {
+      "normal_transport_context_exited": true,
+      "owned_start_identities": {
+        "server": {
+          "pid": 1130590,
+          "comm": "python",
+          "parent": 1079125,
+          "start_ticks": 156324843,
+          "state": "S",
+          "rss_kib": 82316,
+          "peak_rss_kib": 82316
+        },
+        "pet": null,
+        "owner_RPC": {
+          "success": true,
+          "server_pid": 1130590,
+          "server_start_ticks": 156324843,
+          "source": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt3-final006/complete_goals_mcp.py",
+          "source_sha256": "930256d175ca36ec4b3866d692e98791636380e1b886b619c328ead8c3829ff8",
+          "ownership_method": "owned-stdio-response"
+        }
+      },
+      "owned_server_exited": true,
+      "owned_pet_exited": true,
+      "client_cleanup_signals": 0,
+      "stdio_termination_fallback_calls": 0,
+      "server_internal_cleanup_signals_observed": false,
+      "original_error_preserved": false,
+      "owned_pet_RSS_before_close_kib": 0,
+      "owned_pet_peak_RSS_kib": 0
+    }
+  ],
+  "limits": [
+    "The theorem and contract boundary are unchanged.",
+    "The runtime compiler wrapper enforces 6 GiB and unlimited CPU.",
+    "The retained stdio server wrapper uses a 64 GiB scope.",
+    "Root owns Iris.",
+    "The 300-second target remains open."
+  ],
+  "bindings": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.v",
+      "sha256": "3dabd65879a22bb7fe7a519a07055c5d1d4a3522ff94eb13ef843e43e035b70b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt3-final006/COMPILE.json",
+      "sha256": "640096ef557acfcd287fd5022ce94e4ff55460a208c0157c0f3f8c24da0a110c"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt3-final006/VERIFY.json",
+      "sha256": "c33a2dc2fc8b91b8c7d1cecf04cce8986e2ae4b200fce20b52ad00eb2bfe3f0f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt3-final006/PREPARATION.json",
+      "sha256": "55a8abaee338dda34b0733aebafcf29ea56a9a574a979de9f4f044ada508d09b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt3-final006/raw-calls.json",
+      "sha256": "5b9ce0b6ec982f095d868b88b3a1978f21853fdaf7e705f5a77a9d57cb2ceb69"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt3-final006/SAMPLED-COMPILERS.json",
+      "sha256": "461c8ad0c9a89d512edfea862e0f46033d857076040c8f589291bd308976c648"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt3-final006/MONITOR-CLOSED.json",
+      "sha256": "63793f3aa93d65d1cdd159698eb44c3c70d508d02aee005a079777a985fe0643"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt3-live005/COMMAND-017-STATE.json",
+      "sha256": "dd5e82d18feacc4a63b99ef9c55018bc711874bbbea4b7a662ccc0d7432c31c7"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt3-live005/COMMAND-018-RESULT.json",
+      "sha256": "cabe00d1f20c19ad5069a4bb9c8ea335509ac0c9c8eedf7e2236a5581e4289e5"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt3-live005/inspect-return/exports/state_97.json",
+      "sha256": "9364991b81442d7737e232376a72172c164e3491d6d68872c02e83d27157a97f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt3-live005/inspect-return/session-closure.json",
+      "sha256": "7ca2f7322a03f5d4e29b00b97e00825bb2a319f5fb562f8b3f7deef152bf5716"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt3-checkpoint006/ARTIFACTS.json",
+      "sha256": "a62076557ff5f6852feac50f372f95eef2816a21089bb7419838c0c3425e88f3"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt3-final006/compile-6b08-opt3/session-closure.json",
+      "sha256": "4afdc607adb39ac02f2d91a4aa8e9f2deb47993fc9e919c2a2d311a96ff88a8d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt3-final006/verify-6b08-opt3/session-closure.json",
+      "sha256": "19c8efdaf3012d805b91e4e2d0e8c9836fea9ba3390886cec98f74c3b1f68679"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt3-checkpoint006/CHECK-FAST.json",
+      "sha256": "17eaffabfae8529f99176fa96f46030e496398766301c6bf58abedab9abec35e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt3-checkpoint006/CHECK-FAST.log",
+      "sha256": "eee78855c86906150e55fe3c74d65d4f4b5e0cc56a407643bb8de998785fb84a"
+    }
+  ],
+  "integration_parent": "bc33754fe3caec0f9e16083b9b838076f2e03543",
+  "gate": {
+    "command": [
+      "python3",
+      "tools/block/prepare_hand_gate.py",
+      "--workspace",
+      "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22",
+      "--module",
+      "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.v",
+      "--agent",
+      "spec-b",
+      "--jobs",
+      "6",
+      "--check-fast"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 484.42209478188306,
+    "Iris_owner": "Root"
+  },
+  "rebase_changes": {
+    "changed_files": [
+      "Scaffolding/DecodeItemNativeBlocksCompliance.v",
+      "Scaffolding/DecodeItemNativeBlocksComplianceFixtures.v",
+      "ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v",
+      "ZesuSsz/Evidence/DecodeItemOpenNativeHypothesesFixtures.v",
+      "ZesuSsz/Evidence/DecodeItemPromoted6ac4Fixtures.v",
+      "ZesuSsz/Evidence/spec_shape_inventory.json",
+      "ZesuSsz/Generated/DecodeItem/PromotedBodies.v",
+      "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ac4.v"
+    ],
+    "proof_source_unchanged": true,
+    "imported_proof_dependencies_changed": false,
+    "scope": "The rebase adds the 6ac4 promotion consumers. It changes no source in this Hand module import closure."
+  },
+  "health": {
+    "compile_and_verify_ok": true,
+    "records": "/home/cody/zesislar/.worktrees/worker1-spec-b-hand6b08-opt-3df2ff22/_build/hand6b08-opt3-final006/raw-calls.json"
+  }
+}
