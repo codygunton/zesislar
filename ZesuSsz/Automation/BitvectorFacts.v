@@ -92,3 +92,18 @@ Proof.
   rewrite (bv_wrap_bv_wrap low width _ Hwidth).
   apply bv_wrap_add_idemp_r.
 Qed.
+
+Lemma zesu_unsigned_low_mask_add_sub_modulus (width low : N)
+    (value mask : bv width) (offset : Z) :
+  (low <= width)%N ->
+  bv_unsigned mask = Z.ones (Z.of_N low) ->
+  bv_modulus low <= bv_unsigned value + offset < 2 * bv_modulus low ->
+  bv_unsigned (bv_and (value + Z_to_bv width offset) mask) =
+    bv_unsigned value + offset - bv_modulus low.
+Proof.
+  intros Hwidth Hmask Hrange.
+  rewrite (zesu_unsigned_low_mask_add_integer width low value mask offset Hwidth Hmask).
+  rewrite Z_to_bv_unsigned.
+  rewrite -(bv_wrap_sub_modulus_1 low (bv_unsigned value + offset)).
+  apply bv_wrap_small. lia.
+Qed.
