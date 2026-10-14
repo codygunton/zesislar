@@ -50,6 +50,25 @@ Proof.
   let current := match goal with |- ?target => constr:(target) end in
   constr_eq original current. clear savedTarget. iFrame "Hsource Hpeer".
 Qed.
+Definition designedEntry (fact : Prop) (resource : iProp Sigma) : iProp Sigma :=
+  (entrySource fact resource ∗ True)%I.
+#[local] Instance : LithiumUnfold (@designedEntry) := I.
+Local Typeclasses Opaque designedEntry.
+
+Lemma entry_intro_lithium_unfold `{!islaG Sigma} `{!threadG}
+    (fact : Prop) (resource successor code : iProp Sigma) (pc : Z) :
+  instr_body pc (⌜fact⌝ ∗ entrySource fact resource ∗ True) -∗
+  successor -∗ code -∗ instr_body pc (designedEntry fact resource).
+Proof.
+  zesu_entry_intro_goal_if_enabled.
+  lazymatch goal with
+  | |- @bi_emp_valid _
+      (instr_body pc (⌜fact⌝ ∗ entrySource fact resource ∗ True) -∗
+       successor -∗ code -∗
+       instr_body pc (⌜fact⌝ ∗ entrySource fact resource ∗ True))%I => idtac
+  end.
+  iStartProof. iIntros "Hbody _ _". iExact "Hbody".
+Qed.
 End Controls.
 End RegisteredSource.
 
