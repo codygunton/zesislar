@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "item": "r1-source-keyed-declarations",
+  "measured_root": "ec272135",
+  "rebased_parent": "7a970d9c7956d0d740ab7f6e405188a778a549ff",
+  "Rocq_diff_between_roots": [],
+  "source": "ZesuSsz/Automation/EntryIntro.v",
+  "source_sha256": "35ec8db172ff7edd25c8fa4f54dfd2778addd7db85ad56d381eccf74ba66dec6",
+  "definitions_only": true,
+  "class_names": [
+    "ZesuEntryIntro",
+    "ZesuLoopStep"
+  ],
+  "effective_explicit_hint_modes": [
+    "+ -",
+    "+ -"
+  ],
+  "step_tactic_present": false,
+  "switch_present": false,
+  "proof_certificate": false,
+  "ZesuEntryIntro_declaration_sha256": "e61227ecd8fc81cd59babe42451cded7fc8a56d70e93e97b1c98be08357ad029",
+  "ZesuLoopStep_declaration_sha256": "983f54d95a9124d0de0a80bfdbd4984922a48b1c53dae1631fd61c336ed05b4a",
+  "MCP_record": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-av-r1-entry-intro-ec272/_build/r1-class-declarations-mcp-001/result.json",
+    "sha256": "88e5790b98dad7d8855aa4372f02d2835f3d1b34b641089f4b18820b81695acd"
+  },
+  "check_fast": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-av-r1-entry-intro-ec272/_build/r1-class-check-fast-004/result.json",
+    "sha256": "f58d744fca55eb688c69fee7055726cb7783628cd697ee8c2174711403854651"
+  },
+  "source_artifact_cleanup": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-av-r1-entry-intro-ec272/_build/r1-source-artifact-cleanup-003/REPORT.json",
+    "sha256": "a8d7aced30fe3a7dc850238fb22ffed4f8ff454e1b0c4a091bc310b6c28bf67c"
+  },
+  "focused_refresh_test": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-av-r1-entry-intro-ec272/_build/r1-source-artifact-cleanup-003/FOCUSED.json",
+    "sha256": "06aa2039737f503c74f99fb8e1433889f3499c3e0b78dbe0432cd721e14065a0"
+  },
+  "MCP_compile_success": true,
+  "check_fast_exit": 0,
+  "check_fast_elapsed_seconds": 1272.2668834968936,
+  "changed_inputs": []
+}
