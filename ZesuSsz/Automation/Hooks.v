@@ -4,6 +4,7 @@ Require Import ZesuSsz.Automation.SwitchDispatch.
 From iris.proofmode Require Import environments.
 Require Import isla.riscv64.riscv64.
 Require Export ZesuSsz.Automation.ByteArrays.
+Require Export ZesuSsz.Automation.MemoryAccess.
 Require Import ZesuSsz.Automation.NatBounds.
 Require Export ZesuSsz.Automation.ByteArrayLengths.
 Require Import ZesuSsz.Automation.UninitRegions.
@@ -1717,6 +1718,7 @@ Ltac zesu_liAStep :=
   | zesu_handoff_adjacent_words_if_enabled
   | zesu_handoff_facts_if_enabled
   | zesu_handoff_integer_equality_if_enabled
+  | zesu_memory_access_if_enabled zesu_integer_array_facts
   | zesu_integer_array_address_if_enabled
   | zesu_normalize_find_mem_address
   | zesu_liAWriteMem

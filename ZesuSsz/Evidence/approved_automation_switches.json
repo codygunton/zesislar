@@ -97,6 +97,10 @@
     {
       "switch": "WordArrayLookup",
       "class": "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepWordArrayLookup"
+    },
+    {
+      "switch": "MemoryAccess",
+      "class": "ZesuSsz.Automation.MemoryAccess.ZesuStepMemoryAccess"
     }
   ],
   "reference_pass_inventory": {
