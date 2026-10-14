@@ -1,0 +1,21 @@
+{
+  "item": "R1a switch export repair",
+  "base": "2c5e57b3518c52aa12c115e977c48829c26dfaea",
+  "preserved_candidate": "dc77603350f76b1120d8a6b9d2e10271133d8fce",
+  "source": {
+    "path": "ZesuSsz/Automation/Switches/EntryIntro.v",
+    "sha256": "1b6f76274b5f4c3a1c0b81f8da17ba46eb5be4f724acbf3fd7d32330c16899c1"
+  },
+  "report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-av-r1-entry-intro-ec272/_build/r1a-export-repair-030/REPORT.json",
+    "sha256": "e996633822e2d882284cca7f460a4a03818fb5abbecb4a6e3a708b94b1f4b3df"
+  },
+  "focused_exit": 0,
+  "changed_inputs": [],
+  "controls": 5,
+  "normalizer": false,
+  "native_table": "pending C",
+  "check_fast": "pending C table per Orch sequence",
+  "check_iris": "pending Root",
+  "native_closure": false
+}
