@@ -1,0 +1,49 @@
+{
+  "item": "R1 integration comparison candidate",
+  "base": "dad8c896",
+  "components": {
+    "R1a": "cf33f436",
+    "R1b_prime": "5cea4f165eb08ef5cc12c88870544cb203262ab5",
+    "R1c": "89c6a1d0f51be1f634eeedfdda229eb412c4d32d",
+    "Spec_data": "a4ce9f06ea74a6fb8e70903073ecdc061ded60c8"
+  },
+  "source_sha256": {
+    "ZesuSsz/Automation/Approved.v": "25140cf99d085f484a0e83cd9860c8519c224b80a519b4a5b9ab96236a66573f",
+    "ZesuSsz/Automation/BitvectorFacts.v": "1d6678eb4318ee66af81a1bcfe3c18d0d14858f0540ae813475d7458b25c7a93",
+    "ZesuSsz/Automation/ConjunctMatch.v": "89a7a56f3ee61836016d401f663ec9ba44465af31cdedbc71d452ffb850a8c7b",
+    "ZesuSsz/Automation/EntryIntro.v": "85d0975fb10e87089222aec1ac9b614fa9d08e34adda3dd1f46091c0a9f54b3b",
+    "ZesuSsz/Automation/Finish.v": "98d456eff6a4c13f467dbf5595080664ecb38bc6427f1ad0e2661e28d2df9dfd",
+    "ZesuSsz/Automation/Hooks.v": "76fe0ba6e63e8030f11150bac796083e315ba6d59dfd90730eabd68f7893c6a7",
+    "ZesuSsz/Automation/Switches/ConjunctMatch.v": "7297b4be81634966b0865fedd6f39892884009ad261ee1a2ea4dc299cfafa777",
+    "ZesuSsz/Automation/Switches/EntryIntro.v": "1b6f76274b5f4c3a1c0b81f8da17ba46eb5be4f724acbf3fd7d32330c16899c1",
+    "ZesuSsz/Automation/Switches/MaskNormalizer.v": "b3838fafbe5909cba981ce6fa1ae4a3722995d155b7511bbb072f4e0156a7367",
+    "ZesuSsz/Compliance/DecodeItemDataRegistrations.v": "44b9d452a1d86d87abb64349b690425098fa701561dc19bd8dd7d1649379d9ba",
+    "ZesuSsz/Compliance/DecodeItemEntryAdditionalFacts.v": "19a508b70848a11167e9afce216785538d1c64e0658304316d8f1612abca8c84",
+    "ZesuSsz/Compliance/DecodeItemHints.v": "c204d89b194c0f8ba4b5e22024f1f635363f3ed7c59cd8606221464b8a7a60ec",
+    "ZesuSsz/Evidence/GatesPlugin/signature_gates_plugin.ml": "61c82df51775b3240e6ec5f7ae7662693e8cb5571b5219383172a7d737fff2b8",
+    "ZesuSsz/Evidence/approved_automation_switches.json": "6de71400524e3eb5ea6586a38026f109988b44fde66f6d5e6e0c8b8eab2fb63b",
+    "ZesuSsz/Evidence/spec_shape_inventory.json": "07ac37afd1200c50522457291d26cf276c7a24177399391ef7a70cc558a35881",
+    "ZesuSsz/Proofs/Tests/ApprovedSwitches.v": "1c62031444f5f020d12749d5a1a37ef9a72d39d1adf7737616315f674b45bf1d",
+    "ZesuSsz/Proofs/Tests/ConjunctHead.v": "1c5cf820e1f5fcb681dd353ceb07c4bd73d5177abf67726817a1de39eaa4c683",
+    "ZesuSsz/Proofs/Tests/EntryIntro.v": "4901d00dc1d82abb55b77c6b0336bf16897cbe048cd00698714b0f43dc9b86c3",
+    "ZesuSsz/Proofs/Tests/EntryMask.v": "64cf4a2533c3534c1376fb0eacdfa8d14bcb3558f291cbd5e42d92e84799741d",
+    "tools/block/test_approved_switches.py": "5de8c50dcde648bcf89de16d7bf5625077f9d882f0a436983ec2faf629011030"
+  },
+  "focused_build": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-av-r1-integrated-dad8/_build/r1-integrated-focused-002/REPORT.json",
+    "sha256": "066f8dd9a62179fed1174222ea508d6315d3fbdbd3c424f0780a68bb5c896525",
+    "result": "pass",
+    "outputs": 16,
+    "changed_inputs": []
+  },
+  "generic_scan_matches": 0,
+  "approved_switches": 31,
+  "unit_tests": {
+    "total": 55,
+    "result": "pass"
+  },
+  "export_added": "ZesuSsz.Compliance.DecodeItemEntryAdditionalFacts",
+  "native_scope": "C runs 6a38 and 6ad8 OFF/ON, removing only the ConjunctMatch switch for OFF. C then runs nine Auto ON.",
+  "native_closure": false,
+  "gates": "Held pending the native table. No broad gate ran."
+}
