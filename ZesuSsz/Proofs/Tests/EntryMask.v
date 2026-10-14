@@ -83,3 +83,15 @@ Proof.
   assert_fails (assert (candidate : bv_unsigned value - 183 < bv_unsigned limit)
     by zesu_low_mask_sub_modulus_if_enabled). exact I.
 Qed.
+
+Lemma r1b_prime_Z (value : bv 64) (prefix offset : Z)
+    (Hvalue : bv_unsigned value = prefix)
+    (Hrange : 256 <= prefix + offset < 512) :
+    bv_unsigned (bv_and (value + Z_to_bv 64 offset) 255) = prefix + offset - 256.
+Proof. zesu_low_mask_sub_modulus_if_enabled. Qed.
+
+Lemma r1b_prime_bv (value : bv 64) (prefix offset : Z)
+    (Hvalue : bv_unsigned value = prefix)
+    (Hrange : 256 <= prefix + offset < 512) :
+    bv_and (value + Z_to_bv 64 offset) 255 = Z_to_bv 64 (prefix + offset - 256).
+Proof. zesu_low_mask_sub_modulus_if_enabled. Qed.
