@@ -14,6 +14,7 @@ Require Export ZesuSsz.Automation.Switches.StrictSigned.
 Require Export ZesuSsz.Automation.Switches.ListWitness.
 Require Export ZesuSsz.Automation.Switches.TupleWitness.
 Require Export ZesuSsz.Automation.Switches.ArrayRegionBounds.
+Require Export ZesuSsz.Automation.Switches.EntryIntro.
 Require Export ZesuSsz.Automation.Switches.PureFactHints.
 Require Export ZesuSsz.Automation.Switches.KnownPairWitness.
 Require Export ZesuSsz.Automation.Switches.PureWitnessConstraints.
