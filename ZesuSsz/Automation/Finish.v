@@ -560,7 +560,7 @@ Ltac zesu_run_pass :=
 Ltac zesu_search_switches := constr:([
   ZesuSsz.Automation.Hooks.ZesuStepRegionFaultNormalization; ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup;
   ZesuSsz.Automation.Hooks.ZesuStepStackWrite; ZesuSsz.Automation.Hooks.ZesuStepRamFault; ZesuSsz.Automation.Hooks.ZesuStepRegionFault;
-  ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask; ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress; ZesuSsz.Automation.Hooks.ZesuStepRecordWitness;
+  ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask; ZesuSsz.Automation.EntryIntro.ZesuStepEntryIntro; ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress; ZesuSsz.Automation.Hooks.ZesuStepRecordWitness;
   ZesuSsz.Automation.Hooks.ZesuStepNaturalIndexConstraint;
   ZesuSsz.Automation.Hooks.ZesuStepArrayBounds; ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff; ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle;
   ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand; ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned; ZesuSsz.Automation.Hooks.ZesuStepListWitness;

@@ -13,7 +13,7 @@ class ApprovedSwitchCoverageTests(unittest.TestCase):
 
     def test_current_pass_inventory_is_exported(self):
         self.assertEqual(export_differences(self.source, self.manifest), ([], []))
-        self.assertEqual(len(inventory_modules(self.manifest)), 28)
+        self.assertEqual(len(inventory_modules(self.manifest)), 29)
         self.assertEqual(len(self.manifest["exclusions"]), 17)
 
     def test_new_approved_switch_requires_export(self):
