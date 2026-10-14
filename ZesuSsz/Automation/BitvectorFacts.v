@@ -66,6 +66,8 @@ Proof. move => Hsub. rewrite bv_sub_unsigned bv_wrap_small; bv_solve. Qed.
 
 Class ZesuStepLowMask : Prop := zesu_step_low_mask : True.
 
+Class ZesuStepMaskNormalizer : Prop := zesu_step_mask_normalizer : True.
+
 Lemma zesu_unsigned_low_mask_add (width low : N)
     (value offset mask : bv width) :
   (low <= width)%N ->
