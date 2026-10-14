@@ -1,0 +1,46 @@
+{
+  "item": "additional-entry-facts",
+  "root": "dad8c896366194af15a3a4613f66ffd6c5b54ae5",
+  "class_dependency": "1ad066a75643579fc319ab10a7f2166dcda9ce44",
+  "registration_dependency": "c2d6ebcec1aa7e7a10582c1ba08202b42a4ca1f0",
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-additional-facts-dad8c896/_build/additional-facts-checkpoint005/REPORT.json",
+    "sha256": "0a7e46078e9f682f54ea3c0b99a4941196524c4735a25f9adf9d5ff94c2679bc",
+    "bindings": 15
+  },
+  "MCP": {
+    "changed_lemmas": 4,
+    "facts_output_evar_queries": 4,
+    "groups": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "actual_Qed": true,
+    "compilation": "passed",
+    "exact_verification": "module_m passed",
+    "assumptions": [],
+    "normal_owned_closures": 8
+  },
+  "preservation": {
+    "old_lemmas": "unchanged",
+    "loop_instances": "unchanged",
+    "old_existential_facts": "retained inside conjunction",
+    "acceptance": "conditional",
+    "registration": "one instance per source; unexported"
+  },
+  "interface_lines": {
+    "new_module": 157,
+    "registration_before": 81,
+    "registration_after": 58,
+    "delta": 134
+  },
+  "focused_checks": {
+    "shape_inventory": "passed; checker-generated rows",
+    "data_only": "passed"
+  },
+  "check_fast": "Not run. Orch explicitly releases unexported unit; Infra A owns export and integration gates.",
+  "limitation": "Consumer behavior was not measured.",
+  "umbrella_check": "Expected integration-only rejection retained in the full certificate."
+}
