@@ -1,0 +1,43 @@
+{
+  "item": "deletion-consumers",
+  "integration_Root": "d8a4810db3c84b6d0fff5bf294451e69c7d57a04",
+  "pending_R1_overlay": "a4ce9f06ea74a6fb8e70903073ecdc061ded60c8",
+  "root_totals": {
+    "candidate_modules": 15,
+    "candidate_lines": 2998,
+    "direct_reference_rows": 1562,
+    "direct_consumer_pairs": 314,
+    "transitive_import_pairs": 1348,
+    "semantic_definition_modules": 5,
+    "actually_unreferenced_modules": 0,
+    "deletion_credit": 0
+  },
+  "overlay_totals": {
+    "candidate_modules": 15,
+    "candidate_lines": 2998,
+    "direct_reference_rows": 1574,
+    "direct_consumer_pairs": 318,
+    "transitive_import_pairs": 1353,
+    "semantic_definition_modules": 5,
+    "actually_unreferenced_modules": 0,
+    "deletion_credit": 0
+  },
+  "reference_scope": "All tracked repository text, including tools, generated proof tables, and build metadata. Allocation paths, generated ISA traces, machine dumps/binaries, stock inventory and CFG excluded before reading.",
+  "reference_limits": "Lexical occurrences include historical metadata and comments. Parsed local Require edges give transitive consumers. No compiled dependency or removal test ran.",
+  "replacement_policy": "Each reference has an exact keyed lemma/registration target where available, or an explicit retained/nothing status. R1/R4 consumers and R3 API remain pending. E3 stays separate.",
+  "semantic_definition_modules": [
+    "ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.v",
+    "ZesuSsz/Compliance/DecodeItemOutputWitnessSelections.v",
+    "ZesuSsz/Compliance/DecodeItemLongStringOutputMeaning.v",
+    "ZesuSsz/Compliance/DecodeItemEmptyStringOutputMeaning.v",
+    "ZesuSsz/Compliance/DecodeItemShortListOutputMeaning.v"
+  ],
+  "deletion_credit": 0,
+  "unresolved_for_removal_modules": 15,
+  "checks": "Exact Git blob hashes, lines, symbols, and replacement-status coverage passed. Metadata only.",
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-deletion-consumers-dad8c896/_build/deletion-consumers001/REPORT.json",
+    "sha256": "32ce225ec0bf467cade261ed811fc14589b2b325918c76421febaa7f6612c922",
+    "bindings": 6
+  }
+}
