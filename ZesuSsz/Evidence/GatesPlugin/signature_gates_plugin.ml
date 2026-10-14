@@ -69,6 +69,28 @@ let () =
     (Tac2ffi.constr @-> tac Tac2ffi.unit)
     target_registration
 
+(* Preserve the declared source-input mode and reject ambiguous facts. *)
+let unique_entry_registration () =
+  let database = Hints.searchtable_map Class_tactics.typeclasses_db in
+  let modes = Hints.Hint_db.modes database in
+  let transparency = Hints.Hint_db.transparent_state database in
+  let search = Class_tactics.Search.eauto_tac (modes, transparency)
+    ~unique:true ~only_classes:true ~best_effort:false ~depth:(Some 12)
+    ~dep:true [database] in
+  Proofview.tclOR search (fun (error, info) ->
+    match error with
+    | Proofview.MoreThanOneSuccess ->
+        Tacticals.tclFAILn ~info 100
+          Pp.(str "Ambiguous source-keyed entry registration")
+    | _ -> Proofview.tclZERO ~info error)
+
+let () =
+  let open Tac2externals in
+  define { Tac2expr.mltac_plugin = "zesu-signature-gates.plugin";
+           mltac_tactic = "unique_entry_registration" }
+    (Tac2ffi.unit @-> tac Tac2ffi.unit)
+    unique_entry_registration
+
 (* Reject only a proved absence of the native root. Preserve uncertain
    scans for the existing exact checks and registered proof application. *)
 exception Unknown_occurrence

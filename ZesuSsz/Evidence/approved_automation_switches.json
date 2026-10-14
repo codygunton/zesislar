@@ -15,6 +15,7 @@
     "ZesuSsz.Automation.Switches.ListWitness",
     "ZesuSsz.Automation.Switches.TupleWitness",
     "ZesuSsz.Automation.Switches.ArrayRegionBounds",
+    "ZesuSsz.Automation.Switches.EntryIntro",
     "ZesuSsz.Automation.Switches.PureFactHints",
     "ZesuSsz.Automation.Switches.KnownPairWitness",
     "ZesuSsz.Automation.Switches.PureWitnessConstraints",
