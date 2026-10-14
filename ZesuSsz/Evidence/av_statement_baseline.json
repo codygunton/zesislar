@@ -213,5 +213,278 @@
     "This baseline records statement identity and current verification. It does not remove explicit premises by checking Print Assumptions alone.",
     "The proof-session warning after fixture compilation refers to invalidated prior session states. No proof command reused those states.",
     "The manifest remains its separate frozen 680b56ad snapshot."
-  ]
+  ],
+  "data_only_lemmas": {
+    "status": "verified source and exact statements bound to final B tip",
+    "B_root": "680b56ada4485e13c6836716e8c36acd9c1bc5d0",
+    "B_commit": "8bdadc11644b1ef6ec52d83a2016b4ed9ed73474",
+    "count": 12,
+    "source_bindings": [
+      {
+        "origin": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Compliance/DecodeItemEntryIntroductions.v",
+        "snapshot": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-data-statements-011/sources/DecodeItemEntryIntroductions.v",
+        "sha256": "362346c3336d89bc99d0920a322b996f3f56ddc64b4a1f5cebd6f5d44741690f",
+        "lines": 98
+      },
+      {
+        "origin": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Compliance/DecodeItemLoopSteps.v",
+        "snapshot": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-data-statements-011/sources/DecodeItemLoopSteps.v",
+        "sha256": "09912655439bed42bdcb76911847650e8d28dbd83407e99619e2e4e26ffad6ae",
+        "lines": 51
+      },
+      {
+        "origin": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Compliance/DecodeItemExitMeanings.v",
+        "snapshot": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-data-statements-011/sources/DecodeItemExitMeanings.v",
+        "sha256": "71f6003cc18303eb3daf2e37952e9608cbbc16d4fe30cefd8b498ad630309386",
+        "lines": 129
+      }
+    ],
+    "B_report_binding": {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-checkpoint001/REPORT.json",
+      "sha256": "891623f4831c8b9d213c091ea067607aedeb2d1b047cd0701fe8fd5ddcbe4f46"
+    },
+    "spec_verification_binding": {
+      "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-data-statements-writer-012/verification/RESULT.json",
+      "sha256": "30ed5fbd77a01747c1d85c20a69bbcb4c01c2939f528b80391461dc01948343b"
+    },
+    "statements": [
+      {
+        "constant": "ZesuSsz.Compliance.DecodeItemEntryIntroductions.decodeItemEntry6a08Introduction",
+        "source_path": "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v",
+        "source_sha256": "362346c3336d89bc99d0920a322b996f3f56ddc64b4a1f5cebd6f5d44741690f",
+        "source_declaration": "Lemma decodeItemEntry6a08Introduction `{!islaG Sigma} `{!threadG}\n    args frameBytes (x13 : bv 64) prefix rest :\n  decodeItemEntryAt800d6a08 args frameBytes x13 prefix rest \u22a2\n  \u231c(exists (n payloadStart : Z) (lengthBytes : list byte),\n    n = bv_unsigned prefix - 183 /\\\n    payloadStart = decodeItemInputPointer args + 1 /\\\n    lengthBytes = firstn (Z.to_nat n) rest /\\\n    1 <= n <= 8 /\\\n    decodeItemFoldProvenance args false prefix rest n payloadStart lengthBytes)%Z\u231d.",
+        "source_declaration_sha256": "5548dfd40ea588145095b76809731d3d48d4937d4aff39e840106b30cbd2a30b",
+        "statement_sha256": "952ac9897535233d90d9f2ed25e331f6fb5b5a4ce4231ddf90b8c38ae8167d97",
+        "statement_representation": "Exact complete problem_statement argument, including import and earlier-lemma prefix, without normalization.",
+        "verification_method": "module_m",
+        "assumptions": [],
+        "registration_status": "plain lemma; no keyed instance registration",
+        "B_commit": "8bdadc11644b1ef6ec52d83a2016b4ed9ed73474",
+        "final_tip_status": "bound",
+        "exact_problem_statement_binding": {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-data-statements-writer-012/verification/RESULT.json",
+          "sha256": "30ed5fbd77a01747c1d85c20a69bbcb4c01c2939f528b80391461dc01948343b",
+          "selector": "decodeItemEntry6a08Introduction"
+        }
+      },
+      {
+        "constant": "ZesuSsz.Compliance.DecodeItemEntryIntroductions.decodeItemEntry6aa8Introduction",
+        "source_path": "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v",
+        "source_sha256": "362346c3336d89bc99d0920a322b996f3f56ddc64b4a1f5cebd6f5d44741690f",
+        "source_declaration": "Lemma decodeItemEntry6aa8Introduction `{!islaG Sigma} `{!threadG}\n    args frameBytes (x13 : bv 64) prefix rest :\n  decodeItemEntryAt800d6aa8 args frameBytes x13 prefix rest \u22a2\n  \u231c(exists (n payloadStart : Z) (lengthBytes : list byte),\n    n = bv_unsigned prefix - 247 /\\\n    payloadStart = decodeItemInputPointer args + 1 /\\\n    lengthBytes = firstn (Z.to_nat n) rest /\\\n    1 <= n <= 8 /\\\n    decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes)%Z\u231d.",
+        "source_declaration_sha256": "466a2f6a7333cdea96cf20e1ae0b2117ec292200a85d45e12359ff32db8f6988",
+        "statement_sha256": "38d47beb712dd29acf1d5c86af7e5227f8cc5bcf592eb05313e257c7cc7dc342",
+        "statement_representation": "Exact complete problem_statement argument, including import and earlier-lemma prefix, without normalization.",
+        "verification_method": "module_m",
+        "assumptions": [],
+        "registration_status": "plain lemma; no keyed instance registration",
+        "B_commit": "8bdadc11644b1ef6ec52d83a2016b4ed9ed73474",
+        "final_tip_status": "bound",
+        "exact_problem_statement_binding": {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-data-statements-writer-012/verification/RESULT.json",
+          "sha256": "30ed5fbd77a01747c1d85c20a69bbcb4c01c2939f528b80391461dc01948343b",
+          "selector": "decodeItemEntry6aa8Introduction"
+        }
+      },
+      {
+        "constant": "ZesuSsz.Compliance.DecodeItemEntryIntroductions.decodeItemEntry6a38Introduction",
+        "source_path": "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v",
+        "source_sha256": "362346c3336d89bc99d0920a322b996f3f56ddc64b4a1f5cebd6f5d44741690f",
+        "source_declaration": "Lemma decodeItemEntry6a38Introduction `{!islaG Sigma} `{!threadG}\n    args n payloadStart lengthBytes frameBytes (loaded : bv 64) prefix rest :\n  decodeItemEntryAt800d6a38 args n payloadStart lengthBytes frameBytes loaded prefix rest \u22a2\n  \u231c(exists (headerLength payloadLength : Z),\n    headerLength = 1 + n /\\ payloadLength = bigEndian lengthBytes /\\\n    (decodeItemFoldLengthFits args n lengthBytes = true ->\n      decodeItemLongAcceptedFacts args false headerLength payloadLength))%Z\u231d.",
+        "source_declaration_sha256": "a0f5bc34bed41d177d09f41d70fc54dd44c7aa3eb45be279d0414fdf2acb2da2",
+        "statement_sha256": "ef4277f94e14c53798dad07ce54478ebe636649a3bcc7516138e0895af85195e",
+        "statement_representation": "Exact complete problem_statement argument, including import and earlier-lemma prefix, without normalization.",
+        "verification_method": "module_m",
+        "assumptions": [],
+        "registration_status": "plain lemma; no keyed instance registration",
+        "B_commit": "8bdadc11644b1ef6ec52d83a2016b4ed9ed73474",
+        "final_tip_status": "bound",
+        "exact_problem_statement_binding": {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-data-statements-writer-012/verification/RESULT.json",
+          "sha256": "30ed5fbd77a01747c1d85c20a69bbcb4c01c2939f528b80391461dc01948343b",
+          "selector": "decodeItemEntry6a38Introduction"
+        }
+      },
+      {
+        "constant": "ZesuSsz.Compliance.DecodeItemEntryIntroductions.decodeItemEntry6ad8Introduction",
+        "source_path": "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v",
+        "source_sha256": "362346c3336d89bc99d0920a322b996f3f56ddc64b4a1f5cebd6f5d44741690f",
+        "source_declaration": "Lemma decodeItemEntry6ad8Introduction `{!islaG Sigma} `{!threadG}\n    args n payloadStart lengthBytes frameBytes (loaded : bv 64) prefix rest :\n  decodeItemEntryAt800d6ad8 args n payloadStart lengthBytes frameBytes loaded prefix rest \u22a2\n  \u231c(exists (headerLength payloadLength : Z),\n    headerLength = 1 + n /\\ payloadLength = bigEndian lengthBytes /\\\n    (decodeItemFoldLengthFits args n lengthBytes = true ->\n      decodeItemLongAcceptedFacts args true headerLength payloadLength))%Z\u231d.",
+        "source_declaration_sha256": "48d4996399e7a2b422eae19aea95a1804545b662d563ab7e0b64aaaf7e733fd9",
+        "statement_sha256": "daf82fa00348022ad2f94e732871073fac967674626daca4180abc4e7856f025",
+        "statement_representation": "Exact complete problem_statement argument, including import and earlier-lemma prefix, without normalization.",
+        "verification_method": "module_m",
+        "assumptions": [],
+        "registration_status": "plain lemma; no keyed instance registration",
+        "B_commit": "8bdadc11644b1ef6ec52d83a2016b4ed9ed73474",
+        "final_tip_status": "bound",
+        "exact_problem_statement_binding": {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-data-statements-writer-012/verification/RESULT.json",
+          "sha256": "30ed5fbd77a01747c1d85c20a69bbcb4c01c2939f528b80391461dc01948343b",
+          "selector": "decodeItemEntry6ad8Introduction"
+        }
+      },
+      {
+        "constant": "ZesuSsz.Compliance.DecodeItemLoopSteps.decodeItemHeader6a24Step",
+        "source_path": "ZesuSsz/Compliance/DecodeItemLoopSteps.v",
+        "source_sha256": "09912655439bed42bdcb76911847650e8d28dbd83407e99619e2e4e26ffad6ae",
+        "source_declaration": "Lemma decodeItemHeader6a24Step `{!islaG Sigma} `{!threadG}\n    args n i payloadStart lengthBytes frameBytes (loaded : bv 64) :\n  decodeItemByteFoldStringHeader args n i payloadStart lengthBytes frameBytes loaded \u22a2\n  \u231c(forall next : byte, i < n ->\n    nth_error lengthBytes (Z.to_nat i) = Some next ->\n    decodeItemByteFoldFacts args n (i + 1) payloadStart lengthBytes /\\\n    bigEndian (firstn (Z.to_nat (i + 1)) lengthBytes) =\n      256 * bigEndian (firstn (Z.to_nat i) lengthBytes) + bv_unsigned next)%Z\u231d.",
+        "source_declaration_sha256": "76e3fdcbbedc78e0573ee6b596c01d1d6edc2c63434d1c09fa0f1b8d0e046893",
+        "statement_sha256": "c865e3a3945c185f2081d3664fbe658d8db53a36d099d8e990c57ef516b588e3",
+        "statement_representation": "Exact complete problem_statement argument, including import and earlier-lemma prefix, without normalization.",
+        "verification_method": "module_m",
+        "assumptions": [],
+        "registration_status": "plain lemma; no keyed instance registration",
+        "B_commit": "8bdadc11644b1ef6ec52d83a2016b4ed9ed73474",
+        "final_tip_status": "bound",
+        "exact_problem_statement_binding": {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-data-statements-writer-012/verification/RESULT.json",
+          "sha256": "30ed5fbd77a01747c1d85c20a69bbcb4c01c2939f528b80391461dc01948343b",
+          "selector": "decodeItemHeader6a24Step"
+        }
+      },
+      {
+        "constant": "ZesuSsz.Compliance.DecodeItemLoopSteps.decodeItemHeader6ac4Step",
+        "source_path": "ZesuSsz/Compliance/DecodeItemLoopSteps.v",
+        "source_sha256": "09912655439bed42bdcb76911847650e8d28dbd83407e99619e2e4e26ffad6ae",
+        "source_declaration": "Lemma decodeItemHeader6ac4Step `{!islaG Sigma} `{!threadG}\n    args n i payloadStart lengthBytes frameBytes (loaded : bv 64) :\n  decodeItemByteFoldListHeader args n i payloadStart lengthBytes frameBytes loaded \u22a2\n  \u231c(forall next : byte, i < n ->\n    nth_error lengthBytes (Z.to_nat i) = Some next ->\n    decodeItemByteFoldFacts args n (i + 1) payloadStart lengthBytes /\\\n    bigEndian (firstn (Z.to_nat (i + 1)) lengthBytes) =\n      256 * bigEndian (firstn (Z.to_nat i) lengthBytes) + bv_unsigned next)%Z\u231d.",
+        "source_declaration_sha256": "1695298d43cc141493e5f0f1ee870b9391b5bd810f1a4de2c26ca4cc12df1fbb",
+        "statement_sha256": "ff009967a7e48a4a5a9eace0ac1dc2c2a17274227d1f1a6b3f59a5b4e535fe80",
+        "statement_representation": "Exact complete problem_statement argument, including import and earlier-lemma prefix, without normalization.",
+        "verification_method": "module_m",
+        "assumptions": [],
+        "registration_status": "plain lemma; no keyed instance registration",
+        "B_commit": "8bdadc11644b1ef6ec52d83a2016b4ed9ed73474",
+        "final_tip_status": "bound",
+        "exact_problem_statement_binding": {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-data-statements-writer-012/verification/RESULT.json",
+          "sha256": "30ed5fbd77a01747c1d85c20a69bbcb4c01c2939f528b80391461dc01948343b",
+          "selector": "decodeItemHeader6ac4Step"
+        }
+      },
+      {
+        "constant": "ZesuSsz.Compliance.DecodeItemExitMeanings.decodeItemReturn698cMeaning",
+        "source_path": "ZesuSsz/Compliance/DecodeItemExitMeanings.v",
+        "source_sha256": "71f6003cc18303eb3daf2e37952e9608cbbc16d4fe30cefd8b498ad630309386",
+        "source_declaration": "Lemma decodeItemReturn698cMeaning `{!islaG Sigma} `{!threadG}\n    args locals pointerBytes lengthBytes prefix rest isLiteral :\n  decodeItemEntryAt800d698c args locals pointerBytes lengthBytes prefix rest isLiteral \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess false (if isLiteral then 0 else 1) (if isLiteral then 1 else bv_unsigned prefix - 128)) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.",
+        "source_declaration_sha256": "15eceed1184524aafe0d0f90647684e72b4afa3496404d5b6ba1cc81058fd28e",
+        "statement_sha256": "b9b02025cdbaea1a8a11f23392616268e2ca98f1b78713c4f9685c838b047d00",
+        "statement_representation": "Exact complete problem_statement argument, including import and earlier-lemma prefix, without normalization.",
+        "verification_method": "module_m",
+        "assumptions": [],
+        "registration_status": "plain lemma; no keyed instance registration",
+        "B_commit": "8bdadc11644b1ef6ec52d83a2016b4ed9ed73474",
+        "final_tip_status": "bound",
+        "exact_problem_statement_binding": {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-data-statements-writer-012/verification/RESULT.json",
+          "sha256": "30ed5fbd77a01747c1d85c20a69bbcb4c01c2939f528b80391461dc01948343b",
+          "selector": "decodeItemReturn698cMeaning"
+        }
+      },
+      {
+        "constant": "ZesuSsz.Compliance.DecodeItemExitMeanings.decodeItemReturn69b0Meaning",
+        "source_path": "ZesuSsz/Compliance/DecodeItemExitMeanings.v",
+        "source_sha256": "71f6003cc18303eb3daf2e37952e9608cbbc16d4fe30cefd8b498ad630309386",
+        "source_declaration": "Lemma decodeItemReturn69b0Meaning `{!islaG Sigma} `{!threadG}\n    args locals prefix rest :\n  decodeItemEntryAt800d69b0 args locals prefix rest \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess false 1 0) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.",
+        "source_declaration_sha256": "738f08cf0df077c20bbdac87ae8d5124b6249b85d2709196470262e83ced02e9",
+        "statement_sha256": "61db578c79f05100b097dbb9b0c57e47a5649cca1ab5664423f63760653bdfd3",
+        "statement_representation": "Exact complete problem_statement argument, including import and earlier-lemma prefix, without normalization.",
+        "verification_method": "module_m",
+        "assumptions": [],
+        "registration_status": "plain lemma; no keyed instance registration",
+        "B_commit": "8bdadc11644b1ef6ec52d83a2016b4ed9ed73474",
+        "final_tip_status": "bound",
+        "exact_problem_statement_binding": {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-data-statements-writer-012/verification/RESULT.json",
+          "sha256": "30ed5fbd77a01747c1d85c20a69bbcb4c01c2939f528b80391461dc01948343b",
+          "selector": "decodeItemReturn69b0Meaning"
+        }
+      },
+      {
+        "constant": "ZesuSsz.Compliance.DecodeItemExitMeanings.decodeItemReturn6a40Meaning",
+        "source_path": "ZesuSsz/Compliance/DecodeItemExitMeanings.v",
+        "source_sha256": "71f6003cc18303eb3daf2e37952e9608cbbc16d4fe30cefd8b498ad630309386",
+        "source_declaration": "Lemma decodeItemReturn6a40Meaning `{!islaG Sigma} `{!threadG}\n    args locals prefix rest headerLength payloadLength :\n  decodeItemEntryAt800d6a40 args locals prefix rest headerLength payloadLength \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess false headerLength payloadLength) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.",
+        "source_declaration_sha256": "fd53ab908015e3d2852c318d9fe1d0ef22ec7d988b309a704e82ab0d0a680da0",
+        "statement_sha256": "9a84b564bae9d9cda62303feee234eb113ef5e58bced528df8d898bfe9f8737b",
+        "statement_representation": "Exact complete problem_statement argument, including import and earlier-lemma prefix, without normalization.",
+        "verification_method": "module_m",
+        "assumptions": [],
+        "registration_status": "plain lemma; no keyed instance registration",
+        "B_commit": "8bdadc11644b1ef6ec52d83a2016b4ed9ed73474",
+        "final_tip_status": "bound",
+        "exact_problem_statement_binding": {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-data-statements-writer-012/verification/RESULT.json",
+          "sha256": "30ed5fbd77a01747c1d85c20a69bbcb4c01c2939f528b80391461dc01948343b",
+          "selector": "decodeItemReturn6a40Meaning"
+        }
+      },
+      {
+        "constant": "ZesuSsz.Compliance.DecodeItemExitMeanings.decodeItemReturn6a78Meaning",
+        "source_path": "ZesuSsz/Compliance/DecodeItemExitMeanings.v",
+        "source_sha256": "71f6003cc18303eb3daf2e37952e9608cbbc16d4fe30cefd8b498ad630309386",
+        "source_declaration": "Lemma decodeItemReturn6a78Meaning `{!islaG Sigma} `{!threadG}\n    args locals prefix rest :\n  decodeItemEntryAt800d6a78 args locals prefix rest \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess true 1 (bv_unsigned prefix - 192)) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.",
+        "source_declaration_sha256": "27b4405d5d8bcd7bb112076f98088b9830bca125aaf08109e27076020d2d77e0",
+        "statement_sha256": "3e71b285f2307d26626f663d2e12ba85206c1c55a408284cfb9f39ea687cdfc0",
+        "statement_representation": "Exact complete problem_statement argument, including import and earlier-lemma prefix, without normalization.",
+        "verification_method": "module_m",
+        "assumptions": [],
+        "registration_status": "plain lemma; no keyed instance registration",
+        "B_commit": "8bdadc11644b1ef6ec52d83a2016b4ed9ed73474",
+        "final_tip_status": "bound",
+        "exact_problem_statement_binding": {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-data-statements-writer-012/verification/RESULT.json",
+          "sha256": "30ed5fbd77a01747c1d85c20a69bbcb4c01c2939f528b80391461dc01948343b",
+          "selector": "decodeItemReturn6a78Meaning"
+        }
+      },
+      {
+        "constant": "ZesuSsz.Compliance.DecodeItemExitMeanings.decodeItemReturn6ae0Meaning",
+        "source_path": "ZesuSsz/Compliance/DecodeItemExitMeanings.v",
+        "source_sha256": "71f6003cc18303eb3daf2e37952e9608cbbc16d4fe30cefd8b498ad630309386",
+        "source_declaration": "Lemma decodeItemReturn6ae0Meaning `{!islaG Sigma} `{!threadG}\n    args locals  :\n  decodeItemEntryAt800d6ae0 args locals \u22a2\n  \u231c(forall after, errorResult40 after ->\n    encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateError) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.",
+        "source_declaration_sha256": "e0d7a2604fb5139d9e3e948ad6adb5d43aab92f723b821f20bda195551f332e1",
+        "statement_sha256": "b2a68cec1531da447d76d5473594209674cbfc67bb0f62c821592da604331718",
+        "statement_representation": "Exact complete problem_statement argument, including import and earlier-lemma prefix, without normalization.",
+        "verification_method": "module_m",
+        "assumptions": [],
+        "registration_status": "plain lemma; no keyed instance registration",
+        "B_commit": "8bdadc11644b1ef6ec52d83a2016b4ed9ed73474",
+        "final_tip_status": "bound",
+        "exact_problem_statement_binding": {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-data-statements-writer-012/verification/RESULT.json",
+          "sha256": "30ed5fbd77a01747c1d85c20a69bbcb4c01c2939f528b80391461dc01948343b",
+          "selector": "decodeItemReturn6ae0Meaning"
+        }
+      },
+      {
+        "constant": "ZesuSsz.Compliance.DecodeItemExitMeanings.decodeItemReturn6b08Meaning",
+        "source_path": "ZesuSsz/Compliance/DecodeItemExitMeanings.v",
+        "source_sha256": "71f6003cc18303eb3daf2e37952e9608cbbc16d4fe30cefd8b498ad630309386",
+        "source_declaration": "Lemma decodeItemReturn6b08Meaning `{!islaG Sigma} `{!threadG}\n    args locals prefix rest headerLength payloadLength :\n  decodeItemEntryAt800d6b08 args locals prefix rest headerLength payloadLength \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess true headerLength payloadLength) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.",
+        "source_declaration_sha256": "2959bddb18ef4195a59200be341ad79153a6c01257ea4b9aeb70394e41c080cd",
+        "statement_sha256": "884b83353783fbdb7288dd975ccfbd6be68bf8efecdbac32b50c7841e448d337",
+        "statement_representation": "Exact complete problem_statement argument, including import and earlier-lemma prefix, without normalization.",
+        "verification_method": "module_m",
+        "assumptions": [],
+        "registration_status": "plain lemma; no keyed instance registration",
+        "B_commit": "8bdadc11644b1ef6ec52d83a2016b4ed9ed73474",
+        "final_tip_status": "bound",
+        "exact_problem_statement_binding": {
+          "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-data-statements-writer-012/verification/RESULT.json",
+          "sha256": "30ed5fbd77a01747c1d85c20a69bbcb4c01c2939f528b80391461dc01948343b",
+          "selector": "decodeItemReturn6b08Meaning"
+        }
+      }
+    ],
+    "limitations": [
+      "Conditional premises remain exactly as stated.",
+      "No class registration, native consumption, or machine-code closure follows."
+    ],
+    "integrated_root": "8c3e7bf574b5cc9c7b5daccf0faa29463f474ef7",
+    "final_B_report": {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-final001/REPORT.json",
+      "sha256": "9db269079f231eb70e3a9636ea372ffc2a4751e360269e64b66c8d36efec70f7"
+    }
+  }
 }

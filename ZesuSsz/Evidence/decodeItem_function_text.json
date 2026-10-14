@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "function": "decodeItem",
-  "snapshot_commit": "680b56ada4485e13c6836716e8c36acd9c1bc5d0",
+  "snapshot_commit": "8c3e7bf574b5cc9c7b5daccf0faa29463f474ef7",
   "counting_rules": {
     "unit": "Physical lines, including comments and blank lines. A final line without a newline counts once.",
-    "scope": "Tracked files under ZesuSsz/, Scaffolding/, tools/, and Makefile. Select paths or text matching case-insensitive decode_?item, decodeItem PCs 800d69xx/800d6axx/800d6b0x, or native800d/DesignedBoundary_800d prefixes. Exclude binary files and hold-out allocation paths before reading.",
+    "scope": "Read exact Git blob bytes at snapshot_commit under ZesuSsz/, Scaffolding/, tools/, Makefile, and build/stock-zisk/automation-validation/. This is a commit snapshot, not an assertion about later working-tree metadata. Select paths or text matching case-insensitive decode_?item, decodeItem PCs 800d69xx/800d6axx/800d6b0x, or native800d/DesignedBoundary_800d prefixes. Exclude binary files and hold-out allocation paths before reading.",
     "whole_files": "Count complete decodeItem-named files and directories. Count matching complete statements in shared Python/Rocq files. Count matched lines in other shared text. Count shared JSON conservatively in full.",
     "ranges": "One-based inclusive line ranges. Merge overlaps before counting. Each file belongs to one category. No physical line is counted twice.",
     "generator_json": "Includes design JSON, generated table metadata, source-embedded constant tables, and decodeItem-specific generator statements. Tables are not omitted because their format is Python.",
@@ -12,7 +12,7 @@
     "extra_totals": "block_proofs, composition, and tests_and_exports are separate. Tests and exports do not contribute to the interface score.",
     "self": "Count this manifest as unscored tests_and_exports with role measurement_metadata. Omit its own content hash to avoid a circular hash. Solve its physical-line count to a fixed point.",
     "generic_sources": "Generic dependency text without a decodeItem token is outside this per-function inventory. ISA traces, binary images, stock inventory/CFG, historical docs, and ignored run artifacts are excluded machine/evidence inputs; no alloc blocks were read.",
-    "recount": "For each files record, read path.splitlines(), union inclusive line_ranges, and count the union. Sum by category; compare category_totals. Verify sha256 except this manifest."
+    "recount": "For each files record, read the snapshot_commit:path Git blob and splitlines(), union inclusive line_ranges, and count the union. Sum by category; compare category_totals. Verify sha256 except this manifest."
   },
   "contracts": [
     "ZesuSsz/Contracts/Candidates/ParentHeaderDomain.v",
@@ -47,6 +47,7 @@
     "ZesuSsz/Compliance/DecodeItemDataWitnessFacts.v",
     "ZesuSsz/Compliance/DecodeItemEntryByteIndexFacts.v",
     "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
+    "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v",
     "ZesuSsz/Compliance/DecodeItemEntryWitnessIntroductions.v",
     "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v",
     "ZesuSsz/Compliance/DecodeItemInitializationPureFacts.v",
@@ -69,6 +70,7 @@
   "exit_meanings": [
     "ZesuSsz/Compliance/DecodeItemC1BMeaning.v",
     "ZesuSsz/Compliance/DecodeItemEmptyStringOutputMeaning.v",
+    "ZesuSsz/Compliance/DecodeItemExitMeanings.v",
     "ZesuSsz/Compliance/DecodeItemJoinTransferPure.v",
     "ZesuSsz/Compliance/DecodeItemLongStringOutputMeaning.v",
     "ZesuSsz/Compliance/DecodeItemMaskedReturnFacts.v",
@@ -92,6 +94,7 @@
     "ZesuSsz/Compliance/DecodeItemFoldRejectionFacts.v",
     "ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.v",
     "ZesuSsz/Compliance/DecodeItemFoldZeroFacts.v",
+    "ZesuSsz/Compliance/DecodeItemLoopSteps.v",
     "ZesuSsz/Proofs/DecodeItem/ByteFoldPure.v"
   ],
   "registrations": [
@@ -245,6 +248,7 @@
     "ZesuSsz/Evidence/array_store/statements/s152b_entry_698c_output_facts.txt",
     "ZesuSsz/Evidence/array_store/statements/s152b_entry_6ae0_output_facts.txt",
     "ZesuSsz/Evidence/array_store/statements/s152b_entry_6b08_output_facts.txt",
+    "ZesuSsz/Evidence/av_statement_baseline.json",
     "ZesuSsz/Evidence/check_decode_item_hints.py",
     "ZesuSsz/Evidence/check_decode_item_route_repair.py",
     "ZesuSsz/Evidence/check_i75_evidence.py",
@@ -353,6 +357,9 @@
     "ZesuSsz/Proofs/Tests/StockExecutor.v",
     "ZesuSsz/Proofs/Tests/SuccessorTupleGuard.v",
     "ZesuSsz/dune",
+    "build/stock-zisk/automation-validation/spec-b-data-lemmas/GENERATED-SHAPE-ROWS.json",
+    "build/stock-zisk/automation-validation/spec-b-data-lemmas/MCP-CERTIFICATES.json",
+    "build/stock-zisk/automation-validation/spec-b-data-lemmas/generate-shape-rows.py",
     "tools/coqc_scratch.sh",
     "tools/stock_zisk/closure.py",
     "tools/stock_zisk/inventory.py",
@@ -376,6 +383,7 @@
     "tools/test_production_modules.py",
     "tools/test_promote_table.py",
     "tools/test_promotion_verification.py",
+    "tools/test_rule_compare.py",
     "tools/test_successor_entailment.py"
   ],
   "lemmas": [
@@ -388,7 +396,9 @@
     "ZesuSsz/Compliance/DecodeItemEmptyStringOutputMeaning.v",
     "ZesuSsz/Compliance/DecodeItemEntryByteIndexFacts.v",
     "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
+    "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v",
     "ZesuSsz/Compliance/DecodeItemEntryWitnessIntroductions.v",
+    "ZesuSsz/Compliance/DecodeItemExitMeanings.v",
     "ZesuSsz/Compliance/DecodeItemFoldBackEdgeWitnesses.v",
     "ZesuSsz/Compliance/DecodeItemFoldExitFacts.v",
     "ZesuSsz/Compliance/DecodeItemFoldInitializationWitnesses.v",
@@ -401,6 +411,7 @@
     "ZesuSsz/Compliance/DecodeItemJoinTransferPure.v",
     "ZesuSsz/Compliance/DecodeItemLoadedEntryFacts.v",
     "ZesuSsz/Compliance/DecodeItemLongStringOutputMeaning.v",
+    "ZesuSsz/Compliance/DecodeItemLoopSteps.v",
     "ZesuSsz/Compliance/DecodeItemMaskedReturnFacts.v",
     "ZesuSsz/Compliance/DecodeItemOutcomeWitnessFacts.v",
     "ZesuSsz/Compliance/DecodeItemOutputBaseWitnessFacts.v",
@@ -430,25 +441,13 @@
   ],
   "pending": [
     {
-      "path": "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v",
-      "category": "introductions",
-      "counted_lines": 0,
-      "status": "Reserved; not present at snapshot."
-    },
-    {
-      "path": "ZesuSsz/Compliance/DecodeItemLoopSteps.v",
-      "category": "loop_steps",
-      "counted_lines": 0,
-      "status": "Reserved; not present at snapshot."
-    },
-    {
-      "path": "ZesuSsz/Compliance/DecodeItemExitMeanings.v",
-      "category": "exit_meanings",
-      "counted_lines": 0,
-      "status": "Reserved; not present at snapshot."
-    },
-    {
       "path": "ZesuSsz/Compliance/DecodeItemUnfoldRegistrations.v",
+      "category": "registrations",
+      "counted_lines": 0,
+      "status": "Reserved; not present at snapshot."
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemDataRegistrations.v",
       "category": "registrations",
       "counted_lines": 0,
       "status": "Reserved; not present at snapshot."
@@ -751,6 +750,20 @@
       "counted_lines": 96
     },
     {
+      "path": "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v",
+      "category": "introductions",
+      "scope": "whole_file",
+      "sha256": "362346c3336d89bc99d0920a322b996f3f56ddc64b4a1f5cebd6f5d44741690f",
+      "file_lines": 98,
+      "line_ranges": [
+        [
+          1,
+          98
+        ]
+      ],
+      "counted_lines": 98
+    },
+    {
       "path": "ZesuSsz/Compliance/DecodeItemEntryWitnessIntroductions.v",
       "category": "introductions",
       "scope": "whole_file",
@@ -763,6 +776,20 @@
         ]
       ],
       "counted_lines": 101
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemExitMeanings.v",
+      "category": "exit_meanings",
+      "scope": "whole_file",
+      "sha256": "71f6003cc18303eb3daf2e37952e9608cbbc16d4fe30cefd8b498ad630309386",
+      "file_lines": 129,
+      "line_ranges": [
+        [
+          1,
+          129
+        ]
+      ],
+      "counted_lines": 129
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemFoldBackEdgeWitnesses.v",
@@ -945,6 +972,20 @@
         ]
       ],
       "counted_lines": 65
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemLoopSteps.v",
+      "category": "loop_steps",
+      "scope": "whole_file",
+      "sha256": "09912655439bed42bdcb76911847650e8d28dbd83407e99619e2e4e26ffad6ae",
+      "file_lines": 51,
+      "line_ranges": [
+        [
+          1,
+          51
+        ]
+      ],
+      "counted_lines": 51
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemMaskedReturnFacts.v",
@@ -2267,6 +2308,21 @@
       "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
     },
     {
+      "path": "ZesuSsz/Evidence/av_statement_baseline.json",
+      "category": "tests_and_exports",
+      "scope": "mixed_file",
+      "sha256": "6b00d78440fcd56b6935d7b23f6f3dff6de435e9beb1b3ddf8bc2e805dd693a1",
+      "file_lines": 217,
+      "line_ranges": [
+        [
+          1,
+          217
+        ]
+      ],
+      "counted_lines": 217,
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+    },
+    {
       "path": "ZesuSsz/Evidence/check_decode_item_hints.py",
       "category": "tests_and_exports",
       "scope": "whole_file",
@@ -2475,14 +2531,14 @@
       "role": "measurement_metadata",
       "scope": "whole_file",
       "sha256": null,
-      "file_lines": 7502,
+      "file_lines": 7753,
       "line_ranges": [
         [
           1,
-          7502
+          7753
         ]
       ],
-      "counted_lines": 7502
+      "counted_lines": 7753
     },
     {
       "path": "ZesuSsz/Evidence/decode_item_auto_modules.json",
@@ -3723,15 +3779,15 @@
       "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "3cdc325a0ad91b881fd4a2a77b8482314b6c6fc8dca70df6263b6b2047fa2f2d",
-      "file_lines": 100,
+      "sha256": "5b1810a3cb9fd56fe61e10790d922378d78cb412c1fa215ce9364103bef749d3",
+      "file_lines": 103,
       "line_ranges": [
         [
           1,
-          100
+          103
         ]
       ],
-      "counted_lines": 100,
+      "counted_lines": 103,
       "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
     },
     {
@@ -5803,6 +5859,51 @@
       "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
     },
     {
+      "path": "build/stock-zisk/automation-validation/spec-b-data-lemmas/GENERATED-SHAPE-ROWS.json",
+      "category": "tests_and_exports",
+      "scope": "mixed_file",
+      "sha256": "6df90f28de983e1e9bfd2a10ac5f37b94c9f4535ce4b788bc9be62938b59e829",
+      "file_lines": 42,
+      "line_ranges": [
+        [
+          1,
+          42
+        ]
+      ],
+      "counted_lines": 42,
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/spec-b-data-lemmas/MCP-CERTIFICATES.json",
+      "category": "tests_and_exports",
+      "scope": "mixed_file",
+      "sha256": "891623f4831c8b9d213c091ea067607aedeb2d1b047cd0701fe8fd5ddcbe4f46",
+      "file_lines": 1759,
+      "line_ranges": [
+        [
+          1,
+          1759
+        ]
+      ],
+      "counted_lines": 1759,
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/spec-b-data-lemmas/generate-shape-rows.py",
+      "category": "tests_and_exports",
+      "scope": "mixed_file",
+      "sha256": "937267988baaf8cb699133e5fd971d5ea058e7d89bfe8f5162a00428dc4c643a",
+      "file_lines": 13,
+      "line_ranges": [
+        [
+          11,
+          12
+        ]
+      ],
+      "counted_lines": 2,
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+    },
+    {
       "path": "tools/block/DISCOVERY.md",
       "category": "generator_json",
       "scope": "mixed_file",
@@ -7102,6 +7203,45 @@
       "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
     },
     {
+      "path": "tools/test_rule_compare.py",
+      "category": "tests_and_exports",
+      "scope": "mixed_file",
+      "sha256": "8fbeb7465f7378f1d80f0e84e2e6df55f4a35c6251997559efcc62f661eea7c7",
+      "file_lines": 181,
+      "line_ranges": [
+        [
+          10,
+          22
+        ],
+        [
+          29,
+          29
+        ]
+      ],
+      "counted_lines": 14,
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "source_embedded_constants": [
+        {
+          "line_range": [
+            10,
+            22
+          ],
+          "names": [
+            "SOURCE"
+          ]
+        },
+        {
+          "line_range": [
+            29,
+            29
+          ],
+          "names": [
+            "INCOMPLETE"
+          ]
+        }
+      ]
+    },
+    {
       "path": "tools/test_successor_entailment.py",
       "category": "tests_and_exports",
       "scope": "mixed_file",
@@ -7353,6 +7493,16 @@
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
     },
     {
+      "path": "ZesuSsz/Evidence/av_statement_baseline.json",
+      "line_ranges": [
+        [
+          1,
+          217
+        ]
+      ],
+      "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
+    },
+    {
       "path": "ZesuSsz/Evidence/precommitment/6a08.json",
       "line_ranges": [
         [
@@ -7457,7 +7607,7 @@
       "line_ranges": [
         [
           1,
-          100
+          103
         ]
       ],
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
@@ -7473,6 +7623,26 @@
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
     },
     {
+      "path": "build/stock-zisk/automation-validation/spec-b-data-lemmas/GENERATED-SHAPE-ROWS.json",
+      "line_ranges": [
+        [
+          1,
+          42
+        ]
+      ],
+      "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/spec-b-data-lemmas/MCP-CERTIFICATES.json",
+      "line_ranges": [
+        [
+          1,
+          1759
+        ]
+      ],
+      "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
+    },
+    {
       "path": "tools/block/testdata/unfolded_header_target.json",
       "line_ranges": [
         [
@@ -7483,20 +7653,101 @@
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
     }
   ],
-  "conservative_shared_json_lines": 14242,
+  "conservative_shared_json_lines": 16263,
   "category_totals": {
     "contracts": 2438,
-    "introductions": 3438,
-    "exit_meanings": 2963,
-    "loop_steps": 913,
+    "introductions": 3536,
+    "exit_meanings": 3092,
+    "loop_steps": 964,
     "registrations": 154,
     "generator_json": 3970,
     "block_proofs": 3513,
     "composition": 392,
-    "tests_and_exports": 33005
+    "tests_and_exports": 35293
   },
-  "interface_total": 13876,
-  "extra_total": 36910,
-  "overall_total": 50786,
-  "file_count": 346
+  "interface_total": 14154,
+  "extra_total": 39198,
+  "overall_total": 53352,
+  "file_count": 354,
+  "comparison": {
+    "before_commit": "8f3a7aa2ed2d7ac307a5cd7ba19f579ce1cc81b3",
+    "B_commit": "8bdadc11644b1ef6ec52d83a2016b4ed9ed73474",
+    "integrated_root": "8c3e7bf574b5cc9c7b5daccf0faa29463f474ef7",
+    "before_category_totals": {
+      "contracts": 2438,
+      "introductions": 3438,
+      "exit_meanings": 2963,
+      "loop_steps": 913,
+      "registrations": 154,
+      "generator_json": 3970,
+      "block_proofs": 3513,
+      "composition": 392,
+      "tests_and_exports": 33308
+    },
+    "after_B_category_totals": {
+      "contracts": 2438,
+      "introductions": 3536,
+      "exit_meanings": 3092,
+      "loop_steps": 964,
+      "registrations": 154,
+      "generator_json": 3970,
+      "block_proofs": 3513,
+      "composition": 392,
+      "tests_and_exports": 35212
+    },
+    "before_interface_total": 13876,
+    "after_interface_total": 14154,
+    "added_interface_lines": 278,
+    "category_additions": {
+      "introductions": 98,
+      "loop_steps": 51,
+      "exit_meanings": 129
+    },
+    "removed_lines": 0,
+    "replacement_candidates": [
+      {
+        "path": "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v",
+        "candidate_successor_category": "introductions",
+        "existing_category": "introductions",
+        "counted_lines": 402,
+        "status": "retained dependency; no deletion or count credit"
+      },
+      {
+        "path": "ZesuSsz/Compliance/DecodeItemCompletedFoldFacts.v",
+        "candidate_successor_category": "introductions",
+        "existing_category": "loop_steps",
+        "counted_lines": 26,
+        "status": "retained dependency; no deletion or count credit"
+      },
+      {
+        "path": "ZesuSsz/Compliance/DecodeItemFoldExitFacts.v",
+        "candidate_successor_category": "introductions",
+        "existing_category": "loop_steps",
+        "counted_lines": 106,
+        "status": "retained dependency; no deletion or count credit"
+      },
+      {
+        "path": "ZesuSsz/Compliance/DecodeItemEntryWitnessIntroductions.v",
+        "candidate_successor_category": "introductions",
+        "existing_category": "introductions",
+        "counted_lines": 101,
+        "status": "retained dependency; no deletion or count credit"
+      },
+      {
+        "path": "ZesuSsz/Proofs/DecodeItem/ByteFoldPure.v",
+        "candidate_successor_category": "loop_steps",
+        "existing_category": "loop_steps",
+        "counted_lines": 77,
+        "status": "retained dependency; no deletion or count credit"
+      },
+      {
+        "path": "ZesuSsz/Compliance/DecodeItemReturnExitResources.v",
+        "candidate_successor_category": "exit_meanings",
+        "existing_category": "exit_meanings",
+        "counted_lines": 120,
+        "status": "retained dependency; no deletion or count credit"
+      }
+    ],
+    "status": "All candidate predecessors remain counted. No module was removed. No class registration is implied."
+  }
 }

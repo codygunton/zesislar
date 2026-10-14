@@ -1,0 +1,53 @@
+{
+  "item": "spec-c-data-baselines",
+  "status": "verified; metadata gate passed",
+  "B_commit": "8bdadc11644b1ef6ec52d83a2016b4ed9ed73474",
+  "snapshot_root": "8c3e7bf574b5cc9c7b5daccf0faa29463f474ef7",
+  "baseline_sha256": "4b99e641999d2d4ecce0238b520c41345827b46b4055db7e5824a6d46bd54d80",
+  "manifest_sha256": "7deccbbc338d25231c300f1ba6824c5c10136917b0207e75589cd9a86f9d020a",
+  "source_sha256": {
+    "DecodeItemEntryIntroductions.v": "362346c3336d89bc99d0920a322b996f3f56ddc64b4a1f5cebd6f5d44741690f",
+    "DecodeItemLoopSteps.v": "09912655439bed42bdcb76911847650e8d28dbd83407e99619e2e4e26ffad6ae",
+    "DecodeItemExitMeanings.v": "71f6003cc18303eb3daf2e37952e9608cbbc16d4fe30cefd8b498ad630309386"
+  },
+  "statement_sha256": {
+    "decodeItemEntry6a08Introduction": "952ac9897535233d90d9f2ed25e331f6fb5b5a4ce4231ddf90b8c38ae8167d97",
+    "decodeItemEntry6aa8Introduction": "38d47beb712dd29acf1d5c86af7e5227f8cc5bcf592eb05313e257c7cc7dc342",
+    "decodeItemEntry6a38Introduction": "ef4277f94e14c53798dad07ce54478ebe636649a3bcc7516138e0895af85195e",
+    "decodeItemEntry6ad8Introduction": "daf82fa00348022ad2f94e732871073fac967674626daca4180abc4e7856f025",
+    "decodeItemHeader6a24Step": "c865e3a3945c185f2081d3664fbe658d8db53a36d099d8e990c57ef516b588e3",
+    "decodeItemHeader6ac4Step": "ff009967a7e48a4a5a9eace0ac1dc2c2a17274227d1f1a6b3f59a5b4e535fe80",
+    "decodeItemReturn698cMeaning": "b9b02025cdbaea1a8a11f23392616268e2ca98f1b78713c4f9685c838b047d00",
+    "decodeItemReturn69b0Meaning": "61db578c79f05100b097dbb9b0c57e47a5649cca1ab5664423f63760653bdfd3",
+    "decodeItemReturn6a40Meaning": "9a84b564bae9d9cda62303feee234eb113ef5e58bced528df8d898bfe9f8737b",
+    "decodeItemReturn6a78Meaning": "3e71b285f2307d26626f663d2e12ba85206c1c55a408284cfb9f39ea687cdfc0",
+    "decodeItemReturn6ae0Meaning": "b2a68cec1531da447d76d5473594209674cbfc67bb0f62c821592da604331718",
+    "decodeItemReturn6b08Meaning": "884b83353783fbdb7288dd975ccfbd6be68bf8efecdbac32b50c7841e448d337"
+  },
+  "verification_method": "module_m",
+  "assumptions": [],
+  "interface_lines_before": 13876,
+  "interface_lines_after": 14154,
+  "added_lines": 278,
+  "removed_lines": 0,
+  "MCP_record": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-data-final-checkpoint-015/MCP-RECORD.json",
+    "sha256": "21ad634ed2c80860ace7eee5da6c8e16ca1ece61f007c7950301b01f48fa40b5"
+  },
+  "gates": {
+    "B_post_rebase_check_fast_seconds": 93.128352,
+    "spec_metadata_check_fast": {
+      "root": "8c3e7bf574b5cc9c7b5daccf0faa29463f474ef7",
+      "exit_code": 0,
+      "wall_seconds": 114.51860284106806,
+      "environment": {
+        "ZESU_GATE_MODULE_LIMIT_GIB": "32",
+        "ZESU_PROOF_CPU_LIMIT": "4000"
+      }
+    }
+  },
+  "limits": [
+    "Plain data lemmas; no keyed registration or native consumption.",
+    "Full MCP evidence remains untracked in _build."
+  ]
+}
