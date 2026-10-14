@@ -174,6 +174,38 @@ class BlockTableTests(unittest.TestCase):
                          arguments=["args", "frameBytes"], source_hashes={"Fixture.v": "0" * 64})
         return design, generate_table.structure(cfg, design)
 
+    def test_edge_alternative_is_preserved_in_structural_metadata(self):
+        cfg, design = self.fixture()
+        target = design["blocks"][1]
+        name = "Fixture.Contracts.selectedEntry"
+        target.update(entry_definition="Fixture.Contracts.defaultEntry",
+                      resource_predicate="Fixture.Contracts.defaultEntry", binders=[],
+                      arguments=[], source_hashes={"Fixture/Contracts.v": "0" * 64})
+        target["incoming_edges"][0]["resource_alternative"] = name
+        report = generate_table.structure(cfg, design)
+        selected = [edge for edge in report["edges"] if edge["target"] == "0x1004"]
+        self.assertEqual(selected[0]["resource_alternative"], name)
+        self.assertNotIn("resource_alternative", report["edges"][0])
+        self.assertEqual(target["resource_predicate"], "Fixture.Contracts.defaultEntry")
+
+    def test_alternative_does_not_hide_a_changed_control_edge(self):
+        cfg, design = self.fixture()
+        target = design["blocks"][1]
+        target.update(entry_definition="Fixture.Contracts.entry",
+                      resource_predicate="Fixture.Contracts.entry", binders=[],
+                      arguments=[], source_hashes={"Fixture/Contracts.v": "0" * 64})
+        target["incoming_edges"][0].update(resource_alternative="Fixture.Contracts.otherEntry",
+                                           from_instruction="0x1004")
+        with self.assertRaisesRegex(ValueError, "incoming edges"):
+            generate_table.structure(cfg, design)
+
+    def test_absent_alternatives_preserve_exact_rendering(self):
+        import hashlib
+        design, report = self.executable_fixture()
+        source = generate_table.render_table(design, report).encode()
+        self.assertEqual(hashlib.sha256(source).hexdigest(),
+                         "cf4fcf414856f25a4cb05305a950bfdff7ae562fc7a16f183a33eddeb0324df7")
+
     def test_rendering_preserves_exact_binders_and_arguments(self):
         design, report = self.executable_fixture()
         design["blocks"][0]["arguments"] = ["frameBytes", "args"]

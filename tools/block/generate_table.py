@@ -39,6 +39,10 @@ def entry_source_hashes(design, root=ROOT):
             continue
         fields = entry_schema.contract_fields(block)
         entry_schema.verify_sources(fields, root)
+        for edge in block.get("incoming_edges", []):
+            if "resource_alternative" in edge:
+                selected = entry_schema.edge_contract_fields(block, edge)
+                entry_schema.verify_declarations(selected, root)
         sources = fields["source_hashes"]
         for name, expected in sources.items():
             if name in hashes and hashes[name] != expected:
@@ -189,20 +193,30 @@ def structure(cfg, design):
     if set(owners) != set(row_map) or any(count != 1 for count in owners.values()):
         raise ValueError("An instruction belongs to zero or multiple blocks.")
     incoming = []
+    alternatives = {}
     entries = 0
     for target, block in designs.items():
         for edge in block["incoming_edges"]:
+            if "resource_alternative" in edge:
+                fields = entry_schema.edge_contract_fields(block, edge)
             if edge["from_block"] == "caller":
                 if target != root or edge.get("kind") != "entry":
                     raise ValueError("The design has an unexpected caller entry.")
                 entries += 1
             else:
-                incoming.append({"source": hex(address(edge["from_block"])),
-                                 "instruction": hex(address(edge["from_instruction"])),
-                                 "target": hex(target), "condition": edge["path_condition"]})
+                row = {"source": hex(address(edge["from_block"])),
+                       "instruction": hex(address(edge["from_instruction"])),
+                       "target": hex(target), "condition": edge["path_condition"]}
+                incoming.append(row)
+                if "resource_alternative" in edge:
+                    alternatives[json.dumps(row, sort_keys=True)] = fields["entry_definition"]
     canonical = lambda values: Counter(json.dumps(value, sort_keys=True) for value in values)
     if entries != 1 or canonical(incoming) != canonical(edges):
         raise ValueError("The design incoming edges differ from the instruction words.")
+    for edge in edges:
+        selected = alternatives.get(json.dumps(edge, sort_keys=True))
+        if selected is not None:
+            edge["resource_alternative"] = selected
     if sorted(map(address, function["returns"])) != sorted(address(row["instruction"]) for row in returns):
         raise ValueError("The CFG return inventory differs from the block exits.")
     if function["calls"]:

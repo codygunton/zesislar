@@ -1,0 +1,68 @@
+{
+  "base": "1805f8a852b5964d25c0f51fb38b0317461010be",
+  "scope": "Optional edge validation, adapter rendering, metadata, and tests. No contract or proof body changes.",
+  "field": "incoming_edges[].resource_alternative",
+  "rendering": "Existing instr_pre_wand derives the target sum from the named alternative.",
+  "resource_allocation": "The successor subgoal receives the existing Hnext resource.",
+  "focused_tests": {
+    "count": 71,
+    "exit_code": 0,
+    "log": "/home/cody/zesislar/.worktrees/worker2-child-map-probe-routing-680b/_build/av-edge-immediate-checkpoint011/tests.log",
+    "log_sha256": "9c52732e3aa6e18e4e5c42adee3af007a451f6f9d487091b61572cf171fc9c02"
+  },
+  "absent_field": {
+    "scope": "Identical supplied design and report. Every Rocq output is byte-identical.",
+    "table_sha256": "8593825493acdeb8adcfac836c91eeb8b2990adbe195751658c97528e6b8b149",
+    "adapter_count": 24,
+    "record": "/home/cody/zesislar/.worktrees/worker2-child-map-probe-routing-680b/_build/av-edge-immediate-checkpoint011/ABSENT-ADAPTERS.json",
+    "record_sha256": "06d1b15e3610bf952f581d0e4a983c40a46d2b31428136a6c9120aa318963290"
+  },
+  "generator_hash": {
+    "before": "277970112715cdf780dc4552598e83b1bf92591866b88625e62d7c6d06b9afcd",
+    "after": "ceae92829e7fb74be844b74171850580d4ae7896595a13c2a765a5867c32730d"
+  },
+  "renderer_proof": {
+    "report": "/home/cody/zesislar/.worktrees/worker2-child-map-probe-routing-680b/_build/av-edge-checkpoint007/REPORT.json",
+    "report_sha256": "11ef8191cfec822ef5dcbb2353ffb4ffef53be3e89ae81951ff9d9eeba7c04c5",
+    "unique_namespace": "RendererFixture.Contracts.RlpDecodeItemBlockEntries",
+    "cases": 2,
+    "health": true,
+    "ordinary_final_groups": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "kernel_final_groups": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "Qed": true,
+    "compile_file": true,
+    "exact_statement_verification": "module_m",
+    "assumptions": [],
+    "transport_closed_normally": true
+  },
+  "source_sha256": {
+    "tools/block/DISCOVERY.md": "0f55ed05e5ff5105c31974d5bda21d373be6e4f51abbd7fb8bccefb332b088c7",
+    "tools/block/complete_promotion.py": "76f1966822a6f7de1ab72cf11c61f2d5cf3ab92a0614588344ec3b09e9f7e0aa",
+    "tools/block/entry_schema.py": "3f91d05aced7cb0eaec0b0363d073f0f6dc59bdf638a469d72abda954059a167",
+    "tools/block/generate_table.py": "ceae92829e7fb74be844b74171850580d4ae7896595a13c2a765a5867c32730d",
+    "tools/test_block_table.py": "d45cc568cab7ee5aac4f52d504e1d259b19abe68906fd041a6589eacef23d872",
+    "tools/test_complete_promotion.py": "6002fd27f4cae3ffd0a728549e98e9d226d46d12a4c64dbbf0d7ac21b4f049de",
+    "tools/test_entry_schema.py": "176b05af1a0be6d3c49550c67f100b7b97868a180cc58d5a10a33e229ca7850e",
+    "ZesuSsz/Generated/DecodeItem/block_table_metadata.json": "6a24fb38eabe81f2592010a8da90821ddd45c4dea1fa5dfb06c7cb96b1650edf"
+  },
+  "limitations": [
+    "E3 remains unmerged. The fixture proves rendering, not native closure.",
+    "Orch accepted 71 focused tests for this immediate tooling checkpoint. No child full gate ran.",
+    "Metadata records the new generator hash. Provenance comments depend on the supplied report."
+  ],
+  "final_regeneration": {
+    "root": "1805f8a852b5964d25c0f51fb38b0317461010be",
+    "preserved": "Root block design, shape union, table convention, and every metadata binding except the actual generator hash.",
+    "metadata_sha256": "6a24fb38eabe81f2592010a8da90821ddd45c4dea1fa5dfb06c7cb96b1650edf"
+  }
+}
