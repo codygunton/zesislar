@@ -1,0 +1,14 @@
+{
+  "item": "R3 declarations",
+  "base": "d8a4810d",
+  "source": "ZesuSsz/Automation/ReturnRoute.v",
+  "source_sha256": "5aa79d3c08eae5054f8aeb0f191ed1dcf15d862a87c1f93b255af3b1f769e618",
+  "declaration": "Require Import isla.riscv64.riscv64.\n\nClass ZesuExitMeaning {Sigma} (source : iProp Sigma) (facts : Prop) : Prop :=\n  zesu_exit_meaning : source \u22a2 \u231cfacts\u231d.\n#[global] Hint Mode ZesuExitMeaning + + - : typeclass_instances.\n",
+  "compilation": {
+    "result": "pass",
+    "report": "/home/cody/zesislar/.worktrees/worker2-av-r3-return-d8a4/_build/r3-declarations-002/REPORT.json",
+    "sha256": "483961daa11ea58d2917685f3a733a0cb44b2365eeb7eb23c03c36709d2e00a3"
+  },
+  "scope": "Class declaration only. The return rule remains pending.",
+  "gates": "No broad gate authorized."
+}
