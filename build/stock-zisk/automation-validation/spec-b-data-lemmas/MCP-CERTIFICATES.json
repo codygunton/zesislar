@@ -1,0 +1,1759 @@
+{
+  "root": "680b56ada4485e13c6836716e8c36acd9c1bc5d0",
+  "certificates": [
+    {
+      "name": "decodeItemEntry6a08Introduction",
+      "source": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Compliance/DecodeItemEntryIntroductions.v",
+      "source_sha256": "362346c3336d89bc99d0920a322b996f3f56ddc64b4a1f5cebd6f5d44741690f",
+      "statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nRequire Import EvmSailRlp.evm_rlp_types.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Contracts.DecodeItemReturnFacts.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFold.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.\nRequire Import ZesuSsz.Contracts.DecodeItemBranchEntries.\nRequire Import ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts.\nRequire Import ZesuSsz.Compliance.DecodeItemCompletedFoldFacts.\nFrom Coq Require Import List ZArith Lia.\nOpen Scope Z_scope.\n\nLemma decodeItemEntry6a08Introduction `{!islaG Sigma} `{!threadG}\n    args frameBytes (x13 : bv 64) prefix rest :\n  decodeItemEntryAt800d6a08 args frameBytes x13 prefix rest \u22a2\n  \u231c(exists (n payloadStart : Z) (lengthBytes : list byte),\n    n = bv_unsigned prefix - 183 /\\\n    payloadStart = decodeItemInputPointer args + 1 /\\\n    lengthBytes = firstn (Z.to_nat n) rest /\\\n    1 <= n <= 8 /\\\n    decodeItemFoldProvenance args false prefix rest n payloadStart lengthBytes)%Z\u231d.\n",
+      "statement_sha256": "952ac9897535233d90d9f2ed25e331f6fb5b5a4ce4231ddf90b8c38ae8167d97",
+      "actual_groups": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "Qed": {
+        "tool": "rocq_check",
+        "arguments": {
+          "from_state": 10,
+          "body": "Qed.",
+          "timeout": 7200
+        },
+        "request_UTC": "2026-10-14T15:12:01.876427+00:00",
+        "raw_response": {
+          "meta": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":1,\"check_time_ms\":15,\"state_id\":11,\"from_state_id\":10,\"feedback\":[[\"Qed.\",\"decodeItemEntry6a08Introduction is defined\"]],\"proof_tactics\":[\"unfold decodeItemEntryAt800d6a08.\",\"iIntros \\\"Hentry\\\".\",\"iDestruct \\\"Hentry\\\" as (x15 x16) \\\"(%Hfacts & _)\\\".\",\"iPureIntro.\",\"destruct Hfacts as (Hhead & Hclass & Hvalue & Hguard).\",\"exists (bv_unsigned prefix - 183), (decodeItemInputPointer args + 1),\\n    (firstn (Z.to_nat (bv_unsigned prefix - 183)) rest).\",\"unfold decodeItemFoldProvenance.\",\"simpl.\",\"repeat split; try reflexivity; try lia; assumption.\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}",
+              "annotations": null,
+              "meta": null
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "goals": "No goals remaining.",
+            "proof_finished": true,
+            "commands_run": 1,
+            "check_time_ms": 15,
+            "state_id": 11,
+            "from_state_id": 10,
+            "feedback": [
+              [
+                "Qed.",
+                "decodeItemEntry6a08Introduction is defined"
+              ]
+            ],
+            "proof_tactics": [
+              "unfold decodeItemEntryAt800d6a08.",
+              "iIntros \"Hentry\".",
+              "iDestruct \"Hentry\" as (x15 x16) \"(%Hfacts & _)\".",
+              "iPureIntro.",
+              "destruct Hfacts as (Hhead & Hclass & Hvalue & Hguard).",
+              "exists (bv_unsigned prefix - 183), (decodeItemInputPointer args + 1),\n    (firstn (Z.to_nat (bv_unsigned prefix - 183)) rest).",
+              "unfold decodeItemFoldProvenance.",
+              "simpl.",
+              "repeat split; try reflexivity; try lia; assumption.",
+              "Qed."
+            ],
+            "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+          },
+          "isError": false
+        },
+        "result": {
+          "success": true,
+          "goals": "No goals remaining.",
+          "proof_finished": true,
+          "commands_run": 1,
+          "check_time_ms": 15,
+          "state_id": 11,
+          "from_state_id": 10,
+          "feedback": [
+            [
+              "Qed.",
+              "decodeItemEntry6a08Introduction is defined"
+            ]
+          ],
+          "proof_tactics": [
+            "unfold decodeItemEntryAt800d6a08.",
+            "iIntros \"Hentry\".",
+            "iDestruct \"Hentry\" as (x15 x16) \"(%Hfacts & _)\".",
+            "iPureIntro.",
+            "destruct Hfacts as (Hhead & Hclass & Hvalue & Hguard).",
+            "exists (bv_unsigned prefix - 183), (decodeItemInputPointer args + 1),\n    (firstn (Z.to_nat (bv_unsigned prefix - 183)) rest).",
+            "unfold decodeItemFoldProvenance.",
+            "simpl.",
+            "repeat split; try reflexivity; try lia; assumption.",
+            "Qed."
+          ],
+          "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+        },
+        "wall_seconds": 0.01803737902082503
+      },
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "Print_Assumptions": {
+        "success": true,
+        "goals": "No goals remaining.",
+        "proof_finished": true,
+        "commands_run": 1,
+        "check_time_ms": 552,
+        "state_id": 12,
+        "from_state_id": 11,
+        "feedback": [
+          [
+            "Print Assumptions decodeItemEntry6a08Introduction.",
+            "Fetching opaque proofs from disk for iris.algebra.ofe\nFetching opaque proofs from disk for Coq.Structures.OrdersFacts\nFetching opaque proofs from disk for Coq.Classes.Morphisms\nFetching opaque proofs from disk for Coq.Init.Logic\nFetching opaque proofs from disk for Coq.Arith.PeanoNat\nFetching opaque proofs from disk for Coq.Init.Peano\nFetching opaque proofs from disk for Coq.micromega.ZifyClasses\nFetching opaque proofs from disk for Coq.ZArith.Znat\nFetching opaque proofs from disk for Coq.Arith.Compare_dec\nFetching opaque proofs from disk for Coq.NArith.Nnat\nFetching opaque proofs from disk for Coq.PArith.Pnat\nFetching opaque proofs from disk for Coq.PArith.BinPos\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZAdd\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZBase\nFetching opaque proofs from disk for Coq.Numbers.Natural.Abstract.NOrder\nFetching opaque proofs from disk for Coq.Numbers.Natural.Abstract.NBase\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZOrder\nFetching opaque proofs from disk for Coq.Structures.OrdersTac\nFetching opaque proofs from disk for Coq.Classes.Morphisms_Prop\nFetching opaque proofs from disk for Coq.Init.Datatypes\nFetching opaque proofs from disk for Coq.ZArith.BinInt\nFetching opaque proofs from disk for Coq.micromega.ZMicromega\nFetching opaque proofs from disk for Coq.micromega.Tauto\nFetching opaque proofs from disk for Coq.micromega.Refl\nFetching opaque proofs from disk for Coq.Bool.Bool\nFetching opaque proofs from disk for Coq.micromega.RingMicromega\nFetching opaque proofs from disk for Coq.micromega.OrderedRing\nFetching opaque proofs from disk for Coq.setoid_ring.InitialRing\nFetching opaque proofs from disk for Coq.setoid_ring.Ring_theory\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZMul\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZAdd\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZBase\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZAddOrder\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZMulOrder\nFetching opaque proofs from disk for Coq.ZArith.Zbool\nFetching opaque proofs from disk for Coq.micromega.EnvRing\nFetching opaque proofs from disk for Coq.micromega.Env\nFetching opaque proofs from disk for Coq.setoid_ring.Ring_polynom\nFetching opaque proofs from disk for Coq.setoid_ring.BinList\nFetching opaque proofs from disk for Coq.NArith.BinNat\nFetching opaque proofs from disk for Coq.Numbers.Natural.Abstract.NSub\nFetching opaque proofs from disk for Coq.Numbers.Natural.Abstract.NAdd\nFetching opaque proofs from disk for Coq.setoid_ring.ZArithRing\nFetching opaque proofs from disk for Coq.ZArith.Zpow_def\nFetching opaque proofs from disk for Coq.ZArith.Zorder\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZAddOrder\nFetching opaque proofs from disk for Coq.ZArith.auxiliary\nFetching opaque proofs from disk for Coq.Lists.List\nFetching opaque proofs from disk for Coq.ZArith.Znumtheory\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZMul\nFetching opaque proofs from disk for Coq.ZArith.Zdiv\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZDivFloor\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZDiv\nFetching opaque proofs from disk for Coq.ZArith.Zmax\nFetching opaque proofs from disk for Coq.Structures.GenericMinMax\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZGcd\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZGcd\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZLt\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZSgnAbs\nFetching opaque proofs from disk for Coq.Structures.Equalities\nFetching opaque proofs from disk for Coq.micromega.Ztac\nFetching opaque proofs from disk for stdpp.base\nFetching opaque proofs from disk for stdpp.option\nFetching opaque proofs from disk for iris.base_logic.upred\nFetching opaque proofs from disk for iris.algebra.cmra\nFetching opaque proofs from disk for Coq.ssr.ssreflect\nFetching opaque proofs from disk for iris.algebra.gmap\nFetching opaque proofs from disk for stdpp.gmap\nFetching opaque proofs from disk for stdpp.tactics\nFetching opaque proofs from disk for stdpp.proof_irrel\nFetching opaque proofs from disk for Coq.micromega.ZifyInst\nFetching opaque proofs from disk for stdpp.countable\nFetching opaque proofs from disk for stdpp.fin_maps\nFetching opaque proofs from disk for stdpp.well_founded\nFetching opaque proofs from disk for stdpp.list\nFetching opaque proofs from disk for Coq.Sorting.Permutation\nFetching opaque proofs from disk for stdpp.orders\nFetching opaque proofs from disk for iris.algebra.cofe_solver\nFetching opaque proofs from disk for stdpp.numbers\nFetching opaque proofs from disk for Coq.Classes.RelationClasses\nFetching opaque proofs from disk for iris.base_logic.bi\nFetching opaque proofs from disk for Coq.QArith.Qcanon\nFetching opaque proofs from disk for Coq.QArith.Qreduction\nFetching opaque proofs from disk for iris.algebra.agree\nFetching opaque proofs from disk for Coq.QArith.QArith_base\nFetching opaque proofs from disk for Coq.Logic.Eqdep_dec\nFetching opaque proofs from disk for Coq.ZArith.Zcompare\nFetching opaque proofs from disk for iris.algebra.dfrac\nFetching opaque proofs from disk for iris.algebra.frac\nFetching opaque proofs from disk for stdpp.sets\nFetching opaque proofs from disk for iris.algebra.view\nFetching opaque proofs from disk for iris.algebra.lib.gmap_view\nFetching opaque proofs from disk for stdpp.coPset\nFetching opaque proofs from disk for iris.algebra.coPset\nFetching opaque proofs from disk for stdpp.mapset\nFetching opaque proofs from disk for iris.algebra.gset\nFetching opaque proofs from disk for iris.algebra.auth\nFetching opaque proofs from disk for iris.algebra.numbers\nFetching opaque proofs from disk for stdpp.bitvector.definitions\nFetching opaque proofs from disk for stdpp.strings\nFetching opaque proofs from disk for iris.proofmode.classes\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZPow\nFetching opaque proofs from disk for isla.ghost_state\nFetching opaque proofs from disk for iris.base_logic.lib.ghost_map\nFetching opaque proofs from disk for iris.base_logic.lib.own\nFetching opaque proofs from disk for stdpp.fin\nFetching opaque proofs from disk for iris.bi.interface\nFetching opaque proofs from disk for iris.bi.derived_laws\nFetching opaque proofs from disk for isla.lifting\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZBits\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZLog\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZParity\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZMulOrder\nFetching opaque proofs from disk for Coq.Numbers.Natural.Abstract.NBits\nFetching opaque proofs from disk for Coq.Logic.Decidable\nFetching opaque proofs from disk for isla.opsem\nFetching opaque proofs from disk for iris.program_logic.weakestpre\nFetching opaque proofs from disk for iris.base_logic.lib.fancy_updates\nFetching opaque proofs from disk for iris.algebra.big_op\nFetching opaque proofs from disk for iris.base_logic.lib.later_credits\nFetching opaque proofs from disk for iris.bi.updates\nFetching opaque proofs from disk for iris.bi.derived_laws_later\nFetching opaque proofs from disk for stdpp.decidable\nFetching opaque proofs from disk for iris.proofmode.class_instances\nFetching opaque proofs from disk for iris.proofmode.coq_tactics\nFetching opaque proofs from disk for iris.proofmode.environments\nFetching opaque proofs from disk for iris.proofmode.base\nFetching opaque proofs from disk for iris.algebra.monoid\nFetching opaque proofs from disk for iris.bi.big_op\nFetching opaque proofs from disk for iris.proofmode.class_instances_updates\nFetching opaque proofs from disk for iris.proofmode.modalities\nFetching opaque proofs from disk for iris.proofmode.class_instances_frame\nFetching opaque proofs from disk for iris.proofmode.class_instances_make\nFetching opaque proofs from disk for iris.proofmode.modality_instances\nFetching opaque proofs from disk for iris.proofmode.class_instances_later\nFetching opaque proofs from disk for stdpp.nat_cancel\nFetching opaque proofs from disk for iris.base_logic.lib.wsat\nFetching opaque proofs from disk for iris.algebra.functions\nFetching opaque proofs from disk for iris.base_logic.proofmode\nFetching opaque proofs from disk for iris.base_logic.derived\nFetching opaque proofs from disk for iris.base_logic.lib.iprop\nFetching opaque proofs from disk for iris.base_logic.algebra\nFetching opaque proofs from disk for Coq.ZArith.Zwf\nClosed under the global context"
+          ]
+        ],
+        "proof_tactics": [
+          "unfold decodeItemEntryAt800d6a08.",
+          "iIntros \"Hentry\".",
+          "iDestruct \"Hentry\" as (x15 x16) \"(%Hfacts & _)\".",
+          "iPureIntro.",
+          "destruct Hfacts as (Hhead & Hclass & Hvalue & Hguard).",
+          "exists (bv_unsigned prefix - 183), (decodeItemInputPointer args + 1),\n    (firstn (Z.to_nat (bv_unsigned prefix - 183)) rest).",
+          "unfold decodeItemFoldProvenance.",
+          "simpl.",
+          "repeat split; try reflexivity; try lia; assumption.",
+          "Qed.",
+          "Print Assumptions decodeItemEntry6a08Introduction."
+        ],
+        "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+      },
+      "closure": {
+        "normal_transport": true,
+        "owner": {
+          "success": true,
+          "pid": 1684803,
+          "start_ticks": 169003897
+        },
+        "pet": {
+          "pid": 1684984,
+          "start_ticks": 169004106
+        },
+        "server_exited": true,
+        "owned_Pet_absent": true
+      },
+      "raw_record": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp002/RESULT.json"
+    },
+    {
+      "name": "decodeItemEntry6aa8Introduction",
+      "source": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Compliance/DecodeItemEntryIntroductions.v",
+      "source_sha256": "362346c3336d89bc99d0920a322b996f3f56ddc64b4a1f5cebd6f5d44741690f",
+      "statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nRequire Import EvmSailRlp.evm_rlp_types.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Contracts.DecodeItemReturnFacts.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFold.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.\nRequire Import ZesuSsz.Contracts.DecodeItemBranchEntries.\nRequire Import ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts.\nRequire Import ZesuSsz.Compliance.DecodeItemCompletedFoldFacts.\nFrom Coq Require Import List ZArith Lia.\nOpen Scope Z_scope.\n\nLemma decodeItemEntry6a08Introduction `{!islaG Sigma} `{!threadG}\n    args frameBytes (x13 : bv 64) prefix rest :\n  decodeItemEntryAt800d6a08 args frameBytes x13 prefix rest \u22a2\n  \u231c(exists (n payloadStart : Z) (lengthBytes : list byte),\n    n = bv_unsigned prefix - 183 /\\\n    payloadStart = decodeItemInputPointer args + 1 /\\\n    lengthBytes = firstn (Z.to_nat n) rest /\\\n    1 <= n <= 8 /\\\n    decodeItemFoldProvenance args false prefix rest n payloadStart lengthBytes)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d6a08.\n  iIntros \"Hentry\".\n  iDestruct \"Hentry\" as (x15 x16) \"(%Hfacts & _)\".\n  iPureIntro. destruct Hfacts as (Hhead & Hclass & Hvalue & Hguard).\n  exists (bv_unsigned prefix - 183), (decodeItemInputPointer args + 1),\n    (firstn (Z.to_nat (bv_unsigned prefix - 183)) rest).\n  unfold decodeItemFoldProvenance. simpl.\n  repeat split; try reflexivity; try lia; assumption.\nQed.\n\nPrint Assumptions decodeItemEntry6a08Introduction.\n\nLemma decodeItemEntry6aa8Introduction `{!islaG Sigma} `{!threadG}\n    args frameBytes (x13 : bv 64) prefix rest :\n  decodeItemEntryAt800d6aa8 args frameBytes x13 prefix rest \u22a2\n  \u231c(exists (n payloadStart : Z) (lengthBytes : list byte),\n    n = bv_unsigned prefix - 247 /\\\n    payloadStart = decodeItemInputPointer args + 1 /\\\n    lengthBytes = firstn (Z.to_nat n) rest /\\\n    1 <= n <= 8 /\\\n    decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes)%Z\u231d.\n",
+      "statement_sha256": "38d47beb712dd29acf1d5c86af7e5227f8cc5bcf592eb05313e257c7cc7dc342",
+      "actual_groups": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "Qed": {
+        "tool": "rocq_check",
+        "arguments": {
+          "from_state": 10,
+          "body": "Qed.",
+          "timeout": 7200
+        },
+        "request_UTC": "2026-10-14T15:12:17.043220+00:00",
+        "raw_response": {
+          "meta": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":1,\"check_time_ms\":18,\"state_id\":11,\"from_state_id\":10,\"feedback\":[[\"Qed.\",\"decodeItemEntry6aa8Introduction is defined\"]],\"proof_tactics\":[\"unfold decodeItemEntryAt800d6aa8.\",\"iIntros \\\"Hentry\\\".\",\"iDestruct \\\"Hentry\\\" as (x15 x16) \\\"(%Hfacts & _)\\\".\",\"iPureIntro.\",\"destruct Hfacts as (Hhead & Hclass & Hvalue & Hguard).\",\"exists (bv_unsigned prefix - 247), (decodeItemInputPointer args + 1),\\n    (firstn (Z.to_nat (bv_unsigned prefix - 247)) rest).\",\"unfold decodeItemFoldProvenance.\",\"simpl.\",\"repeat split; try reflexivity; try lia; assumption.\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}",
+              "annotations": null,
+              "meta": null
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "goals": "No goals remaining.",
+            "proof_finished": true,
+            "commands_run": 1,
+            "check_time_ms": 18,
+            "state_id": 11,
+            "from_state_id": 10,
+            "feedback": [
+              [
+                "Qed.",
+                "decodeItemEntry6aa8Introduction is defined"
+              ]
+            ],
+            "proof_tactics": [
+              "unfold decodeItemEntryAt800d6aa8.",
+              "iIntros \"Hentry\".",
+              "iDestruct \"Hentry\" as (x15 x16) \"(%Hfacts & _)\".",
+              "iPureIntro.",
+              "destruct Hfacts as (Hhead & Hclass & Hvalue & Hguard).",
+              "exists (bv_unsigned prefix - 247), (decodeItemInputPointer args + 1),\n    (firstn (Z.to_nat (bv_unsigned prefix - 247)) rest).",
+              "unfold decodeItemFoldProvenance.",
+              "simpl.",
+              "repeat split; try reflexivity; try lia; assumption.",
+              "Qed."
+            ],
+            "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+          },
+          "isError": false
+        },
+        "result": {
+          "success": true,
+          "goals": "No goals remaining.",
+          "proof_finished": true,
+          "commands_run": 1,
+          "check_time_ms": 18,
+          "state_id": 11,
+          "from_state_id": 10,
+          "feedback": [
+            [
+              "Qed.",
+              "decodeItemEntry6aa8Introduction is defined"
+            ]
+          ],
+          "proof_tactics": [
+            "unfold decodeItemEntryAt800d6aa8.",
+            "iIntros \"Hentry\".",
+            "iDestruct \"Hentry\" as (x15 x16) \"(%Hfacts & _)\".",
+            "iPureIntro.",
+            "destruct Hfacts as (Hhead & Hclass & Hvalue & Hguard).",
+            "exists (bv_unsigned prefix - 247), (decodeItemInputPointer args + 1),\n    (firstn (Z.to_nat (bv_unsigned prefix - 247)) rest).",
+            "unfold decodeItemFoldProvenance.",
+            "simpl.",
+            "repeat split; try reflexivity; try lia; assumption.",
+            "Qed."
+          ],
+          "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+        },
+        "wall_seconds": 0.02111598616465926
+      },
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "Print_Assumptions": {
+        "success": true,
+        "goals": "No goals remaining.",
+        "proof_finished": true,
+        "commands_run": 1,
+        "check_time_ms": 485,
+        "state_id": 12,
+        "from_state_id": 11,
+        "feedback": [
+          [
+            "Print Assumptions decodeItemEntry6aa8Introduction.",
+            "Closed under the global context"
+          ]
+        ],
+        "proof_tactics": [
+          "unfold decodeItemEntryAt800d6aa8.",
+          "iIntros \"Hentry\".",
+          "iDestruct \"Hentry\" as (x15 x16) \"(%Hfacts & _)\".",
+          "iPureIntro.",
+          "destruct Hfacts as (Hhead & Hclass & Hvalue & Hguard).",
+          "exists (bv_unsigned prefix - 247), (decodeItemInputPointer args + 1),\n    (firstn (Z.to_nat (bv_unsigned prefix - 247)) rest).",
+          "unfold decodeItemFoldProvenance.",
+          "simpl.",
+          "repeat split; try reflexivity; try lia; assumption.",
+          "Qed.",
+          "Print Assumptions decodeItemEntry6aa8Introduction."
+        ],
+        "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+      },
+      "closure": {
+        "normal_transport": true,
+        "owner": {
+          "success": true,
+          "pid": 1686583,
+          "start_ticks": 169005361
+        },
+        "pet": {
+          "pid": 1686847,
+          "start_ticks": 169005571
+        },
+        "server_exited": true,
+        "owned_Pet_absent": true
+      },
+      "raw_record": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp002/RESULT.json"
+    },
+    {
+      "name": "decodeItemEntry6a38Introduction",
+      "source": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Compliance/DecodeItemEntryIntroductions.v",
+      "source_sha256": "362346c3336d89bc99d0920a322b996f3f56ddc64b4a1f5cebd6f5d44741690f",
+      "statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nRequire Import EvmSailRlp.evm_rlp_types.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Contracts.DecodeItemReturnFacts.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFold.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.\nRequire Import ZesuSsz.Contracts.DecodeItemBranchEntries.\nRequire Import ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts.\nRequire Import ZesuSsz.Compliance.DecodeItemCompletedFoldFacts.\nFrom Coq Require Import List ZArith Lia.\nOpen Scope Z_scope.\n\nLemma decodeItemEntry6a08Introduction `{!islaG Sigma} `{!threadG}\n    args frameBytes (x13 : bv 64) prefix rest :\n  decodeItemEntryAt800d6a08 args frameBytes x13 prefix rest \u22a2\n  \u231c(exists (n payloadStart : Z) (lengthBytes : list byte),\n    n = bv_unsigned prefix - 183 /\\\n    payloadStart = decodeItemInputPointer args + 1 /\\\n    lengthBytes = firstn (Z.to_nat n) rest /\\\n    1 <= n <= 8 /\\\n    decodeItemFoldProvenance args false prefix rest n payloadStart lengthBytes)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d6a08.\n  iIntros \"Hentry\".\n  iDestruct \"Hentry\" as (x15 x16) \"(%Hfacts & _)\".\n  iPureIntro. destruct Hfacts as (Hhead & Hclass & Hvalue & Hguard).\n  exists (bv_unsigned prefix - 183), (decodeItemInputPointer args + 1),\n    (firstn (Z.to_nat (bv_unsigned prefix - 183)) rest).\n  unfold decodeItemFoldProvenance. simpl.\n  repeat split; try reflexivity; try lia; assumption.\nQed.\n\nPrint Assumptions decodeItemEntry6a08Introduction.\n\nLemma decodeItemEntry6aa8Introduction `{!islaG Sigma} `{!threadG}\n    args frameBytes (x13 : bv 64) prefix rest :\n  decodeItemEntryAt800d6aa8 args frameBytes x13 prefix rest \u22a2\n  \u231c(exists (n payloadStart : Z) (lengthBytes : list byte),\n    n = bv_unsigned prefix - 247 /\\\n    payloadStart = decodeItemInputPointer args + 1 /\\\n    lengthBytes = firstn (Z.to_nat n) rest /\\\n    1 <= n <= 8 /\\\n    decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d6aa8.\n  iIntros \"Hentry\".\n  iDestruct \"Hentry\" as (x15 x16) \"(%Hfacts & _)\".\n  iPureIntro. destruct Hfacts as (Hhead & Hclass & Hvalue & Hguard).\n  exists (bv_unsigned prefix - 247), (decodeItemInputPointer args + 1),\n    (firstn (Z.to_nat (bv_unsigned prefix - 247)) rest).\n  unfold decodeItemFoldProvenance. simpl.\n  repeat split; try reflexivity; try lia; assumption.\nQed.\n\nPrint Assumptions decodeItemEntry6aa8Introduction.\n\nLemma decodeItemEntry6a38Introduction `{!islaG Sigma} `{!threadG}\n    args n payloadStart lengthBytes frameBytes (loaded : bv 64) prefix rest :\n  decodeItemEntryAt800d6a38 args n payloadStart lengthBytes frameBytes loaded prefix rest \u22a2\n  \u231c(exists (headerLength payloadLength : Z),\n    headerLength = 1 + n /\\ payloadLength = bigEndian lengthBytes /\\\n    (decodeItemFoldLengthFits args n lengthBytes = true ->\n      decodeItemLongAcceptedFacts args false headerLength payloadLength))%Z\u231d.\n",
+      "statement_sha256": "ef4277f94e14c53798dad07ce54478ebe636649a3bcc7516138e0895af85195e",
+      "actual_groups": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "Qed": {
+        "tool": "rocq_check",
+        "arguments": {
+          "from_state": 11,
+          "body": "Qed.",
+          "timeout": 7200
+        },
+        "request_UTC": "2026-10-14T15:12:28.453626+00:00",
+        "raw_response": {
+          "meta": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":1,\"check_time_ms\":73,\"state_id\":12,\"from_state_id\":11,\"feedback\":[[\"Qed.\",\"decodeItemEntry6a38Introduction is defined\"]],\"proof_tactics\":[\"unfold decodeItemEntryAt800d6a38, decodeItemByteFoldResources.\",\"iIntros \\\"(%Hfacts & Hfold & _)\\\".\",\"iDestruct \\\"Hfold\\\" as \\\"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hfold & _)\\\".\",\"iPureIntro.\",\"destruct Hfacts as (Hdomain & Hprovenance & Hframe).\",\"exists (1 + n), (bigEndian lengthBytes).\",\"split; first reflexivity.\",\"split; first reflexivity.\",\"intro Hfits.\",\"exact (decodeItemCompletedFoldAcceptedWitnessFacts args false prefix rest n\\n    payloadStart lengthBytes Hdomain Hprovenance (proj2 Hfold) Hfits).\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}",
+              "annotations": null,
+              "meta": null
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "goals": "No goals remaining.",
+            "proof_finished": true,
+            "commands_run": 1,
+            "check_time_ms": 73,
+            "state_id": 12,
+            "from_state_id": 11,
+            "feedback": [
+              [
+                "Qed.",
+                "decodeItemEntry6a38Introduction is defined"
+              ]
+            ],
+            "proof_tactics": [
+              "unfold decodeItemEntryAt800d6a38, decodeItemByteFoldResources.",
+              "iIntros \"(%Hfacts & Hfold & _)\".",
+              "iDestruct \"Hfold\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hfold & _)\".",
+              "iPureIntro.",
+              "destruct Hfacts as (Hdomain & Hprovenance & Hframe).",
+              "exists (1 + n), (bigEndian lengthBytes).",
+              "split; first reflexivity.",
+              "split; first reflexivity.",
+              "intro Hfits.",
+              "exact (decodeItemCompletedFoldAcceptedWitnessFacts args false prefix rest n\n    payloadStart lengthBytes Hdomain Hprovenance (proj2 Hfold) Hfits).",
+              "Qed."
+            ],
+            "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+          },
+          "isError": false
+        },
+        "result": {
+          "success": true,
+          "goals": "No goals remaining.",
+          "proof_finished": true,
+          "commands_run": 1,
+          "check_time_ms": 73,
+          "state_id": 12,
+          "from_state_id": 11,
+          "feedback": [
+            [
+              "Qed.",
+              "decodeItemEntry6a38Introduction is defined"
+            ]
+          ],
+          "proof_tactics": [
+            "unfold decodeItemEntryAt800d6a38, decodeItemByteFoldResources.",
+            "iIntros \"(%Hfacts & Hfold & _)\".",
+            "iDestruct \"Hfold\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hfold & _)\".",
+            "iPureIntro.",
+            "destruct Hfacts as (Hdomain & Hprovenance & Hframe).",
+            "exists (1 + n), (bigEndian lengthBytes).",
+            "split; first reflexivity.",
+            "split; first reflexivity.",
+            "intro Hfits.",
+            "exact (decodeItemCompletedFoldAcceptedWitnessFacts args false prefix rest n\n    payloadStart lengthBytes Hdomain Hprovenance (proj2 Hfold) Hfits).",
+            "Qed."
+          ],
+          "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+        },
+        "wall_seconds": 0.07660282799042761
+      },
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "Print_Assumptions": {
+        "success": true,
+        "goals": "No goals remaining.",
+        "proof_finished": true,
+        "commands_run": 1,
+        "check_time_ms": 463,
+        "state_id": 13,
+        "from_state_id": 12,
+        "feedback": [
+          [
+            "Print Assumptions decodeItemEntry6a38Introduction.",
+            "Fetching opaque proofs from disk for ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts\nFetching opaque proofs from disk for ZesuSsz.Compliance.DecodeItemSemanticIntroduction\nFetching opaque proofs from disk for Coq.omega.PreOmega\nFetching opaque proofs from disk for ZesuSsz.Compliance.DecodeItemSailIntroduction\nFetching opaque proofs from disk for ZesuSsz.Compliance.DecodeItemSailFold\nFetching opaque proofs from disk for ZesuSsz.Compliance.DecodeItemSailEvaluation\nFetching opaque proofs from disk for ZesuSsz.Automation.ByteFold\nFetching opaque proofs from disk for ZesuSsz.Proofs.DecodeItem.ByteFoldPure\nFetching opaque proofs from disk for ZesuSsz.Compliance.RlpInputBounds\nClosed under the global context"
+          ]
+        ],
+        "proof_tactics": [
+          "unfold decodeItemEntryAt800d6a38, decodeItemByteFoldResources.",
+          "iIntros \"(%Hfacts & Hfold & _)\".",
+          "iDestruct \"Hfold\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hfold & _)\".",
+          "iPureIntro.",
+          "destruct Hfacts as (Hdomain & Hprovenance & Hframe).",
+          "exists (1 + n), (bigEndian lengthBytes).",
+          "split; first reflexivity.",
+          "split; first reflexivity.",
+          "intro Hfits.",
+          "exact (decodeItemCompletedFoldAcceptedWitnessFacts args false prefix rest n\n    payloadStart lengthBytes Hdomain Hprovenance (proj2 Hfold) Hfits).",
+          "Qed.",
+          "Print Assumptions decodeItemEntry6a38Introduction."
+        ],
+        "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+      },
+      "closure": {
+        "normal_transport": true,
+        "owner": {
+          "success": true,
+          "pid": 1687351,
+          "start_ticks": 169006441
+        },
+        "pet": {
+          "pid": 1687543,
+          "start_ticks": 169006655
+        },
+        "server_exited": true,
+        "owned_Pet_absent": true
+      },
+      "raw_record": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp002/RESULT.json"
+    },
+    {
+      "name": "decodeItemEntry6ad8Introduction",
+      "source": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Compliance/DecodeItemEntryIntroductions.v",
+      "source_sha256": "362346c3336d89bc99d0920a322b996f3f56ddc64b4a1f5cebd6f5d44741690f",
+      "statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nRequire Import EvmSailRlp.evm_rlp_types.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Contracts.DecodeItemReturnFacts.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFold.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.\nRequire Import ZesuSsz.Contracts.DecodeItemBranchEntries.\nRequire Import ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts.\nRequire Import ZesuSsz.Compliance.DecodeItemCompletedFoldFacts.\nFrom Coq Require Import List ZArith Lia.\nOpen Scope Z_scope.\n\nLemma decodeItemEntry6a08Introduction `{!islaG Sigma} `{!threadG}\n    args frameBytes (x13 : bv 64) prefix rest :\n  decodeItemEntryAt800d6a08 args frameBytes x13 prefix rest \u22a2\n  \u231c(exists (n payloadStart : Z) (lengthBytes : list byte),\n    n = bv_unsigned prefix - 183 /\\\n    payloadStart = decodeItemInputPointer args + 1 /\\\n    lengthBytes = firstn (Z.to_nat n) rest /\\\n    1 <= n <= 8 /\\\n    decodeItemFoldProvenance args false prefix rest n payloadStart lengthBytes)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d6a08.\n  iIntros \"Hentry\".\n  iDestruct \"Hentry\" as (x15 x16) \"(%Hfacts & _)\".\n  iPureIntro. destruct Hfacts as (Hhead & Hclass & Hvalue & Hguard).\n  exists (bv_unsigned prefix - 183), (decodeItemInputPointer args + 1),\n    (firstn (Z.to_nat (bv_unsigned prefix - 183)) rest).\n  unfold decodeItemFoldProvenance. simpl.\n  repeat split; try reflexivity; try lia; assumption.\nQed.\n\nPrint Assumptions decodeItemEntry6a08Introduction.\n\nLemma decodeItemEntry6aa8Introduction `{!islaG Sigma} `{!threadG}\n    args frameBytes (x13 : bv 64) prefix rest :\n  decodeItemEntryAt800d6aa8 args frameBytes x13 prefix rest \u22a2\n  \u231c(exists (n payloadStart : Z) (lengthBytes : list byte),\n    n = bv_unsigned prefix - 247 /\\\n    payloadStart = decodeItemInputPointer args + 1 /\\\n    lengthBytes = firstn (Z.to_nat n) rest /\\\n    1 <= n <= 8 /\\\n    decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d6aa8.\n  iIntros \"Hentry\".\n  iDestruct \"Hentry\" as (x15 x16) \"(%Hfacts & _)\".\n  iPureIntro. destruct Hfacts as (Hhead & Hclass & Hvalue & Hguard).\n  exists (bv_unsigned prefix - 247), (decodeItemInputPointer args + 1),\n    (firstn (Z.to_nat (bv_unsigned prefix - 247)) rest).\n  unfold decodeItemFoldProvenance. simpl.\n  repeat split; try reflexivity; try lia; assumption.\nQed.\n\nPrint Assumptions decodeItemEntry6aa8Introduction.\n\nLemma decodeItemEntry6a38Introduction `{!islaG Sigma} `{!threadG}\n    args n payloadStart lengthBytes frameBytes (loaded : bv 64) prefix rest :\n  decodeItemEntryAt800d6a38 args n payloadStart lengthBytes frameBytes loaded prefix rest \u22a2\n  \u231c(exists (headerLength payloadLength : Z),\n    headerLength = 1 + n /\\ payloadLength = bigEndian lengthBytes /\\\n    (decodeItemFoldLengthFits args n lengthBytes = true ->\n      decodeItemLongAcceptedFacts args false headerLength payloadLength))%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d6a38, decodeItemByteFoldResources.\n  iIntros \"(%Hfacts & Hfold & _)\".\n  iDestruct \"Hfold\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hfold & _)\".\n  iPureIntro. destruct Hfacts as (Hdomain & Hprovenance & Hframe).\n  exists (1 + n), (bigEndian lengthBytes). split; first reflexivity.\n  split; first reflexivity. intro Hfits.\n  exact (decodeItemCompletedFoldAcceptedWitnessFacts args false prefix rest n\n    payloadStart lengthBytes Hdomain Hprovenance (proj2 Hfold) Hfits).\nQed.\n\nPrint Assumptions decodeItemEntry6a38Introduction.\n\nLemma decodeItemEntry6ad8Introduction `{!islaG Sigma} `{!threadG}\n    args n payloadStart lengthBytes frameBytes (loaded : bv 64) prefix rest :\n  decodeItemEntryAt800d6ad8 args n payloadStart lengthBytes frameBytes loaded prefix rest \u22a2\n  \u231c(exists (headerLength payloadLength : Z),\n    headerLength = 1 + n /\\ payloadLength = bigEndian lengthBytes /\\\n    (decodeItemFoldLengthFits args n lengthBytes = true ->\n      decodeItemLongAcceptedFacts args true headerLength payloadLength))%Z\u231d.\n",
+      "statement_sha256": "daf82fa00348022ad2f94e732871073fac967674626daca4180abc4e7856f025",
+      "actual_groups": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "Qed": {
+        "tool": "rocq_check",
+        "arguments": {
+          "from_state": 11,
+          "body": "Qed.",
+          "timeout": 7200
+        },
+        "request_UTC": "2026-10-14T15:12:41.934896+00:00",
+        "raw_response": {
+          "meta": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":1,\"check_time_ms\":64,\"state_id\":12,\"from_state_id\":11,\"feedback\":[[\"Qed.\",\"decodeItemEntry6ad8Introduction is defined\"]],\"proof_tactics\":[\"unfold decodeItemEntryAt800d6ad8, decodeItemByteFoldResources.\",\"iIntros \\\"(%Hfacts & Hfold & _)\\\".\",\"iDestruct \\\"Hfold\\\" as \\\"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hfold & _)\\\".\",\"iPureIntro.\",\"destruct Hfacts as (Hdomain & Hprovenance & Hframe).\",\"exists (1 + n), (bigEndian lengthBytes).\",\"split; first reflexivity.\",\"split; first reflexivity.\",\"intro Hfits.\",\"exact (decodeItemCompletedFoldAcceptedWitnessFacts args true prefix rest n\\n    payloadStart lengthBytes Hdomain Hprovenance (proj2 Hfold) Hfits).\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}",
+              "annotations": null,
+              "meta": null
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "goals": "No goals remaining.",
+            "proof_finished": true,
+            "commands_run": 1,
+            "check_time_ms": 64,
+            "state_id": 12,
+            "from_state_id": 11,
+            "feedback": [
+              [
+                "Qed.",
+                "decodeItemEntry6ad8Introduction is defined"
+              ]
+            ],
+            "proof_tactics": [
+              "unfold decodeItemEntryAt800d6ad8, decodeItemByteFoldResources.",
+              "iIntros \"(%Hfacts & Hfold & _)\".",
+              "iDestruct \"Hfold\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hfold & _)\".",
+              "iPureIntro.",
+              "destruct Hfacts as (Hdomain & Hprovenance & Hframe).",
+              "exists (1 + n), (bigEndian lengthBytes).",
+              "split; first reflexivity.",
+              "split; first reflexivity.",
+              "intro Hfits.",
+              "exact (decodeItemCompletedFoldAcceptedWitnessFacts args true prefix rest n\n    payloadStart lengthBytes Hdomain Hprovenance (proj2 Hfold) Hfits).",
+              "Qed."
+            ],
+            "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+          },
+          "isError": false
+        },
+        "result": {
+          "success": true,
+          "goals": "No goals remaining.",
+          "proof_finished": true,
+          "commands_run": 1,
+          "check_time_ms": 64,
+          "state_id": 12,
+          "from_state_id": 11,
+          "feedback": [
+            [
+              "Qed.",
+              "decodeItemEntry6ad8Introduction is defined"
+            ]
+          ],
+          "proof_tactics": [
+            "unfold decodeItemEntryAt800d6ad8, decodeItemByteFoldResources.",
+            "iIntros \"(%Hfacts & Hfold & _)\".",
+            "iDestruct \"Hfold\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hfold & _)\".",
+            "iPureIntro.",
+            "destruct Hfacts as (Hdomain & Hprovenance & Hframe).",
+            "exists (1 + n), (bigEndian lengthBytes).",
+            "split; first reflexivity.",
+            "split; first reflexivity.",
+            "intro Hfits.",
+            "exact (decodeItemCompletedFoldAcceptedWitnessFacts args true prefix rest n\n    payloadStart lengthBytes Hdomain Hprovenance (proj2 Hfold) Hfits).",
+            "Qed."
+          ],
+          "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+        },
+        "wall_seconds": 0.06815876299515367
+      },
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "Print_Assumptions": {
+        "success": true,
+        "goals": "No goals remaining.",
+        "proof_finished": true,
+        "commands_run": 1,
+        "check_time_ms": 466,
+        "state_id": 13,
+        "from_state_id": 12,
+        "feedback": [
+          [
+            "Print Assumptions decodeItemEntry6ad8Introduction.",
+            "Closed under the global context"
+          ]
+        ],
+        "proof_tactics": [
+          "unfold decodeItemEntryAt800d6ad8, decodeItemByteFoldResources.",
+          "iIntros \"(%Hfacts & Hfold & _)\".",
+          "iDestruct \"Hfold\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hfold & _)\".",
+          "iPureIntro.",
+          "destruct Hfacts as (Hdomain & Hprovenance & Hframe).",
+          "exists (1 + n), (bigEndian lengthBytes).",
+          "split; first reflexivity.",
+          "split; first reflexivity.",
+          "intro Hfits.",
+          "exact (decodeItemCompletedFoldAcceptedWitnessFacts args true prefix rest n\n    payloadStart lengthBytes Hdomain Hprovenance (proj2 Hfold) Hfits).",
+          "Qed.",
+          "Print Assumptions decodeItemEntry6ad8Introduction."
+        ],
+        "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+      },
+      "closure": {
+        "normal_transport": true,
+        "owner": {
+          "success": true,
+          "pid": 1688100,
+          "start_ticks": 169007734
+        },
+        "pet": {
+          "pid": 1688273,
+          "start_ticks": 169007942
+        },
+        "server_exited": true,
+        "owned_Pet_absent": true
+      },
+      "raw_record": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp002/RESULT.json"
+    },
+    {
+      "name": "decodeItemHeader6a24Step",
+      "source": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Compliance/DecodeItemLoopSteps.v",
+      "source_sha256": "09912655439bed42bdcb76911847650e8d28dbd83407e99619e2e4e26ffad6ae",
+      "statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nRequire Import EvmSailRlp.evm_rlp_types.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Contracts.DecodeItemReturnFacts.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFold.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFold.\nRequire Import ZesuSsz.Proofs.DecodeItem.ByteFoldPure.\nFrom Coq Require Import List ZArith.\nOpen Scope Z_scope.\n\nLemma decodeItemHeader6a24Step `{!islaG Sigma} `{!threadG}\n    args n i payloadStart lengthBytes frameBytes (loaded : bv 64) :\n  decodeItemByteFoldStringHeader args n i payloadStart lengthBytes frameBytes loaded \u22a2\n  \u231c(forall next : byte, i < n ->\n    nth_error lengthBytes (Z.to_nat i) = Some next ->\n    decodeItemByteFoldFacts args n (i + 1) payloadStart lengthBytes /\\\n    bigEndian (firstn (Z.to_nat (i + 1)) lengthBytes) =\n      256 * bigEndian (firstn (Z.to_nat i) lengthBytes) + bv_unsigned next)%Z\u231d.\n",
+      "statement_sha256": "c865e3a3945c185f2081d3664fbe658d8db53a36d099d8e990c57ef516b588e3",
+      "actual_groups": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "Qed": {
+        "tool": "rocq_check",
+        "arguments": {
+          "from_state": 7,
+          "body": "Qed.",
+          "timeout": 7200
+        },
+        "request_UTC": "2026-10-14T15:12:52.227259+00:00",
+        "raw_response": {
+          "meta": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":1,\"check_time_ms\":54,\"state_id\":8,\"from_state_id\":7,\"feedback\":[[\"Qed.\",\"decodeItemHeader6a24Step is defined\"]],\"proof_tactics\":[\"unfold decodeItemByteFoldStringHeader, decodeItemByteFoldResources.\",\"iIntros \\\"Hheader\\\".\",\"iDestruct \\\"Hheader\\\" as \\\"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hfacts & _)\\\".\",\"iPureIntro.\",\"intros next Hguard Hnext.\",\"exact (decodeItem_fold_preservation args n i payloadStart lengthBytes next\\n    (proj2 Hfacts) Hguard Hnext).\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}",
+              "annotations": null,
+              "meta": null
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "goals": "No goals remaining.",
+            "proof_finished": true,
+            "commands_run": 1,
+            "check_time_ms": 54,
+            "state_id": 8,
+            "from_state_id": 7,
+            "feedback": [
+              [
+                "Qed.",
+                "decodeItemHeader6a24Step is defined"
+              ]
+            ],
+            "proof_tactics": [
+              "unfold decodeItemByteFoldStringHeader, decodeItemByteFoldResources.",
+              "iIntros \"Hheader\".",
+              "iDestruct \"Hheader\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hfacts & _)\".",
+              "iPureIntro.",
+              "intros next Hguard Hnext.",
+              "exact (decodeItem_fold_preservation args n i payloadStart lengthBytes next\n    (proj2 Hfacts) Hguard Hnext).",
+              "Qed."
+            ],
+            "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+          },
+          "isError": false
+        },
+        "result": {
+          "success": true,
+          "goals": "No goals remaining.",
+          "proof_finished": true,
+          "commands_run": 1,
+          "check_time_ms": 54,
+          "state_id": 8,
+          "from_state_id": 7,
+          "feedback": [
+            [
+              "Qed.",
+              "decodeItemHeader6a24Step is defined"
+            ]
+          ],
+          "proof_tactics": [
+            "unfold decodeItemByteFoldStringHeader, decodeItemByteFoldResources.",
+            "iIntros \"Hheader\".",
+            "iDestruct \"Hheader\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hfacts & _)\".",
+            "iPureIntro.",
+            "intros next Hguard Hnext.",
+            "exact (decodeItem_fold_preservation args n i payloadStart lengthBytes next\n    (proj2 Hfacts) Hguard Hnext).",
+            "Qed."
+          ],
+          "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+        },
+        "wall_seconds": 0.05686624790541828
+      },
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "Print_Assumptions": {
+        "success": true,
+        "goals": "No goals remaining.",
+        "proof_finished": true,
+        "commands_run": 1,
+        "check_time_ms": 338,
+        "state_id": 9,
+        "from_state_id": 8,
+        "feedback": [
+          [
+            "Print Assumptions decodeItemHeader6a24Step.",
+            "Fetching opaque proofs from disk for iris.algebra.ofe\nFetching opaque proofs from disk for Coq.Structures.OrdersFacts\nFetching opaque proofs from disk for Coq.Classes.Morphisms\nFetching opaque proofs from disk for Coq.Init.Logic\nFetching opaque proofs from disk for Coq.Arith.PeanoNat\nFetching opaque proofs from disk for Coq.Init.Peano\nFetching opaque proofs from disk for Coq.micromega.ZifyClasses\nFetching opaque proofs from disk for Coq.ZArith.Znat\nFetching opaque proofs from disk for Coq.Arith.Compare_dec\nFetching opaque proofs from disk for Coq.NArith.Nnat\nFetching opaque proofs from disk for Coq.PArith.Pnat\nFetching opaque proofs from disk for Coq.PArith.BinPos\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZAdd\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZBase\nFetching opaque proofs from disk for Coq.Numbers.Natural.Abstract.NOrder\nFetching opaque proofs from disk for Coq.Numbers.Natural.Abstract.NBase\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZOrder\nFetching opaque proofs from disk for Coq.Structures.OrdersTac\nFetching opaque proofs from disk for Coq.Classes.Morphisms_Prop\nFetching opaque proofs from disk for Coq.Init.Datatypes\nFetching opaque proofs from disk for Coq.ZArith.BinInt\nFetching opaque proofs from disk for Coq.micromega.ZMicromega\nFetching opaque proofs from disk for Coq.micromega.Tauto\nFetching opaque proofs from disk for Coq.micromega.Refl\nFetching opaque proofs from disk for Coq.Bool.Bool\nFetching opaque proofs from disk for Coq.micromega.RingMicromega\nFetching opaque proofs from disk for Coq.micromega.OrderedRing\nFetching opaque proofs from disk for Coq.setoid_ring.InitialRing\nFetching opaque proofs from disk for Coq.setoid_ring.Ring_theory\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZMul\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZAdd\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZBase\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZAddOrder\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZMulOrder\nFetching opaque proofs from disk for Coq.ZArith.Zbool\nFetching opaque proofs from disk for Coq.micromega.EnvRing\nFetching opaque proofs from disk for Coq.micromega.Env\nFetching opaque proofs from disk for Coq.setoid_ring.Ring_polynom\nFetching opaque proofs from disk for Coq.setoid_ring.BinList\nFetching opaque proofs from disk for Coq.NArith.BinNat\nFetching opaque proofs from disk for Coq.Numbers.Natural.Abstract.NSub\nFetching opaque proofs from disk for Coq.Numbers.Natural.Abstract.NAdd\nFetching opaque proofs from disk for Coq.setoid_ring.ZArithRing\nFetching opaque proofs from disk for Coq.ZArith.Zpow_def\nFetching opaque proofs from disk for Coq.ZArith.Zorder\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZAddOrder\nFetching opaque proofs from disk for Coq.ZArith.auxiliary\nFetching opaque proofs from disk for Coq.Lists.List\nFetching opaque proofs from disk for Coq.ZArith.Znumtheory\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZMul\nFetching opaque proofs from disk for Coq.ZArith.Zdiv\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZDivFloor\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZDiv\nFetching opaque proofs from disk for Coq.ZArith.Zmax\nFetching opaque proofs from disk for Coq.Structures.GenericMinMax\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZGcd\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZGcd\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZLt\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZSgnAbs\nFetching opaque proofs from disk for Coq.Structures.Equalities\nFetching opaque proofs from disk for Coq.micromega.Ztac\nFetching opaque proofs from disk for stdpp.base\nFetching opaque proofs from disk for stdpp.option\nFetching opaque proofs from disk for iris.base_logic.upred\nFetching opaque proofs from disk for iris.algebra.cmra\nFetching opaque proofs from disk for Coq.ssr.ssreflect\nFetching opaque proofs from disk for iris.algebra.gmap\nFetching opaque proofs from disk for stdpp.gmap\nFetching opaque proofs from disk for stdpp.tactics\nFetching opaque proofs from disk for stdpp.proof_irrel\nFetching opaque proofs from disk for Coq.micromega.ZifyInst\nFetching opaque proofs from disk for stdpp.countable\nFetching opaque proofs from disk for stdpp.fin_maps\nFetching opaque proofs from disk for stdpp.well_founded\nFetching opaque proofs from disk for stdpp.list\nFetching opaque proofs from disk for Coq.Sorting.Permutation\nFetching opaque proofs from disk for stdpp.orders\nFetching opaque proofs from disk for iris.algebra.cofe_solver\nFetching opaque proofs from disk for stdpp.numbers\nFetching opaque proofs from disk for Coq.Classes.RelationClasses\nFetching opaque proofs from disk for iris.base_logic.bi\nFetching opaque proofs from disk for Coq.QArith.Qcanon\nFetching opaque proofs from disk for Coq.QArith.Qreduction\nFetching opaque proofs from disk for iris.algebra.agree\nFetching opaque proofs from disk for Coq.QArith.QArith_base\nFetching opaque proofs from disk for Coq.Logic.Eqdep_dec\nFetching opaque proofs from disk for Coq.ZArith.Zcompare\nFetching opaque proofs from disk for iris.algebra.dfrac\nFetching opaque proofs from disk for iris.algebra.frac\nFetching opaque proofs from disk for stdpp.sets\nFetching opaque proofs from disk for iris.algebra.view\nFetching opaque proofs from disk for iris.algebra.lib.gmap_view\nFetching opaque proofs from disk for stdpp.coPset\nFetching opaque proofs from disk for iris.algebra.coPset\nFetching opaque proofs from disk for stdpp.mapset\nFetching opaque proofs from disk for iris.algebra.gset\nFetching opaque proofs from disk for iris.algebra.auth\nFetching opaque proofs from disk for iris.algebra.numbers\nFetching opaque proofs from disk for stdpp.bitvector.definitions\nFetching opaque proofs from disk for stdpp.strings\nFetching opaque proofs from disk for iris.proofmode.classes\nFetching opaque proofs from disk for iris.bi.interface\nFetching opaque proofs from disk for iris.bi.derived_laws\nFetching opaque proofs from disk for isla.ghost_state\nFetching opaque proofs from disk for iris.base_logic.lib.ghost_map\nFetching opaque proofs from disk for iris.base_logic.lib.own\nFetching opaque proofs from disk for stdpp.fin\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZPow\nFetching opaque proofs from disk for iris.proofmode.class_instances\nFetching opaque proofs from disk for iris.proofmode.coq_tactics\nFetching opaque proofs from disk for iris.proofmode.environments\nFetching opaque proofs from disk for iris.proofmode.base\nFetching opaque proofs from disk for iris.algebra.big_op\nFetching opaque proofs from disk for iris.algebra.monoid\nFetching opaque proofs from disk for iris.bi.big_op\nFetching opaque proofs from disk for ZesuSsz.Proofs.DecodeItem.ByteFoldPure\nFetching opaque proofs from disk for ZesuSsz.Automation.ByteFold\nClosed under the global context"
+          ]
+        ],
+        "proof_tactics": [
+          "unfold decodeItemByteFoldStringHeader, decodeItemByteFoldResources.",
+          "iIntros \"Hheader\".",
+          "iDestruct \"Hheader\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hfacts & _)\".",
+          "iPureIntro.",
+          "intros next Hguard Hnext.",
+          "exact (decodeItem_fold_preservation args n i payloadStart lengthBytes next\n    (proj2 Hfacts) Hguard Hnext).",
+          "Qed.",
+          "Print Assumptions decodeItemHeader6a24Step."
+        ],
+        "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+      },
+      "closure": {
+        "normal_transport": true,
+        "owner": {
+          "success": true,
+          "pid": 1688853,
+          "start_ticks": 169009039
+        },
+        "pet": {
+          "pid": 1689047,
+          "start_ticks": 169009243
+        },
+        "server_exited": true,
+        "owned_Pet_absent": true
+      },
+      "raw_record": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp002/RESULT.json"
+    },
+    {
+      "name": "decodeItemHeader6ac4Step",
+      "source": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Compliance/DecodeItemLoopSteps.v",
+      "source_sha256": "09912655439bed42bdcb76911847650e8d28dbd83407e99619e2e4e26ffad6ae",
+      "statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nRequire Import EvmSailRlp.evm_rlp_types.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Contracts.DecodeItemReturnFacts.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFold.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFold.\nRequire Import ZesuSsz.Proofs.DecodeItem.ByteFoldPure.\nFrom Coq Require Import List ZArith.\nOpen Scope Z_scope.\n\nLemma decodeItemHeader6a24Step `{!islaG Sigma} `{!threadG}\n    args n i payloadStart lengthBytes frameBytes (loaded : bv 64) :\n  decodeItemByteFoldStringHeader args n i payloadStart lengthBytes frameBytes loaded \u22a2\n  \u231c(forall next : byte, i < n ->\n    nth_error lengthBytes (Z.to_nat i) = Some next ->\n    decodeItemByteFoldFacts args n (i + 1) payloadStart lengthBytes /\\\n    bigEndian (firstn (Z.to_nat (i + 1)) lengthBytes) =\n      256 * bigEndian (firstn (Z.to_nat i) lengthBytes) + bv_unsigned next)%Z\u231d.\nProof.\n  unfold decodeItemByteFoldStringHeader, decodeItemByteFoldResources.\n  iIntros \"Hheader\".\n  iDestruct \"Hheader\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hfacts & _)\".\n  iPureIntro. intros next Hguard Hnext.\n  exact (decodeItem_fold_preservation args n i payloadStart lengthBytes next\n    (proj2 Hfacts) Hguard Hnext).\nQed.\n\nPrint Assumptions decodeItemHeader6a24Step.\n\nLemma decodeItemHeader6ac4Step `{!islaG Sigma} `{!threadG}\n    args n i payloadStart lengthBytes frameBytes (loaded : bv 64) :\n  decodeItemByteFoldListHeader args n i payloadStart lengthBytes frameBytes loaded \u22a2\n  \u231c(forall next : byte, i < n ->\n    nth_error lengthBytes (Z.to_nat i) = Some next ->\n    decodeItemByteFoldFacts args n (i + 1) payloadStart lengthBytes /\\\n    bigEndian (firstn (Z.to_nat (i + 1)) lengthBytes) =\n      256 * bigEndian (firstn (Z.to_nat i) lengthBytes) + bv_unsigned next)%Z\u231d.\n",
+      "statement_sha256": "ff009967a7e48a4a5a9eace0ac1dc2c2a17274227d1f1a6b3f59a5b4e535fe80",
+      "actual_groups": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "Qed": {
+        "tool": "rocq_check",
+        "arguments": {
+          "from_state": 7,
+          "body": "Qed.",
+          "timeout": 7200
+        },
+        "request_UTC": "2026-10-14T15:13:05.034980+00:00",
+        "raw_response": {
+          "meta": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":1,\"check_time_ms\":61,\"state_id\":8,\"from_state_id\":7,\"feedback\":[[\"Qed.\",\"decodeItemHeader6ac4Step is defined\"]],\"proof_tactics\":[\"unfold decodeItemByteFoldListHeader, decodeItemByteFoldResources.\",\"iIntros \\\"Hheader\\\".\",\"iDestruct \\\"Hheader\\\" as \\\"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hfacts & _)\\\".\",\"iPureIntro.\",\"intros next Hguard Hnext.\",\"exact (decodeItem_fold_preservation args n i payloadStart lengthBytes next\\n    (proj2 Hfacts) Hguard Hnext).\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}",
+              "annotations": null,
+              "meta": null
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "goals": "No goals remaining.",
+            "proof_finished": true,
+            "commands_run": 1,
+            "check_time_ms": 61,
+            "state_id": 8,
+            "from_state_id": 7,
+            "feedback": [
+              [
+                "Qed.",
+                "decodeItemHeader6ac4Step is defined"
+              ]
+            ],
+            "proof_tactics": [
+              "unfold decodeItemByteFoldListHeader, decodeItemByteFoldResources.",
+              "iIntros \"Hheader\".",
+              "iDestruct \"Hheader\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hfacts & _)\".",
+              "iPureIntro.",
+              "intros next Hguard Hnext.",
+              "exact (decodeItem_fold_preservation args n i payloadStart lengthBytes next\n    (proj2 Hfacts) Hguard Hnext).",
+              "Qed."
+            ],
+            "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+          },
+          "isError": false
+        },
+        "result": {
+          "success": true,
+          "goals": "No goals remaining.",
+          "proof_finished": true,
+          "commands_run": 1,
+          "check_time_ms": 61,
+          "state_id": 8,
+          "from_state_id": 7,
+          "feedback": [
+            [
+              "Qed.",
+              "decodeItemHeader6ac4Step is defined"
+            ]
+          ],
+          "proof_tactics": [
+            "unfold decodeItemByteFoldListHeader, decodeItemByteFoldResources.",
+            "iIntros \"Hheader\".",
+            "iDestruct \"Hheader\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hfacts & _)\".",
+            "iPureIntro.",
+            "intros next Hguard Hnext.",
+            "exact (decodeItem_fold_preservation args n i payloadStart lengthBytes next\n    (proj2 Hfacts) Hguard Hnext).",
+            "Qed."
+          ],
+          "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+        },
+        "wall_seconds": 0.06523164198733866
+      },
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "Print_Assumptions": {
+        "success": true,
+        "goals": "No goals remaining.",
+        "proof_finished": true,
+        "commands_run": 1,
+        "check_time_ms": 328,
+        "state_id": 9,
+        "from_state_id": 8,
+        "feedback": [
+          [
+            "Print Assumptions decodeItemHeader6ac4Step.",
+            "Closed under the global context"
+          ]
+        ],
+        "proof_tactics": [
+          "unfold decodeItemByteFoldListHeader, decodeItemByteFoldResources.",
+          "iIntros \"Hheader\".",
+          "iDestruct \"Hheader\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hfacts & _)\".",
+          "iPureIntro.",
+          "intros next Hguard Hnext.",
+          "exact (decodeItem_fold_preservation args n i payloadStart lengthBytes next\n    (proj2 Hfacts) Hguard Hnext).",
+          "Qed.",
+          "Print Assumptions decodeItemHeader6ac4Step."
+        ],
+        "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+      },
+      "closure": {
+        "normal_transport": true,
+        "owner": {
+          "success": true,
+          "pid": 1689657,
+          "start_ticks": 169010171
+        },
+        "pet": {
+          "pid": 1689841,
+          "start_ticks": 169010377
+        },
+        "server_exited": true,
+        "owned_Pet_absent": true
+      },
+      "raw_record": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp002/RESULT.json"
+    },
+    {
+      "name": "decodeItemReturn698cMeaning",
+      "source": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Compliance/DecodeItemExitMeanings.v",
+      "source_sha256": "71f6003cc18303eb3daf2e37952e9608cbbc16d4fe30cefd8b498ad630309386",
+      "statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nRequire Import EvmSailRlp.evm_rlp_types.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Contracts.DecodeItemReturnFacts.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFold.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemSchema.\nRequire Import ZesuSsz.Compliance.DecodeItemReturnExitResources.\nFrom Coq Require Import ZArith Lia.\nOpen Scope Z_scope.\n\nLemma decodeItemReturn698cMeaning `{!islaG Sigma} `{!threadG}\n    args locals pointerBytes lengthBytes prefix rest isLiteral :\n  decodeItemEntryAt800d698c args locals pointerBytes lengthBytes prefix rest isLiteral \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess false (if isLiteral then 0 else 1) (if isLiteral then 1 else bv_unsigned prefix - 128)) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\n",
+      "statement_sha256": "b9b02025cdbaea1a8a11f23392616268e2ca98f1b78713c4f9685c838b047d00",
+      "actual_groups": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "Qed": {
+        "tool": "rocq_check",
+        "arguments": {
+          "from_state": 14,
+          "body": "Qed.",
+          "timeout": 7200
+        },
+        "request_UTC": "2026-10-14T15:14:40.703330+00:00",
+        "raw_response": {
+          "meta": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":1,\"check_time_ms\":76,\"state_id\":15,\"from_state_id\":14,\"feedback\":[[\"Qed.\",\"decodeItemReturn698cMeaning is defined\"]],\"proof_tactics\":[\"unfold decodeItemEntryAt800d698c, decodeItemReturnEntryCore.\",\"iIntros \\\"(Hcore & %Hfacts)\\\".\",\"iDestruct \\\"Hcore\\\" as \\\"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\\\".\",\"iPureIntro.\",\"intros after Himage.\",\"destruct Hfacts as (Hhead & Hprefix & Hpointer & Hlength & Hconsumed & Haccepted & _).\",\"destruct isLiteral; simpl in *.\",\"{\",\"exact (decodeItemLiteralPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage).\",\"}\",\"{\",\"eapply (decodeItemShortStringPostMeaning args after (bv_unsigned prefix - 128));\\n      try eassumption; try exact (proj2 (proj1 Hcore)); unfold word64Modulus; lia.\",\"}\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}",
+              "annotations": null,
+              "meta": null
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "goals": "No goals remaining.",
+            "proof_finished": true,
+            "commands_run": 1,
+            "check_time_ms": 76,
+            "state_id": 15,
+            "from_state_id": 14,
+            "feedback": [
+              [
+                "Qed.",
+                "decodeItemReturn698cMeaning is defined"
+              ]
+            ],
+            "proof_tactics": [
+              "unfold decodeItemEntryAt800d698c, decodeItemReturnEntryCore.",
+              "iIntros \"(Hcore & %Hfacts)\".",
+              "iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".",
+              "iPureIntro.",
+              "intros after Himage.",
+              "destruct Hfacts as (Hhead & Hprefix & Hpointer & Hlength & Hconsumed & Haccepted & _).",
+              "destruct isLiteral; simpl in *.",
+              "{",
+              "exact (decodeItemLiteralPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage).",
+              "}",
+              "{",
+              "eapply (decodeItemShortStringPostMeaning args after (bv_unsigned prefix - 128));\n      try eassumption; try exact (proj2 (proj1 Hcore)); unfold word64Modulus; lia.",
+              "}",
+              "Qed."
+            ],
+            "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+          },
+          "isError": false
+        },
+        "result": {
+          "success": true,
+          "goals": "No goals remaining.",
+          "proof_finished": true,
+          "commands_run": 1,
+          "check_time_ms": 76,
+          "state_id": 15,
+          "from_state_id": 14,
+          "feedback": [
+            [
+              "Qed.",
+              "decodeItemReturn698cMeaning is defined"
+            ]
+          ],
+          "proof_tactics": [
+            "unfold decodeItemEntryAt800d698c, decodeItemReturnEntryCore.",
+            "iIntros \"(Hcore & %Hfacts)\".",
+            "iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".",
+            "iPureIntro.",
+            "intros after Himage.",
+            "destruct Hfacts as (Hhead & Hprefix & Hpointer & Hlength & Hconsumed & Haccepted & _).",
+            "destruct isLiteral; simpl in *.",
+            "{",
+            "exact (decodeItemLiteralPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage).",
+            "}",
+            "{",
+            "eapply (decodeItemShortStringPostMeaning args after (bv_unsigned prefix - 128));\n      try eassumption; try exact (proj2 (proj1 Hcore)); unfold word64Modulus; lia.",
+            "}",
+            "Qed."
+          ],
+          "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+        },
+        "wall_seconds": 0.0798090600874275
+      },
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "Print_Assumptions": {
+        "success": true,
+        "goals": "No goals remaining.",
+        "proof_finished": true,
+        "commands_run": 1,
+        "check_time_ms": 522,
+        "state_id": 16,
+        "from_state_id": 15,
+        "feedback": [
+          [
+            "Print Assumptions decodeItemReturn698cMeaning.",
+            "Fetching opaque proofs from disk for iris.algebra.ofe\nFetching opaque proofs from disk for Coq.Structures.OrdersFacts\nFetching opaque proofs from disk for Coq.Classes.Morphisms\nFetching opaque proofs from disk for Coq.Init.Logic\nFetching opaque proofs from disk for Coq.Arith.PeanoNat\nFetching opaque proofs from disk for Coq.Init.Peano\nFetching opaque proofs from disk for Coq.micromega.ZifyClasses\nFetching opaque proofs from disk for Coq.ZArith.Znat\nFetching opaque proofs from disk for Coq.Arith.Compare_dec\nFetching opaque proofs from disk for Coq.NArith.Nnat\nFetching opaque proofs from disk for Coq.PArith.Pnat\nFetching opaque proofs from disk for Coq.PArith.BinPos\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZAdd\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZBase\nFetching opaque proofs from disk for Coq.Numbers.Natural.Abstract.NOrder\nFetching opaque proofs from disk for Coq.Numbers.Natural.Abstract.NBase\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZOrder\nFetching opaque proofs from disk for Coq.Structures.OrdersTac\nFetching opaque proofs from disk for Coq.Classes.Morphisms_Prop\nFetching opaque proofs from disk for Coq.Init.Datatypes\nFetching opaque proofs from disk for Coq.ZArith.BinInt\nFetching opaque proofs from disk for Coq.micromega.ZMicromega\nFetching opaque proofs from disk for Coq.micromega.Tauto\nFetching opaque proofs from disk for Coq.micromega.Refl\nFetching opaque proofs from disk for Coq.Bool.Bool\nFetching opaque proofs from disk for Coq.micromega.RingMicromega\nFetching opaque proofs from disk for Coq.micromega.OrderedRing\nFetching opaque proofs from disk for Coq.setoid_ring.InitialRing\nFetching opaque proofs from disk for Coq.setoid_ring.Ring_theory\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZMul\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZAdd\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZBase\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZAddOrder\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZMulOrder\nFetching opaque proofs from disk for Coq.ZArith.Zbool\nFetching opaque proofs from disk for Coq.micromega.EnvRing\nFetching opaque proofs from disk for Coq.micromega.Env\nFetching opaque proofs from disk for Coq.setoid_ring.Ring_polynom\nFetching opaque proofs from disk for Coq.setoid_ring.BinList\nFetching opaque proofs from disk for Coq.NArith.BinNat\nFetching opaque proofs from disk for Coq.Numbers.Natural.Abstract.NSub\nFetching opaque proofs from disk for Coq.Numbers.Natural.Abstract.NAdd\nFetching opaque proofs from disk for Coq.setoid_ring.ZArithRing\nFetching opaque proofs from disk for Coq.ZArith.Zpow_def\nFetching opaque proofs from disk for Coq.ZArith.Zorder\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZAddOrder\nFetching opaque proofs from disk for Coq.ZArith.auxiliary\nFetching opaque proofs from disk for Coq.Lists.List\nFetching opaque proofs from disk for Coq.ZArith.Znumtheory\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZMul\nFetching opaque proofs from disk for Coq.ZArith.Zdiv\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZDivFloor\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZDiv\nFetching opaque proofs from disk for Coq.ZArith.Zmax\nFetching opaque proofs from disk for Coq.Structures.GenericMinMax\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZGcd\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZGcd\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZLt\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZSgnAbs\nFetching opaque proofs from disk for Coq.Structures.Equalities\nFetching opaque proofs from disk for Coq.micromega.Ztac\nFetching opaque proofs from disk for stdpp.base\nFetching opaque proofs from disk for stdpp.option\nFetching opaque proofs from disk for iris.base_logic.upred\nFetching opaque proofs from disk for iris.algebra.cmra\nFetching opaque proofs from disk for Coq.ssr.ssreflect\nFetching opaque proofs from disk for iris.algebra.gmap\nFetching opaque proofs from disk for stdpp.gmap\nFetching opaque proofs from disk for stdpp.tactics\nFetching opaque proofs from disk for stdpp.proof_irrel\nFetching opaque proofs from disk for Coq.micromega.ZifyInst\nFetching opaque proofs from disk for stdpp.countable\nFetching opaque proofs from disk for stdpp.fin_maps\nFetching opaque proofs from disk for stdpp.well_founded\nFetching opaque proofs from disk for stdpp.list\nFetching opaque proofs from disk for Coq.Sorting.Permutation\nFetching opaque proofs from disk for stdpp.orders\nFetching opaque proofs from disk for iris.algebra.cofe_solver\nFetching opaque proofs from disk for stdpp.numbers\nFetching opaque proofs from disk for Coq.Classes.RelationClasses\nFetching opaque proofs from disk for iris.base_logic.bi\nFetching opaque proofs from disk for Coq.QArith.Qcanon\nFetching opaque proofs from disk for Coq.QArith.Qreduction\nFetching opaque proofs from disk for iris.algebra.agree\nFetching opaque proofs from disk for Coq.QArith.QArith_base\nFetching opaque proofs from disk for Coq.Logic.Eqdep_dec\nFetching opaque proofs from disk for Coq.ZArith.Zcompare\nFetching opaque proofs from disk for iris.algebra.dfrac\nFetching opaque proofs from disk for iris.algebra.frac\nFetching opaque proofs from disk for stdpp.sets\nFetching opaque proofs from disk for iris.algebra.view\nFetching opaque proofs from disk for iris.algebra.lib.gmap_view\nFetching opaque proofs from disk for stdpp.coPset\nFetching opaque proofs from disk for iris.algebra.coPset\nFetching opaque proofs from disk for stdpp.mapset\nFetching opaque proofs from disk for iris.algebra.gset\nFetching opaque proofs from disk for iris.algebra.auth\nFetching opaque proofs from disk for iris.algebra.numbers\nFetching opaque proofs from disk for stdpp.bitvector.definitions\nFetching opaque proofs from disk for stdpp.strings\nFetching opaque proofs from disk for iris.proofmode.classes\nFetching opaque proofs from disk for iris.bi.interface\nFetching opaque proofs from disk for iris.bi.derived_laws\nFetching opaque proofs from disk for isla.ghost_state\nFetching opaque proofs from disk for iris.base_logic.lib.ghost_map\nFetching opaque proofs from disk for iris.base_logic.lib.own\nFetching opaque proofs from disk for stdpp.fin\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZPow\nFetching opaque proofs from disk for isla.lifting\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZBits\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZLog\nFetching opaque proofs from disk for Coq.Numbers.NatInt.NZParity\nFetching opaque proofs from disk for Coq.Numbers.Integer.Abstract.ZMulOrder\nFetching opaque proofs from disk for Coq.Numbers.Natural.Abstract.NBits\nFetching opaque proofs from disk for Coq.Logic.Decidable\nFetching opaque proofs from disk for isla.opsem\nFetching opaque proofs from disk for iris.program_logic.weakestpre\nFetching opaque proofs from disk for iris.base_logic.lib.fancy_updates\nFetching opaque proofs from disk for iris.algebra.big_op\nFetching opaque proofs from disk for iris.base_logic.lib.later_credits\nFetching opaque proofs from disk for iris.bi.updates\nFetching opaque proofs from disk for iris.bi.derived_laws_later\nFetching opaque proofs from disk for stdpp.decidable\nFetching opaque proofs from disk for iris.proofmode.class_instances\nFetching opaque proofs from disk for iris.proofmode.coq_tactics\nFetching opaque proofs from disk for iris.proofmode.environments\nFetching opaque proofs from disk for iris.proofmode.base\nFetching opaque proofs from disk for iris.algebra.monoid\nFetching opaque proofs from disk for iris.bi.big_op\nFetching opaque proofs from disk for iris.proofmode.class_instances_updates\nFetching opaque proofs from disk for iris.proofmode.modalities\nFetching opaque proofs from disk for iris.proofmode.class_instances_frame\nFetching opaque proofs from disk for iris.proofmode.class_instances_make\nFetching opaque proofs from disk for iris.proofmode.modality_instances\nFetching opaque proofs from disk for iris.proofmode.class_instances_later\nFetching opaque proofs from disk for stdpp.nat_cancel\nFetching opaque proofs from disk for iris.base_logic.lib.wsat\nFetching opaque proofs from disk for iris.algebra.functions\nFetching opaque proofs from disk for iris.base_logic.proofmode\nFetching opaque proofs from disk for iris.base_logic.derived\nFetching opaque proofs from disk for iris.base_logic.lib.iprop\nFetching opaque proofs from disk for iris.base_logic.algebra\nFetching opaque proofs from disk for Coq.ZArith.Zwf\nFetching opaque proofs from disk for ZesuSsz.Compliance.DecodeItemReturnExitResources\nFetching opaque proofs from disk for ZesuSsz.Compliance.DecodeItemPathAgreement\nFetching opaque proofs from disk for Coq.omega.PreOmega\nClosed under the global context"
+          ]
+        ],
+        "proof_tactics": [
+          "unfold decodeItemEntryAt800d698c, decodeItemReturnEntryCore.",
+          "iIntros \"(Hcore & %Hfacts)\".",
+          "iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".",
+          "iPureIntro.",
+          "intros after Himage.",
+          "destruct Hfacts as (Hhead & Hprefix & Hpointer & Hlength & Hconsumed & Haccepted & _).",
+          "destruct isLiteral; simpl in *.",
+          "{",
+          "exact (decodeItemLiteralPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage).",
+          "}",
+          "{",
+          "eapply (decodeItemShortStringPostMeaning args after (bv_unsigned prefix - 128));\n      try eassumption; try exact (proj2 (proj1 Hcore)); unfold word64Modulus; lia.",
+          "}",
+          "Qed.",
+          "Print Assumptions decodeItemReturn698cMeaning."
+        ],
+        "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+      },
+      "closure": {
+        "normal_transport": true,
+        "owner": {
+          "success": true,
+          "pid": 1693351,
+          "start_ticks": 169019884
+        },
+        "pet": {
+          "pid": 1693513,
+          "start_ticks": 169019991
+        },
+        "server_exited": true,
+        "owned_Pet_absent": true
+      },
+      "raw_record": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp004/RESULT.json"
+    },
+    {
+      "name": "decodeItemReturn69b0Meaning",
+      "source": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Compliance/DecodeItemExitMeanings.v",
+      "source_sha256": "71f6003cc18303eb3daf2e37952e9608cbbc16d4fe30cefd8b498ad630309386",
+      "statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nRequire Import EvmSailRlp.evm_rlp_types.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Contracts.DecodeItemReturnFacts.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFold.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemSchema.\nRequire Import ZesuSsz.Compliance.DecodeItemReturnExitResources.\nFrom Coq Require Import ZArith Lia.\nOpen Scope Z_scope.\n\nLemma decodeItemReturn698cMeaning `{!islaG Sigma} `{!threadG}\n    args locals pointerBytes lengthBytes prefix rest isLiteral :\n  decodeItemEntryAt800d698c args locals pointerBytes lengthBytes prefix rest isLiteral \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess false (if isLiteral then 0 else 1) (if isLiteral then 1 else bv_unsigned prefix - 128)) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d698c, decodeItemReturnEntryCore.\n  iIntros \"(Hcore & %Hfacts)\".\n  iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".\n  iPureIntro.\n  intros after Himage.\n  destruct Hfacts as (Hhead & Hprefix & Hpointer & Hlength & Hconsumed & Haccepted & _).\n  destruct isLiteral; simpl in *.\n  { exact (decodeItemLiteralPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage). }\n  { eapply (decodeItemShortStringPostMeaning args after (bv_unsigned prefix - 128));\n      try eassumption; try exact (proj2 (proj1 Hcore)); unfold word64Modulus; lia. }\nQed.\n\nPrint Assumptions decodeItemReturn698cMeaning.\n\nLemma decodeItemReturn69b0Meaning `{!islaG Sigma} `{!threadG}\n    args locals prefix rest :\n  decodeItemEntryAt800d69b0 args locals prefix rest \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess false 1 0) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\n",
+      "statement_sha256": "61db578c79f05100b097dbb9b0c57e47a5649cca1ab5664423f63760653bdfd3",
+      "actual_groups": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "Qed": {
+        "tool": "rocq_check",
+        "arguments": {
+          "from_state": 8,
+          "body": "Qed.",
+          "timeout": 7200
+        },
+        "request_UTC": "2026-10-14T15:14:57.441176+00:00",
+        "raw_response": {
+          "meta": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":1,\"check_time_ms\":66,\"state_id\":9,\"from_state_id\":8,\"feedback\":[[\"Qed.\",\"decodeItemReturn69b0Meaning is defined\"]],\"proof_tactics\":[\"unfold decodeItemEntryAt800d69b0, decodeItemReturnEntryCore.\",\"iIntros \\\"(Hcore & %Hfacts)\\\".\",\"iDestruct \\\"Hcore\\\" as \\\"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\\\".\",\"iPureIntro.\",\"intros after Himage.\",\"destruct Hfacts as (Hhead & Hprefix & Haccepted & _).\",\"exact (decodeItemEmptyStringPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage).\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}",
+              "annotations": null,
+              "meta": null
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "goals": "No goals remaining.",
+            "proof_finished": true,
+            "commands_run": 1,
+            "check_time_ms": 66,
+            "state_id": 9,
+            "from_state_id": 8,
+            "feedback": [
+              [
+                "Qed.",
+                "decodeItemReturn69b0Meaning is defined"
+              ]
+            ],
+            "proof_tactics": [
+              "unfold decodeItemEntryAt800d69b0, decodeItemReturnEntryCore.",
+              "iIntros \"(Hcore & %Hfacts)\".",
+              "iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".",
+              "iPureIntro.",
+              "intros after Himage.",
+              "destruct Hfacts as (Hhead & Hprefix & Haccepted & _).",
+              "exact (decodeItemEmptyStringPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage).",
+              "Qed."
+            ],
+            "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+          },
+          "isError": false
+        },
+        "result": {
+          "success": true,
+          "goals": "No goals remaining.",
+          "proof_finished": true,
+          "commands_run": 1,
+          "check_time_ms": 66,
+          "state_id": 9,
+          "from_state_id": 8,
+          "feedback": [
+            [
+              "Qed.",
+              "decodeItemReturn69b0Meaning is defined"
+            ]
+          ],
+          "proof_tactics": [
+            "unfold decodeItemEntryAt800d69b0, decodeItemReturnEntryCore.",
+            "iIntros \"(Hcore & %Hfacts)\".",
+            "iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".",
+            "iPureIntro.",
+            "intros after Himage.",
+            "destruct Hfacts as (Hhead & Hprefix & Haccepted & _).",
+            "exact (decodeItemEmptyStringPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage).",
+            "Qed."
+          ],
+          "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+        },
+        "wall_seconds": 0.07030255603604019
+      },
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "Print_Assumptions": {
+        "success": true,
+        "goals": "No goals remaining.",
+        "proof_finished": true,
+        "commands_run": 1,
+        "check_time_ms": 484,
+        "state_id": 10,
+        "from_state_id": 9,
+        "feedback": [
+          [
+            "Print Assumptions decodeItemReturn69b0Meaning.",
+            "Closed under the global context"
+          ]
+        ],
+        "proof_tactics": [
+          "unfold decodeItemEntryAt800d69b0, decodeItemReturnEntryCore.",
+          "iIntros \"(Hcore & %Hfacts)\".",
+          "iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".",
+          "iPureIntro.",
+          "intros after Himage.",
+          "destruct Hfacts as (Hhead & Hprefix & Haccepted & _).",
+          "exact (decodeItemEmptyStringPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage).",
+          "Qed.",
+          "Print Assumptions decodeItemReturn69b0Meaning."
+        ],
+        "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+      },
+      "closure": {
+        "normal_transport": true,
+        "owner": {
+          "success": true,
+          "pid": 1694262,
+          "start_ticks": 169021392
+        },
+        "pet": {
+          "pid": 1694441,
+          "start_ticks": 169021597
+        },
+        "server_exited": true,
+        "owned_Pet_absent": true
+      },
+      "raw_record": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp004/RESULT.json"
+    },
+    {
+      "name": "decodeItemReturn6a40Meaning",
+      "source": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Compliance/DecodeItemExitMeanings.v",
+      "source_sha256": "71f6003cc18303eb3daf2e37952e9608cbbc16d4fe30cefd8b498ad630309386",
+      "statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nRequire Import EvmSailRlp.evm_rlp_types.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Contracts.DecodeItemReturnFacts.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFold.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemSchema.\nRequire Import ZesuSsz.Compliance.DecodeItemReturnExitResources.\nFrom Coq Require Import ZArith Lia.\nOpen Scope Z_scope.\n\nLemma decodeItemReturn698cMeaning `{!islaG Sigma} `{!threadG}\n    args locals pointerBytes lengthBytes prefix rest isLiteral :\n  decodeItemEntryAt800d698c args locals pointerBytes lengthBytes prefix rest isLiteral \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess false (if isLiteral then 0 else 1) (if isLiteral then 1 else bv_unsigned prefix - 128)) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d698c, decodeItemReturnEntryCore.\n  iIntros \"(Hcore & %Hfacts)\".\n  iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".\n  iPureIntro.\n  intros after Himage.\n  destruct Hfacts as (Hhead & Hprefix & Hpointer & Hlength & Hconsumed & Haccepted & _).\n  destruct isLiteral; simpl in *.\n  { exact (decodeItemLiteralPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage). }\n  { eapply (decodeItemShortStringPostMeaning args after (bv_unsigned prefix - 128));\n      try eassumption; try exact (proj2 (proj1 Hcore)); unfold word64Modulus; lia. }\nQed.\n\nPrint Assumptions decodeItemReturn698cMeaning.\n\nLemma decodeItemReturn69b0Meaning `{!islaG Sigma} `{!threadG}\n    args locals prefix rest :\n  decodeItemEntryAt800d69b0 args locals prefix rest \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess false 1 0) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d69b0, decodeItemReturnEntryCore.\n  iIntros \"(Hcore & %Hfacts)\".\n  iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".\n  iPureIntro.\n  intros after Himage. destruct Hfacts as (Hhead & Hprefix & Haccepted & _).\n  exact (decodeItemEmptyStringPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage).\nQed.\n\nPrint Assumptions decodeItemReturn69b0Meaning.\n\nLemma decodeItemReturn6a40Meaning `{!islaG Sigma} `{!threadG}\n    args locals prefix rest headerLength payloadLength :\n  decodeItemEntryAt800d6a40 args locals prefix rest headerLength payloadLength \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess false headerLength payloadLength) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\n",
+      "statement_sha256": "9a84b564bae9d9cda62303feee234eb113ef5e58bced528df8d898bfe9f8737b",
+      "actual_groups": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "Qed": {
+        "tool": "rocq_check",
+        "arguments": {
+          "from_state": 8,
+          "body": "Qed.",
+          "timeout": 7200
+        },
+        "request_UTC": "2026-10-14T15:15:10.793503+00:00",
+        "raw_response": {
+          "meta": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":1,\"check_time_ms\":80,\"state_id\":9,\"from_state_id\":8,\"feedback\":[[\"Qed.\",\"decodeItemReturn6a40Meaning is defined\"]],\"proof_tactics\":[\"unfold decodeItemEntryAt800d6a40, decodeItemReturnEntryCore.\",\"iIntros \\\"(Hcore & %Hfacts)\\\".\",\"iDestruct \\\"Hcore\\\" as \\\"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\\\".\",\"iPureIntro.\",\"intros after Himage.\",\"destruct Hfacts as (Hhead & Hprefix & Hheader & Hpayload & Hnonnegative &\\n    Hpointer & Hvalue & Hconsumed & Haccepted & _).\",\"eapply (decodeItemLongStringPostMeaning args after headerLength payloadLength);\\n    try eassumption; try exact (proj2 (proj1 Hcore)); lia.\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}",
+              "annotations": null,
+              "meta": null
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "goals": "No goals remaining.",
+            "proof_finished": true,
+            "commands_run": 1,
+            "check_time_ms": 80,
+            "state_id": 9,
+            "from_state_id": 8,
+            "feedback": [
+              [
+                "Qed.",
+                "decodeItemReturn6a40Meaning is defined"
+              ]
+            ],
+            "proof_tactics": [
+              "unfold decodeItemEntryAt800d6a40, decodeItemReturnEntryCore.",
+              "iIntros \"(Hcore & %Hfacts)\".",
+              "iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".",
+              "iPureIntro.",
+              "intros after Himage.",
+              "destruct Hfacts as (Hhead & Hprefix & Hheader & Hpayload & Hnonnegative &\n    Hpointer & Hvalue & Hconsumed & Haccepted & _).",
+              "eapply (decodeItemLongStringPostMeaning args after headerLength payloadLength);\n    try eassumption; try exact (proj2 (proj1 Hcore)); lia.",
+              "Qed."
+            ],
+            "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+          },
+          "isError": false
+        },
+        "result": {
+          "success": true,
+          "goals": "No goals remaining.",
+          "proof_finished": true,
+          "commands_run": 1,
+          "check_time_ms": 80,
+          "state_id": 9,
+          "from_state_id": 8,
+          "feedback": [
+            [
+              "Qed.",
+              "decodeItemReturn6a40Meaning is defined"
+            ]
+          ],
+          "proof_tactics": [
+            "unfold decodeItemEntryAt800d6a40, decodeItemReturnEntryCore.",
+            "iIntros \"(Hcore & %Hfacts)\".",
+            "iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".",
+            "iPureIntro.",
+            "intros after Himage.",
+            "destruct Hfacts as (Hhead & Hprefix & Hheader & Hpayload & Hnonnegative &\n    Hpointer & Hvalue & Hconsumed & Haccepted & _).",
+            "eapply (decodeItemLongStringPostMeaning args after headerLength payloadLength);\n    try eassumption; try exact (proj2 (proj1 Hcore)); lia.",
+            "Qed."
+          ],
+          "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+        },
+        "wall_seconds": 0.08398984605446458
+      },
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "Print_Assumptions": {
+        "success": true,
+        "goals": "No goals remaining.",
+        "proof_finished": true,
+        "commands_run": 1,
+        "check_time_ms": 480,
+        "state_id": 10,
+        "from_state_id": 9,
+        "feedback": [
+          [
+            "Print Assumptions decodeItemReturn6a40Meaning.",
+            "Closed under the global context"
+          ]
+        ],
+        "proof_tactics": [
+          "unfold decodeItemEntryAt800d6a40, decodeItemReturnEntryCore.",
+          "iIntros \"(Hcore & %Hfacts)\".",
+          "iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".",
+          "iPureIntro.",
+          "intros after Himage.",
+          "destruct Hfacts as (Hhead & Hprefix & Hheader & Hpayload & Hnonnegative &\n    Hpointer & Hvalue & Hconsumed & Haccepted & _).",
+          "eapply (decodeItemLongStringPostMeaning args after headerLength payloadLength);\n    try eassumption; try exact (proj2 (proj1 Hcore)); lia.",
+          "Qed.",
+          "Print Assumptions decodeItemReturn6a40Meaning."
+        ],
+        "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+      },
+      "closure": {
+        "normal_transport": true,
+        "owner": {
+          "success": true,
+          "pid": 1694920,
+          "start_ticks": 169022724
+        },
+        "pet": {
+          "pid": 1695103,
+          "start_ticks": 169022927
+        },
+        "server_exited": true,
+        "owned_Pet_absent": true
+      },
+      "raw_record": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp004/RESULT.json"
+    },
+    {
+      "name": "decodeItemReturn6a78Meaning",
+      "source": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Compliance/DecodeItemExitMeanings.v",
+      "source_sha256": "71f6003cc18303eb3daf2e37952e9608cbbc16d4fe30cefd8b498ad630309386",
+      "statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nRequire Import EvmSailRlp.evm_rlp_types.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Contracts.DecodeItemReturnFacts.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFold.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemSchema.\nRequire Import ZesuSsz.Compliance.DecodeItemReturnExitResources.\nFrom Coq Require Import ZArith Lia.\nOpen Scope Z_scope.\n\nLemma decodeItemReturn698cMeaning `{!islaG Sigma} `{!threadG}\n    args locals pointerBytes lengthBytes prefix rest isLiteral :\n  decodeItemEntryAt800d698c args locals pointerBytes lengthBytes prefix rest isLiteral \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess false (if isLiteral then 0 else 1) (if isLiteral then 1 else bv_unsigned prefix - 128)) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d698c, decodeItemReturnEntryCore.\n  iIntros \"(Hcore & %Hfacts)\".\n  iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".\n  iPureIntro.\n  intros after Himage.\n  destruct Hfacts as (Hhead & Hprefix & Hpointer & Hlength & Hconsumed & Haccepted & _).\n  destruct isLiteral; simpl in *.\n  { exact (decodeItemLiteralPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage). }\n  { eapply (decodeItemShortStringPostMeaning args after (bv_unsigned prefix - 128));\n      try eassumption; try exact (proj2 (proj1 Hcore)); unfold word64Modulus; lia. }\nQed.\n\nPrint Assumptions decodeItemReturn698cMeaning.\n\nLemma decodeItemReturn69b0Meaning `{!islaG Sigma} `{!threadG}\n    args locals prefix rest :\n  decodeItemEntryAt800d69b0 args locals prefix rest \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess false 1 0) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d69b0, decodeItemReturnEntryCore.\n  iIntros \"(Hcore & %Hfacts)\".\n  iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".\n  iPureIntro.\n  intros after Himage. destruct Hfacts as (Hhead & Hprefix & Haccepted & _).\n  exact (decodeItemEmptyStringPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage).\nQed.\n\nPrint Assumptions decodeItemReturn69b0Meaning.\n\nLemma decodeItemReturn6a40Meaning `{!islaG Sigma} `{!threadG}\n    args locals prefix rest headerLength payloadLength :\n  decodeItemEntryAt800d6a40 args locals prefix rest headerLength payloadLength \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess false headerLength payloadLength) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d6a40, decodeItemReturnEntryCore.\n  iIntros \"(Hcore & %Hfacts)\".\n  iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".\n  iPureIntro.\n  intros after Himage.\n  destruct Hfacts as (Hhead & Hprefix & Hheader & Hpayload & Hnonnegative &\n    Hpointer & Hvalue & Hconsumed & Haccepted & _).\n  eapply (decodeItemLongStringPostMeaning args after headerLength payloadLength);\n    try eassumption; try exact (proj2 (proj1 Hcore)); lia.\nQed.\n\nPrint Assumptions decodeItemReturn6a40Meaning.\n\nLemma decodeItemReturn6a78Meaning `{!islaG Sigma} `{!threadG}\n    args locals prefix rest :\n  decodeItemEntryAt800d6a78 args locals prefix rest \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess true 1 (bv_unsigned prefix - 192)) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\n",
+      "statement_sha256": "3e71b285f2307d26626f663d2e12ba85206c1c55a408284cfb9f39ea687cdfc0",
+      "actual_groups": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "Qed": {
+        "tool": "rocq_check",
+        "arguments": {
+          "from_state": 8,
+          "body": "Qed.",
+          "timeout": 7200
+        },
+        "request_UTC": "2026-10-14T15:15:25.238675+00:00",
+        "raw_response": {
+          "meta": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":1,\"check_time_ms\":64,\"state_id\":9,\"from_state_id\":8,\"feedback\":[[\"Qed.\",\"decodeItemReturn6a78Meaning is defined\"]],\"proof_tactics\":[\"unfold decodeItemEntryAt800d6a78, decodeItemReturnEntryCore.\",\"iIntros \\\"(Hcore & %Hfacts)\\\".\",\"iDestruct \\\"Hcore\\\" as \\\"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\\\".\",\"iPureIntro.\",\"intros after Himage.\",\"destruct Hfacts as (Hhead & Hprefix & Hpointer & Hpayload & Haccepted & _).\",\"eapply (decodeItemShortListPostMeaning args after (bv_unsigned prefix - 192));\\n    try eassumption; try exact (proj2 (proj1 Hcore)); unfold word64Modulus; lia.\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}",
+              "annotations": null,
+              "meta": null
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "goals": "No goals remaining.",
+            "proof_finished": true,
+            "commands_run": 1,
+            "check_time_ms": 64,
+            "state_id": 9,
+            "from_state_id": 8,
+            "feedback": [
+              [
+                "Qed.",
+                "decodeItemReturn6a78Meaning is defined"
+              ]
+            ],
+            "proof_tactics": [
+              "unfold decodeItemEntryAt800d6a78, decodeItemReturnEntryCore.",
+              "iIntros \"(Hcore & %Hfacts)\".",
+              "iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".",
+              "iPureIntro.",
+              "intros after Himage.",
+              "destruct Hfacts as (Hhead & Hprefix & Hpointer & Hpayload & Haccepted & _).",
+              "eapply (decodeItemShortListPostMeaning args after (bv_unsigned prefix - 192));\n    try eassumption; try exact (proj2 (proj1 Hcore)); unfold word64Modulus; lia.",
+              "Qed."
+            ],
+            "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+          },
+          "isError": false
+        },
+        "result": {
+          "success": true,
+          "goals": "No goals remaining.",
+          "proof_finished": true,
+          "commands_run": 1,
+          "check_time_ms": 64,
+          "state_id": 9,
+          "from_state_id": 8,
+          "feedback": [
+            [
+              "Qed.",
+              "decodeItemReturn6a78Meaning is defined"
+            ]
+          ],
+          "proof_tactics": [
+            "unfold decodeItemEntryAt800d6a78, decodeItemReturnEntryCore.",
+            "iIntros \"(Hcore & %Hfacts)\".",
+            "iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".",
+            "iPureIntro.",
+            "intros after Himage.",
+            "destruct Hfacts as (Hhead & Hprefix & Hpointer & Hpayload & Haccepted & _).",
+            "eapply (decodeItemShortListPostMeaning args after (bv_unsigned prefix - 192));\n    try eassumption; try exact (proj2 (proj1 Hcore)); unfold word64Modulus; lia.",
+            "Qed."
+          ],
+          "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+        },
+        "wall_seconds": 0.06800615391694009
+      },
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "Print_Assumptions": {
+        "success": true,
+        "goals": "No goals remaining.",
+        "proof_finished": true,
+        "commands_run": 1,
+        "check_time_ms": 476,
+        "state_id": 10,
+        "from_state_id": 9,
+        "feedback": [
+          [
+            "Print Assumptions decodeItemReturn6a78Meaning.",
+            "Closed under the global context"
+          ]
+        ],
+        "proof_tactics": [
+          "unfold decodeItemEntryAt800d6a78, decodeItemReturnEntryCore.",
+          "iIntros \"(Hcore & %Hfacts)\".",
+          "iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".",
+          "iPureIntro.",
+          "intros after Himage.",
+          "destruct Hfacts as (Hhead & Hprefix & Hpointer & Hpayload & Haccepted & _).",
+          "eapply (decodeItemShortListPostMeaning args after (bv_unsigned prefix - 192));\n    try eassumption; try exact (proj2 (proj1 Hcore)); unfold word64Modulus; lia.",
+          "Qed.",
+          "Print Assumptions decodeItemReturn6a78Meaning."
+        ],
+        "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+      },
+      "closure": {
+        "normal_transport": true,
+        "owner": {
+          "success": true,
+          "pid": 1695762,
+          "start_ticks": 169024035
+        },
+        "pet": {
+          "pid": 1695973,
+          "start_ticks": 169024241
+        },
+        "server_exited": true,
+        "owned_Pet_absent": true
+      },
+      "raw_record": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp004/RESULT.json"
+    },
+    {
+      "name": "decodeItemReturn6ae0Meaning",
+      "source": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Compliance/DecodeItemExitMeanings.v",
+      "source_sha256": "71f6003cc18303eb3daf2e37952e9608cbbc16d4fe30cefd8b498ad630309386",
+      "statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nRequire Import EvmSailRlp.evm_rlp_types.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Contracts.DecodeItemReturnFacts.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFold.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemSchema.\nRequire Import ZesuSsz.Compliance.DecodeItemReturnExitResources.\nFrom Coq Require Import ZArith Lia.\nOpen Scope Z_scope.\n\nLemma decodeItemReturn698cMeaning `{!islaG Sigma} `{!threadG}\n    args locals pointerBytes lengthBytes prefix rest isLiteral :\n  decodeItemEntryAt800d698c args locals pointerBytes lengthBytes prefix rest isLiteral \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess false (if isLiteral then 0 else 1) (if isLiteral then 1 else bv_unsigned prefix - 128)) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d698c, decodeItemReturnEntryCore.\n  iIntros \"(Hcore & %Hfacts)\".\n  iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".\n  iPureIntro.\n  intros after Himage.\n  destruct Hfacts as (Hhead & Hprefix & Hpointer & Hlength & Hconsumed & Haccepted & _).\n  destruct isLiteral; simpl in *.\n  { exact (decodeItemLiteralPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage). }\n  { eapply (decodeItemShortStringPostMeaning args after (bv_unsigned prefix - 128));\n      try eassumption; try exact (proj2 (proj1 Hcore)); unfold word64Modulus; lia. }\nQed.\n\nPrint Assumptions decodeItemReturn698cMeaning.\n\nLemma decodeItemReturn69b0Meaning `{!islaG Sigma} `{!threadG}\n    args locals prefix rest :\n  decodeItemEntryAt800d69b0 args locals prefix rest \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess false 1 0) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d69b0, decodeItemReturnEntryCore.\n  iIntros \"(Hcore & %Hfacts)\".\n  iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".\n  iPureIntro.\n  intros after Himage. destruct Hfacts as (Hhead & Hprefix & Haccepted & _).\n  exact (decodeItemEmptyStringPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage).\nQed.\n\nPrint Assumptions decodeItemReturn69b0Meaning.\n\nLemma decodeItemReturn6a40Meaning `{!islaG Sigma} `{!threadG}\n    args locals prefix rest headerLength payloadLength :\n  decodeItemEntryAt800d6a40 args locals prefix rest headerLength payloadLength \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess false headerLength payloadLength) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d6a40, decodeItemReturnEntryCore.\n  iIntros \"(Hcore & %Hfacts)\".\n  iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".\n  iPureIntro.\n  intros after Himage.\n  destruct Hfacts as (Hhead & Hprefix & Hheader & Hpayload & Hnonnegative &\n    Hpointer & Hvalue & Hconsumed & Haccepted & _).\n  eapply (decodeItemLongStringPostMeaning args after headerLength payloadLength);\n    try eassumption; try exact (proj2 (proj1 Hcore)); lia.\nQed.\n\nPrint Assumptions decodeItemReturn6a40Meaning.\n\nLemma decodeItemReturn6a78Meaning `{!islaG Sigma} `{!threadG}\n    args locals prefix rest :\n  decodeItemEntryAt800d6a78 args locals prefix rest \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess true 1 (bv_unsigned prefix - 192)) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d6a78, decodeItemReturnEntryCore.\n  iIntros \"(Hcore & %Hfacts)\".\n  iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".\n  iPureIntro.\n  intros after Himage.\n  destruct Hfacts as (Hhead & Hprefix & Hpointer & Hpayload & Haccepted & _).\n  eapply (decodeItemShortListPostMeaning args after (bv_unsigned prefix - 192));\n    try eassumption; try exact (proj2 (proj1 Hcore)); unfold word64Modulus; lia.\nQed.\n\nPrint Assumptions decodeItemReturn6a78Meaning.\n\nLemma decodeItemReturn6ae0Meaning `{!islaG Sigma} `{!threadG}\n    args locals  :\n  decodeItemEntryAt800d6ae0 args locals \u22a2\n  \u231c(forall after, errorResult40 after ->\n    encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateError) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\n",
+      "statement_sha256": "b2a68cec1531da447d76d5473594209674cbfc67bb0f62c821592da604331718",
+      "actual_groups": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "Qed": {
+        "tool": "rocq_check",
+        "arguments": {
+          "from_state": 8,
+          "body": "Qed.",
+          "timeout": 7200
+        },
+        "request_UTC": "2026-10-14T15:15:41.659354+00:00",
+        "raw_response": {
+          "meta": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":1,\"check_time_ms\":70,\"state_id\":9,\"from_state_id\":8,\"feedback\":[[\"Qed.\",\"decodeItemReturn6ae0Meaning is defined\"]],\"proof_tactics\":[\"unfold decodeItemEntryAt800d6ae0, decodeItemReturnEntryCore.\",\"iIntros \\\"(Hcore & %Hfacts)\\\".\",\"iDestruct \\\"Hcore\\\" as \\\"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\\\".\",\"iPureIntro.\",\"intros after Herror Himage.\",\"destruct Hfacts as [Hrejected Hstorage].\",\"exact (decodeItemErrorPostMeaning args after (proj2 (proj1 Hcore)) Hrejected Herror Himage).\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}",
+              "annotations": null,
+              "meta": null
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "goals": "No goals remaining.",
+            "proof_finished": true,
+            "commands_run": 1,
+            "check_time_ms": 70,
+            "state_id": 9,
+            "from_state_id": 8,
+            "feedback": [
+              [
+                "Qed.",
+                "decodeItemReturn6ae0Meaning is defined"
+              ]
+            ],
+            "proof_tactics": [
+              "unfold decodeItemEntryAt800d6ae0, decodeItemReturnEntryCore.",
+              "iIntros \"(Hcore & %Hfacts)\".",
+              "iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".",
+              "iPureIntro.",
+              "intros after Herror Himage.",
+              "destruct Hfacts as [Hrejected Hstorage].",
+              "exact (decodeItemErrorPostMeaning args after (proj2 (proj1 Hcore)) Hrejected Herror Himage).",
+              "Qed."
+            ],
+            "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+          },
+          "isError": false
+        },
+        "result": {
+          "success": true,
+          "goals": "No goals remaining.",
+          "proof_finished": true,
+          "commands_run": 1,
+          "check_time_ms": 70,
+          "state_id": 9,
+          "from_state_id": 8,
+          "feedback": [
+            [
+              "Qed.",
+              "decodeItemReturn6ae0Meaning is defined"
+            ]
+          ],
+          "proof_tactics": [
+            "unfold decodeItemEntryAt800d6ae0, decodeItemReturnEntryCore.",
+            "iIntros \"(Hcore & %Hfacts)\".",
+            "iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".",
+            "iPureIntro.",
+            "intros after Herror Himage.",
+            "destruct Hfacts as [Hrejected Hstorage].",
+            "exact (decodeItemErrorPostMeaning args after (proj2 (proj1 Hcore)) Hrejected Herror Himage).",
+            "Qed."
+          ],
+          "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+        },
+        "wall_seconds": 0.07391397305764258
+      },
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "Print_Assumptions": {
+        "success": true,
+        "goals": "No goals remaining.",
+        "proof_finished": true,
+        "commands_run": 1,
+        "check_time_ms": 430,
+        "state_id": 10,
+        "from_state_id": 9,
+        "feedback": [
+          [
+            "Print Assumptions decodeItemReturn6ae0Meaning.",
+            "Closed under the global context"
+          ]
+        ],
+        "proof_tactics": [
+          "unfold decodeItemEntryAt800d6ae0, decodeItemReturnEntryCore.",
+          "iIntros \"(Hcore & %Hfacts)\".",
+          "iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".",
+          "iPureIntro.",
+          "intros after Herror Himage.",
+          "destruct Hfacts as [Hrejected Hstorage].",
+          "exact (decodeItemErrorPostMeaning args after (proj2 (proj1 Hcore)) Hrejected Herror Himage).",
+          "Qed.",
+          "Print Assumptions decodeItemReturn6ae0Meaning."
+        ],
+        "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+      },
+      "closure": {
+        "normal_transport": true,
+        "owner": {
+          "success": true,
+          "pid": 1696615,
+          "start_ticks": 169025616
+        },
+        "pet": {
+          "pid": 1696811,
+          "start_ticks": 169025826
+        },
+        "server_exited": true,
+        "owned_Pet_absent": true
+      },
+      "raw_record": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp004/RESULT.json"
+    },
+    {
+      "name": "decodeItemReturn6b08Meaning",
+      "source": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Compliance/DecodeItemExitMeanings.v",
+      "source_sha256": "71f6003cc18303eb3daf2e37952e9608cbbc16d4fe30cefd8b498ad630309386",
+      "statement": "Require Import ZesuSsz.Automation.All.\nRequire Import isla.riscv64.riscv64.\nRequire Import EvmSailRlp.evm_rlp_types.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemContract.\nRequire Import ZesuSsz.Contracts.DecodeItemReturnFacts.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFold.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.\nRequire Import ZesuSsz.Contracts.RlpDecodeItemSchema.\nRequire Import ZesuSsz.Compliance.DecodeItemReturnExitResources.\nFrom Coq Require Import ZArith Lia.\nOpen Scope Z_scope.\n\nLemma decodeItemReturn698cMeaning `{!islaG Sigma} `{!threadG}\n    args locals pointerBytes lengthBytes prefix rest isLiteral :\n  decodeItemEntryAt800d698c args locals pointerBytes lengthBytes prefix rest isLiteral \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess false (if isLiteral then 0 else 1) (if isLiteral then 1 else bv_unsigned prefix - 128)) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d698c, decodeItemReturnEntryCore.\n  iIntros \"(Hcore & %Hfacts)\".\n  iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".\n  iPureIntro.\n  intros after Himage.\n  destruct Hfacts as (Hhead & Hprefix & Hpointer & Hlength & Hconsumed & Haccepted & _).\n  destruct isLiteral; simpl in *.\n  { exact (decodeItemLiteralPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage). }\n  { eapply (decodeItemShortStringPostMeaning args after (bv_unsigned prefix - 128));\n      try eassumption; try exact (proj2 (proj1 Hcore)); unfold word64Modulus; lia. }\nQed.\n\nPrint Assumptions decodeItemReturn698cMeaning.\n\nLemma decodeItemReturn69b0Meaning `{!islaG Sigma} `{!threadG}\n    args locals prefix rest :\n  decodeItemEntryAt800d69b0 args locals prefix rest \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess false 1 0) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d69b0, decodeItemReturnEntryCore.\n  iIntros \"(Hcore & %Hfacts)\".\n  iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".\n  iPureIntro.\n  intros after Himage. destruct Hfacts as (Hhead & Hprefix & Haccepted & _).\n  exact (decodeItemEmptyStringPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage).\nQed.\n\nPrint Assumptions decodeItemReturn69b0Meaning.\n\nLemma decodeItemReturn6a40Meaning `{!islaG Sigma} `{!threadG}\n    args locals prefix rest headerLength payloadLength :\n  decodeItemEntryAt800d6a40 args locals prefix rest headerLength payloadLength \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess false headerLength payloadLength) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d6a40, decodeItemReturnEntryCore.\n  iIntros \"(Hcore & %Hfacts)\".\n  iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".\n  iPureIntro.\n  intros after Himage.\n  destruct Hfacts as (Hhead & Hprefix & Hheader & Hpayload & Hnonnegative &\n    Hpointer & Hvalue & Hconsumed & Haccepted & _).\n  eapply (decodeItemLongStringPostMeaning args after headerLength payloadLength);\n    try eassumption; try exact (proj2 (proj1 Hcore)); lia.\nQed.\n\nPrint Assumptions decodeItemReturn6a40Meaning.\n\nLemma decodeItemReturn6a78Meaning `{!islaG Sigma} `{!threadG}\n    args locals prefix rest :\n  decodeItemEntryAt800d6a78 args locals prefix rest \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess true 1 (bv_unsigned prefix - 192)) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d6a78, decodeItemReturnEntryCore.\n  iIntros \"(Hcore & %Hfacts)\".\n  iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".\n  iPureIntro.\n  intros after Himage.\n  destruct Hfacts as (Hhead & Hprefix & Hpointer & Hpayload & Haccepted & _).\n  eapply (decodeItemShortListPostMeaning args after (bv_unsigned prefix - 192));\n    try eassumption; try exact (proj2 (proj1 Hcore)); unfold word64Modulus; lia.\nQed.\n\nPrint Assumptions decodeItemReturn6a78Meaning.\n\nLemma decodeItemReturn6ae0Meaning `{!islaG Sigma} `{!threadG}\n    args locals  :\n  decodeItemEntryAt800d6ae0 args locals \u22a2\n  \u231c(forall after, errorResult40 after ->\n    encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateError) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\nProof.\n  unfold decodeItemEntryAt800d6ae0, decodeItemReturnEntryCore.\n  iIntros \"(Hcore & %Hfacts)\".\n  iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".\n  iPureIntro.\n  intros after Herror Himage. destruct Hfacts as [Hrejected Hstorage].\n  exact (decodeItemErrorPostMeaning args after (proj2 (proj1 Hcore)) Hrejected Herror Himage).\nQed.\n\nPrint Assumptions decodeItemReturn6ae0Meaning.\n\nLemma decodeItemReturn6b08Meaning `{!islaG Sigma} `{!threadG}\n    args locals prefix rest headerLength payloadLength :\n  decodeItemEntryAt800d6b08 args locals prefix rest headerLength payloadLength \u22a2\n  \u231c(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)\n      (decodeItemBeforeStorage args) after (candidateSuccess true headerLength payloadLength) ->\n    DecodeMeaningModuloKnownBugs args after)%Z\u231d.\n",
+      "statement_sha256": "884b83353783fbdb7288dd975ccfbd6be68bf8efecdbac32b50c7841e448d337",
+      "actual_groups": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "Qed": {
+        "tool": "rocq_check",
+        "arguments": {
+          "from_state": 8,
+          "body": "Qed.",
+          "timeout": 7200
+        },
+        "request_UTC": "2026-10-14T15:15:58.280233+00:00",
+        "raw_response": {
+          "meta": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"success\":true,\"goals\":\"No goals remaining.\",\"proof_finished\":true,\"commands_run\":1,\"check_time_ms\":75,\"state_id\":9,\"from_state_id\":8,\"feedback\":[[\"Qed.\",\"decodeItemReturn6b08Meaning is defined\"]],\"proof_tactics\":[\"unfold decodeItemEntryAt800d6b08, decodeItemReturnEntryCore.\",\"iIntros \\\"(Hcore & %Hfacts)\\\".\",\"iDestruct \\\"Hcore\\\" as \\\"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\\\".\",\"iPureIntro.\",\"intros after Himage.\",\"destruct Hfacts as (Hhead & Hprefix & Hheader & Hpayload & Hnonnegative &\\n    Hpointer & Hvalue & Hconsumed & Haccepted & _).\",\"eapply (decodeItemLongListPostMeaning args after headerLength payloadLength);\\n    try eassumption; try exact (proj2 (proj1 Hcore)); lia.\",\"Qed.\"],\"proof_hint\":\"Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify.\"}",
+              "annotations": null,
+              "meta": null
+            }
+          ],
+          "structuredContent": {
+            "success": true,
+            "goals": "No goals remaining.",
+            "proof_finished": true,
+            "commands_run": 1,
+            "check_time_ms": 75,
+            "state_id": 9,
+            "from_state_id": 8,
+            "feedback": [
+              [
+                "Qed.",
+                "decodeItemReturn6b08Meaning is defined"
+              ]
+            ],
+            "proof_tactics": [
+              "unfold decodeItemEntryAt800d6b08, decodeItemReturnEntryCore.",
+              "iIntros \"(Hcore & %Hfacts)\".",
+              "iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".",
+              "iPureIntro.",
+              "intros after Himage.",
+              "destruct Hfacts as (Hhead & Hprefix & Hheader & Hpayload & Hnonnegative &\n    Hpointer & Hvalue & Hconsumed & Haccepted & _).",
+              "eapply (decodeItemLongListPostMeaning args after headerLength payloadLength);\n    try eassumption; try exact (proj2 (proj1 Hcore)); lia.",
+              "Qed."
+            ],
+            "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+          },
+          "isError": false
+        },
+        "result": {
+          "success": true,
+          "goals": "No goals remaining.",
+          "proof_finished": true,
+          "commands_run": 1,
+          "check_time_ms": 75,
+          "state_id": 9,
+          "from_state_id": 8,
+          "feedback": [
+            [
+              "Qed.",
+              "decodeItemReturn6b08Meaning is defined"
+            ]
+          ],
+          "proof_tactics": [
+            "unfold decodeItemEntryAt800d6b08, decodeItemReturnEntryCore.",
+            "iIntros \"(Hcore & %Hfacts)\".",
+            "iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".",
+            "iPureIntro.",
+            "intros after Himage.",
+            "destruct Hfacts as (Hhead & Hprefix & Hheader & Hpayload & Hnonnegative &\n    Hpointer & Hvalue & Hconsumed & Haccepted & _).",
+            "eapply (decodeItemLongListPostMeaning args after headerLength payloadLength);\n    try eassumption; try exact (proj2 (proj1 Hcore)); lia.",
+            "Qed."
+          ],
+          "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+        },
+        "wall_seconds": 0.07879703887738287
+      },
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "Print_Assumptions": {
+        "success": true,
+        "goals": "No goals remaining.",
+        "proof_finished": true,
+        "commands_run": 1,
+        "check_time_ms": 489,
+        "state_id": 10,
+        "from_state_id": 9,
+        "feedback": [
+          [
+            "Print Assumptions decodeItemReturn6b08Meaning.",
+            "Closed under the global context"
+          ]
+        ],
+        "proof_tactics": [
+          "unfold decodeItemEntryAt800d6b08, decodeItemReturnEntryCore.",
+          "iIntros \"(Hcore & %Hfacts)\".",
+          "iDestruct \"Hcore\" as \"(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)\".",
+          "iPureIntro.",
+          "intros after Himage.",
+          "destruct Hfacts as (Hhead & Hprefix & Hheader & Hpayload & Hnonnegative &\n    Hpointer & Hvalue & Hconsumed & Haccepted & _).",
+          "eapply (decodeItemLongListPostMeaning args after headerLength payloadLength);\n    try eassumption; try exact (proj2 (proj1 Hcore)); lia.",
+          "Qed.",
+          "Print Assumptions decodeItemReturn6b08Meaning."
+        ],
+        "proof_hint": "Proof complete! Assemble imports + theorem statement + Proof. + tactics + Qed. then validate with rocq_compile and rocq_verify."
+      },
+      "closure": {
+        "normal_transport": true,
+        "owner": {
+          "success": true,
+          "pid": 1697557,
+          "start_ticks": 169027220
+        },
+        "pet": {
+          "pid": 1697749,
+          "start_ticks": 169027428
+        },
+        "server_exited": true,
+        "owned_Pet_absent": true
+      },
+      "raw_record": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp004/RESULT.json"
+    }
+  ],
+  "count": 12,
+  "bindings": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp002/RESULT.json",
+      "sha256": "f909be50015347d896dc8bc14bd2816952cf8131a564b07fb68aef32282105db"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp002/exports/state_10.json",
+      "sha256": "a64cd08ba25b75e26cbed775c005a9565f976fdb28845c07adda969be4d56944"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp002/exports/state_11.json",
+      "sha256": "a64cd08ba25b75e26cbed775c005a9565f976fdb28845c07adda969be4d56944"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp002/exports/state_7.json",
+      "sha256": "a64cd08ba25b75e26cbed775c005a9565f976fdb28845c07adda969be4d56944"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp004/RESULT.json",
+      "sha256": "88a051dc5b0b0e396f933410cb05e948d955941d8b2b7918880d6d2d468c96f5"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp004/exports/state_14.json",
+      "sha256": "a64cd08ba25b75e26cbed775c005a9565f976fdb28845c07adda969be4d56944"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp004/exports/state_8.json",
+      "sha256": "a64cd08ba25b75e26cbed775c005a9565f976fdb28845c07adda969be4d56944"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Compliance/DecodeItemEntryIntroductions.v",
+      "sha256": "362346c3336d89bc99d0920a322b996f3f56ddc64b4a1f5cebd6f5d44741690f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-checkpoint001/DecodeItemEntryIntroductions.vo",
+      "sha256": "8e2877745e0f04525eb278cf9147563a86fbd3c9e825c44c3d925d661fe911e9"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Compliance/DecodeItemLoopSteps.v",
+      "sha256": "09912655439bed42bdcb76911847650e8d28dbd83407e99619e2e4e26ffad6ae"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-checkpoint001/DecodeItemLoopSteps.vo",
+      "sha256": "bc78f3be7dad99c9937feb8970053239a5a99d1cf482c4a0aa57af167807181e"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Compliance/DecodeItemExitMeanings.v",
+      "sha256": "71f6003cc18303eb3daf2e37952e9608cbbc16d4fe30cefd8b498ad630309386"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-checkpoint001/DecodeItemExitMeanings.vo",
+      "sha256": "a683b4217a6b1f12443325c3e8a00038a68ed1b63bfdb86247416d3134a8916d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-entry-deps001/BUILD.json",
+      "sha256": "15b3ff05af73420257d58744a605e463a2e5ff8ee498dd07d097c8a9d0c44e2c"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-entry-deps002/BUILD.json",
+      "sha256": "ae7ed4fa873a52f96249d69deb7071d369a76286270326ff6cfadd95d2a11d50"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-entry-deps003/BUILD.json",
+      "sha256": "ea908dd22648c03e6f16bf0c04e8b8f47adbdc629a3091b12d68261005ceb7d9"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-deps004/BUILD.json",
+      "sha256": "1d678ecdebf31d21e4c1a87a0d7687891173cff117a578fa6f2dce2d03fddd63"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp001/RESULT.json",
+      "sha256": "8779a5f88981eaf530b77846ae0cd08a908f92ab8898a6294b09e8f8b95aff7f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp003/RESULT.json",
+      "sha256": "c93ccebc691070f30e1de2bd587f51241d918db8846e580c13c7cb9b1ffe841b"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-entry-deps003/DECODEITEM-GENERATED-INPUTS.json",
+      "sha256": "0c1ac386afb5425dff32e3b91a6ebd2901ecdbd1cb52fd11e5093b7c83dd13e2"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-mcp002/SOURCE-CORRECTION.json",
+      "sha256": "b441a33f6cf5f84129b2787ce7fa318d01b28606ca98f7b69cba86923bc17d4a"
+    }
+  ],
+  "limitations": [
+    "These are plain data-only entailment lemmas. No class registration is present.",
+    "Header introductions do not add the later read-fit guard.",
+    "Completed-fold acceptance remains conditional on the existing fit test.",
+    "Loop steps remain conditional on i<n and the exact byte lookup.",
+    "Exit meanings remain conditional on a final encodeResult image; the error path also requires errorResult40.",
+    "No machine-step premise, native witness assignment, runtime consumption, or block closure follows."
+  ],
+  "preserved_failures": [
+    "deps001: missing private build parent",
+    "deps002: absent generated stock theory",
+    "mcp001: arithmetic scope in declaration",
+    "mcp002 exit case: missing encodeResult import; preceding six certificates passed",
+    "mcp003: solved goals but an empty focus frame remained; no Qed ran"
+  ],
+  "MCP_primary": "available",
+  "alloc_semantic_inspection": false
+}

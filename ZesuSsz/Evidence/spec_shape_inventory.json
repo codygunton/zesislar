@@ -95,6 +95,9 @@
       "uninferable_existentials": 0,
       "predicates_without_unfold": 0,
       "disjunctive_specs": 0
-    }
+    },
+    "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v": {},
+    "ZesuSsz/Compliance/DecodeItemLoopSteps.v": {},
+    "ZesuSsz/Compliance/DecodeItemExitMeanings.v": {}
   }
 }

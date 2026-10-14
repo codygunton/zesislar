@@ -1,0 +1,62 @@
+{
+  "verification_root": "680b56ada4485e13c6836716e8c36acd9c1bc5d0",
+  "intended_rebase_root": "8f3a7aa2ed2d7ac307a5cd7ba19f579ce1cc81b3",
+  "certificate_count": 12,
+  "accepted_MCP_report_sha256": "891623f4831c8b9d213c091ea067607aedeb2d1b047cd0701fe8fd5ddcbe4f46",
+  "verification": "Twelve interactive proofs, actual four-group closure, advancing Qed, full compilation, exact statement verification with module_m, Print Assumptions, assumptions[], and normal owner closure.",
+  "gate": {
+    "command": [
+      "make",
+      "check-fast",
+      "CHECK_AGENT=spec-b",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/agents/spec-b",
+      "FAST_JOBS=6"
+    ],
+    "root": "680b56ada4485e13c6836716e8c36acd9c1bc5d0",
+    "start_UTC": "2026-10-14T15:20:37.052177+00:00",
+    "elapsed_seconds": 7106.240389571991,
+    "exit": 0,
+    "policy": "Normal gate guard. No diagnostic probe. Root owns Iris."
+  },
+  "gate_elapsed_limit": "Elapsed time includes shared gate admission.",
+  "registrations": "Pending class interfaces. No class instances are active.",
+  "old_modules_removed": [],
+  "limitations": [
+    "These are plain data-only entailment lemmas. No class registration is present.",
+    "Header introductions do not add the later read-fit guard.",
+    "Completed-fold acceptance remains conditional on the existing fit test.",
+    "Loop steps remain conditional on i<n and the exact byte lookup.",
+    "Exit meanings remain conditional on a final encodeResult image; the error path also requires errorResult40.",
+    "No machine-step premise, native witness assignment, runtime consumption, or block closure follows."
+  ],
+  "bindings": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-checkpoint001/REPORT.json",
+      "sha256": "891623f4831c8b9d213c091ea067607aedeb2d1b047cd0701fe8fd5ddcbe4f46"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-fast001/CHECK-FAST.json",
+      "sha256": "bcb3e800cd8aee93623d51026dcd3a18a431068d62c3364926120b4803eb6e55"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-fast001/CHECK-FAST.log",
+      "sha256": "f606fbed55a520f632247c887ef8675bb26fa19fa51ed8c6fc2311211d646f60"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-fast002/CHECK-FAST.json",
+      "sha256": "b1bc2dcdbfd65f7a8392fb4e110a6b9e4bd95b41176a801458100618c171fe3d"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-fast002/GENERATED-SHAPE-ROWS.json",
+      "sha256": "6df90f28de983e1e9bfd2a10ac5f37b94c9f4535ce4b788bc9be62938b59e829"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-data-fast002/generate-shape-rows.py",
+      "sha256": "937267988baaf8cb699133e5fd971d5ea058e7d89bfe8f5162a00428dc4c643a"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Evidence/spec_shape_inventory.json",
+      "sha256": "5b1810a3cb9fd56fe61e10790d922378d78cb412c1fa215ce9364103bef749d3"
+    }
+  ]
+}
