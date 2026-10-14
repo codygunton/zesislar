@@ -1,0 +1,61 @@
+{
+  "item": "R1c conjunct-head candidate",
+  "base": "dad8c896",
+  "source_sha256": {
+    "ZesuSsz/Automation/ConjunctMatch.v": "89a7a56f3ee61836016d401f663ec9ba44465af31cdedbc71d452ffb850a8c7b",
+    "ZesuSsz/Automation/Hooks.v": "7d0503e693961a600590eeacceb7147c7684a7aa4e2b0048b2f7637ca5d38d8b",
+    "ZesuSsz/Automation/Approved.v": "b864db0bdb73a0f8164209669bb2f4d2ee2452c23887e2d9b96d77220dac8821",
+    "ZesuSsz/Automation/Switches/ConjunctMatch.v": "7297b4be81634966b0865fedd6f39892884009ad261ee1a2ea4dc299cfafa777",
+    "ZesuSsz/Evidence/approved_automation_switches.json": "9294c1eb9b011ece334ead3398b085b0231af34416d39de3e13fa4d4012108e8",
+    "ZesuSsz/Proofs/Tests/ApprovedSwitches.v": "7e527c161c740a7086765b038a49548e0b801708cae6fb46a10899d42aaf7df8",
+    "ZesuSsz/Proofs/Tests/ConjunctHead.v": "1c5cf820e1f5fcb681dd353ceb07c4bd73d5177abf67726817a1de39eaa4c683"
+  },
+  "statement_sha256": {
+    "r1c_constant_assignment": "bd9b8c5f5f37916d42c2610e70ac4d8052cf2e9362fb8205da4c52b4e2dbf9cb",
+    "r1c_ambiguous": "1ecf2020a8c1804d19f61fedc58b21a308fd66bd7f0fb5fa82c66389a0bafbf2",
+    "r1c_absent_head": "e940ab47783e8f2178188fca4cc12aa6c3c4a8e1f66b4b18d47eaaf513762052",
+    "r1c_ignored_binder": "cab58f9ce99a13d3dedf63291fdb1d1fa2410a8f28beb68e3a7b8eed5717187f",
+    "r1c_variable_head": "7753e2279548fe9bfdc6a3727f2bca5f64010008e45089432ab9af2dd9bffe91",
+    "r1c_unregistered_premise": "3e497f19cbd86e0c684fadb016f17a9b6192054545405473de99b50b176ddf33",
+    "r1c_registered_guard": "e32cde8cae778b61e86132b4308c1a5106ae0a1809cc41eab7330ba87883d721",
+    "r1c_absent_guard": "845f8342c6a90b3a1981ba265ac6280573d2a0192ab2b36df0a2fa6fa4ebf121",
+    "r1c_reordered": "2a1a7e310b51b44297d68d763cc6bf1c636f61a7a8aea571264327957ced2989",
+    "r1c_plain_goal": "faace9546fa9aa37d0d3cbc569dfdc086600a11c5f10798f05e46b516b140da6",
+    "r1c_real_eq_ambiguous": "a31321c3cc52b5c9afee100cf89b1da0046ca160de7e05df97efb52733ea2982",
+    "r1c_real_eq_header_discrimination": "0e4784a7ab0100b0a21b97367f84367dfca07bdac4e864b5636d5dee9de32876",
+    "r1c_real_eq_payload_discrimination": "3dbf6b66ef19b30cf4ac2d794ee31793781157e95e111ffbf47bc1b5c92020b5",
+    "r1c_real_eq_fixed_mismatch": "25635b59f8483e2763924efeea80031cb59c4d3acc65e9d630b5a59acca18699"
+  },
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-av-r1c-constant-cf33/_build/r1c-final-statements-012/REPORT.json",
+    "sha256": "c82f9086b6c0c0a922158200f3954e38e31e7656767ec4f62f2b4ba155ba3cea",
+    "cases": 14,
+    "method": "module_m",
+    "assumptions": [],
+    "final_groups": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "kernel_groups": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "rollback_exact": true,
+    "normal_owned_closure": true,
+    "changed_inputs": []
+  },
+  "focused_build": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-av-r1c-constant-cf33/_build/r1c-focused-010/REPORT.json",
+    "sha256": "ba6b314b16572602f0c70a8f2c3b00f7af47244f5df99d35af603fda8bac0cc3",
+    "result": "pass"
+  },
+  "switch": "ZesuSsz.Automation.Switches.ConjunctMatch",
+  "generic_scan_matches": 0,
+  "native_closure": false,
+  "native_predictions": "6a38 and 6ad8 close under EntryIntro plus ConjunctMatch. Pending native comparison and Spec registrations.",
+  "gates": "Held pending the native table, as Orch ordered."
+}
