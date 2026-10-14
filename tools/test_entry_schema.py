@@ -8,7 +8,7 @@ import unittest
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "block"))
-from entry_schema import contract_fields, design_states, entry_state, FIELDS
+from entry_schema import contract_fields, design_states, edge_contract_fields, entry_state, FIELDS
 import chain_root
 
 
@@ -42,6 +42,53 @@ class EntrySchemaTests(unittest.TestCase):
         states, errors = design_states({"blocks": [row]}, self.root, "Fixture.Traces.instrs", ["code -∗"])
         self.assertEqual(states, {})
         self.assertIn("lacks approved fields", errors[16])
+
+    def test_absent_edge_alternative_preserves_contract_fields(self):
+        self.assertEqual(edge_contract_fields(self.row, {"from_block": "0x8"}),
+                         contract_fields(self.row))
+
+    def test_edge_alternative_preserves_parameters_and_source_bindings(self):
+        original = deepcopy(self.row)
+        fields = edge_contract_fields(self.row, {"from_block": "0x8",
+            "resource_alternative": "Fixture.Contracts.otherEntry"})
+        self.assertEqual(fields["entry_definition"], "Fixture.Contracts.otherEntry")
+        self.assertEqual(fields["resource_predicate"], "Fixture.Contracts.otherEntry")
+        for key in ("binders", "arguments", "source_hashes"):
+            self.assertEqual(fields[key], self.row[key])
+        fields["binders"][0]["type"] = "nat"
+        self.assertEqual(self.row, original)
+
+    def test_edge_alternative_rejects_invalid_names(self):
+        for name in (None, "", "entry", "Fixture.Contracts.entry. Abort.", 1):
+            with self.subTest(name=name):
+                with self.assertRaisesRegex(ValueError, "fully qualified"):
+                    edge_contract_fields(self.row, {"from_block": "0x8",
+                                                   "resource_alternative": name})
+
+    def test_edge_alternative_requires_bound_target_source(self):
+        with self.assertRaisesRegex(ValueError, "do not bind"):
+            edge_contract_fields(self.row, {"from_block": "0x8",
+                "resource_alternative": "Other.Contracts.entry"})
+
+    def test_edge_alternative_rejects_caller_selection(self):
+        with self.assertRaisesRegex(ValueError, "caller entry"):
+            edge_contract_fields(self.row, {"from_block": "caller",
+                "resource_alternative": "Fixture.Contracts.entry"})
+
+    def test_edge_alternative_requires_executable_target(self):
+        with self.assertRaisesRegex(ValueError, "lacks a target contract"):
+            edge_contract_fields({}, {"from_block": "0x8",
+                "resource_alternative": "Fixture.Contracts.entry"})
+
+    def test_selected_edge_entry_checks_actual_declaration(self):
+        fields = edge_contract_fields(self.row, {"from_block": "0x8",
+            "resource_alternative": "Fixture.Contracts.absent"})
+        with self.assertRaisesRegex(ValueError, "lacks Definition"):
+            self.state({**self.row, **fields})
+        fields = edge_contract_fields(self.row, {"from_block": "0x8",
+            "resource_alternative": "Fixture.Contracts.entry"})
+        state = self.state({**self.row, **fields})
+        self.assertEqual(state["spatial"], ["Fixture.Contracts.entry (args) (n + 1)"])
 
     def test_only_approved_fields_are_consumed(self):
         self.row["needed_resources"] = {"description": "owned memory"}

@@ -247,5 +247,102 @@ class CompletePromotionTests(unittest.TestCase):
         self.assertFalse((self.workspace / 'ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6974.v').exists())
 
 
+
+class EdgeAdapterTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.workspace = Path(self.temp.name)
+        path = self.workspace / "Fixture/Contracts.v"
+        path.parent.mkdir()
+        path.write_text("Definition root := True.\nDefinition source := True.\n"
+                        "Definition selected := True.\nDefinition sum := True.\n")
+        source_hashes = {"Fixture/Contracts.v": complete_promotion.binding(path)["sha256"]}
+        def row(pc, name, binders, successors):
+            return {"entry_pc": hex(pc), "entry_definition": "Fixture.Contracts." + name,
+                    "resource_predicate": "Fixture.Contracts." + name,
+                    "binders": binders, "arguments": [item["name"] for item in binders],
+                    "source_hashes": source_hashes, "successor_pcs": list(map(hex, successors)),
+                    "incoming_edges": []}
+        shared = {"name": "args", "type": "unit"}
+        root = row(0x1000, "root", [shared], [0x1004])
+        source = row(0x1004, "source", [shared, {"name": "loaded", "type": "nat"}], [0x1008])
+        self.target = row(0x1008, "sum", [shared, {"name": "value", "type": "nat"}], [])
+        self.edge = {"from_block": "0x1004", "from_instruction": "0x1004",
+                     "resource_alternative": "Fixture.Contracts.selected"}
+        self.target["incoming_edges"] = [self.edge]
+        self.design = {"entry_pc": "0x1000", "blocks": [root, source, self.target]}
+
+    def render(self, **kwargs):
+        return complete_promotion.render_adapter(0x1004, "Fixture.Proof", "native",
+            ["args", "loaded"], design=self.design, workspace=self.workspace, **kwargs)
+
+    def test_selected_alternative_uses_wand_without_changing_table_interface(self):
+        source = self.render()
+        self.assertIn('instr_body 0x1004 decodeItemState1004.', source)
+        self.assertIn('instr_pre_wand with "Hnext1008 []"', source)
+        self.assertIn('iApply (native args loaded with "[Hnext1008] Hcode")', source)
+        self.assertIn('iAssert (Fixture.Contracts.selected (args) (next1008_value))%I', source)
+        self.assertIn('iExists next1008_value.', source)
+        self.assertNotIn('iExists args', source)
+        self.assertIn('rewrite /Fixture.Contracts.sum.', source)
+        self.assertIn('Require Import Fixture.Contracts.', source)
+        self.assertNotIn('Definition decodeItemEdge', source)
+
+    def test_absent_field_preserves_accepted_adapter_bytes(self):
+        del self.edge["resource_alternative"]
+        plain = complete_promotion.render_adapter(0x1004, "Fixture.Proof", "native", ["args", "loaded"])
+        self.assertEqual(self.render().encode(), plain.encode())
+        self.assertIn('exact (native args loaded).', plain)
+
+    def test_unrelated_predecessor_does_not_trigger_adaptation(self):
+        self.edge["from_block"] = "0x1000"
+        self.assertNotIn('instr_pre_wand', self.render())
+
+    def test_missing_selected_declaration_is_rejected(self):
+        self.edge["resource_alternative"] = "Fixture.Contracts.absent"
+        with self.assertRaisesRegex(ValueError, 'lacks Definition'):
+            self.render()
+
+    def test_changed_bound_source_is_rejected(self):
+        (self.workspace / "Fixture/Contracts.v").write_text('Definition selected := False.')
+        with self.assertRaisesRegex(ValueError, 'source hash changed'):
+            self.render()
+
+    def test_undeclared_successor_is_rejected(self):
+        self.design["blocks"][1]["successor_pcs"] = []
+        with self.assertRaisesRegex(ValueError, 'undeclared successor'):
+            self.render()
+
+    def test_duplicate_alternative_for_one_successor_is_rejected(self):
+        self.target["incoming_edges"].append(dict(self.edge))
+        with self.assertRaisesRegex(ValueError, 'repeats a resource alternative'):
+            self.render()
+
+    def test_changed_native_arguments_are_rejected(self):
+        with self.assertRaisesRegex(ValueError, 'native arguments differ'):
+            complete_promotion.render_adapter(0x1004, "Fixture.Proof", "native", ["loaded", "args"],
+                design=self.design, workspace=self.workspace)
+
+    def test_changed_shared_parameter_type_is_rejected(self):
+        self.target["binders"] = [{"name": "args", "type": "nat"}]
+        self.target["arguments"] = ["args"]
+        with self.assertRaisesRegex(ValueError, 'shared successor parameter'):
+            self.render()
+
+    def test_parameter_free_resource_does_not_create_a_witness(self):
+        self.target["binders"] = []
+        self.target["arguments"] = []
+        source = self.render()
+        self.assertIn('iIntros "Hentry".', source)
+        self.assertNotIn('iExists', source)
+
+    def test_proposition_witness_is_rejected(self):
+        self.target["binders"][1]["type"] = "Prop"
+        with self.assertRaisesRegex(ValueError, 'not a data parameter'):
+            self.render()
+
+
+
 if __name__ == '__main__':
     unittest.main()

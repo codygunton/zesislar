@@ -67,19 +67,114 @@ def arguments(source, theorem):
             for name in group.split()]
 
 
-def render_adapter(pc, module, theorem, args):
+def render_adapter(pc, module, theorem, args, *, design=None, workspace=None):
     suffix = f"{pc:x}"
     conditional = f"ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter{suffix}Conditional"
     # These are the existing named adapter and native theorem. No new boundary
     # or machine execution proof is generated.
-    return (PREFIX + f"Require Import {conditional}.\nRequire Import {module}.\n\n"
+    adaptation = render_edge_adaptation(pc, theorem, args, design, workspace)
+    imports = ""
+    if adaptation:
+        modules = {edge["resource_alternative"].rsplit(".", 1)[0]
+                   for _, edge in selected_edge_targets(design, pc)}
+        imports = "".join(f"Require Import {name}.\n" for name in sorted(modules))
+    return (PREFIX + f"Require Import {conditional}.\nRequire Import {module}.\n" + imports + "\n"
             f"Lemma decodeItemSlotBody{suffix} `{{!islaG Sigma}} `{{!threadG}} :\n"
             "  ⊢ block_table_pre decodeItemBlockTable -∗\n"
             f"    instr_body {hex(pc)} decodeItemState{suffix}.\nProof.\n"
             f"  apply decodeItemSlotBody{suffix}Conditional.\n"
             + ("  intros " + " ".join(args) + ".\n" if args else "")
-            + f"  exact ({theorem} {' '.join(args)}).\nQed.\n"
+            + (adaptation or f"  exact ({theorem} {' '.join(args)}).\n") + "Qed.\n"
             f"Print Assumptions decodeItemSlotBody{suffix}.\n")
+
+
+def selected_edge_targets(design, pc):
+    """Find explicit alternatives for this predecessor without changing the table."""
+    if design is None:
+        return []
+    return [(block, edge) for block in design["blocks"]
+            for edge in block["incoming_edges"]
+            if edge["from_block"] != "caller" and
+            generate_table.address(edge["from_block"]) == pc and
+            "resource_alternative" in edge]
+
+
+def render_edge_adaptation(pc, theorem, args, design, workspace):
+    """Derive selected successor preconditions through the existing wand lemma."""
+    selected = selected_edge_targets(design, pc)
+    if not selected:
+        return ""
+    if workspace is None:
+        raise ValueError("Edge adaptation requires a bound workspace.")
+    import entry_schema
+    workspace = Path(workspace).resolve()
+    blocks = {generate_table.address(block["entry_pc"]): block for block in design["blocks"]}
+    source = blocks.get(pc)
+    if source is None:
+        raise ValueError("The edge predecessor has no declared block.")
+    source_fields = entry_schema.contract_fields(source)
+    if source_fields is None or args != [binder["name"] for binder in source_fields["binders"]]:
+        raise ValueError("The native arguments differ from the declared predecessor binders.")
+    root = blocks[generate_table.address(design["entry_pc"])]
+    root_names = {binder["name"] for binder in root["binders"]}
+    alternatives = {}
+    for target, edge in selected:
+        address = generate_table.address(target["entry_pc"])
+        if address not in map(generate_table.address, source["successor_pcs"]):
+            raise ValueError("The selected resource belongs to an undeclared successor.")
+        if address in alternatives:
+            raise ValueError("The predecessor repeats a resource alternative for one successor.")
+        fields = entry_schema.edge_contract_fields(target, edge)
+        entry_schema.verify_sources(fields, workspace)
+        entry_schema.verify_declarations(fields, workspace)
+        entry_schema.verify_declarations(entry_schema.contract_fields(target), workspace)
+        alternatives[address] = (target, fields)
+    successors = list(map(generate_table.address, source["successor_pcs"]))
+    hypotheses = [f"Hnext{target:x}" for target in successors]
+    patterns = [f"[{name}]" if target in alternatives else name
+                for target, name in zip(successors, hypotheses)]
+    resources = " ".join([*patterns, "Hcode"])
+    lines = ['  iIntros "' + " ".join([*hypotheses, "Hcode"]) + '".',
+             f'  iApply ({theorem} {" ".join(args)} with "{resources}").']
+    for address, name in zip(successors, hypotheses):
+        if address not in alternatives:
+            continue
+        target, fields = alternatives[address]
+        locals_ = []
+        replacements = {}
+        for binder in fields["binders"]:
+            variable = binder["name"]
+            if variable in root_names:
+                own = next((item for item in source_fields["binders"] if item["name"] == variable), None)
+                if own is None or own["type"] != binder["type"]:
+                    raise ValueError("A shared successor parameter is absent or has another type.")
+            else:
+                if binder["type"] in {"Prop", "Type", "Set"}:
+                    raise ValueError("A successor witness is not a data parameter.")
+                fresh = f"next{address:x}_{variable}"
+                while fresh in args or fresh in locals_:
+                    fresh = "next_" + fresh
+                locals_.append(fresh)
+                replacements[variable] = fresh
+        def substitute(value):
+            for variable, fresh in replacements.items():
+                value = re.sub(r"(?<![\w'.])" + re.escape(variable) + r"(?![\w'])",
+                               lambda _: fresh, value)
+            return value
+        application = fields["resource_predicate"] + "".join(
+            " (" + substitute(value) + ")" for value in fields["arguments"])
+        pattern = " & ".join([*("%" + variable for variable in locals_), "Hentry"])
+        if locals_:
+            pattern = "(" + pattern + ")"
+        lines += [f'  {{ iApply (instr_pre_wand with "{name} []"); [done|done|].',
+                  f'    iIntros "{pattern}".',
+                  f'    iAssert ({application})%I with "[Hentry]" as "Hselected".',
+                  '    { iExact "Hentry". }']
+        if locals_:
+            lines.append("    iExists " + ", ".join(locals_) + ".")
+        lines += ["    rewrite /" + target["resource_predicate"] + ".",
+                  "    iFrame. }"]
+    return "\n".join(lines) + "\n"
 
 
 def render_signature(pc):
@@ -149,7 +244,12 @@ def plan(workspace, pc, module, lemma, table=None):
         raise ValueError("The production source names a different block.")
     outputs = {}
     adapter = f"ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter{pc:x}.v"
-    outputs[adapter] = render_adapter(pc, module, theorem, args)
+    design_path = workspace / "ZesuSsz/Evidence/decode_item_block_design.json"
+    design = json.loads(design_path.read_text()) if design_path.is_file() else None
+    if selected_edge_targets(design, pc):
+        generate_table.bound_inputs(workspace / "build/stock-zisk/build-recipe.json",
+                                    workspace / "build/stock-zisk/cfg.json", design_path)
+    outputs[adapter] = render_adapter(pc, module, theorem, args, design=design, workspace=workspace)
     signature = f"ZesuSsz/Evidence/DecodeItemPromoted{short}Fixtures.v"
     promoted = "ZesuSsz/Generated/DecodeItem/PromotedBodies.v"
     outputs[promoted] = update_promoted((workspace / promoted).read_text(), pc)

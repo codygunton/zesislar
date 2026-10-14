@@ -61,6 +61,26 @@ def contract_fields(block):
     return {name: deepcopy(block[name]) for name in sorted(FIELDS)}
 
 
+def edge_contract_fields(block, edge):
+    """Select an explicitly named target entry without changing its parameters."""
+    fields = contract_fields(block)
+    if "resource_alternative" not in edge:
+        return fields
+    name = edge["resource_alternative"]
+    if edge.get("from_block") == "caller":
+        raise ValueError("A caller entry cannot select an edge resource alternative")
+    if not isinstance(name, str) or not ROCQ_NAME.fullmatch(name):
+        raise ValueError("The edge resource alternative is not a fully qualified Rocq name")
+    if fields is None:
+        raise ValueError("The edge resource alternative lacks a target contract")
+    if not any(path.endswith(".v") and name.startswith(source_module(path) + ".")
+               for path in fields["source_hashes"]):
+        raise ValueError("The source hashes do not bind the edge resource alternative: " + name)
+    fields["entry_definition"] = name
+    fields["resource_predicate"] = name
+    return fields
+
+
 def source_module(path):
     return str(PurePosixPath(path).with_suffix("")).replace("/", ".")
 
@@ -77,12 +97,9 @@ def verify_sources(fields, root):
     return root
 
 
-def entry_state(block, root, trace_import, code_premises):
-    """Use supplied expressions without synthesizing resources or local values."""
-    fields = contract_fields(block)
-    if fields is None:
-        return None
-    root = verify_sources(fields, root)
+def verify_declarations(fields, root):
+    """Locate the supplied entry definitions in their bound source modules."""
+    root = Path(root)
     owners = {}
     for key in ("entry_definition", "resource_predicate"):
         name = fields[key]
@@ -96,6 +113,16 @@ def entry_state(block, root, trace_import, code_premises):
                          (root / owner).read_text()):
             raise ValueError("The entry source lacks Definition " + name)
         owners[key] = owner
+    return owners
+
+
+def entry_state(block, root, trace_import, code_premises):
+    """Use supplied expressions without synthesizing resources or local values."""
+    fields = contract_fields(block)
+    if fields is None:
+        return None
+    root = verify_sources(fields, root)
+    owners = verify_declarations(fields, root)
     if not isinstance(trace_import, str) or not ROCQ_NAME.fullmatch(trace_import):
         raise ValueError("The trace import is not a fully qualified Rocq name")
     if not code_premises or not any(line.strip() for line in code_premises):

@@ -154,3 +154,16 @@ The selector focuses the first active goal and retains every returned goal.
 The replay adds no primary execution, outcome classification, or contract closure.
 Its fixed-point check still compares returned active goal text only.
 All returned shelved goals remain in the raw captures.
+
+An incoming edge can optionally contain `resource_alternative`.
+The value is the qualified name of an existing target entry definition.
+The target block supplies its binders, arguments, and source hashes.
+The checker requires the edge to match the instruction words.
+The checker also requires the named definition in a hashed source.
+
+The table retains one resource state per block.
+The promotion adapter uses `instr_pre_wand` to adapt the selected entry to that state.
+The adapter preserves shared parameters and existential witnesses.
+The generated entailment must prove that the selected entry implies the target resource.
+Rocq must check this entailment.
+An absent field retains the existing generated output.
