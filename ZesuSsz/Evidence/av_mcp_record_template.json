@@ -1,0 +1,243 @@
+{
+  "schema_version": 1,
+  "record_kind": "template",
+  "status": "unfilled; this file supplies no proof evidence",
+  "instructions": [
+    "Copy this record into the checkpoint evidence directory.",
+    "Replace each null with an actual result or an explicit reason for absence.",
+    "Bind each raw response and source file by path and SHA256.",
+    "Save each response before any later request can fail.",
+    "Record each failed attempt separately.",
+    "Do not infer tactic success from a launcher exit code.",
+    "Export all goal groups before Qed.",
+    "Save the advancing Qed response; do not request goals after Qed.",
+    "Use source or architecture changes only within the authorized scope."
+  ],
+  "checkpoint": {
+    "task": null,
+    "function": null,
+    "theorem": null,
+    "workspace": null,
+    "root_commit": null,
+    "parent_commit": null,
+    "tip_commit": null,
+    "plan_revision": null,
+    "scope": null
+  },
+  "bindings": {
+    "sources": [],
+    "dependencies": [],
+    "runtime_sources": [],
+    "private_artifacts": [],
+    "reports": [],
+    "binding_shape": {
+      "path": null,
+      "sha256": null,
+      "bytes": null
+    },
+    "hash_rule": "Hash exact file bytes with SHA256. Do not hash a report inside itself."
+  },
+  "toolchain": {
+    "switch": null,
+    "server_version": null,
+    "compiler_path": null,
+    "compiler_version": null,
+    "pet_path": null,
+    "pet_version": null,
+    "private_build_directory": null,
+    "findlib_environment": null,
+    "tool_schema_binding": null
+  },
+  "health": {
+    "method": "rocq_health",
+    "request_UTC": null,
+    "arguments": null,
+    "raw_response_binding": null,
+    "success": null
+  },
+  "interactive": {
+    "stable_file_binding": null,
+    "start": {
+      "method": "rocq_start",
+      "request_UTC": null,
+      "arguments": null,
+      "raw_response_binding": null,
+      "success": null,
+      "state_id": null
+    },
+    "checks": [],
+    "check_shape": {
+      "method": "rocq_check or rocq_step_multi",
+      "request_UTC": null,
+      "from_state": null,
+      "body": null,
+      "raw_response_binding": null,
+      "success": null,
+      "commands_run": null,
+      "last_valid_state_id": null,
+      "result_state_id": null,
+      "error": null
+    },
+    "pre_Qed_export": {
+      "method": "rocq_complete_goals",
+      "state_id": null,
+      "export_binding": null,
+      "active_goals": null,
+      "stack_frames": [],
+      "shelved_goals": null,
+      "given_up_goals": null,
+      "complete_kernel_contexts": null,
+      "complete_local_definitions": null,
+      "required_result": "All active, stacked, shelved, and given-up groups are empty.",
+      "stack_frame_shape": {
+        "left_goals": null,
+        "right_goals": null,
+        "complete_goal_and_context_binding": null
+      }
+    },
+    "Qed": {
+      "method": "rocq_check",
+      "body": "Qed.",
+      "request_UTC": null,
+      "from_state": null,
+      "result_state_id": null,
+      "raw_response_binding": null,
+      "success": null,
+      "post_Qed_goal_query": "Do not query a closed proof scope."
+    }
+  },
+  "compilation": {
+    "method": "rocq_compile_file",
+    "request_UTC": null,
+    "file_binding": null,
+    "arguments": null,
+    "raw_response_binding": null,
+    "success": null,
+    "artifact_binding": null,
+    "sentence_profile_binding": null
+  },
+  "exact_verification": {
+    "method": "rocq_verify",
+    "request_UTC": null,
+    "problem_name": null,
+    "exact_statement": null,
+    "statement_sha256": null,
+    "statement_hash_rule": "Hash the exact UTF-8 problem_statement argument, without normalization.",
+    "source_declaration": null,
+    "source_declaration_sha256": null,
+    "source_hash_rule": "Hash the exact declaration bytes. State the selected byte interval.",
+    "explicit_premises": [],
+    "statement_unchanged": null,
+    "proof_source_binding": null,
+    "raw_response_binding": null,
+    "success": null,
+    "verification_method": null,
+    "assumptions": null,
+    "required_result": "Exact statement verification succeeds with assumptions []. Explicit premises are recorded separately.",
+    "representations": {
+      "source_declaration": "Exact declaration bytes from the bound production file. Preserve aliases and whitespace.",
+      "qualified_query": "Exact problem_statement bytes sent to rocq_verify. Include imports, qualifications, and the terminal newline.",
+      "comparison_rule": "Compare hashes only within the same named representation. Record a checked equivalence between different representations."
+    },
+    "source_byte_range": null
+  },
+  "print_assumptions": {
+    "command": null,
+    "raw_output_binding": null,
+    "output": null,
+    "assumptions": null,
+    "limit": "Print Assumptions does not detect explicit theorem premises."
+  },
+  "ownership": {
+    "server_identity": null,
+    "pet_identity": null,
+    "identity_fields": [
+      "pid",
+      "start_ticks"
+    ],
+    "actual_process_limits_binding": null,
+    "transport_closed_normally": null,
+    "server_exited": null,
+    "owned_Pet_absent": null,
+    "cleanup_signals": [],
+    "closure_record_binding": null
+  },
+  "measurements": {
+    "compilation_cpu_seconds": null,
+    "compilation_wall_seconds": null,
+    "compilation_peak_rss_kib": null,
+    "verification_cpu_seconds": null,
+    "verification_wall_seconds": null,
+    "verification_peak_rss_kib": null,
+    "measurement_method": null,
+    "raw_measurements_binding": null,
+    "worker_count": null,
+    "machine_utilization_binding": null,
+    "actual_cpu_limit": null,
+    "actual_memory_limit": null,
+    "actual_stack_limit": null,
+    "physical_Proof_Qed_lines": null,
+    "shared_helper_lines": null
+  },
+  "gates": [],
+  "gate_shape": {
+    "command": null,
+    "root_commit": null,
+    "environment": null,
+    "exit_code": null,
+    "wall_seconds": null,
+    "log_binding": null,
+    "exit_watcher_identity": null
+  },
+  "rule_comparison": {
+    "applicability": null,
+    "prediction_binding": null,
+    "identical_contract_and_import_hashes": null,
+    "rule_on_report_binding": null,
+    "rule_off_report_binding": null,
+    "unexpected_closures": [],
+    "adversarial_test_report_binding": null
+  },
+  "failures": [],
+  "fallback": {
+    "primary_status": null,
+    "exact_primary_errors": [],
+    "fallback_authorization": null,
+    "fallback_methods": [],
+    "limit": "Typechecking errors do not count as genuine repeated session failures. Never force_restart.",
+    "primary_record_label": "primary unavailable: <exact error>, only when the authorized fallback condition applies",
+    "genuine_session_failure_count": null,
+    "source_or_typechecking_errors_are_session_failures": false,
+    "fallback_result_is_primary_MCP_evidence": false
+  },
+  "limits_and_remaining_obligations": [],
+  "released_queue": null,
+  "request_records": [],
+  "request_record_shape": {
+    "method": null,
+    "request_UTC": null,
+    "completed_UTC": null,
+    "arguments": null,
+    "request_binding": null,
+    "response_received": null,
+    "raw_response_binding": null,
+    "success": null,
+    "tool_error": null,
+    "transport_exception": {
+      "type": null,
+      "message": null,
+      "traceback_binding": null
+    },
+    "last_valid_state_id": null,
+    "result_state_id": null
+  },
+  "policy": {
+    "requested_environment": null,
+    "effective_scope_environment": null,
+    "guard_source_binding": null,
+    "admission_class": null,
+    "reservation_identity": null,
+    "actual_process_limits_binding": null,
+    "policy_authorization": null
+  }
+}

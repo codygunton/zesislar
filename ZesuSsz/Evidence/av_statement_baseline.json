@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "root": "1fc0a98d9397e22386a9407e16c37c7a769a6b20",
+  "production_module": "ZesuSsz.Compliance.DecodeItemCompliance",
+  "production_theorem": "decodeItemSelectedCompliance",
+  "reviewed_type_sha256": "5b485f886fc945504a03e059e2b70f39164d51b282c72e55e5517e8d83762206",
+  "reviewed_type_matches_closure_report": true,
+  "exact_Level1_statement": "forall returnAddress,\n    IslarisContractCorrect decodeItemEntry returnAddress\n      (decodeItemSelectedModel returnAddress).",
+  "hash_rules": {
+    "source_declaration": "Exact UTF-8 declaration bytes, from Definition/Lemma to its final period. Exclude trailing whitespace after the period.",
+    "statement_sha256": "Exact UTF-8 problem_statement argument sent to rocq_verify. Include all imports and the terminal newline. No normalization.",
+    "definition_verification": "Verify the equality between ReviewedDecodeItemComplianceType and the expanded contract type by reflexivity.",
+    "theorem_verification": "Verify the expanded contract type by applying the compiled production theorem. No added premise."
+  },
+  "statements": [
+    {
+      "constant": "ZesuSsz.Compliance.DecodeItemCompliance.decodeItemSelectedCompliance",
+      "source_declaration": "Lemma decodeItemSelectedCompliance\n :\n  ReviewedDecodeItemComplianceType.",
+      "source_declaration_sha256": "5814f973b16b1e4435ee03e703fcc987377ad36f39487d9cff85b067311d072e",
+      "exact_problem_statement": "Require Import ZesuSsz.Automation.All.\nRequire Import ZesuSsz.Contracts.Level1.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\nRequire Import ZesuSsz.Contracts.DecodeItemSelected.\nRequire Import ZesuSsz.Compliance.DecodeItemCompliance.\nLemma avDecodeItemSelectedCompliance :\n  forall returnAddress,\n    ZesuSsz.Contracts.Level1.IslarisContractCorrect ZesuSsz.Contracts.RlpDecodeItem.decodeItemEntry returnAddress\n      (ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedModel returnAddress).\n",
+      "statement_sha256": "13a32c4ca32e812340ee894cdf587e6b68e655bbb020aa288f88bb2dd7d61a51",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "explicit_extra_premises": [],
+      "proof_source_sha256": "0aad24b8e27a8663c1b36de128a3abe79fc916477c564ca7579fe122b750ecf6",
+      "interactive_start_UTC": "2026-10-14T15:16:25.903880+00:00",
+      "pre_Qed_groups": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "pre_Qed_state_id": 2,
+      "Qed_state_id": 3
+    },
+    {
+      "constant": "ZesuSsz.Compliance.DecodeItemCompliance.ReviewedDecodeItemComplianceType",
+      "source_declaration": "Definition ReviewedDecodeItemComplianceType : Prop :=\n  forall returnAddress,\n    IslarisContractCorrect decodeItemEntry returnAddress\n      (decodeItemSelectedModel returnAddress).",
+      "source_declaration_sha256": "5b485f886fc945504a03e059e2b70f39164d51b282c72e55e5517e8d83762206",
+      "exact_problem_statement": "Require Import ZesuSsz.Automation.All.\nRequire Import ZesuSsz.Contracts.Level1.\nRequire Import ZesuSsz.Contracts.RlpDecodeItem.\nRequire Import ZesuSsz.Contracts.DecodeItemSelected.\nRequire Import ZesuSsz.Compliance.DecodeItemCompliance.\nLemma avReviewedDecodeItemComplianceType :\n  ZesuSsz.Compliance.DecodeItemCompliance.ReviewedDecodeItemComplianceType =\n  (forall returnAddress,\n    ZesuSsz.Contracts.Level1.IslarisContractCorrect ZesuSsz.Contracts.RlpDecodeItem.decodeItemEntry returnAddress\n      (ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedModel returnAddress)).\n",
+      "statement_sha256": "fd69fa299320bd2f05a32a64bdb0b72d31469aa3d3a236f8191be32af854a58c",
+      "verification_method": "module_m",
+      "assumptions": [],
+      "explicit_extra_premises": [],
+      "proof_source_sha256": "03ffa95e12fea263b579e9f370b2cefc586ef0e3d09a9243fb5106964e45db9e",
+      "interactive_start_UTC": "2026-10-14T15:16:28.789390+00:00",
+      "pre_Qed_groups": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "pre_Qed_state_id": 5,
+      "Qed_state_id": 6
+    }
+  ],
+  "assumptions": [],
+  "compilation": {
+    "success": true,
+    "file": "Final.v",
+    "Print_Assumptions_output": "Closed under the global context\nClosed under the global context",
+    "request_wall_seconds": 24.17857731389813,
+    "sentence_profile": {
+      "total_sentences": 15,
+      "top_slowest": [
+        {
+          "line": 13,
+          "characters": [
+            588,
+            637
+          ],
+          "name": "Print~Assumptions~avDecodeItem...",
+          "duration_seconds": 22.467
+        },
+        {
+          "line": 1,
+          "characters": [
+            0,
+            38
+          ],
+          "name": "Require~Import~ZesuSsz.Automat...",
+          "duration_seconds": 0.547
+        },
+        {
+          "line": 23,
+          "characters": [
+            1010,
+            1063
+          ],
+          "name": "Print~Assumptions~avReviewedDe...",
+          "duration_seconds": 0.524
+        },
+        {
+          "line": 5,
+          "characters": [
+            181,
+            236
+          ],
+          "name": "Require~Import~ZesuSsz.Complia...",
+          "duration_seconds": 0.056
+        },
+        {
+          "line": 2,
+          "characters": [
+            39,
+            79
+          ],
+          "name": "Require~Import~ZesuSsz.Contrac...",
+          "duration_seconds": 0.0
+        }
+      ],
+      "last_completed": {
+        "line": 23,
+        "characters": [
+          1010,
+          1063
+        ],
+        "name": "Print~Assumptions~avReviewedDe...",
+        "duration_seconds": 0.524
+      }
+    }
+  },
+  "ownership": {
+    "owner": {
+      "success": true,
+      "pid": 1699291,
+      "start_ticks": 169030567
+    },
+    "pet": {
+      "pid": 1699521,
+      "start_ticks": 169030779
+    },
+    "transport_closed_normally": true,
+    "server_exited": true,
+    "owned_Pet_absent": true,
+    "cleanup_signals": 0
+  },
+  "source_bindings": [
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemCompliance.v",
+      "sha256": "97c189c8f5d6369aaee7e690e4724149790d614e5731cc71e82692f75860d03b"
+    },
+    {
+      "path": "ZesuSsz/Contracts/Level1.v",
+      "sha256": "45e31b086c53807d6887a91578033c2c9ffdd1d55000631f063018a6f61e9d4f"
+    },
+    {
+      "path": "ZesuSsz/Contracts/RlpDecodeItem.v",
+      "sha256": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e"
+    },
+    {
+      "path": "ZesuSsz/Contracts/DecodeItemSelected.v",
+      "sha256": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804"
+    },
+    {
+      "path": "ZesuSsz/Evidence/DecodeItemClosureReport.json",
+      "sha256": "4a3ec5342272e32b388bc13730e1aef778770915986af12f461c24e5ca44b9bb"
+    }
+  ],
+  "verification_binding": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-statement-baseline-private-path-006/RESULT.json",
+    "sha256": "7383b9524391a75104f33c7041e117f29a7a6245d0285d3e3291cbd08816e13e"
+  },
+  "solved_setup": {
+    "cause": "_build/default was a directory without the required private artifacts.",
+    "correction": "Preserve that directory and link _build/default to _build/agents/spec-c-av-manifest/default.",
+    "rebuild_required": false,
+    "health_schema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "prior_failed_attempts": [
+    {
+      "attempt": "002",
+      "cause": "The client omitted initialize; the health request returned Invalid request parameters.",
+      "proof_result": false,
+      "record": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-statement-baseline-002/RESULT.json",
+        "sha256": "61ad7e55c24931a4fffd985833d0b911c01c3f7124e980e6073d18979d70c81c"
+      }
+    },
+    {
+      "attempt": "003",
+      "cause": "The interactive declaration could not resolve IslarisContractCorrect.",
+      "proof_result": false,
+      "record": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-statement-baseline-003/RESULT.json",
+        "sha256": "e9baf5fa8f0df4815f43c997c1ae9d7118498be9dc19944746cc1aca015fb05f"
+      }
+    },
+    {
+      "attempt": "004",
+      "cause": "The qualified name remained unavailable because the private artifact mapping was absent.",
+      "proof_result": false,
+      "record": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-statement-baseline-004/RESULT.json",
+        "sha256": "93eab68c8f875bbb9620afbfff7524247518cf15fdb0425e7f2b788bc26a5930"
+      }
+    },
+    {
+      "attempt": "diagnostic-005",
+      "cause": "Compilation failed at Automation.All import. _build/default did not point to the private artifacts.",
+      "proof_result": false,
+      "record": {
+        "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-statement-baseline-diagnostic-005/RESULT.json",
+        "sha256": "cf5678d746c1178a30f32b48259d67caf3c6aacec44770b4f914462606cd8b7a"
+      }
+    }
+  ],
+  "limits": [
+    "This baseline records statement identity and current verification. It does not remove explicit premises by checking Print Assumptions alone.",
+    "The proof-session warning after fixture compilation refers to invalidated prior session states. No proof command reused those states.",
+    "The manifest remains its separate frozen 680b56ad snapshot."
+  ]
+}
