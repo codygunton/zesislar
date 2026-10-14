@@ -38,3 +38,82 @@ Ltac zesu_conjunct_match_if_enabled :=
               iEval (rewrite -bi.sep_assoc)
           end]
   end.
+
+
+(* Read closed context facts without assigning a requested root. *)
+Ltac zesu_pure_head head_term :=
+  lazymatch head_term with
+  | ?function ?argument => zesu_pure_head function
+  | _ => head_term
+  end.
+
+Ltac zesu_context_pure_leaf premise_solver requested evidence continuation :=
+  let available := type of evidence in
+  first [
+    assert_fails (has_evar available);
+    let wanted_head := zesu_pure_head requested in
+    let available_head := zesu_pure_head available in
+    assert_fails (is_var wanted_head);
+    assert_fails (is_var available_head);
+    constr_eq wanted_head available_head;
+    assert_fails (assert_fails (unify requested available));
+    continuation available evidence
+  | lazymatch available with
+    | ?left /\ ?right =>
+        first [
+          let proof := constr:(proj1 evidence) in
+          zesu_context_pure_leaf premise_solver requested proof continuation
+        | let proof := constr:(proj2 evidence) in
+          zesu_context_pure_leaf premise_solver requested proof continuation]
+    | ?premise -> _ =>
+        assert_fails (has_evar premise);
+        let premise_proof := premise_solver premise in
+        assert_fails (has_evar premise_proof);
+        let proof_type := type of premise_proof in
+        assert_fails (has_evar proof_type);
+        let proof := constr:(evidence premise_proof) in
+        zesu_context_pure_leaf premise_solver requested proof continuation
+    end].
+
+(* Reject different concrete arguments before assigning any requested root. *)
+Ltac zesu_match_context_pure_head premise_solver requested :=
+  has_evar requested;
+  multimatch goal with
+  | H : _ |- _ =>
+      zesu_context_pure_leaf premise_solver requested H
+        ltac:(fun available evidence =>
+          tryif (multimatch goal with
+            | Hother : _ |- _ =>
+                zesu_context_pure_leaf premise_solver requested Hother
+                  ltac:(fun other _ => assert_fails (constr_eq available other))
+            end)
+          then fail 100 "Different context facts match the requested head."
+          else unify requested available)
+  end.
+
+Ltac zesu_match_pure_conjunct_heads premise_solver requested :=
+  lazymatch requested with
+  | ?left /\ ?right =>
+      try zesu_match_pure_conjunct_heads premise_solver left;
+      try zesu_match_pure_conjunct_heads premise_solver right
+  | _ => try zesu_match_context_pure_head premise_solver requested
+  end.
+
+Ltac zesu_match_resource_pure_heads premise_solver fuel requested :=
+  lazymatch requested with
+  | @bi_pure _ ?fact => zesu_match_pure_conjunct_heads premise_solver fact
+  | @bi_sep _ ?left ?right =>
+      zesu_match_resource_pure_heads premise_solver fuel left;
+      zesu_match_resource_pure_heads premise_solver fuel right
+  | _ =>
+      lazymatch fuel with
+      | S ?remaining =>
+          try (let head := zesu_pure_head requested in
+            assert_fails (is_var head);
+            assert_fails (has_evar head);
+            let expanded := eval cbv beta iota delta [head] in requested in
+            assert_fails (constr_eq requested expanded);
+            zesu_match_resource_pure_heads premise_solver remaining expanded)
+      | O => idtac
+      end
+  end.
