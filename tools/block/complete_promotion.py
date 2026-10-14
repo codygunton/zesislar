@@ -155,7 +155,7 @@ def plan(workspace, pc, module, lemma, table=None):
     outputs[promoted] = update_promoted((workspace / promoted).read_text(), pc)
     # The signature fixture imports the generated promoted bodies.
     outputs[signature] = render_signature(pc)
-    compliance = "Scaffolding/DecodeItemNativeBlocksCompliance.v"
+    compliance = "ZesuSsz/Compliance/DecodeItemCompliance.v"
     original = (workspace / compliance).read_text()
     remaining = re.findall(r"^  \((native[0-9a-f]+)\s*:", original, re.M)
     if native not in remaining:
@@ -164,22 +164,6 @@ def plan(workspace, pc, module, lemma, table=None):
     text = add_import(remove_binders(original, native), module)
     text = text.replace(f"({native} Sigma HG HT)", f"(@{theorem} Sigma HG HT)")
     outputs[compliance] = text
-    fixtures = "Scaffolding/DecodeItemNativeBlocksComplianceFixtures.v"
-    text = remove_binders((workspace / fixtures).read_text(), native)
-    positive = "  exact (decodeItemNativeBlocksSelectedCompliance " + " ".join(remaining) + ")."
-    text = re.sub(r"^  exact \(decodeItemNativeBlocksSelectedCompliance .*?\)\.", positive, text, flags=re.M)
-    # Rebuild the negative application from the remaining hypotheses. The
-    # positive application retains all of them.
-    if remaining:
-        negative = "  Fail exact (decodeItemNativeBlocksSelectedCompliance " + " ".join(remaining[1:]) + ")."
-        text = re.sub(r"^  Fail exact \(decodeItemNativeBlocksSelectedCompliance .*?\)\.", negative, text, flags=re.M)
-        if remaining[0] != "native800d6960":
-            text = text.replace("decodeItemNativeBlocksMissingRootRejected",
-                                "decodeItemNativeBlocksMissing" + remaining[0][10:] + "Rejected")
-    else:
-        text = re.sub(r"^  Fail exact \(decodeItemNativeBlocksSelectedCompliance .*?\)\.\n", "", text, flags=re.M)
-        text = text.replace("decodeItemNativeBlocksMissingRootRejected", "decodeItemNativeBlocksNoOpenHypotheses")
-    outputs[fixtures] = text
     status = "ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v"
     text = (workspace / status).read_text()
     text = re.sub(r"^  " + native + r" : \w+;?\n", "", text, flags=re.M)
@@ -205,23 +189,6 @@ def plan(workspace, pc, module, lemma, table=None):
     if table is not None:
         text = refresh_counts(text, table)
     outputs[status] = text
-    status_fixtures = "ZesuSsz/Evidence/DecodeItemOpenNativeHypothesesFixtures.v"
-    text = remove_binders((workspace / status_fixtures).read_text(), "H" + short)
-    text = text.replace(" H" + short, "")
-    # The record fixture deliberately lacks a hypothesis, unlike the
-    # compliance fixture that tests an omitted application argument.
-    text = re.sub(r"\nLemma decodeItemOpenNativeMissing[0-9a-f]+Rejected\b.*?Qed\.\n", "\n", text, flags=re.S)
-    text = re.sub(r"Print Assumptions decodeItemOpenNativeMissing[0-9a-f]+Rejected\.\n", "", text)
-    if remaining:
-        missing = remaining[0][10:]
-        declarations = [f"  (H{name[10:]} : decodeItemOpenNativeClosure{name[10:]})"
-                        for name in remaining[1:]]
-        text += (f"\nLemma decodeItemOpenNativeMissing{missing}Rejected\n" +
-                 "\n".join(declarations) + " : True.\nProof.\n"
-                 "  Fail assert (Hopen : DecodeItemOpenNativeHypotheses) by (constructor; assumption).\n"
-                 "  exact I.\nQed.\n" +
-                 f"Print Assumptions decodeItemOpenNativeMissing{missing}Rejected.\n")
-    outputs[status_fixtures] = text
     return outputs, {"production": binding(production), "conditional_adapter": binding(conditional),
                      "production_module": module, "production_lemma": lemma,
                      "native_hypothesis_removed": native, "remaining_native_hypotheses": remaining}

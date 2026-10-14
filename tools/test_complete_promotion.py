@@ -20,11 +20,13 @@ INPUTS = [
     'ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v',
     'ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6974Conditional.v',
     'ZesuSsz/Generated/DecodeItem/PromotedBodies.v',
-    'Scaffolding/DecodeItemNativeBlocksCompliance.v',
-    'Scaffolding/DecodeItemNativeBlocksComplianceFixtures.v',
+    'ZesuSsz/Compliance/DecodeItemCompliance.v',
     'ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v',
-    'ZesuSsz/Evidence/DecodeItemOpenNativeHypothesesFixtures.v',
 ]
+# The accepted history kept the open-hypothesis compliance lemma in a
+# Scaffolding alias that the tool now edits in the production module.
+HISTORICAL_COMPLIANCE = 'Scaffolding/DecodeItemNativeBlocksCompliance.v'
+HISTORICAL_NAMES = {'ZesuSsz/Compliance/DecodeItemCompliance.v': HISTORICAL_COMPLIANCE}
 
 
 def historical(ref, name):
@@ -39,7 +41,7 @@ class CompletePromotionTests(unittest.TestCase):
         for name in INPUTS:
             path = self.workspace / name
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(historical('cp-p1-i60', name))
+            path.write_text(historical('cp-p1-i60', HISTORICAL_NAMES.get(name, name)))
 
     def test_6974_matches_both_accepted_checkpoints(self):
         outputs, provenance = complete_promotion.plan(self.workspace, 0x800d6974, MODULE, LEMMA)
@@ -47,9 +49,8 @@ class CompletePromotionTests(unittest.TestCase):
                      'ZesuSsz/Generated/DecodeItem/PromotedBodies.v',
                      'ZesuSsz/Evidence/DecodeItemPromoted6974Fixtures.v']:
             self.assertEqual(outputs[name], historical('cp-p1-s50', name), name)
-        for name in ['Scaffolding/DecodeItemNativeBlocksCompliance.v',
-                     'Scaffolding/DecodeItemNativeBlocksComplianceFixtures.v']:
-            self.assertEqual(outputs[name], historical('cp-p1-s53', name), name)
+        self.assertEqual(outputs['ZesuSsz/Compliance/DecodeItemCompliance.v'],
+                         historical('cp-p1-s53', HISTORICAL_COMPLIANCE))
         self.assertEqual(len(provenance['remaining_native_hypotheses']), 15)
         self.assertNotIn('native800d6974', provenance['remaining_native_hypotheses'])
         self.assertEqual(outputs['ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v'].count(
@@ -65,7 +66,7 @@ class CompletePromotionTests(unittest.TestCase):
 
     def test_record_fields_and_destruct_names_match_after_each_removal(self):
         status = 'ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v'
-        compliance = 'Scaffolding/DecodeItemNativeBlocksCompliance.v'
+        compliance = 'ZesuSsz/Compliance/DecodeItemCompliance.v'
         originals = {name: (self.workspace / name).read_text() for name in INPUTS}
         sites = re.findall(r'^  native800d([0-9a-f]+)\s*:', originals[status], re.M)
         cases = [('first', sites[0], sites), ('middle', sites[len(sites) // 2], sites),
@@ -142,7 +143,7 @@ class CompletePromotionTests(unittest.TestCase):
 
     def test_all_unrelated_native_hypotheses_remain_exact(self):
         outputs, _ = complete_promotion.plan(self.workspace, 0x800d6974, MODULE, LEMMA)
-        original = (self.workspace / 'Scaffolding/DecodeItemNativeBlocksCompliance.v').read_text()
+        original = (self.workspace / 'ZesuSsz/Compliance/DecodeItemCompliance.v').read_text()
         for site in ['6960', '697c', '698c', '69b0', '69e8', '6a08', '6a24', '6a38',
                      '6a40', '6a78', '6aa8', '6ac4', '6ad8', '6ae0', '6b08']:
             name = 'native800d' + site
@@ -151,7 +152,7 @@ class CompletePromotionTests(unittest.TestCase):
             # The removed declaration is the exact substring missing from the
             # balanced-binder removal. Check its presence in the final source.
             end = start + len(original) - len(removed)
-            self.assertIn(original[start:end], outputs['Scaffolding/DecodeItemNativeBlocksCompliance.v'])
+            self.assertIn(original[start:end], outputs['ZesuSsz/Compliance/DecodeItemCompliance.v'])
 
     def status_table(self, broken=False):
         production = self.workspace / INPUTS[0]
@@ -177,11 +178,11 @@ class CompletePromotionTests(unittest.TestCase):
                                                   self.workspace / 'report.json', table)
         self.assertEqual(report['native_status']['open_closures'], 15)
         self.assertEqual(report['native_status']['closed_6974']['theorem'], LEMMA)
-        self.assertEqual(len(report['generated_sources']), 7)
+        self.assertEqual(len(report['generated_sources']), 5)
         self.assertTrue(report['success'])
         self.assertEqual(report['status'], 'verified')
         verifier.assert_called_once()
-        self.assertEqual(len(verifier.call_args.args[1]), 7)
+        self.assertEqual(len(verifier.call_args.args[1]), 5)
         self.assertEqual((self.workspace / INPUTS[2]).read_text(),
                          historical('cp-p1-s50', INPUTS[2]))
 
@@ -196,7 +197,7 @@ class CompletePromotionTests(unittest.TestCase):
         self.assertFalse(report['success'])
         self.assertEqual(report['status'], 'dry_run')
         self.assertNotIn('kernel_verification_required', report)
-        self.assertEqual(len(report['generated_sources']), 7)
+        self.assertEqual(len(report['generated_sources']), 5)
 
     def test_failed_verification_restores_sources_and_reports_failure(self):
         table = self.status_table()

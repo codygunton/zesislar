@@ -1,3 +1,0 @@
-Require Import ZesuSsz.Compliance.DecodeItemCompliance.
-
-Definition decodeItemNativeBlocksSelectedCompliance := decodeItemSelectedCompliance.

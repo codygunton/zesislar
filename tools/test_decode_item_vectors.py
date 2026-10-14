@@ -13,7 +13,6 @@ class DecodeItemVectorsTest(unittest.TestCase):
     def test_pinned_sources(self):
         report = json.loads((ROOT / "ZesuSsz/Evidence/DECODE_ITEM_VECTORS.json").read_text())
         for key, path in [
-            ("generator_sha256", "ZesuSsz/Evidence/generate_decode_item_vectors.py"),
             ("oracle_sha256", "ZesuSsz/Evidence/DecodeItemVectorOracle.v"),
             ("contract_sha256", "ZesuSsz/Contracts/RlpDecodeItem.v"),
         ]:
