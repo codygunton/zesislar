@@ -1,0 +1,42 @@
+{
+  "generator_module": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/ZesuSsz/Evidence/check_spec_shapes.py",
+  "generator_sha256": "d96c585099998211e68b0ff3ecf6f04ec51d69e17d88cd00400ef7b5a75f2d88",
+  "functions": [
+    "shape_counts",
+    "unfold_opacity_count"
+  ],
+  "rows": {
+    "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v": {
+      "function_outputs": {
+        "uninferable_existentials": 0,
+        "predicates_without_unfold": 0,
+        "disjunctive_specs": 0,
+        "frame_parameters_in_closed_specs": 0,
+        "unfold_without_typeclasses_opaque": 0
+      },
+      "inventory_row": {}
+    },
+    "ZesuSsz/Compliance/DecodeItemLoopSteps.v": {
+      "function_outputs": {
+        "uninferable_existentials": 0,
+        "predicates_without_unfold": 0,
+        "disjunctive_specs": 0,
+        "frame_parameters_in_closed_specs": 0,
+        "unfold_without_typeclasses_opaque": 0
+      },
+      "inventory_row": {}
+    },
+    "ZesuSsz/Compliance/DecodeItemExitMeanings.v": {
+      "function_outputs": {
+        "uninferable_existentials": 0,
+        "predicates_without_unfold": 0,
+        "disjunctive_specs": 0,
+        "frame_parameters_in_closed_specs": 0,
+        "unfold_without_typeclasses_opaque": 0
+      },
+      "inventory_row": {}
+    }
+  },
+  "existing_inventory_matches": true,
+  "inventory_mutated": false
+}
