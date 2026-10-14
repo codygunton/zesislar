@@ -1,0 +1,29 @@
+{
+  "item": "R1b mask normalizer comparison candidate",
+  "base": "2c5e57b3518c52aa12c115e977c48829c26dfaea",
+  "R1a_parent": "0b22b598d71d6bd810b006264a74bf70b53512a9",
+  "report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-av-r1-entry-intro-ec272/_build/r1b-production-focused-036/REPORT.json",
+    "sha256": "e691b79aa2351764db8e7c7698ceaf4a72e569552ff6074f4b31529937c9f8c7"
+  },
+  "sources": {
+    "ZesuSsz/Automation/BitvectorFacts.v": "aff622794ce8774c62d46db7e4b9dc470590fbe5f8a5d0a561c984a06f84f2e2",
+    "ZesuSsz/Automation/Hooks.v": "0e3edd74b429b55b60982a2f3688f04e0a33449adf612c52245258832e5e154c",
+    "ZesuSsz/Proofs/Tests/EntryMask.v": "3b631dd53ddae6fb1a2e2892a3a1d990efef6eaa646f1ea33fa3725689588331"
+  },
+  "focused_exit": 0,
+  "changed_inputs": [],
+  "MCP_method": "module_m",
+  "MCP_assumptions": [],
+  "normalizer_controls": 11,
+  "final_groups": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "native_table": "pending C",
+  "check_fast": "pending C table per Orch sequence",
+  "check_iris": "pending Root",
+  "native_closure": false
+}
