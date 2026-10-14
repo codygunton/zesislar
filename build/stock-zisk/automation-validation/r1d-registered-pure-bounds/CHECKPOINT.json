@@ -1,0 +1,39 @@
+{
+  "item": "r1d-registered-pure-bounds",
+  "source_base": "a4ce9f06ea74a6fb8e70903073ecdc061ded60c8",
+  "class_dependency": "1ad066a75643579fc319ab10a7f2166dcda9ce44",
+  "registration_dependency": "c2d6ebcec1aa7e7a10582c1ba08202b42a4ca1f0",
+  "new_lemmas": [
+    {
+      "name": "decodeItemBigEndianNonnegativePure",
+      "statement": "Lemma decodeItemBigEndianNonnegativePure (bytes : list byte) :\n  0 <= bigEndian bytes.",
+      "statement_sha256": "18a686461379b8e4ae83e0a0c6a8d2ea4e9650dce2654a818db8af43700440fd"
+    },
+    {
+      "name": "decodeItemCompletedFoldHeaderEndBound",
+      "statement": "Lemma decodeItemCompletedFoldHeaderEndBound args n payloadStart bytes :\n  decodeItemC1BDomain args ->\n  decodeItemByteFoldFacts args n n payloadStart bytes ->\n  0 <= decodeItemInputPointer args + 1 + n < word64Modulus.",
+      "statement_sha256": "2b5bded8c9072ba529804da9c789842a30cc5ed4d29ecd40295f9502258e101c"
+    }
+  ],
+  "registration": "Five exported goal-keyed SimplAnd hints; loaded through the unexported DecodeItemDataRegistrations module.",
+  "checks": "Eight interactive proofs; complete zero groups; actual Qed; full compilation; module_m exact verification; assumptions[]; normal owned closure.",
+  "interface_lines": {
+    "new_module": 68,
+    "registration_delta": 2,
+    "total_delta": 70,
+    "previous_additional_delta": 134
+  },
+  "limits": [
+    "Routes require completed FoldFacts already extracted by the entry introduction. HeaderEnd also requires C1BDomain.",
+    "ValueBytes must match the retained whole logical header byte list; canonical take n rest equality remains explicit.",
+    "No accepting guard is discharged or removed. No spatial entry premise is strengthened.",
+    "Hint Extern registers SimplAnd goals. No new ZesuDerivedFacts or EntryIntro instance is added.",
+    "DataRegistrations imports and exports the bound module but remains unexported by DecodeItemHints.",
+    "Integration owns umbrella export and check-fast. This unit claims focused checks and full MCP records only."
+  ],
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-additional-facts-dad8c896/_build/r1d-checkpoint005/REPORT.json",
+    "sha256": "b4ecc5e5c3425050e7a1b3c9b45fabac6e0e3281c40656243ea60155dc062526",
+    "bindings": 23
+  }
+}
