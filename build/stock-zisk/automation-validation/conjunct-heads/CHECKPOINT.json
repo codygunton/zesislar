@@ -1,0 +1,31 @@
+{
+  "item": "six-successor-conjunct-heads",
+  "metadata_only": true,
+  "source_root": "97ec87a6b0632670e2d1047acd9bb912d02d0e0c",
+  "delivery_root": "e6fd15b26a0f3fab65b182a3a0be15c3daaebda9",
+  "E3_entry_commit": "1ab77096986045af66e25f2b2e10526541ab3436",
+  "report_path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/r1c-conjunct-heads005/REPORT.json",
+  "report_sha256": "f6385707a6b1ec737b282a2102a131a3647a2b2a913cef336893d91133d38c25",
+  "report_bindings": 16,
+  "details_path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/r1c-conjunct-heads005/HEAD-AUDIT.json",
+  "details_sha256": "f5affe5360856d264fa2237a61dc7a70507f7d4074e6acca64ae01a8329dec79",
+  "pure_conjunct_counts": {
+    "6a14": 4,
+    "6ab4": 4,
+    "6a40": 12,
+    "6b08": 12,
+    "698cLiteral_E3": 13,
+    "698cShortString_E3": 14
+  },
+  "total": 59,
+  "none_source_head_candidates": 34,
+  "ambiguity_control_cases": 13,
+  "proof_applicability_claim": false,
+  "registered_availability": "The accepted six instances are inactive on the audited Root; plain lemmas stay plain.",
+  "premises": "Completed acceptance retains the fit condition. Guard bridges require completed fold facts and accepting branch comparisons.",
+  "MCP_record": "Six separate entry Prints passed. Four introduction, two loop, and seven E3 exit Checks passed in their recorded scopes. The prior guard certificate supplies the bridge type.",
+  "preserved_query_failures": "001 unavailable introduction Check;003 unavailable normal698c Check;004 unavailable guard Check.",
+  "focused_checks": "JSON schema/counts; all six actual Print conjunction counts match the source leaf counts; source/hash bindings.",
+  "gate": "Metadata only; no proof or generic rule changed.",
+  "execution_queue": "empty"
+}
