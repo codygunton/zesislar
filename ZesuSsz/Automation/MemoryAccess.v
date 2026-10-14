@@ -47,6 +47,13 @@ Proof. intros Hwidth Hbase Hoffset Hextent Hnowrap. split; lia. Qed.
 Ltac zesu_memory_offset_integer offset :=
   lazymatch offset with
   | Z_to_bv 64 ?value => constr:(value)
+  | @BV _ ?value _ =>
+      let closed := constr:((ltac:(tryif is_closed_term value
+        then exact true else exact false)) : bool) in
+      lazymatch closed with
+      | true => constr:(value)
+      | false => constr:(bv_unsigned offset)
+      end
   | bv_add ?left ?right =>
       let leftZ := zesu_memory_offset_integer left in
       let rightZ := zesu_memory_offset_integer right in
@@ -169,48 +176,77 @@ Ltac zesu_memory_access_prepare facts pointer byteLength continuation :=
           continuation name resource base offset values Haddress Hinterval Hindex
       end)).
 
-Ltac zesu_memory_access_select name resource base offset values Haddress Hinterval Hindex :=
-  rewrite Haddress;
-  notypeclasses refine (tac_find_in_context (ZesuMemRegionSearch (base + offset))
-    (find_mem_region_inst (base + offset)) _);
-  unfold find_mem_region_inst; simpl; repeat liExist false;
-  notypeclasses refine (tac_find_hyp_equal (ZesuMemRegionSearch (base + offset))
-    resource _ _ _ _ _);
-  [apply find_mem_region_array; left;
-    change (base <= base + offset < base + Z.of_nat (length values) * 1)%Z;
-    rewrite Z.mul_1_r; exact (proj1 Hinterval) | ];
-  iFrame name;
-  cbn [N.eqb Pos.eqb zesu_byte_access_size];
-  iSplitR; [iPureIntro; first [reflexivity | rewrite Z.mod_1_r; reflexivity] | ];
-  iExists (Z.to_nat offset);
-  iSplitR; [iPureIntro; rewrite ?Z.div_1_r; cbn [N.to_nat]; lia | ];
-  iSplitR; [iPureIntro; cbn [N.to_nat]; lia | ];
-  try (iExists eq_refl).
+(* This local certificate exists only during one checked region selection. *)
+Class MemoryAccessSelection (address : Z) : Type := {
+  memory_selection_base : Z;
+  memory_selection_values : list (bv 8);
+  memory_selection_width : nat;
+  memory_selection_bounds :
+    0 <= memory_selection_base /\ memory_selection_base <= address /\
+    address + Z.of_nat memory_selection_width <=
+      memory_selection_base + Z.of_nat (length memory_selection_values) /\
+    memory_selection_base + Z.of_nat (length memory_selection_values) <= 2 ^ 64
+}.
+Global Hint Mode MemoryAccessSelection + : typeclass_instances.
+
+Lemma memory_access_find_array `{!islaG Sigma} (address : Z)
+    (choice : MemoryAccessSelection address) (T : mem_mapsto_kind -> iProp Sigma) :
+  ((@memory_selection_base address choice) ↦ₘ∗ (@memory_selection_values address choice) ∗
+    T (MKArray 8 (@memory_selection_base address choice) (@memory_selection_values address choice))) ⊢
+  find_in_context (FindMemMapsTo address) T.
+Proof.
+  iIntros "[Hbytes HT]".
+  iExists (MKArray 8 (@memory_selection_base address choice) (@memory_selection_values address choice)).
+  by iFrame.
+Qed.
+
+Definition memory_access_array_inst `{!islaG Sigma} `{!ZesuStepMemoryAccess}
+    (address : Z) {choice : MemoryAccessSelection address} :=
+  [instance memory_access_find_array address choice with FICSyntactic].
+Global Existing Instance memory_access_array_inst | 0.
+
+Ltac zesu_memory_continuation_width target continuation :=
+  lazymatch target with
+  | context [N.to_nat ?width] => continuation width
+  | context [Z.of_N ?width] => continuation width
+  end.
 
 Ltac zesu_memory_access_if_enabled facts :=
+  lazymatch goal with
+  | |- envs_entails _ (find_in_context (FindMemMapsTo _) _) => idtac
+  end;
   zesu_switch_enabled constr:(ZesuStepMemoryAccess);
   zesu_expose_environment_alias;
   unLET;
   lazymatch goal with
-  | |- envs_entails _ (WPasm (WriteMem _ _
-      (RVal_Bits (bv_to_bvn ?pointer)) _ ?length _ _ :t: _)) =>
-      zesu_memory_access_prepare facts pointer length
-        ltac:(fun name resource base offset values Haddress Hinterval Hindex =>
-          unshelve (notypeclasses refine
-            (tac_fast_apply (li_wp_write_mem_zesu _ _ _ _ _ _ _ _ _) _));
-          iSplitR; [iPureIntro; reflexivity | ];
-          iSplitR; [iPureIntro; discriminate | ];
-          zesu_memory_access_select name resource base offset values
-            Haddress Hinterval Hindex)
-  | |- envs_entails _ (WPasm (ReadMem _ _
-      (RVal_Bits (bv_to_bvn ?pointer)) ?length _ _ :t: _)) =>
-      zesu_memory_access_prepare facts pointer length
-        ltac:(fun name resource base offset values Haddress Hinterval Hindex =>
-          notypeclasses refine
-            (tac_fast_apply (li_wp_read_mem_zesu _ _ _ _ _ _ _ _) _);
-          iSplitR; [iPureIntro; reflexivity | ];
-          iSplitR; [iPureIntro; discriminate | ];
-          zesu_memory_access_select name resource base offset values
-            Haddress Hinterval Hindex)
+  | |- envs_entails _
+      (find_in_context (FindMemMapsTo (bv_unsigned ?pointer)) ?K) =>
+      zesu_memory_pointer_parts pointer ltac:(fun base offset =>
+        iMatchHyp ltac:(fun name resource =>
+          lazymatch resource with
+          | (?actual ↦ₘ∗ ?values)%I =>
+              constr_eq base actual;
+              let target := eval cbn [N.eqb Pos.eqb
+                zesu_byte_access_size] in (K (MKArray 8 base values)) in
+              zesu_memory_continuation_width target ltac:(fun width =>
+                zesu_memory_access_prepare facts pointer width
+                  ltac:(fun selected resource base offset values Haddress
+                      Hinterval Hindex =>
+                    let count := eval cbv in (N.to_nat width) in
+                    let Hbounds := fresh "HselectionBounds" in
+                    assert (Hbounds :
+                      0 <= base /\ base <= base + offset /\
+                      base + offset + Z.of_nat count <=
+                        base + Z.of_nat (length values) /\
+                      base + Z.of_nat (length values) <= 2 ^ 64)
+                      by (repeat split; lia);
+                    let certificate := constr:(@Build_MemoryAccessSelection
+                      (base + offset) base values count Hbounds) in
+                    assert_fails (has_evar certificate);
+                    let selected := fresh "memorySelection" in
+                    pose (selected := certificate);
+                    rewrite Haddress;
+                    liFindInContext;
+                    unfold selected in *; clear selected))
+          end))
   end.
-
