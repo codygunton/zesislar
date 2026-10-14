@@ -97,8 +97,7 @@ Ltac zesu_low_mask_integer_offset width offset continuation :=
       continuation integer
   end.
 
-Ltac zesu_low_mask_sub_modulus_if_enabled :=
-  zesu_switch_enabled constr:(ZesuStepEntryIntro);
+Ltac zesu_low_mask_sub_modulus_goal :=
   lazymatch goal with
   | |- bv_unsigned (bv_and (bv_add ?value ?offset) ?mask) = ?requested =>
       assert_fails (has_evar value);
@@ -130,6 +129,44 @@ Ltac zesu_low_mask_sub_modulus_if_enabled :=
       end
   end.
 
+
+(* Normalize a branch guard only when it contains a complete low-bit wrap. *)
+Ltac zesu_low_mask_branch_hypotheses :=
+  repeat match goal with
+  | H : context [bv_signed (bv_zero_extend 128
+        (bv_and (bv_add ?value ?offset) ?mask))] |- _ =>
+      assert_fails (has_evar value);
+      assert_fails (has_evar offset);
+      is_closed_term mask;
+      progress (repeat match type of H with
+        | context [bv_signed (bv_zero_extend 128 ?word)] =>
+            lazymatch type of word with bv 64 => idtac end;
+            assert_fails (has_evar word);
+            rewrite (zesu_signed_zero_extend_64_128 word) in H
+        end)
+  | H : context [bv_unsigned (bv_and (bv_add ?value ?offset) ?mask)] |- _ =>
+      assert_fails (has_evar value);
+      is_closed_term mask;
+      lazymatch type of value with bv ?width =>
+        is_closed_term width;
+        let low := eval vm_compute in
+          (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
+        let modulus := eval vm_compute in (bv_modulus low) in
+        zesu_low_mask_integer_offset width offset ltac:(fun integer =>
+          let Hnormalized := fresh "HmaskNormalized" in
+          assert (Hnormalized :
+            bv_unsigned (bv_and (value + offset) mask) =
+              bv_unsigned value + integer - modulus)
+            by zesu_low_mask_sub_modulus_goal;
+          progress rewrite Hnormalized in H;
+          clear Hnormalized)
+      end
+  end.
+
+Ltac zesu_low_mask_sub_modulus_if_enabled :=
+  zesu_switch_enabled constr:(ZesuStepMaskNormalizer);
+  first [solve [zesu_low_mask_sub_modulus_goal]
+    | solve [progress zesu_low_mask_branch_hypotheses; lia]].
 
 (* Keep low-bit mask equalities symbolic before general arithmetic unfolds them. *)
 Ltac zesu_low_mask_if_enabled :=
