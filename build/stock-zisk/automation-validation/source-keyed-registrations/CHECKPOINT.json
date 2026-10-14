@@ -1,0 +1,27 @@
+{
+  "integration_root": "692a4598942f909bbe9b661ae9e35dccc2726dd0",
+  "private_dependency_commit": "b1b4697d25961231241c8d4213bf1de7c7e398c9",
+  "verified_class_commit": "1ad066a75643579fc319ab10a7f2166dcda9ce44",
+  "class_source_sha256": "35ec8db172ff7edd25c8fa4f54dfd2778addd7db85ad56d381eccf74ba66dec6",
+  "source": "ZesuSsz/Compliance/DecodeItemDataRegistrations.v",
+  "source_sha256": "4434f7609d4e759a5ddd1dbb127100ac8d3a0fdc3d848317475dbfe8d5fae7bd",
+  "instances": {
+    "decodeItemEntry6a08IntroductionRegistered": "0ca26a7f2a27f9ace34855bfcc693a67527ec36916ce3c7d5ab10e67aa22fd81",
+    "decodeItemEntry6aa8IntroductionRegistered": "0e97b538bd7a9fc175171e5380dd3fa3c9395e7a0c104c72e2ad224f2c021e5b",
+    "decodeItemEntry6a38IntroductionRegistered": "60d91aad282d0d812375eef7bfb9e702980b8f6b0386494338314b8c973cec8e",
+    "decodeItemEntry6ad8IntroductionRegistered": "c13b55cbd5069126295cea8f52927ed9636eeea31f56bc1be97918f3f1c59700",
+    "decodeItemHeader6a24StepRegistered": "221bac24f621b8178b7dfb615734b446184148016da23e180dcf6da9d5cf165e",
+    "decodeItemHeader6ac4StepRegistered": "4e040294b565297bd79d9a4341575041010e2a7b581a274538f1a489e6487778"
+  },
+  "MCP_record": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-class-checkpoint001/REPORT.json",
+  "MCP_record_sha256": "cfc4b875b303572f3c0e3cee0b02f6f697bf2b0f11907e46a328a9892b2de4d1",
+  "MCP_bindings": 22,
+  "MCP_result": "Six actual class-resolution proofs, all four groups zero, actual Qed, full compilation, exact registered-constant verification, Print Assumptions, assumptions[], normal owned closure.",
+  "shape_row_receipt": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-class-checkpoint001/GENERATED-SHAPE-ROW.json",
+  "shape_row_receipt_sha256": "1ef8c028f5a4ce4ea14eade557575c55fdf67aa00f37c7fef4657460c3856c84",
+  "project_gate": "Orch explicitly releases this unexported commit despite the Compliance export-checker constraint. Root will merge with R1 and run one Iris gate.",
+  "production_exported": false,
+  "runtime_consumption_measured": false,
+  "loop_source_limit": "Loop keys match headers nested below the outer entry existential binders. No hook ordering is defined by the released class declarations.",
+  "accepted_lemmas_changed": false
+}
