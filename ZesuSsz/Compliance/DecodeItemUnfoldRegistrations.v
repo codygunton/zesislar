@@ -97,7 +97,7 @@ Global Instance : LithiumUnfold (@decodeItemEntryAt800d6aa8) := I.
 Global Instance : LithiumUnfold (@decodeItemEntryAt800d6ab4) := I.
 Global Instance : LithiumUnfold (@decodeItemEntryAt800d6ad8) := I.
 Global Typeclasses Opaque decodeItemReturnEntryCore
-  decodeItemEntryAt800d698c decodeItemEntryAt800d69b0
+  decodeItem698cCaseResources decodeItemEntryAt800d69b0
   decodeItemEntryAt800d6a40 decodeItemEntryAt800d6a78
   decodeItemEntryAt800d6ae0 decodeItemEntryAt800d6b08
   decodeItemReturnOkExit decodeItemReturnErrorExit
@@ -106,7 +106,7 @@ Global Typeclasses Opaque decodeItemReturnEntryCore
   decodeItemReturnAt800d6a40 decodeItemReturnAt800d6a78
   decodeItemReturnAt800d6ae0 decodeItemReturnAt800d6b08.
 Global Instance : LithiumUnfold (@decodeItemReturnEntryCore) := I.
-Global Instance : LithiumUnfold (@decodeItemEntryAt800d698c) := I.
+Global Instance : LithiumUnfold (@decodeItem698cCaseResources) := I.
 Global Instance : LithiumUnfold (@decodeItemEntryAt800d69b0) := I.
 Global Instance : LithiumUnfold (@decodeItemEntryAt800d6a40) := I.
 Global Instance : LithiumUnfold (@decodeItemEntryAt800d6a78) := I.

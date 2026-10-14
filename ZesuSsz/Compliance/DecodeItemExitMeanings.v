@@ -12,26 +12,48 @@ Require Import ZesuSsz.Compliance.DecodeItemReturnExitResources.
 From Coq Require Import ZArith Lia.
 Open Scope Z_scope.
 
-Lemma decodeItemReturn698cMeaning `{!islaG Sigma} `{!threadG}
-    args locals pointerBytes lengthBytes prefix rest isLiteral :
-  decodeItemEntryAt800d698c args locals pointerBytes lengthBytes prefix rest isLiteral ⊢
+Lemma decodeItemReturn698cLiteralMeaning `{!islaG Sigma} `{!threadG}
+    args (x11 x12 x13 x14 x15 x16 : bv 64)
+    (outputBytes frameBytes pointerBytes lengthBytes : list byte)
+    (inputPrefix : byte) (rest : list byte) :
+  decodeItemEntryAt800d698cLiteral args x11 x12 x13 x14 x15 x16
+    outputBytes frameBytes pointerBytes lengthBytes inputPrefix rest ⊢
   ⌜(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)
-      (decodeItemBeforeStorage args) after (candidateSuccess false (if isLiteral then 0 else 1) (if isLiteral then 1 else bv_unsigned prefix - 128)) ->
+      (decodeItemBeforeStorage args) after (candidateSuccess false 0 1) ->
     DecodeMeaningModuloKnownBugs args after)%Z⌝.
 Proof.
-  unfold decodeItemEntryAt800d698c, decodeItemReturnEntryCore.
+  unfold decodeItemEntryAt800d698cLiteral, decodeItemReturnEntryCore.
   iIntros "(Hcore & %Hfacts)".
   iDestruct "Hcore" as "(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)".
-  iPureIntro.
-  intros after Himage.
+  iPureIntro. intros after Himage.
   destruct Hfacts as (Hhead & Hprefix & Hpointer & Hlength & Hconsumed & Haccepted & _).
-  destruct isLiteral; simpl in *.
-  { exact (decodeItemLiteralPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage). }
-  { eapply (decodeItemShortStringPostMeaning args after (bv_unsigned prefix - 128));
-      try eassumption; try exact (proj2 (proj1 Hcore)); unfold word64Modulus; lia. }
+  exact (decodeItemLiteralPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage).
 Qed.
 
-Print Assumptions decodeItemReturn698cMeaning.
+Print Assumptions decodeItemReturn698cLiteralMeaning.
+
+Lemma decodeItemReturn698cShortStringMeaning `{!islaG Sigma} `{!threadG}
+    args (x11 x12 x13 x14 x15 x16 : bv 64)
+    (outputBytes frameBytes pointerBytes lengthBytes : list byte)
+    (inputPrefix : byte) (rest : list byte) :
+  decodeItemEntryAt800d698cShortString args x11 x12 x13 x14 x15 x16
+    outputBytes frameBytes pointerBytes lengthBytes inputPrefix rest ⊢
+  ⌜(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)
+      (decodeItemBeforeStorage args) after (candidateSuccess false 1 (bv_unsigned inputPrefix - 128)) ->
+    DecodeMeaningModuloKnownBugs args after)%Z⌝.
+Proof.
+  unfold decodeItemEntryAt800d698cShortString, decodeItemReturnEntryCore.
+  iIntros "(Hcore & %Hfacts)".
+  iDestruct "Hcore" as "(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)".
+  iPureIntro. intros after Himage.
+  destruct Hfacts as (Hhead & Hprefix & Hpointer & Hlength & Hconsumed & Haccepted & _).
+  eapply (decodeItemShortStringPostMeaning args after (bv_unsigned inputPrefix - 128));
+    try eassumption; try exact (proj2 (proj1 Hcore)).
+  { change (0 <= @bv_unsigned 8%N inputPrefix - 128)%Z; apply (proj2 (Z.le_0_sub 128 (@bv_unsigned 8%N inputPrefix))); eapply Z.le_trans with (m := 129%Z); [vm_compute; discriminate | exact (proj1 Hprefix)]. }
+  { change (1 + (@bv_unsigned 8%N inputPrefix - 128) < 18446744073709551616)%Z; eapply Z.le_lt_trans with (m := (1 + (183 - 128))%Z); [apply (proj1 (Z.add_le_mono_l _ _ 1)); apply (proj1 (Z.sub_le_mono_r _ _ 128)); exact (proj2 Hprefix) | vm_compute; reflexivity]. }
+Qed.
+
+Print Assumptions decodeItemReturn698cShortStringMeaning.
 
 Lemma decodeItemReturn69b0Meaning `{!islaG Sigma} `{!threadG}
     args locals prefix rest :

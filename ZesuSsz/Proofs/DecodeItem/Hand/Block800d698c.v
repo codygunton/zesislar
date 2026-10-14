@@ -23,7 +23,7 @@ From iris.proofmode Require Import environments.
 
 Definition DesignedEntry_800d698c
     `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (pointerBytes : list byte) (lengthBytes : list byte) (inputPrefix : byte) (rest : list byte) (isLiteral : bool) : iProp Sigma :=
-  ((ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (locals) (pointerBytes) (lengthBytes) (inputPrefix) (rest) (isLiteral)) ∗
+  ((ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItem698cCaseResources (args) (locals) (pointerBytes) (lengthBytes) (inputPrefix) (rest) (isLiteral)) ∗
    True)%I.
 Global Instance : LithiumUnfold (@DesignedEntry_800d698c) := I.
 Global Typeclasses Opaque DesignedEntry_800d698c.

@@ -100,7 +100,7 @@ Lemma decodeItemLiteralOutputExpandedDirect `{!islaG Sigma} `{!threadG}
   ⊢ (decodeItemReturnEntryCore args (decodeItemRawOutputLocals args
     (Z_to_bv 64 (decodeItemInputPointer args)) 1 a3 a4 a5 a6 1 frameBytes) -∗
     ∃ (locals : DecodeItemReturnLocals) (pointerBytes lengthBytes : list byte),
-      decodeItemEntryAt800d698c args locals pointerBytes lengthBytes prefix rest true)%I.
+      decodeItem698cCaseResources args locals pointerBytes lengthBytes prefix rest true)%I.
 Proof.
   intros Hdomain Hhead Hclass Haccepted. iIntros "Hcore".
   iEval (unfold decodeItemReturnEntryCore) in "Hcore".
@@ -126,7 +126,7 @@ Lemma decodeItemShortStringOutputExpandedDirect `{!islaG Sigma} `{!threadG}
     (bv_add (Z_to_bv 64 (decodeItemInputPointer args)) 1) (bv_add payloadLength 1)
     a3 a4 a5 a6 payloadLength frameBytes) -∗
     ∃ (locals : DecodeItemReturnLocals) (pointerBytes lengthBytes : list byte),
-      decodeItemEntryAt800d698c args locals pointerBytes lengthBytes prefix rest false)%I.
+      decodeItem698cCaseResources args locals pointerBytes lengthBytes prefix rest false)%I.
 Proof.
   intros Hdomain Hhead Hclass Hlength Haccepted. iIntros "Hcore".
   iEval (unfold decodeItemReturnEntryCore) in "Hcore".

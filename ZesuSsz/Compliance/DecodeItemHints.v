@@ -1,4 +1,6 @@
 Require Export ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import isla.automation.
+Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
 Require Export ZesuSsz.Compliance.DecodeItemBranchGuardFacts.
 Require Export ZesuSsz.Compliance.DecodeItemCanonicalAnchors.
 Require Export ZesuSsz.Compliance.DecodeItemCompletedFoldFacts.
@@ -31,3 +33,10 @@ Require Export ZesuSsz.Compliance.DecodeItemReturnRestorationFacts.
 Require Export ZesuSsz.Compliance.DecodeItemShortListOutputMeaning.
 Require Export ZesuSsz.Compliance.DecodeItemEmptyStringOutputMeaning.
 Require Export ZesuSsz.Compliance.DecodeItemLongStringOutputMeaning.
+
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d698cLiteral) := I.
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d698cShortString) := I.
+Global Typeclasses Opaque decodeItemEntryAt800d698cLiteral decodeItemEntryAt800d698cShortString.
+
+Global Instance : LithiumUnfold (@decodeItemEntryAt800d698c) := I.
+Global Typeclasses Opaque decodeItemEntryAt800d698c.

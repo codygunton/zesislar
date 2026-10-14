@@ -15,16 +15,32 @@ Lemma decodeItemSlotBody800d698cConditional `{!islaG Sigma} `{!threadG}
   (Hnative : forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (pointerBytes : list byte) (lengthBytes : list byte) (inputPrefix : byte) (rest : list byte) (isLiteral : bool),
   decodeItemSelectedCode -∗
   instr_body 0x800d698c
-    (decodeItemEntryAt800d698c args locals pointerBytes lengthBytes inputPrefix rest isLiteral ∗ True)) :
+    (decodeItem698cCaseResources args locals pointerBytes lengthBytes inputPrefix rest isLiteral ∗ True)) :
   ⊢ block_table_pre decodeItemBlockTable -∗
     instr_body 0x800d698c decodeItemState800d698c.
 Proof.
   iIntros "#Htable".
   rewrite instr_pre'_eq /instr_pre'_def /=.
-  iIntros "(%args & %locals & %pointerBytes & %lengthBytes & %inputPrefix & %rest & %isLiteral & Hentry)".
+  iIntros "(%args & %x11 & %x12 & %x13 & %x14 & %x15 & %x16 & %outputBytes & %frameBytes & %pointerBytes & %lengthBytes & %inputPrefix & %rest & Hentry)".
   iPoseProof (block_table_pre_code with "Htable") as "#Hcode".
-  iPoseProof (Hnative args locals pointerBytes lengthBytes inputPrefix rest isLiteral with "Hcode") as "Hbody".
-  iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in "Hbody".
-  iApply ("Hbody" with "[Hentry]"). iFrame.
+  iEval (unfold decodeItemEntryAt800d698c) in "Hentry".
+  iDestruct "Hentry" as "[Hentry|Hentry]".
+  { iPoseProof (Hnative args
+      {| returnA1 := x11; returnA2 := x12; returnA3 := x13;
+         returnA4 := x14; returnA5 := x15; returnA6 := x16;
+         returnStorage := outputBytes; returnFrame := frameBytes |}
+      pointerBytes lengthBytes inputPrefix rest true with "Hcode") as "Hbody".
+    iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in "Hbody".
+    iApply ("Hbody" with "[Hentry]").
+    iSplitL "Hentry"; last done. iExact "Hentry". }
+  { iPoseProof (Hnative args
+      {| returnA1 := x11; returnA2 := x12; returnA3 := x13;
+         returnA4 := x14; returnA5 := x15; returnA6 := x16;
+         returnStorage := outputBytes; returnFrame := frameBytes |}
+      pointerBytes lengthBytes inputPrefix rest false with "Hcode") as "Hbody".
+    iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in "Hbody".
+    iApply ("Hbody" with "[Hentry]").
+    iSplitL "Hentry"; last done. iExact "Hentry". }
+
 Qed.
 Print Assumptions decodeItemSlotBody800d698cConditional.
