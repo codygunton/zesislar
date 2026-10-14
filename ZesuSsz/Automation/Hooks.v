@@ -86,6 +86,51 @@ Ltac zesu_name_machine_bound expected name :=
       rename H into name
   end.
 
+(* Reduce one complete low-bit wrap before general arithmetic. *)
+Ltac zesu_low_mask_integer_offset width offset continuation :=
+  lazymatch offset with
+  | Z_to_bv width ?integer =>
+      assert_fails (has_evar integer); continuation integer
+  | _ =>
+      is_closed_term offset;
+      let integer := eval vm_compute in (bv_unsigned offset) in
+      continuation integer
+  end.
+
+Ltac zesu_low_mask_sub_modulus_if_enabled :=
+  zesu_switch_enabled constr:(ZesuStepEntryIntro);
+  lazymatch goal with
+  | |- bv_unsigned (bv_and (bv_add ?value ?offset) ?mask) = ?requested =>
+      assert_fails (has_evar value);
+      assert_fails (has_evar requested);
+      is_closed_term mask;
+      lazymatch type of value with bv ?width =>
+        is_closed_term width;
+        let low := eval vm_compute in
+          (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
+        let modulus := eval vm_compute in (bv_modulus low) in
+        let Hwidth := fresh "HmaskWidth" in
+        assert (Hwidth : (low <= width)%N) by (vm_compute; congruence);
+        let Hmask := fresh "HmaskBits" in
+        assert (Hmask : bv_unsigned mask = Z.ones (Z.of_N low)) by
+          (vm_compute; reflexivity);
+        zesu_low_mask_integer_offset width offset ltac:(fun integer =>
+          let Hoffset := fresh "HmaskOffset" in
+          assert (Hoffset : offset = Z_to_bv width integer) by
+            first [reflexivity | is_closed_term offset;
+              apply bv_eq; vm_compute; reflexivity];
+          let Hrange := fresh "HmaskRange" in
+          assert (Hrange : modulus <= bv_unsigned value + integer < 2 * modulus)
+            by lia;
+          first [let checked := constr:(eq_refl :
+                   offset = Z_to_bv width integer) in idtac | rewrite Hoffset];
+          rewrite (zesu_unsigned_low_mask_add_sub_modulus
+            width low value mask integer Hwidth Hmask Hrange);
+          solve [reflexivity | change (bv_unsigned value + integer - modulus = requested); lia])
+      end
+  end.
+
+
 (* Keep low-bit mask equalities symbolic before general arithmetic unfolds them. *)
 Ltac zesu_low_mask_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepLowMask);
@@ -144,6 +189,7 @@ Ltac zesu_strict_signed_if_enabled :=
 (* Library solvers also call these primitives without the project finisher. *)
 Ltac lia ::= zesu_bounded_arithmetic ltac:(Zify.zify; xlia zchecker).
 Ltac bv_solve ::= first [solve [zesu_strict_signed_if_enabled] |
+  solve [zesu_low_mask_sub_modulus_if_enabled] |
   solve [zesu_low_mask_if_enabled] |
   zesu_bounded_arithmetic ltac:(
   bv_simplify_arith;
@@ -153,7 +199,8 @@ Ltac bv_solve ::= first [solve [zesu_strict_signed_if_enabled] |
   simpl; lia)].
 
 Ltac zesu_solve_machine_bounds :=
-  first [solve [zesu_low_mask_if_enabled] |
+  first [solve [zesu_low_mask_sub_modulus_if_enabled] |
+    solve [zesu_low_mask_if_enabled] |
     zesu_bounded_arithmetic ltac:(solve [zesu_normalize_binary_nat_hypotheses;
       zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; bv_solve])].
 Ltac zesu_solve_machine_linear :=
