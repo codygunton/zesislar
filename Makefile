@@ -117,7 +117,10 @@ check-evidence-tools:
 	@echo "uncached checks: machine config, tests, hygiene, spec shapes"
 	$(PYTHON) tools/machine_config.py --check
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
-	$(PYTHON) -m unittest tools.block.test_approved_switches
+	$(PYTHON) -m unittest tools.block.test_approved_switches tools.block.test_automation_lints
+	$(PYTHON) -m tools.block.check_approved_switches
+	$(PYTHON) -m tools.block.check_generic_automation
+	$(PYTHON) -m tools.block.check_data_only_lemmas
 	$(PYTHON) -m unittest discover -s tools/stock_zisk -p 'test_manifest.py'
 	$(PYTHON) -m unittest discover -s tools/stock_zisk/machine_map -p 'test_*.py'
 	$(PYTHON) tools/stock_zisk/machine_map/generate.py --build $(STOCK_DIR) --check
