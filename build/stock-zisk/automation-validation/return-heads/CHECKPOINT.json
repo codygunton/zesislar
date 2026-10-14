@@ -1,0 +1,33 @@
+{
+  "item": "return-heads",
+  "Root": "c6532d6af1b48e011eca05aa9e7ed67def9eb319",
+  "E3_separate_scope": "b5e02ceb9e8ecbd12c803a152da0a6a7b4291ecf",
+  "coverage": {
+    "entries": 8,
+    "Root_entries": 6,
+    "E3_entries": 2,
+    "theme_rows": 40,
+    "none": 16,
+    "multiple": 24,
+    "single": 0
+  },
+  "immediate_entry_pure_leaves": {
+    "Root": 53,
+    "E3": 27
+  },
+  "layer_counts": {
+    "immediate_entry_themes_present": 0,
+    "themes_in_later_or_auxiliary_layers": 40
+  },
+  "none_cases": "Eight restored-register ownership heads and eight uninitialized-region heads have no data-only candidate.",
+  "ambiguity_limits": "Equality and meaning heads have multiple candidates. Exact operands, source keys, typed binders and conditional premises still control applicability. Alignment has no exact mod-4 candidate.",
+  "availability": "Plain exit lemmas. Existing S188/S189 ZesuDerivedFacts registrations. No active R3 registration or consumer claim.",
+  "MCP": "Complete narrow Root/E3 Print/Check captures. Final diagnostics kept 1/0/0/0 and used Abort. Three normal owned closures.",
+  "prior_attempts": "001/003 namespace symptoms; 004 restoration and 006 mask ByteFold inconsistencies. Full closure008 refreshed all planned helpers on Root.",
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-return-heads-d8a4810d/_build/return-heads-audit010/REPORT.json",
+    "sha256": "2f2a671e24943eb84d3ea87cd47319a850c32e90cdefa83ebf84f121dab19f94",
+    "bindings": 24
+  },
+  "checks": "Source hashes, eight expected entry Print commands, conditional fact preservation, explicit layers and final diagnostic closure checks passed. Metadata only."
+}
