@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "item": "instance-match",
+  "root": "38b9a7cccf27d3e315b8603cbd7663f2e6e25916",
+  "class_source_commit": "1ad066a75643579fc319ab10a7f2166dcda9ce44",
+  "B_registration_commit": "c2d6ebcec1aa7e7a10582c1ba08202b42a4ca1f0",
+  "registration_sha256": "4434f7609d4e759a5ddd1dbb127100ac8d3a0fdc3d848317475dbfe8d5fae7bd",
+  "method": "Compile top-level reflection aliases. Extract instance source from its compiled class type. Unfold only DesignedEntry_ and remove its trailing True. Capture each Print separately with Printing All. Compare complete normalized lambda terms and nested header applications. No type hash substitutes for term comparison.",
+  "normalization": "Whitespace only. No delta/beta/arithmetic normalization in the compared Print text. Alias construction unfolds the specified DesignedEntry_ wrapper only.",
+  "complete_query_count": 14,
+  "unexpected_mismatches": 0,
+  "loop_consumer": "pending(R4); intended back-edge source after opening the header entry",
+  "limits": ["No hook matched an owned machine state.", "The two loop outer differences are intentional. R4 consumer remains pending.", "The registration module remains unexported.", "Attempts 023-025 remain preserved and do not establish complete comparison pairs."],
+  "full_report": {"path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-instance-match-final-031/REPORT.json", "sha256": "db08eb0e3fab6724bc5c69579c300f2d89b22cd26be225b231934c7a3162b36a", "bindings": 38},
+  "evidence_check": {"command": ["make", "check-evidence-tools"], "start_utc": "2026-10-14T18:36:50.633079+00:00", "root": "692a4598942f909bbe9b661ae9e35dccc2726dd0", "exit_code": 0, "elapsed_seconds": 92.79023063299246},
+  "metadata_root": "692a4598942f909bbe9b661ae9e35dccc2726dd0",
+  "rows": [
+    {"block":"0x800d6a08","instance":"decodeItemEntry6a08IntroductionRegistered","immediate_verdict":"identical","instance_source":"@decodeItemEntryAt800d6a08 Sigma islaG0 H args frameBytes x13 inputPrefix rest","immediate_block_source":"@decodeItemEntryAt800d6a08 Sigma islaG0 H args frameBytes x13 inputPrefix rest","Z_to_bv_wrappers":"none in either source application"},
+    {"block":"0x800d6aa8","instance":"decodeItemEntry6aa8IntroductionRegistered","immediate_verdict":"identical","instance_source":"@decodeItemEntryAt800d6aa8 Sigma islaG0 H args frameBytes x13 inputPrefix rest","immediate_block_source":"@decodeItemEntryAt800d6aa8 Sigma islaG0 H args frameBytes x13 inputPrefix rest","Z_to_bv_wrappers":"none in either source application"},
+    {"block":"0x800d6a38","instance":"decodeItemEntry6a38IntroductionRegistered","immediate_verdict":"identical","instance_source":"@decodeItemEntryAt800d6a38 Sigma islaG0 H args n payloadStart lengthBytes frameBytes loaded inputPrefix rest","immediate_block_source":"@decodeItemEntryAt800d6a38 Sigma islaG0 H args n payloadStart lengthBytes frameBytes loaded inputPrefix rest","Z_to_bv_wrappers":"none in either source application"},
+    {"block":"0x800d6ad8","instance":"decodeItemEntry6ad8IntroductionRegistered","immediate_verdict":"identical","instance_source":"@decodeItemEntryAt800d6ad8 Sigma islaG0 H args n payloadStart lengthBytes frameBytes loaded inputPrefix rest","immediate_block_source":"@decodeItemEntryAt800d6ad8 Sigma islaG0 H args n payloadStart lengthBytes frameBytes loaded inputPrefix rest","Z_to_bv_wrappers":"none in either source application"},
+    {"block":"0x800d6a24","instance":"decodeItemHeader6a24StepRegistered","immediate_verdict":"differs","instance_source":"@RlpDecodeItemByteFold.decodeItemByteFoldStringHeader Sigma islaG0 H args n i payloadStart lengthBytes frameBytes loaded","immediate_block_source":"@decodeItemEntryAt800d6a24 Sigma islaG0 H args inputPrefix rest","Z_to_bv_wrappers":"none in either source application","after_opening_verdict":"identical","existential_order":["n","i","payloadStart","lengthBytes","frameBytes","loaded"]},
+    {"block":"0x800d6ac4","instance":"decodeItemHeader6ac4StepRegistered","immediate_verdict":"differs","instance_source":"@RlpDecodeItemByteFold.decodeItemByteFoldListHeader Sigma islaG0 H args n i payloadStart lengthBytes frameBytes loaded","immediate_block_source":"@decodeItemEntryAt800d6ac4 Sigma islaG0 H args inputPrefix rest","Z_to_bv_wrappers":"none in either source application","after_opening_verdict":"identical","existential_order":["n","i","payloadStart","lengthBytes","frameBytes","loaded"]}
+  ]
+}
