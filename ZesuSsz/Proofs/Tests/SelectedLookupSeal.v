@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
 From iris.proofmode Require Import environments.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.SelectedCodeLookup.

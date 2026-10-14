@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
 Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Export.Adequacy.
 Require Import ZesuSsz.Export.Executor.

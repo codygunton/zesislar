@@ -1,3 +1,4 @@
+Require Export ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
 Require Export ZesuSsz.Compliance.DecodeItemBranchGuardFacts.
 Require Export ZesuSsz.Compliance.DecodeItemCanonicalAnchors.
 Require Export ZesuSsz.Compliance.DecodeItemCompletedFoldFacts.

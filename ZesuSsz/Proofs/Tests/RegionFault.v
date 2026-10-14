@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
 From Coq Require Import ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
