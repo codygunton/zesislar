@@ -1,0 +1,54 @@
+{
+  "item": "R1a consumer comparison candidate",
+  "status": "focused-built; native table and gates pending",
+  "base": "b84359b215a6f9b1c059b347e13757546efcb1aa",
+  "switch": "ZesuSsz.Automation.Switches.EntryIntro",
+  "normalizer": false,
+  "LoopStep_consumer": false,
+  "report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-av-r1-entry-intro-ec272/_build/r1a-step-checkpoint-025/REPORT.json",
+    "sha256": "1322e023d08c17f81d9448760148394976f1ce5309d76724c7af3de329d72e5d"
+  },
+  "sources": {
+    "ZesuSsz/Automation/EntryIntro.v": "a6a315b9db4b5b52389871c12cb5d99e03cbd41ecd864d593461c2a4c91fa80e",
+    "ZesuSsz/Automation/Hooks.v": "a061231a853386220b7735d20ceb97d3a4fb634f4a366961085b4117b13203cd",
+    "ZesuSsz/Automation/Finish.v": "bba4e11656c561d16daa22d356476ce4e76391f84ea59d0ddbe4b4fc6d206b47",
+    "ZesuSsz/Automation/Approved.v": "a198288edb084d0bb2d038eb8148577cbf46afe5df29385ef00455e7bcffbc98",
+    "ZesuSsz/Automation/Switches/EntryIntro.v": "2a510ccd702aa40701e17d44ca6fe4b9e49de3ee3b494e8ea6bcad5d84193c0d",
+    "ZesuSsz/Proofs/Tests/EntryIntro.v": "b45bdbecb508c7938061da928a5d35be5f14fa7a1535e8eece308af5313deca0",
+    "ZesuSsz/Compliance/DecodeItemDataRegistrations.v": "4434f7609d4e759a5ddd1dbb127100ac8d3a0fdc3d848317475dbfe8d5fae7bd",
+    "ZesuSsz/Compliance/DecodeItemHints.v": "a1237aea4cc9528d994d8e191a16701af11e49714d8e2d1809308f2138f46ef7",
+    "ZesuSsz/Evidence/GatesPlugin/signature_gates_plugin.ml": "61c82df51775b3240e6ec5f7ae7662693e8cb5571b5219383172a7d737fff2b8",
+    "ZesuSsz/Evidence/approved_automation_switches.json": "eb4b97fcee70aba3f8e446f0883872b0afa66b9e86af1dfaab50f6846d5d58bd",
+    "tools/block/test_approved_switches.py": "927bad519d784dea739b3849b24b740fdbbc0e3dee1d8d31cf1d77998eecfb79"
+  },
+  "literal_declaration_sha256": {
+    "entry_intro_reordered": "f0c32d2543dcd0458eed990b2405384888734585a0d2de28c2da7a2be9eeddbc",
+    "entry_intro_no_duplication": "e24b78005c9f967eb3fcc00af2cf22b9187289466d8bfcde90ff958e2718c58a",
+    "entry_intro_recorded_instance": "332c7f59bec423627a839382ac502c320062094eafbf2a12c9ebf5914436aa2b",
+    "entry_intro_absent_binder": "cd9a1b87d85698ef2ce8d05d2fc3ab75f52e8c005495971dd3f1d0cad705305f",
+    "entry_intro_duplicate_rejection": "91bedea8a86d63b04057d0c101869776f504a9f72d1063fa693edce669b4fe52"
+  },
+  "focused": {
+    "exit": 0,
+    "record": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-av-r1-entry-intro-ec272/_build/r1a-step-checkpoint-025/worker-build-2-r1a-coherent-focused024.json",
+      "sha256": "b7e60fb1a156ea47413a9abbdc3af8cb13f0d3dd1d15662f4b4699f1c87e2b72",
+      "log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261014-145440-worker-build-2-r1a-coherent-focused024.log"
+    }
+  },
+  "controls": {
+    "count": 5,
+    "exit": 0,
+    "assumptions": "five closed global contexts",
+    "record": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-av-r1-entry-intro-ec272/_build/r1a-step-checkpoint-025/worker-build-2-r1-applied-instance-scratch023.json",
+      "sha256": "37414fcde3144ab9aeca9d07ee642f86d8081f8b6e0e0d265abbaaa9dc9a95e7",
+      "log": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261014-144857-worker-build-2-r1-applied-instance-scratch023.log"
+    }
+  },
+  "generic_lint_matches": 0,
+  "check_fast": "pending C table, per explicit Orch sequence",
+  "check_iris": "pending Root",
+  "native_closure": false
+}
