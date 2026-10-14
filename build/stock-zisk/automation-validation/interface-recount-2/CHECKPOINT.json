@@ -1,0 +1,73 @@
+{
+  "item": "interface-recount-2",
+  "snapshot_basis": {
+    "baseline": "8f3a7aa2ed2d7ac307a5cd7ba19f579ce1cc81b3",
+    "current_Root": "dad8c896366194af15a3a4613f66ffd6c5b54ae5",
+    "verified_unintegrated_overlay": "a4ce9f06ea74a6fb8e70903073ecdc061ded60c8",
+    "declaration_dependency": "1ad066a75643579fc319ab10a7f2166dcda9ce44",
+    "registration_dependency": "c2d6ebcec1aa7e7a10582c1ba08202b42a4ca1f0"
+  },
+  "category_totals": {
+    "baseline": {
+      "contracts": 2438,
+      "introductions": 3438,
+      "exit_meanings": 2963,
+      "loop_steps": 913,
+      "registrations": 154,
+      "generator_json": 3970,
+      "block_proofs": 3513,
+      "composition": 392,
+      "tests_and_exports": 33308
+    },
+    "current_Root": {
+      "contracts": 2438,
+      "introductions": 3536,
+      "exit_meanings": 3092,
+      "loop_steps": 965,
+      "registrations": 184,
+      "generator_json": 3995,
+      "block_proofs": 3513,
+      "composition": 392,
+      "tests_and_exports": 36808
+    },
+    "verified_overlay": {
+      "contracts": 2438,
+      "introductions": 3693,
+      "exit_meanings": 3092,
+      "loop_steps": 965,
+      "registrations": 242,
+      "generator_json": 3995,
+      "block_proofs": 3513,
+      "composition": 392,
+      "tests_and_exports": 36899
+    }
+  },
+  "interface_totals": {
+    "baseline": 13876,
+    "current_Root": 14210,
+    "verified_overlay": 14425,
+    "overlay_delta_from_baseline": 549
+  },
+  "attribution": {
+    "plain_lemmas": 278,
+    "other_Root_changes": 56,
+    "pending_original_instances": 81,
+    "additional_facts_delta": 134,
+    "Root_to_verified_overlay": 215
+  },
+  "candidate_summary": {
+    "modules": 15,
+    "counted_lines": 2998,
+    "lexically_referenced_modules": 15,
+    "actually_unreferenced_claims": 0,
+    "deletion_credit": 0,
+    "status": "Potential candidates only. All retain lexical references. Compiled dependency and consumer-removal checks remain required at cp-av-train."
+  },
+  "limits": "No deletion credit. All candidates retain lexical references. R1 consumer and compiled dependency checks remain pending. E3 and untracked drafts are separate.",
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-interface-recount2-dad8c896/_build/interface-recount2-001/REPORT.json",
+    "sha256": "1a18990eb54932d835a650282a3515257cd705abe294977636d570aa540ad230",
+    "bindings": 7
+  },
+  "focused_checks": "Git blob hashes, physical-line ranges, unique categories, and totals passed. Metadata only; no project build required."
+}
