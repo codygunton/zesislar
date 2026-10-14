@@ -56,3 +56,5 @@ Require Import ZesuSsz.Automation.EntryIntro.
     bigEndian (firstn (Z.to_nat (i + 1)) lengthBytes) =
       256 * bigEndian (firstn (Z.to_nat i) lengthBytes) + bv_unsigned next)%Z) :=
   decodeItemHeader6ac4Step args n i payloadStart lengthBytes frameBytes loaded.
+
+Require Export ZesuSsz.Compliance.DecodeItemCompletedFoldPureFacts.
