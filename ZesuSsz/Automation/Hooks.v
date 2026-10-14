@@ -1725,7 +1725,6 @@ Ltac zesu_liAStep :=
   | liAAsm
   | liAExp
   | liAOther
-  | zesu_entry_intro_if_enabled
   | zesu_pure_fact_hints_if_enabled
   | liUnfoldEarly
   | zesu_known_pair_witness_if_enabled
