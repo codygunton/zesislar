@@ -5,18 +5,20 @@
   "source_hashes": {
     "build/stock-zisk/build-recipe.json": "ed8196f2d359dc1a60827a9ccb0267247e8b27f97f2d09763315af159c662e99",
     "build/stock-zisk/cfg.json": "98c4614e6ff7b6e1cb85bdc3b9e600dd85eccd5afacda8b1c5b75ff66db16fc2",
-    "ZesuSsz/Evidence/decode_item_block_design.json": "5905dc39240e34696ba7be214fb7f6118ae52f61a2dae4a8c44e346d65571dc0",
+    "ZesuSsz/Evidence/decode_item_block_design.json": "157f51f1d674a95574819d558edceabb6dce68e2a1319155a2f59f853065e1c6",
     "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
     "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+    "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "45c8d41da95e03677aab58d4cf8029171d9464dabf67e38881f0ccfd05a7c825",
     "ZesuSsz/Contracts/RlpDecodeItemContract.v": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
-    "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "56415970e12f9eace8d54e85d7a65e0b4c7d35bb0aaa0439dde6b8024ae82019",
-    "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "6f45a50cd3f707c3a8287be8ec6705cc3130024ad55e4c24a2db27ce7437a39d",
+    "ZesuSsz/Contracts/DecodeItemReturnFacts.v": "9da33c0898953f7ff5f270dc6e1f66681f4de045c7bb774b7701676399da1cf5",
+    "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "9958b62a6eb8a5161ea3b526e4d02aaecd48fd7734dde2ea1ab1dd995cee1eb8",
     "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
     "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d",
-    "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "e713916e6672e661ec77ee46aeb31e4fc7dda7a21ec8f6c7c0adbf0e3e22439b",
+    "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "6f80226eadadd5468b46aebc8c48561f54815f94c1989e465d530f6896e4237d",
     "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "a504dfa090e1ec91f709ad3c3b5c7df1823dc64159b0b53960a0606a5ffe92a9",
-    "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v": "a7415475adb13eed8a3d23c9f3aac9c6eca94bb635a4b53685934307692bb803",
-    "tools/block/generate_table.py": "277970112715cdf780dc4552598e83b1bf92591866b88625e62d7c6d06b9afcd"
+    "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v": "7b22b45607725212a23b90a195c8d94471a952ea00ba5ea6a7e1b2e8541b5dbe",
+    "ZesuSsz/Contracts/DecodeItemSelected.v": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804",
+    "tools/block/generate_table.py": "b877ecc8288b828f85b5066d6db8d8cdc568b1315842f34e0182edb0e9d87f61"
   },
   "coverage": {
     "instructions": 116,
@@ -466,7 +468,7 @@
   "table_convention": {
     "entry_type": "(Z * iProp Sigma)",
     "pc_ownership": "instr_pre pc state supplies PC; entry predicates do not own PC",
-    "universal_binders": "Each row's binders, in their listed order",
+    "existential_binders": "Each row's binders, in their listed order",
     "resource_application": "Apply resource_predicate to arguments in order",
     "internal_existentials": {
       "entry_pcs": [
@@ -538,17 +540,22 @@
         "x16"
       ]
     },
-    "other_entries": "Listed table binders are universal; unlisted write-register values can be existential inside entry predicates",
-    "continuations": "Outcome existentials inside shared continuations are not table locals"
+    "other_entries": "Each table state stores existential entry parameters. Instruction preconditions convert these families to universal continuations.",
+    "continuations": "Outcome existentials inside shared continuations are not table locals",
+    "code_persistence": "block_table_pre boxes the supplied code resource",
+    "code_resource": "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedCode",
+    "code_source_hashes": {
+      "ZesuSsz/Contracts/DecodeItemSelected.v": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804"
+    }
   },
   "generated_hashes": {
-    "ZesuSsz/Generated/DecodeItem/BlockTable.v": "a931bd4de830b3314cde566310d9e142c12f4ccaab94e3b367c45734cec73658"
+    "ZesuSsz/Generated/DecodeItem/BlockTable.v": "e47ce415391abcfa24908272711ec15f8ebdb21006ee13fdc847284cfaf8d7aa"
   },
   "proof_slots": [
     {
       "pc": "0x800d6960",
-      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemEntryResources",
-      "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemEntryResources",
+      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6960",
+      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6960",
       "proof_lemma": null
     },
     {

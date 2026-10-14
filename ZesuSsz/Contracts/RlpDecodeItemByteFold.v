@@ -3,7 +3,7 @@ From stdpp Require Import bitvector.definitions.
 Require Import SailStdpp.MachineWord EvmSailRlp.evm_rlp_types.
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Machine.
-Require Import ZesuSsz.Automation.ByteFold.
+Require Import ZesuSsz.Compliance.ByteFold.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.IslarisCode.

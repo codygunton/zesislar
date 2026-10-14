@@ -6,7 +6,7 @@ Require Import EvmSailRlp.evm_rlp_types EvmSailRlp.evm_rlp.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemReturnFacts.
-Require Import ZesuSsz.Automation.ByteFold.
+Require Import ZesuSsz.Compliance.ByteFold.
 Require Import ZesuSsz.Proofs.DecodeItem.ByteFoldPure.
 Require Import ZesuSsz.Compliance.SailRun.
 Require Import ZesuSsz.Compliance.DecodeItemSailEvaluation.

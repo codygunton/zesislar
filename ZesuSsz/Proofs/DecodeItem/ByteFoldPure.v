@@ -2,7 +2,7 @@ Require Import ZesuSsz.Automation.All.
 From Coq Require Import List ZArith Lia.
 From stdpp Require Import bitvector.definitions.
 Require Import EvmSailRlp.evm_rlp_types.
-Require Import ZesuSsz.Automation.ByteFold.
+Require Import ZesuSsz.Compliance.ByteFold.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
