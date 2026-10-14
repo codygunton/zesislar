@@ -9,6 +9,7 @@ Lemma approved_switch_inventory :
   ZesuSsz.Automation.Hooks.ZesuStepRegionFault /\
   ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask /\
   ZesuSsz.Automation.BitvectorFacts.ZesuStepMaskNormalizer /\
+  ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch /\
   ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress /\
   ZesuSsz.Automation.Hooks.ZesuStepRecordWitness /\
   ZesuSsz.Automation.Hooks.ZesuStepArrayBounds /\

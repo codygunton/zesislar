@@ -17,6 +17,7 @@
     "ZesuSsz.Automation.Switches.ArrayRegionBounds",
     "ZesuSsz.Automation.Switches.EntryIntro",
     "ZesuSsz.Automation.Switches.MaskNormalizer",
+    "ZesuSsz.Automation.Switches.ConjunctMatch",
     "ZesuSsz.Automation.Switches.PureFactHints",
     "ZesuSsz.Automation.Switches.KnownPairWitness",
     "ZesuSsz.Automation.Switches.PureWitnessConstraints",
@@ -51,10 +52,6 @@
     {
       "switch": "CallReturnSpecTable",
       "class": "ZesuSsz.Automation.CallReturnSpecTable.ZesuStepCallReturnSpecTable"
-    },
-    {
-      "switch": "ConjunctMatch",
-      "class": "ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch"
     },
     {
       "switch": "ExistentialArrayRestore",
