@@ -1,0 +1,35 @@
+{
+  "item": "R1a once-per-block goal-side comparison candidate",
+  "base": "97ec87a6b0632670e2d1047acd9bb912d02d0e0c",
+  "preserved_R1a": "0b22b598d71d6bd810b006264a74bf70b53512a9",
+  "preserved_R1b": "e8260b4d4c6d6e16089a6a80059baf5c21535169",
+  "report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-av-r1-entry-intro-ec272/_build/r1a-goal-consumer-focused-040/REPORT.json",
+    "sha256": "cdb01dde5ce1c79e89731e21cbe9dfae8805f5d3088dce3be37c48695973dc55"
+  },
+  "sources": {
+    "ZesuSsz/Automation/EntryIntro.v": "85d0975fb10e87089222aec1ac9b614fa9d08e34adda3dd1f46091c0a9f54b3b",
+    "ZesuSsz/Automation/Hooks.v": "8389dd236c5c2498609d447818b4ae04e39c79a4e9f7ed1114d258cb7e22bb61",
+    "ZesuSsz/Automation/Finish.v": "98d456eff6a4c13f467dbf5595080664ecb38bc6427f1ad0e2661e28d2df9dfd",
+    "ZesuSsz/Proofs/Tests/EntryIntro.v": "4901d00dc1d82abb55b77c6b0336bf16897cbe048cd00698714b0f43dc9b86c3"
+  },
+  "statement_sha256": {
+    "entry_intro_reordered": "df0dd9d8c5010ad316905f20eae6fae18885c21c3a76702ac70809a49a0e8fe0",
+    "entry_intro_no_duplication": "6d92dd59197c128b33a578336cf9e57d037bcccf81f6acb5e377f2029afd6da8",
+    "entry_intro_recorded_instance": "661fbdf73212742a3fa62fc29c500f64c06222aaff5890d0d41dd61d9d80e64e",
+    "entry_intro_absent_binder": "b6621663b6e92b2cd4ce92f738ff966dea4694b770f91c8b3c4f20569ac5c578",
+    "entry_intro_duplicate_rejection": "684cd7ca8337637e8af5b0746012f7ba65dbf779b5f1e92ccba34e905bfa12e5",
+    "entry_intro_lithium_unfold": "9eb6bef2fe51b3c977d26c1080ebe904159acc2498fc7700eda47e076c5c3d1f",
+    "zesu_entry_intro_instr_body_equiv": "5ffe563b14d3e3535924553f61019509e72c92fdcce28120328f2679868e6861",
+    "zesu_entry_intro_wand_equiv": "bd55439949f667f3c068c8477e605ed0e4f76408a20d21eae363245092b13b26"
+  },
+  "focused_exit": 0,
+  "changed_inputs": [],
+  "controls": 6,
+  "normalizer": false,
+  "resolver_unchanged": true,
+  "registrations_unchanged": true,
+  "check_fast": "pending C table per Orch sequence",
+  "check_iris": "pending Root",
+  "native_closure": false
+}
