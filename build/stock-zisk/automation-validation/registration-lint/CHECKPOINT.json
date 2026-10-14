@@ -1,0 +1,17 @@
+{
+  "kind": "registration-key-lint",
+  "base": "2c5e57b3518c52aa12c115e977c48829c26dfaea",
+  "sources": {"tools/block/check_data_only_lemmas.py": "e2c83053de48b064c3c316f5217fbc8c07df75758e991129a12c0441d55db463", "tools/block/test_automation_lints.py": "742238b040c8d319a2eb1dd54d293a1bac17c7ebee90769609c4faf5dd6d1600"},
+  "manifest_change": "Optional aliases object only. Existing function manifests remain unchanged.",
+  "key": ["class", "canonical qualified predicate"],
+  "classes": ["ZesuEntryIntro", "ZesuLoopStep"],
+  "name_resolution": "Require imports against manifest-listed modules, then explicit Definition or named Notation aliases.",
+  "duplicate_error": "Reports both instance names.",
+  "unresolved_error": "unresolved registration key: <name>",
+  "focus_tests": 49,
+  "scanner_results": "Both scanners pass on the current manifest.",
+  "gate": {"command": ["make", "check-fast", "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker2-child-map-registration-lint-f9da/_build/agents/worker-build-2-registration-lint", "AGENT_JOBS=32", "FAST_JOBS=32", "PYTHON=/usr/bin/python3"], "compiler_CPU_limit_seconds": 4000, "compiler_cap": 48, "elapsed_seconds": 1714.9911983038764, "exit_code": 0, "gate": "check-fast", "gate_module_limit_GiB": 32, "inputs_unchanged": true, "log_sha256": "7aba58b277959bd22132af065b63f622844725510654897c5751e146220e1f20", "root": "2c5e57b3518c52aa12c115e977c48829c26dfaea", "started_utc": "2026-10-14T19:35:23Z", "success": true, "workers": 32},
+  "evidence": {"/home/cody/zesislar/.worktrees/worker2-child-map-registration-lint-f9da/_build/registration-lint-gate003/CONTROLS.json": "f292398775e4560c7439a6925fd36eedbf14c4be50f580d5a79bcaa4a22565e8", "/home/cody/zesislar/.worktrees/worker2-child-map-registration-lint-f9da/_build/registration-lint-gate003/INPUTS.json": "410f008bb183ca5b0456e1c518b23969674a94cced47b00acae7b9fe488266b9", "/home/cody/zesislar/.worktrees/worker2-child-map-registration-lint-f9da/_build/registration-lint-gate003/RESULT.json": "930ac7c1e0d8bcc7c749385caac4b5bf3691af6790a3fdcd7ff49749245d7599", "/home/cody/zesislar/.worktrees/worker2-child-map-registration-lint-f9da/_build/registration-lint-proposal002/REPORT.json": "321d0f8a33fefca787bb09832630eadf3690da9d42b66fe951868b8b253bae59"},
+  "preservation": "No certified lemma, Automation rule, or R1 comparison input changed.",
+  "limitations": ["The scanner parses named heads and does not elaborate arbitrary Rocq expressions.", "The current manifest lists no instances of either target class. Negative fixtures establish duplicate detection.", "The lint applies aliases supplied by metadata. It does not infer Definition aliases."]
+}
