@@ -59,7 +59,7 @@ class GenericAutomationTests(unittest.TestCase):
         self.assertEqual(check_generic_automation.violations(self.root), [])
 
 
-class DataOnlyLemmaTests(unittest.TestCase):
+class ManifestFixture:
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
@@ -77,6 +77,8 @@ class DataOnlyLemmaTests(unittest.TestCase):
         (self.root / relative).write_text(text)
         self.manifest[category] = [relative]
 
+
+class DataOnlyLemmaTests(ManifestFixture, unittest.TestCase):
     def test_data_facts_pass(self):
         self.add_file("introductions", "Lemma length_fact : length [] = 0. Proof. reflexivity. Qed.")
         self.write_manifest()
@@ -157,6 +159,324 @@ class BlockTableMetadataTests(unittest.TestCase):
             for relative, expected in metadata[category].items():
                 with self.subTest(path=relative):
                     self.assertEqual(hashlib.sha256((root / relative).read_bytes()).hexdigest(), expected)
+
+
+class RegistrationParserTests(unittest.TestCase):
+    def test_named_classes_and_source_heads(self):
+        records = check_data_only_lemmas.registrations("""
+#[global] Instance first {Sigma} (args : Args) :
+  ZesuEntryIntro (Contracts.entry args) (fact args).
+Proof. exact certified. Qed.
+Local Instance second (args : Args) :
+  ZesuLoopStep (Contracts.header args) (step args) := certified_step.
+""", "Registrations")
+        self.assertEqual([(r.name, r.class_name, r.predicate) for r in records],
+                         [("Registrations.first", "ZesuEntryIntro", "Contracts.entry"),
+                          ("Registrations.second", "ZesuLoopStep", "Contracts.header")])
+
+    def test_explicit_and_named_implicit_class_arguments(self):
+        records = check_data_only_lemmas.registrations("""
+Global Instance first : @Rules.ZesuEntryIntro Sigma (@Contracts.entry Sigma args) fact.
+Global Instance second : Rules.ZesuLoopStep (Sigma := Sigma) (Contracts.header args) fact.
+""")
+        self.assertEqual([r.predicate for r in records], ["Contracts.entry", "Contracts.header"])
+
+    def test_premises_quantifiers_and_parentheses(self):
+        records = check_data_only_lemmas.registrations("""
+Instance first : forall (x : nat), (Ready x) ->
+  (ZesuEntryIntro ((Contracts.entry (pair x x)) : Resource) (facts x)).
+Instance second : forall x, ZesuEntryIntro (Contracts.premise x) True ->
+  ZesuLoopStep (Contracts.header x) True.
+""")
+        self.assertEqual([(r.class_name, r.predicate) for r in records],
+                         [("ZesuEntryIntro", "Contracts.entry"),
+                          ("ZesuLoopStep", "Contracts.header")])
+
+    def test_comments_strings_and_unrelated_instances_are_not_registrations(self):
+        records = check_data_only_lemmas.registrations('''
+(* Instance fake : ZesuEntryIntro Entry True. (* nested *) "*)" *)
+Definition note := "Instance fake : ZesuLoopStep Header True. ""quoted""".
+Instance unrelated : Other (ZesuEntryIntro Entry True) := evidence.
+Instance real : ZesuEntryIntro Entry True := evidence.
+''')
+        self.assertEqual([r.name for r in records], ["real"])
+
+    def test_priority_does_not_distinguish_registrations(self):
+        records = check_data_only_lemmas.registrations("""
+Instance first : ZesuEntryIntro Entry True | 10 := certificate.
+Instance second : ZesuEntryIntro Entry Other | 20 := certificate.
+""")
+        self.assertEqual([r.predicate for r in records], ["Entry", "Entry"])
+
+    def test_local_definitions_keep_module_namespaces_distinct(self):
+        records = check_data_only_lemmas.registrations("""
+Module Left.
+Section Left.
+Definition entry := resource.
+Instance first : ZesuEntryIntro entry True := certificate.
+End Left.
+Instance second : ZesuLoopStep entry True := certificate.
+End Left.
+Module Right.
+Definition entry := other_resource.
+Instance third : ZesuEntryIntro entry True := certificate.
+End Right.
+""", "Registrations")
+        self.assertEqual([r.predicate for r in records],
+                         ["Registrations.Left.entry", "Registrations.Left.entry",
+                          "Registrations.Right.entry"])
+
+    def test_anonymous_targeted_instance_fails(self):
+        with self.assertRaisesRegex(ValueError, "explicit instance name"):
+            check_data_only_lemmas.registrations("Instance : ZesuEntryIntro Entry True.")
+
+    def test_qualified_local_heads_and_module_export_match(self):
+        records = check_data_only_lemmas.registrations("""
+Module Export Inner.
+Local Definition entry := resource.
+Instance first : ZesuEntryIntro entry True := certificate.
+End Inner.
+Instance second : ZesuEntryIntro Inner.entry True := certificate.
+""", "Registrations")
+        self.assertEqual([r.predicate for r in records],
+                         ["Registrations.Inner.entry", "Registrations.Inner.entry"])
+
+    def test_malformed_delimiters_fail(self):
+        for source in ["Instance first : ZesuEntryIntro (Entry args] True.",
+                       "Instance first : ZesuEntryIntro (Entry args True."]:
+            with self.subTest(source=source), self.assertRaises(ValueError):
+                check_data_only_lemmas.registrations(source)
+
+    def test_unsupported_source_expression_fails(self):
+        with self.assertRaisesRegex(ValueError, "named predicate head"):
+            check_data_only_lemmas.registrations(
+                "Instance first : ZesuEntryIntro (fun x => Entry x) True.")
+
+    def test_incomplete_arguments_comments_and_strings_fail(self):
+        for source in ["Instance first : ZesuEntryIntro.", "(* unterminated",
+                       'Definition note := "unterminated']:
+            with self.subTest(source=source), self.assertRaises(ValueError):
+                check_data_only_lemmas.registrations(source)
+
+
+class RegistrationManifestTests(ManifestFixture, unittest.TestCase):
+    def setUp(self):
+        super().setUp()
+        (self.root / "Contracts.v").write_text("""
+Definition entry := resource.
+Definition Entry := resource.
+Module Left. Definition entry := resource. End Left.
+Module Right. Definition entry := other_resource. End Right.
+""")
+        self.manifest["contracts"] = ["Contracts.v"]
+
+    def add_file(self, category, text):
+        if category == "registrations":
+            text = "Require Import Contracts.\n" + text
+        super().add_file(category, text)
+
+    def test_duplicate_intro_reports_both_names(self):
+        self.add_file("registrations", """
+Instance first : ZesuEntryIntro (Contracts.entry left) LeftFacts := left_certificate.
+Instance second : ZesuEntryIntro (Contracts.entry right) RightFacts := right_certificate.
+""")
+        self.write_manifest()
+        errors = check_data_only_lemmas.violations(self.root)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("Duplicate ZesuEntryIntro", errors[0])
+        self.assertIn("registrations.first", errors[0])
+        self.assertIn("registrations.second", errors[0])
+
+    def test_duplicates_across_modules_and_classes_are_checked(self):
+        for cls in check_data_only_lemmas.REGISTRATION_CLASSES:
+            with self.subTest(cls=cls):
+                self.add_file("registrations", f"Instance first : {cls} Contracts.entry Left := proof.")
+                other = self.evidence / "Other.v"
+                other.write_text(f"Instance second : {cls} Contracts.entry Right := proof.")
+                self.manifest["registrations"].append(str(other.relative_to(self.root)))
+                self.write_manifest()
+                errors = check_data_only_lemmas.violations(self.root)
+                self.assertEqual(len(errors), 1)
+                self.assertIn("registrations.first", errors[0])
+                self.assertIn("Other.second", errors[0])
+
+    def test_different_classes_and_qualified_predicates_pass(self):
+        self.add_file("registrations", """
+Instance intro : ZesuEntryIntro Contracts.Left.entry True := proof.
+Instance step : ZesuLoopStep Contracts.Left.entry True := proof.
+Instance other : ZesuEntryIntro Contracts.Right.entry True := proof.
+""")
+        self.write_manifest()
+        self.assertEqual(check_data_only_lemmas.violations(self.root), [])
+
+    def test_repeated_manifest_paths_do_not_duplicate_an_instance(self):
+        self.add_file("registrations", "Instance first : ZesuEntryIntro Entry True := proof.")
+        self.manifest["registrations"] *= 2
+        self.write_manifest("first")
+        self.write_manifest("second")
+        self.assertEqual(check_data_only_lemmas.violations(self.root), [])
+
+    def test_unlisted_registration_modules_are_not_scanned(self):
+        (self.evidence / "Unlisted.v").write_text("""
+Instance first : ZesuEntryIntro Entry True := proof.
+Instance second : ZesuEntryIntro Entry Other := proof.
+""")
+        self.write_manifest()
+        self.assertEqual(check_data_only_lemmas.violations(self.root), [])
+
+    def test_unsupported_registration_is_reported_with_its_file(self):
+        self.add_file("registrations", "Instance : ZesuLoopStep Entry True.")
+        self.write_manifest()
+        errors = check_data_only_lemmas.violations(self.root)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("ZesuSsz/Evidence/registrations.v", errors[0])
+        self.assertIn("explicit instance name", errors[0])
+
+    def test_imported_and_qualified_predicates_share_a_key(self):
+        self.add_file("registrations", """
+Instance first : ZesuEntryIntro entry True := proof.
+Instance second : ZesuEntryIntro Contracts.entry Other := proof.
+""")
+        self.write_manifest()
+        errors = check_data_only_lemmas.violations(self.root)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("Contracts.entry", errors[0])
+        self.assertIn("registrations.first", errors[0])
+        self.assertIn("registrations.second", errors[0])
+
+    def test_from_imports_and_reexports_resolve_predicates(self):
+        package = self.root / "Package"
+        package.mkdir()
+        (package / "Source.v").write_text("Definition entry := resource.")
+        (package / "Umbrella.v").write_text("From Package Require Export Source.")
+        self.manifest["contracts"].extend(["Package/Source.v", "Package/Umbrella.v"])
+        self.add_file("registrations", """
+From Package Require Import Umbrella.
+Instance first : ZesuLoopStep entry True := proof.
+Instance second : ZesuLoopStep Package.Source.entry Other := proof.
+""")
+        self.write_manifest()
+        # Contracts.entry and Package.Source.entry are both visible. Require a
+        # qualified source instead of silently choosing one imported declaration.
+        self.assertIn("ambiguous", check_data_only_lemmas.violations(self.root)[0])
+        (self.evidence / "registrations.v").write_text("""
+From Package Require Import Umbrella.
+Instance first : ZesuLoopStep entry True := proof.
+Instance second : ZesuLoopStep Package.Source.entry Other := proof.
+""")
+        errors = check_data_only_lemmas.violations(self.root)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("Duplicate ZesuLoopStep", errors[0])
+        self.assertIn("Package.Source.entry", errors[0])
+
+    def test_unresolved_predicate_is_rejected(self):
+        self.add_file("registrations", "Instance first : ZesuEntryIntro Missing.entry True := proof.")
+        self.write_manifest()
+        self.assertIn("unresolved registration key: Missing.entry",
+                      check_data_only_lemmas.violations(self.root)[0])
+
+    def test_definition_alias_duplicate_reports_both_names(self):
+        self.add_file("registrations", """
+Definition alias := Contracts.entry.
+Instance original : ZesuEntryIntro Contracts.entry True := proof.
+Instance duplicate : ZesuEntryIntro alias Other := proof.
+""")
+        self.manifest["aliases"] = {"ZesuSsz.Evidence.registrations.alias": "Contracts.entry"}
+        self.write_manifest()
+        errors = check_data_only_lemmas.violations(self.root)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("registrations.original", errors[0])
+        self.assertIn("registrations.duplicate", errors[0])
+        self.assertIn("Contracts.entry", errors[0])
+
+    def test_named_notation_alias_and_short_alias_key(self):
+        self.add_file("registrations", """
+Notation \"alias\" := Contracts.entry.
+Instance original : ZesuLoopStep entry True := proof.
+Instance duplicate : ZesuLoopStep alias Other := proof.
+""")
+        self.manifest["aliases"] = {"alias": "Contracts.entry"}
+        self.write_manifest()
+        errors = check_data_only_lemmas.violations(self.root)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("Duplicate ZesuLoopStep", errors[0])
+        self.assertIn("registrations.original", errors[0])
+        self.assertIn("registrations.duplicate", errors[0])
+
+    def test_aliases_are_not_inferred_without_manifest_metadata(self):
+        self.add_file("registrations", """
+Definition alias := Contracts.entry.
+Instance original : ZesuEntryIntro Contracts.entry True := proof.
+Instance distinct_key : ZesuEntryIntro alias Other := proof.
+""")
+        self.write_manifest()
+        self.assertEqual(check_data_only_lemmas.violations(self.root), [])
+
+    def test_alias_chains_resolve_to_one_canonical_key(self):
+        self.add_file("registrations", """
+Definition alias := Contracts.entry.
+Definition alias2 := alias.
+Instance original : ZesuEntryIntro Contracts.entry True := proof.
+Instance duplicate : ZesuEntryIntro alias2 Other := proof.
+""")
+        self.manifest["aliases"] = {
+            "alias2": "ZesuSsz.Evidence.registrations.alias",
+            "alias": "Contracts.entry"}
+        self.write_manifest()
+        self.assertIn("Duplicate ZesuEntryIntro", check_data_only_lemmas.violations(self.root)[0])
+
+    def test_alias_cycles_and_unresolved_targets_fail(self):
+        self.add_file("registrations", """
+Definition alias := Contracts.entry.
+Instance first : ZesuEntryIntro alias True := proof.
+""")
+        for target, expected in [
+                ("ZesuSsz.Evidence.registrations.alias", "cycle"),
+                ("Contracts.missing", "unresolved registration key: Contracts.missing")]:
+            with self.subTest(target=target):
+                self.manifest["aliases"] = {"alias": target}
+                self.write_manifest()
+                self.assertIn(expected, check_data_only_lemmas.violations(self.root)[0])
+
+    def test_invalid_alias_metadata_fails(self):
+        for aliases in [[], {"alias": "entry"}, {"alias": None}, {"": "Contracts.entry"}]:
+            with self.subTest(aliases=aliases):
+                self.manifest["aliases"] = aliases
+                self.write_manifest()
+                self.assertTrue(check_data_only_lemmas.violations(self.root))
+
+    def test_conflicting_manifest_aliases_fail(self):
+        self.manifest["aliases"] = {"alias": "Contracts.entry"}
+        self.write_manifest("first")
+        self.manifest["aliases"] = {"alias": "Contracts.Entry"}
+        self.write_manifest("second")
+        self.assertIn("disagree", check_data_only_lemmas.violations(self.root)[0])
+
+    def test_unlisted_import_cannot_resolve_a_registration_key(self):
+        (self.root / "Unlisted.v").write_text("Definition other := resource.")
+        self.add_file("registrations", """
+Require Import Unlisted.
+Instance first : ZesuEntryIntro other True := proof.
+""")
+        self.write_manifest()
+        self.assertIn("unresolved registration key: other",
+                      check_data_only_lemmas.violations(self.root)[0])
+
+    def test_unused_alias_still_requires_a_declared_source_and_target(self):
+        for aliases, expected in [
+                ({"missing": "Contracts.entry"}, "missing"),
+                ({"Contracts.Entry": "Contracts.missing"}, "Contracts.missing")]:
+            with self.subTest(aliases=aliases):
+                self.manifest["aliases"] = aliases
+                self.write_manifest()
+                self.assertIn("unresolved registration key: " + expected,
+                              check_data_only_lemmas.violations(self.root)[0])
+
+    def test_ambiguous_short_alias_name_requires_qualification(self):
+        self.manifest["aliases"] = {"entry": "Contracts.Entry"}
+        self.write_manifest()
+        self.assertIn("unresolved registration key: entry",
+                      check_data_only_lemmas.violations(self.root)[0])
 
 
 if __name__ == "__main__":
