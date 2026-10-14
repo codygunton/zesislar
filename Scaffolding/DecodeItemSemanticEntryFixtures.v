@@ -14,7 +14,7 @@ Definition binding800d6974 (args : DecodeItemArgs) (frameBytes : list byte) (inp
 Definition binding800d697c (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
   ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d697c (args) (frameBytes) (x13) (inputPrefix) (rest).
 Definition binding800d698c (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (pointerBytes : list byte) (lengthBytes : list byte) (inputPrefix : byte) (rest : list byte) (isLiteral : bool) : iProp Sigma :=
-  ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (locals) (pointerBytes) (lengthBytes) (inputPrefix) (rest) (isLiteral).
+  ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItem698cCaseResources (args) (locals) (pointerBytes) (lengthBytes) (inputPrefix) (rest) (isLiteral).
 Definition binding800d69a4 (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
   ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69a4 (args) (frameBytes) (x13) (inputPrefix) (rest).
 Definition binding800d69b0 (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) : iProp Sigma :=

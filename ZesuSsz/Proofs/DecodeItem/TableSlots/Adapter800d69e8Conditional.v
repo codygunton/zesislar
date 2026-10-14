@@ -13,7 +13,7 @@ Open Scope Z_scope.
 
 Lemma decodeItemSlotBody800d69e8Conditional `{!islaG Sigma} `{!threadG}
   (Hnative : forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),
-  instr_pre 0x800d698c (∃ (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -∗
+  instr_pre 0x800d698c (∃ (successor_x11 successor_x12 successor_x13 successor_x14 successor_x15 successor_x16 : bv 64) (successor_outputBytes successor_frameBytes successor_pointerBytes successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698cShortString args successor_x11 successor_x12 successor_x13 successor_x14 successor_x15 successor_x16 successor_outputBytes successor_frameBytes successor_pointerBytes successor_lengthBytes successor_inputPrefix successor_rest)%I -∗
   decodeItemSelectedCode -∗
   instr_body 0x800d69e8
     (decodeItemEntryAt800d69e8 args frameBytes x13 inputPrefix rest ∗ True)) :
@@ -29,9 +29,10 @@ Proof.
   { by apply elem_of_list_lookup_2 with 3%nat. }
   iPoseProof (Hnative args frameBytes x13 inputPrefix rest with "[] Hcode") as "Hbody".
   { iApply (instr_pre_wand with "Hnext []"); [done|done|].
-    iIntros "(%nextLocals & %nextPointer & %nextLength & %nextPrefix & %nextRest & %nextLiteral & HnextEntry)".
-    iExists args, nextLocals, nextPointer, nextLength, nextPrefix, nextRest, nextLiteral.
-    iExact "HnextEntry". }
+    iIntros "(%nextA1 & %nextA2 & %nextA3 & %nextA4 & %nextA5 & %nextA6 & %nextStorage & %nextFrame & %nextPointer & %nextLength & %nextPrefix & %nextRest & HnextEntry)".
+    iExists args, nextA1, nextA2, nextA3, nextA4, nextA5, nextA6,
+      nextStorage, nextFrame, nextPointer, nextLength, nextPrefix, nextRest.
+    rewrite /decodeItemEntryAt800d698c. iRight. iExact "HnextEntry". }
   iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in "Hbody".
   iApply ("Hbody" with "[Hentry]"). iFrame.
 Qed.

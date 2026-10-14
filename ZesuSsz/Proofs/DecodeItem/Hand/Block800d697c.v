@@ -28,7 +28,7 @@ Global Typeclasses Opaque DesignedEntry_800d697c.
 Local Tactic Notation "hand697c_recover" integer(count) := do count zesu_liAStep.
 
 Lemma DesignedBoundary_800d697c `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte)  :
-  instr_pre 0x800d698c (∃ (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -∗
+  instr_pre 0x800d698c (∃ (successor_x11 successor_x12 successor_x13 successor_x14 successor_x15 successor_x16 : bv 64) (successor_outputBytes successor_frameBytes successor_pointerBytes successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698cLiteral args successor_x11 successor_x12 successor_x13 successor_x14 successor_x15 successor_x16 successor_outputBytes successor_frameBytes successor_pointerBytes successor_lengthBytes successor_inputPrefix successor_rest)%I -∗
   decodeItemSelectedCode -∗
   instr_body 0x800d697c
     (DesignedEntry_800d697c args frameBytes x13 inputPrefix rest).
@@ -63,26 +63,13 @@ end).
 1: hand697c_recover 5.
 1: unfold TRACE.
 1: hand697c_recover 6.
-1: liExist.
-1: do 5 liExist.
-1: liInst (fun x => x.1ₗ = true).
-1: liExInst.
-1: liInst (fun x => x.3ₗ = bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 1))).
-1: liExInst.
-1: liInst (fun x => x.3ₗ = bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)))).
-1: liExInst.
-1: iMatchHyp ltac:(fun H P => lazymatch P with
+1: iMatchHyp ltac:(fun name resource => lazymatch resource with
   (decodeItemOutputPointer args ↦ₘ∗ ?storage)%I =>
-  liInst (fun x => x.3ₗ = {| returnA1 := Z_to_bv 64 (decodeItemInputPointer args);
-    returnA2 := Z_to_bv 64 1; returnA3 := Z_to_bv 64 (bv_signed inputPrefix);
-    returnA4 := x14; returnA5 := x15; returnA6 := x16;
-    returnStorage := storage; returnFrame := frameBytes |}); liExInst end).
-1: liInst (fun x => x.2ₗ = inputPrefix); liExInst.
-1: liInst (fun x => x.1ₗ = rest); liExInst.
-1: unfold decodeItemEntryAt800d698c, decodeItemReturnEntryCore;
+    iExists (Z_to_bv 64 (decodeItemInputPointer args)), (Z_to_bv 64 1), (Z_to_bv 64 (bv_signed inputPrefix)), x14, x15, x16, storage, frameBytes,
+      (bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)))), (bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 1))), inputPrefix, rest end).
+1: unfold decodeItemEntryAt800d698cLiteral, decodeItemReturnEntryCore;
    cbn [returnA1 returnA2 returnA3 returnA4 returnA5 returnA6 returnStorage returnFrame].
 1: iFrame.
-1: iExists tt.
 1: unfold decodeItemBranchContinuation, decodeItemBranchContinuationAt; iFrame.
 1: iSplit.
 1: replace (Z_to_bv 64 1) with (1%bv : bv 64) by (apply bv_eq; reflexivity).

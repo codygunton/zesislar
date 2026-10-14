@@ -47,7 +47,7 @@ Lemma decodeItemLiteralOutputCanonicalLookupExpanded `{!islaG Sigma} `{!threadG}
     (decodeItemOutputPointer args ↦ₘ∗ decodeItemRawOutputStorage
       (decodeItemBeforeStorage args) (Z_to_bv 64 (decodeItemInputPointer args)) 1)
     ((∃ (locals : DecodeItemReturnLocals) (pointerBytes lengthBytes : list byte),
-      decodeItemEntryAt800d698c args locals pointerBytes lengthBytes prefix rest true)%I)
+      decodeItem698cCaseResources args locals pointerBytes lengthBytes prefix rest true)%I)
     (⌜decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args /\
       decodeItemInputHead args prefix rest /\ bv_unsigned prefix <= 127 /\
       decodeItemAcceptedFacts args false 0 1⌝ ∗
@@ -98,7 +98,7 @@ Lemma decodeItemShortStringOutputCanonicalLookupExpanded `{!islaG Sigma} `{!thre
     (decodeItemOutputPointer args ↦ₘ∗ decodeItemRawOutputStorage
       (decodeItemBeforeStorage args) (bv_add (Z_to_bv 64 (decodeItemInputPointer args)) 1) payloadLength)
     ((∃ (locals : DecodeItemReturnLocals) (pointerBytes lengthBytes : list byte),
-      decodeItemEntryAt800d698c args locals pointerBytes lengthBytes prefix rest false)%I)
+      decodeItem698cCaseResources args locals pointerBytes lengthBytes prefix rest false)%I)
     (⌜decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args /\
       decodeItemInputHead args prefix rest /\ 129 <= bv_unsigned prefix <= 183 /\
       bv_unsigned payloadLength = bv_unsigned prefix - 128 /\

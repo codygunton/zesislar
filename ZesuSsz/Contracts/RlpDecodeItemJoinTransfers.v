@@ -26,7 +26,7 @@ Definition decodeItemJoin698cTarget `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte)
     (isLiteral : bool) : iProp Sigma :=
   (∃ (locals : DecodeItemReturnLocals) (pointerBytes lengthBytes : list byte),
-    decodeItemEntryAt800d698c args locals pointerBytes lengthBytes inputPrefix rest isLiteral)%I.
+    decodeItem698cCaseResources args locals pointerBytes lengthBytes inputPrefix rest isLiteral)%I.
 
 Definition decodeItemJoin6ae0Target `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) : iProp Sigma :=

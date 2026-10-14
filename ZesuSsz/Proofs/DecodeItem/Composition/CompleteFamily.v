@@ -42,7 +42,8 @@ Context (pending800d6ae0 :
 Context (pending800d6b08 :
   ⊢ block_table_pre decodeItemBlockTable -∗ instr_body 0x800d6b08 decodeItemState800d6b08).
 
-(* All table members use their exact existential entry family. *)
+(* All table members use their exact existential entry family.
+   The 698c state has literal and short-string resource alternatives. *)
 Lemma decodeItemBlockTable_body_family :
   ⊢ □ (∀ address state, ⌜(address, state) ∈ block_table_entries decodeItemBlockTable⌝ -∗
     block_table_pre decodeItemBlockTable -∗ instr_body address state).

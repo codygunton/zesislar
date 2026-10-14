@@ -110,7 +110,7 @@ Proof.
   iExists (decodeItemRawOutputLocals args pointer consumed a3 a4 a5 a6 lengthValue frameBytes),
     (bv_to_little_endian 8 8 (bv_unsigned pointer)),
     (bv_to_little_endian 8 8 (bv_unsigned lengthValue)).
-  unfold decodeItemEntryAt800d698c. iFrame "Hcore". iPureIntro.
+  unfold decodeItem698cCaseResources. iFrame "Hcore". iPureIntro.
   cbn [decodeItemRawOutputLocals returnA1 returnA2 returnStorage]. rewrite decodeItemRawOutputStorageShape.
   repeat split; try assumption.
   - rewrite decodeItemStoredWordValue. exact Hlength.
