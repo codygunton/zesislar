@@ -25,20 +25,22 @@ Proof.
   iPoseProof (block_table_pre_code with "Htable") as "#Hcode".
   iEval (unfold decodeItemEntryAt800d698c) in "Hentry".
   iDestruct "Hentry" as "[Hentry|Hentry]".
-  - iPoseProof (Hnative args
+  { iPoseProof (Hnative args
       {| returnA1 := x11; returnA2 := x12; returnA3 := x13;
          returnA4 := x14; returnA5 := x15; returnA6 := x16;
          returnStorage := outputBytes; returnFrame := frameBytes |}
       pointerBytes lengthBytes inputPrefix rest true with "Hcode") as "Hbody".
     iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in "Hbody".
-    iApply ("Hbody" with "[Hentry]"). iFrame.
-  - iPoseProof (Hnative args
+    iApply ("Hbody" with "[Hentry]").
+    iSplitL "Hentry"; last done. iExact "Hentry". }
+  { iPoseProof (Hnative args
       {| returnA1 := x11; returnA2 := x12; returnA3 := x13;
          returnA4 := x14; returnA5 := x15; returnA6 := x16;
          returnStorage := outputBytes; returnFrame := frameBytes |}
       pointerBytes lengthBytes inputPrefix rest false with "Hcode") as "Hbody".
     iEval (rewrite instr_pre'_eq /instr_pre'_def /=) in "Hbody".
-    iApply ("Hbody" with "[Hentry]"). iFrame.
+    iApply ("Hbody" with "[Hentry]").
+    iSplitL "Hentry"; last done. iExact "Hentry". }
 
 Qed.
 Print Assumptions decodeItemSlotBody800d698cConditional.

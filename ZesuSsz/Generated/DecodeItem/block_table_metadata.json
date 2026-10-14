@@ -5,13 +5,13 @@
   "source_hashes": {
     "build/stock-zisk/build-recipe.json": "ed8196f2d359dc1a60827a9ccb0267247e8b27f97f2d09763315af159c662e99",
     "build/stock-zisk/cfg.json": "98c4614e6ff7b6e1cb85bdc3b9e600dd85eccd5afacda8b1c5b75ff66db16fc2",
-    "ZesuSsz/Evidence/decode_item_block_design.json": "157f51f1d674a95574819d558edceabb6dce68e2a1319155a2f59f853065e1c6",
+    "ZesuSsz/Evidence/decode_item_block_design.json": "b097f5f30803f6098f188476ee79da818a6e65a8bd62bb50911f6ad4b5749b34",
     "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
     "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
     "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "45c8d41da95e03677aab58d4cf8029171d9464dabf67e38881f0ccfd05a7c825",
     "ZesuSsz/Contracts/RlpDecodeItemContract.v": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
     "ZesuSsz/Contracts/DecodeItemReturnFacts.v": "9da33c0898953f7ff5f270dc6e1f66681f4de045c7bb774b7701676399da1cf5",
-    "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "9958b62a6eb8a5161ea3b526e4d02aaecd48fd7734dde2ea1ab1dd995cee1eb8",
+    "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "537345226529da0c1e460444a0362bbd8110887c229de755ae5be47bc10a7c47",
     "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
     "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d",
     "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "6f80226eadadd5468b46aebc8c48561f54815f94c1989e465d530f6896e4237d",
@@ -77,7 +77,8 @@
       "target": "0x800d698c",
       "condition": {
         "op": "true"
-      }
+      },
+      "resource_alternative": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698cLiteral"
     },
     {
       "source": "0x800d69a4",
@@ -145,7 +146,8 @@
       "target": "0x800d698c",
       "condition": {
         "op": "true"
-      }
+      },
+      "resource_alternative": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698cShortString"
     },
     {
       "source": "0x800d6a00",
@@ -549,7 +551,7 @@
     }
   },
   "generated_hashes": {
-    "ZesuSsz/Generated/DecodeItem/BlockTable.v": "e47ce415391abcfa24908272711ec15f8ebdb21006ee13fdc847284cfaf8d7aa"
+    "ZesuSsz/Generated/DecodeItem/BlockTable.v": "a012934ed3641c6d28e044aa53ca551447b18a5afaa186a38bd5d2468994054e"
   },
   "proof_slots": [
     {

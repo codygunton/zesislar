@@ -17,6 +17,14 @@
     "reason": "The memcpy service continuation introduces the after-state when it returns; this witness is not inferred from entry resources.",
     "uninferable_existentials": 1
   },
+  "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": {
+    "reason": "E3-only approved exception: the 698c sum joins Literal and ShortString on the hypothesis side. Each predecessor targets only its own resource alternative.",
+    "uninferable_existentials": 0,
+    "predicates_without_unfold": 0,
+    "disjunctive_specs": 1,
+    "frame_parameters_in_closed_specs": 0,
+    "unfold_without_typeclasses_opaque": 0
+  },
   "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v": {
     "reason": "Four fold entries package six Q46 locals each. The predecessor resources carry concrete witnesses. The compiled entailment adapter must introduce those witnesses at each edge; raw register inference is not assumed.",
     "uninferable_existentials": 24
