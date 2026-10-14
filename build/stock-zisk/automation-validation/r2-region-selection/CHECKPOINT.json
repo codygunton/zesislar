@@ -1,0 +1,44 @@
+{
+  "status": "Local candidate for controlled native comparison; not accepted for production",
+  "base": "965678f3ff9862bb2dc06a34f9d2cf6de1776469",
+  "frozen_candidate": "16ebbbe6cefd1e592369f006924b8f21a772cbad",
+  "report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-map-r2-region-0d880796/_build/r2-region-checkpoint091/REPORT.json",
+    "sha256": "f02e1e096621feb56f47f4579a58673bf69c0a5bd9c556696fe33a51890f6a2e"
+  },
+  "bindings": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-map-r2-region-0d880796/_build/r2-region-checkpoint091/BINDINGS.json",
+    "sha256": "866e0cc801163fb3951d1233995f96caa4b6228d7bc3f59d5a2a885484f23915",
+    "count": 79
+  },
+  "source_package": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-map-r2-region-0d880796/_build/r2-region-source-package092/MANIFEST.json",
+    "sha256": "31cf31b051bae4493808727d7119ec875e30556821e8599abd9a6f3229628073"
+  },
+  "source_sha256": {
+    "ZesuSsz/Automation/MemoryAccess.v": "8c65415a5e01f3db835022f69cb744827c32fed94a22e508f052e26e10f2c407",
+    "ZesuSsz/Automation/Hooks.v": "d9fc362943f8d9a7395c545de976c931fb25c963dd289149ca451fcc30f856c9",
+    "ZesuSsz/Automation/Switches/MemoryAccess.v": "a7751ed3f14cf04e8b699a1edf272e63ddcfd25990ba07a7ea40f37fc4dd9932",
+    "ZesuSsz/Proofs/Tests/MemoryAccessRule.v": "55280f4b695fe1b38f078c25849bc48d3a841004a4264290630996efe7cf0321",
+    "ZesuSsz/Evidence/approved_automation_switches.json": "8f5f1b4572965ab3721644b687ade8d9fc3db1e083a092f25ddd2a7e8e90eb10",
+    "tools/block/test_approved_switches.py": "fcb5b038cbc6f8403c6df903f18b96ca078811a997fdc482958d033fabb01a88"
+  },
+  "focused_controls": 13,
+  "literal_verifications": 14,
+  "verification_method": "module_m",
+  "assumptions": [],
+  "registry": "tac_find_in_context FICSyntactic (memory_access_array_inst (base + offset))",
+  "preservation": "Exact ordinary/kernel peer and inherited nat shelf",
+  "negative_controls": "OFF, duplicate arrays, missing extent/no-wrap, past end, wrap; exact export rollback",
+  "compiler_memory_GiB": 6,
+  "compiler_CPU_seconds": 1200,
+  "stack": "unlimited",
+  "closure": "Normal owned exits; no cleanup signals",
+  "native_effect": "unmeasured",
+  "gates": "Pending; local commit authorized before gates for comparison",
+  "limitations": [
+    "The nat-index continuation remains open after region selection.",
+    "The native-literal final pre-Qed export contains one empty stack frame. Qed passes.",
+    "The earlier failed attempts and diagnostic069 remain retained."
+  ]
+}
