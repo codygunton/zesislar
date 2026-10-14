@@ -1,0 +1,55 @@
+{
+  "item": "E3",
+  "branch": "spec-a-av-e3",
+  "base": "e6fd15b26a0f3fab65b182a3a0be15c3daaebda9",
+  "gate_tested_draft": "964245c2be5d1e9dbb5d84817acb38350a1d1be7",
+  "source_count": 24,
+  "source_seal": {
+    "path": "/home/cody/zesislar/.worktrees/spec-a-av-e3-680b56ad/_build/e3-verified-pair-check-iris-076/INPUTS.json",
+    "sha256": "c51c79896ccfd74af57d180ac5774c339dfb704f47e227f40809d830617c92f8"
+  },
+  "statement_sha256": {
+    "decodeItemSelectedCompliance": "54590c7e679c84561b9266569ecad2e0fb5911c89b0638d373ba4595a5c82e77",
+    "ReviewedDecodeItemComplianceType": "5b485f886fc945504a03e059e2b70f39164d51b282c72e55e5517e8d83762206"
+  },
+  "public_entries": [
+    "decodeItemEntryAt800d698cLiteral",
+    "decodeItemEntryAt800d698cShortString"
+  ],
+  "table_sum": "decodeItemEntryAt800d698c",
+  "edge_field": "incoming_edges[].resource_alternative",
+  "retained_helper": {
+    "name": "decodeItem698cCaseResources",
+    "definition_lines": 23,
+    "scope": "Internal compatibility only. The public sum has no Boolean binder."
+  },
+  "ratchet_exception": {
+    "path": "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v",
+    "disjunctive_specs": 1,
+    "reason": "Orch approved the 698c hypothesis-side sum. No other allowance increased."
+  },
+  "mcp_record": {
+    "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-av-manifest/_build/av-e3-final-record-041/MCP-RECORD.json",
+    "sha256": "2c6ae8fde5e953f6777391ac2d0d7c3dc61d3f533e19f3c4b1ed9c756b3ac00c",
+    "bindings": 169
+  },
+  "check_fast": {
+    "exit_code": 0,
+    "wall_seconds": 95.809479,
+    "record": "/home/cody/zesislar/.worktrees/spec-a-av-e3-680b56ad/_build/e3-verified-pair-check-fast-075/RESULT.json",
+    "sha256": "77c9f4bbb8bd3b28f460523610bfcb08d8ef58254cbed6a7730d97729cf84ea7"
+  },
+  "check_iris": {
+    "exit_code": 0,
+    "wall_seconds": 1447.158455,
+    "record": "/home/cody/zesislar/.worktrees/spec-a-av-e3-680b56ad/_build/e3-verified-pair-check-iris-076/RESULT.json",
+    "sha256": "10660bd8d2aa968f230a976ac1e7a7126cd34f0d3625a57ea3f906a69171f17a"
+  },
+  "rebase_delta": "Only a 48-line successor-witness checkpoint changed. All 24 tested source hashes remain unchanged.",
+  "limits": [
+    "Older certificates retain their frozen scopes.",
+    "Rules-off/rules-on predictions remain unmeasured.",
+    "The user must rule before merge."
+  ],
+  "merged": false
+}
