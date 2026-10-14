@@ -1,0 +1,48 @@
+{
+  "integration_root": "692a4598942f909bbe9b661ae9e35dccc2726dd0",
+  "private_dependency_commit": "b1b4697d25961231241c8d4213bf1de7c7e398c9",
+  "verified_class_commit": "1ad066a75643579fc319ab10a7f2166dcda9ce44",
+  "class_source_sha256": "35ec8db172ff7edd25c8fa4f54dfd2778addd7db85ad56d381eccf74ba66dec6",
+  "source": "ZesuSsz/Compliance/DecodeItemDataRegistrations.v",
+  "source_sha256": "4434f7609d4e759a5ddd1dbb127100ac8d3a0fdc3d848317475dbfe8d5fae7bd",
+  "instances": {
+    "decodeItemEntry6a08IntroductionRegistered": "0ca26a7f2a27f9ace34855bfcc693a67527ec36916ce3c7d5ab10e67aa22fd81",
+    "decodeItemEntry6aa8IntroductionRegistered": "0e97b538bd7a9fc175171e5380dd3fa3c9395e7a0c104c72e2ad224f2c021e5b",
+    "decodeItemEntry6a38IntroductionRegistered": "60d91aad282d0d812375eef7bfb9e702980b8f6b0386494338314b8c973cec8e",
+    "decodeItemEntry6ad8IntroductionRegistered": "c13b55cbd5069126295cea8f52927ed9636eeea31f56bc1be97918f3f1c59700",
+    "decodeItemHeader6a24StepRegistered": "221bac24f621b8178b7dfb615734b446184148016da23e180dcf6da9d5cf165e",
+    "decodeItemHeader6ac4StepRegistered": "4e040294b565297bd79d9a4341575041010e2a7b581a274538f1a489e6487778"
+  },
+  "MCP_record": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-class-checkpoint001/REPORT.json",
+  "MCP_record_sha256": "cfc4b875b303572f3c0e3cee0b02f6f697bf2b0f11907e46a328a9892b2de4d1",
+  "MCP_bindings": 22,
+  "MCP_result": "Six actual class-resolution proofs, all four groups zero, actual Qed, full compilation, exact registered-constant verification, Print Assumptions, assumptions[], normal owned closure.",
+  "shape_row_receipt": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-class-checkpoint001/GENERATED-SHAPE-ROW.json",
+  "shape_row_receipt_sha256": "1ef8c028f5a4ce4ea14eade557575c55fdf67aa00f37c7fef4657460c3856c84",
+  "project_gate": "Orch explicitly releases this unexported commit despite the Compliance export-checker constraint. Root will merge with R1 and run one Iris gate.",
+  "production_exported": false,
+  "runtime_consumption_measured": false,
+  "accepted_lemmas_changed": false,
+  "R4_source_boundary": "Orch confirms the StringHeader/ListHeader keys. The future R4 consumer uses them after the outer header entry is opened.",
+  "R1_AFTER_expectations": {
+    "0x800d6a08": "exists (n payloadStart : Z) (lengthBytes : list byte), n = bv_unsigned prefix - 183 /\\ payloadStart = decodeItemInputPointer args + 1 /\\ lengthBytes = firstn (Z.to_nat n) rest /\\ 1 <= n <= 8 /\\ decodeItemFoldProvenance args false prefix rest n payloadStart lengthBytes",
+    "0x800d6aa8": "exists (n payloadStart : Z) (lengthBytes : list byte), n = bv_unsigned prefix - 247 /\\ payloadStart = decodeItemInputPointer args + 1 /\\ lengthBytes = firstn (Z.to_nat n) rest /\\ 1 <= n <= 8 /\\ decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes",
+    "0x800d6a38": "exists (headerLength payloadLength : Z), headerLength = 1 + n /\\ payloadLength = bigEndian lengthBytes /\\ (decodeItemFoldLengthFits args n lengthBytes = true -> decodeItemLongAcceptedFacts args false headerLength payloadLength)",
+    "0x800d6ad8": "exists (headerLength payloadLength : Z), headerLength = 1 + n /\\ payloadLength = bigEndian lengthBytes /\\ (decodeItemFoldLengthFits args n lengthBytes = true -> decodeItemLongAcceptedFacts args true headerLength payloadLength)"
+  },
+  "R1_AFTER_detail": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/av-r1-after001/AFTER-EXPECTATIONS.json",
+  "R1_AFTER_detail_sha256": "55909e024a9543cdb2567c83df6ff44b4b5b317d67e0b30b2f16ce5efe1cccd6",
+  "R1_AFTER_claim": "Expected pure-context additions only; no measured rule-on result or closure claim.",
+  "R1c_successor_witness_detail": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-data-680b56ad/_build/r1c-successor-mappings003/SUCCESSOR-WITNESSES.json",
+    "sha256": "9b420db90622b98a62b6d1bcc74d57630317cdf515cc789be5a3606dd1ad8a0d"
+  },
+  "R1c_successor_witnesses": {
+    "6a08->6a14": "args=args; n=bv_unsigned prefix - 183; payloadStart=decodeItemInputPointer args + 1; lengthBytes=firstn (Z.to_nat (bv_unsigned prefix - 183)) rest; frameBytes=frameBytes; oldAcc=x13; oldCursor=x15; loaded=x16; inputPrefix=prefix; rest=rest",
+    "6aa8->6ab4": "args=args; n=bv_unsigned prefix - 247; payloadStart=decodeItemInputPointer args + 1; lengthBytes=firstn (Z.to_nat (bv_unsigned prefix - 247)) rest; frameBytes=frameBytes; oldAcc=x13; oldCursor=x15; loaded=x16; inputPrefix=prefix; rest=rest",
+    "6a38->6a40": "args=args; locals=decodeItemCompletedFoldLocals args n payloadStart lengthBytes frameBytes loaded; inputPrefix=prefix; rest=rest; headerLength=1 + n; payloadLength=bigEndian lengthBytes",
+    "6ad8->6b08": "args=args; locals=decodeItemCompletedFoldLocals args n payloadStart lengthBytes frameBytes loaded; inputPrefix=prefix; rest=rest; headerLength=1 + n; payloadLength=bigEndian lengthBytes",
+    "697c->698c[Literal;E3]": "args=args; successor_x11=Z_to_bv 64 (decodeItemInputPointer args); successor_x12=Z_to_bv 64 1; successor_x13=Z_to_bv 64 (bv_signed inputPrefix); successor_x14=x14; successor_x15=x15; successor_x16=x16; successor_outputBytes=storage; successor_frameBytes=frameBytes; successor_pointerBytes=bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args))); successor_lengthBytes=bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 1)); successor_inputPrefix=inputPrefix; successor_rest=rest",
+    "69e8->698c[ShortString;E3]": "args=args; successor_x11=(Z_to_bv 64 (decodeItemInputPointer args) + 1)%bv; successor_x12=(x13 + 1)%bv; successor_x13=x13; successor_x14=Z_to_bv 64 183; successor_x15=x15; successor_x16=x16; successor_outputBytes=storage; successor_frameBytes=frameBytes; successor_pointerBytes=bv_to_little_endian 8 8 (bv_unsigned ((Z_to_bv 64 (decodeItemInputPointer args) + 1)%bv)); successor_lengthBytes=bv_to_little_endian 8 8 (bv_unsigned x13); successor_inputPrefix=inputPrefix; successor_rest=rest"
+  }
+}
