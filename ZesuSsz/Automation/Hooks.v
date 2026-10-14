@@ -17,6 +17,7 @@ Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Contracts.SelectedCodeLookup.
 Require Import InstrSpecs.Lookup.
 Require Import ZesuSsz.Automation.ResourceGroups.
+Require Import ZesuSsz.Automation.ConjunctMatch.
 
 (* Keep the selected table named during search and simplification.
    Explicit computation still resolves one selected instruction. *)
@@ -1004,6 +1005,25 @@ Ltac zesu_pure_witness_constraints_if_enabled :=
       end
   end.
 
+
+Ltac zesu_conjunct_head_if_enabled :=
+  zesu_switch_enabled constr:(ZesuStepConjunctMatch);
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ _ _) =>
+      let introFuel := constr:(12%nat) in
+      zesu_witness_open_existentials introFuel
+  | |- envs_entails _ _ => idtac
+  end;
+  lazymatch goal with
+  | |- envs_entails _ ?requested =>
+      let unfoldFuel := constr:(4%nat) in
+      progress (zesu_match_resource_pure_heads
+        ltac:(fun premise => zesu_registered_pure_fact premise)
+        unfoldFuel requested)
+  end.
+
+
 Ltac zesu_record_constructor_witness T :=
   let guard := constr:(ltac:(
     assert_fails (has_evar T);
@@ -1727,6 +1747,7 @@ Ltac zesu_liAStep :=
   | liAOther
   | zesu_pure_fact_hints_if_enabled
   | liUnfoldEarly
+  | zesu_conjunct_head_if_enabled
   | zesu_known_pair_witness_if_enabled
   | zesu_pure_witness_constraints_if_enabled
   | zesu_record_witness_if_enabled
