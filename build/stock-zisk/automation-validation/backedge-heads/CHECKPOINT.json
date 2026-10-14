@@ -1,0 +1,29 @@
+{
+  "item": "backedge-heads",
+  "Root": "965678f3ff9862bb2dc06a34f9d2cf6de1776469",
+  "totals": {
+    "headers": 2,
+    "immediate_outer_pure_leaves": 8,
+    "nested_resource_pure_leaves": 4,
+    "audited_role_rows": 24,
+    "historical_backedge_paths": 4,
+    "verified_pending_loop_instances": 2,
+    "Root_active_loop_instances": 0,
+    "R4_engine_runs": 0,
+    "spatial_resource_none_rows": 2,
+    "new_registered_guard_routes": 0
+  },
+  "one_unfold_scope": "Outer entry: six existentials plus four pure leaves. Header/resources/fold/provenance require separate layers.",
+  "strict_guard_route": "Existing plain decodeItemByteFoldBackedgeGuard; keep C1BDomain, current FoldFacts, i<n and exact taken-bne inequality.",
+  "pending_class_outputs": "FoldFacts at i+1 and Z accumulator recurrence; no strict successor guard or spatial reconstruction.",
+  "binder_limit": "Current i and fresh target j are distinct. No witness/value/kind assignment occurred.",
+  "historical_native_scope": "Selected back-edge callback bodies only; four checked exports retain exact hypotheses, arrays, local definitions and all groups. No native replay.",
+  "availability": "Two separately verified unexported loop instances; zero active LoopStep instances in frozen Root. Existing SimplAnd hints are not an R4 result.",
+  "MCP": "Eleven complete narrow Print/Check captures. Diagnostic1/0/0/0, Abort, normal owned closure.",
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-backedge-heads-0d880796/_build/backedge-audit004/REPORT.json",
+    "sha256": "7745908ce209040dd5096fe8631fe8887e7f5941f3f4c2bf784f81fd5c528da1",
+    "bindings": 22
+  },
+  "checks": "Source hashes, exact branch predicates, typed binder roles, output conditions and capture completeness checked. Metadata only."
+}
