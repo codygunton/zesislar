@@ -1,0 +1,36 @@
+{
+  "schema": "nextuint64-level1-definitions-v1",
+  "base": "bf9f3411cfefcc719c472ebf7049eac9f2f92273",
+  "source": "ZesuSsz/Contracts/NextUint64Contract.v",
+  "source_sha256": "5bbb9c35376d8fd933deb5c295a8d10703c71de6da2f408835c94f2a2f15121f",
+  "source_lines": 69,
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-level1/_build/nextuint64-level1-certificate-004/REPORT.json",
+    "sha256": "9bdec88833eb9227dd822124c22fe583f26f5ba9f7b5a4aa0867a38f849daa74",
+    "bindings": 16
+  },
+  "checks": {
+    "rocq_health": "passed",
+    "rocq_compile_file": "passed",
+    "Check_definitions": 6,
+    "Print_Assumptions": 6,
+    "assumptions": [],
+    "context_groups": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "context_closed": "Abort.",
+    "normal_owned_closures": true
+  },
+  "scope": "Definitions only. NextUint64ContractCorrect remains an unproved Prop.",
+  "exit": "ABI registers; input; result image; rest slice; caller96; separate callee16",
+  "gates": "Orch released this definition unit for one combined Root check-fast/check-iris chain with definition and fold commits. No duplicate worktree gate.",
+  "Level1_changed": false,
+  "free_changed": false,
+  "native_proof": false,
+  "native_execution": false,
+  "rebase_source_delta": false,
+  "release": "Parent dispatch explicitly authorizes commit/push on bf9f3411 under the combined Root gate scope."
+}
