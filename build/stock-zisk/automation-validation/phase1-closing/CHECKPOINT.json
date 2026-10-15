@@ -1,0 +1,61 @@
+{
+  "item": "phase1-closing",
+  "scope": "Recorded Phase1 tables; metadata only. No new proof, native run, or timing measurement.",
+  "parent_root": "06acf88081b14cdf19e09f7ac90d969a67cd3115",
+  "tables": "build/stock-zisk/automation-validation/phase1-closing/TABLES.md",
+  "tables_sha256": "080405133594f91ff5615aa6b00f16f3227fdcac5da379da385d077fd583193a",
+  "full_certificate": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-contracts/_build/phase1-closing-final026/REPORT.json",
+  "certificate_sha256": "8f088549488a4af388758dad70f379cc94c59faa6fd5024a592ddcd650288f9b",
+  "certificate_bindings": 12,
+  "metrics_sha256": "ea00709c3c3c36b9b0d4c87d26f194b1734a51d133d1a801ffdc0e3216f60433",
+  "issue13_comments": 54,
+  "delivery": "ai-coord message36132; Orch received and saved the full text",
+  "baseline_body_lines": 1106,
+  "promoted_manual_after": {
+    "6a08": 0,
+    "6aa8": 0
+  },
+  "other_manual_after": "Unknown; not zero.",
+  "retained_baseline_body_lines": 1033,
+  "physical_audit_lines": 1059,
+  "physical_audit_root": "6e08631942efd13d229ff7a46a01ab6a3c42384a",
+  "physical_kind_totals": {
+    "machine": 222,
+    "trace_return": 128,
+    "encoding_image": 31,
+    "branch_handoff": 137,
+    "spatial": 378,
+    "pure_finisher": 163
+  },
+  "spatial_totals": {
+    "output_literal_offset_whole_array": 130,
+    "input_take_drop": 2,
+    "frame_stack": 67,
+    "other": 179
+  },
+  "r1c": "Accepted on authorized same-tip medians; original failure preserved.",
+  "r1d_r2": "Closed failed.",
+  "r3": "First native suffix comparison failed; diagnosis/repair pending.",
+  "finding_updates": [
+    "F30",
+    "F31",
+    "F32",
+    "F33",
+    "F34"
+  ],
+  "interface_scope": "Frozen integration scope16888; not a current-main recount.",
+  "limits": [
+    "Body, physical, and manual-after line measures differ.",
+    "Conditional overlap78 is not proven deletion.",
+    "Head matching and fixtures do not prove native closure.",
+    "F33/F34 use owner metrics; final R3 repair outcome unknown."
+  ],
+  "checks": [
+    "All12 source bindings match.",
+    "Published TABLES.md bytes match the accepted text.",
+    "Baseline1106, physical1059, spatial378, interface16888 totals recompute.",
+    "All cited issue comments exist in the bound snapshot.",
+    "JSON, whitespace and metadata-only diff checks."
+  ],
+  "gate": "Orch released metadata-only publication without a proof or project gate."
+}
