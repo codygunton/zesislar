@@ -1,0 +1,46 @@
+{
+  "item": "Checked nextUint64 registrations and unexecuted templates",
+  "base": "c84147faf85a232f4c40bd64f7aee96111e964d3",
+  "owner_reports": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-unfold/_build/nextuint64-exit-seal-013/REPORT.json",
+      "sha256": "7c9ccf1ed7f054fd2efb87765514469ee39c552d6f6a0f87e0a06d2a3af69244",
+      "bindings_verified": 28
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-loop-c84147fa/_build/nextuint64-loop-seal013/REPORT.json",
+      "sha256": "38baa4421550969ffba7c2abf9aee10efac9c5f2349977e403696c15ca5ef027",
+      "bindings_verified": 66
+    }
+  ],
+  "sources": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-loop-c84147fa/_build/nextuint64-loop-seal013/sources/NextUint64ExitMeanings.v",
+      "sha256": "3714b659e5af6fd76e3bf17540fe98f12f138a0fba3b4f3f878c0e7557b2767d",
+      "lines": 79
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-loop-c84147fa/_build/nextuint64-loop-seal013/sources/NextUint64LoopSteps.v",
+      "sha256": "db5bb7f770f816576b8164f81ce1c93ee439155742b8b544aca66b9501b20323",
+      "lines": 42
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-loop-c84147fa/_build/nextuint64-loop-seal013/sources/NextUint64DataRegistrations.v",
+      "sha256": "7d78d41a333aad513f8c01c220835166f6f0ea79bb34bfcffc4d7a5402a1472a",
+      "lines": 57
+    }
+  ],
+  "interface_before": 867,
+  "interface_delta": 179,
+  "interface_after": 1046,
+  "markers": 15,
+  "source_limits": [
+    "The return preserves its exact saved-frame and conditional output facts.",
+    "The loop retains nonzero length, exact byte lookup, and strict/equality branch guards.",
+    "The function umbrella exports both instances. Approved rule activation remains unchanged.",
+    "No native proof or run occurred. All template measurements remain null.",
+    "Exact future nextUint64 run and freeze identities remain pending."
+  ],
+  "evidence_check": "make check-evidence-tools passed in89.007396s; result SHA256 2c77628085a546d4459a536137ac0ac70e2af8ad7a9274a007a25cb2c1d11a49. Root owns check-fast. Attempts1/2 remain in the full report.",
+  "full_report": "/home/cody/zesislar/.worktrees/spec-c-av-nextuint64-registrations-draft/_build/nextuint64-registration-assembly-002/REPORT.json"
+}
