@@ -1,0 +1,39 @@
+{
+  "item": "decodeItem manifest-bound recount on cp-av-r1-r3",
+  "root": "6e08631942efd13d229ff7a46a01ab6a3c42384a",
+  "tag": "cp-av-r1-r3",
+  "tag_commit": "6e08631942efd13d229ff7a46a01ab6a3c42384a",
+  "manifest_sha256": "8930ba3383562d1ae7f3cd52ad8c6f65a054d8aaf0d783080ef742a60614ff88",
+  "files": 361,
+  "category_totals": {
+    "contracts": 2496,
+    "introductions": 3688,
+    "exit_meanings": 3114,
+    "loop_steps": 965,
+    "registrations": 326,
+    "generator_json": 6299,
+    "block_proofs": 3461,
+    "composition": 393,
+    "tests_and_exports": 34255
+  },
+  "interface_total": 16888,
+  "overall_total": 54997,
+  "mismatches": [],
+  "history": {
+    "original_baseline_interface": 13876,
+    "plain_lemma_scope": 14154,
+    "earlier_registration_scope": 14425,
+    "conservative_integration_scope": 16901,
+    "final_scored_integration_scope": 16888
+  },
+  "inactive_in_Approved": {
+    "ReturnRoute": true,
+    "ConjunctMatch": true,
+    "MemoryAccess": true
+  },
+  "count_rule": "Read each manifest file. Verify actual SHA and physical length. Union one-based inclusive ranges without overlap. Sum by recorded category. The self-manifest has no circular declared hash; this receipt binds its actual SHA.",
+  "scope_note": "The manifest retains its historical private-scope header. This audit independently binds its exact records to the integrated Root. No source or manifest bytes changed.",
+  "full_ranges_path": "/home/cody/zesislar/.worktrees/spec-c-av-r1-r3-recount-6e08/_build/r1-r3-root-recount-001/FILE-RANGES.json",
+  "full_ranges_sha256": "9688ad51ddbd42c3297edb71dc61585432d99b3ed400dbed6f8f7081d3ef47f0",
+  "no_proof_or_new_measurement": true
+}
