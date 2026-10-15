@@ -1,0 +1,52 @@
+{
+  "item": "hand-kinds",
+  "scope": "Read-only physical-line classification. No proof change or proof run.",
+  "audit_commit": "6e08631942efd13d229ff7a46a01ab6a3c42384a",
+  "metadata_parent": "6fab59f30bed5ca1a33616bf9acf3672c140254d",
+  "full_certificate": "/home/cody/zesislar/.worktrees/spec-b-av-hand-kinds-6e086319/_build/hand-kinds001/REPORT.json",
+  "certificate_sha256": "563aa5ba4ba90a40962d6d9686a6af27674087e351855cbda1dd1897f7bb9449",
+  "source_bindings": 14,
+  "counted_modules": 13,
+  "counted_physical_lines": 1059,
+  "priority": ["machine_step", "trace_lookup_return_route", "encoding_image_fact", "branch_case_handoff", "spatial_reasoning", "pure_finisher"],
+  "mixed_rule": "Choose the first detected kind in priority order. Retain all detected kinds separately.",
+  "structural_rule": "Inherit the next direct line in the same proof. At proof end, inherit the previous direct line.",
+  "blocks": [
+    {"block": "6960", "counts": [25, 3, 0, 11, 17, 12], "total": 68},
+    {"block": "697c", "counts": [9, 5, 11, 4, 14, 22], "total": 65},
+    {"block": "698c", "counts": [5, 19, 11, 1, 38, 6], "total": 80},
+    {"block": "69b0", "counts": [9, 20, 1, 0, 55, 7], "total": 92},
+    {"block": "69e8", "counts": [16, 12, 5, 5, 18, 19], "total": 75},
+    {"block": "6a24", "counts": [55, 2, 0, 46, 42, 15], "total": 160},
+    {"block": "6a38", "counts": [3, 2, 0, 9, 4, 13], "total": 31},
+    {"block": "6a40", "counts": [8, 18, 1, 2, 26, 7], "total": 62},
+    {"block": "6a78", "counts": [9, 20, 1, 0, 55, 6], "total": 91},
+    {"block": "6ac4", "counts": [57, 2, 0, 44, 47, 21], "total": 171},
+    {"block": "6ad8", "counts": [10, 2, 0, 15, 16, 25], "total": 68},
+    {"block": "6ae0", "counts": [8, 18, 1, 0, 36, 10], "total": 73},
+    {"block": "6b08", "counts": [8, 5, 0, 0, 10, 0], "total": 23}
+  ],
+  "counts_use_priority_order": true,
+  "totals": {"machine_step": 222, "trace_lookup_return_route": 128, "encoding_image_fact": 31, "branch_case_handoff": 137, "spatial_reasoning": 378, "pure_finisher": 163},
+  "mixed_lines": 444,
+  "structural_lines": 59,
+  "artifacts": [
+    {"path": "/home/cody/zesislar/.worktrees/spec-b-av-hand-kinds-6e086319/_build/hand-kinds001/classify.py", "sha256": "dbce29b6fb265401c1dedb25cdf48e58e8d9b8510d9a21fe26fbc051ac12ddd0"},
+    {"path": "/home/cody/zesislar/.worktrees/spec-b-av-hand-kinds-6e086319/_build/hand-kinds001/verify.py", "sha256": "3993d7a494cc82d5463ba313b532955d35bb783bb97f83116f78315e1d99c97c"},
+    {"path": "/home/cody/zesislar/.worktrees/spec-b-av-hand-kinds-6e086319/_build/hand-kinds001/CHECKS.json", "sha256": "8432bb51b31fedb4a26bf068597545ee16c8145ec1f23819f81b8925df9e6585"},
+    {"path": "/home/cody/zesislar/.worktrees/spec-b-av-hand-kinds-6e086319/_build/hand-kinds001/TABLE.md", "sha256": "12d77bdd16d79465402d0f0296f2cc846cc5a9cd6f1888e6837115712d1e8686"},
+    {"path": "/home/cody/zesislar/.worktrees/spec-b-av-hand-kinds-6e086319/_build/hand-kinds001/MIXED.json", "sha256": "fbae114ec21e190c40dad572fc45177135d2c1d548734beea4378c861d0ce1c6"},
+    {"path": "/home/cody/zesislar/.worktrees/spec-b-av-hand-kinds-6e086319/_build/hand-kinds001/STRUCTURAL.json", "sha256": "1570f1444936f4206082aff256cd7e028ee137b97badf4229b34a0de5396a565"}
+  ],
+  "focused_checks": ["Exact source bytes and hashes", "Every line appears once", "Cue priority recomputes", "Structural inheritance recomputes", "Per-block and full totals recompute", "JSON and whitespace"],
+  "limits": [
+    "The count includes Proof, Qed, syntax, and blank lines through explicit inheritance.",
+    "A cue can occur in a goal test or callback. The audit does not establish execution.",
+    "Mixed lines retain lower-priority obligations in the separate record.",
+    "Pure finisher describes written work. It does not establish generic solver success.",
+    "These counts measure physical source lines, not time, instructions, or atomic obligations.",
+    "No deletion, proof closure, native result, or consumer activation is claimed."
+  ],
+  "gate": "Metadata-only scope. Focused checks passed. No full project or MCP gate is claimed.",
+  "ownership": "Root owns integration and Iris. The free hold-out remains on standby."
+}
