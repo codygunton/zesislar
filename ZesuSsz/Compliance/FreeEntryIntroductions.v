@@ -54,7 +54,11 @@ Lemma freeEntry42154Introduction `{!islaG Sigma} `{!threadG}
     bufferBytes listBytes frameBytes ⊢
   ⌜x12 = Z_to_bv 64
       (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) /\
-    0 <= freeSizeClass (freeBufferLength args) (freeLog2Alignment args) < 23⌝.
+    0 <= freeSizeClass (freeBufferLength args) (freeLog2Alignment args) < 23 /\
+    0 <= freeSizeClassOfBytes (freeBufferLength args) <= 22 /\
+    (~ bv_signed (bv_zero_extend 128 x12) >=
+      bv_signed (bv_zero_extend 128 (BV 64 22)) ->
+      0 <= freeSizeClassOfBytes (freeBufferLength args) < 22)⌝.
 Proof.
   unfold freeEntryAt80042154.
   iIntros "(Hcore & %Hbranch)".
@@ -62,5 +66,9 @@ Proof.
   destruct Hbranch as (_ & Halign & Hclass).
   rewrite (freeSmallAlignmentClass _ _ Halign).
   split; first exact Hclass.
-  pose proof (freeSizeClassOfBytesRange (freeBufferLength args)). lia.
+  pose proof (freeSizeClassOfBytesRange (freeBufferLength args)) as Hrange.
+  split; first lia.
+  split; first exact Hrange.
+  intros Hguard.
+  exact (freeSizeClassOfBytesAcceptingRange (freeBufferLength args) x12 Hclass Hguard).
 Qed.

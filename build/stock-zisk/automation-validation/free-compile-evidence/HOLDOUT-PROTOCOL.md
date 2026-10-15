@@ -26,6 +26,19 @@ The integration identity and frozen-rule tag remain pending. Native readiness re
 Root4073c8d3 supports `--terminal-descriptor`; use the bound free descriptor.
 `RUN-INPUTS.json` records exact packet paths and hashes. Earlier packets remain historical.
 
+## Store prediction after R2 failure
+
+[Issue13 comment6183989697](https://github.com/codygunton/zesislar/issues/13#issuecomment-6183989697) closes Phase1 R2 as failed.
+[Supplement6184005012](https://github.com/codygunton/zesislar/issues/13#issuecomment-6184005012) binds the final candidate and measurements.
+R2 stays disabled. Stores are a hand prediction for this unexecuted free hold-out.
+The literal frame stores at0x80041f3c/0x80041f40 belong to block0x80041f38.
+The buffer store at0x80042174 and indexed state store at0x80042178 belong to block0x80042160.
+All four stores have width8. The two data stores share one return block.
+The buffer address is x11+0. The state address is x10+8 after x10=stateBase+(class<<3).
+These are static input facts and predictions, not running proof results.
+No exact hand-line count is predicted. All measured fields remain null.
+Preserve an unexpected native closure as a finding. Do not revise the frozen first result.
+
 ## Discovery
 
 Bind each `FREE_*` variable from the input seal. These commands were not executed.

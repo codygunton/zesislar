@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "item": "free guarded class source follow-up",
+  "base_root": "2e88f45f10171880975e4cd2c1411c899a48643b",
+  "preserved_package": "8e73544ccd7923b3b9ca7d0405dea2bd7c89714b",
+  "status": "Checked owner sources assembled; integration gate and native execution remain pending.",
+  "owner_report": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-free-data-965678f3/_build/free-guarded-class-checkpoint040/REPORT.json",
+    "sha256": "943c65d7a7573d322a051ceed268a4e318570226de78c93c74d71bb7615caf11"
+  },
+  "source_changes": {
+    "FreeClassFacts.v": {
+      "module": "FreeClassFacts.v",
+      "before": 22,
+      "after": 39,
+      "delta": 17
+    },
+    "FreeEntryIntroductions.v": {
+      "module": "FreeEntryIntroductions.v",
+      "before": 66,
+      "after": 74,
+      "delta": 8
+    },
+    "FreeDataRegistrations.v": {
+      "module": "FreeDataRegistrations.v",
+      "before": 28,
+      "after": 28,
+      "delta": 0
+    }
+  },
+  "interface_before": 958,
+  "interface_delta": 25,
+  "interface_after": 983,
+  "methods": {
+    "freeSizeClassOfBytesAcceptingRange": "shared_defs",
+    "freeEntry42154Introduction": "shared_defs",
+    "resolve_free42154_output_facts": "module_m"
+  },
+  "statement_sha256": {
+    "freeSizeClassOfBytesAcceptingRange": "8109c294a8b15e06a7d6c1c649a4cb639b6782693917ab0baf98e742ecd218b8",
+    "freeEntry42154Introduction": "5f8092a73aa7466bad731b96533acc09de2bd8e1bf0e00f58fbc7833e3eb831e",
+    "resolve_free42154_output_facts": "7c3e27a0ed0b39335e7824ae18b52a17e6d9a9e14a6229af45fe6ac28780cfce"
+  },
+  "assumptions": [],
+  "owner_groups": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "guard_remains_conditional": true,
+  "existing42154_instance_only": true,
+  "contract_packet009_unchanged": true,
+  "corrected_exit031_unchanged": true,
+  "stand_in_class_copied": false,
+  "protocol": "R2 failed; four stores across two blocks are hand predictions. Measurements remain null.",
+  "freeze_requirement": "No native free execution before the exact cp-av-rules-frozen commit is sealed.",
+  "checks": "Focused data-only, umbrella, shape, exact owner source/hash, complete counts, and two shell syntax checks passed.",
+  "native_runs": 0,
+  "full_gate_claim": false,
+  "full_report": {
+    "path": "/home/cody/zesislar/.worktrees/spec-c-av-free-guarded-2e88/_build/free-guarded-package-001/REPORT.json",
+    "sha256": null
+  }
+}
