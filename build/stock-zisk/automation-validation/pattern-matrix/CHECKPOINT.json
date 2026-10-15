@@ -1,0 +1,32 @@
+{
+  "schema": "pattern-coverage-skeleton-v1",
+  "base_root": "06acf88081b14cdf19e09f7ac90d969a67cd3115",
+  "scope": "Documentation-only Phase4 item2 skeleton; no proof or native run.",
+  "matrix_sha256": "d0a8073f601b93ee48d67f517b1e1d6823124ca9e756514ac66aba118c4075e5",
+  "README_sha256": "a7ee91d923c54d91b7682315238b7013c78bfd8a7e23ba9bd0fbc7e55e4c88cb",
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-a-av-pattern-matrix/_build/pattern-matrix-sources-001/REPORT.json",
+    "sha256": "adbad27ff501682dc4f710565b4c8ef7d756ff258df5ba9b55687e0c31f5c503",
+    "bindings": 9
+  },
+  "issue_comment": "https://github.com/codygunton/zesislar/issues/13#issuecomment-6195564367",
+  "issue_comment_body_sha256": "9274a22bdf3269ba6ab8c2a2e43f8c72c1d4b59b05d5f8a9b3ccc31ac0aa1f24",
+  "focused_checks": "passed",
+  "row_count": 8,
+  "columns": [
+    "decodeItem",
+    "free",
+    "nextUint64",
+    "alloc"
+  ],
+  "non_decodeItem_cells": "All24 remain null.",
+  "absent_decodeItem_patterns": [
+    "store-symbolic",
+    "return-without-frame",
+    "call"
+  ],
+  "project_gate": "Not run: documentation-only metadata; no executable artifact changed.",
+  "MCP": "Not used: no proof changed.",
+  "native_execution": false,
+  "alloc_source_read": false
+}
