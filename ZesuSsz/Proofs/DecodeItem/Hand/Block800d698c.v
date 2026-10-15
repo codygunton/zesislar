@@ -2,6 +2,7 @@ Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Common.
 Require Import ZesuSsz.Automation.Approved.
 Require Import ZesuSsz.Compliance.DecodeItemHints.
+Require Import ZesuSsz.Contracts.DecodeItemCompositional.
 Require Import ZesuSsz.Compliance.DecodeItemReturnExitResources.
 Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Compliance.DecodeItemReturnRestorationFacts.
@@ -91,7 +92,7 @@ zesu_run_until ltac:(fun _ => lazymatch goal with |- iris.proofmode.environments
 1: zesu_expose_environment_alias.
 1: iMatchHyp ltac:(fun name resource => lazymatch resource with | (?base ↦ₘ∗ ?values)%I => constr_eq base (decodeItemOutputPointer args); iExists values end).
 1: iSplitR.
-2: hand_return_exit_resources ltac:(unfold decodeItemExitResources; rewrite (bi.sep_comm ((decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) ↦ₘ? RlpDecodeItem.decodeItemStackBytes)%I True%I)) (proj1 H1).
+2: hand_return_exit_resources ltac:(unfold decodeItemExitResourcesRegisters, decodeItemReturnedCallerRegisters, decodeItemExitResources; rewrite (bi.sep_comm ((decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) ↦ₘ? RlpDecodeItem.decodeItemStackBytes)%I True%I)) (proj1 H1).
 2: match goal with Hpin : ?T |- _ => let expected := constr:((0 <= decodeItemReturnAddress args)%Z) in unify T expected; rename Hpin into HreturnNonnegative end.
 2: match goal with Hpin : ?T |- _ => let expected := constr:((decodeItemReturnAddress args < RlpDecodeItem.word64Modulus)%Z) in unify T expected; rename Hpin into HreturnUpperBound end.
 2: match goal with Hpin : ?T |- _ => let expected := constr:((decodeItemReturnAddress args mod 4 = 0)%Z) in unify T expected; rename Hpin into HreturnAddressAligned end.

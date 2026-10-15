@@ -1,6 +1,7 @@
 Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Automation.Approved.
 Require Import ZesuSsz.Compliance.DecodeItemHints.
+Require Import ZesuSsz.Contracts.DecodeItemCompositional.
 Require Import ZesuSsz.Compliance.DecodeItemReturnRestorationFacts.
 Require Import ZesuSsz.Compliance.DecodeItemLongStringOutputMeaning.
 Require Import ZesuSsz.Contracts.DecodeItemFrameImage.
@@ -82,7 +83,7 @@ zesu_run_until ltac:(fun _ => lazymatch goal with | |- envs_entails _ (li_tactic
 1: rename select (bv_unsigned (returnA4 locals) = _) into HreturnA4. 1: rename select ((0 <= RlpDecodeItem.bigEndian _)%Z) into HpayloadNonnegative.
 1: iPureIntro. 1: lazymatch goal with |- DecodeMeaningModuloKnownBugs args ?after => assert (HcanonicalImage : after = decodeItemOkBytes (returnStorage locals) (bv_to_little_endian 8 8 (bv_unsigned (returnA1 locals))) (bv_to_little_endian 8 8 (bv_unsigned (returnA3 locals))) (bv_to_little_endian 8 8 (bv_unsigned (returnA4 locals))) false) by (generalize HstorageLength; generalize (returnStorage locals); intros before Hlength; clear -before Hlength locals; do 40 (destruct before as [|? before]; [discriminate |]); destruct before; [unfold decodeItemOkBytes, bv_to_little_endian, Z_to_little_endian; cbn [Z.iter Pos.iter Z.of_N N.to_nat take drop firstn skipn list_fmap fmap insert]; repeat (rewrite Z.land_ones; last lia); repeat (rewrite Z.shiftr_div_pow2; last lia); assert (Hwidth8 : N.to_nat 8%N = 8%nat) by (vm_compute; reflexivity); assert (Hwidth2 : N.to_nat 2%N = 2%nat) by (vm_compute; reflexivity); assert (Hzero64 : bv_unsigned (0%bv : bv 64) = 0%Z) by (vm_compute; reflexivity); rewrite ?Hwidth8 ?Hwidth2 ?Hzero64; cbn; assert (Hzero8 : (0%bv : bv 8) = Z_to_bv 8 0%Z) by (apply (proj2 (bv_eq 8 _ _)); split; vm_compute; reflexivity); change (0 `mod` 2 ^ 8)%Z with 0%Z; rewrite ?Hzero8; reflexivity | cbn in Hlength; lia]) end.
 1: apply (decodeItemLongStringMachineOutputMeaning args locals inputPrefix rest _); unfold decodeItemLongStringMachineMeaningFacts; pose proof (proj2 H0) as Hdomain; repeat first [assumption | split | lia]. 1: pose proof (decodeItemStackEpilogueRestored args) as HstackRestored.
-1: rename select (length (returnFrame locals) = _) into HframeLength. 1: unfold decodeItemExitResources; rewrite HstackRestored; iFrame.
+1: rename select (length (returnFrame locals) = _) into HframeLength. 1: unfold decodeItemExitResourcesRegisters, decodeItemReturnedCallerRegisters, decodeItemExitResources; rewrite HstackRestored; iFrame.
 1: iRename select ((decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) ↦ₘ∗ _)%I into "HframeBytes". 1: iDestruct (IslarisMemory.mem_mapsto_byte_array_to_mapsto_len 16 with "HframeBytes") as "Hframe"; first exact HframeLength.
 1: iSplitL "Hframe"; [iApply (ghost_state.mem_mapsto_mapsto_to_uninit with "Hframe") | done]. unLET.
 pose proof (decodeItemSavedReturnDecoder args (returnFrame locals) H1) as HfaultReturnReady. repeat match type of HfaultReturnReady with context[Z.to_nat (?base + ?offset - ?base)] => replace (base + offset - base)%Z with offset in HfaultReturnReady by lia end.

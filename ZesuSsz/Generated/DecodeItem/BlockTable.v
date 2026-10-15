@@ -16,7 +16,7 @@ Import ListNotations.
 Open Scope Z_scope.
 
 (* Generated resource wiring. No block-body proof is supplied. *)
-(* Source: ZesuSsz/Contracts/DecodeItemBranchEntries.v; SHA-256: 45c8d41da95e03677aab58d4cf8029171d9464dabf67e38881f0ccfd05a7c825. *)
+(* Source: ZesuSsz/Contracts/DecodeItemBranchEntries.v; SHA-256: 3a26213468527356d4716688b0e5699a653639ab0e359c1b40e75e1bcd010b8b. *)
 (* Source: ZesuSsz/Contracts/DecodeItemReturnFacts.v; SHA-256: 9da33c0898953f7ff5f270dc6e1f66681f4de045c7bb774b7701676399da1cf5. *)
 (* Source: ZesuSsz/Contracts/DecodeItemSelected.v; SHA-256: a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804. *)
 (* Source: ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v; SHA-256: 537345226529da0c1e460444a0362bbd8110887c229de755ae5be47bc10a7c47. *)
@@ -26,7 +26,7 @@ Open Scope Z_scope.
 (* Source: ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v; SHA-256: 7b22b45607725212a23b90a195c8d94471a952ea00ba5ea6a7e1b2e8541b5dbe. *)
 (* Source: ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v; SHA-256: 9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2. *)
 (* Source: ZesuSsz/Contracts/RlpDecodeItemReturnImages.v; SHA-256: 16d16546759e850d362bd1d8c36d4e1f0708c8cfe7c5d6180abb0f629f6bba6d. *)
-(* Source: ZesuSsz/Evidence/decode_item_block_design.json; SHA-256: b097f5f30803f6098f188476ee79da818a6e65a8bd62bb50911f6ad4b5749b34. *)
+(* Source: ZesuSsz/Evidence/decode_item_block_design.json; SHA-256: 1bb893cfbdd87b2dd291f41629162b0602b10192f3a2eaf73fde8b7d9dd8412b. *)
 (* Source: build/stock-zisk/cfg.json; SHA-256: 98c4614e6ff7b6e1cb85bdc3b9e600dd85eccd5afacda8b1c5b75ff66db16fc2. *)
 (* Source: build/stock-zisk/decodeItem.raw.dump; SHA-256: 411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a. *)
 (* Source: build/stock-zisk/inventory.json; SHA-256: 7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d. *)

@@ -2,6 +2,8 @@ Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.DecodeItemBranchEntries.
+Require Import ZesuSsz.Contracts.DecodeItemCompositional.
+Require Import ZesuSsz.Compliance.DecodeItemCompositionalWeakening.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Generated.DecodeItem.BlockTable.
 
@@ -24,15 +26,33 @@ Proof.
 Qed.
 Print Assumptions decodeItemRootEntryContinuation.
 
-Lemma decodeItemRootCallerContinuation `{!islaG Sigma} `{!threadG}
+Lemma decodeItemRootInternalCallerContinuation `{!islaG Sigma} `{!threadG}
     returnAddress args :
   decodeItemBranchContinuationAt args returnAddress =
     (instr_pre returnAddress
       (∃ outcome : DecodeItemOutcome,
         ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args /\
           DecodeMeaningModuloKnownBugs args outcome⌝ ∗
-        decodeItemExitResources args outcome))%I.
+        decodeItemExitResourcesRegisters args outcome))%I.
 Proof. reflexivity. Qed.
+Print Assumptions decodeItemRootInternalCallerContinuation.
+
+Lemma decodeItemRootCallerContinuation `{!islaG Sigma} `{!threadG}
+    returnAddress args :
+  (instr_pre returnAddress
+    (∃ outcome : DecodeItemOutcome,
+      ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args /\
+        DecodeMeaningModuloKnownBugs args outcome⌝ ∗
+      decodeItemExitResources args outcome))%I ⊢
+  decodeItemBranchContinuationAt args returnAddress.
+Proof.
+  unfold decodeItemBranchContinuationAt.
+  iIntros "Hpublic".
+  iApply (instr_pre_wand with "Hpublic []"); [done|done|].
+  iIntros "Hafter". iDestruct "Hafter" as (outcome) "[%Hallowed Hexit]".
+  iExists outcome. iFrame "%".
+  iApply (decodeItemRegisterExitWeakens with "Hexit").
+Qed.
 Print Assumptions decodeItemRootCallerContinuation.
 
 Lemma decodeItemRootTableResources `{!islaG Sigma} `{!threadG} :
