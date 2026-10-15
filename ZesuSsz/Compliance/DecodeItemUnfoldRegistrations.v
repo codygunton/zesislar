@@ -1,5 +1,6 @@
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.Level1.
+Require Import ZesuSsz.Contracts.DecodeItemCompositional.
 Require Import ZesuSsz.Contracts.ParentHeaderLevel1.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemSelected.
@@ -149,3 +150,19 @@ Global Instance : LithiumUnfold (@decodeItemJoin6ae0From6ad8) := I.
 Global Typeclasses Opaque decodeItemErrorBranchEntry.
 Global Instance : LithiumUnfold (@decodeItemErrorBranchEntry) := I.
 
+
+(* Resource boundaries for the compositional native contract. *)
+Global Typeclasses Opaque decodeItemReturnedCallerRegisters.
+Global Instance : LithiumUnfold (@decodeItemReturnedCallerRegisters) := I.
+Global Typeclasses Opaque decodeItemOtherCallerRegisters.
+Global Instance : LithiumUnfold (@decodeItemOtherCallerRegisters) := I.
+Global Typeclasses Opaque decodeItemOtherCalleeRegisters.
+Global Instance : LithiumUnfold (@decodeItemOtherCalleeRegisters) := I.
+Global Typeclasses Opaque decodeItemUntouchedRegisters.
+Global Instance : LithiumUnfold (@decodeItemUntouchedRegisters) := I.
+Global Typeclasses Opaque decodeItemExitResourcesRegisters.
+Global Instance : LithiumUnfold (@decodeItemExitResourcesRegisters) := I.
+Global Typeclasses Opaque decodeItemEntryResourcesCompositional.
+Global Instance : LithiumUnfold (@decodeItemEntryResourcesCompositional) := I.
+Global Typeclasses Opaque decodeItemExitResourcesCompositional.
+Global Instance : LithiumUnfold (@decodeItemExitResourcesCompositional) := I.

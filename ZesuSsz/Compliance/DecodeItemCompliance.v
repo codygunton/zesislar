@@ -50,6 +50,9 @@ Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a78.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d69b0.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a40.
 
+Require Import ZesuSsz.Compliance.DecodeItemCompositionalCompliance.
+Require Import ZesuSsz.Compliance.DecodeItemCompositionalBridge.
+
 Definition ReviewedDecodeItemComplianceType : Prop :=
   forall returnAddress,
     IslarisContractCorrect decodeItemEntry returnAddress
@@ -59,34 +62,9 @@ Lemma decodeItemSelectedCompliance
  :
   ReviewedDecodeItemComplianceType.
 Proof.
-  intros returnAddress Sigma HG HT.
-  change (⊢ decodeItemSelectedCode -∗ ∀ args : DecodeItemArgs,
-    instr_body decodeItemEntry
-      (decodeItemEntryResources (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗
-       decodeItemBranchContinuationAt args returnAddress))%I.
-  rewrite /decodeItemSelectedCode.
-  iIntros "#Hcode" (args).
-  iPoseProof (decodeItemBlockTable_complete_native_family
-    (decodeItemSlotBody800d6960Conditional (@DesignedBoundary_800d6960 Sigma HG HT))
-    (@DesignedBoundary_800d6974 Sigma HG HT)
-    (@DesignedBoundary_800d697c Sigma HG HT)
-    (@DesignedBoundary_800d698c Sigma HG HT)
-    (@DesignedBoundary_800d69b0 Sigma HG HT)
-    (@DesignedBoundary_800d69e8 Sigma HG HT)
-    (@DesignedBoundary_800d6a08 Sigma HG HT)
-    (@DesignedBoundary_800d6a24 Sigma HG HT)
-    (@DesignedBoundary_800d6a38 Sigma HG HT)
-    (@DesignedBoundary_800d6a40 Sigma HG HT)
-    (@DesignedBoundary_800d6a78 Sigma HG HT)
-    (@DesignedBoundary_800d6aa8 Sigma HG HT)
-    (@DesignedBoundary_800d6ac4 Sigma HG HT)
-    (@DesignedBoundary_800d6ad8 Sigma HG HT)
-    (@DesignedBoundary_800d6ae0 Sigma HG HT)
-    (@DesignedBoundary_800d6b08 Sigma HG HT) with "Hcode") as "#Htable".
-  iPoseProof (decodeItemSlotBody800d6960Conditional (@DesignedBoundary_800d6960 Sigma HG HT) with "Htable") as "Hbody".
-  iApply (instr_pre_wand with "Hbody []"); [done|done|].
-  iIntros "[Hentry Hreturn]". iExists returnAddress, args.
-  unfold decodeItemEntryAt800d6960, decodeItemBranchContinuationAt.
-  iFrame.
+  unfold ReviewedDecodeItemComplianceType.
+  intros returnAddress.
+  apply decodeItemRegisterComplianceWeakens.
+  apply decodeItemSelectedComplianceRegisters.
 Qed.
 Print Assumptions decodeItemSelectedCompliance.

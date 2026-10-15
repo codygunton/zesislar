@@ -9,18 +9,19 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.
 Require Import ZesuSsz.Contracts.DecodeItemSelected.
 Require Import ZesuSsz.Contracts.DecodeItemReturnFacts.
+Require Import ZesuSsz.Contracts.DecodeItemCompositional.
 
 Import ListNotations.
 Open Scope Z_scope.
 
-(* The continuation is the one supplied by the selected Level 1 contract. *)
+(* The native family returns the caller registers required by the compositional exit. *)
 Definition decodeItemBranchContinuationAt `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (returnAddress : Z) : iProp Sigma :=
   (instr_pre returnAddress
     (∃ outcome : DecodeItemOutcome,
       ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args /\
         DecodeMeaningModuloKnownBugs args outcome⌝ ∗
-      decodeItemExitResources args outcome))%I.
+      decodeItemExitResourcesRegisters args outcome))%I.
 
 Definition decodeItemBranchContinuation `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) : iProp Sigma :=
