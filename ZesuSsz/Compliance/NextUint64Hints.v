@@ -1,2 +1,3 @@
 Require Export ZesuSsz.Compliance.NextUint64FoldFacts.
 Require Export ZesuSsz.Compliance.NextUint64UnfoldRegistrations.
+Require Export ZesuSsz.Compliance.NextUint64DataRegistrations.

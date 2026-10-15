@@ -1,0 +1,228 @@
+{
+  "function": "rlp_decode.nextUint64",
+  "status": "Unexecuted preparation. Exact future run and freeze identity remain pending.",
+  "checked_contract_tip": "cb72b7f3c673f06eb6d0885c2690809322437e39",
+  "contract_parent": "a9110030a2455722f28d6fe085911b0d76afd577",
+  "manifest": {
+    "path": "ZesuSsz/Evidence/nextUint64_function_text.json",
+    "sha256": "25504322adf8409fc3caf711bf4c13cfc7754c62a4f088e97ca3751a334878c1",
+    "interface_lines": 1046
+  },
+  "predictions": {
+    "path": "build/stock-zisk/automation-validation/nextuint64-predictions/CHECKPOINT.json",
+    "sha256": "81843c045dd7c8f43a5c4584d0b80e7d8a64cbfc0b2f24c370c744aa6c905cf6",
+    "comment": "https://github.com/codygunton/zesislar/issues/13#issuecomment-6191876275",
+    "body_sha256": "2ab0d903839b48fddb74f536cd5d033c0618d4323600726ef6f862b18c65f11f",
+    "labels_non_additive": {
+      "store": 3,
+      "call": 1,
+      "propagate": 4,
+      "introduce": 2,
+      "return": 1,
+      "loop": 1
+    }
+  },
+  "inventory": {
+    "entry": "0x800d6274",
+    "instructions": 53,
+    "blocks": 10,
+    "conditional_branches": 5,
+    "call": "0x800d62b4",
+    "callee": "0x800d6960",
+    "callee_return": "0x800d62b8",
+    "loop": "0x800d6318",
+    "epilogue": "0x800d62e4",
+    "return_instruction": "0x800d6300"
+  },
+  "future_run_identity": null,
+  "future_freeze_identity": null,
+  "freeze_policy": "Pending an explicit nextUint64 ruling. This template does not inherit the free run policy.",
+  "native_correctness": null,
+  "schema": "nextuint64-per-block-result-template-v1",
+  "outcome_values": [
+    "closed",
+    "residual"
+  ],
+  "started_UTC": null,
+  "finished_UTC": null,
+  "result_report": null,
+  "rows": [
+    {
+      "block": "0x800d6274",
+      "predicted_classes": [
+        "store",
+        "call"
+      ],
+      "outcome": null,
+      "first_residual": null,
+      "cpu_seconds": null,
+      "wall_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null,
+      "goal_groups": null,
+      "actual_Qed": null,
+      "exact_verification": null,
+      "assumptions": null
+    },
+    {
+      "block": "0x800d62b8",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": null,
+      "first_residual": null,
+      "cpu_seconds": null,
+      "wall_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null,
+      "goal_groups": null,
+      "actual_Qed": null,
+      "exact_verification": null,
+      "assumptions": null
+    },
+    {
+      "block": "0x800d62c0",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": null,
+      "first_residual": null,
+      "cpu_seconds": null,
+      "wall_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null,
+      "goal_groups": null,
+      "actual_Qed": null,
+      "exact_verification": null,
+      "assumptions": null
+    },
+    {
+      "block": "0x800d62cc",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": null,
+      "first_residual": null,
+      "cpu_seconds": null,
+      "wall_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null,
+      "goal_groups": null,
+      "actual_Qed": null,
+      "exact_verification": null,
+      "assumptions": null
+    },
+    {
+      "block": "0x800d62d8",
+      "predicted_classes": [
+        "store"
+      ],
+      "outcome": null,
+      "first_residual": null,
+      "cpu_seconds": null,
+      "wall_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null,
+      "goal_groups": null,
+      "actual_Qed": null,
+      "exact_verification": null,
+      "assumptions": null
+    },
+    {
+      "block": "0x800d62e4",
+      "predicted_classes": [
+        "return"
+      ],
+      "outcome": null,
+      "first_residual": null,
+      "cpu_seconds": null,
+      "wall_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null,
+      "goal_groups": null,
+      "actual_Qed": null,
+      "exact_verification": null,
+      "assumptions": null
+    },
+    {
+      "block": "0x800d6304",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": null,
+      "first_residual": null,
+      "cpu_seconds": null,
+      "wall_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null,
+      "goal_groups": null,
+      "actual_Qed": null,
+      "exact_verification": null,
+      "assumptions": null
+    },
+    {
+      "block": "0x800d6310",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": null,
+      "first_residual": null,
+      "cpu_seconds": null,
+      "wall_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null,
+      "goal_groups": null,
+      "actual_Qed": null,
+      "exact_verification": null,
+      "assumptions": null
+    },
+    {
+      "block": "0x800d6318",
+      "predicted_classes": [
+        "loop"
+      ],
+      "outcome": null,
+      "first_residual": null,
+      "cpu_seconds": null,
+      "wall_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null,
+      "goal_groups": null,
+      "actual_Qed": null,
+      "exact_verification": null,
+      "assumptions": null
+    },
+    {
+      "block": "0x800d632c",
+      "predicted_classes": [
+        "store",
+        "introduce"
+      ],
+      "outcome": null,
+      "first_residual": null,
+      "cpu_seconds": null,
+      "wall_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null,
+      "goal_groups": null,
+      "actual_Qed": null,
+      "exact_verification": null,
+      "assumptions": null
+    }
+  ],
+  "field_rules": {
+    "predicted_classes": "Frozen non-exclusive pattern labels. Do not change them after the run.",
+    "outcome": "Null before measurement. A process exit alone does not prove closure.",
+    "first_residual": "Exact first goal, or null only with separately certified closure.",
+    "cpu_seconds": "Actual compiler user plus system CPU. Exclude admission and setup.",
+    "peak_GiB": "Actual compiler peak RSS in GiB. Preserve the raw source measurement.",
+    "hand_lines": "Manual proof lines after rule calls. Null if no complete proof supplies a measured count."
+  },
+  "integrated_contract_root": "c84147faf85a232f4c40bd64f7aee96111e964d3",
+  "pending_registration_package": "Checked A return packet013 and B combined loop packet013. The function umbrella exports both instances; Approved activation remains unchanged.",
+  "historical_manifest": {
+    "tip": "cb72b7f3c673f06eb6d0885c2690809322437e39",
+    "interface_lines": 867,
+    "sha256": "7ed020247efbb1bb02e2e8891b6533e2f31ea2a440637f5ce839b3e6deb59249"
+  }
+}
