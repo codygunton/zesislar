@@ -1,0 +1,82 @@
+{
+  "schema": "nextuint64-data-fold-facts-v1",
+  "root": "9a8b148f11c97d8a22a417d1eb93e8a6462fe817",
+  "definition_dependency": "691f62dc510c7ce3a06bd38da51f59be83d1a3ac",
+  "status": "Four main fold lemmas and two helpers passed full MCP checks. No native contract proof.",
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-contracts/_build/nextuint64-fold-seal019/REPORT.json",
+    "sha256": "16eef952307c4689893a5da93d72beb74154b22e484963e8621966ae6a68eca3",
+    "bindings": 34
+  },
+  "source": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-contracts/ZesuSsz/Compliance/NextUint64FoldFacts.v",
+    "sha256": "84049eaab7c674cdec9564162b7bd8d46eef0fe4dfde353c9828afb8bf6a430c",
+    "physical_lines": 187,
+    "interface_line_delta": 187
+  },
+  "object": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-contracts/_build/agents/spec-b/default/ZesuSsz/Compliance/NextUint64FoldFacts.vo",
+    "sha256": "84701258e7466c6081cde5cc36f7e257c692df66d11ff732a12c932f87e14884"
+  },
+  "main_lemmas": [
+    {
+      "name": "nextUint64FoldInitialization",
+      "statement_sha256": "99e2778b21ec9cb216ff36a71c4945917e79517169030fdb168b18e6efad3f67",
+      "verification_method": "module_m"
+    },
+    {
+      "name": "nextUint64FoldStep",
+      "statement_sha256": "745b48d89b668bdb571ad721264ed5629dfa5ff3e7bf20860528cdad354b3a58",
+      "verification_method": "shared_defs"
+    },
+    {
+      "name": "nextUint64FoldLast",
+      "statement_sha256": "632282086b7a748fe00cb6167894e0b8831b636520b91ae393ed625a24d4e470",
+      "verification_method": "shared_defs"
+    },
+    {
+      "name": "nextUint64EmptyFold",
+      "statement_sha256": "c05603a5899163103889bf272755e1689a112d12cdba4dead8da0596f97aaa34",
+      "verification_method": "module_m"
+    }
+  ],
+  "helpers": [
+    {
+      "name": "nextUint64BytesValueBound",
+      "verification_method": "module_m"
+    },
+    {
+      "name": "nextUint64PrefixStepValue",
+      "verification_method": "shared_defs"
+    }
+  ],
+  "MCP": {
+    "health": "passed",
+    "all_groups": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "actual_Qed": 6,
+    "final_compilation": "passed",
+    "exact_verification": 6,
+    "assumptions": [],
+    "normal_owner_closure": true
+  },
+  "main_statements_unchanged": true,
+  "interface_line_delta": 187,
+  "limits": [
+    "The six results are data-only lemmas, not native loop correctness.",
+    "No nextUint64 machine proof or execution ran.",
+    "No new premise or boundary change was added.",
+    "Level1.v and free remain unchanged.",
+    "The immutable certificate describes the verification scope before publication."
+  ],
+  "publication": {
+    "release": "Orch authorizes this handoff directly on definition tip691f62dc.",
+    "branch": "spec-b-av-nextuint64-contracts",
+    "local_broad_gate": "Not required for this released handoff.",
+    "Root_gate": "Orch runs both gates once on the combined tip after3a."
+  }
+}
