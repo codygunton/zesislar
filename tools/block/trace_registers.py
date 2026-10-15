@@ -5,7 +5,7 @@ from pathlib import Path
 import re
 
 
-TOKEN = re.compile(r'\(\*|\*\)|"(?:[^"\n]|"")*"|[A-Za-z_][A-Za-z0-9_\']*|\S')
+TOKEN = re.compile(r'\(\*|\*\)|"(?:[^"\n]|"")*"|[A-Za-z_][A-Za-z0-9_\']*|[0-9]+|\S')
 
 
 def tokens(text):
