@@ -1,0 +1,47 @@
+{
+  "item": "3a-compositional-decodeItem-exit",
+  "base": "9a8b148f11c97d8a22a417d1eb93e8a6462fe817",
+  "tested_base": "48bd0d79ee0f889b7e504709e00b5e71d13c0840",
+  "rebase_delta": "Two nextUint64 checkpoint records only; all18 reviewed source hashes remain exact.",
+  "caller_registers_returned": 15,
+  "callee_registers_preserved": 12,
+  "public_statement_sha256": "54590c7e679c84561b9266569ecad2e0fb5911c89b0638d373ba4595a5c82e77",
+  "reviewed_type_sha256": "5b485f886fc945504a03e059e2b70f39164d51b282c72e55e5517e8d83762206",
+  "unchanged": [
+    "decodeItemSelectedModel",
+    "Level1.v",
+    "IslarisContractCorrect"
+  ],
+  "verification": "MCP full compilation, exact module_m verification, and compiled Print Assumptions; assumptions [].",
+  "certificates": [
+    {
+      "kind": "proof",
+      "path": "/home/cody/zesislar/.worktrees/spec-a-av-3a-a422ab98/_build/compositional-complete-certificate-035/REPORT.json",
+      "sha256": "6fa5327be2accf095000f3c21796187615288bc81de03ff096b53b1ebeddbb6f"
+    },
+    {
+      "kind": "root_test",
+      "path": "/home/cody/zesislar/.worktrees/spec-a-av-3a-a422ab98/_build/compositional-root-test-certificate-038/REPORT.json",
+      "sha256": "8581c2d049a3a7bd4713f7046cb916ac858990ca7f9c6ae1a837484f9e0021ef"
+    }
+  ],
+  "source_seal": {
+    "path": "/home/cody/zesislar/.worktrees/spec-a-av-3a-a422ab98/_build/compositional-root-test-gates-039/INPUTS.json",
+    "sha256": "4bad6dd2cacc05db3d35b4c2854590500d8e500c35328a82db61b11b4bf75e97"
+  },
+  "gates": {
+    "check-fast": {
+      "exit_code": 0,
+      "seconds": 96.01290458696894,
+      "path": "/home/cody/zesislar/.worktrees/spec-a-av-3a-a422ab98/_build/compositional-root-test-gates-039/check-fast-RESULT.json",
+      "sha256": "58dbd54046db0a1034531377a154d612873a2b518d0f03dd57dab1f740bda907"
+    },
+    "check-iris": {
+      "exit_code": 0,
+      "seconds": 4426.448121801019,
+      "path": "/home/cody/zesislar/.worktrees/spec-a-av-3a-a422ab98/_build/compositional-root-test-gates-039/check-iris-RESULT.json",
+      "sha256": "b6d40ca310d640a50ac0a94cb280d478e88a06eba25fdb8853de8e517a98398f"
+    }
+  },
+  "native_free_run": false
+}
