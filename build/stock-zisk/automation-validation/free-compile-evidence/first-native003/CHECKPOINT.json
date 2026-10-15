@@ -1,0 +1,21 @@
+{
+  "item": "Unexecuted first-native discovery protocol update",
+  "root": "663635a9af74e87f7b2a619a373721a70823ab43",
+  "protocol_sha256": "3706685b1b5339200904cb4332e28582ed55a52f03424d839a96b32ec83f6763",
+  "historical_protocol_sha256": "4de570761249c855e7c79fb9d079f37c020e2cb6e489667b56808a920928500f",
+  "discovery_sha256": "7408ab2d4d7a487836cc7e9794e6389eb5bbb0ff957614d8bf14d061cd28e2fa",
+  "added_arguments": [
+    "--first-native-run \"$FREE_RULE_FREEZE\"",
+    "--designed-successors"
+  ],
+  "preconditions": [
+    "Full frozen SHA equals the sealed expected SHA.",
+    "HEAD equals the frozen SHA.",
+    "No baseline/resume/legacy inputs.",
+    "Fresh output directory and complete source/artifact seal."
+  ],
+  "syntax_check": "Both shell blocks pass bash -n only.",
+  "native_runs": 0,
+  "freeze_commit": null,
+  "no_proof_or_discovery_command_executed": true
+}
