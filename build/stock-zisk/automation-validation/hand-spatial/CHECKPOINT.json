@@ -1,0 +1,52 @@
+{
+  "item": "hand-spatial",
+  "scope": "Read-only classification of the accepted 378 primary spatial lines.",
+  "audit_commit": "6e08631942efd13d229ff7a46a01ab6a3c42384a",
+  "metadata_parent": "125c9b2b1064588ee91fccff478eefedbee7c502",
+  "upstream_certificate": {"path": "/home/cody/zesislar/.worktrees/spec-b-av-hand-kinds-6e086319/_build/hand-kinds001/REPORT.json", "sha256": "563aa5ba4ba90a40962d6d9686a6af27674087e351855cbda1dd1897f7bb9449", "primary_kind": "spatial_reasoning", "selected_rows": 378},
+  "full_certificate": "/home/cody/zesislar/.worktrees/spec-b-av-hand-spatial-6e086319/_build/hand-spatial001/REPORT.json",
+  "certificate_sha256": "8c3f69524fb673c36df86c778d2623e34816cf5125dcc440a20656d59687de93",
+  "source_bindings": 15,
+  "priority": ["output_array_literal_offset_split_recombination", "input_array_take_drop", "frame_stack_bookkeeping", "other"],
+  "blocks": [
+    {"block": "6960", "counts": [0, 0, 10, 7], "total": 17},
+    {"block": "697c", "counts": [0, 0, 0, 14], "total": 14},
+    {"block": "698c", "counts": [17, 0, 13, 8], "total": 38},
+    {"block": "69b0", "counts": [36, 0, 13, 6], "total": 55},
+    {"block": "69e8", "counts": [0, 0, 0, 18], "total": 18},
+    {"block": "6a24", "counts": [0, 0, 0, 42], "total": 42},
+    {"block": "6a38", "counts": [0, 0, 0, 4], "total": 4},
+    {"block": "6a40", "counts": [16, 0, 8, 2], "total": 26},
+    {"block": "6a78", "counts": [36, 0, 13, 6], "total": 55},
+    {"block": "6ac4", "counts": [0, 0, 0, 47], "total": 47},
+    {"block": "6ad8", "counts": [0, 2, 0, 14], "total": 16},
+    {"block": "6ae0", "counts": [20, 0, 9, 7], "total": 36},
+    {"block": "6b08", "counts": [5, 0, 1, 4], "total": 10}
+  ],
+  "counts_use_priority_order": true,
+  "totals": {"output_array_literal_offset_split_recombination": 130, "input_array_take_drop": 2, "frame_stack_bookkeeping": 67, "other": 179},
+  "total": 378,
+  "upstream_mixed_lines": 195,
+  "upstream_structural_lines": 14,
+  "mixed_subcategory_lines": 3,
+  "artifacts": [
+    {"path": "/home/cody/zesislar/.worktrees/spec-b-av-hand-spatial-6e086319/_build/hand-spatial001/classify.py", "sha256": "6167f462efae98bb3c0a1996b6576ab4a6fedf9dc5cda553d5ff6047c9540c78"},
+    {"path": "/home/cody/zesislar/.worktrees/spec-b-av-hand-spatial-6e086319/_build/hand-spatial001/verify.py", "sha256": "93287e4a14942fab6e6f74c12dbbd5087b7087743279be3ada87a341520e0252"},
+    {"path": "/home/cody/zesislar/.worktrees/spec-b-av-hand-spatial-6e086319/_build/hand-spatial001/CHECKS.json", "sha256": "b9d675d4a741f2d7253179a50741e7b899d1e8f95b756fab4b75df05ea53202f"},
+    {"path": "/home/cody/zesislar/.worktrees/spec-b-av-hand-spatial-6e086319/_build/hand-spatial001/TABLE.md", "sha256": "583db877c2f27a385029efb6cc3c0a5698fd63999a5ef4caae7a58d8ebfd060d"},
+    {"path": "/home/cody/zesislar/.worktrees/spec-b-av-hand-spatial-6e086319/_build/hand-spatial001/MIXED-NOTES.json", "sha256": "a21300facb9d098eba9fa672fcf94be134ad095d926f5564ec7be409b8e5a078"}
+  ],
+  "deterministic_rule": "Use the bound operation regions and two explicit Htake sites. Apply the fixed priority. Put unmatched selected rows in other.",
+  "focused_checks": ["Exact 378 primary row identities", "All upstream row fields unchanged", "15 source bindings match", "Context membership recomputes", "Mixed priority and totals recompute", "JSON and whitespace"],
+  "limits": [
+    "No non-spatial line enters this classification.",
+    "Output packets select and frame whole arrays. iSplit does not establish an array split.",
+    "The two input sites normalize slice values. They do not split input ownership.",
+    "Input-read index wrappers and combined bundles remain other unless a slice rewrite is explicit.",
+    "The prior mixed kinds and structural inheritance remain unchanged.",
+    "These are static physical-line counts, not execution, timing, or proof-applicability measurements.",
+    "No proof changed and no proof ran."
+  ],
+  "gate": "Metadata-only scope. Focused checks passed. No full project gate is claimed.",
+  "ownership": "Root owns integration and Iris. Free standby remains unchanged."
+}
