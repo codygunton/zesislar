@@ -1,0 +1,36 @@
+{
+  "item": "free-store-shapes",
+  "base": "2e88f45f10171880975e4cd2c1411c899a48643b",
+  "classification": "Data-only static shape audit; no native execution.",
+  "packet009_sha256": "77cc2105894e46071b29659c67561f9e545109abd1322cfa5a6df3ed4803fdac",
+  "pre_run_correction": "contract corrected before run: ownership omitted the 8-byte header",
+  "packet008": "Preserved as history; corrected sources remain a separate integration dependency.",
+  "details": {
+    "store_count": 2,
+    "address_width_bits": 64,
+    "value_width_bits": 64,
+    "access_width_bytes": 8,
+    "buffer_address": "bv_add x11 (BV 64 0)",
+    "state_slot_address": "bv_add x10 (BV 64 8)",
+    "state_slot_static_value": "0xa0534000 + 8 + 8*class modulo2^64",
+    "buffer_owner": "freeBufferPointer args with bufferBytes",
+    "state_owner": "freeListsPointer with listBytes",
+    "state_bytes": 184,
+    "class_guard": "0<=freeSizeClass(size,alignment)<22",
+    "static_class21_slot_end": 184,
+    "exact_terms": "Bound free-only AST snapshots and exact packet009 source control identity.",
+    "search_export": "No native search state was captured."
+  },
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-free-data-965678f3/_build/free-store-return-audit033/REPORT.json",
+    "sha256": "f1e67922ffd2d13bdf784d798a3a7c6a2a642f7b83155994dcb0dfce10ec9a60",
+    "binding_count": 40
+  },
+  "limits": [
+    "Head and shape matching do not prove applicability or closure.",
+    "No contract, rule, proof body, or source registration changed.",
+    "No native free proof ran.",
+    "The class-introduction guard boundary remains a separate task."
+  ],
+  "checks": "JSON parsing, all40 binding hashes, exact trace widths/offsets, and git diff --check."
+}
