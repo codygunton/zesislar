@@ -1,0 +1,95 @@
+{
+  "schema": "nextuint64-phase3c-preparation-v1",
+  "status": "Uncompiled source-only preparation. Boundary ruling remains pending.",
+  "integration_base": "48bd0d79ee0f889b7e504709e00b5e71d13c0840",
+  "source_root": "6f4d5810fcf9a49423b60d20b44409a02ddbcba4",
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-prep/_build/nextuint64-preparation001/REPORT.json",
+    "sha256": "2695151292935908e4ca4436e0b745068c8c02e46f3180304cf4f4acdb10f60b",
+    "bindings": 25
+  },
+  "focused_checks": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-prep/_build/nextuint64-preparation001/CHECKS.json",
+    "sha256": "74da8992c935129a7af2117c865e9d97366114a73c39db07f012e8fb5838e7f8",
+    "result": "passed for preparation only"
+  },
+  "inventory": {
+    "entry": "0x800d6274",
+    "instructions": 53,
+    "blocks": 10,
+    "conditional_branches": 5,
+    "call": "0x800d62b4",
+    "callee": "0x800d6960",
+    "callee_return": "0x800d62b8",
+    "loop": "0x800d6318",
+    "epilogue": "0x800d62e4",
+    "return_instruction": "0x800d6300"
+  },
+  "drafts": [
+    "NextUint64Level1Draft.v.txt",
+    "ENTRY-DRAFTS.json",
+    "ENTRY-SIGNATURES.v.txt",
+    "NextUint64FoldDraft.v.txt",
+    "CALLEE-PREMISE.v.txt"
+  ],
+  "draft_directory": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-prep/_build/nextuint64-preparation001",
+  "draft_limit": "The ten register/byte-array entry signatures are blueprints, not compiled definitions.",
+  "callee_dependency": {
+    "packet": "/home/cody/zesislar/.worktrees/spec-a-av-3a-a422ab98/_build/compositional-complete-certificate-035/REPORT.json",
+    "sha256": "6fa5327be2accf095000f3c21796187615288bc81de03ff096b53b1ebeddbb6f",
+    "status": "Prepared by A. Commit, gate, and integration remain pending.",
+    "theorem": "decodeItemSelectedComplianceCompositional 0x800d62b8",
+    "declaration_sha256": "3ca2243ef6671eaeae7d2216986e7a21ba0efe3f68f601ca9707ed2122c097dc",
+    "hash_limit": "This hash covers the source declaration, not a new kernel statement check."
+  },
+  "boundary": {
+    "retained_stack_bytes": 96,
+    "missing_callee_frame": "[sp-112,sp-96), 16 bytes",
+    "missing_GPR_count": 20,
+    "missing_GPRs": [
+      "x5",
+      "x6",
+      "x7",
+      "x12",
+      "x13",
+      "x14",
+      "x15",
+      "x16",
+      "x17",
+      "x21",
+      "x22",
+      "x23",
+      "x24",
+      "x25",
+      "x26",
+      "x27",
+      "x28",
+      "x29",
+      "x30",
+      "x31"
+    ],
+    "other_gaps": [
+      "RAM/input-window conditions",
+      "Actual zisk_input_end and input-end bound",
+      "Caller stack views",
+      "Callee call bridge if required"
+    ],
+    "limit": "No changed Level1 premise or wider ownership was adopted."
+  },
+  "loop_limit": "The empty path skips cursor setup. The join must not constrain x12/x13 unconditionally.",
+  "verification": {
+    "method": "Static hashes, instruction fields, counts, and schemas only.",
+    "proof_runs": 0,
+    "native_runs": 0,
+    "MCP": "Not run, as instructed.",
+    "compilation": "Not run, as instructed.",
+    "project_gate": "Not run for metadata-only preparation."
+  },
+  "preserved": [
+    "Level1.v",
+    "IslarisContractCorrect",
+    "free",
+    "96-byte boundary"
+  ],
+  "alloc_inspected": false
+}
