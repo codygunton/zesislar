@@ -178,10 +178,28 @@ def native_boundary_closed(evidence, rendered, block):
 def designed_terminal(block, options):
     if block['successors']:
         return None
+    if options.get('terminal_descriptor') is not None:
+        return options['terminal_descriptor']
     owner = 'ZesuSsz/Contracts/DecodeItemBranchEntries.v'
     return {'kind': 'owned_continuation', 'address': options['terminal'],
             'definition': 'ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemBranchContinuation',
             'source_hashes': {owner: digest(Path(options['workspace'])/owner)}}
+
+
+
+def load_terminal_descriptor(path, address, root):
+    """Validate an explicit owned continuation through the existing entry schema."""
+    import successor_entailment
+    value = json.loads(Path(path).read_text())
+    if not isinstance(value, dict) or value.get('kind') != 'owned_continuation':
+        raise ValueError('The terminal descriptor must name an owned continuation')
+    if value.get('address') != address:
+        raise ValueError('The terminal descriptor names a different terminal address')
+    chain_root.terminal_target(address)
+    successor_entailment.designed_target({'entry_pc': '0x0',
+        'entry_definition': value['definition'], 'resource_predicate': value['definition'],
+        'binders': [], 'arguments': [], 'source_hashes': value['source_hashes']}, root)
+    return value
 
 
 def reuse_native_capture(row, block, state, previous, options):
@@ -246,7 +264,7 @@ async def probe_designed_block(row, block, state, options):
     from mcp import ClientSession, StdioServerParameters
     from mcp.client.stdio import stdio_client
     design = json.loads(Path(options['design']).read_text())
-    terminal = options.get('terminal_descriptor') or designed_terminal(block, options)
+    terminal = designed_terminal(block, options)
     rendered = successor_entailment.native_boundary_source(
         state, block, design, Path(options['workspace']), enabled=True,
         terminal=terminal)
@@ -608,6 +626,8 @@ def main():
     parser.add_argument('--native-resume-report', type=Path)
     parser.add_argument('--native-baseline-report', type=Path)
     parser.add_argument('--terminal', required=True)
+    parser.add_argument('--terminal-descriptor', type=Path,
+                        help='Read a source-bound owned continuation for designed successor proofs')
     parser.add_argument('--mcp-command', default=str(HERE.parent / 'rocq_mcp_guarded.sh'))
     parser.add_argument('--build-dir', type=Path, default=Path('_build/default').resolve().parent)
     parser.add_argument('--jobs', type=int, default=6)
@@ -627,6 +647,10 @@ def main():
         parser.error('Design-schema entries require --trace-import, --code-premises, and --binding-report')
     if args.entries and (args.trace_import or args.code_premises or args.probe_import or args.binding_report):
         parser.error('Legacy entries already contain their probe options')
+    if args.terminal_descriptor and not args.designed_successors:
+        parser.error('--terminal-descriptor requires --designed-successors')
+    terminal_descriptor = (load_terminal_descriptor(args.terminal_descriptor, args.terminal, Path.cwd())
+                           if args.terminal_descriptor else None)
     design = json.loads(args.design.read_text())
     manifest = json.loads(args.manifest.read_text())
     cfg = json.loads(args.cfg.read_text())
@@ -654,6 +678,9 @@ def main():
     input_paths = [args.design, args.cfg, args.manifest, Path(__file__), Path(chain_root.__file__), Path(entry_schema.__file__), Path(native_diagnostics.__file__), Path(setup_fallback.__file__)]
     if args.designed_successors:
         input_paths.append(HERE/'successor_entailment.py')
+    if args.terminal_descriptor:
+        input_paths.append(args.terminal_descriptor)
+        input_paths.extend(Path(path) for path in terminal_descriptor['source_hashes'])
     if args.native_baseline_report:
         input_paths.append(args.native_baseline_report)
     if args.native_resume_report:
@@ -695,7 +722,8 @@ def main():
             for target in block['successors'] or [args.terminal]:
                 disabled = successor_entailment.native_boundary_source(state, block, design,
                     Path.cwd(), enabled=False, historical_target=chain_root.terminal_target(target),
-                    terminal=designed_terminal(block, {'terminal': args.terminal, 'workspace': str(Path.cwd())}))
+                    terminal=designed_terminal(block, {'terminal': args.terminal, 'workspace': str(Path.cwd()),
+                                                      'terminal_descriptor': terminal_descriptor}))
                 expected = next(pair for pair in baseline['pairs'] if pair['entry'] == row['entry_pc']
                                 and pair['target'] == target)['sources']['switch-on']
                 if hashlib.sha256(disabled['source'].encode()).hexdigest() != expected:
@@ -705,6 +733,8 @@ def main():
                'mcp_command': args.mcp_command, 'terminal': args.terminal, 'seconds': args.seconds,
                'build_dir': str(args.build_dir.resolve()), 'design': str(args.design.resolve()),
                'designed_successors': args.designed_successors}
+    if terminal_descriptor is not None:
+        options['terminal_descriptor'] = terminal_descriptor
     reused = []
     if args.native_resume_report:
         previous_native = json.loads(args.native_resume_report.read_text())
