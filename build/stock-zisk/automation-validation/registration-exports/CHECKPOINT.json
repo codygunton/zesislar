@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "base": "df0c431ee27c3cbd6a87f7e1c47918b0d9373277",
+  "sources": {
+    "tools/block/check_data_only_lemmas.py": "bafd193268f0f655d6fe6eb5cc0972e6a8bab39d7376fc1db973aead17a7465a",
+    "tools/block/test_automation_lints.py": "6173557e9199ac964413e6e1d6e5681448ff04493816931414c511c2b54fd080"
+  },
+  "focused_tests": 59,
+  "actual_finding": [
+    "ZesuSsz/Evidence/decodeItem_function_text.json: Unlisted registration module: ZesuSsz/Compliance/DecodeItemDataRegistrations.v (exported by ZesuSsz/Compliance/DecodeItemHints.v)."
+  ],
+  "snapshot_classification": "Four unique introductions and two unique loop steps. No duplicate catch.",
+  "current_findings": [],
+  "gate_seconds": 2286.7697448609397,
+  "limits": {
+    "module_GiB": 32,
+    "CPU_seconds": 4000,
+    "workers": 32,
+    "compiler_cap": 48
+  },
+  "evidence": {
+    "/home/cody/zesislar/.worktrees/worker2-av-registration-closure-a422/_build/registration-export-policy004/REPORT.json": "c79962e1b8f4f62311fa29d86d7243e4be85bbd86fca9f424d2b4a833e105b34",
+    "/home/cody/zesislar/.worktrees/worker2-av-registration-closure-a422/_build/registration-export-check-fast005/RESULT.json": "ae19cf38511e8ebe272ebcd4fb0a32ab5b29bb2cd12d38d4a80f9ba9909c7da6",
+    "/home/cody/zesislar/.worktrees/worker2-av-registration-closure-a422/_build/registration-export-check-fast005/check-fast.log": "cb7045427abe67f47e3f062288b466ed31d3d34ac6892eb3c8bc70d3c4e9358a",
+    "/home/cody/zesislar/.worktrees/worker2-av-registration-closure-a422/_build/registration-export-check-fast005/INPUTS.json": "6dda223190dfc4ab397722bb6708a99eb2ad29115bb1b1cdb097f353d43a7d60"
+  }
+}
