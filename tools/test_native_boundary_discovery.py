@@ -84,17 +84,73 @@ class NativeClosureTests(unittest.TestCase):
         bound.write_text(json.dumps(evidence))
         previous = {'entry': '0x10', 'captures': [{'native_evidence': {
             'path': str(bound), 'sha256': hashlib.sha256(bound.read_bytes()).hexdigest()}}]}
-        options = {'design': str(design), 'workspace': str(root)}
+        options = {'design': str(design), 'workspace': str(root),
+                   'terminal_descriptor': {'kind': 'owned_continuation', 'address': 'ret'}}
         rendered = {'source': Path(evidence['source']).read_text()}
-        with patch('successor_entailment.native_boundary_source', return_value=rendered):
+        with patch('successor_entailment.native_boundary_source', return_value=rendered) as render:
             result = discovery.reuse_native_capture({'entry_pc': '0x10'}, self.block, {}, previous, options)
             self.assertTrue(result['reused_native_attempt'])
+            self.assertIsNone(render.call_args.kwargs['terminal'])
+            terminal_block = {'successors': []}
+            discovery.reuse_native_capture({'entry_pc': '0x10'}, terminal_block, {}, previous, options)
+            self.assertEqual(render.call_args.kwargs['terminal'], options['terminal_descriptor'])
             exported.write_text('changed')
             with self.assertRaisesRegex(ValueError, 'goal export changed'):
                 discovery.reuse_native_capture({'entry_pc': '0x10'}, self.block, {}, previous, options)
         with patch('successor_entailment.native_boundary_source', return_value={'source': 'different'}):
             with self.assertRaisesRegex(ValueError, 'obligation changed'):
                 discovery.reuse_native_capture({'entry_pc': '0x10'}, self.block, {}, previous, options)
+
+
+class TerminalDescriptorTests(unittest.TestCase):
+    def setUp(self):
+        self.directory = tempfile.TemporaryDirectory()
+        self.addCleanup(self.directory.cleanup)
+        self.root = Path(self.directory.name)
+        self.owner = self.root/'Example/Entries.v'
+        self.owner.parent.mkdir()
+        self.owner.write_text('Definition caller (args : nat) := args.\n')
+        self.descriptor = {'kind': 'owned_continuation', 'address': 'returnAddress args',
+            'definition': 'Example.Entries.caller',
+            'source_hashes': {'Example/Entries.v': discovery.digest(self.owner)}}
+        self.path = self.root/'terminal.json'
+        self.path.write_text(json.dumps(self.descriptor))
+
+    def test_descriptor_binds_the_named_existing_definition(self):
+        loaded = discovery.load_terminal_descriptor(self.path, 'returnAddress args', self.root)
+        self.assertEqual(loaded, self.descriptor)
+        options = {'terminal': 'returnAddress args', 'workspace': str(self.root),
+                   'terminal_descriptor': loaded}
+        self.assertEqual(discovery.designed_terminal({'successors': []}, options), loaded)
+        self.assertIsNone(discovery.designed_terminal({'successors': ['0x20']}, options))
+
+    def test_changed_source_and_missing_definition_reject(self):
+        self.owner.write_text('Definition another := 0.\n')
+        with self.assertRaises(ValueError):
+            discovery.load_terminal_descriptor(self.path, 'returnAddress args', self.root)
+        self.descriptor['source_hashes']['Example/Entries.v'] = discovery.digest(self.owner)
+        self.path.write_text(json.dumps(self.descriptor))
+        with self.assertRaisesRegex(ValueError, 'Missing executable Definition'):
+            discovery.load_terminal_descriptor(self.path, 'returnAddress args', self.root)
+
+    def test_wrong_kind_address_and_unsafe_terminal_reject(self):
+        for update, address in [({'kind': 'image'}, 'returnAddress args'),
+                ({'address': 'other args'}, 'returnAddress args'),
+                ({'address': 'args. Abort.'}, 'args. Abort.')]:
+            value = {**self.descriptor, **update}
+            self.path.write_text(json.dumps(value))
+            with self.assertRaises(ValueError):
+                discovery.load_terminal_descriptor(self.path, address, self.root)
+
+    def test_default_descriptor_stays_exact(self):
+        owner = self.root/'ZesuSsz/Contracts/DecodeItemBranchEntries.v'
+        owner.parent.mkdir(parents=True)
+        owner.write_text('existing source')
+        self.assertEqual(discovery.designed_terminal({'successors': []},
+            {'terminal': 'ret', 'workspace': str(self.root)}),
+            {'kind': 'owned_continuation', 'address': 'ret',
+             'definition': 'ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemBranchContinuation',
+             'source_hashes': {'ZesuSsz/Contracts/DecodeItemBranchEntries.v': discovery.digest(owner)}})
 
 
 class CoqcFallbackTests(unittest.IsolatedAsyncioTestCase):
