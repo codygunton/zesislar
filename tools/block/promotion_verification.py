@@ -12,6 +12,7 @@ import subprocess
 import sys
 
 from successor_entailment import _result
+from function_names import FunctionNames
 
 HERE = Path(__file__).resolve().parent
 
@@ -98,7 +99,7 @@ def restated_statement(source, match, end, module=None):
             f'  ltac:(let statement := type of @{module}.{match[1]} in exact statement).\n')
 
 
-def statements(source, pc, module=None):
+def statements(source, pc, module=None, *, name_prefix="decodeItem"):
     """Retain exact declarations, including earlier definitions and scopes."""
     result = []
     for match in re.finditer(r'^Lemma\s+([A-Za-z_][A-Za-z0-9_\']*)\b', source, re.M):
@@ -113,7 +114,7 @@ def statements(source, pc, module=None):
             proof += f'\nArguments {match[1]} : clear implicits.\n'
         result.append((match[1], statement, proof))
     # PromotedBodies exports typed definitions inside an Iris section.
-    name = f'decodeItemPromotedBody{pc:x}'
+    name = f'{FunctionNames(name_prefix).prefix}PromotedBody{pc:x}'
     match = re.search(r'Definition ' + name + r'\s*:\s*(.*?)\s*:=', source, re.S)
     if match:
         imports = source.split('Section promoted_block_bodies.', 1)[0]
@@ -158,7 +159,8 @@ def owned_pet(health, owner):
     return {'pid': pid, 'start_ticks': int(fields[19])}
 
 
-async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_checks=None):
+async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_checks=None,
+                 name_prefix="decodeItem"):
     from mcp import ClientSession, StdioServerParameters
     from mcp.client.stdio import stdio_client
     directory = Path(directory)
@@ -252,7 +254,9 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
             report['checks'].append({'source': str(source), 'compile_file': compiled,
                                     'private_artifact': str(artifact), 'private_artifact_sha256': digest(artifact),
                                     'source_tree_clean': True, 'statements': []})
-            for number, (name, statement, proof) in enumerate(statements(copy.read_text(), pc, '.'.join(source.relative_to(workspace).with_suffix('').parts))):
+            for number, (name, statement, proof) in enumerate(statements(
+                    copy.read_text(), pc, '.'.join(source.relative_to(workspace).with_suffix('').parts),
+                    name_prefix=name_prefix)):
                 checked = await operation(f'verify-{index}-{number}', 'rocq_verify',
                     {'workspace': str(workspace), 'problem_statement': statement,
                      'proof': proof, 'problem_name': name, 'timeout': timeout})
@@ -272,7 +276,7 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
         raise
 
 
-def verify_generated(workspace, sources, pc, directory, python=None):
+def verify_generated(workspace, sources, pc, directory, python=None, *, name_prefix="decodeItem"):
     """Use the pinned MCP Python, never a shell compiler fallback."""
     if not os.environ.get('OPAM_SWITCH_PREFIX') or not shutil.which('pet'):
         raise ValueError('Run complete promotion under the pinned opam environment with pet on PATH.')
@@ -281,8 +285,10 @@ def verify_generated(workspace, sources, pc, directory, python=None):
     manifest.parent.mkdir(parents=True, exist_ok=True)
     if manifest.exists() or Path(directory).exists():
         raise ValueError('The verification output already exists. Preserve that attempt.')
+    FunctionNames(name_prefix)
     manifest.write_text(json.dumps({'workspace': str(workspace), 'sources': list(map(str, sources)),
-                                    'pc': pc, 'directory': str(directory)}, indent=2) + '\n')
+                                    'pc': pc, 'directory': str(directory),
+                                    'name_prefix': name_prefix}, indent=2) + '\n')
     subprocess.run([python, str(Path(__file__).resolve()), '--inputs', str(manifest)], check=True)
     result = json.loads((Path(directory) / 'RESULT.json').read_text())
     if result.get('success') is not True:
@@ -295,4 +301,5 @@ if __name__ == '__main__':
     parser.add_argument('--inputs', type=Path, required=True)
     args = parser.parse_args()
     inputs = json.loads(args.inputs.read_text())
-    asyncio.run(verify(Path(inputs['workspace']), inputs['sources'], inputs['pc'], inputs['directory']))
+    asyncio.run(verify(Path(inputs['workspace']), inputs['sources'], inputs['pc'], inputs['directory'],
+                       name_prefix=inputs.get('name_prefix', 'decodeItem')))

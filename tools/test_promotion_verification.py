@@ -100,6 +100,19 @@ class PromotionVerificationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'no supported statement'):
             verification.statements('Definition untyped := 1.', 0x800d6974)
 
+    def test_other_function_definition_keeps_its_exact_table_signature(self):
+        source = ('Require Import isla.riscv64.riscv64.\nSection promoted_block_bodies.\n'
+                  'Context `{!islaG Sigma} `{!threadG}.\n'
+                  'Definition freePromotedBody1000 :\n'
+                  '  ⊢ block_table_pre freeTable -∗ instr_body 0x1000 freeEntry := native.\n'
+                  'End promoted_block_bodies.\n')
+        checks = verification.statements(source, 0x1000, name_prefix="free")
+        self.assertEqual(len(checks), 1)
+        self.assertIn('⊢ block_table_pre freeTable -∗ instr_body 0x1000 freeEntry.', checks[0][1])
+        self.assertIn('exact freePromotedBody1000.', checks[0][2])
+        with self.assertRaisesRegex(ValueError, 'no supported statement'):
+            verification.statements(source, 0x1000)
+
     def test_source_artifact_detection_preserves_existing_objects(self):
         with tempfile.TemporaryDirectory() as temp:
             source = Path(temp) / 'Fixture.v'

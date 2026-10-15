@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "status": "check-fast passed; source-preserving function tooling",
+  "base": "df0c431ee27c3cbd6a87f7e1c47918b0d9373277",
+  "source_sha256": {
+    "ZesuSsz/Contracts/FreeSelected.v": "4bf0926a8ae42926edf8f9452691ef30ffc3501c5c98f827da59488574368d1b",
+    "ZesuSsz/Contracts/decode_item_block_design.json": "5f25507dee28a24946a43d3b053ff3dc840d38374d2a2f4cbc47b08f45006d06",
+    "ZesuSsz/Evidence/generate_block_design.py": "74d6984f924436f376352389485e0b0c68ae9e53845419099c916ea34ac4d2d8",
+    "tools/block/function_names.py": "619eb4b97f110e5158e950fa84f91753210605512dd921a603c55bded6bdd5e9",
+    "tools/stock_zisk/platform/function_binding.py": "0691954da33a5224c704b7fa546980c0e058d69180dabe496430184a67a70d50",
+    "tools/stock_zisk/platform/test_function_binding.py": "d03673e59950f5c98c8b76021a4d1cf54b2ef464a4ce7a30582334306b1a0428",
+    "tools/stock_zisk/selected/bind_traces.py": "5f5c1370c5d595c65bc3684dbc0850435c1bb1d683f40030195ed6416123ff62",
+    "tools/test_function_names.py": "c9faf55be426c91103eb74b2365007116af4d097b335f647bf6d0df32b800d27",
+    "tools/test_function_preparation.py": "ba98f463a3d4d96d790c9c5453df9c359d617cba7603985f337a1ae5dcc78663",
+    "tools/test_generate_block_design.py": "dbf203090c4617b4f94b21f4bec028fbfb55925dfc555d2dcbeace9c84a3634a",
+    "Makefile": "e1a322c20b0b182f13bdb1099e7aa3c980dfcc6163132965436fee4574b41f1f",
+    "ZesuSsz/Generated/DecodeItem/BlockTable.v": "263f000d69de5a18797465a1223e23304b7b1e6dde9bedb85e07690a23c1a51d",
+    "ZesuSsz/Generated/DecodeItem/block_table_metadata.json": "802034e4f03fe3c11b5e30e82221ea4e1b86764546e55c0d09f08fef80c1d9d1",
+    "ZesuSsz/dune": "5da9d5eb563da11c19d2d28e85a77202728228416208279aadb9ba2d3ffb1d11",
+    "_CoqProject": "9bcd9b403fb2703543296e7345c288c47ab2051daa00669ddb385ceef19c991a",
+    "tools/block/check_entry_bindings.py": "400d8ba1873478f62c91dc57cc29d884a324b37e4fa66bf17ec152f1053b71cd",
+    "tools/block/complete_promotion.py": "88756608ed800fa9156dab4f4655460cdde7d6c39df4b462a8ba4c62bb032583",
+    "tools/block/entry_bindings.py": "51f731829eb1fb1cf2d2daa6aa8b93643045b50ab8c72cd4d27d0002e4172903",
+    "tools/block/generate_table.py": "8d83838db904221dc5426394c6f4a72ee652c0c984ae3e2b1d54274e3b6df989",
+    "tools/block/production_modules.py": "e83748f031cd3b2f7fea1a3cbd2623ef467c0906d30cd8b46028496db6e19e6c",
+    "tools/block/promote_table.py": "e8b5ab00f4eef36cf4f9cf0207a2f7aefec651664cda7d9d8de2ca308856c1bd",
+    "tools/block/promotion_verification.py": "c29f3b63659e98963910491630b2dadf47e06efaa5b85a3fd682ed4d6f34fd28",
+    "tools/test_promotion_verification.py": "2c036985b2a5a7f58decc35353cbd67573f4a847ffb48c1dd01c35403083d9b3"
+  },
+  "unchanged_root_sources": {
+    "tools/stock_zisk/platform/bind_traces.py": "158a90111fc74e589cdf5eeaf7fb615bceeea0d5b7f1fa5324012cbf96d69bdf",
+    "tools/stock_zisk/platform/indexes.py": "3dbf16ccc12d453aa5004209b48786cef9ea7ebce81a98220e6d604372c30ace",
+    "build/stock-zisk/build-recipe.json": "ed8196f2d359dc1a60827a9ccb0267247e8b27f97f2d09763315af159c662e99"
+  },
+  "manifest_identity": "bd8f29b23700dca4ae8238585241b02143b3406a4c75a77aad78945f99947c37",
+  "focused_tests": {
+    "prior": 220,
+    "selected_binding": 9,
+    "preparation": 1
+  },
+  "recorded_verification": "Accepted free MCP008: index_free and FreeSelected compilation only",
+  "preserved_files": 9263,
+  "design_exception": "Only hashes.generator_sha256",
+  "Rocq_exception": "Only the standalone producer-SHA comment line",
+  "metadata": "Actual current tool and output hashes",
+  "native_files": "Untracked",
+  "native_runs": 0,
+  "limits": [
+    "No semantic or native free proof",
+    "Free entry-application report remains unavailable",
+    "Private profile excluded"
+  ],
+  "evidence": {
+    "/home/cody/zesislar/.worktrees/worker2-child-map-function-generators-965678f3/_build/function-wrapper-checkpoint026/REPORT.json": "8c450d74d361dbef7edc41e821883013927dced59b112437d8da22bb271b122f",
+    "/home/cody/zesislar/.worktrees/worker2-child-map-function-generators-965678f3/_build/function-wrapper-check-fast027/RESULT.json": "d0c84d7d58f3679eb75ceb237f3350bd879c3bdaea17931adfd265490d537228",
+    "/home/cody/zesislar/.worktrees/worker2-child-map-function-generators-965678f3/_build/function-wrapper-check-fast027/check-fast.log": "f73af7f056203bd8f77c2554c7abe18f3b29334e6e5608f2082fd946159d7d41"
+  }
+}

@@ -7,6 +7,7 @@
 -R _build/default/generated/isla-traces IslaTraces
 -Q _build/default/generated/isla-traces/stock-zisk/decodeItem ZesuSsz.Stock.DecodeItem
 -Q _build/default/generated/isla-traces/stock-zisk/closure ZesuSsz.Stock.Closure
+-Q _build/default/generated/isla-traces/stock-zisk/free ZesuSsz.Stock.Free
 -Q _build/default/generated/evm-sail-coq EvmSail
 -Q _build/default/generated/evm-sail-coq/rlp EvmSailRlp
 -Q _build/default/generated/sail-stdpp SailStdpp

@@ -30,7 +30,7 @@ Open Scope Z_scope.
 (* Source: build/stock-zisk/cfg.json; SHA-256: 98c4614e6ff7b6e1cb85bdc3b9e600dd85eccd5afacda8b1c5b75ff66db16fc2. *)
 (* Source: build/stock-zisk/decodeItem.raw.dump; SHA-256: 411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a. *)
 (* Source: build/stock-zisk/inventory.json; SHA-256: 7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d. *)
-(* Source: tools/block/generate_table.py; SHA-256: ceae92829e7fb74be844b74171850580d4ae7896595a13c2a765a5867c32730d. *)
+(* Source: tools/block/generate_table.py; SHA-256: 8d83838db904221dc5426394c6f4a72ee652c0c984ae3e2b1d54274e3b6df989. *)
 
 Section decode_item_block_table.
 Context `{!islaG Sigma} `{!threadG}.

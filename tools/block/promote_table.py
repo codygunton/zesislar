@@ -12,15 +12,17 @@ import json
 import re
 from pathlib import Path
 import generate_table
+from function_names import FunctionNames, prefix_argument
 
 
 def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def table_statement(pc):
-    return (f"⊢ block_table_pre decodeItemBlockTable -∗ "
-            f"instr_body {hex(pc)} decodeItemState{pc:x}")
+def table_statement(pc, *, name_prefix="decodeItem"):
+    names = FunctionNames(name_prefix)
+    return (f"⊢ block_table_pre {names.table} -∗ "
+            f"instr_body {hex(pc)} {names.state(pc)}")
 
 
 def proof_module(proof):
@@ -35,7 +37,7 @@ def proof_module(proof):
     return module
 
 
-def validate_promotion(block, evidence, adapter, *, design_sha256):
+def validate_promotion(block, evidence, adapter, *, design_sha256, name_prefix="decodeItem"):
     """Reject partial edges, diagnostic results, debts, and unrelated proofs."""
     pc = generate_table.address(block['entry_pc'])
     successors = sorted(map(generate_table.address, block['successor_pcs']))
@@ -57,14 +59,14 @@ def validate_promotion(block, evidence, adapter, *, design_sha256):
         if proof.get('inherited_debts') != []:
             raise ValueError('The proof has unavailable or nonempty inherited debts.')
         proof_module(proof)
-    if adapter.get('statement') != table_statement(pc):
+    if adapter.get('statement') != table_statement(pc, name_prefix=name_prefix):
         raise ValueError('The proof has a different table-body signature.')
     if not isinstance(adapter.get('lemma'), str) or not re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)+', adapter['lemma']):
         raise ValueError('The table adapter has no proof name.')
     return adapter['lemma']
 
 
-def coverage(cfg, design, native_report, promotions=None, *, design_sha256):
+def coverage(cfg, design, native_report, promotions=None, *, design_sha256, name_prefix="decodeItem"):
     """Assign every selected instruction to exactly one proved or pending block."""
     structural = generate_table.structure(cfg, design)
     native_blocks = {generate_table.address(row['entry']): row for row in native_report['blocks']}
@@ -83,7 +85,7 @@ def coverage(cfg, design, native_report, promotions=None, *, design_sha256):
             if not native.get('block_closed'):
                 raise ValueError('The native report does not close the proposed block.')
             lemma = validate_promotion(block, proposal['native'], proposal['adapter'],
-                                       design_sha256=design_sha256)
+                                       design_sha256=design_sha256, name_prefix=name_prefix)
         elif native.get('block_closed'):
             # Native closure still needs a checked table adapter.
             pass
@@ -130,31 +132,33 @@ def load_promotions(path):
         proposals[pc] = proposal
     return proposals, hashes
 
-def render_slots(report):
+def render_slots(report, *, name_prefix="decodeItem"):
     """Generate typed references only. Pending slots introduce no proposition."""
+    names = FunctionNames(name_prefix)
     slots = [slot for slot in report['proof_slots'] if slot['status'] == 'proved']
     modules = sorted({proof_module({'module': slot['proof_module'],
                                    'lemma': slot['proof_lemma']}) for slot in slots})
     lines = ['Require Import ZesuSsz.Automation.All.',
              'Require Import ZesuSsz.Automation.Approved.',
-             'Require Import ZesuSsz.Compliance.DecodeItemHints.',
+             f'Require Import {names.hints}.',
              'Require Import isla.riscv64.riscv64.',
              'Require Import ZesuSsz.Automation.BlockTable.',
-             'Require Import ZesuSsz.Generated.DecodeItem.BlockTable.']
+             f'Require Import {names.table_module}.']
     lines.extend(f'Require Import {module}.' for module in modules)
     lines += ['', '(* Pending slots have no proof term. No composition theorem is generated. *)',
               'Section promoted_block_bodies.', 'Context `{!islaG Sigma} `{!threadG}.', '']
     for slot in slots:
         pc = generate_table.address(slot['pc'])
-        lines += [f'Definition decodeItemPromotedBody{pc:x} :',
-                  f'  {table_statement(pc)} :=', f"  {slot['proof_lemma']}.", '']
+        lines += [f'Definition {names.prefix}PromotedBody{pc:x} :',
+                  f'  {table_statement(pc, name_prefix=name_prefix)} :=', f"  {slot['proof_lemma']}.", '']
     lines += ['End promoted_block_bodies.', '']
-    lines.extend(f"Print Assumptions decodeItemPromotedBody{generate_table.address(slot['pc']):x}."
+    lines.extend(f"Print Assumptions {names.prefix}PromotedBody{generate_table.address(slot['pc']):x}."
                  for slot in slots)
     return '\n'.join(lines) + '\n'
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--function', type=prefix_argument, default='decodeItem')
     parser.add_argument('--recipe', type=Path, default=generate_table.ROOT / 'build/stock-zisk/build-recipe.json')
     parser.add_argument('--cfg', type=Path)
     parser.add_argument('--design', type=Path)
@@ -173,26 +177,28 @@ def main():
     parser.add_argument('--mcp-python', help='Pinned Python interpreter with the rocq-mcp package.')
     args = parser.parse_args()
     if args.complete_native is not None:
-        if not all((args.production_module, args.production_lemma, args.native_status_table)):
-            parser.error('Complete promotion requires the named production module, lemma, and status table.')
+        if not all((args.production_module, args.production_lemma)):
+            parser.error('Complete promotion requires the named production module and lemma.')
+        if args.function == 'decodeItem' and args.native_status_table is None:
+            parser.error('Complete decodeItem promotion requires its retained status table.')
         from complete_promotion import complete
         complete(args.workspace, args.complete_native, args.production_module,
                  args.production_lemma, args.output, args.native_status_table,
                  dry_run=args.dry_run, verification_directory=args.verification_directory,
-                 mcp_python=args.mcp_python)
+                 mcp_python=args.mcp_python, name_prefix=args.function)
         return
     if not all((args.cfg, args.design, args.native_report)):
         parser.error('Coverage generation requires --cfg, --design, and --native-report.')
     promotions, promotion_hashes = load_promotions(args.promotions) if args.promotions else ({}, {})
     report = coverage(*(json.loads(path.read_text()) for path in
-                        (args.cfg, args.design, args.native_report)), promotions=promotions, design_sha256=digest(args.design))
+                        (args.cfg, args.design, args.native_report)), promotions=promotions, design_sha256=digest(args.design), name_prefix=args.function)
     report['manifest_binding'] = generate_table.bound_inputs(args.recipe, args.cfg, args.design)
     report['input_hashes'] = {str(path): digest(path) for path in
                               (args.recipe, args.cfg, args.design, args.native_report, Path(__file__))}
     report['input_hashes'].update(promotion_hashes)
     if args.rocq_output:
         args.rocq_output.parent.mkdir(parents=True, exist_ok=True)
-        args.rocq_output.write_text(render_slots(report))
+        args.rocq_output.write_text(render_slots(report, name_prefix=args.function))
         report['generated_hashes'] = {str(args.rocq_output): digest(args.rocq_output)}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2) + '\n')

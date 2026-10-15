@@ -10,6 +10,7 @@ import time
 
 from entry_bindings import application_source, validate_design
 from entry_schema import FIELDS
+from function_names import prefix_argument
 
 
 def digest(path):
@@ -43,6 +44,7 @@ async def compile_queries(workspace, source, timeout):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--function', type=prefix_argument, default='decodeItem')
     parser.add_argument('--design', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--seconds', type=int, default=60)
@@ -54,12 +56,13 @@ def main():
     count = validate_design(design, workspace)
     args.out.mkdir(parents=True, exist_ok=True)
     source = (args.out/'ApplicationChecks.v').resolve()
-    source.write_text(application_source(design))
+    source.write_text(application_source(design, name_prefix=args.function))
     started = time.monotonic()
     health, result = asyncio.run(compile_queries(workspace, source, args.seconds))
-    inputs = {str(args.design): digest(args.design),
-              'ZesuSsz/Contracts/RlpDecodeItemContract.v':
-              digest(workspace/'ZesuSsz/Contracts/RlpDecodeItemContract.v')}
+    inputs = {str(args.design): digest(args.design)}
+    if args.function == 'decodeItem':
+        contract = 'ZesuSsz/Contracts/RlpDecodeItemContract.v'
+        inputs[contract] = digest(workspace/contract)
     for row in design['blocks']:
         for path, expected in row['source_hashes'].items():
             inputs[path] = digest(path)
@@ -67,6 +70,7 @@ def main():
                 raise ValueError('The bound source changed during validation')
     for path in (Path(__file__), Path(__file__).with_name('entry_bindings.py'),
                  Path(__file__).with_name('entry_schema.py'),
+                 Path(__file__).with_name('function_names.py'),
                  Path(__file__).with_name('trace_registers.py'),
                  workspace/'tools/rocq_mcp_guarded.sh',
                  workspace/'tools/block/entry_check_coqc.sh', workspace/'_CoqProject'):
@@ -77,6 +81,8 @@ def main():
               'elapsed_seconds': time.monotonic()-started, 'health': health, 'result': result,
               'module_limit_seconds': args.seconds, 'module_limit_gib': 2, 'workers': 1,
               'argument_policy': 'JSON expression order is authoritative; same-type swaps require specification review'}
+    if args.function != 'decodeItem':
+        report['name_prefix'] = args.function
     path = args.out/'report.json'
     path.write_text(json.dumps(report, indent=2)+'\n')
     print(json.dumps({'report': str(path), 'sha256': digest(path), 'success': result.get('success')}))
@@ -94,7 +100,7 @@ def validate_report(path, design_path, workspace):
         raise ValueError('The entry application report does not record successful typing')
     if report.get('row_count') != len(design['blocks']) or report.get('fields') != sorted(FIELDS):
         raise ValueError('The entry application report has different rows or fields')
-    expected = hashlib.sha256(application_source(design).encode()).hexdigest()
+    expected = hashlib.sha256(application_source(design, name_prefix=report.get('name_prefix', 'decodeItem')).encode()).hexdigest()
     if report.get('source', {}).get('sha256') != expected:
         raise ValueError('The entry application report checked different ordered expressions')
     for name, expected in report['inputs'].items():

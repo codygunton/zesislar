@@ -4,6 +4,7 @@ import re
 
 from entry_schema import contract_fields, source_module, verify_sources
 from trace_registers import tokens
+from function_names import FunctionNames
 
 
 def normalize_type(value):
@@ -100,10 +101,12 @@ def validate_design(design, root):
     return len(design['blocks'])
 
 
-def application_source(design):
+def application_source(design, *, name_prefix="decodeItem"):
     """Render type queries for the unchanged, ordered JSON applications."""
-    modules = ['ZesuSsz.Automation.All', 'isla.riscv64.riscv64', 'SailStdpp.MachineWord',
-               'ZesuSsz.Contracts.RlpDecodeItemContract']
+    FunctionNames(name_prefix)
+    modules = ['ZesuSsz.Automation.All', 'isla.riscv64.riscv64', 'SailStdpp.MachineWord']
+    if name_prefix == 'decodeItem':
+        modules.append('ZesuSsz.Contracts.RlpDecodeItemContract')
     for row in design['blocks']:
         fields = contract_fields(row)
         modules.extend(source_module(path) for path in fields['source_hashes'] if path.endswith('.v'))

@@ -11,6 +11,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+from function_names import FunctionNames, prefix_argument
 
 
 DIRECTORY = Path("ZesuSsz/Proofs/DecodeItem/Auto")
@@ -38,7 +39,8 @@ def statement(source, lemma):
     return source[start:end]
 
 
-def module_name(rendered, kind):
+def module_name(rendered, kind, *, name_prefix="decodeItem"):
+    names = FunctionNames(name_prefix)
     if kind == "native":
         pc = rendered["entry_pc"]
         if not re.fullmatch(r"0x[0-9a-f]+", pc):
@@ -46,14 +48,14 @@ def module_name(rendered, kind):
         stem = "Block" + pc[2:]
     elif kind == "adapter":
         lemma = rendered["lemma"]
-        if not lemma.startswith("decodeItem") or not lemma.endswith("_automatic"):
+        if not lemma.startswith(names.prefix) or not lemma.endswith("_automatic"):
             raise ValueError("The transfer adapter lacks its prepared name.")
-        stem = lemma[len("decodeItem"):-len("_automatic")]
+        stem = lemma[len(names.prefix):-len("_automatic")]
     else:
         raise ValueError("The production obligation kind is invalid.")
     if not re.fullmatch(IDENTIFIER, stem):
         raise ValueError("The production module name is invalid.")
-    return "ZesuSsz.Proofs.DecodeItem.Auto." + stem
+    return names.proofs + ".Auto." + stem
 
 
 def object_path(module):
@@ -61,8 +63,10 @@ def object_path(module):
     return Path(module.replace(".", "/")).with_suffix(".vo")
 
 
-def render(rendered, kind):
+def render(rendered, kind, *, name_prefix="decodeItem"):
     """Preserve the declaration and use only the production block tactic."""
+    names = FunctionNames(name_prefix)
+    required_imports = (*REQUIRED_IMPORTS[:2], names.hints)
     source, lemma = rendered["source"], rendered["lemma"]
     declaration = statement(source, lemma)
     if hashlib.sha256(declaration.encode()).hexdigest() != rendered["statement_sha256"]:
@@ -79,7 +83,7 @@ def render(rendered, kind):
         for name in group.split():
             if name == "Boundary" or name.endswith(".Boundary"):
                 raise ValueError("A production proof cannot import a frozen Boundary.")
-            if (name not in REQUIRED_IMPORTS and
+            if (name not in required_imports and
                     not name.startswith("ZesuSsz.Automation.Switches.") and
                     name not in imports):
                 imports.append(name)
@@ -101,7 +105,7 @@ def render(rendered, kind):
     elif kind != "adapter":
         raise ValueError("The production obligation kind is invalid.")
     result = "".join("Require Import " + name + ".\n"
-                     for name in [*REQUIRED_IMPORTS, *imports])
+                     for name in [*required_imports, *imports])
     result += "".join(line + "\n" for line in [*from_imports, *settings])
     result += "\n" + local + declaration + "\nProof.\n  zesu_block.\nQed.\n\n"
     result += "Print Assumptions " + lemma + ".\n"
@@ -110,13 +114,13 @@ def render(rendered, kind):
     return result
 
 
-def emit(rendered, kind, workspace):
+def emit(rendered, kind, workspace, *, name_prefix="decodeItem"):
     """Write one current-source module without reading a frozen object."""
-    module = module_name(rendered, kind)
+    module = module_name(rendered, kind, name_prefix=name_prefix)
     relative = object_path(module).with_suffix(".v")
-    if relative.parent != DIRECTORY:
+    if relative.parent != Path(FunctionNames(name_prefix).proofs.replace(".", "/")) / "Auto":
         raise ValueError("The production module leaves its approved directory.")
-    source = render(rendered, kind)
+    source = render(rendered, kind, name_prefix=name_prefix)
     workspace = Path(workspace).resolve()
     path = workspace / relative
     if not path.resolve().is_relative_to(workspace):
@@ -138,7 +142,7 @@ def emit(rendered, kind, workspace):
     }
 
 
-def emit_pass(report, jobs, workspace):
+def emit_pass(report, jobs, workspace, *, name_prefix="decodeItem"):
     """Select measured closures while preserving each prepared declaration."""
     workspace = Path(workspace).resolve()
     by_id = {job["id"]: job for job in jobs}
@@ -166,22 +170,23 @@ def emit_pass(report, jobs, workspace):
         if job["statement_sha256"] != row["statement_sha256"]:
             raise ValueError("The closure binds a different prepared statement.")
         rendered = {**job, "source": source_path.read_text()}
-        module = module_name(rendered, kind)
-        source = render(rendered, kind)
+        module = module_name(rendered, kind, name_prefix=name_prefix)
+        source = render(rendered, kind, name_prefix=name_prefix)
         target = workspace / object_path(module).with_suffix(".v")
         if not target.resolve().is_relative_to(workspace):
             raise ValueError("The production source path leaves its workspace.")
         if target.exists() and target.read_text() != source:
             raise ValueError("An existing production module has different source.")
         prepared.append((rendered, kind))
-    modules = [module_name(rendered, kind) for rendered, kind in prepared]
+    modules = [module_name(rendered, kind, name_prefix=name_prefix) for rendered, kind in prepared]
     if len(modules) != len(set(modules)):
         raise ValueError("The production obligations collide on a module name.")
-    return [emit(rendered, kind, workspace) for rendered, kind in prepared]
+    return [emit(rendered, kind, workspace, name_prefix=name_prefix) for rendered, kind in prepared]
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--function", type=prefix_argument, default="decodeItem")
     parser.add_argument("--pass-report", type=Path, required=True)
     parser.add_argument("--pass-report-sha256", required=True)
     parser.add_argument("--jobs", type=Path, required=True)
@@ -194,14 +199,14 @@ def main():
         if digest(path) != expected:
             raise ValueError("The reviewed production input hash differs.")
     report = json.loads(args.pass_report.read_text())
-    rows = emit_pass(report, json.loads(args.jobs.read_text()), args.workspace)
+    rows = emit_pass(report, json.loads(args.jobs.read_text()), args.workspace, name_prefix=args.function)
     inventory = {
         "schema_version": 1,
         "scope": "Production source inventory. This file is not proof evidence.",
         "historical_root": report["root"],
         "historical_report_sha256": args.pass_report_sha256,
         "historical_jobs_sha256": args.jobs_sha256,
-        "required_imports": list(REQUIRED_IMPORTS),
+        "required_imports": [*REQUIRED_IMPORTS[:2], FunctionNames(args.function).hints],
         "modules": rows,
     }
     args.inventory.parent.mkdir(parents=True, exist_ok=True)
