@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "item": "free manifest with checked owner sources",
+  "base_root": "a422ab98e489198f127a86c6c896e6f293d39211",
+  "status": "Reviewable source package. Root compilation and full gate pending integrated class/checker dependencies.",
+  "manifest": "ZesuSsz/Evidence/free_function_text.json",
+  "source_files": 9,
+  "source_physical_lines": 896,
+  "interface_total": 933,
+  "category_totals": {
+    "contracts": 558,
+    "introductions": 88,
+    "exit_meanings": 57,
+    "loop_steps": 0,
+    "registrations": 131,
+    "generator_json": 99
+  },
+  "umbrella": "ZesuSsz.Compliance.FreeHints",
+  "owner_evidence": [
+    "A packet008; definitions compiled; gates pending",
+    "B checkpoint019; two introductions/two meanings and class queries verified",
+    "FreeHints023 compilation; corrected024 class queries verified"
+  ],
+  "focused_checks": [
+    "Data-only and unique-registration lint: passed",
+    "Shape measurements: all nine zero; six required inventory rows added",
+    "Exact owner source hashes and complete, disjoint line ranges: passed"
+  ],
+  "known_pending": [
+    "Root lacks Automation/EntryIntro.v; no private stand-in copied",
+    "Old Root umbrella checker rejects the two free registrations; Infra owns correction"
+  ],
+  "native_free_execution": false,
+  "full_gate_passed": false,
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-c-av-free-manifest/_build/free-manifest-preparation-001/SOURCE-PACKAGE-REPORT.json",
+    "sha256": "e3c36fe16e274b247b3910ddf557cc744739caa4ec12be9487730e4770341f19"
+  },
+  "scope": "This checkpoint does not freeze rules or spend the hold-out."
+}
