@@ -1,0 +1,48 @@
+{
+  "item": "free-hand-prediction",
+  "scope": "Pre-freeze read-only prediction. No native result.",
+  "metadata_parent": "6f4d5810fcf9a49423b60d20b44409a02ddbcba4",
+  "decodeItem_audit_commit": "6e08631942efd13d229ff7a46a01ab6a3c42384a",
+  "free_source_commit": "6f4d5810fcf9a49423b60d20b44409a02ddbcba4",
+  "full_certificate": "/home/cody/zesislar/.worktrees/spec-b-av-free-hand-prediction/_build/free-hand-prediction001/REPORT.json",
+  "certificate_sha256": "91f6506c627d75f43e98248b06ca0dc171e4913dda0e7e1dd2ec413432bf4936",
+  "bindings": 22,
+  "comment": {"id": 6188076869, "url": "https://github.com/codygunton/zesislar/issues/13#issuecomment-6188076869", "created_at": "2026-10-15T08:41:10Z", "body_sha256": "a4b80cff7b0ac544ee57af50ff3836f14ccffe3cb00ce5ff0249a13c35a0bde3", "posted_response_matches": true, "readback_matches": true},
+  "source_rates": {"output": {"numerator": 130, "denominator": 6, "exact": "65/3"}, "return_only": {"numerator": 100, "denominator": 6, "exact": "50/3"}, "frame": {"numerator": 67, "denominator": 7, "exact": "67/7"}},
+  "primary_scenario": "keyed-only-primary",
+  "eligible_quantity_key": "0x80042154",
+  "disjoint_bins": {"propagate": 12, "introduce": 28, "store": 2, "return_only": 1},
+  "overlap_assignment": {"block": "0x80042160", "charged_to": "store", "not_charged_to": "return_only"},
+  "scenarios": [
+    {"name": "keyed-only-primary", "automatic_introduction_labels": 1, "baseline_introduction_labels": 27, "introduction_range": [783, 1782], "store_proxy_range": [10, 72], "return_only_proxy_range": [5, 20], "arithmetic_proxy_subtotal": [798, 1874], "subtotal_limit": "The subtotal uses disjoint class bins. It is not a complete budget or a hard native bound. Frame work stays separate."},
+    {"name": "all-introductions-route", "automatic_introduction_labels": 28, "baseline_introduction_labels": 0, "introduction_range": [0, 0], "store_proxy_range": [10, 72], "return_only_proxy_range": [5, 20], "arithmetic_proxy_subtotal": [15, 92], "subtotal_limit": "The subtotal uses disjoint class bins. It is not a complete budget or a hard native bound. Frame work stays separate."},
+    {"name": "no-introduction-routes", "automatic_introduction_labels": 0, "baseline_introduction_labels": 28, "introduction_range": [812, 1848], "store_proxy_range": [10, 72], "return_only_proxy_range": [5, 20], "arithmetic_proxy_subtotal": [827, 1940], "subtotal_limit": "The subtotal uses disjoint class bins. It is not a complete budget or a hard native bound. Frame work stays separate."}
+  ],
+  "scaled_anchors": {"two_stores": {"numerator": 260, "denominator": 6, "exact": "130/3"}, "one_return_only": {"numerator": 100, "denominator": 6, "exact": "50/3"}, "store_plus_return_proxy": {"exact": "60"}, "three_frame_sites": {"numerator": 201, "denominator": 7, "exact": "201/7"}},
+  "frame_allowance": {"sites": ["0x80041f38", "0x80042144", "0x80042160"], "range": [3, 39], "additive": false, "reason": "The model treats store/return block budgets as already covering their frame work. Store42160 also owns its return role. The frame anchor is non-additive. Whole-block introduction baselines can contain frame work."},
+  "artifacts": [
+    {"path": "/home/cody/zesislar/.worktrees/spec-b-av-free-hand-prediction/_build/free-hand-prediction001/MODEL.json", "sha256": "38727e06fdd87259ead8c1490177b1d8cb4fe36934a45981e084149c732f38bc"},
+    {"path": "/home/cody/zesislar/.worktrees/spec-b-av-free-hand-prediction/_build/free-hand-prediction001/POSTED-BODY.md", "sha256": "a4b80cff7b0ac544ee57af50ff3836f14ccffe3cb00ce5ff0249a13c35a0bde3"},
+    {"path": "/home/cody/zesislar/.worktrees/spec-b-av-free-hand-prediction/_build/free-hand-prediction001/POST-RECEIPT.json", "sha256": "31364c0967b76703cc4dda1ad318e5faabb5c2d7151ad886bd7e1d2a068cec70"},
+    {"path": "/home/cody/zesislar/.worktrees/spec-b-av-free-hand-prediction/_build/free-hand-prediction001/PRE-FREEZE-CHECK.json", "sha256": "96074c6b4a971f5307c22ee8e51761ae66b85d751841387de5acc9c7b935615c"},
+    {"path": "/home/cody/zesislar/.worktrees/spec-b-av-free-hand-prediction/_build/free-hand-prediction001/CHECKS.json", "sha256": "9df6664050a1706cf490a337b6986f8b0916703adae22b6a12fb4a5dbec0cc47"},
+    {"path": "/home/cody/zesislar/.worktrees/spec-b-av-free-hand-prediction/_build/free-hand-prediction001/seal.py", "sha256": "bcc6fd7f879a5159f0e8d5685c737bf204870bee677f5d451f44c7f6e1285619"},
+    {"path": "/home/cody/zesislar/.worktrees/spec-b-av-free-hand-prediction/_build/free-hand-prediction001/post.py", "sha256": "5b9d30b4fd07b77e7773bf91f59bbfa618bbe8637aba49104ca0f94fbf383869"}
+  ],
+  "historical_limit": "The earlier two-key draft is superseded. Do not use its754–1716range.",
+  "limits": [
+    "Only the modeled quantity at42154 receives zero-line introduction credit.",
+    "The source keeps both syntactic entry registrations unchanged.",
+    "The store allowance owns42160including its return role. That block is charged once.",
+    "The store/return block budgets include their frame role in this model. The frame anchor is non-additive.",
+    "The store labels mix a stack-save prologue and a symbolic output-store return block.",
+    "The proxy subtotal can omit encoding or finisher work outside the chosen proxies.",
+    "The ranges are transfer scenarios, not confidence intervals or hard native bounds.",
+    "ReturnRoute remains pending. No return-rule benefit is assumed."
+  ],
+  "focused_checks": ["22 hashes match", "One-key mapping", "All scenario arithmetic", "43 disjoint blocks", "Correct denominators", "Posted body and readback match", "Pre-freeze tag absent", "JSON and whitespace"],
+  "native_result": null,
+  "proof_runs": 0,
+  "gate": "Metadata-only scope. Focused checks passed. No project proof gate is claimed.",
+  "ownership": "Root owns integration and Iris. No native free proof ran."
+}
