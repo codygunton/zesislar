@@ -1,9 +1,10 @@
 """Check measured ledger boundaries without asserting native closure."""
-import hashlib
 import json
 from pathlib import Path
 import re
 import unittest
+
+from check_decode_item_route_repair import historical_file
 
 ROOT = Path(__file__).resolve().parents[2]
 SITES = ['6960', '697c', '698c', '69b0', '69e8', '6a08', '6a24', '6a38',
@@ -26,10 +27,7 @@ class PrecommitmentLedgerTests(unittest.TestCase):
         def visit(value):
             if isinstance(value, dict):
                 if 'path' in value and 'sha256' in value:
-                    path = Path(value['path'])
-                    if not path.is_absolute():
-                        path = ROOT / path
-                    self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), value['sha256'], str(path))
+                    historical_file(value, ROOT)
                 for child in value.values():
                     visit(child)
             elif isinstance(value, list):
