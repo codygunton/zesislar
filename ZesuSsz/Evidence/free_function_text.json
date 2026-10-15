@@ -607,12 +607,12 @@
       "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "8bad6bd3c1984a6311970cefa820bd702719c5fefe7771d6615e65896402c6df",
-      "file_lines": 173,
+      "sha256": "46f62d3f0913e3952c724fda4d23b1fb7f689babe654704e1fd6fb0e2119108d",
+      "file_lines": 239,
       "line_ranges": [
         [
-          116,
-          171
+          137,
+          192
         ]
       ],
       "counted_lines": 56,
