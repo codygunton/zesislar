@@ -1,0 +1,31 @@
+{
+  "item": "free-exit-instances",
+  "delivery_base": "1ab41c3d6a5719849d2c6a68ac9fc658e245d6bc",
+  "checked_R3_dependency": "b7359b55f3609d22e28d1021570543f274d446b7",
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-free-exit-1ab41c3d/_build/free-exit-delivery017/REPORT.json",
+    "sha256": "6dfbc83fc8fe8d62bfe26e0ebecb3bb6f26f8b261b5df68cd111079011f7dccb",
+    "bindings": 22
+  },
+  "proof_certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-free-exit-b7359b55/_build/free-exit-real-seal016/REPORT.json",
+    "sha256": "2caad8cdb429acec5a4ed83ac842c33669f0e01f5d56c0dc07c35846261a68d6",
+    "bindings": 41
+  },
+  "new_module_lines": 121,
+  "umbrella_line_delta": 1,
+  "previous_interface_lines": 983,
+  "interface_lines": 1105,
+  "interface_delta": 122,
+  "instances": 2,
+  "facts_output_evar_queries": 2,
+  "exact_compiled_constants": 5,
+  "verification_method": "module_m",
+  "assumptions": [],
+  "exports": "FreeHints exports FreeExitRegistrations",
+  "R3_active_in_Approved": false,
+  "native_free_execution": false,
+  "gate": "Root gates after cp-av-r1-r3 under explicit release. No local full-gate claim.",
+  "counting": "Both modules count regardless of R3 activation.",
+  "Automation_files_delivered": 0
+}

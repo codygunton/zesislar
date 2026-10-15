@@ -1,0 +1,799 @@
+{
+  "schema_version": 1,
+  "function": "alt_fl_alloc.free",
+  "status": "Checked two exit registrations exported; no native run; R3 activation is independent.",
+  "snapshot_base_root": "1ab41c3d6a5719849d2c6a68ac9fc658e245d6bc",
+  "snapshot_kind": "Reviewable worktree with exact checked owner bytes; file hashes are authoritative.",
+  "umbrella": "ZesuSsz.Compliance.FreeHints",
+  "counting_rules": {
+    "unit": "Physical lines, including comments and blank lines. A final line without newline counts once.",
+    "scope": "Function modules under Contracts/Compliance; audited free-specific statements under tools/Evidence/Makefile; measurement records. No alloc blocks read.",
+    "mixed": "Count complete smallest matched Python statements and embedded tables. Record every selected line range. Count the freeCfgEdges table/comment as generator_json.",
+    "test_roles": "Tests, exports, build declarations and measurement metadata are unscored. Block proofs and composition have separate roles.",
+    "self": "Count this manifest by a physical-line fixed point. No circular self-hash. The outer certificate binds final bytes.",
+    "boundaries": "933 interface and508 metadata lines from92940986 remain historical. External generator data stays separate until its source enters this snapshot.",
+    "activation": "Count both exit modules and the umbrella export regardless of return-route activation."
+  },
+  "contracts": [
+    "ZesuSsz/Contracts/AltFlFree.v",
+    "ZesuSsz/Contracts/AltFlFreeBlockEntries.v",
+    "ZesuSsz/Contracts/AltFlFreeContract.v",
+    "ZesuSsz/Contracts/FreeSelected.v"
+  ],
+  "introductions": [
+    "ZesuSsz/Compliance/FreeClassFacts.v",
+    "ZesuSsz/Compliance/FreeEntryIntroductions.v"
+  ],
+  "exit_meanings": [
+    "ZesuSsz/Compliance/FreeExitMeanings.v",
+    "ZesuSsz/Compliance/FreeReturnFacts.v"
+  ],
+  "loop_steps": [],
+  "registrations": [
+    "ZesuSsz/Compliance/FreeDataRegistrations.v",
+    "ZesuSsz/Compliance/FreeHints.v",
+    "ZesuSsz/Compliance/FreeUnfoldRegistrations.v",
+    "ZesuSsz/Compliance/FreeExitRegistrations.v"
+  ],
+  "generator_json": [
+    "ZesuSsz/Contracts/AltFlFree.v",
+    "ZesuSsz/Evidence/generate_zesu_cfg.py",
+    "tools/stock_zisk/closure.py",
+    "tools/stock_zisk/platform/exports.py",
+    "tools/stock_zisk/platform/indexes.py",
+    "tools/stock_zisk/runtime_inventory.py"
+  ],
+  "block_proofs": [],
+  "composition": [],
+  "tests_and_exports": [
+    "Makefile",
+    "ZesuSsz/Evidence/test_check_decode_item_hints.py",
+    "tools/stock_zisk/platform/test_function_binding.py",
+    "tools/test_function_names.py",
+    "tools/test_function_preparation.py",
+    "tools/test_promotion_verification.py",
+    "ZesuSsz/Evidence/spec_shape_inventory.json",
+    "build/stock-zisk/automation-validation/free-guarded-update/CHECKPOINT.json",
+    "build/stock-zisk/automation-validation/free-manifest/CHECKPOINT.json",
+    "build/stock-zisk/automation-validation/free-contract-correction/CHECKPOINT.json",
+    "build/stock-zisk/automation-validation/free-compile-evidence/CHECKPOINT.json",
+    "build/stock-zisk/automation-validation/free-compile-evidence/HOLDOUT-PROTOCOL.md",
+    "ZesuSsz/Evidence/free_function_text.json",
+    "build/stock-zisk/automation-validation/free-exit-instances/CHECKPOINT.json"
+  ],
+  "lemmas": [
+    "ZesuSsz/Compliance/FreeClassFacts.v",
+    "ZesuSsz/Compliance/FreeEntryIntroductions.v",
+    "ZesuSsz/Compliance/FreeExitMeanings.v",
+    "ZesuSsz/Compliance/FreeReturnFacts.v",
+    "ZesuSsz/Compliance/FreeExitRegistrations.v"
+  ],
+  "pending": [],
+  "excluded_false_matches": [
+    {
+      "path": "tools/test_gate_cap.py",
+      "matched_lines": [
+        47
+      ],
+      "reason": "The quoted free name denotes the Linux memory utility, not alt_fl_alloc.free."
+    },
+    {
+      "path": "tools/test_guard.py",
+      "matched_lines": [
+        81
+      ],
+      "reason": "The quoted free name denotes the Linux memory utility, not alt_fl_alloc.free."
+    }
+  ],
+  "pending_generator": {
+    "scope": "Checked owner artifacts; not Root source credit",
+    "design_path": "/home/cody/zesislar/.worktrees/worker2-av-free-terminal-df0c431e/_build/free-artifact-packet005/workspace/ZesuSsz/Contracts/free_block_design.json",
+    "design_sha256": "1046e03caab3dc2ee6e106adb31d4309334ca227b00747f108eef0ebb40f91d6",
+    "design_lines": 4687,
+    "code_premises_lines": 1,
+    "terminal_descriptor_lines": 8,
+    "source_credit": 0,
+    "status": "Entry applications compiled against corrected snapshots; final integration and freeze pending."
+  },
+  "correction": "contract corrected before run: ownership omitted the 8-byte header",
+  "source_evidence": {
+    "packet009": "77cc2105894e46071b29659c67561f9e545109abd1322cfa5a6df3ed4803fdac",
+    "corrected_exit031": "47298b3c5bf42cb0c566f77ee8cb8f017dcd378e067079258aec15c781b800b0",
+    "unchanged_B_unit": "0742436497375e6d7c9a18b3112dddb45c4b04a20244fe7be57352bb8f7fe8df",
+    "FreeHints_source": "d4a6d8fcca4cc744990ab57a070070ebce4b1ae717f147543f75b6854e422b0d",
+    "guarded_class040": "943c65d7a7573d322a051ceed268a4e318570226de78c93c74d71bb7615caf11",
+    "scope": "Guarded data facts use shared_defs and the output-evar query uses module_m. Corrected exits verified as module_m42144/shared_defs42160. Unchanged data sources retain their historical checked scopes.",
+    "exit_instances_real_dependency": "2caad8cdb429acec5a4ed83ac842c33669f0e01f5d56c0dc07c35846261a68d6"
+  },
+  "historical_counts": {
+    "commit": "92940986c349abc545b28cccee3e64b4f5567815",
+    "interface_total": 933,
+    "metadata_total": 508,
+    "overall_total": 1441,
+    "status": "Pre-correction and pre-run; not overwritten."
+  },
+  "previous_corrected_counts": {
+    "commit": "8e73544ccd7923b3b9ca7d0405dea2bd7c89714b",
+    "interface_total": 958,
+    "metadata_total": 1044,
+    "overall_total": 2002
+  },
+  "guarded_delta": 25,
+  "files": [
+    {
+      "path": "ZesuSsz/Contracts/AltFlFree.v",
+      "category": "contracts",
+      "scope": "mixed_file",
+      "sha256": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+      "file_lines": 117,
+      "line_ranges": [
+        [
+          1,
+          53
+        ],
+        [
+          116,
+          117
+        ]
+      ],
+      "counted_lines": 55,
+      "selection": "Exclude the embedded CFG table/comment, counted separately."
+    },
+    {
+      "path": "ZesuSsz/Contracts/AltFlFree.v",
+      "category": "generator_json",
+      "scope": "mixed_file",
+      "sha256": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+      "file_lines": 117,
+      "line_ranges": [
+        [
+          54,
+          115
+        ]
+      ],
+      "counted_lines": 62,
+      "selection": "Source-embedded freeCfgEdges table and its comment. No line overlap."
+    },
+    {
+      "path": "ZesuSsz/Contracts/AltFlFreeBlockEntries.v",
+      "category": "contracts",
+      "scope": "whole_file",
+      "sha256": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d",
+      "file_lines": 389,
+      "line_ranges": [
+        [
+          1,
+          389
+        ]
+      ],
+      "counted_lines": 389
+    },
+    {
+      "path": "ZesuSsz/Contracts/AltFlFreeContract.v",
+      "category": "contracts",
+      "scope": "whole_file",
+      "sha256": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+      "file_lines": 115,
+      "line_ranges": [
+        [
+          1,
+          115
+        ]
+      ],
+      "counted_lines": 115
+    },
+    {
+      "path": "ZesuSsz/Contracts/FreeSelected.v",
+      "category": "contracts",
+      "scope": "whole_file",
+      "sha256": "4bf0926a8ae42926edf8f9452691ef30ffc3501c5c98f827da59488574368d1b",
+      "file_lines": 12,
+      "line_ranges": [
+        [
+          1,
+          12
+        ]
+      ],
+      "counted_lines": 12
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeClassFacts.v",
+      "category": "introductions",
+      "scope": "whole_file",
+      "sha256": "69df14f57e9b3a1f38ad291162b8e36e87aad29e4c9ee4782ed44524486d7505",
+      "file_lines": 39,
+      "line_ranges": [
+        [
+          1,
+          39
+        ]
+      ],
+      "counted_lines": 39
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeDataRegistrations.v",
+      "category": "registrations",
+      "scope": "whole_file",
+      "sha256": "78cac3811422b7b6ef299969c38accce86d505e72f5250c6106d81319f94ebbb",
+      "file_lines": 28,
+      "line_ranges": [
+        [
+          1,
+          28
+        ]
+      ],
+      "counted_lines": 28
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeEntryIntroductions.v",
+      "category": "introductions",
+      "scope": "whole_file",
+      "sha256": "be3045bf0e12ba7e2bde681e274b695cef315ffb639296c16bd19935e55adec4",
+      "file_lines": 74,
+      "line_ranges": [
+        [
+          1,
+          74
+        ]
+      ],
+      "counted_lines": 74
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeExitMeanings.v",
+      "category": "exit_meanings",
+      "scope": "whole_file",
+      "sha256": "f4845b3e92258860209e94a880d8fa7be4df070d720c2d76ec5ed36f0f5e238b",
+      "file_lines": 57,
+      "line_ranges": [
+        [
+          1,
+          57
+        ]
+      ],
+      "counted_lines": 57
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeHints.v",
+      "category": "registrations",
+      "scope": "whole_file",
+      "sha256": "d4a6d8fcca4cc744990ab57a070070ebce4b1ae717f147543f75b6854e422b0d",
+      "file_lines": 3,
+      "line_ranges": [
+        [
+          1,
+          3
+        ]
+      ],
+      "counted_lines": 3
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeUnfoldRegistrations.v",
+      "category": "registrations",
+      "scope": "whole_file",
+      "sha256": "e3d3bebfe5b1732911e6380d85a3aafee03145ee7c548b7d6748e033e7f2ba75",
+      "file_lines": 101,
+      "line_ranges": [
+        [
+          1,
+          101
+        ]
+      ],
+      "counted_lines": 101
+    },
+    {
+      "path": "Makefile",
+      "category": "tests_and_exports",
+      "scope": "mixed_file",
+      "sha256": "e1a322c20b0b182f13bdb1099e7aa3c980dfcc6163132965436fee4574b41f1f",
+      "file_lines": 392,
+      "line_ranges": [
+        [
+          383,
+          383
+        ]
+      ],
+      "counted_lines": 1,
+      "role": "test_or_build_metadata",
+      "selection": "Complete smallest matched Python statements, including shared constant tables; exact matched Makefile lines. Shared rows count conservatively."
+    },
+    {
+      "path": "ZesuSsz/Evidence/generate_zesu_cfg.py",
+      "category": "generator_json",
+      "scope": "mixed_file",
+      "sha256": "23c628547cc604cdd113f52d9364cdbeebd64a214b281ca54a8f2a1844e6739a",
+      "file_lines": 754,
+      "line_ranges": [
+        [
+          392,
+          397
+        ]
+      ],
+      "counted_lines": 6,
+      "selection": "Complete smallest matched Python statements, including shared constant tables; exact matched Makefile lines. Shared rows count conservatively."
+    },
+    {
+      "path": "ZesuSsz/Evidence/test_check_decode_item_hints.py",
+      "category": "tests_and_exports",
+      "scope": "mixed_file",
+      "sha256": "f834165669d8627ce2d2b317c43a8083d15bd6741a430d5e6992e98421904ac0",
+      "file_lines": 127,
+      "line_ranges": [
+        [
+          91,
+          91
+        ],
+        [
+          93,
+          93
+        ],
+        [
+          96,
+          96
+        ],
+        [
+          110,
+          110
+        ]
+      ],
+      "counted_lines": 4,
+      "role": "test_or_build_metadata",
+      "selection": "Complete smallest matched Python statements, including shared constant tables; exact matched Makefile lines. Shared rows count conservatively."
+    },
+    {
+      "path": "tools/stock_zisk/closure.py",
+      "category": "generator_json",
+      "scope": "mixed_file",
+      "sha256": "c55da1702313ba5fdb7da5b0bc1b8337f95ce21aae1bec2cf632723d7e52d54f",
+      "file_lines": 396,
+      "line_ranges": [
+        [
+          14,
+          19
+        ],
+        [
+          370,
+          379
+        ]
+      ],
+      "counted_lines": 16,
+      "selection": "Complete smallest matched Python statements, including shared constant tables; exact matched Makefile lines. Shared rows count conservatively."
+    },
+    {
+      "path": "tools/stock_zisk/platform/exports.py",
+      "category": "generator_json",
+      "scope": "mixed_file",
+      "sha256": "de452dd154d1494e24ca2447d41e28c02466c561a7f922ff8efa27fdff01641e",
+      "file_lines": 164,
+      "line_ranges": [
+        [
+          128,
+          132
+        ]
+      ],
+      "counted_lines": 5,
+      "selection": "Complete smallest matched Python statements, including shared constant tables; exact matched Makefile lines. Shared rows count conservatively."
+    },
+    {
+      "path": "tools/stock_zisk/platform/indexes.py",
+      "category": "generator_json",
+      "scope": "mixed_file",
+      "sha256": "3dbf16ccc12d453aa5004209b48786cef9ea7ebce81a98220e6d604372c30ace",
+      "file_lines": 64,
+      "line_ranges": [
+        [
+          5,
+          18
+        ]
+      ],
+      "counted_lines": 14,
+      "selection": "Complete smallest matched Python statements, including shared constant tables; exact matched Makefile lines. Shared rows count conservatively."
+    },
+    {
+      "path": "tools/stock_zisk/platform/test_function_binding.py",
+      "category": "tests_and_exports",
+      "scope": "mixed_file",
+      "sha256": "d03673e59950f5c98c8b76021a4d1cf54b2ef464a4ce7a30582334306b1a0428",
+      "file_lines": 191,
+      "line_ranges": [
+        [
+          34,
+          35
+        ],
+        [
+          39,
+          39
+        ],
+        [
+          42,
+          43
+        ],
+        [
+          47,
+          51
+        ],
+        [
+          59,
+          60
+        ],
+        [
+          64,
+          65
+        ],
+        [
+          67,
+          67
+        ],
+        [
+          75,
+          75
+        ],
+        [
+          78,
+          78
+        ],
+        [
+          82,
+          82
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          101,
+          101
+        ],
+        [
+          113,
+          113
+        ],
+        [
+          127,
+          128
+        ],
+        [
+          153,
+          153
+        ],
+        [
+          155,
+          156
+        ],
+        [
+          166,
+          166
+        ],
+        [
+          172,
+          172
+        ],
+        [
+          176,
+          176
+        ],
+        [
+          178,
+          178
+        ],
+        [
+          185,
+          185
+        ],
+        [
+          187,
+          187
+        ]
+      ],
+      "counted_lines": 32,
+      "role": "test_or_build_metadata",
+      "selection": "Complete smallest matched Python statements, including shared constant tables; exact matched Makefile lines. Shared rows count conservatively."
+    },
+    {
+      "path": "tools/stock_zisk/runtime_inventory.py",
+      "category": "generator_json",
+      "scope": "mixed_file",
+      "sha256": "8d0f0522ebfc6da0b9638a64afec016000e7072512080e65ae5b359bb1c773d9",
+      "file_lines": 104,
+      "line_ranges": [
+        [
+          24,
+          30
+        ],
+        [
+          33,
+          33
+        ]
+      ],
+      "counted_lines": 8,
+      "selection": "Complete smallest matched Python statements, including shared constant tables; exact matched Makefile lines. Shared rows count conservatively."
+    },
+    {
+      "path": "tools/test_function_names.py",
+      "category": "tests_and_exports",
+      "scope": "mixed_file",
+      "sha256": "c9faf55be426c91103eb74b2365007116af4d097b335f647bf6d0df32b800d27",
+      "file_lines": 169,
+      "line_ranges": [
+        [
+          22,
+          22
+        ],
+        [
+          78,
+          78
+        ],
+        [
+          80,
+          81
+        ],
+        [
+          88,
+          91
+        ],
+        [
+          99,
+          100
+        ],
+        [
+          107,
+          107
+        ],
+        [
+          112,
+          112
+        ],
+        [
+          115,
+          116
+        ],
+        [
+          119,
+          119
+        ],
+        [
+          128,
+          128
+        ],
+        [
+          138,
+          140
+        ],
+        [
+          152,
+          153
+        ],
+        [
+          165,
+          165
+        ]
+      ],
+      "counted_lines": 22,
+      "role": "test_or_build_metadata",
+      "selection": "Complete smallest matched Python statements, including shared constant tables; exact matched Makefile lines. Shared rows count conservatively."
+    },
+    {
+      "path": "tools/test_function_preparation.py",
+      "category": "tests_and_exports",
+      "scope": "mixed_file",
+      "sha256": "ba98f463a3d4d96d790c9c5453df9c359d617cba7603985f337a1ae5dcc78663",
+      "file_lines": 46,
+      "line_ranges": [
+        [
+          40,
+          42
+        ]
+      ],
+      "counted_lines": 3,
+      "role": "test_or_build_metadata",
+      "selection": "Complete smallest matched Python statements, including shared constant tables; exact matched Makefile lines. Shared rows count conservatively."
+    },
+    {
+      "path": "tools/test_promotion_verification.py",
+      "category": "tests_and_exports",
+      "scope": "mixed_file",
+      "sha256": "2c036985b2a5a7f58decc35353cbd67573f4a847ffb48c1dd01c35403083d9b3",
+      "file_lines": 157,
+      "line_ranges": [
+        [
+          109,
+          109
+        ]
+      ],
+      "counted_lines": 1,
+      "role": "test_or_build_metadata",
+      "selection": "Complete smallest matched Python statements, including shared constant tables; exact matched Makefile lines. Shared rows count conservatively."
+    },
+    {
+      "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
+      "category": "tests_and_exports",
+      "scope": "mixed_file",
+      "sha256": "8bad6bd3c1984a6311970cefa820bd702719c5fefe7771d6615e65896402c6df",
+      "file_lines": 173,
+      "line_ranges": [
+        [
+          116,
+          171
+        ]
+      ],
+      "counted_lines": 56,
+      "role": "measurement_metadata",
+      "selection": "All eight free measurement rows only."
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/free-guarded-update/CHECKPOINT.json",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": null,
+      "file_lines": 65,
+      "line_ranges": [
+        [
+          1,
+          65
+        ]
+      ],
+      "counted_lines": 65,
+      "role": "measurement_metadata",
+      "hash_rule": "No circular hash; the final outer checkpoint certificate binds these bytes."
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/free-manifest/CHECKPOINT.json",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": null,
+      "file_lines": 40,
+      "line_ranges": [
+        [
+          1,
+          40
+        ]
+      ],
+      "counted_lines": 40,
+      "role": "measurement_metadata",
+      "hash_rule": "No circular hash; the final outer checkpoint certificate binds these bytes."
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/free-contract-correction/CHECKPOINT.json",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": null,
+      "file_lines": 43,
+      "line_ranges": [
+        [
+          1,
+          43
+        ]
+      ],
+      "counted_lines": 43,
+      "role": "measurement_metadata",
+      "hash_rule": "No circular hash; the final outer checkpoint certificate binds these bytes."
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/free-compile-evidence/CHECKPOINT.json",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": null,
+      "file_lines": 68,
+      "line_ranges": [
+        [
+          1,
+          68
+        ]
+      ],
+      "counted_lines": 68,
+      "role": "measurement_metadata",
+      "hash_rule": "No circular hash; the final outer checkpoint certificate binds these bytes."
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/free-compile-evidence/HOLDOUT-PROTOCOL.md",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": null,
+      "file_lines": 97,
+      "line_ranges": [
+        [
+          1,
+          97
+        ]
+      ],
+      "counted_lines": 97,
+      "role": "measurement_metadata",
+      "hash_rule": "No circular hash; the final outer checkpoint certificate binds these bytes."
+    },
+    {
+      "path": "ZesuSsz/Evidence/free_function_text.json",
+      "category": "tests_and_exports",
+      "role": "measurement_metadata",
+      "scope": "whole_file",
+      "sha256": null,
+      "hash_rule": "No circular self-hash. The outer certificate binds final bytes.",
+      "file_lines": 799,
+      "line_ranges": [
+        [
+          1,
+          799
+        ]
+      ],
+      "counted_lines": 799
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeReturnFacts.v",
+      "category": "exit_meanings",
+      "scope": "whole_file",
+      "sha256": "6c4e348e4cedb7fed168276cb9a6c7d2aa635fcba52557e444421e508a1a395a",
+      "file_lines": 52,
+      "line_ranges": [
+        [
+          1,
+          52
+        ]
+      ],
+      "counted_lines": 52
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeExitRegistrations.v",
+      "category": "registrations",
+      "scope": "whole_file",
+      "sha256": "08aac01a4ad742201daad0350fb13f32095bcffb449e9b25839df1925e79fc05",
+      "file_lines": 69,
+      "line_ranges": [
+        [
+          1,
+          69
+        ]
+      ],
+      "counted_lines": 69
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/free-exit-instances/CHECKPOINT.json",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": null,
+      "file_lines": 31,
+      "line_ranges": [
+        [
+          1,
+          31
+        ]
+      ],
+      "counted_lines": 31,
+      "role": "measurement_metadata",
+      "hash_rule": "The outer receipt binds these bytes without a circular hash."
+    }
+  ],
+  "category_totals": {
+    "contracts": 571,
+    "introductions": 113,
+    "exit_meanings": 109,
+    "loop_steps": 0,
+    "registrations": 201,
+    "generator_json": 111,
+    "block_proofs": 0,
+    "composition": 0,
+    "tests_and_exports": 1262
+  },
+  "interface_total": 1105,
+  "conservative_source_file_lines": 2538,
+  "block_records": [],
+  "native_runs": 0,
+  "holdout_spent": false,
+  "freeze_requirement": "No native free execution before exact cp-av-rules-frozen commit is sealed.",
+  "overall_total": 2367,
+  "checked_class_dependency": "b7359b55f3609d22e28d1021570543f274d446b7",
+  "previous_guarded_counts": {
+    "commit": "1ab41c3d6a5719849d2c6a68ac9fc658e245d6bc",
+    "category_totals": {
+      "contracts": 571,
+      "introductions": 113,
+      "exit_meanings": 57,
+      "loop_steps": 0,
+      "registrations": 131,
+      "generator_json": 111,
+      "block_proofs": 0,
+      "composition": 0,
+      "tests_and_exports": 1148
+    },
+    "interface_total": 983,
+    "overall_total": 2131
+  },
+  "exit_registration_delta": 122
+}
