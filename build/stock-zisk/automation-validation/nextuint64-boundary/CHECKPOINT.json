@@ -1,0 +1,80 @@
+{
+  "schema": "nextuint64-authorized-boundary-preparation-v1",
+  "root": "4e5d73d18b314ea77d47fc863b246f018d20ae97",
+  "status": "Source-only uncompiled drafts under the four authorized decisions.",
+  "previous_tip": "921943fe4d2539af330455cfd9e270b85b5d2d6d",
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-prep/_build/nextuint64-authorized002/REPORT.json",
+    "sha256": "586d8a37e6f54e8bfd15389070849f32be7666154bddccfe5bbec8d141a21da9",
+    "bindings": 7,
+    "prior_transitive_bindings": 25
+  },
+  "decisions": [
+    {
+      "entry_stack": "[sp-112,sp)",
+      "own_frame_bytes": 96,
+      "separate_callee_frame_bytes": 16,
+      "nextUint64StackBytes": 96
+    },
+    {
+      "GPR_count": 29,
+      "excluded": [
+        "x3",
+        "x4"
+      ],
+      "shape": "Register binders with existential caller-saved values."
+    },
+    {
+      "domain": "Exact decodeItem form: 0 <= inputEnd < word64Modulus and inputPointer + length <= inputEnd.",
+      "register": "Actual zisk_input_end, not a guessed bound."
+    },
+    {
+      "header": "Existential cursor. The nonzero-length guard remains a conjunct."
+    }
+  ],
+  "drafts": [
+    "DECISIONS.json",
+    "ENTRY-DRAFTS.json",
+    "ENTRY-SIGNATURES.v.txt",
+    "NextUint64FoldDraft.v.txt",
+    "NextUint64BoundaryDraft.v.txt",
+    "REMAINING-LIMITS.json"
+  ],
+  "draft_directory": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-prep/_build/nextuint64-authorized002",
+  "coverage": {
+    "entries": 10,
+    "GPRs_per_entry": 29,
+    "existential_public_caller_registers": 15,
+    "own_frame_bytes": 96,
+    "callee_frame_bytes": 16
+  },
+  "domain_scope": "Draft uses the exact substituted decodeItemEntryLayout, the original nextUint64 domain, and separation for the complete 112-byte ownership. These are draft conditions, not proved consequences.",
+  "remaining_limits": [
+    {
+      "id": "caller-stack-views",
+      "status": "Unproved sound views for pad8, decode40, and saved48. The separate callee frame16 is now authorized."
+    },
+    {
+      "id": "callee-call-bridge",
+      "status": "The exact A theorem remains prepared. No persistent instr_pre or machine_call derivation is claimed."
+    },
+    {
+      "id": "draft-elaboration",
+      "status": "No compilation or proof ran. Resource clauses and argument record are source-only."
+    }
+  ],
+  "verification": {
+    "method": "Static hash, schema, resource-count, and guard checks.",
+    "proof_runs": 0,
+    "native_runs": 0,
+    "MCP": "Not run, as instructed.",
+    "compilation": "Not run, as instructed."
+  },
+  "unchanged": [
+    "Level1.v",
+    "IslarisContractCorrect",
+    "nextUint64StackBytes=96",
+    "free"
+  ],
+  "alloc_inspected": false
+}
