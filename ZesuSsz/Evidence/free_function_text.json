@@ -1,0 +1,426 @@
+{
+  "schema_version": 1,
+  "function": "alt_fl_alloc.free",
+  "status": "Assembled checked owner sources on Root a422ab98; integration and gates pending; no hold-out run",
+  "snapshot_commit": "a422ab98e489198f127a86c6c896e6f293d39211",
+  "umbrella": "ZesuSsz.Compliance.FreeHints",
+  "counting_rules": {
+    "unit": "Physical lines, including comments and blank lines. A final line without newline counts once.",
+    "data_lint": "Scan each complete file listed under introductions, exit_meanings, and loop_steps. Pending paths stay outside category arrays.",
+    "mixed_files": "Select the smallest Python statement containing the exact free or free_lists symbol. Count shared constant tables conservatively and record explicit ranges.",
+    "metadata": "Count this manifest under tests_and_exports with role measurement_metadata. Exclude its lines from scored interface totals. No circular self-hash.",
+    "score": "The six interface categories are scored separately. Block proofs and composition have separate totals. Tests, exports, and measurement metadata are unscored.",
+    "safety": "No alloc machine block or source implementation was read. Shared generator symbol names do not disclose blocks.",
+    "snapshot": "Current assembled worktree contains all nine owner files. The base Root contains none; original owner reports and Root counts remain separately bound.",
+    "scope": "Nine exact checked owner source files plus audited mixed generator statements. Count all comments and blank lines in function-specific files.",
+    "mixed_contract_table": "AltFlFree.v1..52 and115..116 are contracts. Its source-embedded CFG table/comment53..114 are generator_json. The ranges do not overlap."
+  },
+  "contracts": [
+    "ZesuSsz/Contracts/AltFlFree.v",
+    "ZesuSsz/Contracts/AltFlFreeContract.v",
+    "ZesuSsz/Contracts/AltFlFreeBlockEntries.v"
+  ],
+  "introductions": [
+    "ZesuSsz/Compliance/FreeClassFacts.v",
+    "ZesuSsz/Compliance/FreeEntryIntroductions.v"
+  ],
+  "exit_meanings": [
+    "ZesuSsz/Compliance/FreeExitMeanings.v"
+  ],
+  "loop_steps": [],
+  "registrations": [
+    "ZesuSsz/Compliance/FreeUnfoldRegistrations.v",
+    "ZesuSsz/Compliance/FreeDataRegistrations.v",
+    "ZesuSsz/Compliance/FreeHints.v"
+  ],
+  "generator_json": [
+    "tools/stock_zisk/runtime_inventory.py",
+    "tools/stock_zisk/platform/indexes.py",
+    "tools/stock_zisk/closure.py",
+    "ZesuSsz/Evidence/generate_zesu_cfg.py",
+    "ZesuSsz/Contracts/AltFlFree.v"
+  ],
+  "block_proofs": [],
+  "composition": [],
+  "tests_and_exports": [
+    "ZesuSsz/Evidence/free_function_text.json",
+    "ZesuSsz/Evidence/spec_shape_inventory.json",
+    "build/stock-zisk/automation-validation/free-manifest/CHECKPOINT.json"
+  ],
+  "lemmas": [
+    "ZesuSsz/Compliance/FreeClassFacts.v",
+    "ZesuSsz/Compliance/FreeEntryIntroductions.v",
+    "ZesuSsz/Compliance/FreeExitMeanings.v"
+  ],
+  "pending": [],
+  "pending_generator": {
+    "status": "No final generator module or design JSON locator supplied. Reserve no guessed path."
+  },
+  "source_evidence": {
+    "A_packet008": {
+      "path": "/home/cody/zesislar/.worktrees/spec-a-av-free-contracts-0d880796/_build/free-contract-checked-packet-008/REPORT.json",
+      "sha256": "5bee8e2579230212efa17f3be3ae44987cce8d86d6b61e414a5b46090e665c81",
+      "bindings": 14
+    },
+    "B_checkpoint019": {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-free-data-965678f3/_build/free-data-checkpoint019/REPORT.json",
+      "sha256": "0742436497375e6d7c9a18b3112dddb45c4b04a20244fe7be57352bb8f7fe8df",
+      "bindings": 48
+    },
+    "B_handoff020": {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-free-data-965678f3/_build/free-data-handoff020/HANDOFF.json",
+      "sha256": "62bab261eb464da6aa8de26c53a508e2f4fac24f9afb681c3bca5d90b558b8ba"
+    },
+    "FreeHints_audit": {
+      "path": "/home/cody/zesislar/.worktrees/spec-c-av-free-manifest/_build/free-manifest-preparation-001/FREE-HINTS-AUDIT.json",
+      "sha256": "e8e301c6bbba4376e3fec44ae790ac93ac0e6fd230e67fd82b8fb3e939198327"
+    },
+    "limits": "Owner compilation and data proofs are checked. No native free proof ran. The generator code parameter and integrated class/checker dependencies remain pending."
+  },
+  "base_Root_measure": {
+    "root": "a422ab98e489198f127a86c6c896e6f293d39211",
+    "scored_interface_lines": 37,
+    "owner_source_lines_added": 896,
+    "base_contains_owner_sources": false
+  },
+  "historical_packet006": {
+    "path": "/home/cody/zesislar/.worktrees/spec-c-av-free-manifest/_build/free-manifest-preparation-001/PACKET006-MANIFEST.json",
+    "sha256": "622b4fba37f84c7ae054904863b994ed5a312f2790615cc0698b8f1505866c22",
+    "status": "Historical owner-only draft; no current count credit"
+  },
+  "files": [
+    {
+      "path": "tools/stock_zisk/runtime_inventory.py",
+      "category": "generator_json",
+      "scope": "mixed_file",
+      "sha256": "8d0f0522ebfc6da0b9638a64afec016000e7072512080e65ae5b359bb1c773d9",
+      "file_lines": 104,
+      "line_ranges": [
+        [
+          33,
+          33
+        ]
+      ],
+      "counted_lines": 1,
+      "source_embedded_constant_ranges": [
+        [
+          33,
+          33
+        ]
+      ],
+      "ambiguity": "Complete smallest Python statements containing the free symbol or its free_lists data symbol. Shared table members count conservatively. These are generator metadata, not alloc blocks."
+    },
+    {
+      "path": "tools/stock_zisk/platform/indexes.py",
+      "category": "generator_json",
+      "scope": "mixed_file",
+      "sha256": "3dbf16ccc12d453aa5004209b48786cef9ea7ebce81a98220e6d604372c30ace",
+      "file_lines": 64,
+      "line_ranges": [
+        [
+          5,
+          18
+        ]
+      ],
+      "counted_lines": 14,
+      "source_embedded_constant_ranges": [
+        [
+          5,
+          18
+        ]
+      ],
+      "ambiguity": "Complete smallest Python statements containing the free symbol or its free_lists data symbol. Shared table members count conservatively. These are generator metadata, not alloc blocks."
+    },
+    {
+      "path": "tools/stock_zisk/closure.py",
+      "category": "generator_json",
+      "scope": "mixed_file",
+      "sha256": "c55da1702313ba5fdb7da5b0bc1b8337f95ce21aae1bec2cf632723d7e52d54f",
+      "file_lines": 396,
+      "line_ranges": [
+        [
+          14,
+          19
+        ],
+        [
+          370,
+          379
+        ]
+      ],
+      "counted_lines": 16,
+      "source_embedded_constant_ranges": [
+        [
+          14,
+          19
+        ],
+        [
+          370,
+          379
+        ]
+      ],
+      "ambiguity": "Complete smallest Python statements containing the free symbol or its free_lists data symbol. Shared table members count conservatively. These are generator metadata, not alloc blocks."
+    },
+    {
+      "path": "ZesuSsz/Evidence/generate_zesu_cfg.py",
+      "category": "generator_json",
+      "scope": "mixed_file",
+      "sha256": "23c628547cc604cdd113f52d9364cdbeebd64a214b281ca54a8f2a1844e6739a",
+      "file_lines": 754,
+      "line_ranges": [
+        [
+          392,
+          397
+        ]
+      ],
+      "counted_lines": 6,
+      "source_embedded_constant_ranges": [
+        [
+          392,
+          397
+        ]
+      ],
+      "ambiguity": "Complete smallest Python statements containing the free symbol or its free_lists data symbol. Shared table members count conservatively. These are generator metadata, not alloc blocks."
+    },
+    {
+      "path": "ZesuSsz/Contracts/AltFlFree.v",
+      "category": "generator_json",
+      "scope": "mixed_file",
+      "sha256": "a1852b70ba1718ca8a04930af0a5b27c9c583caf48437ef08d64683d49dcd367",
+      "file_lines": 116,
+      "line_ranges": [
+        [
+          53,
+          114
+        ]
+      ],
+      "counted_lines": 62,
+      "owner_snapshot": "/home/cody/zesislar/.worktrees/spec-a-av-free-contracts-0d880796/_build/free-contract-checked-packet-008/AltFlFree.v",
+      "split_reason": "The source-embedded CFG table and its comment at53..114 count as generator_json.",
+      "source_embedded_constant": "freeCfgEdges"
+    },
+    {
+      "path": "ZesuSsz/Contracts/AltFlFree.v",
+      "category": "contracts",
+      "scope": "mixed_file",
+      "sha256": "a1852b70ba1718ca8a04930af0a5b27c9c583caf48437ef08d64683d49dcd367",
+      "file_lines": 116,
+      "line_ranges": [
+        [
+          1,
+          52
+        ],
+        [
+          115,
+          116
+        ]
+      ],
+      "counted_lines": 54,
+      "owner_snapshot": "/home/cody/zesislar/.worktrees/spec-a-av-free-contracts-0d880796/_build/free-contract-checked-packet-008/AltFlFree.v",
+      "split_reason": "The source-embedded CFG table and its comment at53..114 count as generator_json."
+    },
+    {
+      "path": "ZesuSsz/Contracts/AltFlFreeContract.v",
+      "category": "contracts",
+      "scope": "whole_file",
+      "sha256": "386922694ec0263577be6547c0186a3190800c117ddb2ea8d779602378433a9a",
+      "file_lines": 115,
+      "line_ranges": [
+        [
+          1,
+          115
+        ]
+      ],
+      "counted_lines": 115,
+      "owner_snapshot": "/home/cody/zesislar/.worktrees/spec-a-av-free-contracts-0d880796/_build/free-contract-checked-packet-008/AltFlFreeContract.v"
+    },
+    {
+      "path": "ZesuSsz/Contracts/AltFlFreeBlockEntries.v",
+      "category": "contracts",
+      "scope": "whole_file",
+      "sha256": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d",
+      "file_lines": 389,
+      "line_ranges": [
+        [
+          1,
+          389
+        ]
+      ],
+      "counted_lines": 389,
+      "owner_snapshot": "/home/cody/zesislar/.worktrees/spec-a-av-free-contracts-0d880796/_build/free-contract-checked-packet-008/AltFlFreeBlockEntries.v"
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeUnfoldRegistrations.v",
+      "category": "registrations",
+      "scope": "whole_file",
+      "sha256": "e3d3bebfe5b1732911e6380d85a3aafee03145ee7c548b7d6748e033e7f2ba75",
+      "file_lines": 101,
+      "line_ranges": [
+        [
+          1,
+          101
+        ]
+      ],
+      "counted_lines": 101,
+      "owner_snapshot": "/home/cody/zesislar/.worktrees/spec-a-av-free-contracts-0d880796/_build/free-contract-checked-packet-008/FreeUnfoldRegistrations.v"
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeClassFacts.v",
+      "category": "introductions",
+      "scope": "whole_file",
+      "sha256": "0c33c8bbcabb3f154895346910782cda63128c64b45b372db8787bd67a357cb8",
+      "file_lines": 22,
+      "line_ranges": [
+        [
+          1,
+          22
+        ]
+      ],
+      "counted_lines": 22,
+      "owner_snapshot": "/home/cody/zesislar/.worktrees/spec-b-av-free-data-965678f3/_build/free-data-handoff020/FreeClassFacts.v"
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeDataRegistrations.v",
+      "category": "registrations",
+      "scope": "whole_file",
+      "sha256": "78cac3811422b7b6ef299969c38accce86d505e72f5250c6106d81319f94ebbb",
+      "file_lines": 28,
+      "line_ranges": [
+        [
+          1,
+          28
+        ]
+      ],
+      "counted_lines": 28,
+      "owner_snapshot": "/home/cody/zesislar/.worktrees/spec-b-av-free-data-965678f3/_build/free-data-handoff020/FreeDataRegistrations.v"
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeEntryIntroductions.v",
+      "category": "introductions",
+      "scope": "whole_file",
+      "sha256": "a1771fd1f25ca285aa1137bdcaa3ae41ef19de7601d876c37e0b9a3d3114199e",
+      "file_lines": 66,
+      "line_ranges": [
+        [
+          1,
+          66
+        ]
+      ],
+      "counted_lines": 66,
+      "owner_snapshot": "/home/cody/zesislar/.worktrees/spec-b-av-free-data-965678f3/_build/free-data-handoff020/FreeEntryIntroductions.v"
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeExitMeanings.v",
+      "category": "exit_meanings",
+      "scope": "whole_file",
+      "sha256": "8566cd54379646261898f6f417bc213cddda7e8e957ef7b2d26dd84561e85296",
+      "file_lines": 57,
+      "line_ranges": [
+        [
+          1,
+          57
+        ]
+      ],
+      "counted_lines": 57,
+      "owner_snapshot": "/home/cody/zesislar/.worktrees/spec-b-av-free-data-965678f3/_build/free-data-handoff020/FreeExitMeanings.v"
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeHints.v",
+      "category": "registrations",
+      "scope": "whole_file",
+      "sha256": "5224fb5d901d6e2a454186839916eab3300cf46ea112758259f220b83b239895",
+      "file_lines": 2,
+      "line_ranges": [
+        [
+          1,
+          2
+        ]
+      ],
+      "counted_lines": 2,
+      "owner_snapshot": "/home/cody/zesislar/.worktrees/spec-b-av-free-data-965678f3/_build/free-hints-snapshot021/FreeHints.v"
+    },
+    {
+      "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
+      "category": "tests_and_exports",
+      "role": "measurement_metadata",
+      "scope": "mixed_file",
+      "sha256": "5f9d1593a02c6caa105b28e5b7eae948546c91716f0be44ddd468c5a84d2cc70",
+      "file_lines": 159,
+      "line_ranges": [
+        [
+          116,
+          122
+        ],
+        [
+          123,
+          129
+        ],
+        [
+          130,
+          136
+        ],
+        [
+          137,
+          143
+        ],
+        [
+          144,
+          150
+        ],
+        [
+          151,
+          157
+        ]
+      ],
+      "counted_lines": 42,
+      "selection": "Six new free inventory rows only. Existing unrelated rows are excluded."
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/free-manifest/CHECKPOINT.json",
+      "category": "tests_and_exports",
+      "role": "measurement_metadata",
+      "scope": "whole_file",
+      "sha256": null,
+      "hash_rule": "The outer push receipt binds the final checkpoint. The checkpoint references the source report, so no circular hash is embedded.",
+      "file_lines": 40,
+      "line_ranges": [
+        [
+          1,
+          40
+        ]
+      ],
+      "counted_lines": 40
+    },
+    {
+      "path": "ZesuSsz/Evidence/free_function_text.json",
+      "category": "tests_and_exports",
+      "role": "measurement_metadata",
+      "scope": "whole_file",
+      "sha256": null,
+      "hash_rule": "No circular self-hash. The checkpoint certificate binds final bytes.",
+      "file_lines": 426,
+      "line_ranges": [
+        [
+          1,
+          426
+        ]
+      ],
+      "counted_lines": 426
+    }
+  ],
+  "totals": {
+    "contracts": 558,
+    "introductions": 88,
+    "exit_meanings": 57,
+    "loop_steps": 0,
+    "registrations": 131,
+    "generator_json": 99,
+    "block_proofs": 0,
+    "composition": 0,
+    "tests_and_exports": 508
+  },
+  "interface_total": 933,
+  "conservative_source_file_lines": 2214,
+  "block_records": [],
+  "holdout_status": "No native proof or frozen-rule hold-out run occurred.",
+  "overall_total": 1441
+}

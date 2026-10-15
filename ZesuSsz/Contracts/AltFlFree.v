@@ -1,0 +1,116 @@
+From Coq Require Import List ZArith.
+Require Import EvmSailRlp.evm_rlp_types.
+Require Import ZesuSsz.Contracts.AbiBytes.
+Import ListNotations.
+Open Scope Z_scope.
+
+Definition freeEntry : Z := 0x80041f38.
+Definition freeRegionEnd : Z := 0x8004218c.
+Definition freeReturnBlockEntries : list Z := [0x80042144; 0x80042160].
+Definition freeReturnSites : list Z := [0x80042150; 0x80042188].
+Definition freeStackBytes : Z := 16.
+Definition freeListsPointer : Z := 0xa0534000.
+Definition freeListCount : Z := 22.
+Definition freeListsBytes : Z := 176.
+
+(* This balanced comparison tree is the shared source helper used by free. *)
+Definition freeSizeClassOfBytes (size : Z) : Z :=
+  if size <=? 2048 then
+    if size <=? 64 then
+      if size <=? 16 then (if size <=? 8 then 0 else 1)
+      else if size <=? 32 then 2 else 3
+    else if size <=? 512 then
+      if size <=? 128 then 4 else if size <=? 256 then 5 else 6
+    else if size <=? 1024 then 7 else 8
+  else if size <=? 262144 then
+    if size <=? 16384 then
+      if size <=? 4096 then 9 else if size <=? 8192 then 10 else 11
+    else if size <=? 65536 then (if size <=? 32768 then 12 else 13)
+    else if size <=? 131072 then 14 else 15
+  else if size <=? 4194304 then
+    if size <=? 1048576 then (if size <=? 524288 then 16 else 17)
+    else if size <=? 2097152 then 18 else 19
+  else if size <=? 8388608 then 20
+  else if size <=? 16777216 then 21 else 22.
+
+Definition freeSizeClass (size log2Align : Z) : Z :=
+  Z.max (freeSizeClassOfBytes size) (Z.max 0 (log2Align - 3)).
+
+Definition freeReplaceWord (bytes : list byte) (offset : nat)
+    (word : list byte) : list byte :=
+  (firstn offset bytes ++ word ++ skipn (offset + 8) bytes)%list.
+
+Definition freeResultImages (pointer size log2Align : Z)
+    (beforeBuffer beforeLists afterBuffer afterLists : list byte) : Prop :=
+  let class := freeSizeClass size log2Align in
+  if class <? freeListCount then
+    afterBuffer = freeReplaceWord beforeBuffer 0
+      (firstn 8 (skipn (Z.to_nat (8 * class)) beforeLists)) /\
+    afterLists = freeReplaceWord beforeLists (Z.to_nat (8 * class))
+      (word64Bytes pointer)
+  else afterBuffer = beforeBuffer /\ afterLists = beforeLists.
+
+(* Exact static successors from the free-only inventory. Return targets are dynamic. *)
+Definition freeCfgEdges : list (Z * Z) := [
+  (0x80041f38, 0x80041f3c); (0x80041f3c, 0x80041f40); (0x80041f40, 0x80041f44);
+  (0x80041f44, 0x80041f48); (0x80041f48, 0x80041f4c); (0x80041f4c, 0x80041f50);
+  (0x80041f50, 0x80041f54); (0x80041f54, 0x80041f80); (0x80041f54, 0x80041f58);
+  (0x80041f58, 0x80041f5c); (0x80041f5c, 0x80041fb8); (0x80041f5c, 0x80041f60);
+  (0x80041f60, 0x80041f64); (0x80041f64, 0x80042014); (0x80041f64, 0x80041f68);
+  (0x80041f68, 0x80041f6c); (0x80041f6c, 0x80041f70); (0x80041f70, 0x80041f74);
+  (0x80041f74, 0x80041f78); (0x80041f78, 0x80042130); (0x80041f78, 0x80041f7c);
+  (0x80041f7c, 0x80042134); (0x80041f80, 0x80041f84); (0x80041f84, 0x80041f88);
+  (0x80041f88, 0x80041fdc); (0x80041f88, 0x80041f8c); (0x80041f8c, 0x80041f90);
+  (0x80041f90, 0x80041f94); (0x80041f94, 0x8004202c); (0x80041f94, 0x80041f98);
+  (0x80041f98, 0x80041f9c); (0x80041f9c, 0x80041fa0); (0x80041fa0, 0x80042094);
+  (0x80041fa0, 0x80041fa4); (0x80041fa4, 0x80041fa8); (0x80041fa8, 0x80041fac);
+  (0x80041fac, 0x80041fb0); (0x80041fb0, 0x80042130); (0x80041fb0, 0x80041fb4);
+  (0x80041fb4, 0x80042134); (0x80041fb8, 0x80041fbc); (0x80041fbc, 0x80042058);
+  (0x80041fbc, 0x80041fc0); (0x80041fc0, 0x80041fc4); (0x80041fc4, 0x800420b4);
+  (0x80041fc4, 0x80041fc8); (0x80041fc8, 0x80041fcc); (0x80041fcc, 0x80041fd0);
+  (0x80041fd0, 0x80041fd4); (0x80041fd4, 0x80042130); (0x80041fd4, 0x80041fd8);
+  (0x80041fd8, 0x80042134); (0x80041fdc, 0x80041fe0); (0x80041fe0, 0x80041fe4);
+  (0x80041fe4, 0x80042074); (0x80041fe4, 0x80041fe8); (0x80041fe8, 0x80041fec);
+  (0x80041fec, 0x80041ff0); (0x80041ff0, 0x800420d0); (0x80041ff0, 0x80041ff4);
+  (0x80041ff4, 0x80041ff8); (0x80041ff8, 0x80041ffc); (0x80041ffc, 0x80042000);
+  (0x80042000, 0x80042004); (0x80042004, 0x80042008); (0x80042008, 0x8004200c);
+  (0x8004200c, 0x80042130); (0x8004200c, 0x80042010); (0x80042010, 0x80042134);
+  (0x80042014, 0x80042018); (0x80042018, 0x8004201c); (0x8004201c, 0x80042020);
+  (0x80042020, 0x80042024); (0x80042024, 0x80042130); (0x80042024, 0x80042028);
+  (0x80042028, 0x80042134); (0x8004202c, 0x80042030); (0x80042030, 0x80042034);
+  (0x80042034, 0x800420f0); (0x80042034, 0x80042038); (0x80042038, 0x8004203c);
+  (0x8004203c, 0x80042040); (0x80042040, 0x80042044); (0x80042044, 0x80042048);
+  (0x80042048, 0x8004204c); (0x8004204c, 0x80042050); (0x80042050, 0x80042130);
+  (0x80042050, 0x80042054); (0x80042054, 0x80042134); (0x80042058, 0x8004205c);
+  (0x8004205c, 0x80042060); (0x80042060, 0x80042064); (0x80042064, 0x80042068);
+  (0x80042068, 0x8004206c); (0x8004206c, 0x80042130); (0x8004206c, 0x80042070);
+  (0x80042070, 0x80042134); (0x80042074, 0x80042078); (0x80042078, 0x8004207c);
+  (0x8004207c, 0x80042110); (0x8004207c, 0x80042080); (0x80042080, 0x80042084);
+  (0x80042084, 0x80042088); (0x80042088, 0x8004208c); (0x8004208c, 0x80042130);
+  (0x8004208c, 0x80042090); (0x80042090, 0x80042134); (0x80042094, 0x80042098);
+  (0x80042098, 0x8004209c); (0x8004209c, 0x800420a0); (0x800420a0, 0x800420a4);
+  (0x800420a4, 0x800420a8); (0x800420a8, 0x800420ac); (0x800420ac, 0x80042130);
+  (0x800420ac, 0x800420b0); (0x800420b0, 0x80042134); (0x800420b4, 0x800420b8);
+  (0x800420b8, 0x800420bc); (0x800420bc, 0x800420c0); (0x800420c0, 0x800420c4);
+  (0x800420c4, 0x800420c8); (0x800420c8, 0x80042130); (0x800420c8, 0x800420cc);
+  (0x800420cc, 0x80042134); (0x800420d0, 0x800420d4); (0x800420d4, 0x800420d8);
+  (0x800420d8, 0x800420dc); (0x800420dc, 0x800420e0); (0x800420e0, 0x800420e4);
+  (0x800420e4, 0x800420e8); (0x800420e8, 0x80042130); (0x800420e8, 0x800420ec);
+  (0x800420ec, 0x80042134); (0x800420f0, 0x800420f4); (0x800420f4, 0x800420f8);
+  (0x800420f8, 0x800420fc); (0x800420fc, 0x80042100); (0x80042100, 0x80042104);
+  (0x80042104, 0x80042108); (0x80042108, 0x80042130); (0x80042108, 0x8004210c);
+  (0x8004210c, 0x80042134); (0x80042110, 0x80042114); (0x80042114, 0x80042118);
+  (0x80042118, 0x8004211c); (0x8004211c, 0x80042120); (0x80042120, 0x80042124);
+  (0x80042124, 0x80042128); (0x80042128, 0x8004212c); (0x8004212c, 0x80042134);
+  (0x8004212c, 0x80042130); (0x80042130, 0x80042134); (0x80042134, 0x80042138);
+  (0x80042138, 0x80042154); (0x80042138, 0x8004213c); (0x8004213c, 0x80042140);
+  (0x80042140, 0x80042160); (0x80042140, 0x80042144); (0x80042144, 0x80042148);
+  (0x80042148, 0x8004214c); (0x8004214c, 0x80042150); (0x80042154, 0x80042158);
+  (0x80042158, 0x8004215c); (0x8004215c, 0x80042144); (0x8004215c, 0x80042160);
+  (0x80042160, 0x80042164); (0x80042164, 0x80042168); (0x80042168, 0x8004216c);
+  (0x8004216c, 0x80042170); (0x80042170, 0x80042174); (0x80042174, 0x80042178);
+  (0x80042178, 0x8004217c); (0x8004217c, 0x80042180); (0x80042180, 0x80042184);
+  (0x80042184, 0x80042188)
+].
+Definition freeCfgStep (source target : Z) : Prop :=
+  List.In (source, target) freeCfgEdges.
