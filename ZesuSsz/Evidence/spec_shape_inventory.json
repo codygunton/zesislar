@@ -192,6 +192,27 @@
     },
     "ZesuSsz/Compliance/DecodeItemCompositionalBridge.v": {},
     "ZesuSsz/Compliance/DecodeItemCompositionalCompliance.v": {},
-    "ZesuSsz/Compliance/DecodeItemCompositionalWeakening.v": {}
+    "ZesuSsz/Compliance/DecodeItemCompositionalWeakening.v": {},
+    "ZesuSsz/Compliance/NextUint64FoldFacts.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Compliance/NextUint64UnfoldRegistrations.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Compliance/NextUint64Hints.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    }
   }
 }

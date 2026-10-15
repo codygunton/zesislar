@@ -1,0 +1,49 @@
+{
+  "item": "nextUint64 checked contracts, facts, markers and manifest",
+  "root": "a9110030a2455722f28d6fe085911b0d76afd577",
+  "report_path": "/home/cody/zesislar/.worktrees/spec-c-av-nextuint64-manifest/_build/nextuint64-final-002/REPORT.json",
+  "report_sha256": "96537fc8c2b6c61afa30cf81389de4be3e7a33518183ec6e594cb4e910465bd3",
+  "manifest_sha256": "7ed020247efbb1bb02e2e8891b6533e2f31ea2a440637f5ce839b3e6deb59249",
+  "interface_total": 867,
+  "marker_count": 15,
+  "marker_split": {
+    "entry": 13,
+    "contract": 2
+  },
+  "decision2": "File-specific allowances preserve fifteen caller-saved existential values in BlockEntries and Contract. No global threshold changes.",
+  "pointer_correction": "Pointer 1 for prefix 128 is modeled behavior admitted by Schema/relateItem, not a new defect.",
+  "gate": "check-evidence-tools passed in 87.987171 seconds on 06acf880. Reviewed source bytes are unchanged. Root runs both integration gates.",
+  "limits": [
+    "No native proof or rule experiment.",
+    "Marker MCP record retains its pre-correction dependency scope.",
+    "B packet025 verifies corrected predicates and unchanged fold facts.",
+    "No stale dependent object is reused."
+  ],
+  "cleanup_change": {
+    "authorization": "Orch 2026-10-15; historical evidence availability only.",
+    "historical_status": "removed in the 2026-10-15 worktree cleanup; hash retained",
+    "I75_status": "unavailable since the 2026-10-15 cleanup; hash retained",
+    "hashes_preserved": true,
+    "native_certificate_reads": "Strict; missing bytes cannot establish acceptance.",
+    "focused_Evidence_tests": 225,
+    "inherited_from": "be4a327b cp-av-evidence-cleanup-status"
+  },
+  "reviewed_source_sha256": {
+    "ZesuSsz/Contracts/NextUint64BlockEntries.v": "ab2a5fbd607d768abf278e6071263fc458c28a97571e713e5a7c64994e58c72b",
+    "ZesuSsz/Compliance/NextUint64FoldFacts.v": "84049eaab7c674cdec9564162b7bd8d46eef0fe4dfde353c9828afb8bf6a430c",
+    "ZesuSsz/Contracts/NextUint64Contract.v": "5bbb9c35376d8fd933deb5c295a8d10703c71de6da2f408835c94f2a2f15121f",
+    "ZesuSsz/Contracts/NextUint64Selected.v": "56915c500d67b048c69bc14c75bfcbdb93e02ec3260206b4cafa5a6c3c4f6c07",
+    "ZesuSsz/Compliance/NextUint64UnfoldRegistrations.v": "09660cab7a350c34357622de1b1a50a21bbcea09f682f0ad424e128726239190",
+    "ZesuSsz/Compliance/NextUint64Hints.v": "d02accd571b407b5b8c2be9ffda3398180bb9986addf8abf016bef74acc029a7"
+  },
+  "category_totals": {
+    "contracts": 643,
+    "introductions": 0,
+    "exit_meanings": 0,
+    "loop_steps": 187,
+    "registrations": 37,
+    "generator_json": 0
+  },
+  "A_packet007_sha256": "9d2855338e8e9bf4fcda3b4a97db480a7d449180985f3f24c93c245ddcbe1939",
+  "B_packet025_sha256": "9ff9ca7a99f7d9da82e1f30cfc0d6f13ad5c9f1bb95c4a26ed85fb20e52a950a"
+}

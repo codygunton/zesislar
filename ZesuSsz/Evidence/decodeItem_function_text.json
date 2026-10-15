@@ -391,7 +391,10 @@
     "tools/test_promote_table.py",
     "tools/test_promotion_verification.py",
     "tools/test_rule_compare.py",
-    "tools/test_successor_entailment.py"
+    "tools/test_successor_entailment.py",
+    "ZesuSsz/Evidence/test_historical_evidence.py",
+    "ZesuSsz/Evidence/i75/INDEX.json",
+    "ZesuSsz/Evidence/test_i75_evidence.py"
   ],
   "lemmas": [
     "ZesuSsz/Compliance/ByteFold.v",
@@ -2074,15 +2077,15 @@
       "path": "ZesuSsz/Evidence/array_store/INDEX.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "b228cf4fb1f637d6fcdcc22f4ef785fd38c5b2567b0564a9bfcd32fe669fff9f",
-      "file_lines": 685,
+      "sha256": "a558cb62fedf92e56cf8f219b1c4a7171a8617b17dc91baa1ab0aaeec31eae5d",
+      "file_lines": 752,
       "line_ranges": [
         [
           1,
-          685
+          752
         ]
       ],
-      "counted_lines": 685,
+      "counted_lines": 752,
       "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
     },
     {
@@ -2404,15 +2407,15 @@
       "path": "ZesuSsz/Evidence/check_decode_item_route_repair.py",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "401f0558857b9e00e4b3991b3f16e26a8f2d5b1b5ebc9ea79e99a67a43f2d628",
-      "file_lines": 921,
+      "sha256": "dbd70cc7733c3e52b23420e982494fcd2487ef14225e02f943a8ad2fe0a44cfb",
+      "file_lines": 943,
       "line_ranges": [
         [
           1,
-          921
+          943
         ]
       ],
-      "counted_lines": 921,
+      "counted_lines": 943,
       "source_embedded_constants": [
         {
           "line_range": [
@@ -2519,19 +2522,15 @@
       "path": "ZesuSsz/Evidence/check_i75_evidence.py",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "c0a9e5addbcd132607c3804c8f9d1cc25555adae797ccb3b1ae8842171b6a0d6",
-      "file_lines": 87,
+      "sha256": "7c099935d14a8cfe446f4b726422dc46a759247e75d3bcf57e15b3511e8063dc",
+      "file_lines": 127,
       "line_ranges": [
         [
-          7,
-          7
-        ],
-        [
-          53,
-          53
+          1,
+          127
         ]
       ],
-      "counted_lines": 2,
+      "counted_lines": 127,
       "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
     },
     {
@@ -2566,14 +2565,14 @@
       "role": "measurement_metadata",
       "scope": "whole_file",
       "sha256": null,
-      "file_lines": 7960,
+      "file_lines": 8012,
       "line_ranges": [
         [
           1,
-          7960
+          8012
         ]
       ],
-      "counted_lines": 7960
+      "counted_lines": 8012
     },
     {
       "path": "ZesuSsz/Evidence/decode_item_auto_modules.json",
@@ -3494,15 +3493,15 @@
       "path": "ZesuSsz/Evidence/precommitment/LEDGER.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "4bd5af8d830905a96948fa3ed98bff2436902cc489a93dee27f6e15fb77fbe6d",
-      "file_lines": 1753,
+      "sha256": "38871432347d5d8b98df80bc7a867a6267152b15fde225d943f7c0c92b31b0e6",
+      "file_lines": 1838,
       "line_ranges": [
         [
           1,
-          1753
+          1838
         ]
       ],
-      "counted_lines": 1753,
+      "counted_lines": 1838,
       "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
     },
     {
@@ -3727,15 +3726,15 @@
       "path": "ZesuSsz/Evidence/route_repair/ENTRY_NORMALIZATION.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "5b73cb8bf85b7d96d06f10582aa6b350eb9c5f1cfc220948e6bc51728325df8c",
-      "file_lines": 425,
+      "sha256": "1478b8cab76af2862eb3759d3df6bff197ff623b6814e667531f2d903c5b636c",
+      "file_lines": 462,
       "line_ranges": [
         [
           1,
-          425
+          462
         ]
       ],
-      "counted_lines": 425,
+      "counted_lines": 462,
       "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
     },
     {
@@ -3757,15 +3756,15 @@
       "path": "ZesuSsz/Evidence/route_repair/INDEX.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "27dc6355729fa532d5bed56815e243c8904a0df47077ceab8d75b5f15d09bce0",
-      "file_lines": 420,
+      "sha256": "46e863e34d71f15f2944e0d80b62625a209b50cd320cffd91f6c3e82e86abf10",
+      "file_lines": 457,
       "line_ranges": [
         [
           1,
-          420
+          457
         ]
       ],
-      "counted_lines": 420,
+      "counted_lines": 457,
       "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
     },
     {
@@ -3799,30 +3798,30 @@
       "path": "ZesuSsz/Evidence/spec_shape_baseline.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "983ad8574d5f3f3f9e36e01ebc98112ec231f82e95f7c3b007e4d94f86ec8adf",
-      "file_lines": 46,
+      "sha256": "912fe55516db8179f4656e74bf11194438d45445321f205652bb282166ef9a49",
+      "file_lines": 62,
       "line_ranges": [
         [
           1,
-          46
+          62
         ]
       ],
-      "counted_lines": 46,
+      "counted_lines": 62,
       "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
     },
     {
       "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "dbb67c49598e3d1f79455793dc1030ca945badf64f7945d67880253f3ed2fc24",
-      "file_lines": 138,
+      "sha256": "90b766d0cdf133b8d9304d3ae0c35b0785d612167cb889c2d9077de052909628",
+      "file_lines": 218,
       "line_ranges": [
         [
           1,
-          138
+          218
         ]
       ],
-      "counted_lines": 138,
+      "counted_lines": 218,
       "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
     },
     {
@@ -3961,12 +3960,12 @@
       "path": "ZesuSsz/Evidence/test_precommitment_ledger.py",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "aef0ef306fc9c083384c595cd30f026686244ce8e8038d987936ad9030d47df8",
-      "file_lines": 74,
+      "sha256": "73ff31539816f6619239a3481a964787e394ab73a500167dc6815448c5658516",
+      "file_lines": 72,
       "line_ranges": [
         [
-          20,
-          20
+          21,
+          21
         ]
       ],
       "counted_lines": 1,
@@ -7460,6 +7459,51 @@
       ],
       "counted_lines": 2,
       "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+    },
+    {
+      "path": "ZesuSsz/Evidence/test_historical_evidence.py",
+      "category": "tests_and_exports",
+      "role": "historical_evidence_tests",
+      "scope": "whole_file",
+      "sha256": "4e11328b64e6df35dad12ab8d5d5c72ef0a00a10fb238e41f551cbd70d5e52f1",
+      "file_lines": 72,
+      "line_ranges": [
+        [
+          1,
+          72
+        ]
+      ],
+      "counted_lines": 72
+    },
+    {
+      "path": "ZesuSsz/Evidence/i75/INDEX.json",
+      "category": "tests_and_exports",
+      "role": "historical_evidence_metadata",
+      "scope": "whole_file",
+      "sha256": "7651460f0dbcd3c2f979f6d33fa5b43e2ffb40f54fc6dadf95af9a65d1bd99d9",
+      "file_lines": 458,
+      "line_ranges": [
+        [
+          1,
+          458
+        ]
+      ],
+      "counted_lines": 458
+    },
+    {
+      "path": "ZesuSsz/Evidence/test_i75_evidence.py",
+      "category": "tests_and_exports",
+      "role": "historical_evidence_metadata",
+      "scope": "whole_file",
+      "sha256": "0ef03397a4c8cf7ff8348ae8cc268da9a2bd0146d038e8726334462226642950",
+      "file_lines": 112,
+      "line_ranges": [
+        [
+          1,
+          112
+        ]
+      ],
+      "counted_lines": 112
     }
   ],
   "blocks": [
@@ -7692,7 +7736,7 @@
       "line_ranges": [
         [
           1,
-          685
+          752
         ]
       ],
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
@@ -7762,7 +7806,7 @@
       "line_ranges": [
         [
           1,
-          1753
+          1838
         ]
       ],
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
@@ -7782,7 +7826,7 @@
       "line_ranges": [
         [
           1,
-          425
+          462
         ]
       ],
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
@@ -7792,7 +7836,7 @@
       "line_ranges": [
         [
           1,
-          420
+          457
         ]
       ],
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
@@ -7802,7 +7846,7 @@
       "line_ranges": [
         [
           1,
-          46
+          62
         ]
       ],
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
@@ -7812,7 +7856,7 @@
       "line_ranges": [
         [
           1,
-          138
+          218
         ]
       ],
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
@@ -7838,7 +7882,7 @@
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
     }
   ],
-  "conservative_shared_json_lines": 14780,
+  "conservative_shared_json_lines": 15102,
   "status": "Private immutable source scope: base e7eb0bce plus eighteen native-certificate018 sources. No Root integration credit.",
   "integration_scope": {
     "base": "e7eb0bcef249f2cf99dfc86cf60d8436ade29a31",
@@ -7884,12 +7928,12 @@
     "generator_json": 6299,
     "block_proofs": 3461,
     "composition": 393,
-    "tests_and_exports": 34255
+    "tests_and_exports": 35418
   },
   "interface_total": 16888,
-  "extra_total": 38109,
-  "overall_total": 54997,
-  "file_count": 361,
+  "extra_total": 39272,
+  "overall_total": 56160,
+  "file_count": 364,
   "embedded_registration_ranges": [
     {
       "path": "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
@@ -7956,5 +8000,13 @@
     "interface_total": 16901,
     "generator_json": 6312,
     "scope": "Earlier same-source snapshot with thirteen test lines scored conservatively; preserved in packet001."
+  },
+  "metadata_refresh": {
+    "root": "a9110030a2455722f28d6fe085911b0d76afd577",
+    "scope": "Cleanup-status checker and affected unscored historical records only. Original scored source scope and interface total remain historical.",
+    "cleanup_status": "removed in the 2026-10-15 worktree cleanup; hash retained",
+    "policy": "Historical inventory may lack explicitly removed worktree bytes. Present files must match. Native certificate reads remain strict.",
+    "interface_change": 0,
+    "I75": "Count the complete affected I75 historical checker, index and tests as unscored text. Retained report comparisons remain verified; missing raw evidence remains unavailable."
   }
 }
