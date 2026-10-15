@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Check that the decodeItem umbrella exports every Compliance hint module."""
+"""Check each function's declared hint umbrella without mixing function scopes."""
 
+import json
 from pathlib import Path
 import re
 
@@ -68,11 +69,12 @@ def has_hint_registration(text: str) -> bool:
     return False
 
 
-def hint_modules(directory: Path) -> set[str]:
+def hint_modules(directory: Path, umbrellas=(UMBRELLA,)) -> set[str]:
+    excluded = {directory / path for path in umbrellas}
     return {
         PREFIX + ".".join(path.relative_to(directory).with_suffix("").parts)
         for path in directory.rglob("*.v")
-        if path != directory / UMBRELLA and has_hint_registration(path.read_text())
+        if path not in excluded and has_hint_registration(path.read_text())
     }
 
 
@@ -94,14 +96,74 @@ def missing_hint_modules(directory: Path) -> list[str]:
     return sorted(hint_modules(directory) - exported_modules((directory / UMBRELLA).read_text()))
 
 
+def manifest_umbrellas(root: Path) -> list[tuple[Path, Path, set[str]]]:
+    """Read the single Hints module listed in each registration category."""
+    result = []
+    for manifest in sorted((root / "ZesuSsz/Evidence").glob("*_function_text.json")):
+        data = json.loads(manifest.read_text())
+        registrations = data.get("registrations", [])
+        if not isinstance(registrations, list) or any(not isinstance(path, str)
+                                                      for path in registrations):
+            raise ValueError(f"Invalid registrations in {manifest.name}.")
+        umbrellas = [path for path in registrations if Path(path).name.endswith("Hints.v")]
+        if len(umbrellas) != 1:
+            raise ValueError(f"The manifest must list one hint umbrella: {manifest.name}.")
+        listed = set()
+        for category in ("contracts", "introductions", "exit_meanings", "loop_steps", "registrations"):
+            paths = data.get(category, [])
+            if not isinstance(paths, list) or any(not isinstance(path, str) for path in paths):
+                raise ValueError(f"Invalid {category} in {manifest.name}.")
+            listed.update(paths)
+        compliance = root / "ZesuSsz/Compliance"
+        owned = set()
+        for name in listed:
+            path = (root / name).resolve()
+            if not path.is_relative_to(root.resolve()):
+                raise ValueError(f"The manifest path leaves the workspace: {name}.")
+            if path.is_relative_to(compliance.resolve()) and path.suffix == ".v":
+                if not path.is_file():
+                    raise ValueError(f"The listed Compliance source is missing: {name}.")
+                if has_hint_registration(path.read_text()):
+                    owned.add(PREFIX + ".".join(path.relative_to(compliance.resolve()).with_suffix("").parts))
+        umbrella = (root / umbrellas[0]).resolve()
+        if not umbrella.is_relative_to(compliance.resolve()) or not umbrella.is_file():
+            raise ValueError(f"The hint umbrella is not a Compliance source: {umbrellas[0]}.")
+        own_name = PREFIX + ".".join(umbrella.relative_to(compliance.resolve()).with_suffix("").parts)
+        owned.discard(own_name)
+        result.append((manifest, umbrella, owned))
+    if not result:
+        raise ValueError("No function-text manifest declares a hint umbrella.")
+    return result
+
+
+def manifest_errors(root: Path) -> tuple[list[str], int]:
+    """Check declared ownership and reject hint modules outside every umbrella."""
+    groups = manifest_umbrellas(root)
+    directory = root / "ZesuSsz/Compliance"
+    umbrellas = [path.relative_to(directory.resolve()) for _, path, _ in groups]
+    modules = hint_modules(directory, umbrellas)
+    covered, errors = set(), []
+    for manifest, umbrella, owned in groups:
+        exports = exported_modules(umbrella.read_text())
+        covered.update(exports)
+        for module in sorted(owned - exports):
+            errors.append(f"{manifest.name}: {umbrella.name} does not export {module}.")
+    for module in sorted(modules - covered):
+        errors.append(f"No function hint umbrella exports {module}.")
+    return errors, len(modules)
+
+
 def main() -> int:
-    directory = ROOT / "ZesuSsz" / "Compliance"
-    missing = missing_hint_modules(directory)
-    for module in missing:
-        print(f"The hint umbrella does not export {module}.")
-    if missing:
+    try:
+        errors, count = manifest_errors(ROOT)
+    except (ValueError, OSError) as error:
+        print(error)
         return 1
-    print(f"The hint umbrella exports all {len(hint_modules(directory))} Compliance hint modules.")
+    for error in errors:
+        print(error)
+    if errors:
+        return 1
+    print(f"The hint umbrella exports all {count} Compliance hint modules.")
     return 0
 
 
