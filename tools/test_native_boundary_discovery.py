@@ -1,9 +1,13 @@
 import copy
+import argparse
+import asyncio
+import contextlib
+import io
 import hashlib
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, AsyncMock
 import json
 from pathlib import Path
 
@@ -177,3 +181,191 @@ class CoqcFallbackTests(unittest.IsolatedAsyncioTestCase):
             retained = json.loads((root/'fallback-evidence.json').read_text())
             self.assertEqual(retained['failed_mcp_setup'], setup)
             self.assertEqual(retained['inherited_debts'], debts)
+
+
+class FirstNativeRunTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.sha = 'a' * 40
+        self.owner = self.root/'Example/Entries.v'
+        self.owner.parent.mkdir()
+        self.owner.write_text('Definition caller (args : nat) := args.\n')
+        self.descriptor = {'kind': 'owned_continuation', 'address': 'returnAddress args',
+            'definition': 'Example.Entries.caller',
+            'source_hashes': {'Example/Entries.v': discovery.digest(self.owner)}}
+        self.write_json('terminal.json', self.descriptor)
+        default_owner = self.root/'ZesuSsz/Contracts/DecodeItemBranchEntries.v'
+        default_owner.parent.mkdir(parents=True)
+        default_owner.write_text('existing continuation source')
+        self.row = {'entry_pc': '0x10', 'incoming_edges': [],
+            'entry_definition': 'Example.Entries.caller',
+            'resource_predicate': 'Example.Entries.caller',
+            'binders': [{'name': 'args', 'type': 'nat'}], 'arguments': ['args'],
+            'source_hashes': self.descriptor['source_hashes']}
+        self.design = {'entry_pc': '0x10', 'hashes': {'selected_elf_sha256': 'elf'},
+                       'blocks': [self.row]}
+        self.write_json('design.json', self.design)
+        self.write_json('cfg.json', {'artifact_identity': 'code'})
+        self.write_json('manifest.json', {'artifact_identity': 'code', 'elf_sha256': 'elf'})
+        self.write_json('bindings.json', {})
+        (self.root/'code.txt').write_text('  Example.code -∗\n')
+        self.block = {'start': '0x10', 'successors': []}
+        self.state = {'imports': [], 'spatial': ['Example.Entries.caller args'],
+            'entry_source': {'path': str(self.owner), 'sha256': discovery.digest(self.owner),
+                             'declaration': 'Definition caller'}}
+        self.record = {'entry': '0x10', 'captures': [], 'outcomes': ['native-residual'],
+                       'block_closed': False}
+        self.write_json('baseline.json', {'root_commit': self.sha, 'inputs': {},
+            'pairs': [{'entry': '0x10', 'target': 'returnAddress args',
+                       'sources': {'switch-on': hashlib.sha256(b'abstract source').hexdigest()}}]})
+
+    def write_json(self, name, value):
+        (self.root/name).write_text(json.dumps(value))
+
+    def options(self, **changes):
+        values = dict(first_native_run=self.sha, designed_successors=True,
+            native_baseline_report=None, native_resume_report=None,
+            resume_report=None, entries=None)
+        values.update(changes)
+        return argparse.Namespace(**values)
+
+    def validate(self, **changes):
+        with patch('discovery.subprocess.check_output', return_value=self.sha + '\n'), \
+                contextlib.redirect_stderr(io.StringIO()):
+            return discovery.first_native_root(self.options(**changes),
+                argparse.ArgumentParser(), self.root)
+
+    def invoke(self, extra, *, binding_error=None, head_results=None):
+        arguments = ['discovery.py', '--design', str(self.root/'design.json'),
+            '--trace-import', 'Example.index', '--code-premises', str(self.root/'code.txt'),
+            '--binding-report', str(self.root/'bindings.json'), '--cfg', str(self.root/'cfg.json'),
+            '--manifest', str(self.root/'manifest.json'), '--out', str(self.root/'out'),
+            '--terminal', 'returnAddress args', *extra]
+        with contextlib.ExitStack() as stack:
+            stack.enter_context(patch.object(sys, 'argv', arguments))
+            stack.enter_context(contextlib.chdir(self.root))
+            git = stack.enter_context(patch('discovery.subprocess.check_output',
+                return_value=self.sha + '\n', side_effect=head_results))
+            validator = stack.enter_context(patch('discovery.check_entry_bindings.validate_report',
+                side_effect=binding_error))
+            stack.enter_context(patch('discovery.entry_schema.design_states',
+                return_value=({16: self.state}, {})))
+            stack.enter_context(patch('discovery.prepare',
+                return_value=([(self.row, self.block, self.state)], [])))
+            stack.enter_context(patch('discovery.machine', return_value={}))
+            renderer = stack.enter_context(patch('successor_entailment.native_boundary_source',
+                return_value={'source': 'abstract source'}))
+            pool = stack.enter_context(patch('discovery.ProcessPoolExecutor'))
+            pool.return_value.__enter__.return_value.map.return_value = [copy.deepcopy(self.record)]
+            stack.enter_context(contextlib.redirect_stdout(io.StringIO()))
+            stack.enter_context(contextlib.redirect_stderr(io.StringIO()))
+            result = discovery.main()
+            return result, json.loads((self.root/'out/report.json').read_text()), pool, renderer, validator, git
+
+    def first_arguments(self):
+        return ['--designed-successors', '--first-native-run', self.sha,
+                '--terminal-descriptor', str(self.root/'terminal.json')]
+
+    def test_first_native_valid(self):
+        result, report, pool, renderer, validator, _ = self.invoke(self.first_arguments())
+        self.assertEqual(result, 0)
+        options = pool.return_value.__enter__.return_value.map.call_args.args[1][0][-1]
+        self.assertEqual(options['terminal_descriptor'], self.descriptor)
+        self.assertTrue(options['designed_successors'])
+        renderer.assert_not_called()
+        validator.assert_called_once()
+        self.assertTrue(report['first_native_run'])
+
+    def test_first_native_requires_designed(self):
+        with self.assertRaises(SystemExit):
+            self.validate(designed_successors=False)
+
+    def test_first_native_forbids_baseline(self):
+        with self.assertRaises(SystemExit):
+            self.validate(native_baseline_report=Path('baseline.json'))
+
+    def test_first_native_forbids_native_reuse(self):
+        with self.assertRaises(SystemExit):
+            self.validate(native_resume_report=Path('prior.json'))
+
+    def test_first_native_forbids_capture_reuse(self):
+        with self.assertRaises(SystemExit):
+            self.validate(resume_report=Path('capture.json'))
+
+    def test_first_native_forbids_legacy_entry(self):
+        with self.assertRaises(SystemExit):
+            self.validate(entries=Path('legacy.json'))
+
+    def test_first_native_root_mismatch(self):
+        with self.assertRaises(SystemExit):
+            self.validate(first_native_run='b' * 40)
+
+    def test_first_native_root_malformed(self):
+        for value in ('', 'a' * 39, 'a' * 41, 'g' * 40, 'A' * 40):
+            with self.subTest(value=value), self.assertRaises(SystemExit):
+                self.validate(first_native_run=value)
+
+    def test_first_native_entry_binding_failure(self):
+        with self.assertRaisesRegex(ValueError, 'changed executable entry'):
+            self.invoke(self.first_arguments(), binding_error=ValueError('changed executable entry'))
+
+    def test_first_native_terminal_owner_failure(self):
+        self.owner.write_text('Definition another := 0.\n')
+        with self.assertRaises(ValueError):
+            self.invoke(self.first_arguments())
+
+    def test_first_native_artifact_mismatch(self):
+        self.write_json('cfg.json', {'artifact_identity': 'another code'})
+        with self.assertRaisesRegex(ValueError, 'different artifact identity'):
+            self.invoke(self.first_arguments())
+
+    def test_first_native_report_identity(self):
+        _, report, _, _, _, git = self.invoke(self.first_arguments())
+        self.assertEqual(report['measurement_root'], self.sha)
+        self.assertIsNone(report['frozen_baseline_report'])
+        self.assertFalse(report['capture_only'])
+        self.assertEqual(git.call_count, 2)
+        with self.assertRaisesRegex(ValueError, 'changed during execution'):
+            self.invoke(self.first_arguments(), head_results=[self.sha, 'b' * 40])
+
+    def test_comparison_baseline_still_required(self):
+        with self.assertRaises(SystemExit):
+            self.invoke(['--designed-successors'])
+
+    def test_comparison_input_check_preserved(self):
+        baseline = json.loads((self.root/'baseline.json').read_text())
+        baseline['inputs'] = {str(self.owner): '0' * 64}
+        self.write_json('baseline.json', baseline)
+        with self.assertRaisesRegex(ValueError, 'frozen native comparison input changed'):
+            self.invoke(['--designed-successors', '--native-baseline-report', str(self.root/'baseline.json')])
+
+    def test_comparison_source_check_preserved(self):
+        baseline = json.loads((self.root/'baseline.json').read_text())
+        baseline['pairs'][0]['sources']['switch-on'] = '0' * 64
+        self.write_json('baseline.json', baseline)
+        with self.assertRaisesRegex(ValueError, 'differs from the frozen full-ON baseline'):
+            self.invoke(['--designed-successors', '--native-baseline-report', str(self.root/'baseline.json')])
+
+    def test_comparison_output_preserved(self):
+        arguments = ['--designed-successors', '--native-baseline-report', str(self.root/'baseline.json')]
+        _, report, _, renderer, _, git = self.invoke(arguments)
+        self.assertNotIn('first_native_run', report)
+        self.assertEqual(report['measurement_root'], self.sha)
+        self.assertEqual(report['frozen_baseline_report'], str(self.root/'baseline.json'))
+        self.assertTrue(report['designed_successors'])
+        self.assertFalse(renderer.call_args.kwargs['enabled'])
+        git.assert_not_called()
+
+    def test_capture_descriptor_rejection_preserved(self):
+        with self.assertRaises(SystemExit):
+            self.invoke(['--terminal-descriptor', str(self.root/'terminal.json')])
+
+    def test_native_renderer_and_debt_policy_preserved(self):
+        marker = {'block_closed': False, 'inherited_debts': {'shelved_goals': ['debt']}}
+        with patch('discovery.probe_designed_block', new_callable=AsyncMock, return_value=marker) as native:
+            result = asyncio.run(discovery.probe_block(self.row, self.block, self.state,
+                                                       {'designed_successors': True}))
+        self.assertEqual(result, marker)
+        native.assert_awaited_once()

@@ -14,6 +14,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import traceback
 from pathlib import Path
 import sys
@@ -609,6 +610,24 @@ def machine():
             'memory': memory, 'cpu_ticks': Path('/proc/stat').read_text().splitlines()[0]}
 
 
+def first_native_root(args, parser, workspace):
+    """Bind an explicit first native run without creating a comparison baseline."""
+    root = args.first_native_run
+    if root is None:
+        return None
+    if not args.designed_successors:
+        parser.error('--first-native-run requires --designed-successors')
+    for name in ('native_baseline_report', 'native_resume_report', 'resume_report', 'entries'):
+        if getattr(args, name):
+            parser.error('--first-native-run cannot use --' + name.replace('_', '-'))
+    if re.fullmatch(r'[0-9a-f]{40}', root) is None:
+        parser.error('--first-native-run requires a full lowercase frozen root SHA')
+    actual = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=workspace, text=True).strip()
+    if actual != root:
+        parser.error('The first native frozen root differs from workspace HEAD')
+    return root
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--design', type=Path, required=True)
@@ -625,6 +644,8 @@ def main():
     parser.add_argument('--resume-report', type=Path)
     parser.add_argument('--native-resume-report', type=Path)
     parser.add_argument('--native-baseline-report', type=Path)
+    parser.add_argument('--first-native-run', metavar='FROZEN_ROOT_SHA',
+                        help='Run designed native proofs once at this exact root without a comparison baseline')
     parser.add_argument('--terminal', required=True)
     parser.add_argument('--terminal-descriptor', type=Path,
                         help='Read a source-bound owned continuation for designed successor proofs')
@@ -635,9 +656,10 @@ def main():
     args = parser.parse_args()
     if not 1 <= args.jobs <= 6 or not 1 <= args.seconds <= 300:
         parser.error('The driver permits one to six workers and at most 300 seconds per MCP call')
+    first_root = first_native_root(args, parser, Path.cwd())
     if (args.native_resume_report or args.native_baseline_report) and not args.designed_successors:
         parser.error('Native comparison and reuse require --designed-successors')
-    if args.designed_successors and not args.native_baseline_report:
+    if args.designed_successors and not args.native_baseline_report and first_root is None:
         parser.error('Designed successor proofs require a frozen --native-baseline-report')
     if args.designed_successors and args.entries:
         parser.error('Designed successor proofs require the validated design schema')
@@ -789,7 +811,7 @@ def main():
     measurements = [capture['performance'] for row in records for capture in row['captures'] if 'performance' in capture]
     report = {'schema': 1, 'label': ('Phase 1 I1 native designed-boundary discovery' if args.designed_successors else
                                    'Phase 1 WP5 designed-entry discovery; no proof completion claim'),
-              'measurement_root': baseline['root_commit'] if args.native_baseline_report else None,
+              'measurement_root': baseline['root_commit'] if args.native_baseline_report else first_root,
               'capture_only': not args.designed_successors,
               'designed_successors': args.designed_successors,
               'frozen_baseline_report': str(args.native_baseline_report) if args.native_baseline_report else None,
@@ -804,6 +826,11 @@ def main():
               'machine_before': before, 'machine_after': machine(),
               'classes': dict(Counter(value for row in records for value in row['outcomes'])),
               'blocks': sorted(records, key=lambda row: gen_block.address(row['entry']))}
+    if first_root is not None:
+        actual = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+        if actual != first_root:
+            raise ValueError('The first native frozen root changed during execution')
+        report['first_native_run'] = True
     chain_root.atomic_json(args.out / 'report.json', report)
     print(json.dumps({'report': str(args.out / 'report.json'), 'sha256': digest(args.out / 'report.json'),
                       'classes': report['classes'], 'elapsed_seconds': elapsed}))
