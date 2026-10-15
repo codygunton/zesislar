@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "function": "alt_fl_alloc.free",
-  "status": "Corrected packet009, exit031, and guarded class040 assembled; no native run",
-  "snapshot_base_root": "2e88f45f10171880975e4cd2c1411c899a48643b",
+  "status": "Checked two exit registrations exported; no native run; R3 activation is independent.",
+  "snapshot_base_root": "1ab41c3d6a5719849d2c6a68ac9fc658e245d6bc",
   "snapshot_kind": "Reviewable worktree with exact checked owner bytes; file hashes are authoritative.",
   "umbrella": "ZesuSsz.Compliance.FreeHints",
   "counting_rules": {
@@ -11,7 +11,8 @@
     "mixed": "Count complete smallest matched Python statements and embedded tables. Record every selected line range. Count the freeCfgEdges table/comment as generator_json.",
     "test_roles": "Tests, exports, build declarations and measurement metadata are unscored. Block proofs and composition have separate roles.",
     "self": "Count this manifest by a physical-line fixed point. No circular self-hash. The outer certificate binds final bytes.",
-    "boundaries": "933 interface and508 metadata lines from92940986 remain historical. External generator data stays separate until its source enters this snapshot."
+    "boundaries": "933 interface and508 metadata lines from92940986 remain historical. External generator data stays separate until its source enters this snapshot.",
+    "activation": "Count both exit modules and the umbrella export regardless of return-route activation."
   },
   "contracts": [
     "ZesuSsz/Contracts/AltFlFree.v",
@@ -24,13 +25,15 @@
     "ZesuSsz/Compliance/FreeEntryIntroductions.v"
   ],
   "exit_meanings": [
-    "ZesuSsz/Compliance/FreeExitMeanings.v"
+    "ZesuSsz/Compliance/FreeExitMeanings.v",
+    "ZesuSsz/Compliance/FreeReturnFacts.v"
   ],
   "loop_steps": [],
   "registrations": [
     "ZesuSsz/Compliance/FreeDataRegistrations.v",
     "ZesuSsz/Compliance/FreeHints.v",
-    "ZesuSsz/Compliance/FreeUnfoldRegistrations.v"
+    "ZesuSsz/Compliance/FreeUnfoldRegistrations.v",
+    "ZesuSsz/Compliance/FreeExitRegistrations.v"
   ],
   "generator_json": [
     "ZesuSsz/Contracts/AltFlFree.v",
@@ -55,12 +58,15 @@
     "build/stock-zisk/automation-validation/free-contract-correction/CHECKPOINT.json",
     "build/stock-zisk/automation-validation/free-compile-evidence/CHECKPOINT.json",
     "build/stock-zisk/automation-validation/free-compile-evidence/HOLDOUT-PROTOCOL.md",
-    "ZesuSsz/Evidence/free_function_text.json"
+    "ZesuSsz/Evidence/free_function_text.json",
+    "build/stock-zisk/automation-validation/free-exit-instances/CHECKPOINT.json"
   ],
   "lemmas": [
     "ZesuSsz/Compliance/FreeClassFacts.v",
     "ZesuSsz/Compliance/FreeEntryIntroductions.v",
-    "ZesuSsz/Compliance/FreeExitMeanings.v"
+    "ZesuSsz/Compliance/FreeExitMeanings.v",
+    "ZesuSsz/Compliance/FreeReturnFacts.v",
+    "ZesuSsz/Compliance/FreeExitRegistrations.v"
   ],
   "pending": [],
   "excluded_false_matches": [
@@ -94,9 +100,10 @@
     "packet009": "77cc2105894e46071b29659c67561f9e545109abd1322cfa5a6df3ed4803fdac",
     "corrected_exit031": "47298b3c5bf42cb0c566f77ee8cb8f017dcd378e067079258aec15c781b800b0",
     "unchanged_B_unit": "0742436497375e6d7c9a18b3112dddb45c4b04a20244fe7be57352bb8f7fe8df",
-    "FreeHints_source": "5224fb5d901d6e2a454186839916eab3300cf46ea112758259f220b83b239895",
+    "FreeHints_source": "d4a6d8fcca4cc744990ab57a070070ebce4b1ae717f147543f75b6854e422b0d",
     "guarded_class040": "943c65d7a7573d322a051ceed268a4e318570226de78c93c74d71bb7615caf11",
-    "scope": "Guarded data facts use shared_defs and the output-evar query uses module_m. Corrected exits verified as module_m42144/shared_defs42160. Unchanged data sources retain their historical checked scopes."
+    "scope": "Guarded data facts use shared_defs and the output-evar query uses module_m. Corrected exits verified as module_m42144/shared_defs42160. Unchanged data sources retain their historical checked scopes.",
+    "exit_instances_real_dependency": "2caad8cdb429acec5a4ed83ac842c33669f0e01f5d56c0dc07c35846261a68d6"
   },
   "historical_counts": {
     "commit": "92940986c349abc545b28cccee3e64b4f5567815",
@@ -249,15 +256,15 @@
       "path": "ZesuSsz/Compliance/FreeHints.v",
       "category": "registrations",
       "scope": "whole_file",
-      "sha256": "5224fb5d901d6e2a454186839916eab3300cf46ea112758259f220b83b239895",
-      "file_lines": 2,
+      "sha256": "d4a6d8fcca4cc744990ab57a070070ebce4b1ae717f147543f75b6854e422b0d",
+      "file_lines": 3,
       "line_ranges": [
         [
           1,
-          2
+          3
         ]
       ],
-      "counted_lines": 2
+      "counted_lines": 3
     },
     {
       "path": "ZesuSsz/Compliance/FreeUnfoldRegistrations.v",
@@ -600,17 +607,17 @@
       "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "5f9d1593a02c6caa105b28e5b7eae948546c91716f0be44ddd468c5a84d2cc70",
-      "file_lines": 159,
+      "sha256": "8bad6bd3c1984a6311970cefa820bd702719c5fefe7771d6615e65896402c6df",
+      "file_lines": 173,
       "line_ranges": [
         [
           116,
-          157
+          171
         ]
       ],
-      "counted_lines": 42,
+      "counted_lines": 56,
       "role": "measurement_metadata",
-      "selection": "The six free measurement rows only."
+      "selection": "All eight free measurement rows only."
     },
     {
       "path": "build/stock-zisk/automation-validation/free-guarded-update/CHECKPOINT.json",
@@ -699,32 +706,94 @@
       "scope": "whole_file",
       "sha256": null,
       "hash_rule": "No circular self-hash. The outer certificate binds final bytes.",
-      "file_lines": 730,
+      "file_lines": 799,
       "line_ranges": [
         [
           1,
-          730
+          799
         ]
       ],
-      "counted_lines": 730
+      "counted_lines": 799
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeReturnFacts.v",
+      "category": "exit_meanings",
+      "scope": "whole_file",
+      "sha256": "6c4e348e4cedb7fed168276cb9a6c7d2aa635fcba52557e444421e508a1a395a",
+      "file_lines": 52,
+      "line_ranges": [
+        [
+          1,
+          52
+        ]
+      ],
+      "counted_lines": 52
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeExitRegistrations.v",
+      "category": "registrations",
+      "scope": "whole_file",
+      "sha256": "08aac01a4ad742201daad0350fb13f32095bcffb449e9b25839df1925e79fc05",
+      "file_lines": 69,
+      "line_ranges": [
+        [
+          1,
+          69
+        ]
+      ],
+      "counted_lines": 69
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/free-exit-instances/CHECKPOINT.json",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": null,
+      "file_lines": 31,
+      "line_ranges": [
+        [
+          1,
+          31
+        ]
+      ],
+      "counted_lines": 31,
+      "role": "measurement_metadata",
+      "hash_rule": "The outer receipt binds these bytes without a circular hash."
     }
   ],
   "category_totals": {
     "contracts": 571,
     "introductions": 113,
-    "exit_meanings": 57,
+    "exit_meanings": 109,
     "loop_steps": 0,
-    "registrations": 131,
+    "registrations": 201,
     "generator_json": 111,
     "block_proofs": 0,
     "composition": 0,
-    "tests_and_exports": 1148
+    "tests_and_exports": 1262
   },
-  "interface_total": 983,
-  "conservative_source_file_lines": 2416,
+  "interface_total": 1105,
+  "conservative_source_file_lines": 2538,
   "block_records": [],
   "native_runs": 0,
   "holdout_spent": false,
   "freeze_requirement": "No native free execution before exact cp-av-rules-frozen commit is sealed.",
-  "overall_total": 2131
+  "overall_total": 2367,
+  "checked_class_dependency": "b7359b55f3609d22e28d1021570543f274d446b7",
+  "previous_guarded_counts": {
+    "commit": "1ab41c3d6a5719849d2c6a68ac9fc658e245d6bc",
+    "category_totals": {
+      "contracts": 571,
+      "introductions": 113,
+      "exit_meanings": 57,
+      "loop_steps": 0,
+      "registrations": 131,
+      "generator_json": 111,
+      "block_proofs": 0,
+      "composition": 0,
+      "tests_and_exports": 1148
+    },
+    "interface_total": 983,
+    "overall_total": 2131
+  },
+  "exit_registration_delta": 122
 }
