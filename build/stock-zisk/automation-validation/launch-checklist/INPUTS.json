@@ -1,0 +1,41 @@
+{
+  "rules_frozen_commit": null,
+  "rules_frozen_tag": "cp-av-rules-frozen",
+  "freeze_release": null,
+  "free": {
+    "runner": "Infra C",
+    "writer_id": "worker2-c",
+    "input_worktree": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf",
+    "prepared_command_packet": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-input-launch-validation598/REPORT.json",
+    "prepared_command_file": "COMMAND598.txt",
+    "prepared_root": "06acf88081b14cdf19e09f7ac90d969a67cd3115",
+    "prepared_output_directory": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-06acf880",
+    "final_launch_command": null,
+    "final_output_directory": null,
+    "result_record": "build/stock-zisk/automation-validation/free-first-result/CHECKPOINT.json",
+    "first_result_id": null,
+    "outcome": null
+  },
+  "nextUint64": {
+    "runner": "Infra C",
+    "generator_owner": "Infra B",
+    "order": [
+      "call block0x800d6274 alone",
+      "all10blocks after the call-block record"
+    ],
+    "call_pc": "0x800d62b4",
+    "callee_pc": "0x800d6960",
+    "return_site_pc": "0x800d62b8",
+    "input_worktree": null,
+    "call_only_design": null,
+    "launch_command": null,
+    "future_run_identity": null,
+    "future_freeze_identity": null,
+    "result_record": "build/stock-zisk/automation-validation/nextuint64-compile-evidence/RESULT.template.json",
+    "compile_record": "build/stock-zisk/automation-validation/nextuint64-compile-evidence/COMPILE.template.json",
+    "call_time_to_instr_pre": null,
+    "first_residual": null,
+    "outcome": null
+  },
+  "native_execution": false
+}
