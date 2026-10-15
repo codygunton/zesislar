@@ -1,0 +1,67 @@
+{
+  "schema": "nextuint64-definitions-typecheck-v1",
+  "root": "9a8b148f11c97d8a22a417d1eb93e8a6462fe817",
+  "status": "Definitions compiled and queried. No native contract proof.",
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-contracts/_build/nextuint64-contract-seal008/REPORT.json",
+    "sha256": "12ec6f04461eb28d5bcd3e4ffba2e52fc37dd1773c9ab4c495a703e6c5b0b078",
+    "bindings": 19
+  },
+  "source": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-contracts/ZesuSsz/Contracts/NextUint64BlockEntries.v",
+    "sha256": "eaa68787334b1bd23199ce23576e8fbbf78349ab9d0db4b2811991076d7396dd",
+    "physical_lines": 360,
+    "entry_count": 10,
+    "proof_commands": 0
+  },
+  "object": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-contracts/_build/agents/spec-b/default/ZesuSsz/Contracts/NextUint64BlockEntries.vo",
+    "sha256": "73a553e2478fb873e27bdb3b0eef9e3302d43fb7e68087eeda50649b0afb3ada"
+  },
+  "checks": {
+    "MCP_health": "passed",
+    "MCP_compilation": "passed in record006",
+    "Check_definitions": 12,
+    "Print_Assumptions": 12,
+    "assumptions": [],
+    "query_context_groups": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "closing_command": "Abort.",
+    "normal_owner_closure": true,
+    "native_proof": false,
+    "native_run": false,
+    "rocq_verify": "Not used for the definitions-only scope."
+  },
+  "authorized_decisions": {
+    "entry_stack": "caller96 plus separate uninitialized callee16 at [sp-112,sp-96)",
+    "nextUint64StackBytes": 96,
+    "GPR_count": 29,
+    "public_caller_existentials": 15,
+    "domain": "Exact callee layout with actual input-end bound.",
+    "invariant": "Existential cursor and nonzero-length guard as a conjunct."
+  },
+  "lemma_drafts": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-contracts/_build/nextuint64-contract-seal008/FOLD-LEMMA-STATEMENTS.json",
+    "sha256": "5a80371b0aec4464ee392cfb29a9cf3170c0ad385d6b06e6e0181c698e86590d",
+    "count": 4,
+    "status": "Unproved, unelaborated statement drafts. Not accepted facts."
+  },
+  "historical_failures": [
+    "003: missing word64Modulus import",
+    "006: compilation passed; the combined query failed with No node at point"
+  ],
+  "remaining_limits": [
+    "Caller stack-view conversions remain unproved.",
+    "Callee composition and ABI framing remain unproved.",
+    "No native proof or run occurred.",
+    "The query context was aborted, not proved.",
+    "No gate, commit, or push is claimed for this source packet."
+  ],
+  "Level1_changed": false,
+  "free_changed": false,
+  "alloc_inspected": false
+}
