@@ -42,5 +42,21 @@
   },
   "ZesuSsz/Proofs/Tests/OptionalScratchCleanup.v": {
     "unfold_without_typeclasses_opaque": 1
+  },
+  "ZesuSsz/Contracts/NextUint64BlockEntries.v": {
+    "uninferable_existentials": 15,
+    "predicates_without_unfold": 0,
+    "disjunctive_specs": 0,
+    "frame_parameters_in_closed_specs": 0,
+    "unfold_without_typeclasses_opaque": 0,
+    "_comment": "Decision 2: the public ABI owns fifteen existential caller-saved register values. This file-specific exception changes no global threshold."
+  },
+  "ZesuSsz/Contracts/NextUint64Contract.v": {
+    "uninferable_existentials": 15,
+    "predicates_without_unfold": 0,
+    "disjunctive_specs": 0,
+    "frame_parameters_in_closed_specs": 0,
+    "unfold_without_typeclasses_opaque": 0,
+    "_comment": "Decision 2: the public ABI owns fifteen existential caller-saved register values. This file-specific exception changes no global threshold."
   }
 }

@@ -1,0 +1,302 @@
+{
+  "schema_version": 1,
+  "function": "rlp_decode.nextUint64",
+  "status": "Checked source assembly. No native proof or rule result. Root integration remains pending.",
+  "snapshot_base_root": "a9110030a2455722f28d6fe085911b0d76afd577",
+  "umbrella": "ZesuSsz.Compliance.NextUint64Hints",
+  "counting_rules": {
+    "unit": "Physical lines including comments and blank lines. A final line without newline counts once.",
+    "ranges": "One-based inclusive ranges. No line overlaps inside this function manifest.",
+    "mixed": "Count exact nextUint64 commands and their attached comments. Exclude shared caller consumers and shared markers.",
+    "source_embedded_data": "No new design JSON exists in this snapshot. Generator_json remains empty.",
+    "metadata": "Shape rows, checkpoint and this manifest are unscored measurement metadata.",
+    "self": "Count this manifest through a physical-line fixed point. The outer certificate binds its hash."
+  },
+  "source_evidence": {
+    "A_packet007_sha256": "9d2855338e8e9bf4fcda3b4a97db480a7d449180985f3f24c93c245ddcbe1939",
+    "B_packet025_sha256": "9ff9ca7a99f7d9da82e1f30cfc0d6f13ad5c9f1bb95c4a26ed85fb20e52a950a",
+    "scope004_sha256": "43443e5485368de5e3e63c696560bd91867430878ae5c47e17dea07d3c5ba759"
+  },
+  "correction": "Accepted payload selection uses pointer 1 for prefix 128. Schema/relateItem admits this modeled behavior; this is not a new defect.",
+  "excluded_shared": [
+    {
+      "path": "ZesuSsz/Contracts/ParentHeaderSelected.v",
+      "reason": "The parent-header caller consumes nextUint64; it is not this function implementation."
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemUnfoldRegistrations.v",
+      "reason": "Existing shared selected-code markers remain outside the new registration unit."
+    },
+    {
+      "path": "ZesuSsz/Contracts/ParentHeaderRootFacts.v",
+      "line_ranges": [
+        [
+          49,
+          57
+        ]
+      ],
+      "reason": "These caller-site lists and obligations belong to parentHeader."
+    }
+  ],
+  "pending": [
+    {
+      "kind": "generator_design",
+      "path": null,
+      "status": "No checked design JSON exists in the bound snapshot; no line credit."
+    }
+  ],
+  "lemmas": [
+    "ZesuSsz/Compliance/NextUint64FoldFacts.v"
+  ],
+  "contracts": [
+    "ZesuSsz/Contracts/NextUint64BlockEntries.v",
+    "ZesuSsz/Contracts/NextUint64Selected.v",
+    "ZesuSsz/Contracts/NextUint64Contract.v",
+    "ZesuSsz/Contracts/ParentHeaderRootFacts.v",
+    "ZesuSsz/Contracts/ParentHeader.v",
+    "ZesuSsz/Contracts/ParentHeaderLevel1.v"
+  ],
+  "introductions": [],
+  "exit_meanings": [],
+  "loop_steps": [
+    "ZesuSsz/Compliance/NextUint64FoldFacts.v"
+  ],
+  "registrations": [
+    "ZesuSsz/Compliance/NextUint64UnfoldRegistrations.v",
+    "ZesuSsz/Compliance/NextUint64Hints.v"
+  ],
+  "generator_json": [],
+  "block_proofs": [],
+  "composition": [],
+  "tests_and_exports": [
+    "ZesuSsz/Evidence/spec_shape_baseline.json",
+    "ZesuSsz/Evidence/spec_shape_inventory.json",
+    "build/stock-zisk/automation-validation/nextuint64-function-text/CHECKPOINT.json",
+    "ZesuSsz/Evidence/nextUint64_function_text.json"
+  ],
+  "files": [
+    {
+      "path": "ZesuSsz/Contracts/NextUint64BlockEntries.v",
+      "category": "contracts",
+      "scope": "whole_file",
+      "sha256": "ab2a5fbd607d768abf278e6071263fc458c28a97571e713e5a7c64994e58c72b",
+      "file_lines": 365,
+      "line_ranges": [
+        [
+          1,
+          365
+        ]
+      ],
+      "counted_lines": 365
+    },
+    {
+      "path": "ZesuSsz/Contracts/NextUint64Selected.v",
+      "category": "contracts",
+      "scope": "whole_file",
+      "sha256": "56915c500d67b048c69bc14c75bfcbdb93e02ec3260206b4cafa5a6c3c4f6c07",
+      "file_lines": 90,
+      "line_ranges": [
+        [
+          1,
+          90
+        ]
+      ],
+      "counted_lines": 90
+    },
+    {
+      "path": "ZesuSsz/Contracts/NextUint64Contract.v",
+      "category": "contracts",
+      "scope": "whole_file",
+      "sha256": "5bbb9c35376d8fd933deb5c295a8d10703c71de6da2f408835c94f2a2f15121f",
+      "file_lines": 69,
+      "line_ranges": [
+        [
+          1,
+          69
+        ]
+      ],
+      "counted_lines": 69
+    },
+    {
+      "path": "ZesuSsz/Compliance/NextUint64FoldFacts.v",
+      "category": "loop_steps",
+      "scope": "whole_file",
+      "sha256": "84049eaab7c674cdec9564162b7bd8d46eef0fe4dfde353c9828afb8bf6a430c",
+      "file_lines": 187,
+      "line_ranges": [
+        [
+          1,
+          187
+        ]
+      ],
+      "counted_lines": 187
+    },
+    {
+      "path": "ZesuSsz/Compliance/NextUint64UnfoldRegistrations.v",
+      "category": "registrations",
+      "scope": "whole_file",
+      "sha256": "09660cab7a350c34357622de1b1a50a21bbcea09f682f0ad424e128726239190",
+      "file_lines": 35,
+      "line_ranges": [
+        [
+          1,
+          35
+        ]
+      ],
+      "counted_lines": 35
+    },
+    {
+      "path": "ZesuSsz/Compliance/NextUint64Hints.v",
+      "category": "registrations",
+      "scope": "whole_file",
+      "sha256": "d02accd571b407b5b8c2be9ffda3398180bb9986addf8abf016bef74acc029a7",
+      "file_lines": 2,
+      "line_ranges": [
+        [
+          1,
+          2
+        ]
+      ],
+      "counted_lines": 2
+    },
+    {
+      "path": "ZesuSsz/Contracts/ParentHeaderRootFacts.v",
+      "category": "contracts",
+      "scope": "mixed_file",
+      "sha256": "3032c34f795903497012cf5488f102e5d46da2f5ccbc4f4d063b034717318461",
+      "file_lines": 133,
+      "line_ranges": [
+        [
+          32,
+          32
+        ],
+        [
+          36,
+          36
+        ],
+        [
+          59,
+          74
+        ],
+        [
+          89,
+          133
+        ]
+      ],
+      "counted_lines": 63,
+      "selection": "Own stack/return constants, layout, call/result records, and result relation."
+    },
+    {
+      "path": "ZesuSsz/Contracts/ParentHeader.v",
+      "category": "contracts",
+      "scope": "mixed_file",
+      "sha256": "efbb3d6b1a4697ea190c8baaa69dbaa08e685cd26d4661f099e58d98562c8d82",
+      "file_lines": 106,
+      "line_ranges": [
+        [
+          17,
+          18
+        ],
+        [
+          64,
+          88
+        ]
+      ],
+      "counted_lines": 27,
+      "selection": "Own range constants, byte fold, output encoding, and its two data lemmas with adjacent comments."
+    },
+    {
+      "path": "ZesuSsz/Contracts/ParentHeaderLevel1.v",
+      "category": "contracts",
+      "scope": "mixed_file",
+      "sha256": "7d665aa12d4c32fbb08f1e41421744501a2ca8d0c2dae8c3870405da75a78ba6",
+      "file_lines": 136,
+      "line_ranges": [
+        [
+          13,
+          41
+        ]
+      ],
+      "counted_lines": 29,
+      "selection": "Own domain, allowed result, and internal handoff statements with their shared introductory comment."
+    },
+    {
+      "path": "ZesuSsz/Evidence/spec_shape_baseline.json",
+      "category": "tests_and_exports",
+      "scope": "mixed_file",
+      "sha256": "912fe55516db8179f4656e74bf11194438d45445321f205652bb282166ef9a49",
+      "file_lines": 62,
+      "line_ranges": [
+        [
+          46,
+          61
+        ]
+      ],
+      "counted_lines": 16,
+      "role": "measurement_metadata",
+      "selection": "Only the nextUint64 shape rows; complete source hash is bound."
+    },
+    {
+      "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
+      "category": "tests_and_exports",
+      "scope": "mixed_file",
+      "sha256": "90b766d0cdf133b8d9304d3ae0c35b0785d612167cb889c2d9077de052909628",
+      "file_lines": 218,
+      "line_ranges": [
+        [
+          196,
+          216
+        ]
+      ],
+      "counted_lines": 21,
+      "role": "measurement_metadata",
+      "selection": "Only the nextUint64 shape rows; complete source hash is bound."
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/nextuint64-function-text/CHECKPOINT.json",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": null,
+      "file_lines": 49,
+      "line_ranges": [
+        [
+          1,
+          49
+        ]
+      ],
+      "counted_lines": 49,
+      "role": "measurement_metadata",
+      "hash_rule": "No circular report hash; the outer push receipt binds this checkpoint."
+    },
+    {
+      "path": "ZesuSsz/Evidence/nextUint64_function_text.json",
+      "category": "tests_and_exports",
+      "role": "measurement_metadata",
+      "scope": "whole_file",
+      "sha256": null,
+      "hash_rule": "No circular self-hash. The outer certificate binds final bytes.",
+      "file_lines": 302,
+      "line_ranges": [
+        [
+          1,
+          302
+        ]
+      ],
+      "counted_lines": 302
+    }
+  ],
+  "category_totals": {
+    "contracts": 643,
+    "introductions": 0,
+    "exit_meanings": 0,
+    "loop_steps": 187,
+    "registrations": 37,
+    "generator_json": 0,
+    "block_proofs": 0,
+    "composition": 0,
+    "tests_and_exports": 388
+  },
+  "interface_total": 867,
+  "overall_total": 1255,
+  "conservative_full_file_lines": 1754
+}
