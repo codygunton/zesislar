@@ -33,6 +33,8 @@ Require Export ZesuSsz.Compliance.DecodeItemReturnRestorationFacts.
 Require Export ZesuSsz.Compliance.DecodeItemShortListOutputMeaning.
 Require Export ZesuSsz.Compliance.DecodeItemEmptyStringOutputMeaning.
 Require Export ZesuSsz.Compliance.DecodeItemLongStringOutputMeaning.
+Require Export ZesuSsz.Compliance.DecodeItemEntryAdditionalFacts.
+Require Export ZesuSsz.Compliance.DecodeItemDataRegistrations.
 
 Global Instance : LithiumUnfold (@decodeItemEntryAt800d698cLiteral) := I.
 Global Instance : LithiumUnfold (@decodeItemEntryAt800d698cShortString) := I.

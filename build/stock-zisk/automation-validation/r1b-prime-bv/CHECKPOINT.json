@@ -1,0 +1,40 @@
+{
+  "item": "R1b prime",
+  "base": "dad8c896",
+  "source_sha256": {
+    "ZesuSsz/Automation/BitvectorFacts.v": "1d6678eb4318ee66af81a1bcfe3c18d0d14858f0540ae813475d7458b25c7a93",
+    "ZesuSsz/Automation/Hooks.v": "f3637e5989e1946c9f2ea53b0f9f4c999a9d4a372b40eeb11c51a28c51106ea2",
+    "ZesuSsz/Proofs/Tests/EntryMask.v": "64cf4a2533c3534c1376fb0eacdfa8d14bcb3558f291cbd5e42d92e84799741d",
+    "ZesuSsz/Automation/Switches/MaskNormalizer.v": "b3838fafbe5909cba981ce6fa1ae4a3722995d155b7511bbb072f4e0156a7367",
+    "ZesuSsz/Automation/Approved.v": "4ba4ac6f6cf3b7ede56bc164b159272e71f579f85e9987c145e1a35c0283a851"
+  },
+  "statement_sha256": {
+    "r1b_prime_Z": "06a4dfdfb5760fb6111d0608b3ff24b11a9d6243c7445bdeb0f224ac3b344e0a",
+    "r1b_prime_bv": "7c732e2c3660d7a41f6e4bdb7c0df945abb0a7429c5f755440ffcfda84efc708"
+  },
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-av-r1b-bv-6c794422/_build/r1b-prime-bridge-controls-051/REPORT.json",
+    "sha256": "e645c497d770e7138b06d4a81edaa8c360693026f296597be1a63637439a89a0",
+    "method": "module_m",
+    "assumptions": [],
+    "final_groups": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "rollback_exact": true,
+    "normal_owned_closure": true
+  },
+  "focused_build": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-av-r1b-bv-6c794422/_build/r1b-prime-focused-050/REPORT.json",
+    "sha256": "d3dde1d89238b5de875a55539ba4cbfe298f6123309f604bcea6c7580138f061",
+    "result": "pass",
+    "changed_inputs": []
+  },
+  "switch": "ZesuSsz.Automation.Switches.MaskNormalizer",
+  "OFF": "EntryIntro remains active",
+  "old_controls": "Preserved byte-for-byte.",
+  "native_closure": false,
+  "gates": "Pending C table, then final gates."
+}

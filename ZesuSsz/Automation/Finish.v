@@ -1,4 +1,5 @@
 Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Automation.EntryIntro.
 Require Import ZesuMachineMap.Machine.
 Require Export ZesuSsz.Automation.ByteArrays.
 Require Export ZesuSsz.Automation.Hooks.
@@ -560,7 +561,7 @@ Ltac zesu_run_pass :=
 Ltac zesu_search_switches := constr:([
   ZesuSsz.Automation.Hooks.ZesuStepRegionFaultNormalization; ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup;
   ZesuSsz.Automation.Hooks.ZesuStepStackWrite; ZesuSsz.Automation.Hooks.ZesuStepRamFault; ZesuSsz.Automation.Hooks.ZesuStepRegionFault;
-  ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask; ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress; ZesuSsz.Automation.Hooks.ZesuStepRecordWitness;
+  ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask; ZesuSsz.Automation.EntryIntro.ZesuStepEntryIntro; ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress; ZesuSsz.Automation.Hooks.ZesuStepRecordWitness;
   ZesuSsz.Automation.Hooks.ZesuStepNaturalIndexConstraint;
   ZesuSsz.Automation.Hooks.ZesuStepArrayBounds; ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff; ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle;
   ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand; ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned; ZesuSsz.Automation.Hooks.ZesuStepListWitness;
@@ -619,6 +620,7 @@ Ltac zesu_block_v1 :=
     progress iIntros "?"];
   zesu_reduce_introduced_code_lists;
   repeat iDestruct select (_ ∗ _)%I as "[? ?]";
+  try zesu_entry_intro_if_enabled;
   zesu_run)
   else first [solve [zesu_finish] | idtac].
 
@@ -629,10 +631,12 @@ Ltac zesu_block_v2 :=
       progress iIntros "?"];
     zesu_reduce_introduced_code_lists;
     repeat iDestruct select (_ ∗ _)%I as "[? ?]";
+    try zesu_entry_intro_if_enabled;
     zesu_run)
   else first [solve [zesu_finish] | idtac].
 
 Ltac zesu_block :=
+  try zesu_entry_intro_goal_if_enabled;
   tryif zesu_rule_set_v2_on then zesu_block_v2 else zesu_block_v1.
 
 Ltac zesu_block_simpl :=

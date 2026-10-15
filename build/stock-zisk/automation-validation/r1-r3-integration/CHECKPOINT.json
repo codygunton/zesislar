@@ -1,0 +1,42 @@
+{
+  "item": "r1-r3-integration",
+  "tested_source_root": "e7eb0bcef249f2cf99dfc86cf60d8436ade29a31",
+  "report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-av-r1-r3-integration-a422/_build/r1-r3-final-checkpoint-029/REPORT.json",
+    "sha256": "39818996868a17fab0f59cda6da5f66d3babfa207a86fd027609e157e345a6a0"
+  },
+  "native_certificate": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-av-r1-r3-integration-a422/_build/r1-r3-native-certificate-018/REPORT.json",
+    "sha256": "a9d7c5ba0b00a8928343b6c18bfbb22e1d1d87bcf7a9d2cda901585a9bfdfaf1"
+  },
+  "native_statement_sha256": {
+    "6a08": "1f8b007b0e49ff2fab1dcc18c2bc648e4dccd4fcceef72d31feec267e2d37991",
+    "6aa8": "3a911227c99482094be29f11bd364dc75480037f906f7aba4adadeebea59625f"
+  },
+  "native_groups": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "verification_assumptions": [],
+  "compiled_assumptions": "Closed under the global context",
+  "gate": {
+    "name": "check-fast028",
+    "exit_code": 0,
+    "execution_seconds": 103.23822365608066,
+    "changed_inputs": []
+  },
+  "root_gates": "Pending parent execution.",
+  "generic_matches": 0,
+  "approved_switch_count": 30,
+  "disabled": [
+    "ConjunctMatch",
+    "MemoryAccess",
+    "ReturnRoute"
+  ],
+  "interface_count": 16888,
+  "conservative_history": 16901,
+  "hygiene_measurement": "The parser continued across Abort into a later Qed. No completed 52-line proof existed. Gate020 and old bytes remain preserved. Closed tests pass without a baseline change.",
+  "scope": "Two body-only promotions and reviewed data/R3 integration. R3 has no native return closure claim."
+}

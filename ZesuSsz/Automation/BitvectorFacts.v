@@ -66,6 +66,8 @@ Proof. move => Hsub. rewrite bv_sub_unsigned bv_wrap_small; bv_solve. Qed.
 
 Class ZesuStepLowMask : Prop := zesu_step_low_mask : True.
 
+Class ZesuStepMaskNormalizer : Prop := zesu_step_mask_normalizer : True.
+
 Lemma zesu_unsigned_low_mask_add (width low : N)
     (value offset mask : bv width) :
   (low <= width)%N ->
@@ -91,4 +93,37 @@ Proof.
   rewrite -(bv_wrap_add_idemp_r low (bv_unsigned value) (bv_wrap width offset)).
   rewrite (bv_wrap_bv_wrap low width _ Hwidth).
   apply bv_wrap_add_idemp_r.
+Qed.
+
+Lemma zesu_unsigned_low_mask_add_sub_modulus (width low : N)
+    (value mask : bv width) (offset : Z) :
+  (low <= width)%N ->
+  bv_unsigned mask = Z.ones (Z.of_N low) ->
+  bv_modulus low <= bv_unsigned value + offset < 2 * bv_modulus low ->
+  bv_unsigned (bv_and (value + Z_to_bv width offset) mask) =
+    bv_unsigned value + offset - bv_modulus low.
+Proof.
+  intros Hwidth Hmask Hrange.
+  rewrite (zesu_unsigned_low_mask_add_integer width low value mask offset Hwidth Hmask).
+  rewrite Z_to_bv_unsigned.
+  rewrite -(bv_wrap_sub_modulus_1 low (bv_unsigned value + offset)).
+  apply bv_wrap_small. lia.
+Qed.
+
+
+Lemma zesu_low_mask_add_bv_sub_modulus (width low : N)
+    (value mask : bv width) (offset : Z) :
+  (low <= width)%N ->
+  bv_unsigned mask = Z.ones (Z.of_N low) ->
+  bv_modulus low <= bv_unsigned value + offset < 2 * bv_modulus low ->
+  bv_and (value + Z_to_bv width offset) mask =
+    Z_to_bv width (bv_unsigned value + offset - bv_modulus low).
+Proof.
+  intros Hwidth Hmask Hrange.
+  apply bv_eq. rewrite bv_and_unsigned Z_to_bv_unsigned.
+  pose proof (zesu_unsigned_low_mask_add_sub_modulus
+    width low value mask offset Hwidth Hmask Hrange) as Hunsigned.
+  rewrite bv_and_unsigned in Hunsigned. rewrite Hunsigned.
+  symmetry. apply bv_wrap_small.
+  pose proof (bv_modulus_le_mono low width Hwidth). lia.
 Qed.

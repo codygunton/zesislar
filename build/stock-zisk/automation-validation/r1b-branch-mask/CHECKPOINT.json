@@ -1,0 +1,53 @@
+{
+  "item": "R1b",
+  "base": "cf33f436f430739ead71eda4c15fcf74df496cd2",
+  "normalizer_switch": "ZesuSsz.Automation.Switches.MaskNormalizer",
+  "OFF": "EntryIntro remains active",
+  "source_sha256": {
+    "ZesuSsz/Automation/BitvectorFacts.v": "096422d8a96cfc9f8ead09b6f75758f284b58d2ce4ce379de6c04726ef180e8d",
+    "ZesuSsz/Automation/Hooks.v": "af86133ed24c7c2bb987a670ff7f3a0dffdeda24ecfcb3ba7bb49e3c6820e503",
+    "ZesuSsz/Automation/Approved.v": "4ba4ac6f6cf3b7ede56bc164b159272e71f579f85e9987c145e1a35c0283a851",
+    "ZesuSsz/Automation/Switches/MaskNormalizer.v": "b3838fafbe5909cba981ce6fa1ae4a3722995d155b7511bbb072f4e0156a7367",
+    "ZesuSsz/Evidence/approved_automation_switches.json": "88f7b2de8b3856bfbed5fcb81a1c14fb32a9ab9b5e8d1faf86be373554ef716b",
+    "ZesuSsz/Proofs/Tests/ApprovedSwitches.v": "89328b5d5d18b1fbcd861383691f8547d8218c41e888fbe4f983805ebcda099b",
+    "ZesuSsz/Proofs/Tests/EntryMask.v": "e7b9a369e9ebcee8c64b43074730034e8fd13b6f6a0dd84661ff50029b3388bd"
+  },
+  "statement_sha256": {
+    "r1b_mask_disabled": "f0321e8ccb205990ca87a71eb6474273f1f41dd3911bbda1313f92918d4b6a7b",
+    "r1b_mask_literal73": "c72aaa7ef2dd4d2d411a86e268c190c64a8dfd0ad32afe11133d1b6d905208f1",
+    "r1b_mask_literal9": "dc29e8a604e3b4345e86995ebc438429a73dc5f0f68b1792f19b88bd2cf9843f",
+    "r1b_mask_missing_range": "5477db0148b7b8eab849b76823f33adca06a5a383049e14d885c9afc69bb24dd",
+    "r1b_mask_wrong_mask": "16a08393e824ba49dcfef35bf136deda1f5c071d4114b4fa6496faa9951822a6",
+    "r1b_mask_symbolic_mask": "c6dc3e2d803ef5877700b7be77d00d04663f65d2a1f495438cd4564d67c43eac",
+    "r1b_mask_outside_range": "05e8f652a36750bcc21b84ed21dd34210d739138636659d437b05bb042d3b3a8",
+    "r1b_mask_width8": "c1de56df67ec1f25952111afe3dbc3d9b919102565839ee28c49832e7a555007",
+    "r1b_mask_width0": "1f053a488269d0047f40534c4a5a9e50984690d6465ba2f2a60f8ffb8f351c70",
+    "r1b_mask_upper_range": "5a7762568c5ca6cb022816adfefe6b469be403ec53409b717c19b12ee28e002f",
+    "r1b_mask_branch73": "0ed35f05feaacddbfd6f7402127eb95b11ff0a07120345cbdfde90e689b0605f",
+    "r1b_mask_branch9": "114590610edb6e73daa96bdba22627897c73bac5f38a050b5b2b2fe45f04e94c",
+    "r1b_mask_branch_missing_range": "acf49ff85acd4bb2dd3bbeab3efde4afefbb903714fe22383c3271c2eafc3b8d"
+  },
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-av-r1-entry-intro-ec272/_build/r1b-branch-controls-047/REPORT.json",
+    "sha256": "6fd310f5e09f98f790298909e62f4845b720735264ac237b5d1478d110f1eff6",
+    "controls": 13,
+    "verification_method": "module_m",
+    "assumptions": [],
+    "actual_final_groups": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "rollback_exact": true,
+    "normal_owned_closure": true
+  },
+  "focused_build": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-av-r1-entry-intro-ec272/_build/r1b-branch-focused-046/result.json",
+    "sha256": "453e4c64b7a1bf63cbfcafe868cc7c13221038e0d24b6ce5031bc8dcb5118804",
+    "exit_code": 0,
+    "changed_inputs": []
+  },
+  "gates": "Held until C supplies the native table.",
+  "scope": "Comparison candidate; no native closure claim."
+}

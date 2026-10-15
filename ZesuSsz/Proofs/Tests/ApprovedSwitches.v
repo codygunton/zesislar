@@ -8,6 +8,8 @@ Lemma approved_switch_inventory :
   ZesuSsz.Automation.Hooks.ZesuStepRamFault /\
   ZesuSsz.Automation.Hooks.ZesuStepRegionFault /\
   ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask /\
+  ZesuSsz.Automation.BitvectorFacts.ZesuStepMaskNormalizer /\
+  ZesuSsz.Automation.EntryIntro.ZesuStepEntryIntro /\
   ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress /\
   ZesuSsz.Automation.Hooks.ZesuStepRecordWitness /\
   ZesuSsz.Automation.Hooks.ZesuStepArrayBounds /\
@@ -32,6 +34,10 @@ Lemma approved_switch_inventory :
   ZesuSsz.Automation.Hooks.ZesuStepByteListContainment /\
   ZesuSsz.Automation.Hooks.ZesuStepRegionFaultCastHypotheses.
 Proof.
+  Fail assert (Hdisabled : ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch)
+    by typeclasses eauto.
+  Fail assert (Hdisabled : ZesuSsz.Automation.ReturnRoute.ZesuStepReturnRoute)
+    by typeclasses eauto.
   repeat apply conj.
   all: typeclasses eauto.
 Qed.

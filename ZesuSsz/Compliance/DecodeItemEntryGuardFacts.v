@@ -3,6 +3,7 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.BitvectorFacts.
 Require Import ZesuSsz.Compliance.DecodeItemBranchGuardFacts.
 Require Import ZesuSsz.Compliance.DecodeItemSemanticIntroduction.
+Require Import ZesuSsz.Compliance.DecodeItemSailIntroduction.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemReturnFacts.
@@ -32,8 +33,14 @@ Proof.
   pose proof (zesu_unsigned_low_mask_add_integer 64 8 register 255 73
     ltac:(done) ltac:(reflexivity)) as Hmask.
   rewrite Hmask (Z_to_bv_small 64 _ Hrange) in Hguard.
-  exact (decodeItemLongStringHeaderGuardRejected args register prefix rest
-    Hdomain Hhead Hclass Hvalue Hguard).
+  assert (Hheader : bv_unsigned (Z_to_bv 8 (bv_unsigned register + 73)) =
+    bv_unsigned prefix - 183) by bv_solve.
+  rewrite Hheader in Hguard.
+  eapply (decodeItemLongStringHeaderRejected args prefix rest);
+    [exact (proj2 Hdomain) | exact Hhead | exact Hclass |].
+  destruct (proj2 Hdomain) as [Hinput [Hstorage Hlayout]].
+  rewrite -Hinput Z.add_1_l.
+  apply (proj2 (Z.lt_succ_r _ _)). exact (Z.ge_le _ _ Hguard).
 Qed.
 
 Lemma decodeItemMaskedListHeaderRejected args (register : bv 64)
@@ -54,8 +61,14 @@ Proof.
   pose proof (zesu_unsigned_low_mask_add_integer 64 8 register 255 9
     ltac:(done) ltac:(reflexivity)) as Hmask.
   rewrite Hmask (Z_to_bv_small 64 _ Hrange) in Hguard.
-  exact (decodeItemLongListHeaderGuardRejected args register prefix rest
-    Hdomain Hhead Hclass Hvalue Hguard).
+  assert (Hheader : bv_unsigned (Z_to_bv 8 (bv_unsigned register + 9)) =
+    bv_unsigned prefix - 247) by bv_solve.
+  rewrite Hheader in Hguard.
+  eapply (decodeItemLongListHeaderRejected args prefix rest);
+    [exact (proj2 Hdomain) | exact Hhead | exact Hclass |].
+  destruct (proj2 Hdomain) as [Hinput [Hstorage Hlayout]].
+  rewrite -Hinput Z.add_1_l.
+  apply (proj2 (Z.lt_succ_r _ _)). exact (Z.ge_le _ _ Hguard).
 Qed.
 
 #[export] Instance decodeItemStackSubtractionHint args :
@@ -94,3 +107,29 @@ Print Assumptions decodeItemStackSubtraction.
 Print Assumptions decodeItemMaskedStringHeaderRejected.
 Print Assumptions decodeItemMaskedListHeaderRejected.
 Print Assumptions decodeItemStackSubtractionHint.
+
+#[export] Hint Extern 1 (SimplAnd (decodeItemRejectedFacts ?args) True) =>
+  match goal with
+  | Hdomain : decodeItemC1BDomain args,
+    Hhead : decodeItemInputHead args ?prefix ?rest,
+    Hvalue : bv_unsigned ?register = bv_unsigned ?prefix,
+    Hguard : bv_signed (bv_zero_extend 128 (bv_and (?register + 73) 255)) >=
+      bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) |- _ =>
+    unfold SimplAnd; split;
+    [intros _; eapply (decodeItemMaskedStringHeaderRejected args register prefix rest);
+      solve [exact (conj eq_refl Hdomain) | eassumption | split; assumption]
+    | intros _; exact I]
+  end : typeclass_instances.
+
+#[export] Hint Extern 1 (SimplAnd (decodeItemRejectedFacts ?args) True) =>
+  match goal with
+  | Hdomain : decodeItemC1BDomain args,
+    Hhead : decodeItemInputHead args ?prefix ?rest,
+    Hvalue : bv_unsigned ?register = bv_unsigned ?prefix,
+    Hguard : bv_signed (bv_zero_extend 128 (bv_and (?register + 9) 255)) >=
+      bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) |- _ =>
+    unfold SimplAnd; split;
+    [intros _; eapply (decodeItemMaskedListHeaderRejected args register prefix rest);
+      solve [exact (conj eq_refl Hdomain) | eassumption | split; assumption]
+    | intros _; exact I]
+  end : typeclass_instances.

@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.EntryIntro.
 Require Import ZesuSsz.Automation.SwitchDispatch.
 (** Project-wide Lithium hook redefinitions belong in this module. *)
 
@@ -13,9 +14,11 @@ Require Import ZesuSsz.Automation.InstrPre.
 Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.BitvectorFacts.
 Require Import ZesuSsz.Automation.PureFacts.
+Require Export ZesuSsz.Automation.ReturnRoute.
 Require Import ZesuSsz.Contracts.SelectedCodeLookup.
 Require Import InstrSpecs.Lookup.
 Require Import ZesuSsz.Automation.ResourceGroups.
+Require Import ZesuSsz.Automation.ConjunctMatch.
 
 (* Keep the selected table named during search and simplification.
    Explicit computation still resolves one selected instruction. *)
@@ -85,6 +88,123 @@ Ltac zesu_name_machine_bound expected name :=
       rename H into name
   end.
 
+(* Reduce one complete low-bit wrap before general arithmetic. *)
+Ltac zesu_low_mask_integer_offset width offset continuation :=
+  lazymatch offset with
+  | Z_to_bv width ?integer =>
+      assert_fails (has_evar integer); continuation integer
+  | _ =>
+      is_closed_term offset;
+      let integer := eval vm_compute in (bv_unsigned offset) in
+      continuation integer
+  end.
+
+Ltac zesu_low_mask_sub_modulus_goal :=
+  lazymatch goal with
+  | |- bv_unsigned (bv_and (bv_add ?value ?offset) ?mask) = ?requested =>
+      assert_fails (has_evar value);
+      assert_fails (has_evar requested);
+      is_closed_term mask;
+      lazymatch type of value with bv ?width =>
+        is_closed_term width;
+        let low := eval vm_compute in
+          (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
+        let modulus := eval vm_compute in (bv_modulus low) in
+        let Hwidth := fresh "HmaskWidth" in
+        assert (Hwidth : (low <= width)%N) by (vm_compute; congruence);
+        let Hmask := fresh "HmaskBits" in
+        assert (Hmask : bv_unsigned mask = Z.ones (Z.of_N low)) by
+          (vm_compute; reflexivity);
+        zesu_low_mask_integer_offset width offset ltac:(fun integer =>
+          let Hoffset := fresh "HmaskOffset" in
+          assert (Hoffset : offset = Z_to_bv width integer) by
+            first [reflexivity | is_closed_term offset;
+              apply bv_eq; vm_compute; reflexivity];
+          let Hrange := fresh "HmaskRange" in
+          assert (Hrange : modulus <= bv_unsigned value + integer < 2 * modulus)
+            by lia;
+          first [let checked := constr:(eq_refl :
+                   offset = Z_to_bv width integer) in idtac | rewrite Hoffset];
+          rewrite (zesu_unsigned_low_mask_add_sub_modulus
+            width low value mask integer Hwidth Hmask Hrange);
+          solve [reflexivity | change (bv_unsigned value + integer - modulus = requested); lia])
+      end
+  end.
+
+
+(* Normalize a branch guard only when it contains a complete low-bit wrap. *)
+Ltac zesu_low_mask_branch_hypotheses :=
+  repeat match goal with
+  | H : context [bv_signed (bv_zero_extend 128
+        (bv_and (bv_add ?value ?offset) ?mask))] |- _ =>
+      assert_fails (has_evar value);
+      assert_fails (has_evar offset);
+      is_closed_term mask;
+      progress (repeat match type of H with
+        | context [bv_signed (bv_zero_extend 128 ?word)] =>
+            lazymatch type of word with bv 64 => idtac end;
+            assert_fails (has_evar word);
+            rewrite (zesu_signed_zero_extend_64_128 word) in H
+        end)
+  | H : context [bv_unsigned (bv_and (bv_add ?value ?offset) ?mask)] |- _ =>
+      assert_fails (has_evar value);
+      is_closed_term mask;
+      lazymatch type of value with bv ?width =>
+        is_closed_term width;
+        let low := eval vm_compute in
+          (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
+        let modulus := eval vm_compute in (bv_modulus low) in
+        zesu_low_mask_integer_offset width offset ltac:(fun integer =>
+          let Hnormalized := fresh "HmaskNormalized" in
+          assert (Hnormalized :
+            bv_unsigned (bv_and (value + offset) mask) =
+              bv_unsigned value + integer - modulus)
+            by zesu_low_mask_sub_modulus_goal;
+          progress rewrite Hnormalized in H;
+          clear Hnormalized)
+      end
+  end.
+
+
+Ltac zesu_low_mask_bv_goal :=
+  lazymatch goal with
+  | |- bv_and (bv_add ?value ?offset) ?mask = Z_to_bv ?width ?requested =>
+      assert_fails (has_evar value);
+      assert_fails (has_evar requested);
+      is_closed_term mask;
+      is_closed_term width;
+      let low := eval vm_compute in
+        (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
+      let modulus := eval vm_compute in (bv_modulus low) in
+      let Hwidth := fresh "HmaskWidth" in
+      assert (Hwidth : (low <= width)%N) by (vm_compute; congruence);
+      let Hmask := fresh "HmaskBits" in
+      assert (Hmask : bv_unsigned mask = Z.ones (Z.of_N low)) by
+        (vm_compute; reflexivity);
+      zesu_low_mask_integer_offset width offset ltac:(fun integer =>
+        let Hoffset := fresh "HmaskOffset" in
+        assert (Hoffset : offset = Z_to_bv width integer) by
+          first [reflexivity | is_closed_term offset;
+            apply bv_eq; vm_compute; reflexivity];
+        let Hrange := fresh "HmaskRange" in
+        assert (Hrange : modulus <= bv_unsigned value + integer < 2 * modulus)
+          by lia;
+        let Hresult := fresh "HmaskResult" in
+        assert (Hresult : requested = bv_unsigned value + integer - modulus)
+          by lia;
+        first [let checked := constr:(eq_refl :
+                 offset = Z_to_bv width integer) in idtac | rewrite Hoffset];
+        rewrite Hresult;
+        exact (zesu_low_mask_add_bv_sub_modulus
+          width low value mask integer Hwidth Hmask Hrange))
+  end.
+
+Ltac zesu_low_mask_sub_modulus_if_enabled :=
+  zesu_switch_enabled constr:(ZesuStepMaskNormalizer);
+  first [solve [zesu_low_mask_sub_modulus_goal]
+    | solve [zesu_low_mask_bv_goal]
+    | solve [progress zesu_low_mask_branch_hypotheses; lia]].
+
 (* Keep low-bit mask equalities symbolic before general arithmetic unfolds them. *)
 Ltac zesu_low_mask_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepLowMask);
@@ -143,6 +263,7 @@ Ltac zesu_strict_signed_if_enabled :=
 (* Library solvers also call these primitives without the project finisher. *)
 Ltac lia ::= zesu_bounded_arithmetic ltac:(Zify.zify; xlia zchecker).
 Ltac bv_solve ::= first [solve [zesu_strict_signed_if_enabled] |
+  solve [zesu_low_mask_sub_modulus_if_enabled] |
   solve [zesu_low_mask_if_enabled] |
   zesu_bounded_arithmetic ltac:(
   bv_simplify_arith;
@@ -152,7 +273,8 @@ Ltac bv_solve ::= first [solve [zesu_strict_signed_if_enabled] |
   simpl; lia)].
 
 Ltac zesu_solve_machine_bounds :=
-  first [solve [zesu_low_mask_if_enabled] |
+  first [solve [zesu_low_mask_sub_modulus_if_enabled] |
+    solve [zesu_low_mask_if_enabled] |
     zesu_bounded_arithmetic ltac:(solve [zesu_normalize_binary_nat_hypotheses;
       zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; bv_solve])].
 Ltac zesu_solve_machine_linear :=
@@ -1003,6 +1125,25 @@ Ltac zesu_pure_witness_constraints_if_enabled :=
       end
   end.
 
+
+Ltac zesu_conjunct_head_if_enabled :=
+  zesu_switch_enabled constr:(ZesuStepConjunctMatch);
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ _ _) =>
+      let introFuel := constr:(12%nat) in
+      zesu_witness_open_existentials introFuel
+  | |- envs_entails _ _ => idtac
+  end;
+  lazymatch goal with
+  | |- envs_entails _ ?requested =>
+      let unfoldFuel := constr:(4%nat) in
+      progress (zesu_match_resource_pure_heads
+        ltac:(fun premise => zesu_registered_pure_fact premise)
+        unfoldFuel requested)
+  end.
+
+
 Ltac zesu_record_constructor_witness T :=
   let guard := constr:(ltac:(
     assert_fails (has_evar T);
@@ -1726,6 +1867,7 @@ Ltac zesu_liAStep :=
   | liAOther
   | zesu_pure_fact_hints_if_enabled
   | liUnfoldEarly
+  | zesu_conjunct_head_if_enabled
   | zesu_known_pair_witness_if_enabled
   | zesu_pure_witness_constraints_if_enabled
   | zesu_record_witness_if_enabled
