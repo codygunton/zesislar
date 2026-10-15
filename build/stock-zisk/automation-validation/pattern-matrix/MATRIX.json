@@ -17,12 +17,13 @@
     "loop",
     "call"
   ],
-  "scope": "Phase4 item2 skeleton. Only recorded decodeItem training results are populated. Other function columns remain null.",
+  "scope": "Recorded decodeItem observations plus explicitly predicted nextUint64 cells. Free and alloc remain null.",
   "status_meanings": {
     "closed": "The cited automatic proof closes at the stated scope.",
     "hand": "A cited hand proof closes; this does not establish automatic rule closure.",
     "residual": "The cited automation comparison retains an obligation.",
-    "null": "No observation is recorded for this function and pattern."
+    "null": "No observation is recorded for this function and pattern.",
+    "predicted": "The cell copies the bound pre-run pattern prediction. It records no native observation, activation, or proof closure."
   },
   "aggregation": "A mixed observed row remains residual and lists its closed sites separately. Pattern rows overlap. Counts are not additive.",
   "production_scope": "All decodeItem blocks already have production proofs. Residual describes the cited automation experiment only.",
@@ -42,6 +43,22 @@
     {
       "path": "/home/cody/zesislar/.worktrees/spec-a-av-pattern-matrix/_build/pattern-matrix-sources-001/ISSUE-BODY.md",
       "sha256": "351c9648171d02644c4f0caeff7844f23191e37b511b4098025ddd3371691ddd"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-pattern-matrix-602f6384/_build/nextuint64-matrix001/PREDICTION-PREDICTIONS.json",
+      "sha256": "d7ee30a8ba45d30f6d1f5ec3a6ac1eb580049aa75c37096d87f23d6aec418d2a"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-pattern-matrix-602f6384/_build/nextuint64-matrix001/PREDICTION-INVENTORY.json",
+      "sha256": "dd81f9d0b20b1501ba7846265370d19d55f661a62f72f79b544a474bf48b4fb6"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-pattern-matrix-602f6384/_build/nextuint64-matrix001/PREDICTION-COMMENT.md",
+      "sha256": "2ab0d903839b48fddb74f536cd5d033c0618d4323600726ef6f862b18c65f11f"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-pattern-matrix-602f6384/_build/nextuint64-matrix001/PREDICTION-POST-RECEIPT.json",
+      "sha256": "f9cf19d9687acf6aca4d31040d27b50239dc801076ee4981614b953e790daa06"
     }
   ],
   "rows": [
@@ -68,7 +85,58 @@
         ]
       },
       "free": null,
-      "nextUint64": null,
+      "nextUint64": {
+        "status": "predicted",
+        "coverage": "predicted",
+        "predicted_outcome": "close",
+        "sites": [
+          "0x800d62b8",
+          "0x800d62c0",
+          "0x800d6304",
+          "0x800d6310"
+        ],
+        "entry_keys": [
+          "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62b8",
+          "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62c0",
+          "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6304",
+          "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6310"
+        ],
+        "closed_sites": [],
+        "block_predictions": [
+          {
+            "block": "0x800d62b8",
+            "entry_key": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62b8",
+            "criterion_prediction": "close",
+            "predicted_obligation_family_if_residual": "Decoded-array read and guard propagation."
+          },
+          {
+            "block": "0x800d62c0",
+            "entry_key": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62c0",
+            "criterion_prediction": "close",
+            "predicted_obligation_family_if_residual": "Byte-array read, mask normalization, and guard propagation."
+          },
+          {
+            "block": "0x800d6304",
+            "entry_key": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6304",
+            "criterion_prediction": "close",
+            "predicted_obligation_family_if_residual": "Decoded-array read and empty-fold/guard propagation."
+          },
+          {
+            "block": "0x800d6310",
+            "entry_key": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6310",
+            "criterion_prediction": "close",
+            "predicted_obligation_family_if_residual": "Initialization from the accepted payload and its exact array view."
+          }
+        ],
+        "references": [
+          "https://github.com/codygunton/zesislar/issues/13#issuecomment-6191876275"
+        ],
+        "prediction_basis": "Exact posted predictions and the bound53-instruction inventory. No new native observation.",
+        "native_result": null,
+        "native_seconds": null,
+        "native_peak_GiB": null,
+        "native_residual": null
+      },
       "alloc": null
     },
     {
@@ -99,7 +167,42 @@
         ]
       },
       "free": null,
-      "nextUint64": null,
+      "nextUint64": {
+        "status": "predicted",
+        "coverage": "predicted",
+        "predicted_outcome": "residual_or_hand",
+        "sites": [
+          "0x800d62cc",
+          "0x800d632c"
+        ],
+        "entry_keys": [
+          "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62cc",
+          "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d632c"
+        ],
+        "closed_sites": [],
+        "block_predictions": [
+          {
+            "block": "0x800d62cc",
+            "entry_key": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62cc",
+            "criterion_prediction": "residual_or_hand",
+            "predicted_obligation_family_if_residual": "Conditional accepted-payload extraction from the exact callee meaning."
+          },
+          {
+            "block": "0x800d632c",
+            "entry_key": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d632c",
+            "criterion_prediction": "residual_or_hand",
+            "predicted_obligation_family_if_residual": "Whole-array writes plus canonical rest-state and success-image packaging."
+          }
+        ],
+        "references": [
+          "https://github.com/codygunton/zesislar/issues/13#issuecomment-6191876275"
+        ],
+        "prediction_basis": "Exact posted predictions and the bound53-instruction inventory. No new native observation.",
+        "native_result": null,
+        "native_seconds": null,
+        "native_peak_GiB": null,
+        "native_residual": null
+      },
       "alloc": null
     },
     {
@@ -127,7 +230,51 @@
         ]
       },
       "free": null,
-      "nextUint64": null,
+      "nextUint64": {
+        "status": "predicted",
+        "coverage": "predicted",
+        "predicted_outcome": "residual_or_hand",
+        "sites": [
+          "0x800d6274",
+          "0x800d62d8",
+          "0x800d632c"
+        ],
+        "entry_keys": [
+          "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6274",
+          "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62d8",
+          "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d632c"
+        ],
+        "closed_sites": [],
+        "block_predictions": [
+          {
+            "block": "0x800d6274",
+            "entry_key": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6274",
+            "criterion_prediction": "residual_or_hand",
+            "predicted_obligation_family_if_residual": "Frame-store/view matching, then callee resource and continuation framing."
+          },
+          {
+            "block": "0x800d62d8",
+            "entry_key": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62d8",
+            "criterion_prediction": "residual_or_hand",
+            "predicted_obligation_family_if_residual": "Whole result-array writes and exact error-image relation."
+          },
+          {
+            "block": "0x800d632c",
+            "entry_key": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d632c",
+            "criterion_prediction": "residual_or_hand",
+            "predicted_obligation_family_if_residual": "Whole-array writes plus canonical rest-state and success-image packaging."
+          }
+        ],
+        "references": [
+          "https://github.com/codygunton/zesislar/issues/13#issuecomment-6191876275"
+        ],
+        "prediction_basis": "Exact posted predictions and the bound53-instruction inventory. No new native observation.",
+        "native_result": null,
+        "native_seconds": null,
+        "native_peak_GiB": null,
+        "native_residual": null,
+        "mapping_limit": "The three posted store blocks use fixed frame/result/slice field offsets. This is predicted pattern coverage, not measured rule success."
+      },
       "alloc": null
     },
     {
@@ -143,7 +290,24 @@
         ]
       },
       "free": null,
-      "nextUint64": null,
+      "nextUint64": {
+        "status": "predicted",
+        "coverage": "predicted",
+        "predicted_outcome": "not-present-in-bound-classification",
+        "sites": [],
+        "entry_keys": [],
+        "closed_sites": [],
+        "block_predictions": [],
+        "references": [
+          "https://github.com/codygunton/zesislar/issues/13#issuecomment-6191876275"
+        ],
+        "prediction_basis": "Exact posted predictions and the bound53-instruction inventory. No new native observation.",
+        "native_result": null,
+        "native_seconds": null,
+        "native_peak_GiB": null,
+        "native_residual": null,
+        "mapping_limit": "No site carries this pattern in the bound prediction/inventory scope. The absence is a prediction label, not a native result."
+      },
       "alloc": null
     },
     {
@@ -168,7 +332,35 @@
         ]
       },
       "free": null,
-      "nextUint64": null,
+      "nextUint64": {
+        "status": "predicted",
+        "coverage": "predicted",
+        "predicted_outcome": "residual_or_hand",
+        "sites": [
+          "0x800d62e4"
+        ],
+        "entry_keys": [
+          "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62e4"
+        ],
+        "closed_sites": [],
+        "block_predictions": [
+          {
+            "block": "0x800d62e4",
+            "entry_key": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62e4",
+            "criterion_prediction": "residual_or_hand",
+            "predicted_obligation_family_if_residual": "Saved-ra decode, masked target, four-alignment fault, and exit framing."
+          }
+        ],
+        "references": [
+          "https://github.com/codygunton/zesislar/issues/13#issuecomment-6191876275"
+        ],
+        "prediction_basis": "Exact posted predictions and the bound53-instruction inventory. No new native observation.",
+        "native_result": null,
+        "native_seconds": null,
+        "native_peak_GiB": null,
+        "native_residual": null,
+        "mapping_limit": "The posted return block reloads six saved registers and restores sp. Actual ret is6300 in entry62e4."
+      },
       "alloc": null
     },
     {
@@ -184,7 +376,24 @@
         ]
       },
       "free": null,
-      "nextUint64": null,
+      "nextUint64": {
+        "status": "predicted",
+        "coverage": "predicted",
+        "predicted_outcome": "not-present-in-bound-classification",
+        "sites": [],
+        "entry_keys": [],
+        "closed_sites": [],
+        "block_predictions": [],
+        "references": [
+          "https://github.com/codygunton/zesislar/issues/13#issuecomment-6191876275"
+        ],
+        "prediction_basis": "Exact posted predictions and the bound53-instruction inventory. No new native observation.",
+        "native_result": null,
+        "native_seconds": null,
+        "native_peak_GiB": null,
+        "native_residual": null,
+        "mapping_limit": "No site carries this pattern in the bound prediction/inventory scope. The absence is a prediction label, not a native result."
+      },
       "alloc": null
     },
     {
@@ -203,7 +412,34 @@
         ]
       },
       "free": null,
-      "nextUint64": null,
+      "nextUint64": {
+        "status": "predicted",
+        "coverage": "predicted",
+        "predicted_outcome": "residual_or_hand",
+        "sites": [
+          "0x800d6318"
+        ],
+        "entry_keys": [
+          "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6318"
+        ],
+        "closed_sites": [],
+        "block_predictions": [
+          {
+            "block": "0x800d6318",
+            "entry_key": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6318",
+            "criterion_prediction": "residual_or_hand",
+            "predicted_obligation_family_if_residual": "Exact byte lookup, fold preservation, continuation guard, or final-byte exit."
+          }
+        ],
+        "references": [
+          "https://github.com/codygunton/zesislar/issues/13#issuecomment-6191876275"
+        ],
+        "prediction_basis": "Exact posted predictions and the bound53-instruction inventory. No new native observation.",
+        "native_result": null,
+        "native_seconds": null,
+        "native_peak_GiB": null,
+        "native_residual": null
+      },
       "alloc": null
     },
     {
@@ -219,7 +455,34 @@
         ]
       },
       "free": null,
-      "nextUint64": null,
+      "nextUint64": {
+        "status": "predicted",
+        "coverage": "predicted",
+        "predicted_outcome": "residual_or_hand",
+        "sites": [
+          "0x800d6274"
+        ],
+        "entry_keys": [
+          "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6274"
+        ],
+        "closed_sites": [],
+        "block_predictions": [
+          {
+            "block": "0x800d6274",
+            "entry_key": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6274",
+            "criterion_prediction": "residual_or_hand",
+            "predicted_obligation_family_if_residual": "Frame-store/view matching, then callee resource and continuation framing."
+          }
+        ],
+        "references": [
+          "https://github.com/codygunton/zesislar/issues/13#issuecomment-6191876275"
+        ],
+        "prediction_basis": "Exact posted predictions and the bound53-instruction inventory. No new native observation.",
+        "native_result": null,
+        "native_seconds": null,
+        "native_peak_GiB": null,
+        "native_residual": null
+      },
       "alloc": null
     }
   ],
@@ -228,6 +491,56 @@
     "No proof or compilation ran.",
     "No alloc source was read.",
     "Not-present cells do not claim success or failure.",
-    "Historical findings retain their original candidate and measurement scope."
-  ]
+    "Historical findings retain their original candidate and measurement scope.",
+    "All eight nextUint64 cells are explicitly predicted. No native result is populated.",
+    "The posted predicate/registration availability scope remains historical; later preparation is not new native evidence.",
+    "Store-literal and framed-return refine the posted store/return labels through the same bound inventory.",
+    "Free and alloc cells remain null. DecodeItem cell objects remain unchanged."
+  ],
+  "prediction_update_UTC": "2026-10-15T20:59:02.821752+00:00",
+  "prediction_metadata_root": "602f638495d285c7846741dc24ffaee9439ea5da",
+  "nextUint64_prediction_scope": {
+    "posted_comment": "https://github.com/codygunton/zesislar/issues/13#issuecomment-6191876275",
+    "posted_UTC": "2026-10-15T12:19:05Z",
+    "posted_body_sha256": "2ab0d903839b48fddb74f536cd5d033c0618d4323600726ef6f862b18c65f11f",
+    "frozen_prediction_sha256": "d7ee30a8ba45d30f6d1f5ec3a6ac1eb580049aa75c37096d87f23d6aec418d2a",
+    "inventory_sha256": "dd81f9d0b20b1501ba7846265370d19d55f661a62f72f79b544a474bf48b4fb6",
+    "source_pin": "b5483dda21d72405c50a22cb6406a1231e51a579",
+    "source_tree": "322fdbcf246141e65b9e31b570389d13e1b1d9ee",
+    "source_range": "src/stateless/rlp_decode.zig:629-640",
+    "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
+    "original_entry_consumer_tip": "bf9f3411cfefcc719c472ebf7049eac9f2f92273",
+    "original_metadata_root": "1eed60b396351e5a19712ee5c72269728dd47e3c",
+    "criterion": {
+      "propagate": "Only carries existing semantic quantities or tests them. Canonical loop setup counts as propagation.",
+      "introduce": "Creates a new successor semantic quantity or relation. This label does not assert an abstract binder or a registered instance.",
+      "store": "Contains a memory write, including stack saves. Image construction alone stays under store unless it also creates a new rest-state quantity.",
+      "return": "Contains the actual return instruction. The label names its enclosing entry block.",
+      "loop": "Executes the fold body and must re-establish the header invariant or its exit.",
+      "call": "Contains the callee transfer. Its returned witness comes from the callee contract, not an invented source-introduction fact."
+    },
+    "non_additive_label_counts": {
+      "store": 3,
+      "call": 1,
+      "propagate": 4,
+      "introduce": 2,
+      "return": 1,
+      "loop": 1
+    },
+    "label_instances": 12,
+    "unique_blocks": 10,
+    "overlaps": {
+      "0x800d6274": [
+        "store",
+        "call"
+      ],
+      "0x800d632c": [
+        "store",
+        "introduce"
+      ]
+    },
+    "propagate_only_predicted_close": 4,
+    "other_blocks_predicted_residual_or_hand": 6,
+    "later_data_facts": "The later pointer correction and registrations do not revise this accepted prediction. No activation or native closure follows."
+  }
 }
