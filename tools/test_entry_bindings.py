@@ -15,6 +15,15 @@ class EntryBindingTests(unittest.TestCase):
         self.assertEqual(declared_binders(source, 'entry'), [
             {'name': 'args', 'type': 'Args'}, {'name': 'n', 'type': 'Z'}, {'name': 'cursor', 'type': 'Z'}])
 
+    def test_numeric_token_boundaries_remain_distinct(self):
+        self.assertEqual(normalize_type('bv 64'), 'bv 64')
+        self.assertEqual(normalize_type('bv 6 4'), 'bv 6 4')
+        self.assertNotEqual(normalize_type('bv 64'), normalize_type('bv 6 4'))
+        declared = declared_binders(
+            'Definition entry (value : bv 64) : Type := nat.', 'entry')
+        self.assertEqual(declared, [{'name': 'value', 'type': 'bv 64'}])
+        self.assertNotEqual(declared[0]['type'], normalize_type('bv 6 4'))
+
     def test_comments_cannot_supply_a_missing_definition(self):
         with self.assertRaisesRegex(ValueError, 'unambiguous'):
             declared_binders('(* Definition entry (args : Args) : Type := nat. *)', 'entry')
