@@ -9,6 +9,7 @@ Class ZesuLoopStep {Sigma} (source : iProp Sigma) (facts : Prop) : Prop :=
 #[global] Hint Mode ZesuLoopStep + + - : typeclass_instances.
 
 Require Import ZesuSsz.Automation.SwitchDispatch.
+Require Import ZesuSsz.Automation.ReturnRoute.
 From iris.proofmode Require Import intro_patterns.
 From Ltac2 Require Import Ltac2.
 Declare ML Module "zesu-signature-gates.plugin".
@@ -49,52 +50,114 @@ Lemma zesu_entry_intro_wand_equiv {PROP : bi} (premise before after : PROP) :
   before ⊣⊢ after -> (premise -∗ before) ⊣⊢ (premise -∗ after).
 Proof. intros Hequivalent. by rewrite Hequivalent. Qed.
 
+Lemma zesu_entry_intro_combine {Sigma} (source : iProp Sigma)
+    (entryFacts exitFacts : Prop) (entry : ZesuEntryIntro source entryFacts)
+    (exit : ZesuEntryIntro source exitFacts) :
+  ZesuEntryIntro source (entryFacts /\ exitFacts).
+Proof.
+  rewrite /ZesuEntryIntro.
+  iIntros "Hsource".
+  iDestruct (zesu_entry_intro_preserve source entryFacts entry with "Hsource")
+    as "[%Hentry Hsource]".
+  iDestruct (@zesu_entry_intro Sigma source exitFacts exit with "Hsource")
+    as "%Hexit".
+  iPureIntro. tauto.
+Qed.
+
+(* Resolve each source-keyed class independently before unfolding the source. *)
+Ltac zesu_entry_intro_goal_entry_registration Sigma source continuation :=
+  zesu_switch_enabled constr:(ZesuStepEntryIntro);
+     let evidence := open_constr:(ltac:(ltac2:(zesu_unique_entry_registration ()))
+       : @ZesuEntryIntro Sigma source _) in
+     let evidenceType := type of evidence in
+     assert_fails (has_evar evidence); assert_fails (has_evar evidenceType);
+     lazymatch evidenceType with
+     | @ZesuEntryIntro Sigma _ ?facts =>
+         tryif match goal with
+           | _ : @ZesuEntryIntroApplied Sigma source _ _ |- _ => idtac
+           end
+         then fail 100 "The goal entry already has an applied instance"
+         else
+           let marker := constr:(@ZesuEntryIntroWasApplied Sigma source facts evidence) in
+           continuation facts evidence marker
+     end.
+
+Ltac zesu_entry_intro_goal_exit_registration Sigma source continuation :=
+  zesu_switch_enabled constr:(ZesuStepReturnRoute);
+     let evidence := open_constr:(ltac:(ltac2:(zesu_unique_entry_registration ()))
+       : @ZesuExitMeaning Sigma source _) in
+     let evidenceType := type of evidence in
+     assert_fails (has_evar evidence); assert_fails (has_evar evidenceType);
+     lazymatch evidenceType with
+     | @ZesuExitMeaning Sigma _ ?facts =>
+         tryif match goal with
+           | _ : @ZesuExitMeaningApplied Sigma source _ _ |- _ => idtac
+           end
+         then fail 100 "The goal entry already has applied exit facts"
+         else
+           let intro := constr:(@zesu_exit_meaning Sigma source facts evidence
+             : @ZesuEntryIntro Sigma source facts) in
+           let marker := constr:(@ZesuExitMeaningWasApplied Sigma source facts evidence) in
+           continuation facts intro marker
+     end.
+
+Ltac zesu_entry_intro_goal_registration Sigma source continuation :=
+  first
+    [zesu_entry_intro_goal_entry_registration Sigma source
+       ltac:(fun entryFacts entry entryMarker =>
+         first
+           [zesu_entry_intro_goal_exit_registration Sigma source
+              ltac:(fun exitFacts exit exitMarker =>
+                let facts := constr:(entryFacts /\ exitFacts) in
+                let evidence := constr:(@zesu_entry_intro_combine Sigma source
+                  entryFacts exitFacts entry exit) in
+                let markers := constr:(conj entryMarker exitMarker) in
+                continuation facts evidence markers)
+           |continuation entryFacts entry entryMarker])
+    |zesu_entry_intro_goal_exit_registration Sigma source continuation].
+
 (* Inspect only the conclusion of the original wand prefix. *)
 Ltac zesu_entry_intro_goal_term assertion continuation :=
   lazymatch assertion with
   | @bi_wand ?PROP ?premise ?tail =>
       zesu_entry_intro_goal_term tail
-        ltac:(fun replacement equivalent Sigma source facts evidence =>
+        ltac:(fun replacement equivalent marker =>
           let rewritten := constr:((premise -∗ replacement)%I) in
           let lifted := constr:(@zesu_entry_intro_wand_equiv PROP
             premise tail replacement equivalent) in
-          continuation rewritten lifted Sigma source facts evidence)
+          continuation rewritten lifted marker)
   | @instr_pre' ?Arch ?Sigma ?isla ?thread false ?pc ?entry =>
       let head := get_head entry in
       let expanded := eval cbv beta delta [head] in entry in
       lazymatch expanded with
       | (?source ∗ ?frame)%I =>
           assert_fails (has_evar source);
-          let evidence := open_constr:(ltac:(ltac2:(zesu_unique_entry_registration ()))
-            : @ZesuEntryIntro Sigma source _) in
-          let evidenceType := type of evidence in
-          assert_fails (has_evar evidence);
-          assert_fails (has_evar evidenceType);
-          lazymatch evidenceType with
-          | @ZesuEntryIntro Sigma _ ?facts =>
-              tryif match goal with
-                | _ : @ZesuEntryIntroApplied Sigma source _ _ |- _ => idtac
-                end
-              then fail 100 "The goal entry already has an applied instance"
-              else
-                let replacement := constr:(@instr_pre' Arch Sigma isla thread
-                  false pc (⌜facts⌝ ∗ source ∗ frame)%I) in
-                let equivalent := constr:(@zesu_entry_intro_instr_body_equiv
-                  Sigma isla thread pc source frame facts evidence) in
-                continuation replacement equivalent Sigma source facts evidence
-          end
+          zesu_entry_intro_goal_registration Sigma source
+            ltac:(fun facts intro marker =>
+              let replacement := constr:(@instr_pre' Arch Sigma isla thread
+                false pc (⌜facts⌝ ∗ source ∗ frame)%I) in
+              let equivalent := constr:(@zesu_entry_intro_instr_body_equiv
+                Sigma isla thread pc source frame facts intro) in
+              continuation replacement equivalent marker)
       end
   end.
 
 Ltac zesu_entry_intro_goal_if_enabled :=
-  zesu_switch_enabled constr:(ZesuStepEntryIntro);
   lazymatch goal with
   | |- @bi_emp_valid ?PROP ?assertion =>
       zesu_entry_intro_goal_term assertion
-        ltac:(fun replacement equivalent Sigma source facts evidence =>
+        ltac:(fun replacement equivalent marker =>
           rewrite equivalent;
-          let marker := fresh "HentryIntroApplied" in
-          pose proof (@ZesuEntryIntroWasApplied Sigma source facts evidence) as marker)
+          let applied := fresh "HsourceFactsApplied" in
+          pose proof marker as applied;
+          let markerType := type of marker in
+          lazymatch markerType with
+          | _ /\ _ =>
+              let entryApplied := fresh "HentryIntroApplied" in
+              let exitApplied := fresh "HexitMeaningApplied" in
+              destruct applied as [entryApplied exitApplied]
+          | _ => idtac
+          end)
   end.
 
 Ltac zesu_entry_intro_if_enabled :=

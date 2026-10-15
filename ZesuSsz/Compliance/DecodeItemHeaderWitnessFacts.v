@@ -400,3 +400,44 @@ Qed.
 
 Print Assumptions decodeItemCompletedFoldFitsContradiction.
 Print Assumptions decodeItemCompletedFoldAlternateFitsContradiction.
+
+#[export] Hint Extern 1
+  (SimplAnd (bv_unsigned ?prefix - 183 < decodeItemInputLength ?args) True) =>
+  match goal with
+  | Hdomain : decodeItemC1BDomain args,
+    Hvalue : bv_unsigned ?register = bv_unsigned prefix,
+    Hguard : ~ bv_signed (bv_zero_extend 128 (bv_and (?register + 73) 255)) >=
+      bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) |- _ =>
+    unfold SimplAnd; split;
+    [intros _; eapply (decodeItemStringHeaderReadGuardFacts args register prefix);
+      solve [exact (conj eq_refl Hdomain) | eassumption | split; assumption]
+    | intros _; exact I]
+  end : typeclass_instances.
+
+#[export] Hint Extern 1
+  (SimplAnd (bv_unsigned ?prefix - 247 < decodeItemInputLength ?args) True) =>
+  match goal with
+  | Hdomain : decodeItemC1BDomain args,
+    Hvalue : bv_unsigned ?register = bv_unsigned prefix,
+    Hguard : ~ bv_signed (bv_zero_extend 128 (bv_and (?register + 9) 255)) >=
+      bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) |- _ =>
+    unfold SimplAnd; split;
+    [intros _; eapply (decodeItemListHeaderReadGuardFacts args register prefix);
+      solve [exact (conj eq_refl Hdomain) | eassumption | split; assumption]
+    | intros _; exact I]
+  end : typeclass_instances.
+
+#[export] Hint Extern 1
+  (SimplAnd (decodeItemByteFoldFacts ?args ?n 0 (decodeItemInputPointer ?args + 1)
+    (firstn (Z.to_nat ?n) ?rest)) True) =>
+  assert_fails (has_evar n);
+  match goal with Hhead : decodeItemInputHead args ?prefix rest,
+    Hdomain : decodeItemC1BDomain args |- _ =>
+    unfold SimplAnd; split;
+    [intros _; apply (decodeItemHeaderInitialFoldFacts
+      (decodeItemReturnAddress args) args prefix rest n);
+      [exact (conj eq_refl Hdomain) | exact Hhead |
+        let Hwidth := constr:(_ : SimplAnd (1 <= n <= 8) True) in exact ((proj1 Hwidth) I) |
+        let Hfits := constr:(_ : SimplAnd (n < decodeItemInputLength args) True) in exact ((proj1 Hfits) I)]
+    | intros _; exact I]
+  end : typeclass_instances.
