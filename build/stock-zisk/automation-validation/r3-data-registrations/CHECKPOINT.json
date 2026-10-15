@@ -1,0 +1,20 @@
+{
+  "item": "Seven unexported post-E3 exit-meaning registrations",
+  "root": "965678f3ff9862bb2dc06a34f9d2cf6de1776469",
+  "class_dependency": "7d7a2ffc7bfe9d9cf43683f616d83b326dd74e7b",
+  "class_source_sha256": "5aa79d3c08eae5054f8aeb0f191ed1dcf15d862a87c1f93b255af3b1f769e618",
+  "module": "ZesuSsz/Compliance/DecodeItemDataRegistrations.v",
+  "module_sha256": "413bd52233450e5697e83cf992a8096a88f4de5f1c7702ff78b7e8f4951b593f",
+  "registrations": 7,
+  "module_lines": 84,
+  "class_lines": 5,
+  "certificate": "/home/cody/zesislar/.worktrees/spec-a-av-r3-draft-dad8c896/_build/r3-seven-final-checkpoint-014/REPORT.json",
+  "certificate_sha256": "233b9f485eca91c56e024d67a1f9e459615836a28a42c323f3a41997d054e063",
+  "bindings": 11,
+  "MCP": "Health, exact module_m checks, assumptions[], complete terminal groups, Qed, Print Assumptions, normal closures.",
+  "reuse": "Five unchanged checks retained; the E3 alternative pair has fresh checks. Old Boolean registration excluded.",
+  "check_fast": "pass;1523.408736s;peak4371912KiB;unchanged sources",
+  "check_iris": "Root combined integration only, per Orch ruling.",
+  "failure_preserved": "011 failed at missing pinned source path. Exact pin links restored without pin changes.",
+  "scope": "Local instances only. No umbrella export, checker algorithm edit, or R3 engine consumer."
+}
