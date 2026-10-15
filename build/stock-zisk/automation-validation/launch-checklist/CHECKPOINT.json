@@ -1,0 +1,25 @@
+{
+  "schema": "phase2-phase3-launch-checklist-v1",
+  "root": "930e096b6a3281f236aef00cd0e653121fcd7317",
+  "scope": "Documentation only. No proof or launch command executed.",
+  "source_receipt": {
+    "path": "/home/cody/zesislar/.worktrees/spec-a-av-pattern-matrix/_build/launch-checklist-source-004/REPORT.json",
+    "sha256": "8b57784f400fa74116f7ccd646685736326c417ef555f4e6fbc3226afd1005a0",
+    "bindings": 9
+  },
+  "focused_checks": {
+    "path": "/home/cody/zesislar/.worktrees/spec-a-av-pattern-matrix/_build/launch-checklist-source-004/FOCUSED-CHECKS.json",
+    "sha256": "5f7ea5fd17fc39eac6b5f2b26496c819429d7d679cf25f3b8ade8964df2b2d80",
+    "passed": true
+  },
+  "files": {
+    "COMMAND598.txt": "144b0a6b6996a83f7e1511f187bab3cb81b26909def8bdd2f8aed43799e7fb0a",
+    "INPUTS.json": "2c61b175aca371dba3366ede3674ab43bab5706b7a4aea19d99acc6bef210529",
+    "README.md": "c596d5eea339ab9c09ab2c1f50646156354521936c813b691a4e69269fddad2a"
+  },
+  "rules_frozen_commit": null,
+  "native_execution": false,
+  "alloc_source_read": false,
+  "project_gate": "Not required for documentation-only metadata.",
+  "source_receipt_scope": "The receipt preserves preparation on5f83fd2b. Rebase changes no checklist source or command598 snapshot."
+}
