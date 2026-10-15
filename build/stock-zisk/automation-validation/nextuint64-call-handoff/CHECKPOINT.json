@@ -1,0 +1,87 @@
+{
+  "schema": "nextuint64-call-return-handoff-v1",
+  "metadata_Root": "2f52e438c6b1f2a1dd7377fb60e48b098f1c7f14",
+  "consumer_tip": "bf9f3411cfefcc719c472ebf7049eac9f2f92273",
+  "typed_definition_tip": "691f62dc510c7ce3a06bd38da51f59be83d1a3ac",
+  "callee_published_tip": "f776b46d439e6151ad0da86f9575778e0fb7bb30",
+  "callee_integrated_Root": "d77840e1f3de4c49640ebec4364e36966135c9a0",
+  "entry": "nextUint64EntryAt800d62b8",
+  "entry_source_lines": [
+    224,
+    236
+  ],
+  "theorem": "decodeItemSelectedComplianceCompositional 0x800d62b8",
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-call-handoff/_build/nextuint64-call-handoff001/REPORT.json",
+    "sha256": "9cdac092bc34698d2ab0085f6e504ee0dc2d7feccceed7177faa1692fd727e9d",
+    "bindings": 19
+  },
+  "resources": {
+    "GPR_count": 29,
+    "callee_partition": [
+      3,
+      7,
+      8,
+      11
+    ],
+    "callee_owned": [
+      "Exact input-end sysregs",
+      "Whole input array",
+      "Exact40-byte returned output",
+      "Separate uninitialized callee16"
+    ],
+    "caller_framed": [
+      "Original whole slice16",
+      "Uninitialized result16",
+      "Padding8",
+      "Saved-register array48 and six saved-word facts"
+    ],
+    "callee_existential_caller_GPRs": 15
+  },
+  "pure_context": [
+    "Retain caller BoundaryDomain.",
+    "Use the exact returned before-image and meaning witness.",
+    "Do not assume status/tag/length acceptance at62b8."
+  ],
+  "unproved_bridges": [
+    "The caller prologue must establish the mapped registers and six saved-word facts.",
+    "The caller needs sound stack views and an exact40-byte before-image witness.",
+    "The caller must construct the callee domain conjunction, including the before-image length.",
+    "The exact sysreg/resource correspondence still needs its kernel-level instantiation.",
+    "The return continuation must extract the output length and package its before-image meaning witness.",
+    "The caller must flatten returned register witnesses and frame its untouched resources.",
+    "The caller must instantiate the existing body-to-pre route and the return continuation with the actual code resources."
+  ],
+  "mismatch_finding": "No source resource mismatch found within this exact substitution. No entailment or kernel-state equality is claimed.",
+  "checks": {
+    "result": "passed for source comparison only",
+    "entry_registers": 29,
+    "callee_register_partition": [
+      3,
+      7,
+      8,
+      11
+    ],
+    "existential_caller_registers": 15,
+    "stack_partition_bytes": [
+      16,
+      8,
+      40,
+      48
+    ],
+    "caller_stack_constant": 96,
+    "no_early_acceptance_guard": true,
+    "published_callee_is_in_Root": true,
+    "kernel_entailment_check": false,
+    "native_proof_runs": 0,
+    "native_runs": 0
+  },
+  "limits": [
+    "Packet044 uses draft field names. The explicit field-role translation is not a record-type equality.",
+    "The typed-entry MCP record and the callee theorem record retain their original scopes.",
+    "DecodeMeaningModuloKnownBugs is retained. No bug-free or terminating execution is claimed.",
+    "No new proof or native run occurred.",
+    "The complete96-byte caller frame and separate16-byte callee frame remain distinct."
+  ],
+  "binder_limit": "The return entry has flat explicit bv64 binders. Fifteen values come from the callee existential witnesses."
+}
