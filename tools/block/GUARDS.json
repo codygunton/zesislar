@@ -1,0 +1,64 @@
+{
+  "citations": [
+    {
+      "clause": "closed-ra",
+      "invocation": 1,
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/p0-native-69b0-bundle030/evidence/events/process-2006451/event-00001334.json",
+      "refusal": "No matching clauses for match.",
+      "refusal_pointer": "#/refusal",
+      "sha256": "75ac7bbed853885abcbfeb3d17459461463a774def2aa3269eef9a3208bc711c"
+    },
+    {
+      "clause": "closed-ra",
+      "invocation": 2,
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/p0-native-69b0-bundle030/evidence/events/process-2006451/event-00003077.json",
+      "refusal": "No matching clauses for match.",
+      "refusal_pointer": "#/refusal",
+      "sha256": "0c4c7b1aae4386670ac8416bc1cb90e51c1e57fb1c90a1b7517e2690571d9169"
+    }
+  ],
+  "commands": {
+    "ReturnRoute.fault": {
+      "closed-ra": {
+        "command": "zesu_switch_enabled constr:(ZesuStepReturnRoute); unLET; lazymatch goal with |- SimplAnd (bv_extract 0 1 (bv_shiftr (bv_or (bv_and (bv_add ?ra (BV 64 0)) (BV 64 18446744073709551614)) (BV 64 0)) (BV 64 1)) = BV 1 1) False => assert_fails (has_evar ra); idtac end",
+        "sha256": "3bbff0999ca633bce5403e134666f4b2370097d14b969cb906f0142eb84fe3f6"
+      },
+      "requested-trigger": {
+        "command": "lazymatch goal with | |- LiTactic (normalize_instr_addr (bv_unsigned (bv_or (bv_and (bv_add _ (BV 64 0)) (BV 64 18446744073709551614)) (BV 64 0)))) => idtac | |- LiTactic (normalize_instr_addr (bv_unsigned (bv_or (bv_and _ (BV 64 18446744073709551614)) (BV 64 0)))) => idtac | _ => fail 0 \"requested masked-return trigger is absent\" end",
+        "sha256": "89dac3b47dabe23b853723261f9ae2d535d4c2a97b43399f0e18ad865cd5c59a"
+      },
+      "switch-check": {
+        "command": "zesu_switch_enabled constr:(ZesuStepReturnRoute)",
+        "sha256": "58cd0d348b4186b662de182e4f2bf72f960257d7a419cb347a8c38c239922cb7"
+      }
+    },
+    "ReturnRoute.implication": {
+      "closed-ra": {
+        "command": "zesu_switch_enabled constr:(ZesuStepReturnRoute); unLET; lazymatch goal with |- SimplImpl ?predicate ?simplified => lazymatch predicate with bv_extract 0 1 (bv_shiftr (bv_or (bv_and (bv_add ?ra (BV 64 0)) (BV 64 18446744073709551614)) (BV 64 0)) (BV 64 1)) = BV 1 1 => unify simplified False; change (SimplAnd predicate False); assert_fails (has_evar ra); idtac end end",
+        "sha256": "2b84e625ff43309d0c62f1524a69c35677b494eab3eff498c59b1147dbd52f48"
+      },
+      "requested-trigger": {
+        "command": "lazymatch goal with | |- LiTactic (normalize_instr_addr (bv_unsigned (bv_or (bv_and (bv_add _ (BV 64 0)) (BV 64 18446744073709551614)) (BV 64 0)))) => idtac | |- LiTactic (normalize_instr_addr (bv_unsigned (bv_or (bv_and _ (BV 64 18446744073709551614)) (BV 64 0)))) => idtac | _ => fail 0 \"requested masked-return trigger is absent\" end",
+        "sha256": "89dac3b47dabe23b853723261f9ae2d535d4c2a97b43399f0e18ad865cd5c59a"
+      },
+      "switch-check": {
+        "command": "zesu_switch_enabled constr:(ZesuStepReturnRoute)",
+        "sha256": "58cd0d348b4186b662de182e4f2bf72f960257d7a419cb347a8c38c239922cb7"
+      }
+    },
+    "ReturnRoute.normalize": {
+      "closed-ra": {
+        "command": "zesu_switch_enabled constr:(ZesuStepReturnRoute); unLET; lazymatch goal with | |- LiTactic (normalize_instr_addr (bv_unsigned (bv_or (bv_and (bv_add ?ra (BV 64 0)) (BV 64 18446744073709551614)) (BV 64 0)))) => assert_fails (has_evar ra); idtac | |- LiTactic (normalize_instr_addr (bv_unsigned (bv_or (bv_and ?ra (BV 64 18446744073709551614)) (BV 64 0)))) => assert_fails (has_evar ra); idtac end",
+        "sha256": "5129de6d69eb38d0e0c7d1310dd330d024512f0cbf2ae042c9585f4515d5ce2e"
+      },
+      "requested-trigger": {
+        "command": "lazymatch goal with | |- LiTactic (normalize_instr_addr (bv_unsigned (bv_or (bv_and (bv_add _ (BV 64 0)) (BV 64 18446744073709551614)) (BV 64 0)))) => idtac | |- LiTactic (normalize_instr_addr (bv_unsigned (bv_or (bv_and _ (BV 64 18446744073709551614)) (BV 64 0)))) => idtac | _ => fail 0 \"requested masked-return trigger is absent\" end",
+        "sha256": "89dac3b47dabe23b853723261f9ae2d535d4c2a97b43399f0e18ad865cd5c59a"
+      },
+      "switch-check": {
+        "command": "zesu_switch_enabled constr:(ZesuStepReturnRoute)",
+        "sha256": "58cd0d348b4186b662de182e4f2bf72f960257d7a419cb347a8c38c239922cb7"
+      }
+    }
+  }
+}

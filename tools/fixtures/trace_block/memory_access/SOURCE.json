@@ -1,0 +1,14 @@
+{
+  "Hooks.v": {
+    "command_sha256": "81217e4be386c2d0142026ad38f702faf61da1618816055a2c818ac910b271a7",
+    "source_path": "ZesuSsz/Automation/Hooks.v",
+    "source_root": "8c229d9372600a7ab87c1bae6c9a5b6d520589dc",
+    "source_sha256": "d9fc362943f8d9a7395c545de976c931fb25c963dd289149ca451fcc30f856c9"
+  },
+  "MemoryAccess.v": {
+    "command_sha256": "5be3eb1705567eef37448802ebe83e3855ee75d15e737d98f381710f5b4c9bcf",
+    "source_path": "ZesuSsz/Automation/MemoryAccess.v",
+    "source_root": "8c229d9372600a7ab87c1bae6c9a5b6d520589dc",
+    "source_sha256": "338f38ea676c2374577855953dbe825355fb78d88eea0b1df9cfeab1511f717e"
+  }
+}

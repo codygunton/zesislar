@@ -12,6 +12,7 @@ import os
 from pathlib import Path
 import re
 import sys
+import subprocess
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from coqc_recipe import snapshot_recipe
@@ -133,7 +134,10 @@ def prepare(module, workspace, switch, lemma=None, keyed_lemma=None):
             + " := ltac:(typeclasses eauto).\n")
         body = "  zesu_block.\n"
         if keyed_lemma:
-            body += "  apply " + keyed_lemma + ".\n"
+            body += ('  all: idtac "RULE-COMPARE-AUTOMATIC-RETURNED".\n'
+                     '  all: idtac "RULE-COMPARE-KEYED-BEGIN".\n'
+                     "  apply " + keyed_lemma + ".\n"
+                     '  all: idtac "RULE-COMPARE-KEYED-RETURNED".\n')
         diagnostic = ('  all: (chain_print_goal "active"; idtac "CHAIN-GOAL-END").\n'
                       '  Unshelve.\n'
                       '  all: idtac "RULE-COMPARE-RETURNED".\n'
@@ -224,13 +228,131 @@ def classify(exit_code, output, compiler, lemma=None):
     return {**result, "outcome": "compiler-error", "goals": goals}
 
 
-def compare(module, switch, build, out, schema, lemma=None, keyed_lemma=None):
+def trace_rule_name(switch):
+    """Use the backend registry. A switch without an observer cannot run."""
+    from trace_block_mcp import rule_name_for_switch
+    return rule_name_for_switch(switch.rsplit(".", 1)[-1])
+
+
+def capture_arm_trace(row, *, arm, workspace, root, block, switch, prepared,
+                      out, runner=None, keyed_lemma=None):
+    """Link a complete live traversal to the exact measured arm.
+
+    A failing arm requests its first residual. Every traversal observes all
+    selected rule entries. Closed arms request the selected rule's entries.
+    Incomplete traces leave compiler outcomes intact and block publication.
+    """
+    import trace_block
+    source = Path(row["source"])
+    rule_set = [{"name": trace_rule_name(switch), "enabled": arm == "rule_on"}]
+    rule = rule_set[0]["name"]
+    stop = "rule:" + rule if row["outcome"] == "closed" else "residual"
+    directory = source.parent / "trace"
+    scope = {"root": root, "source": source.relative_to(workspace).as_posix(),
+             "source_sha256": digest(source), "statement_sha256": prepared["statement_sha256"],
+             "theorem": prepared["lemma"], "switch_class": switch,
+             "rule_set": rule_set, "instance_changes": prepared["arm_instances"][arm],
+             "keyed_lemma": keyed_lemma,
+             "trace_sequence": "Automatic zesu_block stage through first residual or closure. The keyed continuation has separate compiler evidence."}
+    record = {"complete": False, "source_scope": scope, "requested_stop": stop,
+              "links": {"residual": None, "selected_triggers": {rule: []}}, "errors": []}
+    arguments = ["--block", "0x" + block.removeprefix("0x"),
+                 "--rules", rule + ("=on" if arm == "rule_on" else "=off"),
+                 "--stop", stop, "--workspace", str(workspace),
+                 "--source", str(source), "--theorem", prepared["lemma"], "--out", str(directory)]
+    record["arguments"] = arguments
+    try:
+        status = (runner or trace_block.main)(arguments)
+        record["exit_code"] = status
+        trace_path, markdown = directory / "TRACE.json", directory / "TRACE.md"
+        for key, path in (("json", trace_path), ("markdown", markdown)):
+            if not path.is_file():
+                record["errors"].append("The generator did not produce " + path.name + ".")
+            else:
+                record[key] = {"path": path.relative_to(out).as_posix(), "sha256": digest(path)}
+        if "json" not in record or "markdown" not in record:
+            return record
+        trace = json.loads(trace_path.read_text())
+        # Recheck the stable record rather than trusting its completeness flag.
+        validated = trace_block.build_trace(trace.get("request", {}), trace)
+        if markdown.read_text() != trace_block.render_markdown(trace):
+            record["errors"].append("The Markdown does not render the linked trace record.")
+        if status != 0 or not validated["completion"]["trace_complete"]:
+            record["errors"].append("The generator returned incomplete trace coverage.")
+            record["errors"].extend(validated["completion"]["reasons"])
+        identity, request = trace.get("identity", {}), trace.get("request", {})
+        for field in ("root", "source_sha256", "statement_sha256"):
+            if identity.get(field) != scope[field]:
+                record["errors"].append("The trace has a different " + field + ".")
+        if request.get("rule_set") != rule_set:
+            record["errors"].append("The trace has a different switch assignment.")
+        trace_scope = request.get("scope", {})
+        if trace_scope.get("source_sha256") != scope["source_sha256"]:
+            record["errors"].append("The trace request does not bind the measured arm source.")
+        switches = identity.get("switches", {})
+        if not isinstance(switches.get("actual_instances"), list):
+            record["errors"].append("The trace lacks measured switch instances.")
+        expected_stop = trace_block.parse_stop(stop)
+        if request.get("stop") != expected_stop:
+            record["errors"].append("The trace has a different requested checkpoint.")
+        counts = trace.get("coverage", {}).get("entry_events", {})
+        if rule not in counts:
+            record["errors"].append("The selected rule lacks an entry-coverage record.")
+        for index, point in enumerate(trace.get("points", [])):
+            trigger = point.get("trigger", {})
+            if trigger.get("kind") == "rule-entry" and trigger.get("rule") == rule:
+                record["links"]["selected_triggers"][rule].append(
+                    record["json"]["path"] + "#" + trace_block.pointer("points", index))
+        if trace.get("residual") is not None:
+            record["links"]["residual"] = record["json"]["path"] + "#/residual"
+        if row["outcome"] != "closed" and record["links"]["residual"] is None:
+            record["errors"].append("The failing arm lacks a residual trace link.")
+        automatic_closed = validated["completion"].get("proof_closed") is True
+        record["stages"] = {"automatic": {"command": "zesu_block.",
+            "proof_closed": automatic_closed, "residual": record["links"]["residual"],
+            "trace": record["json"]["path"]}}
+        if keyed_lemma:
+            stages = row.get("compiler_stages", {})
+            record["stages"]["keyed_continuation"] = {
+                "command": "apply " + keyed_lemma + ".", "evidence_scope": "compiler sequence after zesu_block",
+                "started": stages.get("keyed_started", False), "returned": stages.get("keyed_returned", False),
+                "sequence_proof_closed": row["outcome"] == "closed",
+                "compiler_log": row.get("log"), "compiler_log_sha256": row.get("log_sha256")}
+            if row["outcome"] == "closed" and not all(stages.get(key) is True for key in
+                    ("automatic_returned", "keyed_started", "keyed_returned")):
+                record["errors"].append("The compiler closure lacks explicit keyed-stage evidence.")
+        elif row["outcome"] == "closed" and not automatic_closed:
+            record["errors"].append("The automatic trace did not reproduce the compiler closure.")
+        if digest(source) != scope["source_sha256"]:
+            record["errors"].append("The measured source changed during trace capture.")
+        record["complete"] = not record["errors"]
+    except (Exception, SystemExit) as error:
+        # An operational capture failure must not erase the measured arm row.
+        record["errors"].append(type(error).__name__ + ": " + str(error))
+    return record
+
+
+def compiler_stages(output):
+    return {name: re.search(r"(?m)^" + marker + r"\s*$", output) is not None
+            for name, marker in (("automatic_returned", "RULE-COMPARE-AUTOMATIC-RETURNED"),
+                                 ("keyed_started", "RULE-COMPARE-KEYED-BEGIN"),
+                                 ("keyed_returned", "RULE-COMPARE-KEYED-RETURNED"))}
+
+
+def comparison_complete(arms):
+    """Require a compiler result and complete trace coverage for every row."""
+    return set(arms) == {"rule_off", "rule_on"} and all((row["outcome"] == "closed" or row["outcome"].startswith("residual:"))
+               and row.get("trace", {}).get("complete") is True for row in arms.values())
+
+
+def compare(module, switch, build, out, schema, lemma=None, keyed_lemma=None, *, trace_runner=None):
     workspace = Path(__file__).resolve().parents[2]
     module, build, out = module.resolve(), build.resolve(), out.resolve()
     if not module.is_relative_to(workspace) or not build.is_relative_to(workspace):
         raise ValueError("The source and private build must belong to this workspace.")
     if not out.is_relative_to(workspace / "_build"):
         raise ValueError("Comparison evidence must use a private _build directory.")
+    trace_rule_name(switch)  # Reject unsupported observers before native compilation.
     schema_value = json.loads(schema.read_text())
     required = {"slot", "hand_lines", "rule_on", "rule_off", "seconds", "peak_gib", "mcp_record"}
     if not required <= schema_value["block_record_schema"].keys():
@@ -239,6 +361,7 @@ def compare(module, switch, build, out, schema, lemma=None, keyed_lemma=None):
     schema_snapshot = out / "metrics-schema.json"
     schema_snapshot.write_bytes(schema.read_bytes())
     original_hash = digest(module)
+    root = subprocess.check_output(["git", "-C", str(workspace), "rev-parse", "HEAD"], text=True).strip()
     prepared = prepare(module, workspace, switch, lemma, keyed_lemma)
     recipe = out / "compiler-recipe.json"
     recipe_hash = snapshot_recipe(build, recipe)
@@ -252,6 +375,7 @@ def compare(module, switch, build, out, schema, lemma=None, keyed_lemma=None):
     os.environ.update(env)
     policy = coqc_primary.budget_policy(memory_gib=64, diagnostic_probe=True)
     arms = {}
+    block = prepared["lemma"].removeprefix("DesignedBoundary_")
     for arm in ("rule_off", "rule_on"):
         directory = out / arm
         directory.mkdir()
@@ -260,6 +384,7 @@ def compare(module, switch, build, out, schema, lemma=None, keyed_lemma=None):
         done, output, log, compiler, wall = coqc_primary.compile_source(
             source, directory, build, policy=policy)
         result = classify(done.returncode, output, compiler, prepared["lemma"])
+        result["compiler_stages"] = compiler_stages(output)
         result.update(source=str(source), source_sha256=digest(source),
                       instance_changes=prepared["arm_instances"][arm],
                       log=str(log), log_sha256=digest(log),
@@ -271,13 +396,19 @@ def compare(module, switch, build, out, schema, lemma=None, keyed_lemma=None):
                       group_coverage={"active": "recorded before Unshelve",
                                       "shelf": "post-unshelve targets include surviving active goals",
                                       "stack": "unavailable", "given_up": "unavailable"})
+        try:
+            result["trace"] = capture_arm_trace(
+                result, arm=arm, workspace=workspace, root=root, block=block,
+                switch=switch, prepared=prepared, out=out, runner=trace_runner, keyed_lemma=keyed_lemma)
+        except ValueError as error:
+            result["trace"] = {"complete": False, "errors": [str(error)]}
         save(directory / "evidence.json", result)
         arms[arm] = result
         assert digest(module) == original_hash
-    successful = all(a["outcome"] == "closed" or a["outcome"].startswith("residual:")
-                     for a in arms.values())
-    block = prepared["lemma"].removeprefix("DesignedBoundary_")
-    report = {"block": block, "source": str(module), "source_sha256": original_hash,
+    successful = comparison_complete(arms)
+    report = {"root": root, "trace_coverage_complete": all(row["trace"]["complete"] for row in arms.values()),
+              "trace_link_base": "Paths resolve relative to this report directory.",
+              "block": block, "source": str(module), "source_sha256": original_hash,
               "switch": switch, "imports": prepared["imports"],
               "statement": prepared["statement"], "statement_sha256": prepared["statement_sha256"],
               "existing_instances": prepared["existing_instances"],
@@ -294,6 +425,7 @@ def compare(module, switch, build, out, schema, lemma=None, keyed_lemma=None):
                    "rule_on": arms["rule_on"]["outcome"], "rule_off": arms["rule_off"]["outcome"],
                    "seconds": arms["rule_on"]["seconds"], "peak_gib": arms["rule_on"]["peak_gib"],
                    "measurement_arm": "rule_on", "mcp_record": None,
+                   "traces": {arm: row["trace"] for arm, row in arms.items()},
                    "first_residual": {arm: row["first_residual"] for arm, row in arms.items()},
                    "per_arm": {arm: {key: row[key] for key in ["seconds", "peak_gib", "total_wall_seconds"]}
                                for arm, row in arms.items()},

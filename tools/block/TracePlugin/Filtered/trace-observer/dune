@@ -1,0 +1,5 @@
+(library
+ (name filtered_trace_plugin)
+ (public_name p0-filtered-trace.trace-observer)
+ (modules trace_block_chunks filtered_trace_plugin)
+ (libraries unix coq-core.vernac coq-core.plugins.ltac2 yojson zarith))

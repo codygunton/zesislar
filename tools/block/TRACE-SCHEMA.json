@@ -1,0 +1,448 @@
+{
+  "command_policy": "Each trial currently supports exactly one actual atomic command record. Its command equals trial.command. Composite records are rejected.",
+  "completion": {
+    "final_obligations": {
+      "availability": "complete | unavailable",
+      "counts": {
+        "given_up": "nonnegative integer",
+        "goals": "nonnegative integer",
+        "shelf": "nonnegative integer",
+        "stack": "Nonnegative integer after accepted Qed. Null when the open-proof public API cannot expose hidden frames."
+      },
+      "evidence": "Legacy: evidence/SESSION.json#/final_snapshot. Filtered: evidence/SESSION.json#/final_obligations.",
+      "method": "Filtered closure uses kernel-accepted-Qed and the exact same-session accepted operation.",
+      "session": "same logical session id",
+      "undefined_evars": "exact integer count, or null when unavailable"
+    },
+    "proof_closed": "boolean",
+    "reasons": [
+      "exact independent trace/proof limitations"
+    ],
+    "trace_complete": "boolean"
+  },
+  "coverage": {
+    "actual_triggers": "nonnegative integer counts of qualifying triggers by selected rule",
+    "attempted_entries": "nonnegative integer counts of all native attempts by selected rule",
+    "captured_events": "same map as actual_triggers and exact retained point counts",
+    "entry_events": "same map as actual_triggers",
+    "instruction_provenance_complete": "False when a native checkpoint lacks its canonical PC or exact state attribution. An unavailable value is distinct from an absent event.",
+    "missing_event_ids": [],
+    "raw_event_index": "raw/INDEX.json",
+    "requested_trigger": "occurred | not-occurred | unobserved",
+    "requested_trigger_instruction_list": [],
+    "required_complete": "boolean",
+    "traversal": "first-residual | proof-closed | interrupted",
+    "unknown_guards": "Nonnegative counts by selected rule. Any unknown guard prevents completeness.",
+    "unobserved_regions": []
+  },
+  "external_seal": {
+    "complete_raw_seal": "RAW-SEAL.json",
+    "no_native_memory_claim": true,
+    "path": "EVIDENCE-MAP.json",
+    "raw_index": "raw/INDEX.json",
+    "required_checks": [
+      "Bind the unchanged raw SESSION hash and exact REQUEST hash.",
+      "Recompute the logical session and match the accepted proof start.",
+      "Match native RUN-MANIFEST revisions and instrumentation.",
+      "Verify every owned Pet event against the raw index.",
+      "Verify every process stream and file against the complete RAW-SEAL.",
+      "Verify operation and final-capture references.",
+      "Match raw attempted and actual counts to coverage and retained point identities.",
+      "Reject completeness when any raw trigger classification is unknown.",
+      "Derive every schema2 classification from its exact guard-counter bytes.",
+      "Join every actual guard to its exact native capture identity.",
+      "Require every declared trial and its exact entry, trial and rollback snapshots.",
+      "Join accepted Qed to its same-session command, source-state chain, accepted response, final state and empty obligations.",
+      "Keep public Pet.state_hash equality separate from full discarded-trial snapshot equality.",
+      "Verify every bounded chunk and reconstruct complete logical content without truncation."
+    ],
+    "runtime_link": "evidence -> unchanged raw evidence directory"
+  },
+  "identity": {
+    "inputs": "sorted role/path/hash records",
+    "instrumentation": "observer and overlay source/artifact hashes",
+    "root": "exact source commit",
+    "source_sha256": "original source SHA256",
+    "statement_sha256": "exact declaration SHA256",
+    "switches": "requested assignments and separately measured ordered actual instances"
+  },
+  "identity_policy": "The identity root, source path, source SHA, statement SHA and retained prefix equal request.scope.",
+  "instruction_visits": [],
+  "omitted_metadata": "The complete required live Evd subset includes contexts, types, bodies, status, filters and candidates. Universe constraints, source locations, relevance and abstraction metadata remain unavailable.",
+  "packages": {
+    "default": "P0Filtered; p0-filtered-trace.trace-observer",
+    "legacy": "The separate zesu-signature-gates.trace-observer package retains accepted026."
+  },
+  "pet_start_tick": "evidence/SESSION.json#/ownership/pet/start_ticks",
+  "physical_records": {
+    "encoding": "json-chunks-v1",
+    "index_children": 256,
+    "leaf_payload_bytes": 262144,
+    "limit_scope": "Every observer record includes its metadata and JSON encoding overhead. Goals, live Evd, feedback, refusals and residual Show Proof use the same lossless format.",
+    "maximum_serialized_bytes": 2097152
+  },
+  "points": [
+    {
+      "completeness": {
+        "hidden_frames_required": false,
+        "missing_observations": [
+          "exact missing required observation"
+        ],
+        "required_fields_complete": "boolean"
+      },
+      "current_goals": [
+        "ordered full goal records, with both printing modes and named contexts"
+      ],
+      "evars": {
+        "availability": "complete | unavailable",
+        "entries": [
+          {
+            "body": "complete defined body or null",
+            "body_nonotation": "complete defined body or null",
+            "context": "ordered complete local declarations",
+            "id": "exact Evd identifier",
+            "status": "defined | undefined",
+            "type": "complete notation text",
+            "type_nonotation": "complete no-notation text"
+          }
+        ],
+        "show_existentials": "complete Show Existentials feedback"
+      },
+      "given_up": [
+        "full goal records in the public API enumeration order"
+      ],
+      "goal": "complete notation text of the primary current goal, or null only for a proved empty current group",
+      "goal_nonotation": "complete no-notation text of the same goal, or null under the same condition",
+      "hand_call": [
+        {
+          "after_trial": "Exact logical snapshots key, or its #/snapshots/<RFC6901-escaped-id> pointer. The named snapshot must exist.",
+          "before": "Exact logical snapshots key, or its #/snapshots/<RFC6901-escaped-id> pointer. The named snapshot must exist.",
+          "clause": "exposed clause name or null",
+          "command": "exact existing rule invocation",
+          "commands": [
+            {
+              "after": "#/snapshots/<RFC6901-escaped-id>",
+              "before": "#/snapshots/<RFC6901-escaped-id>",
+              "command": "exact observed command text",
+              "outcome": "accepted | refused",
+              "refusal": "exact refusal text, or null for acceptance"
+            }
+          ],
+          "feedback": "complete original feedback",
+          "outcome": "accepted | refused | unavailable",
+          "rollback": "Exact logical snapshots key, or its #/snapshots/<RFC6901-escaped-id> pointer. The named snapshot must exist.",
+          "rollback_equal": "boolean or null"
+        }
+      ],
+      "hidden_focus_frames": {
+        "availability": "unavailable",
+        "reason": "Proofview.tclFOCUS stores hidden left/right goals in a lexical continuation. The public observer API does not expose those ordered frames."
+      },
+      "hint_log": {
+        "availability": "complete | unavailable",
+        "events": [
+          "ordered complete filtered events with actual entry/branch identifiers"
+        ],
+        "filter": [
+          "exact rule classes and hint names"
+        ]
+      },
+      "hyps": [
+        {
+          "body": "complete notation definition body or null",
+          "body_nonotation": "complete no-notation definition body or null",
+          "names": [
+            "exact local names in context order"
+          ],
+          "type": "complete notation text",
+          "type_nonotation": "complete no-notation text"
+        }
+      ],
+      "id": "point-NNNN, assigned in actual event order",
+      "refusal": [
+        {
+          "clause": "exact exposed clause name or null",
+          "exposure": "exposed | not-exposed",
+          "hand_call_index": "integer",
+          "message": "complete refusal text"
+        }
+      ],
+      "session_id": "exact value of top-level session.id",
+      "shelf": [
+        "ordered full goal records, with both printing modes and named contexts"
+      ],
+      "trigger": {
+        "branch": "actual branch identifier",
+        "client": "exact instrumented client name",
+        "entry": "exact client or hint name or null",
+        "invocation": "exact native invocation integer",
+        "kind": "rule-entry",
+        "matches_stop": "boolean",
+        "ordinal": "integer",
+        "program_counter": "exact observed value or null",
+        "rule": "canonical rule name or null"
+      }
+    }
+  ],
+  "request": {
+    "block": "canonical hexadecimal PC",
+    "rules": "sorted unique NAME=on/off assignments",
+    "scope": "bound workspace/source/theorem/prefix inputs",
+    "stop": "parsed marked checkpoint"
+  },
+  "residual": {
+    "completeness": {
+      "hidden_frames_required": false,
+      "missing_observations": [
+        "exact missing required observation"
+      ],
+      "required_fields_complete": "boolean"
+    },
+    "current_goals": [
+      "ordered full goal records, with both printing modes and named contexts"
+    ],
+    "evars": {
+      "availability": "complete | unavailable",
+      "entries": [
+        {
+          "body": "complete defined body or null",
+          "body_nonotation": "complete defined body or null",
+          "context": "ordered complete local declarations",
+          "id": "exact Evd identifier",
+          "status": "defined | undefined",
+          "type": "complete notation text",
+          "type_nonotation": "complete no-notation text"
+        }
+      ],
+      "show_existentials": "complete Show Existentials feedback"
+    },
+    "given_up": [
+      "full goal records in the public API enumeration order"
+    ],
+    "goal": "complete notation text of the primary current goal, or null only for a proved empty current group",
+    "goal_nonotation": "complete no-notation text of the same goal, or null under the same condition",
+    "hand_call": [
+      {
+        "after_trial": "Exact logical snapshots key, or its #/snapshots/<RFC6901-escaped-id> pointer. The named snapshot must exist.",
+        "before": "Exact logical snapshots key, or its #/snapshots/<RFC6901-escaped-id> pointer. The named snapshot must exist.",
+        "clause": "exposed clause name or null",
+        "command": "exact existing rule invocation",
+        "commands": [
+          {
+            "after": "#/snapshots/<RFC6901-escaped-id>",
+            "before": "#/snapshots/<RFC6901-escaped-id>",
+            "command": "exact observed command text",
+            "outcome": "accepted | refused",
+            "refusal": "exact refusal text, or null for acceptance"
+          }
+        ],
+        "execution": "SDK-discarded",
+        "feedback": "complete original feedback",
+        "native_entry": false,
+        "outcome": "accepted | refused | unavailable",
+        "rollback": "Exact logical snapshots key, or its #/snapshots/<RFC6901-escaped-id> pointer. The named snapshot must exist.",
+        "rollback_equal": "boolean or null",
+        "scope": "residual-leaf for an SDK-discarded first-leaf trial",
+        "selected_goal_id": "exact positive current goal evar ID",
+        "state_hash_check": "Exact public Pet.state_hash values. This check remains separate from full payload equality."
+      }
+    ],
+    "hidden_focus_frames": {
+      "availability": "unavailable",
+      "reason": "Proofview.tclFOCUS stores hidden left/right goals in a lexical continuation. The public observer API does not expose those ordered frames."
+    },
+    "hint_log": {
+      "availability": "complete | unavailable",
+      "events": [
+        "ordered complete filtered events with actual entry/branch identifiers"
+      ],
+      "filter": [
+        "exact rule classes and hint names"
+      ]
+    },
+    "hyps": [
+      {
+        "body": "complete notation definition body or null",
+        "body_nonotation": "complete no-notation definition body or null",
+        "names": [
+          "exact local names in context order"
+        ],
+        "type": "complete notation text",
+        "type_nonotation": "complete no-notation text"
+      }
+    ],
+    "id": "point-NNNN, assigned in actual event order",
+    "refusal": [
+      {
+        "clause": "exact exposed clause name or null",
+        "exposure": "exposed | not-exposed",
+        "hand_call_index": "integer",
+        "message": "complete refusal text"
+      }
+    ],
+    "session_id": "exact value of top-level session.id",
+    "shelf": [
+      "ordered full goal records, with both printing modes and named contexts"
+    ],
+    "show_proof": {
+      "availability": "complete | unavailable",
+      "text": "complete residual Show Proof feedback"
+    },
+    "trigger": {
+      "branch": "actual branch identifier",
+      "entry": "exact client or hint name or null",
+      "kind": "rule-entry | pc | instruction | goal-head | residual",
+      "matches_stop": "boolean",
+      "ordinal": "integer",
+      "program_counter": "exact observed value or null",
+      "rule": "canonical rule name or null"
+    }
+  },
+  "residual_null_policy": "residual is null only when traversal establishes proof closure. Empty printed groups alone do not establish closure.",
+  "residual_show_proof": {
+    "availability": "complete | unavailable",
+    "command": "Show Proof.",
+    "text": "Exact notation proof text.",
+    "text_nonotation": "Exact no-notation proof text."
+  },
+  "residual_trial_policy": {
+    "coverage": "Residual trials do not add native triggers or repair missing instrumentation.",
+    "execution": "SDK-discarded. No native rule entry is inferred.",
+    "full_state": "Before and rollback captures match completely, including both printers, live Evd, fresh counter, and Show Proof. They can expose more peers than the first selected-leaf capture.",
+    "operation_join": "The same SESSION binds adjacent full-before, discarded-command, and full-rollback operations. Their paths remain inside its evidence root.",
+    "refused_after": "The discarded partial state remains unavailable. The restored rollback snapshot supplies the after pointer with an explicit status.",
+    "selection": "The exact first focused leaf ID must match SESSION.residual_selection and SESSION.residual_event."
+  },
+  "runtime_evidence": "fixed relative sidecar path only; runtime hashes belong in the separate evidence seal",
+  "schema_version": 1,
+  "selected_point_policy": [
+    "Retain every actual selected-rule trigger in observed order.",
+    "Retain the first residual with complete Show Proof.",
+    "Retain only snapshots referenced by selected trials and the first residual.",
+    "Keep every other event and the instruction lists in the hashed raw sidecar.",
+    "Require attempted_entries >= actual_triggers = entry_events = captured_events for each selected rule.",
+    "Unknown classification makes trace completeness false."
+  ],
+  "session": {
+    "id": "stable logical session identifier derived from bound inputs",
+    "runtime": "evidence/SESSION.json#/ownership/pet"
+  },
+  "snapshot_association_policy": [
+    "The first command before pointer names the trial before snapshot.",
+    "The final command after pointer names the trial after_trial snapshot.",
+    "Each later command before pointer equals the previous command after pointer.",
+    "No command follows a refusal.",
+    "The rollback snapshot equals the entry snapshot.",
+    "The entry snapshot retains the actual rule point goals, contexts, live Evd, shelf and given-up data."
+  ],
+  "snapshot_policy": "Every command pointer resolves inside snapshots. Snapshots contain actual observed before/after states. A failed trial may point to its observed restored state and must record that limit.",
+  "snapshots": {
+    "<stable-snapshot-id>": {
+      "completeness": {
+        "hidden_frames_required": false,
+        "missing_observations": [
+          "exact missing required observation"
+        ],
+        "required_fields_complete": "boolean"
+      },
+      "current_goals": [
+        "ordered full goal records, with both printing modes and named contexts"
+      ],
+      "evars": {
+        "availability": "complete | unavailable",
+        "entries": [
+          {
+            "body": "complete defined body or null",
+            "body_nonotation": "complete defined body or null",
+            "context": "ordered complete local declarations",
+            "id": "exact Evd identifier",
+            "status": "defined | undefined",
+            "type": "complete notation text",
+            "type_nonotation": "complete no-notation text"
+          }
+        ],
+        "show_existentials": "complete Show Existentials feedback"
+      },
+      "given_up": [
+        "full goal records in the public API enumeration order"
+      ],
+      "goal": "complete notation text of the primary current goal, or null only for a proved empty current group",
+      "goal_nonotation": "complete no-notation text of the same goal, or null under the same condition",
+      "hidden_focus_frames": {
+        "availability": "unavailable",
+        "reason": "Proofview.tclFOCUS stores hidden left/right goals in a lexical continuation. The public observer API does not expose those ordered frames."
+      },
+      "hyps": [
+        {
+          "body": "complete notation definition body or null",
+          "body_nonotation": "complete no-notation definition body or null",
+          "names": [
+            "exact local names in context order"
+          ],
+          "type": "complete notation text",
+          "type_nonotation": "complete no-notation text"
+        }
+      ],
+      "shelf": [
+        "ordered full goal records, with both printing modes and named contexts"
+      ]
+    }
+  },
+  "success_policy": {
+    "proof_closure": "The owned whole-proof Qed succeeds. The final obligation record is complete and contains zero goals, zero stack goals, zero shelf goals, zero given-up goals and zero undefined evars.",
+    "rule_success": "An accepted whole-rule entry trial defines all exact entry goal evars, introduces no new remaining undefined evars, and discharges the targeted goals. Earlier identified obligations may remain. Bind the exact trial and both live Evd snapshots.",
+    "unresolved": "The available evidence establishes neither supported success kind. Unsupported supplied terminal claims make trace completeness false."
+  },
+  "unsupported_refutation_record": {
+    "Qed": {
+      "accepted": true,
+      "command": "Qed.",
+      "evidence": "pointer to the accepted same-session operation"
+    },
+    "assumptions": [],
+    "closure_check": {
+      "accepted": true,
+      "evidence": "same-session closure pointer",
+      "final_obligations": "complete empty final-obligation record"
+    },
+    "context": {
+      "hyps": "exact ordered named hypotheses with complete statements and definitions",
+      "point": "RFC6901 pointer to the exact trigger point",
+      "sha256": "SHA256 of the context hyps canonical JSON: sorted maps, indent 2, UTF-8, final newline",
+      "snapshot": "RFC6901 pointer to the same-session live entry snapshot"
+    },
+    "kind": "refutation",
+    "negated_clause": {
+      "condition": "literal clause side condition",
+      "trial": "RFC6901 pointer to the same-session exposed-clause trial"
+    },
+    "policy": "Reject refutation claims until the full statement/context/session/hash/Qed/assumption/closure validator exists.",
+    "session": "same logical session id as the point and trial",
+    "statement": "literal proved declaration with explicit binders: <point hypotheses> \u22a2 \u00ac <clause side condition>",
+    "statement_sha256": "SHA256 of the exact UTF-8 statement bytes without normalization",
+    "supported": false
+  },
+  "verdict": {
+    "evidence": "RFC6901 pointer to validated terminal success, or null",
+    "kind": "rule_success | proof_closure | null",
+    "reason": "observed result or unresolved limit",
+    "scope": "whole-proof | named-rule | session",
+    "session": "same logical session id as the top-level session and every point",
+    "status": "actual-success | unresolved",
+    "terminal_check": {
+      "after": "#/snapshots/<escaped-id>",
+      "after_undefined_evars": [
+        "exact complete live undefined identifiers"
+      ],
+      "before": "#/snapshots/<escaped-id>",
+      "before_undefined_evars": [
+        "exact complete live undefined identifiers"
+      ],
+      "entry_goal_evars": [
+        "exact entry goal identifiers"
+      ],
+      "target_discharge": "Every exact entry goal id is defined and absent from after current/shelf/given-up goals. Every remaining goal has an exact id."
+    }
+  },
+  "verdict_policy": "Only actual-success and unresolved are supported. actual-success carries rule_success or proof_closure. An unresolved verdict carries kind null. Every supplied success claim must match the independently derived evidence, scope, kind and session. Refutation claims remain unsupported."
+}

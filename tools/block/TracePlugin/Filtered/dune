@@ -1,0 +1,10 @@
+(executable
+ (name chunk_control)
+ (modules chunk_control)
+ (libraries filtered_trace_plugin yojson unix))
+
+(coq.theory
+ (name P0Filtered)
+ (modules TraceObserver)
+ (theories Ltac2)
+ (plugins p0-filtered-trace.trace-observer))

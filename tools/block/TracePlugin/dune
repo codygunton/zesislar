@@ -1,0 +1,7 @@
+(include_subdirs no)
+
+(library
+ (name trace_block_plugin)
+ (public_name zesu-signature-gates.trace-observer)
+ (modules trace_block_plugin)
+ (libraries unix coq-core.vernac coq-core.plugins.ltac2 yojson))

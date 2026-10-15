@@ -1,0 +1,39 @@
+
+
+Ltac zesu_liAStep :=
+ liEnsureInvariant;
+ try progress (unfold TRACE_LET);
+ try liAIntroduceLetInGoal;
+ first [
+    zesu_registered_array_fact_if_enabled
+  | zesu_expose_instruction_lookup
+  | zesu_region_fault_if_enabled
+  | zesu_ram_fault_if_enabled
+  | zesu_signed_address_if_enabled
+  | zesu_stack_write_if_enabled
+  | zesu_handoff_goal_address_if_enabled
+  | zesu_handoff_memory_if_enabled
+  | zesu_handoff_adjacent_words_if_enabled
+  | zesu_handoff_facts_if_enabled
+  | zesu_handoff_integer_equality_if_enabled
+  | zesu_memory_access_if_enabled zesu_integer_array_facts
+  | zesu_integer_array_address_if_enabled
+  | zesu_normalize_find_mem_address
+  | zesu_liAWriteMem
+  | zesu_liAReadMem
+  | liAAsm
+  | liAExp
+  | liAOther
+  | zesu_pure_fact_hints_if_enabled
+  | liUnfoldEarly
+  | zesu_known_pair_witness_if_enabled
+  | zesu_pure_witness_constraints_if_enabled
+  | zesu_record_witness_if_enabled
+  | zesu_primitive_tuple_if_enabled
+  | zesu_liInstrPreMatch
+  | zesu_preserve_current_unsigned
+  | zesu_register_collection_selection_if_enabled
+  | liStep
+  | liLetBindHint
+  | liUnfoldLate
+ ]; liSimpl.
