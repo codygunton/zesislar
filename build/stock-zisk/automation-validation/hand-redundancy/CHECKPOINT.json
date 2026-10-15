@@ -1,0 +1,47 @@
+{
+  "item": "hand-redundancy",
+  "scope": "Static audit. No proof change or native execution.",
+  "audit_commit": "6e08631942efd13d229ff7a46a01ab6a3c42384a",
+  "metadata_parent": "e75016bfc1f070909da51b656476b14dfda13c0b",
+  "full_certificate": "/home/cody/zesislar/.worktrees/spec-b-av-hand-redundancy-6e086319/_build/hand-redundancy001/REPORT.json",
+  "certificate_sha256": "231862d155d788c1c859f99a7fe083758ab237ef3fe2d7459e1c0236c6a964a5",
+  "source_bindings": 33,
+  "audit_script_sha256": "e01bbc5829173085c1b9a2e2deddcef9382cabd7faf9c3b2e65cfdeb8023aa57",
+  "checks_path": "/home/cody/zesislar/.worktrees/spec-b-av-hand-redundancy-6e086319/_build/hand-redundancy001/CHECKS.json",
+  "checks_sha256": "e98c409ad936c007554a01f98f697fd627221445fe71ec36114d2b79e70c9fa5",
+  "table_path": "/home/cody/zesislar/.worktrees/spec-b-av-hand-redundancy-6e086319/_build/hand-redundancy001/TABLE.md",
+  "table_sha256": "e050b6545870e85aee2f836696c9ca219a4415c53a92dc6bbcf8ed7c765b184d",
+  "blocks": [
+    {"block": "6960", "proof_physical_lines": 68, "whole_candidate_count": 2, "partial_candidate_count": 0, "blocked_lines": []},
+    {"block": "697c", "proof_physical_lines": 65, "whole_candidate_count": 0, "partial_candidate_count": 0, "blocked_lines": []},
+    {"block": "698c", "proof_physical_lines": 80, "whole_candidate_count": 6, "partial_candidate_count": 1, "blocked_lines": [111, 112]},
+    {"block": "69b0", "proof_physical_lines": 92, "whole_candidate_count": 2, "partial_candidate_count": 3, "blocked_lines": []},
+    {"block": "69e8", "proof_physical_lines": 75, "whole_candidate_count": 0, "partial_candidate_count": 0, "blocked_lines": []},
+    {"block": "6a24", "proof_physical_lines": 160, "whole_candidate_count": 8, "partial_candidate_count": 3, "blocked_lines": []},
+    {"block": "6a38", "proof_physical_lines": 31, "whole_candidate_count": 4, "partial_candidate_count": 1, "blocked_lines": []},
+    {"block": "6a40", "proof_physical_lines": 62, "whole_candidate_count": 4, "partial_candidate_count": 5, "blocked_lines": []},
+    {"block": "6a78", "proof_physical_lines": 91, "whole_candidate_count": 2, "partial_candidate_count": 3, "blocked_lines": []},
+    {"block": "6ac4", "proof_physical_lines": 171, "whole_candidate_count": 8, "partial_candidate_count": 3, "blocked_lines": []},
+    {"block": "6ad8", "proof_physical_lines": 68, "whole_candidate_count": 12, "partial_candidate_count": 3, "blocked_lines": []},
+    {"block": "6ae0", "proof_physical_lines": 73, "whole_candidate_count": 4, "partial_candidate_count": 2, "blocked_lines": []},
+    {"block": "6b08", "proof_physical_lines": 23, "whole_candidate_count": 0, "partial_candidate_count": 2, "blocked_lines": []}
+  ],
+  "totals": {"blocks": 13, "proof_physical_lines": 1059, "whole_candidate_lines": 52, "partial_candidate_lines": 26, "partial_fragment_records": 29, "blocked_source_lines": 2, "proven_native_deletions": 0, "standalone_R1d_registered_route_deletions": 0},
+  "coverage": [
+    "Four introduction registrations. The two promoted blocks are excluded.",
+    "Two loop registrations. The next-byte premise and successor guard remain.",
+    "Seven exit registrations. The two flat 698c sources mismatch the Hand view.",
+    "The historical 27 R1c facts remain grouped in the current introductions.",
+    "Three R1d bound shapes have no standalone registrations on this Root."
+  ],
+  "limits": [
+    "All deletion opportunities remain conditional. Proven native deletions: zero.",
+    "Whole and partial physical lines use disjoint sets. Overlapping families count once.",
+    "ReturnRoute is inactive. This audit does not establish an active R4 consumer.",
+    "Encoding, image, spatial, machine, and branch obligations remain.",
+    "The completed introductions supply related bounds. Standalone query routes remain absent."
+  ],
+  "focused_checks": ["33 frozen source bindings match", "All candidate texts match", "All counts recompute", "JSON parses", "Whitespace check"],
+  "gate": "Metadata-only scope. No full project gate or new MCP proof is claimed.",
+  "ownership": "Root owns integration and Iris. Free standby remains unchanged."
+}
