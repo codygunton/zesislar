@@ -427,6 +427,30 @@ def manifest_aliases(manifest: dict) -> dict[str, str]:
     return aliases
 
 
+def unlisted_registration_exports(files: dict[str, list[Path]], root: Path) -> list[str]:
+    """Reject exported registration modules outside this function manifest."""
+    declared = {path for paths in files.values() for path in paths}
+    pending, visited, errors = list(files["registrations"]), set(), []
+    while pending:
+        source = pending.pop(0)
+        if source in visited or source.suffix != ".v":
+            continue
+        visited.add(source)
+        for command in rocq_commands(source.read_text()):
+            imports, exported = command_imports([token[0] for token in command])
+            if not exported:
+                continue
+            for module in imports:
+                path = root.joinpath(*module.split(".")).with_suffix(".v")
+                if not path.is_file():
+                    continue  # External and generated theories have no local source here.
+                pending.append(path)
+                if path not in declared and registrations(path.read_text()):
+                    errors.append(f"Unlisted registration module: {path.relative_to(root)} "
+                                  f"(exported by {source.relative_to(root)}).")
+    return errors
+
+
 def violations(root: Path) -> list[str]:
     errors, registration_paths, modules, aliases = [], set(), set(), {}
     for manifest in sorted((root / "ZesuSsz/Evidence").glob("*_function_text.json")):
@@ -441,8 +465,14 @@ def violations(root: Path) -> list[str]:
         except (ValueError, OSError) as error:
             errors.append(f"{label}: {error}")
             continue
-        registration_paths.update(files["registrations"])
-        modules.update(path for paths in files.values() for path in paths if path.suffix == ".v")
+        try:
+            errors.extend(f"{label}: {error}" for error in
+                          unlisted_registration_exports(files, root))
+        except (ValueError, OSError) as error:
+            errors.append(f"{label}: {error}")
+        declared_modules = {path for paths in files.values() for path in paths if path.suffix == ".v"}
+        registration_paths.update(declared_modules)
+        modules.update(declared_modules)
         aliases.update(named_aliases)
         for category in DATA_CATEGORIES:
             for path in files[category]:

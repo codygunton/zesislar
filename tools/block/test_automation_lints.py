@@ -300,6 +300,120 @@ Instance second : ZesuEntryIntro (Contracts.entry right) RightFacts := right_cer
                 self.assertIn("registrations.first", errors[0])
                 self.assertIn("Other.second", errors[0])
 
+    def test_intro_instances_in_different_manifest_categories_share_a_key(self):
+        self.add_file("introductions", """
+Require Import Contracts.
+Instance base : ZesuEntryIntro entry Left := first_certificate.
+""")
+        self.add_file("registrations", """
+Instance additional : ZesuEntryIntro Contracts.entry Right := second_certificate.
+""")
+        self.write_manifest()
+        errors = check_data_only_lemmas.violations(self.root)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("Duplicate ZesuEntryIntro registration for Contracts.entry", errors[0])
+        self.assertIn("introductions.base", errors[0])
+        self.assertIn("registrations.additional", errors[0])
+
+    def test_loop_instances_in_different_manifest_categories_share_a_key(self):
+        self.add_file("loop_steps", """
+Require Import Contracts.
+Instance base : ZesuLoopStep entry Left := first_certificate.
+""")
+        self.add_file("registrations", """
+Instance additional : ZesuLoopStep Contracts.entry Right := second_certificate.
+""")
+        self.write_manifest()
+        errors = check_data_only_lemmas.violations(self.root)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("loop_steps.base", errors[0])
+        self.assertIn("registrations.additional", errors[0])
+
+    def test_aliases_resolve_across_declared_module_categories(self):
+        self.add_file("introductions", """
+Definition alias := Contracts.entry.
+Instance base : ZesuEntryIntro alias Left := first_certificate.
+""")
+        self.add_file("registrations", """
+Instance additional : ZesuEntryIntro Contracts.entry Right := second_certificate.
+""")
+        self.manifest["aliases"] = {"ZesuSsz.Evidence.introductions.alias": "Contracts.entry"}
+        self.write_manifest()
+        errors = check_data_only_lemmas.violations(self.root)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("Contracts.entry", errors[0])
+        self.assertIn("introductions.base", errors[0])
+        self.assertIn("registrations.additional", errors[0])
+
+    def test_exported_unlisted_registration_module_fails(self):
+        self.add_file("registrations", """
+Require Export ZesuSsz.Evidence.Unlisted.
+Instance first : ZesuEntryIntro Contracts.entry Left := first_certificate.
+""")
+        (self.evidence / "Unlisted.v").write_text("""
+Instance second : ZesuEntryIntro Contracts.entry Right := second_certificate.
+""")
+        self.write_manifest()
+        errors = check_data_only_lemmas.violations(self.root)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("Unlisted registration module: ZesuSsz/Evidence/Unlisted.v", errors[0])
+        self.assertIn("exported by ZesuSsz/Evidence/registrations.v", errors[0])
+
+    def test_exported_listed_registration_module_is_checked(self):
+        self.add_file("registrations", "Require Export ZesuSsz.Evidence.Listed.")
+        path = self.evidence / "Listed.v"
+        path.write_text("Instance unique : ZesuEntryIntro Contracts.entry True := proof.")
+        self.manifest["registrations"].append(str(path.relative_to(self.root)))
+        self.write_manifest()
+        self.assertEqual(check_data_only_lemmas.violations(self.root), [])
+
+    def test_unlisted_registration_through_export_chain_fails(self):
+        self.add_file("registrations", "From ZesuSsz.Evidence Require Export Bridge.")
+        (self.evidence / "Bridge.v").write_text(
+            "Require Export ZesuSsz.Evidence.Hidden.")
+        (self.evidence / "Hidden.v").write_text(
+            "Instance hidden : ZesuLoopStep Contracts.entry True := proof.")
+        self.write_manifest()
+        errors = check_data_only_lemmas.violations(self.root)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("Hidden.v", errors[0])
+        self.assertIn("Bridge.v", errors[0])
+
+    def test_export_cycle_terminates_without_registration(self):
+        self.add_file("registrations", "Require Export ZesuSsz.Evidence.Bridge.")
+        (self.evidence / "Bridge.v").write_text(
+            "Require Export ZesuSsz.Evidence.registrations.")
+        self.write_manifest()
+        self.assertEqual(check_data_only_lemmas.violations(self.root), [])
+
+    def test_import_does_not_trigger_export_policy(self):
+        self.add_file("registrations", "Require Import ZesuSsz.Evidence.Hidden.")
+        (self.evidence / "Hidden.v").write_text(
+            "Instance hidden : ZesuEntryIntro Contracts.entry True := proof.")
+        self.write_manifest()
+        self.assertEqual(check_data_only_lemmas.violations(self.root), [])
+
+    def test_export_comment_and_string_do_not_trigger_policy(self):
+        self.add_file("registrations", '''
+(* Require Export ZesuSsz.Evidence.Hidden. *)
+Definition label := "Require Export ZesuSsz.Evidence.Hidden.".
+''')
+        (self.evidence / "Hidden.v").write_text(
+            "Instance hidden : ZesuEntryIntro Contracts.entry True := proof.")
+        self.write_manifest()
+        self.assertEqual(check_data_only_lemmas.violations(self.root), [])
+
+    def test_another_manifest_cannot_cover_an_unlisted_export(self):
+        self.add_file("registrations", "Require Export ZesuSsz.Evidence.Hidden.")
+        hidden = self.evidence / "Hidden.v"
+        hidden.write_text("Instance hidden : ZesuEntryIntro Contracts.entry True := proof.")
+        self.write_manifest("first")
+        self.manifest["registrations"] = [str(hidden.relative_to(self.root))]
+        self.write_manifest("second")
+        errors = check_data_only_lemmas.violations(self.root)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("first_function_text.json", errors[0])
+
     def test_different_classes_and_qualified_predicates_pass(self):
         self.add_file("registrations", """
 Instance intro : ZesuEntryIntro Contracts.Left.entry True := proof.
