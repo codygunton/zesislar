@@ -1,32 +1,34 @@
 {
-  "schema": "pattern-coverage-skeleton-v1",
-  "base_root": "06acf88081b14cdf19e09f7ac90d969a67cd3115",
-  "scope": "Documentation-only Phase4 item2 skeleton; no proof or native run.",
-  "matrix_sha256": "d0a8073f601b93ee48d67f517b1e1d6823124ca9e756514ac66aba118c4075e5",
-  "README_sha256": "a7ee91d923c54d91b7682315238b7013c78bfd8a7e23ba9bd0fbc7e55e4c88cb",
-  "certificate": {
-    "path": "/home/cody/zesislar/.worktrees/spec-a-av-pattern-matrix/_build/pattern-matrix-sources-001/REPORT.json",
-    "sha256": "adbad27ff501682dc4f710565b4c8ef7d756ff258df5ba9b55687e0c31f5c503",
-    "bindings": 9
-  },
-  "issue_comment": "https://github.com/codygunton/zesislar/issues/13#issuecomment-6195564367",
-  "issue_comment_body_sha256": "9274a22bdf3269ba6ab8c2a2e43f8c72c1d4b59b05d5f8a9b3ccc31ac0aa1f24",
-  "focused_checks": "passed",
+  "item": "pattern-matrix-nextuint64-predictions",
+  "root": "602f638495d285c7846741dc24ffaee9439ea5da",
+  "scope": "Metadata only. DecodeItem observed; nextUint64 predicted; free/alloc null.",
+  "matrix_sha256": "31480f5256b41663f841f7f974ffd2f68e11d002ad20bafb08a127ecdc44e594",
+  "README_sha256": "e85931c93f63e936b8d170d3f7d1be319c2c4b6b0ed6d27bc0e27414776288a5",
+  "full_certificate": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-pattern-matrix-602f6384/_build/nextuint64-matrix001/REPORT.json",
+  "certificate_sha256": "dd6e07ed49710e98ebde45cf53cf02500c70e00adf5fdb3cc5d79994d2752fa0",
+  "bindings": 15,
   "row_count": 8,
-  "columns": [
-    "decodeItem",
-    "free",
-    "nextUint64",
-    "alloc"
-  ],
-  "non_decodeItem_cells": "All24 remain null.",
-  "absent_decodeItem_patterns": [
-    "store-symbolic",
-    "return-without-frame",
-    "call"
-  ],
-  "project_gate": "Not run: documentation-only metadata; no executable artifact changed.",
-  "MCP": "Not used: no proof changed.",
-  "native_execution": false,
+  "nextUint64_predicted_cells": 8,
+  "free_alloc_null_cells": 16,
+  "decodeItem_observations": "Unchanged.",
+  "prediction_comment": "https://github.com/codygunton/zesislar/issues/13#issuecomment-6191876275",
+  "prediction_comment_body_sha256": "2ab0d903839b48fddb74f536cd5d033c0618d4323600726ef6f862b18c65f11f",
+  "frozen_predictions_sha256": "d7ee30a8ba45d30f6d1f5ec3a6ac1eb580049aa75c37096d87f23d6aec418d2a",
+  "inventory_sha256": "dd81f9d0b20b1501ba7846265370d19d55f661a62f72f79b544a474bf48b4fb6",
+  "criterion": "Copied exactly from the accepted frozen prediction JSON.",
+  "non_additive_counts": {
+    "store": 3,
+    "call": 1,
+    "propagate": 4,
+    "introduce": 2,
+    "return": 1,
+    "loop": 1
+  },
+  "label_instances": 12,
+  "unique_blocks": 10,
+  "native_result_time_memory_residual": "All null.",
+  "later_data_availability": "No prediction revision, activation or closure inference.",
+  "focused_checks": "Passed exact text, matrix preservation, mapping, counts, JSON and whitespace checks.",
+  "gate": "Metadata only; no proof or project gate ran.",
   "alloc_source_read": false
 }
