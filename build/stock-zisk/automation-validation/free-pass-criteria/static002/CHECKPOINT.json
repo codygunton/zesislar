@@ -1,0 +1,85 @@
+{
+  "item": "Phase2 static pass rows",
+  "scope": "Source-count comparisons only. No native pass is claimed.",
+  "free_package": "0a6f495e83f814eb5a2f02db867239bc245e1a04",
+  "free_package_report_sha256": "002dbdcdb6deb651d6c9e28523fed943c314c4a7640c871e5f35e5b5cfbc08e4",
+  "free_interface_total": 1105,
+  "free_category_totals": {
+    "contracts": 571,
+    "introductions": 113,
+    "exit_meanings": 109,
+    "loop_steps": 0,
+    "registrations": 201,
+    "generator_json": 111
+  },
+  "free_delta": {
+    "previous_interface": 983,
+    "new_modules": 121,
+    "umbrella_export": 1,
+    "total_delta": 122
+  },
+  "denominator_ruling": "Registered-introduction quantity: free one guarded class; decodeItem four.",
+  "ratios": [
+    {
+      "id": "introductions_per_registered_quantity",
+      "free": {
+        "numerator": 113,
+        "denominator": 1,
+        "exact_fraction": "113/1",
+        "display_6dp": "113.000000"
+      },
+      "decodeItem": {
+        "numerator": 3688,
+        "denominator": 4,
+        "exact_fraction": "3688/4",
+        "reduced_fraction": "922/1",
+        "display_6dp": "922.000000"
+      },
+      "comparison": "free <= decodeItem",
+      "cross_products": [
+        452,
+        3688
+      ],
+      "static_pass": true,
+      "unit": "Introductions category lines per registered-introduction quantity. Free has one guarded class; decodeItem has four."
+    },
+    {
+      "id": "interface_lines_per_block",
+      "free": {
+        "numerator": 1105,
+        "denominator": 43,
+        "exact_fraction": "1105/43",
+        "display_6dp": "25.697674"
+      },
+      "decodeItem": {
+        "numerator": 16888,
+        "denominator": 24,
+        "exact_fraction": "16888/24",
+        "reduced_fraction": "2111/3",
+        "display_6dp": "703.666667"
+      },
+      "comparison": "free <= decodeItem",
+      "cross_products": [
+        26520,
+        726184
+      ],
+      "static_pass": true,
+      "unit": "All six scored interface categories per block."
+    }
+  ],
+  "native_results": {
+    "propagate": null,
+    "returns": null,
+    "stores": null,
+    "frozen_rules": null,
+    "first_full_result": null
+  },
+  "rounding": "Display values use six decimal places. Exact integer cross-products determine the static result.",
+  "integration_status": "Free source package accepted. Root recount and combined gates remain pending.",
+  "rule_freeze_commit": null,
+  "historical_counts": [
+    933,
+    958,
+    983
+  ]
+}
