@@ -1,5 +1,5 @@
 {
-  "status": "Local candidate for controlled native comparison; not accepted for production",
+  "status": "Reviewed comparison candidate; disabled pending native correction review",
   "base": "965678f3ff9862bb2dc06a34f9d2cf6de1776469",
   "frozen_candidate": "16ebbbe6cefd1e592369f006924b8f21a772cbad",
   "report": {
@@ -19,7 +19,7 @@
     "ZesuSsz/Automation/MemoryAccess.v": "8c65415a5e01f3db835022f69cb744827c32fed94a22e508f052e26e10f2c407",
     "ZesuSsz/Automation/Hooks.v": "d9fc362943f8d9a7395c545de976c931fb25c963dd289149ca451fcc30f856c9",
     "ZesuSsz/Automation/Switches/MemoryAccess.v": "a7751ed3f14cf04e8b699a1edf272e63ddcfd25990ba07a7ea40f37fc4dd9932",
-    "ZesuSsz/Proofs/Tests/MemoryAccessRule.v": "55280f4b695fe1b38f078c25849bc48d3a841004a4264290630996efe7cf0321",
+    "ZesuSsz/Proofs/Tests/MemoryAccessRule.v": "99b1289df6c733f3c62c57e1388d971d8955c7745d480cd0aa16d88e116e9720",
     "ZesuSsz/Evidence/approved_automation_switches.json": "8f5f1b4572965ab3721644b687ade8d9fc3db1e083a092f25ddd2a7e8e90eb10",
     "tools/block/test_approved_switches.py": "fcb5b038cbc6f8403c6df903f18b96ca078811a997fdc482958d033fabb01a88"
   },
@@ -34,11 +34,31 @@
   "compiler_CPU_seconds": 1200,
   "stack": "unlimited",
   "closure": "Normal owned exits; no cleanup signals",
-  "native_effect": "unmeasured",
-  "gates": "Pending; local commit authorized before gates for comparison",
+  "native_effect": "Frozen b1f6 comparison remains separate; no native closure follows",
+  "gates": {
+    "check_fast": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-child-map-r2-region-0d880796/_build/r2-region-check-fast101/RESULT.json",
+      "sha256": "956ddc5c6be39056e62d57d820aba9bde3e7f401acd00eaba5688cabd724161d",
+      "elapsed_seconds": 1734.47515363805,
+      "exit_code": 0,
+      "inputs_unchanged": true
+    },
+    "iris": "No child preview under the comparison ruling"
+  },
   "limitations": [
     "The nat-index continuation remains open after region selection.",
     "The native-literal final pre-Qed export contains one empty stack frame. Qed passes.",
     "The earlier failed attempts and diagnostic069 remain retained."
-  ]
+  ],
+  "fixture_supplement": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-map-r2-region-0d880796/_build/r2-region-fixture-supplement099/REPORT.json",
+    "sha256": "7f07e219df606128da6cf5ab12b905932f5f22301f41499fb36d0a3c9b50bb63"
+  },
+  "fixture_bindings": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-child-map-r2-region-0d880796/_build/r2-region-fixture-supplement099/BINDINGS.json",
+    "sha256": "872dbf9dc7c19843c043ba5463adc371ac8c6c25cfc72526ef6202c170063d77"
+  },
+  "final_source_base": "a422ab98",
+  "historical_comparison_tip": "b1f6c9d3125ce251495051e8787e16f2fd0751d3",
+  "changed_fixture_literal_verifications": 11
 }

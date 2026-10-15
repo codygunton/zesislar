@@ -28,12 +28,15 @@ Definition memory_region_continuation (address : Z) (width : N)
     (kind : mem_mapsto_kind) : iProp Sigma :=
   match kind with
   | MKArray 8 base values =>
-      ∃ index : nat,
+      let index := Z.to_nat (address - base) in
         ⌜Z.of_nat index = address - base⌝ ∗
         ⌜(index + N.to_nat width <= length values)%nat⌝ ∗
         (base ↦ₘ∗ values -∗ True)
   | _ => False
   end.
+
+Global Instance : LithiumUnfold (@memory_region_continuation) := I.
+Global Typeclasses Opaque memory_region_continuation.
 
 Lemma memory_region_literal (base offset : Z) (values : list (bv 8))
     (Hbase : 0 <= base) (Hoffset : 0 <= offset)
@@ -48,9 +51,12 @@ Proof.
   unfold memory_region_continuation.
   zesu_memory_access_if_enabled ltac:(idtac).
   Fail let _ := constr:(_ : MemoryAccessSelection (base + offset)) in idtac.
-  iExists (Z.to_nat offset). iSplitR.
+  iSplitR.
   - iPureIntro. rewrite Z2Nat.id; lia.
-  - iSplitR; [iPureIntro; lia |]. iIntros "Hvalues". done.
+  - iSplitR.
+    + iPureIntro. apply Nat2Z.inj_le.
+      rewrite Nat2Z.inj_add Z2Nat.id; cbn [N.to_nat]; lia.
+    + iIntros "Hvalues". done.
 Qed.
 Lemma memory_region_one (base offset : Z) (values : list (bv 8))
     (Hbase : 0 <= base) (Hoffset : 0 <= offset)
@@ -65,9 +71,12 @@ Proof.
   unfold memory_region_continuation.
   zesu_memory_access_if_enabled ltac:(idtac).
   Fail let _ := constr:(_ : MemoryAccessSelection (base + offset)) in idtac.
-  iExists (Z.to_nat offset). iSplitR.
+  iSplitR.
   - iPureIntro. rewrite Z2Nat.id; lia.
-  - iSplitR; [iPureIntro; lia |]. iIntros "Hvalues". done.
+  - iSplitR.
+    + iPureIntro. apply Nat2Z.inj_le.
+      rewrite Nat2Z.inj_add Z2Nat.id; cbn [N.to_nat]; lia.
+    + iIntros "Hvalues". done.
 Qed.
 Lemma memory_region_eight (base offset : Z) (values : list (bv 8))
     (Hbase : 0 <= base) (Hoffset : 0 <= offset)
@@ -82,9 +91,12 @@ Proof.
   unfold memory_region_continuation.
   zesu_memory_access_if_enabled ltac:(idtac).
   Fail let _ := constr:(_ : MemoryAccessSelection (base + offset)) in idtac.
-  iExists (Z.to_nat offset). iSplitR.
+  iSplitR.
   - iPureIntro. rewrite Z2Nat.id; lia.
-  - iSplitR; [iPureIntro; lia |]. iIntros "Hvalues". done.
+  - iSplitR.
+    + iPureIntro. apply Nat2Z.inj_le.
+      rewrite Nat2Z.inj_add Z2Nat.id; cbn [N.to_nat]; lia.
+    + iIntros "Hvalues". done.
 Qed.
 Lemma memory_region_missing_extent (base offset : Z) (values : list (bv 8))
     (Hbase : 0 <= base) (Hoffset : 0 <= offset)
@@ -191,9 +203,12 @@ Proof.
   unfold memory_region_continuation.
   zesu_memory_access_if_enabled ltac:(idtac).
   Fail let _ := constr:(_ : MemoryAccessSelection (base + (bv_unsigned index * 8 + constant))) in idtac.
-  iExists (Z.to_nat (bv_unsigned index * 8 + constant)). iSplitR.
+  iSplitR.
   - iPureIntro. rewrite Z2Nat.id; lia.
-  - iSplitR; [iPureIntro; lia |]. iIntros "Hvalues". done.
+  - iSplitR.
+    + iPureIntro. apply Nat2Z.inj_le.
+      rewrite Nat2Z.inj_add Z2Nat.id; cbn [N.to_nat]; lia.
+    + iIntros "Hvalues". done.
 Qed.
 Lemma memory_region_native_literal (base : Z) (values : list (bv 8))
     (Hbase : 0 <= base)
@@ -208,9 +223,12 @@ Proof.
   unfold memory_region_continuation.
   zesu_memory_access_if_enabled ltac:(idtac).
   Fail let _ := constr:(_ : MemoryAccessSelection (base + 32)) in idtac.
-  iExists (32%nat). iSplitR.
-  - iPureIntro. cbn; lia.
-  - iSplitR; [iPureIntro; lia |]. iIntros "Hvalues". done.
+  iSplitR.
+  - iPureIntro. rewrite Z2Nat.id; lia.
+  - iSplitR.
+    + iPureIntro. apply Nat2Z.inj_le.
+      rewrite Nat2Z.inj_add Z2Nat.id; cbn [N.to_nat]; lia.
+    + iIntros "Hvalues". done.
 Qed.
 Lemma memory_region_peer_shelf (base offset : Z) (values : list (bv 8))
     (Hbase : 0 <= base) (Hoffset : 0 <= offset)
@@ -226,9 +244,12 @@ Proof.
   assert (unrelated : nat) by shelve.
   assert (Hpeer : True).
   2: zesu_memory_access_if_enabled ltac:(idtac).
-  2: (iExists (Z.to_nat offset); iSplitR;
+  2: (iSplitR;
     [iPureIntro; rewrite Z2Nat.id; lia |
-     iSplitR; [iPureIntro; lia | iIntros "Hvalues"; done]]).
+     iSplitR;
+       [iPureIntro; apply Nat2Z.inj_le;
+        rewrite Nat2Z.inj_add Z2Nat.id; cbn [N.to_nat]; lia |
+        iIntros "Hvalues"; done]]).
   exact I.
   Unshelve.
   exact 0%nat.
