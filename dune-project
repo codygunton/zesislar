@@ -4,3 +4,5 @@
 (package
  (name zesu-signature-gates)
  (depends coq-core))
+
+(package (name p0-filtered-trace) (depends coq-core))

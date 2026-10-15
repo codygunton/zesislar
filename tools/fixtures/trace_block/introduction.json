@@ -1,0 +1,612 @@
+{
+  "completion": {
+    "proof_closed": false,
+    "reasons": [],
+    "trace_complete": true
+  },
+  "coverage": {
+    "captured_events": {
+      "ConjunctMatch": 1
+    },
+    "entry_events": {
+      "ConjunctMatch": 1
+    },
+    "missing_event_ids": [],
+    "requested_trigger": "occurred",
+    "requested_trigger_instruction_list": [
+      {
+        "kind": "entry",
+        "program_counter": "0x1000"
+      }
+    ],
+    "required_complete": true,
+    "traversal": "first-residual",
+    "unobserved_regions": []
+  },
+  "identity": {
+    "root": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "source": "Fixture.v",
+    "source_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "statement_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "switches": {
+      "actual_instances": [
+        "ConjunctMatch.enabled"
+      ],
+      "requested": [
+        "ConjunctMatch"
+      ]
+    }
+  },
+  "instruction_visits": [
+    {
+      "kind": "entry",
+      "program_counter": "0x1000"
+    }
+  ],
+  "pet_start_tick": "evidence/SESSION.json#/ownership/pet/start_ticks",
+  "points": [
+    {
+      "completeness": {
+        "hidden_frames_required": false,
+        "missing_observations": [],
+        "required_fields_complete": true
+      },
+      "current_goals": [
+        {
+          "goal": "exists n : nat, key n /\\ n = cached",
+          "goal_nonotation": "exists n : nat, key n /\\ n = cached",
+          "hyps": [
+            {
+              "body": null,
+              "body_nonotation": null,
+              "names": [
+                "n"
+              ],
+              "type": "nat",
+              "type_nonotation": "nat"
+            },
+            {
+              "body": "S n",
+              "body_nonotation": "S n",
+              "names": [
+                "cached"
+              ],
+              "type": "nat",
+              "type_nonotation": "nat"
+            }
+          ]
+        },
+        {
+          "goal": "True",
+          "goal_nonotation": "True",
+          "hyps": []
+        }
+      ],
+      "evars": {
+        "availability": "complete",
+        "entries": [
+          {
+            "body": null,
+            "body_nonotation": null,
+            "context": [
+              {
+                "body": null,
+                "body_nonotation": null,
+                "names": [
+                  "n"
+                ],
+                "type": "nat",
+                "type_nonotation": "nat"
+              },
+              {
+                "body": "S n",
+                "body_nonotation": "S n",
+                "names": [
+                  "cached"
+                ],
+                "type": "nat",
+                "type_nonotation": "nat"
+              }
+            ],
+            "id": "?goal17",
+            "status": "undefined",
+            "type": "exists n : nat, key n /\\ n = cached",
+            "type_nonotation": "exists n : nat, key n /\\ n = cached"
+          },
+          {
+            "body": "S n",
+            "body_nonotation": "S n",
+            "context": [
+              {
+                "body": null,
+                "body_nonotation": null,
+                "names": [
+                  "n"
+                ],
+                "type": "nat",
+                "type_nonotation": "nat"
+              }
+            ],
+            "id": "?defined19",
+            "status": "defined",
+            "type": "nat",
+            "type_nonotation": "nat"
+          }
+        ],
+        "show_existentials": "Existential 17 remains open.\nExistential 19 := S n.\n"
+      },
+      "given_up": [],
+      "goal": "exists n : nat, key n /\\ n = cached",
+      "goal_nonotation": "exists n : nat, key n /\\ n = cached",
+      "hand_call": [
+        {
+          "after_trial": "trial",
+          "before": "entry",
+          "clause": null,
+          "command": "existing_ConjunctMatch.",
+          "commands": [
+            {
+              "after": "#/snapshots/trial",
+              "before": "#/snapshots/entry",
+              "command": "existing_ConjunctMatch.",
+              "outcome": "accepted",
+              "refusal": null
+            }
+          ],
+          "feedback": "advanced",
+          "outcome": "accepted",
+          "rollback": "entry",
+          "rollback_equal": true
+        }
+      ],
+      "hidden_focus_frames": {
+        "availability": "unavailable",
+        "reason": "Proofview.tclFOCUS stores hidden left/right goals in a lexical continuation. The public observer API does not expose those ordered frames."
+      },
+      "hint_log": {
+        "availability": "complete",
+        "events": [
+          "entry ConjunctMatch",
+          "trial logging suppressed"
+        ],
+        "filter": [
+          "ConjunctMatch"
+        ]
+      },
+      "hyps": [
+        {
+          "body": null,
+          "body_nonotation": null,
+          "names": [
+            "n"
+          ],
+          "type": "nat",
+          "type_nonotation": "nat"
+        },
+        {
+          "body": "S n",
+          "body_nonotation": "S n",
+          "names": [
+            "cached"
+          ],
+          "type": "nat",
+          "type_nonotation": "nat"
+        }
+      ],
+      "id": "point-0000",
+      "refusal": [],
+      "session_id": "trace-session-cdf014675f6699e883a0c793ebba1d29bd469d7fc37718298f94184cea0c809a",
+      "shelf": [
+        {
+          "goal": "nat",
+          "goal_nonotation": "nat",
+          "hyps": []
+        }
+      ],
+      "trigger": {
+        "branch": "native/0",
+        "entry": "existing_ConjunctMatch",
+        "kind": "rule-entry",
+        "matches_stop": true,
+        "ordinal": 0,
+        "program_counter": "0x1000",
+        "rule": "ConjunctMatch"
+      }
+    }
+  ],
+  "request": {
+    "block_pc": "0x1000",
+    "rule_set": [
+      {
+        "enabled": true,
+        "name": "ConjunctMatch"
+      }
+    ],
+    "scope": {
+      "root": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source": "Fixture.v",
+      "source_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "statement_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "stop": {
+      "kind": "rule",
+      "value": "ConjunctMatch"
+    }
+  },
+  "residual": {
+    "completeness": {
+      "hidden_frames_required": false,
+      "missing_observations": [],
+      "required_fields_complete": true
+    },
+    "current_goals": [
+      {
+        "goal": "exists n : nat, key n /\\ n = cached",
+        "goal_nonotation": "exists n : nat, key n /\\ n = cached",
+        "hyps": [
+          {
+            "body": null,
+            "body_nonotation": null,
+            "names": [
+              "n"
+            ],
+            "type": "nat",
+            "type_nonotation": "nat"
+          },
+          {
+            "body": "S n",
+            "body_nonotation": "S n",
+            "names": [
+              "cached"
+            ],
+            "type": "nat",
+            "type_nonotation": "nat"
+          }
+        ]
+      },
+      {
+        "goal": "True",
+        "goal_nonotation": "True",
+        "hyps": []
+      }
+    ],
+    "evars": {
+      "availability": "complete",
+      "entries": [
+        {
+          "body": null,
+          "body_nonotation": null,
+          "context": [
+            {
+              "body": null,
+              "body_nonotation": null,
+              "names": [
+                "n"
+              ],
+              "type": "nat",
+              "type_nonotation": "nat"
+            },
+            {
+              "body": "S n",
+              "body_nonotation": "S n",
+              "names": [
+                "cached"
+              ],
+              "type": "nat",
+              "type_nonotation": "nat"
+            }
+          ],
+          "id": "?goal17",
+          "status": "undefined",
+          "type": "exists n : nat, key n /\\ n = cached",
+          "type_nonotation": "exists n : nat, key n /\\ n = cached"
+        },
+        {
+          "body": "S n",
+          "body_nonotation": "S n",
+          "context": [
+            {
+              "body": null,
+              "body_nonotation": null,
+              "names": [
+                "n"
+              ],
+              "type": "nat",
+              "type_nonotation": "nat"
+            }
+          ],
+          "id": "?defined19",
+          "status": "defined",
+          "type": "nat",
+          "type_nonotation": "nat"
+        }
+      ],
+      "show_existentials": "Existential 17 remains open.\nExistential 19 := S n.\n"
+    },
+    "given_up": [],
+    "goal": "exists n : nat, key n /\\ n = cached",
+    "goal_nonotation": "exists n : nat, key n /\\ n = cached",
+    "hand_call": [],
+    "hidden_focus_frames": {
+      "availability": "unavailable",
+      "reason": "Proofview.tclFOCUS stores hidden left/right goals in a lexical continuation. The public observer API does not expose those ordered frames."
+    },
+    "hint_log": {
+      "availability": "complete",
+      "events": [
+        "entry ConjunctMatch",
+        "trial logging suppressed"
+      ],
+      "filter": [
+        "ConjunctMatch"
+      ]
+    },
+    "hyps": [
+      {
+        "body": null,
+        "body_nonotation": null,
+        "names": [
+          "n"
+        ],
+        "type": "nat",
+        "type_nonotation": "nat"
+      },
+      {
+        "body": "S n",
+        "body_nonotation": "S n",
+        "names": [
+          "cached"
+        ],
+        "type": "nat",
+        "type_nonotation": "nat"
+      }
+    ],
+    "refusal": [],
+    "session_id": "trace-session-cdf014675f6699e883a0c793ebba1d29bd469d7fc37718298f94184cea0c809a",
+    "shelf": [
+      {
+        "goal": "nat",
+        "goal_nonotation": "nat",
+        "hyps": []
+      }
+    ],
+    "show_proof": {
+      "availability": "complete",
+      "text": "fun n => ?goal17\n"
+    },
+    "trigger": {
+      "branch": "native/0",
+      "entry": "existing_ConjunctMatch",
+      "kind": "residual",
+      "matches_stop": false,
+      "ordinal": 1,
+      "program_counter": "0x1000",
+      "rule": "ConjunctMatch"
+    }
+  },
+  "runtime_evidence": "evidence/SESSION.json",
+  "schema_version": 1,
+  "session": {
+    "id": "trace-session-cdf014675f6699e883a0c793ebba1d29bd469d7fc37718298f94184cea0c809a",
+    "runtime": "evidence/SESSION.json#/ownership/pet"
+  },
+  "snapshots": {
+    "entry": {
+      "completeness": {
+        "hidden_frames_required": false,
+        "missing_observations": [],
+        "required_fields_complete": true
+      },
+      "current_goals": [
+        {
+          "goal": "exists n : nat, key n /\\ n = cached",
+          "goal_nonotation": "exists n : nat, key n /\\ n = cached",
+          "hyps": [
+            {
+              "body": null,
+              "body_nonotation": null,
+              "names": [
+                "n"
+              ],
+              "type": "nat",
+              "type_nonotation": "nat"
+            },
+            {
+              "body": "S n",
+              "body_nonotation": "S n",
+              "names": [
+                "cached"
+              ],
+              "type": "nat",
+              "type_nonotation": "nat"
+            }
+          ]
+        },
+        {
+          "goal": "True",
+          "goal_nonotation": "True",
+          "hyps": []
+        }
+      ],
+      "evars": {
+        "availability": "complete",
+        "entries": [
+          {
+            "body": null,
+            "body_nonotation": null,
+            "context": [
+              {
+                "body": null,
+                "body_nonotation": null,
+                "names": [
+                  "n"
+                ],
+                "type": "nat",
+                "type_nonotation": "nat"
+              },
+              {
+                "body": "S n",
+                "body_nonotation": "S n",
+                "names": [
+                  "cached"
+                ],
+                "type": "nat",
+                "type_nonotation": "nat"
+              }
+            ],
+            "id": "?goal17",
+            "status": "undefined",
+            "type": "exists n : nat, key n /\\ n = cached",
+            "type_nonotation": "exists n : nat, key n /\\ n = cached"
+          },
+          {
+            "body": "S n",
+            "body_nonotation": "S n",
+            "context": [
+              {
+                "body": null,
+                "body_nonotation": null,
+                "names": [
+                  "n"
+                ],
+                "type": "nat",
+                "type_nonotation": "nat"
+              }
+            ],
+            "id": "?defined19",
+            "status": "defined",
+            "type": "nat",
+            "type_nonotation": "nat"
+          }
+        ],
+        "show_existentials": "Existential 17 remains open.\nExistential 19 := S n.\n"
+      },
+      "given_up": [],
+      "goal": "exists n : nat, key n /\\ n = cached",
+      "goal_nonotation": "exists n : nat, key n /\\ n = cached",
+      "hidden_focus_frames": {
+        "availability": "unavailable",
+        "reason": "Proofview.tclFOCUS stores hidden left/right goals in a lexical continuation. The public observer API does not expose those ordered frames."
+      },
+      "hyps": [
+        {
+          "body": null,
+          "body_nonotation": null,
+          "names": [
+            "n"
+          ],
+          "type": "nat",
+          "type_nonotation": "nat"
+        },
+        {
+          "body": "S n",
+          "body_nonotation": "S n",
+          "names": [
+            "cached"
+          ],
+          "type": "nat",
+          "type_nonotation": "nat"
+        }
+      ],
+      "session_id": "trace-session-cdf014675f6699e883a0c793ebba1d29bd469d7fc37718298f94184cea0c809a",
+      "shelf": [
+        {
+          "goal": "nat",
+          "goal_nonotation": "nat",
+          "hyps": []
+        }
+      ]
+    },
+    "trial": {
+      "completeness": {
+        "hidden_frames_required": false,
+        "missing_observations": [],
+        "required_fields_complete": true
+      },
+      "current_goals": [
+        {
+          "goal": "True",
+          "goal_nonotation": "True",
+          "hyps": []
+        }
+      ],
+      "evars": {
+        "availability": "complete",
+        "entries": [
+          {
+            "body": null,
+            "body_nonotation": null,
+            "context": [
+              {
+                "body": null,
+                "body_nonotation": null,
+                "names": [
+                  "n"
+                ],
+                "type": "nat",
+                "type_nonotation": "nat"
+              },
+              {
+                "body": "S n",
+                "body_nonotation": "S n",
+                "names": [
+                  "cached"
+                ],
+                "type": "nat",
+                "type_nonotation": "nat"
+              }
+            ],
+            "id": "?goal17",
+            "status": "undefined",
+            "type": "exists n : nat, key n /\\ n = cached",
+            "type_nonotation": "exists n : nat, key n /\\ n = cached"
+          },
+          {
+            "body": "S n",
+            "body_nonotation": "S n",
+            "context": [
+              {
+                "body": null,
+                "body_nonotation": null,
+                "names": [
+                  "n"
+                ],
+                "type": "nat",
+                "type_nonotation": "nat"
+              }
+            ],
+            "id": "?defined19",
+            "status": "defined",
+            "type": "nat",
+            "type_nonotation": "nat"
+          }
+        ],
+        "show_existentials": "Existential 17 remains open.\nExistential 19 := S n.\n"
+      },
+      "given_up": [],
+      "goal": "True",
+      "goal_nonotation": "True",
+      "hidden_focus_frames": {
+        "availability": "unavailable",
+        "reason": "Proofview.tclFOCUS stores hidden left/right goals in a lexical continuation. The public observer API does not expose those ordered frames."
+      },
+      "hyps": [],
+      "session_id": "trace-session-cdf014675f6699e883a0c793ebba1d29bd469d7fc37718298f94184cea0c809a",
+      "shelf": [
+        {
+          "goal": "nat",
+          "goal_nonotation": "nat",
+          "hyps": []
+        }
+      ]
+    }
+  },
+  "verdict": {
+    "evidence": null,
+    "kind": null,
+    "reason": "No terminal named-rule evidence, accepted Qed, or unsatisfiability certificate was established.",
+    "scope": "session",
+    "session": "trace-session-cdf014675f6699e883a0c793ebba1d29bd469d7fc37718298f94184cea0c809a",
+    "status": "unresolved"
+  }
+}

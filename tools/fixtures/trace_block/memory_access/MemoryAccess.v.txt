@@ -1,0 +1,7 @@
+
+Global Hint Extern 0 (FindInContext (FindMemMapsTo ?address) ?key) =>
+  (lazymatch address with
+   | bv_unsigned (bv_add (Z_to_bv 64 ?base) ?offset) =>
+       unify key FICSyntactic;
+       exact (memory_access_array_inst (Z_to_bv 64 base) offset)
+   end) : typeclass_instances.
