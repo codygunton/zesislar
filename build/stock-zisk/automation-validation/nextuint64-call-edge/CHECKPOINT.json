@@ -1,0 +1,26 @@
+{
+  "schema": "nextuint64-call-edge-description-v1",
+  "root": "602f638495d285c7846741dc24ffaee9439ea5da",
+  "certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-unfold/_build/nextuint64-call-edge-015/REPORT.json",
+    "sha256": "7fb3ea53f540d35156b7c74c35b620cec8ee554ef366a78e0650409641464839",
+    "bindings": 14
+  },
+  "focused_checks": {
+    "path": "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-unfold/_build/nextuint64-call-edge-015/FOCUSED-CHECKS.json",
+    "sha256": "5cc92855e056092496de309325c13827af55e28eaf48624929ef163dc3ce173f",
+    "passed": true
+  },
+  "files": {
+    "EDGE.json": "07e74981f2270fa345649683def8a4462704a6f8eff9656e14bb908b636c8219",
+    "CALL-PREMISE.v.txt": "f920b4fa00458cb269d1cf3a04d0a913d6f3ca05ffdee5455a65a132f55201db",
+    "README.md": "4bf4e76ab831ecaa39828015daab50020e06ea81aeb27a2018333fede5dfbdb7"
+  },
+  "theorem": "decodeItemSelectedComplianceCompositional 0x800d62b8",
+  "table_premise": "\u25a1 instr_pre 0x800d6960 nextUint64DecodeItemCallState",
+  "scope": "Documentation only; generic boxed-entry installation and caller resource bridges remain unproved.",
+  "native_proof": false,
+  "native_run": false,
+  "project_gate": "Not required for documentation-only changes.",
+  "Level1_changed": false
+}

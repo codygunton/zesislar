@@ -1,0 +1,55 @@
+(* Documentation-only interface. No new declaration was compiled. *)
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Contracts.Level1.
+Require Import ZesuSsz.Contracts.DecodeItemCompositional.
+Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
+Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
+Require Import ZesuSsz.Compliance.DecodeItemCompositionalCompliance.
+
+(* Exact integrated theorem application. *)
+decodeItemSelectedComplianceCompositional 0x800d62b8
+
+(* The external table state includes its exact return continuation. *)
+Definition nextUint64DecodeItemCallState `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (∃ cargs : DecodeItemCompositionalArgs,
+    decodeItemEntryResourcesCompositional
+      (decodeItemDomainAt 0x800d62b8 decodeItemC1BDomain) cargs ∗
+    instr_pre 0x800d62b8
+      (∃ after : DecodeItemOutcome,
+        ⌜decodeItemDomainAt 0x800d62b8 decodeItemC1BDomain
+            (decodeItemCompositionalBase cargs) /\
+          DecodeMeaningModuloKnownBugs (decodeItemCompositionalBase cargs) after⌝ ∗
+        decodeItemExitResourcesCompositional cargs after))%I.
+
+(* Required table-level premise. The generator must preserve the box. *)
+□ instr_pre 0x800d6960 nextUint64DecodeItemCallState
+
+(* Caller substitution. before is the exact 40-byte local output image. *)
+Definition nextUint64DecodeItemSaved (params : NextUint64Args) : DecodeItemOtherCalleeSaved :=
+  {| decodeItemSavedX9 := Z_to_bv 64 (nextResultPointer (nextUint64Base params));
+     decodeItemSavedX18 := Z_to_bv 64 (nextSlicePointer (nextUint64Base params));
+     decodeItemSavedX19 := Z_to_bv 64 (nextInputPointer (nextUint64Base params));
+     decodeItemSavedX20 := Z_to_bv 64 (Z.of_nat (length (nextInputBytes (nextUint64Base params))));
+     decodeItemSavedX21 := nextUint64SavedX21 params;
+     decodeItemSavedX22 := nextUint64SavedX22 params;
+     decodeItemSavedX23 := nextUint64SavedX23 params;
+     decodeItemSavedX24 := nextUint64SavedX24 params;
+     decodeItemSavedX25 := nextUint64SavedX25 params;
+     decodeItemSavedX26 := nextUint64SavedX26 params;
+     decodeItemSavedX27 := nextUint64SavedX27 params |}.
+Definition nextUint64DecodeItemArgs params before : DecodeItemCompositionalArgs :=
+  {| decodeItemCompositionalBase := nextUint64CalleeBase params before;
+     decodeItemCompositionalSaved := nextUint64DecodeItemSaved params |}.
+
+(* Exact theorem expansion at each Sigma/HG/HT. This has instr_body, not a box. *)
+⊢ decodeItemSelectedCode -∗ ∀ cargs : DecodeItemCompositionalArgs,
+    instr_body 0x800d6960
+      (decodeItemEntryResourcesCompositional
+         (decodeItemDomainAt 0x800d62b8 decodeItemC1BDomain) cargs ∗
+       instr_pre 0x800d62b8
+         (∃ after : DecodeItemOutcome,
+           ⌜decodeItemDomainAt 0x800d62b8 decodeItemC1BDomain
+               (decodeItemCompositionalBase cargs) /\
+             DecodeMeaningModuloKnownBugs (decodeItemCompositionalBase cargs) after⌝ ∗
+           decodeItemExitResourcesCompositional cargs after)).
