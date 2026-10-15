@@ -27,6 +27,23 @@ def bound_file(reference, root=ROOT):
     return path.resolve(), data
 
 
+CLEANUP_STATUS = "removed in the 2026-10-15 worktree cleanup; hash retained"
+
+
+def historical_file(reference, root=ROOT):
+    """Check retained hashes without treating removed history as proof bytes."""
+    try:
+        return bound_file(reference, root)
+    except FileNotFoundError:
+        path = Path(reference["path"])
+        path = (path if path.is_absolute() else root / path).resolve()
+        require(".worktrees" in path.parts and reference.get("status") == CLEANUP_STATUS
+                and isinstance(reference.get("sha256"), str)
+                and re.fullmatch(r"[0-9a-f]{64}", reference["sha256"]) is not None,
+                "A missing historical file lacks the exact worktree-cleanup status: " + str(path))
+        return path, None
+
+
 def declaration(source, name):
     match = re.search(r"\bLemma " + re.escape(name) + r"\b", source)
     require(match is not None, "The exact native theorem is missing: " + name)
@@ -100,14 +117,15 @@ def inventory(index, root=ROOT):
     require([case["block"] for case in index["cases"]] == SITES,
             "The acceptance inventory must contain the exact nine sites.")
     for case in index["cases"]:
-        _, statement = bound_file(case["native_statement"], root)
-        _, source = bound_file(case["native_source"], root)
-        require(declaration(source.decode(), case["native_theorem"]) ==
-                statement.decode().strip(), "The captured native statement changed.")
-        bound_file(case["capture"], root)
-    bound_file(index["checked_module_source"], root)
-    bound_file(index["control_module"], root)
-    bound_file(index["reviewed_terminal_package"], root)
+        _, statement = historical_file(case["native_statement"], root)
+        _, source = historical_file(case["native_source"], root)
+        if source is not None and statement is not None:
+            require(declaration(source.decode(), case["native_theorem"]) ==
+                    statement.decode().strip(), "The captured native statement changed.")
+        historical_file(case["capture"], root)
+    historical_file(index["checked_module_source"], root)
+    historical_file(index["control_module"], root)
+    historical_file(index["reviewed_terminal_package"], root)
     controls = index.get("loop_negative_controls", [])
     require([case.get("control_id") for case in controls] == LOOP_NEGATIVE_IDS,
             "Both loop negative identities are required.")
@@ -115,7 +133,7 @@ def inventory(index, root=ROOT):
         for key in ("target", "certificate_statement", "negative_report", "call_log", "raw_calls",
                     "input_index", "closures", "captured_context", "proof_source", "certificate_source",
                     "successor_report"):
-            bound_file(case[key], root)
+            historical_file(case[key], root)
 
 
 
@@ -655,44 +673,47 @@ def array_store_capture_inventory(index, root=ROOT):
     array_store_schema(index)
     for key in ("reservation", "reviewed_locator_package", "reviewed_locator_audit"):
         if key in index:
-            bound_file(index[key], root)
+            historical_file(index[key], root)
     for record in index.get("separate_review_reports", []):
-        bound_file(record["report"], root)
+        historical_file(record["report"], root)
     for support in index.get("supporting_certificates", []):
         require(support.get("eligible_as_exact_native_selection_control") is False,
                        "Supporting facts must remain non-eligible selection controls.")
-        bound_file(support["report"], root)
+        historical_file(support["report"], root)
         for row in support["declarations"]:
-            _, source = bound_file(row["source"], root)
-            _, statement = bound_file(row["statement"], root)
-            require(declaration(source.decode(), row["theorem"]) ==
-                           statement.decode().strip(), "A supporting declaration changed.")
+            _, source = historical_file(row["source"], root)
+            _, statement = historical_file(row["statement"], root)
+            if source is not None and statement is not None:
+                require(declaration(source.decode(), row["theorem"]) ==
+                        statement.decode().strip(), "A supporting declaration changed.")
     for case in index["cases"]:
         require(all(case.get(key) is not None for key in
                        ("native_statement", "native_source", "capture", "capture_provenance")),
                        "An exact capture identity is missing.")
-        _, statement = bound_file(case["native_statement"], root)
-        _, source = bound_file(case["native_source"], root)
-        require(declaration(source.decode(), case["native_theorem"]) ==
-                       statement.decode().strip(), "An exact native statement changed.")
+        _, statement = historical_file(case["native_statement"], root)
+        _, source = historical_file(case["native_source"], root)
+        if source is not None and statement is not None:
+            require(declaration(source.decode(), case["native_theorem"]) ==
+                    statement.decode().strip(), "An exact native statement changed.")
         if "compiled_native_source" in case:
-            _, compiled_source = bound_file(case["compiled_native_source"], root)
-            require(declaration(compiled_source.decode(), case["native_theorem"]) ==
-                           statement.decode().strip(), "The compiled native declaration changed.")
+            _, compiled_source = historical_file(case["compiled_native_source"], root)
+            if compiled_source is not None and statement is not None:
+                require(declaration(compiled_source.decode(), case["native_theorem"]) ==
+                        statement.decode().strip(), "The compiled native declaration changed.")
         if "native_evidence" in case:
-            bound_file(case["native_evidence"], root)
-        bound_file(case["capture"], root)
-        bound_file(case["capture_provenance"], root)
+            historical_file(case["native_evidence"], root)
+        historical_file(case["capture"], root)
+        historical_file(case["capture_provenance"], root)
         require(case.get("retained_captures"), "The retained capture list is required.")
         for reference in case["retained_captures"]:
-            bound_file(reference, root)
+            historical_file(reference, root)
         require(isinstance(case["capture_scope"], dict) and case["capture_scope"],
                        "The exact captured scope is required.")
         require(isinstance(case["source_root"], str) and
                        re.fullmatch(r"[0-9a-f]{40}", case["source_root"]),
                        "The exact frozen source root is required.")
         for role in ("approved", "hints"):
-            bound_file(case["capture_scope"][role], root)
+            historical_file(case["capture_scope"][role], root)
 
 
 def array_store_inventory(index, root=ROOT):
@@ -700,11 +721,12 @@ def array_store_inventory(index, root=ROOT):
     require(not pending, "Acceptance dependencies are missing: " + ", ".join(pending))
     array_store_capture_inventory(index, root)
     for control in index["controls"]:
-        _, source = bound_file(control["source"], root)
-        _, statement = bound_file(control["statement"], root)
-        require(declaration(source.decode(), control["theorem"]) ==
-                       statement.decode().strip(), "An S152 control statement changed.")
-        bound_file(control["reviewed_certificate"], root)
+        _, source = historical_file(control["source"], root)
+        _, statement = historical_file(control["statement"], root)
+        if source is not None and statement is not None:
+            require(declaration(source.decode(), control["theorem"]) ==
+                    statement.decode().strip(), "An S152 control statement changed.")
+        historical_file(control["reviewed_certificate"], root)
 
 
 def array_store_acceptance(index, bundle, root=ROOT):
@@ -840,7 +862,7 @@ def dry_run(index, root=ROOT, *, switch_source=None, bundle=None, array_store=Fa
                 ["native: " + site for site in sites] + ["control: " + name for name in controls] +
                 ["control: " + name for name in loop_controls]),
             "pending_inventory": pending,
-            "limits": "A source identity check does not prove switch typing, runtime activation, or native closure."}
+            "limits": "Historical cleanup records can lack bytes. Their hashes remain recorded. A source identity check does not prove switch typing, runtime activation, or native closure."}
 
 
 def main():
@@ -882,7 +904,7 @@ def main():
         require(not args.check_schema and not args.check_captures,
                 "Entry normalization uses the nine-site inventory check.")
         if args.check_inventory:
-            print("Nine entry-normalization identities checked. Native acceptance did not run.")
+            print("Nine entry-normalization identities checked. Removed historical bytes were not inspected. Native acceptance did not run.")
             return 0
         require(args.results is not None, "The actual nine-native proof bundle is required.")
         result = entry_normalization_acceptance(index, json.loads(args.results.read_text()), root)
@@ -895,11 +917,11 @@ def main():
             return 0
         if args.check_captures:
             array_store_capture_inventory(index, root)
-            print("Six frozen capture sets checked. Native acceptance did not run.")
+            print("Six historical capture identities checked. Removed bytes were not inspected. Native acceptance did not run.")
             return 0
         if args.check_inventory:
             array_store_inventory(index, root)
-            print("Six capture identities checked. Native acceptance did not run.")
+            print("Six capture identities checked. Removed historical bytes were not inspected. Native acceptance did not run.")
             return 0
         require(args.results is not None, "The six-native linked proof bundle is required.")
         result = array_store_acceptance(index, json.loads(args.results.read_text()), root)
@@ -909,7 +931,7 @@ def main():
             "Schema and capture checks require the array-store class.")
     if args.check_inventory:
         inventory(index, root)
-        print("Nine capture identities checked. Native acceptance did not run.")
+        print("Nine capture identities checked. Removed historical bytes were not inspected. Native acceptance did not run.")
         return 0
     require(args.results is not None, "The actual nine-native proof bundle is required.")
     result = acceptance(index, json.loads(args.results.read_text()), root)

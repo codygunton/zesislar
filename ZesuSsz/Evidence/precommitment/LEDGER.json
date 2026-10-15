@@ -8,23 +8,28 @@
       "operation": "liExist",
       "source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/6960/Source.v.txt",
-        "sha256": "5f0f26bebf26a5c9a6357f30b5824e743a997cbc714ab8094fa4c4316e91a554"
+        "sha256": "5f0f26bebf26a5c9a6357f30b5824e743a997cbc714ab8094fa4c4316e91a554",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "statement": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/6960/Statement.v.txt",
-        "sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a"
+        "sha256": "29455c08e4b5e342d561eda80cc34af7d43a6deca48e8a7e4b0a8697c8f2101a",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "capture": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-final-native-three-sites-080/block-6960/exports/state_39.json",
-        "sha256": "bf0a5b4e6f5fcfb79124d73c422889164e27a1124033f5f85c48d761ed44d70b"
+        "sha256": "bf0a5b4e6f5fcfb79124d73c422889164e27a1124033f5f85c48d761ed44d70b",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "classification": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/6960/CLASSIFICATION.json",
-        "sha256": "a679a3c60d77d0767604df91488d06919ebd7061cb37210f2481575ed6fd7c13"
+        "sha256": "a679a3c60d77d0767604df91488d06919ebd7061cb37210f2481575ed6fd7c13",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/REPORT.json",
-        "sha256": "f1e794b433637b620bf32c1884a052456e6981911d5afc29bbca5fa33eec07d8"
+        "sha256": "f1e794b433637b620bf32c1884a052456e6981911d5afc29bbca5fa33eec07d8",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "retained_scope": {
         "root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
@@ -32,11 +37,13 @@
           "inventory_bindings": [
             {
               "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/INVENTORY.json",
-              "sha256": "684a05dc346bb95b244ef723204b80bb430177716974ad7dfd5d2dad9a7dc985"
+              "sha256": "684a05dc346bb95b244ef723204b80bb430177716974ad7dfd5d2dad9a7dc985",
+              "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
             },
             {
               "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-002/INVENTORY.json",
-              "sha256": "684a05dc346bb95b244ef723204b80bb430177716974ad7dfd5d2dad9a7dc985"
+              "sha256": "684a05dc346bb95b244ef723204b80bb430177716974ad7dfd5d2dad9a7dc985",
+              "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
             }
           ],
           "approved_switches": 28,
@@ -74,23 +81,28 @@
       "operation": "ZesuSsz.Automation.Hooks.zesu_pure_witness_constraints_if_enabled",
       "source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/697c/Source.v.txt",
-        "sha256": "6b3c2cb70bfa0199d226b5c25e3c2a3d260f6ccf4ff8a5f48021b8f5d1831bce"
+        "sha256": "6b3c2cb70bfa0199d226b5c25e3c2a3d260f6ccf4ff8a5f48021b8f5d1831bce",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "statement": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/697c/Statement.v.txt",
-        "sha256": "4416a8f35e49ca7dce03358b8f4b4d354f056c0e475248816df61c27ad0ef6f0"
+        "sha256": "4416a8f35e49ca7dce03358b8f4b4d354f056c0e475248816df61c27ad0ef6f0",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "capture": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-final-native-three-sites-080/block-697c/exports/state_39.json",
-        "sha256": "e714eed98defc4c284092dea8583525923566698dddea2afc6fd2dc88984ebd6"
+        "sha256": "e714eed98defc4c284092dea8583525923566698dddea2afc6fd2dc88984ebd6",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "classification": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/697c/CLASSIFICATION.json",
-        "sha256": "3f7967104946a8a692f7503ed1c8ceffb609bb4748788ff5dca069c7389430a8"
+        "sha256": "3f7967104946a8a692f7503ed1c8ceffb609bb4748788ff5dca069c7389430a8",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/REPORT.json",
-        "sha256": "f1e794b433637b620bf32c1884a052456e6981911d5afc29bbca5fa33eec07d8"
+        "sha256": "f1e794b433637b620bf32c1884a052456e6981911d5afc29bbca5fa33eec07d8",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "retained_scope": {
         "root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
@@ -98,11 +110,13 @@
           "inventory_bindings": [
             {
               "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/INVENTORY.json",
-              "sha256": "684a05dc346bb95b244ef723204b80bb430177716974ad7dfd5d2dad9a7dc985"
+              "sha256": "684a05dc346bb95b244ef723204b80bb430177716974ad7dfd5d2dad9a7dc985",
+              "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
             },
             {
               "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-002/INVENTORY.json",
-              "sha256": "684a05dc346bb95b244ef723204b80bb430177716974ad7dfd5d2dad9a7dc985"
+              "sha256": "684a05dc346bb95b244ef723204b80bb430177716974ad7dfd5d2dad9a7dc985",
+              "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
             }
           ],
           "approved_switches": 28,
@@ -151,11 +165,13 @@
       "operation": "1: liFindInContext.",
       "source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-mcp-001/Capture698c.v",
-        "sha256": "43670ebdf59f0127ed2fa52ed17579907112b782d16be91229c9b1457be99056"
+        "sha256": "43670ebdf59f0127ed2fa52ed17579907112b782d16be91229c9b1457be99056",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "statement": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-mcp-001/698c.statement.v",
-        "sha256": "0271fee75312dda7e09f70629c47b8425c3ec3ae2f3b121055c50039fbe564b3"
+        "sha256": "0271fee75312dda7e09f70629c47b8425c3ec3ae2f3b121055c50039fbe564b3",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-audit-001/REPORT.json",
@@ -163,7 +179,8 @@
       },
       "capture": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-mcp-001/698c/exports/state_36.json",
-        "sha256": "29628ddd7d5187eb56eca31f9e2af796024b0ed113290b97cac0a4ef109b0408"
+        "sha256": "29628ddd7d5187eb56eca31f9e2af796024b0ed113290b97cac0a4ef109b0408",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "groups": [
         3,
@@ -185,7 +202,8 @@
         ],
         "export": {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-mcp-001/698c/exports/state_11.json",
-          "sha256": "0777df521dd6d7183c6f0e9ff1c9a30ffef889f1271c75eeb3d33c670abb357f"
+          "sha256": "0777df521dd6d7183c6f0e9ff1c9a30ffef889f1271c75eeb3d33c670abb357f",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         }
       },
       "selected_resource": "Initialized output array at decodeItemOutputPointer args with image returnStorage locals.",
@@ -216,11 +234,13 @@
       "operation": "1: liFindInContext.",
       "source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/Capture69b0.v",
-        "sha256": "404ac20e15a71c38622bd9318d13d0c4ae86d4f48d49e485daa57366c51489ef"
+        "sha256": "404ac20e15a71c38622bd9318d13d0c4ae86d4f48d49e485daa57366c51489ef",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "statement": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/69b0.statement.v",
-        "sha256": "8171c09103807a8fce25145ffed0f47860d52883a15e4431e87aa6202017b843"
+        "sha256": "8171c09103807a8fce25145ffed0f47860d52883a15e4431e87aa6202017b843",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/REPORT.json",
@@ -228,7 +248,8 @@
       },
       "capture": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/69b0/exports/state_36.json",
-        "sha256": "46e3b2edcb21df9055d16084a1faba1baf950a13b8401777a655133cc8a072c6"
+        "sha256": "46e3b2edcb21df9055d16084a1faba1baf950a13b8401777a655133cc8a072c6",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "groups": [
         3,
@@ -250,7 +271,8 @@
         ],
         "export": {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/69b0/exports/state_11.json",
-          "sha256": "036420c51e08ef9c4139db61d9261be7b926f9e43ac04673bac7ba52bcba0f06"
+          "sha256": "036420c51e08ef9c4139db61d9261be7b926f9e43ac04673bac7ba52bcba0f06",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         },
         "targets": [
           {
@@ -331,23 +353,28 @@
       "operation": "ZesuSsz.Automation.Hooks.zesu_pure_witness_constraints_if_enabled",
       "source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/69e8/Source.v.txt",
-        "sha256": "505410cb4f82a2a8445a48b91081284b7d2bd3dd0a44ccc0a4ffdc575ebfd01c"
+        "sha256": "505410cb4f82a2a8445a48b91081284b7d2bd3dd0a44ccc0a4ffdc575ebfd01c",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "statement": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/69e8/Statement.v.txt",
-        "sha256": "3b68710d40940010dfd36b1dd533142e87af5bf79dd8cc4086b6242b88ddc3ae"
+        "sha256": "3b68710d40940010dfd36b1dd533142e87af5bf79dd8cc4086b6242b88ddc3ae",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "capture": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/_build/i75-final-native-three-sites-080/block-69e8/exports/state_39.json",
-        "sha256": "d2f309224f081eaeb6d5b52a824e28f30968c693ba72978f24be25dc465f5706"
+        "sha256": "d2f309224f081eaeb6d5b52a824e28f30968c693ba72978f24be25dc465f5706",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "classification": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/69e8/CLASSIFICATION.json",
-        "sha256": "58fb8950e06822b734b23e7a30a74e31a17234d5f6f437cc7cdb0574863cacb2"
+        "sha256": "58fb8950e06822b734b23e7a30a74e31a17234d5f6f437cc7cdb0574863cacb2",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-precommit-captures/build/stock-zisk/i75-final-priority-stops-001/REPORT.json",
-        "sha256": "f1e794b433637b620bf32c1884a052456e6981911d5afc29bbca5fa33eec07d8"
+        "sha256": "f1e794b433637b620bf32c1884a052456e6981911d5afc29bbca5fa33eec07d8",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "retained_scope": {
         "root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
@@ -355,11 +382,13 @@
           "inventory_bindings": [
             {
               "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/INVENTORY.json",
-              "sha256": "684a05dc346bb95b244ef723204b80bb430177716974ad7dfd5d2dad9a7dc985"
+              "sha256": "684a05dc346bb95b244ef723204b80bb430177716974ad7dfd5d2dad9a7dc985",
+              "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
             },
             {
               "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-002/INVENTORY.json",
-              "sha256": "684a05dc346bb95b244ef723204b80bb430177716974ad7dfd5d2dad9a7dc985"
+              "sha256": "684a05dc346bb95b244ef723204b80bb430177716974ad7dfd5d2dad9a7dc985",
+              "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
             }
           ],
           "approved_switches": 28,
@@ -408,7 +437,8 @@
       "operation": "decodeItemStringSliceWitness",
       "capture": {
         "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s173/ZesuSsz/Evidence/precommitment/6a08.json",
-        "sha256": "3b25c4a4a6603fd365fa66f41523fb96360c2981366a7f0c81d94107ca6aae62"
+        "sha256": "3b25c4a4a6603fd365fa66f41523fb96360c2981366a7f0c81d94107ca6aae62",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "source": {
         "success": true,
@@ -428,7 +458,8 @@
         "theorem": "DesignedBoundary_800d6a08",
         "source": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/Replay6a08.v",
         "source_sha256": "35f05a4b0e094fbf7f275d4dc64bb3c97a0a215785804473b7ebab03de522e7b",
-        "proof_finished": false
+        "proof_finished": false,
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "retained_scope": {
         "input_index_sha256": "c302ab4d77ab541036a2ed27c96b7b3b25e39332a1575584becfc072edf17e2e",
@@ -447,7 +478,8 @@
       },
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/build/stock-zisk/spec-a-s117/EXPLICIT-S43-005.json",
-        "sha256": "cc43987d4c311e8f0acb2d5b7f836a39e8d497f0dbd19b8438d75d9c9d38b56b"
+        "sha256": "cc43987d4c311e8f0acb2d5b7f836a39e8d497f0dbd19b8438d75d9c9d38b56b",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "required_assignment": "Use the registered canonical witness before commitment; discharge the unchanged resource source.",
       "limits": "Captured proof state stays open. Pure theorem uses the verified retained premise subset. No repaired native closure asserted.",
@@ -464,15 +496,18 @@
       "certificate_statement": "Lemma S131_6a24_01 (args : DecodeItemArgs) (inputPrefix : bv 8) (i : Z) :\ndecodeItemByteFoldFacts args (Z.sub (bv_unsigned inputPrefix) 183) i (Z.add (decodeItemInputPointer args) 1) (take (Z.to_nat (Z.sub (bv_unsigned inputPrefix) 183)) (drop 1 (decodeItemInputBytes args))) ->\n((Z_to_bv 64 (Z.add (Z.add (decodeItemInputPointer args) 1) i) + 1)%bv = Z_to_bv 64 (Z.add (Z.add (decodeItemInputPointer args) 1) (Z.add i 1))).\n",
       "source": {
         "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old1_S131.v",
-        "sha256": "295f2a6294cc2a5d884a2f25510a6705b30230e61d6ae5e62c54cf22d850553e"
+        "sha256": "295f2a6294cc2a5d884a2f25510a6705b30230e61d6ae5e62c54cf22d850553e",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "context": {
         "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-supported-shelf-focus-005/6a24-OLD-VALUE-1-CONTEXT.json",
-        "sha256": "c38b02b78afa5e61e52cb89ecf5cf3418c65678ba4f98d487c6e94b5f47b8b57"
+        "sha256": "c38b02b78afa5e61e52cb89ecf5cf3418c65678ba4f98d487c6e94b5f47b8b57",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/REPORT.json",
-        "sha256": "e28885c86e0e87f0c90e86b6cc8bc337d28e980c9dada6e36e9a323405d530c1"
+        "sha256": "e28885c86e0e87f0c90e86b6cc8bc337d28e980c9dada6e36e9a323405d530c1",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "retained_scope": {
         "frozen_root": "f2033b63f8f785efcacf8c06fbba1107fe9a7f7e",
@@ -525,7 +560,8 @@
                 "theorem": "S165_6a24_old0_S131",
                 "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old0_S131.v",
                 "source_sha256": "ee294c64bd263d5b26a1be479dd5f6889ebd7f35ad2e6cda81dc81a7c3ee5b23",
-                "proof_finished": false
+                "proof_finished": false,
+                "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
               },
               "after": {
                 "success": true,
@@ -545,7 +581,8 @@
                 "theorem": "S165_6a24_old0_S131",
                 "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old0_S131.v",
                 "source_sha256": "ee294c64bd263d5b26a1be479dd5f6889ebd7f35ad2e6cda81dc81a7c3ee5b23",
-                "proof_finished": false
+                "proof_finished": false,
+                "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
               }
             },
             {
@@ -578,7 +615,8 @@
                 "theorem": "S165_6a24_old0_S131",
                 "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old0_S131.v",
                 "source_sha256": "ee294c64bd263d5b26a1be479dd5f6889ebd7f35ad2e6cda81dc81a7c3ee5b23",
-                "proof_finished": false
+                "proof_finished": false,
+                "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
               },
               "after": {
                 "success": true,
@@ -598,7 +636,8 @@
                 "theorem": "S165_6a24_old0_S131",
                 "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old0_S131.v",
                 "source_sha256": "ee294c64bd263d5b26a1be479dd5f6889ebd7f35ad2e6cda81dc81a7c3ee5b23",
-                "proof_finished": false
+                "proof_finished": false,
+                "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
               }
             }
           ],
@@ -632,7 +671,8 @@
             "theorem": "S165_6a24_old0_S131",
             "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old0_S131.v",
             "source_sha256": "ee294c64bd263d5b26a1be479dd5f6889ebd7f35ad2e6cda81dc81a7c3ee5b23",
-            "proof_finished": false
+            "proof_finished": false,
+            "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
           },
           "advancement": null,
           "final": {
@@ -653,7 +693,8 @@
             "theorem": "S165_6a24_old0_S131",
             "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old0_S131.v",
             "source_sha256": "ee294c64bd263d5b26a1be479dd5f6889ebd7f35ad2e6cda81dc81a7c3ee5b23",
-            "proof_finished": false
+            "proof_finished": false,
+            "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
           },
           "native_assignment_executed": false,
           "native_assignment_limit": "The exported target binds i. No assignable successor existential or global native evar map is available."
@@ -704,7 +745,8 @@
                 "theorem": "S165_6a24_old1_S131",
                 "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old1_S131.v",
                 "source_sha256": "295f2a6294cc2a5d884a2f25510a6705b30230e61d6ae5e62c54cf22d850553e",
-                "proof_finished": false
+                "proof_finished": false,
+                "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
               },
               "after": {
                 "success": true,
@@ -724,7 +766,8 @@
                 "theorem": "S165_6a24_old1_S131",
                 "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old1_S131.v",
                 "source_sha256": "295f2a6294cc2a5d884a2f25510a6705b30230e61d6ae5e62c54cf22d850553e",
-                "proof_finished": false
+                "proof_finished": false,
+                "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
               }
             },
             {
@@ -757,7 +800,8 @@
                 "theorem": "S165_6a24_old1_S131",
                 "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old1_S131.v",
                 "source_sha256": "295f2a6294cc2a5d884a2f25510a6705b30230e61d6ae5e62c54cf22d850553e",
-                "proof_finished": false
+                "proof_finished": false,
+                "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
               },
               "after": {
                 "success": true,
@@ -777,7 +821,8 @@
                 "theorem": "S165_6a24_old1_S131",
                 "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old1_S131.v",
                 "source_sha256": "295f2a6294cc2a5d884a2f25510a6705b30230e61d6ae5e62c54cf22d850553e",
-                "proof_finished": false
+                "proof_finished": false,
+                "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
               }
             }
           ],
@@ -811,7 +856,8 @@
             "theorem": "S165_6a24_old1_S131",
             "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old1_S131.v",
             "source_sha256": "295f2a6294cc2a5d884a2f25510a6705b30230e61d6ae5e62c54cf22d850553e",
-            "proof_finished": false
+            "proof_finished": false,
+            "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
           },
           "advancement": null,
           "final": {
@@ -832,7 +878,8 @@
             "theorem": "S165_6a24_old1_S131",
             "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6a24_old1_S131.v",
             "source_sha256": "295f2a6294cc2a5d884a2f25510a6705b30230e61d6ae5e62c54cf22d850553e",
-            "proof_finished": false
+            "proof_finished": false,
+            "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
           },
           "native_assignment_executed": false,
           "native_assignment_limit": "The exported target binds i. No assignable successor existential or global native evar map is available."
@@ -852,7 +899,8 @@
       "operation": "decodeItemStringReturnLengthWitness",
       "capture": {
         "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s173/ZesuSsz/Evidence/precommitment/6a38.json",
-        "sha256": "e3196ab655f9afd5d52b70a22f64bd7a740a4bf43d7de933879950947b1184be"
+        "sha256": "e3196ab655f9afd5d52b70a22f64bd7a740a4bf43d7de933879950947b1184be",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "source": {
         "success": true,
@@ -872,12 +920,14 @@
         "theorem": "DesignedBoundary_800d6a38",
         "source": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s115-precommit-s43-application-005/Replay6a38.v",
         "source_sha256": "cc5205109467654a52deb8a4e69c71209815d22442c59e18be59a7c7f4359d7d",
-        "proof_finished": false
+        "proof_finished": false,
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "retained_scope": "Exact retained I62 native statements on owned current artifacts. Historical33b9a455 plus four Rule38 overlays differs from the current28-switch scope.",
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/build/stock-zisk/spec-a-s115/PRECOMMIT-005-REPORT.json",
-        "sha256": "a420690601eb14f439d1c28ad5f660fe147669f37f22f118f1bbff10ebfe3442"
+        "sha256": "a420690601eb14f439d1c28ad5f660fe147669f37f22f118f1bbff10ebfe3442",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "required_assignment": "Use the registered canonical witness before commitment; discharge the unchanged resource source.",
       "limits": "Captured proof state stays open. Pure theorem uses the verified retained premise subset. No repaired native closure asserted.",
@@ -893,11 +943,13 @@
       "operation": "1: liFindInContext.",
       "source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/Capture6a40.v",
-        "sha256": "a85dbcdb24f9bb424c62191044ea0bd5e9332870905f2c771957cf7a58eb7f5d"
+        "sha256": "a85dbcdb24f9bb424c62191044ea0bd5e9332870905f2c771957cf7a58eb7f5d",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "statement": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/6a40.statement.v",
-        "sha256": "624ac8a4c331478dbc8a2d38023485bf6a21d7fc39eeeda2c48497f896ed422e"
+        "sha256": "624ac8a4c331478dbc8a2d38023485bf6a21d7fc39eeeda2c48497f896ed422e",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/REPORT.json",
@@ -905,7 +957,8 @@
       },
       "capture": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/6a40/exports/state_36.json",
-        "sha256": "bfe14856b2aeb6e0dd7f5001e7d86802c662efb518842282f9c704e36f9b0f39"
+        "sha256": "bfe14856b2aeb6e0dd7f5001e7d86802c662efb518842282f9c704e36f9b0f39",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "groups": [
         3,
@@ -927,7 +980,8 @@
         ],
         "export": {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/6a40/exports/state_11.json",
-          "sha256": "bd7ec2a2256fd73f36ca4a1622d0ec6b0562e444372ab4dcdbbb07e459cb189e"
+          "sha256": "bd7ec2a2256fd73f36ca4a1622d0ec6b0562e444372ab4dcdbbb07e459cb189e",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         },
         "targets": [
           {
@@ -1008,11 +1062,13 @@
       "operation": "1: liFindInContext.",
       "source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/Capture6a78.v",
-        "sha256": "cd1b5daab9e89dce5f6105334d787f3bba8f428e37cc01c6b53744b3e2a2abf7"
+        "sha256": "cd1b5daab9e89dce5f6105334d787f3bba8f428e37cc01c6b53744b3e2a2abf7",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "statement": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/6a78.statement.v",
-        "sha256": "4bb8faa217ebf0b1219dca178f67140e17266c05cdcdbde48a83608f3a0e0b95"
+        "sha256": "4bb8faa217ebf0b1219dca178f67140e17266c05cdcdbde48a83608f3a0e0b95",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/REPORT.json",
@@ -1020,7 +1076,8 @@
       },
       "capture": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/6a78/exports/state_38.json",
-        "sha256": "942bed6eaad7df051655c3574b781eaee457d3e8fd07beb3bbb9298d53841d49"
+        "sha256": "942bed6eaad7df051655c3574b781eaee457d3e8fd07beb3bbb9298d53841d49",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "groups": [
         3,
@@ -1042,7 +1099,8 @@
         ],
         "export": {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-mcp-002/6a78/exports/state_11.json",
-          "sha256": "a06c812cf7fbb5a9901f93540658595f57b0613cc3d9ec9e3c7425e78eb4096c"
+          "sha256": "a06c812cf7fbb5a9901f93540658595f57b0613cc3d9ec9e3c7425e78eb4096c",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         },
         "targets": [
           {
@@ -1131,7 +1189,8 @@
       "operation": "decodeItemListSliceWitness",
       "capture": {
         "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s173/ZesuSsz/Evidence/precommitment/6aa8.json",
-        "sha256": "40e1d37a1b9b7560dc805bc568a9b8f070a421797ababe18b2f328e9b3e71bc9"
+        "sha256": "40e1d37a1b9b7560dc805bc568a9b8f070a421797ababe18b2f328e9b3e71bc9",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "source": {
         "success": true,
@@ -1151,7 +1210,8 @@
         "theorem": "DesignedBoundary_800d6aa8",
         "source": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s117-explicit-s43-005/Replay6aa8.v",
         "source_sha256": "dab2fddf92bb0b3abae4014419d08d2c9c99bed69dbe33f1d6fdd78f9643e343",
-        "proof_finished": false
+        "proof_finished": false,
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "retained_scope": {
         "input_index_sha256": "c302ab4d77ab541036a2ed27c96b7b3b25e39332a1575584becfc072edf17e2e",
@@ -1170,7 +1230,8 @@
       },
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/build/stock-zisk/spec-a-s117/EXPLICIT-S43-005.json",
-        "sha256": "cc43987d4c311e8f0acb2d5b7f836a39e8d497f0dbd19b8438d75d9c9d38b56b"
+        "sha256": "cc43987d4c311e8f0acb2d5b7f836a39e8d497f0dbd19b8438d75d9c9d38b56b",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "required_assignment": "Use the registered canonical witness before commitment; discharge the unchanged resource source.",
       "limits": "Captured proof state stays open. Pure theorem uses the verified retained premise subset. No repaired native closure asserted.",
@@ -1187,15 +1248,18 @@
       "certificate_statement": "Lemma S131_6ac4_01 (args : DecodeItemArgs) (inputPrefix : bv 8) (i : Z) :\ndecodeItemByteFoldFacts args (Z.sub (bv_unsigned inputPrefix) 247) i (Z.add (decodeItemInputPointer args) 1) (take (Z.to_nat (Z.sub (bv_unsigned inputPrefix) 247)) (drop 1 (decodeItemInputBytes args))) ->\n((Z_to_bv 64 (Z.add (Z.add (decodeItemInputPointer args) 1) i) + 1)%bv = Z_to_bv 64 (Z.add (Z.add (decodeItemInputPointer args) 1) (Z.add i 1))).\n",
       "source": {
         "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old1_S131.v",
-        "sha256": "0757206a5054007715840edcbd83694805c4f4d3c787229e704d7c7c9d05427a"
+        "sha256": "0757206a5054007715840edcbd83694805c4f4d3c787229e704d7c7c9d05427a",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "context": {
         "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-supported-shelf-focus-005/6ac4-OLD-VALUE-1-CONTEXT.json",
-        "sha256": "3f627b23188427fa827031da25f5a80275f0b1594d65b2b1790ed433e2caeeec"
+        "sha256": "3f627b23188427fa827031da25f5a80275f0b1594d65b2b1790ed433e2caeeec",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/REPORT.json",
-        "sha256": "e28885c86e0e87f0c90e86b6cc8bc337d28e980c9dada6e36e9a323405d530c1"
+        "sha256": "e28885c86e0e87f0c90e86b6cc8bc337d28e980c9dada6e36e9a323405d530c1",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "retained_scope": {
         "frozen_root": "f2033b63f8f785efcacf8c06fbba1107fe9a7f7e",
@@ -1248,7 +1312,8 @@
                 "theorem": "S165_6ac4_old0_S131",
                 "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old0_S131.v",
                 "source_sha256": "ecf369ae2e84c888a5c294f8f4df59393eb3fb28cb75be6e0c1ad5caf61fb130",
-                "proof_finished": false
+                "proof_finished": false,
+                "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
               },
               "after": {
                 "success": true,
@@ -1268,7 +1333,8 @@
                 "theorem": "S165_6ac4_old0_S131",
                 "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old0_S131.v",
                 "source_sha256": "ecf369ae2e84c888a5c294f8f4df59393eb3fb28cb75be6e0c1ad5caf61fb130",
-                "proof_finished": false
+                "proof_finished": false,
+                "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
               }
             },
             {
@@ -1301,7 +1367,8 @@
                 "theorem": "S165_6ac4_old0_S131",
                 "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old0_S131.v",
                 "source_sha256": "ecf369ae2e84c888a5c294f8f4df59393eb3fb28cb75be6e0c1ad5caf61fb130",
-                "proof_finished": false
+                "proof_finished": false,
+                "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
               },
               "after": {
                 "success": true,
@@ -1321,7 +1388,8 @@
                 "theorem": "S165_6ac4_old0_S131",
                 "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old0_S131.v",
                 "source_sha256": "ecf369ae2e84c888a5c294f8f4df59393eb3fb28cb75be6e0c1ad5caf61fb130",
-                "proof_finished": false
+                "proof_finished": false,
+                "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
               }
             }
           ],
@@ -1355,7 +1423,8 @@
             "theorem": "S165_6ac4_old0_S131",
             "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old0_S131.v",
             "source_sha256": "ecf369ae2e84c888a5c294f8f4df59393eb3fb28cb75be6e0c1ad5caf61fb130",
-            "proof_finished": false
+            "proof_finished": false,
+            "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
           },
           "advancement": null,
           "final": {
@@ -1376,7 +1445,8 @@
             "theorem": "S165_6ac4_old0_S131",
             "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old0_S131.v",
             "source_sha256": "ecf369ae2e84c888a5c294f8f4df59393eb3fb28cb75be6e0c1ad5caf61fb130",
-            "proof_finished": false
+            "proof_finished": false,
+            "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
           },
           "native_assignment_executed": false,
           "native_assignment_limit": "The exported target binds i. No assignable successor existential or global native evar map is available."
@@ -1427,7 +1497,8 @@
                 "theorem": "S165_6ac4_old1_S131",
                 "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old1_S131.v",
                 "source_sha256": "0757206a5054007715840edcbd83694805c4f4d3c787229e704d7c7c9d05427a",
-                "proof_finished": false
+                "proof_finished": false,
+                "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
               },
               "after": {
                 "success": true,
@@ -1447,7 +1518,8 @@
                 "theorem": "S165_6ac4_old1_S131",
                 "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old1_S131.v",
                 "source_sha256": "0757206a5054007715840edcbd83694805c4f4d3c787229e704d7c7c9d05427a",
-                "proof_finished": false
+                "proof_finished": false,
+                "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
               }
             },
             {
@@ -1480,7 +1552,8 @@
                 "theorem": "S165_6ac4_old1_S131",
                 "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old1_S131.v",
                 "source_sha256": "0757206a5054007715840edcbd83694805c4f4d3c787229e704d7c7c9d05427a",
-                "proof_finished": false
+                "proof_finished": false,
+                "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
               },
               "after": {
                 "success": true,
@@ -1500,7 +1573,8 @@
                 "theorem": "S165_6ac4_old1_S131",
                 "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old1_S131.v",
                 "source_sha256": "0757206a5054007715840edcbd83694805c4f4d3c787229e704d7c7c9d05427a",
-                "proof_finished": false
+                "proof_finished": false,
+                "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
               }
             }
           ],
@@ -1534,7 +1608,8 @@
             "theorem": "S165_6ac4_old1_S131",
             "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old1_S131.v",
             "source_sha256": "0757206a5054007715840edcbd83694805c4f4d3c787229e704d7c7c9d05427a",
-            "proof_finished": false
+            "proof_finished": false,
+            "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
           },
           "advancement": null,
           "final": {
@@ -1555,7 +1630,8 @@
             "theorem": "S165_6ac4_old1_S131",
             "source": "/home/cody/zesislar/.worktrees/worker1-spec-a-s160/_build/s165-s131-exact-old-targets-007/S165_6ac4_old1_S131.v",
             "source_sha256": "0757206a5054007715840edcbd83694805c4f4d3c787229e704d7c7c9d05427a",
-            "proof_finished": false
+            "proof_finished": false,
+            "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
           },
           "native_assignment_executed": false,
           "native_assignment_limit": "The exported target binds i. No assignable successor existential or global native evar map is available."
@@ -1575,7 +1651,8 @@
       "operation": "decodeItemListReturnLengthWitness",
       "capture": {
         "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s173/ZesuSsz/Evidence/precommitment/6ad8.json",
-        "sha256": "df24287b5055eabf9d6f6985c139a59c29f90e8075ba36d793863d032a3c693c"
+        "sha256": "df24287b5055eabf9d6f6985c139a59c29f90e8075ba36d793863d032a3c693c",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "source": {
         "success": true,
@@ -1595,12 +1672,14 @@
         "theorem": "DesignedBoundary_800d6ad8",
         "source": "/home/cody/zesislar/.worktrees/worker1-spec-a/_build/s115-precommit-s43-application-005/Replay6ad8.v",
         "source_sha256": "03d042264e2348a5681b45b0aeb74715a4645c46a322f0519484b0d55714de31",
-        "proof_finished": false
+        "proof_finished": false,
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "retained_scope": "Exact retained I62 native statements on owned current artifacts. Historical33b9a455 plus four Rule38 overlays differs from the current28-switch scope.",
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker1-spec-a/build/stock-zisk/spec-a-s115/PRECOMMIT-005-REPORT.json",
-        "sha256": "a420690601eb14f439d1c28ad5f660fe147669f37f22f118f1bbff10ebfe3442"
+        "sha256": "a420690601eb14f439d1c28ad5f660fe147669f37f22f118f1bbff10ebfe3442",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "required_assignment": "Use the registered canonical witness before commitment; discharge the unchanged resource source.",
       "limits": "Captured proof state stays open. Pure theorem uses the verified retained premise subset. No repaired native closure asserted.",
@@ -1616,7 +1695,8 @@
       "operation": "1: liFindInContext.",
       "statement": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-native-store-capture-mcp-006/STATEMENT.v",
-        "sha256": "a173e2a65b54c347008f8cf26a95353b8eca2a9a91f5e0c0d03d6f3d66f7a530"
+        "sha256": "a173e2a65b54c347008f8cf26a95353b8eca2a9a91f5e0c0d03d6f3d66f7a530",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-native-store-capture-audit-006/REPORT.json",
@@ -1624,7 +1704,8 @@
       },
       "capture": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-native-store-capture-mcp-006/6ae0/exports/state_37.json",
-        "sha256": "5fc98da21f7d1b36164d1f532d3754179ae6e5fb52b3ed8a7e794354a15995eb"
+        "sha256": "5fc98da21f7d1b36164d1f532d3754179ae6e5fb52b3ed8a7e794354a15995eb",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "groups": [
         3,
@@ -1685,11 +1766,13 @@
       "operation": "1: liFindInContext.",
       "source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-mcp-001/Capture6b08.v",
-        "sha256": "25c80d1f03d333969c602311f7afd9eb3122d3ba889be8ee4ca9d8f20ea5db90"
+        "sha256": "25c80d1f03d333969c602311f7afd9eb3122d3ba889be8ee4ca9d8f20ea5db90",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "statement": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-mcp-001/6b08.statement.v",
-        "sha256": "fd497456cf685e8f4810147e6d30f40b63c6b3cf766c857ddd52686bcc9d73b7"
+        "sha256": "fd497456cf685e8f4810147e6d30f40b63c6b3cf766c857ddd52686bcc9d73b7",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-audit-001/REPORT.json",
@@ -1697,7 +1780,8 @@
       },
       "capture": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-mcp-001/6b08/exports/state_36.json",
-        "sha256": "07380311e3ed1b5d97cfb0368e2fb87ed3bdb4951cebbb58339d7d9e8b01a897"
+        "sha256": "07380311e3ed1b5d97cfb0368e2fb87ed3bdb4951cebbb58339d7d9e8b01a897",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "groups": [
         3,
@@ -1719,7 +1803,8 @@
         ],
         "export": {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-mcp-001/6b08/exports/state_11.json",
-          "sha256": "426ec7d4643589163253057c760a2cb07473c41a9a60b1b2e72fa78c607e16e6"
+          "sha256": "426ec7d4643589163253057c760a2cb07473c41a9a60b1b2e72fa78c607e16e6",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         }
       },
       "selected_resource": "Initialized output array at decodeItemOutputPointer args with image returnStorage locals.",

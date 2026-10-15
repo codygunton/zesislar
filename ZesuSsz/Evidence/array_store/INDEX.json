@@ -27,37 +27,45 @@
       },
       "native_source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6a40/Source.v",
-        "sha256": "e823cacff76c503967539c5a3baf0d3c1f395d78a6009cc9e4cc76f25bba70de"
+        "sha256": "e823cacff76c503967539c5a3baf0d3c1f395d78a6009cc9e4cc76f25bba70de",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "compiled_native_source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-002/arms/block_0x800d6a40/default/Boundary.v",
-        "sha256": "8300aa875b1e93df4782e3d5172f80eb4961353c8506bc5e75eb2416b4b55da7"
+        "sha256": "8300aa875b1e93df4782e3d5172f80eb4961353c8506bc5e75eb2416b4b55da7",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "capture": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a40-000.json",
-        "sha256": "a1b09ba7df897c0d637a4c046a6b67162a1211948543e6153466d1e8eb514243"
+        "sha256": "a1b09ba7df897c0d637a4c046a6b67162a1211948543e6153466d1e8eb514243",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "retained_captures": [
         {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a40-000.json",
-          "sha256": "a1b09ba7df897c0d637a4c046a6b67162a1211948543e6153466d1e8eb514243"
+          "sha256": "a1b09ba7df897c0d637a4c046a6b67162a1211948543e6153466d1e8eb514243",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         },
         {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a40-001.json",
-          "sha256": "f282a95fa3ac419eb5805cef2b7a7199e139b11af97c0f91a46435294dd3bf0d"
+          "sha256": "f282a95fa3ac419eb5805cef2b7a7199e139b11af97c0f91a46435294dd3bf0d",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         },
         {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-009/captures/block_0x800d6a40-002.json",
-          "sha256": "458d98c34a850dc21e1dc49d685b592b5a677835ab2aafac17e2931b1fa75723"
+          "sha256": "458d98c34a850dc21e1dc49d685b592b5a677835ab2aafac17e2931b1fa75723",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         }
       ],
       "native_evidence": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-002/arms/block_0x800d6a40/default/evidence.json",
-        "sha256": "23d6151f7dfa8728faae6cdbf9dd9ba6f1a4d894dedd0208f263be9a3bcc1b1a"
+        "sha256": "23d6151f7dfa8728faae6cdbf9dd9ba6f1a4d894dedd0208f263be9a3bcc1b1a",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "capture_provenance": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/s152-s153-array-store-locators-002/PACKAGE.json",
-        "sha256": "0c8dba4a118188c8a13afec959b299e2ff9ab209b73781b79332a1280d356550"
+        "sha256": "0c8dba4a118188c8a13afec959b299e2ff9ab209b73781b79332a1280d356550",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "source_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
       "capture_scope": {
@@ -89,37 +97,45 @@
       },
       "native_source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6a78/Source.v",
-        "sha256": "aa49c78429562adcebd1219a7a833c42a50b76d7f48b514ff1a7ae2fe487dfc1"
+        "sha256": "aa49c78429562adcebd1219a7a833c42a50b76d7f48b514ff1a7ae2fe487dfc1",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "compiled_native_source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-002/arms/block_0x800d6a78/default/Boundary.v",
-        "sha256": "c612bafd0410e3dc64e8bd15a3aa24aeda70818a103b98f142bd0f9c8cb9386b"
+        "sha256": "c612bafd0410e3dc64e8bd15a3aa24aeda70818a103b98f142bd0f9c8cb9386b",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "capture": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-013/captures/block_0x800d6a78-000.json",
-        "sha256": "66be4023ec3193f72ddd685ba0b05443e54b4ca6ecaac2aa635e842c59840806"
+        "sha256": "66be4023ec3193f72ddd685ba0b05443e54b4ca6ecaac2aa635e842c59840806",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "retained_captures": [
         {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-013/captures/block_0x800d6a78-000.json",
-          "sha256": "66be4023ec3193f72ddd685ba0b05443e54b4ca6ecaac2aa635e842c59840806"
+          "sha256": "66be4023ec3193f72ddd685ba0b05443e54b4ca6ecaac2aa635e842c59840806",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         },
         {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-013/captures/block_0x800d6a78-001.json",
-          "sha256": "02efcae5ad2ebedb4fd2d32b58bba04bed15d3494450bc8420963a5bfccf4f1c"
+          "sha256": "02efcae5ad2ebedb4fd2d32b58bba04bed15d3494450bc8420963a5bfccf4f1c",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         },
         {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-013/captures/block_0x800d6a78-002.json",
-          "sha256": "6e5dff046149a57500b0ad6d21ced796946eea830ef1c6684aa4c4c7b3c63f03"
+          "sha256": "6e5dff046149a57500b0ad6d21ced796946eea830ef1c6684aa4c4c7b3c63f03",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         }
       ],
       "native_evidence": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-002/arms/block_0x800d6a78/default/evidence.json",
-        "sha256": "dc4638f2abd8b8dbaa2fd451baa30f18ca7706584baf430fa94b53380f357cee"
+        "sha256": "dc4638f2abd8b8dbaa2fd451baa30f18ca7706584baf430fa94b53380f357cee",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "capture_provenance": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/s152-s153-array-store-locators-002/PACKAGE.json",
-        "sha256": "0c8dba4a118188c8a13afec959b299e2ff9ab209b73781b79332a1280d356550"
+        "sha256": "0c8dba4a118188c8a13afec959b299e2ff9ab209b73781b79332a1280d356550",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "source_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
       "capture_scope": {
@@ -151,37 +167,45 @@
       },
       "native_source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d69b0/Source.v",
-        "sha256": "cc00e25c31423968640a1053d5d7a19c0cb5ca26dc4c6c3409f57cd1de8e7ee0"
+        "sha256": "cc00e25c31423968640a1053d5d7a19c0cb5ca26dc4c6c3409f57cd1de8e7ee0",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "compiled_native_source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/arms/block_0x800d69b0/default/Boundary.v",
-        "sha256": "7c16fb2dd872f7f2c60ac4d4a9b0cf619ab29fd59561c54f1b27ed6ff4825d41"
+        "sha256": "7c16fb2dd872f7f2c60ac4d4a9b0cf619ab29fd59561c54f1b27ed6ff4825d41",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "capture": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-004/captures/block_0x800d69b0-000.json",
-        "sha256": "dc7e58083fb777ea3aeb631b014933175abd28c995e2cd8c7f3ebaf4eae0bbeb"
+        "sha256": "dc7e58083fb777ea3aeb631b014933175abd28c995e2cd8c7f3ebaf4eae0bbeb",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "retained_captures": [
         {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-004/captures/block_0x800d69b0-000.json",
-          "sha256": "dc7e58083fb777ea3aeb631b014933175abd28c995e2cd8c7f3ebaf4eae0bbeb"
+          "sha256": "dc7e58083fb777ea3aeb631b014933175abd28c995e2cd8c7f3ebaf4eae0bbeb",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         },
         {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-004/captures/block_0x800d69b0-001.json",
-          "sha256": "3521e7f5659bdbef4fc1bf5cadff29f82dd72786092e4b3fb72793ea282f0fb7"
+          "sha256": "3521e7f5659bdbef4fc1bf5cadff29f82dd72786092e4b3fb72793ea282f0fb7",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         },
         {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-004/captures/block_0x800d69b0-002.json",
-          "sha256": "f5447c0d7cdfe5a9477f753b9a939063bd38d899844ea7d73f89890a55f995f9"
+          "sha256": "f5447c0d7cdfe5a9477f753b9a939063bd38d899844ea7d73f89890a55f995f9",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         }
       ],
       "native_evidence": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/arms/block_0x800d69b0/default/evidence.json",
-        "sha256": "17df176043cc143aa5faca9922d56422558f3a79d04f8cb942b295b9ff7df6ed"
+        "sha256": "17df176043cc143aa5faca9922d56422558f3a79d04f8cb942b295b9ff7df6ed",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "capture_provenance": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/s152-s153-array-store-locators-002/PACKAGE.json",
-        "sha256": "0c8dba4a118188c8a13afec959b299e2ff9ab209b73781b79332a1280d356550"
+        "sha256": "0c8dba4a118188c8a13afec959b299e2ff9ab209b73781b79332a1280d356550",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "source_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
       "capture_scope": {
@@ -213,29 +237,35 @@
       },
       "native_source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6ae0/Source.v",
-        "sha256": "12bb074246087b2ba1af3dd5fb97ffd3f747b7ddf72da1f9d737c9e77d0b3754"
+        "sha256": "12bb074246087b2ba1af3dd5fb97ffd3f747b7ddf72da1f9d737c9e77d0b3754",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "compiled_native_source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-002/arms/block_0x800d6ae0/default/Boundary.v",
-        "sha256": "ceaef39dcdbbb08a0f12272f927132ccf47702a29205a785acac922b77e07233"
+        "sha256": "ceaef39dcdbbb08a0f12272f927132ccf47702a29205a785acac922b77e07233",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "capture": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-016/captures/block_0x800d6ae0-000.json",
-        "sha256": "c346b72ed026c95c9d3ae3a106d934f41a6dd2b7ab37b18fdb6ac915f7506202"
+        "sha256": "c346b72ed026c95c9d3ae3a106d934f41a6dd2b7ab37b18fdb6ac915f7506202",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "retained_captures": [
         {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-016/captures/block_0x800d6ae0-000.json",
-          "sha256": "c346b72ed026c95c9d3ae3a106d934f41a6dd2b7ab37b18fdb6ac915f7506202"
+          "sha256": "c346b72ed026c95c9d3ae3a106d934f41a6dd2b7ab37b18fdb6ac915f7506202",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         }
       ],
       "native_evidence": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-002/arms/block_0x800d6ae0/default/evidence.json",
-        "sha256": "b5003557328415fa84b3df9b9a78f24491fcd8f05e17d87d31bbd5a2d419c025"
+        "sha256": "b5003557328415fa84b3df9b9a78f24491fcd8f05e17d87d31bbd5a2d419c025",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "capture_provenance": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/s152-s153-array-store-locators-002/PACKAGE.json",
-        "sha256": "0c8dba4a118188c8a13afec959b299e2ff9ab209b73781b79332a1280d356550"
+        "sha256": "0c8dba4a118188c8a13afec959b299e2ff9ab209b73781b79332a1280d356550",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "source_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
       "capture_scope": {
@@ -268,37 +298,45 @@
       },
       "native_source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d698c/Source.v",
-        "sha256": "5a10c5984543cef63827cda501b1bac82d4470132772ac38418a47545d136ba5"
+        "sha256": "5a10c5984543cef63827cda501b1bac82d4470132772ac38418a47545d136ba5",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "compiled_native_source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/arms/block_0x800d698c/default/Boundary.v",
-        "sha256": "9e58897fea5969cbd4f6c13b51e7f6b7b2b9dad2e9156f26359c479d3b0d5338"
+        "sha256": "9e58897fea5969cbd4f6c13b51e7f6b7b2b9dad2e9156f26359c479d3b0d5338",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "capture": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d698c-000.json",
-        "sha256": "e25eb5f89a36b7ee8d50986435ec703813af46307ee1a1ffb8ae0c603280d15e"
+        "sha256": "e25eb5f89a36b7ee8d50986435ec703813af46307ee1a1ffb8ae0c603280d15e",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "retained_captures": [
         {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d698c-000.json",
-          "sha256": "e25eb5f89a36b7ee8d50986435ec703813af46307ee1a1ffb8ae0c603280d15e"
+          "sha256": "e25eb5f89a36b7ee8d50986435ec703813af46307ee1a1ffb8ae0c603280d15e",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         },
         {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d698c-001.json",
-          "sha256": "171a719b4bd2ae3cbd4bc2a5e3406a6105605e9c17248369286b30fd0015ce01"
+          "sha256": "171a719b4bd2ae3cbd4bc2a5e3406a6105605e9c17248369286b30fd0015ce01",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         },
         {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-incremental-001/captures/block_0x800d698c-002.json",
-          "sha256": "a985f69e428d68acb78785b97977684543d66642097ca49a58badbf46343f383"
+          "sha256": "a985f69e428d68acb78785b97977684543d66642097ca49a58badbf46343f383",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         }
       ],
       "native_evidence": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/arms/block_0x800d698c/default/evidence.json",
-        "sha256": "c71be787119de5afd525614a198ed041131b57bebdcb610ef891dfde6dd2d5c0"
+        "sha256": "c71be787119de5afd525614a198ed041131b57bebdcb610ef891dfde6dd2d5c0",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "capture_provenance": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/s152-s153-array-store-locators-002/PACKAGE.json",
-        "sha256": "0c8dba4a118188c8a13afec959b299e2ff9ab209b73781b79332a1280d356550"
+        "sha256": "0c8dba4a118188c8a13afec959b299e2ff9ab209b73781b79332a1280d356550",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "source_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
       "capture_scope": {
@@ -330,37 +368,45 @@
       },
       "native_source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-001/sources/block_0x800d6b08/Source.v",
-        "sha256": "2271a9622eec46df85e3663fc2cc5fbc1c18a4bc361cdec179abd2f202ff78e2"
+        "sha256": "2271a9622eec46df85e3663fc2cc5fbc1c18a4bc361cdec179abd2f202ff78e2",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "compiled_native_source": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-002/arms/block_0x800d6b08/default/Boundary.v",
-        "sha256": "d63a8841832754b80d0d163eaa9bbcd0ef573e2912253800eaab4ccf8b683766"
+        "sha256": "d63a8841832754b80d0d163eaa9bbcd0ef573e2912253800eaab4ccf8b683766",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "capture": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-default-final-001/captures/block_0x800d6b08-000.json",
-        "sha256": "96fafab91e7701469f5b0b9999648f7672800c4835dd306d63621455efbaada9"
+        "sha256": "96fafab91e7701469f5b0b9999648f7672800c4835dd306d63621455efbaada9",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "retained_captures": [
         {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-default-final-001/captures/block_0x800d6b08-000.json",
-          "sha256": "96fafab91e7701469f5b0b9999648f7672800c4835dd306d63621455efbaada9"
+          "sha256": "96fafab91e7701469f5b0b9999648f7672800c4835dd306d63621455efbaada9",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         },
         {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-default-final-001/captures/block_0x800d6b08-001.json",
-          "sha256": "4179c0e09c6643f4569a8d0dbc2784190599a8ae724c492d7a021f66d317125e"
+          "sha256": "4179c0e09c6643f4569a8d0dbc2784190599a8ae724c492d7a021f66d317125e",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         },
         {
           "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/i67-default-final-001/captures/block_0x800d6b08-002.json",
-          "sha256": "d3125804e4318417419f8d015b239bc9bb93dd8e4af48678ec93bbe39d1ba03d"
+          "sha256": "d3125804e4318417419f8d015b239bc9bb93dd8e4af48678ec93bbe39d1ba03d",
+          "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
         }
       ],
       "native_evidence": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/_build/i67-native-pass-002/arms/block_0x800d6b08/default/evidence.json",
-        "sha256": "583a261d6d25bbaf60bfbe47d0c4231984855447be71590ef7c4f4b076b2b2a8"
+        "sha256": "583a261d6d25bbaf60bfbe47d0c4231984855447be71590ef7c4f4b076b2b2a8",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "capture_provenance": {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/s152-s153-array-store-locators-002/PACKAGE.json",
-        "sha256": "0c8dba4a118188c8a13afec959b299e2ff9ab209b73781b79332a1280d356550"
+        "sha256": "0c8dba4a118188c8a13afec959b299e2ff9ab209b73781b79332a1280d356550",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "source_root": "e17a8888ac3aed392397113fb97d0a244a2bba6e",
       "capture_scope": {
@@ -409,11 +455,13 @@
   "evidence_limit": "The checker validates linked consistency. It does not execute proofs or authenticate transcripts.",
   "reviewed_locator_package": {
     "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/s152-s153-array-store-locators-002/PACKAGE.json",
-    "sha256": "0c8dba4a118188c8a13afec959b299e2ff9ab209b73781b79332a1280d356550"
+    "sha256": "0c8dba4a118188c8a13afec959b299e2ff9ab209b73781b79332a1280d356550",
+    "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
   },
   "reviewed_locator_audit": {
     "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i67-e17-pass/build/stock-zisk/s152-s153-array-store-locators-002/REPORT.json",
-    "sha256": "bed2d98906444ccfadc931af713d6dbec6a1046647c0130c5a8382ff6294e3cd"
+    "sha256": "bed2d98906444ccfadc931af713d6dbec6a1046647c0130c5a8382ff6294e3cd",
+    "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
   },
   "separate_newer_I78": {
     "block": "0x800d6a78",
@@ -422,28 +470,33 @@
     "integrated_runtime_root": "f2033b63f8f785efcacf8c06fbba1107fe9a7f7e",
     "source": {
       "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i78-unlimited-stack-b214/_build/i78-block-integrated-preparation-002/Boundary.v",
-      "sha256": "c612bafd0410e3dc64e8bd15a3aa24aeda70818a103b98f142bd0f9c8cb9386b"
+      "sha256": "c612bafd0410e3dc64e8bd15a3aa24aeda70818a103b98f142bd0f9c8cb9386b",
+      "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
     },
     "statement_sha256": "6a9b7fe601eeecca8c04fee785e3456580f7a8f15199aa95c386c3fd22f74da2",
     "result_audit": {
       "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i78-unlimited-stack-b214/_build/i78-block-probe-result-audit-001/REPORT.json",
-      "sha256": "e45d43a3a5ece85f2f59a04b671b7f842df8c26e2b201110ce2a3332275c6087"
+      "sha256": "e45d43a3a5ece85f2f59a04b671b7f842df8c26e2b201110ce2a3332275c6087",
+      "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
     },
     "captures": [
       {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i78-unlimited-stack-b214/_build/i78-block-probe-result-audit-001/active000.json",
         "sha256": "66be4023ec3193f72ddd685ba0b05443e54b4ca6ecaac2aa635e842c59840806",
-        "first_head": "mem_mapsto_kind"
+        "first_head": "mem_mapsto_kind",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i78-unlimited-stack-b214/_build/i78-block-probe-result-audit-001/active001.json",
         "sha256": "02efcae5ad2ebedb4fd2d32b58bba04bed15d3494450bc8420963a5bfccf4f1c",
-        "first_head": "(FindHypEqual (ZesuMemRegionSearch (bv_unsigned LET0))\n   (decodeItemOutputPointer args\n    \u21a6\u2098\u2217 (Z_to_bv 8 (Z.land (bv_unsigned (returnA1 locals + 1)) (Z.ones 8))\n       "
+        "first_head": "(FindHypEqual (ZesuMemRegionSearch (bv_unsigned LET0))\n   (decodeItemOutputPointer args\n    \u21a6\u2098\u2217 (Z_to_bv 8 (Z.land (bv_unsigned (returnA1 locals + 1)) (Z.ones 8))\n       ",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       {
         "path": "/home/cody/zesislar/.worktrees/worker2-child-platform-i78-unlimited-stack-b214/_build/i78-block-probe-result-audit-001/active002.json",
         "sha256": "6e5dff046149a57500b0ad6d21ced796946eea830ef1c6684aa4c4c7b3c63f03",
-        "first_head": "match ?Goal@{H58:=bv_unsigned_in_range_alt 64 b10; H59:=bv_signed_in_range 64 b10; H60:=bv_unsigned_in_range_alt 64 n3; H61:=bv_signed_in_range 64 n3} with\n| MKMapsTo n' "
+        "first_head": "match ?Goal@{H58:=bv_unsigned_in_range_alt 64 b10; H59:=bv_signed_in_range 64 b10; H60:=bv_unsigned_in_range_alt 64 n3; H61:=bv_signed_in_range 64 n3} with\n| MKMapsTo n' ",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       }
     ],
     "groups": {
@@ -512,21 +565,24 @@
       "site": "6a78",
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-s148-f2033b63/_build/s149-checkpoint001/REPORT.json",
-        "sha256": "135734e03403ad3b327ac51558bc8969a88b17afe822b20c3cc5ed5676bad6d3"
+        "sha256": "135734e03403ad3b327ac51558bc8969a88b17afe822b20c3cc5ed5676bad6d3",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       }
     },
     {
       "site": "6a40",
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-s148-f2033b63/_build/s150-checkpoint001/REPORT.json",
-        "sha256": "2e4dc4cd3c1b6ddb70cb4aae24de69bec6a47fe2d015bad6c53464d9269c9b43"
+        "sha256": "2e4dc4cd3c1b6ddb70cb4aae24de69bec6a47fe2d015bad6c53464d9269c9b43",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       }
     },
     {
       "site": "69b0",
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker1-spec-c-i67-e17/build/stock-zisk/spec-c-s151-completion-008/REPORT.json",
-        "sha256": "e121e845fb234d89bddd0ef140eb3ca9095f99881321c9e04fe57b6b5f60f049"
+        "sha256": "e121e845fb234d89bddd0ef140eb3ca9095f99881321c9e04fe57b6b5f60f049",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       }
     }
   ],
@@ -535,7 +591,8 @@
       "id": "S152a",
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s152a/build/stock-zisk/spec-a-s152a/SUPPORTED-CERTIFICATES-002.json",
-        "sha256": "7b70d0d69888bdd5de9f223f3a0b00244b85c9afe03a44bf7d2ae81d74158204"
+        "sha256": "7b70d0d69888bdd5de9f223f3a0b00244b85c9afe03a44bf7d2ae81d74158204",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "root": "38c9d932080fec62c280036264d25ea0305e64fc",
       "eligible_as_exact_native_selection_control": false,
@@ -544,7 +601,8 @@
           "theorem": "decodeItemOutput24SelectionFacts",
           "source": {
             "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s152a/_build/s152a-owned-mcp-004/decodeItemOutput24SelectionFacts.v",
-            "sha256": "fc7a9370516b724fbe7660504bd18ac128cad91ef74e4ec51ed1efd87e85dd29"
+            "sha256": "fc7a9370516b724fbe7660504bd18ac128cad91ef74e4ec51ed1efd87e85dd29",
+            "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
           },
           "statement": {
             "path": "ZesuSsz/Evidence/array_store/statements/decodeItemOutput24SelectionFacts.txt",
@@ -558,7 +616,8 @@
           "theorem": "decodeItemReturnEntryOutput24Selection",
           "source": {
             "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s152a/_build/s152a-owned-mcp-004/decodeItemReturnEntryOutput24Selection.v",
-            "sha256": "553d16ea97989a6ce73d52403cfec58a5757f284c82a6d0e4bbd3509d40a7c4a"
+            "sha256": "553d16ea97989a6ce73d52403cfec58a5757f284c82a6d0e4bbd3509d40a7c4a",
+            "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
           },
           "statement": {
             "path": "ZesuSsz/Evidence/array_store/statements/decodeItemReturnEntryOutput24Selection.txt",
@@ -572,7 +631,8 @@
           "theorem": "decodeItemEntry6a40Output24Selection",
           "source": {
             "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s152a/_build/s152a-owned-mcp-004/decodeItemEntry6a40Output24Selection.v",
-            "sha256": "a5a01d555836b560d251844e0ac36dd019cbf101ee109623fce49ba14db090f0"
+            "sha256": "a5a01d555836b560d251844e0ac36dd019cbf101ee109623fce49ba14db090f0",
+            "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
           },
           "statement": {
             "path": "ZesuSsz/Evidence/array_store/statements/decodeItemEntry6a40Output24Selection.txt",
@@ -586,7 +646,8 @@
           "theorem": "decodeItemEntry6a78Output24Selection",
           "source": {
             "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s152a/_build/s152a-owned-mcp-004/decodeItemEntry6a78Output24Selection.v",
-            "sha256": "e00e00439bf133dfa07f2cd9df346d322668ab8acf5aa1b1244120315493edde"
+            "sha256": "e00e00439bf133dfa07f2cd9df346d322668ab8acf5aa1b1244120315493edde",
+            "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
           },
           "statement": {
             "path": "ZesuSsz/Evidence/array_store/statements/decodeItemEntry6a78Output24Selection.txt",
@@ -600,7 +661,8 @@
           "theorem": "decodeItemEntry69b0Output24Selection",
           "source": {
             "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s152a/_build/s152a-owned-mcp-004/decodeItemEntry69b0Output24Selection.v",
-            "sha256": "b56d41cba2eba5ad595965f41c1c6f4360007929158c572394aa591ca44649bc"
+            "sha256": "b56d41cba2eba5ad595965f41c1c6f4360007929158c572394aa591ca44649bc",
+            "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
           },
           "statement": {
             "path": "ZesuSsz/Evidence/array_store/statements/decodeItemEntry69b0Output24Selection.txt",
@@ -614,7 +676,8 @@
           "theorem": "decodeItemOutput24UpdatedExtent",
           "source": {
             "path": "/home/cody/zesislar/.worktrees/worker1-spec-a-s152a/_build/s152a-owned-mcp-004/decodeItemOutput24UpdatedExtent.v",
-            "sha256": "7028d38a04fded4e6d5dfae7c8d7f503df2d482b733c4b49442b82fd90d1fed3"
+            "sha256": "7028d38a04fded4e6d5dfae7c8d7f503df2d482b733c4b49442b82fd90d1fed3",
+            "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
           },
           "statement": {
             "path": "ZesuSsz/Evidence/array_store/statements/decodeItemOutput24UpdatedExtent.txt",
@@ -631,7 +694,8 @@
       "id": "S152b",
       "report": {
         "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-s148-f2033b63/_build/s152b-checkpoint001/REPORT.json",
-        "sha256": "f55825ff20ea62a0d411667fde6b57b6b656bd3213f19d08089a853576c4422f"
+        "sha256": "f55825ff20ea62a0d411667fde6b57b6b656bd3213f19d08089a853576c4422f",
+        "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
       },
       "root": "38c9d932080fec62c280036264d25ea0305e64fc",
       "eligible_as_exact_native_selection_control": false,
@@ -640,7 +704,8 @@
           "theorem": "s152b_entry_6ae0_output_facts",
           "source": {
             "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-s148-f2033b63/_build/s152b-pure003/Entry6ae0.v",
-            "sha256": "c611e521b397131a601f16dac0f493a9de0e0a688a627181ca0645da82ebcfbe"
+            "sha256": "c611e521b397131a601f16dac0f493a9de0e0a688a627181ca0645da82ebcfbe",
+            "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
           },
           "statement": {
             "path": "ZesuSsz/Evidence/array_store/statements/s152b_entry_6ae0_output_facts.txt",
@@ -654,7 +719,8 @@
           "theorem": "s152b_entry_698c_output_facts",
           "source": {
             "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-s148-f2033b63/_build/s152b-pure004/Entry698c.v",
-            "sha256": "bae98c80975667bef9c83564beb46b93c6f20e22f04ee07c58989fab7d4af996"
+            "sha256": "bae98c80975667bef9c83564beb46b93c6f20e22f04ee07c58989fab7d4af996",
+            "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
           },
           "statement": {
             "path": "ZesuSsz/Evidence/array_store/statements/s152b_entry_698c_output_facts.txt",
@@ -668,7 +734,8 @@
           "theorem": "s152b_entry_6b08_output_facts",
           "source": {
             "path": "/home/cody/zesislar/.worktrees/worker1-spec-b-s148-f2033b63/_build/s152b-pure004/Entry6b08.v",
-            "sha256": "208e27bd0a034784511182d0701a2c6ee01b508260539fda6f77dc3a9ee1355f"
+            "sha256": "208e27bd0a034784511182d0701a2c6ee01b508260539fda6f77dc3a9ee1355f",
+            "status": "removed in the 2026-10-15 worktree cleanup; hash retained"
           },
           "statement": {
             "path": "ZesuSsz/Evidence/array_store/statements/s152b_entry_6b08_output_facts.txt",
