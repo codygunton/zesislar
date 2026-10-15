@@ -1,0 +1,27 @@
+{
+  "schema": "nextuint64-call-edge-description-v1",
+  "scope": "Documentation interface for Infra. These field names describe the required data; this is not a claim that the current generator accepts this schema.",
+  "caller_function": "rlp_decode.nextUint64",
+  "from_block": "0x800d6274",
+  "call_site_pc": "0x800d62b4",
+  "callee_pc": "0x800d6960",
+  "return_site_pc": "0x800d62b8",
+  "contract_name": "ZesuSsz.Contracts.DecodeItemCompositional.decodeItemSelectedModelCompositional",
+  "contract_arguments": [
+    "0x800d62b8"
+  ],
+  "correctness_theorem": "ZesuSsz.Compliance.DecodeItemCompositionalCompliance.decodeItemSelectedComplianceCompositional",
+  "theorem_arguments": [
+    "0x800d62b8"
+  ],
+  "callee_state": "nextUint64DecodeItemCallState",
+  "table_premise": "\u25a1 instr_pre 0x800d6960 nextUint64DecodeItemCallState",
+  "return_entry": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62b8",
+  "entry_resource": "ZesuSsz.Contracts.DecodeItemCompositional.decodeItemEntryResourcesCompositional (decodeItemDomainAt 0x800d62b8 decodeItemC1BDomain)",
+  "exit_resource": "ZesuSsz.Contracts.DecodeItemCompositional.decodeItemExitResourcesCompositional",
+  "base_substitution": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64CalleeBase params before",
+  "additional_saved_substitution": "nextUint64DecodeItemSaved params; ordered x9,x18,x19,x20,x21,x22,x23,x24,x25,x26,x27",
+  "code_resource": "decodeItemSelectedCode; supplied by nextUint64SelectedCode together with caller code",
+  "not_a_local_successor": "Keep the callee PC outside the caller block-slot obligations. The return-site PC remains a caller successor.",
+  "pending_generic_installation": "The integrated theorem yields code -\u2217 \u2200args,instr_body. Installing the boxed existential table entry still needs the generic body/pre and quantifier bridge with actual code ownership. This description does not claim that bridge is proved."
+}
