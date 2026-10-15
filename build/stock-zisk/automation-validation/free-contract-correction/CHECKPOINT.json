@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "item": "corrected free source integration preparation",
+  "status": "Corrected sources and protocol reviewed; evidence-only gate passed. Full integration gate and native run remain pending.",
+  "base_root": "2e88f45f10171880975e4cd2c1411c899a48643b",
+  "checkpoint_text": "contract corrected before run: ownership omitted the 8-byte header",
+  "contract_packet009": "77cc2105894e46071b29659c67561f9e545109abd1322cfa5a6df3ed4803fdac",
+  "corrected_exit031": "47298b3c5bf42cb0c566f77ee8cb8f017dcd378e067079258aec15c781b800b0",
+  "exit_verification": {
+    "42144": "module_m; assumptions[]",
+    "42160": "shared_defs; assumptions[]"
+  },
+  "application_report010": "e9de72118cc3cb4bd90963670e532787a3009aabe3f604dea36b02107d09b4bb",
+  "artifact_packet006": "d343eab5326b2b7d154852255e9cddd2803a914b32ed0ad040a3612e573c440a",
+  "entry_applications": 43,
+  "ownership_bytes": 184,
+  "head_count": 22,
+  "slot_offset": "8+8*class",
+  "manifest": "ZesuSsz/Evidence/free_function_text.json",
+  "interface_total": 958,
+  "metadata_total": 1044,
+  "historical_pre_run_counts": {
+    "commit": "92940986c349abc545b28cccee3e64b4f5567815",
+    "interface": 933,
+    "metadata": 508
+  },
+  "checks": [
+    "Exact source bytes match checked owner packets.",
+    "Static data-only/unique-registration, umbrella, and shapes pass.",
+    "Protocol shell blocks pass syntax only. Evidence-only make check-evidence-tools passed;212 evidence tests."
+  ],
+  "pending": [
+    "Integrated class dependency and final integration gate",
+    "Exact cp-av-rules-frozen commit before native execution"
+  ],
+  "native_runs": 0,
+  "first_holdout_spent": false,
+  "full_gate_claim": false,
+  "report": {
+    "path": "/home/cody/zesislar/.worktrees/spec-c-av-free-corrected-407/_build/free-corrected-package-001/REPORT.json",
+    "sha256": "c77a698b8b3e39e907912742af920e63a736fff0fd0d4e2bd167f045ee80ade4"
+  }
+}

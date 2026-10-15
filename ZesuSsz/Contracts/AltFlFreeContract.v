@@ -32,7 +32,7 @@ Definition freeArgsWellFormed (args : FreeArgs) : Prop :=
   0 <= freeLog2Alignment args < 64 /\
   8 <= Z.of_nat (length (freeBeforeBuffer args)) /\
   freeBufferLength args <= Z.of_nat (length (freeBeforeBuffer args)) /\
-  length (freeBeforeLists args) = 176%nat /\
+  length (freeBeforeLists args) = 184%nat /\
   freeRange (freeBufferPointer args) (Z.of_nat (length (freeBeforeBuffer args))) /\
   freeRange freeListsPointer freeListsBytes /\
   freeRange (freeStackPointer args - freeStackBytes) freeStackBytes /\

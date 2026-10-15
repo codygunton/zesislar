@@ -11,7 +11,8 @@ Definition freeReturnSites : list Z := [0x80042150; 0x80042188].
 Definition freeStackBytes : Z := 16.
 Definition freeListsPointer : Z := 0xa0534000.
 Definition freeListCount : Z := 22.
-Definition freeListsBytes : Z := 176.
+(* The merged object has state:u8, seven padding bytes, then 22 list heads. *)
+Definition freeListsBytes : Z := 8 + 8 * freeListCount.
 
 (* This balanced comparison tree is the shared source helper used by free. *)
 Definition freeSizeClassOfBytes (size : Z) : Z :=
@@ -45,8 +46,8 @@ Definition freeResultImages (pointer size log2Align : Z)
   let class := freeSizeClass size log2Align in
   if class <? freeListCount then
     afterBuffer = freeReplaceWord beforeBuffer 0
-      (firstn 8 (skipn (Z.to_nat (8 * class)) beforeLists)) /\
-    afterLists = freeReplaceWord beforeLists (Z.to_nat (8 * class))
+      (firstn 8 (skipn (Z.to_nat (8 + 8 * class)) beforeLists)) /\
+    afterLists = freeReplaceWord beforeLists (Z.to_nat (8 + 8 * class))
       (word64Bytes pointer)
   else afterBuffer = beforeBuffer /\ afterLists = beforeLists.
 

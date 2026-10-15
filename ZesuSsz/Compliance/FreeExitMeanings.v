@@ -36,10 +36,10 @@ Lemma freeReturn42160Meaning `{!islaG Sigma} `{!threadG}
     bufferBytes listBytes frameBytes ⊢
   ⌜forall after : FreeOutcome,
     freeAfterBuffer after = freeReplaceWord bufferBytes 0
-      (firstn 8 (skipn (Z.to_nat (8 * freeSizeClass (freeBufferLength args)
+      (firstn 8 (skipn (Z.to_nat (8 + 8 * freeSizeClass (freeBufferLength args)
         (freeLog2Alignment args))) listBytes)) /\
     freeAfterLists after = freeReplaceWord listBytes
-      (Z.to_nat (8 * freeSizeClass (freeBufferLength args) (freeLog2Alignment args)))
+      (Z.to_nat (8 + 8 * freeSizeClass (freeBufferLength args) (freeLog2Alignment args)))
       (word64Bytes (freeBufferPointer args)) ->
     freeAllows args after⌝.
 Proof.
