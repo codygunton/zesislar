@@ -13,6 +13,7 @@ import sys
 from pathlib import Path
 
 import generate_table
+from function_names import FunctionNames
 
 
 PREFIX = "\n".join([
@@ -23,6 +24,18 @@ PREFIX = "\n".join([
     "Require Import ZesuSsz.Automation.BlockTable.",
     "Require Import ZesuSsz.Generated.DecodeItem.BlockTable.",
 ]) + "\n"
+
+
+def render_prefix(name_prefix="decodeItem"):
+    names = FunctionNames(name_prefix)
+    return "\n".join([
+        "Require Import ZesuSsz.Automation.All.",
+        "Require Import ZesuSsz.Automation.Approved.",
+        f"Require Import {names.hints}.",
+        "Require Import isla.riscv64.riscv64.",
+        "Require Import ZesuSsz.Automation.BlockTable.",
+        f"Require Import {names.table_module}.",
+    ]) + "\n"
 
 
 def binding(path):
@@ -67,9 +80,10 @@ def arguments(source, theorem):
             for name in group.split()]
 
 
-def render_adapter(pc, module, theorem, args, *, design=None, workspace=None):
+def render_adapter(pc, module, theorem, args, *, design=None, workspace=None, name_prefix="decodeItem"):
+    names = FunctionNames(name_prefix)
     suffix = f"{pc:x}"
-    conditional = f"ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter{suffix}Conditional"
+    conditional = f"{names.proofs}.TableSlots.Adapter{suffix}Conditional"
     # These are the existing named adapter and native theorem. No new boundary
     # or machine execution proof is generated.
     adaptation = render_edge_adaptation(pc, theorem, args, design, workspace)
@@ -78,14 +92,14 @@ def render_adapter(pc, module, theorem, args, *, design=None, workspace=None):
         modules = {edge["resource_alternative"].rsplit(".", 1)[0]
                    for _, edge in selected_edge_targets(design, pc)}
         imports = "".join(f"Require Import {name}.\n" for name in sorted(modules))
-    return (PREFIX + f"Require Import {conditional}.\nRequire Import {module}.\n" + imports + "\n"
-            f"Lemma decodeItemSlotBody{suffix} `{{!islaG Sigma}} `{{!threadG}} :\n"
-            "  ⊢ block_table_pre decodeItemBlockTable -∗\n"
-            f"    instr_body {hex(pc)} decodeItemState{suffix}.\nProof.\n"
-            f"  apply decodeItemSlotBody{suffix}Conditional.\n"
+    return (render_prefix(name_prefix) + f"Require Import {conditional}.\nRequire Import {module}.\n" + imports + "\n"
+            f"Lemma {names.prefix}SlotBody{suffix} `{{!islaG Sigma}} `{{!threadG}} :\n"
+            f"  ⊢ block_table_pre {names.table} -∗\n"
+            f"    instr_body {hex(pc)} {names.state(pc)}.\nProof.\n"
+            f"  apply {names.prefix}SlotBody{suffix}Conditional.\n"
             + ("  intros " + " ".join(args) + ".\n" if args else "")
             + (adaptation or f"  exact ({theorem} {' '.join(args)}).\n") + "Qed.\n"
-            f"Print Assumptions decodeItemSlotBody{suffix}.\n")
+            f"Print Assumptions {names.prefix}SlotBody{suffix}.\n")
 
 
 def selected_edge_targets(design, pc):
@@ -177,24 +191,26 @@ def render_edge_adaptation(pc, theorem, args, design, workspace):
     return "\n".join(lines) + "\n"
 
 
-def render_signature(pc):
+def render_signature(pc, *, name_prefix="decodeItem"):
+    names = FunctionNames(name_prefix)
     suffix = f"{pc:x}"
-    return (PREFIX + "Require Import ZesuSsz.Generated.DecodeItem.PromotedBodies.\n"
-            f"Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter{suffix}.\n\n"
-            f"Lemma decodeItemPromoted{suffix[4:]}ExactSignature `{{!islaG Sigma}} `{{!threadG}} :\n"
-            "  ⊢ block_table_pre decodeItemBlockTable -∗\n"
-            f"    instr_body {hex(pc)} decodeItemState{suffix}.\n"
-            f"Proof. exact decodeItemPromotedBody{suffix}. Qed.\n\n"
-            f"Print Assumptions decodeItemSlotBody{suffix}.\n"
-            f"Print Assumptions decodeItemPromotedBody{suffix}.\n"
-            f"Print Assumptions decodeItemPromoted{suffix[4:]}ExactSignature.\n")
+    return (render_prefix(name_prefix) + f"Require Import ZesuSsz.Generated.{names.module}.PromotedBodies.\n"
+            f"Require Import {names.proofs}.TableSlots.Adapter{suffix}.\n\n"
+            f"Lemma {names.prefix}Promoted{suffix[4:]}ExactSignature `{{!islaG Sigma}} `{{!threadG}} :\n"
+            f"  ⊢ block_table_pre {names.table} -∗\n"
+            f"    instr_body {hex(pc)} {names.state(pc)}.\n"
+            f"Proof. exact {names.prefix}PromotedBody{suffix}. Qed.\n\n"
+            f"Print Assumptions {names.prefix}SlotBody{suffix}.\n"
+            f"Print Assumptions {names.prefix}PromotedBody{suffix}.\n"
+            f"Print Assumptions {names.prefix}Promoted{suffix[4:]}ExactSignature.\n")
 
 
-def update_promoted(text, pc):
+def update_promoted(text, pc, *, name_prefix="decodeItem"):
+    names = FunctionNames(name_prefix)
     from promote_table import render_slots
-    declarations = re.findall(r"Definition decodeItemPromotedBody([0-9a-f]+)\s*:", text)
+    declarations = re.findall(r"Definition " + re.escape(names.prefix) + r"PromotedBody([0-9a-f]+)\s*:", text)
     recorded = re.findall(
-        r"Definition decodeItemPromotedBody([0-9a-f]+)\s*:.*?:=\s*"
+        r"Definition " + re.escape(names.prefix) + r"PromotedBody([0-9a-f]+)\s*:.*?:=\s*"
         r"([A-Za-z_][A-Za-z0-9_.]+)\.\s", text, re.S)
     if len(recorded) != len(declarations) or len(set(declarations)) != len(declarations):
         raise ValueError("The recorded promoted proof terms are unavailable or ambiguous.")
@@ -202,32 +218,34 @@ def update_promoted(text, pc):
                               "proof_module": lemma.rsplit('.', 1)[0], "proof_lemma": lemma}
              for address, lemma in recorded}
     slots[pc] = {"pc": hex(pc), "status": "proved",
-                 "proof_module": f"ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter{pc:x}",
-                 "proof_lemma": f"ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter{pc:x}.decodeItemSlotBody{pc:x}"}
-    return render_slots({"proof_slots": [slots[address] for address in sorted(slots)]})
+                 "proof_module": f"{names.proofs}.TableSlots.Adapter{pc:x}",
+                 "proof_lemma": f"{names.proofs}.TableSlots.Adapter{pc:x}.{names.prefix}SlotBody{pc:x}"}
+    return render_slots({"proof_slots": [slots[address] for address in sorted(slots)]}, name_prefix=name_prefix)
 
 
-def refresh_counts(text, table):
-    sites = re.findall(r"^  native800d([0-9a-f]+) :", text, re.M)
+def refresh_counts(text, table, *, name_prefix="decodeItem"):
+    names = FunctionNames(name_prefix)
+    sites = re.findall(r"^  native([0-9a-f]+) :", text, re.M)
     rows = {row["block"]: row for row in table["rows"]}
     values = []
     for site in sites:
-        count = rows["0x800d" + site].get("goal_count")
+        count = rows["0x" + site].get("goal_count")
         if count is not None and (not isinstance(count, int) or count < 0):
             raise ValueError("The measured active count is invalid.")
         value = "None" if count is None else f"Some {count}%nat"
-        values.append(f"(0x800d{site}, {value})")
-    declaration = "Definition decodeItemI67NativeResidualCounts : list (Z * option nat) :=\n  [" + ";\n   ".join(values) + "]."
-    pattern = r"Definition decodeItemI67NativeResidualCounts.*?\]\.[\n]"
+        values.append(f"(0x{site}, {value})")
+    declaration = f"Definition {names.prefix}I67NativeResidualCounts : list (Z * option nat) :=\n  [" + ";\n   ".join(values) + "]."
+    pattern = r"Definition " + re.escape(names.prefix) + r"I67NativeResidualCounts.*?\]\.[\n]"
     if re.search(pattern, text, re.S):
         return re.sub(pattern, declaration + "\n", text, flags=re.S)
     return text + ("\n(* I67 printed active counts. None means unavailable. *)\n" + declaration +
-                   "\n\nLemma decodeItemI67StatusMatchesOpenBlocks :\n"
-                   "  map fst decodeItemI67NativeResidualCounts = decodeItemOpenNativeBlocks.\n"
+                   f"\n\nLemma {names.prefix}I67StatusMatchesOpenBlocks :\n"
+                   f"  map fst {names.prefix}I67NativeResidualCounts = {names.prefix}OpenNativeBlocks.\n"
                    "Proof. reflexivity. Qed.\n")
 
 
-def plan(workspace, pc, module, lemma, table=None):
+def plan(workspace, pc, module, lemma, table=None, *, name_prefix="decodeItem"):
+    names = FunctionNames(name_prefix)
     from promote_table import proof_module
     proof_module({"module": module, "lemma": lemma})
     workspace = Path(workspace).resolve()
@@ -237,25 +255,25 @@ def plan(workspace, pc, module, lemma, table=None):
     source = production.read_text()
     theorem = lemma.removeprefix(module + ".")
     args = arguments(source, theorem)
-    conditional = workspace / f"ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter{pc:x}Conditional.v"
+    conditional = workspace / f"{names.proof_directory}/TableSlots/Adapter{pc:x}Conditional.v"
     if not conditional.is_file():
         raise ValueError("The exact conditional adapter is unavailable.")
     if f"instr_body {hex(pc)}" not in source:
         raise ValueError("The production source names a different block.")
     outputs = {}
-    adapter = f"ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter{pc:x}.v"
-    design_path = workspace / "ZesuSsz/Evidence/decode_item_block_design.json"
+    adapter = f"{names.proof_directory}/TableSlots/Adapter{pc:x}.v"
+    design_path = workspace / f"ZesuSsz/Evidence/{names.filename}_block_design.json"
     design = json.loads(design_path.read_text()) if design_path.is_file() else None
     if selected_edge_targets(design, pc):
         generate_table.bound_inputs(workspace / "build/stock-zisk/build-recipe.json",
                                     workspace / "build/stock-zisk/cfg.json", design_path)
-    outputs[adapter] = render_adapter(pc, module, theorem, args, design=design, workspace=workspace)
-    signature = f"ZesuSsz/Evidence/DecodeItemPromoted{short}Fixtures.v"
-    promoted = "ZesuSsz/Generated/DecodeItem/PromotedBodies.v"
-    outputs[promoted] = update_promoted((workspace / promoted).read_text(), pc)
+    outputs[adapter] = render_adapter(pc, module, theorem, args, design=design, workspace=workspace, name_prefix=name_prefix)
+    signature = f"ZesuSsz/Evidence/{names.module}Promoted{short}Fixtures.v"
+    promoted = f"ZesuSsz/Generated/{names.module}/PromotedBodies.v"
+    outputs[promoted] = update_promoted((workspace / promoted).read_text(), pc, name_prefix=name_prefix)
     # The signature fixture imports the generated promoted bodies.
-    outputs[signature] = render_signature(pc)
-    compliance = "ZesuSsz/Compliance/DecodeItemCompliance.v"
+    outputs[signature] = render_signature(pc, name_prefix=name_prefix)
+    compliance = f"ZesuSsz/Compliance/{names.module}Compliance.v"
     original = (workspace / compliance).read_text()
     remaining = re.findall(r"^  \((native[0-9a-f]+)\s*:", original, re.M)
     if native not in remaining:
@@ -264,30 +282,30 @@ def plan(workspace, pc, module, lemma, table=None):
     text = add_import(remove_binders(original, native), module)
     text = text.replace(f"({native} Sigma HG HT)", f"(@{theorem} Sigma HG HT)")
     outputs[compliance] = text
-    status = "ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v"
+    status = f"ZesuSsz/Evidence/{names.module}OpenNativeHypotheses.v"
     text = (workspace / status).read_text()
     text = re.sub(r"^  " + native + r" : \w+;?\n", "", text, flags=re.M)
-    text = re.sub(r"(Definition decodeItemOpenNativeBlocks : list Z :=\n  )\[(.*?)\]\.",
+    text = re.sub(r"(Definition " + re.escape(names.prefix) + r"OpenNativeBlocks : list Z :=\n  )\[(.*?)\]\.",
                   lambda m: m[1] + "[" + "; ".join(x for x in m[2].split("; ")
                                                   if x != hex(pc)) + "].", text)
     text = text.replace(";\n}.\n", "\n}.\n")
-    record = re.search(r"Record DecodeItemOpenNativeHypotheses : Prop := \{(.*?)\n\}\.",
+    record = re.search(r"Record " + re.escape(names.module) + r"OpenNativeHypotheses : Prop := \{(.*?)\n\}\.",
                        text, re.S)
     if not record:
         raise ValueError("The open native hypothesis record is unavailable.")
-    fields = re.findall(r"^  native800d([0-9a-f]+)\s*:", record[1], re.M)
-    pattern = "  destruct Hopen as [" + " ".join("H" + field for field in fields) + "]."
+    fields = re.findall(r"^  native([0-9a-f]+)\s*:", record[1], re.M)
+    pattern = "  destruct Hopen as [" + " ".join("H" + field[4:] for field in fields) + "]."
     text, replacements = re.subn(r"^  destruct Hopen as \[[^\]]*\]\.", pattern, text, flags=re.M)
     if replacements != 1:
         raise ValueError("The open native hypothesis destruct pattern is unavailable or ambiguous.")
     text = text.replace(f"(H{short} Sigma islaG0 H)", f"(@{lemma} Sigma islaG0 H)")
     count = len(remaining)
-    text = re.sub(r"(length decodeItemOpenNativeBlocks = )\d+%nat", rf"\g<1>{count}%nat", text)
+    text = re.sub(r"(length " + re.escape(names.prefix) + r"OpenNativeBlocks = )\d+%nat", rf"\g<1>{count}%nat", text)
     text = add_import(text, module)
     # I67 measurements are independent of proof closure. Remove only this
     # open row; historical I62 counts remain unchanged.
     if table is not None:
-        text = refresh_counts(text, table)
+        text = refresh_counts(text, table, name_prefix=name_prefix)
     outputs[status] = text
     return outputs, {"production": binding(production), "conditional_adapter": binding(conditional),
                      "production_module": module, "production_lemma": lemma,
@@ -295,17 +313,19 @@ def plan(workspace, pc, module, lemma, table=None):
 
 
 def complete(workspace, pc, module, lemma, output, status_table, *, dry_run=False,
-             verification_directory=None, mcp_python=None):
+             verification_directory=None, mcp_python=None, name_prefix="decodeItem"):
     output = Path(output)
     directory = Path(verification_directory) if verification_directory else output.with_suffix('.verification')
     if output.exists() or (not dry_run and (directory.exists() or Path(str(directory) + '.inputs.json').exists())):
         raise ValueError("The promotion evidence already exists. Use a fresh output path.")
-    sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "ZesuSsz/Evidence"))
-    import generate_decode_item_native_status as status
-    if binding(status_table)["sha256"] != status.I67_SHA256:
-        raise ValueError("The retained I67 table hash differs.")
-    table = json.loads(Path(status_table).read_text())
-    outputs, provenance = plan(workspace, pc, module, lemma, table)
+    status = None
+    table = json.loads(Path(status_table).read_text()) if status_table is not None else None
+    if name_prefix == "decodeItem":
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "ZesuSsz/Evidence"))
+        import generate_decode_item_native_status as status
+        if status_table is None or binding(status_table)["sha256"] != status.I67_SHA256:
+            raise ValueError("The retained I67 table hash differs.")
+    outputs, provenance = plan(workspace, pc, module, lemma, table, name_prefix=name_prefix)
     workspace = Path(workspace).resolve()
     before = [binding(workspace / name) for name in outputs if (workspace / name).exists()]
     originals = {name: (workspace / name).read_bytes() if (workspace / name).exists() else None
@@ -316,8 +336,10 @@ def complete(workspace, pc, module, lemma, output, status_table, *, dry_run=Fals
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(text)
         root = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=workspace, text=True).strip()
-        native_status = status.generate(status_table, workspace=workspace, status_root=root,
-                                       productions={f"{pc:x}"[4:]: (module, lemma.split(".")[-1])})
+        native_status = None
+        if status is not None:
+            native_status = status.generate(status_table, workspace=workspace, status_root=root,
+                                           productions={f"{pc:x}"[4:]: (module, lemma.split(".")[-1])})
     except Exception:
         for name, original in originals.items():
             path = workspace / name
@@ -336,7 +358,8 @@ def complete(workspace, pc, module, lemma, output, status_table, *, dry_run=Fals
         from promotion_verification import verify_generated
         try:
             report["verification"] = verify_generated(workspace, [workspace / name for name in outputs],
-                                                       pc, directory, python=mcp_python)
+                                                       pc, directory, python=mcp_python,
+                                                       name_prefix=name_prefix)
             if report["verification"].get("success") is not True:
                 raise ValueError("Generated-source verification did not pass.")
         except Exception as error:

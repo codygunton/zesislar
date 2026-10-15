@@ -11,9 +11,50 @@ from collections import Counter
 import hashlib
 import json
 from pathlib import Path
+import re
 import entry_schema
+from function_names import FunctionNames, prefix_argument
 
 ROOT = Path(__file__).resolve().parents[2]
+PRODUCER_SHA_LINE = re.compile(
+    r"^\(\* Source: tools/block/generate_table\.py; SHA-256: [0-9a-f]{64}\. \*\)\n", re.M)
+
+
+def rocq_outputs_equal(before, after):
+    """Compare every byte except one producer-SHA comment in each output."""
+    def without_producer(source):
+        matches, position, depth, quoted = [], 0, 0, False
+        while position < len(source):
+            match = PRODUCER_SHA_LINE.match(source, position) if not depth and not quoted else None
+            if match:
+                matches.append(match)
+                position = match.end()
+            elif quoted:
+                if source.startswith('""', position):
+                    position += 2
+                elif source[position] == '"':
+                    quoted = False
+                    position += 1
+                else:
+                    position += 1
+            elif source.startswith("(*", position):
+                depth += 1
+                position += 2
+            elif depth and source.startswith("*)", position):
+                depth -= 1
+                position += 2
+            elif not depth and source[position] == '"':
+                quoted = True
+                position += 1
+            else:
+                position += 1
+        if len(matches) > 1:
+            raise ValueError("The Rocq output contains duplicate producer-SHA comments.")
+        if not matches:
+            return 0, source
+        match = matches[0]
+        return 1, source[:match.start()] + source[match.end():]
+    return without_producer(before) == without_producer(after)
 
 
 def address(value):
@@ -276,12 +317,13 @@ def bound_inputs(recipe_path, cfg_path, design_path):
             **report}
 
 
-def render_table(design, report):
+def render_table(design, report, *, name_prefix="decodeItem"):
     """Render resource wiring; the completion interface still requires bodies.
 
     The caller must validate the approved table convention before rendering.
     This function introduces no body proof and no execution premise.
     """
+    names = FunctionNames(name_prefix)
     convention = table_convention(design)
     blocks = sorted(design["blocks"], key=lambda block: address(block["entry_pc"]))
     imports, states = {convention["code_resource"].rsplit(".", 1)[0]}, []
@@ -298,7 +340,7 @@ def render_table(design, report):
         arguments = " ".join(f"({argument})" for argument in block["arguments"])
         application = f"{predicate} {arguments}".rstrip()
         body = f"∃ {typed}, {application}" if typed else application
-        name = f"decodeItemState{address(block['entry_pc']):x}"
+        name = names.state(address(block['entry_pc']))
         states.append((block, name, body))
     lines = ["Require Import ZesuSsz.Automation.All.",
              "Require Import isla.riscv64.riscv64.",
@@ -311,50 +353,64 @@ def render_table(design, report):
         # The recipe binds generated output. Do not create a recipe/output hash cycle.
         if Path(path).name != "build-recipe.json":
             lines.append(f"(* Source: {path}; SHA-256: {sha}. *)")
-    lines += ["", "Section decode_item_block_table.",
+    lines += ["", f"Section {names.filename}_block_table.",
               "Context `{!islaG Sigma} `{!threadG}.", ""]
     for block, name, body in states:
         lines += [f"(* Entry: {block['entry_definition']}. Body proof: pending. *)",
                   f"Definition {name} : iProp Sigma :=", f"  ({body})%I.", ""]
     entries = ";\n   ".join(f"(0x{address(block['entry_pc']):x}, {name})"
                               for block, name, _ in states)
-    lines += ["Definition decodeItemBlockTable : blockTable Sigma :=",
+    lines += [f"Definition {names.table} : blockTable Sigma :=",
               "  {| block_table_code := " + convention["code_resource"] + ";",
               f"     block_table_entries := [{entries}] |}}.", "",
               "(* Completion requires the persistent code resource and every block body. *)",
-              "Definition decodeItemBlockTable_complete :=",
-              "  block_table_complete decodeItemBlockTable.", "",
-              "End decode_item_block_table.", ""]
+              f"Definition {names.table}_complete :=",
+              f"  block_table_complete {names.table}.", "",
+              f"End {names.filename}_block_table.", ""]
     edges = ";\n   ".join(f"({edge['source']}, {edge['target']})" for edge in report["edges"])
     returns = ";\n   ".join(f"({row['block']}, {row['instruction']})" for row in report["returns"])
-    lines += ["Definition decodeItemBlockEdges : list (Z * Z) :=", f"  [{edges}].", "",
-              "Definition decodeItemBlockReturns : list (Z * Z) :=", f"  [{returns}].", "",
-              "Print Assumptions decodeItemBlockTable_complete.", ""]
+    lines += [f"Definition {names.prefix}BlockEdges : list (Z * Z) :=", f"  [{edges}].", "",
+              f"Definition {names.prefix}BlockReturns : list (Z * Z) :=", f"  [{returns}].", "",
+              f"Print Assumptions {names.table}_complete.", ""]
     return "\n".join(lines)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--function", type=prefix_argument, default="decodeItem")
     parser.add_argument("--recipe", type=Path, default=ROOT / "build/stock-zisk/build-recipe.json")
     parser.add_argument("--cfg", type=Path, default=ROOT / "build/stock-zisk/cfg.json")
-    parser.add_argument("--design", type=Path, default=ROOT / "ZesuSsz/Evidence/decode_item_block_design.json")
+    parser.add_argument("--design", type=Path)
     parser.add_argument("--coverage", type=Path, required=True)
     parser.add_argument("--output", type=Path,
                         help="Write the Rocq table under the approved published convention.")
+    parser.add_argument("--check", action="store_true", help="Check existing output bytes without writing files.")
     args = parser.parse_args()
+    names = FunctionNames(args.function)
+    args.design = args.design or ROOT / f"ZesuSsz/Evidence/{names.filename}_block_design.json"
     report = bound_inputs(args.recipe, args.cfg, args.design)
     if args.output:
         design = json.loads(args.design.read_text())
-        source = render_table(design, report)
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(source)
+        source = render_table(design, report, name_prefix=args.function)
+        if args.check:
+            if not args.output.is_file() or not rocq_outputs_equal(
+                    args.output.read_bytes().decode("utf-8"), source):
+                raise ValueError("The generated Rocq table is stale.")
+        else:
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            args.output.write_text(source)
         report["table_convention"] = table_convention(design)
         report["generated_hashes"] = {path_label(args.output): digest(args.output)}
         report["proof_slots"] = [{"pc": block["entry_pc"], "entry_definition": block["entry_definition"],
                                   "resource_predicate": block["resource_predicate"], "proof_lemma": None}
                                  for block in design["blocks"]]
-    args.coverage.parent.mkdir(parents=True, exist_ok=True)
-    args.coverage.write_text(json.dumps(report, indent=2) + "\n")
+    rendered = json.dumps(report, indent=2) + "\n"
+    if args.check:
+        if not args.coverage.is_file() or args.coverage.read_text() != rendered:
+            raise ValueError("The generated table metadata is stale.")
+    else:
+        args.coverage.parent.mkdir(parents=True, exist_ok=True)
+        args.coverage.write_text(rendered)
 
 
 if __name__ == "__main__":

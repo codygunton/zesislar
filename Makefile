@@ -122,6 +122,7 @@ check-evidence-tools:
 	$(PYTHON) -m tools.block.check_generic_automation
 	$(PYTHON) -m tools.block.check_data_only_lemmas
 	$(PYTHON) -m unittest discover -s tools/stock_zisk -p 'test_manifest.py'
+	PYTHONPATH=tools/stock_zisk/platform $(PYTHON) -m unittest discover -s tools/stock_zisk/platform -p 'test_function_binding.py'
 	$(PYTHON) -m unittest discover -s tools/stock_zisk/machine_map -p 'test_*.py'
 	$(PYTHON) tools/stock_zisk/machine_map/generate.py --build $(STOCK_DIR) --check
 	$(PYTHON) -m unittest discover -s tools/stock_zisk/static_sites -p 'test_*.py'
@@ -378,6 +379,8 @@ stock-native-indexes:
 	  --manifest $(STOCK_TRACE_MANIFEST) --cache-dir $(STOCK_NATIVE_TRACE_CACHE_DIR) \
 	  --decode-out $(STOCK_DECODE_TRACE_DIR) --closure-out $(STOCK_CLOSURE_TRACE_DIR) \
 	  --dump $(DUMP) --jobs $(TRACE_JOBS)
+	$(PYTHON) tools/stock_zisk/selected/bind_traces.py --out $(STOCK_CLOSURE_TRACE_DIR) \
+	  --function alt_fl_alloc.free --trace-name free
 
 check-evidence-tools check-signatures: stock-native-indexes
 
