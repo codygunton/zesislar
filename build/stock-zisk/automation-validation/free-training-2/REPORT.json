@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "status": "training2-plus-authorized-kernel-validation",
+  "root": "3c8ab7b0f769176f509e16824faf675adef3674b",
+  "training": true,
+  "first_native_run": false,
+  "verified": 12,
+  "open": 31,
+  "original_discovery_classes": {
+    "native-residual": 43
+  },
+  "original_interactive_empty": 12,
+  "prediction": {
+    "closed": 26,
+    "residual": 17,
+    "verified_predicted_closures": 12,
+    "failed_predicted_closures": 14,
+    "matched_residual_predictions": 17
+  },
+  "open_first_residual_classes": {
+    "list-witness": 1,
+    "Iris-pure-condition": 28,
+    "memory-obligation": 2
+  },
+  "open_groups": {
+    "goals": 61,
+    "stack": 0,
+    "shelf": 0,
+    "given_up": 0
+  },
+  "original805": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-result805/REPORT.json",
+    "sha256": "a093848921b029fe83eacf20476c3321dcbc04cc8e64ce74d34e7598201cb374",
+    "bytes": 2893
+  },
+  "supplement": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-validation-supplement812/VALIDATION-SUPPLEMENT.json",
+    "sha256": "9e44e1151585bce79419a742e7f7c91fefe9b2ddf7e383c0e4543b721af83571",
+    "bytes": 33194
+  },
+  "details": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-validation-supplement812/DETAILS.json",
+    "sha256": "5d1cd859c4b16a4721e730d9cbc1d5983d23ab6dc64c88a31a90f21ea07df36d",
+    "bytes": 453150
+  },
+  "table": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-validation-supplement812/TABLE.md",
+    "sha256": "d93cfd972d48ae71588641025e23713ccce6d309de4d489bbb54c3c1c75b99a3",
+    "bytes": 3734
+  },
+  "result": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-validation-supplement812/TRAINING-RESULT.json",
+    "sha256": "6001a9fcc07bf0d6ba892e4da79cc34188714de02f7b02d5f3f7f1bfa55a3aeb",
+    "bytes": 1094
+  },
+  "Automation_source_changed": false,
+  "other31_native_runs": 0,
+  "iris": {
+    "inherited_from": "3c8ab7b0f769176f509e16824faf675adef3674b",
+    "fresh_gate": false,
+    "scope": "Data-only publication. Frozen-root Iris evidence is inherited."
+  }
+}

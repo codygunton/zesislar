@@ -1,0 +1,141 @@
+{
+  "schema": 1,
+  "base": "3c8ab7b0f769176f509e16824faf675adef3674b",
+  "branch": "worker2-av-free-training-2",
+  "immutable_artifacts": [
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-2/REPORT.json",
+      "sha256": "013de5b4ccab3d119bc64af178b1d919205eb6f26ef9051c631e9a8f4b5233b7",
+      "bytes": 2237,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-validation-supplement812/REPORT.json",
+        "sha256": "013de5b4ccab3d119bc64af178b1d919205eb6f26ef9051c631e9a8f4b5233b7",
+        "bytes": 2237
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-2/DETAILS.json",
+      "sha256": "5d1cd859c4b16a4721e730d9cbc1d5983d23ab6dc64c88a31a90f21ea07df36d",
+      "bytes": 453150,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-validation-supplement812/DETAILS.json",
+        "sha256": "5d1cd859c4b16a4721e730d9cbc1d5983d23ab6dc64c88a31a90f21ea07df36d",
+        "bytes": 453150
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-2/TABLE.md",
+      "sha256": "d93cfd972d48ae71588641025e23713ccce6d309de4d489bbb54c3c1c75b99a3",
+      "bytes": 3734,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-validation-supplement812/TABLE.md",
+        "sha256": "d93cfd972d48ae71588641025e23713ccce6d309de4d489bbb54c3c1c75b99a3",
+        "bytes": 3734
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-2/TRAINING-RESULT.json",
+      "sha256": "6001a9fcc07bf0d6ba892e4da79cc34188714de02f7b02d5f3f7f1bfa55a3aeb",
+      "bytes": 1094,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-validation-supplement812/TRAINING-RESULT.json",
+        "sha256": "6001a9fcc07bf0d6ba892e4da79cc34188714de02f7b02d5f3f7f1bfa55a3aeb",
+        "bytes": 1094
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-2/VALIDATION-SUPPLEMENT.json",
+      "sha256": "9e44e1151585bce79419a742e7f7c91fefe9b2ddf7e383c0e4543b721af83571",
+      "bytes": 33194,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-validation-supplement812/VALIDATION-SUPPLEMENT.json",
+        "sha256": "9e44e1151585bce79419a742e7f7c91fefe9b2ddf7e383c0e4543b721af83571",
+        "bytes": 33194
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-2/COMPILE-FIX.md",
+      "sha256": "1a2e9bc33765937a0605fcd6a3844bc5dba525129994316dca892de50aa73184",
+      "bytes": 1367,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-validation-supplement812/COMPILE-FIX.md",
+        "sha256": "1a2e9bc33765937a0605fcd6a3844bc5dba525129994316dca892de50aa73184",
+        "bytes": 1367
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-2/ORIGINAL-REPORT.json",
+      "sha256": "a093848921b029fe83eacf20476c3321dcbc04cc8e64ce74d34e7598201cb374",
+      "bytes": 2893,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-result805/REPORT.json",
+        "sha256": "a093848921b029fe83eacf20476c3321dcbc04cc8e64ce74d34e7598201cb374",
+        "bytes": 2893
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-2/ORIGINAL-DETAILS.json",
+      "sha256": "502b33a77c5cd70be530e5db13b218d92a8da885abed197d204c0b5537ea762e",
+      "bytes": 415700,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-result805/DETAILS.json",
+        "sha256": "502b33a77c5cd70be530e5db13b218d92a8da885abed197d204c0b5537ea762e",
+        "bytes": 415700
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-2/ORIGINAL-TABLE.md",
+      "sha256": "74d99d347b8b8a3ee72d31be8e0ce72591c9cc5dc6037627f5104f2c1029cec5",
+      "bytes": 4050,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-result805/TABLE.md",
+        "sha256": "74d99d347b8b8a3ee72d31be8e0ce72591c9cc5dc6037627f5104f2c1029cec5",
+        "bytes": 4050
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-2/ORIGINAL-TRAINING-RESULT.json",
+      "sha256": "e14c17cc8e18580ee180bff94e685bbe813140f76e6681883163e10e302deedc",
+      "bytes": 2351,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-result805/TRAINING-RESULT.json",
+        "sha256": "e14c17cc8e18580ee180bff94e685bbe813140f76e6681883163e10e302deedc",
+        "bytes": 2351
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-2/STARTUP-797.json",
+      "sha256": "33d2ce9b3d50eda39b723cb0b15f117913b53cc94340c0b570755a3b7511813a",
+      "bytes": 2831,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-startup-failure798/REPORT.json",
+        "sha256": "33d2ce9b3d50eda39b723cb0b15f117913b53cc94340c0b570755a3b7511813a",
+        "bytes": 2831
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-2/LAUNCH-800.json",
+      "sha256": "a27440e71da2a50287e3e3ba8c7c0b168b622b52fbc519574eaa45615433bbb0",
+      "bytes": 1026,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-launch800/LAUNCHED.json",
+        "sha256": "a27440e71da2a50287e3e3ba8c7c0b168b622b52fbc519574eaa45615433bbb0",
+        "bytes": 1026
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-2/PREDICTION-POSTED.json",
+      "sha256": "c89277c8b358ee7d38ce52029023b5f5fe8eed5a74be73e9b236d0ba6b640619",
+      "bytes": 1221,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-launch800/PREDICTION-POSTED.json",
+        "sha256": "c89277c8b358ee7d38ce52029023b5f5fe8eed5a74be73e9b236d0ba6b640619",
+        "bytes": 1221
+      }
+    }
+  ],
+  "scope": "Recorded training data and validation supplement only. No executable, proof, rule, or contract change.",
+  "fresh_check_fast": "pending",
+  "iris_inherited": true,
+  "fresh_Iris_gate": false
+}
