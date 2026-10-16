@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "base": "3c8ab7b0f769176f509e16824faf675adef3674b",
+  "branch": "spec-a-free-value-bound-hints",
+  "report_path": "/home/cody/zesislar/.worktrees/spec-a-free-value-bounds-3c8ab7b0/_build/free-value-final006/REPORT.json",
+  "report_sha256": "188fe515720368e004919b1d6f15208dea68db31706aff72401213ad42d0592d",
+  "MCP_path": "/home/cody/zesislar/.worktrees/spec-a-free-value-bounds-3c8ab7b0/_build/free-value-bounds-certificate004/REPORT.json",
+  "MCP_sha256": "c39b319c4441ef4102fd46941ff15f6bfe33c73ae767623d0c788ea8452a8814",
+  "source_hashes": {
+    "/home/cody/zesislar/.worktrees/spec-a-free-value-bounds-3c8ab7b0/ZesuSsz/Compliance/FreeValueBoundFacts.v": "5ba88669ab4a0976620068544caaadcdad0f27ed1a22a926692e7898c85c9336",
+    "/home/cody/zesislar/.worktrees/spec-a-free-value-bounds-3c8ab7b0/ZesuSsz/Compliance/FreeValueBoundRegistrations.v": "6486c88c5d7a8aed01e8d68d3303d95823def51a759f24f13cc2f27e29cf8662",
+    "/home/cody/zesislar/.worktrees/spec-a-free-value-bounds-3c8ab7b0/ZesuSsz/Compliance/FreeHints.v": "14283bb300581eee558fd1ba2bd9b66432fdfd50df88618b201bc91693e2cc9b",
+    "/home/cody/zesislar/.worktrees/spec-a-free-value-bounds-3c8ab7b0/ZesuSsz/Evidence/FreeValueBoundsFixtures.v": "73911778d5694982ea48e947c7ffa5706beb5c5ec533866434a8dae63ca96856",
+    "/home/cody/zesislar/.worktrees/spec-a-free-value-bounds-3c8ab7b0/ZesuSsz/Evidence/free_function_text.json": "4d7d62fec811b2dc06e326424d5bf87e55e73e39b8814bd2d6f585d2a602a60d",
+    "/home/cody/zesislar/.worktrees/spec-a-free-value-bounds-3c8ab7b0/ZesuSsz/Evidence/spec_shape_inventory.json": "997c311b22ebe38551cdc86375cebf1cd9399a52715cff0cb36642903816c880"
+  },
+  "registration_form": "Hint Extern1 (SimplAnd P True) on typeclass_instances.",
+  "conditional_premise": "freeArgsWellFormed args for length and alignment.",
+  "class_bounds": "freeSizeClassOfBytes is in0..22 unconditionally. Its word range follows.",
+  "exact_module_m_checks": 15,
+  "assumptions": [],
+  "compiled_Print_Assumptions": 15,
+  "pre_Qed_groups": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "positive_consumer_controls": 11,
+  "missing_WF_refusals": 6,
+  "interface_total": 11135,
+  "interface_delta": 95,
+  "check_fast": {
+    "exit_code": 0,
+    "wall_seconds": 1642.9765251898207,
+    "record": "/home/cody/zesislar/.worktrees/spec-a-free-value-bounds-3c8ab7b0/_build/free-value-fast005/RESULT.json",
+    "record_sha256": "ba158cf90619be2a79e243777e5d2dd226a4a64a0e6e09fe47e903d53afa0728"
+  },
+  "contract_changes": false,
+  "automation_changes": false,
+  "native_run": false,
+  "failure_scope": "001missing SimplAnd import, corrected by direct defining-module import.",
+  "integration": "Root gates are separate."
+}
