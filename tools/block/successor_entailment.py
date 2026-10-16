@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 import entry_schema
 import chain_root
 import setup_fallback
+from launch_imports import validate_launch_imports
 from chain_state import normalize_successor, render_successor
 
 GROUPS = ('goals', 'stack', 'shelf', 'given_up')
@@ -265,6 +266,7 @@ def native_boundary_source(state, block, design, root, *, enabled=True,
     # No captured pure fact or execution result becomes a premise here.
     proof = '\nProof.\n  try zesu_block.\nQed.\n\nPrint Assumptions ' + name + '.\n'
     return {'source': prefix + headers + statement + proof, 'lemma': name,
+            'function': design.get('function'),
             'entry_pc': hex(entry), 'entry_definition': original['entry_definition'],
             'statement_sha256': hashlib.sha256(statement.encode()).hexdigest(),
             'successors': [hex(pc) for pc in successors],
@@ -325,6 +327,10 @@ async def check_boundary(session, rendered, path, workspace, *, inherited_debts,
         raise ValueError('The proof budget must be between 1 and 1200 seconds')
     if not isinstance(inherited_debts, dict):
         raise ValueError('Inherited debts must be explicit')
+    launch_preflight = None
+    if rendered['scope'] == 'unproved native designed boundary':
+        launch_preflight = validate_launch_imports(
+            rendered['source'], rendered.get('function'), workspace)
     path = Path(path).resolve()
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(rendered['source'])
@@ -337,6 +343,8 @@ async def check_boundary(session, rendered, path, workspace, *, inherited_debts,
               'entry_definition': rendered.get('entry_definition'),
               'successors': deepcopy(rendered.get('successors', [])),
               'statement_sha256': rendered.get('statement_sha256')}
+    if launch_preflight is not None:
+        record['launch_preflight'] = launch_preflight
 
     async def call(tool, arguments):
         started = time.monotonic()

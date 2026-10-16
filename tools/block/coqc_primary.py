@@ -18,6 +18,7 @@ import time
 
 import chain_goals
 import coqc_certificate
+from launch_imports import validate_launch_imports
 
 
 def digest(path):
@@ -294,6 +295,7 @@ def compile_source(path, out, build, *, policy):
 def run_primary(rendered, out, build, *, inherited_debts, seconds=300, cpu_seconds=None, memory_gib=6, diagnostic_probe=False):
     if not isinstance(inherited_debts, dict):
         raise ValueError('Inherited debts must be explicit')
+    validate_launch_imports(rendered['source'], rendered.get('function'), Path.cwd())
     out, build = Path(out).resolve(), Path(build).resolve()
     out.mkdir(parents=True, exist_ok=True)
     if (out/'evidence.json').exists():
