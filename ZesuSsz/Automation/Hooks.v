@@ -1128,6 +1128,10 @@ Ltac zesu_pure_witness_constraints_if_enabled :=
 
 Ltac zesu_conjunct_head_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepConjunctMatch);
+  lazymatch goal with
+  | _ : @ZesuEntryIntroApplied _ _ _ _,
+    _ : ZesuEntryIntroHeads _ |- _ => idtac
+  end;
   zesu_expose_environment_alias;
   lazymatch goal with
   | |- envs_entails _ (@bi_exist _ _ _) =>

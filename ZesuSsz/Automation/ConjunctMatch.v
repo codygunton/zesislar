@@ -40,11 +40,49 @@ Ltac zesu_conjunct_match_if_enabled :=
   end.
 
 
+Require Import ZesuSsz.Automation.EntryIntro.
+
+Ltac zesu_qualify_context_fact_head premise_solver head available :=
+  zesu_cached_entry_fact_head head.
+
 (* Read closed context facts without assigning a requested root. *)
 Ltac zesu_pure_head head_term :=
   lazymatch head_term with
   | ?function ?argument => zesu_pure_head function
   | _ => head_term
+  end.
+
+(* An implication is eligible only after its conclusion has a cached head. *)
+Ltac zesu_cached_conclusion_head requested available :=
+  first
+    [let wanted := zesu_pure_head requested in
+     let found := zesu_pure_head available in
+     constr_eq wanted found;
+     zesu_cached_entry_fact_head wanted
+    | lazymatch available with
+      | ?left /\ ?right => first
+          [zesu_cached_conclusion_head requested left
+          |zesu_cached_conclusion_head requested right]
+      | _ -> ?tail => zesu_cached_conclusion_head requested tail
+      end].
+
+(* The marker retains the actual proof returned by the registered bridge. *)
+Inductive ZesuConjunctPremiseApplied (premise : Prop) (evidence : premise) : Prop :=
+  ZesuConjunctPremiseWasProved.
+
+Ltac zesu_with_conjunct_premise premise_solver premise continuation :=
+  lazymatch goal with
+  | _ : @ZesuConjunctPremiseApplied premise ?proof |- _ =>
+      assert_fails (has_evar proof);
+      continuation proof
+  | _ =>
+      let proof := premise_solver premise in
+      let proof_type := type of proof in
+      assert_fails (has_evar proof);
+      assert_fails (has_evar proof_type);
+      let marker := fresh "HconjunctPremiseApplied" in
+      pose proof (@ZesuConjunctPremiseWasProved premise proof) as marker;
+      continuation proof
   end.
 
 Ltac zesu_context_pure_leaf premise_solver requested evidence continuation :=
@@ -56,6 +94,7 @@ Ltac zesu_context_pure_leaf premise_solver requested evidence continuation :=
     assert_fails (is_var wanted_head);
     assert_fails (is_var available_head);
     constr_eq wanted_head available_head;
+    zesu_qualify_context_fact_head premise_solver wanted_head available;
     assert_fails (assert_fails (unify requested available));
     continuation available evidence
   | lazymatch available with
@@ -65,14 +104,13 @@ Ltac zesu_context_pure_leaf premise_solver requested evidence continuation :=
           zesu_context_pure_leaf premise_solver requested proof continuation
         | let proof := constr:(proj2 evidence) in
           zesu_context_pure_leaf premise_solver requested proof continuation]
-    | ?premise -> _ =>
+    | ?premise -> ?conclusion =>
+        zesu_cached_conclusion_head requested conclusion;
         assert_fails (has_evar premise);
-        let premise_proof := premise_solver premise in
-        assert_fails (has_evar premise_proof);
-        let proof_type := type of premise_proof in
-        assert_fails (has_evar proof_type);
-        let proof := constr:(evidence premise_proof) in
-        zesu_context_pure_leaf premise_solver requested proof continuation
+        zesu_with_conjunct_premise premise_solver premise
+          ltac:(fun premise_proof =>
+            let proof := constr:(evidence premise_proof) in
+            zesu_context_pure_leaf premise_solver requested proof continuation)
     end].
 
 (* Reject different concrete arguments before assigning any requested root. *)

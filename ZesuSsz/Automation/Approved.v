@@ -29,3 +29,4 @@ Require Export ZesuSsz.Automation.Switches.PureFactExistential.
 Require Export ZesuSsz.Automation.Switches.CanonicalPureConjunction.
 Require Export ZesuSsz.Automation.Switches.ByteListContainment.
 Require Export ZesuSsz.Automation.Switches.RegionFaultCastHypotheses.
+Require Export ZesuSsz.Automation.Switches.ConjunctMatch.
