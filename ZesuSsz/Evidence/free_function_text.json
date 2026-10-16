@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "function": "alt_fl_alloc.free",
-  "status": "Conditional leaf-introduction training family. No new native run.",
-  "snapshot_base_root": "e8131be295b89a1821b3ba760f39e7aad1e8647d",
-  "snapshot_kind": "Frozen-source preparation with additional training facts. File hashes are authoritative.",
+  "status": "Fully counted register-form free training snapshot. No new native result.",
+  "snapshot_base_root": "6154d91b74d370dfd8aaabf38f470f95da953510",
+  "snapshot_kind": "Checked owner proof bytes plus complete tracked generator design/profile JSON.",
   "umbrella": "ZesuSsz.Compliance.FreeHints",
   "counting_rules": {
     "unit": "Physical lines, including comments and blank lines. A final line without newline counts once.",
@@ -12,7 +12,8 @@
     "test_roles": "Tests, exports, build declarations and measurement metadata are unscored. Block proofs and composition have separate roles.",
     "self": "Count this manifest by a physical-line fixed point. No circular self-hash. The outer certificate binds final bytes.",
     "boundaries": "933 interface and508 metadata lines from92940986 remain historical. External generator data stays separate until its source enters this snapshot.",
-    "activation": "Count both exit modules and the umbrella export regardless of return-route activation."
+    "activation": "Count both exit modules and the umbrella export regardless of return-route activation.",
+    "generator_scope": "Count both complete tracked design/profile JSON files under generator_json. Earlier free totals excluded the then-untracked design."
   },
   "contracts": [
     "ZesuSsz/Contracts/AltFlFree.v",
@@ -43,7 +44,9 @@
     "tools/stock_zisk/closure.py",
     "tools/stock_zisk/platform/exports.py",
     "tools/stock_zisk/platform/indexes.py",
-    "tools/stock_zisk/runtime_inventory.py"
+    "tools/stock_zisk/runtime_inventory.py",
+    "ZesuSsz/Evidence/free_block_design.json",
+    "ZesuSsz/Evidence/free_block_profile.json"
   ],
   "block_proofs": [],
   "composition": [],
@@ -91,14 +94,10 @@
     }
   ],
   "pending_generator": {
-    "scope": "Checked owner artifacts; not Root source credit",
-    "design_path": "/home/cody/zesislar/.worktrees/worker2-av-free-terminal-df0c431e/_build/free-artifact-packet005/workspace/ZesuSsz/Contracts/free_block_design.json",
-    "design_sha256": "1046e03caab3dc2ee6e106adb31d4309334ca227b00747f108eef0ebb40f91d6",
-    "design_lines": 4687,
-    "code_premises_lines": 1,
-    "terminal_descriptor_lines": 8,
-    "source_credit": 0,
-    "status": "Entry applications compiled against corrected snapshots; final integration and freeze pending."
+    "scope": "Tracked source JSON counted in full.",
+    "design_path": "ZesuSsz/Evidence/free_block_design.json",
+    "profile_path": "ZesuSsz/Evidence/free_block_profile.json",
+    "status": "Source-hash metadata refreshed through existing generator functions. No native execution."
   },
   "correction": "contract corrected before run: ownership omitted the 8-byte header",
   "source_evidence": {
@@ -163,7 +162,7 @@
       "path": "ZesuSsz/Contracts/AltFlFreeBlockEntries.v",
       "category": "contracts",
       "scope": "whole_file",
-      "sha256": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d",
+      "sha256": "a154bce477ab912b9ca987a9d9062bf667bfd2a765e7de3ab0a3615149d320c6",
       "file_lines": 389,
       "line_ranges": [
         [
@@ -747,14 +746,14 @@
       "scope": "whole_file",
       "sha256": null,
       "hash_rule": "No circular self-hash. The outer certificate binds final bytes.",
-      "file_lines": 898,
+      "file_lines": 942,
       "line_ranges": [
         [
           1,
-          898
+          942
         ]
       ],
-      "counted_lines": 898
+      "counted_lines": 942
     },
     {
       "path": "ZesuSsz/Compliance/FreeReturnFacts.v",
@@ -818,15 +817,15 @@
       "path": "ZesuSsz/Compliance/FreeLeafIntroductions.v",
       "category": "introductions",
       "scope": "whole_file",
-      "sha256": "0448c009e009abf767a5bb99ee35a551b72219769f4ac9ce85a2b8d8313136c5",
-      "file_lines": 223,
+      "sha256": "514b1f3b1cf6aeea6100831971d0e132d34a84e44a8522bca448c7486f4079df",
+      "file_lines": 250,
       "line_ranges": [
         [
           1,
-          223
+          250
         ]
       ],
-      "counted_lines": 223
+      "counted_lines": 250
     },
     {
       "path": "build/stock-zisk/automation-validation/free-leaf-introductions/CHECKPOINT.json",
@@ -842,26 +841,54 @@
         ]
       ],
       "counted_lines": 46
+    },
+    {
+      "path": "ZesuSsz/Evidence/free_block_design.json",
+      "category": "generator_json",
+      "scope": "whole_file",
+      "sha256": "a7e3b2f55188215c1c5dc7469fdd1dc30362b2b1c408c31592d18b7c7b0c2753",
+      "file_lines": 4691,
+      "line_ranges": [
+        [
+          1,
+          4691
+        ]
+      ],
+      "counted_lines": 4691
+    },
+    {
+      "path": "ZesuSsz/Evidence/free_block_profile.json",
+      "category": "generator_json",
+      "scope": "whole_file",
+      "sha256": "5b0b5d264b25bc4cc597ccc12dd386408adf94a9ff8751eea4484fa8540a689c",
+      "file_lines": 4701,
+      "line_ranges": [
+        [
+          1,
+          4701
+        ]
+      ],
+      "counted_lines": 4701
     }
   ],
   "category_totals": {
     "contracts": 571,
-    "introductions": 554,
+    "introductions": 581,
     "exit_meanings": 109,
     "loop_steps": 0,
     "registrations": 276,
-    "generator_json": 111,
+    "generator_json": 9503,
     "block_proofs": 0,
     "composition": 0,
-    "tests_and_exports": 1421
+    "tests_and_exports": 1465
   },
-  "interface_total": 1621,
-  "conservative_source_file_lines": 2538,
+  "interface_total": 11040,
+  "conservative_source_file_lines": 15147,
   "block_records": [],
   "native_runs": 1,
   "holdout_spent": true,
   "freeze_requirement": "The frozen boundary is e8131be2. Result724 spent the hold-out. Later native runs are training.",
-  "overall_total": 3042,
+  "overall_total": 12505,
   "checked_class_dependency": "b7359b55f3609d22e28d1021570543f274d446b7",
   "previous_guarded_counts": {
     "commit": "1ab41c3d6a5719849d2c6a68ac9fc658e245d6bc",
@@ -894,5 +921,22 @@
     "native_runs": 0,
     "holdout_spent": false,
     "scope": "Inherited pre-run manifest snapshot, preserved as history."
+  },
+  "historical_pending_generator": {
+    "scope": "Checked owner artifacts; not Root source credit",
+    "design_path": "/home/cody/zesislar/.worktrees/worker2-av-free-terminal-df0c431e/_build/free-artifact-packet005/workspace/ZesuSsz/Contracts/free_block_design.json",
+    "design_sha256": "1046e03caab3dc2ee6e106adb31d4309334ca227b00747f108eef0ebb40f91d6",
+    "design_lines": 4687,
+    "code_premises_lines": 1,
+    "terminal_descriptor_lines": 8,
+    "source_credit": 0,
+    "status": "Entry applications compiled against corrected snapshots; final integration and freeze pending."
+  },
+  "register_bounds_recount": {
+    "historical_leaf_family_interface": 1621,
+    "inherited_scope_interface": 1648,
+    "added_design_profile_lines": 9392,
+    "fully_counted_interface": 11040,
+    "comparison_limit": "Earlier totals excluded the then-untracked design. Use identical generator scope for comparisons."
   }
 }

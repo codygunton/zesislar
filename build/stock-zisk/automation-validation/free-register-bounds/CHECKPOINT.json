@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "status": "Verified per-function contract/data update. Local check-fast green.",
+  "base": "6154d91b74d370dfd8aaabf38f470f95da953510",
+  "branch": "spec-a-free-register-bounds",
+  "report_path": "/home/cody/zesislar/.worktrees/spec-a-free-register-bounds-6154d91b/_build/free-bounds-final009/REPORT.json",
+  "report_sha256": "9be4da3418246566da70f28fd31387713827173100e67a93722a6653b58ca9c8",
+  "primary_MCP_path": "/home/cody/zesislar/.worktrees/spec-a-free-register-bounds-6154d91b/_build/free-bounds-review005/REPORT.json",
+  "primary_MCP_sha256": "b2d03ec32f2b26d7549126f0012a0e0bfaaf558f0bbe9b7864e7d450697f82d1",
+  "source_hashes": {
+    "/home/cody/zesislar/.worktrees/spec-a-free-register-bounds-6154d91b/ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "a154bce477ab912b9ca987a9d9062bf667bfd2a765e7de3ab0a3615149d320c6",
+    "/home/cody/zesislar/.worktrees/spec-a-free-register-bounds-6154d91b/ZesuSsz/Compliance/FreeLeafIntroductions.v": "514b1f3b1cf6aeea6100831971d0e132d34a84e44a8522bca448c7486f4079df",
+    "/home/cody/zesislar/.worktrees/spec-a-free-register-bounds-6154d91b/ZesuSsz/Evidence/free_block_design.json": "a7e3b2f55188215c1c5dc7469fdd1dc30362b2b1c408c31592d18b7c7b0c2753",
+    "/home/cody/zesislar/.worktrees/spec-a-free-register-bounds-6154d91b/ZesuSsz/Evidence/free_function_text.json": "104403a216ac7ce44bf8d423b4ee3a532d4e2d0ec95cf3b5583e0608a0b5c4d9"
+  },
+  "exact_module_m_checks": 25,
+  "assumptions": [],
+  "compiled_Print_Assumptions": 25,
+  "pre_Qed_groups": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "inferred_facts_controls": 12,
+  "fully_counted_interface": 11040,
+  "inherited_scope_interface": 1648,
+  "counting_limit": "Earlier totals excluded the then-untracked design.",
+  "check_fast": {
+    "exit_code": 0,
+    "wall_seconds": 1456.5621478389949,
+    "record_path": "/home/cody/zesislar/.worktrees/spec-a-free-register-bounds-6154d91b/_build/free-bounds-fast008/RESULT.json",
+    "record_sha256": "c0fed864b77618000934370314715d6d4aede8ba23fd08d007e27cce15f0ca92"
+  },
+  "root_gates": "Orch runs check-fast and check-iris for integration.",
+  "native_rerun": false,
+  "automation_rule": false,
+  "preserved_results": "Holdout724andtraining758remain0/43.",
+  "failures": "All retained primary failures and004OOM remain explicit in the MCP certificate."
+}
