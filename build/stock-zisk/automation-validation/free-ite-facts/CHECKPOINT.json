@@ -1,0 +1,49 @@
+{
+  "item": "free ite leaf facts",
+  "preparation_base": "80eed12d",
+  "implementation_root": "06da845196f69b215f2283e4c5d0b0a41d3d9049",
+  "two_leaf_bundles": 9,
+  "unchanged_constant_bundles": [
+    "41fb4",
+    "41fd8",
+    "42090"
+  ],
+  "condition_policy": "Exact authorized terms; immediate signed128 literals; proposed LUI unsigned64 literals.",
+  "LUI_limit": "Training assumption; not a measured normalized after-state.",
+  "orientation": "True selects the smaller-range class; false selects the larger-range class.",
+  "range_policy": "Full join ranges remain implications inside facts. No entry premise added.",
+  "one_instance_per_source": true,
+  "interface_delta": 171,
+  "MCP_certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-free-ite-80eed12d/_build/free-ite-seal006/REPORT.json",
+    "sha256": "e5de8a8786ab0fdf4a763ee01da490358ea651b23945d2bca9095842fad928da",
+    "bindings": 102
+  },
+  "gate": {
+    "exit": 0,
+    "elapsed_seconds": 1769.2388087599538,
+    "root": "06da845196f69b215f2283e4c5d0b0a41d3d9049",
+    "record": "/home/cody/zesislar/.worktrees/spec-b-free-ite-80eed12d/_build/free-ite-fast007/RESULT.json",
+    "sha256": "237cce2aee9bb6db89f8833c6ff33c746d5e27f881965e0e11ca5b57fafebbc2"
+  },
+  "native_run": false,
+  "MCP_counts": {
+    "new_pure_helpers": 9,
+    "changed_entry_bundles": 9,
+    "inferred_facts_queries": 9,
+    "zero_exports_and_advancing_Qed": 27,
+    "module_m_checks": 36,
+    "closed_Print_Assumptions": 36,
+    "assumptions": []
+  },
+  "status": "Data family verified; check-fast green.",
+  "source_hashes": {
+    "ZesuSsz/Compliance/FreeSizeClassIteFacts.v": "748300b0522fffb2750160d2aa362c5b76a1f480e506acaeb2942c34cfa284bd",
+    "ZesuSsz/Compliance/FreeLeafIntroductions.v": "3181b33fe3ed7f9ddc07d5043cfbed0afc3b461ade0dbc020d0475e19303e1a8",
+    "ZesuSsz/Compliance/FreeDataRegistrations.v": "b0b4d95be5b0682b43c4bb2c08c700f5040810ddba6c83497633bf165d212194"
+  },
+  "preserved_failure": "mcp003 reached0/1/0/0; normal Abort. Explicit braces fixed focus syntax.",
+  "interface_total": 11306,
+  "full_publication_certificate": "/home/cody/zesislar/.worktrees/spec-b-free-ite-80eed12d/_build/free-ite-final008/REPORT.json",
+  "publication_certificate_note": "The publication certificate binds this checkpoint; no circular self-hash."
+}
