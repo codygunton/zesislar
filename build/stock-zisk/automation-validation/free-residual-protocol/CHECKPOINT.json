@@ -1,0 +1,46 @@
+{
+  "item": "free-residual-protocol",
+  "scope": "Documentation-only residual protocol. No new source/proof/native run and no free result inspection.",
+  "root": "e8131be295b89a1821b3ba760f39e7aad1e8647d",
+  "freeze_label": "cp-av-rules-frozen",
+  "protocol_sha256": "d697edbfd3d63ea96087272c4066d28a6391055b1f6d181f5512e3b0f372b375",
+  "full_certificate": "/home/cody/zesislar/.worktrees/spec-b-av-free-residual-protocol-e8131be2/_build/free-residual-protocol001/REPORT.json",
+  "certificate_sha256": "9a595d00c3df05448eb98c37d997d045ab2e37ae5e466f81333a1330785d7cfb",
+  "bindings": 14,
+  "classes": [
+    "Z-binder evar",
+    "pure-conjunction committed witness",
+    "mem_mapsto_kind",
+    "store-index existential",
+    "fold-accumulator step",
+    "trace-lookup existential",
+    "other"
+  ],
+  "active_core": [
+    "EntryIntro",
+    "MaskNormalizerZ",
+    "MaskNormalizerbv",
+    "ConjunctMatch"
+  ],
+  "inactive_rules": [
+    "ReturnRoute",
+    "FinishFacts",
+    "MemoryAccess"
+  ],
+  "source_scopes": {
+    "full_block_rule_off": "decodeItem680b56ad; issue13 comment6175892853",
+    "return_suffix_rule_off": "decodeItemb7359b55; report578;698c helper scope"
+  },
+  "ambiguity": "Keep all candidate classes and missing discriminators. No guessed cause or witness.",
+  "goal_groups": "Record all four separately; unknown is not zero.",
+  "findings": [
+    "F20: R2 closed failed",
+    "F24: R1c accepted on medians",
+    "F30: R1d closed failed"
+  ],
+  "checks": "Source hashes, exact7-class coverage, OFF-only filter, frozen mappings, null template, JSON and whitespace.",
+  "gate": "Documentation-only release. No proof or project gate needed.",
+  "free_results_read": false,
+  "proof_or_native_run": false,
+  "alloc_source_read": false
+}
