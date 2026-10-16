@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "function": "rlp_decode.nextUint64",
-  "status": "Checked data-only registrations exported through the function umbrella. No Approved switch activation or native correctness claim.",
-  "snapshot_base_root": "4dc8a2e796bc5ebc9d32477cc64babce5269b0e9",
+  "status": "Checked data registrations and callee installation bridge. No native caller proof or execution claim.",
+  "snapshot_base_root": "6eb85c37374307001a3a407edb6d20d64ab37c2b",
   "umbrella": "ZesuSsz.Compliance.NextUint64Hints",
   "counting_rules": {
     "unit": "Physical lines including comments and blank lines. A final line without newline counts once.",
@@ -65,14 +65,17 @@
   "registrations": [
     "ZesuSsz/Compliance/NextUint64UnfoldRegistrations.v",
     "ZesuSsz/Compliance/NextUint64Hints.v",
-    "ZesuSsz/Compliance/NextUint64DataRegistrations.v"
+    "ZesuSsz/Compliance/NextUint64DataRegistrations.v",
+    "ZesuSsz/Compliance/NextUint64BridgeRegistrations.v"
   ],
   "generator_json": [
     "ZesuSsz/Evidence/next_uint64_block_profile.json",
     "ZesuSsz/Evidence/next_uint64_block_design.json"
   ],
   "block_proofs": [],
-  "composition": [],
+  "composition": [
+    "ZesuSsz/Compliance/NextUint64CallBridge.v"
+  ],
   "tests_and_exports": [
     "ZesuSsz/Evidence/spec_shape_baseline.json",
     "ZesuSsz/Evidence/spec_shape_inventory.json",
@@ -157,15 +160,15 @@
       "path": "ZesuSsz/Compliance/NextUint64Hints.v",
       "category": "registrations",
       "scope": "whole_file",
-      "sha256": "c11e24906d71d70fe9f705c54a246ac35da65ab6aebbe2a076b2757f2a96c64f",
-      "file_lines": 3,
+      "sha256": "5ac64ce9c668154a4ca36c5ae2f7ddd40d9f72c35efb05cba520500cfb360264",
+      "file_lines": 4,
       "line_ranges": [
         [
           1,
-          3
+          4
         ]
       ],
-      "counted_lines": 3
+      "counted_lines": 4
     },
     {
       "path": "ZesuSsz/Contracts/ParentHeaderRootFacts.v",
@@ -232,8 +235,8 @@
       "path": "ZesuSsz/Evidence/spec_shape_baseline.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "912fe55516db8179f4656e74bf11194438d45445321f205652bb282166ef9a49",
-      "file_lines": 62,
+      "sha256": "294311b8b7ae9d6a17ce6373fabcc846719cd71af3533a112a93a73b3415ed0a",
+      "file_lines": 70,
       "line_ranges": [
         [
           46,
@@ -248,8 +251,8 @@
       "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "997c311b22ebe38551cdc86375cebf1cd9399a52715cff0cb36642903816c880",
-      "file_lines": 281,
+      "sha256": "33dbcd92c42c35c3905e1c07db9cf5dadec061e2bf6ee03c6d700c309600c651",
+      "file_lines": 295,
       "line_ranges": [
         [
           196,
@@ -283,14 +286,14 @@
       "scope": "whole_file",
       "sha256": null,
       "hash_rule": "No circular self-hash. The outer certificate binds final bytes.",
-      "file_lines": 429,
+      "file_lines": 460,
       "line_ranges": [
         [
           1,
-          429
+          460
         ]
       ],
-      "counted_lines": 429
+      "counted_lines": 460
     },
     {
       "path": "ZesuSsz/Compliance/NextUint64ExitMeanings.v",
@@ -409,6 +412,34 @@
         ]
       ],
       "counted_lines": 2207
+    },
+    {
+      "path": "ZesuSsz/Compliance/NextUint64CallBridge.v",
+      "category": "composition",
+      "scope": "whole_file",
+      "sha256": "f5f43d5273fca4b6f01061130e3db3b749617d56bf193529c500f2f7e4e6cf45",
+      "file_lines": 42,
+      "line_ranges": [
+        [
+          1,
+          42
+        ]
+      ],
+      "counted_lines": 42
+    },
+    {
+      "path": "ZesuSsz/Compliance/NextUint64BridgeRegistrations.v",
+      "category": "registrations",
+      "scope": "whole_file",
+      "sha256": "e2dff5625a6cca8e2fd08354e5b17f40cf9145141634ebf17072fb05c348cc85",
+      "file_lines": 7,
+      "line_ranges": [
+        [
+          1,
+          7
+        ]
+      ],
+      "counted_lines": 7
     }
   ],
   "category_totals": {
@@ -416,14 +447,14 @@
     "introductions": 0,
     "exit_meanings": 79,
     "loop_steps": 229,
-    "registrations": 95,
+    "registrations": 103,
     "generator_json": 4120,
     "block_proofs": 0,
-    "composition": 0,
-    "tests_and_exports": 1067
+    "composition": 42,
+    "tests_and_exports": 1098
   },
-  "interface_total": 5166,
-  "overall_total": 6233,
-  "conservative_full_file_lines": 6774,
+  "interface_total": 5174,
+  "overall_total": 6314,
+  "conservative_full_file_lines": 6877,
   "historical_interface_total": 867
 }
