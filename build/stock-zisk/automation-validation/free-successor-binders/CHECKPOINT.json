@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "status": "tools-only fix; no training run",
+  "base": "d02667110bf1495575980bf18a0bd7bde1d6f7c3",
+  "finding": "F43: predecessor register and array names became fixed successor parameters.",
+  "change": "The free design explicitly fixes only args. Every other successor binder uses the existing fresh existential convention.",
+  "source_hashes": {
+    "tools/block/successor_entailment.py": "758c1e7c638f22c2ec459993c22e67d612d4ca04fb5604d59e55aac5158a4bb5",
+    "tools/test_successor_entailment.py": "6e06362a78fdecb5772746ed514cb49b9370f75b26ed3f573d16ded1b15980f4",
+    "ZesuSsz/Evidence/free_block_profile.json": "5b0b5d264b25bc4cc597ccc12dd386408adf94a9ff8751eea4484fa8540a689c",
+    "ZesuSsz/Evidence/free_block_design.json": "4f0532466c46cbeb71bdc5db8a091a80acc5552b725ba296246f6297bc019f52"
+  },
+  "original_free_design_sha256": "1046e03caab3dc2ee6e106adb31d4309334ca227b00747f108eef0ebb40f91d6",
+  "static_outputs": {
+    "free": {
+      "files": 43,
+      "sha256_of_ordered_output_records": "e9a11a25a82b3e4288e3e6b0d477c6100bb44293afc3a1647bff036881caa5f6"
+    },
+    "decode_item": {
+      "files": 24,
+      "sha256_of_ordered_output_records": "89e23ba1033647817a4266675fd97803e58aaff0c5b4cf4c3de365d3e7d8e4e0"
+    }
+  },
+  "static_manifest": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-free-successor-binders-d026/_build/f43-successor282/MANIFEST.json",
+    "sha256": "865b2d3b39f96a1289c149e12f8b167f6ef9144b47397670c717ac471a8515a7",
+    "bytes": 46265
+  },
+  "static_regenerator": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-free-successor-binders-d026/_build/f43-successor282/regenerate.py",
+    "sha256": "3c570ebf1b0cf6eb4aad39bd37a0a367773ed7b200919e7e5f500915dadfb45b",
+    "bytes": 5653
+  },
+  "checks": {
+    "free_design_check": true,
+    "decode_item_design_check": true,
+    "free_boundaries": 43,
+    "free_changed_nonterminal_boundaries": 41,
+    "free_unchanged_terminal_boundaries": 2,
+    "decode_item_byte_identical_boundaries": 24,
+    "successor_edges": 69,
+    "focused_tests": 53,
+    "tools_only_fast_command": [
+      "make",
+      "check-evidence-tools",
+      "PYTHON=/usr/bin/python3"
+    ],
+    "tools_only_fast_log": {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-035614-child-b-f43-tools-fast283.log",
+      "sha256": "e68c6b736fc77a099d568f96857bdfd09d2b72600c9492ea064559d4a8e81981",
+      "bytes": 10661
+    },
+    "suite_counts": [
+      1744,
+      65,
+      17,
+      9,
+      4,
+      2,
+      225
+    ],
+    "prerequisite_repair": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-free-successor-binders-d026/_build/f43-prerequisites283/REPORT.json",
+      "sha256": "4814e3d189f93f9798edf6d2b9690a1981fb486e6cdad6b4598b656b7067000e",
+      "bytes": 24869
+    }
+  },
+  "preserved": {
+    "automation_sources": true,
+    "contract_sources": true,
+    "spent_free_result": true,
+    "diagnostic_artifacts": true,
+    "frame_existential_behavior": true
+  },
+  "proof_commands_started": 0,
+  "limits": [
+    "The generated boundary statements remain unproved.",
+    "No training run starts before the generator fix and the twelve introductions merge.",
+    "The tools-only fast gate does not claim a full Rocq project gate."
+  ]
+}
