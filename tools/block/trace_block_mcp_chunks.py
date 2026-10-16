@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+from trace_block_raw_budget import write_bytes
 
 INLINE_BYTES = 32768
 PHYSICAL_BYTES = 2 * 1024 * 1024
@@ -87,6 +88,7 @@ def store(root, ordinal, value):
     if len(encoded) > PHYSICAL_BYTES:
         raise ValueError('The bounded MCP metadata exceeds 2 MiB.')
     path = root / ('capture-%06d.json' % ordinal)
-    with path.open('xb') as stream:
-        stream.write(encoded)
+    if path.exists():
+        raise FileExistsError(path)
+    write_bytes(path, encoded, control=True)
     return {'path': str(path), 'sha256': hashlib.sha256(encoded).hexdigest()}

@@ -2,7 +2,7 @@
  (name kernel_codec)
  (public_name p0-bounded-trace.kernel-codec)
  (wrapped false)
- (modules kernel_artifact kernel_store kernel_display kernel_capture trace_block_chunks)
+ (modules trace_raw_budget kernel_artifact kernel_store kernel_display kernel_capture trace_block_chunks)
  (libraries unix coq-core.vernac coq-core.plugins.ltac2 yojson zarith))
 (executable
  (name kernel_control)
@@ -25,4 +25,9 @@
 (executable
  (name group_control)
  (modules group_control)
+ (libraries kernel_codec))
+
+(executable
+ (name chunk_control)
+ (modules chunk_control)
  (libraries kernel_codec))

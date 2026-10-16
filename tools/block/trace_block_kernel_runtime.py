@@ -6,6 +6,7 @@ import json
 import os
 import shutil
 from pathlib import Path
+from trace_block_raw_budget import copy_file, write_bytes
 
 POLICY = "bounded-kernel-v1"
 
@@ -69,6 +70,8 @@ def prepare_kernel_environment(request, evidence_dir):
     if toolchain["path"] in by_path:
         raise ValueError("The kernel toolchain inventory must not reference itself.")
     required = [runtime["plugin"], runtime["bridge"], runtime["kernel_reader"], request["chunk_writer"]]
+    if runtime.get("raw_policy") == "trigger-selected-raw-v2":
+        required.append(runtime["raw_budget_writer"])
     for item in required:
         name = str(Path(item["path"]).resolve())
         if name not in by_path or by_path[name]["sha256"] != item["sha256"]:
@@ -81,8 +84,8 @@ def prepare_kernel_environment(request, evidence_dir):
     directory.mkdir()
     reader_copy = directory / "kernel_reader.exe"
     toolchain_copy = directory / "TOOLCHAIN.json"
-    shutil.copy2(reader["path"], reader_copy)
-    shutil.copy2(toolchain["path"], toolchain_copy)
+    copy_file(reader["path"], reader_copy)
+    copy_file(toolchain["path"], toolchain_copy)
     if hashlib.sha256(reader_copy.read_bytes()).hexdigest() != reader["sha256"]:
         raise ValueError("The copied kernel reader hash differs.")
     if hashlib.sha256(toolchain_copy.read_bytes()).hexdigest() != toolchain["sha256"]:
@@ -92,8 +95,8 @@ def prepare_kernel_environment(request, evidence_dir):
     reader_ref = _relative_reference(reader_copy, evidence_dir)
     toolchain_ref = _relative_reference(toolchain_copy, evidence_dir)
     manifest_path = directory / "MANIFEST.json"
-    manifest_path.write_text(json.dumps({"schema": 1, "reader": reader_ref,
-                                        "toolchain_ref": toolchain_ref}, indent=2) + "\n")
+    write_bytes(manifest_path, (json.dumps({"schema": 1, "reader": reader_ref,
+                                        "toolchain_ref": toolchain_ref}, indent=2) + "\n").encode(), control=True)
     binding = {"surface_policy": POLICY, "source_reader": reader, "source_toolchain": toolchain,
                "reader": reader_ref, "toolchain_ref": toolchain_ref,
                "manifest": _relative_reference(manifest_path, evidence_dir), "artifacts": artifacts}
@@ -141,11 +144,25 @@ def status_command(closed):
 
 
 def parse_observer_status(result):
-    if result.get("accepted") is not True:
+    if not isinstance(result, dict) or result.get("accepted") is not True:
         raise ValueError("The observer status query refused.")
-    reference = checked_reference({"path": result["path"], "sha256": result["sha256"],
-                                   "bytes": Path(result["path"]).stat().st_size})
-    raw = json.loads(Path(reference["path"]).read_text())
+    path = result.get("path")
+    digest = result.get("sha256")
+    if (not isinstance(path, str) or not Path(path).is_absolute()
+            or not isinstance(digest, str) or len(digest) != 64
+            or any(char not in "0123456789abcdef" for char in digest)):
+        raise ValueError("The observer status reference is invalid.")
+    with Path(path).open("rb") as stream:
+        payload = stream.read(2 * 1024 * 1024 + 1)
+    if len(payload) > 2 * 1024 * 1024 or hashlib.sha256(payload).hexdigest() != digest:
+        raise ValueError("The observer status bytes differ from their reference.")
+    return parse_observer_status_payload(json.loads(payload))
+
+
+def parse_observer_status_payload(raw):
+    """Validate a response payload that the caller binds to exact evidence bytes."""
+    if not isinstance(raw, dict):
+        raise ValueError("The observer status payload is invalid.")
     if raw.get("accepted") is not True:
         raise ValueError("The retained observer status query refused.")
     if raw.get("retained_state_hash_unchanged") is not True:
@@ -164,6 +181,23 @@ def parse_observer_status(result):
     status = json.loads(message[len(prefix):-1])
     keys = {"schema", "complete", "diagnostic_errors", "unrecorded_errors", "hand_trials",
             "first_error", "first_unrecorded_error"}
+    if isinstance(status, dict) and "raw_budget" in status:
+        keys.add("raw_budget")
+        budget = status["raw_budget"]
+        if (not isinstance(budget, dict) or set(budget) != {"schema", "limit_bytes", "limit_reached", "ledger"}
+                or budget["schema"] != 1 or type(budget["limit_bytes"]) is not int
+                or not 8192 < budget["limit_bytes"] <= 2000000000
+                or type(budget["limit_reached"]) is not bool or budget["ledger"] != "evidence/RAW-BUDGET.json"):
+            raise ValueError("The observer raw budget is invalid.")
+    if isinstance(status, dict) and "selected_feedback" in status:
+        keys.add("selected_feedback")
+        logs = status["selected_feedback"]
+        if (not isinstance(logs, dict) or set(logs) != {"emitted", "omitted", "complete", "first_error"}
+                or any(type(logs[key]) is not int or logs[key] < 0 for key in ("emitted", "omitted"))
+                or type(logs["complete"]) is not bool or logs["complete"] != (logs["omitted"] == 0)
+                or (logs["first_error"] is not None if logs["omitted"] == 0 else
+                    not isinstance(logs["first_error"], str) or not logs["first_error"])):
+            raise ValueError("The selected feedback status is invalid.")
     if not isinstance(status, dict) or set(status) != keys or status["schema"] != 1:
         raise ValueError("The observer status schema is invalid.")
     if type(status["complete"]) is not bool:
@@ -171,13 +205,17 @@ def parse_observer_status(result):
     for name in ("diagnostic_errors", "unrecorded_errors"):
         if type(status[name]) is not int or status[name] < 0:
             raise ValueError("The observer error count is invalid.")
+    if status.get("selected_feedback", {}).get("omitted", 0) > status["diagnostic_errors"]:
+        raise ValueError("The selected feedback omissions exceed diagnostic errors.")
     hand = status["hand_trials"]
     if (not isinstance(hand, dict) or set(hand) != {"started", "accepted", "refused", "rolled_back"}
             or any(type(value) is not int or value < 0 for value in hand.values())
             or hand["accepted"] + hand["refused"] > hand["started"]
             or hand["rolled_back"] > hand["started"]):
         raise ValueError("The observer hand-trial counts are invalid.")
-    if status["complete"] != (status["diagnostic_errors"] == 0 and status["unrecorded_errors"] == 0):
+    if status["complete"] != (status["diagnostic_errors"] == 0 and status["unrecorded_errors"] == 0
+                               and not status.get("raw_budget", {}).get("limit_reached", False)
+                               and status.get("selected_feedback", {}).get("complete", True)):
         raise ValueError("The observer completeness flag contradicts its error counts.")
     for name, counter, fields in (
             ("first_error", "diagnostic_errors", {"phase", "error"}),

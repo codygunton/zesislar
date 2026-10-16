@@ -77,7 +77,9 @@ class BoundedPackageTests(unittest.TestCase):
         self.assertEqual(package.INSTALL_TARGETS[0], 'p0-bounded-trace.install')
         self.assertIn(package.READER_TARGET, package.INSTALL_TARGETS)
         self.assertIn(package.WRITER_TARGET, package.INSTALL_TARGETS)
-        self.assertIn('/Filtered/', package.WRITER_TARGET)
+        self.assertIn('/Bounded/', package.WRITER_TARGET)
+        self.assertIn('trace-observer/trace_raw_budget.ml', package.FILES)
+        self.assertIn('trace-observer/chunk_control.ml', package.FILES)
 
     def test_explicit_filtered_compatibility_remains(self):
         self.assertIs(prepare.preparation_package({}), prepare.package)
@@ -143,6 +145,46 @@ class BoundedPackageTests(unittest.TestCase):
                         request['observer_runtime'][name] = package.reference(path, sized=False)
                     with self.assertRaisesRegex(ValueError, 'leaves its workspace'):
                         package.validate_runtime(request)
+
+    def test_new_raw_policy_requires_its_writer(self):
+        request = self.runtime_request()
+        request['observer_runtime']['raw_policy'] = package.RAW_POLICY
+        with self.assertRaisesRegex(ValueError, 'complete bounded runtime'):
+            package.validate_runtime(request)
+
+    def test_orphan_raw_writer_rejects(self):
+        request = self.runtime_request()
+        request['observer_runtime']['raw_budget_writer'] = {}
+        with self.assertRaisesRegex(ValueError, 'complete bounded runtime'):
+            package.validate_runtime(request)
+
+    def test_unknown_raw_policy_rejects(self):
+        request = self.runtime_request()
+        request['observer_runtime']['raw_policy'] = 'other'
+        request['observer_runtime']['raw_budget_writer'] = {}
+        with self.assertRaisesRegex(ValueError, 'unsupported raw policy'):
+            package.validate_runtime(request)
+
+    def test_default_runtime_emits_budget_policy_and_owned_writer(self):
+        from unittest.mock import patch
+        build = self.root / '_build/owned'
+        paths = [build / 'install/default/lib/p0-bounded-trace/trace-observer/bounded_trace_plugin.cmxs',
+                 build / 'install/default/lib/p0-bounded-trace/kernel-codec/kernel_codec.cmxs',
+                 build / 'default' / package.READER_TARGET,
+                 build / 'default' / package.BRIDGE.replace('.v', '.vo'),
+                 build / 'default' / package.WRITER_TARGET,
+                 self.root / package.RAW_WRITER]
+        for path in paths:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(b'fixture')
+        with patch.object(package, 'canonical_artifacts', return_value=([], [])), \
+                patch.object(package, 'validate_runtime') as validate:
+            result = package.runtime_inputs(self.root, build)
+        runtime = result['observer_runtime']
+        self.assertEqual(runtime['raw_policy'], package.RAW_POLICY)
+        self.assertEqual(runtime['raw_budget_writer'], package.reference(self.root / package.RAW_WRITER))
+        self.assertEqual(result['chunk_writer'], package.reference(paths[4], sized=False))
+        validate.assert_called_once_with(dict(result, workspace=str(self.root)))
 
     def test_existing_observer_source_rejects(self):
         with self.assertRaisesRegex(ValueError, 'already contains'):

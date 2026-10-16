@@ -20,9 +20,10 @@ def _pointer(sequence):return '#/snapshots/event-%08d'%sequence
 def _catalog_equal(left,right,before,after):
     """Compare full checked catalogs with exact locally bound sidecar references."""
     if not isinstance(left,Mapping)or not isinstance(right,Mapping):return False
-    expected={'schema','complete_sidecar','entries'}
+    version=left.get('schema')
+    if type(version)is not int or version not in (1,2)or not _exact(right.get('schema'),version):return False
+    expected={'schema','complete_sidecar','entries'}|({'selected_ids'}if version==2 else set())
     if set(left)!=expected or set(right)!=expected:return False
-    if not _exact(left['schema'],1)or not _exact(right['schema'],1):return False
     if not _array(left['entries'])or not _array(right['entries']):return False
     def compare(a,b):
         if isinstance(a,Mapping)or isinstance(b,Mapping):
@@ -123,7 +124,7 @@ class BoundedPoints:
                     raise ValueError('The bounded guard lacks its exact source binding.')
                 counters[key]=row
             if number is not None:groups[number].append((reference,row))
-            if 'capture'in row:
+            if 'capture'in row or 'capture_ref'in row:
                 if row['sequence']not in captures:raise ValueError('A full event lacks its checked capture.')
                 capture=captures[row['sequence']]
                 self.snapshots['event-%08d'%row['sequence']]=capture.stable()
@@ -189,6 +190,9 @@ class BoundedPoints:
                         'rollback':'event-%08d'%row['sequence'],'rollback_equal':True,
                         'rollback_method':'complete-marshal-bytes-and-printed-state','feedback':feedback,
                         'event_sequence':row['sequence'],'operation':self._operation(row['sequence'])}
+                    if 'capture_ref'in row:
+                        trial['rollback_method']='checked-discarded-reference'
+                        trial['rollback_reference']=rollback.provenance
                     if accepted is None:trial['after_trial_availability']='unavailable: refused discarded branch'
                     trial['commands']=[{'command':command,'before':_pointer(entry['sequence']),
                         'after':_pointer(accepted if accepted is not None else row['sequence']),

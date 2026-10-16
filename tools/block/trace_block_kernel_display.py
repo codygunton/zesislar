@@ -138,9 +138,24 @@ def _marker(root, reference, expected_toolchain_ref):
 
 
 def _reload(root, reference, display, expected_reader):
+    from trace_block_compact_catalog import catalog_header, receipt_check
     receipt = _read(root, reference)
+    catalog = _read(root, display['evar_catalog_ref'])
+    catalog_version = catalog.get('schema')
+    if type(catalog_version) is not int or catalog_version not in (1, 2):
+        raise ValueError('The reload catalog schema is unsupported.')
+    if catalog_version == 2:
+        context = _read(root, display['context_ref'])
+        _fields(context, 'schema kind complete_sidecar goals shelf given_up')
+        _same(context, 'schema', 1)
+        _same(context, 'kind', 'kernel-snapshot-context')
+        _same(context, 'complete_sidecar', display['complete_sidecar'])
+        catalog_header(catalog, display['complete_sidecar'], context)
     _fields(receipt, 'schema kind sidecar context_ref evar_catalog_ref toolchain_ref reader '
-                     'accepted checks kernel_typecheck error unique_kernel_nodes')
+                     'accepted checks kernel_typecheck error unique_kernel_nodes' +
+                     (' catalog_check' if catalog_version == 2 else ''))
+    if catalog_version == 2:
+        receipt_check(receipt['catalog_check'], catalog)
     _schema(receipt, 'kernel-marshal-reload')
     _integer(receipt['unique_kernel_nodes'])
     for field, expected in [('sidecar', display['complete_sidecar']),

@@ -4,6 +4,9 @@ open Ltac2_plugin
 open Proofview.Notations
 
 let sequence = ref 0
+let selected_feedback_emitted=ref 0
+let selected_feedback_omitted=ref 0
+let first_feedback_error=ref None
 let diagnostic_errors = ref 0
 let unrecorded_errors = ref 0
 let hand_trials_started = ref 0
@@ -33,21 +36,29 @@ let diagnostic_status () =
   let unrecorded = match !first_unrecorded_error with None -> `Null
     | Some (phase, original, error) -> `Assoc ["phase", `String phase;
       "capture_error", `String original; "logging_error", `String error] in
-  Yojson.Safe.to_string (`Assoc ["schema", `Int 1;
-    "complete", `Bool (!diagnostic_errors = 0 && !unrecorded_errors = 0);
+  let raw_budget=Trace_raw_budget.status()in
+  let budget_complete=match raw_budget with `Assoc fields->List.assoc "limit_reached"fields=`Bool false|_->true in
+  Yojson.Safe.to_string (`Assoc (["schema", `Int 1;
+    "complete", `Bool (!diagnostic_errors = 0 && !unrecorded_errors = 0 && budget_complete);
     "diagnostic_errors", `Int !diagnostic_errors;
     "unrecorded_errors", `Int !unrecorded_errors;
     "hand_trials", `Assoc ["started", `Int !hand_trials_started;
       "accepted", `Int !hand_trials_accepted; "refused", `Int !hand_trials_refused;
       "rolled_back", `Int !hand_trials_rolled_back];
     "first_error", pair !first_diagnostic_error;
-    "first_unrecorded_error", unrecorded])
+    "first_unrecorded_error", unrecorded] @ (if raw_budget=`Null then []else[
+      "raw_budget",raw_budget;
+      "selected_feedback",`Assoc["emitted",`Int !selected_feedback_emitted;
+        "omitted",`Int !selected_feedback_omitted;"complete",`Bool(!selected_feedback_omitted=0);
+        "first_error",(match !first_feedback_error with None->`Null|Some error->`String error)]])))
 let invocation = ref 0
 let trial_depth = ref 0
 let active_invocations = ref []
 let active_clause = ref None
 let feedback_counts = Hashtbl.create 8
-let full_active () = List.exists (fun (_, full) -> full) !active_invocations
+let full_active () =
+  if Trace_raw_budget.configured()=None then List.exists(fun(_,full)->full)!active_invocations
+  else match !active_invocations with []->false|(_,full)::_->full
 let current_invocation () = match !active_invocations with [] -> `Null | (n, _) :: _ -> `Int n
 let enter number full = active_invocations := (number, full) :: !active_invocations
 let leave number = match !active_invocations with
@@ -65,9 +76,9 @@ let envelope number fields =
   if String.length data > Chunks.physical_limit then
     CErrors.user_err Pp.(str "The serialized observer envelope exceeds 2 MiB");
   let path = Filename.concat directory (Printf.sprintf "event-%08d.json" number) in
-  let channel = open_out_gen [Open_wronly; Open_creat; Open_excl; Open_binary] 0o600 path in
-  Fun.protect ~finally:(fun () -> close_out channel) (fun () -> output_string channel data)
+  Trace_raw_budget.with_output path(fun channel->output_string channel data)
 let payload number field emit =
+  Trace_raw_budget.ensure_data();
   let relative_directory = Printf.sprintf "events/process-%d/chunks/event-%08d-%s" (Unix.getpid ()) number field in
   let logical_event = Printf.sprintf "event-%08d/%s" number field in
   let writer = Chunks.create ~evidence_root:(Filename.dirname (event_root ())) ~relative_directory ~logical_event in
@@ -122,7 +133,7 @@ let () = ignore (Feedback.add_feeder (fun feedback ->
   | Some _, Feedback.Message (level, _, message) ->
       let level = match level with Feedback.Debug -> "debug" | Feedback.Info -> "info"
         | Feedback.Notice -> "notice" | Feedback.Warning -> "warning" | Feedback.Error -> "error" in
-      if full_active () then diagnostic "feedback-output" (fun () ->
+      if full_active () then (try
         if Sys.getenv_opt "ZESU_TRACE_INJECT_LOG_FAILURE" = Some "1" then
           failwith "P0-DIAGNOSTIC-LOG-INJECTED";
         let number = reserve () in
@@ -130,7 +141,12 @@ let () = ignore (Feedback.add_feeder (fun feedback ->
         envelope number ["kind", `String "feedback"; "level", `String level;
           "trial", `Bool (!trial_depth > 0); "invocation", current_invocation ();
           "clause", (match !active_clause with None -> `Null | Some clause -> `String clause);
-          "message", message])
+          "message", message];
+        incr selected_feedback_emitted
+       with error when CErrors.noncritical error->
+        incr selected_feedback_omitted;
+        let exact=diagnostic_error "feedback-output"error in
+        if !first_feedback_error=None then first_feedback_error:=Some exact)
       else (
         let count = match Hashtbl.find_opt feedback_counts level with None -> 0 | Some n -> n in
         Hashtbl.replace feedback_counts level (count + 1))
@@ -163,6 +179,7 @@ let with_printing no_notation callback =
 let fresh_counter () =
   let summaries=Summary.Interp.freeze_summaries()in
   Summary.Interp.project_from_summary summaries Evd.evar_counter_summary_tag
+let native_captures=Hashtbl.create 16
 let capture kind name invocation additional =
   Proofview.tclENV >>= fun env ->
   Proofview.tclEVARMAP >>= fun sigma ->
@@ -178,7 +195,9 @@ let capture kind name invocation additional =
       let captured=payload number "capture"(fun writer->
         Kernel_capture.emit ~evidence_root ~directory ~number
           ~include_proof:(kind="checkpoint" && name="residual")writer env sigma goals(fresh_counter()))in
-      envelope number(identity kind name invocation@["capture",captured]@additional)
+      envelope number(identity kind name invocation@["capture",captured]@additional);
+      if kind="native-entry"then
+        Hashtbl.replace native_captures invocation(number,captured,env,sigma,goals,fresh_counter())
     with error when CErrors.noncritical error ->
       let exact_error=diagnostic_error "capture-serialization" error in
       (try
@@ -204,6 +223,31 @@ let same_live (sigma, goals, shelf, given_up, counter, printing)
     (sigma', goals', shelf', given_up', counter', printing') =
   sigma == sigma' && goals = goals' && shelf = shelf' &&
   Evar.Set.equal given_up given_up' && counter = counter' && printing = printing'
+let rollback_capture name number clause before after before_env after_env =
+  if not(same_live before after) || before_env != after_env then
+    Tacticals.tclFAIL Pp.(str "The hand trial changed its retained entry state")
+  else if Trace_raw_budget.configured()=None then
+    capture "hand-rollback"name number["clause",`String clause;"exact",`Bool true]
+  else
+    let sigma,goals,shelf,given_up,fresh,_=before in
+    match Hashtbl.find_opt native_captures number with
+    |Some(source_sequence,captured,source_env,source_sigma,source_goals,source_fresh)
+      when source_env==before_env && source_sigma==sigma && source_goals=goals &&
+        Evd.shelf source_sigma=shelf && Evar.Set.equal(Evd.given_up source_sigma)given_up && source_fresh=fresh ->
+      effect(fun()->diagnostic "rollback-reference-output"(fun()->
+        let ordinal=reserve()in
+        let relative=Printf.sprintf "events/process-%d/event-%08d.json"(Unix.getpid())source_sequence in
+        let event=Kernel_store.reference(Filename.dirname(event_root()))relative in
+        envelope ordinal(identity "hand-rollback"name number@[
+          "clause",`String clause;"exact",`Bool true;
+          "capture_ref",`Assoc["event",Kernel_store.reference_json event;"capture",captured;
+            "source_sequence",`Int source_sequence];
+          "reuse_check",`Assoc(("kind",`String "discarded-branch-rollback")::
+            List.map(fun key->key,`Bool true)["exact";"proofview_backtracked";
+              "interp_summary_restored";"synterp_summary_restored";"evd_physical_equal";
+              "environment_physical_equal";"ordered_groups_equal";"fresh_counter_equal"])])))
+    |_->effect(fun()->ignore(diagnostic_error "rollback-reference-unavailable"
+      (Failure "The hand rollback has no matching complete native entry")))
 exception Guard_finished of bool
 exception Trace_trial_finished
 let evaluate_guard callback =
@@ -237,6 +281,7 @@ let discarded_guard callback =
         Tacticals.tclFAIL Pp.(str "The typed guard changed its retained entry state")
       else Proofview.tclUNIT (match error with Guard_finished value -> Some value | _ -> None))
 let trial name number clause callback =
+  Proofview.tclENV >>= fun before_env ->
   read_live >>= fun before ->
   effect (fun () -> Summary.Interp.freeze_summaries (), Summary.Synterp.freeze_summaries ())
     >>= fun (interp, synterp) ->
@@ -250,7 +295,8 @@ let trial name number clause callback =
       effect (fun () -> decr trial_depth; active_clause := None; leave number;
         Summary.Synterp.unfreeze_summaries synterp; Summary.Interp.unfreeze_summaries interp) <*>
       read_live >>= fun after ->
-      capture "hand-rollback" name number ["clause", `String clause; "exact", `Bool (same_live before after)] <*>
+      Proofview.tclENV >>= fun after_env ->
+      rollback_capture name number clause before after before_env after_env <*>
       if not (same_live before after) then
         Tacticals.tclFAIL Pp.(str "The hand trial changed its retained entry state")
       else
@@ -304,7 +350,7 @@ let filtered name guard clauses callback =
       List.fold_left (fun result (clause, body) -> result <*> trial name number clause body)
         (Proofview.tclUNIT ()) clauses <*>
       trial name number "whole-rule" callback <*>
-      effect (fun () -> restore_debug debug)) else Proofview.tclUNIT ()) <*>
+      effect (fun () -> Hashtbl.remove native_captures number; restore_debug debug)) else Proofview.tclUNIT ()) <*>
     observe_results name number hash classification full (Tac2ffi.app_fun1 callback Tac2ffi.unit Tac2ffi.unit ())
 let checkpoint label =
   if label = "residual" then capture "checkpoint" label 0 []
@@ -353,7 +399,10 @@ let () =
   define { Tac2expr.mltac_plugin = "p0-bounded-trace.trace-observer"; mltac_tactic = "status" }
     (Tac2ffi.unit @-> tac Tac2ffi.string) (fun () -> effect diagnostic_status);
   define { Tac2expr.mltac_plugin = "p0-bounded-trace.trace-observer"; mltac_tactic = "complete" }
-    (Tac2ffi.unit @-> tac Tac2ffi.bool) (fun () -> effect (fun () -> !diagnostic_errors = 0 && !unrecorded_errors = 0));
+    (Tac2ffi.unit @-> tac Tac2ffi.bool) (fun () -> effect (fun () ->
+      let budget=Trace_raw_budget.status()in
+      let allowed=match budget with `Assoc fields->List.assoc "limit_reached"fields=`Bool false|_->true in
+      !diagnostic_errors = 0 && !unrecorded_errors = 0 && allowed));
   let callback = Tac2ffi.fun1 Tac2ffi.unit Tac2ffi.unit in
   let guard = Tac2ffi.fun1 Tac2ffi.unit Tac2ffi.bool in
   define { Tac2expr.mltac_plugin = "p0-bounded-trace.trace-observer"; mltac_tactic = "filtered" }

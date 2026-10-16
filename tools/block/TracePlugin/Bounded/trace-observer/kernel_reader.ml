@@ -31,7 +31,10 @@ let run root plan_path expected executable =
   if remarshal.sha256<>complete.sha256 || remarshal.bytes<>complete.bytes then failwith "Complete remarshal mismatch";
   let catalog_ref=reference(assoc "evar_catalog_ref" plan) in
   let catalog=read_json root catalog_ref in
-  if catalog <> catalog_json snapshot complete then failwith "Catalog content or association mismatch";
+  let actual_catalog=Kernel_artifact.hash_stream(fun output->Kernel_artifact.emit_json output catalog)in
+  let compact=match assoc "schema" catalog with `Int 2->true|`Int 1->false|_->failwith "Unsupported catalog schema"in
+  let expected_catalog=Kernel_artifact.hash_stream(fun output->emit_catalog ~compact output snapshot complete)in
+  if actual_catalog<>expected_catalog then failwith "Catalog content or association mismatch";
   let dummy={evidence_root=root;directory="";snapshot;complete;catalog_ref;toolchain_ref;
     terms=Physical.create 1;marker_count=0} in
   let receipts=List.mapi(fun index value->
@@ -117,13 +120,18 @@ let run root plan_path expected executable =
         "toolchain_ref",reference_json toolchain_ref;"reader",reference_json reader;
         "accepted",`Bool true;"error",`Null]))(list(assoc "displays" plan)) in
   let receipt=write_json root (prefix^"/reload.json")
-    (`Assoc["schema",`Int 1;"kind",`String "kernel-marshal-reload";
+    (`Assoc(["schema",`Int 1;"kind",`String "kernel-marshal-reload";
       "sidecar",reference_json complete;"context_ref",reference_json context_ref;
       "evar_catalog_ref",reference_json catalog_ref;"toolchain_ref",reference_json toolchain_ref;
       "reader",reference_json reader;"accepted",`Bool true;"error",`Null;
       "unique_kernel_nodes",`Int nodes;"kernel_typecheck",`String "not-attempted";
       "checks",`Assoc(List.map(fun key->key,`Bool true)
-        ["hash";"bytes";"schema";"toolchain";"context";"evar_references";"remarshal_bytes";"trailing_bytes_absent"])]) in
+        ["hash";"bytes";"schema";"toolchain";"context";"evar_references";"remarshal_bytes";"trailing_bytes_absent"])] @
+      (if compact then ["catalog_check",`Assoc["schema",`Int 2;"entries",`Int(List.length snapshot.catalog);
+        "selected_ids",`List(List.map(fun key->`Int key)(selected_ids snapshot));
+        "referenced_contexts",`Int(List.length snapshot.catalog-List.length(selected_ids snapshot));
+        "referenced_filters",`Int(List.length snapshot.catalog-List.length(selected_ids snapshot));
+        "complete",`Bool true;"verification",`String "compact-catalog-to-Marshal"]]else[]))) in
   `Assoc["schema",`Int 1;"accepted",`Bool true;"receipt",reference_json receipt;
     "membership_receipts",`List(List.map reference_json receipts);
     "root_receipts",`List(List.map reference_json root_receipts)]

@@ -64,9 +64,7 @@ let write_record writer name value logical_bytes =
   let data = Yojson.Safe.to_string value ^ "\n" in
   if String.length data > physical_limit then failwith "The serialized observer record exceeds 2 MiB";
   let path = Filename.concat writer.directory name in
-  let channel = open_out_gen [Open_wronly; Open_creat; Open_excl; Open_binary] 0o600 path in
-  Fun.protect ~finally:(fun () -> close_out channel) (fun () ->
-    output_string channel data; flush channel);
+  Trace_raw_budget.with_output path(fun channel->output_string channel data);
   { path = Filename.concat writer.relative_directory name;
     sha256 = sha256_file path; bytes = String.length data; logical_bytes }
 

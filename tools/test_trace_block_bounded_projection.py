@@ -136,6 +136,39 @@ class ProjectionTests(unittest.TestCase):
         view.rule_successes = []
         self.assertEqual(view._header({})['verdict']['kind'], 'proof_closure')
 
+    def new_policy_view(self):
+        view = self.view()
+        view.request['observer_runtime'] = {'raw_policy': 'trigger-selected-raw-v2'}
+        view.raw_budget = {'complete': True}
+        view.selected_feedback = {'availability': 'complete'}
+        return view
+
+    def test_new_policy_missing_feedback_blocks_completeness(self):
+        view = self.new_policy_view()
+        view.selected_feedback = None
+        header = view._header({})
+        self.assertFalse(header['completion']['trace_complete'])
+        self.assertIn('The selected feedback is unavailable or incomplete.', header['completion']['reasons'])
+
+    def test_new_policy_partial_feedback_blocks_completeness(self):
+        view = self.new_policy_view()
+        view.selected_feedback = {'availability': 'partial'}
+        self.assertFalse(view._header({})['completion']['trace_complete'])
+
+    def test_new_policy_missing_seal_blocks_completeness(self):
+        view = self.new_policy_view()
+        view.raw_budget = None
+        self.assertFalse(view._header({})['completion']['trace_complete'])
+
+    def test_new_policy_exhausted_budget_blocks_completeness(self):
+        view = self.new_policy_view()
+        view.raw_budget = {'complete': False}
+        self.assertFalse(view._header({})['completion']['trace_complete'])
+
+    def test_new_policy_checked_feedback_and_budget(self):
+        view = self.new_policy_view()
+        self.assertTrue(view._header({})['completion']['trace_complete'])
+
     def residual_view(self):
         view = self.view()
         view.root = Path('/owned-evidence')
