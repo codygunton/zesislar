@@ -1,0 +1,304 @@
+{
+  "schema": 1,
+  "status": "completed-once-comparison-with-regressions",
+  "root": "3aebfa260c6a38ef1abc9eae5ea4b342410de422",
+  "comparison_report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-comparison854/REPORT.json",
+    "sha256": "95121b1c92ef544912fde8dcbac9502de40598b1e46a6fce38df4200fdb9f077",
+    "bytes": 1711
+  },
+  "details": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-comparison854/DETAILS.json",
+    "sha256": "247e1225e7d2c831f2b59b484fe200f0f98f7b2f8647e79abb07ecc1cb485819",
+    "bytes": 386865
+  },
+  "table": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-comparison854/TABLE.md",
+    "sha256": "491dbb1ed5b2939304f1b20596e8ac5a8c30e0e0714c9ae04d905a8eda1802be",
+    "bytes": 3906
+  },
+  "controls_table": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-final855/AUTO-CONTROLS.md",
+    "sha256": "a84650034d0a82baf7173df60b575a8daa9292dbca39b512187a6e096b2a8e3e",
+    "bytes": 721
+  },
+  "source_seal": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-final855/SOURCE-SEAL.json",
+    "sha256": "a2ed46df172ddef403aeaa679a1a420eaa636eea988f2761207a2b611816b9b9",
+    "bytes": 90381
+  },
+  "prediction": {
+    "OFF_closed": 12,
+    "ON_closed": 40,
+    "OFF_residual": 31,
+    "ON_residual": 3
+  },
+  "observed": {
+    "OFF": {
+      "residual": 31,
+      "interactive-empty; compile-timeout": 6,
+      "verified": 6
+    },
+    "ON": {
+      "residual": 27,
+      "interactive-empty; compile-timeout": 8,
+      "verified": 8
+    }
+  },
+  "interactive_empty": {
+    "OFF": 12,
+    "ON": 16
+  },
+  "open_state_classes": {
+    "OFF": {
+      "list-witness": 1,
+      "Iris-pure-condition": 27,
+      "pure-equality": 1,
+      "memory-obligation": 2
+    },
+    "ON": {
+      "list-witness": 1,
+      "Iris-pure-condition": 23,
+      "pure-equality": 1,
+      "memory-obligation": 2
+    }
+  },
+  "open_goal_totals": {
+    "OFF": {
+      "goals": 61
+    },
+    "ON": {
+      "goals": 53
+    }
+  },
+  "interactive_gains_ON": [
+    "0x80041f58",
+    "0x80041f60",
+    "0x80041fb8",
+    "0x80041fc0"
+  ],
+  "pair41f58": {
+    "OFF": {
+      "entry": "0x80041f58",
+      "arm": "OFF",
+      "family_from805": "range",
+      "prediction": "residual",
+      "outcome": "residual",
+      "verified_closed": false,
+      "interactive_groups_empty": false,
+      "final_verification_failures": [],
+      "groups": {
+        "goals": 2,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "first_residual_class": "Iris-pure-condition",
+      "first_goal": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n_ : instr_pre 2147753824\n      (\u2203 (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt80041f60 args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------\u2217\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeBufferLength args) = Z_to_bv 64 (freeBufferLength args) \u2227 65 \u2264 bv_unsigned (Z_to_bv 64 (freeBufferLength args)) \u2264 2048\u231d",
+      "primary_accepted": true,
+      "primary_proof_finished": false,
+      "statement_sha256": "97894c3f6561f49a6d3b5c9e8b02db4fd4204316e1e38b4957ed723012b2f819",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-off821/native/block_0x80041f58/Boundary.v",
+        "sha256": "3a60e61aaa1c092232f0427ced2c987ab0d222c86c1c26ac967b344ff66a8123",
+        "bytes": 5067
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-off821/native/block_0x80041f58/evidence.json",
+        "sha256": "a6d8884bed45afa5dce8954ce99516016db2c86e5db81b39bdf0ec7b401635fe",
+        "bytes": 40399
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-off821/native/block_0x80041f58/complete/state_2.json",
+        "sha256": "37a8a7569277ca87c9eac563b91be91f8922a6d55d83fa99d5b4c0a42f0ecd93",
+        "bytes": 18658
+      },
+      "recorded_discovery_outcomes": [
+        "native-residual"
+      ]
+    },
+    "ON": {
+      "entry": "0x80041f58",
+      "arm": "ON",
+      "family_from805": "range",
+      "prediction": "closed",
+      "outcome": "interactive-empty; compile-timeout",
+      "verified_closed": false,
+      "interactive_groups_empty": true,
+      "final_verification_failures": [
+        {
+          "tool": "rocq_compile_file",
+          "arguments": {
+            "workspace": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair",
+            "file": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041f58/Boundary.v",
+            "timeout": 300,
+            "timing": true
+          },
+          "result": {
+            "success": false,
+            "reason": "timeout",
+            "error": "Compilation timed out after 300.0s. The proof may contain a diverging tactic. Retry with timing=True to identify the slowest sentence.",
+            "timing": {
+              "total_sentences": 0,
+              "top_slowest": [],
+              "last_completed": null
+            },
+            "state_capture_status": "no_position"
+          },
+          "started": "2026-10-16T16:40:36.998409+00:00",
+          "elapsed_seconds": 300.0491617640946
+        }
+      ],
+      "groups": {
+        "goals": 0,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "first_residual_class": null,
+      "first_goal": null,
+      "primary_accepted": true,
+      "primary_proof_finished": true,
+      "statement_sha256": "97894c3f6561f49a6d3b5c9e8b02db4fd4204316e1e38b4957ed723012b2f819",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041f58/Boundary.v",
+        "sha256": "238c1ad441b006b9c8a7ff8b3cd275312a0a5a2d52f3987ec200f1c853286c1d",
+        "bytes": 5199
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041f58/evidence.json",
+        "sha256": "ebbb4761a3dcffca751b48d8500cf791532de0d1cceab80bedc10111243cfabe",
+        "bytes": 20857
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041f58/complete/state_2.json",
+        "sha256": "a64cd08ba25b75e26cbed775c005a9565f976fdb28845c07adda969be4d56944",
+        "bytes": 240
+      },
+      "recorded_discovery_outcomes": [
+        "native-residual"
+      ]
+    }
+  },
+  "Auto_controls": [
+    {
+      "pc": "800d6974",
+      "OFF_verified": true,
+      "ON_verified": true,
+      "OFF_cpu_seconds": 417.840143,
+      "ON_cpu_seconds": 426.71155,
+      "performance_eligible": true,
+      "initial_ratio": 1.0212315813801547,
+      "initial_regression_percent": 2.1231581380154685,
+      "median_repeat_required": false
+    },
+    {
+      "pc": "800d69a4",
+      "OFF_verified": true,
+      "ON_verified": true,
+      "OFF_cpu_seconds": 12.066061000000001,
+      "ON_cpu_seconds": 11.839968,
+      "performance_eligible": true,
+      "initial_ratio": 0.9812620705298937,
+      "initial_regression_percent": -1.873792947010633,
+      "median_repeat_required": false
+    },
+    {
+      "pc": "800d69d8",
+      "OFF_verified": true,
+      "ON_verified": true,
+      "OFF_cpu_seconds": 16.334370999999997,
+      "ON_cpu_seconds": 12.604892999999999,
+      "performance_eligible": true,
+      "initial_ratio": 0.7716791176103445,
+      "initial_regression_percent": -22.832088238965554,
+      "median_repeat_required": false
+    },
+    {
+      "pc": "800d69e0",
+      "OFF_verified": true,
+      "ON_verified": false,
+      "OFF_cpu_seconds": 16.474671,
+      "ON_cpu_seconds": 12.875677000000001,
+      "performance_eligible": false,
+      "initial_ratio": null,
+      "initial_regression_percent": null,
+      "median_repeat_required": false
+    },
+    {
+      "pc": "800d6a00",
+      "OFF_verified": true,
+      "ON_verified": true,
+      "OFF_cpu_seconds": 17.577679999999997,
+      "ON_cpu_seconds": 15.048435,
+      "performance_eligible": true,
+      "initial_ratio": 0.8561104195775553,
+      "initial_regression_percent": -14.388958042244472,
+      "median_repeat_required": false
+    },
+    {
+      "pc": "800d6a14",
+      "OFF_verified": true,
+      "ON_verified": true,
+      "OFF_cpu_seconds": 8.785851000000001,
+      "ON_cpu_seconds": 8.687143999999998,
+      "performance_eligible": true,
+      "initial_ratio": 0.9887652317345238,
+      "initial_regression_percent": -1.1234768265476203,
+      "median_repeat_required": false
+    },
+    {
+      "pc": "800d6a64",
+      "OFF_verified": true,
+      "ON_verified": true,
+      "OFF_cpu_seconds": 16.504239000000002,
+      "ON_cpu_seconds": 15.882689,
+      "performance_eligible": true,
+      "initial_ratio": 0.9623399782322588,
+      "initial_regression_percent": -3.766002176774119,
+      "median_repeat_required": false
+    },
+    {
+      "pc": "800d6a6c",
+      "OFF_verified": true,
+      "ON_verified": false,
+      "OFF_cpu_seconds": 22.046526,
+      "ON_cpu_seconds": 19.394374,
+      "performance_eligible": false,
+      "initial_ratio": null,
+      "initial_regression_percent": null,
+      "median_repeat_required": false
+    },
+    {
+      "pc": "800d6ab4",
+      "OFF_verified": true,
+      "ON_verified": true,
+      "OFF_cpu_seconds": 8.66921,
+      "ON_cpu_seconds": 8.800567000000001,
+      "performance_eligible": true,
+      "initial_ratio": 1.015152130355592,
+      "initial_regression_percent": 1.515213035559193,
+      "median_repeat_required": false
+    }
+  ],
+  "median_repeat_pcs": [],
+  "Auto_OFF_verified": 9,
+  "Auto_ON_verified": 7,
+  "Auto_ON_compile_failures": [
+    "800d69e0",
+    "800d6a6c"
+  ],
+  "source_preservation": "All 2369 input hashes/sizes and 131 nested source references pass after all jobs exit.",
+  "limits": [
+    "Interactive empty groups do not establish final verified closure.",
+    "All 14 final free compilation failures report the 300-second tool timeout. The message does not establish tactic divergence.",
+    "The four ON interactive gains remain unverified because final compilation timed out.",
+    "Two additional ON verified rows had empty OFF groups and OFF compile timeouts. They are not new interactive gains.",
+    "Two Auto ON proofs fail Qed with incomplete proof. Their OFF counterparts verify.",
+    "The seven successful control pairs stay outside the authorized 8% to 12% regression window. No median repeat is needed.",
+    "The historical eight-row inventory omits6974. This run includes all nine committed Auto sources.",
+    "The result does not authorize merge. Historical hold-out and training records remain unchanged."
+  ],
+  "proof_retries": 0,
+  "new_rule_edits": 0
+}

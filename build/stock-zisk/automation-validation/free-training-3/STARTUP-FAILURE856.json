@@ -1,0 +1,170 @@
+{
+  "schema": 1,
+  "status": "failed-before-MCP-initialization",
+  "original_packet": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped856/REPORT.json",
+    "sha256": "5bf11b4ed58e975b4369f0d3542d4d2eeda690273ad11b867ecd44caca2744bf",
+    "bytes": 3290
+  },
+  "launches": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped856/LAUNCHED.json",
+    "sha256": "779264b0555b58a59f7bd569e1fe5af26c43acc8604a4245fd9c9a06efd735c9",
+    "bytes": 13389
+  },
+  "task_count": 14,
+  "tool_calls": 0,
+  "compilations_started": 0,
+  "interactive_calls": 0,
+  "controller_signals": 0,
+  "files": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/OFF-80041f7c/RESULT.json",
+      "sha256": "72dea87415763d82bef6bf6eb96c8668fcd4c9040472da232fecf2d94cbb2eef",
+      "bytes": 9924
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/OFF-80041f7c/server.log",
+      "sha256": "38de5eed652dd9c2938afefacbf21b626772864d01f3797951ccbe08a562d0c5",
+      "bytes": 2494
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/OFF-80041fb4/RESULT.json",
+      "sha256": "4abd69fcf0c895e5dc5b789f31c9f1fc3fdba0e612a1fdac152ee7af0330de44",
+      "bytes": 9924
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/OFF-80041fb4/server.log",
+      "sha256": "38de5eed652dd9c2938afefacbf21b626772864d01f3797951ccbe08a562d0c5",
+      "bytes": 2494
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/OFF-80041fd8/RESULT.json",
+      "sha256": "50a7fffd7d2f8d71cc47783730d04f3d6a6ba54a9fff463d917291b24b89ee3f",
+      "bytes": 9924
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/OFF-80041fd8/server.log",
+      "sha256": "84e17603f811c38852518e3d2227ada4dc6d9bfaffbf5be2b80b3e0b6ca699d1",
+      "bytes": 2494
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/OFF-80042010/RESULT.json",
+      "sha256": "49607b0cf06e60cbe948362cab7876110c456864862d6956e22da1fa4c8c9447",
+      "bytes": 9924
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/OFF-80042010/server.log",
+      "sha256": "b503dc7087455beef6c4a68efef2eda20071c547ea4d3fa61c16572685be002b",
+      "bytes": 2494
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/OFF-80042054/RESULT.json",
+      "sha256": "397820069be18b6b7c8292f7d6255ef82179514cf7275fe40471270a99763171",
+      "bytes": 9924
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/OFF-80042054/server.log",
+      "sha256": "b503dc7087455beef6c4a68efef2eda20071c547ea4d3fa61c16572685be002b",
+      "bytes": 2494
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/OFF-800420b0/RESULT.json",
+      "sha256": "fc6b276e9e54231fa3474d2408b449ed0cc68f79acffd8ba1133a428fc2f1fa2",
+      "bytes": 9924
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/OFF-800420b0/server.log",
+      "sha256": "d5a102b5943ef97572ac6b3cd9aaedef14bed48a4876c42781f617ae45eb49d4",
+      "bytes": 2494
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/ON-80041f58/RESULT.json",
+      "sha256": "a03058118b0eb66b595a75d91ee6ec419696ba0413c87c66bc3b26055b3cab92",
+      "bytes": 10652
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/ON-80041f58/server.log",
+      "sha256": "04bc1504746c4b463eaa63164524c21ff04b7e9feb59fc2346e2410903710deb",
+      "bytes": 2494
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/ON-80041f60/RESULT.json",
+      "sha256": "2f3ad9b3cd63d19eafbf73556c5df2c1ad80e18039f627c8662f5c527fda54c5",
+      "bytes": 10652
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/ON-80041f60/server.log",
+      "sha256": "d5a102b5943ef97572ac6b3cd9aaedef14bed48a4876c42781f617ae45eb49d4",
+      "bytes": 2494
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/ON-80041f7c/RESULT.json",
+      "sha256": "d38158f8f33e52039f0012be33115926bdd4b6ad2cb30ea57e109792ce711b62",
+      "bytes": 10051
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/ON-80041f7c/server.log",
+      "sha256": "c804cd48cd48d6f6fe621e61448ddcbfcf39ca182249f130fd442a2f6462dd14",
+      "bytes": 2494
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/ON-80041fb4/RESULT.json",
+      "sha256": "6f88d88a8c967cd77ae4bce47836726da34c7fd0ef45ff0235dea9879fc93558",
+      "bytes": 10051
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/ON-80041fb4/server.log",
+      "sha256": "c804cd48cd48d6f6fe621e61448ddcbfcf39ca182249f130fd442a2f6462dd14",
+      "bytes": 2494
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/ON-80041fb8/RESULT.json",
+      "sha256": "fcc6fd85d1cc4a5a78bfca02c0bdd4215b42281f8e8f31c2421fb9e9b351dbd8",
+      "bytes": 10652
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/ON-80041fb8/server.log",
+      "sha256": "6b9f4668fd8e40fcb20cd5852b003e3a883b25191f0a2a55fc970c44f1920799",
+      "bytes": 2494
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/ON-80041fc0/RESULT.json",
+      "sha256": "f9e078a543ae29127fc5282114b1d94833b264db239d0f96aa2ede93ef6c680f",
+      "bytes": 10652
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/ON-80041fc0/server.log",
+      "sha256": "700ac84bd51b0ce5737a62c6cb749c804a3038cce823925a69a88e57c19ab576",
+      "bytes": 2494
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/ON-80041fd8/RESULT.json",
+      "sha256": "fae889572c1740b8e083ca583225dc8a5487e4bc191f1c08b29f18318a97e919",
+      "bytes": 10051
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/ON-80041fd8/server.log",
+      "sha256": "28088d33a28d5ddd3d36d6d7dfb20ed8929d34b961e7b43cf27905bb6c622253",
+      "bytes": 2494
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/ON-80042010/RESULT.json",
+      "sha256": "65c8802b1aa5874d57d1cd17f158869292191afb7102a453cfe16713c321601c",
+      "bytes": 10051
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification856/ON-80042010/server.log",
+      "sha256": "28088d33a28d5ddd3d36d6d7dfb20ed8929d34b961e7b43cf27905bb6c622253",
+      "bytes": 2494
+    }
+  ],
+  "batch_stop": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped856/BATCH-STOP.json",
+    "sha256": "505f0020ea70299eb1d7fb30f3fb06f552082ade163ceaefea17d02da9acd364",
+    "bytes": 154
+  },
+  "probe_comment": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6220930546",
+  "cause": "The guard starts systemd-run as a background job without explicit stdin inheritance. The server starts with closed protocol input.",
+  "source_changes": false,
+  "installed_MCP_package_changed": false
+}
