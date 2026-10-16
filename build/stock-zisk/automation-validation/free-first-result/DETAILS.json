@@ -1,0 +1,3547 @@
+{
+  "schema": 1,
+  "status": "corrected-free-result-sealed-once",
+  "frozen_root": "e8131be295b89a1821b3ba760f39e7aad1e8647d",
+  "started_utc": "2026-10-16T05:38:55.848623+00:00",
+  "finished_utc": "2026-10-16T05:43:23.387026+00:00",
+  "block_count": 43,
+  "closed": 0,
+  "residual": 43,
+  "successful_MCP_starts": 43,
+  "accepted_primary_calls": 43,
+  "primary_command": "try zesu_block.",
+  "residual_classes": {
+    "list-witness": 1,
+    "pure-equality": 28,
+    "Iris-pure-condition": 12,
+    "memory-obligation": 2
+  },
+  "rows": [
+    {
+      "entry": "0x80041f38",
+      "predicted_classes": [
+        "store"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "list-witness",
+      "first_goal": "list (bv 8)",
+      "first_conclusion": "list (bv 8)",
+      "groups": {
+        "goals": 12,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "cf2644c5ebcaf45aa285a5ea6bbf4ac7ce611fd23cca1e6662e02c0dea4d94af",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f38/Boundary.v",
+        "sha256": "ee7fd5e7d54add731b42e81d0f49b0ecb051f6e7bfc00331994b8d9572d39698",
+        "bytes": 4275
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f38/Boundary_interactive.v",
+        "sha256": "be48d4619fc7f6a5e54ab6a04711ba3e78bdc354a8e014efb016e6bfe2b35f80",
+        "bytes": 4213
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f38/evidence.json",
+        "sha256": "293f4fdde436a7cfb688ddd9db654a93ea8364bf35fe97b5033628a5c79b6e53",
+        "bytes": 283930
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f38/complete/state_2.json",
+        "sha256": "82f3d75f00f8b494b80b721f9bf1d9190f724546a2460b8f24b099193cc9fd11",
+        "bytes": 688314
+      },
+      "primary_call_wall_seconds": 118.96080376394093,
+      "performance": {
+        "wall_seconds": 126.35038323886693,
+        "peak_mib": 1772.26953125,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2723511
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80041f58",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "65%bv = x13",
+      "first_conclusion": "65%bv = x13",
+      "groups": {
+        "goals": 4,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "7863415758cd20abf1e10857d61b33e443077dfdb1e8ce91fdc000948bb6528d",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f58/Boundary.v",
+        "sha256": "6eb31e1cef8e030787932a1c6c01371b4f9a33d35c7c17a00e0859393165ea9b",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f58/Boundary_interactive.v",
+        "sha256": "d68a978072a5cd576d0057bb4b80fe34f3f8e92424a6c7191c4957070ee913d9",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f58/evidence.json",
+        "sha256": "d3d79e3a935a460d832456ed2837d8834db05bdef36d2669408edc82a89131ec",
+        "bytes": 57711
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f58/complete/state_2.json",
+        "sha256": "86a73af7717267b4788e22498397203f98eba8f5100192ca8abb66e94dac321a",
+        "bytes": 26866
+      },
+      "primary_call_wall_seconds": 17.757578367134556,
+      "performance": {
+        "wall_seconds": 21.671205528080463,
+        "peak_mib": 1128.73828125,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2723495
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80041f60",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "17%bv = x13",
+      "first_conclusion": "17%bv = x13",
+      "groups": {
+        "goals": 4,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "f586418dd2415a7b67a9566ced6c11748d650f4baca8a1fb8095c8cb18945466",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f60/Boundary.v",
+        "sha256": "51f877d8012538c4fc560ffa8d708054c0e8513e62d06d8747391fbb95b1f2ad",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f60/Boundary_interactive.v",
+        "sha256": "81110de5b91d47a831c6f581735ea960bc440cb95a6912821f03d46f414738e6",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f60/evidence.json",
+        "sha256": "748c900aa546105faa703920fbcbdb4f231f2cde7a34f047a4751b3a64406d12",
+        "bytes": 57676
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f60/complete/state_2.json",
+        "sha256": "f2125eea9fb582e251af60c1a90b41b0effc602f87778860b05a37d28bc09e77",
+        "bytes": 26651
+      },
+      "primary_call_wall_seconds": 17.624739062972367,
+      "performance": {
+        "wall_seconds": 24.59123903606087,
+        "peak_mib": 1128.01171875,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2723513
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80041f68",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 9)) 1%bv 0%bv)) 1 = Z_to_bv 64 (freeBufferLength args)",
+      "first_conclusion": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 9)) 1%bv 0%bv)) 1 = Z_to_bv 64 (freeBufferLength args)",
+      "groups": {
+        "goals": 8,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "5e55ceb399ff9ce6bbdc42f6d344566412fbdda27a886f92afcc7bcd9cb79df7",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f68/Boundary.v",
+        "sha256": "653d9cc0f4d57e43ecac3a81a1352e45506af359f215b53e23ae7bf3cd034884",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f68/Boundary_interactive.v",
+        "sha256": "f97bf5edf74092c2316bd29a8ae6e893050d31da3cedcf990352fa7a782ec444",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f68/evidence.json",
+        "sha256": "67929241f7d7dc9f4ea6b36f50d99bcfd727e8ed3a4fe1896a8cc31e97556419",
+        "bytes": 125268
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f68/complete/state_2.json",
+        "sha256": "d7c85aa2e0064c861960567aec17356f13e49260b23ff0919186e512f0aad11b",
+        "bytes": 154236
+      },
+      "primary_call_wall_seconds": 55.26932516298257,
+      "performance": {
+        "wall_seconds": 62.327417189022526,
+        "peak_mib": 1217.8984375,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2723512
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80041f7c",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "Iris-pure-condition",
+      "first_goal": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "first_conclusion": "\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "groups": {
+        "goals": 1,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "506f5c304d73d7aac95055194edac88820a1910738beb8ac96e0d5b71c1717dc",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f7c/Boundary.v",
+        "sha256": "0ec755739976d041710cf2f771b9a5c5d77042888ce7b27c931a5acf3ae29bdc",
+        "bytes": 4115
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f7c/Boundary_interactive.v",
+        "sha256": "a1b8c615e844489139d9c7b4c9029f1b227bb72ded91c7e9ebca25861c2b23ca",
+        "bytes": 4053
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f7c/evidence.json",
+        "sha256": "3d5b330f22cb62f6c824ac121586cc168919e04532f69c773e696dfbf2c68bec",
+        "bytes": 23415
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f7c/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "primary_call_wall_seconds": 5.102103421930224,
+      "performance": {
+        "wall_seconds": 8.83136944193393,
+        "peak_mib": 1045.39453125,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2723494
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80041f80",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "(262144 + 1)%bv = x13",
+      "first_conclusion": "(262144 + 1)%bv = x13",
+      "groups": {
+        "goals": 4,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "fccb228c471c3f8c55af83c067dfac1c9629aa33f4d996fcb35af8d81f94d05f",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f80/Boundary.v",
+        "sha256": "fb0a98d693d538c98a2c59911ac5f0bd40457886a582f59dc2ca6076b8618d2c",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f80/Boundary_interactive.v",
+        "sha256": "125ccc18dc58207223496992e248e8c9a7c0f5cd02524fdd4ed1f38103fae3bb",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f80/evidence.json",
+        "sha256": "3278ad3bfeaa580d5f520db361a77f73e02f35f907c9fcf987fd1232befbbce7",
+        "bytes": 62567
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f80/complete/state_2.json",
+        "sha256": "24d19c2152726f375813cea7641212ba4b682cd4491389fbb03afc6d249e1e2a",
+        "bytes": 32140
+      },
+      "primary_call_wall_seconds": 19.81085034715943,
+      "performance": {
+        "wall_seconds": 26.766718588070944,
+        "peak_mib": 1146.00390625,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2723514
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80041f8c",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "(16384 + 1)%bv = x13",
+      "first_conclusion": "(16384 + 1)%bv = x13",
+      "groups": {
+        "goals": 4,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "61be8614397b043ffa89bd60bb96ba4efe7ee858298481ce0f0216fd6b633692",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f8c/Boundary.v",
+        "sha256": "340b99c7c085331f797b66d1568f80982264cee36d27331f0a8eba9fb16efdc2",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f8c/Boundary_interactive.v",
+        "sha256": "bc1f99c452c64d0f7b4503be97f554270feaa905ec8a1ec2788d5fdd19a3d8f4",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f8c/evidence.json",
+        "sha256": "40911b2d244acbfecb2d9515fd85c5ec35a1058d9b6492e9c2db4627d1f8a729",
+        "bytes": 64084
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f8c/complete/state_2.json",
+        "sha256": "ccd73c29b7ff075174d51d910ad771c978c7545b2fc72ba4da93698161adca1e",
+        "bytes": 32944
+      },
+      "primary_call_wall_seconds": 20.357764304149896,
+      "performance": {
+        "wall_seconds": 23.893046617042273,
+        "peak_mib": 1145.7109375,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2723730
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80041f98",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "(4096 + 1)%bv = x13",
+      "first_conclusion": "(4096 + 1)%bv = x13",
+      "groups": {
+        "goals": 4,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "3686ee611f07c1b7a49b1481a8fba43f8c9a7ef06d232c19f72039cae861c376",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f98/Boundary.v",
+        "sha256": "7f7a0cd5ffcfebf486fcddc5965b6794e8e3f2cfd95c0374be20f5d05707598c",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f98/Boundary_interactive.v",
+        "sha256": "b0d338c403c160f1d9b58c1b43f253152705462b193f3903ad54a3dba39e35a3",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f98/evidence.json",
+        "sha256": "f2323b3e464534a423ae739cf75b64a414cc31be6135ac667d81487da7fa600d",
+        "bytes": 64028
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f98/complete/state_2.json",
+        "sha256": "57bcdadf8da09d47c745d6651571196c46129a1b4ec181fcfb0c4ba63754cc0a",
+        "bytes": 32751
+      },
+      "primary_call_wall_seconds": 20.309660005848855,
+      "performance": {
+        "wall_seconds": 23.71332812285982,
+        "peak_mib": 1144.12890625,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2724036
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80041fa4",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "9%bv = Z_to_bv 64 (freeBufferLength args)",
+      "first_conclusion": "9%bv = Z_to_bv 64 (freeBufferLength args)",
+      "groups": {
+        "goals": 8,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "fb31d7409880c2187113c6d64b01ea9e7f093d39d38a3b345ed0993f0d78a8a8",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fa4/Boundary.v",
+        "sha256": "0cb2843dec81aa0f749f494db1eac8236a49990a3b2b8d2fb046f48d4df754b4",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fa4/Boundary_interactive.v",
+        "sha256": "f563f85a5b42dc118dfc18fa4170a67457412a1725d9ec5ca607d3d602278070",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fa4/evidence.json",
+        "sha256": "a9beaceb98d0ae83ba1e4f72f449267ec04c108cef1a0d6f82caab2096f61395",
+        "bytes": 111327
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fa4/complete/state_2.json",
+        "sha256": "86bc0871030b9a70196977bfd88117d4c3ffb8b08ac219a7cd61a21fb72d7484",
+        "bytes": 129708
+      },
+      "primary_call_wall_seconds": 35.55798713490367,
+      "performance": {
+        "wall_seconds": 39.14059193409048,
+        "peak_mib": 1182.10546875,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2724283
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80041fb4",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "Iris-pure-condition",
+      "first_goal": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "first_conclusion": "\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "groups": {
+        "goals": 1,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "5396938d50f434094891d6964f3fce41d0536dac9bb1491872ee165dbd4f5eaa",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb4/Boundary.v",
+        "sha256": "723bacf62055dcd232034ff884839844ee69355d437a99e247a13395fec7b74e",
+        "bytes": 4115
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb4/Boundary_interactive.v",
+        "sha256": "4e0175b8a1558a96117cfe22dc8fed14bc417d18e58edc86874f53f3190b2d1f",
+        "bytes": 4053
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb4/evidence.json",
+        "sha256": "b1eac0b240ffc429af2cd841d5f2b52f9dd8e17f071294d5ef18fa54dd425531",
+        "bytes": 23415
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb4/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "primary_call_wall_seconds": 5.293034242000431,
+      "performance": {
+        "wall_seconds": 7.796218063915148,
+        "peak_mib": 1050.64453125,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2724474
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80041fb8",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "513%bv = x13",
+      "first_conclusion": "513%bv = x13",
+      "groups": {
+        "goals": 4,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "fd508b918f997f4131b69e0078498b2f3346ead3b1a9f9a96c14bae1e51923d7",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb8/Boundary.v",
+        "sha256": "c9d20ca2d9e16bb6da4f83046400a55640c6dda6f3bea5c112ebeb36666a9425",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb8/Boundary_interactive.v",
+        "sha256": "9fe11632186b70e6a2da67acc9588b59730e9dbbc0511134572e55903bf1eab5",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb8/evidence.json",
+        "sha256": "73cf082b48f39cf2c7ae271d7c6cc6927bf9e5f4cd9e937f9173e75f2b35b4a5",
+        "bytes": 57756
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb8/complete/state_2.json",
+        "sha256": "c4a10c8f342d7583106893973042b71aa5d96304ad011717785810abb0c2b079",
+        "bytes": 27238
+      },
+      "primary_call_wall_seconds": 17.962943226099014,
+      "performance": {
+        "wall_seconds": 21.405873998068273,
+        "peak_mib": 1132.12890625,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2724783
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80041fc0",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "129%bv = x13",
+      "first_conclusion": "129%bv = x13",
+      "groups": {
+        "goals": 4,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "07dff9e4f9f03b33cb1d93027c46d176d05aaf5814507c2bf857c8a9b7c755a8",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc0/Boundary.v",
+        "sha256": "3d33a26bd15829142549d16dbf3bbe724cca9892e1629f59364b106f24db6db9",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc0/Boundary_interactive.v",
+        "sha256": "996398a298d8ba48dcb41190b99b64e13178d3496c0f892957c62d5368129978",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc0/evidence.json",
+        "sha256": "29158382432513f52cb2b1f441c23559ff4a46016b7c23fac1c1629a19a79aea",
+        "bytes": 57739
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc0/complete/state_2.json",
+        "sha256": "35770f2f5bf3b440956f0f84088d81f8b7b51bdd1d6d89418e4daf508a742848",
+        "bytes": 27085
+      },
+      "primary_call_wall_seconds": 17.537762142019346,
+      "performance": {
+        "wall_seconds": 19.953313522972167,
+        "peak_mib": 1128.24609375,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2724941
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80041fc8",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "4%bv = Z_to_bv 64 (freeBufferLength args)",
+      "first_conclusion": "4%bv = Z_to_bv 64 (freeBufferLength args)",
+      "groups": {
+        "goals": 8,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "146b99febc903b3a4459dde1868334083673c8b33003124395959327b0e9564b",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc8/Boundary.v",
+        "sha256": "0edbd78da79cdce7552ea47ce19a7cecbba70a4f1781050b8fdc3a7bb5e8e98a",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc8/Boundary_interactive.v",
+        "sha256": "90219225a22776a5bce74faa7b4573b4b5a66f726f149ba2ade7b92df0fb0ead",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc8/evidence.json",
+        "sha256": "d1b8952a6a252c478e903abe1924b86a88b476d2f7fed260ca7f43516ef8e065",
+        "bytes": 111286
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc8/complete/state_2.json",
+        "sha256": "213dc2e62ab82960e0d25a9708918ce30acfca316755bb521041a79fb7725350",
+        "bytes": 129224
+      },
+      "primary_call_wall_seconds": 38.04755110293627,
+      "performance": {
+        "wall_seconds": 41.55361450300552,
+        "peak_mib": 1181.87890625,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2725247
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80041fd8",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "Iris-pure-condition",
+      "first_goal": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "first_conclusion": "\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "groups": {
+        "goals": 1,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "43e5a9ddf4acba8280b2701d8c5e11cc6026d6fa130b420f8c61a0836234c404",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fd8/Boundary.v",
+        "sha256": "b74892fda981525dc1841dd4dcbd60a282a395ba29654e5f9498b589776ca01f",
+        "bytes": 4115
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fd8/Boundary_interactive.v",
+        "sha256": "f1f7d26977e84368c8e1654ed21e260170c6101da12a46b77c425f1a21d934a1",
+        "bytes": 4053
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fd8/evidence.json",
+        "sha256": "ed2ad3b55d794c04cac3dcb33be6190a2cd41b1a0a03444c7f644f9ece286fdd",
+        "bytes": 23418
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fd8/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "primary_call_wall_seconds": 5.226956768892705,
+      "performance": {
+        "wall_seconds": 8.714452321873978,
+        "peak_mib": 1046.390625,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2725630
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80041fdc",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "(4194304 + 1)%bv = x13",
+      "first_conclusion": "(4194304 + 1)%bv = x13",
+      "groups": {
+        "goals": 4,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "5fdfa6a562f960ca528fbf6b448b8a2bc4b05c56107209b7154d22d009d579a6",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fdc/Boundary.v",
+        "sha256": "3dd5da22a940a84a1350dc1ff30b90fa8a4472242f5d9b6ebffd72a9f3b7702e",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fdc/Boundary_interactive.v",
+        "sha256": "dff384aadf6b899cb9c662eba58ec31793e485a1f363a1419f1311a9027ef0d1",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fdc/evidence.json",
+        "sha256": "89210f126de66d3f6dd2534e26d8ced678669d2f0b03e0cfd195ffd7b72a16f0",
+        "bytes": 62636
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fdc/complete/state_2.json",
+        "sha256": "000bd689f6cf6777b67c72749ed1338e2d0ad7f642d83f82090ee4cee438e6c1",
+        "bytes": 32505
+      },
+      "primary_call_wall_seconds": 19.352742180926725,
+      "performance": {
+        "wall_seconds": 22.553980263182893,
+        "peak_mib": 1149.1953125,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2725655
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80041fe8",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "(1048576 + 1)%bv = x13",
+      "first_conclusion": "(1048576 + 1)%bv = x13",
+      "groups": {
+        "goals": 4,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "72722cb00c88d32dd1401cdcd84a6e516ee6a265575d2309639ec0a578cd8a7c",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fe8/Boundary.v",
+        "sha256": "1810d6e06cd895f47d90407f06b392fd6cfe35a104614fb9118b324fce329cdb",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fe8/Boundary_interactive.v",
+        "sha256": "3b645507bdf49631182fa85277b13737c223ecf85011b014c678c06a00f84fb0",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fe8/evidence.json",
+        "sha256": "1d698e72803bf5e3ab070561b2ef051122de954b4552f8faf9a9efaf69176402",
+        "bytes": 64165
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fe8/complete/state_2.json",
+        "sha256": "dfa28de0f2d90553fce94dfc6c4d30efd103d0bb02da7d2742fd54eeb925219a",
+        "bytes": 33556
+      },
+      "primary_call_wall_seconds": 20.756259257905185,
+      "performance": {
+        "wall_seconds": 24.1636200749781,
+        "peak_mib": 1143.3359375,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2726240
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80041ff4",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (524288 + 1)))) 1%bv 0%bv)) 17 =\nZ_to_bv 64 (freeBufferLength args)",
+      "first_conclusion": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (524288 + 1)))) 1%bv 0%bv)) 17 =\nZ_to_bv 64 (freeBufferLength args)",
+      "groups": {
+        "goals": 8,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "410d1194a86f9ae6efc535069a40486ba7c2096714b2809f5b7ef457bb8b2222",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041ff4/Boundary.v",
+        "sha256": "c1729e2c769be45f204266cbe94ac368e7caa34c558817acc736e303d838db84",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041ff4/Boundary_interactive.v",
+        "sha256": "b9e69d89066758cbce2087dc67b10c497628bd2cff0b63a3b1c7ab60c7832f74",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041ff4/evidence.json",
+        "sha256": "a3b7ec3431fa49965770c393abe1fa9d07c4169600e6c69553365c8e49a5e02a",
+        "bytes": 147788
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041ff4/complete/state_2.json",
+        "sha256": "d3b986cfee5f003955b5e595fea2df6aff169dcb79e8388a754c666e9c13f275",
+        "bytes": 183626
+      },
+      "primary_call_wall_seconds": 72.0329223209992,
+      "performance": {
+        "wall_seconds": 75.22951567987911,
+        "peak_mib": 1288.26171875,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2726256
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80042010",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "Iris-pure-condition",
+      "first_goal": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "first_conclusion": "\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "groups": {
+        "goals": 1,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "a705aff62e81120f833629664f33146f7436db7412d0f73bb08cacd76c3d7e6c",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042010/Boundary.v",
+        "sha256": "78d0bfe18102c4a6c1a30e2b3ad56d1b83eda71e80d10daf6fa03e279dd69090",
+        "bytes": 4115
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042010/Boundary_interactive.v",
+        "sha256": "70625c6b2ace021982f0bd6d501bef305bffa9d93cde27590accbf851178041d",
+        "bytes": 4053
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042010/evidence.json",
+        "sha256": "0eac2fc78007006c7b2593f11ad036a1c663387cb1c8ea24e7874101de3660f8",
+        "bytes": 23423
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042010/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "primary_call_wall_seconds": 5.282611489994451,
+      "performance": {
+        "wall_seconds": 7.630153176141903,
+        "peak_mib": 1045.62890625,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2726324
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80042014",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 33)) 1%bv 0%bv)) 3 = Z_to_bv 64 (freeBufferLength args)",
+      "first_conclusion": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 33)) 1%bv 0%bv)) 3 = Z_to_bv 64 (freeBufferLength args)",
+      "groups": {
+        "goals": 8,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "6ac0ce2b5cbf318ed15858926a542f668ab1427190b943656dc2d28acd014d77",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042014/Boundary.v",
+        "sha256": "fb9f09ac3a08ef3c264be300fd21313b6bc91bbd76fb35b238a1444e1515c2ff",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042014/Boundary_interactive.v",
+        "sha256": "bf5c424cf6e2c582740db53f73dc605b4827bfd0f36d6ac0b0f7da9c27616a0c",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042014/evidence.json",
+        "sha256": "867a8e59439d6d9684f555ae39dc974b149ada12b57252db92bfc6026c4c00e9",
+        "bytes": 125321
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042014/complete/state_2.json",
+        "sha256": "8a8cd56acead63c5b8955561d08a8cb1764daa4115a08fe596bbef3e115ca0bd",
+        "bytes": 154856
+      },
+      "primary_call_wall_seconds": 55.588460257975385,
+      "performance": {
+        "wall_seconds": 59.16195139591582,
+        "peak_mib": 1220.7890625,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2726628
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80042028",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "Iris-pure-condition",
+      "first_goal": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "first_conclusion": "\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "groups": {
+        "goals": 1,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "39ce86e08cd1eaa802602ba9287c23f51dbfd3c636eea65f99744b679c31dad4",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042028/Boundary.v",
+        "sha256": "f5c9633fe4bbe66d96814eef20facd945e223bb1a67b4b4aa2bf12f7be08bc6e",
+        "bytes": 4115
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042028/Boundary_interactive.v",
+        "sha256": "80a6ddfd3e91422030e05a187ef2a83ca66e637236d4ecc8b1dcffe82b26a38d",
+        "bytes": 4053
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042028/evidence.json",
+        "sha256": "b9bfd3ee482bbebe110a214d278000b9d3225e10d9187776a037dfea03cb256a",
+        "bytes": 23415
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042028/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "primary_call_wall_seconds": 5.308222952065989,
+      "performance": {
+        "wall_seconds": 8.66068805498071,
+        "peak_mib": 1047.1640625,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2726874
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x8004202c",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "(65536 + 1)%bv = x13",
+      "first_conclusion": "(65536 + 1)%bv = x13",
+      "groups": {
+        "goals": 4,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "f58ba28d10bea126e97b8931b5271046ee04762b5585b3993166edd91b386cdf",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004202c/Boundary.v",
+        "sha256": "d2fa0a830506b5a8f8f115d66b799589ee3ef8d6847ac6f37e1d9e07f88613cb",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004202c/Boundary_interactive.v",
+        "sha256": "28549893bddc93938c055e71cac8d306bf3025a46ea4592a133789cebfa794f6",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004202c/evidence.json",
+        "sha256": "d5de917250538ce34d86a3e2a797669d031a6d022132c662d991f994ff390107",
+        "bytes": 64099
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004202c/complete/state_2.json",
+        "sha256": "265f5c0f2b6f0da5cc537f301f17ce3120c1606c493e0756a29678d0475a88b1",
+        "bytes": 33104
+      },
+      "primary_call_wall_seconds": 20.327240918995813,
+      "performance": {
+        "wall_seconds": 23.89138977904804,
+        "peak_mib": 1145.9296875,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2727445
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80042038",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (32768 + 1)))) 1%bv 0%bv)) 13 =\nZ_to_bv 64 (freeBufferLength args)",
+      "first_conclusion": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (32768 + 1)))) 1%bv 0%bv)) 13 =\nZ_to_bv 64 (freeBufferLength args)",
+      "groups": {
+        "goals": 8,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "d722b3e1ccf3f01ed9cece358ed6b68dada380ca55e0dcb5ce118773e1ccbe2e",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042038/Boundary.v",
+        "sha256": "fcb9f416217f505655def233e5d6c4f0119dda5f856365281f4be54334050097",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042038/Boundary_interactive.v",
+        "sha256": "1509ef0ed4130fba2a26ecc8b0da6c41c9d304eca4d79ffaba1fe75adb247199",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042038/evidence.json",
+        "sha256": "ebf4918c6f1fc5ceffd1909ac4509a008ee125706cf2e890c0e21b4f8b9c96d8",
+        "bytes": 147730
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042038/complete/state_2.json",
+        "sha256": "ddd58177c3d865dde377ca30b6ec85ab4d6a6298113cad05124d8cfe2c25e298",
+        "bytes": 182730
+      },
+      "primary_call_wall_seconds": 71.41442728391849,
+      "performance": {
+        "wall_seconds": 74.51049116882496,
+        "peak_mib": 1289.1015625,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2727446
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80042054",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "Iris-pure-condition",
+      "first_goal": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "first_conclusion": "\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "groups": {
+        "goals": 1,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "ce9ba2e2890aa0057e2e10bcbc79a67202f6ddce754e431775b5dd43a9ae6120",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042054/Boundary.v",
+        "sha256": "979f8c4ce8f0184e7ef53ab2ab662dd75db08872134cf517bc36e7c5e5ec32a0",
+        "bytes": 4115
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042054/Boundary_interactive.v",
+        "sha256": "b682ea32a261473bb7b92d4f390d5a7f804bc3aca66c2985270c861a62b2adba",
+        "bytes": 4053
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042054/evidence.json",
+        "sha256": "fcc63be62c6d003e8930d7ab81089def1eb074c04ffd93ff41bd4108dca5cf57",
+        "bytes": 23395
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042054/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "primary_call_wall_seconds": 5.383327302988619,
+      "performance": {
+        "wall_seconds": 12.229110258165747,
+        "peak_mib": 1043.32421875,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2727530
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80042058",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "(8 - bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 1025)) 1 0))%bv = Z_to_bv 64 (freeBufferLength args)",
+      "first_conclusion": "(8 - bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 1025)) 1 0))%bv = Z_to_bv 64 (freeBufferLength args)",
+      "groups": {
+        "goals": 8,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "7d91ec6c8b80f35386f5109a78962ea572bd09d06cc1df5edbee8cc48323263b",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042058/Boundary.v",
+        "sha256": "d8b184ec500959e5a8ed07bda581abce7d4014c329903196ec9835779489413d",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042058/Boundary_interactive.v",
+        "sha256": "71fc450537e58fa1c52a7420fdac47a8a9ee9f778499da2a21beb797ef92c0c7",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042058/evidence.json",
+        "sha256": "9c4aac876bcac96777d665b28f39d24690680e2b3a6e7d9eea8ea02c00a94468",
+        "bytes": 135957
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042058/complete/state_2.json",
+        "sha256": "4336ac1750545982ab1ec974673447e8ea5bc750ea891716ecf7b6b842235a05",
+        "bytes": 164708
+      },
+      "primary_call_wall_seconds": 63.45935313217342,
+      "performance": {
+        "wall_seconds": 67.14159253099933,
+        "peak_mib": 1256.81640625,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2727777
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80042070",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "Iris-pure-condition",
+      "first_goal": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "first_conclusion": "\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "groups": {
+        "goals": 1,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "39f4c933ac20adfd9c8d0936d0c542089c3bd4205fb7952168689ace67d701c2",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042070/Boundary.v",
+        "sha256": "b33c96a02f82f80e0d7c961fc8d93db4d12dfc84eb925fa838f30e1bffe7e627",
+        "bytes": 4115
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042070/Boundary_interactive.v",
+        "sha256": "22a0375ea3fcb215d0346636d04b0b2d9372948b5c738ca46e6db00610875e4e",
+        "bytes": 4053
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042070/evidence.json",
+        "sha256": "660343b4c7a01a254705bc89a48b915a857f7d1250c8dcd5976ae66482bcfaba",
+        "bytes": 23412
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042070/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "primary_call_wall_seconds": 5.27805958292447,
+      "performance": {
+        "wall_seconds": 8.575102207949385,
+        "peak_mib": 1049.51953125,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2728058
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80042074",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "(8388608 + 1)%bv = x13",
+      "first_conclusion": "(8388608 + 1)%bv = x13",
+      "groups": {
+        "goals": 4,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "afbeceb59a5e1723f59799c142f21156a593db1ed0ff951bb3960b1313b8aa77",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042074/Boundary.v",
+        "sha256": "379c1b13ecf6d73836672e62cc0f6562bae846f1d6425f6dfb6223205fae2c52",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042074/Boundary_interactive.v",
+        "sha256": "2fa6b20e07ba0b01645e6146011856e6947c1e57c8e646b1ddd18a5c65a51a2b",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042074/evidence.json",
+        "sha256": "f5066950292dbcd3dd0e0cf88ed4075ab536a9821292deea9c0757f585cdceb0",
+        "bytes": 62644
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042074/complete/state_2.json",
+        "sha256": "e24b5e880046c23bb28a1a50d5980a8a9af06cc43282544406a321095389ec17",
+        "bytes": 32650
+      },
+      "primary_call_wall_seconds": 19.54429174796678,
+      "performance": {
+        "wall_seconds": 22.906745590968058,
+        "peak_mib": 1146.9765625,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2728341
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80042080",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "20%bv = Z_to_bv 64 (freeBufferLength args)",
+      "first_conclusion": "20%bv = Z_to_bv 64 (freeBufferLength args)",
+      "groups": {
+        "goals": 8,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "4aab31b34bd607df5e48d6e74acaa40c3d8bc27286fa6d6364a77ff03f2b8e89",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042080/Boundary.v",
+        "sha256": "38e2aef424a2816436b5308d64a715e8023bf93d050c2523568a0d2c952542a1",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042080/Boundary_interactive.v",
+        "sha256": "53790a38160cdc251233c0eca453c2274109d37925444d0ca0fda1b0be6abae9",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042080/evidence.json",
+        "sha256": "a37aa4c620d11bdebb5ceea0d09727eb7355bf98e46edd241ba9ee76bec14a4d",
+        "bytes": 111449
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042080/complete/state_2.json",
+        "sha256": "16f18ba325c09c1f3e8465abb5b21ed41289dad9506236513fbd9b538eccefd5",
+        "bytes": 130714
+      },
+      "primary_call_wall_seconds": 36.043046607170254,
+      "performance": {
+        "wall_seconds": 39.53556813299656,
+        "peak_mib": 1188.5625,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2728830
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80042090",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "Iris-pure-condition",
+      "first_goal": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "first_conclusion": "\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "groups": {
+        "goals": 1,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "5214c0cbf1f98503e4d72a369d8732152bdea95482d06639b9d3b39439b8264d",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042090/Boundary.v",
+        "sha256": "5477644ea9d4511c898341db33e399d0a3c9e4e8e3d4b139ac8b96e0902fa08f",
+        "bytes": 4115
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042090/Boundary_interactive.v",
+        "sha256": "4d7828591ebe724b6b839a1a4ad01c33343b96694f55203219319847f9415789",
+        "bytes": 4053
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042090/evidence.json",
+        "sha256": "53034f44d7259b853b6e68335e97946724599537dd15e581a1cfb6bbc852ba26",
+        "bytes": 23419
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042090/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "primary_call_wall_seconds": 5.230508781038225,
+      "performance": {
+        "wall_seconds": 8.621835011988878,
+        "peak_mib": 1043.58984375,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2729027
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80042094",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (8192 + 1)))) 1%bv 0%bv)) 11 =\nZ_to_bv 64 (freeBufferLength args)",
+      "first_conclusion": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (8192 + 1)))) 1%bv 0%bv)) 11 =\nZ_to_bv 64 (freeBufferLength args)",
+      "groups": {
+        "goals": 8,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "70169f1c4297866580c70ecdb446845531987aae4144e62bfb9bc339e7e45133",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042094/Boundary.v",
+        "sha256": "7277c3512eeb0cb0cb8562a0610a8a1d5809519f3196fd01f6471c3e9a9c091c",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042094/Boundary_interactive.v",
+        "sha256": "c2b765d32ac669bbba51253d1179cb658056fd55309d18c77fc7eff5c53dfb35",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042094/evidence.json",
+        "sha256": "00350a05f0fb07ed339b4a389c41b53ce1a8444bdfd98bad8eacd460a7de6c0a",
+        "bytes": 147619
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042094/complete/state_2.json",
+        "sha256": "c2645da171f3f2615ad82ce6037c9558ba9bf43a7a34f1e956558c6e8ede9aa0",
+        "bytes": 182062
+      },
+      "primary_call_wall_seconds": 71.0408908110112,
+      "performance": {
+        "wall_seconds": 74.68813792010769,
+        "peak_mib": 1291.55078125,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2729456
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x800420b0",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "Iris-pure-condition",
+      "first_goal": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "first_conclusion": "\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "groups": {
+        "goals": 1,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "52e972771d22152d28c538adf9871b414e1ff321df061848e1e627781a722701",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b0/Boundary.v",
+        "sha256": "cfaa7382f4da59590a2226aa38242ce2ff1e321a65eb74cdb90dd5b0e5607b4b",
+        "bytes": 4115
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b0/Boundary_interactive.v",
+        "sha256": "1a6fa3e3b440b631bcc8a122259931d1464b8aed9792362682495aa8c1520f00",
+        "bytes": 4053
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b0/evidence.json",
+        "sha256": "0b8d722de0e19bd2a322f41410372801e7a5a03087740d9318d6af66d0b13ef9",
+        "bytes": 23422
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b0/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "primary_call_wall_seconds": 5.247867971891537,
+      "performance": {
+        "wall_seconds": 7.5902711329981685,
+        "peak_mib": 1044.8203125,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2729465
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x800420b4",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "(6 - bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 257)) 1 0))%bv = Z_to_bv 64 (freeBufferLength args)",
+      "first_conclusion": "(6 - bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 257)) 1 0))%bv = Z_to_bv 64 (freeBufferLength args)",
+      "groups": {
+        "goals": 8,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "eefc8b4d59ab5ef2267e9aa8d42d97bdec7c5c14823ebafb6457c04d2e8e6e4c",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b4/Boundary.v",
+        "sha256": "9041a68bef74a3c640985131902fcb577c481709b86b243e8438f2df8b9855ff",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b4/Boundary_interactive.v",
+        "sha256": "ce38655fa908cc66ae319da5518b3d8b4e4f7c8e7c47f4ee654f3ead8e75f76c",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b4/evidence.json",
+        "sha256": "099264f487e17e19be1b5c6253d9393e8684afa65bf01736546b939ab865bd4e",
+        "bytes": 135915
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b4/complete/state_2.json",
+        "sha256": "04682cc852ccfacbf51243827d5e21cc9d3fc613ac6a34996e90751d63c8033a",
+        "bytes": 164228
+      },
+      "primary_call_wall_seconds": 63.9448306041304,
+      "performance": {
+        "wall_seconds": 67.48765509901568,
+        "peak_mib": 1255.83984375,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2729665
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x800420cc",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "Iris-pure-condition",
+      "first_goal": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "first_conclusion": "\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "groups": {
+        "goals": 1,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "f86c72f7b261b74d0637ee1227dbbd6ef5ca0e72e0f96fc8a44b11a7864503ac",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420cc/Boundary.v",
+        "sha256": "f79e7f2c4b87974f6f3feb035cc98db96b6a1f8aaa8d35afe9476fe9d6e24ea2",
+        "bytes": 4115
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420cc/Boundary_interactive.v",
+        "sha256": "21c9c151419745b42ebf2f72a1f049d4e477e0e2f6a416a91f30820820101c67",
+        "bytes": 4053
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420cc/evidence.json",
+        "sha256": "7a87112212188bdd21e7c8157ab7f0f89cc97ce93b3d87ffe9e29db26001d2a3",
+        "bytes": 23405
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420cc/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "primary_call_wall_seconds": 5.397910919971764,
+      "performance": {
+        "wall_seconds": 8.775183909107,
+        "peak_mib": 1047.54296875,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2729916
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x800420d0",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (2097152 + 1)))) 1%bv 0%bv)) 19 =\nZ_to_bv 64 (freeBufferLength args)",
+      "first_conclusion": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (2097152 + 1)))) 1%bv 0%bv)) 19 =\nZ_to_bv 64 (freeBufferLength args)",
+      "groups": {
+        "goals": 8,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "04712df18e7b9588180d62a4e43b52c9ca9d592312f34f5a378c4ccee1564207",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420d0/Boundary.v",
+        "sha256": "89a7f4df1ca039b71ba7e8bbc5467a550898070c83094b0a092dbeb670f19055",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420d0/Boundary_interactive.v",
+        "sha256": "11c5df1fd0509c0f8774c4051c263e6a6be98e972ffb8b819423b10c2244f854",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420d0/evidence.json",
+        "sha256": "8b53c07f4192a6be096bd1f0c3aa3a0267bab06f8e62280a451f667ad103ff68",
+        "bytes": 147882
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420d0/complete/state_2.json",
+        "sha256": "7b6c99e0144126198d390bb15b9aaccb2176b61a77ad453871eeddc16f17eac9",
+        "bytes": 184070
+      },
+      "primary_call_wall_seconds": 71.82112481817603,
+      "performance": {
+        "wall_seconds": 75.45411964482628,
+        "peak_mib": 1282.34765625,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2730169
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x800420ec",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "Iris-pure-condition",
+      "first_goal": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "first_conclusion": "\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "groups": {
+        "goals": 1,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "76f319bdf0f210ae31a047f324f53133aa2e906007491910697c2cb5a0d7bdfb",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420ec/Boundary.v",
+        "sha256": "90581c124d798fbd50f137f9ef0b8f58b1b021dcd392f370dfe5182ab72bc03b",
+        "bytes": 4115
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420ec/Boundary_interactive.v",
+        "sha256": "e8c46aa170a8d58c9f531d2f089202862cd310f361197d8fc27d986ac1f9f4c2",
+        "bytes": 4053
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420ec/evidence.json",
+        "sha256": "52badb3a090af35c94b0eb006f66c7641c68ba588206f389f000f7aac6d5536b",
+        "bytes": 23408
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420ec/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "primary_call_wall_seconds": 5.243911171797663,
+      "performance": {
+        "wall_seconds": 8.50874813995324,
+        "peak_mib": 1047.578125,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2730400
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x800420f0",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (131072 + 1)))) 1%bv 0%bv)) 15 =\nZ_to_bv 64 (freeBufferLength args)",
+      "first_conclusion": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (131072 + 1)))) 1%bv 0%bv)) 15 =\nZ_to_bv 64 (freeBufferLength args)",
+      "groups": {
+        "goals": 8,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "0b5a3adaae16e234f369cd173d9e72d3607385b9709616c4acee3e8d34c93af8",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420f0/Boundary.v",
+        "sha256": "15939b7499f6b79bc2ea61358404c14210f911e34c3ff51576c7d774582004f9",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420f0/Boundary_interactive.v",
+        "sha256": "b7ea32258c58b17efae8b405ddc0e3a3e12d02ec83175cf1a6df4236b50bc69b",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420f0/evidence.json",
+        "sha256": "1419fd92e43b6aa3e13e9fd6c4270cb91736d58688de2106a85e0a5c82a328a6",
+        "bytes": 147766
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420f0/complete/state_2.json",
+        "sha256": "8a1cd47644cdaf377f1dd4337c906ac31db0019e2548a44a500040bca9fb8f0e",
+        "bytes": 183150
+      },
+      "primary_call_wall_seconds": 71.41651953407563,
+      "performance": {
+        "wall_seconds": 75.10450912313536,
+        "peak_mib": 1287.15625,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2730791
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x8004210c",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "Iris-pure-condition",
+      "first_goal": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "first_conclusion": "\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "groups": {
+        "goals": 1,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "57c87c9e033d6a5016819cf605a37d6fe6ffaa2b707a27ebd87a371b3371e250",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004210c/Boundary.v",
+        "sha256": "1b22bdbd52be0d0fbf6960491d999c6490edffd8c1085419899e21eff0989035",
+        "bytes": 4115
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004210c/Boundary_interactive.v",
+        "sha256": "13c2313d5ba2b1088038d619a916308717803ca9a101f7b35305ae2637d5c4e8",
+        "bytes": 4053
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004210c/evidence.json",
+        "sha256": "9f2680cd2c48efc5dde966e84cb5821a90444c7ac63f5bb635cefd9b7c4210e5",
+        "bytes": 23427
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004210c/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "primary_call_wall_seconds": 5.311715591000393,
+      "performance": {
+        "wall_seconds": 8.334276817040518,
+        "peak_mib": 1045.14453125,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2730804
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80042110",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "(22 - bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (16777216 + 1)))) 1 0))%bv =\nZ_to_bv 64 (freeBufferLength args)",
+      "first_conclusion": "(22 - bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (16777216 + 1)))) 1 0))%bv =\nZ_to_bv 64 (freeBufferLength args)",
+      "groups": {
+        "goals": 8,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "0be7d441f779d3c9076324ddc5fb206d3a49e8824a8dd93118ab317c491c5c6a",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042110/Boundary.v",
+        "sha256": "5c3464d7b35a30e50c07a575fdaf5a5be30969aacd722353faf39e2de6c93d00",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042110/Boundary_interactive.v",
+        "sha256": "684b1de524c0e4d961436bb9a315b35065a08970d140c0d077dfce05853cbeba",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042110/evidence.json",
+        "sha256": "75d71c2b2a8c74b5718db5aeb96dc12cb1e0a696cd4cfebfec930b821522f822",
+        "bytes": 155545
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042110/complete/state_2.json",
+        "sha256": "dec26e9a8587111dd519b0c1a36b2cb42cc1a9fa1fcb5c57ea157805f2bdacdd",
+        "bytes": 191690
+      },
+      "primary_call_wall_seconds": 48.88087076600641,
+      "performance": {
+        "wall_seconds": 52.44342666794546,
+        "peak_mib": 1316.08984375,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2731000
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80042130",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "freeAlignmentWord args = x13",
+      "first_conclusion": "freeAlignmentWord args = x13",
+      "groups": {
+        "goals": 2,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "5e4221f7a0f4de9c4b36127dc8883783f3b7bd52ef71e805966144f5811bdf55",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042130/Boundary.v",
+        "sha256": "f61e8366817a67b49430818919507158db8195c9c126d89099547e041fec1ea1",
+        "bytes": 4115
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042130/Boundary_interactive.v",
+        "sha256": "b915d85e0326a435470376b2310fba5ff5f536ff188ae88b4211cdb5b92fc22c",
+        "bytes": 4053
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042130/evidence.json",
+        "sha256": "e72d0cf70bc2d5f4b0c6e6f1a026ed2d62bd1d3c515d6e0da688d563dbcd4eeb",
+        "bytes": 30610
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042130/complete/state_2.json",
+        "sha256": "40d5f1432f1f240c2ac95f3516773726121f8cb41c2943f8866cc29c3ddebf83",
+        "bytes": 8096
+      },
+      "primary_call_wall_seconds": 3.1059851069003344,
+      "performance": {
+        "wall_seconds": 6.59887115098536,
+        "peak_mib": 1022.7578125,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2731209
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80042134",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "3%bv = freeAlignmentWord args",
+      "first_conclusion": "3%bv = freeAlignmentWord args",
+      "groups": {
+        "goals": 4,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "82df60c448bda10688375a7a28a85dfee4cfc34170e163203a602f2c13a48c2a",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042134/Boundary.v",
+        "sha256": "a0f3fc1ff52e6c7d798cf23d35cfcf8a80fef4e0d51be98752a7048265556216",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042134/Boundary_interactive.v",
+        "sha256": "9587802865f619945ad9baea355e369cc669236e07e6d2d6e16cdf88ea01364e",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042134/evidence.json",
+        "sha256": "3a661b1f1b74f88a2016a0710c6105375e2a1446f298e840a9d8eac24506b0f2",
+        "bytes": 67021
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042134/complete/state_2.json",
+        "sha256": "3f5f7ee57c7be2ec82528c866b177d82be0ccc9c2d73c49378af450d090a12a4",
+        "bytes": 37292
+      },
+      "primary_call_wall_seconds": 21.86197200510651,
+      "performance": {
+        "wall_seconds": 25.369404198834673,
+        "peak_mib": 1133.6875,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2731506
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x8004213c",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "22%bv = Z_to_bv 64 (freeLog2Alignment args)",
+      "first_conclusion": "22%bv = Z_to_bv 64 (freeLog2Alignment args)",
+      "groups": {
+        "goals": 4,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "ce571c507404bfcb23926f489d1e83a192aebe1f8d9d48e2dc8db7fb0d2d0adf",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004213c/Boundary.v",
+        "sha256": "73cc0eedefc937ea6b7e61e3a94a4adf4c5f16e38f1dc67f97f0695f952a1365",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004213c/Boundary_interactive.v",
+        "sha256": "94165533fc110d44cc54a3f9def73eb65cda294facbdfc1211957b33282e16b8",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004213c/evidence.json",
+        "sha256": "b8d12b0db1cccab95c90bc6270f464084e74e015a31975f7b07dea1d44d697a3",
+        "bytes": 51240
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004213c/complete/state_2.json",
+        "sha256": "6275b1799d60f00a3ec8d9ac2189e236e2fe3448946c6695a62d89b80c0c9f85",
+        "bytes": 22294
+      },
+      "primary_call_wall_seconds": 12.607991009950638,
+      "performance": {
+        "wall_seconds": 15.98587919282727,
+        "peak_mib": 1126.6640625,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2731930
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80042144",
+      "predicted_classes": [
+        "return"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "memory-obligation",
+      "first_goal": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n_ : \"x1\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeReturnAddress args))\n_ : \"x8\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeStackPointer args))\n_ : \"x10\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 22)\n_ : \"x11\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeBufferPointer args))\n_ : \"x12\" \u21a6\u1d63 RVal_Bits x12\n_ : \"x13\" \u21a6\u1d63 RVal_Bits x13\n_ : \"x14\" \u21a6\u1d63 RVal_Bits x14\n_ : freeBufferPointer args \u21a6\u2098\u2217 freeBeforeBuffer args\n_ : freeListsPointer \u21a6\u2098\u2217 freeBeforeLists args\n_ : (freeStackPointer args - freeStackBytes) \u21a6\u2098\u2217 frameBytes\n_ : instr_pre (freeReturnAddress args)\n      (\u2203 bufferBytes listBytes : list evm_rlp_types.byte, freeBufferPointer args \u21a6\u2098\u2217 bufferBytes \u2217 freeListsPointer \u21a6\u2098\u2217 listBytes \u2217\n         \u231cfreeAllowsAt (freeReturnAddress args) args {| freeAfterBuffer := bufferBytes; freeAfterLists := listBytes |}\u231d \u2217 freeExitRegisterResources args)\n_ : \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2147754308)\n_ : \"x2\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeStackPointer args - freeStackBytes))\n_ : reg_col zesu_ram_sys_regs\n--------------------------------------\u2217\nfind_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8)))\n  (\u03bb mk : mem_mapsto_kind,\n     match mk with\n     | MKMapsTo n' vmem => \u2203 Heq : 64%N = n', \u231ceq_rect 64%N bv n1 n' Heq = vmem\u231d -\u2217 bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) \u21a6\u2098 vmem -\u2217 WPasm HIDDEN\n     | MKArray n' a' values =>\n         if (n' =? 64)%N\n         then \u231c(bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) - a') `mod` 8 = 0\u231d \u2217\n         \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) - a') `div` 8\u231d \u2217 \u231c(i < length values)%nat\u231d \u2217\n           \u2203 Heq : 64%N = n', \u2200 vmem : bv n', \u231cvalues !! i = Some vmem\u231d -\u2217 \u231ceq_rect 64%N bv n1 n' Heq = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN\n         else \u231cn' = 8%N\u231d \u2217\n         \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) - a'\u231d \u2217 \u231c(i + N.to_nat 8 <= length values)%nat\u231d \u2217\n           \u2200 vmem : bv 64, \u231cvmem = Z_to_bv 64 (little_endian_to_bv n' (take (N.to_nat 8) (drop i values)))\u231d -\u2217 \u231cn1 = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN\n     | MKUninit _ _ => False\n     | MKMMIO a' length => \u231ca' \u2264 bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8)\u231d \u2217 \u231cbv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) + 8 \u2264 a' + length\u231d \u2217\n         \u2203 Pks Pks' : spec, spec_trace Pks \u2217 \u231cscons (SReadMem (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) n1) Pks' \u2286 Pks\u231d \u2217 (spec_trace Pks' -\u2217 WPasm HIDDEN)\n     end)",
+      "first_conclusion": "find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8)))\n  (\u03bb mk : mem_mapsto_kind,\n     match mk with\n     | MKMapsTo n' vmem => \u2203 Heq : 64%N = n', \u231ceq_rect 64%N bv n1 n' Heq = vmem\u231d -\u2217 bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) \u21a6\u2098 vmem -\u2217 WPasm HIDDEN\n     | MKArray n' a' values =>\n         if (n' =? 64)%N\n         then \u231c(bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) - a') `mod` 8 = 0\u231d \u2217\n         \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) - a') `div` 8\u231d \u2217 \u231c(i < length values)%nat\u231d \u2217\n           \u2203 Heq : 64%N = n', \u2200 vmem : bv n', \u231cvalues !! i = Some vmem\u231d -\u2217 \u231ceq_rect 64%N bv n1 n' Heq = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN\n         else \u231cn' = 8%N\u231d \u2217\n         \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) - a'\u231d \u2217 \u231c(i + N.to_nat 8 <= length values)%nat\u231d \u2217\n           \u2200 vmem : bv 64, \u231cvmem = Z_to_bv 64 (little_endian_to_bv n' (take (N.to_nat 8) (drop i values)))\u231d -\u2217 \u231cn1 = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN\n     | MKUninit _ _ => False\n     | MKMMIO a' length => \u231ca' \u2264 bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8)\u231d \u2217 \u231cbv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) + 8 \u2264 a' + length\u231d \u2217\n         \u2203 Pks Pks' : spec, spec_trace Pks \u2217 \u231cscons (SReadMem (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) n1) Pks' \u2286 Pks\u231d \u2217 (spec_trace Pks' -\u2217 WPasm HIDDEN)\n     end)",
+      "groups": {
+        "goals": 1,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "41b2df0469091bc884b81c9011dad1135fabc963dd6d5ce9b27e2263f9586700",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042144/Boundary.v",
+        "sha256": "75d108420ecf6e7d9cc539908045267926baa32a7632871813a60c856cee927d",
+        "bytes": 3786
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042144/Boundary_interactive.v",
+        "sha256": "eacd8f21e4c573c402f3331bd27f71e7b26a1ea155bcff8dc7554d94e65e327a",
+        "bytes": 3724
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042144/evidence.json",
+        "sha256": "9673a2ddc9721a9b2113f4476a01ee94afb844d0f05e0f74150d5a092ff05e44",
+        "bytes": 37665
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042144/complete/state_2.json",
+        "sha256": "532b3b9fb6cab1049c9816ac173bdcae7149d889e143bfd7f2786be5ba50639d",
+        "bytes": 41865
+      },
+      "primary_call_wall_seconds": 15.467415431048721,
+      "performance": {
+        "wall_seconds": 17.83415906713344,
+        "peak_mib": 1196.78515625,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2732087
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80042154",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "pure-equality",
+      "first_goal": "22%bv = Z_to_bv 64 (freeLog2Alignment args)",
+      "first_conclusion": "22%bv = Z_to_bv 64 (freeLog2Alignment args)",
+      "groups": {
+        "goals": 6,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "e8adffab4e4964f6a052a1bf35937ac26643cbbbdc7307d3c227c36e60858d53",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042154/Boundary.v",
+        "sha256": "fbe27b3c880ff21f496472750fd6475780ab031af7f493da56e0d8cbba50068b",
+        "bytes": 4349
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042154/Boundary_interactive.v",
+        "sha256": "9d3a14a9008c7476132de7e6fc6ffca34b6e1e2241589ae97aece3a444970b34",
+        "bytes": 4287
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042154/evidence.json",
+        "sha256": "30c13814ec8d3e16bd8a853a4be4b8c08e894c0d7bfd7122d6d52d4438b09b54",
+        "bytes": 122706
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042154/complete/state_2.json",
+        "sha256": "7d0136bc64d5a52049c28f85cd2db1744ecb2379c6aa62f39d5ad9eb3a51d56b",
+        "bytes": 86453
+      },
+      "primary_call_wall_seconds": 50.694827819941565,
+      "performance": {
+        "wall_seconds": 54.20943064009771,
+        "peak_mib": 1164.76953125,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2732373
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    },
+    {
+      "entry": "0x80042160",
+      "predicted_classes": [
+        "store",
+        "return"
+      ],
+      "outcome": "residual",
+      "first_residual_class": "memory-obligation",
+      "first_goal": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n_ : \"x1\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeReturnAddress args))\n_ : \"x2\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeStackPointer args - freeStackBytes))\n_ : \"x8\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeStackPointer args))\n_ : \"x11\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeBufferPointer args))\n_ : \"x12\" \u21a6\u1d63 RVal_Bits x12\n_ : \"x14\" \u21a6\u1d63 RVal_Bits x14\n_ : freeBufferPointer args \u21a6\u2098\u2217 freeBeforeBuffer args\n_ : freeListsPointer \u21a6\u2098\u2217 freeBeforeLists args\n_ : (freeStackPointer args - freeStackBytes) \u21a6\u2098\u2217 frameBytes\n_ : instr_pre (freeReturnAddress args)\n      (\u2203 bufferBytes listBytes : list evm_rlp_types.byte, freeBufferPointer args \u21a6\u2098\u2217 bufferBytes \u2217 freeListsPointer \u21a6\u2098\u2217 listBytes \u2217\n         \u231cfreeAllowsAt (freeReturnAddress args) args {| freeAfterBuffer := bufferBytes; freeAfterLists := listBytes |}\u231d \u2217 freeExitRegisterResources args)\n_ : \"x13\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3)%bv\n_ : \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2147754352)\n_ : \"x10\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3)%bv\n_ : reg_col zesu_ram_sys_regs\n--------------------------------------\u2217\nfind_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8)))\n  (\u03bb mk : mem_mapsto_kind,\n     match mk with\n     | MKMapsTo n' vmem =>\n         \u2203 Heq : 64%N = n',\n           \u231ceq_rect 64%N bv n1 n' Heq = vmem\u231d -\u2217\n           bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) \u21a6\u2098 vmem -\u2217 WPasm HIDDEN\n     | MKArray n' a' values =>\n         if (n' =? 64)%N\n         then \u231c(bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) - a') `mod` 8 = 0\u231d \u2217\n         \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) - a') `div` 8\u231d \u2217\n           \u231c(i < length values)%nat\u231d \u2217 \u2203 Heq : 64%N = n', \u2200 vmem : bv n', \u231cvalues !! i = Some vmem\u231d -\u2217 \u231ceq_rect 64%N bv n1 n' Heq = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN\n         else \u231cn' = 8%N\u231d \u2217\n         \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) - a'\u231d \u2217\n           \u231c(i + N.to_nat 8 <= length values)%nat\u231d \u2217 \u2200 vmem : bv 64, \u231cvmem = Z_to_bv 64 (little_endian_to_bv n' (take (N.to_nat 8) (drop i values)))\u231d -\u2217 \u231cn1 = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN\n     | MKUninit _ _ => False\n     | MKMMIO a' length => \u231ca' \u2264 bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8)\u231d \u2217\n         \u231cbv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) + 8 \u2264 a' + length\u231d \u2217\n         \u2203 Pks Pks' : spec, spec_trace Pks \u2217\n           \u231cscons (SReadMem (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) n1) Pks' \u2286 Pks\u231d \u2217\n           (spec_trace Pks' -\u2217 WPasm HIDDEN)\n     end)",
+      "first_conclusion": "find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8)))\n  (\u03bb mk : mem_mapsto_kind,\n     match mk with\n     | MKMapsTo n' vmem =>\n         \u2203 Heq : 64%N = n',\n           \u231ceq_rect 64%N bv n1 n' Heq = vmem\u231d -\u2217\n           bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) \u21a6\u2098 vmem -\u2217 WPasm HIDDEN\n     | MKArray n' a' values =>\n         if (n' =? 64)%N\n         then \u231c(bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) - a') `mod` 8 = 0\u231d \u2217\n         \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) - a') `div` 8\u231d \u2217\n           \u231c(i < length values)%nat\u231d \u2217 \u2203 Heq : 64%N = n', \u2200 vmem : bv n', \u231cvalues !! i = Some vmem\u231d -\u2217 \u231ceq_rect 64%N bv n1 n' Heq = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN\n         else \u231cn' = 8%N\u231d \u2217\n         \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) - a'\u231d \u2217\n           \u231c(i + N.to_nat 8 <= length values)%nat\u231d \u2217 \u2200 vmem : bv 64, \u231cvmem = Z_to_bv 64 (little_endian_to_bv n' (take (N.to_nat 8) (drop i values)))\u231d -\u2217 \u231cn1 = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN\n     | MKUninit _ _ => False\n     | MKMMIO a' length => \u231ca' \u2264 bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8)\u231d \u2217\n         \u231cbv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) + 8 \u2264 a' + length\u231d \u2217\n         \u2203 Pks Pks' : spec, spec_trace Pks \u2217\n           \u231cscons (SReadMem (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) n1) Pks' \u2286 Pks\u231d \u2217\n           (spec_trace Pks' -\u2217 WPasm HIDDEN)\n     end)",
+      "groups": {
+        "goals": 1,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "state_chain": {
+        "entry_state": 1,
+        "primary_state": 2,
+        "export_state": 2
+      },
+      "health_ok": true,
+      "primary_command": "try zesu_block.",
+      "primary_accepted": true,
+      "commands_run": 1,
+      "statement_sha256": "165e170d15e93d7cce4da72e57167f0509a738bc86ef2f73c416f4894fd1c72a",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042160/Boundary.v",
+        "sha256": "62b8636f86369e293383ad1aa17499696b8937d5871beb90eeba728e0c3dd3f2",
+        "bytes": 3786
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042160/Boundary_interactive.v",
+        "sha256": "acb545bf8c98437e17374c8c5c98c9ad26a77c4fdead4738018b4521e446596d",
+        "bytes": 3724
+      },
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042160/evidence.json",
+        "sha256": "f375d8e36b29e7529031016ee5ee21d85e1ac34d76660a01140cdedc8c0c8467",
+        "bytes": 46933
+      },
+      "primary_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042160/complete/state_2.json",
+        "sha256": "0e98ef62b711dda6e407adb22f92cd5febbe2d1b8611e645d34efed58fa4f6ca",
+        "bytes": 145357
+      },
+      "primary_call_wall_seconds": 19.745337448082864,
+      "performance": {
+        "wall_seconds": 23.177073633065447,
+        "peak_mib": 1288.62890625,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "owned_pet_pids": [
+        2732591
+      ],
+      "compiler_cpu_seconds": null,
+      "compiler_peak_GiB": null,
+      "hand_lines": null,
+      "Qed": "not attempted; proof remains open",
+      "kernel_compilation": "not attempted; proof remains open",
+      "statement_verification": "not attempted; proof remains open"
+    }
+  ],
+  "owned_pet_PIDs_present_after_run": [],
+  "checked_inputs": 142,
+  "bindings": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f38/Boundary.v",
+      "sha256": "ee7fd5e7d54add731b42e81d0f49b0ecb051f6e7bfc00331994b8d9572d39698",
+      "bytes": 4275
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f38/Boundary_interactive.v",
+      "sha256": "be48d4619fc7f6a5e54ab6a04711ba3e78bdc354a8e014efb016e6bfe2b35f80",
+      "bytes": 4213
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f38/complete/state_2.json",
+      "sha256": "82f3d75f00f8b494b80b721f9bf1d9190f724546a2460b8f24b099193cc9fd11",
+      "bytes": 688314
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f38/evidence.json",
+      "sha256": "293f4fdde436a7cfb688ddd9db654a93ea8364bf35fe97b5033628a5c79b6e53",
+      "bytes": 283930
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f58/Boundary.v",
+      "sha256": "6eb31e1cef8e030787932a1c6c01371b4f9a33d35c7c17a00e0859393165ea9b",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f58/Boundary_interactive.v",
+      "sha256": "d68a978072a5cd576d0057bb4b80fe34f3f8e92424a6c7191c4957070ee913d9",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f58/complete/state_2.json",
+      "sha256": "86a73af7717267b4788e22498397203f98eba8f5100192ca8abb66e94dac321a",
+      "bytes": 26866
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f58/evidence.json",
+      "sha256": "d3d79e3a935a460d832456ed2837d8834db05bdef36d2669408edc82a89131ec",
+      "bytes": 57711
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f60/Boundary.v",
+      "sha256": "51f877d8012538c4fc560ffa8d708054c0e8513e62d06d8747391fbb95b1f2ad",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f60/Boundary_interactive.v",
+      "sha256": "81110de5b91d47a831c6f581735ea960bc440cb95a6912821f03d46f414738e6",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f60/complete/state_2.json",
+      "sha256": "f2125eea9fb582e251af60c1a90b41b0effc602f87778860b05a37d28bc09e77",
+      "bytes": 26651
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f60/evidence.json",
+      "sha256": "748c900aa546105faa703920fbcbdb4f231f2cde7a34f047a4751b3a64406d12",
+      "bytes": 57676
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f68/Boundary.v",
+      "sha256": "653d9cc0f4d57e43ecac3a81a1352e45506af359f215b53e23ae7bf3cd034884",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f68/Boundary_interactive.v",
+      "sha256": "f97bf5edf74092c2316bd29a8ae6e893050d31da3cedcf990352fa7a782ec444",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f68/complete/state_2.json",
+      "sha256": "d7c85aa2e0064c861960567aec17356f13e49260b23ff0919186e512f0aad11b",
+      "bytes": 154236
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f68/evidence.json",
+      "sha256": "67929241f7d7dc9f4ea6b36f50d99bcfd727e8ed3a4fe1896a8cc31e97556419",
+      "bytes": 125268
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f7c/Boundary.v",
+      "sha256": "0ec755739976d041710cf2f771b9a5c5d77042888ce7b27c931a5acf3ae29bdc",
+      "bytes": 4115
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f7c/Boundary_interactive.v",
+      "sha256": "a1b8c615e844489139d9c7b4c9029f1b227bb72ded91c7e9ebca25861c2b23ca",
+      "bytes": 4053
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f7c/complete/state_2.json",
+      "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+      "bytes": 4234
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f7c/evidence.json",
+      "sha256": "3d5b330f22cb62f6c824ac121586cc168919e04532f69c773e696dfbf2c68bec",
+      "bytes": 23415
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f80/Boundary.v",
+      "sha256": "fb0a98d693d538c98a2c59911ac5f0bd40457886a582f59dc2ca6076b8618d2c",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f80/Boundary_interactive.v",
+      "sha256": "125ccc18dc58207223496992e248e8c9a7c0f5cd02524fdd4ed1f38103fae3bb",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f80/complete/state_2.json",
+      "sha256": "24d19c2152726f375813cea7641212ba4b682cd4491389fbb03afc6d249e1e2a",
+      "bytes": 32140
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f80/evidence.json",
+      "sha256": "3278ad3bfeaa580d5f520db361a77f73e02f35f907c9fcf987fd1232befbbce7",
+      "bytes": 62567
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f8c/Boundary.v",
+      "sha256": "340b99c7c085331f797b66d1568f80982264cee36d27331f0a8eba9fb16efdc2",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f8c/Boundary_interactive.v",
+      "sha256": "bc1f99c452c64d0f7b4503be97f554270feaa905ec8a1ec2788d5fdd19a3d8f4",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f8c/complete/state_2.json",
+      "sha256": "ccd73c29b7ff075174d51d910ad771c978c7545b2fc72ba4da93698161adca1e",
+      "bytes": 32944
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f8c/evidence.json",
+      "sha256": "40911b2d244acbfecb2d9515fd85c5ec35a1058d9b6492e9c2db4627d1f8a729",
+      "bytes": 64084
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f98/Boundary.v",
+      "sha256": "7f7a0cd5ffcfebf486fcddc5965b6794e8e3f2cfd95c0374be20f5d05707598c",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f98/Boundary_interactive.v",
+      "sha256": "b0d338c403c160f1d9b58c1b43f253152705462b193f3903ad54a3dba39e35a3",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f98/complete/state_2.json",
+      "sha256": "57bcdadf8da09d47c745d6651571196c46129a1b4ec181fcfb0c4ba63754cc0a",
+      "bytes": 32751
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f98/evidence.json",
+      "sha256": "f2323b3e464534a423ae739cf75b64a414cc31be6135ac667d81487da7fa600d",
+      "bytes": 64028
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fa4/Boundary.v",
+      "sha256": "0cb2843dec81aa0f749f494db1eac8236a49990a3b2b8d2fb046f48d4df754b4",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fa4/Boundary_interactive.v",
+      "sha256": "f563f85a5b42dc118dfc18fa4170a67457412a1725d9ec5ca607d3d602278070",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fa4/complete/state_2.json",
+      "sha256": "86bc0871030b9a70196977bfd88117d4c3ffb8b08ac219a7cd61a21fb72d7484",
+      "bytes": 129708
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fa4/evidence.json",
+      "sha256": "a9beaceb98d0ae83ba1e4f72f449267ec04c108cef1a0d6f82caab2096f61395",
+      "bytes": 111327
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb4/Boundary.v",
+      "sha256": "723bacf62055dcd232034ff884839844ee69355d437a99e247a13395fec7b74e",
+      "bytes": 4115
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb4/Boundary_interactive.v",
+      "sha256": "4e0175b8a1558a96117cfe22dc8fed14bc417d18e58edc86874f53f3190b2d1f",
+      "bytes": 4053
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb4/complete/state_2.json",
+      "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+      "bytes": 4234
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb4/evidence.json",
+      "sha256": "b1eac0b240ffc429af2cd841d5f2b52f9dd8e17f071294d5ef18fa54dd425531",
+      "bytes": 23415
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb8/Boundary.v",
+      "sha256": "c9d20ca2d9e16bb6da4f83046400a55640c6dda6f3bea5c112ebeb36666a9425",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb8/Boundary_interactive.v",
+      "sha256": "9fe11632186b70e6a2da67acc9588b59730e9dbbc0511134572e55903bf1eab5",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb8/complete/state_2.json",
+      "sha256": "c4a10c8f342d7583106893973042b71aa5d96304ad011717785810abb0c2b079",
+      "bytes": 27238
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb8/evidence.json",
+      "sha256": "73cf082b48f39cf2c7ae271d7c6cc6927bf9e5f4cd9e937f9173e75f2b35b4a5",
+      "bytes": 57756
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc0/Boundary.v",
+      "sha256": "3d33a26bd15829142549d16dbf3bbe724cca9892e1629f59364b106f24db6db9",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc0/Boundary_interactive.v",
+      "sha256": "996398a298d8ba48dcb41190b99b64e13178d3496c0f892957c62d5368129978",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc0/complete/state_2.json",
+      "sha256": "35770f2f5bf3b440956f0f84088d81f8b7b51bdd1d6d89418e4daf508a742848",
+      "bytes": 27085
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc0/evidence.json",
+      "sha256": "29158382432513f52cb2b1f441c23559ff4a46016b7c23fac1c1629a19a79aea",
+      "bytes": 57739
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc8/Boundary.v",
+      "sha256": "0edbd78da79cdce7552ea47ce19a7cecbba70a4f1781050b8fdc3a7bb5e8e98a",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc8/Boundary_interactive.v",
+      "sha256": "90219225a22776a5bce74faa7b4573b4b5a66f726f149ba2ade7b92df0fb0ead",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc8/complete/state_2.json",
+      "sha256": "213dc2e62ab82960e0d25a9708918ce30acfca316755bb521041a79fb7725350",
+      "bytes": 129224
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc8/evidence.json",
+      "sha256": "d1b8952a6a252c478e903abe1924b86a88b476d2f7fed260ca7f43516ef8e065",
+      "bytes": 111286
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fd8/Boundary.v",
+      "sha256": "b74892fda981525dc1841dd4dcbd60a282a395ba29654e5f9498b589776ca01f",
+      "bytes": 4115
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fd8/Boundary_interactive.v",
+      "sha256": "f1f7d26977e84368c8e1654ed21e260170c6101da12a46b77c425f1a21d934a1",
+      "bytes": 4053
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fd8/complete/state_2.json",
+      "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+      "bytes": 4234
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fd8/evidence.json",
+      "sha256": "ed2ad3b55d794c04cac3dcb33be6190a2cd41b1a0a03444c7f644f9ece286fdd",
+      "bytes": 23418
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fdc/Boundary.v",
+      "sha256": "3dd5da22a940a84a1350dc1ff30b90fa8a4472242f5d9b6ebffd72a9f3b7702e",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fdc/Boundary_interactive.v",
+      "sha256": "dff384aadf6b899cb9c662eba58ec31793e485a1f363a1419f1311a9027ef0d1",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fdc/complete/state_2.json",
+      "sha256": "000bd689f6cf6777b67c72749ed1338e2d0ad7f642d83f82090ee4cee438e6c1",
+      "bytes": 32505
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fdc/evidence.json",
+      "sha256": "89210f126de66d3f6dd2534e26d8ced678669d2f0b03e0cfd195ffd7b72a16f0",
+      "bytes": 62636
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fe8/Boundary.v",
+      "sha256": "1810d6e06cd895f47d90407f06b392fd6cfe35a104614fb9118b324fce329cdb",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fe8/Boundary_interactive.v",
+      "sha256": "3b645507bdf49631182fa85277b13737c223ecf85011b014c678c06a00f84fb0",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fe8/complete/state_2.json",
+      "sha256": "dfa28de0f2d90553fce94dfc6c4d30efd103d0bb02da7d2742fd54eeb925219a",
+      "bytes": 33556
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fe8/evidence.json",
+      "sha256": "1d698e72803bf5e3ab070561b2ef051122de954b4552f8faf9a9efaf69176402",
+      "bytes": 64165
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041ff4/Boundary.v",
+      "sha256": "c1729e2c769be45f204266cbe94ac368e7caa34c558817acc736e303d838db84",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041ff4/Boundary_interactive.v",
+      "sha256": "b9e69d89066758cbce2087dc67b10c497628bd2cff0b63a3b1c7ab60c7832f74",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041ff4/complete/state_2.json",
+      "sha256": "d3b986cfee5f003955b5e595fea2df6aff169dcb79e8388a754c666e9c13f275",
+      "bytes": 183626
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041ff4/evidence.json",
+      "sha256": "a3b7ec3431fa49965770c393abe1fa9d07c4169600e6c69553365c8e49a5e02a",
+      "bytes": 147788
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042010/Boundary.v",
+      "sha256": "78d0bfe18102c4a6c1a30e2b3ad56d1b83eda71e80d10daf6fa03e279dd69090",
+      "bytes": 4115
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042010/Boundary_interactive.v",
+      "sha256": "70625c6b2ace021982f0bd6d501bef305bffa9d93cde27590accbf851178041d",
+      "bytes": 4053
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042010/complete/state_2.json",
+      "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+      "bytes": 4234
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042010/evidence.json",
+      "sha256": "0eac2fc78007006c7b2593f11ad036a1c663387cb1c8ea24e7874101de3660f8",
+      "bytes": 23423
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042014/Boundary.v",
+      "sha256": "fb9f09ac3a08ef3c264be300fd21313b6bc91bbd76fb35b238a1444e1515c2ff",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042014/Boundary_interactive.v",
+      "sha256": "bf5c424cf6e2c582740db53f73dc605b4827bfd0f36d6ac0b0f7da9c27616a0c",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042014/complete/state_2.json",
+      "sha256": "8a8cd56acead63c5b8955561d08a8cb1764daa4115a08fe596bbef3e115ca0bd",
+      "bytes": 154856
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042014/evidence.json",
+      "sha256": "867a8e59439d6d9684f555ae39dc974b149ada12b57252db92bfc6026c4c00e9",
+      "bytes": 125321
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042028/Boundary.v",
+      "sha256": "f5c9633fe4bbe66d96814eef20facd945e223bb1a67b4b4aa2bf12f7be08bc6e",
+      "bytes": 4115
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042028/Boundary_interactive.v",
+      "sha256": "80a6ddfd3e91422030e05a187ef2a83ca66e637236d4ecc8b1dcffe82b26a38d",
+      "bytes": 4053
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042028/complete/state_2.json",
+      "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+      "bytes": 4234
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042028/evidence.json",
+      "sha256": "b9bfd3ee482bbebe110a214d278000b9d3225e10d9187776a037dfea03cb256a",
+      "bytes": 23415
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004202c/Boundary.v",
+      "sha256": "d2fa0a830506b5a8f8f115d66b799589ee3ef8d6847ac6f37e1d9e07f88613cb",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004202c/Boundary_interactive.v",
+      "sha256": "28549893bddc93938c055e71cac8d306bf3025a46ea4592a133789cebfa794f6",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004202c/complete/state_2.json",
+      "sha256": "265f5c0f2b6f0da5cc537f301f17ce3120c1606c493e0756a29678d0475a88b1",
+      "bytes": 33104
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004202c/evidence.json",
+      "sha256": "d5de917250538ce34d86a3e2a797669d031a6d022132c662d991f994ff390107",
+      "bytes": 64099
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042038/Boundary.v",
+      "sha256": "fcb9f416217f505655def233e5d6c4f0119dda5f856365281f4be54334050097",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042038/Boundary_interactive.v",
+      "sha256": "1509ef0ed4130fba2a26ecc8b0da6c41c9d304eca4d79ffaba1fe75adb247199",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042038/complete/state_2.json",
+      "sha256": "ddd58177c3d865dde377ca30b6ec85ab4d6a6298113cad05124d8cfe2c25e298",
+      "bytes": 182730
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042038/evidence.json",
+      "sha256": "ebf4918c6f1fc5ceffd1909ac4509a008ee125706cf2e890c0e21b4f8b9c96d8",
+      "bytes": 147730
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042054/Boundary.v",
+      "sha256": "979f8c4ce8f0184e7ef53ab2ab662dd75db08872134cf517bc36e7c5e5ec32a0",
+      "bytes": 4115
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042054/Boundary_interactive.v",
+      "sha256": "b682ea32a261473bb7b92d4f390d5a7f804bc3aca66c2985270c861a62b2adba",
+      "bytes": 4053
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042054/complete/state_2.json",
+      "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+      "bytes": 4234
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042054/evidence.json",
+      "sha256": "fcc63be62c6d003e8930d7ab81089def1eb074c04ffd93ff41bd4108dca5cf57",
+      "bytes": 23395
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042058/Boundary.v",
+      "sha256": "d8b184ec500959e5a8ed07bda581abce7d4014c329903196ec9835779489413d",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042058/Boundary_interactive.v",
+      "sha256": "71fc450537e58fa1c52a7420fdac47a8a9ee9f778499da2a21beb797ef92c0c7",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042058/complete/state_2.json",
+      "sha256": "4336ac1750545982ab1ec974673447e8ea5bc750ea891716ecf7b6b842235a05",
+      "bytes": 164708
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042058/evidence.json",
+      "sha256": "9c4aac876bcac96777d665b28f39d24690680e2b3a6e7d9eea8ea02c00a94468",
+      "bytes": 135957
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042070/Boundary.v",
+      "sha256": "b33c96a02f82f80e0d7c961fc8d93db4d12dfc84eb925fa838f30e1bffe7e627",
+      "bytes": 4115
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042070/Boundary_interactive.v",
+      "sha256": "22a0375ea3fcb215d0346636d04b0b2d9372948b5c738ca46e6db00610875e4e",
+      "bytes": 4053
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042070/complete/state_2.json",
+      "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+      "bytes": 4234
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042070/evidence.json",
+      "sha256": "660343b4c7a01a254705bc89a48b915a857f7d1250c8dcd5976ae66482bcfaba",
+      "bytes": 23412
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042074/Boundary.v",
+      "sha256": "379c1b13ecf6d73836672e62cc0f6562bae846f1d6425f6dfb6223205fae2c52",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042074/Boundary_interactive.v",
+      "sha256": "2fa6b20e07ba0b01645e6146011856e6947c1e57c8e646b1ddd18a5c65a51a2b",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042074/complete/state_2.json",
+      "sha256": "e24b5e880046c23bb28a1a50d5980a8a9af06cc43282544406a321095389ec17",
+      "bytes": 32650
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042074/evidence.json",
+      "sha256": "f5066950292dbcd3dd0e0cf88ed4075ab536a9821292deea9c0757f585cdceb0",
+      "bytes": 62644
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042080/Boundary.v",
+      "sha256": "38e2aef424a2816436b5308d64a715e8023bf93d050c2523568a0d2c952542a1",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042080/Boundary_interactive.v",
+      "sha256": "53790a38160cdc251233c0eca453c2274109d37925444d0ca0fda1b0be6abae9",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042080/complete/state_2.json",
+      "sha256": "16f18ba325c09c1f3e8465abb5b21ed41289dad9506236513fbd9b538eccefd5",
+      "bytes": 130714
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042080/evidence.json",
+      "sha256": "a37aa4c620d11bdebb5ceea0d09727eb7355bf98e46edd241ba9ee76bec14a4d",
+      "bytes": 111449
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042090/Boundary.v",
+      "sha256": "5477644ea9d4511c898341db33e399d0a3c9e4e8e3d4b139ac8b96e0902fa08f",
+      "bytes": 4115
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042090/Boundary_interactive.v",
+      "sha256": "4d7828591ebe724b6b839a1a4ad01c33343b96694f55203219319847f9415789",
+      "bytes": 4053
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042090/complete/state_2.json",
+      "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+      "bytes": 4234
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042090/evidence.json",
+      "sha256": "53034f44d7259b853b6e68335e97946724599537dd15e581a1cfb6bbc852ba26",
+      "bytes": 23419
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042094/Boundary.v",
+      "sha256": "7277c3512eeb0cb0cb8562a0610a8a1d5809519f3196fd01f6471c3e9a9c091c",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042094/Boundary_interactive.v",
+      "sha256": "c2b765d32ac669bbba51253d1179cb658056fd55309d18c77fc7eff5c53dfb35",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042094/complete/state_2.json",
+      "sha256": "c2645da171f3f2615ad82ce6037c9558ba9bf43a7a34f1e956558c6e8ede9aa0",
+      "bytes": 182062
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042094/evidence.json",
+      "sha256": "00350a05f0fb07ed339b4a389c41b53ce1a8444bdfd98bad8eacd460a7de6c0a",
+      "bytes": 147619
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b0/Boundary.v",
+      "sha256": "cfaa7382f4da59590a2226aa38242ce2ff1e321a65eb74cdb90dd5b0e5607b4b",
+      "bytes": 4115
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b0/Boundary_interactive.v",
+      "sha256": "1a6fa3e3b440b631bcc8a122259931d1464b8aed9792362682495aa8c1520f00",
+      "bytes": 4053
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b0/complete/state_2.json",
+      "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+      "bytes": 4234
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b0/evidence.json",
+      "sha256": "0b8d722de0e19bd2a322f41410372801e7a5a03087740d9318d6af66d0b13ef9",
+      "bytes": 23422
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b4/Boundary.v",
+      "sha256": "9041a68bef74a3c640985131902fcb577c481709b86b243e8438f2df8b9855ff",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b4/Boundary_interactive.v",
+      "sha256": "ce38655fa908cc66ae319da5518b3d8b4e4f7c8e7c47f4ee654f3ead8e75f76c",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b4/complete/state_2.json",
+      "sha256": "04682cc852ccfacbf51243827d5e21cc9d3fc613ac6a34996e90751d63c8033a",
+      "bytes": 164228
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b4/evidence.json",
+      "sha256": "099264f487e17e19be1b5c6253d9393e8684afa65bf01736546b939ab865bd4e",
+      "bytes": 135915
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420cc/Boundary.v",
+      "sha256": "f79e7f2c4b87974f6f3feb035cc98db96b6a1f8aaa8d35afe9476fe9d6e24ea2",
+      "bytes": 4115
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420cc/Boundary_interactive.v",
+      "sha256": "21c9c151419745b42ebf2f72a1f049d4e477e0e2f6a416a91f30820820101c67",
+      "bytes": 4053
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420cc/complete/state_2.json",
+      "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+      "bytes": 4234
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420cc/evidence.json",
+      "sha256": "7a87112212188bdd21e7c8157ab7f0f89cc97ce93b3d87ffe9e29db26001d2a3",
+      "bytes": 23405
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420d0/Boundary.v",
+      "sha256": "89a7f4df1ca039b71ba7e8bbc5467a550898070c83094b0a092dbeb670f19055",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420d0/Boundary_interactive.v",
+      "sha256": "11c5df1fd0509c0f8774c4051c263e6a6be98e972ffb8b819423b10c2244f854",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420d0/complete/state_2.json",
+      "sha256": "7b6c99e0144126198d390bb15b9aaccb2176b61a77ad453871eeddc16f17eac9",
+      "bytes": 184070
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420d0/evidence.json",
+      "sha256": "8b53c07f4192a6be096bd1f0c3aa3a0267bab06f8e62280a451f667ad103ff68",
+      "bytes": 147882
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420ec/Boundary.v",
+      "sha256": "90581c124d798fbd50f137f9ef0b8f58b1b021dcd392f370dfe5182ab72bc03b",
+      "bytes": 4115
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420ec/Boundary_interactive.v",
+      "sha256": "e8c46aa170a8d58c9f531d2f089202862cd310f361197d8fc27d986ac1f9f4c2",
+      "bytes": 4053
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420ec/complete/state_2.json",
+      "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+      "bytes": 4234
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420ec/evidence.json",
+      "sha256": "52badb3a090af35c94b0eb006f66c7641c68ba588206f389f000f7aac6d5536b",
+      "bytes": 23408
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420f0/Boundary.v",
+      "sha256": "15939b7499f6b79bc2ea61358404c14210f911e34c3ff51576c7d774582004f9",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420f0/Boundary_interactive.v",
+      "sha256": "b7ea32258c58b17efae8b405ddc0e3a3e12d02ec83175cf1a6df4236b50bc69b",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420f0/complete/state_2.json",
+      "sha256": "8a1cd47644cdaf377f1dd4337c906ac31db0019e2548a44a500040bca9fb8f0e",
+      "bytes": 183150
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420f0/evidence.json",
+      "sha256": "1419fd92e43b6aa3e13e9fd6c4270cb91736d58688de2106a85e0a5c82a328a6",
+      "bytes": 147766
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004210c/Boundary.v",
+      "sha256": "1b22bdbd52be0d0fbf6960491d999c6490edffd8c1085419899e21eff0989035",
+      "bytes": 4115
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004210c/Boundary_interactive.v",
+      "sha256": "13c2313d5ba2b1088038d619a916308717803ca9a101f7b35305ae2637d5c4e8",
+      "bytes": 4053
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004210c/complete/state_2.json",
+      "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+      "bytes": 4234
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004210c/evidence.json",
+      "sha256": "9f2680cd2c48efc5dde966e84cb5821a90444c7ac63f5bb635cefd9b7c4210e5",
+      "bytes": 23427
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042110/Boundary.v",
+      "sha256": "5c3464d7b35a30e50c07a575fdaf5a5be30969aacd722353faf39e2de6c93d00",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042110/Boundary_interactive.v",
+      "sha256": "684b1de524c0e4d961436bb9a315b35065a08970d140c0d077dfce05853cbeba",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042110/complete/state_2.json",
+      "sha256": "dec26e9a8587111dd519b0c1a36b2cb42cc1a9fa1fcb5c57ea157805f2bdacdd",
+      "bytes": 191690
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042110/evidence.json",
+      "sha256": "75d71c2b2a8c74b5718db5aeb96dc12cb1e0a696cd4cfebfec930b821522f822",
+      "bytes": 155545
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042130/Boundary.v",
+      "sha256": "f61e8366817a67b49430818919507158db8195c9c126d89099547e041fec1ea1",
+      "bytes": 4115
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042130/Boundary_interactive.v",
+      "sha256": "b915d85e0326a435470376b2310fba5ff5f536ff188ae88b4211cdb5b92fc22c",
+      "bytes": 4053
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042130/complete/state_2.json",
+      "sha256": "40d5f1432f1f240c2ac95f3516773726121f8cb41c2943f8866cc29c3ddebf83",
+      "bytes": 8096
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042130/evidence.json",
+      "sha256": "e72d0cf70bc2d5f4b0c6e6f1a026ed2d62bd1d3c515d6e0da688d563dbcd4eeb",
+      "bytes": 30610
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042134/Boundary.v",
+      "sha256": "a0f3fc1ff52e6c7d798cf23d35cfcf8a80fef4e0d51be98752a7048265556216",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042134/Boundary_interactive.v",
+      "sha256": "9587802865f619945ad9baea355e369cc669236e07e6d2d6e16cdf88ea01364e",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042134/complete/state_2.json",
+      "sha256": "3f5f7ee57c7be2ec82528c866b177d82be0ccc9c2d73c49378af450d090a12a4",
+      "bytes": 37292
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042134/evidence.json",
+      "sha256": "3a661b1f1b74f88a2016a0710c6105375e2a1446f298e840a9d8eac24506b0f2",
+      "bytes": 67021
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004213c/Boundary.v",
+      "sha256": "73cc0eedefc937ea6b7e61e3a94a4adf4c5f16e38f1dc67f97f0695f952a1365",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004213c/Boundary_interactive.v",
+      "sha256": "94165533fc110d44cc54a3f9def73eb65cda294facbdfc1211957b33282e16b8",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004213c/complete/state_2.json",
+      "sha256": "6275b1799d60f00a3ec8d9ac2189e236e2fe3448946c6695a62d89b80c0c9f85",
+      "bytes": 22294
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004213c/evidence.json",
+      "sha256": "b8d12b0db1cccab95c90bc6270f464084e74e015a31975f7b07dea1d44d697a3",
+      "bytes": 51240
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042144/Boundary.v",
+      "sha256": "75d108420ecf6e7d9cc539908045267926baa32a7632871813a60c856cee927d",
+      "bytes": 3786
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042144/Boundary_interactive.v",
+      "sha256": "eacd8f21e4c573c402f3331bd27f71e7b26a1ea155bcff8dc7554d94e65e327a",
+      "bytes": 3724
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042144/complete/state_2.json",
+      "sha256": "532b3b9fb6cab1049c9816ac173bdcae7149d889e143bfd7f2786be5ba50639d",
+      "bytes": 41865
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042144/evidence.json",
+      "sha256": "9673a2ddc9721a9b2113f4476a01ee94afb844d0f05e0f74150d5a092ff05e44",
+      "bytes": 37665
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042154/Boundary.v",
+      "sha256": "fbe27b3c880ff21f496472750fd6475780ab031af7f493da56e0d8cbba50068b",
+      "bytes": 4349
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042154/Boundary_interactive.v",
+      "sha256": "9d3a14a9008c7476132de7e6fc6ffca34b6e1e2241589ae97aece3a444970b34",
+      "bytes": 4287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042154/complete/state_2.json",
+      "sha256": "7d0136bc64d5a52049c28f85cd2db1744ecb2379c6aa62f39d5ad9eb3a51d56b",
+      "bytes": 86453
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042154/evidence.json",
+      "sha256": "30c13814ec8d3e16bd8a853a4be4b8c08e894c0d7bfd7122d6d52d4438b09b54",
+      "bytes": 122706
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042160/Boundary.v",
+      "sha256": "62b8636f86369e293383ad1aa17499696b8937d5871beb90eeba728e0c3dd3f2",
+      "bytes": 3786
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042160/Boundary_interactive.v",
+      "sha256": "acb545bf8c98437e17374c8c5c98c9ad26a77c4fdead4738018b4521e446596d",
+      "bytes": 3724
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042160/complete/state_2.json",
+      "sha256": "0e98ef62b711dda6e407adb22f92cd5febbe2d1b8611e645d34efed58fa4f6ca",
+      "bytes": 145357
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042160/evidence.json",
+      "sha256": "f375d8e36b29e7529031016ee5ee21d85e1ac34d76660a01140cdedc8c0c8467",
+      "bytes": 46933
+    }
+  ],
+  "launch": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-approved-launch723/LAUNCHED.json",
+    "sha256": "13fb7b51bf5caa7d3e34b405cb5980887ff66bb9c36bf52449382620de4fba65",
+    "bytes": 721
+  },
+  "sealed_launch": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-approved-launch723/SEALED-LAUNCH.json",
+    "sha256": "143cc4888a96666902ca247ebf515895448292d1a379affb73195e7b33f3225f",
+    "bytes": 39558
+  },
+  "controller_exit": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-approved-launch723/RESULT.json",
+    "sha256": "6106fda9fd186ec285c74f9e20348fc411104cf092cb55ad36800bb797941559",
+    "bytes": 409
+  },
+  "discovery_report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/report.json",
+    "sha256": "77e87a98520d7d6172a243431adb1f78dbffbf1bba7f25fc3c9628aea989e976",
+    "bytes": 1603895
+  },
+  "original_template": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-frozen-readiness704/FIRST-RESULT-TEMPLATE.json",
+    "sha256": "4ba06b4434e2eb1e4084909081742974a3c1aae8010672724f18e969e9b51caa",
+    "bytes": 8108
+  },
+  "limits": [
+    "All 43 primary tactics entered once and returned accepted residual states.",
+    "The first residual class uses the exact printed conclusion. It does not classify every remaining goal.",
+    "Full active, stack, shelf and given-up groups remain in each checked primary export.",
+    "Compiler CPU and compiler peak RSS are unavailable. Their template fields remain null.",
+    "MCP wall time and sampled worker peak are separate measurements. They do not establish tactic CPU cost.",
+    "No Qed, compilation or verification follows from an open proof.",
+    "No internal instruction chronology or complete branch coverage follows from these exports.",
+    "No completion probe, hand step or repeated proof arm ran.",
+    "Historical 705, 706, 707 and F39 ruling 713 remain unchanged.",
+    "The original null template remains unchanged. This new result records the released corrected run.",
+    "No frozen rule changed. No alloc block was inspected."
+  ]
+}

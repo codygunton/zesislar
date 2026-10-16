@@ -1,0 +1,13 @@
+{
+  "exit_status": 0,
+  "elapsed_wall_seconds": 267.5388384719845,
+  "finished_utc": "2026-10-16T05:43:23.387026+00:00",
+  "frozen_root": "e8131be295b89a1821b3ba760f39e7aad1e8647d",
+  "discovery_pid": 2722536,
+  "discovery_start_ticks": 182845773,
+  "signals_sent_by_controller": 0,
+  "limits": [
+    "The compiler exit does not establish proof closure.",
+    "Per-block evidence decides each outcome."
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "result_id": "free-first-result724",
+  "frozen_root": "e8131be295b89a1821b3ba760f39e7aad1e8647d",
+  "branch": "worker2-av-free-holdout-result",
+  "closed": 0,
+  "residual": 43,
+  "published_artifacts": [
+    {
+      "published_path": "CHECKPOINT.json",
+      "original": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-first-result724/CHECKPOINT.json",
+        "sha256": "e43678e8752dfb89f7cd4ef9e5f637f4b3b1d03ae9a5fb2dbf4a29c52da34359",
+        "bytes": 28937
+      },
+      "sha256": "e43678e8752dfb89f7cd4ef9e5f637f4b3b1d03ae9a5fb2dbf4a29c52da34359",
+      "bytes": 28937
+    },
+    {
+      "published_path": "TABLE.md",
+      "original": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-first-result724/TABLE.md",
+        "sha256": "469378664ca5942da88237e038e12fd93699c95515c1c373a6e4dfe1f6eeacf5",
+        "bytes": 3053
+      },
+      "sha256": "469378664ca5942da88237e038e12fd93699c95515c1c373a6e4dfe1f6eeacf5",
+      "bytes": 3053
+    },
+    {
+      "published_path": "DETAILS.json",
+      "original": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-first-result724/DETAILS.json",
+        "sha256": "4ce4826f196be438f1a68a036ba0eb2242cb642a40241a4b73985bc613e15cc5",
+        "bytes": 187021
+      },
+      "sha256": "4ce4826f196be438f1a68a036ba0eb2242cb642a40241a4b73985bc613e15cc5",
+      "bytes": 187021
+    },
+    {
+      "published_path": "RESULT-REPORT.json",
+      "original": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-first-result724/REPORT.json",
+        "sha256": "08f1f79f50625c7e252707fef3fce24e79982ca672e294d107842bcdf9f4ae43",
+        "bytes": 2363
+      },
+      "sha256": "08f1f79f50625c7e252707fef3fce24e79982ca672e294d107842bcdf9f4ae43",
+      "bytes": 2363
+    },
+    {
+      "published_path": "F39-VOID-RUN.json",
+      "original": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-launch-defect-F39-ruling713/RULING.json",
+        "sha256": "0b661aa75885b4dccde29eb622e582e8e8917cc38ea33f79420632dc10f30c04",
+        "bytes": 4404
+      },
+      "sha256": "0b661aa75885b4dccde29eb622e582e8e8917cc38ea33f79420632dc10f30c04",
+      "bytes": 4404
+    },
+    {
+      "published_path": "launch/COMMAND.txt",
+      "original": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-approved-launch723/COMMAND.txt",
+        "sha256": "434806761ee06d1a8b4beafb19cf2459c3c32aa04bad4cbb3e0c372f77fbd6d1",
+        "bytes": 3568
+      },
+      "sha256": "434806761ee06d1a8b4beafb19cf2459c3c32aa04bad4cbb3e0c372f77fbd6d1",
+      "bytes": 3568
+    },
+    {
+      "published_path": "launch/SEALED-LAUNCH.json",
+      "original": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-approved-launch723/SEALED-LAUNCH.json",
+        "sha256": "143cc4888a96666902ca247ebf515895448292d1a379affb73195e7b33f3225f",
+        "bytes": 39558
+      },
+      "sha256": "143cc4888a96666902ca247ebf515895448292d1a379affb73195e7b33f3225f",
+      "bytes": 39558
+    },
+    {
+      "published_path": "launch/LAUNCHED.json",
+      "original": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-approved-launch723/LAUNCHED.json",
+        "sha256": "13fb7b51bf5caa7d3e34b405cb5980887ff66bb9c36bf52449382620de4fba65",
+        "bytes": 721
+      },
+      "sha256": "13fb7b51bf5caa7d3e34b405cb5980887ff66bb9c36bf52449382620de4fba65",
+      "bytes": 721
+    },
+    {
+      "published_path": "launch/RESULT.json",
+      "original": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-approved-launch723/RESULT.json",
+        "sha256": "6106fda9fd186ec285c74f9e20348fc411104cf092cb55ad36800bb797941559",
+        "bytes": 409
+      },
+      "sha256": "6106fda9fd186ec285c74f9e20348fc411104cf092cb55ad36800bb797941559",
+      "bytes": 409
+    }
+  ],
+  "history": "Run 706 is void under F39. Run 724 records the one corrected hold-out result. Historical 705, 706, 707 and 713 remain unchanged.",
+  "limits": [
+    "The publication copies every result artifact without changing its bytes.",
+    "Absolute evidence paths remain original. This manifest supplies repository-relative publication paths.",
+    "Compiler CPU and compiler peak RSS remain unavailable.",
+    "No rule, contract, statement or proof body changes in this publication.",
+    "No additional proof run follows from this publication."
+  ]
+}

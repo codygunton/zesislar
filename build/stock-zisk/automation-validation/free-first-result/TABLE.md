@@ -1,0 +1,45 @@
+| Block | Prediction | Outcome | First residual class | Goals | MCP wall (s) |
+|---|---|---|---|---:|---:|
+| 0x80041f38 | store | residual | list-witness | 12 | 118.961 |
+| 0x80041f58 | propagate | residual | pure-equality | 4 | 17.758 |
+| 0x80041f60 | propagate | residual | pure-equality | 4 | 17.625 |
+| 0x80041f68 | introduce | residual | pure-equality | 8 | 55.269 |
+| 0x80041f7c | introduce | residual | Iris-pure-condition | 1 | 5.102 |
+| 0x80041f80 | propagate | residual | pure-equality | 4 | 19.811 |
+| 0x80041f8c | propagate | residual | pure-equality | 4 | 20.358 |
+| 0x80041f98 | propagate | residual | pure-equality | 4 | 20.310 |
+| 0x80041fa4 | introduce | residual | pure-equality | 8 | 35.558 |
+| 0x80041fb4 | introduce | residual | Iris-pure-condition | 1 | 5.293 |
+| 0x80041fb8 | propagate | residual | pure-equality | 4 | 17.963 |
+| 0x80041fc0 | propagate | residual | pure-equality | 4 | 17.538 |
+| 0x80041fc8 | introduce | residual | pure-equality | 8 | 38.048 |
+| 0x80041fd8 | introduce | residual | Iris-pure-condition | 1 | 5.227 |
+| 0x80041fdc | propagate | residual | pure-equality | 4 | 19.353 |
+| 0x80041fe8 | propagate | residual | pure-equality | 4 | 20.756 |
+| 0x80041ff4 | introduce | residual | pure-equality | 8 | 72.033 |
+| 0x80042010 | introduce | residual | Iris-pure-condition | 1 | 5.283 |
+| 0x80042014 | introduce | residual | pure-equality | 8 | 55.588 |
+| 0x80042028 | introduce | residual | Iris-pure-condition | 1 | 5.308 |
+| 0x8004202c | propagate | residual | pure-equality | 4 | 20.327 |
+| 0x80042038 | introduce | residual | pure-equality | 8 | 71.414 |
+| 0x80042054 | introduce | residual | Iris-pure-condition | 1 | 5.383 |
+| 0x80042058 | introduce | residual | pure-equality | 8 | 63.459 |
+| 0x80042070 | introduce | residual | Iris-pure-condition | 1 | 5.278 |
+| 0x80042074 | propagate | residual | pure-equality | 4 | 19.544 |
+| 0x80042080 | introduce | residual | pure-equality | 8 | 36.043 |
+| 0x80042090 | introduce | residual | Iris-pure-condition | 1 | 5.231 |
+| 0x80042094 | introduce | residual | pure-equality | 8 | 71.041 |
+| 0x800420b0 | introduce | residual | Iris-pure-condition | 1 | 5.248 |
+| 0x800420b4 | introduce | residual | pure-equality | 8 | 63.945 |
+| 0x800420cc | introduce | residual | Iris-pure-condition | 1 | 5.398 |
+| 0x800420d0 | introduce | residual | pure-equality | 8 | 71.821 |
+| 0x800420ec | introduce | residual | Iris-pure-condition | 1 | 5.244 |
+| 0x800420f0 | introduce | residual | pure-equality | 8 | 71.417 |
+| 0x8004210c | introduce | residual | Iris-pure-condition | 1 | 5.312 |
+| 0x80042110 | introduce | residual | pure-equality | 8 | 48.881 |
+| 0x80042130 | introduce | residual | pure-equality | 2 | 3.106 |
+| 0x80042134 | introduce | residual | pure-equality | 4 | 21.862 |
+| 0x8004213c | propagate | residual | pure-equality | 4 | 12.608 |
+| 0x80042144 | return | residual | memory-obligation | 1 | 15.467 |
+| 0x80042154 | introduce | residual | pure-equality | 6 | 50.695 |
+| 0x80042160 | store, return | residual | memory-obligation | 1 | 19.745 |
