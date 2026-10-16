@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).parent / 'block'))
 from successor_entailment import (capture_evidence, debt_groups, designed_target,
                                  digest, plan_successor, successor_application,
                                  native_boundary_source, check_boundary, capture_entailment_source)
-from successor_entailment import validate_import
+from successor_entailment import validate_import, successor_root_parameters
 
 
 class SuccessorValidationTests(unittest.TestCase):
@@ -161,6 +161,38 @@ class SuccessorValidationTests(unittest.TestCase):
                   'application': 'Target args x13'}
         expression = successor_application(target, '(args : Args) (x13 : bv 64)', ['args'])
         self.assertEqual(expression, '(∃ (successor_x13 : bv 64), Target args successor_x13)%I')
+
+    def test_declared_interface_keeps_successor_registers_and_arrays_existential(self):
+        binders = [{'name': 'args', 'type': 'Args'}, {'name': 'x13', 'type': 'bv 64'},
+                   {'name': 'bufferBytes', 'type': 'list byte'},
+                   {'name': 'listBytes', 'type': 'list byte'},
+                   {'name': 'frameBytes', 'type': 'list byte'}]
+        design = {'entry_pc': '0x10', 'blocks': [{'entry_pc': '0x10', 'binders': binders[:-1]}],
+                  'table_convention': {'successor_root_parameters': ['args']}}
+        fixed = successor_root_parameters(design)
+        expression = successor_application({'binders': binders,
+            'application': 'Target args x13 bufferBytes listBytes frameBytes'},
+            '(args : Args) (x13 : bv 64) (bufferBytes listBytes : list byte)', fixed)
+        self.assertEqual(fixed, ['args'])
+        self.assertEqual(expression,
+            '(∃ (successor_x13 : bv 64) (successor_bufferBytes : list byte) '
+            '(successor_listBytes : list byte) (successor_frameBytes : list byte), '
+            'Target args successor_x13 successor_bufferBytes successor_listBytes successor_frameBytes)%I')
+
+    def test_absent_interface_convention_preserves_existing_root_parameters(self):
+        design = {'entry_pc': '0x10', 'blocks': [{'entry_pc': '0x10',
+                  'binders': [{'name': 'returnAddress', 'type': 'Z'},
+                              {'name': 'args', 'type': 'Args'}]}]}
+        self.assertEqual(successor_root_parameters(design), ['returnAddress', 'args'])
+
+    def test_invalid_interface_conventions_reject(self):
+        design = {'entry_pc': '0x10', 'blocks': [{'entry_pc': '0x10',
+                  'binders': [{'name': 'args', 'type': 'Args'}, {'name': 'x13', 'type': 'bv 64'}]}],
+                  'table_convention': {}}
+        for selected in ('args', ['missing'], ['args', 'args'], ['x13', 'args'], [True]):
+            with self.subTest(selected=selected), self.assertRaisesRegex(ValueError, 'ordered subset'):
+                design['table_convention']['successor_root_parameters'] = selected
+                successor_root_parameters(design)
 
     def test_fixed_root_parameter_cannot_change_type(self):
         self.assertRaises(ValueError, successor_application,

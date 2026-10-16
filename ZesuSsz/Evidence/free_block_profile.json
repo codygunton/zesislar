@@ -1,0 +1,4701 @@
+{
+  "function": "alt_fl_alloc.free",
+  "design": {
+    "schema_version": 1,
+    "label": "Structural wiring coverage; no machine contract proof",
+    "proof_status": "No native block body proof",
+    "source_inventory": "build/stock-zisk/inventory.json",
+    "function": "alt_fl_alloc.free",
+    "entry_pc": "0x80041f38",
+    "end_pc_exclusive": "0x8004218c",
+    "instruction_count": 149,
+    "block_count": 43,
+    "conditional_branch_count": 28,
+    "loop_count": 0,
+    "table_convention": {
+      "entry_type": "(Z * iProp Sigma)",
+      "pc_ownership": "instr_pre pc state supplies PC; entry predicates do not own PC",
+      "existential_binders": "Each row's binders, in their listed order",
+      "resource_application": "Apply resource_predicate to arguments in order",
+      "code_persistence": "block_table_pre boxes the supplied code resource",
+      "code_resource": "ZesuSsz.Contracts.FreeSelected.freeSelectedCode",
+      "code_source_hashes": {
+        "ZesuSsz/Contracts/FreeSelected.v": "4bf0926a8ae42926edf8f9452691ef30ffc3501c5c98f827da59488574368d1b"
+      },
+      "successor_root_parameters": [
+        "args"
+      ],
+      "successor_existentials": "Each successor row's remaining binders, in their listed order, including every register, array and frame binder"
+    },
+    "edge_condition_scope": "register values before the source block's final instruction",
+    "condition_ops": {
+      "eq": "equal bits",
+      "ne": "unequal bits",
+      "s_lt": "signed less than",
+      "s_ge": "signed greater or equal",
+      "u_lt": "unsigned less than",
+      "u_ge": "unsigned greater or equal",
+      "true": "unconditional"
+    },
+    "hashes": {
+      "inventory_sha256": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+      "selected_elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
+      "contract_sha256": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+      "data_semantics_sha256": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+      "entry_source_sha256": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d",
+      "generator_sha256": "74d6984f924436f376352389485e0b0c68ae9e53845419099c916ea34ac4d2d8"
+    },
+    "blocks": [
+      {
+        "entry_pc": "0x80041f38",
+        "end_pc_exclusive": "0x80041f58",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "caller",
+            "from_instruction": null,
+            "kind": "entry",
+            "path_condition": {
+              "op": "true"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80041f80",
+          "0x80041f58"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x1",
+            "x2",
+            "x8",
+            "x11",
+            "x12",
+            "x13"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f38"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f38",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f38",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80041f58",
+        "end_pc_exclusive": "0x80041f60",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041f38",
+            "from_instruction": "0x80041f54",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x12",
+              "right": "x14"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80041fb8",
+          "0x80041f60"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f58"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f58",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f58",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80041f60",
+        "end_pc_exclusive": "0x80041f68",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041f58",
+            "from_instruction": "0x80041f5c",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042014",
+          "0x80041f68"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f60"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f60",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f60",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80041f68",
+        "end_pc_exclusive": "0x80041f7c",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041f60",
+            "from_instruction": "0x80041f64",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042130",
+          "0x80041f7c"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f68"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f68",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f68",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80041f7c",
+        "end_pc_exclusive": "0x80041f80",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041f68",
+            "from_instruction": "0x80041f78",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x14",
+              "right": "x12"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042134"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12",
+            "x13"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f7c"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f7c",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f7c",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80041f80",
+        "end_pc_exclusive": "0x80041f8c",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041f38",
+            "from_instruction": "0x80041f54",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x12",
+              "right": "x14"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80041fdc",
+          "0x80041f8c"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f80"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f80",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f80",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80041f8c",
+        "end_pc_exclusive": "0x80041f98",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041f80",
+            "from_instruction": "0x80041f88",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x8004202c",
+          "0x80041f98"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f8c"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f8c",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f8c",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80041f98",
+        "end_pc_exclusive": "0x80041fa4",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041f8c",
+            "from_instruction": "0x80041f94",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042094",
+          "0x80041fa4"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f98"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f98",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f98",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80041fa4",
+        "end_pc_exclusive": "0x80041fb4",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041f98",
+            "from_instruction": "0x80041fa0",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042130",
+          "0x80041fb4"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fa4"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fa4",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fa4",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80041fb4",
+        "end_pc_exclusive": "0x80041fb8",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041fa4",
+            "from_instruction": "0x80041fb0",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x14",
+              "right": "x12"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042134"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12",
+            "x13"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fb4"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fb4",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fb4",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80041fb8",
+        "end_pc_exclusive": "0x80041fc0",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041f58",
+            "from_instruction": "0x80041f5c",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042058",
+          "0x80041fc0"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fb8"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fb8",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fb8",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80041fc0",
+        "end_pc_exclusive": "0x80041fc8",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041fb8",
+            "from_instruction": "0x80041fbc",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x800420b4",
+          "0x80041fc8"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fc0"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fc0",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fc0",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80041fc8",
+        "end_pc_exclusive": "0x80041fd8",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041fc0",
+            "from_instruction": "0x80041fc4",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042130",
+          "0x80041fd8"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fc8"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fc8",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fc8",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80041fd8",
+        "end_pc_exclusive": "0x80041fdc",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041fc8",
+            "from_instruction": "0x80041fd4",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x14",
+              "right": "x12"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042134"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12",
+            "x13"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fd8"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fd8",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fd8",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80041fdc",
+        "end_pc_exclusive": "0x80041fe8",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041f80",
+            "from_instruction": "0x80041f88",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042074",
+          "0x80041fe8"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fdc"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fdc",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fdc",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80041fe8",
+        "end_pc_exclusive": "0x80041ff4",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041fdc",
+            "from_instruction": "0x80041fe4",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x800420d0",
+          "0x80041ff4"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fe8"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fe8",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041fe8",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80041ff4",
+        "end_pc_exclusive": "0x80042010",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041fe8",
+            "from_instruction": "0x80041ff0",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042130",
+          "0x80042010"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041ff4"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041ff4",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041ff4",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80042010",
+        "end_pc_exclusive": "0x80042014",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041ff4",
+            "from_instruction": "0x8004200c",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x14",
+              "right": "x12"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042134"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12",
+            "x13"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042010"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042010",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042010",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80042014",
+        "end_pc_exclusive": "0x80042028",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041f60",
+            "from_instruction": "0x80041f64",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042130",
+          "0x80042028"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042014"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042014",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042014",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80042028",
+        "end_pc_exclusive": "0x8004202c",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80042014",
+            "from_instruction": "0x80042024",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x14",
+              "right": "x12"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042134"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12",
+            "x13"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042028"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042028",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042028",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x8004202c",
+        "end_pc_exclusive": "0x80042038",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041f8c",
+            "from_instruction": "0x80041f94",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x800420f0",
+          "0x80042038"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt8004202c"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt8004202c",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt8004202c",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80042038",
+        "end_pc_exclusive": "0x80042054",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x8004202c",
+            "from_instruction": "0x80042034",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042130",
+          "0x80042054"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042038"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042038",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042038",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80042054",
+        "end_pc_exclusive": "0x80042058",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80042038",
+            "from_instruction": "0x80042050",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x14",
+              "right": "x12"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042134"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12",
+            "x13"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042054"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042054",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042054",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80042058",
+        "end_pc_exclusive": "0x80042070",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041fb8",
+            "from_instruction": "0x80041fbc",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042130",
+          "0x80042070"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042058"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042058",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042058",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80042070",
+        "end_pc_exclusive": "0x80042074",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80042058",
+            "from_instruction": "0x8004206c",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x14",
+              "right": "x12"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042134"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12",
+            "x13"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042070"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042070",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042070",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80042074",
+        "end_pc_exclusive": "0x80042080",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041fdc",
+            "from_instruction": "0x80041fe4",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042110",
+          "0x80042080"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042074"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042074",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042074",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80042080",
+        "end_pc_exclusive": "0x80042090",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80042074",
+            "from_instruction": "0x8004207c",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042130",
+          "0x80042090"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042080"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042080",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042080",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80042090",
+        "end_pc_exclusive": "0x80042094",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80042080",
+            "from_instruction": "0x8004208c",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x14",
+              "right": "x12"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042134"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12",
+            "x13"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042090"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042090",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042090",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80042094",
+        "end_pc_exclusive": "0x800420b0",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041f98",
+            "from_instruction": "0x80041fa0",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042130",
+          "0x800420b0"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042094"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042094",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042094",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x800420b0",
+        "end_pc_exclusive": "0x800420b4",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80042094",
+            "from_instruction": "0x800420ac",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x14",
+              "right": "x12"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042134"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12",
+            "x13"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt800420b0"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt800420b0",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt800420b0",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x800420b4",
+        "end_pc_exclusive": "0x800420cc",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041fc0",
+            "from_instruction": "0x80041fc4",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042130",
+          "0x800420cc"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt800420b4"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt800420b4",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt800420b4",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x800420cc",
+        "end_pc_exclusive": "0x800420d0",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x800420b4",
+            "from_instruction": "0x800420c8",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x14",
+              "right": "x12"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042134"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12",
+            "x13"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt800420cc"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt800420cc",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt800420cc",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x800420d0",
+        "end_pc_exclusive": "0x800420ec",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041fe8",
+            "from_instruction": "0x80041ff0",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042130",
+          "0x800420ec"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt800420d0"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt800420d0",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt800420d0",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x800420ec",
+        "end_pc_exclusive": "0x800420f0",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x800420d0",
+            "from_instruction": "0x800420e8",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x14",
+              "right": "x12"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042134"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12",
+            "x13"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt800420ec"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt800420ec",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt800420ec",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x800420f0",
+        "end_pc_exclusive": "0x8004210c",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x8004202c",
+            "from_instruction": "0x80042034",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042130",
+          "0x8004210c"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt800420f0"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt800420f0",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt800420f0",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x8004210c",
+        "end_pc_exclusive": "0x80042110",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x800420f0",
+            "from_instruction": "0x80042108",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x14",
+              "right": "x12"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042134"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12",
+            "x13"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt8004210c"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt8004210c",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt8004210c",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80042110",
+        "end_pc_exclusive": "0x80042130",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80042074",
+            "from_instruction": "0x8004207c",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x12",
+              "right": "x13"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042134",
+          "0x80042130"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042110"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042110",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042110",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80042130",
+        "end_pc_exclusive": "0x80042134",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041f68",
+            "from_instruction": "0x80041f78",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x14",
+              "right": "x12"
+            }
+          },
+          {
+            "from_block": "0x80041fa4",
+            "from_instruction": "0x80041fb0",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x14",
+              "right": "x12"
+            }
+          },
+          {
+            "from_block": "0x80041fc8",
+            "from_instruction": "0x80041fd4",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x14",
+              "right": "x12"
+            }
+          },
+          {
+            "from_block": "0x80041ff4",
+            "from_instruction": "0x8004200c",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x14",
+              "right": "x12"
+            }
+          },
+          {
+            "from_block": "0x80042014",
+            "from_instruction": "0x80042024",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x14",
+              "right": "x12"
+            }
+          },
+          {
+            "from_block": "0x80042038",
+            "from_instruction": "0x80042050",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x14",
+              "right": "x12"
+            }
+          },
+          {
+            "from_block": "0x80042058",
+            "from_instruction": "0x8004206c",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x14",
+              "right": "x12"
+            }
+          },
+          {
+            "from_block": "0x80042080",
+            "from_instruction": "0x8004208c",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x14",
+              "right": "x12"
+            }
+          },
+          {
+            "from_block": "0x80042094",
+            "from_instruction": "0x800420ac",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x14",
+              "right": "x12"
+            }
+          },
+          {
+            "from_block": "0x800420b4",
+            "from_instruction": "0x800420c8",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x14",
+              "right": "x12"
+            }
+          },
+          {
+            "from_block": "0x800420d0",
+            "from_instruction": "0x800420e8",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x14",
+              "right": "x12"
+            }
+          },
+          {
+            "from_block": "0x800420f0",
+            "from_instruction": "0x80042108",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x14",
+              "right": "x12"
+            }
+          },
+          {
+            "from_block": "0x80042110",
+            "from_instruction": "0x8004212c",
+            "source_terminator": "bltu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x14",
+              "right": "x12"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042134"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12",
+            "x14"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042130"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042130",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042130",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80042134",
+        "end_pc_exclusive": "0x8004213c",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80041f7c",
+            "from_instruction": "0x80041f7c",
+            "source_terminator": "jal",
+            "kind": "jump",
+            "path_condition": {
+              "op": "true"
+            }
+          },
+          {
+            "from_block": "0x80041fb4",
+            "from_instruction": "0x80041fb4",
+            "source_terminator": "jal",
+            "kind": "jump",
+            "path_condition": {
+              "op": "true"
+            }
+          },
+          {
+            "from_block": "0x80041fd8",
+            "from_instruction": "0x80041fd8",
+            "source_terminator": "jal",
+            "kind": "jump",
+            "path_condition": {
+              "op": "true"
+            }
+          },
+          {
+            "from_block": "0x80042010",
+            "from_instruction": "0x80042010",
+            "source_terminator": "jal",
+            "kind": "jump",
+            "path_condition": {
+              "op": "true"
+            }
+          },
+          {
+            "from_block": "0x80042028",
+            "from_instruction": "0x80042028",
+            "source_terminator": "jal",
+            "kind": "jump",
+            "path_condition": {
+              "op": "true"
+            }
+          },
+          {
+            "from_block": "0x80042054",
+            "from_instruction": "0x80042054",
+            "source_terminator": "jal",
+            "kind": "jump",
+            "path_condition": {
+              "op": "true"
+            }
+          },
+          {
+            "from_block": "0x80042070",
+            "from_instruction": "0x80042070",
+            "source_terminator": "jal",
+            "kind": "jump",
+            "path_condition": {
+              "op": "true"
+            }
+          },
+          {
+            "from_block": "0x80042090",
+            "from_instruction": "0x80042090",
+            "source_terminator": "jal",
+            "kind": "jump",
+            "path_condition": {
+              "op": "true"
+            }
+          },
+          {
+            "from_block": "0x800420b0",
+            "from_instruction": "0x800420b0",
+            "source_terminator": "jal",
+            "kind": "jump",
+            "path_condition": {
+              "op": "true"
+            }
+          },
+          {
+            "from_block": "0x800420cc",
+            "from_instruction": "0x800420cc",
+            "source_terminator": "jal",
+            "kind": "jump",
+            "path_condition": {
+              "op": "true"
+            }
+          },
+          {
+            "from_block": "0x800420ec",
+            "from_instruction": "0x800420ec",
+            "source_terminator": "jal",
+            "kind": "jump",
+            "path_condition": {
+              "op": "true"
+            }
+          },
+          {
+            "from_block": "0x8004210c",
+            "from_instruction": "0x8004210c",
+            "source_terminator": "jal",
+            "kind": "jump",
+            "path_condition": {
+              "op": "true"
+            }
+          },
+          {
+            "from_block": "0x80042110",
+            "from_instruction": "0x8004212c",
+            "source_terminator": "bltu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x14",
+              "right": "x12"
+            }
+          },
+          {
+            "from_block": "0x80042130",
+            "from_instruction": "0x80042130",
+            "source_terminator": "addi",
+            "kind": "fallthrough",
+            "path_condition": {
+              "op": "true"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042154",
+          "0x8004213c"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x10",
+            "x11",
+            "x12",
+            "x13"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042134"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042134",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042134",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x8004213c",
+        "end_pc_exclusive": "0x80042144",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80042134",
+            "from_instruction": "0x80042138",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x14",
+              "right": "x10"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042160",
+          "0x80042144"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x11",
+            "x13"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt8004213c"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt8004213c",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt8004213c",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80042144",
+        "end_pc_exclusive": "0x80042154",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x8004213c",
+            "from_instruction": "0x80042140",
+            "source_terminator": "bltu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x13",
+              "right": "x10"
+            }
+          },
+          {
+            "from_block": "0x80042154",
+            "from_instruction": "0x8004215c",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x12",
+              "right": "x10"
+            }
+          }
+        ],
+        "successor_pcs": [],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042144"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042144",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042144",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        },
+        "return_clause": {
+          "return_instruction_pc": "0x80042150"
+        }
+      },
+      {
+        "entry_pc": "0x80042154",
+        "end_pc_exclusive": "0x80042160",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x80042134",
+            "from_instruction": "0x80042138",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_ge",
+              "left": "x14",
+              "right": "x10"
+            }
+          }
+        ],
+        "successor_pcs": [
+          "0x80042144",
+          "0x80042160"
+        ],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x11",
+            "x12"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042154"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042154",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042154",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        }
+      },
+      {
+        "entry_pc": "0x80042160",
+        "end_pc_exclusive": "0x8004218c",
+        "entry_class": "declared_entry",
+        "incoming_edges": [
+          {
+            "from_block": "0x8004213c",
+            "from_instruction": "0x80042140",
+            "source_terminator": "bltu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x13",
+              "right": "x10"
+            }
+          },
+          {
+            "from_block": "0x80042154",
+            "from_instruction": "0x8004215c",
+            "source_terminator": "bgeu",
+            "kind": "conditional",
+            "path_condition": {
+              "op": "u_lt",
+              "left": "x12",
+              "right": "x10"
+            }
+          }
+        ],
+        "successor_pcs": [],
+        "needed_resources": {
+          "register_live_in_hint": [
+            "x2",
+            "x11",
+            "x13"
+          ],
+          "rocq_entry": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042160"
+        },
+        "entry_definition": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042160",
+        "binders": [
+          {
+            "name": "args",
+            "type": "FreeArgs"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "bufferBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "listBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "args",
+          "x1",
+          "x2",
+          "x8",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "bufferBytes",
+          "listBytes",
+          "frameBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042160",
+        "source_hashes": {
+          "ZesuSsz/Contracts/AltFlFree.v": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+          "ZesuSsz/Contracts/AltFlFreeContract.v": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+          "ZesuSsz/Contracts/AltFlFreeBlockEntries.v": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d"
+        },
+        "return_clause": {
+          "return_instruction_pc": "0x80042188"
+        }
+      }
+    ]
+  },
+  "hash_sources": {
+    "inventory_sha256": "build/stock-zisk/inventory.json",
+    "selected_elf_sha256": "build/stock-zisk/zesu-zisk.elf",
+    "contract_sha256": "ZesuSsz/Contracts/AltFlFreeContract.v",
+    "data_semantics_sha256": "ZesuSsz/Contracts/AltFlFree.v",
+    "entry_source_sha256": "ZesuSsz/Contracts/AltFlFreeBlockEntries.v"
+  }
+}

@@ -172,6 +172,20 @@ def successor_application(target, fixed_binders, root_parameters):
     return '(' + body + ')%I'
 
 
+def successor_root_parameters(design):
+    """Keep declared interface parameters fixed across successor applications."""
+    root = chain_root.gen_block.address(design['entry_pc'])
+    entry = next(row for row in design['blocks']
+                 if chain_root.gen_block.address(row['entry_pc']) == root)
+    names = [binder['name'] for binder in entry['binders']]
+    selected = design.get('table_convention', {}).get('successor_root_parameters', names)
+    if (not isinstance(selected, list) or any(not isinstance(name, str) for name in selected)
+            or len(selected) != len(set(selected))
+            or selected != [name for name in names if name in selected]):
+        raise ValueError('The successor root parameters must be an ordered subset of the root binders')
+    return list(selected)
+
+
 def native_boundary_source(state, block, design, root, *, enabled=True,
                            terminal=None, extra_imports=(), historical_target=None):
     """Use the existing whole-block renderer with actual designed boundaries.
@@ -186,8 +200,7 @@ def native_boundary_source(state, block, design, root, *, enabled=True,
     convention = design.get('table_convention', {})
     if convention.get('existential_binders') != "Each row's binders, in their listed order":
         raise ValueError('Unavailable published binder convention')
-    root_entry = chain_root.gen_block.address(design['entry_pc'])
-    root_parameters = [binder['name'] for binder in entries[root_entry]['binders']]
+    root_parameters = successor_root_parameters(design)
     if entry not in entries:
         raise ValueError('The native block has no designed entry')
     original = designed_target(entries[entry], root)
