@@ -1,0 +1,822 @@
+{
+  "schema": 1,
+  "frozen_root": "e8131be295b89a1821b3ba760f39e7aad1e8647d",
+  "root_matches_main": true,
+  "announcement": "Parent released one corrected run after review 722.",
+  "sealed_utc": "2026-10-16T05:38:55.628859+00:00",
+  "environment": {
+    "ZESU_WRITER_ID": "worker2-c",
+    "ZESU_GATE_MODULE_LIMIT_GIB": "32",
+    "ZESU_MODULE_LIMIT_GIB": "32",
+    "ZESU_PROOF_CPU_LIMIT": "4000",
+    "OPAM_SWITCH_PREFIX": "/home/cody/islaris/_opam",
+    "ISLARIS_REPO": "/home/cody/islaris",
+    "OCAMLPATH": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/agents/worker2-c-free-first/install/default/lib",
+    "ROCQ_DUNE_BUILD": "0",
+    "ZESU_ROCQ_MCP_BINARY": "/home/cody/.local/share/uv/tools/rocq-mcp/bin/rocq-mcp",
+    "ZESU_ROCQ_COQC_WRAPPER": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/tools/rocq_coqc_guarded.sh",
+    "PATH": "/home/cody/islaris/_opam/bin:/home/cody/.elan/bin:/home/cody/.npm-global/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/cody/.codex/tmp/arg0/codex-arg0s7GuYH:/opt/cuda/bin:/home/cody/.pixi/bin:/home/cody/.elan/bin:/home/cody/android-sdk/cmdline-tools/latest/bin:/home/cody/android-sdk/platform-tools:/opt/cuda/bin:/home/cody/.pixi/bin:/home/cody/.elan/bin:/home/cody/android-sdk/cmdline-tools/latest/bin:/home/cody/android-sdk/platform-tools:/home/cody/.elan/bin:/home/cody/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/home/cody/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/home/cody/.sp1/bin:/home/cody/.zisk-1.0.0-alpha/bin:/home/cody/.sp1/bin:/home/cody/.zisk-1.0.0-alpha/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/cody/.local/bin:/home/cody/.local/bin/zig-install:/home/cody/.cargo/bin:/home/cody/.npm-global/bin:/home/cody/.pyenv/bin:/home/cody/ai-cookbook/scripts:/home/cody/.risc0/bin:/opt/nvim-linux-x86_64/bin:/home/cody/.fzf/bin:/home/cody/.maestro/bin:/home/cody/.dotnet:/home/cody/.dotnet/tools:/home/cody/.sp1/bin:/home/cody/.zisk-1.0.0-alpha/bin:/home/cody/.local/bin:/home/cody/.local/bin/zig-install:/home/cody/.cargo/bin:/home/cody/.npm-global/bin:/home/cody/.pyenv/bin:/home/cody/ai-cookbook/scripts:/home/cody/.risc0/bin:/opt/nvim-linux-x86_64/bin:/home/cody/.maestro/bin:/home/cody/.dotnet:/home/cody/.dotnet/tools:/home/cody/.sp1/bin:/home/cody/.zisk-1.0.0-alpha/bin"
+  },
+  "arguments": [
+    "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+    "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/tools/block/discovery.py",
+    "--designed-successors",
+    "--first-native-run",
+    "e8131be295b89a1821b3ba760f39e7aad1e8647d",
+    "--design",
+    "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-first-inputs/free_block_design.json",
+    "--trace-import",
+    "ZesuSsz.Stock.Free.index_free",
+    "--code-premises",
+    "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-first-inputs/free-code-premises.txt",
+    "--probe-import",
+    "ZesuSsz.Contracts.FreeSelected",
+    "--probe-import",
+    "ZesuSsz.Compliance.FreeHints",
+    "--probe-import",
+    "ZesuSsz.Automation.Approved",
+    "--binding-report",
+    "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-entry-applications597/report.json",
+    "--terminal",
+    "freeReturnAddress args",
+    "--terminal-descriptor",
+    "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-first-inputs/terminal-descriptor.json",
+    "--cfg",
+    "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/build/stock-zisk/cfg.json",
+    "--manifest",
+    "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/build/stock-zisk/build-recipe.json",
+    "--out",
+    "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720",
+    "--mcp-command",
+    "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/tools/rocq_mcp_guarded.sh",
+    "--build-dir",
+    "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/agents/worker2-c-free-first",
+    "--jobs",
+    "6",
+    "--seconds",
+    "300"
+  ],
+  "checked_inputs": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Contracts/AltFlFree.v",
+      "sha256": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+      "bytes": 7182
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Contracts/AltFlFreeContract.v",
+      "sha256": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+      "bytes": 5240
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Contracts/AltFlFreeBlockEntries.v",
+      "sha256": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d",
+      "bytes": 22853
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Compliance/FreeClassFacts.v",
+      "sha256": "69df14f57e9b3a1f38ad291162b8e36e87aad29e4c9ee4782ed44524486d7505",
+      "bytes": 1419
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Compliance/FreeEntryIntroductions.v",
+      "sha256": "be3045bf0e12ba7e2bde681e274b695cef315ffb639296c16bd19935e55adec4",
+      "bytes": 3034
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Compliance/FreeDataRegistrations.v",
+      "sha256": "78cac3811422b7b6ef299969c38accce86d505e72f5250c6106d81319f94ebbb",
+      "bytes": 1173
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Compliance/FreeUnfoldRegistrations.v",
+      "sha256": "e3d3bebfe5b1732911e6380d85a3aafee03145ee7c548b7d6748e033e7f2ba75",
+      "bytes": 5389
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Compliance/FreeReturnFacts.v",
+      "sha256": "6c4e348e4cedb7fed168276cb9a6c7d2aa635fcba52557e444421e508a1a395a",
+      "bytes": 2162
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Compliance/FreeExitRegistrations.v",
+      "sha256": "08aac01a4ad742201daad0350fb13f32095bcffb449e9b25839df1925e79fc05",
+      "bytes": 3274
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Compliance/FreeHints.v",
+      "sha256": "d4a6d8fcca4cc744990ab57a070070ebce4b1ae717f147543f75b6854e422b0d",
+      "bytes": 173
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Contracts/FreeSelected.v",
+      "sha256": "4bf0926a8ae42926edf8f9452691ef30ffc3501c5c98f827da59488574368d1b",
+      "bytes": 501
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/tools/block/discovery.py",
+      "sha256": "7408ab2d4d7a487836cc7e9794e6389eb5bbb0ff957614d8bf14d061cd28e2fa",
+      "bytes": 50204
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/tools/rocq_mcp_guarded.sh",
+      "sha256": "005116d86277297aaf3f0f01a01c44490532f5ac0395e2b4cf2de7c132839f24",
+      "bytes": 1095
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/tools/rocq_coqc_guarded.sh",
+      "sha256": "e8671fd5331f997348b4d34ab2afe2a2b7a26ec7d32489b1ad04493802486eeb",
+      "bytes": 737
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/tools/coqc_findlib.py",
+      "sha256": "68d7a7d7530bfab491056996042f187333f6eda18041ed19e430242fd86125eb",
+      "bytes": 5685
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/tools/resource_guard.sh",
+      "sha256": "73d048edfa332d231800c29960ae0325574887c0410be34c2e4fbdbf9efc6d8b",
+      "bytes": 56591
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_CoqProject",
+      "sha256": "9bcd9b403fb2703543296e7345c288c47ab2051daa00669ddb385ceef19c991a",
+      "bytes": 777
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/All.v",
+      "sha256": "eef1d03755d6828c8057984b96adcb693f1ac2a8b402797c611171d4e214479f",
+      "bytes": 460
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/AllLegacy.v",
+      "sha256": "2e3cd07b3fee5485b536ee966f53a26089947ba055b79f29539c3231a999cb15",
+      "bytes": 1024
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Approved.v",
+      "sha256": "3f2b79be209341d0f181055b81922d6e31027452519486d4bf6125caf4eea488",
+      "bytes": 1946
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/ArrayByteValues.v",
+      "sha256": "f645a5a4afd7cafd7ad2fd76bebb461de508551a2afde5ca4f6808589b329398",
+      "bytes": 9449
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/ArrayCursors.v",
+      "sha256": "f3a36d809d5a61cc03bab24527b1c6f7d26e52d3c45b3939dcd7b4973de3400d",
+      "bytes": 2808
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/ArrayLoadPreselect.v",
+      "sha256": "0b52f9a4a1dce14a519a93cb6aac0db0bfa3bf1009b5b38bb2e464cf6b7e46c9",
+      "bytes": 3036
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/ArrayLoadPriority.v",
+      "sha256": "b23d4889e2ace741a36d7666aff6ad12206cb0dbbef992b84ca206b2266a4f17",
+      "bytes": 7760
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/ArrayPacking.v",
+      "sha256": "f8019b11552c9366dcc27a6e496f12bf72828cbc369c0b9d375c25b2ba666223",
+      "bytes": 2342
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/ArraySlices.v",
+      "sha256": "afb41ad2d785e441d701ad6c3468a1de3c40155ede8c9bcca3544f7aebe95ece",
+      "bytes": 5756
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/BitvectorFacts.v",
+      "sha256": "1d6678eb4318ee66af81a1bcfe3c18d0d14858f0540ae813475d7458b25c7a93",
+      "bytes": 4921
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/BlockTable.v",
+      "sha256": "d0d4b21522ac72f564c38640f19199a1d5ce18d5a278ba818c78dfc31c1a9870",
+      "bytes": 3754
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/BoundedArithmetic.v",
+      "sha256": "f2c8236be52fcc3621159a5db49fc02ca0f16ad5df49b22568e234d4099d64c5",
+      "bytes": 2199
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/ByteArrayLengths.v",
+      "sha256": "3e7b6786a579bae22b792994df9b6d8e56d84da3a76bc6f7f579db5935b78ebf",
+      "bytes": 874
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/ByteArrayLoadSpec.v",
+      "sha256": "cde2c3cfb0999e7b520fc9f4bbcfa9cdd5acadad3719d875f6ab09eeb91e72f9",
+      "bytes": 1654
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/ByteArrays.v",
+      "sha256": "3849f6d0a8e95472a24bfd81862112af9442f5461b9fe8ddb989ceac499208cc",
+      "bytes": 27356
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/ByteFold.v",
+      "sha256": "4a9cce8ecec70607830b93a2c3a8e10bcc3dd0ada7246312f7fd08c663256d14",
+      "bytes": 61
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/CallReturn.v",
+      "sha256": "6cc56125cff1007f4f119a18b1f75b4db9687b3cf65b5f8a851d0d7b1c179f4b",
+      "bytes": 1708
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/CallReturnSpecTable.v",
+      "sha256": "2f20fd79fbb7f37b752588930edcf640613b34055b951964183331bce7a50cb2",
+      "bytes": 713
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Calls.v",
+      "sha256": "30561eb68a70e4e497fdeeb966ea8d262259614374b06527dd7171dc9fcbacd3",
+      "bytes": 8298
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/ConjunctMatch.v",
+      "sha256": "475a449608598dc9c0e7286081b27fe89be38b8d4a613359a2b6d521ef5132f8",
+      "bytes": 6085
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/EntryIntro.v",
+      "sha256": "1ed4cc24d34a6f3c1a1ca64e6e60edb22829b34e2422b495708de3981775eaf7",
+      "bytes": 13190
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/ExistentialArrayRestore.v",
+      "sha256": "7206794357f54ba98a898de4d3c8b65f1f144954b30f4ca1bd08872e46958219",
+      "bytes": 2192
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Finish.v",
+      "sha256": "98d456eff6a4c13f467dbf5595080664ecb38bc6427f1ad0e2661e28d2df9dfd",
+      "bytes": 27418
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/GuardedTracePrefix.v",
+      "sha256": "5d1d093b4a26d9cce24cdcc50710735c75dff3b2ae68248789d85e0c441c0b17",
+      "bytes": 3245
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Hooks.v",
+      "sha256": "a34d392ecd85d12a7e26eda8db2faa0983603cb48839e164466bde6e0bc3168c",
+      "bytes": 75588
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/InstrPre.v",
+      "sha256": "8e4542e23863ffe23a1342edb1c8aa2db50ea373f93dd493d501d72367f77fae",
+      "bytes": 1934
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/InstrPreAddress.v",
+      "sha256": "8dd94031f3adcb656141cd681f42e653052699d11e8e735e344ca2688186e588",
+      "bytes": 1147
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/InteriorByteSlice.v",
+      "sha256": "34a9c4c0efbc63bed5bef5715fae06825c7d661e30c6327837b2754befd837a1",
+      "bytes": 6670
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Legacy/Finish.v",
+      "sha256": "0a7e042e2b45137fbc3aa5dc247627e90d61887743e4a1cae952575b860df0b9",
+      "bytes": 12186
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Legacy/Hooks.v",
+      "sha256": "e3f8250dc1b0964228e3813ad0f9d1ce03c403d207a018a906f85573e614c2bb",
+      "bytes": 7584
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/ListImageFacts.v",
+      "sha256": "c0983cb8f14a28e6853da971be8e47be83c02e3c13575c4e2d859fc2b68caff0",
+      "bytes": 2877
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/LoadedTrace.v",
+      "sha256": "46ad11509996a6d7f14bf764b781d81cca98bc01976b1a09bdc3322ee73369fa",
+      "bytes": 1717
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/LookupReduce.v",
+      "sha256": "09e6da594bdf2c4c142023e8189abdad9a5b626053ae7043b473ef01dd65b229",
+      "bytes": 2121
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/NatBitvectors.v",
+      "sha256": "e32c3e1b043d6cf97b2cd8358ac6728e04b52fc576c85ac9001b6aa622b51f41",
+      "bytes": 702
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/NatBounds.v",
+      "sha256": "2570c41758373c4182f5eda674a4dd4a1f4bc26193413a6e2ba2979a6888d145",
+      "bytes": 1098
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/OutcomeHandoff.v",
+      "sha256": "90fe67aa1d0918cea02585a2aacdae7f1f26bed45946e1dc5c8a8ad5011e8340",
+      "bytes": 862
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/PackedWordValues.v",
+      "sha256": "d27bb6336c1ba03296a49e23f6bba12933ffde93d4f0b786bd5b3d9b374d8105",
+      "bytes": 3417
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/PureFacts.v",
+      "sha256": "f335711bf01eb2cd6d16ab811a02a75c9e7f05f8919470b5f8f3e906ccd19f14",
+      "bytes": 5268
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/ResourceGroups.v",
+      "sha256": "0201606b2145f7ff3c2db1d2a3c4fe515ab6779c555bd3e95308f6ead94ee6d5",
+      "bytes": 10442
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/ReturnBundle.v",
+      "sha256": "eba6f9486d417e9f176d582cfa3c859f1631d4df98e1667df75b9742cdefa97b",
+      "bytes": 1222
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/ReturnRoute.v",
+      "sha256": "1a958f92b6f0a9a55605aa8f590c8e444cfa595e6d5e69ea232ab90e2170517d",
+      "bytes": 6150
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/ReturnWand.v",
+      "sha256": "32d684cc8fa6892825f0f81622d8c55f55c598110e2ddad9eb39e8312437176b",
+      "bytes": 523
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Rewrites.v",
+      "sha256": "2284673efe7010629e0e76b48e62106189be74f225a6e96b355bdaef77635ed4",
+      "bytes": 2404
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/SealedCoverage.v",
+      "sha256": "9e3d730616f8ebae52dd32956298109b06e121d4a524ec1234c93b4d61305143",
+      "bytes": 9626
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Sets/call.v",
+      "sha256": "0a8d4b87a3cca9b35634965e5980852072ba1612f9470a77fa189939a9f164cb",
+      "bytes": 521
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Sets/v1.v",
+      "sha256": "19671621738637d1e9287f7d22d2aed952dcb5dae8c8718c35d0855d07ac423d",
+      "bytes": 949
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Sets/v2.v",
+      "sha256": "c56dbd1bafa0cf9767a2a65dce6843cc7ad8dbb405fc7af87ba9b381dae91a75",
+      "bytes": 2877
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/SpecPrefix.v",
+      "sha256": "a69173559162c6d45988ccb7c176a31ddbd20813d98b8feb403d53c1e6d473ca",
+      "bytes": 3194
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/StackArrayIndices.v",
+      "sha256": "1f96ee0971d91fdda04518241caac1904678ccb22f2a81e9da1f04f189734de1",
+      "bytes": 1175
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/StackArrayLookup.v",
+      "sha256": "90475f13a4685496fdf343baf276aa05630e97f6b6e93d108bdd60082914f4b4",
+      "bytes": 2289
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/SwitchDispatch.v",
+      "sha256": "d34dabce60a8b7552ff673f9ff93417fe0a07fec24e5312633ba69b70ebdb417",
+      "bytes": 3117
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/ArrayBounds.v",
+      "sha256": "9c959f84ce536976bae84c1c0bbe9d254536b5669a85eb5b1269ab64b8ff8605",
+      "bytes": 114
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/ArrayLoadPriority.v",
+      "sha256": "6a2fdeeb507847d74f2b65b5dd754a6c41a9e4da93c0c29f4db870b0c9aa6361",
+      "bytes": 260
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/ArrayRegionBounds.v",
+      "sha256": "99a08b4d942e076699ad7afb0d24015caa96d5ac19dcb4657d8e47e9d237162d",
+      "bytes": 138
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/BoundedArithmetic.v",
+      "sha256": "ed5555a2c45ff4bd86304e2ae014c5ba3a7b411785a7a26213ad8c364b9e8904",
+      "bytes": 137
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/ByteListContainment.v",
+      "sha256": "7f419b79a67c9eaaa8890c4f2f4370cdcb0e8a056fc0ca14a9e5c549011b96ab",
+      "bytes": 134
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/CallReturn.v",
+      "sha256": "fb466d4bcd02410a1abe9dd317902f57818f56d68401dbd03b8ef5909917f3fa",
+      "bytes": 806
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/CanonicalAnchor.v",
+      "sha256": "7e11959825bc023c5f4c8b3edf4062f8a272c7ce37b297a8e405ce777d6950e0",
+      "bytes": 123
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/CanonicalPureConjunction.v",
+      "sha256": "28fab080877d773c3dbba62bb127fd7552990357d3971045cc9324c6a6b6a0e8",
+      "bytes": 144
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/ConjunctMatch.v",
+      "sha256": "7297b4be81634966b0865fedd6f39892884009ad261ee1a2ea4dc299cfafa777",
+      "bytes": 127
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/EntryIntro.v",
+      "sha256": "1b6f76274b5f4c3a1c0b81f8da17ba46eb5be4f724acbf3fd7d32330c16899c1",
+      "bytes": 119
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/EvarImplicationGuard.v",
+      "sha256": "3c2a70e7e58da0a9cb32dd02756ecec1c67365f37d1bdcfcc1752be617ccb293",
+      "bytes": 133
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/EvarSideconditionGuard.v",
+      "sha256": "b42d39d88addee59cb3aaf7e3504dce76f31920886ed168b9dfb6ef8b0964859",
+      "bytes": 137
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/ExistentialArrayRestore.v",
+      "sha256": "7f6bc1a9ca6a0764ef516390a53b3af0025ed01e81484043ade1711fb53ec3c5",
+      "bytes": 287
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/InstrPreAddress.v",
+      "sha256": "5175d873211928630c7029a55aafeded758d8ebf63d526334b93d28a511bf0fb",
+      "bytes": 253
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/InstructionLookup.v",
+      "sha256": "9fdd65b96e2147572eb07d7e79f8b7b518a0677994e27bfb589ccedc630c5b23",
+      "bytes": 126
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/IntegerArrayAddress.v",
+      "sha256": "16a7a06138645304ba55aa5b90ed93f1141ff29e42868d39335dd0abae1d4ebc",
+      "bytes": 131
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/InteriorByteSlice.v",
+      "sha256": "3660189b2862069a167fa87dcd9a755ca31708800b051d234a213f8a580eb80c",
+      "bytes": 192
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/KnownPairWitness.v",
+      "sha256": "09d3f437d741500d471b393acc0e143bd95ae63179cf2aa38b6bea630ed2dc17",
+      "bytes": 125
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/ListWitness.v",
+      "sha256": "b1e5937695fc540e0533447f7ad66fbb2c4a04cee0248a5ba34a9ca830efcb59",
+      "bytes": 114
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/LoadedTrace.v",
+      "sha256": "5d41a3ff6fdff9fd157ce4c24227ebaa0f697bc7e4c5035de8c7d0443fc545bf",
+      "bytes": 297
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/LookupReduce.v",
+      "sha256": "bf3a099f74e961c9312ce3a64c48a1abf3afe3175666b2272134e1082cdc5904",
+      "bytes": 804
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/LowMask.v",
+      "sha256": "539edc301a163c8b7102e9ce44f4ee9eb68e86535e95abcd99f7ff7af82899d7",
+      "bytes": 156
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/MaskNormalizer.v",
+      "sha256": "b3838fafbe5909cba981ce6fa1ae4a3722995d155b7511bbb072f4e0156a7367",
+      "bytes": 130
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/OutcomeHandoff.v",
+      "sha256": "4b5cb51d120649f708332c287fab53e5ad343a78cea72ac3e7fc6b31f386d016",
+      "bytes": 247
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/PureFactExistential.v",
+      "sha256": "6dbec9718eb9d0ff7d45ef1c482b8a6c4567b59e54b3d22f3d24c524c855eb44",
+      "bytes": 131
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/PureFactHints.v",
+      "sha256": "d1d926ff7a27a9b2f3dfad2d8668c5724c40d2d848570d39fba95fca937601ac",
+      "bytes": 119
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/PureWitnessConstraints.v",
+      "sha256": "91096935b447191640f6dca99e4d1a9e3d2e319a13efedbd50618fabb36eeb2b",
+      "bytes": 137
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/RamFault.v",
+      "sha256": "3715bc1577f76ab347a0d1559a7cba86c5e2210f77d66a33b8b436d0b8227ccb",
+      "bytes": 108
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/RecordWitness.v",
+      "sha256": "16031e2cba45a7aa9522613ae6d5d635a67d63ada765a5b9201cdf5f4d829193",
+      "bytes": 118
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/RegionFault.v",
+      "sha256": "7e3837c0a2a0dba755409cc3446aff3d73a855b3404c76e0889ad9fe122e954b",
+      "bytes": 114
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/RegionFaultCastHypotheses.v",
+      "sha256": "628613fe938f4611c4e7eedb3045263d0a36893cf741bb1e7a74734d39df0156",
+      "bytes": 147
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/RegionFaultNormalization.v",
+      "sha256": "b1701b350599a73e1b0fae290d2d08ee241636396d7bcdc6d9d2792f7d298736",
+      "bytes": 142
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/RegisterCollectionSelection.v",
+      "sha256": "56c8408870cb1c3d2f85f08ee7b0e5f645c1ec91a649a5542725a130de632368",
+      "bytes": 151
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/ReturnBundle.v",
+      "sha256": "54c6c943e555e59ca849076cc1d0651810ea1d94cfa98286c9b34bd0d393d419",
+      "bytes": 239
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/ReturnRoute.v",
+      "sha256": "0fd6fcd00970a268b396416c6fe33a7ea34d22c0772ad496f5d657123d232128",
+      "bytes": 121
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/ReturnWand.v",
+      "sha256": "c62340b55b7861a05b79f9b9a809113279e7ce9612954b78491a2e9736afadb6",
+      "bytes": 231
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/SealedOpen.v",
+      "sha256": "99083cc24b71e8eecf263f1a2d6d1761d34decdb0f9c2c7c8237b0ea7db44bc6",
+      "bytes": 825
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/SpecTail.v",
+      "sha256": "9c727682ea8993478f1b0173de6f8dcf2ba7027bc24d1c966b44f68f7bf0b04f",
+      "bytes": 797
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/StackWrite.v",
+      "sha256": "5cca498f4d778438bc8b58c1d0da8def0c231bd64d463e1053b18279c806efdb",
+      "bytes": 112
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/StrictSigned.v",
+      "sha256": "87261fc54b89444d8c09f7ae2acda9d82adc21676438c26f1d888038cd5102d6",
+      "bytes": 166
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/SwitchDispatch.v",
+      "sha256": "54c050ef53f3a2add813ce8247859847f98111da3589dffa97a7a4a7e0468e0b",
+      "bytes": 122
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/TracePrefixTail.v",
+      "sha256": "23f82e3260556dd4ee3f049ab20cbd92e22458397928480961be716298333825",
+      "bytes": 132
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/TupleWitness.v",
+      "sha256": "9b95391a98b6a6ae3e18d98a40ad77e7f77e20a6fd483b42479a40eefa652b57",
+      "bytes": 116
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/WitnessArith.v",
+      "sha256": "bc12a0872c87534d857dbc8eb62a9106d18158876b0fc0bc3308749a3e947346",
+      "bytes": 766
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/WordArrayHandoff.v",
+      "sha256": "7397d5860c202ed1d4b8976065ccdd0d7316859f7885567b8ad0ce23bd583f5c",
+      "bytes": 125
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/TracePrefixTail.v",
+      "sha256": "54848455e3314d28d88f9b2999309847239262c3d52e6fa6ec209effb897c619",
+      "bytes": 3730
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/TraceTailLemmas.v",
+      "sha256": "a3056417ea1bd254051bf577740321043d097011499cf3644e8ea6835b8db1fc",
+      "bytes": 1029
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/UninitRegions.v",
+      "sha256": "9d191960dca1a6998d2b041a0200fb7b097c7e41c52b1cd738c4262ec372a738",
+      "bytes": 7211
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/V2Steps.v",
+      "sha256": "7af373278c7d5104c718d6a3cf23d294d5d4916516aa265f4266482fed4b2e53",
+      "bytes": 4072
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/WordArrayBytes.v",
+      "sha256": "3fe92c9d9c7d17e7be80bb77d5b6d55c122911c1feb279e1f077510b30181179",
+      "bytes": 4042
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-first-inputs/free_block_design.json",
+      "sha256": "1046e03caab3dc2ee6e106adb31d4309334ca227b00747f108eef0ebb40f91d6",
+      "bytes": 115325
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-first-inputs/free-code-premises.txt",
+      "sha256": "fa9f7beae222117f7683b1020f76d8c473729a9e3a425e47474f9758410840fd",
+      "bytes": 55
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-first-inputs/terminal-descriptor.json",
+      "sha256": "edf5d8de4cc73676a48e85f4d7e227bb51524ecf2b328cc997603d78ffb83085",
+      "bytes": 286
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-entry-applications597/report.json",
+      "sha256": "3485c32092cef6c9dcf0879b4493372868d3a5626ef08bd6b185f73621a9fb33",
+      "bytes": 6369
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/build/stock-zisk/cfg.json",
+      "sha256": "98c4614e6ff7b6e1cb85bdc3b9e600dd85eccd5afacda8b1c5b75ff66db16fc2",
+      "bytes": 1775038
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/build/stock-zisk/build-recipe.json",
+      "sha256": "ed8196f2d359dc1a60827a9ccb0267247e8b27f97f2d09763315af159c662e99",
+      "bytes": 4174612
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/tools/block/discovery.py",
+      "sha256": "7408ab2d4d7a487836cc7e9794e6389eb5bbb0ff957614d8bf14d061cd28e2fa",
+      "bytes": 50204
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/tools/rocq_mcp_guarded.sh",
+      "sha256": "005116d86277297aaf3f0f01a01c44490532f5ac0395e2b4cf2de7c132839f24",
+      "bytes": 1095
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/tools/rocq_coqc_guarded.sh",
+      "sha256": "e8671fd5331f997348b4d34ab2afe2a2b7a26ec7d32489b1ad04493802486eeb",
+      "bytes": 737
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/tools/coqc_findlib.py",
+      "sha256": "68d7a7d7530bfab491056996042f187333f6eda18041ed19e430242fd86125eb",
+      "bytes": 5685
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/tools/resource_guard.sh",
+      "sha256": "73d048edfa332d231800c29960ae0325574887c0410be34c2e4fbdbf9efc6d8b",
+      "bytes": 56591
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_CoqProject",
+      "sha256": "9bcd9b403fb2703543296e7345c288c47ab2051daa00669ddb385ceef19c991a",
+      "bytes": 777
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/agents/worker2-c-free-first/coqc-ocamlpath.json",
+      "sha256": "8f60341cd35696865b19d131b4628a0eeba1cdaddb33a5d76d972e6bb95190d8",
+      "bytes": 341
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/agents/worker2-c-free-first/default/ZesuSsz/Automation/All.vo",
+      "sha256": "6480a93cbde67980c6a108ab4022f336855534821779941708a610a7aa3344e9",
+      "bytes": 42128
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/agents/worker2-c-free-first/default/ZesuSsz/Compliance/FreeHints.vo",
+      "sha256": "63df7169152bfa53062a84d2b97285e5ca3090b5a57b7291ee08f57eb2d1cfc5",
+      "bytes": 55233
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/agents/worker2-c-free-first/default/ZesuSsz/Contracts/FreeSelected.vo",
+      "sha256": "791f4ff94ba77ce69f43b3436b8abffc9d4277cd39ae064adb9db45c9d818ca2",
+      "bytes": 58558
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/agents/worker2-c-free-first/default/generated/isla-traces/stock-zisk/free/index_free.vo",
+      "sha256": "3c59a23b6d3c7257245c9201c4fec5cff917ab08bf8c8120037fab19ecb98ebc",
+      "bytes": 123376
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/All.v",
+      "sha256": "eef1d03755d6828c8057984b96adcb693f1ac2a8b402797c611171d4e214479f",
+      "bytes": 460
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Approved.v",
+      "sha256": "3f2b79be209341d0f181055b81922d6e31027452519486d4bf6125caf4eea488",
+      "bytes": 1946
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Automation/Switches/InstructionLookup.v",
+      "sha256": "9fdd65b96e2147572eb07d7e79f8b7b518a0677994e27bfb589ccedc630c5b23",
+      "bytes": 126
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/agents/worker2-c-free-first/default/ZesuSsz/Automation/Approved.vo",
+      "sha256": "21236fb2988961f874294a13195d4700f9b6975cd5efd1de9026cfd581b971bd",
+      "bytes": 44540
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-approved-launch-preparation719/ARGUMENTS.json",
+      "sha256": "8e35a33e1180d5a76cd47f557b676fb498a52b098d08736cfd11bab58656b911",
+      "bytes": 3916
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-approved-launch-preparation719/SOURCE-DELTA.json",
+      "sha256": "fb784cf3ea5dcbd4ab7f795ef3158d1ed264c0de8f6bb90d505db457155d38f9",
+      "bytes": 68535
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-approved-launch-preparation719/COMMAND.txt",
+      "sha256": "434806761ee06d1a8b4beafb19cf2459c3c32aa04bad4cbb3e0c372f77fbd6d1",
+      "bytes": 3568
+    }
+  ],
+  "readiness": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-frozen-readiness704/REPORT.json",
+    "sha256": "bf51f7166258473e199db2e010783266bd35cf7f22233a23293aa39041d9c95e",
+    "bytes": 37276
+  },
+  "controller": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-approved-launch723/launch.py",
+    "sha256": "d023d2b7ff38d4c55e431305ffde2be0b02c28c1ee7c894b57f5e3c9d67e258b",
+    "bytes": 2731
+  },
+  "command": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-approved-launch723/COMMAND.txt",
+    "sha256": "434806761ee06d1a8b4beafb19cf2459c3c32aa04bad4cbb3e0c372f77fbd6d1",
+    "bytes": 3568
+  },
+  "historical_command": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-input-launch-validation598/COMMAND.txt",
+    "sha256": "144b0a6b6996a83f7e1511f187bab3cb81b26909def8bdd2f8aed43799e7fb0a",
+    "bytes": 1984
+  },
+  "cleared_probe_variables": [
+    "ZESU_IN_GATE",
+    "ZESU_DIAGNOSTIC_PROBE",
+    "ZESU_PROBE_ISSUE",
+    "ZESU_PRIMARY_CPU_LIMIT",
+    "ZESU_SCRATCH_WALL_SECONDS",
+    "ZESU_SCRATCH_MEMORY_GIB"
+  ],
+  "trace_capture": false,
+  "alloc_inspected": false,
+  "startup_correction": "Add only the sealed Approved probe import. Preserve the command form and frozen inputs.",
+  "preserved_startup_failure": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-frozen-launch705/RESULT.json",
+    "sha256": "dd6ed53cbfa5ef08dc8ae31571cc07ab5c6a17bb99c5f721629d370618f5d86a",
+    "bytes": 410
+  },
+  "preserved_launch_defect": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-launch-defect-F39-ruling713/RULING.json",
+    "sha256": "0b661aa75885b4dccde29eb622e582e8e8917cc38ea33f79420632dc10f30c04",
+    "bytes": 4404
+  },
+  "correction719": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-approved-launch-preparation719/REPORT.json",
+    "sha256": "e8c8bbc401f241d006627178742dd366476078d86dc35be9f139dadc09c419ad",
+    "bytes": 3276
+  },
+  "cause_review722": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/p0-c-free-sdk-review722/REPORT.json",
+    "sha256": "cab131b2864f02b6994ba4218f40b89266195cb28d02ddef29838c01910ea392",
+    "bytes": 7049
+  }
+}

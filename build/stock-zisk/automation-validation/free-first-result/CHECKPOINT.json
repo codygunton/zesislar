@@ -1,65 +1,523 @@
 {
-  "item":"First full frozen-rule free result template",
-  "function":"alt_fl_alloc.free",
-  "status":"Unexecuted template; Infra C fills it once after the exact freeze.",
-  "predictions_comment":"https://github.com/codygunton/zesislar/issues/13#issuecomment-6184779274",
-  "predictions_sha256":"aaa6eee90458fa008e9520a13c0eeef14d58c375eacee34579ee2a0c9eafc606",
-  "source_package":"0a6f495e83f814eb5a2f02db867239bc245e1a04",
-  "source_package_report_sha256":"002dbdcdb6deb651d6c9e28523fed943c314c4a7640c871e5f35e5b5cfbc08e4",
-  "frozen_root":null,
-  "first_result_id":null,
-  "started_UTC":null,
-  "finished_UTC":null,
-  "discovery_report":null,
-  "completion_probe_reports":null,
-  "result_report_sha256":null,
-  "outcome_values":["closed","residual"],
-  "field_rules":{"predicted_classes":"Frozen non-exclusive pattern labels. Do not change them after the run.","outcome":"Null before measurement. A process exit alone does not prove closure.","first_residual":"Exact first goal, or null only with separately certified closure.","cpu_seconds":"Actual compiler user plus system CPU. Exclude admission and setup.","peak_GiB":"Actual compiler peak RSS in GiB. Preserve the raw source measurement.","hand_lines":"Manual proof lines after rule calls. Null if no complete proof supplies a measured count."},
-  "report_detail":"Keep full groups, actual Qed, exact statement SHA, assumptions, owner closure, wall/setup/admission and raw logs in the bound full MCP record.",
-  "later_runs":"Use distinct training records. Never overwrite the first full result.",
-  "rows":[
-    {"block":"0x80041f38","predicted_classes":["store"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80041f58","predicted_classes":["propagate"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80041f60","predicted_classes":["propagate"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80041f68","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80041f7c","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80041f80","predicted_classes":["propagate"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80041f8c","predicted_classes":["propagate"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80041f98","predicted_classes":["propagate"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80041fa4","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80041fb4","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80041fb8","predicted_classes":["propagate"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80041fc0","predicted_classes":["propagate"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80041fc8","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80041fd8","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80041fdc","predicted_classes":["propagate"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80041fe8","predicted_classes":["propagate"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80041ff4","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80042010","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80042014","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80042028","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x8004202c","predicted_classes":["propagate"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80042038","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80042054","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80042058","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80042070","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80042074","predicted_classes":["propagate"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80042080","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80042090","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80042094","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x800420b0","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x800420b4","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x800420cc","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x800420d0","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x800420ec","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x800420f0","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x8004210c","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80042110","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80042130","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80042134","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x8004213c","predicted_classes":["propagate"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80042144","predicted_classes":["return"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80042154","predicted_classes":["introduce"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null},
-    {"block":"0x80042160","predicted_classes":["store","return"],"outcome":null,"first_residual":null,"cpu_seconds":null,"peak_GiB":null,"hand_lines":null}
+  "item": "First full frozen-rule free result template",
+  "function": "alt_fl_alloc.free",
+  "status": "Corrected frozen-rule free result recorded once. All 43 blocks retain measured residuals.",
+  "predictions_comment": "https://github.com/codygunton/zesislar/issues/13#issuecomment-6184779274",
+  "predictions_sha256": "aaa6eee90458fa008e9520a13c0eeef14d58c375eacee34579ee2a0c9eafc606",
+  "source_package": "0a6f495e83f814eb5a2f02db867239bc245e1a04",
+  "source_package_report_sha256": "002dbdcdb6deb651d6c9e28523fed943c314c4a7640c871e5f35e5b5cfbc08e4",
+  "frozen_root": "e8131be295b89a1821b3ba760f39e7aad1e8647d",
+  "first_result_id": "free-first-result724",
+  "started_UTC": "2026-10-16T05:38:55.848623+00:00",
+  "finished_UTC": "2026-10-16T05:43:23.387026+00:00",
+  "discovery_report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/report.json",
+    "sha256": "77e87a98520d7d6172a243431adb1f78dbffbf1bba7f25fc3c9628aea989e976",
+    "bytes": 1603895
+  },
+  "completion_probe_reports": [],
+  "result_report_sha256": "4ce4826f196be438f1a68a036ba0eb2242cb642a40241a4b73985bc613e15cc5",
+  "outcome_values": [
+    "closed",
+    "residual"
+  ],
+  "field_rules": {
+    "predicted_classes": "Frozen non-exclusive pattern labels. Do not change them after the run.",
+    "outcome": "Null before measurement. A process exit alone does not prove closure.",
+    "first_residual": "Exact first goal, or null only with separately certified closure.",
+    "cpu_seconds": "Actual compiler user plus system CPU. Exclude admission and setup.",
+    "peak_GiB": "Actual compiler peak RSS in GiB. Preserve the raw source measurement.",
+    "hand_lines": "Manual proof lines after rule calls. Null if no complete proof supplies a measured count."
+  },
+  "report_detail": "Keep full groups, actual Qed, exact statement SHA, assumptions, owner closure, wall/setup/admission and raw logs in the bound full MCP record.",
+  "later_runs": "Use distinct training records. Never overwrite the first full result.",
+  "rows": [
+    {
+      "block": "0x80041f38",
+      "predicted_classes": [
+        "store"
+      ],
+      "outcome": "residual",
+      "first_residual": "list (bv 8)",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80041f58",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual": "65%bv = x13",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80041f60",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual": "17%bv = x13",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80041f68",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 9)) 1%bv 0%bv)) 1 = Z_to_bv 64 (freeBufferLength args)",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80041f7c",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80041f80",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual": "(262144 + 1)%bv = x13",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80041f8c",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual": "(16384 + 1)%bv = x13",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80041f98",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual": "(4096 + 1)%bv = x13",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80041fa4",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "9%bv = Z_to_bv 64 (freeBufferLength args)",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80041fb4",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80041fb8",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual": "513%bv = x13",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80041fc0",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual": "129%bv = x13",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80041fc8",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "4%bv = Z_to_bv 64 (freeBufferLength args)",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80041fd8",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80041fdc",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual": "(4194304 + 1)%bv = x13",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80041fe8",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual": "(1048576 + 1)%bv = x13",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80041ff4",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (524288 + 1)))) 1%bv 0%bv)) 17 =\nZ_to_bv 64 (freeBufferLength args)",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80042010",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80042014",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 33)) 1%bv 0%bv)) 3 = Z_to_bv 64 (freeBufferLength args)",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80042028",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x8004202c",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual": "(65536 + 1)%bv = x13",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80042038",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (32768 + 1)))) 1%bv 0%bv)) 13 =\nZ_to_bv 64 (freeBufferLength args)",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80042054",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80042058",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "(8 - bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 1025)) 1 0))%bv = Z_to_bv 64 (freeBufferLength args)",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80042070",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80042074",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual": "(8388608 + 1)%bv = x13",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80042080",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "20%bv = Z_to_bv 64 (freeBufferLength args)",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80042090",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80042094",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (8192 + 1)))) 1%bv 0%bv)) 11 =\nZ_to_bv 64 (freeBufferLength args)",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x800420b0",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x800420b4",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "(6 - bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 257)) 1 0))%bv = Z_to_bv 64 (freeBufferLength args)",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x800420cc",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x800420d0",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (2097152 + 1)))) 1%bv 0%bv)) 19 =\nZ_to_bv 64 (freeBufferLength args)",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x800420ec",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x800420f0",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (131072 + 1)))) 1%bv 0%bv)) 15 =\nZ_to_bv 64 (freeBufferLength args)",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x8004210c",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80042110",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "(22 - bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (16777216 + 1)))) 1 0))%bv =\nZ_to_bv 64 (freeBufferLength args)",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80042130",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "freeAlignmentWord args = x13",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80042134",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "3%bv = freeAlignmentWord args",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x8004213c",
+      "predicted_classes": [
+        "propagate"
+      ],
+      "outcome": "residual",
+      "first_residual": "22%bv = Z_to_bv 64 (freeLog2Alignment args)",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80042144",
+      "predicted_classes": [
+        "return"
+      ],
+      "outcome": "residual",
+      "first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n_ : \"x1\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeReturnAddress args))\n_ : \"x8\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeStackPointer args))\n_ : \"x10\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 22)\n_ : \"x11\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeBufferPointer args))\n_ : \"x12\" \u21a6\u1d63 RVal_Bits x12\n_ : \"x13\" \u21a6\u1d63 RVal_Bits x13\n_ : \"x14\" \u21a6\u1d63 RVal_Bits x14\n_ : freeBufferPointer args \u21a6\u2098\u2217 freeBeforeBuffer args\n_ : freeListsPointer \u21a6\u2098\u2217 freeBeforeLists args\n_ : (freeStackPointer args - freeStackBytes) \u21a6\u2098\u2217 frameBytes\n_ : instr_pre (freeReturnAddress args)\n      (\u2203 bufferBytes listBytes : list evm_rlp_types.byte, freeBufferPointer args \u21a6\u2098\u2217 bufferBytes \u2217 freeListsPointer \u21a6\u2098\u2217 listBytes \u2217\n         \u231cfreeAllowsAt (freeReturnAddress args) args {| freeAfterBuffer := bufferBytes; freeAfterLists := listBytes |}\u231d \u2217 freeExitRegisterResources args)\n_ : \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2147754308)\n_ : \"x2\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeStackPointer args - freeStackBytes))\n_ : reg_col zesu_ram_sys_regs\n--------------------------------------\u2217\nfind_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8)))\n  (\u03bb mk : mem_mapsto_kind,\n     match mk with\n     | MKMapsTo n' vmem => \u2203 Heq : 64%N = n', \u231ceq_rect 64%N bv n1 n' Heq = vmem\u231d -\u2217 bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) \u21a6\u2098 vmem -\u2217 WPasm HIDDEN\n     | MKArray n' a' values =>\n         if (n' =? 64)%N\n         then \u231c(bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) - a') `mod` 8 = 0\u231d \u2217\n         \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) - a') `div` 8\u231d \u2217 \u231c(i < length values)%nat\u231d \u2217\n           \u2203 Heq : 64%N = n', \u2200 vmem : bv n', \u231cvalues !! i = Some vmem\u231d -\u2217 \u231ceq_rect 64%N bv n1 n' Heq = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN\n         else \u231cn' = 8%N\u231d \u2217\n         \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) - a'\u231d \u2217 \u231c(i + N.to_nat 8 <= length values)%nat\u231d \u2217\n           \u2200 vmem : bv 64, \u231cvmem = Z_to_bv 64 (little_endian_to_bv n' (take (N.to_nat 8) (drop i values)))\u231d -\u2217 \u231cn1 = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN\n     | MKUninit _ _ => False\n     | MKMMIO a' length => \u231ca' \u2264 bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8)\u231d \u2217 \u231cbv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) + 8 \u2264 a' + length\u231d \u2217\n         \u2203 Pks Pks' : spec, spec_trace Pks \u2217 \u231cscons (SReadMem (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) n1) Pks' \u2286 Pks\u231d \u2217 (spec_trace Pks' -\u2217 WPasm HIDDEN)\n     end)",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80042154",
+      "predicted_classes": [
+        "introduce"
+      ],
+      "outcome": "residual",
+      "first_residual": "22%bv = Z_to_bv 64 (freeLog2Alignment args)",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    },
+    {
+      "block": "0x80042160",
+      "predicted_classes": [
+        "store",
+        "return"
+      ],
+      "outcome": "residual",
+      "first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n_ : \"x1\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeReturnAddress args))\n_ : \"x2\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeStackPointer args - freeStackBytes))\n_ : \"x8\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeStackPointer args))\n_ : \"x11\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeBufferPointer args))\n_ : \"x12\" \u21a6\u1d63 RVal_Bits x12\n_ : \"x14\" \u21a6\u1d63 RVal_Bits x14\n_ : freeBufferPointer args \u21a6\u2098\u2217 freeBeforeBuffer args\n_ : freeListsPointer \u21a6\u2098\u2217 freeBeforeLists args\n_ : (freeStackPointer args - freeStackBytes) \u21a6\u2098\u2217 frameBytes\n_ : instr_pre (freeReturnAddress args)\n      (\u2203 bufferBytes listBytes : list evm_rlp_types.byte, freeBufferPointer args \u21a6\u2098\u2217 bufferBytes \u2217 freeListsPointer \u21a6\u2098\u2217 listBytes \u2217\n         \u231cfreeAllowsAt (freeReturnAddress args) args {| freeAfterBuffer := bufferBytes; freeAfterLists := listBytes |}\u231d \u2217 freeExitRegisterResources args)\n_ : \"x13\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3)%bv\n_ : \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2147754352)\n_ : \"x10\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3)%bv\n_ : reg_col zesu_ram_sys_regs\n--------------------------------------\u2217\nfind_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8)))\n  (\u03bb mk : mem_mapsto_kind,\n     match mk with\n     | MKMapsTo n' vmem =>\n         \u2203 Heq : 64%N = n',\n           \u231ceq_rect 64%N bv n1 n' Heq = vmem\u231d -\u2217\n           bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) \u21a6\u2098 vmem -\u2217 WPasm HIDDEN\n     | MKArray n' a' values =>\n         if (n' =? 64)%N\n         then \u231c(bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) - a') `mod` 8 = 0\u231d \u2217\n         \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) - a') `div` 8\u231d \u2217\n           \u231c(i < length values)%nat\u231d \u2217 \u2203 Heq : 64%N = n', \u2200 vmem : bv n', \u231cvalues !! i = Some vmem\u231d -\u2217 \u231ceq_rect 64%N bv n1 n' Heq = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN\n         else \u231cn' = 8%N\u231d \u2217\n         \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) - a'\u231d \u2217\n           \u231c(i + N.to_nat 8 <= length values)%nat\u231d \u2217 \u2200 vmem : bv 64, \u231cvmem = Z_to_bv 64 (little_endian_to_bv n' (take (N.to_nat 8) (drop i values)))\u231d -\u2217 \u231cn1 = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN\n     | MKUninit _ _ => False\n     | MKMMIO a' length => \u231ca' \u2264 bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8)\u231d \u2217\n         \u231cbv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) + 8 \u2264 a' + length\u231d \u2217\n         \u2203 Pks Pks' : spec, spec_trace Pks \u2217\n           \u231cscons (SReadMem (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) n1) Pks' \u2286 Pks\u231d \u2217\n           (spec_trace Pks' -\u2217 WPasm HIDDEN)\n     end)",
+      "cpu_seconds": null,
+      "peak_GiB": null,
+      "hand_lines": null
+    }
+  ],
+  "measurement_limits": [
+    "All 43 primary tactics entered once and returned accepted residual states.",
+    "The first residual class uses the exact printed conclusion. It does not classify every remaining goal.",
+    "Full active, stack, shelf and given-up groups remain in each checked primary export.",
+    "Compiler CPU and compiler peak RSS are unavailable. Their template fields remain null.",
+    "MCP wall time and sampled worker peak are separate measurements. They do not establish tactic CPU cost.",
+    "No Qed, compilation or verification follows from an open proof.",
+    "No internal instruction chronology or complete branch coverage follows from these exports.",
+    "No completion probe, hand step or repeated proof arm ran.",
+    "Historical 705, 706, 707 and F39 ruling 713 remain unchanged.",
+    "The original null template remains unchanged. This new result records the released corrected run.",
+    "No frozen rule changed. No alloc block was inspected."
   ]
 }

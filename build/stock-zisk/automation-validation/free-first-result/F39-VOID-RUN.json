@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "kind": "separate-Orch-ruling-note",
+  "created_utc": "2026-10-16T05:04:58.133719+00:00",
+  "ruling": {
+    "authority": "Orch ruling relayed by parent to C.",
+    "record": "F39",
+    "run": 706,
+    "classification": "launch-defect",
+    "holdout_result": false,
+    "holdout_spent": false,
+    "reason": "The launch stopped at entry instruction lookup. No machine instruction executed.",
+    "effect": "Historical output 707 remains unchanged. Its first-result classification is superseded by this separate ruling."
+  },
+  "preserved_historical_output707": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-first-result707/REPORT.json",
+      "sha256": "886c007f901d9b232a20e7087c130d6c06a10905c32231408bcb2f07ffd0a073",
+      "bytes": 2007
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-first-result707/CHECKPOINT.json",
+      "sha256": "9a3c110c052d368a1d2c7f388a25f4a410a899fa6cb8ed84c4f752cd8dcf0551",
+      "bytes": 56063
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-first-result707/TABLE.md",
+      "sha256": "c130f34991eced4cbf31efd9c070be6df6dd95edaef1bb106907d9a1a6e838f1",
+      "bytes": 4289
+    }
+  ],
+  "historical_startup705": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-frozen-launch705/STARTUP-FAILURE.json",
+    "sha256": "2e9fc1c093c89ae9b95a89e5fb3e250dedc628e82d91d617b38049fc69ce81a7",
+    "bytes": 20578
+  },
+  "retained_free_scratch": {
+    "root": "e8131be295b89a1821b3ba760f39e7aad1e8647d",
+    "interactive_source": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-path706/native/block_0x80041f38/Boundary_interactive.v",
+      "sha256": "d417d3f4cda98423976b9fa6c7dc7729e166a2ac58b84fced46cd3f919d6635b",
+      "bytes": 4125
+    },
+    "native_source": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-path706/native/block_0x80041f38/Boundary.v",
+      "sha256": "e702a63d83e3ff9eeaf1d6b95a85dfd84e2737032cb390f3936577b9d5f3b0d6",
+      "bytes": 4187
+    },
+    "MCP_evidence": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-path706/native/block_0x80041f38/evidence.json",
+      "sha256": "0c1af322199f239604fe45ed32f8e5846ffeaa4f7fc8b6fa9358deb8eca228bc",
+      "bytes": 23480
+    },
+    "statement_sha256": "cf2644c5ebcaf45aa285a5ea6bbf4ac7ce611fd23cca1e6662e02c0dea4d94af",
+    "standalone_compiled_object": "unavailable",
+    "scope": "Pet loaded the exact interactive source. Open proof state supplies no native Qed certificate."
+  },
+  "retained6974_locator": {
+    "source": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-av-r1c-activate-125c/_build/agents/worker2-av-r1c-activate-125c/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v",
+      "sha256": "ca7fb94a835a783c2d62c0a24e1e0d552ce2a76f65cd6ee7d277df32dfea9d6e",
+      "bytes": 2040
+    },
+    "compiled_object": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-av-r1c-activate-125c/_build/agents/worker2-av-r1c-activate-125c/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.vo",
+      "sha256": "354d99e73613e8a234ac1546df61f3cebec5fee9b75997d77c71a38838bc6cd1",
+      "bytes": 1103481
+    },
+    "source_equals_frozen_Git_blob": true,
+    "same_frozen_root_compilation_established": false,
+    "scope": "Existing production module artifact. This is not an established same-frozen-root diagnostic scratch."
+  },
+  "same_frozen_root6974_compiled_scratch": "No retained actual scratch was established. No reconstruction ran.",
+  "runtime_boundary": {
+    "MCP_starts": 43,
+    "accepted_primary_calls": 43,
+    "primary_command": "try zesu_block.",
+    "retained_goal": "FindInstrKind at each entry PC",
+    "machine_execution_claim": "Excluded by the F39 ruling."
+  },
+  "next_actions": "A and B own the entry-lookup diagnosis. No arm or rule change is authorized by this note.",
+  "limits": [
+    "No historical 707 file or once-filled template changed.",
+    "The original unexecuted result template remains available for the future authorized actual hold-out.",
+    "No proof, native replay, source edit, reconstruction, alloc inspection or process signal ran."
+  ]
+}

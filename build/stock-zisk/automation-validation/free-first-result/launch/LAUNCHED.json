@@ -1,0 +1,18 @@
+{
+  "utc": "2026-10-16T05:38:55.848623+00:00",
+  "controller_pid": 2722532,
+  "discovery_pid": 2722536,
+  "discovery_start_ticks": 182845773,
+  "frozen_root": "e8131be295b89a1821b3ba760f39e7aad1e8647d",
+  "command": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-approved-launch723/COMMAND.txt",
+    "sha256": "434806761ee06d1a8b4beafb19cf2459c3c32aa04bad4cbb3e0c372f77fbd6d1",
+    "bytes": 3568
+  },
+  "sealed_launch": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-approved-launch723/SEALED-LAUNCH.json",
+    "sha256": "143cc4888a96666902ca247ebf515895448292d1a379affb73195e7b33f3225f",
+    "bytes": 39558
+  },
+  "holdout_started": true
+}
