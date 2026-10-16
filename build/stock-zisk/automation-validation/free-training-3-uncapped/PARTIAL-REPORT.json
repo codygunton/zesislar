@@ -1,0 +1,820 @@
+{
+  "schema": 1,
+  "status": "14-compilations-13-verifications-1-infrastructure-failure",
+  "root": "3aebfa260c6a38ef1abc9eae5ea4b342410de422",
+  "compiled_files": 14,
+  "verified_files": 13,
+  "infrastructure_failures": 1,
+  "OFF_additional_verified": 6,
+  "ON_additional_verified": 7,
+  "final_comparison": {
+    "OFF_verified": 12,
+    "OFF_open": 31,
+    "ON_verified": 15,
+    "ON_open": 27,
+    "ON_verification_unavailable": 1
+  },
+  "unchanged_prediction": {
+    "OFF_closed": 12,
+    "ON_closed": 40
+  },
+  "Auto_control_failures_unchanged": [
+    "800d69e0-ON",
+    "800d6a6c-ON"
+  ],
+  "records": [
+    {
+      "key": "OFF-80041f7c",
+      "arm": "OFF",
+      "pc": "0x80041f7c",
+      "verified": true,
+      "verification_outcome": "verified",
+      "verification_error": null,
+      "compile_success": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-uncapped-inputs856/OFF-80041f7c/Boundary.v",
+        "sha256": "02fbc75a17ad8230baaabdf37efaf3ef3ef95148ff0abb4f9b027ceb75ff9f4b",
+        "bytes": 4474
+      },
+      "original_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-off821/native/block_0x80041f7c/Boundary.v",
+        "sha256": "02fbc75a17ad8230baaabdf37efaf3ef3ef95148ff0abb4f9b027ceb75ff9f4b",
+        "bytes": 4474
+      },
+      "statement_sha256": "d0978227e786306bf8c60ca8f98249da16ab0ad0efbffe485a34f2af6fbc5671",
+      "original_timeout_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-off821/native/block_0x80041f7c/evidence.json",
+        "sha256": "2a3c15db3871321c1918c9df8a8a17ccdde3644c11bc46f91e773a93bef7923f",
+        "bytes": 19118
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/OFF-80041f7c/RESULT.json",
+        "sha256": "d76949441ff9cebfbbfa6b96f0db87f33eafea56f74672609ce362c9540d783f",
+        "bytes": 28407
+      },
+      "raw_receipts": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/OFF-80041f7c/COQC.jsonl",
+        "sha256": "e7635d56c39f585be14648fff8968755d40c0ac844a852d35bfb49b6da13b9f8",
+        "bytes": 2537
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/OFF-80041f7c/server.log",
+        "sha256": "82e7235d48967397e4594c8b62c37ecd4f8cfd853dee5ccb8412d012030569e8",
+        "bytes": 2635
+      },
+      "compile_CPU_seconds": 11.069887999999999,
+      "compile_wall_seconds": 11.129472522996366,
+      "compile_peak_RSS_KiB": 950212,
+      "compile_tool_wall_seconds": 12.405106615042314,
+      "verification_CPU_seconds": 10.050124000000002,
+      "verification_peak_RSS_KiB": 1042132,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_assumptions_output": "Closed under the global context",
+      "normal_owned_closure": true,
+      "unchanged_inputs": true,
+      "interactive_calls": 0,
+      "native_block_runs": 0
+    },
+    {
+      "key": "OFF-80041fb4",
+      "arm": "OFF",
+      "pc": "0x80041fb4",
+      "verified": true,
+      "verification_outcome": "verified",
+      "verification_error": null,
+      "compile_success": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-uncapped-inputs856/OFF-80041fb4/Boundary.v",
+        "sha256": "b0583682fecda1152254f2a0b0af7dfd24621d29f6afaa2e8deda3f06cef363b",
+        "bytes": 4474
+      },
+      "original_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-off821/native/block_0x80041fb4/Boundary.v",
+        "sha256": "b0583682fecda1152254f2a0b0af7dfd24621d29f6afaa2e8deda3f06cef363b",
+        "bytes": 4474
+      },
+      "statement_sha256": "80450c4a0ffca873fdc544dfc559e2a7696dc54afc641be0008e49931ae4e309",
+      "original_timeout_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-off821/native/block_0x80041fb4/evidence.json",
+        "sha256": "fe51226328fd4826e417830daaf5a78888fa753cb9171bbe7dec8c155efd952d",
+        "bytes": 19119
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/OFF-80041fb4/RESULT.json",
+        "sha256": "135f5bb771cb7618e300e248abfda3eb0731bab5835273c2311c570cab4066d0",
+        "bytes": 28437
+      },
+      "raw_receipts": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/OFF-80041fb4/COQC.jsonl",
+        "sha256": "0753f2fb1590c09d663e1b5ea31e03223ea2832cc51ad8ce1dc525c8e8f7b399",
+        "bytes": 2524
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/OFF-80041fb4/server.log",
+        "sha256": "f253097dbf2f63778d3692af0f3efaa30ffe4e369f3879cf9cb8f5bb5133c019",
+        "bytes": 2670
+      },
+      "compile_CPU_seconds": 8.272243000000001,
+      "compile_wall_seconds": 8.299126306083053,
+      "compile_peak_RSS_KiB": 947528,
+      "compile_tool_wall_seconds": 8.553583515109494,
+      "verification_CPU_seconds": 9.522166,
+      "verification_peak_RSS_KiB": 1046116,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_assumptions_output": "Closed under the global context",
+      "normal_owned_closure": true,
+      "unchanged_inputs": true,
+      "interactive_calls": 0,
+      "native_block_runs": 0
+    },
+    {
+      "key": "OFF-80041fd8",
+      "arm": "OFF",
+      "pc": "0x80041fd8",
+      "verified": true,
+      "verification_outcome": "verified",
+      "verification_error": null,
+      "compile_success": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-uncapped-inputs856/OFF-80041fd8/Boundary.v",
+        "sha256": "cdced32d7422af42dd23bfd79ef026ef778592048240a487ed731a1bdca344c6",
+        "bytes": 4474
+      },
+      "original_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-off821/native/block_0x80041fd8/Boundary.v",
+        "sha256": "cdced32d7422af42dd23bfd79ef026ef778592048240a487ed731a1bdca344c6",
+        "bytes": 4474
+      },
+      "statement_sha256": "41d6da67b64c3cf4d5897e9d0347dde22f65ea1737024866b9fc2c947e8ad7a0",
+      "original_timeout_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-off821/native/block_0x80041fd8/evidence.json",
+        "sha256": "3d6784280aec4b638173339f402fec0544a78dd8d4f35a9ab425f177b6148871",
+        "bytes": 19117
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/OFF-80041fd8/RESULT.json",
+        "sha256": "8091d3ab4531d3fab5cbd4df8cf3214c92e9e6d273e15cb0976ce6e54904bf78",
+        "bytes": 28433
+      },
+      "raw_receipts": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/OFF-80041fd8/COQC.jsonl",
+        "sha256": "d8134e4b7f6b91dde6b63334a093ff52310e384399fc7fc196f7c7c8353c63b3",
+        "bytes": 2514
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/OFF-80041fd8/server.log",
+        "sha256": "a21b3066e52c1e7ccc99202c721f9a38ebfa148b76421e50ad99d9151407f0be",
+        "bytes": 2670
+      },
+      "compile_CPU_seconds": 8.113668,
+      "compile_wall_seconds": 8.137118838960305,
+      "compile_peak_RSS_KiB": 947164,
+      "compile_tool_wall_seconds": 8.388209159951657,
+      "verification_CPU_seconds": 9.47419,
+      "verification_peak_RSS_KiB": 1037404,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_assumptions_output": "Closed under the global context",
+      "normal_owned_closure": true,
+      "unchanged_inputs": true,
+      "interactive_calls": 0,
+      "native_block_runs": 0
+    },
+    {
+      "key": "OFF-80042010",
+      "arm": "OFF",
+      "pc": "0x80042010",
+      "verified": true,
+      "verification_outcome": "verified",
+      "verification_error": null,
+      "compile_success": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-uncapped-inputs856/OFF-80042010/Boundary.v",
+        "sha256": "397da1242d8debc563ffbb0563b2b7bbe01845091b4773c12d9ed3f75acbb940",
+        "bytes": 4474
+      },
+      "original_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-off821/native/block_0x80042010/Boundary.v",
+        "sha256": "397da1242d8debc563ffbb0563b2b7bbe01845091b4773c12d9ed3f75acbb940",
+        "bytes": 4474
+      },
+      "statement_sha256": "ec2f839c9537fbe958764d5e54cda2ffb6a7c48b997ffba065c63963fdd3ef80",
+      "original_timeout_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-off821/native/block_0x80042010/evidence.json",
+        "sha256": "6276d49cb7b2d9b7b5a2f69dc012de2d4b280f610d12ea387a0070756d864608",
+        "bytes": 19123
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/OFF-80042010/RESULT.json",
+        "sha256": "89cba42dce93448c3fb173f11da54ce0eea9733e007cfbcf87f59f77615a12ca",
+        "bytes": 28444
+      },
+      "raw_receipts": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/OFF-80042010/COQC.jsonl",
+        "sha256": "d25f00a3f049a6031eab52ae554e9679ca2717b32031a0a214ed79b82571f66f",
+        "bytes": 2524
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/OFF-80042010/server.log",
+        "sha256": "15c6df43f7cd2af9bb92f7fd733b877b98ffdcf9a06e6b422055eeec9e7ac867",
+        "bytes": 2670
+      },
+      "compile_CPU_seconds": 7.985824000000002,
+      "compile_wall_seconds": 8.007448079064488,
+      "compile_peak_RSS_KiB": 946988,
+      "compile_tool_wall_seconds": 11.04680982301943,
+      "verification_CPU_seconds": 9.835983,
+      "verification_peak_RSS_KiB": 1048968,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_assumptions_output": "Closed under the global context",
+      "normal_owned_closure": true,
+      "unchanged_inputs": true,
+      "interactive_calls": 0,
+      "native_block_runs": 0
+    },
+    {
+      "key": "OFF-80042054",
+      "arm": "OFF",
+      "pc": "0x80042054",
+      "verified": true,
+      "verification_outcome": "verified",
+      "verification_error": null,
+      "compile_success": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-uncapped-inputs856/OFF-80042054/Boundary.v",
+        "sha256": "01a7a893e616ef7ae833844e842f2bcb34d702528c0a59fae8f43ef7f79fd230",
+        "bytes": 4474
+      },
+      "original_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-off821/native/block_0x80042054/Boundary.v",
+        "sha256": "01a7a893e616ef7ae833844e842f2bcb34d702528c0a59fae8f43ef7f79fd230",
+        "bytes": 4474
+      },
+      "statement_sha256": "0bfea91478b4cf542a537571dbc31576e04599ed6c92bc446aa3baf8ef89d2e3",
+      "original_timeout_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-off821/native/block_0x80042054/evidence.json",
+        "sha256": "f9d12ad2621cd2e49ec964431ae833bd01aa4007a01ae11d412fb2151a7d48b9",
+        "bytes": 19103
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/OFF-80042054/RESULT.json",
+        "sha256": "adf75bde09929845df63e514aa5a5ebf764927f5b02dfa054247067c0c62fc82",
+        "bytes": 28448
+      },
+      "raw_receipts": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/OFF-80042054/COQC.jsonl",
+        "sha256": "c5851271fe961544417dc529ea0001413017b195310c7b090beef860b59333b0",
+        "bytes": 2533
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/OFF-80042054/server.log",
+        "sha256": "b44634541cf77d0c9e31fdc8524c8de18d5c5a0c2a46c9bd27989441e6d811bb",
+        "bytes": 2670
+      },
+      "compile_CPU_seconds": 7.959112000000001,
+      "compile_wall_seconds": 7.981092914938927,
+      "compile_peak_RSS_KiB": 943896,
+      "compile_tool_wall_seconds": 11.108260275097564,
+      "verification_CPU_seconds": 9.928967999999998,
+      "verification_peak_RSS_KiB": 1051024,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_assumptions_output": "Closed under the global context",
+      "normal_owned_closure": true,
+      "unchanged_inputs": true,
+      "interactive_calls": 0,
+      "native_block_runs": 0
+    },
+    {
+      "key": "OFF-800420b0",
+      "arm": "OFF",
+      "pc": "0x800420b0",
+      "verified": true,
+      "verification_outcome": "verified",
+      "verification_error": null,
+      "compile_success": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-uncapped-inputs856/OFF-800420b0/Boundary.v",
+        "sha256": "7885140c42f118bf1e83e57563320d4688d6d60898710e3417a09cd6cb69fc3c",
+        "bytes": 4474
+      },
+      "original_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-off821/native/block_0x800420b0/Boundary.v",
+        "sha256": "7885140c42f118bf1e83e57563320d4688d6d60898710e3417a09cd6cb69fc3c",
+        "bytes": 4474
+      },
+      "statement_sha256": "d685ea29da392f0dc46a6f6416d2fc47dbe5896db6d2f8464234315a6aa674f9",
+      "original_timeout_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-off821/native/block_0x800420b0/evidence.json",
+        "sha256": "6fadb24d459226fb0fe3aeb9def0c58eef466725f1ec18c7b47b30c1c8d00ac2",
+        "bytes": 19111
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/OFF-800420b0/RESULT.json",
+        "sha256": "325bfb91c545209d9c86e4bbff5b91638386ce21d33f8cc8998ea9df62cb5c43",
+        "bytes": 28430
+      },
+      "raw_receipts": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/OFF-800420b0/COQC.jsonl",
+        "sha256": "9ceff9d2e4eff598147bbd1b3515bf825f1244f96a150446e69446cb09c0cee6",
+        "bytes": 2523
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/OFF-800420b0/server.log",
+        "sha256": "5b66dfae198e4067e0a704dc5938f1b8eeab0005afb4fe271f41648893d39a69",
+        "bytes": 2635
+      },
+      "compile_CPU_seconds": 7.731404,
+      "compile_wall_seconds": 7.752448403974995,
+      "compile_peak_RSS_KiB": 946640,
+      "compile_tool_wall_seconds": 8.989281861111522,
+      "verification_CPU_seconds": 9.131970000000003,
+      "verification_peak_RSS_KiB": 1041884,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_assumptions_output": "Closed under the global context",
+      "normal_owned_closure": true,
+      "unchanged_inputs": true,
+      "interactive_calls": 0,
+      "native_block_runs": 0
+    },
+    {
+      "key": "ON-80041f58",
+      "arm": "ON",
+      "pc": "0x80041f58",
+      "verified": true,
+      "verification_outcome": "verified",
+      "verification_error": null,
+      "compile_success": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-uncapped-inputs856/ON-80041f58/Boundary.v",
+        "sha256": "238c1ad441b006b9c8a7ff8b3cd275312a0a5a2d52f3987ec200f1c853286c1d",
+        "bytes": 5199
+      },
+      "original_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041f58/Boundary.v",
+        "sha256": "238c1ad441b006b9c8a7ff8b3cd275312a0a5a2d52f3987ec200f1c853286c1d",
+        "bytes": 5199
+      },
+      "statement_sha256": "97894c3f6561f49a6d3b5c9e8b02db4fd4204316e1e38b4957ed723012b2f819",
+      "original_timeout_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041f58/evidence.json",
+        "sha256": "ebbb4761a3dcffca751b48d8500cf791532de0d1cceab80bedc10111243cfabe",
+        "bytes": 20857
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041f58/RESULT.json",
+        "sha256": "65a4ff1896cfc2390ef686b52d9e09e6c95da36e207c0aee481bbcb8e8ce6c96",
+        "bytes": 30662
+      },
+      "raw_receipts": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041f58/COQC.jsonl",
+        "sha256": "10b54c50bbc0629b0a4af5f48d3a4a9b303765c825adb3428768e25e28ebacb0",
+        "bytes": 2537
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041f58/server.log",
+        "sha256": "47bb9c091afe140b3516e566bf884f4f5e5679ba36d95d762ba166b47fd44612",
+        "bytes": 2635
+      },
+      "compile_CPU_seconds": 17.243181000000003,
+      "compile_wall_seconds": 17.296366160036996,
+      "compile_peak_RSS_KiB": 1068664,
+      "compile_tool_wall_seconds": 19.339020740939304,
+      "verification_CPU_seconds": 18.503747999999998,
+      "verification_peak_RSS_KiB": 1166828,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_assumptions_output": "Closed under the global context",
+      "normal_owned_closure": true,
+      "unchanged_inputs": true,
+      "interactive_calls": 0,
+      "native_block_runs": 0
+    },
+    {
+      "key": "ON-80041f60",
+      "arm": "ON",
+      "pc": "0x80041f60",
+      "verified": true,
+      "verification_outcome": "verified",
+      "verification_error": null,
+      "compile_success": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-uncapped-inputs856/ON-80041f60/Boundary.v",
+        "sha256": "5f5ffccfc292c4ad52b4e77c6de48262116fa96fed278e7c1cbfce9cb87e9b18",
+        "bytes": 5199
+      },
+      "original_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041f60/Boundary.v",
+        "sha256": "5f5ffccfc292c4ad52b4e77c6de48262116fa96fed278e7c1cbfce9cb87e9b18",
+        "bytes": 5199
+      },
+      "statement_sha256": "34e6b38c2d0fffa8a7253b52b535b4fd9b0e3c45a3f3b52027ea0487309292f7",
+      "original_timeout_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041f60/evidence.json",
+        "sha256": "41fe4c2f251dc29d2a2220924d25a7e59e6e314f5b4bc4ec0828e83dfa29fd9e",
+        "bytes": 20853
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041f60/RESULT.json",
+        "sha256": "f2511d549528ac60362f22db601fc82bb15a2f56fa7521f018223c7d36dfe151",
+        "bytes": 30638
+      },
+      "raw_receipts": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041f60/COQC.jsonl",
+        "sha256": "49c6386b9a374c0e8f9410fdd8579bb4b4afa731f093e35aed7749f881483ad8",
+        "bytes": 2519
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041f60/server.log",
+        "sha256": "61b7b9db8865a41e870939e610e0f4f526e0976c7c92f1ca9acd3dba84aca13f",
+        "bytes": 2635
+      },
+      "compile_CPU_seconds": 16.987492,
+      "compile_wall_seconds": 17.044934812933207,
+      "compile_peak_RSS_KiB": 1061152,
+      "compile_tool_wall_seconds": 17.47741485084407,
+      "verification_CPU_seconds": 19.532056,
+      "verification_peak_RSS_KiB": 1160324,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_assumptions_output": "Closed under the global context",
+      "normal_owned_closure": true,
+      "unchanged_inputs": true,
+      "interactive_calls": 0,
+      "native_block_runs": 0
+    },
+    {
+      "key": "ON-80041f7c",
+      "arm": "ON",
+      "pc": "0x80041f7c",
+      "verified": false,
+      "verification_outcome": "infrastructure-failure-before-proof-verification",
+      "verification_error": "resource guard: compiler reservation disappeared: /run/user/1000/zesu-guard/coqc-reservations/1579580.28674.7764",
+      "compile_success": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-uncapped-inputs856/ON-80041f7c/Boundary.v",
+        "sha256": "9e6203eefafa37d04bd6a3e774e2f8c1e3faff4c7b179113136dd4111da5f5dc",
+        "bytes": 4606
+      },
+      "original_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041f7c/Boundary.v",
+        "sha256": "9e6203eefafa37d04bd6a3e774e2f8c1e3faff4c7b179113136dd4111da5f5dc",
+        "bytes": 4606
+      },
+      "statement_sha256": "d0978227e786306bf8c60ca8f98249da16ab0ad0efbffe485a34f2af6fbc5671",
+      "original_timeout_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041f7c/evidence.json",
+        "sha256": "2d259e7b69c9738d06758f7b0efc93b5da8e8f17a7be92110651086982d1bbea",
+        "bytes": 19102
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041f7c/RESULT.json",
+        "sha256": "db911c7c8419f21553126f8c3662285a5df1e7f6f70d1adce444649d0bc4f348",
+        "bytes": 27706
+      },
+      "raw_receipts": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041f7c/COQC.jsonl",
+        "sha256": "a83d38882d2d321972722f2e92688346e89ec902560217a2ccd25abda87b306e",
+        "bytes": 1284
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041f7c/server.log",
+        "sha256": "8fde8f36e8f68068d70cb3972840afbaf72e95338d0a2cd8595fbc4f9052ab47",
+        "bytes": 2635
+      },
+      "compile_CPU_seconds": 7.83163,
+      "compile_wall_seconds": 7.85660440986976,
+      "compile_peak_RSS_KiB": 952848,
+      "compile_tool_wall_seconds": 9.117537945043296,
+      "verification_CPU_seconds": 0,
+      "verification_peak_RSS_KiB": null,
+      "verification_method": null,
+      "assumptions": null,
+      "compile_assumptions_output": "Closed under the global context",
+      "normal_owned_closure": true,
+      "unchanged_inputs": true,
+      "interactive_calls": 0,
+      "native_block_runs": 0
+    },
+    {
+      "key": "ON-80041fb4",
+      "arm": "ON",
+      "pc": "0x80041fb4",
+      "verified": true,
+      "verification_outcome": "verified",
+      "verification_error": null,
+      "compile_success": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-uncapped-inputs856/ON-80041fb4/Boundary.v",
+        "sha256": "980fc9b99fc629910a7cc1fb7d73ba6b2c947ff0639630ad5c2eef67bf12d0bf",
+        "bytes": 4606
+      },
+      "original_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041fb4/Boundary.v",
+        "sha256": "980fc9b99fc629910a7cc1fb7d73ba6b2c947ff0639630ad5c2eef67bf12d0bf",
+        "bytes": 4606
+      },
+      "statement_sha256": "80450c4a0ffca873fdc544dfc559e2a7696dc54afc641be0008e49931ae4e309",
+      "original_timeout_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041fb4/evidence.json",
+        "sha256": "ae487ab24733f9e5e790202777456ccc3a4c8d6522160b1ce8d881603e8e60b7",
+        "bytes": 19106
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041fb4/RESULT.json",
+        "sha256": "a4d0cbfdc20d7020afd07d74f5274610c63b02c677d85d3210407554b260301e",
+        "bytes": 28811
+      },
+      "raw_receipts": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041fb4/COQC.jsonl",
+        "sha256": "fc15be599fa8ed93aa72168810447776d14fb67dafb2bfd68f2b314f85b98dc6",
+        "bytes": 2536
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041fb4/server.log",
+        "sha256": "dc42025f35605ac3b3fa3db739a412117b47868dd4a036ef48ab41e9557a240f",
+        "bytes": 2635
+      },
+      "compile_CPU_seconds": 10.880676000000001,
+      "compile_wall_seconds": 10.933539716061205,
+      "compile_peak_RSS_KiB": 954524,
+      "compile_tool_wall_seconds": 12.704028806183487,
+      "verification_CPU_seconds": 14.232406000000003,
+      "verification_peak_RSS_KiB": 1046052,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_assumptions_output": "Closed under the global context",
+      "normal_owned_closure": true,
+      "unchanged_inputs": true,
+      "interactive_calls": 0,
+      "native_block_runs": 0
+    },
+    {
+      "key": "ON-80041fb8",
+      "arm": "ON",
+      "pc": "0x80041fb8",
+      "verified": true,
+      "verification_outcome": "verified",
+      "verification_error": null,
+      "compile_success": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-uncapped-inputs856/ON-80041fb8/Boundary.v",
+        "sha256": "be687e0e374b299b59f84db3c325cbe0edea8c5c7b622b283228bbf3b2041ff0",
+        "bytes": 5199
+      },
+      "original_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041fb8/Boundary.v",
+        "sha256": "be687e0e374b299b59f84db3c325cbe0edea8c5c7b622b283228bbf3b2041ff0",
+        "bytes": 5199
+      },
+      "statement_sha256": "e079194bb78d209eaa723719bde0a07324aba838d1439c2e83daa4edcbd5db53",
+      "original_timeout_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041fb8/evidence.json",
+        "sha256": "6e8898c5ff8ee7b4cd90b9842d34c4c692f7127644da207c29d1e67fe2e89062",
+        "bytes": 20854
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041fb8/RESULT.json",
+        "sha256": "1d07f9ec5d6f9e44390f68201ad90ee2ffd801adf855c063adc1ccc93c63b907",
+        "bytes": 30645
+      },
+      "raw_receipts": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041fb8/COQC.jsonl",
+        "sha256": "27cb9655e164c553605dcb9f154b02a485dbe1204583cf89d6418e13991abad4",
+        "bytes": 2527
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041fb8/server.log",
+        "sha256": "c16fd8a901973ae5486e2cdb8d71f7fc54c963c87cfe0b101f2c18bb4a375543",
+        "bytes": 2635
+      },
+      "compile_CPU_seconds": 24.096383999999997,
+      "compile_wall_seconds": 24.242871675873175,
+      "compile_peak_RSS_KiB": 1062592,
+      "compile_tool_wall_seconds": 29.159931942122057,
+      "verification_CPU_seconds": 25.063682,
+      "verification_peak_RSS_KiB": 1164652,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_assumptions_output": "Closed under the global context",
+      "normal_owned_closure": true,
+      "unchanged_inputs": true,
+      "interactive_calls": 0,
+      "native_block_runs": 0
+    },
+    {
+      "key": "ON-80041fc0",
+      "arm": "ON",
+      "pc": "0x80041fc0",
+      "verified": true,
+      "verification_outcome": "verified",
+      "verification_error": null,
+      "compile_success": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-uncapped-inputs856/ON-80041fc0/Boundary.v",
+        "sha256": "cd08deb2ebca12fa1be7678e934a428548b57d0f06d36595a45e5debc408bdf5",
+        "bytes": 5199
+      },
+      "original_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041fc0/Boundary.v",
+        "sha256": "cd08deb2ebca12fa1be7678e934a428548b57d0f06d36595a45e5debc408bdf5",
+        "bytes": 5199
+      },
+      "statement_sha256": "28c72976bb4545d0de20c5d5e520d992cd5d5da4d080e9c4e837fe2703bc1869",
+      "original_timeout_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041fc0/evidence.json",
+        "sha256": "6024689a16199b963154d568f6f534bb50866a82d636123cecf036698828bf24",
+        "bytes": 20859
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041fc0/RESULT.json",
+        "sha256": "03d81c28fba78c6eab6fe6be9badee7edf14800e5510f43831331ed189036176",
+        "bytes": 30634
+      },
+      "raw_receipts": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041fc0/COQC.jsonl",
+        "sha256": "e3e877b2f9c7696d23ec0ca2c58c459ba2d066c941947af49c091d21bbcb6411",
+        "bytes": 2519
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041fc0/server.log",
+        "sha256": "77062e00de159edf30d272d6bcb1c42a0871910dcd40c2dcc61c7f28c71ca3ab",
+        "bytes": 2635
+      },
+      "compile_CPU_seconds": 22.545057,
+      "compile_wall_seconds": 22.668126081116498,
+      "compile_peak_RSS_KiB": 1066068,
+      "compile_tool_wall_seconds": 26.956024178070948,
+      "verification_CPU_seconds": 26.987517,
+      "verification_peak_RSS_KiB": 1170944,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_assumptions_output": "Closed under the global context",
+      "normal_owned_closure": true,
+      "unchanged_inputs": true,
+      "interactive_calls": 0,
+      "native_block_runs": 0
+    },
+    {
+      "key": "ON-80041fd8",
+      "arm": "ON",
+      "pc": "0x80041fd8",
+      "verified": true,
+      "verification_outcome": "verified",
+      "verification_error": null,
+      "compile_success": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-uncapped-inputs856/ON-80041fd8/Boundary.v",
+        "sha256": "b2a130f30cd538d9cc54dbb5008bc5844acb89d0e81cdabce080607beb1fdab0",
+        "bytes": 4606
+      },
+      "original_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041fd8/Boundary.v",
+        "sha256": "b2a130f30cd538d9cc54dbb5008bc5844acb89d0e81cdabce080607beb1fdab0",
+        "bytes": 4606
+      },
+      "statement_sha256": "41d6da67b64c3cf4d5897e9d0347dde22f65ea1737024866b9fc2c947e8ad7a0",
+      "original_timeout_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041fd8/evidence.json",
+        "sha256": "76b153447662e377225c797202289c135dcb0e4edb44d3a8e11a45175f261432",
+        "bytes": 19099
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041fd8/RESULT.json",
+        "sha256": "18ce2f4dc7ad193be00d66e9be2256ae99defafcaf62f36b5c1c930273f12193",
+        "bytes": 28830
+      },
+      "raw_receipts": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041fd8/COQC.jsonl",
+        "sha256": "575cbe7e319fc873bce5d548a3dbd3aa0ac319687acf942d930c27aa144b6117",
+        "bytes": 2518
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041fd8/server.log",
+        "sha256": "d1c5f94188dcd443e8ec49415e84a909a8bc50019527dd941618b73616d29dee",
+        "bytes": 2635
+      },
+      "compile_CPU_seconds": 13.160569,
+      "compile_wall_seconds": 13.231965078040957,
+      "compile_peak_RSS_KiB": 948532,
+      "compile_tool_wall_seconds": 13.581258918857202,
+      "verification_CPU_seconds": 11.469473,
+      "verification_peak_RSS_KiB": 1050024,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_assumptions_output": "Closed under the global context",
+      "normal_owned_closure": true,
+      "unchanged_inputs": true,
+      "interactive_calls": 0,
+      "native_block_runs": 0
+    },
+    {
+      "key": "ON-80042010",
+      "arm": "ON",
+      "pc": "0x80042010",
+      "verified": true,
+      "verification_outcome": "verified",
+      "verification_error": null,
+      "compile_success": true,
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-uncapped-inputs856/ON-80042010/Boundary.v",
+        "sha256": "f3d84ae5900099b7f4e7428f94fbba35e29dcb2f2d1c688163c0fc72fe97272a",
+        "bytes": 4606
+      },
+      "original_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80042010/Boundary.v",
+        "sha256": "f3d84ae5900099b7f4e7428f94fbba35e29dcb2f2d1c688163c0fc72fe97272a",
+        "bytes": 4606
+      },
+      "statement_sha256": "ec2f839c9537fbe958764d5e54cda2ffb6a7c48b997ffba065c63963fdd3ef80",
+      "original_timeout_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80042010/evidence.json",
+        "sha256": "ceb7ca81c9f60ae240e9dd5c34af4c451f2f549e592ed4e89d1c208bd76ef1ad",
+        "bytes": 19096
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80042010/RESULT.json",
+        "sha256": "4361a1b9f2cb061cab3ffa71bf8639a2849acbec3b80b325c2865c7afee5af83",
+        "bytes": 28837
+      },
+      "raw_receipts": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80042010/COQC.jsonl",
+        "sha256": "070961924a882579216c13ce82ddea9bf74b855066d8afbd1e9ede037823e2d7",
+        "bytes": 2526
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80042010/server.log",
+        "sha256": "81e836a8eed79a62a564554f4516524b6a25d021f1f5344995c62e51d2eee232",
+        "bytes": 2635
+      },
+      "compile_CPU_seconds": 10.273741,
+      "compile_wall_seconds": 10.32016803114675,
+      "compile_peak_RSS_KiB": 943872,
+      "compile_tool_wall_seconds": 10.63619915698655,
+      "verification_CPU_seconds": 17.123071999999997,
+      "verification_peak_RSS_KiB": 1048052,
+      "verification_method": "module_m",
+      "assumptions": [],
+      "compile_assumptions_output": "Closed under the global context",
+      "normal_owned_closure": true,
+      "unchanged_inputs": true,
+      "interactive_calls": 0,
+      "native_block_runs": 0
+    }
+  ],
+  "original_report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-final855/REPORT.json",
+    "sha256": "7893c8833b32b848a991458c679f009a587c4d21a9a635873533663386cfa4bc",
+    "bytes": 11680
+  },
+  "original_table": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-comparison854/TABLE.md",
+    "sha256": "491dbb1ed5b2939304f1b20596e8ac5a8c30e0e0714c9ae04d905a8eda1802be",
+    "bytes": 3906
+  },
+  "failed_collection": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped-supplement864/collect.py",
+    "sha256": "2f42af214c1120d7e69f967d3ca3772aab25958e388912f412f9f372ea0157f1",
+    "bytes": 5834
+  },
+  "startup_failure": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped-startup857/REPORT.json",
+    "sha256": "3ec029ede83f951aa0a15dcffcdcc9458bc91263897c827acc6429bf051e2135",
+    "bytes": 8624
+  },
+  "corrected_packet": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-transport858/REPORT.json",
+    "sha256": "c51896702776ac3b5846ead3dc17061e45cce0e4c29d1766f46bb1bfa3ae418b",
+    "bytes": 4503
+  },
+  "corrected_plan": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-transport858/PLAN.json",
+    "sha256": "a94b10480be3b47d9c35f971c33e74498e84b21e6cec4e38ae5236df0a1f1bc5",
+    "bytes": 751591
+  },
+  "parent_review": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped-parent-002/REPORT.json",
+    "sha256": "1c141dfa836498c943d4f02c77eb66f0ca7457e8f529357d4c707bad4a051407",
+    "bytes": 2865
+  },
+  "probe_comments": [
+    "https://github.com/codygunton/zesislar/issues/10#issuecomment-6220930546",
+    "https://github.com/codygunton/zesislar/issues/10#issuecomment-6220960278"
+  ],
+  "installed_MCP_package_changed": false,
+  "source_changes": false,
+  "interactive_calls": 0,
+  "native_block_runs": 0,
+  "shell_proof_fallback": false,
+  "limits": [
+    "This supplement adds final compilation and verification only.",
+    "Original reports 854/855 and their 300-second timeout outcomes remain unchanged.",
+    "The 14 failed 856 startup attempts executed zero tool calls and zero compilations.",
+    "The four new ON interactive-empty states now verify. The observed ON closure count is 15. The prediction stays 40.",
+    "Both ON Auto proof failures remain. No merge acceptance follows."
+  ]
+}

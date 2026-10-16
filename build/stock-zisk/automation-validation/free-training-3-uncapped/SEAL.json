@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "base": "ece170169919ef55fc14649dc7b792ee4ae64b5e",
+  "branch": "worker2-av-free-training3-uncapped",
+  "files": [
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped-final872/REPORT.json",
+        "sha256": "494e2a303fb095948e5c9d379f5fbcfc3b18f92c84622de86fa8a0c88de76f1f",
+        "bytes": 42904
+      },
+      "published": {
+        "path": "build/stock-zisk/automation-validation/free-training-3-uncapped/REPORT.json",
+        "sha256": "494e2a303fb095948e5c9d379f5fbcfc3b18f92c84622de86fa8a0c88de76f1f",
+        "bytes": 42904
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped-final872/TABLE.md",
+        "sha256": "c1ba1a95c2198d45a4a05438373fcba3ac03228d1408314aed07bd00099bf598",
+        "bytes": 1478
+      },
+      "published": {
+        "path": "build/stock-zisk/automation-validation/free-training-3-uncapped/TABLE.md",
+        "sha256": "c1ba1a95c2198d45a4a05438373fcba3ac03228d1408314aed07bd00099bf598",
+        "bytes": 1478
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped-final872/SEAL.json",
+        "sha256": "620863a8fbe4628634e79316f51dc5386369a63a1fc973033a52b7a13471dcf7",
+        "bytes": 1585
+      },
+      "published": {
+        "path": "build/stock-zisk/automation-validation/free-training-3-uncapped/SOURCE-SEAL.json",
+        "sha256": "620863a8fbe4628634e79316f51dc5386369a63a1fc973033a52b7a13471dcf7",
+        "bytes": 1585
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped-partial866/REPORT.json",
+        "sha256": "3b287da2438a656c3e579e15e75bd740a1639a430d7228011f25e73d683a53b5",
+        "bytes": 39718
+      },
+      "published": {
+        "path": "build/stock-zisk/automation-validation/free-training-3-uncapped/PARTIAL-REPORT.json",
+        "sha256": "3b287da2438a656c3e579e15e75bd740a1639a430d7228011f25e73d683a53b5",
+        "bytes": 39718
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041f7c/RESULT.json",
+        "sha256": "db911c7c8419f21553126f8c3662285a5df1e7f6f70d1adce444649d0bc4f348",
+        "bytes": 27706
+      },
+      "published": {
+        "path": "build/stock-zisk/automation-validation/free-training-3-uncapped/RESERVATION-FAILURE.json",
+        "sha256": "db911c7c8419f21553126f8c3662285a5df1e7f6f70d1adce444649d0bc4f348",
+        "bytes": 27706
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-verification-retry868/ON-80041f7c/RESULT.json",
+        "sha256": "82b8f51b20b0135c0a3c52a4ba95441c30b01cce7d55f83db034ab4818ac715d",
+        "bytes": 21484
+      },
+      "published": {
+        "path": "build/stock-zisk/automation-validation/free-training-3-uncapped/VERIFICATION-RETRY.json",
+        "sha256": "82b8f51b20b0135c0a3c52a4ba95441c30b01cce7d55f83db034ab4818ac715d",
+        "bytes": 21484
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-verify-retry868/GUARD-OWNERSHIP.json",
+        "sha256": "ca7d846eee0b47f07811bb9cf3abd29b3d9ef231e7fffff669dfd1a97f69b134",
+        "bytes": 5892
+      },
+      "published": {
+        "path": "build/stock-zisk/automation-validation/free-training-3-uncapped/RESERVATION-OWNERSHIP.json",
+        "sha256": "ca7d846eee0b47f07811bb9cf3abd29b3d9ef231e7fffff669dfd1a97f69b134",
+        "bytes": 5892
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/training3-uncapped-publication873/PROBE-COMMENTS.json",
+        "sha256": "8e1dbd63b9699f3d7b15306feb68873c4c9c0ab4f943c61f1ccf7b1b2992c9bc",
+        "bytes": 686
+      },
+      "published": {
+        "path": "build/stock-zisk/automation-validation/free-training-3-uncapped/PROBE-COMMENTS.json",
+        "sha256": "8e1dbd63b9699f3d7b15306feb68873c4c9c0ab4f943c61f1ccf7b1b2992c9bc",
+        "bytes": 686
+      }
+    }
+  ],
+  "proof_sources_changed": false,
+  "original_results_changed": false,
+  "final_counts": {
+    "OFF_verified": 12,
+    "OFF_open": 31,
+    "ON_verified": 16,
+    "ON_open": 27
+  },
+  "limits": [
+    "This supplement adds final compilation and verification only.",
+    "The original comparison stays immutable on its separate branch.",
+    "Both ON Auto proof failures remain.",
+    "Iris evidence is inherited from the exact base. No fresh Iris gate is claimed."
+  ]
+}
