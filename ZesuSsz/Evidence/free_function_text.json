@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "function": "alt_fl_alloc.free",
-  "status": "Checked two exit registrations exported; no native run; R3 activation is independent.",
-  "snapshot_base_root": "1ab41c3d6a5719849d2c6a68ac9fc658e245d6bc",
-  "snapshot_kind": "Reviewable worktree with exact checked owner bytes; file hashes are authoritative.",
+  "status": "Conditional leaf-introduction training family. No new native run.",
+  "snapshot_base_root": "e8131be295b89a1821b3ba760f39e7aad1e8647d",
+  "snapshot_kind": "Frozen-source preparation with additional training facts. File hashes are authoritative.",
   "umbrella": "ZesuSsz.Compliance.FreeHints",
   "counting_rules": {
     "unit": "Physical lines, including comments and blank lines. A final line without newline counts once.",
@@ -22,7 +22,9 @@
   ],
   "introductions": [
     "ZesuSsz/Compliance/FreeClassFacts.v",
-    "ZesuSsz/Compliance/FreeEntryIntroductions.v"
+    "ZesuSsz/Compliance/FreeEntryIntroductions.v",
+    "ZesuSsz/Compliance/FreeSizeClassLeafFacts.v",
+    "ZesuSsz/Compliance/FreeLeafIntroductions.v"
   ],
   "exit_meanings": [
     "ZesuSsz/Compliance/FreeExitMeanings.v",
@@ -59,14 +61,17 @@
     "build/stock-zisk/automation-validation/free-compile-evidence/CHECKPOINT.json",
     "build/stock-zisk/automation-validation/free-compile-evidence/HOLDOUT-PROTOCOL.md",
     "ZesuSsz/Evidence/free_function_text.json",
-    "build/stock-zisk/automation-validation/free-exit-instances/CHECKPOINT.json"
+    "build/stock-zisk/automation-validation/free-exit-instances/CHECKPOINT.json",
+    "build/stock-zisk/automation-validation/free-leaf-introductions/CHECKPOINT.json"
   ],
   "lemmas": [
     "ZesuSsz/Compliance/FreeClassFacts.v",
     "ZesuSsz/Compliance/FreeEntryIntroductions.v",
     "ZesuSsz/Compliance/FreeExitMeanings.v",
     "ZesuSsz/Compliance/FreeReturnFacts.v",
-    "ZesuSsz/Compliance/FreeExitRegistrations.v"
+    "ZesuSsz/Compliance/FreeExitRegistrations.v",
+    "ZesuSsz/Compliance/FreeSizeClassLeafFacts.v",
+    "ZesuSsz/Compliance/FreeLeafIntroductions.v"
   ],
   "pending": [],
   "excluded_false_matches": [
@@ -214,15 +219,15 @@
       "path": "ZesuSsz/Compliance/FreeDataRegistrations.v",
       "category": "registrations",
       "scope": "whole_file",
-      "sha256": "78cac3811422b7b6ef299969c38accce86d505e72f5250c6106d81319f94ebbb",
-      "file_lines": 28,
+      "sha256": "b0b4d95be5b0682b43c4bb2c08c700f5040810ddba6c83497633bf165d212194",
+      "file_lines": 103,
       "line_ranges": [
         [
           1,
-          28
+          103
         ]
       ],
-      "counted_lines": 28
+      "counted_lines": 103
     },
     {
       "path": "ZesuSsz/Compliance/FreeEntryIntroductions.v",
@@ -607,17 +612,53 @@
       "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "46f62d3f0913e3952c724fda4d23b1fb7f689babe654704e1fd6fb0e2119108d",
-      "file_lines": 239,
+      "sha256": "5d051609fe62966ab0c95e646831b00671827abb24ee1bc34292530d38c5766c",
+      "file_lines": 260,
       "line_ranges": [
         [
           137,
+          143
+        ],
+        [
+          144,
+          150
+        ],
+        [
+          151,
+          157
+        ],
+        [
+          158,
+          164
+        ],
+        [
+          165,
+          171
+        ],
+        [
+          172,
+          178
+        ],
+        [
+          179,
+          185
+        ],
+        [
+          186,
           192
+        ],
+        [
+          245,
+          251
+        ],
+        [
+          252,
+          258
         ]
       ],
-      "counted_lines": 56,
+      "counted_lines": 70,
       "role": "measurement_metadata",
-      "selection": "All eight free measurement rows only."
+      "selection": "All ten free measurement rows only."
     },
     {
       "path": "build/stock-zisk/automation-validation/free-guarded-update/CHECKPOINT.json",
@@ -706,14 +747,14 @@
       "scope": "whole_file",
       "sha256": null,
       "hash_rule": "No circular self-hash. The outer certificate binds final bytes.",
-      "file_lines": 799,
+      "file_lines": 898,
       "line_ranges": [
         [
           1,
-          799
+          898
         ]
       ],
-      "counted_lines": 799
+      "counted_lines": 898
     },
     {
       "path": "ZesuSsz/Compliance/FreeReturnFacts.v",
@@ -758,26 +799,69 @@
       "counted_lines": 31,
       "role": "measurement_metadata",
       "hash_rule": "The outer receipt binds these bytes without a circular hash."
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeSizeClassLeafFacts.v",
+      "category": "introductions",
+      "scope": "whole_file",
+      "sha256": "649786957c7b152c6a52e5c85c89a8e990d3264a4849282cc17767cd44d85a94",
+      "file_lines": 218,
+      "line_ranges": [
+        [
+          1,
+          218
+        ]
+      ],
+      "counted_lines": 218
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeLeafIntroductions.v",
+      "category": "introductions",
+      "scope": "whole_file",
+      "sha256": "0448c009e009abf767a5bb99ee35a551b72219769f4ac9ce85a2b8d8313136c5",
+      "file_lines": 223,
+      "line_ranges": [
+        [
+          1,
+          223
+        ]
+      ],
+      "counted_lines": 223
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/free-leaf-introductions/CHECKPOINT.json",
+      "category": "tests_and_exports",
+      "role": "measurement_metadata",
+      "scope": "whole_file",
+      "sha256": "0e3ebf997e1e8e91313c6d1c221bb2af6c6d2eec788cb1631863ad8a5b4afcd3",
+      "file_lines": 46,
+      "line_ranges": [
+        [
+          1,
+          46
+        ]
+      ],
+      "counted_lines": 46
     }
   ],
   "category_totals": {
     "contracts": 571,
-    "introductions": 113,
+    "introductions": 554,
     "exit_meanings": 109,
     "loop_steps": 0,
-    "registrations": 201,
+    "registrations": 276,
     "generator_json": 111,
     "block_proofs": 0,
     "composition": 0,
-    "tests_and_exports": 1262
+    "tests_and_exports": 1421
   },
-  "interface_total": 1105,
+  "interface_total": 1621,
   "conservative_source_file_lines": 2538,
   "block_records": [],
-  "native_runs": 0,
-  "holdout_spent": false,
-  "freeze_requirement": "No native free execution before exact cp-av-rules-frozen commit is sealed.",
-  "overall_total": 2367,
+  "native_runs": 1,
+  "holdout_spent": true,
+  "freeze_requirement": "The frozen boundary is e8131be2. Result724 spent the hold-out. Later native runs are training.",
+  "overall_total": 3042,
   "checked_class_dependency": "b7359b55f3609d22e28d1021570543f274d446b7",
   "previous_guarded_counts": {
     "commit": "1ab41c3d6a5719849d2c6a68ac9fc658e245d6bc",
@@ -795,5 +879,20 @@
     "interface_total": 983,
     "overall_total": 2131
   },
-  "exit_registration_delta": 122
+  "exit_registration_delta": 122,
+  "training_family": {
+    "introduced_source_keys": 12,
+    "helper_leaf_lemmas": 21,
+    "interface_delta": 516,
+    "range_policy": "Each exact leaf range stays inside an implication. No entry premise or contract changed.",
+    "holdout_result": "Result724 remains final0/43. Any later run is training.",
+    "native_execution": "This family ran no native proof. The one historical result is724, final0/43.",
+    "certificate_sha256": "14f874d7131e28d202bc760a692856d87eca4898d9ee7ff61c5db5731fa73814",
+    "integration_base": "13e0e7333fce445a009c5253357729eca7b3afb7"
+  },
+  "previous_snapshot_native_fields": {
+    "native_runs": 0,
+    "holdout_spent": false,
+    "scope": "Inherited pre-run manifest snapshot, preserved as history."
+  }
 }

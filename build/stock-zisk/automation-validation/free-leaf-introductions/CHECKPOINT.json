@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "item": "free conditional leaf introductions",
+  "frozen_source_root": "e8131be295b89a1821b3ba760f39e7aad1e8647d",
+  "integration_base": "13e0e7333fce445a009c5253357729eca7b3afb7",
+  "integration_tag": "cp-av-free-successor-binders",
+  "native_result": "724 final0/43; spent hold-out; no Spec rerun",
+  "helpers": 21,
+  "entry_introductions": 12,
+  "registered_constants": 12,
+  "inferred_facts_queries": 12,
+  "interactive_proofs": 45,
+  "complete_zero_exports": 45,
+  "actual_advancing_Qed": 45,
+  "exact_checks": 57,
+  "verification_method": "module_m",
+  "assumptions": [],
+  "changed_module_compilations": 3,
+  "interface_line_delta": 516,
+  "range_policy": "All leaf ranges remain implications inside facts. No entry premise or contract changed.",
+  "guard_policy": "Source alignment-word equality and strict unsigned inequality remain exact.",
+  "gate": {
+    "result": "pass",
+    "seconds": 1164.8025838769972,
+    "root": "13e0e7333fce445a009c5253357729eca7b3afb7",
+    "record": "/home/cody/zesislar/.worktrees/spec-b-av-free-leaf-intros-e8131be2/_build/free-leaf-fast015/RESULT.json",
+    "sha256": "9b262d9a6d673cd227c2dd587e75215e9e8ab90caee13561518314cd286be941"
+  },
+  "preserved_gate_failures": [
+    "fast011 absent decodeParentHeader index object",
+    "fast013 absent memcpyStub index object"
+  ],
+  "dependency_fix": "All5 referenced generated index targets built in one focused Dune command.",
+  "MCP_certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-free-leaf-intros-e8131be2/_build/free-leaf-seal010/REPORT.json",
+    "sha256": "8bc191e5093e5e64573c7dfe91021df60e6bd3e8fd425efe35ae83dd7f618ea0",
+    "bindings": 124
+  },
+  "full_certificate": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-av-free-leaf-intros-e8131be2/_build/free-leaf-final016/REPORT.json",
+    "sha256": "14f874d7131e28d202bc760a692856d87eca4898d9ee7ff61c5db5731fa73814",
+    "bindings": 150
+  },
+  "activation_limit": "No native block closure, generic rule change, or fifth arithmetic pattern claim.",
+  "integration_gate": "Root owns both gates before integration."
+}
