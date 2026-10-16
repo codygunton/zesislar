@@ -2,13 +2,13 @@
   "schema_version": 1,
   "function": "rlp_decode.nextUint64",
   "status": "Checked data-only registrations exported through the function umbrella. No Approved switch activation or native correctness claim.",
-  "snapshot_base_root": "c84147faf85a232f4c40bd64f7aee96111e964d3",
+  "snapshot_base_root": "4dc8a2e796bc5ebc9d32477cc64babce5269b0e9",
   "umbrella": "ZesuSsz.Compliance.NextUint64Hints",
   "counting_rules": {
     "unit": "Physical lines including comments and blank lines. A final line without newline counts once.",
     "ranges": "One-based inclusive ranges. No line overlaps inside this function manifest.",
     "mixed": "Count exact nextUint64 commands and their attached comments. Exclude shared caller consumers and shared markers.",
-    "source_embedded_data": "No new design JSON exists in this snapshot. Generator_json remains empty.",
+    "source_embedded_data": "Count the complete source-bound profile and generated design JSON. Generated Rocq and coverage outputs remain untracked structural checks.",
     "metadata": "Shape rows, checkpoint and this manifest are unscored measurement metadata.",
     "self": "Count this manifest through a physical-line fixed point. The outer certificate binds its hash."
   },
@@ -40,13 +40,7 @@
       "reason": "These caller-site lists and obligations belong to parentHeader."
     }
   ],
-  "pending": [
-    {
-      "kind": "generator_design",
-      "path": null,
-      "status": "No checked design JSON exists in the bound snapshot; no line credit."
-    }
-  ],
+  "pending": [],
   "lemmas": [
     "ZesuSsz/Compliance/NextUint64FoldFacts.v",
     "ZesuSsz/Compliance/NextUint64ExitMeanings.v",
@@ -73,7 +67,10 @@
     "ZesuSsz/Compliance/NextUint64Hints.v",
     "ZesuSsz/Compliance/NextUint64DataRegistrations.v"
   ],
-  "generator_json": [],
+  "generator_json": [
+    "ZesuSsz/Evidence/next_uint64_block_profile.json",
+    "ZesuSsz/Evidence/next_uint64_block_design.json"
+  ],
   "block_proofs": [],
   "composition": [],
   "tests_and_exports": [
@@ -251,8 +248,8 @@
       "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "46f62d3f0913e3952c724fda4d23b1fb7f689babe654704e1fd6fb0e2119108d",
-      "file_lines": 239,
+      "sha256": "997c311b22ebe38551cdc86375cebf1cd9399a52715cff0cb36642903816c880",
+      "file_lines": 281,
       "line_ranges": [
         [
           196,
@@ -286,14 +283,14 @@
       "scope": "whole_file",
       "sha256": null,
       "hash_rule": "No circular self-hash. The outer certificate binds final bytes.",
-      "file_lines": 404,
+      "file_lines": 429,
       "line_ranges": [
         [
           1,
-          404
+          429
         ]
       ],
-      "counted_lines": 404
+      "counted_lines": 429
     },
     {
       "path": "ZesuSsz/Compliance/NextUint64ExitMeanings.v",
@@ -384,6 +381,34 @@
       "counted_lines": 46,
       "role": "measurement_metadata",
       "hash_rule": "The outer certificate binds these metadata bytes; internal hashes would be circular."
+    },
+    {
+      "path": "ZesuSsz/Evidence/next_uint64_block_profile.json",
+      "category": "generator_json",
+      "scope": "whole_file",
+      "sha256": "4aa9c0acc54de12121bb0b0d67dccc43be1456840503b8926dd6c638282e71a8",
+      "file_lines": 1913,
+      "line_ranges": [
+        [
+          1,
+          1913
+        ]
+      ],
+      "counted_lines": 1913
+    },
+    {
+      "path": "ZesuSsz/Evidence/next_uint64_block_design.json",
+      "category": "generator_json",
+      "scope": "whole_file",
+      "sha256": "81bc9305cd0a859fe42953aa95cccdc73b72f4e70fe3adff19d72bf77c727047",
+      "file_lines": 2207,
+      "line_ranges": [
+        [
+          1,
+          2207
+        ]
+      ],
+      "counted_lines": 2207
     }
   ],
   "category_totals": {
@@ -392,13 +417,13 @@
     "exit_meanings": 79,
     "loop_steps": 229,
     "registrations": 95,
-    "generator_json": 0,
+    "generator_json": 4120,
     "block_proofs": 0,
     "composition": 0,
-    "tests_and_exports": 1042
+    "tests_and_exports": 1067
   },
-  "interface_total": 1046,
-  "overall_total": 2088,
-  "conservative_full_file_lines": 2587,
+  "interface_total": 5166,
+  "overall_total": 6233,
+  "conservative_full_file_lines": 6774,
   "historical_interface_total": 867
 }

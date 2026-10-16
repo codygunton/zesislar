@@ -1,0 +1,35 @@
+{
+  "scope": "Metadata-only nextUint64 profile, design and full manifest recount. No proof run, native run, generated table compilation or boxed installation proof.",
+  "tested_root": "4dc8a2e796bc5ebc9d32477cc64babce5269b0e9",
+  "report_path": "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/nextuint64-profile-final003/REPORT.json",
+  "report_sha256": "d37186c7a6f66c3f3c489fe319c633d2980959193dc666eb6696527525c7b996",
+  "source_seals": {
+    "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/ZesuSsz/Evidence/next_uint64_block_profile.json": "4aa9c0acc54de12121bb0b0d67dccc43be1456840503b8926dd6c638282e71a8",
+    "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/ZesuSsz/Evidence/next_uint64_block_design.json": "81bc9305cd0a859fe42953aa95cccdc73b72f4e70fe3adff19d72bf77c727047",
+    "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/ZesuSsz/Evidence/nextUint64_function_text.json": "54bde664b42998d675d9e4be6dd6a97f3e9d2b9d371d1bfd94eb33b94a9fddb6"
+  },
+  "interface_total": 5166,
+  "generator_json_lines": 4120,
+  "check_fast": {
+    "command": [
+      "make",
+      "check-fast",
+      "CHECK_AGENT=spec-a",
+      "FAST_JOBS=6",
+      "AGENT_JOBS=6",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/agents/spec-a-nextuint64-profile-gate"
+    ],
+    "start_UTC": "2026-10-16T15:15:34.167472+00:00",
+    "exit_code": 0,
+    "wall_seconds": 1551.044030503137,
+    "user_seconds": 5101.70151,
+    "system_seconds": 390.431098,
+    "peak_RSS_KiB": 4442688,
+    "unchanged_sources": true
+  },
+  "limitations": [
+    "Generated table and coverage remain untracked structural evidence.",
+    "The boxed installation bridge remains external and unproved.",
+    "No native nextUint64 result exists."
+  ]
+}
