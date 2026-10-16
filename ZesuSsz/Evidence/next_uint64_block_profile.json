@@ -1,0 +1,1913 @@
+{
+  "function": "rlp_decode.nextUint64",
+  "hash_sources": {
+    "inventory_sha256": "build/stock-zisk/inventory.json",
+    "selected_elf_sha256": "build/stock-zisk/zesu-zisk.elf",
+    "entry_source_sha256": "ZesuSsz/Contracts/NextUint64BlockEntries.v",
+    "contract_sha256": "ZesuSsz/Contracts/NextUint64Contract.v"
+  },
+  "design": {
+    "schema_version": 1,
+    "label": "Structural call wiring and explicit entry declarations; no native proof or execution",
+    "proof_status": "Native bodies and boxed callee installation remain unproved",
+    "table_convention": {
+      "entry_type": "(Z * iProp Sigma)",
+      "pc_ownership": "instr_pre pc state supplies PC; entry predicates do not own PC",
+      "existential_binders": "Each row's binders, in their listed order",
+      "resource_application": "Apply resource_predicate to arguments in order",
+      "code_persistence": "block_table_pre boxes the supplied code resource",
+      "code_resource": "ZesuSsz.Contracts.NextUint64Selected.nextUint64SelectedCode",
+      "code_source_hashes": [
+        "ZesuSsz/Contracts/NextUint64Selected.v"
+      ],
+      "successor_root_parameters": [
+        "params"
+      ],
+      "successor_existentials": "Each successor row's remaining binders, in their listed order, including every register, array and frame binder"
+    },
+    "blocks": [
+      {
+        "entry_pc": "0x800d6274",
+        "entry_definition": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6274",
+        "binders": [
+          {
+            "name": "params",
+            "type": "NextUint64Args"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x5",
+            "type": "bv 64"
+          },
+          {
+            "name": "x6",
+            "type": "bv 64"
+          },
+          {
+            "name": "x7",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x9",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "x15",
+            "type": "bv 64"
+          },
+          {
+            "name": "x16",
+            "type": "bv 64"
+          },
+          {
+            "name": "x17",
+            "type": "bv 64"
+          },
+          {
+            "name": "x18",
+            "type": "bv 64"
+          },
+          {
+            "name": "x19",
+            "type": "bv 64"
+          },
+          {
+            "name": "x20",
+            "type": "bv 64"
+          },
+          {
+            "name": "x21",
+            "type": "bv 64"
+          },
+          {
+            "name": "x22",
+            "type": "bv 64"
+          },
+          {
+            "name": "x23",
+            "type": "bv 64"
+          },
+          {
+            "name": "x24",
+            "type": "bv 64"
+          },
+          {
+            "name": "x25",
+            "type": "bv 64"
+          },
+          {
+            "name": "x26",
+            "type": "bv 64"
+          },
+          {
+            "name": "x27",
+            "type": "bv 64"
+          },
+          {
+            "name": "x28",
+            "type": "bv 64"
+          },
+          {
+            "name": "x29",
+            "type": "bv 64"
+          },
+          {
+            "name": "x30",
+            "type": "bv 64"
+          },
+          {
+            "name": "x31",
+            "type": "bv 64"
+          },
+          {
+            "name": "inputBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "sliceBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "params",
+          "x1",
+          "x2",
+          "x5",
+          "x6",
+          "x7",
+          "x8",
+          "x9",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "x15",
+          "x16",
+          "x17",
+          "x18",
+          "x19",
+          "x20",
+          "x21",
+          "x22",
+          "x23",
+          "x24",
+          "x25",
+          "x26",
+          "x27",
+          "x28",
+          "x29",
+          "x30",
+          "x31",
+          "inputBytes",
+          "sliceBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6274",
+        "source_hashes": [
+          "ZesuSsz/Contracts/NextUint64BlockEntries.v"
+        ],
+        "end_pc_exclusive": null,
+        "incoming_edges": [],
+        "successor_pcs": []
+      },
+      {
+        "entry_pc": "0x800d62b8",
+        "entry_definition": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62b8",
+        "binders": [
+          {
+            "name": "params",
+            "type": "NextUint64Args"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x5",
+            "type": "bv 64"
+          },
+          {
+            "name": "x6",
+            "type": "bv 64"
+          },
+          {
+            "name": "x7",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x9",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "x15",
+            "type": "bv 64"
+          },
+          {
+            "name": "x16",
+            "type": "bv 64"
+          },
+          {
+            "name": "x17",
+            "type": "bv 64"
+          },
+          {
+            "name": "x18",
+            "type": "bv 64"
+          },
+          {
+            "name": "x19",
+            "type": "bv 64"
+          },
+          {
+            "name": "x20",
+            "type": "bv 64"
+          },
+          {
+            "name": "x21",
+            "type": "bv 64"
+          },
+          {
+            "name": "x22",
+            "type": "bv 64"
+          },
+          {
+            "name": "x23",
+            "type": "bv 64"
+          },
+          {
+            "name": "x24",
+            "type": "bv 64"
+          },
+          {
+            "name": "x25",
+            "type": "bv 64"
+          },
+          {
+            "name": "x26",
+            "type": "bv 64"
+          },
+          {
+            "name": "x27",
+            "type": "bv 64"
+          },
+          {
+            "name": "x28",
+            "type": "bv 64"
+          },
+          {
+            "name": "x29",
+            "type": "bv 64"
+          },
+          {
+            "name": "x30",
+            "type": "bv 64"
+          },
+          {
+            "name": "x31",
+            "type": "bv 64"
+          },
+          {
+            "name": "inputBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "sliceBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "decoded",
+            "type": "list byte"
+          },
+          {
+            "name": "saved",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "params",
+          "x1",
+          "x2",
+          "x5",
+          "x6",
+          "x7",
+          "x8",
+          "x9",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "x15",
+          "x16",
+          "x17",
+          "x18",
+          "x19",
+          "x20",
+          "x21",
+          "x22",
+          "x23",
+          "x24",
+          "x25",
+          "x26",
+          "x27",
+          "x28",
+          "x29",
+          "x30",
+          "x31",
+          "inputBytes",
+          "sliceBytes",
+          "decoded",
+          "saved"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62b8",
+        "source_hashes": [
+          "ZesuSsz/Contracts/NextUint64BlockEntries.v"
+        ],
+        "end_pc_exclusive": null,
+        "incoming_edges": [],
+        "successor_pcs": []
+      },
+      {
+        "entry_pc": "0x800d62c0",
+        "entry_definition": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62c0",
+        "binders": [
+          {
+            "name": "params",
+            "type": "NextUint64Args"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x5",
+            "type": "bv 64"
+          },
+          {
+            "name": "x6",
+            "type": "bv 64"
+          },
+          {
+            "name": "x7",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x9",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "x15",
+            "type": "bv 64"
+          },
+          {
+            "name": "x16",
+            "type": "bv 64"
+          },
+          {
+            "name": "x17",
+            "type": "bv 64"
+          },
+          {
+            "name": "x18",
+            "type": "bv 64"
+          },
+          {
+            "name": "x19",
+            "type": "bv 64"
+          },
+          {
+            "name": "x20",
+            "type": "bv 64"
+          },
+          {
+            "name": "x21",
+            "type": "bv 64"
+          },
+          {
+            "name": "x22",
+            "type": "bv 64"
+          },
+          {
+            "name": "x23",
+            "type": "bv 64"
+          },
+          {
+            "name": "x24",
+            "type": "bv 64"
+          },
+          {
+            "name": "x25",
+            "type": "bv 64"
+          },
+          {
+            "name": "x26",
+            "type": "bv 64"
+          },
+          {
+            "name": "x27",
+            "type": "bv 64"
+          },
+          {
+            "name": "x28",
+            "type": "bv 64"
+          },
+          {
+            "name": "x29",
+            "type": "bv 64"
+          },
+          {
+            "name": "x30",
+            "type": "bv 64"
+          },
+          {
+            "name": "x31",
+            "type": "bv 64"
+          },
+          {
+            "name": "inputBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "sliceBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "decoded",
+            "type": "list byte"
+          },
+          {
+            "name": "saved",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "params",
+          "x1",
+          "x2",
+          "x5",
+          "x6",
+          "x7",
+          "x8",
+          "x9",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "x15",
+          "x16",
+          "x17",
+          "x18",
+          "x19",
+          "x20",
+          "x21",
+          "x22",
+          "x23",
+          "x24",
+          "x25",
+          "x26",
+          "x27",
+          "x28",
+          "x29",
+          "x30",
+          "x31",
+          "inputBytes",
+          "sliceBytes",
+          "decoded",
+          "saved"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62c0",
+        "source_hashes": [
+          "ZesuSsz/Contracts/NextUint64BlockEntries.v"
+        ],
+        "end_pc_exclusive": null,
+        "incoming_edges": [],
+        "successor_pcs": []
+      },
+      {
+        "entry_pc": "0x800d62cc",
+        "entry_definition": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62cc",
+        "binders": [
+          {
+            "name": "params",
+            "type": "NextUint64Args"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x5",
+            "type": "bv 64"
+          },
+          {
+            "name": "x6",
+            "type": "bv 64"
+          },
+          {
+            "name": "x7",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x9",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "x15",
+            "type": "bv 64"
+          },
+          {
+            "name": "x16",
+            "type": "bv 64"
+          },
+          {
+            "name": "x17",
+            "type": "bv 64"
+          },
+          {
+            "name": "x18",
+            "type": "bv 64"
+          },
+          {
+            "name": "x19",
+            "type": "bv 64"
+          },
+          {
+            "name": "x20",
+            "type": "bv 64"
+          },
+          {
+            "name": "x21",
+            "type": "bv 64"
+          },
+          {
+            "name": "x22",
+            "type": "bv 64"
+          },
+          {
+            "name": "x23",
+            "type": "bv 64"
+          },
+          {
+            "name": "x24",
+            "type": "bv 64"
+          },
+          {
+            "name": "x25",
+            "type": "bv 64"
+          },
+          {
+            "name": "x26",
+            "type": "bv 64"
+          },
+          {
+            "name": "x27",
+            "type": "bv 64"
+          },
+          {
+            "name": "x28",
+            "type": "bv 64"
+          },
+          {
+            "name": "x29",
+            "type": "bv 64"
+          },
+          {
+            "name": "x30",
+            "type": "bv 64"
+          },
+          {
+            "name": "x31",
+            "type": "bv 64"
+          },
+          {
+            "name": "inputBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "sliceBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "decoded",
+            "type": "list byte"
+          },
+          {
+            "name": "saved",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "params",
+          "x1",
+          "x2",
+          "x5",
+          "x6",
+          "x7",
+          "x8",
+          "x9",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "x15",
+          "x16",
+          "x17",
+          "x18",
+          "x19",
+          "x20",
+          "x21",
+          "x22",
+          "x23",
+          "x24",
+          "x25",
+          "x26",
+          "x27",
+          "x28",
+          "x29",
+          "x30",
+          "x31",
+          "inputBytes",
+          "sliceBytes",
+          "decoded",
+          "saved"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62cc",
+        "source_hashes": [
+          "ZesuSsz/Contracts/NextUint64BlockEntries.v"
+        ],
+        "end_pc_exclusive": null,
+        "incoming_edges": [],
+        "successor_pcs": []
+      },
+      {
+        "entry_pc": "0x800d62d8",
+        "entry_definition": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62d8",
+        "binders": [
+          {
+            "name": "params",
+            "type": "NextUint64Args"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x5",
+            "type": "bv 64"
+          },
+          {
+            "name": "x6",
+            "type": "bv 64"
+          },
+          {
+            "name": "x7",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x9",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "x15",
+            "type": "bv 64"
+          },
+          {
+            "name": "x16",
+            "type": "bv 64"
+          },
+          {
+            "name": "x17",
+            "type": "bv 64"
+          },
+          {
+            "name": "x18",
+            "type": "bv 64"
+          },
+          {
+            "name": "x19",
+            "type": "bv 64"
+          },
+          {
+            "name": "x20",
+            "type": "bv 64"
+          },
+          {
+            "name": "x21",
+            "type": "bv 64"
+          },
+          {
+            "name": "x22",
+            "type": "bv 64"
+          },
+          {
+            "name": "x23",
+            "type": "bv 64"
+          },
+          {
+            "name": "x24",
+            "type": "bv 64"
+          },
+          {
+            "name": "x25",
+            "type": "bv 64"
+          },
+          {
+            "name": "x26",
+            "type": "bv 64"
+          },
+          {
+            "name": "x27",
+            "type": "bv 64"
+          },
+          {
+            "name": "x28",
+            "type": "bv 64"
+          },
+          {
+            "name": "x29",
+            "type": "bv 64"
+          },
+          {
+            "name": "x30",
+            "type": "bv 64"
+          },
+          {
+            "name": "x31",
+            "type": "bv 64"
+          },
+          {
+            "name": "inputBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "sliceBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "decoded",
+            "type": "list byte"
+          },
+          {
+            "name": "saved",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "params",
+          "x1",
+          "x2",
+          "x5",
+          "x6",
+          "x7",
+          "x8",
+          "x9",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "x15",
+          "x16",
+          "x17",
+          "x18",
+          "x19",
+          "x20",
+          "x21",
+          "x22",
+          "x23",
+          "x24",
+          "x25",
+          "x26",
+          "x27",
+          "x28",
+          "x29",
+          "x30",
+          "x31",
+          "inputBytes",
+          "sliceBytes",
+          "decoded",
+          "saved"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62d8",
+        "source_hashes": [
+          "ZesuSsz/Contracts/NextUint64BlockEntries.v"
+        ],
+        "end_pc_exclusive": null,
+        "incoming_edges": [],
+        "successor_pcs": []
+      },
+      {
+        "entry_pc": "0x800d62e4",
+        "entry_definition": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62e4",
+        "binders": [
+          {
+            "name": "params",
+            "type": "NextUint64Args"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x5",
+            "type": "bv 64"
+          },
+          {
+            "name": "x6",
+            "type": "bv 64"
+          },
+          {
+            "name": "x7",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x9",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "x15",
+            "type": "bv 64"
+          },
+          {
+            "name": "x16",
+            "type": "bv 64"
+          },
+          {
+            "name": "x17",
+            "type": "bv 64"
+          },
+          {
+            "name": "x18",
+            "type": "bv 64"
+          },
+          {
+            "name": "x19",
+            "type": "bv 64"
+          },
+          {
+            "name": "x20",
+            "type": "bv 64"
+          },
+          {
+            "name": "x21",
+            "type": "bv 64"
+          },
+          {
+            "name": "x22",
+            "type": "bv 64"
+          },
+          {
+            "name": "x23",
+            "type": "bv 64"
+          },
+          {
+            "name": "x24",
+            "type": "bv 64"
+          },
+          {
+            "name": "x25",
+            "type": "bv 64"
+          },
+          {
+            "name": "x26",
+            "type": "bv 64"
+          },
+          {
+            "name": "x27",
+            "type": "bv 64"
+          },
+          {
+            "name": "x28",
+            "type": "bv 64"
+          },
+          {
+            "name": "x29",
+            "type": "bv 64"
+          },
+          {
+            "name": "x30",
+            "type": "bv 64"
+          },
+          {
+            "name": "x31",
+            "type": "bv 64"
+          },
+          {
+            "name": "inputBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "sliceBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "decoded",
+            "type": "list byte"
+          },
+          {
+            "name": "saved",
+            "type": "list byte"
+          },
+          {
+            "name": "resultBytes",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "params",
+          "x1",
+          "x2",
+          "x5",
+          "x6",
+          "x7",
+          "x8",
+          "x9",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "x15",
+          "x16",
+          "x17",
+          "x18",
+          "x19",
+          "x20",
+          "x21",
+          "x22",
+          "x23",
+          "x24",
+          "x25",
+          "x26",
+          "x27",
+          "x28",
+          "x29",
+          "x30",
+          "x31",
+          "inputBytes",
+          "sliceBytes",
+          "decoded",
+          "saved",
+          "resultBytes"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62e4",
+        "source_hashes": [
+          "ZesuSsz/Contracts/NextUint64BlockEntries.v"
+        ],
+        "end_pc_exclusive": null,
+        "incoming_edges": [],
+        "successor_pcs": [],
+        "return_clause": {
+          "return_instruction_pc": null
+        }
+      },
+      {
+        "entry_pc": "0x800d6304",
+        "entry_definition": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6304",
+        "binders": [
+          {
+            "name": "params",
+            "type": "NextUint64Args"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x5",
+            "type": "bv 64"
+          },
+          {
+            "name": "x6",
+            "type": "bv 64"
+          },
+          {
+            "name": "x7",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x9",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "x15",
+            "type": "bv 64"
+          },
+          {
+            "name": "x16",
+            "type": "bv 64"
+          },
+          {
+            "name": "x17",
+            "type": "bv 64"
+          },
+          {
+            "name": "x18",
+            "type": "bv 64"
+          },
+          {
+            "name": "x19",
+            "type": "bv 64"
+          },
+          {
+            "name": "x20",
+            "type": "bv 64"
+          },
+          {
+            "name": "x21",
+            "type": "bv 64"
+          },
+          {
+            "name": "x22",
+            "type": "bv 64"
+          },
+          {
+            "name": "x23",
+            "type": "bv 64"
+          },
+          {
+            "name": "x24",
+            "type": "bv 64"
+          },
+          {
+            "name": "x25",
+            "type": "bv 64"
+          },
+          {
+            "name": "x26",
+            "type": "bv 64"
+          },
+          {
+            "name": "x27",
+            "type": "bv 64"
+          },
+          {
+            "name": "x28",
+            "type": "bv 64"
+          },
+          {
+            "name": "x29",
+            "type": "bv 64"
+          },
+          {
+            "name": "x30",
+            "type": "bv 64"
+          },
+          {
+            "name": "x31",
+            "type": "bv 64"
+          },
+          {
+            "name": "inputBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "sliceBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "decoded",
+            "type": "list byte"
+          },
+          {
+            "name": "saved",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "params",
+          "x1",
+          "x2",
+          "x5",
+          "x6",
+          "x7",
+          "x8",
+          "x9",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "x15",
+          "x16",
+          "x17",
+          "x18",
+          "x19",
+          "x20",
+          "x21",
+          "x22",
+          "x23",
+          "x24",
+          "x25",
+          "x26",
+          "x27",
+          "x28",
+          "x29",
+          "x30",
+          "x31",
+          "inputBytes",
+          "sliceBytes",
+          "decoded",
+          "saved"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6304",
+        "source_hashes": [
+          "ZesuSsz/Contracts/NextUint64BlockEntries.v"
+        ],
+        "end_pc_exclusive": null,
+        "incoming_edges": [],
+        "successor_pcs": []
+      },
+      {
+        "entry_pc": "0x800d6310",
+        "entry_definition": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6310",
+        "binders": [
+          {
+            "name": "params",
+            "type": "NextUint64Args"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x5",
+            "type": "bv 64"
+          },
+          {
+            "name": "x6",
+            "type": "bv 64"
+          },
+          {
+            "name": "x7",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x9",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "x15",
+            "type": "bv 64"
+          },
+          {
+            "name": "x16",
+            "type": "bv 64"
+          },
+          {
+            "name": "x17",
+            "type": "bv 64"
+          },
+          {
+            "name": "x18",
+            "type": "bv 64"
+          },
+          {
+            "name": "x19",
+            "type": "bv 64"
+          },
+          {
+            "name": "x20",
+            "type": "bv 64"
+          },
+          {
+            "name": "x21",
+            "type": "bv 64"
+          },
+          {
+            "name": "x22",
+            "type": "bv 64"
+          },
+          {
+            "name": "x23",
+            "type": "bv 64"
+          },
+          {
+            "name": "x24",
+            "type": "bv 64"
+          },
+          {
+            "name": "x25",
+            "type": "bv 64"
+          },
+          {
+            "name": "x26",
+            "type": "bv 64"
+          },
+          {
+            "name": "x27",
+            "type": "bv 64"
+          },
+          {
+            "name": "x28",
+            "type": "bv 64"
+          },
+          {
+            "name": "x29",
+            "type": "bv 64"
+          },
+          {
+            "name": "x30",
+            "type": "bv 64"
+          },
+          {
+            "name": "x31",
+            "type": "bv 64"
+          },
+          {
+            "name": "inputBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "sliceBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "decoded",
+            "type": "list byte"
+          },
+          {
+            "name": "saved",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "params",
+          "x1",
+          "x2",
+          "x5",
+          "x6",
+          "x7",
+          "x8",
+          "x9",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "x15",
+          "x16",
+          "x17",
+          "x18",
+          "x19",
+          "x20",
+          "x21",
+          "x22",
+          "x23",
+          "x24",
+          "x25",
+          "x26",
+          "x27",
+          "x28",
+          "x29",
+          "x30",
+          "x31",
+          "inputBytes",
+          "sliceBytes",
+          "decoded",
+          "saved"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6310",
+        "source_hashes": [
+          "ZesuSsz/Contracts/NextUint64BlockEntries.v"
+        ],
+        "end_pc_exclusive": null,
+        "incoming_edges": [],
+        "successor_pcs": []
+      },
+      {
+        "entry_pc": "0x800d6318",
+        "entry_definition": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6318",
+        "binders": [
+          {
+            "name": "params",
+            "type": "NextUint64Args"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x5",
+            "type": "bv 64"
+          },
+          {
+            "name": "x6",
+            "type": "bv 64"
+          },
+          {
+            "name": "x7",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x9",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "x15",
+            "type": "bv 64"
+          },
+          {
+            "name": "x16",
+            "type": "bv 64"
+          },
+          {
+            "name": "x17",
+            "type": "bv 64"
+          },
+          {
+            "name": "x18",
+            "type": "bv 64"
+          },
+          {
+            "name": "x19",
+            "type": "bv 64"
+          },
+          {
+            "name": "x20",
+            "type": "bv 64"
+          },
+          {
+            "name": "x21",
+            "type": "bv 64"
+          },
+          {
+            "name": "x22",
+            "type": "bv 64"
+          },
+          {
+            "name": "x23",
+            "type": "bv 64"
+          },
+          {
+            "name": "x24",
+            "type": "bv 64"
+          },
+          {
+            "name": "x25",
+            "type": "bv 64"
+          },
+          {
+            "name": "x26",
+            "type": "bv 64"
+          },
+          {
+            "name": "x27",
+            "type": "bv 64"
+          },
+          {
+            "name": "x28",
+            "type": "bv 64"
+          },
+          {
+            "name": "x29",
+            "type": "bv 64"
+          },
+          {
+            "name": "x30",
+            "type": "bv 64"
+          },
+          {
+            "name": "x31",
+            "type": "bv 64"
+          },
+          {
+            "name": "inputBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "sliceBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "decoded",
+            "type": "list byte"
+          },
+          {
+            "name": "saved",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "params",
+          "x1",
+          "x2",
+          "x5",
+          "x6",
+          "x7",
+          "x8",
+          "x9",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "x15",
+          "x16",
+          "x17",
+          "x18",
+          "x19",
+          "x20",
+          "x21",
+          "x22",
+          "x23",
+          "x24",
+          "x25",
+          "x26",
+          "x27",
+          "x28",
+          "x29",
+          "x30",
+          "x31",
+          "inputBytes",
+          "sliceBytes",
+          "decoded",
+          "saved"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6318",
+        "source_hashes": [
+          "ZesuSsz/Contracts/NextUint64BlockEntries.v",
+          "ZesuSsz/Compliance/NextUint64LoopSteps.v",
+          "ZesuSsz/Compliance/NextUint64FoldFacts.v"
+        ],
+        "end_pc_exclusive": null,
+        "incoming_edges": [],
+        "successor_pcs": [],
+        "invariant_hint": {
+          "header_pc": "0x800d6318",
+          "rocq_predicate": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64FoldInvariant",
+          "pure_lemmas": {
+            "preservation": "ZesuSsz.Compliance.NextUint64FoldFacts.nextUint64FoldStep",
+            "exit": "ZesuSsz.Compliance.NextUint64FoldFacts.nextUint64FoldLast"
+          },
+          "registered_step": "ZesuSsz.Compliance.NextUint64LoopSteps.nextUint64Header6318Step",
+          "register_roles": {
+            "current": "x12",
+            "limit": "x13",
+            "accumulator": "x11"
+          },
+          "scope": "Data-only conditional facts. The next-byte lookup and step/last guards remain premises."
+        }
+      },
+      {
+        "entry_pc": "0x800d632c",
+        "entry_definition": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d632c",
+        "binders": [
+          {
+            "name": "params",
+            "type": "NextUint64Args"
+          },
+          {
+            "name": "x1",
+            "type": "bv 64"
+          },
+          {
+            "name": "x2",
+            "type": "bv 64"
+          },
+          {
+            "name": "x5",
+            "type": "bv 64"
+          },
+          {
+            "name": "x6",
+            "type": "bv 64"
+          },
+          {
+            "name": "x7",
+            "type": "bv 64"
+          },
+          {
+            "name": "x8",
+            "type": "bv 64"
+          },
+          {
+            "name": "x9",
+            "type": "bv 64"
+          },
+          {
+            "name": "x10",
+            "type": "bv 64"
+          },
+          {
+            "name": "x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "x12",
+            "type": "bv 64"
+          },
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "x15",
+            "type": "bv 64"
+          },
+          {
+            "name": "x16",
+            "type": "bv 64"
+          },
+          {
+            "name": "x17",
+            "type": "bv 64"
+          },
+          {
+            "name": "x18",
+            "type": "bv 64"
+          },
+          {
+            "name": "x19",
+            "type": "bv 64"
+          },
+          {
+            "name": "x20",
+            "type": "bv 64"
+          },
+          {
+            "name": "x21",
+            "type": "bv 64"
+          },
+          {
+            "name": "x22",
+            "type": "bv 64"
+          },
+          {
+            "name": "x23",
+            "type": "bv 64"
+          },
+          {
+            "name": "x24",
+            "type": "bv 64"
+          },
+          {
+            "name": "x25",
+            "type": "bv 64"
+          },
+          {
+            "name": "x26",
+            "type": "bv 64"
+          },
+          {
+            "name": "x27",
+            "type": "bv 64"
+          },
+          {
+            "name": "x28",
+            "type": "bv 64"
+          },
+          {
+            "name": "x29",
+            "type": "bv 64"
+          },
+          {
+            "name": "x30",
+            "type": "bv 64"
+          },
+          {
+            "name": "x31",
+            "type": "bv 64"
+          },
+          {
+            "name": "inputBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "sliceBytes",
+            "type": "list byte"
+          },
+          {
+            "name": "decoded",
+            "type": "list byte"
+          },
+          {
+            "name": "saved",
+            "type": "list byte"
+          }
+        ],
+        "arguments": [
+          "params",
+          "x1",
+          "x2",
+          "x5",
+          "x6",
+          "x7",
+          "x8",
+          "x9",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "x15",
+          "x16",
+          "x17",
+          "x18",
+          "x19",
+          "x20",
+          "x21",
+          "x22",
+          "x23",
+          "x24",
+          "x25",
+          "x26",
+          "x27",
+          "x28",
+          "x29",
+          "x30",
+          "x31",
+          "inputBytes",
+          "sliceBytes",
+          "decoded",
+          "saved"
+        ],
+        "resource_predicate": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d632c",
+        "source_hashes": [
+          "ZesuSsz/Contracts/NextUint64BlockEntries.v"
+        ],
+        "end_pc_exclusive": null,
+        "incoming_edges": [],
+        "successor_pcs": []
+      }
+    ],
+    "calls": [
+      {
+        "call_site_pc": "0x800d62b4",
+        "callee_pc": "0x800d6960",
+        "return_site_pc": "0x800d62b8",
+        "contract_name": "ZesuSsz.Contracts.DecodeItemCompositional.decodeItemSelectedModelCompositional",
+        "contract_arguments": [
+          "0x800d62b8"
+        ],
+        "argument_type": "DecodeItemCompositionalArgs",
+        "outcome_type": "DecodeItemOutcome",
+        "source_hashes": {
+          "ZesuSsz/Contracts/DecodeItemCompositional.v": "50d8c05339ffe8a09838bc03d61bf9edb424494b75451d249a531e79da93a426",
+          "ZesuSsz/Contracts/RlpDecodeItemContract.v": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a"
+        }
+      }
+    ]
+  }
+}
