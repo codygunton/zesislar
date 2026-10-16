@@ -157,7 +157,9 @@ class TrainingTests(unittest.TestCase):
         source = subprocess.check_output(['git', 'show', 'df9600c2:tools/block/discovery.py'],
                                          cwd=Path(discovery.__file__).parents[2], text=True)
         old, new = ast.parse(source), ast.parse(Path(discovery.__file__).read_text())
-        for name in ('first_native_root', 'native_boundary_closed', 'probe_designed_block',
+        # Native launch admission now has a separate manifest/import preflight.
+        # test_launch_imports checks that path before any MCP or compiler call.
+        for name in ('first_native_root', 'native_boundary_closed',
                      'reuse_native_capture', 'prepare', 'worker'):
             def function(tree):
                 return next(row for row in tree.body if isinstance(row, (ast.FunctionDef, ast.AsyncFunctionDef))

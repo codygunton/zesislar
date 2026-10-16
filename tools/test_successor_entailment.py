@@ -21,6 +21,15 @@ class SuccessorValidationTests(unittest.TestCase):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
+        evidence = self.root / 'ZesuSsz/Evidence'
+        evidence.mkdir(parents=True)
+        hints = self.root / 'ZesuSsz/Compliance/FixtureHints.v'
+        hints.parent.mkdir(parents=True)
+        hints.write_text('(* Fixture registrations. *)\n')
+        (evidence / 'fixture_function_text.json').write_text(json.dumps({
+            'function': 'fixture', 'registrations': ['ZesuSsz/Compliance/FixtureHints.v']}))
+        self.launch_imports = ('Require Import ZesuSsz.Compliance.FixtureHints.\n'
+                               'Require Import ZesuSsz.Automation.Approved.\n')
         contract = self.root / 'Contracts' / 'Entry.v'
         contract.parent.mkdir()
         contract.write_text('Definition successor (args : Args) := resource args.\n')
@@ -238,7 +247,7 @@ class SuccessorValidationTests(unittest.TestCase):
                         if name == 'rocq_start':
                             interactive = Path(arguments['file'])
                             self.assertNotEqual(interactive, self.root / 'Checker.v')
-                            self.assertEqual(interactive.read_text(), statement + '\nProof.\nAbort.\n')
+                            self.assertEqual(interactive.read_text(), self.launch_imports + statement + '\nProof.\nAbort.\n')
                             self.assertEqual((self.root / 'Checker.v').read_text(), rendered['source'])
                         if name == 'rocq_health':
                             return {'ok': True}
@@ -254,7 +263,8 @@ class SuccessorValidationTests(unittest.TestCase):
                             return {'success': True, 'state_id': 3, 'clamped_timeout': 300}
                         return {'success': True, 'state_id': 3}
                 statement = 'Lemma boundary : instr_body 0x10 Entry.'
-                rendered = {'source': statement + '\nProof.\n  try zesu_block.\nQed.\n',
+                rendered = {'source': self.launch_imports + statement + '\nProof.\n  try zesu_block.\nQed.\n',
+                            'function': 'fixture',
                             'lemma': 'boundary', 'scope': 'unproved native designed boundary',
                             'entry_pc': '0x10', 'entry_definition': 'Contracts.Entry.successor',
                             'statement_sha256': hashlib.sha256(statement.encode()).hexdigest()}
@@ -276,7 +286,8 @@ class SuccessorValidationTests(unittest.TestCase):
         export_path.write_text(json.dumps({'goals': [{'ty': 'entry'}],
                                           'stack': [], 'shelf': [], 'given_up': []}))
         statement = 'Lemma boundary : instr_body 0x10 Entry.'
-        rendered = {'source': statement + '\nProof.\ntry zesu_block.\nQed.\n',
+        rendered = {'source': self.launch_imports + statement + '\nProof.\ntry zesu_block.\nQed.\n',
+                    'function': 'fixture',
                     'lemma': 'boundary', 'scope': 'unproved native designed boundary',
                     'entry_pc': '0x10', 'entry_definition': 'Entry',
                     'statement_sha256': hashlib.sha256(statement.encode()).hexdigest()}
@@ -360,7 +371,8 @@ class SuccessorValidationTests(unittest.TestCase):
             async def call_tool(inner, name, arguments):
                 self.fail('A mismatched native signature must fail before proof execution')
         statement = 'Lemma boundary : True.'
-        rendered = {'source': statement + '\nProof.\ntry zesu_block.\nQed.\n',
+        rendered = {'source': self.launch_imports + statement + '\nProof.\ntry zesu_block.\nQed.\n',
+                    'function': 'fixture',
                     'lemma': 'boundary', 'scope': 'unproved native designed boundary',
                     'entry_pc': '0x10', 'entry_definition': 'Contracts.Entry.successor',
                     'statement_sha256': hashlib.sha256(statement.encode()).hexdigest()}

@@ -15,7 +15,10 @@ import subprocess
 class CoqcPrimaryTests(unittest.TestCase):
     def rendered(self):
         statement = 'Lemma Boundary : selectedCode -∗ instr_body 0x10 actualEntry.'
-        return {'source': statement+'\nProof.\ntry zesu_block.\nQed.\nPrint Assumptions Boundary.\n',
+        imports = ('Require Import ZesuSsz.Compliance.DecodeItemHints.\n'
+                   'Require Import ZesuSsz.Automation.Approved.\n')
+        return {'source': imports+statement+'\nProof.\ntry zesu_block.\nQed.\nPrint Assumptions Boundary.\n',
+                'function': 'rlp.decodeItem',
                 'lemma': 'Boundary', 'entry_pc': '0x10', 'entry_definition': 'Contracts.actualEntry',
                 'scope': 'unproved native designed boundary',
                 'statement_sha256': hashlib.sha256(statement.encode()).hexdigest()}

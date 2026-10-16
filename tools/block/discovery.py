@@ -29,6 +29,7 @@ import entry_schema
 import check_entry_bindings
 import native_diagnostics
 import setup_fallback
+from launch_imports import validate_launch_imports
 
 
 def digest(path):
@@ -262,13 +263,14 @@ async def fallback_designed_block(row, state, rendered, options, base, mcp_attem
 async def probe_designed_block(row, block, state, options):
     """Run one native boundary proof through an owned guarded MCP session."""
     import successor_entailment
-    from mcp import ClientSession, StdioServerParameters
-    from mcp.client.stdio import stdio_client
     design = json.loads(Path(options['design']).read_text())
     terminal = designed_terminal(block, options)
     rendered = successor_entailment.native_boundary_source(
         state, block, design, Path(options['workspace']), enabled=True,
         terminal=terminal)
+    validate_launch_imports(rendered['source'], design.get('function'), options['workspace'])
+    from mcp import ClientSession, StdioServerParameters
+    from mcp.client.stdio import stdio_client
     base = Path(options['out'])/'native'/('block_' + row['entry_pc'])
     base.mkdir(parents=True, exist_ok=True)
     path = base/'Boundary.v'
