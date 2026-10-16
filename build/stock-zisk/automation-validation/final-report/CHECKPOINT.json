@@ -1,0 +1,36 @@
+{
+  "item": "final-report-skeleton",
+  "root": "1caa440a0f98488e978f4ac13f046383fb26289b",
+  "status": "Draft; validation is not complete.",
+  "intended_destination": "docs/ai/AUTOMATION_VALIDATION_REPORT",
+  "report": "build/stock-zisk/automation-validation/final-report/AUTOMATION_VALIDATION_REPORT.md",
+  "report_sha256": "9c541c06a3455d4554f19045b45547014c8cd8d4f1a6f9a78f472c0e8d40cbd6",
+  "full_certificate": "/home/cody/zesislar/.worktrees/spec-b-av-matrix-free-d05f36e5/_build/final-report001/REPORT.json",
+  "certificate_status": "Sealed.",
+  "source_bindings": 21,
+  "findings": 51,
+  "finding_placeholders": [
+    "F35",
+    "F36",
+    "F37",
+    "F38",
+    "F40",
+    "F45",
+    "F46",
+    "F49"
+  ],
+  "decodeItem_scope": "Phase1 closing/recount checkpoints; not a fresh current text recount.",
+  "free_scope": "FINALhold-out0/43;besttraining3ON16verified;unmergedencodingcandidate.",
+  "nextUint64_alloc": "Result placeholders; no new source inspection.",
+  "gate": {
+    "exit": 0,
+    "elapsed_seconds": 103.69539795792662,
+    "root": "1caa440a0f98488e978f4ac13f046383fb26289b",
+    "receipt": "/home/cody/zesislar/.worktrees/spec-b-av-matrix-free-d05f36e5/_build/final-report-fast002/RESULT.json",
+    "receipt_sha256": "7e963441baebf0abd88ccf13bcefad526995e6f2c7fc76da40e1c0e868df7ea2"
+  },
+  "no_new_proof_search_or_native_run": true,
+  "certificate_sha256": "9dc2af2fd54b1a8bea08dcd09f03e13f5674b55156ef44f8311eeab216fed5cb",
+  "certificate_bindings": 8,
+  "focused_checks": "21source bindings checked;51finding IDs;8explicit placeholders;matrix/category totals match;whitespace passed."
+}
