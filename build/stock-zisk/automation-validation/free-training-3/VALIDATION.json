@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "base": "ece170169919ef55fc14649dc7b792ee4ae64b5e",
+  "change_scope": "Recorded result data and prose only. No executable, proof, rule, or contract changes.",
+  "fresh_check_fast": {
+    "schema": 1,
+    "exit_status": 0,
+    "elapsed_seconds": 1258.8616825980134,
+    "finished_utc": "2026-10-16T18:03:47.382271+00:00",
+    "log": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/training3-publication-check867/CHECK-FAST.log",
+      "sha256": "4c9c16310bdab44835cdc90fa187bda1caa5c8179aafdb29e5df77048ac966a5",
+      "bytes": 198739
+    },
+    "base": "ece170169919ef55fc14649dc7b792ee4ae64b5e",
+    "native_free_runs": 0
+  },
+  "gate_result": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/training3-publication-check867/RESULT.json",
+    "sha256": "d6526f5ee0fcfae46d1f454a6286e23966cf13b189bbd822f1944bfb34213805",
+    "bytes": 458
+  },
+  "iris": {
+    "inherited": true,
+    "from_root": "ece170169919ef55fc14649dc7b792ee4ae64b5e",
+    "tag": "cp-av-nextuint64-profile",
+    "fresh_gate": false,
+    "authorization": "Coordinator-approved data-only exception."
+  },
+  "native_runs_for_publication": 0,
+  "accepted_artifacts_unchanged": true,
+  "copies": [
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-comparison854/TABLE.md",
+        "sha256": "491dbb1ed5b2939304f1b20596e8ac5a8c30e0e0714c9ae04d905a8eda1802be",
+        "bytes": 3906
+      },
+      "published": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-av-free-training-3/build/stock-zisk/automation-validation/free-training-3/TABLE.md",
+        "sha256": "491dbb1ed5b2939304f1b20596e8ac5a8c30e0e0714c9ae04d905a8eda1802be",
+        "bytes": 3906
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-comparison854/DETAILS.json",
+        "sha256": "247e1225e7d2c831f2b59b484fe200f0f98f7b2f8647e79abb07ecc1cb485819",
+        "bytes": 386865
+      },
+      "published": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-av-free-training-3/build/stock-zisk/automation-validation/free-training-3/DETAILS.json",
+        "sha256": "247e1225e7d2c831f2b59b484fe200f0f98f7b2f8647e79abb07ecc1cb485819",
+        "bytes": 386865
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-final855/REPORT.json",
+        "sha256": "7893c8833b32b848a991458c679f009a587c4d21a9a635873533663386cfa4bc",
+        "bytes": 11680
+      },
+      "published": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-av-free-training-3/build/stock-zisk/automation-validation/free-training-3/REPORT.json",
+        "sha256": "7893c8833b32b848a991458c679f009a587c4d21a9a635873533663386cfa4bc",
+        "bytes": 11680
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-final855/AUTO-CONTROLS.md",
+        "sha256": "a84650034d0a82baf7173df60b575a8daa9292dbca39b512187a6e096b2a8e3e",
+        "bytes": 721
+      },
+      "published": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-av-free-training-3/build/stock-zisk/automation-validation/free-training-3/AUTO-CONTROLS.md",
+        "sha256": "a84650034d0a82baf7173df60b575a8daa9292dbca39b512187a6e096b2a8e3e",
+        "bytes": 721
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-final855/SOURCE-SEAL.json",
+        "sha256": "a2ed46df172ddef403aeaa679a1a420eaa636eea988f2761207a2b611816b9b9",
+        "bytes": 90381
+      },
+      "published": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-av-free-training-3/build/stock-zisk/automation-validation/free-training-3/SOURCE-SEAL.json",
+        "sha256": "a2ed46df172ddef403aeaa679a1a420eaa636eea988f2761207a2b611816b9b9",
+        "bytes": 90381
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped-startup857/REPORT.json",
+        "sha256": "3ec029ede83f951aa0a15dcffcdcc9458bc91263897c827acc6429bf051e2135",
+        "bytes": 8624
+      },
+      "published": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-av-free-training-3/build/stock-zisk/automation-validation/free-training-3/STARTUP-FAILURE856.json",
+        "sha256": "3ec029ede83f951aa0a15dcffcdcc9458bc91263897c827acc6429bf051e2135",
+        "bytes": 8624
+      }
+    }
+  ]
+}
