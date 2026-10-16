@@ -1,0 +1,211 @@
+{
+  "schema": 1,
+  "status": "observed-phase3d-installation-residual",
+  "root": "ece170169919ef55fc14649dc7b792ee4ae64b5e",
+  "tag": "cp-av-nextuint64-profile",
+  "result": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/RESULT.json",
+    "sha256": "861239bc71e7a5be4ce589585628784382c67ffb821d140cc4d852c70543a273",
+    "bytes": 18194
+  },
+  "source": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/Installation.v",
+    "sha256": "13401d81fcca9856ac7f83f49337377c4e5239e059a127384cdeac9ae02684f2",
+    "bytes": 14403
+  },
+  "interactive_source": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/Installation_interactive.v",
+    "sha256": "ec66002c065f42708150f9b47a25bc6d2cf4047dcb3a99050d20870c29660d08",
+    "bytes": 14319
+  },
+  "source_statement": "Lemma NextUint64CalleeInstallation :\n  ZesuSsz.Contracts.NextUint64Selected.nextUint64SelectedCode -\u2217\n  \u25a1 instr_pre 0x800d6960 NextUint64CallState800d62b4.",
+  "statement_sha256": "4ea5bdacf030936c666e7d1acbf10dbab3b2692b4eee3f63f56b2583ff1d2feb",
+  "observed_goal": {
+    "hyps": [
+      {
+        "names": [
+          "Sigma"
+        ],
+        "ty": "gFunctors"
+      },
+      {
+        "names": [
+          "islaG0"
+        ],
+        "ty": "islaG Sigma"
+      },
+      {
+        "names": [
+          "H"
+        ],
+        "ty": "threadG"
+      }
+    ],
+    "info": {
+      "evar": [
+        "Ser_Evar",
+        72
+      ],
+      "name": null
+    },
+    "ty": "nextUint64SelectedCode -\u2217 \u25a1 instr_pre 2148362592 NextUint64CallState800d62b4"
+  },
+  "groups": {
+    "goals": 1,
+    "stack": 0,
+    "shelf": 0,
+    "given_up": 0
+  },
+  "complete_exports": [
+    {
+      "checkpoint": "entry",
+      "artifact": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/complete-goals/state_1.json",
+        "sha256": "f23c326e8307ef44034b02e8d7f63877d3f039f35ba36fb62868bb8a671be2a1",
+        "bytes": 2238
+      },
+      "state_id": 1,
+      "groups": {
+        "groups": {
+          "goals": [
+            {
+              "hyps": [
+                {
+                  "names": [
+                    "Sigma"
+                  ],
+                  "ty": "gFunctors"
+                },
+                {
+                  "names": [
+                    "islaG0"
+                  ],
+                  "ty": "islaG Sigma"
+                },
+                {
+                  "names": [
+                    "H"
+                  ],
+                  "ty": "threadG"
+                }
+              ],
+              "info": {
+                "evar": [
+                  "Ser_Evar",
+                  72
+                ],
+                "name": null
+              },
+              "ty": "nextUint64SelectedCode -\u2217 \u25a1 instr_pre 2148362592 NextUint64CallState800d62b4"
+            }
+          ],
+          "stack": [],
+          "shelf": [],
+          "given_up": []
+        },
+        "sha256": "93dc3203d56cf62d90e87ba2a9a202cd3424bba7024b5152b6ba00761b24dea4",
+        "counts": {
+          "goals": 1,
+          "stack": 0,
+          "shelf": 0,
+          "given_up": 0
+        },
+        "stack_sides": [],
+        "empty": false
+      }
+    },
+    {
+      "checkpoint": "installation-observation",
+      "artifact": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/complete-goals/state_2.json",
+        "sha256": "f23c326e8307ef44034b02e8d7f63877d3f039f35ba36fb62868bb8a671be2a1",
+        "bytes": 2238
+      },
+      "state_id": 2,
+      "groups": {
+        "groups": {
+          "goals": [
+            {
+              "hyps": [
+                {
+                  "names": [
+                    "Sigma"
+                  ],
+                  "ty": "gFunctors"
+                },
+                {
+                  "names": [
+                    "islaG0"
+                  ],
+                  "ty": "islaG Sigma"
+                },
+                {
+                  "names": [
+                    "H"
+                  ],
+                  "ty": "threadG"
+                }
+              ],
+              "info": {
+                "evar": [
+                  "Ser_Evar",
+                  72
+                ],
+                "name": null
+              },
+              "ty": "nextUint64SelectedCode -\u2217 \u25a1 instr_pre 2148362592 NextUint64CallState800d62b4"
+            }
+          ],
+          "stack": [],
+          "shelf": [],
+          "given_up": []
+        },
+        "sha256": "93dc3203d56cf62d90e87ba2a9a202cd3424bba7024b5152b6ba00761b24dea4",
+        "counts": {
+          "goals": 1,
+          "stack": 0,
+          "shelf": 0,
+          "given_up": 0
+        },
+        "stack_sides": [],
+        "empty": false
+      }
+    }
+  ],
+  "identical_entry_and_observation": true,
+  "health_accepted": true,
+  "observation_command": "idtac.",
+  "machine_instructions_executed": 0,
+  "caller_executed": false,
+  "decodeItem_traversal": false,
+  "installation_verified": false,
+  "contract_closed": false,
+  "phase3d_obligation": "Install the boxed callee premise from the exact selected code resource.",
+  "source_preflight_inputs": 947,
+  "launch": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-installation849/LAUNCHED.json",
+    "sha256": "c9e8e69c4c9724c37aae93475c7dc47bf395ade43bff47d4bee84a12259d5e41",
+    "bytes": 1076
+  },
+  "parent_review": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-parent-review-001/REPORT.json",
+    "sha256": "940d2c0ce04ef2d61a79eca7ee3ea2b5ea1d6510cac90366d08985c7caf9cb2f",
+    "bytes": 2381
+  },
+  "plan": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-installation849/PLAN.json",
+    "sha256": "ae97a8f19bf3a9597d53e11fc37cfc08d6ccbe96c37c7175f3c8c678cdc7c357",
+    "bytes": 256768
+  },
+  "normal_owned_closure": true,
+  "pet_pid_absent": 1025220,
+  "controller_pid_absent": 1024266,
+  "signals_sent": 0,
+  "sources_unchanged": true,
+  "limits": [
+    "This records the first installation obligation. It attempts no machine instruction or installation proof.",
+    "No boxed bridge is assumed or installed.",
+    "No caller, callee, or full-function proof runs.",
+    "No closure or compliance theorem follows."
+  ]
+}

@@ -1,0 +1,518 @@
+{
+  "schema": 1,
+  "root": "ece170169919ef55fc14649dc7b792ee4ae64b5e",
+  "controller_pid": 1024266,
+  "utc": "2026-10-16T16:55:40.596401+00:00",
+  "parent_review": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-parent-review-001/REPORT.json",
+    "sha256": "940d2c0ce04ef2d61a79eca7ee3ea2b5ea1d6510cac90366d08985c7caf9cb2f",
+    "bytes": 2381
+  },
+  "source": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/Installation.v",
+    "sha256": "13401d81fcca9856ac7f83f49337377c4e5239e059a127384cdeac9ae02684f2",
+    "bytes": 14403
+  },
+  "interactive_source": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/Installation_interactive.v",
+    "sha256": "ec66002c065f42708150f9b47a25bc6d2cf4047dcb3a99050d20870c29660d08",
+    "bytes": 14319
+  },
+  "calls": [
+    {
+      "tool": "rocq_health",
+      "arguments": {},
+      "utc": "2026-10-16T16:55:41.186010+00:00",
+      "raw": {
+        "meta": null,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"ok\":true,\"server_version\":\"0.3.1\",\"switch\":\"islaris\",\"switch_prefix\":\"/home/cody/islaris/_opam\",\"switch_is_local\":true,\"switch_source\":\"opam_env\",\"toolchain\":{\"coqc\":{\"path\":\"/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/tools/rocq_coqc_guarded.sh\",\"version\":null},\"pet\":{\"path\":\"/home/cody/islaris/_opam/bin/pet\",\"version\":\"0.2.4-dev\",\"pytanque_importable\":true}},\"pet\":{\"running\":false,\"pid\":null},\"warnings\":[]}",
+            "annotations": null,
+            "meta": null
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "ok": true,
+          "server_version": "0.3.1",
+          "switch": "islaris",
+          "switch_prefix": "/home/cody/islaris/_opam",
+          "switch_is_local": true,
+          "switch_source": "opam_env",
+          "toolchain": {
+            "coqc": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/tools/rocq_coqc_guarded.sh",
+              "version": null
+            },
+            "pet": {
+              "path": "/home/cody/islaris/_opam/bin/pet",
+              "version": "0.2.4-dev",
+              "pytanque_importable": true
+            }
+          },
+          "pet": {
+            "running": false,
+            "pid": null
+          },
+          "warnings": []
+        },
+        "isError": false
+      },
+      "result": {
+        "success": true,
+        "ok": true,
+        "server_version": "0.3.1",
+        "switch": "islaris",
+        "switch_prefix": "/home/cody/islaris/_opam",
+        "switch_is_local": true,
+        "switch_source": "opam_env",
+        "toolchain": {
+          "coqc": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/tools/rocq_coqc_guarded.sh",
+            "version": null
+          },
+          "pet": {
+            "path": "/home/cody/islaris/_opam/bin/pet",
+            "version": "0.2.4-dev",
+            "pytanque_importable": true
+          }
+        },
+        "pet": {
+          "running": false,
+          "pid": null
+        },
+        "warnings": []
+      }
+    },
+    {
+      "tool": "rocq_start",
+      "arguments": {
+        "workspace": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first",
+        "file": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/Installation_interactive.v",
+        "theorem": "NextUint64CalleeInstallation",
+        "timeout": 60
+      },
+      "utc": "2026-10-16T16:55:46.217632+00:00",
+      "raw": {
+        "meta": null,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"state_id\":1,\"goals\":\"Sigma : gFunctors\\nislaG0 : islaG Sigma\\nH : threadG\\n|-nextUint64SelectedCode -\u2217 \u25a1 instr_pre 2148362592 NextUint64CallState800d62b4\",\"file\":\"/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/Installation_interactive.v\",\"theorem\":\"NextUint64CalleeInstallation\",\"proof_finished\":false,\"focus_depth\":0}",
+            "annotations": null,
+            "meta": null
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "state_id": 1,
+          "goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\n|-nextUint64SelectedCode -\u2217 \u25a1 instr_pre 2148362592 NextUint64CallState800d62b4",
+          "file": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/Installation_interactive.v",
+          "theorem": "NextUint64CalleeInstallation",
+          "proof_finished": false,
+          "focus_depth": 0
+        },
+        "isError": false
+      },
+      "result": {
+        "success": true,
+        "state_id": 1,
+        "goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\n|-nextUint64SelectedCode -\u2217 \u25a1 instr_pre 2148362592 NextUint64CallState800d62b4",
+        "file": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/Installation_interactive.v",
+        "theorem": "NextUint64CalleeInstallation",
+        "proof_finished": false,
+        "focus_depth": 0
+      }
+    },
+    {
+      "tool": "rocq_diag",
+      "arguments": {},
+      "utc": "2026-10-16T16:55:48.156205+00:00",
+      "raw": {
+        "meta": null,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"server_version\":\"0.3.1\",\"pet\":{\"pid\":1025220,\"uptime_seconds\":1.9381003379821777,\"restarts\":0,\"generation\":0},\"memory\":{\"pet_rss_mb\":655.32421875,\"peak_pet_rss_mb\":623.0,\"max_rss_mb_threshold\":32768.0,\"sample_status\":\"ok\"},\"load_average\":{\"1m\":4.9345703125,\"5m\":6.1015625,\"15m\":5.59619140625},\"live_states\":[{\"state_id\":1,\"parent\":null,\"file\":\"/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/Installation_interactive.v\",\"theorem\":\"NextUint64CalleeInstallation\",\"age_seconds\":0.0050809383392333984}],\"live_states_total\":1,\"recent_errors\":[]}",
+            "annotations": null,
+            "meta": null
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "server_version": "0.3.1",
+          "pet": {
+            "pid": 1025220,
+            "uptime_seconds": 1.9381003379821777,
+            "restarts": 0,
+            "generation": 0
+          },
+          "memory": {
+            "pet_rss_mb": 655.32421875,
+            "peak_pet_rss_mb": 623.0,
+            "max_rss_mb_threshold": 32768.0,
+            "sample_status": "ok"
+          },
+          "load_average": {
+            "1m": 4.9345703125,
+            "5m": 6.1015625,
+            "15m": 5.59619140625
+          },
+          "live_states": [
+            {
+              "state_id": 1,
+              "parent": null,
+              "file": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/Installation_interactive.v",
+              "theorem": "NextUint64CalleeInstallation",
+              "age_seconds": 0.0050809383392333984
+            }
+          ],
+          "live_states_total": 1,
+          "recent_errors": []
+        },
+        "isError": false
+      },
+      "result": {
+        "success": true,
+        "server_version": "0.3.1",
+        "pet": {
+          "pid": 1025220,
+          "uptime_seconds": 1.9381003379821777,
+          "restarts": 0,
+          "generation": 0
+        },
+        "memory": {
+          "pet_rss_mb": 655.32421875,
+          "peak_pet_rss_mb": 623.0,
+          "max_rss_mb_threshold": 32768.0,
+          "sample_status": "ok"
+        },
+        "load_average": {
+          "1m": 4.9345703125,
+          "5m": 6.1015625,
+          "15m": 5.59619140625
+        },
+        "live_states": [
+          {
+            "state_id": 1,
+            "parent": null,
+            "file": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/Installation_interactive.v",
+            "theorem": "NextUint64CalleeInstallation",
+            "age_seconds": 0.0050809383392333984
+          }
+        ],
+        "live_states_total": 1,
+        "recent_errors": []
+      }
+    },
+    {
+      "tool": "rocq_complete_goals",
+      "arguments": {
+        "from_state": 1
+      },
+      "utc": "2026-10-16T16:55:48.159547+00:00",
+      "raw": {
+        "meta": null,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"state_id\":1,\"path\":\"/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/complete-goals/state_1.json\",\"sha256\":\"f23c326e8307ef44034b02e8d7f63877d3f039f35ba36fb62868bb8a671be2a1\",\"bytes\":2238,\"active_goals\":1,\"stack_entries\":0,\"shelved_goals\":0,\"given_up_goals\":0,\"stack_frame_goal_counts\":[]}",
+            "annotations": null,
+            "meta": null
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "state_id": 1,
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/complete-goals/state_1.json",
+          "sha256": "f23c326e8307ef44034b02e8d7f63877d3f039f35ba36fb62868bb8a671be2a1",
+          "bytes": 2238,
+          "active_goals": 1,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0,
+          "stack_frame_goal_counts": []
+        },
+        "isError": false
+      },
+      "result": {
+        "success": true,
+        "state_id": 1,
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/complete-goals/state_1.json",
+        "sha256": "f23c326e8307ef44034b02e8d7f63877d3f039f35ba36fb62868bb8a671be2a1",
+        "bytes": 2238,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      }
+    },
+    {
+      "tool": "rocq_check",
+      "arguments": {
+        "from_state": 1,
+        "body": "idtac.",
+        "timeout": 60
+      },
+      "utc": "2026-10-16T16:55:48.165770+00:00",
+      "raw": {
+        "meta": null,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"goals\":\"Sigma : gFunctors\\nislaG0 : islaG Sigma\\nH : threadG\\n|-nextUint64SelectedCode -\u2217 \u25a1 instr_pre 2148362592 NextUint64CallState800d62b4\",\"proof_finished\":false,\"commands_run\":1,\"check_time_ms\":0,\"state_id\":2,\"from_state_id\":1,\"focus_depth\":0}",
+            "annotations": null,
+            "meta": null
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\n|-nextUint64SelectedCode -\u2217 \u25a1 instr_pre 2148362592 NextUint64CallState800d62b4",
+          "proof_finished": false,
+          "commands_run": 1,
+          "check_time_ms": 0,
+          "state_id": 2,
+          "from_state_id": 1,
+          "focus_depth": 0
+        },
+        "isError": false
+      },
+      "result": {
+        "success": true,
+        "goals": "Sigma : gFunctors\nislaG0 : islaG Sigma\nH : threadG\n|-nextUint64SelectedCode -\u2217 \u25a1 instr_pre 2148362592 NextUint64CallState800d62b4",
+        "proof_finished": false,
+        "commands_run": 1,
+        "check_time_ms": 0,
+        "state_id": 2,
+        "from_state_id": 1,
+        "focus_depth": 0
+      }
+    },
+    {
+      "tool": "rocq_complete_goals",
+      "arguments": {
+        "from_state": 2
+      },
+      "utc": "2026-10-16T16:55:48.170876+00:00",
+      "raw": {
+        "meta": null,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"state_id\":2,\"path\":\"/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/complete-goals/state_2.json\",\"sha256\":\"f23c326e8307ef44034b02e8d7f63877d3f039f35ba36fb62868bb8a671be2a1\",\"bytes\":2238,\"active_goals\":1,\"stack_entries\":0,\"shelved_goals\":0,\"given_up_goals\":0,\"stack_frame_goal_counts\":[]}",
+            "annotations": null,
+            "meta": null
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "state_id": 2,
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/complete-goals/state_2.json",
+          "sha256": "f23c326e8307ef44034b02e8d7f63877d3f039f35ba36fb62868bb8a671be2a1",
+          "bytes": 2238,
+          "active_goals": 1,
+          "stack_entries": 0,
+          "shelved_goals": 0,
+          "given_up_goals": 0,
+          "stack_frame_goal_counts": []
+        },
+        "isError": false
+      },
+      "result": {
+        "success": true,
+        "state_id": 2,
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/complete-goals/state_2.json",
+        "sha256": "f23c326e8307ef44034b02e8d7f63877d3f039f35ba36fb62868bb8a671be2a1",
+        "bytes": 2238,
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0,
+        "stack_frame_goal_counts": []
+      }
+    }
+  ],
+  "exports": [
+    {
+      "checkpoint": "entry",
+      "artifact": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/complete-goals/state_1.json",
+        "sha256": "f23c326e8307ef44034b02e8d7f63877d3f039f35ba36fb62868bb8a671be2a1",
+        "bytes": 2238
+      },
+      "state_id": 1,
+      "groups": {
+        "groups": {
+          "goals": [
+            {
+              "hyps": [
+                {
+                  "names": [
+                    "Sigma"
+                  ],
+                  "ty": "gFunctors"
+                },
+                {
+                  "names": [
+                    "islaG0"
+                  ],
+                  "ty": "islaG Sigma"
+                },
+                {
+                  "names": [
+                    "H"
+                  ],
+                  "ty": "threadG"
+                }
+              ],
+              "info": {
+                "evar": [
+                  "Ser_Evar",
+                  72
+                ],
+                "name": null
+              },
+              "ty": "nextUint64SelectedCode -\u2217 \u25a1 instr_pre 2148362592 NextUint64CallState800d62b4"
+            }
+          ],
+          "stack": [],
+          "shelf": [],
+          "given_up": []
+        },
+        "sha256": "93dc3203d56cf62d90e87ba2a9a202cd3424bba7024b5152b6ba00761b24dea4",
+        "counts": {
+          "goals": 1,
+          "stack": 0,
+          "shelf": 0,
+          "given_up": 0
+        },
+        "stack_sides": [],
+        "empty": false
+      }
+    },
+    {
+      "checkpoint": "installation-observation",
+      "artifact": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/complete-goals/state_2.json",
+        "sha256": "f23c326e8307ef44034b02e8d7f63877d3f039f35ba36fb62868bb8a671be2a1",
+        "bytes": 2238
+      },
+      "state_id": 2,
+      "groups": {
+        "groups": {
+          "goals": [
+            {
+              "hyps": [
+                {
+                  "names": [
+                    "Sigma"
+                  ],
+                  "ty": "gFunctors"
+                },
+                {
+                  "names": [
+                    "islaG0"
+                  ],
+                  "ty": "islaG Sigma"
+                },
+                {
+                  "names": [
+                    "H"
+                  ],
+                  "ty": "threadG"
+                }
+              ],
+              "info": {
+                "evar": [
+                  "Ser_Evar",
+                  72
+                ],
+                "name": null
+              },
+              "ty": "nextUint64SelectedCode -\u2217 \u25a1 instr_pre 2148362592 NextUint64CallState800d62b4"
+            }
+          ],
+          "stack": [],
+          "shelf": [],
+          "given_up": []
+        },
+        "sha256": "93dc3203d56cf62d90e87ba2a9a202cd3424bba7024b5152b6ba00761b24dea4",
+        "counts": {
+          "goals": 1,
+          "stack": 0,
+          "shelf": 0,
+          "given_up": 0
+        },
+        "stack_sides": [],
+        "empty": false
+      }
+    }
+  ],
+  "installation_verified": false,
+  "caller_executed": false,
+  "decodeItem_traversal": false,
+  "contract_closed": false,
+  "signals_sent": 0,
+  "session_identity": {
+    "pid": 1025220,
+    "uptime_seconds": 1.9381003379821777,
+    "restarts": 0,
+    "generation": 0
+  },
+  "installation_groups": {
+    "groups": {
+      "goals": [
+        {
+          "hyps": [
+            {
+              "names": [
+                "Sigma"
+              ],
+              "ty": "gFunctors"
+            },
+            {
+              "names": [
+                "islaG0"
+              ],
+              "ty": "islaG Sigma"
+            },
+            {
+              "names": [
+                "H"
+              ],
+              "ty": "threadG"
+            }
+          ],
+          "info": {
+            "evar": [
+              "Ser_Evar",
+              72
+            ],
+            "name": null
+          },
+          "ty": "nextUint64SelectedCode -\u2217 \u25a1 instr_pre 2148362592 NextUint64CallState800d62b4"
+        }
+      ],
+      "stack": [],
+      "shelf": [],
+      "given_up": []
+    },
+    "sha256": "93dc3203d56cf62d90e87ba2a9a202cd3424bba7024b5152b6ba00761b24dea4",
+    "counts": {
+      "goals": 1,
+      "stack": 0,
+      "shelf": 0,
+      "given_up": 0
+    },
+    "stack_sides": [],
+    "empty": false
+  },
+  "outcome": "installation-residual",
+  "phase3d_installation": "unproved",
+  "installation_owned_closure": true,
+  "unchanged_inputs": true,
+  "normal_owned_closure": true
+}
