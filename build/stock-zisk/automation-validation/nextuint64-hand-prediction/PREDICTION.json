@@ -1,0 +1,316 @@
+{
+  "schema": "nextuint64-hand-line-prediction-v1",
+  "status": "Pre-full-run prediction. No proof or native execution occurred for this item.",
+  "source_root": "1caa440a0f98488e978f4ac13f046383fb26289b",
+  "posted_forecast": {
+    "comment_id": 6191876275,
+    "url": "https://github.com/codygunton/zesislar/issues/13#issuecomment-6191876275",
+    "prediction_sha256": "d7ee30a8ba45d30f6d1f5ec3a6ac1eb580049aa75c37096d87f23d6aec418d2a",
+    "labels_unchanged": true
+  },
+  "calibration_root": "6e08631942efd13d229ff7a46a01ab6a3c42384a",
+  "calibration_scope": "Historical decodeItem source audit. Introduction budgets are whole-body counts. Store, return and frame budgets are component counts. Loop counts include Proof and Qed. Do not treat these different measures as one measured total.",
+  "measured_component_rates": {
+    "output": {
+      "numerator": 130,
+      "denominator": 6,
+      "exact": "65/3",
+      "decimal": 21.666666666666668
+    },
+    "return_only": {
+      "numerator": 100,
+      "denominator": 6,
+      "exact": "50/3",
+      "decimal": 16.666666666666668
+    },
+    "frame_positive": {
+      "numerator": 67,
+      "denominator": 7,
+      "exact": "67/7",
+      "decimal": 9.571428571428571
+    }
+  },
+  "proxy_ranges": {
+    "propagate": [
+      0,
+      0
+    ],
+    "introduce": [
+      29,
+      66
+    ],
+    "output_store_component": [
+      5,
+      36
+    ],
+    "return_component": [
+      5,
+      20
+    ],
+    "frame_component": [
+      1,
+      13
+    ],
+    "loop_whole_proof": [
+      160,
+      171
+    ]
+  },
+  "loop_measurements": {
+    "6a24": 160,
+    "6ac4": 171
+  },
+  "loop_average": {
+    "numerator": 331,
+    "denominator": 2,
+    "exact": "331/2"
+  },
+  "disjoint_bins": {
+    "propagate": 4,
+    "introduce": 1,
+    "output_store": 1,
+    "return": 1,
+    "loop": 1,
+    "call": 1,
+    "store_and_introduce": 1
+  },
+  "original_nonadditive_labels": {
+    "store": 3,
+    "call": 1,
+    "propagate": 4,
+    "introduce": 2,
+    "return": 1,
+    "loop": 1
+  },
+  "rows": [
+    {
+      "block": "0x800d6274",
+      "posted_labels": [
+        "store",
+        "call"
+      ],
+      "posted_criterion_prediction": "residual_or_hand",
+      "posted_residual_forecast": "Frame-store/view matching, then callee resource and continuation framing.",
+      "native_result": null,
+      "native_hand_lines": null,
+      "disjoint_bin": "call",
+      "predicted_hand_range": null,
+      "components": {
+        "frame_proxy": [
+          1,
+          13
+        ]
+      },
+      "limit": "The call remains uncalibrated. Its frame proxy is non-additive. The installed bridge is per-function composition text, not block hand lines."
+    },
+    {
+      "block": "0x800d62b8",
+      "posted_labels": [
+        "propagate"
+      ],
+      "posted_criterion_prediction": "close",
+      "posted_residual_forecast": "Decoded-array read and guard propagation.",
+      "native_result": null,
+      "native_hand_lines": null,
+      "disjoint_bin": "propagate",
+      "predicted_hand_range": [
+        0,
+        0
+      ],
+      "limit": "Pattern-based closure forecast only. This is not a measured closure."
+    },
+    {
+      "block": "0x800d62c0",
+      "posted_labels": [
+        "propagate"
+      ],
+      "posted_criterion_prediction": "close",
+      "posted_residual_forecast": "Byte-array read, mask normalization, and guard propagation.",
+      "native_result": null,
+      "native_hand_lines": null,
+      "disjoint_bin": "propagate",
+      "predicted_hand_range": [
+        0,
+        0
+      ],
+      "limit": "Pattern-based closure forecast only. This is not a measured closure."
+    },
+    {
+      "block": "0x800d62cc",
+      "posted_labels": [
+        "introduce"
+      ],
+      "posted_criterion_prediction": "residual_or_hand",
+      "posted_residual_forecast": "Conditional accepted-payload extraction from the exact callee meaning.",
+      "native_result": null,
+      "native_hand_lines": null,
+      "disjoint_bin": "introduce",
+      "predicted_hand_range": [
+        29,
+        66
+      ],
+      "limit": "Historical whole-introduction transfer scenario. No selected native introduction route is assumed."
+    },
+    {
+      "block": "0x800d62d8",
+      "posted_labels": [
+        "store"
+      ],
+      "posted_criterion_prediction": "residual_or_hand",
+      "posted_residual_forecast": "Whole result-array writes and exact error-image relation.",
+      "native_result": null,
+      "native_hand_lines": null,
+      "disjoint_bin": "output_store",
+      "predicted_hand_range": [
+        5,
+        36
+      ],
+      "limit": "Output-store component proxy only. This is not a complete native bound."
+    },
+    {
+      "block": "0x800d62e4",
+      "posted_labels": [
+        "return"
+      ],
+      "posted_criterion_prediction": "residual_or_hand",
+      "posted_residual_forecast": "Saved-ra decode, masked target, four-alignment fault, and exit framing.",
+      "native_result": null,
+      "native_hand_lines": null,
+      "disjoint_bin": "return",
+      "predicted_hand_range": [
+        5,
+        20
+      ],
+      "components": {
+        "frame_proxy": [
+          1,
+          13
+        ]
+      },
+      "limit": "Return component proxy only. The frame proxy is non-additive. No return-rule closure is assumed."
+    },
+    {
+      "block": "0x800d6304",
+      "posted_labels": [
+        "propagate"
+      ],
+      "posted_criterion_prediction": "close",
+      "posted_residual_forecast": "Decoded-array read and empty-fold/guard propagation.",
+      "native_result": null,
+      "native_hand_lines": null,
+      "disjoint_bin": "propagate",
+      "predicted_hand_range": [
+        0,
+        0
+      ],
+      "limit": "Pattern-based closure forecast only. This is not a measured closure."
+    },
+    {
+      "block": "0x800d6310",
+      "posted_labels": [
+        "propagate"
+      ],
+      "posted_criterion_prediction": "close",
+      "posted_residual_forecast": "Initialization from the accepted payload and its exact array view.",
+      "native_result": null,
+      "native_hand_lines": null,
+      "disjoint_bin": "propagate",
+      "predicted_hand_range": [
+        0,
+        0
+      ],
+      "limit": "Pattern-based closure forecast only. This is not a measured closure."
+    },
+    {
+      "block": "0x800d6318",
+      "posted_labels": [
+        "loop"
+      ],
+      "posted_criterion_prediction": "residual_or_hand",
+      "posted_residual_forecast": "Exact byte lookup, fold preservation, continuation guard, or final-byte exit.",
+      "native_result": null,
+      "native_hand_lines": null,
+      "disjoint_bin": "loop",
+      "predicted_hand_range": [
+        160,
+        171
+      ],
+      "conditional_target_max": 20,
+      "limit": "Historical physical Proof-through-Qed baseline. The study target of at most20lines is an unverified aspiration, not a measured rate or credited reduction."
+    },
+    {
+      "block": "0x800d632c",
+      "posted_labels": [
+        "store",
+        "introduce"
+      ],
+      "posted_criterion_prediction": "residual_or_hand",
+      "posted_residual_forecast": "Whole-array writes plus canonical rest-state and success-image packaging.",
+      "native_result": null,
+      "native_hand_lines": null,
+      "disjoint_bin": "store_and_introduce",
+      "predicted_hand_range": null,
+      "components": {
+        "output_store_proxy": [
+          5,
+          36
+        ],
+        "introduction_proxy": [
+          29,
+          66
+        ]
+      },
+      "limit": "The proxies overlap. No whole-block range or additive credit is inferred."
+    }
+  ],
+  "partial_proxy_subtotal": {
+    "blocks": [
+      "0x800d62b8",
+      "0x800d62c0",
+      "0x800d62cc",
+      "0x800d62d8",
+      "0x800d62e4",
+      "0x800d6304",
+      "0x800d6310",
+      "0x800d6318"
+    ],
+    "range": [
+      199,
+      293
+    ],
+    "excluded_blocks": [
+      "0x800d6274",
+      "0x800d632c"
+    ],
+    "limit": "Arithmetic transfer proxy for eight disjoint rows. Not a complete budget, measured result, confidence interval or hard upper bound."
+  },
+  "full_hand_line_budget": null,
+  "installed_bridge_text": {
+    "path": "ZesuSsz/Compliance/NextUint64CallBridge.v",
+    "sha256": "f5f43d5273fca4b6f01061130e3db3b749617d56bf193529c500f2f7e4e6cf45",
+    "composition_lines": 42,
+    "block_hand_lines_charged": 0,
+    "registration_module_lines": 7,
+    "umbrella_export_lines": 1,
+    "interface_total": 5174,
+    "scope": "Measured per-function text already integrated. These42lines are not an automated call closure or handwritten block lines."
+  },
+  "limits": [
+    "The caller-first experiment can proceed independently. This prediction must precede the full ten-block run.",
+    "No caller-first residual or result was inspected for this prediction.",
+    "The posted four-close/six-residual-or-hand criterion forecast is unchanged.",
+    "No call calibration exists in the supplied decodeItem/free packets. The call and full budgets remain null.",
+    "The632c overlap remains explicit. Its two proxy components are not added.",
+    "No rule benefit is inferred from a plain lemma or an installed callee premise.",
+    "No alloc source was read. Free forecasts and results remain unchanged."
+  ],
+  "inputs": {
+    "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/nextuint64-hand-prediction001/inputs/DECODEITEM-AUDIT.json": "aa3ffa1a42f72b90e774c4411cc438378393233ebd6aadc8dac4356eff38e701",
+    "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/nextuint64-hand-prediction001/inputs/DECODEITEM-KINDS.json": "563aa5ba4ba90a40962d6d9686a6af27674087e351855cbda1dd1897f7bb9449",
+    "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/nextuint64-hand-prediction001/inputs/FREE-MODEL.json": "38727e06fdd87259ead8c1490177b1d8cb4fe36934a45981e084149c732f38bc",
+    "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/nextuint64-hand-prediction001/inputs/POSTED-FORECAST.md": "2ab0d903839b48fddb74f536cd5d033c0618d4323600726ef6f862b18c65f11f",
+    "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/nextuint64-hand-prediction001/inputs/POSTED-PREDICTIONS.json": "d7ee30a8ba45d30f6d1f5ec3a6ac1eb580049aa75c37096d87f23d6aec418d2a"
+  },
+  "proof_runs": 0,
+  "native_runs": 0
+}

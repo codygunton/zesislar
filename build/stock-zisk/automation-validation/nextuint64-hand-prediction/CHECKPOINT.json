@@ -1,0 +1,49 @@
+{
+  "item": "nextuint64-hand-prediction",
+  "scope": "Metadata-only pre-full-run hand-line prediction. No proof or native execution. No call calibration or closure claim.",
+  "base": "1caa440a0f98488e978f4ac13f046383fb26289b",
+  "report": "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/nextuint64-hand-prediction-final003/REPORT.json",
+  "report_sha256": "bcae363661edb80369a07af47be52063fad8c72b6fba1da6180b9483493cc522",
+  "bindings": 30,
+  "post": {
+    "id": 6223426257,
+    "url": "https://github.com/codygunton/zesislar/issues/13#issuecomment-6223426257",
+    "created_at": "2026-10-16T19:48:00Z",
+    "body_sha256": "94cc5d125ca3661cef76bd1592776866d233498cb338ddd75cd4a2ede76dd377",
+    "posted_response_matches": true,
+    "readback_matches": true,
+    "full_ten_block_run_seen": false
+  },
+  "rows": 10,
+  "partial_proxy_subtotal": [
+    199,
+    293
+  ],
+  "excluded_from_subtotal": [
+    "0x800d6274",
+    "0x800d632c"
+  ],
+  "full_budget": null,
+  "call_budget": null,
+  "bridge_composition_lines": 42,
+  "block_hand_lines_charged_for_bridge": 0,
+  "gate": {
+    "command": [
+      "make",
+      "check-fast",
+      "CHECK_AGENT=spec-a",
+      "FAST_JOBS=6",
+      "AGENT_JOBS=6",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/agents/spec-a-nextuint64-profile-gate"
+    ],
+    "start_UTC": "2026-10-16T19:48:30.196538+00:00",
+    "exit_code": 0,
+    "wall_seconds": 93.91445997706614,
+    "user_seconds": 53.54654,
+    "system_seconds": 25.068689,
+    "peak_RSS_KiB": 181836,
+    "unchanged_sources": true
+  },
+  "proof_runs": 0,
+  "native_runs": 0
+}
