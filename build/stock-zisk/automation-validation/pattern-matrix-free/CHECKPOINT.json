@@ -1,0 +1,32 @@
+{
+  "item": "pattern-matrix-free",
+  "root": "bdac7cf9f4f50beac9de8ac4a958c72f00e48166",
+  "scope": "Metadata only. Frozen hold-out and verified training stay separate.",
+  "matrix": "build/stock-zisk/automation-validation/pattern-matrix/MATRIX.json",
+  "matrix_sha256": "3d441a45e6b9021d5a77f43f8eb50923997afa8b4e14a9446f6d05260243b32a",
+  "full_certificate": "/home/cody/zesislar/.worktrees/spec-b-av-matrix-free-d05f36e5/_build/free-matrix001/REPORT.json",
+  "certificate_status": "Sealed.",
+  "hold_out": "FINAL0/43 at cp-av-holdout-free",
+  "best_training": "run3 ON16verified after uncapped supplement",
+  "per_pattern": {
+    "propagate": "4/12",
+    "introduce": "12/28",
+    "store": "0/2",
+    "return": "0/2"
+  },
+  "counts_non_additive": true,
+  "unchanged": "decodeItem observations, nextUint64 predictions, alloc null fields",
+  "native_run": false,
+  "proof_run": false,
+  "gate": {
+    "exit": 0,
+    "elapsed_seconds": 2053.6332813219633,
+    "root": "6eb85c37374307001a3a407edb6d20d64ab37c2b",
+    "receipt": "/home/cody/zesislar/.worktrees/spec-b-av-matrix-free-d05f36e5/_build/free-matrix-fast004/RESULT.json",
+    "receipt_sha256": "ba03d538f53dab144a06c2905a25300bd42e9822a038b6cc4a124e71d9c2845f"
+  },
+  "certificate_sha256": "69869d40560df31235b7f7c6c9a6e6ef4119b722fe253a558ccbed78627cb173",
+  "bindings": 16,
+  "post_rebase": "Focused checks passed. Root bridge delta does not change matrix inputs or checkers. Root both gates green.",
+  "previous_failure": "fast002 missing pinned source links; repaired after identity checks."
+}

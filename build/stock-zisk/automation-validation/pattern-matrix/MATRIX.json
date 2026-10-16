@@ -17,13 +17,14 @@
     "loop",
     "call"
   ],
-  "scope": "Recorded decodeItem observations plus explicitly predicted nextUint64 cells. Free and alloc remain null.",
+  "scope": "DecodeItem observations, frozen free hold-out, best verified free training, and unchanged nextUint64 predictions. Alloc remains null.",
   "status_meanings": {
     "closed": "The cited automatic proof closes at the stated scope.",
     "hand": "A cited hand proof closes; this does not establish automatic rule closure.",
     "residual": "The cited automation comparison retains an obligation.",
     "null": "No observation is recorded for this function and pattern.",
-    "predicted": "The cell copies the bound pre-run pattern prediction. It records no native observation, activation, or proof closure."
+    "predicted": "The cell copies the bound pre-run pattern prediction. It records no native observation, activation, or proof closure.",
+    "measured": "The free cell keeps the frozen hold-out separate from verified training results."
   },
   "aggregation": "A mixed observed row remains residual and lists its closed sites separately. Pattern rows overlap. Counts are not additive.",
   "production_scope": "All decodeItem blocks already have production proofs. Residual describes the cited automation experiment only.",
@@ -59,6 +60,26 @@
     {
       "path": "/home/cody/zesislar/.worktrees/spec-b-av-nextuint64-pattern-matrix-602f6384/_build/nextuint64-matrix001/PREDICTION-POST-RECEIPT.json",
       "sha256": "f9cf19d9687acf6aca4d31040d27b50239dc801076ee4981614b953e790daa06"
+    },
+    {
+      "commit": "d05f36e54da94718247d58c8eba9800005b72a7b",
+      "path": "build/stock-zisk/automation-validation/free-first-result/DETAILS.json",
+      "sha256": "4ce4826f196be438f1a68a036ba0eb2242cb642a40241a4b73985bc613e15cc5"
+    },
+    {
+      "commit": "d05f36e54da94718247d58c8eba9800005b72a7b",
+      "path": "build/stock-zisk/automation-validation/free-first-result/CHECKPOINT.json",
+      "sha256": "e43678e8752dfb89f7cd4ef9e5f637f4b3b1d03ae9a5fb2dbf4a29c52da34359"
+    },
+    {
+      "commit": "d05f36e54da94718247d58c8eba9800005b72a7b",
+      "path": "build/stock-zisk/automation-validation/free-training-3/DETAILS.json",
+      "sha256": "247e1225e7d2c831f2b59b484fe200f0f98f7b2f8647e79abb07ecc1cb485819"
+    },
+    {
+      "commit": "6eb85c37374307001a3a407edb6d20d64ab37c2b",
+      "path": "build/stock-zisk/automation-validation/free-training-3-uncapped/REPORT.json",
+      "sha256": "494e2a303fb095948e5c9d379f5fbcfc3b18f92c84622de86fa8a0c88de76f1f"
     }
   ],
   "rows": [
@@ -84,7 +105,279 @@
           "https://github.com/codygunton/zesislar/issues/13"
         ]
       },
-      "free": null,
+      "free": {
+        "coverage": "observed",
+        "sites": [
+          "0x80041f58",
+          "0x80041f60",
+          "0x80041f80",
+          "0x80041f8c",
+          "0x80041f98",
+          "0x80041fb8",
+          "0x80041fc0",
+          "0x80041fdc",
+          "0x80041fe8",
+          "0x8004202c",
+          "0x80042074",
+          "0x8004213c"
+        ],
+        "hold_out": {
+          "label": "HOLD-OUT 0/43",
+          "status": "residual",
+          "verified_closed": 0,
+          "blocks": 12,
+          "closed_sites": [],
+          "open_sites": [
+            "0x80041f58",
+            "0x80041f60",
+            "0x80041f80",
+            "0x80041f8c",
+            "0x80041f98",
+            "0x80041fb8",
+            "0x80041fc0",
+            "0x80041fdc",
+            "0x80041fe8",
+            "0x8004202c",
+            "0x80042074",
+            "0x8004213c"
+          ],
+          "first_residual_classes": {
+            "pure-equality": 12
+          },
+          "first_residuals": [
+            {
+              "pc": "0x80041f58",
+              "shape": "65%bv = x13",
+              "groups": {
+                "goals": 4,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041f60",
+              "shape": "17%bv = x13",
+              "groups": {
+                "goals": 4,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041f80",
+              "shape": "(262144 + 1)%bv = x13",
+              "groups": {
+                "goals": 4,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041f8c",
+              "shape": "(16384 + 1)%bv = x13",
+              "groups": {
+                "goals": 4,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041f98",
+              "shape": "(4096 + 1)%bv = x13",
+              "groups": {
+                "goals": 4,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041fb8",
+              "shape": "513%bv = x13",
+              "groups": {
+                "goals": 4,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041fc0",
+              "shape": "129%bv = x13",
+              "groups": {
+                "goals": 4,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041fdc",
+              "shape": "(4194304 + 1)%bv = x13",
+              "groups": {
+                "goals": 4,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041fe8",
+              "shape": "(1048576 + 1)%bv = x13",
+              "groups": {
+                "goals": 4,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x8004202c",
+              "shape": "(65536 + 1)%bv = x13",
+              "groups": {
+                "goals": 4,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042074",
+              "shape": "(8388608 + 1)%bv = x13",
+              "groups": {
+                "goals": 4,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x8004213c",
+              "shape": "22%bv = Z_to_bv 64 (freeLog2Alignment args)",
+              "groups": {
+                "goals": 4,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            }
+          ],
+          "evidence_scope": "Checkpoint first-goal text and reported complete group counts. No new export inspection or proof run."
+        },
+        "best_training": {
+          "label": "BEST TRAINING run3 ON 16 VERIFIED",
+          "status": "residual",
+          "verified_closed": 4,
+          "blocks": 12,
+          "closed_sites": [
+            "0x80041f58",
+            "0x80041f60",
+            "0x80041fb8",
+            "0x80041fc0"
+          ],
+          "open_sites": [
+            "0x80041f80",
+            "0x80041f8c",
+            "0x80041f98",
+            "0x80041fdc",
+            "0x80041fe8",
+            "0x8004202c",
+            "0x80042074",
+            "0x8004213c"
+          ],
+          "first_residual_classes": {
+            "Iris-pure-condition": 8
+          },
+          "first_residuals": [
+            {
+              "pc": "0x80041f80",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147753868\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt80041f8c args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeBufferLength args) = Z_to_bv 64 (freeBufferLength args) ∧ 262145 ≤ bv_unsigned (Z_to_bv 64 (freeBufferLength args))⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041f8c",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147753880\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt80041f98 args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeBufferLength args) = Z_to_bv 64 (freeBufferLength args) ∧ 16385 ≤ bv_unsigned (Z_to_bv 64 (freeBufferLength args)) ≤ 262144⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041f98",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147753892\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt80041fa4 args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeBufferLength args) = Z_to_bv 64 (freeBufferLength args) ∧ 4097 ≤ bv_unsigned (Z_to_bv 64 (freeBufferLength args)) ≤ 16384⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041fdc",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147753960\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt80041fe8 args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeBufferLength args) = Z_to_bv 64 (freeBufferLength args) ∧ 4194305 ≤ bv_unsigned (Z_to_bv 64 (freeBufferLength args))⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041fe8",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147753972\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt80041ff4 args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeBufferLength args) = Z_to_bv 64 (freeBufferLength args) ∧ 1048577 ≤ bv_unsigned (Z_to_bv 64 (freeBufferLength args)) ≤ 4194304⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x8004202c",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147754040\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt80042038 args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeBufferLength args) = Z_to_bv 64 (freeBufferLength args) ∧ 65537 ≤ bv_unsigned (Z_to_bv 64 (freeBufferLength args)) ≤ 262144⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042074",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147754112\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt80042080 args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeBufferLength args) = Z_to_bv 64 (freeBufferLength args) ∧ 8388609 ≤ bv_unsigned (Z_to_bv 64 (freeBufferLength args))⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x8004213c",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147754308\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt80042144 args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜22%bv = Z_to_bv 64 22\n ∧ Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) = Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args))\n   ∧ 0 ≤ freeSizeClass (freeBufferLength args) (freeLog2Alignment args) < freeListCount⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            }
+          ],
+          "evidence_scope": "Checkpoint first-goal text and reported complete group counts. No new export inspection or proof run."
+        },
+        "mapping_limit": "Original frozen labels; no reclassification from later outcomes."
+      },
       "nextUint64": {
         "status": "predicted",
         "coverage": "predicted",
@@ -166,7 +459,569 @@
           "https://github.com/codygunton/zesislar/issues/13#issuecomment-6186740154"
         ]
       },
-      "free": null,
+      "free": {
+        "coverage": "observed",
+        "sites": [
+          "0x80041f68",
+          "0x80041f7c",
+          "0x80041fa4",
+          "0x80041fb4",
+          "0x80041fc8",
+          "0x80041fd8",
+          "0x80041ff4",
+          "0x80042010",
+          "0x80042014",
+          "0x80042028",
+          "0x80042038",
+          "0x80042054",
+          "0x80042058",
+          "0x80042070",
+          "0x80042080",
+          "0x80042090",
+          "0x80042094",
+          "0x800420b0",
+          "0x800420b4",
+          "0x800420cc",
+          "0x800420d0",
+          "0x800420ec",
+          "0x800420f0",
+          "0x8004210c",
+          "0x80042110",
+          "0x80042130",
+          "0x80042134",
+          "0x80042154"
+        ],
+        "hold_out": {
+          "label": "HOLD-OUT 0/43",
+          "status": "residual",
+          "verified_closed": 0,
+          "blocks": 28,
+          "closed_sites": [],
+          "open_sites": [
+            "0x80041f68",
+            "0x80041f7c",
+            "0x80041fa4",
+            "0x80041fb4",
+            "0x80041fc8",
+            "0x80041fd8",
+            "0x80041ff4",
+            "0x80042010",
+            "0x80042014",
+            "0x80042028",
+            "0x80042038",
+            "0x80042054",
+            "0x80042058",
+            "0x80042070",
+            "0x80042080",
+            "0x80042090",
+            "0x80042094",
+            "0x800420b0",
+            "0x800420b4",
+            "0x800420cc",
+            "0x800420d0",
+            "0x800420ec",
+            "0x800420f0",
+            "0x8004210c",
+            "0x80042110",
+            "0x80042130",
+            "0x80042134",
+            "0x80042154"
+          ],
+          "first_residual_classes": {
+            "pure-equality": 16,
+            "Iris-pure-condition": 12
+          },
+          "first_residuals": [
+            {
+              "pc": "0x80041f68",
+              "shape": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 9)) 1%bv 0%bv)) 1 = Z_to_bv 64 (freeBufferLength args)",
+              "groups": {
+                "goals": 8,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041f7c",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ freeAlignmentWord args = freeAlignmentWord args ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)⌝",
+              "groups": {
+                "goals": 1,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041fa4",
+              "shape": "9%bv = Z_to_bv 64 (freeBufferLength args)",
+              "groups": {
+                "goals": 8,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041fb4",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ freeAlignmentWord args = freeAlignmentWord args ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)⌝",
+              "groups": {
+                "goals": 1,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041fc8",
+              "shape": "4%bv = Z_to_bv 64 (freeBufferLength args)",
+              "groups": {
+                "goals": 8,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041fd8",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ freeAlignmentWord args = freeAlignmentWord args ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)⌝",
+              "groups": {
+                "goals": 1,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041ff4",
+              "shape": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (524288 + 1)))) 1%bv 0%bv)) 17 =\nZ_to_bv 64 (freeBufferLength args)",
+              "groups": {
+                "goals": 8,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042010",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ freeAlignmentWord args = freeAlignmentWord args ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)⌝",
+              "groups": {
+                "goals": 1,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042014",
+              "shape": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 33)) 1%bv 0%bv)) 3 = Z_to_bv 64 (freeBufferLength args)",
+              "groups": {
+                "goals": 8,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042028",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ freeAlignmentWord args = freeAlignmentWord args ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)⌝",
+              "groups": {
+                "goals": 1,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042038",
+              "shape": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (32768 + 1)))) 1%bv 0%bv)) 13 =\nZ_to_bv 64 (freeBufferLength args)",
+              "groups": {
+                "goals": 8,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042054",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ freeAlignmentWord args = freeAlignmentWord args ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)⌝",
+              "groups": {
+                "goals": 1,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042058",
+              "shape": "(8 - bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 1025)) 1 0))%bv = Z_to_bv 64 (freeBufferLength args)",
+              "groups": {
+                "goals": 8,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042070",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ freeAlignmentWord args = freeAlignmentWord args ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)⌝",
+              "groups": {
+                "goals": 1,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042080",
+              "shape": "20%bv = Z_to_bv 64 (freeBufferLength args)",
+              "groups": {
+                "goals": 8,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042090",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ freeAlignmentWord args = freeAlignmentWord args ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)⌝",
+              "groups": {
+                "goals": 1,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042094",
+              "shape": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (8192 + 1)))) 1%bv 0%bv)) 11 =\nZ_to_bv 64 (freeBufferLength args)",
+              "groups": {
+                "goals": 8,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x800420b0",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ freeAlignmentWord args = freeAlignmentWord args ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)⌝",
+              "groups": {
+                "goals": 1,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x800420b4",
+              "shape": "(6 - bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 257)) 1 0))%bv = Z_to_bv 64 (freeBufferLength args)",
+              "groups": {
+                "goals": 8,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x800420cc",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ freeAlignmentWord args = freeAlignmentWord args ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)⌝",
+              "groups": {
+                "goals": 1,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x800420d0",
+              "shape": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (2097152 + 1)))) 1%bv 0%bv)) 19 =\nZ_to_bv 64 (freeBufferLength args)",
+              "groups": {
+                "goals": 8,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x800420ec",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ freeAlignmentWord args = freeAlignmentWord args ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)⌝",
+              "groups": {
+                "goals": 1,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x800420f0",
+              "shape": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (131072 + 1)))) 1%bv 0%bv)) 15 =\nZ_to_bv 64 (freeBufferLength args)",
+              "groups": {
+                "goals": 8,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x8004210c",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ freeAlignmentWord args = freeAlignmentWord args ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)⌝",
+              "groups": {
+                "goals": 1,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042110",
+              "shape": "(22 - bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (16777216 + 1)))) 1 0))%bv =\nZ_to_bv 64 (freeBufferLength args)",
+              "groups": {
+                "goals": 8,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042130",
+              "shape": "freeAlignmentWord args = x13",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042134",
+              "shape": "3%bv = freeAlignmentWord args",
+              "groups": {
+                "goals": 4,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042154",
+              "shape": "22%bv = Z_to_bv 64 (freeLog2Alignment args)",
+              "groups": {
+                "goals": 6,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            }
+          ],
+          "evidence_scope": "Checkpoint first-goal text and reported complete group counts. No new export inspection or proof run."
+        },
+        "best_training": {
+          "label": "BEST TRAINING run3 ON 16 VERIFIED",
+          "status": "residual",
+          "verified_closed": 12,
+          "blocks": 28,
+          "closed_sites": [
+            "0x80041f7c",
+            "0x80041fb4",
+            "0x80041fd8",
+            "0x80042010",
+            "0x80042028",
+            "0x80042054",
+            "0x80042070",
+            "0x80042090",
+            "0x800420b0",
+            "0x800420cc",
+            "0x800420ec",
+            "0x8004210c"
+          ],
+          "open_sites": [
+            "0x80041f68",
+            "0x80041fa4",
+            "0x80041fc8",
+            "0x80041ff4",
+            "0x80042014",
+            "0x80042038",
+            "0x80042058",
+            "0x80042080",
+            "0x80042094",
+            "0x800420b4",
+            "0x800420d0",
+            "0x800420f0",
+            "0x80042110",
+            "0x80042130",
+            "0x80042134",
+            "0x80042154"
+          ],
+          "first_residual_classes": {
+            "Iris-pure-condition": 15,
+            "pure-equality": 1
+          },
+          "first_residuals": [
+            {
+              "pc": "0x80041f68",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147753852\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt80041f7c args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_signed 9)) 1%bv 0%bv)) 1 = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)%bv = freeAlignmentWord args\n     ∧ bv_unsigned (bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_signed 9)) 1%bv 0%bv)) 1)\n       ≤ bv_unsigned (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041fa4",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147753908\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt80041fb4 args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ 9%bv = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)%bv = freeAlignmentWord args ∧ 9 ≤ bv_unsigned (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041fc8",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147753944\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt80041fd8 args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ 4%bv = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)%bv = freeAlignmentWord args ∧ 4 ≤ bv_unsigned (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80041ff4",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147754000\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt80042010 args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_unsigned (524288 + 1))) 1%bv 0%bv)) 17 =\n   Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)%bv = freeAlignmentWord args\n     ∧ bv_unsigned (bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_unsigned (524288 + 1))) 1%bv 0%bv)) 17)\n       ≤ bv_unsigned (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042014",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147754024\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt80042028 args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_signed 33)) 1%bv 0%bv)) 3 = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)%bv = freeAlignmentWord args\n     ∧ bv_unsigned (bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_signed 33)) 1%bv 0%bv)) 3)\n       ≤ bv_unsigned (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042038",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147754068\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt80042054 args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_unsigned (32768 + 1))) 1%bv 0%bv)) 13 = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)%bv = freeAlignmentWord args\n     ∧ bv_unsigned (bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_unsigned (32768 + 1))) 1%bv 0%bv)) 13)\n       ≤ bv_unsigned (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042058",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147754096\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt80042070 args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ (8 - bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_signed 1025)) 1 0))%bv = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)%bv = freeAlignmentWord args\n     ∧ bv_unsigned (8 - bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_signed 1025)) 1%bv 0%bv))\n       ≤ bv_unsigned (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042080",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147754128\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt80042090 args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ 20%bv = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)%bv = freeAlignmentWord args ∧ 20 ≤ bv_unsigned (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042094",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147754160\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt800420b0 args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_unsigned (8192 + 1))) 1%bv 0%bv)) 11 = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)%bv = freeAlignmentWord args\n     ∧ bv_unsigned (bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_unsigned (8192 + 1))) 1%bv 0%bv)) 11)\n       ≤ bv_unsigned (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x800420b4",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147754188\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt800420cc args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ (6 - bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_signed 257)) 1 0))%bv = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)%bv = freeAlignmentWord args\n     ∧ bv_unsigned (6 - bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_signed 257)) 1%bv 0%bv))\n       ≤ bv_unsigned (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x800420d0",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147754220\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt800420ec args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_unsigned (2097152 + 1))) 1%bv 0%bv)) 19 =\n   Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)%bv = freeAlignmentWord args\n     ∧ bv_unsigned (bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_unsigned (2097152 + 1))) 1%bv 0%bv)) 19)\n       ≤ bv_unsigned (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x800420f0",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147754252\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt8004210c args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_unsigned (131072 + 1))) 1%bv 0%bv)) 15 =\n   Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)%bv = freeAlignmentWord args\n     ∧ bv_unsigned (bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_unsigned (131072 + 1))) 1%bv 0%bv)) 15)\n       ≤ bv_unsigned (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042110",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147754288\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt80042130 args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ (22 - bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_unsigned (16777216 + 1))) 1 0))%bv = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ (Z_to_bv 64 (freeLog2Alignment args) + 18446744073709551613)%bv = freeAlignmentWord args\n     ∧ (22 - bv_zero_extend 64 (ite (bool_decide (bv_unsigned (Z_to_bv 64 (freeBufferLength args)) < bv_unsigned (16777216 + 1))) 1 0))%bv = Z_to_bv 64 (freeCandidateClass args)⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042130",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   ∧ freeAlignmentWord args = freeAlignmentWord args ∧ freeAlignmentWord args = Z_to_bv 64 (freeCandidateClass args)⌝",
+              "groups": {
+                "goals": 1,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042134",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147754300\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt8004213c args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜Z_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n ∧ freeLog2Alignment args ≤ 3 ∧ Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042154",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : instr_pre 2147754336\n      (∃ (successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 : bv 64) (successor_bufferBytes successor_listBytes\n                                                                                                                                 successor_frameBytes : list (bv 8)),\n         freeEntryAt80042160 args successor_x1 successor_x2 successor_x8 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_bufferBytes successor_listBytes\n           successor_frameBytes)\n--------------------------------------∗\n⌜22%bv = Z_to_bv 64 22 ∧ freeListCount ≤ freeSizeClass (freeBufferLength args) (freeLog2Alignment args)⌝",
+              "groups": {
+                "goals": 2,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            }
+          ],
+          "evidence_scope": "Checkpoint first-goal text and reported complete group counts. No new export inspection or proof run."
+        },
+        "mapping_limit": "Original frozen labels; no reclassification from later outcomes."
+      },
       "nextUint64": {
         "status": "predicted",
         "coverage": "predicted",
@@ -229,7 +1084,65 @@
           "https://github.com/codygunton/zesislar/issues/13#issuecomment-6184005012"
         ]
       },
-      "free": null,
+      "free": {
+        "coverage": "observed",
+        "sites": [
+          "0x80041f38"
+        ],
+        "hold_out": {
+          "label": "HOLD-OUT 0/43",
+          "status": "residual",
+          "verified_closed": 0,
+          "blocks": 1,
+          "closed_sites": [],
+          "open_sites": [
+            "0x80041f38"
+          ],
+          "first_residual_classes": {
+            "list-witness": 1
+          },
+          "first_residuals": [
+            {
+              "pc": "0x80041f38",
+              "shape": "list (bv 8)",
+              "groups": {
+                "goals": 12,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            }
+          ],
+          "evidence_scope": "Checkpoint first-goal text and reported complete group counts. No new export inspection or proof run."
+        },
+        "best_training": {
+          "label": "BEST TRAINING run3 ON 16 VERIFIED",
+          "status": "residual",
+          "verified_closed": 0,
+          "blocks": 1,
+          "closed_sites": [],
+          "open_sites": [
+            "0x80041f38"
+          ],
+          "first_residual_classes": {
+            "list-witness": 1
+          },
+          "first_residuals": [
+            {
+              "pc": "0x80041f38",
+              "shape": "list (bv 8)",
+              "groups": {
+                "goals": 4,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            }
+          ],
+          "evidence_scope": "Checkpoint first-goal text and reported complete group counts. No new export inspection or proof run."
+        },
+        "mapping_limit": "The store subtypes refine the two original store labels. 42160 also has a return label. Counts are not additive."
+      },
       "nextUint64": {
         "status": "predicted",
         "coverage": "predicted",
@@ -289,7 +1202,65 @@
           "https://github.com/codygunton/zesislar/issues/13"
         ]
       },
-      "free": null,
+      "free": {
+        "coverage": "observed",
+        "sites": [
+          "0x80042160"
+        ],
+        "hold_out": {
+          "label": "HOLD-OUT 0/43",
+          "status": "residual",
+          "verified_closed": 0,
+          "blocks": 1,
+          "closed_sites": [],
+          "open_sites": [
+            "0x80042160"
+          ],
+          "first_residual_classes": {
+            "memory-obligation": 1
+          },
+          "first_residuals": [
+            {
+              "pc": "0x80042160",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : \"x1\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeReturnAddress args))\n_ : \"x2\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeStackPointer args - freeStackBytes))\n_ : \"x8\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeStackPointer args))\n_ : \"x11\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeBufferPointer args))\n_ : \"x12\" ↦ᵣ RVal_Bits x12\n_ : \"x14\" ↦ᵣ RVal_Bits x14\n_ : freeBufferPointer args ↦ₘ∗ freeBeforeBuffer args\n_ : freeListsPointer ↦ₘ∗ freeBeforeLists args\n_ : (freeStackPointer args - freeStackBytes) ↦ₘ∗ frameBytes\n_ : instr_pre (freeReturnAddress args)\n      (∃ bufferBytes listBytes : list evm_rlp_types.byte, freeBufferPointer args ↦ₘ∗ bufferBytes ∗ freeListsPointer ↦ₘ∗ listBytes ∗\n         ⌜freeAllowsAt (freeReturnAddress args) args {| freeAfterBuffer := bufferBytes; freeAfterLists := listBytes |}⌝ ∗ freeExitRegisterResources args)\n_ : \"x13\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3)%bv\n_ : \"PC\" ↦ᵣ RVal_Bits (Z_to_bv 64 2147754352)\n_ : \"x10\" ↦ᵣ RVal_Bits (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3)%bv\n_ : reg_col zesu_ram_sys_regs\n--------------------------------------∗\nfind_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8)))\n  (λ mk : mem_mapsto_kind,\n     match mk with\n     | MKMapsTo n' vmem =>\n         ∃ Heq : 64%N = n',\n           ⌜eq_rect 64%N bv n1 n' Heq = vmem⌝ -∗\n           bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) ↦ₘ vmem -∗ WPasm HIDDEN\n     | MKArray n' a' values =>\n         if (n' =? 64)%N\n         then ⌜(bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) - a') `mod` 8 = 0⌝ ∗\n         ∃ i : nat, ⌜i = (bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) - a') `div` 8⌝ ∗\n           ⌜(i < length values)%nat⌝ ∗ ∃ Heq : 64%N = n', ∀ vmem : bv n', ⌜values !! i = Some vmem⌝ -∗ ⌜eq_rect 64%N bv n1 n' Heq = vmem⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN\n         else ⌜n' = 8%N⌝ ∗\n         ∃ i : nat, ⌜i = bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) - a'⌝ ∗\n           ⌜(i + N.to_nat 8 <= length values)%nat⌝ ∗ ∀ vmem : bv 64, ⌜vmem = Z_to_bv 64 (little_endian_to_bv n' (take (N.to_nat 8) (drop i values)))⌝ -∗ ⌜n1 = vmem⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN\n     | MKUninit _ _ => False\n     | MKMMIO a' length => ⌜a' ≤ bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8)⌝ ∗\n         ⌜bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) + 8 ≤ a' + length⌝ ∗\n         ∃ Pks Pks' : spec, spec_trace Pks ∗\n           ⌜scons (SReadMem (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) n1) Pks' ⊆ Pks⌝ ∗\n           (spec_trace Pks' -∗ WPasm HIDDEN)\n     end)",
+              "groups": {
+                "goals": 1,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            }
+          ],
+          "evidence_scope": "Checkpoint first-goal text and reported complete group counts. No new export inspection or proof run."
+        },
+        "best_training": {
+          "label": "BEST TRAINING run3 ON 16 VERIFIED",
+          "status": "residual",
+          "verified_closed": 0,
+          "blocks": 1,
+          "closed_sites": [],
+          "open_sites": [
+            "0x80042160"
+          ],
+          "first_residual_classes": {
+            "memory-obligation": 1
+          },
+          "first_residuals": [
+            {
+              "pc": "0x80042160",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : \"x1\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeReturnAddress args))\n_ : \"x2\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeStackPointer args - freeStackBytes))\n_ : \"x8\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeStackPointer args))\n_ : \"x11\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeBufferPointer args))\n_ : \"x12\" ↦ᵣ RVal_Bits x12\n_ : \"x14\" ↦ᵣ RVal_Bits x14\n_ : freeBufferPointer args ↦ₘ∗ freeBeforeBuffer args\n_ : freeListsPointer ↦ₘ∗ freeBeforeLists args\n_ : (freeStackPointer args - freeStackBytes) ↦ₘ∗ frameBytes\n_ : instr_pre (freeReturnAddress args)\n      (∃ bufferBytes listBytes : list evm_rlp_types.byte, freeBufferPointer args ↦ₘ∗ bufferBytes ∗ freeListsPointer ↦ₘ∗ listBytes ∗\n         ⌜freeAllowsAt (freeReturnAddress args) args {| freeAfterBuffer := bufferBytes; freeAfterLists := listBytes |}⌝ ∗ freeExitRegisterResources args)\n_ : \"x13\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3)%bv\n_ : \"PC\" ↦ᵣ RVal_Bits (Z_to_bv 64 2147754352)\n_ : \"x10\" ↦ᵣ RVal_Bits (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3)%bv\n_ : reg_col zesu_ram_sys_regs\n--------------------------------------∗\nfind_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8)))\n  (λ mk : mem_mapsto_kind,\n     match mk with\n     | MKMapsTo n' vmem =>\n         ∃ Heq : 64%N = n',\n           ⌜eq_rect 64%N bv n1 n' Heq = vmem⌝ -∗\n           bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) ↦ₘ vmem -∗ WPasm HIDDEN\n     | MKArray n' a' values =>\n         if (n' =? 64)%N\n         then ⌜(bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) - a') `mod` 8 = 0⌝ ∗\n         ∃ i : nat, ⌜i = (bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) - a') `div` 8⌝ ∗\n           ⌜(i < length values)%nat⌝ ∗ ∃ Heq : 64%N = n', ∀ vmem : bv n', ⌜values !! i = Some vmem⌝ -∗ ⌜eq_rect 64%N bv n1 n' Heq = vmem⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN\n         else ⌜n' = 8%N⌝ ∗\n         ∃ i : nat, ⌜i = bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) - a'⌝ ∗\n           ⌜(i + N.to_nat 8 <= length values)%nat⌝ ∗ ∀ vmem : bv 64, ⌜vmem = Z_to_bv 64 (little_endian_to_bv n' (take (N.to_nat 8) (drop i values)))⌝ -∗ ⌜n1 = vmem⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN\n     | MKUninit _ _ => False\n     | MKMMIO a' length => ⌜a' ≤ bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8)⌝ ∗\n         ⌜bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) + 8 ≤ a' + length⌝ ∗\n         ∃ Pks Pks' : spec, spec_trace Pks ∗\n           ⌜scons (SReadMem (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) n1) Pks' ⊆ Pks⌝ ∗\n           (spec_trace Pks' -∗ WPasm HIDDEN)\n     end)",
+              "groups": {
+                "goals": 1,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            }
+          ],
+          "evidence_scope": "Checkpoint first-goal text and reported complete group counts. No new export inspection or proof run."
+        },
+        "mapping_limit": "The store subtypes refine the two original store labels. 42160 also has a return label. Counts are not additive."
+      },
       "nextUint64": {
         "status": "predicted",
         "coverage": "predicted",
@@ -331,7 +1302,88 @@
           "https://github.com/codygunton/zesislar/issues/13#issuecomment-6190669567"
         ]
       },
-      "free": null,
+      "free": {
+        "coverage": "observed",
+        "sites": [
+          "0x80042144",
+          "0x80042160"
+        ],
+        "hold_out": {
+          "label": "HOLD-OUT 0/43",
+          "status": "residual",
+          "verified_closed": 0,
+          "blocks": 2,
+          "closed_sites": [],
+          "open_sites": [
+            "0x80042144",
+            "0x80042160"
+          ],
+          "first_residual_classes": {
+            "memory-obligation": 2
+          },
+          "first_residuals": [
+            {
+              "pc": "0x80042144",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : \"x1\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeReturnAddress args))\n_ : \"x8\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeStackPointer args))\n_ : \"x10\" ↦ᵣ RVal_Bits (Z_to_bv 64 22)\n_ : \"x11\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeBufferPointer args))\n_ : \"x12\" ↦ᵣ RVal_Bits x12\n_ : \"x13\" ↦ᵣ RVal_Bits x13\n_ : \"x14\" ↦ᵣ RVal_Bits x14\n_ : freeBufferPointer args ↦ₘ∗ freeBeforeBuffer args\n_ : freeListsPointer ↦ₘ∗ freeBeforeLists args\n_ : (freeStackPointer args - freeStackBytes) ↦ₘ∗ frameBytes\n_ : instr_pre (freeReturnAddress args)\n      (∃ bufferBytes listBytes : list evm_rlp_types.byte, freeBufferPointer args ↦ₘ∗ bufferBytes ∗ freeListsPointer ↦ₘ∗ listBytes ∗\n         ⌜freeAllowsAt (freeReturnAddress args) args {| freeAfterBuffer := bufferBytes; freeAfterLists := listBytes |}⌝ ∗ freeExitRegisterResources args)\n_ : \"PC\" ↦ᵣ RVal_Bits (Z_to_bv 64 2147754308)\n_ : \"x2\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeStackPointer args - freeStackBytes))\n_ : reg_col zesu_ram_sys_regs\n--------------------------------------∗\nfind_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8)))\n  (λ mk : mem_mapsto_kind,\n     match mk with\n     | MKMapsTo n' vmem => ∃ Heq : 64%N = n', ⌜eq_rect 64%N bv n1 n' Heq = vmem⌝ -∗ bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) ↦ₘ vmem -∗ WPasm HIDDEN\n     | MKArray n' a' values =>\n         if (n' =? 64)%N\n         then ⌜(bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) - a') `mod` 8 = 0⌝ ∗\n         ∃ i : nat, ⌜i = (bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) - a') `div` 8⌝ ∗ ⌜(i < length values)%nat⌝ ∗\n           ∃ Heq : 64%N = n', ∀ vmem : bv n', ⌜values !! i = Some vmem⌝ -∗ ⌜eq_rect 64%N bv n1 n' Heq = vmem⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN\n         else ⌜n' = 8%N⌝ ∗\n         ∃ i : nat, ⌜i = bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) - a'⌝ ∗ ⌜(i + N.to_nat 8 <= length values)%nat⌝ ∗\n           ∀ vmem : bv 64, ⌜vmem = Z_to_bv 64 (little_endian_to_bv n' (take (N.to_nat 8) (drop i values)))⌝ -∗ ⌜n1 = vmem⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN\n     | MKUninit _ _ => False\n     | MKMMIO a' length => ⌜a' ≤ bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8)⌝ ∗ ⌜bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) + 8 ≤ a' + length⌝ ∗\n         ∃ Pks Pks' : spec, spec_trace Pks ∗ ⌜scons (SReadMem (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) n1) Pks' ⊆ Pks⌝ ∗ (spec_trace Pks' -∗ WPasm HIDDEN)\n     end)",
+              "groups": {
+                "goals": 1,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042160",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : \"x1\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeReturnAddress args))\n_ : \"x2\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeStackPointer args - freeStackBytes))\n_ : \"x8\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeStackPointer args))\n_ : \"x11\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeBufferPointer args))\n_ : \"x12\" ↦ᵣ RVal_Bits x12\n_ : \"x14\" ↦ᵣ RVal_Bits x14\n_ : freeBufferPointer args ↦ₘ∗ freeBeforeBuffer args\n_ : freeListsPointer ↦ₘ∗ freeBeforeLists args\n_ : (freeStackPointer args - freeStackBytes) ↦ₘ∗ frameBytes\n_ : instr_pre (freeReturnAddress args)\n      (∃ bufferBytes listBytes : list evm_rlp_types.byte, freeBufferPointer args ↦ₘ∗ bufferBytes ∗ freeListsPointer ↦ₘ∗ listBytes ∗\n         ⌜freeAllowsAt (freeReturnAddress args) args {| freeAfterBuffer := bufferBytes; freeAfterLists := listBytes |}⌝ ∗ freeExitRegisterResources args)\n_ : \"x13\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3)%bv\n_ : \"PC\" ↦ᵣ RVal_Bits (Z_to_bv 64 2147754352)\n_ : \"x10\" ↦ᵣ RVal_Bits (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3)%bv\n_ : reg_col zesu_ram_sys_regs\n--------------------------------------∗\nfind_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8)))\n  (λ mk : mem_mapsto_kind,\n     match mk with\n     | MKMapsTo n' vmem =>\n         ∃ Heq : 64%N = n',\n           ⌜eq_rect 64%N bv n1 n' Heq = vmem⌝ -∗\n           bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) ↦ₘ vmem -∗ WPasm HIDDEN\n     | MKArray n' a' values =>\n         if (n' =? 64)%N\n         then ⌜(bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) - a') `mod` 8 = 0⌝ ∗\n         ∃ i : nat, ⌜i = (bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) - a') `div` 8⌝ ∗\n           ⌜(i < length values)%nat⌝ ∗ ∃ Heq : 64%N = n', ∀ vmem : bv n', ⌜values !! i = Some vmem⌝ -∗ ⌜eq_rect 64%N bv n1 n' Heq = vmem⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN\n         else ⌜n' = 8%N⌝ ∗\n         ∃ i : nat, ⌜i = bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) - a'⌝ ∗\n           ⌜(i + N.to_nat 8 <= length values)%nat⌝ ∗ ∀ vmem : bv 64, ⌜vmem = Z_to_bv 64 (little_endian_to_bv n' (take (N.to_nat 8) (drop i values)))⌝ -∗ ⌜n1 = vmem⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN\n     | MKUninit _ _ => False\n     | MKMMIO a' length => ⌜a' ≤ bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8)⌝ ∗\n         ⌜bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) + 8 ≤ a' + length⌝ ∗\n         ∃ Pks Pks' : spec, spec_trace Pks ∗\n           ⌜scons (SReadMem (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) n1) Pks' ⊆ Pks⌝ ∗\n           (spec_trace Pks' -∗ WPasm HIDDEN)\n     end)",
+              "groups": {
+                "goals": 1,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            }
+          ],
+          "evidence_scope": "Checkpoint first-goal text and reported complete group counts. No new export inspection or proof run."
+        },
+        "best_training": {
+          "label": "BEST TRAINING run3 ON 16 VERIFIED",
+          "status": "residual",
+          "verified_closed": 0,
+          "blocks": 2,
+          "closed_sites": [],
+          "open_sites": [
+            "0x80042144",
+            "0x80042160"
+          ],
+          "first_residual_classes": {
+            "memory-obligation": 2
+          },
+          "first_residuals": [
+            {
+              "pc": "0x80042144",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : \"x1\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeReturnAddress args))\n_ : \"x8\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeStackPointer args))\n_ : \"x10\" ↦ᵣ RVal_Bits (Z_to_bv 64 22)\n_ : \"x11\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeBufferPointer args))\n_ : \"x12\" ↦ᵣ RVal_Bits x12\n_ : \"x13\" ↦ᵣ RVal_Bits x13\n_ : \"x14\" ↦ᵣ RVal_Bits x14\n_ : freeBufferPointer args ↦ₘ∗ freeBeforeBuffer args\n_ : freeListsPointer ↦ₘ∗ freeBeforeLists args\n_ : (freeStackPointer args - freeStackBytes) ↦ₘ∗ frameBytes\n_ : instr_pre (freeReturnAddress args)\n      (∃ bufferBytes listBytes : list evm_rlp_types.byte, freeBufferPointer args ↦ₘ∗ bufferBytes ∗ freeListsPointer ↦ₘ∗ listBytes ∗\n         ⌜freeAllowsAt (freeReturnAddress args) args {| freeAfterBuffer := bufferBytes; freeAfterLists := listBytes |}⌝ ∗ freeExitRegisterResources args)\n_ : \"PC\" ↦ᵣ RVal_Bits (Z_to_bv 64 2147754308)\n_ : \"x2\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeStackPointer args - freeStackBytes))\n_ : reg_col zesu_ram_sys_regs\n--------------------------------------∗\nfind_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8)))\n  (λ mk : mem_mapsto_kind,\n     match mk with\n     | MKMapsTo n' vmem => ∃ Heq : 64%N = n', ⌜eq_rect 64%N bv n1 n' Heq = vmem⌝ -∗ bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) ↦ₘ vmem -∗ WPasm HIDDEN\n     | MKArray n' a' values =>\n         if (n' =? 64)%N\n         then ⌜(bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) - a') `mod` 8 = 0⌝ ∗\n         ∃ i : nat, ⌜i = (bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) - a') `div` 8⌝ ∗ ⌜(i < length values)%nat⌝ ∗\n           ∃ Heq : 64%N = n', ∀ vmem : bv n', ⌜values !! i = Some vmem⌝ -∗ ⌜eq_rect 64%N bv n1 n' Heq = vmem⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN\n         else ⌜n' = 8%N⌝ ∗\n         ∃ i : nat, ⌜i = bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) - a'⌝ ∗ ⌜(i + N.to_nat 8 <= length values)%nat⌝ ∗\n           ∀ vmem : bv 64, ⌜vmem = Z_to_bv 64 (little_endian_to_bv n' (take (N.to_nat 8) (drop i values)))⌝ -∗ ⌜n1 = vmem⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN\n     | MKUninit _ _ => False\n     | MKMMIO a' length => ⌜a' ≤ bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8)⌝ ∗ ⌜bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) + 8 ≤ a' + length⌝ ∗\n         ∃ Pks Pks' : spec, spec_trace Pks ∗ ⌜scons (SReadMem (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) n1) Pks' ⊆ Pks⌝ ∗ (spec_trace Pks' -∗ WPasm HIDDEN)\n     end)",
+              "groups": {
+                "goals": 1,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            },
+            {
+              "pc": "0x80042160",
+              "shape": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------□\n_ : \"x1\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeReturnAddress args))\n_ : \"x2\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeStackPointer args - freeStackBytes))\n_ : \"x8\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeStackPointer args))\n_ : \"x11\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeBufferPointer args))\n_ : \"x12\" ↦ᵣ RVal_Bits x12\n_ : \"x14\" ↦ᵣ RVal_Bits x14\n_ : freeBufferPointer args ↦ₘ∗ freeBeforeBuffer args\n_ : freeListsPointer ↦ₘ∗ freeBeforeLists args\n_ : (freeStackPointer args - freeStackBytes) ↦ₘ∗ frameBytes\n_ : instr_pre (freeReturnAddress args)\n      (∃ bufferBytes listBytes : list evm_rlp_types.byte, freeBufferPointer args ↦ₘ∗ bufferBytes ∗ freeListsPointer ↦ₘ∗ listBytes ∗\n         ⌜freeAllowsAt (freeReturnAddress args) args {| freeAfterBuffer := bufferBytes; freeAfterLists := listBytes |}⌝ ∗ freeExitRegisterResources args)\n_ : \"x13\" ↦ᵣ RVal_Bits (Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3)%bv\n_ : \"PC\" ↦ᵣ RVal_Bits (Z_to_bv 64 2147754352)\n_ : \"x10\" ↦ᵣ RVal_Bits (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3)%bv\n_ : reg_col zesu_ram_sys_regs\n--------------------------------------∗\nfind_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8)))\n  (λ mk : mem_mapsto_kind,\n     match mk with\n     | MKMapsTo n' vmem =>\n         ∃ Heq : 64%N = n',\n           ⌜eq_rect 64%N bv n1 n' Heq = vmem⌝ -∗\n           bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) ↦ₘ vmem -∗ WPasm HIDDEN\n     | MKArray n' a' values =>\n         if (n' =? 64)%N\n         then ⌜(bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) - a') `mod` 8 = 0⌝ ∗\n         ∃ i : nat, ⌜i = (bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) - a') `div` 8⌝ ∗\n           ⌜(i < length values)%nat⌝ ∗ ∃ Heq : 64%N = n', ∀ vmem : bv n', ⌜values !! i = Some vmem⌝ -∗ ⌜eq_rect 64%N bv n1 n' Heq = vmem⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN\n         else ⌜n' = 8%N⌝ ∗\n         ∃ i : nat, ⌜i = bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) - a'⌝ ∗\n           ⌜(i + N.to_nat 8 <= length values)%nat⌝ ∗ ∀ vmem : bv 64, ⌜vmem = Z_to_bv 64 (little_endian_to_bv n' (take (N.to_nat 8) (drop i values)))⌝ -∗ ⌜n1 = vmem⌝ -∗ a' ↦ₘ∗ values -∗ WPasm HIDDEN\n     | MKUninit _ _ => False\n     | MKMMIO a' length => ⌜a' ≤ bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8)⌝ ∗\n         ⌜bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) + 8 ≤ a' + length⌝ ∗\n         ∃ Pks Pks' : spec, spec_trace Pks ∗\n           ⌜scons (SReadMem (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) ≪ 3 + 8) n1) Pks' ⊆ Pks⌝ ∗\n           (spec_trace Pks' -∗ WPasm HIDDEN)\n     end)",
+              "groups": {
+                "goals": 1,
+                "stack": 0,
+                "shelf": 0,
+                "given_up": 0
+              }
+            }
+          ],
+          "evidence_scope": "Checkpoint first-goal text and reported complete group counts. No new export inspection or proof run."
+        },
+        "mapping_limit": "Original frozen labels; no reclassification from later outcomes."
+      },
       "nextUint64": {
         "status": "predicted",
         "coverage": "predicted",
@@ -375,7 +1427,33 @@
           "https://github.com/codygunton/zesislar/issues/13"
         ]
       },
-      "free": null,
+      "free": {
+        "coverage": "not-present-in-bound-classification",
+        "sites": [],
+        "hold_out": {
+          "label": "HOLD-OUT 0/43",
+          "status": null,
+          "verified_closed": 0,
+          "blocks": 0,
+          "closed_sites": [],
+          "open_sites": [],
+          "first_residual_classes": {},
+          "first_residuals": [],
+          "evidence_scope": "Checkpoint first-goal text and reported complete group counts. No new export inspection or proof run."
+        },
+        "best_training": {
+          "label": "BEST TRAINING run3 ON 16 VERIFIED",
+          "status": null,
+          "verified_closed": 0,
+          "blocks": 0,
+          "closed_sites": [],
+          "open_sites": [],
+          "first_residual_classes": {},
+          "first_residuals": [],
+          "evidence_scope": "Checkpoint first-goal text and reported complete group counts. No new export inspection or proof run."
+        },
+        "mapping_limit": "Original frozen labels; no reclassification from later outcomes."
+      },
       "nextUint64": {
         "status": "predicted",
         "coverage": "predicted",
@@ -411,7 +1489,33 @@
           "https://github.com/codygunton/zesislar/issues/13#issuecomment-6175892853"
         ]
       },
-      "free": null,
+      "free": {
+        "coverage": "not-present-in-bound-classification",
+        "sites": [],
+        "hold_out": {
+          "label": "HOLD-OUT 0/43",
+          "status": null,
+          "verified_closed": 0,
+          "blocks": 0,
+          "closed_sites": [],
+          "open_sites": [],
+          "first_residual_classes": {},
+          "first_residuals": [],
+          "evidence_scope": "Checkpoint first-goal text and reported complete group counts. No new export inspection or proof run."
+        },
+        "best_training": {
+          "label": "BEST TRAINING run3 ON 16 VERIFIED",
+          "status": null,
+          "verified_closed": 0,
+          "blocks": 0,
+          "closed_sites": [],
+          "open_sites": [],
+          "first_residual_classes": {},
+          "first_residuals": [],
+          "evidence_scope": "Checkpoint first-goal text and reported complete group counts. No new export inspection or proof run."
+        },
+        "mapping_limit": "Original frozen labels; no reclassification from later outcomes."
+      },
       "nextUint64": {
         "status": "predicted",
         "coverage": "predicted",
@@ -454,7 +1558,33 @@
           "https://github.com/codygunton/zesislar/issues/13"
         ]
       },
-      "free": null,
+      "free": {
+        "coverage": "not-present-in-bound-classification",
+        "sites": [],
+        "hold_out": {
+          "label": "HOLD-OUT 0/43",
+          "status": null,
+          "verified_closed": 0,
+          "blocks": 0,
+          "closed_sites": [],
+          "open_sites": [],
+          "first_residual_classes": {},
+          "first_residuals": [],
+          "evidence_scope": "Checkpoint first-goal text and reported complete group counts. No new export inspection or proof run."
+        },
+        "best_training": {
+          "label": "BEST TRAINING run3 ON 16 VERIFIED",
+          "status": null,
+          "verified_closed": 0,
+          "blocks": 0,
+          "closed_sites": [],
+          "open_sites": [],
+          "first_residual_classes": {},
+          "first_residuals": [],
+          "evidence_scope": "Checkpoint first-goal text and reported complete group counts. No new export inspection or proof run."
+        },
+        "mapping_limit": "Original frozen labels; no reclassification from later outcomes."
+      },
       "nextUint64": {
         "status": "predicted",
         "coverage": "predicted",
@@ -495,7 +1625,7 @@
     "All eight nextUint64 cells are explicitly predicted. No native result is populated.",
     "The posted predicate/registration availability scope remains historical; later preparation is not new native evidence.",
     "Store-literal and framed-return refine the posted store/return labels through the same bound inventory.",
-    "Free and alloc cells remain null. DecodeItem cell objects remain unchanged."
+    "Free hold-out and training subcolumns remain separate. DecodeItem and nextUint64 cell objects remain unchanged; alloc remains null."
   ],
   "prediction_update_UTC": "2026-10-15T20:59:02.821752+00:00",
   "prediction_metadata_root": "602f638495d285c7846741dc24ffaee9439ea5da",
@@ -542,5 +1672,52 @@
     "propagate_only_predicted_close": 4,
     "other_blocks_predicted_residual_or_hand": 6,
     "later_data_facts": "The later pointer correction and registrations do not revise this accepted prediction. No activation or native closure follows."
+  },
+  "free_subcolumns": [
+    "hold_out",
+    "best_training"
+  ],
+  "free_measurement_scope": {
+    "hold_out": {
+      "tag": "cp-av-holdout-free",
+      "verified_closed": 0,
+      "blocks": 43,
+      "final_once": true,
+      "frozen_root": "e8131be295b89a1821b3ba760f39e7aad1e8647d"
+    },
+    "best_training": {
+      "run": 3,
+      "arm": "ON",
+      "candidate_root": "3aebfa260c6a38ef1abc9eae5ea4b342410de422",
+      "interactive_empty": 16,
+      "verified_closed": 16,
+      "blocks": 43,
+      "open_blocks": 27,
+      "active_goals": 53,
+      "original854_verified": 8,
+      "uncapped_additional_verified": 8,
+      "candidate_status": "UNMERGED; decodeItem Auto regressions 69e0 and 6a6c remain."
+    },
+    "per_pattern_verified_counts": {
+      "propagate": [
+        4,
+        12
+      ],
+      "introduce": [
+        12,
+        28
+      ],
+      "store": [
+        0,
+        2
+      ],
+      "return": [
+        0,
+        2
+      ]
+    },
+    "non_additive": "44 original label instances across43 blocks;42160 has store and return labels. Never sum pattern denominators.",
+    "history": "Original predictions and checkpoints remain unchanged. Uncapped verification supplements original timeouts; it does not revise854.",
+    "residual_limit": "Shape records do not establish root cause, rule firing, or proof applicability. Absent pattern cells have no measured sample."
   }
 }
