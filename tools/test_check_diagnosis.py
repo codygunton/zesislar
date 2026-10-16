@@ -37,6 +37,88 @@ class CitationFormatTests(unittest.TestCase):
                 self.assertTrue(checker.parse_citations(text)[1])
 
 
+class CitationsOnlyTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.path = self.root / "DIAGNOSIS.md"
+        self.trace = self.root / "TRACE.json"
+        self.trace.write_text(json.dumps({"goal": "a | b", "completion": {"trace_complete": False},
+                                          "verdict": {"status": "unresolved"}}))
+        self.text = ("| Observation | Result | Checked bundle citation |\n|---|---|---|\n"
+                     "| baseline-goal | a \\| b | [trace](TRACE.json#/goal) |\n"
+                     "| outcome-limit | The verdict stays unresolved. | [trace](TRACE.json#/verdict) |\n")
+        self.path.write_text(self.text)
+
+    def test_explicit_observation_mode_resolves_unresolved_trace(self):
+        self.assertEqual(checker.violations(self.path, citations_only=True), [])
+        self.assertTrue(checker.violations(self.path))
+        rows = checker.table_rows(self.text, observations=True)
+        self.assertEqual([row[1] for row in rows], ["baseline-goal", "outcome-limit"])
+        self.assertEqual(rows[0][2], "a | b")
+
+    def test_cli_reports_no_terminal_acceptance(self):
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            code = checker.main([str(self.path), "--citations-only"])
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(output.getvalue()), {"mode": "citations-only", "files": 1,
+                                                       "citations_valid": True, "terminal_acceptance": False})
+
+    def test_a_success_claim_does_not_get_terminal_acceptance(self):
+        self.path.write_text(self.text.replace("| outcome-limit | The verdict stays unresolved.",
+                                               "| terminal | success"))
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            self.assertEqual(checker.main([str(self.path), "--citations-only"]), 0)
+        self.assertFalse(json.loads(output.getvalue())["terminal_acceptance"])
+        self.assertTrue(checker.violations(self.path))
+
+    def test_invalid_pointer_reports_failure_without_terminal_acceptance(self):
+        self.path.write_text(self.text.replace("#/goal", "#/missing"))
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            code = checker.main([str(self.path), "--citations-only"])
+        self.assertEqual(code, 1)
+        result = json.loads(output.getvalue().splitlines()[-1])
+        self.assertFalse(result["citations_valid"])
+        self.assertFalse(result["terminal_acceptance"])
+
+    def test_every_link_and_pointer_stays_checked(self):
+        for text in (self.text.replace("#/goal)", "#/goal"),
+                     self.text.replace("#/goal", "#/bad~2escape"),
+                     self.text.replace("#/goal", "#/bad%xx"),
+                     self.text.replace("TRACE.json#/goal", "https://host/TRACE.json#/goal"),
+                     self.text.replace("[trace](TRACE.json#/goal)", "[trace](TRACE.json#/goal) TODO")):
+            self.path.write_text(text)
+            with self.subTest(text=text):
+                self.assertTrue(checker.violations(self.path, citations_only=True))
+
+    def test_missing_duplicate_or_unnamed_observation_rows_fail(self):
+        header = "| Observation | Result | Checked bundle citation |\n|---|---|---|\n"
+        for text in (header, self.text.replace(header, ""), self.text + header,
+                     self.text + self.text.splitlines()[2] + "\n",
+                     self.text.replace("| baseline-goal |", "| |"),
+                     self.text.replace("| baseline-goal |", "| extra | field |")):
+            self.path.write_text(text)
+            with self.subTest(text=text):
+                self.assertTrue(checker.violations(self.path, citations_only=True))
+
+    def test_placeholders_and_missing_citations_fail(self):
+        for text in (self.text.replace("a \\| b", "TODO"),
+                     self.text.replace("[trace](TRACE.json#/goal)", "TODO")):
+            self.path.write_text(text)
+            with self.subTest(text=text):
+                self.assertTrue(checker.violations(self.path, citations_only=True))
+
+    def test_modes_are_mutually_exclusive(self):
+        for mode in ("--template", "--structure-only"):
+            with self.subTest(mode=mode), contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+                checker.main([str(self.path), "--citations-only", mode])
+        self.assertTrue(checker.violations(self.path, citations_only=True, structure_only=True))
+
+
 class PointerTests(unittest.TestCase):
     def test_objects_arrays_empty_keys_and_root(self):
         value = {"": [0, {"answer": False}], "0": "object key"}

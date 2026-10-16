@@ -13,6 +13,7 @@ CITATION = re.compile(r"(?P<path>[^\s`|#]+TRACE\.json|TRACE\.json)#(?P<pointer>[
 MARKDOWN_LINK = re.compile(r"\[[^\]\n]+\]\((?P<target>[^()\s]+)\)")
 CYCLE = re.compile(r"cycle\.([1-9][0-9]*)\.(refusal|reason|normalization|next_refusal)")
 CYCLE_ROWS = ("refusal", "reason", "normalization", "next_refusal")
+OBSERVATION_HEADER = ["Observation", "Result", "Checked bundle citation"]
 PLACEHOLDER = re.compile(r"(?:TODO|TBD|PENDING|PLACEHOLDER)(?:\b.*)?|<(?:fill|insert|cite|placeholder)[^>]*>", re.IGNORECASE)
 
 
@@ -196,14 +197,16 @@ def split_cells(source: str):
     return cells
 
 
-def table_rows(text: str):
-    """Read the fixed three-column diagnosis table."""
+def table_rows(text: str, *, observations=False):
+    """Read a three-column table without interpreting its evidence."""
     rows = []
     for line, source in enumerate(text.splitlines(), 1):
         if not source.strip().startswith("|"):
             continue
         cells = split_cells(source)
         if cells == ["Row", "Evidence", "Trace citations"]:
+            continue
+        if observations and cells == OBSERVATION_HEADER:
             continue
         if all(re.fullmatch(r":?-+:?", cell) for cell in cells):
             continue
@@ -427,25 +430,33 @@ def semantic_violations(rows, documents, base):
         return [f"Semantic validation: {error}"]
 
 
-def violations(path: Path, template=False, structure_only=False) -> list[str]:
+def violations(path: Path, template=False, structure_only=False, citations_only=False) -> list[str]:
     """Require fixed rows, ordered cycles, and resolving citations."""
+    if citations_only and (template or structure_only):
+        return [f"{path}: citations-only mode cannot use another validation mode."]
     errors = []
     try:
         text = path.read_text(encoding="utf-8")
-        rows = table_rows(text)
+        rows = table_rows(text, observations=citations_only)
     except (OSError, UnicodeError, DiagnosisError) as error:
         return [f"{path}: {error}"]
     names = [row[1] for row in rows]
     if len(set(names)) != len(names):
         errors.append("The diagnosis contains duplicate row names.")
     cycles = sorted({int(match[1]) for name in names if (match := CYCLE.fullmatch(name))})
-    if not cycles or cycles != list(range(1, max(cycles) + 1)):
-        errors.append("The diagnosis needs consecutive cycles starting at 1.")
-    expected = ["trigger_goal"]
-    expected += [f"cycle.{cycle}.{kind}" for cycle in cycles for kind in CYCLE_ROWS]
-    expected += ["terminal", "candidate"]
-    if names != expected:
-        errors.append("The diagnosis rows are missing, unknown, or out of order.")
+    if citations_only:
+        headers = sum(split_cells(line) == OBSERVATION_HEADER for line in text.splitlines()
+                      if line.strip().startswith("|"))
+        if headers != 1 or not rows or any(not name for name in names):
+            errors.append("Citations-only mode needs one observation header and named observation rows.")
+    else:
+        if not cycles or cycles != list(range(1, max(cycles) + 1)):
+            errors.append("The diagnosis needs consecutive cycles starting at 1.")
+        expected = ["trigger_goal"]
+        expected += [f"cycle.{cycle}.{kind}" for cycle in cycles for kind in CYCLE_ROWS]
+        expected += ["terminal", "candidate"]
+        if names != expected:
+            errors.append("The diagnosis rows are missing, unknown, or out of order.")
     documents = {}
     for line, name, evidence, citation_text in rows:
         location = f"Line {line}, row {name}"
@@ -467,6 +478,8 @@ def violations(path: Path, template=False, structure_only=False) -> list[str]:
                 resolve_citation(citation, path.parent, documents)
             except DiagnosisError as error:
                 errors.append(f"{location}: {error}")
+        if citations_only:
+            continue
         if name.endswith(".refusal") or name.endswith(".next_refusal"):
             if not empty and not re.search(r'`[^`]+`|"[^"\n]+"', evidence):
                 errors.append(f"{location}: quote the exact refusal or terminal response.")
@@ -476,7 +489,7 @@ def violations(path: Path, template=False, structure_only=False) -> list[str]:
                 errors.append(f"{location}: list the ordered sum of all normalization rows.")
         if name == "terminal" and not empty and evidence not in {"success", "unsatisfiable"}:
             errors.append(f"{location}: the terminal value must be success or unsatisfiable.")
-    if not template and not structure_only and not errors:
+    if not template and not structure_only and not citations_only and not errors:
         errors.extend(semantic_violations(rows, documents, path.parent))
     return [f"{path}: {error}" for error in errors]
 
@@ -491,12 +504,19 @@ def main(argv=None) -> int:
                         help="Allow empty placeholder rows; still check every filled row")
     mode.add_argument("--structure-only", action="store_true",
                       help="Check preparation structure/citations; do not approve completion")
+    mode.add_argument("--citations-only", action="store_true",
+                      help="Resolve observation-table citations; never approve terminal acceptance")
     args = parser.parse_args(argv)
     paths = args.paths or sorted((args.root / "build/stock-zisk/automation-validation")
                                 .rglob("DIAGNOSIS.md"))
-    errors = [error for path in paths for error in violations(path, template=args.template, structure_only=args.structure_only)]
+    errors = [error for path in paths for error in violations(path, template=args.template,
+              structure_only=args.structure_only, citations_only=args.citations_only)]
     for error in errors:
         print(error)
+    if args.citations_only:
+        print(json.dumps({"mode": "citations-only", "files": len(paths),
+                          "citations_valid": not errors, "terminal_acceptance": False}))
+        return 1 if errors else 0
     if errors:
         return 1
     label = "Template" if args.template else "Structure-only" if args.structure_only else "Completed"
