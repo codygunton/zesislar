@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "kind": "immutable-training-publication",
+  "training_root": "256955582e2adca68f48a3de97d3247eed691491",
+  "experiment_kind": "training",
+  "first_native_run": false,
+  "accepted_result": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training-result758/REPORT.json",
+    "sha256": "24b48f89f563b1c3c4724ae240315c08746582955694d4fa2a520e05d6ab397c"
+  },
+  "copy_policy": "Every published artifact retains the accepted bytes and original source references.",
+  "immutable_artifacts": [
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-1/TABLE.md",
+      "sha256": "1588226e8387aa948f12840bd6f4bd010c7770f876e7fd443f2cc64f0cdc0328",
+      "bytes": 3600,
+      "accepted_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training-result758/TABLE.md",
+        "sha256": "1588226e8387aa948f12840bd6f4bd010c7770f876e7fd443f2cc64f0cdc0328",
+        "bytes": 3600
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-1/REPORT.json",
+      "sha256": "24b48f89f563b1c3c4724ae240315c08746582955694d4fa2a520e05d6ab397c",
+      "bytes": 2183,
+      "accepted_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training-result758/REPORT.json",
+        "sha256": "24b48f89f563b1c3c4724ae240315c08746582955694d4fa2a520e05d6ab397c",
+        "bytes": 2183
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-1/TRAINING-RESULT.json",
+      "sha256": "373cb2d410a81383e0b89534b9d7c286b6b6c36125f131714dab36a5ab918305",
+      "bytes": 76979,
+      "accepted_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training-result758/TRAINING-RESULT.json",
+        "sha256": "373cb2d410a81383e0b89534b9d7c286b6b6c36125f131714dab36a5ab918305",
+        "bytes": 76979
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-1/DETAILS.json",
+      "sha256": "95c14aa87f845bd05f60c3891e3d2a184fa843c756287dafb4c658e0bed13472",
+      "bytes": 214137,
+      "accepted_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training-result758/DETAILS.json",
+        "sha256": "95c14aa87f845bd05f60c3891e3d2a184fa843c756287dafb4c658e0bed13472",
+        "bytes": 214137
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-1/PREDICTION.json",
+      "sha256": "59874a97039486bfdd1f9d135aca4d4bf72c545eae52c84054d4ed24b8961f96",
+      "bytes": 65808,
+      "accepted_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training-prediction-draft743/PREDICTION.json",
+        "sha256": "59874a97039486bfdd1f9d135aca4d4bf72c545eae52c84054d4ed24b8961f96",
+        "bytes": 65808
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-1/launch/COMMAND.txt",
+      "sha256": "52274e62bca6324d0603885f4015a1eb6d632f32659e82f22dc7c15af62ede3f",
+      "bytes": 3582,
+      "accepted_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training-launch755/COMMAND.txt",
+        "sha256": "52274e62bca6324d0603885f4015a1eb6d632f32659e82f22dc7c15af62ede3f",
+        "bytes": 3582
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-1/launch/SEALED-LAUNCH.json",
+      "sha256": "fb0fd57f01575d982aa7bb525fb26f2e86d2b6d87feb3305cd2957cffab4269f",
+      "bytes": 271747,
+      "accepted_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training-launch755/SEALED-LAUNCH.json",
+        "sha256": "fb0fd57f01575d982aa7bb525fb26f2e86d2b6d87feb3305cd2957cffab4269f",
+        "bytes": 271747
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-1/launch/LAUNCHED.json",
+      "sha256": "7771eb2f9bd67df37bb42fd6dd3dbd8a48101cf0edc073e0a957b4aeea73d7c2",
+      "bytes": 751,
+      "accepted_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training-launch755/LAUNCHED.json",
+        "sha256": "7771eb2f9bd67df37bb42fd6dd3dbd8a48101cf0edc073e0a957b4aeea73d7c2",
+        "bytes": 751
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-1/launch/RESULT.json",
+      "sha256": "9dfe7109009a6dfe680add2cf4bc81c9e73d7b33fc1923851072e560aec3c841",
+      "bytes": 335,
+      "accepted_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training-launch755/RESULT.json",
+        "sha256": "9dfe7109009a6dfe680add2cf4bc81c9e73d7b33fc1923851072e560aec3c841",
+        "bytes": 335
+      }
+    },
+    {
+      "published_path": "build/stock-zisk/automation-validation/free-training-1/launch/PREDICTION-POSTED.json",
+      "sha256": "3954828968903b63eef48b287d352745bf4e50c101714102ce4998c2e8646885",
+      "bytes": 495,
+      "accepted_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training-launch755/PREDICTION-POSTED.json",
+        "sha256": "3954828968903b63eef48b287d352745bf4e50c101714102ce4998c2e8646885",
+        "bytes": 495
+      }
+    }
+  ],
+  "holdout_result_unchanged": true,
+  "prediction_unchanged": true
+}

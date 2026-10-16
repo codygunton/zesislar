@@ -1,0 +1,1118 @@
+{
+  "schema": 1,
+  "label": "Free training after F42 and F43. Not a hold-out result.",
+  "status": "Draft prediction rows. Exact merged command and design bindings are pending.",
+  "merge_base": "d02667110bf1495575980bf18a0bd7bde1d6f7c3",
+  "original_prediction": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training-prediction-draft743/ORIGINAL-PREDICTION.json",
+    "sha256": "f5b7ad972bfd47df94c79b8d056b83d37348d7552a7cab92e6939104cb317b16",
+    "bytes": 1056
+  },
+  "spent_result": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-first-result724/REPORT.json",
+    "sha256": "08f1f79f50625c7e252707fef3fce24e79982ca672e294d107842bcdf9f4ae43",
+    "bytes": 2363
+  },
+  "source_basis": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Contracts/AltFlFreeBlockEntries.v",
+      "sha256": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d",
+      "bytes": 22853
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Compliance/FreeEntryIntroductions.v",
+      "sha256": "be3045bf0e12ba7e2bde681e274b695cef315ffb639296c16bd19935e55adec4",
+      "bytes": 3034
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/ZesuSsz/Compliance/FreeDataRegistrations.v",
+      "sha256": "78cac3811422b7b6ef299969c38accce86d505e72f5250c6106d81319f94ebbb",
+      "bytes": 1173
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/tools/block/successor_entailment.py",
+      "sha256": "59dae49bd6bd4e57b668f53abb23ba515a066596e3ca68b9e6fe5f311aa5fc16",
+      "bytes": 24417
+    }
+  ],
+  "original_design": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-first-inputs/free_block_design.json",
+    "sha256": "1046e03caab3dc2ee6e106adb31d4309334ca227b00747f108eef0ebb40f91d6",
+    "bytes": 115325
+  },
+  "convention_only_predicted_closed": [
+    "0x80041f58",
+    "0x80041f60",
+    "0x80041f80",
+    "0x80041f8c",
+    "0x80041f98",
+    "0x80041fb8",
+    "0x80041fc0",
+    "0x80041fdc",
+    "0x80041fe8",
+    "0x8004202c",
+    "0x80042074",
+    "0x80042134",
+    "0x8004213c",
+    "0x80042154"
+  ],
+  "convention_only_count": 14,
+  "both_fixes_predicted_closed": [
+    "0x80041f58",
+    "0x80041f60",
+    "0x80041f7c",
+    "0x80041f80",
+    "0x80041f8c",
+    "0x80041f98",
+    "0x80041fb4",
+    "0x80041fb8",
+    "0x80041fc0",
+    "0x80041fd8",
+    "0x80041fdc",
+    "0x80041fe8",
+    "0x80042010",
+    "0x80042028",
+    "0x8004202c",
+    "0x80042054",
+    "0x80042070",
+    "0x80042074",
+    "0x80042090",
+    "0x800420b0",
+    "0x800420cc",
+    "0x800420ec",
+    "0x8004210c",
+    "0x80042134",
+    "0x8004213c",
+    "0x80042154"
+  ],
+  "both_fixes_count": 26,
+  "rows": [
+    {
+      "block": "0x80041f38",
+      "original_classes": [
+        "store"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "residual",
+      "reason": "The first residual requests a memory-list witness. Fresh successor registers do not supply this witness.",
+      "original_first_residual": "list (bv 8)",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f38/Boundary.v",
+        "sha256": "ee7fd5e7d54add731b42e81d0f49b0ecb051f6e7bfc00331994b8d9572d39698",
+        "bytes": 4275
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f38/complete/state_2.json",
+        "sha256": "82f3d75f00f8b494b80b721f9bf1d9190f724546a2460b8f24b099193cc9fd11",
+        "bytes": 688314
+      },
+      "successors": [
+        "0x80041f80",
+        "0x80041f58"
+      ]
+    },
+    {
+      "block": "0x80041f58",
+      "original_classes": [
+        "propagate"
+      ],
+      "convention_fix_alone": "closed",
+      "both_fixes": "closed",
+      "reason": "The block writes a comparison threshold. Fresh successor registers remove the stale-register equality. Its successor facts retain interval bounds.",
+      "original_first_residual": "65%bv = x13",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f58/Boundary.v",
+        "sha256": "6eb31e1cef8e030787932a1c6c01371b4f9a33d35c7c17a00e0859393165ea9b",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f58/complete/state_2.json",
+        "sha256": "86a73af7717267b4788e22498397203f98eba8f5100192ca8abb66e94dac321a",
+        "bytes": 26866
+      },
+      "successors": [
+        "0x80041fb8",
+        "0x80041f60"
+      ]
+    },
+    {
+      "block": "0x80041f60",
+      "original_classes": [
+        "propagate"
+      ],
+      "convention_fix_alone": "closed",
+      "both_fixes": "closed",
+      "reason": "The block writes a comparison threshold. Fresh successor registers remove the stale-register equality. Its successor facts retain interval bounds.",
+      "original_first_residual": "17%bv = x13",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f60/Boundary.v",
+        "sha256": "51f877d8012538c4fc560ffa8d708054c0e8513e62d06d8747391fbb95b1f2ad",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f60/complete/state_2.json",
+        "sha256": "f2125eea9fb582e251af60c1a90b41b0effc602f87778860b05a37d28bc09e77",
+        "bytes": 26651
+      },
+      "successors": [
+        "0x80042014",
+        "0x80041f68"
+      ]
+    },
+    {
+      "block": "0x80041f68",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "residual",
+      "reason": "The convention change removes stale register equalities. The computed class still needs a relation to freeSizeClassOfBytes. No source-bound fact currently establishes automatic closure.",
+      "original_first_residual": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 9)) 1%bv 0%bv)) 1 = Z_to_bv 64 (freeBufferLength args)",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f68/Boundary.v",
+        "sha256": "653d9cc0f4d57e43ecac3a81a1352e45506af359f215b53e23ae7bf3cd034884",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f68/complete/state_2.json",
+        "sha256": "d7c85aa2e0064c861960567aec17356f13e49260b23ff0919186e512f0aad11b",
+        "bytes": 154236
+      },
+      "successors": [
+        "0x80042130",
+        "0x80041f7c"
+      ]
+    },
+    {
+      "block": "0x80041f7c",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "closed",
+      "reason": "The existing target needs the candidate-class maximum fact. The convention change does not add that fact. The pending leaf introduction targets this entry.",
+      "original_first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f7c/Boundary.v",
+        "sha256": "0ec755739976d041710cf2f771b9a5c5d77042888ce7b27c931a5acf3ae29bdc",
+        "bytes": 4115
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f7c/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "successors": [
+        "0x80042134"
+      ]
+    },
+    {
+      "block": "0x80041f80",
+      "original_classes": [
+        "propagate"
+      ],
+      "convention_fix_alone": "closed",
+      "both_fixes": "closed",
+      "reason": "The block writes a comparison threshold. Fresh successor registers remove the stale-register equality. Its successor facts retain interval bounds.",
+      "original_first_residual": "(262144 + 1)%bv = x13",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f80/Boundary.v",
+        "sha256": "fb0a98d693d538c98a2c59911ac5f0bd40457886a582f59dc2ca6076b8618d2c",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f80/complete/state_2.json",
+        "sha256": "24d19c2152726f375813cea7641212ba4b682cd4491389fbb03afc6d249e1e2a",
+        "bytes": 32140
+      },
+      "successors": [
+        "0x80041fdc",
+        "0x80041f8c"
+      ]
+    },
+    {
+      "block": "0x80041f8c",
+      "original_classes": [
+        "propagate"
+      ],
+      "convention_fix_alone": "closed",
+      "both_fixes": "closed",
+      "reason": "The block writes a comparison threshold. Fresh successor registers remove the stale-register equality. Its successor facts retain interval bounds.",
+      "original_first_residual": "(16384 + 1)%bv = x13",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f8c/Boundary.v",
+        "sha256": "340b99c7c085331f797b66d1568f80982264cee36d27331f0a8eba9fb16efdc2",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f8c/complete/state_2.json",
+        "sha256": "ccd73c29b7ff075174d51d910ad771c978c7545b2fc72ba4da93698161adca1e",
+        "bytes": 32944
+      },
+      "successors": [
+        "0x8004202c",
+        "0x80041f98"
+      ]
+    },
+    {
+      "block": "0x80041f98",
+      "original_classes": [
+        "propagate"
+      ],
+      "convention_fix_alone": "closed",
+      "both_fixes": "closed",
+      "reason": "The block writes a comparison threshold. Fresh successor registers remove the stale-register equality. Its successor facts retain interval bounds.",
+      "original_first_residual": "(4096 + 1)%bv = x13",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f98/Boundary.v",
+        "sha256": "7f7a0cd5ffcfebf486fcddc5965b6794e8e3f2cfd95c0374be20f5d05707598c",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041f98/complete/state_2.json",
+        "sha256": "57bcdadf8da09d47c745d6651571196c46129a1b4ec181fcfb0c4ba63754cc0a",
+        "bytes": 32751
+      },
+      "successors": [
+        "0x80042094",
+        "0x80041fa4"
+      ]
+    },
+    {
+      "block": "0x80041fa4",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "residual",
+      "reason": "The convention change removes stale register equalities. The computed class still needs a relation to freeSizeClassOfBytes. No source-bound fact currently establishes automatic closure.",
+      "original_first_residual": "9%bv = Z_to_bv 64 (freeBufferLength args)",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fa4/Boundary.v",
+        "sha256": "0cb2843dec81aa0f749f494db1eac8236a49990a3b2b8d2fb046f48d4df754b4",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fa4/complete/state_2.json",
+        "sha256": "86bc0871030b9a70196977bfd88117d4c3ffb8b08ac219a7cd61a21fb72d7484",
+        "bytes": 129708
+      },
+      "successors": [
+        "0x80042130",
+        "0x80041fb4"
+      ]
+    },
+    {
+      "block": "0x80041fb4",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "closed",
+      "reason": "The existing target needs the candidate-class maximum fact. The convention change does not add that fact. The pending leaf introduction targets this entry.",
+      "original_first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb4/Boundary.v",
+        "sha256": "723bacf62055dcd232034ff884839844ee69355d437a99e247a13395fec7b74e",
+        "bytes": 4115
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb4/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "successors": [
+        "0x80042134"
+      ]
+    },
+    {
+      "block": "0x80041fb8",
+      "original_classes": [
+        "propagate"
+      ],
+      "convention_fix_alone": "closed",
+      "both_fixes": "closed",
+      "reason": "The block writes a comparison threshold. Fresh successor registers remove the stale-register equality. Its successor facts retain interval bounds.",
+      "original_first_residual": "513%bv = x13",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb8/Boundary.v",
+        "sha256": "c9d20ca2d9e16bb6da4f83046400a55640c6dda6f3bea5c112ebeb36666a9425",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fb8/complete/state_2.json",
+        "sha256": "c4a10c8f342d7583106893973042b71aa5d96304ad011717785810abb0c2b079",
+        "bytes": 27238
+      },
+      "successors": [
+        "0x80042058",
+        "0x80041fc0"
+      ]
+    },
+    {
+      "block": "0x80041fc0",
+      "original_classes": [
+        "propagate"
+      ],
+      "convention_fix_alone": "closed",
+      "both_fixes": "closed",
+      "reason": "The block writes a comparison threshold. Fresh successor registers remove the stale-register equality. Its successor facts retain interval bounds.",
+      "original_first_residual": "129%bv = x13",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc0/Boundary.v",
+        "sha256": "3d33a26bd15829142549d16dbf3bbe724cca9892e1629f59364b106f24db6db9",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc0/complete/state_2.json",
+        "sha256": "35770f2f5bf3b440956f0f84088d81f8b7b51bdd1d6d89418e4daf508a742848",
+        "bytes": 27085
+      },
+      "successors": [
+        "0x800420b4",
+        "0x80041fc8"
+      ]
+    },
+    {
+      "block": "0x80041fc8",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "residual",
+      "reason": "The convention change removes stale register equalities. The computed class still needs a relation to freeSizeClassOfBytes. No source-bound fact currently establishes automatic closure.",
+      "original_first_residual": "4%bv = Z_to_bv 64 (freeBufferLength args)",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc8/Boundary.v",
+        "sha256": "0edbd78da79cdce7552ea47ce19a7cecbba70a4f1781050b8fdc3a7bb5e8e98a",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fc8/complete/state_2.json",
+        "sha256": "213dc2e62ab82960e0d25a9708918ce30acfca316755bb521041a79fb7725350",
+        "bytes": 129224
+      },
+      "successors": [
+        "0x80042130",
+        "0x80041fd8"
+      ]
+    },
+    {
+      "block": "0x80041fd8",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "closed",
+      "reason": "The existing target needs the candidate-class maximum fact. The convention change does not add that fact. The pending leaf introduction targets this entry.",
+      "original_first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fd8/Boundary.v",
+        "sha256": "b74892fda981525dc1841dd4dcbd60a282a395ba29654e5f9498b589776ca01f",
+        "bytes": 4115
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fd8/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "successors": [
+        "0x80042134"
+      ]
+    },
+    {
+      "block": "0x80041fdc",
+      "original_classes": [
+        "propagate"
+      ],
+      "convention_fix_alone": "closed",
+      "both_fixes": "closed",
+      "reason": "The block writes a comparison threshold. Fresh successor registers remove the stale-register equality. Its successor facts retain interval bounds.",
+      "original_first_residual": "(4194304 + 1)%bv = x13",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fdc/Boundary.v",
+        "sha256": "3dd5da22a940a84a1350dc1ff30b90fa8a4472242f5d9b6ebffd72a9f3b7702e",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fdc/complete/state_2.json",
+        "sha256": "000bd689f6cf6777b67c72749ed1338e2d0ad7f642d83f82090ee4cee438e6c1",
+        "bytes": 32505
+      },
+      "successors": [
+        "0x80042074",
+        "0x80041fe8"
+      ]
+    },
+    {
+      "block": "0x80041fe8",
+      "original_classes": [
+        "propagate"
+      ],
+      "convention_fix_alone": "closed",
+      "both_fixes": "closed",
+      "reason": "The block writes a comparison threshold. Fresh successor registers remove the stale-register equality. Its successor facts retain interval bounds.",
+      "original_first_residual": "(1048576 + 1)%bv = x13",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fe8/Boundary.v",
+        "sha256": "1810d6e06cd895f47d90407f06b392fd6cfe35a104614fb9118b324fce329cdb",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041fe8/complete/state_2.json",
+        "sha256": "dfa28de0f2d90553fce94dfc6c4d30efd103d0bb02da7d2742fd54eeb925219a",
+        "bytes": 33556
+      },
+      "successors": [
+        "0x800420d0",
+        "0x80041ff4"
+      ]
+    },
+    {
+      "block": "0x80041ff4",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "residual",
+      "reason": "The convention change removes stale register equalities. The computed class still needs a relation to freeSizeClassOfBytes. No source-bound fact currently establishes automatic closure.",
+      "original_first_residual": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (524288 + 1)))) 1%bv 0%bv)) 17 =\nZ_to_bv 64 (freeBufferLength args)",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041ff4/Boundary.v",
+        "sha256": "c1729e2c769be45f204266cbe94ac368e7caa34c558817acc736e303d838db84",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80041ff4/complete/state_2.json",
+        "sha256": "d3b986cfee5f003955b5e595fea2df6aff169dcb79e8388a754c666e9c13f275",
+        "bytes": 183626
+      },
+      "successors": [
+        "0x80042130",
+        "0x80042010"
+      ]
+    },
+    {
+      "block": "0x80042010",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "closed",
+      "reason": "The existing target needs the candidate-class maximum fact. The convention change does not add that fact. The pending leaf introduction targets this entry.",
+      "original_first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042010/Boundary.v",
+        "sha256": "78d0bfe18102c4a6c1a30e2b3ad56d1b83eda71e80d10daf6fa03e279dd69090",
+        "bytes": 4115
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042010/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "successors": [
+        "0x80042134"
+      ]
+    },
+    {
+      "block": "0x80042014",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "residual",
+      "reason": "The convention change removes stale register equalities. The computed class still needs a relation to freeSizeClassOfBytes. No source-bound fact currently establishes automatic closure.",
+      "original_first_residual": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 33)) 1%bv 0%bv)) 3 = Z_to_bv 64 (freeBufferLength args)",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042014/Boundary.v",
+        "sha256": "fb9f09ac3a08ef3c264be300fd21313b6bc91bbd76fb35b238a1444e1515c2ff",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042014/complete/state_2.json",
+        "sha256": "8a8cd56acead63c5b8955561d08a8cb1764daa4115a08fe596bbef3e115ca0bd",
+        "bytes": 154856
+      },
+      "successors": [
+        "0x80042130",
+        "0x80042028"
+      ]
+    },
+    {
+      "block": "0x80042028",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "closed",
+      "reason": "The existing target needs the candidate-class maximum fact. The convention change does not add that fact. The pending leaf introduction targets this entry.",
+      "original_first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042028/Boundary.v",
+        "sha256": "f5c9633fe4bbe66d96814eef20facd945e223bb1a67b4b4aa2bf12f7be08bc6e",
+        "bytes": 4115
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042028/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "successors": [
+        "0x80042134"
+      ]
+    },
+    {
+      "block": "0x8004202c",
+      "original_classes": [
+        "propagate"
+      ],
+      "convention_fix_alone": "closed",
+      "both_fixes": "closed",
+      "reason": "The block writes a comparison threshold. Fresh successor registers remove the stale-register equality. Its successor facts retain interval bounds.",
+      "original_first_residual": "(65536 + 1)%bv = x13",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004202c/Boundary.v",
+        "sha256": "d2fa0a830506b5a8f8f115d66b799589ee3ef8d6847ac6f37e1d9e07f88613cb",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004202c/complete/state_2.json",
+        "sha256": "265f5c0f2b6f0da5cc537f301f17ce3120c1606c493e0756a29678d0475a88b1",
+        "bytes": 33104
+      },
+      "successors": [
+        "0x800420f0",
+        "0x80042038"
+      ]
+    },
+    {
+      "block": "0x80042038",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "residual",
+      "reason": "The convention change removes stale register equalities. The computed class still needs a relation to freeSizeClassOfBytes. No source-bound fact currently establishes automatic closure.",
+      "original_first_residual": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (32768 + 1)))) 1%bv 0%bv)) 13 =\nZ_to_bv 64 (freeBufferLength args)",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042038/Boundary.v",
+        "sha256": "fcb9f416217f505655def233e5d6c4f0119dda5f856365281f4be54334050097",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042038/complete/state_2.json",
+        "sha256": "ddd58177c3d865dde377ca30b6ec85ab4d6a6298113cad05124d8cfe2c25e298",
+        "bytes": 182730
+      },
+      "successors": [
+        "0x80042130",
+        "0x80042054"
+      ]
+    },
+    {
+      "block": "0x80042054",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "closed",
+      "reason": "The existing target needs the candidate-class maximum fact. The convention change does not add that fact. The pending leaf introduction targets this entry.",
+      "original_first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042054/Boundary.v",
+        "sha256": "979f8c4ce8f0184e7ef53ab2ab662dd75db08872134cf517bc36e7c5e5ec32a0",
+        "bytes": 4115
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042054/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "successors": [
+        "0x80042134"
+      ]
+    },
+    {
+      "block": "0x80042058",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "residual",
+      "reason": "The convention change removes stale register equalities. The computed class still needs a relation to freeSizeClassOfBytes. No source-bound fact currently establishes automatic closure.",
+      "original_first_residual": "(8 - bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 1025)) 1 0))%bv = Z_to_bv 64 (freeBufferLength args)",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042058/Boundary.v",
+        "sha256": "d8b184ec500959e5a8ed07bda581abce7d4014c329903196ec9835779489413d",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042058/complete/state_2.json",
+        "sha256": "4336ac1750545982ab1ec974673447e8ea5bc750ea891716ecf7b6b842235a05",
+        "bytes": 164708
+      },
+      "successors": [
+        "0x80042130",
+        "0x80042070"
+      ]
+    },
+    {
+      "block": "0x80042070",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "closed",
+      "reason": "The existing target needs the candidate-class maximum fact. The convention change does not add that fact. The pending leaf introduction targets this entry.",
+      "original_first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042070/Boundary.v",
+        "sha256": "b33c96a02f82f80e0d7c961fc8d93db4d12dfc84eb925fa838f30e1bffe7e627",
+        "bytes": 4115
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042070/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "successors": [
+        "0x80042134"
+      ]
+    },
+    {
+      "block": "0x80042074",
+      "original_classes": [
+        "propagate"
+      ],
+      "convention_fix_alone": "closed",
+      "both_fixes": "closed",
+      "reason": "The block writes a comparison threshold. Fresh successor registers remove the stale-register equality. Its successor facts retain interval bounds.",
+      "original_first_residual": "(8388608 + 1)%bv = x13",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042074/Boundary.v",
+        "sha256": "379c1b13ecf6d73836672e62cc0f6562bae846f1d6425f6dfb6223205fae2c52",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042074/complete/state_2.json",
+        "sha256": "e24b5e880046c23bb28a1a50d5980a8a9af06cc43282544406a321095389ec17",
+        "bytes": 32650
+      },
+      "successors": [
+        "0x80042110",
+        "0x80042080"
+      ]
+    },
+    {
+      "block": "0x80042080",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "residual",
+      "reason": "The convention change removes stale register equalities. The computed class still needs a relation to freeSizeClassOfBytes. No source-bound fact currently establishes automatic closure.",
+      "original_first_residual": "20%bv = Z_to_bv 64 (freeBufferLength args)",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042080/Boundary.v",
+        "sha256": "38e2aef424a2816436b5308d64a715e8023bf93d050c2523568a0d2c952542a1",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042080/complete/state_2.json",
+        "sha256": "16f18ba325c09c1f3e8465abb5b21ed41289dad9506236513fbd9b538eccefd5",
+        "bytes": 130714
+      },
+      "successors": [
+        "0x80042130",
+        "0x80042090"
+      ]
+    },
+    {
+      "block": "0x80042090",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "closed",
+      "reason": "The existing target needs the candidate-class maximum fact. The convention change does not add that fact. The pending leaf introduction targets this entry.",
+      "original_first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042090/Boundary.v",
+        "sha256": "5477644ea9d4511c898341db33e399d0a3c9e4e8e3d4b139ac8b96e0902fa08f",
+        "bytes": 4115
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042090/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "successors": [
+        "0x80042134"
+      ]
+    },
+    {
+      "block": "0x80042094",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "residual",
+      "reason": "The convention change removes stale register equalities. The computed class still needs a relation to freeSizeClassOfBytes. No source-bound fact currently establishes automatic closure.",
+      "original_first_residual": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (8192 + 1)))) 1%bv 0%bv)) 11 =\nZ_to_bv 64 (freeBufferLength args)",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042094/Boundary.v",
+        "sha256": "7277c3512eeb0cb0cb8562a0610a8a1d5809519f3196fd01f6471c3e9a9c091c",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042094/complete/state_2.json",
+        "sha256": "c2645da171f3f2615ad82ce6037c9558ba9bf43a7a34f1e956558c6e8ede9aa0",
+        "bytes": 182062
+      },
+      "successors": [
+        "0x80042130",
+        "0x800420b0"
+      ]
+    },
+    {
+      "block": "0x800420b0",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "closed",
+      "reason": "The existing target needs the candidate-class maximum fact. The convention change does not add that fact. The pending leaf introduction targets this entry.",
+      "original_first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b0/Boundary.v",
+        "sha256": "cfaa7382f4da59590a2226aa38242ce2ff1e321a65eb74cdb90dd5b0e5607b4b",
+        "bytes": 4115
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b0/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "successors": [
+        "0x80042134"
+      ]
+    },
+    {
+      "block": "0x800420b4",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "residual",
+      "reason": "The convention change removes stale register equalities. The computed class still needs a relation to freeSizeClassOfBytes. No source-bound fact currently establishes automatic closure.",
+      "original_first_residual": "(6 - bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed 257)) 1 0))%bv = Z_to_bv 64 (freeBufferLength args)",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b4/Boundary.v",
+        "sha256": "9041a68bef74a3c640985131902fcb577c481709b86b243e8438f2df8b9855ff",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420b4/complete/state_2.json",
+        "sha256": "04682cc852ccfacbf51243827d5e21cc9d3fc613ac6a34996e90751d63c8033a",
+        "bytes": 164228
+      },
+      "successors": [
+        "0x80042130",
+        "0x800420cc"
+      ]
+    },
+    {
+      "block": "0x800420cc",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "closed",
+      "reason": "The existing target needs the candidate-class maximum fact. The convention change does not add that fact. The pending leaf introduction targets this entry.",
+      "original_first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420cc/Boundary.v",
+        "sha256": "f79e7f2c4b87974f6f3feb035cc98db96b6a1f8aaa8d35afe9476fe9d6e24ea2",
+        "bytes": 4115
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420cc/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "successors": [
+        "0x80042134"
+      ]
+    },
+    {
+      "block": "0x800420d0",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "residual",
+      "reason": "The convention change removes stale register equalities. The computed class still needs a relation to freeSizeClassOfBytes. No source-bound fact currently establishes automatic closure.",
+      "original_first_residual": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (2097152 + 1)))) 1%bv 0%bv)) 19 =\nZ_to_bv 64 (freeBufferLength args)",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420d0/Boundary.v",
+        "sha256": "89a7f4df1ca039b71ba7e8bbc5467a550898070c83094b0a092dbeb670f19055",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420d0/complete/state_2.json",
+        "sha256": "7b6c99e0144126198d390bb15b9aaccb2176b61a77ad453871eeddc16f17eac9",
+        "bytes": 184070
+      },
+      "successors": [
+        "0x80042130",
+        "0x800420ec"
+      ]
+    },
+    {
+      "block": "0x800420ec",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "closed",
+      "reason": "The existing target needs the candidate-class maximum fact. The convention change does not add that fact. The pending leaf introduction targets this entry.",
+      "original_first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420ec/Boundary.v",
+        "sha256": "90581c124d798fbd50f137f9ef0b8f58b1b021dcd392f370dfe5182ab72bc03b",
+        "bytes": 4115
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420ec/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "successors": [
+        "0x80042134"
+      ]
+    },
+    {
+      "block": "0x800420f0",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "residual",
+      "reason": "The convention change removes stale register equalities. The computed class still needs a relation to freeSizeClassOfBytes. No source-bound fact currently establishes automatic closure.",
+      "original_first_residual": "bv_xor (bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (131072 + 1)))) 1%bv 0%bv)) 15 =\nZ_to_bv 64 (freeBufferLength args)",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420f0/Boundary.v",
+        "sha256": "15939b7499f6b79bc2ea61358404c14210f911e34c3ff51576c7d774582004f9",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x800420f0/complete/state_2.json",
+        "sha256": "8a1cd47644cdaf377f1dd4337c906ac31db0019e2548a44a500040bca9fb8f0e",
+        "bytes": 183150
+      },
+      "successors": [
+        "0x80042130",
+        "0x8004210c"
+      ]
+    },
+    {
+      "block": "0x8004210c",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "closed",
+      "reason": "The existing target needs the candidate-class maximum fact. The convention change does not add that fact. The pending leaf introduction targets this entry.",
+      "original_first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n\u231cZ_to_bv 64 (freeLog2Alignment args) = Z_to_bv 64 (freeLog2Alignment args)\n \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args))\n   \u2227 freeAlignmentWord args = freeAlignmentWord args \u2227 Z_to_bv 64 (freeSizeClassOfBytes (freeBufferLength args)) = Z_to_bv 64 (freeCandidateClass args)\u231d",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004210c/Boundary.v",
+        "sha256": "1b22bdbd52be0d0fbf6960491d999c6490edffd8c1085419899e21eff0989035",
+        "bytes": 4115
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004210c/complete/state_2.json",
+        "sha256": "63368580a074391e18cc0b34bf5c800b871a1f52d528c130b6085722f220e6fe",
+        "bytes": 4234
+      },
+      "successors": [
+        "0x80042134"
+      ]
+    },
+    {
+      "block": "0x80042110",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "residual",
+      "reason": "The convention change removes stale register equalities. The computed class still needs a relation to freeSizeClassOfBytes. No source-bound fact currently establishes automatic closure.",
+      "original_first_residual": "(22 - bv_zero_extend 64 (ite (bool_decide (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (freeBufferLength args))) < bv_signed (bv_zero_extend 128 (16777216 + 1)))) 1 0))%bv =\nZ_to_bv 64 (freeBufferLength args)",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042110/Boundary.v",
+        "sha256": "5c3464d7b35a30e50c07a575fdaf5a5be30969aacd722353faf39e2de6c93d00",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042110/complete/state_2.json",
+        "sha256": "dec26e9a8587111dd519b0c1a36b2cb42cc1a9fa1fcb5c57ea157805f2bdacdd",
+        "bytes": 191690
+      },
+      "successors": [
+        "0x80042134",
+        "0x80042130"
+      ]
+    },
+    {
+      "block": "0x80042130",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "residual",
+      "reason": "The convention change permits x13 to receive the alignment word. The candidate-class maximum fact remains a separate unmeasured obligation.",
+      "original_first_residual": "freeAlignmentWord args = x13",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042130/Boundary.v",
+        "sha256": "f61e8366817a67b49430818919507158db8195c9c126d89099547e041fec1ea1",
+        "bytes": 4115
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042130/complete/state_2.json",
+        "sha256": "40d5f1432f1f240c2ac95f3516773726121f8cb41c2943f8866cc29c3ddebf83",
+        "bytes": 8096
+      },
+      "successors": [
+        "0x80042134"
+      ]
+    },
+    {
+      "block": "0x80042134",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "closed",
+      "both_fixes": "closed",
+      "reason": "The block writes the alignment threshold to x14. Fresh successor registers permit that update. Existing freeEntry42134Introduction supplies the guarded size-class fact.",
+      "original_first_residual": "3%bv = freeAlignmentWord args",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042134/Boundary.v",
+        "sha256": "a0f3fc1ff52e6c7d798cf23d35cfcf8a80fef4e0d51be98752a7048265556216",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042134/complete/state_2.json",
+        "sha256": "3f5f7ee57c7be2ec82528c866b177d82be0ccc9c2d73c49378af450d090a12a4",
+        "bytes": 37292
+      },
+      "successors": [
+        "0x80042154",
+        "0x8004213c"
+      ]
+    },
+    {
+      "block": "0x8004213c",
+      "original_classes": [
+        "propagate"
+      ],
+      "convention_fix_alone": "closed",
+      "both_fixes": "closed",
+      "reason": "The block writes a comparison threshold. Fresh successor registers remove the stale-register equality. Its successor facts retain interval bounds.",
+      "original_first_residual": "22%bv = Z_to_bv 64 (freeLog2Alignment args)",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004213c/Boundary.v",
+        "sha256": "73cc0eedefc937ea6b7e61e3a94a4adf4c5f16e38f1dc67f97f0695f952a1365",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x8004213c/complete/state_2.json",
+        "sha256": "6275b1799d60f00a3ec8d9ac2189e236e2fe3448946c6695a62d89b80c0c9f85",
+        "bytes": 22294
+      },
+      "successors": [
+        "0x80042160",
+        "0x80042144"
+      ]
+    },
+    {
+      "block": "0x80042144",
+      "original_classes": [
+        "return"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "residual",
+      "reason": "The terminal body has a memory obligation and no successor binder. The convention change does not affect this target.",
+      "original_first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n_ : \"x1\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeReturnAddress args))\n_ : \"x8\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeStackPointer args))\n_ : \"x10\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 22)\n_ : \"x11\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeBufferPointer args))\n_ : \"x12\" \u21a6\u1d63 RVal_Bits x12\n_ : \"x13\" \u21a6\u1d63 RVal_Bits x13\n_ : \"x14\" \u21a6\u1d63 RVal_Bits x14\n_ : freeBufferPointer args \u21a6\u2098\u2217 freeBeforeBuffer args\n_ : freeListsPointer \u21a6\u2098\u2217 freeBeforeLists args\n_ : (freeStackPointer args - freeStackBytes) \u21a6\u2098\u2217 frameBytes\n_ : instr_pre (freeReturnAddress args)\n      (\u2203 bufferBytes listBytes : list evm_rlp_types.byte, freeBufferPointer args \u21a6\u2098\u2217 bufferBytes \u2217 freeListsPointer \u21a6\u2098\u2217 listBytes \u2217\n         \u231cfreeAllowsAt (freeReturnAddress args) args {| freeAfterBuffer := bufferBytes; freeAfterLists := listBytes |}\u231d \u2217 freeExitRegisterResources args)\n_ : \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2147754308)\n_ : \"x2\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeStackPointer args - freeStackBytes))\n_ : reg_col zesu_ram_sys_regs\n--------------------------------------\u2217\nfind_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8)))\n  (\u03bb mk : mem_mapsto_kind,\n     match mk with\n     | MKMapsTo n' vmem => \u2203 Heq : 64%N = n', \u231ceq_rect 64%N bv n1 n' Heq = vmem\u231d -\u2217 bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) \u21a6\u2098 vmem -\u2217 WPasm HIDDEN\n     | MKArray n' a' values =>\n         if (n' =? 64)%N\n         then \u231c(bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) - a') `mod` 8 = 0\u231d \u2217\n         \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) - a') `div` 8\u231d \u2217 \u231c(i < length values)%nat\u231d \u2217\n           \u2203 Heq : 64%N = n', \u2200 vmem : bv n', \u231cvalues !! i = Some vmem\u231d -\u2217 \u231ceq_rect 64%N bv n1 n' Heq = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN\n         else \u231cn' = 8%N\u231d \u2217\n         \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) - a'\u231d \u2217 \u231c(i + N.to_nat 8 <= length values)%nat\u231d \u2217\n           \u2200 vmem : bv 64, \u231cvmem = Z_to_bv 64 (little_endian_to_bv n' (take (N.to_nat 8) (drop i values)))\u231d -\u2217 \u231cn1 = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN\n     | MKUninit _ _ => False\n     | MKMMIO a' length => \u231ca' \u2264 bv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8)\u231d \u2217 \u231cbv_unsigned (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) + 8 \u2264 a' + length\u231d \u2217\n         \u2203 Pks Pks' : spec, spec_trace Pks \u2217 \u231cscons (SReadMem (Z_to_bv 64 (freeStackPointer args - freeStackBytes) + 8) n1) Pks' \u2286 Pks\u231d \u2217 (spec_trace Pks' -\u2217 WPasm HIDDEN)\n     end)",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042144/Boundary.v",
+        "sha256": "75d108420ecf6e7d9cc539908045267926baa32a7632871813a60c856cee927d",
+        "bytes": 3786
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042144/complete/state_2.json",
+        "sha256": "532b3b9fb6cab1049c9816ac173bdcae7149d889e143bfd7f2786be5ba50639d",
+        "bytes": 41865
+      },
+      "successors": []
+    },
+    {
+      "block": "0x80042154",
+      "original_classes": [
+        "introduce"
+      ],
+      "convention_fix_alone": "closed",
+      "both_fixes": "closed",
+      "reason": "The block writes the class word and comparison threshold. Fresh successor registers permit those updates. Existing freeEntry42154Introduction supplies the class and range facts.",
+      "original_first_residual": "22%bv = Z_to_bv 64 (freeLog2Alignment args)",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042154/Boundary.v",
+        "sha256": "fbe27b3c880ff21f496472750fd6475780ab031af7f493da56e0d8cbba50068b",
+        "bytes": 4349
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042154/complete/state_2.json",
+        "sha256": "7d0136bc64d5a52049c28f85cd2db1744ecb2379c6aa62f39d5ad9eb3a51d56b",
+        "bytes": 86453
+      },
+      "successors": [
+        "0x80042144",
+        "0x80042160"
+      ]
+    },
+    {
+      "block": "0x80042160",
+      "original_classes": [
+        "store",
+        "return"
+      ],
+      "convention_fix_alone": "residual",
+      "both_fixes": "residual",
+      "reason": "The terminal body has a memory obligation and no successor binder. The convention change does not affect this target.",
+      "original_first_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n_ : \"x1\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeReturnAddress args))\n_ : \"x2\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeStackPointer args - freeStackBytes))\n_ : \"x8\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeStackPointer args))\n_ : \"x11\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeBufferPointer args))\n_ : \"x12\" \u21a6\u1d63 RVal_Bits x12\n_ : \"x14\" \u21a6\u1d63 RVal_Bits x14\n_ : freeBufferPointer args \u21a6\u2098\u2217 freeBeforeBuffer args\n_ : freeListsPointer \u21a6\u2098\u2217 freeBeforeLists args\n_ : (freeStackPointer args - freeStackBytes) \u21a6\u2098\u2217 frameBytes\n_ : instr_pre (freeReturnAddress args)\n      (\u2203 bufferBytes listBytes : list evm_rlp_types.byte, freeBufferPointer args \u21a6\u2098\u2217 bufferBytes \u2217 freeListsPointer \u21a6\u2098\u2217 listBytes \u2217\n         \u231cfreeAllowsAt (freeReturnAddress args) args {| freeAfterBuffer := bufferBytes; freeAfterLists := listBytes |}\u231d \u2217 freeExitRegisterResources args)\n_ : \"x13\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3)%bv\n_ : \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2147754352)\n_ : \"x10\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3)%bv\n_ : reg_col zesu_ram_sys_regs\n--------------------------------------\u2217\nfind_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8)))\n  (\u03bb mk : mem_mapsto_kind,\n     match mk with\n     | MKMapsTo n' vmem =>\n         \u2203 Heq : 64%N = n',\n           \u231ceq_rect 64%N bv n1 n' Heq = vmem\u231d -\u2217\n           bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) \u21a6\u2098 vmem -\u2217 WPasm HIDDEN\n     | MKArray n' a' values =>\n         if (n' =? 64)%N\n         then \u231c(bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) - a') `mod` 8 = 0\u231d \u2217\n         \u2203 i : nat, \u231ci = (bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) - a') `div` 8\u231d \u2217\n           \u231c(i < length values)%nat\u231d \u2217 \u2203 Heq : 64%N = n', \u2200 vmem : bv n', \u231cvalues !! i = Some vmem\u231d -\u2217 \u231ceq_rect 64%N bv n1 n' Heq = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN\n         else \u231cn' = 8%N\u231d \u2217\n         \u2203 i : nat, \u231ci = bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) - a'\u231d \u2217\n           \u231c(i + N.to_nat 8 <= length values)%nat\u231d \u2217 \u2200 vmem : bv 64, \u231cvmem = Z_to_bv 64 (little_endian_to_bv n' (take (N.to_nat 8) (drop i values)))\u231d -\u2217 \u231cn1 = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm HIDDEN\n     | MKUninit _ _ => False\n     | MKMMIO a' length => \u231ca' \u2264 bv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8)\u231d \u2217\n         \u231cbv_unsigned (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) + 8 \u2264 a' + length\u231d \u2217\n         \u2203 Pks Pks' : spec, spec_trace Pks \u2217\n           \u231cscons (SReadMem (Z_to_bv 64 2147754340 + 542056448 + 18446744073709551260 + Z_to_bv 64 (freeSizeClass (freeBufferLength args) (freeLog2Alignment args)) \u226a 3 + 8) n1) Pks' \u2286 Pks\u231d \u2217\n           (spec_trace Pks' -\u2217 WPasm HIDDEN)\n     end)",
+      "historical_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042160/Boundary.v",
+        "sha256": "62b8636f86369e293383ad1aa17499696b8937d5871beb90eeba728e0c3dd3f2",
+        "bytes": 3786
+      },
+      "historical_groups": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-inputs-06acf/_build/free-native-first-run-e8131be2-approved720/native/block_0x80042160/complete/state_2.json",
+        "sha256": "0e98ef62b711dda6e407adb22f92cd5febbe2d1b8611e645d34efed58fa4f6ca",
+        "bytes": 145357
+      },
+      "successors": []
+    }
+  ],
+  "pending_bindings": [
+    "Merged F43 generator commit and source hashes.",
+    "Merged twelve-introduction commit and source hashes.",
+    "Generated training design and binding report.",
+    "Exact training command, root, imports, build and output paths."
+  ],
+  "execution": "Do not execute this draft. Both merged fixes and exact input bindings are required.",
+  "limits": [
+    "These are source-based predictions, not measured closures.",
+    "Removing a first equality does not establish full closure.",
+    "The original twelve-block prediction and result 724 remain unchanged.",
+    "No training proof ran."
+  ]
+}

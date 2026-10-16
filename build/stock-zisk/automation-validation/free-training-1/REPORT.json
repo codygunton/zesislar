@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "status": "training-result-sealed-once",
+  "training_root": "256955582e2adca68f48a3de97d3247eed691491",
+  "experiment_kind": "training",
+  "first_native_run": false,
+  "totals": {
+    "residual": 43
+  },
+  "residual_classes": {
+    "list-witness": 1,
+    "Iris-pure-condition": 40,
+    "memory-obligation": 2
+  },
+  "matched_prediction": 17,
+  "checked_input_count": 1038,
+  "evidence_binding_count": 172,
+  "details": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training-result758/DETAILS.json",
+    "sha256": "95c14aa87f845bd05f60c3891e3d2a184fa843c756287dafb4c658e0bed13472",
+    "bytes": 214137
+  },
+  "result": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training-result758/TRAINING-RESULT.json",
+    "sha256": "373cb2d410a81383e0b89534b9d7c286b6b6c36125f131714dab36a5ab918305",
+    "bytes": 76979
+  },
+  "table": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training-result758/TABLE.md",
+    "sha256": "1588226e8387aa948f12840bd6f4bd010c7770f876e7fd443f2cc64f0cdc0328",
+    "bytes": 3600
+  },
+  "collector": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training-result758/seal.py",
+    "sha256": "c9de0cfe0973311ce546d47d5f5457be9d111fe8bc08ace9b0001e0f883886ee",
+    "bytes": 10727
+  },
+  "limits": [
+    "This result records training. The hold-out remains spent.",
+    "The prediction outcomes remain unchanged from posted draft 743.",
+    "Each primary tactic entered once. No hand step or repeated block ran.",
+    "The first residual class describes only the exact first printed conclusion.",
+    "The checked exports retain every active, stack, shelf and given-up goal.",
+    "Compiler CPU and compiler peak RSS remain unavailable.",
+    "MCP wall time and sampled worker memory do not establish tactic CPU cost.",
+    "No internal instruction chronology or complete branch coverage follows from these exports.",
+    "The controller sent zero signals. Every retained Pet PID is absent after completion.",
+    "Historical hold-out result 724 and F39 records remain unchanged."
+  ]
+}
