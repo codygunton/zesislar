@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "function": "alt_fl_alloc.free",
-  "status": "Fully counted register-form free training snapshot. No new native result.",
-  "snapshot_base_root": "6154d91b74d370dfd8aaabf38f470f95da953510",
+  "status": "Data-only well-formedness bounds and registered pure facts. No native run.",
+  "snapshot_base_root": "3c8ab7b0f769176f509e16824faf675adef3674b",
   "snapshot_kind": "Checked owner proof bytes plus complete tracked generator design/profile JSON.",
   "umbrella": "ZesuSsz.Compliance.FreeHints",
   "counting_rules": {
@@ -25,7 +25,8 @@
     "ZesuSsz/Compliance/FreeClassFacts.v",
     "ZesuSsz/Compliance/FreeEntryIntroductions.v",
     "ZesuSsz/Compliance/FreeSizeClassLeafFacts.v",
-    "ZesuSsz/Compliance/FreeLeafIntroductions.v"
+    "ZesuSsz/Compliance/FreeLeafIntroductions.v",
+    "ZesuSsz/Compliance/FreeValueBoundFacts.v"
   ],
   "exit_meanings": [
     "ZesuSsz/Compliance/FreeExitMeanings.v",
@@ -36,7 +37,8 @@
     "ZesuSsz/Compliance/FreeDataRegistrations.v",
     "ZesuSsz/Compliance/FreeHints.v",
     "ZesuSsz/Compliance/FreeUnfoldRegistrations.v",
-    "ZesuSsz/Compliance/FreeExitRegistrations.v"
+    "ZesuSsz/Compliance/FreeExitRegistrations.v",
+    "ZesuSsz/Compliance/FreeValueBoundRegistrations.v"
   ],
   "generator_json": [
     "ZesuSsz/Contracts/AltFlFree.v",
@@ -65,7 +67,8 @@
     "build/stock-zisk/automation-validation/free-compile-evidence/HOLDOUT-PROTOCOL.md",
     "ZesuSsz/Evidence/free_function_text.json",
     "build/stock-zisk/automation-validation/free-exit-instances/CHECKPOINT.json",
-    "build/stock-zisk/automation-validation/free-leaf-introductions/CHECKPOINT.json"
+    "build/stock-zisk/automation-validation/free-leaf-introductions/CHECKPOINT.json",
+    "ZesuSsz/Evidence/FreeValueBoundsFixtures.v"
   ],
   "lemmas": [
     "ZesuSsz/Compliance/FreeClassFacts.v",
@@ -74,7 +77,9 @@
     "ZesuSsz/Compliance/FreeReturnFacts.v",
     "ZesuSsz/Compliance/FreeExitRegistrations.v",
     "ZesuSsz/Compliance/FreeSizeClassLeafFacts.v",
-    "ZesuSsz/Compliance/FreeLeafIntroductions.v"
+    "ZesuSsz/Compliance/FreeLeafIntroductions.v",
+    "ZesuSsz/Compliance/FreeValueBoundFacts.v",
+    "ZesuSsz/Compliance/FreeValueBoundRegistrations.v"
   ],
   "pending": [],
   "excluded_false_matches": [
@@ -260,15 +265,15 @@
       "path": "ZesuSsz/Compliance/FreeHints.v",
       "category": "registrations",
       "scope": "whole_file",
-      "sha256": "d4a6d8fcca4cc744990ab57a070070ebce4b1ae717f147543f75b6854e422b0d",
-      "file_lines": 3,
+      "sha256": "14283bb300581eee558fd1ba2bd9b66432fdfd50df88618b201bc91693e2cc9b",
+      "file_lines": 4,
       "line_ranges": [
         [
           1,
-          3
+          4
         ]
       ],
-      "counted_lines": 3
+      "counted_lines": 4
     },
     {
       "path": "ZesuSsz/Compliance/FreeUnfoldRegistrations.v",
@@ -611,8 +616,8 @@
       "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "5d051609fe62966ab0c95e646831b00671827abb24ee1bc34292530d38c5766c",
-      "file_lines": 260,
+      "sha256": "997c311b22ebe38551cdc86375cebf1cd9399a52715cff0cb36642903816c880",
+      "file_lines": 281,
       "line_ranges": [
         [
           137,
@@ -746,14 +751,14 @@
       "scope": "whole_file",
       "sha256": null,
       "hash_rule": "No circular self-hash. The outer certificate binds final bytes.",
-      "file_lines": 942,
+      "file_lines": 997,
       "line_ranges": [
         [
           1,
-          942
+          997
         ]
       ],
-      "counted_lines": 942
+      "counted_lines": 997
     },
     {
       "path": "ZesuSsz/Compliance/FreeReturnFacts.v",
@@ -869,26 +874,68 @@
         ]
       ],
       "counted_lines": 4701
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeValueBoundFacts.v",
+      "category": "introductions",
+      "scope": "whole_file",
+      "sha256": "5ba88669ab4a0976620068544caaadcdad0f27ed1a22a926692e7898c85c9336",
+      "file_lines": 29,
+      "line_ranges": [
+        [
+          1,
+          29
+        ]
+      ],
+      "counted_lines": 29
+    },
+    {
+      "path": "ZesuSsz/Compliance/FreeValueBoundRegistrations.v",
+      "category": "registrations",
+      "scope": "whole_file",
+      "sha256": "6486c88c5d7a8aed01e8d68d3303d95823def51a759f24f13cc2f27e29cf8662",
+      "file_lines": 65,
+      "line_ranges": [
+        [
+          1,
+          65
+        ]
+      ],
+      "counted_lines": 65
+    },
+    {
+      "path": "ZesuSsz/Evidence/FreeValueBoundsFixtures.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "73911778d5694982ea48e947c7ffa5706beb5c5ec533866434a8dae63ca96856",
+      "file_lines": 83,
+      "line_ranges": [
+        [
+          1,
+          83
+        ]
+      ],
+      "counted_lines": 83
     }
   ],
   "category_totals": {
     "contracts": 571,
-    "introductions": 581,
+    "introductions": 610,
     "exit_meanings": 109,
     "loop_steps": 0,
-    "registrations": 276,
+    "registrations": 342,
     "generator_json": 9503,
     "block_proofs": 0,
     "composition": 0,
-    "tests_and_exports": 1465
+    "tests_and_exports": 1603
   },
-  "interface_total": 11040,
-  "conservative_source_file_lines": 15147,
+  "interface_total": 11135,
+  "conservative_source_file_lines": 15401,
   "block_records": [],
   "native_runs": 1,
   "holdout_spent": true,
   "freeze_requirement": "The frozen boundary is e8131be2. Result724 spent the hold-out. Later native runs are training.",
-  "overall_total": 12505,
+  "overall_total": 12738,
   "checked_class_dependency": "b7359b55f3609d22e28d1021570543f274d446b7",
   "previous_guarded_counts": {
     "commit": "1ab41c3d6a5719849d2c6a68ac9fc658e245d6bc",
@@ -938,5 +985,13 @@
     "added_design_profile_lines": 9392,
     "fully_counted_interface": 11040,
     "comparison_limit": "Earlier totals excluded the then-untracked design. Use identical generator scope for comparisons."
+  },
+  "wellformed_bounds": {
+    "scope": "Conditional length/alignment word bounds; unconditional class bounds. Existing SimplAnd consumer.",
+    "base": "3c8ab7b0f769176f509e16824faf675adef3674b",
+    "native_run": false,
+    "automation_rule": false,
+    "registration_patterns": 11,
+    "negative_missing_premise_controls": 6
   }
 }
