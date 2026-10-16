@@ -2062,15 +2062,15 @@
       "path": "ZesuSsz/Evidence/approved_automation_switches.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "17a76503e8dbf4b57bafbaf2918f45582af9ead96bb732f6a27feb4d92215274",
-      "file_lines": 113,
+      "sha256": "d6c252a2e79759420adcbb2f856f6df068a0578a483197e434451648320525e4",
+      "file_lines": 110,
       "line_ranges": [
         [
           1,
-          113
+          110
         ]
       ],
-      "counted_lines": 113,
+      "counted_lines": 110,
       "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
     },
     {
@@ -5169,8 +5169,8 @@
       "path": "ZesuSsz/Proofs/Tests/ApprovedSwitches.v",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "520b05bc6b55f01a0def86e81b3b329d0399b2a12fd4c48000808fe6f0690f65",
-      "file_lines": 45,
+      "sha256": "0a3ae46f956b2949e12a2d224bf32b8469677fccc006d8f7c99b0350c53b7d7a",
+      "file_lines": 44,
       "line_ranges": [
         [
           3,
@@ -5307,8 +5307,8 @@
       "path": "ZesuSsz/Proofs/Tests/ConjunctHead.v",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "1c5cf820e1f5fcb681dd353ceb07c4bd73d5177abf67726817a1de39eaa4c683",
-      "file_lines": 171,
+      "sha256": "fc8702b17f2172cfc3be7caa89564963e760340d4c51a500953566254e342b35",
+      "file_lines": 701,
       "line_ranges": [
         [
           4,
@@ -7726,7 +7726,7 @@
       "line_ranges": [
         [
           1,
-          113
+          110
         ]
       ],
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
@@ -7882,15 +7882,15 @@
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
     }
   ],
-  "conservative_shared_json_lines": 15102,
+  "conservative_shared_json_lines": 15099,
   "status": "Private immutable source scope: base e7eb0bce plus eighteen native-certificate018 sources. No Root integration credit.",
   "integration_scope": {
     "base": "e7eb0bcef249f2cf99dfc86cf60d8436ade29a31",
     "certificate_sha256": "a9d7c5ba0b00a8928343b6c18bfbb22e1d1d87bcf7a9d2cda901585a9bfdfaf1",
     "overlay_source_sha256": {
-      "ZesuSsz/Automation/Approved.v": "4ba4ac6f6cf3b7ede56bc164b159272e71f579f85e9987c145e1a35c0283a851",
-      "ZesuSsz/Automation/EntryIntro.v": "7e38d432ec581cc30824a653adbe21de71ad5af9863a2566bff920de039bda51",
-      "ZesuSsz/Automation/Hooks.v": "d6e8df8c1aa2f5dc862fcb8becf7ab74f3b485788cf7d07096db448072ce7a90",
+      "ZesuSsz/Automation/Approved.v": "3f2b79be209341d0f181055b81922d6e31027452519486d4bf6125caf4eea488",
+      "ZesuSsz/Automation/EntryIntro.v": "1ed4cc24d34a6f3c1a1ca64e6e60edb22829b34e2422b495708de3981775eaf7",
+      "ZesuSsz/Automation/Hooks.v": "a34d392ecd85d12a7e26eda8db2faa0983603cb48839e164466bde6e0bc3168c",
       "ZesuSsz/Automation/ReturnRoute.v": "1a958f92b6f0a9a55605aa8f590c8e444cfa595e6d5e69ea232ab90e2170517d",
       "ZesuSsz/Automation/Switches/ReturnRoute.v": "0fd6fcd00970a268b396416c6fe33a7ea34d22c0772ad496f5d657123d232128",
       "ZesuSsz/Compliance/DecodeItemDataRegistrations.v": "a6215ba633835d194333103a0b1306f6ce18d233e56e003695018b20b6daffd6",
@@ -7899,14 +7899,14 @@
       "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v": "666b0ffe663d463c0899ebee9ea86cabd0f7d842c435353e21d026cc43d9f930",
       "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v": "10e478c0b9abc0cc5af58b09a44af762f4d785edfee2ad31c8766c850a2676f0",
       "ZesuSsz/Evidence/DecodeItemExitMeaningDraftFixtures.v": "2ff2cdd7ac547f60223adf30a1109f1185f1aefef0260fb4c02c5e679830ed99",
-      "ZesuSsz/Evidence/approved_automation_switches.json": "17a76503e8dbf4b57bafbaf2918f45582af9ead96bb732f6a27feb4d92215274",
+      "ZesuSsz/Evidence/approved_automation_switches.json": "d6c252a2e79759420adcbb2f856f6df068a0578a483197e434451648320525e4",
       "ZesuSsz/Evidence/spec_shape_inventory.json": "dbb67c49598e3d1f79455793dc1030ca945badf64f7945d67880253f3ed2fc24",
       "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a08.v": "1ea441bb662a9305ed4aa03f56bd2cd45f381e5f03cbe1f94b778c0ec637c481",
       "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6aa8.v": "b5be9bc2a454fdacbf253f889c69eeab606e3c240df06e5df9d2a94c9ee2a827",
       "ZesuSsz/Proofs/Tests/ReturnRoute.v": "0b3cd00c862b4cb124b641d3b709eeaafc903bbd5454d3ea60d2c68c464f688a",
       "build/stock-zisk/automation-validation/r3-data-registrations/CHECKPOINT.json": "bd9652200050a7518565686b36d6a77dcc5cca295d947f8510a7963974137bcc",
-      "tools/block/test_approved_switches.py": "0df4135372bc548aaf34d1034221dc4e4fc8eda849f4cde9a566e958ab311d4a",
-      "ZesuSsz/Proofs/Tests/ApprovedSwitches.v": "520b05bc6b55f01a0def86e81b3b329d0399b2a12fd4c48000808fe6f0690f65"
+      "tools/block/test_approved_switches.py": "5de8c50dcde648bcf89de16d7bf5625077f9d882f0a436983ec2faf629011030",
+      "ZesuSsz/Proofs/Tests/ApprovedSwitches.v": "0a3ae46f956b2949e12a2d224bf32b8469677fccc006d8f7c99b0350c53b7d7a"
     },
     "native_scope": "Only two blocks close in the owner certificate. This manifest supplies no new proof claim.",
     "source_scope_sha256": "01735b7082fe2016443c64f66d0959a24f970804ad374628550d3bcd616296f8",
@@ -7928,11 +7928,11 @@
     "generator_json": 6299,
     "block_proofs": 3461,
     "composition": 393,
-    "tests_and_exports": 35418
+    "tests_and_exports": 35415
   },
   "interface_total": 16888,
-  "extra_total": 39272,
-  "overall_total": 56160,
+  "extra_total": 39269,
+  "overall_total": 56157,
   "file_count": 364,
   "embedded_registration_ranges": [
     {

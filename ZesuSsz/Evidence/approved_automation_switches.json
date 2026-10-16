@@ -29,7 +29,8 @@
     "ZesuSsz.Automation.Switches.PureFactExistential",
     "ZesuSsz.Automation.Switches.CanonicalPureConjunction",
     "ZesuSsz.Automation.Switches.ByteListContainment",
-    "ZesuSsz.Automation.Switches.RegionFaultCastHypotheses"
+    "ZesuSsz.Automation.Switches.RegionFaultCastHypotheses",
+    "ZesuSsz.Automation.Switches.ConjunctMatch"
   ],
   "exclusions": [
     {
@@ -95,10 +96,6 @@
     {
       "switch": "WordArrayLookup",
       "class": "ZesuSsz.Automation.ArrayLoadPriority.ZesuStepWordArrayLookup"
-    },
-    {
-      "switch": "ConjunctMatch",
-      "class": "ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch"
     }
   ],
   "reference_pass_inventory": {

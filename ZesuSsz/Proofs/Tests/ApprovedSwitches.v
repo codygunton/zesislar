@@ -32,10 +32,9 @@ Lemma approved_switch_inventory :
   ZesuSsz.Automation.Hooks.ZesuStepPureFactExistential /\
   ZesuSsz.Automation.Hooks.ZesuStepCanonicalPureConjunction /\
   ZesuSsz.Automation.Hooks.ZesuStepByteListContainment /\
-  ZesuSsz.Automation.Hooks.ZesuStepRegionFaultCastHypotheses.
+  ZesuSsz.Automation.Hooks.ZesuStepRegionFaultCastHypotheses /\
+  ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch.
 Proof.
-  Fail assert (Hdisabled : ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch)
-    by typeclasses eauto.
   Fail assert (Hdisabled : ZesuSsz.Automation.ReturnRoute.ZesuStepReturnRoute)
     by typeclasses eauto.
   repeat apply conj.

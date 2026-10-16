@@ -11,7 +11,7 @@ Class ZesuLoopStep {Sigma} (source : iProp Sigma) (facts : Prop) : Prop :=
 Require Import ZesuSsz.Automation.SwitchDispatch.
 Require Import ZesuSsz.Automation.ReturnRoute.
 From iris.proofmode Require Import intro_patterns.
-From Ltac2 Require Import Ltac2.
+From Ltac2 Require Import Ltac2 Constant Ind.
 Declare ML Module "zesu-signature-gates.plugin".
 Ltac2 @ external zesu_unique_entry_registration : unit -> unit :=
   "zesu-signature-gates.plugin" "unique_entry_registration".
@@ -23,6 +23,119 @@ Class ZesuStepEntryIntro : Prop := {}.
 Inductive ZesuEntryIntroApplied {Sigma} (source : iProp Sigma)
     (facts : Prop) (evidence : ZesuEntryIntro source facts) : Prop :=
   ZesuEntryIntroWasApplied.
+
+Ltac2 rec zesu_registered_fact_head (term : constr) :=
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.App function _ => zesu_registered_fact_head function
+  | _ => term
+  end.
+
+Ltac2 zesu_same_fact_head (left : constr) (right : constr) :=
+  let left := zesu_registered_fact_head left in
+  let right := zesu_registered_fact_head right in
+  match Constr.Unsafe.kind left with
+  | Constr.Unsafe.Constant first _ =>
+      match Constr.Unsafe.kind right with
+      | Constr.Unsafe.Constant second _ => Constant.equal first second
+      | _ => false
+      end
+  | Constr.Unsafe.Ind first _ =>
+      match Constr.Unsafe.kind right with
+      | Constr.Unsafe.Ind second _ => Ind.equal first second
+      | _ => false
+      end
+  | _ => false
+  end.
+
+Ltac2 zesu_permitted_fact_head (head : constr) :=
+  if zesu_same_fact_head head constr:(Z.lt) then false else
+  if zesu_same_fact_head head constr:(Z.le) then false else
+  if zesu_same_fact_head head constr:(@eq) then false else
+  if zesu_same_fact_head head constr:(and) then false else
+  if zesu_same_fact_head head constr:(or) then false else
+  if zesu_same_fact_head head constr:(iff) then false else
+  match Constr.Unsafe.kind (zesu_registered_fact_head head) with
+  | Constr.Unsafe.Constant _ _ => true
+  | Constr.Unsafe.Ind _ _ => true
+  | _ => false
+  end.
+
+Ltac2 rec zesu_fact_head_arguments (term : constr) :=
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.App function arguments =>
+      let (head, previous) := zesu_fact_head_arguments function in
+      (head, List.append previous (Array.to_list arguments))
+  | _ => (term, [])
+  end.
+
+Inductive ZesuEntryIntroHead {A : Type} (head : A) : Prop :=
+  ZesuEntryIntroHeadRecorded.
+Inductive ZesuEntryIntroHeads (heads : Prop) : Prop :=
+  ZesuEntryIntroHeadsRecorded.
+
+Ltac2 rec zesu_collect_entry_fact_heads (facts : constr) (heads : constr list) :=
+  match Constr.Unsafe.kind facts with
+  | Constr.Unsafe.Prod _ body => zesu_collect_entry_fact_heads body heads
+  | Constr.Unsafe.Lambda _ body => zesu_collect_entry_fact_heads body heads
+  | _ =>
+      let (head, arguments) := zesu_fact_head_arguments facts in
+      if Bool.or (zesu_same_fact_head head constr:(and))
+           (Bool.or (zesu_same_fact_head head constr:(or))
+                    (zesu_same_fact_head head constr:(iff))) then
+        List.fold_left (fun collected fact =>
+          zesu_collect_entry_fact_heads fact collected) heads arguments
+      else if zesu_same_fact_head head constr:(@ex) then
+        match List.rev arguments with
+        | predicate :: _ => zesu_collect_entry_fact_heads predicate heads
+        | [] => heads
+        end
+      else if zesu_permitted_fact_head head then
+        if List.exist (zesu_same_fact_head head) heads then heads
+        else head :: heads
+      else heads
+  end.
+
+Ltac2 rec zesu_entry_head_set (heads : constr list) :=
+  match heads with
+  | [] => constr:(True)
+  | head :: remaining =>
+      let head_type := Constr.type head in
+      let item := constr:(@ZesuEntryIntroHead $head_type $head) in
+      let tail := zesu_entry_head_set remaining in
+      constr:($item /\ $tail)
+  end.
+
+Ltac2 rec zesu_cached_entry_head (wanted : constr) (heads : constr) :=
+  lazy_match! heads with
+  | @ZesuEntryIntroHead _ ?head => zesu_same_fact_head wanted head
+  | ?left /\ ?right =>
+      Bool.or (zesu_cached_entry_head wanted left)
+              (zesu_cached_entry_head wanted right)
+  | _ => false
+  end.
+
+Set Default Proof Mode "Classic".
+
+Ltac zesu_cache_entry_intro_heads facts :=
+  first [match goal with _ : ZesuEntryIntroHeads _ |- _ => idtac end
+  | let collect := ltac2:(facts |-
+      let facts := Option.get (Ltac1.to_constr facts) in
+      let heads := zesu_entry_head_set (zesu_collect_entry_fact_heads facts []) in
+      let marker := constr:(@ZesuEntryIntroHeadsRecorded $heads) in
+      ltac1:(marker |- let name := fresh "HentryIntroHeads" in
+        pose proof marker as name) (Ltac1.of_constr marker)) in
+    collect facts].
+
+Ltac zesu_cached_entry_fact_head head :=
+  lazymatch goal with
+  | _ : ZesuEntryIntroHeads ?heads |- _ =>
+      let inspect := ltac2:(head heads |-
+        let head := Option.get (Ltac1.to_constr head) in
+        let heads := Option.get (Ltac1.to_constr heads) in
+        if zesu_cached_entry_head head heads then ()
+        else Control.zero (Tactic_failure None)) in
+      inspect head heads
+  end.
 
 Lemma zesu_entry_intro_preserve {Sigma} (source : iProp Sigma) (facts : Prop)
     (intro : ZesuEntryIntro source facts) : source ⊢ ⌜facts⌝ ∗ source.
@@ -157,6 +270,11 @@ Ltac zesu_entry_intro_goal_if_enabled :=
               let exitApplied := fresh "HexitMeaningApplied" in
               destruct applied as [entryApplied exitApplied]
           | _ => idtac
+          end;
+          lazymatch goal with
+          | _ : @ZesuEntryIntroApplied _ _ ?entryFacts _ |- _ =>
+              zesu_cache_entry_intro_heads entryFacts
+          | _ => idtac
           end)
   end.
 
@@ -190,5 +308,6 @@ Ltac zesu_entry_intro_if_enabled :=
             iDestruct (zesu_entry_intro_preserve source facts evidence with name)
               as pattern);
           let marker := fresh "HentryIntroApplied" in
-          pose proof (@ZesuEntryIntroWasApplied Sigma source facts evidence) as marker
+          pose proof (@ZesuEntryIntroWasApplied Sigma source facts evidence) as marker;
+          zesu_cache_entry_intro_heads facts
       end).
