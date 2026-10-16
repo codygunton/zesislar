@@ -1,0 +1,131 @@
+Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.Approved.
+Require Import isla.riscv64.riscv64.
+From Coq Require Import List ZArith.
+Require Import ZesuSsz.Automation.BlockTable.
+Require Import ZesuSsz.Compliance.NextUint64FoldFacts.
+Require Import ZesuSsz.Compliance.NextUint64LoopSteps.
+Require Import ZesuSsz.Contracts.DecodeItemCompositional.
+Require Import ZesuSsz.Contracts.Level1.
+Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
+Require Import ZesuSsz.Contracts.NextUint64Selected.
+Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Import ListNotations.
+Open Scope Z_scope.
+
+(* Generated resource wiring. No block-body proof is supplied. *)
+(* Source: ZesuSsz/Compliance/NextUint64FoldFacts.v; SHA-256: 84049eaab7c674cdec9564162b7bd8d46eef0fe4dfde353c9828afb8bf6a430c. *)
+(* Source: ZesuSsz/Compliance/NextUint64LoopSteps.v; SHA-256: db5bb7f770f816576b8164f81ce1c93ee439155742b8b544aca66b9501b20323. *)
+(* Source: ZesuSsz/Contracts/DecodeItemCompositional.v; SHA-256: 50d8c05339ffe8a09838bc03d61bf9edb424494b75451d249a531e79da93a426. *)
+(* Source: ZesuSsz/Contracts/NextUint64BlockEntries.v; SHA-256: ab2a5fbd607d768abf278e6071263fc458c28a97571e713e5a7c64994e58c72b. *)
+(* Source: ZesuSsz/Contracts/NextUint64Selected.v; SHA-256: 56915c500d67b048c69bc14c75bfcbdb93e02ec3260206b4cafa5a6c3c4f6c07. *)
+(* Source: ZesuSsz/Contracts/RlpDecodeItemContract.v; SHA-256: 595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a. *)
+(* Source: _build/nextuint64-inputs836/next_uint64_block_design.json; SHA-256: 81bc9305cd0a859fe42953aa95cccdc73b72f4e70fe3adff19d72bf77c727047. *)
+(* Source: build/stock-zisk/cfg.json; SHA-256: 98c4614e6ff7b6e1cb85bdc3b9e600dd85eccd5afacda8b1c5b75ff66db16fc2. *)
+(* Source: build/stock-zisk/inventory.json; SHA-256: 7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d. *)
+(* Source: tools/block/generate_table.py; SHA-256: 105ba7ae5fe3a8d1f7e8e7ecdf3fd02317ccbd98100338d293ee7fc32daecf0e. *)
+
+Section next_uint64_block_table.
+Context `{!islaG Sigma} `{!threadG}.
+
+(* Entry: ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6274. Body proof: pending. *)
+Definition nextUint64State800d6274 : iProp Sigma :=
+  (∃ (params : NextUint64Args) (x1 : bv 64) (x2 : bv 64) (x5 : bv 64) (x6 : bv 64) (x7 : bv 64) (x8 : bv 64) (x9 : bv 64) (x10 : bv 64) (x11 : bv 64) (x12 : bv 64) (x13 : bv 64) (x14 : bv 64) (x15 : bv 64) (x16 : bv 64) (x17 : bv 64) (x18 : bv 64) (x19 : bv 64) (x20 : bv 64) (x21 : bv 64) (x22 : bv 64) (x23 : bv 64) (x24 : bv 64) (x25 : bv 64) (x26 : bv 64) (x27 : bv 64) (x28 : bv 64) (x29 : bv 64) (x30 : bv 64) (x31 : bv 64) (inputBytes : list byte) (sliceBytes : list byte), ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6274 (params) (x1) (x2) (x5) (x6) (x7) (x8) (x9) (x10) (x11) (x12) (x13) (x14) (x15) (x16) (x17) (x18) (x19) (x20) (x21) (x22) (x23) (x24) (x25) (x26) (x27) (x28) (x29) (x30) (x31) (inputBytes) (sliceBytes))%I.
+
+(* Entry: ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62b8. Body proof: pending. *)
+Definition nextUint64State800d62b8 : iProp Sigma :=
+  (∃ (params : NextUint64Args) (x1 : bv 64) (x2 : bv 64) (x5 : bv 64) (x6 : bv 64) (x7 : bv 64) (x8 : bv 64) (x9 : bv 64) (x10 : bv 64) (x11 : bv 64) (x12 : bv 64) (x13 : bv 64) (x14 : bv 64) (x15 : bv 64) (x16 : bv 64) (x17 : bv 64) (x18 : bv 64) (x19 : bv 64) (x20 : bv 64) (x21 : bv 64) (x22 : bv 64) (x23 : bv 64) (x24 : bv 64) (x25 : bv 64) (x26 : bv 64) (x27 : bv 64) (x28 : bv 64) (x29 : bv 64) (x30 : bv 64) (x31 : bv 64) (inputBytes : list byte) (sliceBytes : list byte) (decoded : list byte) (saved : list byte), ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62b8 (params) (x1) (x2) (x5) (x6) (x7) (x8) (x9) (x10) (x11) (x12) (x13) (x14) (x15) (x16) (x17) (x18) (x19) (x20) (x21) (x22) (x23) (x24) (x25) (x26) (x27) (x28) (x29) (x30) (x31) (inputBytes) (sliceBytes) (decoded) (saved))%I.
+
+(* Entry: ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62c0. Body proof: pending. *)
+Definition nextUint64State800d62c0 : iProp Sigma :=
+  (∃ (params : NextUint64Args) (x1 : bv 64) (x2 : bv 64) (x5 : bv 64) (x6 : bv 64) (x7 : bv 64) (x8 : bv 64) (x9 : bv 64) (x10 : bv 64) (x11 : bv 64) (x12 : bv 64) (x13 : bv 64) (x14 : bv 64) (x15 : bv 64) (x16 : bv 64) (x17 : bv 64) (x18 : bv 64) (x19 : bv 64) (x20 : bv 64) (x21 : bv 64) (x22 : bv 64) (x23 : bv 64) (x24 : bv 64) (x25 : bv 64) (x26 : bv 64) (x27 : bv 64) (x28 : bv 64) (x29 : bv 64) (x30 : bv 64) (x31 : bv 64) (inputBytes : list byte) (sliceBytes : list byte) (decoded : list byte) (saved : list byte), ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62c0 (params) (x1) (x2) (x5) (x6) (x7) (x8) (x9) (x10) (x11) (x12) (x13) (x14) (x15) (x16) (x17) (x18) (x19) (x20) (x21) (x22) (x23) (x24) (x25) (x26) (x27) (x28) (x29) (x30) (x31) (inputBytes) (sliceBytes) (decoded) (saved))%I.
+
+(* Entry: ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62cc. Body proof: pending. *)
+Definition nextUint64State800d62cc : iProp Sigma :=
+  (∃ (params : NextUint64Args) (x1 : bv 64) (x2 : bv 64) (x5 : bv 64) (x6 : bv 64) (x7 : bv 64) (x8 : bv 64) (x9 : bv 64) (x10 : bv 64) (x11 : bv 64) (x12 : bv 64) (x13 : bv 64) (x14 : bv 64) (x15 : bv 64) (x16 : bv 64) (x17 : bv 64) (x18 : bv 64) (x19 : bv 64) (x20 : bv 64) (x21 : bv 64) (x22 : bv 64) (x23 : bv 64) (x24 : bv 64) (x25 : bv 64) (x26 : bv 64) (x27 : bv 64) (x28 : bv 64) (x29 : bv 64) (x30 : bv 64) (x31 : bv 64) (inputBytes : list byte) (sliceBytes : list byte) (decoded : list byte) (saved : list byte), ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62cc (params) (x1) (x2) (x5) (x6) (x7) (x8) (x9) (x10) (x11) (x12) (x13) (x14) (x15) (x16) (x17) (x18) (x19) (x20) (x21) (x22) (x23) (x24) (x25) (x26) (x27) (x28) (x29) (x30) (x31) (inputBytes) (sliceBytes) (decoded) (saved))%I.
+
+(* Entry: ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62d8. Body proof: pending. *)
+Definition nextUint64State800d62d8 : iProp Sigma :=
+  (∃ (params : NextUint64Args) (x1 : bv 64) (x2 : bv 64) (x5 : bv 64) (x6 : bv 64) (x7 : bv 64) (x8 : bv 64) (x9 : bv 64) (x10 : bv 64) (x11 : bv 64) (x12 : bv 64) (x13 : bv 64) (x14 : bv 64) (x15 : bv 64) (x16 : bv 64) (x17 : bv 64) (x18 : bv 64) (x19 : bv 64) (x20 : bv 64) (x21 : bv 64) (x22 : bv 64) (x23 : bv 64) (x24 : bv 64) (x25 : bv 64) (x26 : bv 64) (x27 : bv 64) (x28 : bv 64) (x29 : bv 64) (x30 : bv 64) (x31 : bv 64) (inputBytes : list byte) (sliceBytes : list byte) (decoded : list byte) (saved : list byte), ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62d8 (params) (x1) (x2) (x5) (x6) (x7) (x8) (x9) (x10) (x11) (x12) (x13) (x14) (x15) (x16) (x17) (x18) (x19) (x20) (x21) (x22) (x23) (x24) (x25) (x26) (x27) (x28) (x29) (x30) (x31) (inputBytes) (sliceBytes) (decoded) (saved))%I.
+
+(* Entry: ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62e4. Body proof: pending. *)
+Definition nextUint64State800d62e4 : iProp Sigma :=
+  (∃ (params : NextUint64Args) (x1 : bv 64) (x2 : bv 64) (x5 : bv 64) (x6 : bv 64) (x7 : bv 64) (x8 : bv 64) (x9 : bv 64) (x10 : bv 64) (x11 : bv 64) (x12 : bv 64) (x13 : bv 64) (x14 : bv 64) (x15 : bv 64) (x16 : bv 64) (x17 : bv 64) (x18 : bv 64) (x19 : bv 64) (x20 : bv 64) (x21 : bv 64) (x22 : bv 64) (x23 : bv 64) (x24 : bv 64) (x25 : bv 64) (x26 : bv 64) (x27 : bv 64) (x28 : bv 64) (x29 : bv 64) (x30 : bv 64) (x31 : bv 64) (inputBytes : list byte) (sliceBytes : list byte) (decoded : list byte) (saved : list byte) (resultBytes : list byte), ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62e4 (params) (x1) (x2) (x5) (x6) (x7) (x8) (x9) (x10) (x11) (x12) (x13) (x14) (x15) (x16) (x17) (x18) (x19) (x20) (x21) (x22) (x23) (x24) (x25) (x26) (x27) (x28) (x29) (x30) (x31) (inputBytes) (sliceBytes) (decoded) (saved) (resultBytes))%I.
+
+(* Entry: ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6304. Body proof: pending. *)
+Definition nextUint64State800d6304 : iProp Sigma :=
+  (∃ (params : NextUint64Args) (x1 : bv 64) (x2 : bv 64) (x5 : bv 64) (x6 : bv 64) (x7 : bv 64) (x8 : bv 64) (x9 : bv 64) (x10 : bv 64) (x11 : bv 64) (x12 : bv 64) (x13 : bv 64) (x14 : bv 64) (x15 : bv 64) (x16 : bv 64) (x17 : bv 64) (x18 : bv 64) (x19 : bv 64) (x20 : bv 64) (x21 : bv 64) (x22 : bv 64) (x23 : bv 64) (x24 : bv 64) (x25 : bv 64) (x26 : bv 64) (x27 : bv 64) (x28 : bv 64) (x29 : bv 64) (x30 : bv 64) (x31 : bv 64) (inputBytes : list byte) (sliceBytes : list byte) (decoded : list byte) (saved : list byte), ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6304 (params) (x1) (x2) (x5) (x6) (x7) (x8) (x9) (x10) (x11) (x12) (x13) (x14) (x15) (x16) (x17) (x18) (x19) (x20) (x21) (x22) (x23) (x24) (x25) (x26) (x27) (x28) (x29) (x30) (x31) (inputBytes) (sliceBytes) (decoded) (saved))%I.
+
+(* Entry: ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6310. Body proof: pending. *)
+Definition nextUint64State800d6310 : iProp Sigma :=
+  (∃ (params : NextUint64Args) (x1 : bv 64) (x2 : bv 64) (x5 : bv 64) (x6 : bv 64) (x7 : bv 64) (x8 : bv 64) (x9 : bv 64) (x10 : bv 64) (x11 : bv 64) (x12 : bv 64) (x13 : bv 64) (x14 : bv 64) (x15 : bv 64) (x16 : bv 64) (x17 : bv 64) (x18 : bv 64) (x19 : bv 64) (x20 : bv 64) (x21 : bv 64) (x22 : bv 64) (x23 : bv 64) (x24 : bv 64) (x25 : bv 64) (x26 : bv 64) (x27 : bv 64) (x28 : bv 64) (x29 : bv 64) (x30 : bv 64) (x31 : bv 64) (inputBytes : list byte) (sliceBytes : list byte) (decoded : list byte) (saved : list byte), ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6310 (params) (x1) (x2) (x5) (x6) (x7) (x8) (x9) (x10) (x11) (x12) (x13) (x14) (x15) (x16) (x17) (x18) (x19) (x20) (x21) (x22) (x23) (x24) (x25) (x26) (x27) (x28) (x29) (x30) (x31) (inputBytes) (sliceBytes) (decoded) (saved))%I.
+
+(* Entry: ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6318. Body proof: pending. *)
+Definition nextUint64State800d6318 : iProp Sigma :=
+  (∃ (params : NextUint64Args) (x1 : bv 64) (x2 : bv 64) (x5 : bv 64) (x6 : bv 64) (x7 : bv 64) (x8 : bv 64) (x9 : bv 64) (x10 : bv 64) (x11 : bv 64) (x12 : bv 64) (x13 : bv 64) (x14 : bv 64) (x15 : bv 64) (x16 : bv 64) (x17 : bv 64) (x18 : bv 64) (x19 : bv 64) (x20 : bv 64) (x21 : bv 64) (x22 : bv 64) (x23 : bv 64) (x24 : bv 64) (x25 : bv 64) (x26 : bv 64) (x27 : bv 64) (x28 : bv 64) (x29 : bv 64) (x30 : bv 64) (x31 : bv 64) (inputBytes : list byte) (sliceBytes : list byte) (decoded : list byte) (saved : list byte), ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6318 (params) (x1) (x2) (x5) (x6) (x7) (x8) (x9) (x10) (x11) (x12) (x13) (x14) (x15) (x16) (x17) (x18) (x19) (x20) (x21) (x22) (x23) (x24) (x25) (x26) (x27) (x28) (x29) (x30) (x31) (inputBytes) (sliceBytes) (decoded) (saved))%I.
+
+(* Entry: ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d632c. Body proof: pending. *)
+Definition nextUint64State800d632c : iProp Sigma :=
+  (∃ (params : NextUint64Args) (x1 : bv 64) (x2 : bv 64) (x5 : bv 64) (x6 : bv 64) (x7 : bv 64) (x8 : bv 64) (x9 : bv 64) (x10 : bv 64) (x11 : bv 64) (x12 : bv 64) (x13 : bv 64) (x14 : bv 64) (x15 : bv 64) (x16 : bv 64) (x17 : bv 64) (x18 : bv 64) (x19 : bv 64) (x20 : bv 64) (x21 : bv 64) (x22 : bv 64) (x23 : bv 64) (x24 : bv 64) (x25 : bv 64) (x26 : bv 64) (x27 : bv 64) (x28 : bv 64) (x29 : bv 64) (x30 : bv 64) (x31 : bv 64) (inputBytes : list byte) (sliceBytes : list byte) (decoded : list byte) (saved : list byte), ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d632c (params) (x1) (x2) (x5) (x6) (x7) (x8) (x9) (x10) (x11) (x12) (x13) (x14) (x15) (x16) (x17) (x18) (x19) (x20) (x21) (x22) (x23) (x24) (x25) (x26) (x27) (x28) (x29) (x30) (x31) (inputBytes) (sliceBytes) (decoded) (saved))%I.
+
+(* External contract: ZesuSsz.Contracts.DecodeItemCompositional.decodeItemSelectedModelCompositional. Installation proof: pending. *)
+Definition nextUint64CallState800d62b4 : iProp Sigma :=
+  let model := ZesuSsz.Contracts.DecodeItemCompositional.decodeItemSelectedModelCompositional (0x800d62b8) in
+  let resources := islarisContractResources (DecodeItemCompositionalArgs) (DecodeItemOutcome) model Sigma _ _ in
+  (∃ args : DecodeItemCompositionalArgs,
+    islarisEntry (DecodeItemCompositionalArgs) (DecodeItemOutcome) resources args ∗
+    instr_pre 0x800d62b8 (∃ outcome : DecodeItemOutcome,
+      ⌜islarisContractAllows (DecodeItemCompositionalArgs) (DecodeItemOutcome) model args outcome⌝ ∗
+      islarisExit (DecodeItemCompositionalArgs) (DecodeItemOutcome) resources args outcome))%I.
+
+Definition nextUint64BlockTable : blockTable Sigma :=
+  {| block_table_code := (ZesuSsz.Contracts.NextUint64Selected.nextUint64SelectedCode ∗ □ instr_pre 0x800d6960 nextUint64CallState800d62b4)%I;
+     block_table_entries := [(0x800d6274, nextUint64State800d6274);
+   (0x800d62b8, nextUint64State800d62b8);
+   (0x800d62c0, nextUint64State800d62c0);
+   (0x800d62cc, nextUint64State800d62cc);
+   (0x800d62d8, nextUint64State800d62d8);
+   (0x800d62e4, nextUint64State800d62e4);
+   (0x800d6304, nextUint64State800d6304);
+   (0x800d6310, nextUint64State800d6310);
+   (0x800d6318, nextUint64State800d6318);
+   (0x800d632c, nextUint64State800d632c)] |}.
+
+(* Completion requires the persistent code resource and every block body. *)
+Definition nextUint64BlockTable_complete :=
+  block_table_complete nextUint64BlockTable.
+
+End next_uint64_block_table.
+
+Definition nextUint64BlockEdges : list (Z * Z) :=
+  [(0x800d6274, 0x800d62b8);
+   (0x800d62b8, 0x800d62d8);
+   (0x800d62b8, 0x800d62c0);
+   (0x800d62c0, 0x800d62d8);
+   (0x800d62c0, 0x800d62cc);
+   (0x800d62cc, 0x800d6304);
+   (0x800d62cc, 0x800d62d8);
+   (0x800d62d8, 0x800d62e4);
+   (0x800d6304, 0x800d632c);
+   (0x800d6304, 0x800d6310);
+   (0x800d6310, 0x800d6318);
+   (0x800d6318, 0x800d6318);
+   (0x800d6318, 0x800d632c);
+   (0x800d632c, 0x800d62e4)].
+
+Definition nextUint64BlockReturns : list (Z * Z) :=
+  [(0x800d62e4, 0x800d6300)].
+
+Print Assumptions nextUint64BlockTable_complete.
+
+Section InstallationObservation.
+Context `{!islaG Sigma} `{!threadG}.
+Definition NextUint64CallState800d62b4 : iProp Sigma := nextUint64CallState800d62b4.
+Lemma NextUint64CalleeInstallation :
+  ZesuSsz.Contracts.NextUint64Selected.nextUint64SelectedCode -∗
+  □ instr_pre 0x800d6960 NextUint64CallState800d62b4.
+Proof.
+  idtac.
+Qed.
+Print Assumptions NextUint64CalleeInstallation.
+End InstallationObservation.

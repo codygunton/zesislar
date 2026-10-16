@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "base": "ece170169919ef55fc14649dc7b792ee4ae64b5e",
+  "branch": "worker2-av-phase3d-first-installation",
+  "files": [
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-phase3d-result853/REPORT.json",
+        "sha256": "ee69a27e093f84dd4332f7055759ce7ce43b3d0e30ffabbc58f043e7a8127593",
+        "bytes": 6556
+      },
+      "published": {
+        "path": "build/stock-zisk/automation-validation/phase3d-first-installation/REPORT.json",
+        "sha256": "ee69a27e093f84dd4332f7055759ce7ce43b3d0e30ffabbc58f043e7a8127593",
+        "bytes": 6556
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-phase3d-result853/RESIDUAL.md",
+        "sha256": "28daa9ed1cc58d32ec4ac34b60089da07773c56f95df93afbd8edb450d3c7c8b",
+        "bytes": 425
+      },
+      "published": {
+        "path": "build/stock-zisk/automation-validation/phase3d-first-installation/RESIDUAL.md",
+        "sha256": "28daa9ed1cc58d32ec4ac34b60089da07773c56f95df93afbd8edb450d3c7c8b",
+        "bytes": 425
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-call-first/_build/nextuint64-installation-result849/RESULT.json",
+        "sha256": "861239bc71e7a5be4ce589585628784382c67ffb821d140cc4d852c70543a273",
+        "bytes": 18194
+      },
+      "published": {
+        "path": "build/stock-zisk/automation-validation/phase3d-first-installation/OBSERVATION.json",
+        "sha256": "861239bc71e7a5be4ce589585628784382c67ffb821d140cc4d852c70543a273",
+        "bytes": 18194
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-installation849/Installation.v",
+        "sha256": "13401d81fcca9856ac7f83f49337377c4e5239e059a127384cdeac9ae02684f2",
+        "bytes": 14403
+      },
+      "published": {
+        "path": "build/stock-zisk/automation-validation/phase3d-first-installation/INSTALLATION-SOURCE.txt",
+        "sha256": "13401d81fcca9856ac7f83f49337377c4e5239e059a127384cdeac9ae02684f2",
+        "bytes": 14403
+      }
+    }
+  ],
+  "result": "One installation residual. Zero machine instructions. No caller or callee execution.",
+  "Iris": "Inherited from cp-av-nextuint64-profile at the exact base. No fresh Iris gate is claimed.",
+  "proof_or_rule_sources_changed": false
+}
