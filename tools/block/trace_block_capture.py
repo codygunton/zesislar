@@ -64,6 +64,12 @@ def project_capture(request, out_dir, raw_root, manifest, *, view_factory=None,
                     storage_records=None):
     """Validate capture ownership, then stream the selected projection and seal."""
     retained, paths = validate_capture(request, raw_root, manifest)
+    runtime = retained.get("observer_runtime")
+    if (view_factory is None and isinstance(runtime, dict) and runtime.get("surface_policy") == "bounded-kernel-v1"):
+        if storage_records is not None:
+            raise ValueError("Bounded capture storage records require an explicit supported adapter.")
+        from trace_block_bounded_bundle import write_bundle
+        return write_bundle(request, out_dir, raw_root, manifest)
     if view_factory is None:
         if retained.get("observer_runtime") is not None:
             from trace_block_filtered_projection import ProjectionView

@@ -1,0 +1,28 @@
+(library
+ (name kernel_codec)
+ (public_name p0-bounded-trace.kernel-codec)
+ (wrapped false)
+ (modules kernel_artifact kernel_store kernel_display kernel_capture trace_block_chunks)
+ (libraries unix coq-core.vernac coq-core.plugins.ltac2 yojson zarith))
+(executable
+ (name kernel_control)
+ (modules kernel_control)
+ (libraries kernel_codec))
+(executable
+ (name kernel_reader)
+ (modules kernel_reader)
+ (libraries kernel_codec))
+(executable
+ (name artifact_control)
+ (modules artifact_control)
+ (libraries kernel_codec))
+(library
+ (name bounded_trace_plugin)
+ (public_name p0-bounded-trace.trace-observer)
+ (modules bounded_trace_plugin)
+ (libraries kernel_codec unix coq-core.vernac coq-core.plugins.ltac2 yojson zarith))
+
+(executable
+ (name group_control)
+ (modules group_control)
+ (libraries kernel_codec))

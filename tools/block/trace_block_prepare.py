@@ -380,9 +380,13 @@ def switch_adjusted_prefix(workspace, request):
     return prefix[:location] + "".join(adjustments) + prefix[location:], adjustments
 
 
-def install_guard_manifest(workspace, descriptors):
+def install_guard_manifest(workspace, descriptors, *, bounded=False):
     """Install the exact descriptor manifest under its content hash."""
-    value, payload = guard_manifest(descriptors)
+    if bounded:
+        from trace_block_bounded_prepare import bounded_guard_manifest
+        value, payload = bounded_guard_manifest(descriptors)
+    else:
+        value, payload = guard_manifest(descriptors)
     expected = hashlib.sha256(payload).hexdigest()
     path = Path(workspace) / "_build/trace-native" / ("GUARD-MANIFEST-" + expected + ".json")
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -419,6 +423,7 @@ def build_environment(workspace, writer_id=None, descriptors=None, guard_referen
 
 def request_key(request):
     logical = {key: request[key] for key in ("scope", "rule_set", "stop")}
+    logical["capture_surface_policy"] = request.get("capture_surface_policy", "filtered-chunks-v1")
     return hashlib.sha256(json.dumps(logical, sort_keys=True).encode()).hexdigest()
 
 
@@ -432,14 +437,15 @@ def publish_prepared(request, record):
 
 
 def corrected_prepared(request):
+    runtime_package = preparation_package(request)
     path = OWNER / "_build/trace-preparation/corrected" / (request_key(request) + ".json")
     if not path.exists():
         return None
     result = json.loads(path.read_text())
-    if result.get("instrumentation", {}).get("protocol") != "filtered-chunks-v1":
+    if result.get("instrumentation", {}).get("protocol") != getattr(runtime_package, "PROTOCOL", "filtered-chunks-v1"):
         raise ValueError("The corrected preparation lacks the filtered capture protocol.")
-    guard_manifest_environment(result["workspace"], result["entry_descriptors"], result.get("guard_manifest"))
-    package.validate_runtime(result)
+    preparation_guard_environment(result["workspace"], result["entry_descriptors"], result.get("guard_manifest"), runtime_package)
+    runtime_package.validate_runtime(result)
     if result["scope"] != request["scope"] or result.get("focused_compilation", {}).get("success") is not True:
         raise ValueError("The corrected preparation has a different scope or lacks compilation.")
     evidence = result["preparation_evidence"]
@@ -582,8 +588,60 @@ def refresh_preparation(request, completed_path, out_dir, plugin_source):
     return result
 
 
+def preparation_package(request):
+    policy = request.get("capture_surface_policy", "filtered-chunks-v1")
+    if policy == "filtered-chunks-v1":
+        return package
+    if policy == "bounded-kernel-v1":
+        import trace_block_bounded_package
+        return trace_block_bounded_package
+    raise ValueError("The requested capture surface is unsupported.")
+
+
+def preparation_guard_environment(workspace, descriptors, reference, runtime_package):
+    if runtime_package is package:
+        return guard_manifest_environment(workspace, descriptors, reference)
+    from trace_block_bounded_prepare import bounded_guard_manifest_environment
+    return bounded_guard_manifest_environment(workspace, descriptors, reference)
+
+
+def bounded_descriptors(descriptors):
+    from trace_block_bounded_prepare import bind_bounded_descriptors
+    result = {}
+    for client, descriptor in descriptors.items():
+        value = dict(descriptor)
+        guard = dict(value["typed_guard"])
+        command = guard["command"]
+        if "trace_block_ltac1_guard" in command:
+            if command.count("trace_block_ltac1_guard") != 1:
+                raise ValueError("The guard bridge has an unsupported boundary.")
+            command = command.replace("trace_block_ltac1_guard", "trace_bounded_ltac1_guard")
+            guard.update(command=command, sha256=hashlib.sha256(command.encode()).hexdigest())
+        value["typed_guard"] = guard
+        # The plugin appends whole-rule automatically. Each declared callback runs once.
+        value["trials"] = [{"clause": label, "command": code,
+            "exposure": "not-exposed" if label in {"liShow", "requested-trigger", "whole-rule"} else "exposed"}
+            for label, code in value["commands"].items()]
+        result[client] = value
+    return bind_bounded_descriptors(result)
+
+
+def bounded_observation(original, observed, descriptors):
+    replacements = {package.BRIDGE_IMPORT: "From P0Bounded Require Import TraceObserver.",
+        "trace_block_filtered": "trace_bounded_filtered",
+        "trace_block_ltac1_guard": "trace_bounded_ltac1_guard",
+        "trace_block_checkpoint": "trace_bounded_checkpoint"}
+    for old, new in replacements.items():
+        if old in original:
+            raise ValueError("The original source already contains observer plumbing.")
+        observed = observed.replace(old, new)
+    return observed, bounded_descriptors(descriptors)
+
+
 def prepare_request(request, out_dir):
     """Copy the frozen scope, instrument it, and build only its import closure."""
+    runtime_package = preparation_package(request)
+    bounded = runtime_package is not package
     ready = corrected_prepared(request)
     if ready is not None:
         return dict(ready, writer_id=writer_identity(request))
@@ -605,7 +663,7 @@ def prepare_request(request, out_dir):
     if not native.is_dir():
         raise ValueError("The validated native source tree is absent.")
     native_sources = native_inventory(native)
-    overlays = {name: digest(OWNER / name) for name in (*RUNTIME_FILES, *package.overlay_files(OWNER))}
+    overlays = {name: digest(OWNER / name) for name in (*RUNTIME_FILES, *runtime_package.overlay_files(OWNER))}
     key_data = {"scope": request["scope"], "inventory": inventory, "native_sources": native_sources, "overlays": overlays,
                 "rules": request["rule_set"], "stop": request["stop"], "helper_sha256": digest(__file__), "writer_id": writer}
     key = hashlib.sha256(json.dumps(key_data, sort_keys=True).encode()).hexdigest()
@@ -616,7 +674,7 @@ def prepare_request(request, out_dir):
         for name, expected in result["instrumentation"]["prepared_source_hashes"].items():
             if digest(Path(result["workspace"]) / name) != expected:
                 raise ValueError("A prepared diagnostic source changed: " + name)
-        package.validate_runtime(result)
+        runtime_package.validate_runtime(result)
         return result
     record_dir.mkdir(parents=True, exist_ok=True)
     common = Path(_git(original, "rev-parse", "--path-format=absolute", "--git-common-dir").decode().strip())
@@ -640,13 +698,15 @@ def prepare_request(request, out_dir):
         shutil.copy2(OWNER / name, target)
         if digest(target) != overlays[name]:
             raise ValueError("An operational overlay changed during copying: " + name)
-    configuration = package.configure(workspace)
+    configuration = runtime_package.configure(workspace)
     entries = {}
     changed = {}
     route = workspace / "ZesuSsz/Automation/ReturnRoute.v"
     if "ReturnRoute" in selected:
         before = route.read_bytes()
         after, descriptors = instrument_return_route(before.decode(), request["stop"])
+        if bounded:
+            after, descriptors = bounded_observation(before.decode(), after, descriptors)
         route.write_text(after)
         entries.update(descriptors)
         changed[str(route.relative_to(workspace))] = {"before_sha256": hashlib.sha256(before).hexdigest(), "after_sha256": digest(route)}
@@ -657,32 +717,42 @@ def prepare_request(request, out_dir):
         memory = workspace / "ZesuSsz/Automation/MemoryAccess.v"
         memory_before = memory.read_bytes()
         after, observed, memory_rows = instrument_memory_access(after, memory_before.decode())
+        if bounded:
+            observed, memory_rows = bounded_observation(memory_before.decode(), observed, memory_rows)
         memory.write_text(observed)
         entries.update(memory_rows)
         changed[str(memory.relative_to(workspace))] = {
             "before_sha256": hashlib.sha256(memory_before).hexdigest(), "after_sha256": digest(memory)}
+    if bounded:
+        after, descriptors = bounded_observation(before.decode(), after, descriptors)
+        entries = bounded_descriptors(entries)
     hooks.write_text(after)
     entries.update(descriptors)
     changed[str(hooks.relative_to(workspace))] = {"before_sha256": hashlib.sha256(before).hexdigest(), "after_sha256": digest(hooks)}
     prefix, adjustments = switch_adjusted_prefix(workspace, request)
     scratch = workspace / "_build/trace-native" / source.name
     scratch.parent.mkdir(parents=True, exist_ok=True)
-    scratch.write_text(insert_bridge_import(prefix) + "Abort.\n")
+    scratch_prefix = insert_bridge_import(prefix)
+    if bounded:
+        scratch_prefix = scratch_prefix.replace(package.BRIDGE_IMPORT, runtime_package.BRIDGE_IMPORT)
+    scratch.write_text(scratch_prefix + "Abort.\n")
     build = workspace / "_build/agents" / writer
     build.mkdir(parents=True)
     default = workspace / "_build/default"
     default.symlink_to(build / "default", target_is_directory=True)
     imports = sorted({name.replace(".", "/") + ".vo" for name in imported_modules(request["source_prefix"])
                       if name.startswith("ZesuSsz.") and (workspace / (name.replace(".", "/") + ".v")).is_file()})
-    targets = sorted(set(imports + [BRIDGE.replace(".v", ".vo")]
+    targets = sorted(set(imports + [runtime_package.BRIDGE.replace(".v", ".vo")]
         + (["ZesuSsz/Automation/MemoryAccess.vo"] if "MemoryAccess" in selected else [])))
-    guard_reference = install_guard_manifest(workspace, entries)
-    environment = build_environment(workspace, writer, entries, guard_reference)
+    guard_reference = install_guard_manifest(workspace, entries, bounded=bounded)
+    environment = build_environment(workspace, writer)
+    environment.update(preparation_guard_environment(workspace, entries, guard_reference, runtime_package))
     opam = shutil.which("opam", path=environment["PATH"])
     if not opam:
         raise ValueError("The pinned opam executable is absent.")
     stages = []
-    for targets_now in (["p0-filtered-trace.install", package.WRITER_TARGET], ["zesu-signature-gates.install"], targets):
+    install_targets = list(getattr(runtime_package, "INSTALL_TARGETS", ("p0-filtered-trace.install", package.WRITER_TARGET)))
+    for targets_now in (install_targets, ["zesu-signature-gates.install"], targets):
         command = [opam, "exec", "--switch=/home/cody/islaris", "--", "dune", "build", "--root", str(workspace),
                    "--build-dir", str(build), "--cache=enabled", "-j32", *targets_now]
         print("COMMAND " + json.dumps(command), flush=True)
@@ -711,7 +781,7 @@ def prepare_request(request, out_dir):
     hashes.update({name: digest(workspace / name) for name in overlays})
     hashes[str(scratch.relative_to(workspace))] = digest(scratch)
     hashes[str(Path(guard_reference["path"]).relative_to(workspace))] = guard_reference["sha256"]
-    runtime = package.runtime_inputs(workspace, build)
+    runtime = runtime_package.runtime_inputs(workspace, build)
     result = dict(request, **runtime, writer_id=writer, workspace=str(workspace), source=str(scratch), build_dir=str(build),
                   prefix_commands=[request["prefix_text"]] if request["prefix_text"] else [],
                   native_command="all: zesu_block." if request["prefix_text"] else "zesu_block.",
@@ -719,7 +789,7 @@ def prepare_request(request, out_dir):
                   selected_rules=selected, guard_manifest=guard_reference,
                   preparation_evidence={"original_scope_record": str(record_dir / "INPUTS.json"),
                       "compiled_objects_record": str(objects_file)},
-                  instrumentation={"protocol": "filtered-chunks-v1", "method": "source-filtered-v1", "schema": 2, "entry_coverage_complete": True, "instruction_coverage_complete": True,
+                  instrumentation={"protocol": getattr(runtime_package, "PROTOCOL", "filtered-chunks-v1"), "method": "source-filtered-v1", "schema": 2, "entry_coverage_complete": True, "instruction_coverage_complete": True,
                       "switch_adjustments": adjustments,
                       "changes": changed, "operational_overlays": overlays, "prepared_source_hashes": hashes,
                       "original_scope_sha256": digest(record_dir / "INPUTS.json"),
@@ -728,6 +798,8 @@ def prepare_request(request, out_dir):
                       "findlib_record_sha256": digest(findlib),
                       "native_source_count": len(native_sources),
                       "compiled_objects_sha256": digest(objects_file), "compiled_object_count": len(objects)})
+    if bounded:
+        result["capture_surface_policy"] = "bounded-kernel-v1"
     save(ready, result)
     print("PREPARED " + str(ready), flush=True)
     return result

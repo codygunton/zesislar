@@ -387,7 +387,11 @@ def server_main():
                                 "Set Typeclasses Debug Verbosity 2.", timeout=None)
                 option_log = feedback(state)
             try:
-                after = pet.run(state, command, timeout=None)
+                if bounded:
+                    from pytanque import Opts
+                    after = pet.run(state, command, opts=Opts(memo=False, hash=True), timeout=None)
+                else:
+                    after = pet.run(state, command, timeout=None)
                 result = {"accepted": True, "message": None,
                           "feedback": feedback(after), "option_feedback": option_log,
                           "after": ({"availability": "metadata-only", "proof_finished": after.proof_finished}
@@ -432,13 +436,20 @@ def _identity_alive(identity):
         return False
 
 
+from trace_block_kernel_runtime import (bounded_kernel, loaded_kernel_runtime,
+                                        prepare_kernel_environment, snapshot_command, parse_observer_status, status_command, observation_complete)
+
+
 def filtered_environment(request):
     """Validate the exact filtered runtime before the MCP server starts."""
     runtime = request.get("observer_runtime")
     if runtime is None:
         return {}
     from trace_block_prepare import guard_manifest_environment
-    if not isinstance(runtime, dict) or set(runtime) != {"plugin", "bridge", "coqpath"}:
+    expected = {"plugin", "bridge", "coqpath"}
+    if bounded_kernel(request):
+        expected |= {"surface_policy", "kernel_reader", "kernel_toolchain"}
+    if not isinstance(runtime, dict) or set(runtime) != expected:
         raise ValueError("The filtered observer runtime binding is invalid.")
     workspace = Path(request["workspace"]).resolve()
     coqpath = Path(runtime["coqpath"]).resolve()
@@ -453,10 +464,16 @@ def filtered_environment(request):
             raise ValueError("The filtered " + role + " leaves its workspace.")
         if hashlib.sha256(path.read_bytes()).hexdigest() != reference["sha256"]:
             raise ValueError("The filtered " + role + " hash differs from its binding.")
-    if Path(runtime["bridge"]["path"]).resolve() != (coqpath / "P0Filtered/TraceObserver.vo").resolve():
+    logical = "P0Bounded" if bounded_kernel(request) else "P0Filtered"
+    if Path(runtime["bridge"]["path"]).resolve() != (coqpath / logical / "TraceObserver.vo").resolve():
         raise ValueError("The filtered bridge does not match its logical search path.")
-    environment = guard_manifest_environment(workspace, request["entry_descriptors"],
-                                             request.get("guard_manifest"))
+    if bounded_kernel(request):
+        from trace_block_bounded_prepare import bounded_guard_manifest_environment
+        environment = bounded_guard_manifest_environment(workspace, request["entry_descriptors"],
+                                                         request.get("guard_manifest"))
+    else:
+        environment = guard_manifest_environment(workspace, request["entry_descriptors"],
+                                                 request.get("guard_manifest"))
     environment["COQPATH"] = str(coqpath)
     return environment
 
@@ -469,7 +486,7 @@ def mapped_observer(request, identity):
     rows = []
     for line in (Path("/proc") / str(identity["pid"]) / "maps").read_text().splitlines():
         fields = line.split(maxsplit=5)
-        if len(fields) != 6 or "filtered_trace_plugin.cmxs" not in fields[5]:
+        if len(fields) != 6 or ("bounded_trace_plugin.cmxs" if bounded_kernel(request) else "filtered_trace_plugin.cmxs") not in fields[5]:
             continue
         row = {"maps": line, "path": fields[5], "sha256": None,
                "file_identity_matches_maps": False}
@@ -600,6 +617,8 @@ async def _run(request, out_dir, *, capture_only=False):
                  "limits": Path("/proc/self/limits").read_text(),
                  "findlib_record_sha256": hashlib.sha256(findlib_path.read_bytes()).hexdigest()}
     env.update(filtered_environment(request))
+    kernel_environment, kernel_binding = prepare_kernel_environment(request, evidence_dir)
+    env.update(kernel_environment)
     if request.get("observer_runtime") is not None:
         writer_reference = request.get("chunk_writer")
         if not isinstance(writer_reference, dict) or set(writer_reference) != {"path", "sha256"}:
@@ -626,6 +645,12 @@ async def _run(request, out_dir, *, capture_only=False):
             "trace_block_filtered_events.py", "trace_block_mcp_chunks.py",
             "trace_block_package.py")]
         revision_paths.append(Path(request["chunk_writer"]["path"]))
+    if kernel_binding is not None:
+        revision_paths += [Path(__file__).with_name(name) for name in (
+            "trace_block_kernel_runtime.py", "trace_block_bounded_prepare.py",
+            "trace_block_bounded_package.py", "trace_block_event_ranges.py")]
+        revision_paths += [Path(kernel_binding[key]["path"]) for key in ("source_reader", "source_toolchain")]
+        revision_paths += [Path(row["path"]) for row in kernel_binding["artifacts"]]
     revisions = {str(path): hashlib.sha256(path.read_bytes()).hexdigest()
                  for path in revision_paths}
     for trial in residual_trials:
@@ -636,7 +661,8 @@ async def _run(request, out_dir, *, capture_only=False):
         raise ValueError("The native backend snapshot already exists.")
     used_backend.write_bytes(Path(__file__).read_bytes())
     save_json(evidence_dir / "RUN-MANIFEST.json", {"revisions": revisions,
-               "prepared_instrumentation": request["instrumentation"], "admission": admission})
+               "prepared_instrumentation": request["instrumentation"], "admission": admission,
+               **({"kernel_runtime": kernel_binding} if kernel_binding is not None else {})})
     operations, points = [], []
     residual_trial_records = []
     pet_identity = owner = state_id = None
@@ -644,17 +670,42 @@ async def _run(request, out_dir, *, capture_only=False):
     error = None
     closure = final = residual_event = final_obligations = residual_selection = None
     actual_switches = []
+    kernel_loaded = None
+    observer_status = observer_status_error = None
+    range_recorder = None
+    if kernel_binding is not None:
+        from trace_block_event_ranges import EventRanges
+        range_recorder = EventRanges(evidence_dir, request["chunk_writer"]["path"],
+                                     "/home/cody/islaris/_opam/bin/pet")
 
     async def call(client, name, arguments):
         started_utc = datetime.datetime.now(datetime.timezone.utc).isoformat()
         print("MCP-REQUEST", name, started_utc, flush=True)
-        response = await client.call_tool(name, arguments)
-        ref = save_json(evidence_dir / ("operation-%06d.json" % len(operations)),
+        index = len(operations)
+        before = range_recorder.begin(index) if range_recorder is not None else None
+        try:
+            response = await client.call_tool(name, arguments)
+        except Exception as caught:
+            if range_recorder is not None:
+                event_range = range_recorder.finish(index, before)
+                operations.append({"tool": name, "arguments": arguments,
+                    "started_utc": started_utc,
+                    "completed_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    "exception": {"type": type(caught).__name__, "message": str(caught)},
+                    "event_range": event_range})
+            raise
+        if range_recorder is not None:
+            range_recorder.adopt_owner(response.model_dump(mode="json"))
+            event_range = range_recorder.finish(index, before)
+        ref = save_json(evidence_dir / ("operation-%06d.json" % index),
                         response.model_dump(mode="json"))
         operations.append({"tool": name, "arguments": arguments,
                            "started_utc": started_utc,
-                           "completed_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(), **ref})
+                           "completed_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(), **ref,
+                           **({"event_range": event_range} if range_recorder is not None else {})})
         result = response.structuredContent
+        if kernel_binding is not None and response.isError:
+            raise RuntimeError("%s returned an SDK error envelope." % name)
         if not isinstance(result, dict) or not result.get("success", result.get("ok", False)):
             raise RuntimeError("%s rejected: %s" % (name, result))
         return result
@@ -694,6 +745,9 @@ async def _run(request, out_dir, *, capture_only=False):
                         raise ValueError("Pet does not belong to the owned server.")
                     pet_identity = {"pid": pid, "start_ticks": int(fields[19])}
                     save_json(evidence_dir / "LOADED-OBSERVER.json", mapped_observer(request, pet_identity))
+                    if kernel_binding is not None:
+                        kernel_loaded = loaded_kernel_runtime(kernel_binding, pet_identity)
+                        save_json(evidence_dir / "LOADED-KERNEL-RUNTIME.json", kernel_loaded)
                     all_mode = "Unset Printing All. " if request.get("observer_runtime") is not None else "Set Printing All. "
                     options = all_mode + "Set Printing Notations. Set Printing Depth 10000. Set Printing Width 1000000. "
                     if request.get("observer_runtime") is None:
@@ -748,7 +802,7 @@ async def _run(request, out_dir, *, capture_only=False):
                             state_id = qed["state_id"]
                         else:
                             checkpoint = await operation(client,
-                                '1: ltac2:(trace_block_snapshot "residual").')
+                                snapshot_command(request))
                             if not checkpoint["accepted"]:
                                 raise ValueError("The bounded residual checkpoint refused.")
                             state_id = checkpoint["state_id"]
@@ -762,6 +816,8 @@ async def _run(request, out_dir, *, capture_only=False):
                             residual_event = matches[0]
                             residual_selection = selected_residual_identity(evidence_dir, residual_event,
                                 out_dir.parent / "residual-selection.sqlite")
+                            if kernel_binding is not None:
+                                residual_selection["command"] = snapshot_command(request)
                     else:
                         final = await snapshot(client, {"kind": "residual"}, proof=True)
                         active = final["capture"]["goals"]["notation"]
@@ -794,7 +850,7 @@ async def _run(request, out_dir, *, capture_only=False):
                                         raise ValueError("The residual trial checkpoint has no full chunked capture.")
                                     references.append({"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()})
                             return references
-                        full_checkpoint = 'all: ltac2:(trace_block_snapshot "residual").'
+                        full_checkpoint = snapshot_command(request, "all:")
                         for index, trial in enumerate(residual_trials):
                             before_events = event_paths()
                             before = await operation(client, full_checkpoint)
@@ -836,6 +892,14 @@ async def _run(request, out_dir, *, capture_only=False):
                 except Exception as caught:
                     error = {"type": type(caught).__name__, "message": str(caught)}
                 finally:
+                    if kernel_binding is not None and state_id is not None:
+                        try:
+                            status_result = await operation(client, status_command(closure is not None), trial=True)
+                            status_value = parse_observer_status(status_result)
+                            observer_status = {"status": status_value,
+                                "operation": {key: operations[-1][key] for key in ("path", "sha256")}}
+                        except Exception as caught:
+                            observer_status_error = {"type": type(caught).__name__, "message": str(caught)}
                     try:
                         await call(client, "rocq_health", {})
                     except Exception as caught:
@@ -856,6 +920,10 @@ async def _run(request, out_dir, *, capture_only=False):
                  "transport_closed_normally": transport_closed,
                  "owned_pet_exited": (not _identity_alive(pet_identity)) if pet_identity else None,
                  "controller_signals_sent": 0}
+    operation_ranges = range_recorder.finalize() if range_recorder is not None else None
+    observation_ok = observation_complete(kernel_binding, kernel_loaded, error,
+        unchanged, observer_status, observer_status_error, ownership) and bool(
+            operation_ranges and operation_ranges["complete"])
     runtime = save_json(evidence_dir / "SESSION.json", {
         "operations": operations, "ownership": ownership, "admission": admission,
         "source_unchanged": unchanged, "changed_revisions": changed_revisions,
@@ -865,13 +933,21 @@ async def _run(request, out_dir, *, capture_only=False):
         "residual_trials": residual_trial_records,
         "final_obligations": final_obligations,
         "final_state_id": state_id,
-        "completed_utc": datetime.datetime.now(datetime.timezone.utc).isoformat()})
+        "completed_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        **({"kernel_runtime": kernel_binding, "loaded_kernel_runtime": kernel_loaded,
+             "observer_status": observer_status, "observer_status_error": observer_status_error,
+             "operation_ranges": operation_ranges, "observation_complete": observation_ok}
+           if kernel_binding is not None else {})})
     if capture_only:
         request_path = evidence_dir / "REQUEST.json"
         return {"schema_version": 1, "projection": "not-run",
                 "request": {"path": str(request_path), "sha256": hashlib.sha256(request_path.read_bytes()).hexdigest()},
                 "session": runtime, "owned_closure": ownership,
-                "source_unchanged": unchanged, "error": error}
+                "source_unchanged": unchanged, "error": error,
+                **({"observation_complete": observation_ok}
+                   if kernel_binding is not None else {})}
+    if kernel_binding is not None:
+        raise ValueError("The bounded-kernel capture requires its separate lazy projection.")
     return project_session(request, evidence_dir)
 
 
