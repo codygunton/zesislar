@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "posted": true,
+  "parent_confirmed": true,
+  "training_run": 2,
+  "root": "3c8ab7b0f769176f509e16824faf675adef3674b",
+  "command_sha256": "3f2c1e7604ec14aa378cdacbb1d2c210c02c4e9fdbcc74802076d4d846c68223",
+  "descriptor_sha256": "620254684e78d91ec171a5e2408512731aa79b5c265ee2d1a0458317991b65b6",
+  "design_sha256": "a7e3b2f55188215c1c5dc7469fdd1dc30362b2b1c408c31592d18b7c7b0c2753",
+  "generator_sha256": "758c1e7c638f22c2ec459993c22e67d612d4ca04fb5604d59e55aac5158a4bb5",
+  "comment_url": "https://github.com/codygunton/zesislar/issues/13#issuecomment-6216961043",
+  "original_prediction_url": "https://github.com/codygunton/zesislar/issues/13#issuecomment-6216737745",
+  "predicted_closures": 26,
+  "predicted_residuals": 17,
+  "parent_review": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-parent-review-002/REPORT.json",
+    "sha256": "d1216fe006108ab4c795cf479a17100fd08f2cd1dae79df05c2713a6bcf502c3",
+    "bytes": 767
+  },
+  "recorded_utc": "2026-10-16T13:52:27.276750+00:00",
+  "confirmation_source": "The parent relayed Spec confirmation and authorized the corrected seal once.",
+  "preserved797": "Startup failure with zero native arms."
+}

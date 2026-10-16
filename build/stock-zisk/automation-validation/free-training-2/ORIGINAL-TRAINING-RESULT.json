@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "status": "recorded-once",
+  "experiment_kind": "training",
+  "training_run": 2,
+  "training_root": "3c8ab7b0f769176f509e16824faf675adef3674b",
+  "first_native_run": false,
+  "details": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-result805/DETAILS.json",
+    "sha256": "502b33a77c5cd70be530e5db13b218d92a8da885abed197d204c0b5537ea762e",
+    "bytes": 415700
+  },
+  "verified_closures": 0,
+  "interactive_empty": 12,
+  "residual_blocks": 31,
+  "prediction": {
+    "closed": 26,
+    "residual": 17,
+    "verified_closed_observed": 0,
+    "interactive_empty_predicted_closed": 12,
+    "predicted_closed_still_residual": 14,
+    "predicted_residual_observed": 17,
+    "class_counts": {
+      "entry-list": 1,
+      "range": 14,
+      "leaf-expression": 14,
+      "class-candidate": 12,
+      "return-memory": 2
+    }
+  },
+  "limits": [
+    "Discovery records 43 native-residual rows. This record preserves those labels.",
+    "Twelve primary exports contain no goals. Their subsequent compiler calls fail on the missing Sets.call logical path.",
+    "No verified closure follows from the twelve empty interactive exports.",
+    "Boundary.v and Boundary_interactive.v contain the same import prefix. Each recorded rocq_start accepts that interactive file and theorem.",
+    "The common prefix includes Sets.call, Switches.ReturnBundle, ReturnWand and Switches.ReturnWand. The compiler rejects Sets.call before the theorem.",
+    "Successful interactive initialization does not establish successful standalone compiler import resolution.",
+    "Thirty-one blocks retain 61 active goals. The exports retain all active, stack, shelf and given-up groups.",
+    "All 43 primary calls enter once and accept. No hand step or block retry runs.",
+    "Every entry export contains instr_body. Every primary export removes that target. No launch lookup refusal remains.",
+    "The exports do not establish an exact instruction count or complete branch chronology.",
+    "Prediction classes derive from the immutable run 1 first conclusions, as the posted prediction specifies.",
+    "The controller sends zero signals. Every retained Pet PID and the discovery PID are absent.",
+    "Run 797 remains a startup failure with zero arms. Historical hold-out and run 1 results remain unchanged."
+  ]
+}

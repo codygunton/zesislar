@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "status": "sealed-training-run2-result",
+  "training_root": "3c8ab7b0f769176f509e16824faf675adef3674b",
+  "verified_closures": 0,
+  "interactive_empty": 12,
+  "residual_blocks": 31,
+  "first_residual_classes": {
+    "list-witness": 1,
+    "Iris-pure-condition": 28,
+    "memory-obligation": 2
+  },
+  "group_totals": {
+    "goals": 61
+  },
+  "accepted_primary_calls": 43,
+  "errored_primary_calls": 0,
+  "new_block_runs": 43,
+  "reused_block_runs": 0,
+  "details": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-result805/DETAILS.json",
+    "sha256": "502b33a77c5cd70be530e5db13b218d92a8da885abed197d204c0b5537ea762e",
+    "bytes": 415700
+  },
+  "result": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-result805/TRAINING-RESULT.json",
+    "sha256": "e14c17cc8e18580ee180bff94e685bbe813140f76e6681883163e10e302deedc",
+    "bytes": 2351
+  },
+  "table": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-result805/TABLE.md",
+    "sha256": "74d99d347b8b8a3ee72d31be8e0ce72591c9cc5dc6037627f5104f2c1029cec5",
+    "bytes": 4050
+  },
+  "collector": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-result805/seal.py",
+    "sha256": "40f1051c89911cd77c6c2098e4b3c574e5d8b6029b7a4c6a9bbda15d5b6ea58e",
+    "bytes": 12133
+  },
+  "limits": [
+    "Discovery records 43 native-residual rows. This record preserves those labels.",
+    "Twelve primary exports contain no goals. Their subsequent compiler calls fail on the missing Sets.call logical path.",
+    "No verified closure follows from the twelve empty interactive exports.",
+    "Boundary.v and Boundary_interactive.v contain the same import prefix. Each recorded rocq_start accepts that interactive file and theorem.",
+    "The common prefix includes Sets.call, Switches.ReturnBundle, ReturnWand and Switches.ReturnWand. The compiler rejects Sets.call before the theorem.",
+    "Successful interactive initialization does not establish successful standalone compiler import resolution.",
+    "Thirty-one blocks retain 61 active goals. The exports retain all active, stack, shelf and given-up groups.",
+    "All 43 primary calls enter once and accept. No hand step or block retry runs.",
+    "Every entry export contains instr_body. Every primary export removes that target. No launch lookup refusal remains.",
+    "The exports do not establish an exact instruction count or complete branch chronology.",
+    "Prediction classes derive from the immutable run 1 first conclusions, as the posted prediction specifies.",
+    "The controller sends zero signals. Every retained Pet PID and the discovery PID are absent.",
+    "Run 797 remains a startup failure with zero arms. Historical hold-out and run 1 results remain unchanged."
+  ]
+}

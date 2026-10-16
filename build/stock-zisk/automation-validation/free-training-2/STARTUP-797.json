@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "classification": "startup-failure-before-native-arms",
+  "watcher": "worker2-c-free-training2-native797",
+  "launch": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-launch794/LAUNCHED.json",
+    "sha256": "35714243c05b08ddec580b16a7a528b4de1374082e14de6c316b7d0a08747de6",
+    "bytes": 1025
+  },
+  "result": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-launch794/RESULT.json",
+    "sha256": "82bafaede743850d3bfcdd68ce3e3bbfcc7bf407af4933a8d5429de16ce52f46",
+    "bytes": 381
+  },
+  "log": {
+    "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-093954-worker2-c-free-training2-native797.log",
+    "sha256": "dd6855bfee2664e809c90fda44301d6e316538258eb384f66c40f41668738dd9",
+    "bytes": 2620
+  },
+  "sealed_launch": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-launch794/SEALED-LAUNCH.json",
+    "sha256": "d789f4f4bd73916f49c27df246a86341393d38a3b5efa2bbfa9ad09be4922d67",
+    "bytes": 273676
+  },
+  "descriptor": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-inputs780/terminal-descriptor.json",
+    "sha256": "edf5d8de4cc73676a48e85f4d7e227bb51524ecf2b328cc997603d78ffb83085",
+    "bytes": 286
+  },
+  "root": "3c8ab7b0f769176f509e16824faf675adef3674b",
+  "first_error": "The executable entry source hash changed: ZesuSsz/Contracts/AltFlFreeBlockEntries.v",
+  "expected_nested_hash": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d",
+  "actual_root_source": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/ZesuSsz/Contracts/AltFlFreeBlockEntries.v",
+    "sha256": "a154bce477ab912b9ca987a9d9062bf667bfd2a765e7de3ab0a3615149d320c6",
+    "bytes": 23117
+  },
+  "elapsed_seconds": 0.1466809909325093,
+  "native_arms_started": 0,
+  "native_tactics_entered": 0,
+  "output_directory_exists": false,
+  "discovery_pid_absent": true,
+  "signals_sent_by_controller": 0,
+  "all_1042_inputs_unchanged": true,
+  "control_flow_evidence": {
+    "source": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/tools/block/discovery.py",
+      "sha256": "73ccd16becf3f718515e3ab0086ca92f4c00e6bc4641ae3c2f5f755adaca2340",
+      "bytes": 53268
+    },
+    "descriptor_validation_line": 733,
+    "output_creation_line": 815
+  },
+  "interpretation": [
+    "The discovery process started, but no native proof arm started.",
+    "This record is not a measured training result.",
+    "No per-block result table is filled.",
+    "All earlier results and launch evidence remain immutable."
+  ],
+  "correction": "Regenerate only descriptor source bindings with the committed generator and validate them before a separately sealed launch."
+}

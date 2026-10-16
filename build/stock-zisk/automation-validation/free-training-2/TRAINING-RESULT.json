@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "experiment_kind": "training",
+  "training_run": 2,
+  "root": "3c8ab7b0f769176f509e16824faf675adef3674b",
+  "first_native_run": false,
+  "verified": 12,
+  "open": 31,
+  "prediction_closed": 26,
+  "prediction_residual": 17,
+  "prediction_matched": 29,
+  "predicted_closures_still_open": 14,
+  "original805": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-result805/REPORT.json",
+    "sha256": "a093848921b029fe83eacf20476c3321dcbc04cc8e64ce74d34e7598201cb374",
+    "bytes": 2893
+  },
+  "validation_supplement": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-validation-supplement812/VALIDATION-SUPPLEMENT.json",
+    "sha256": "9e44e1151585bce79419a742e7f7c91fefe9b2ddf7e383c0e4543b721af83571",
+    "bytes": 33194
+  },
+  "details": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-validation-supplement812/DETAILS.json",
+    "sha256": "5d1cd859c4b16a4721e730d9cbc1d5983d23ab6dc64c88a31a90f21ea07df36d",
+    "bytes": 453150
+  }
+}

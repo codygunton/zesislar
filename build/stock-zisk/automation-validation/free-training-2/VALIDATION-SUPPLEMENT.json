@@ -1,0 +1,753 @@
+{
+  "schema": 1,
+  "kind": "separate-kernel-verification-supplement",
+  "root": "3c8ab7b0f769176f509e16824faf675adef3674b",
+  "original805": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-result805/REPORT.json",
+    "sha256": "a093848921b029fe83eacf20476c3321dcbc04cc8e64ce74d34e7598201cb374",
+    "bytes": 2893
+  },
+  "verified": 12,
+  "open": 31,
+  "dependency_repair": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-dependency-repair808/RESULT.json",
+    "sha256": "9da840bc6ba1020d5cc0435eb7cc784c8b73521d0fda9aeaf4147d112bb70639",
+    "bytes": 961
+  },
+  "compiler_diagnosis": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-compiler-discrepancy807/REPORT.json",
+    "sha256": "630e319dfa5f6ba5121c0e35cb52ff2819fb21b97a445949fc4f5e89984c749a",
+    "bytes": 71949
+  },
+  "preserved_checker_failure809": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-validation809/RESULT.json",
+    "sha256": "1265d7f257c90870bf81edcdc8607c84be87d22b229569140c782517420f154c",
+    "bytes": 3964
+  },
+  "kernel_validation810": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-kernel-validation810/RESULT.json",
+    "sha256": "e9f1eb5fb1a47fadb86f315d594059013942583d297a5de9255db87dd3573100",
+    "bytes": 3977
+  },
+  "rows": [
+    {
+      "entry": "0x80041f7c",
+      "statement_sha256": "d0978227e786306bf8c60ca8f98249da16ab0ad0efbffe485a34f2af6fbc5671",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x80041f7c/Boundary.v",
+        "sha256": "02fbc75a17ad8230baaabdf37efaf3ef3ef95148ff0abb4f9b027ceb75ff9f4b",
+        "bytes": 4474
+      },
+      "original_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-register-bounds799/native/block_0x80041f7c/evidence.json",
+        "sha256": "7736ecf5c8dc6836e27086d15376f4c2592735bcac456ebfbf20e26b85af4eec",
+        "bytes": 21575
+      },
+      "interactive_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x80041f7c/RESULT.json",
+        "sha256": "9233600e8485ac3cc121f356875f1c3d4fd44672895f026113c8ba56cab2a950",
+        "bytes": 17103
+      },
+      "kernel_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-kernel-validation810/block_0x80041f7c/RESULT.json",
+        "sha256": "7752f7ec5c564f01a012cf7806db229655e5961c0b9042171f089d176239bcdf",
+        "bytes": 19442
+      },
+      "health": {
+        "success": true,
+        "ok": true,
+        "server_version": "0.3.1",
+        "switch": "islaris",
+        "switch_prefix": "/home/cody/islaris/_opam",
+        "switch_is_local": true,
+        "switch_source": "opam_env",
+        "toolchain": {
+          "coqc": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/tools/rocq_coqc_guarded.sh",
+            "version": "8.19.2+lsp 4.14.4"
+          },
+          "pet": {
+            "path": "/home/cody/islaris/_opam/bin/pet",
+            "version": "0.2.4-dev",
+            "pytanque_importable": true
+          }
+        },
+        "pet": {
+          "running": false,
+          "pid": null
+        },
+        "warnings": []
+      },
+      "Qed_in_source": true,
+      "Print_Assumptions_output": "Chars 3097 - 3160 [#[global]Instance:~(LithiumUnf...] 0. secs (0.u,0.s)\nChars 3161 - 3210 [#[global]Typeclasses~Opaque~De...] 0. secs (0.u,0.s)\nTactic call zesu_run ran for 4.442 secs (4.417u,0.009s) (success)\nClosed under the global context",
+      "compiled": true,
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "assumptions": [],
+      "normal_owned_closure": true
+    },
+    {
+      "entry": "0x80041fb4",
+      "statement_sha256": "80450c4a0ffca873fdc544dfc559e2a7696dc54afc641be0008e49931ae4e309",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x80041fb4/Boundary.v",
+        "sha256": "b0583682fecda1152254f2a0b0af7dfd24621d29f6afaa2e8deda3f06cef363b",
+        "bytes": 4474
+      },
+      "original_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-register-bounds799/native/block_0x80041fb4/evidence.json",
+        "sha256": "5f8b6fa5456483eb48a75b40536f260e667fef9c6f6b853a012e7ad7e4332bcf",
+        "bytes": 21578
+      },
+      "interactive_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x80041fb4/RESULT.json",
+        "sha256": "de0e7937d5ec5924acb55118540307afdb5a7a6a5f8657b9888a07c38d6adb49",
+        "bytes": 17103
+      },
+      "kernel_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-kernel-validation810/block_0x80041fb4/RESULT.json",
+        "sha256": "a4bd2b4ef0a8fc2e1eaef64cd0a8e6c3a2b093ca8df300d2acbbed4c6ee41873",
+        "bytes": 19434
+      },
+      "health": {
+        "success": true,
+        "ok": true,
+        "server_version": "0.3.1",
+        "switch": "islaris",
+        "switch_prefix": "/home/cody/islaris/_opam",
+        "switch_is_local": true,
+        "switch_source": "opam_env",
+        "toolchain": {
+          "coqc": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/tools/rocq_coqc_guarded.sh",
+            "version": "8.19.2+lsp 4.14.4"
+          },
+          "pet": {
+            "path": "/home/cody/islaris/_opam/bin/pet",
+            "version": "0.2.4-dev",
+            "pytanque_importable": true
+          }
+        },
+        "pet": {
+          "running": false,
+          "pid": null
+        },
+        "warnings": []
+      },
+      "Qed_in_source": true,
+      "Print_Assumptions_output": "Chars 3097 - 3160 [#[global]Instance:~(LithiumUnf...] 0. secs (0.u,0.s)\nChars 3161 - 3210 [#[global]Typeclasses~Opaque~De...] 0. secs (0.u,0.s)\nTactic call zesu_run ran for 4.31 secs (4.281u,0.013s) (success)\nClosed under the global context",
+      "compiled": true,
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "assumptions": [],
+      "normal_owned_closure": true
+    },
+    {
+      "entry": "0x80041fd8",
+      "statement_sha256": "41d6da67b64c3cf4d5897e9d0347dde22f65ea1737024866b9fc2c947e8ad7a0",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x80041fd8/Boundary.v",
+        "sha256": "cdced32d7422af42dd23bfd79ef026ef778592048240a487ed731a1bdca344c6",
+        "bytes": 4474
+      },
+      "original_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-register-bounds799/native/block_0x80041fd8/evidence.json",
+        "sha256": "a9f3eafa99db27ed8922a7d2195ffee00d70671fc893006ff6de12ff7d813f58",
+        "bytes": 21596
+      },
+      "interactive_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x80041fd8/RESULT.json",
+        "sha256": "cf2f010d22f25692d9675c1d1c39ea4a439caf1113126005e307fddf9b20c1db",
+        "bytes": 17108
+      },
+      "kernel_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-kernel-validation810/block_0x80041fd8/RESULT.json",
+        "sha256": "d4297e5860ddb05effca345dca7fff82534b5fdf54b688bfd3f562b62aa8d5b5",
+        "bytes": 19439
+      },
+      "health": {
+        "success": true,
+        "ok": true,
+        "server_version": "0.3.1",
+        "switch": "islaris",
+        "switch_prefix": "/home/cody/islaris/_opam",
+        "switch_is_local": true,
+        "switch_source": "opam_env",
+        "toolchain": {
+          "coqc": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/tools/rocq_coqc_guarded.sh",
+            "version": "8.19.2+lsp 4.14.4"
+          },
+          "pet": {
+            "path": "/home/cody/islaris/_opam/bin/pet",
+            "version": "0.2.4-dev",
+            "pytanque_importable": true
+          }
+        },
+        "pet": {
+          "running": false,
+          "pid": null
+        },
+        "warnings": []
+      },
+      "Qed_in_source": true,
+      "Print_Assumptions_output": "Chars 3097 - 3160 [#[global]Instance:~(LithiumUnf...] 0. secs (0.u,0.s)\nChars 3161 - 3210 [#[global]Typeclasses~Opaque~De...] 0. secs (0.u,0.s)\nTactic call zesu_run ran for 4.338 secs (4.306u,0.019s) (success)\nClosed under the global context",
+      "compiled": true,
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "assumptions": [],
+      "normal_owned_closure": true
+    },
+    {
+      "entry": "0x80042010",
+      "statement_sha256": "ec2f839c9537fbe958764d5e54cda2ffb6a7c48b997ffba065c63963fdd3ef80",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x80042010/Boundary.v",
+        "sha256": "397da1242d8debc563ffbb0563b2b7bbe01845091b4773c12d9ed3f75acbb940",
+        "bytes": 4474
+      },
+      "original_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-register-bounds799/native/block_0x80042010/evidence.json",
+        "sha256": "46931c3683836dfbd0e6ff17f61f0eda3a3cfd6a141945279c2abbdfbdd8eb03",
+        "bytes": 21594
+      },
+      "interactive_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x80042010/RESULT.json",
+        "sha256": "efaf888c773024c26a9cea8a383cf6842ac5501988e556c0039bc4d0fc1a213b",
+        "bytes": 17105
+      },
+      "kernel_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-kernel-validation810/block_0x80042010/RESULT.json",
+        "sha256": "99f664d28e4264f0d759bccad6679465641402d9b3160a8673b0968d82219c8c",
+        "bytes": 19439
+      },
+      "health": {
+        "success": true,
+        "ok": true,
+        "server_version": "0.3.1",
+        "switch": "islaris",
+        "switch_prefix": "/home/cody/islaris/_opam",
+        "switch_is_local": true,
+        "switch_source": "opam_env",
+        "toolchain": {
+          "coqc": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/tools/rocq_coqc_guarded.sh",
+            "version": "8.19.2+lsp 4.14.4"
+          },
+          "pet": {
+            "path": "/home/cody/islaris/_opam/bin/pet",
+            "version": "0.2.4-dev",
+            "pytanque_importable": true
+          }
+        },
+        "pet": {
+          "running": false,
+          "pid": null
+        },
+        "warnings": []
+      },
+      "Qed_in_source": true,
+      "Print_Assumptions_output": "Chars 3097 - 3160 [#[global]Instance:~(LithiumUnf...] 0. secs (0.u,0.s)\nChars 3161 - 3210 [#[global]Typeclasses~Opaque~De...] 0. secs (0.u,0.s)\nTactic call zesu_run ran for 4.414 secs (4.387u,0.013s) (success)\nClosed under the global context",
+      "compiled": true,
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "assumptions": [],
+      "normal_owned_closure": true
+    },
+    {
+      "entry": "0x80042028",
+      "statement_sha256": "adf7b949e7240b7793b81449fb331051a7c2db34a11e3b8d906db02b117d4b6e",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x80042028/Boundary.v",
+        "sha256": "c7afe6462be401b912cafee47117c22fbac5ecc81cecf607b39ce9c2103fbdcb",
+        "bytes": 4474
+      },
+      "original_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-register-bounds799/native/block_0x80042028/evidence.json",
+        "sha256": "f69239314785b14d4c2f559460dcbf3cecaa8f64601cf00872db797c2b0ed557",
+        "bytes": 21587
+      },
+      "interactive_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x80042028/RESULT.json",
+        "sha256": "0a5729b53860bc81a91b446de3bfc9dfb4bed868d2c1755a9786b2ba33dc5b88",
+        "bytes": 17100
+      },
+      "kernel_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-kernel-validation810/block_0x80042028/RESULT.json",
+        "sha256": "d83765d9856bed94709785552a2e76b52b8520b5260286717ad68ece503199df",
+        "bytes": 19432
+      },
+      "health": {
+        "success": true,
+        "ok": true,
+        "server_version": "0.3.1",
+        "switch": "islaris",
+        "switch_prefix": "/home/cody/islaris/_opam",
+        "switch_is_local": true,
+        "switch_source": "opam_env",
+        "toolchain": {
+          "coqc": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/tools/rocq_coqc_guarded.sh",
+            "version": "8.19.2+lsp 4.14.4"
+          },
+          "pet": {
+            "path": "/home/cody/islaris/_opam/bin/pet",
+            "version": "0.2.4-dev",
+            "pytanque_importable": true
+          }
+        },
+        "pet": {
+          "running": false,
+          "pid": null
+        },
+        "warnings": []
+      },
+      "Qed_in_source": true,
+      "Print_Assumptions_output": "Chars 3097 - 3160 [#[global]Instance:~(LithiumUnf...] 0. secs (0.u,0.s)\nChars 3161 - 3210 [#[global]Typeclasses~Opaque~De...] 0. secs (0.u,0.s)\nTactic call zesu_run ran for 4.378 secs (4.353u,0.01s) (success)\nClosed under the global context",
+      "compiled": true,
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "assumptions": [],
+      "normal_owned_closure": true
+    },
+    {
+      "entry": "0x80042054",
+      "statement_sha256": "0bfea91478b4cf542a537571dbc31576e04599ed6c92bc446aa3baf8ef89d2e3",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x80042054/Boundary.v",
+        "sha256": "01a7a893e616ef7ae833844e842f2bcb34d702528c0a59fae8f43ef7f79fd230",
+        "bytes": 4474
+      },
+      "original_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-register-bounds799/native/block_0x80042054/evidence.json",
+        "sha256": "c84390f069a3473a7c0870e7ffbeaae9c5074c17fdcdb5406e42c25d98183735",
+        "bytes": 21594
+      },
+      "interactive_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x80042054/RESULT.json",
+        "sha256": "a7f65b99c70fa47bb52ffb0d6a748b0725fd50eb049ba464acce3aeb3e911b4e",
+        "bytes": 17114
+      },
+      "kernel_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-kernel-validation810/block_0x80042054/RESULT.json",
+        "sha256": "475c55f4ab1c59982350729639092b3dc94afd010ab8139c4d6751766b41a34a",
+        "bytes": 19435
+      },
+      "health": {
+        "success": true,
+        "ok": true,
+        "server_version": "0.3.1",
+        "switch": "islaris",
+        "switch_prefix": "/home/cody/islaris/_opam",
+        "switch_is_local": true,
+        "switch_source": "opam_env",
+        "toolchain": {
+          "coqc": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/tools/rocq_coqc_guarded.sh",
+            "version": "8.19.2+lsp 4.14.4"
+          },
+          "pet": {
+            "path": "/home/cody/islaris/_opam/bin/pet",
+            "version": "0.2.4-dev",
+            "pytanque_importable": true
+          }
+        },
+        "pet": {
+          "running": false,
+          "pid": null
+        },
+        "warnings": []
+      },
+      "Qed_in_source": true,
+      "Print_Assumptions_output": "Chars 3097 - 3160 [#[global]Instance:~(LithiumUnf...] 0. secs (0.u,0.s)\nChars 3161 - 3210 [#[global]Typeclasses~Opaque~De...] 0. secs (0.u,0.s)\nTactic call zesu_run ran for 4.49 secs (4.466u,0.009s) (success)\nClosed under the global context",
+      "compiled": true,
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "assumptions": [],
+      "normal_owned_closure": true
+    },
+    {
+      "entry": "0x80042070",
+      "statement_sha256": "299c76817b775430930238b9e1978508b37117d32db1c6d8764fdfef19fc9ee5",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x80042070/Boundary.v",
+        "sha256": "8868f94f8f0f4046426566dbbb32365cee7fa4213c5330a8cd5da09040ced10c",
+        "bytes": 4474
+      },
+      "original_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-register-bounds799/native/block_0x80042070/evidence.json",
+        "sha256": "6db1c9f614bbcaf2eef88f3274632f9b2718a83a2407bb7d0411bae5b2d49fbb",
+        "bytes": 21578
+      },
+      "interactive_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x80042070/RESULT.json",
+        "sha256": "8134e023ab387ad37295ffa2222adead1b977106966bfa67147ff94daab94d0b",
+        "bytes": 17104
+      },
+      "kernel_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-kernel-validation810/block_0x80042070/RESULT.json",
+        "sha256": "686d06202ca1b197add31393297bc27d65f48f1e0328b70ef154b8ff954a1562",
+        "bytes": 19441
+      },
+      "health": {
+        "success": true,
+        "ok": true,
+        "server_version": "0.3.1",
+        "switch": "islaris",
+        "switch_prefix": "/home/cody/islaris/_opam",
+        "switch_is_local": true,
+        "switch_source": "opam_env",
+        "toolchain": {
+          "coqc": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/tools/rocq_coqc_guarded.sh",
+            "version": "8.19.2+lsp 4.14.4"
+          },
+          "pet": {
+            "path": "/home/cody/islaris/_opam/bin/pet",
+            "version": "0.2.4-dev",
+            "pytanque_importable": true
+          }
+        },
+        "pet": {
+          "running": false,
+          "pid": null
+        },
+        "warnings": []
+      },
+      "Qed_in_source": true,
+      "Print_Assumptions_output": "Chars 3097 - 3160 [#[global]Instance:~(LithiumUnf...] 0. secs (0.u,0.s)\nChars 3161 - 3210 [#[global]Typeclasses~Opaque~De...] 0. secs (0.u,0.s)\nTactic call zesu_run ran for 4.428 secs (4.403u,0.006s) (success)\nClosed under the global context",
+      "compiled": true,
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "assumptions": [],
+      "normal_owned_closure": true
+    },
+    {
+      "entry": "0x80042090",
+      "statement_sha256": "dee199c52945e3b47ddfb0fd15dece6330e86450d16e6c2a546f622be9446966",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x80042090/Boundary.v",
+        "sha256": "b3a0ced1f28511b792aa29f53972ba4219cf8b2a569d26f978549bbbe538bf00",
+        "bytes": 4474
+      },
+      "original_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-register-bounds799/native/block_0x80042090/evidence.json",
+        "sha256": "1a6dcc4979a10c755092be502c4b1bbb371b08b0e44bf419533ace5b81c1b69b",
+        "bytes": 21588
+      },
+      "interactive_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x80042090/RESULT.json",
+        "sha256": "5dd3f15af3139d8f3b5e5ddf25eda30b6972ee491b75d694600ae32d9f45b076",
+        "bytes": 17106
+      },
+      "kernel_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-kernel-validation810/block_0x80042090/RESULT.json",
+        "sha256": "a4eeec37a04a77157fc1275ba2a100b6327c97c67fd6d1b840f74f55df436080",
+        "bytes": 19438
+      },
+      "health": {
+        "success": true,
+        "ok": true,
+        "server_version": "0.3.1",
+        "switch": "islaris",
+        "switch_prefix": "/home/cody/islaris/_opam",
+        "switch_is_local": true,
+        "switch_source": "opam_env",
+        "toolchain": {
+          "coqc": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/tools/rocq_coqc_guarded.sh",
+            "version": "8.19.2+lsp 4.14.4"
+          },
+          "pet": {
+            "path": "/home/cody/islaris/_opam/bin/pet",
+            "version": "0.2.4-dev",
+            "pytanque_importable": true
+          }
+        },
+        "pet": {
+          "running": false,
+          "pid": null
+        },
+        "warnings": []
+      },
+      "Qed_in_source": true,
+      "Print_Assumptions_output": "Chars 3097 - 3160 [#[global]Instance:~(LithiumUnf...] 0. secs (0.u,0.s)\nChars 3161 - 3210 [#[global]Typeclasses~Opaque~De...] 0. secs (0.u,0.s)\nTactic call zesu_run ran for 4.309 secs (4.29u,0.003s) (success)\nClosed under the global context",
+      "compiled": true,
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "assumptions": [],
+      "normal_owned_closure": true
+    },
+    {
+      "entry": "0x800420b0",
+      "statement_sha256": "d685ea29da392f0dc46a6f6416d2fc47dbe5896db6d2f8464234315a6aa674f9",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x800420b0/Boundary.v",
+        "sha256": "7885140c42f118bf1e83e57563320d4688d6d60898710e3417a09cd6cb69fc3c",
+        "bytes": 4474
+      },
+      "original_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-register-bounds799/native/block_0x800420b0/evidence.json",
+        "sha256": "c1e370232146c2df29eb5ea69671c29d6e1762bc659429fbd36477eaf4e89052",
+        "bytes": 21591
+      },
+      "interactive_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x800420b0/RESULT.json",
+        "sha256": "1796114614a9030c0a7074bee016478d20d9c83f4db649c0428218cd07effeac",
+        "bytes": 17097
+      },
+      "kernel_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-kernel-validation810/block_0x800420b0/RESULT.json",
+        "sha256": "f9c6efd0b4818d5b441646370411c3e461a8462d73f2b718e9c11b4bf0abd4da",
+        "bytes": 19436
+      },
+      "health": {
+        "success": true,
+        "ok": true,
+        "server_version": "0.3.1",
+        "switch": "islaris",
+        "switch_prefix": "/home/cody/islaris/_opam",
+        "switch_is_local": true,
+        "switch_source": "opam_env",
+        "toolchain": {
+          "coqc": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/tools/rocq_coqc_guarded.sh",
+            "version": "8.19.2+lsp 4.14.4"
+          },
+          "pet": {
+            "path": "/home/cody/islaris/_opam/bin/pet",
+            "version": "0.2.4-dev",
+            "pytanque_importable": true
+          }
+        },
+        "pet": {
+          "running": false,
+          "pid": null
+        },
+        "warnings": []
+      },
+      "Qed_in_source": true,
+      "Print_Assumptions_output": "Chars 3097 - 3160 [#[global]Instance:~(LithiumUnf...] 0. secs (0.u,0.s)\nChars 3161 - 3210 [#[global]Typeclasses~Opaque~De...] 0. secs (0.u,0.s)\nTactic call zesu_run ran for 4.339 secs (4.319u,0.005s) (success)\nClosed under the global context",
+      "compiled": true,
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "assumptions": [],
+      "normal_owned_closure": true
+    },
+    {
+      "entry": "0x800420cc",
+      "statement_sha256": "0c7431668b6325e08b76a34946715b031ac28db84e932a43e54523862f31c544",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x800420cc/Boundary.v",
+        "sha256": "31fea13da6bd88b53dead386385a3ef70eb802e45bdf65b5be3150bf516b77d0",
+        "bytes": 4474
+      },
+      "original_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-register-bounds799/native/block_0x800420cc/evidence.json",
+        "sha256": "8398d30a4e440c2fbbba9ca6ca5622b4a59172b0e066de616e67ce275e06226a",
+        "bytes": 21590
+      },
+      "interactive_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x800420cc/RESULT.json",
+        "sha256": "d9d5a5ffbb4e8bfccc4dccec1509df1d22e4af7f15f81cde63bcf4d224da45dd",
+        "bytes": 17107
+      },
+      "kernel_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-kernel-validation810/block_0x800420cc/RESULT.json",
+        "sha256": "3c46cccf55eacd44d16fae210bd98d8d347ecbc8509849c5cecc8fc3826fe0cb",
+        "bytes": 19442
+      },
+      "health": {
+        "success": true,
+        "ok": true,
+        "server_version": "0.3.1",
+        "switch": "islaris",
+        "switch_prefix": "/home/cody/islaris/_opam",
+        "switch_is_local": true,
+        "switch_source": "opam_env",
+        "toolchain": {
+          "coqc": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/tools/rocq_coqc_guarded.sh",
+            "version": "8.19.2+lsp 4.14.4"
+          },
+          "pet": {
+            "path": "/home/cody/islaris/_opam/bin/pet",
+            "version": "0.2.4-dev",
+            "pytanque_importable": true
+          }
+        },
+        "pet": {
+          "running": false,
+          "pid": null
+        },
+        "warnings": []
+      },
+      "Qed_in_source": true,
+      "Print_Assumptions_output": "Chars 3097 - 3160 [#[global]Instance:~(LithiumUnf...] 0. secs (0.u,0.s)\nChars 3161 - 3210 [#[global]Typeclasses~Opaque~De...] 0. secs (0.u,0.s)\nTactic call zesu_run ran for 4.362 secs (4.335u,0.012s) (success)\nClosed under the global context",
+      "compiled": true,
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "assumptions": [],
+      "normal_owned_closure": true
+    },
+    {
+      "entry": "0x800420ec",
+      "statement_sha256": "52599d89d828830b993914c4efcd8a824585b0c0d5d6913b6033da3534e10b05",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x800420ec/Boundary.v",
+        "sha256": "177971d4804aad76d634ab40ae5bff373c95e3a281515bb4c3121b2805e4188c",
+        "bytes": 4474
+      },
+      "original_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-register-bounds799/native/block_0x800420ec/evidence.json",
+        "sha256": "a18b95d22e4bd3b4fe19d563310a2d4e4d2803d56c8e15bb057b0e6094f3b0e0",
+        "bytes": 21594
+      },
+      "interactive_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x800420ec/RESULT.json",
+        "sha256": "abab5e3c78b95c4f6ffdd3ef2ef47c68097278a5405c608e68245dceeb3d7f18",
+        "bytes": 17114
+      },
+      "kernel_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-kernel-validation810/block_0x800420ec/RESULT.json",
+        "sha256": "da58844220a01aa28bce090a9b3df762471fc7730426ee6909b00ca2146d168a",
+        "bytes": 19442
+      },
+      "health": {
+        "success": true,
+        "ok": true,
+        "server_version": "0.3.1",
+        "switch": "islaris",
+        "switch_prefix": "/home/cody/islaris/_opam",
+        "switch_is_local": true,
+        "switch_source": "opam_env",
+        "toolchain": {
+          "coqc": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/tools/rocq_coqc_guarded.sh",
+            "version": "8.19.2+lsp 4.14.4"
+          },
+          "pet": {
+            "path": "/home/cody/islaris/_opam/bin/pet",
+            "version": "0.2.4-dev",
+            "pytanque_importable": true
+          }
+        },
+        "pet": {
+          "running": false,
+          "pid": null
+        },
+        "warnings": []
+      },
+      "Qed_in_source": true,
+      "Print_Assumptions_output": "Chars 3097 - 3160 [#[global]Instance:~(LithiumUnf...] 0. secs (0.u,0.s)\nChars 3161 - 3210 [#[global]Typeclasses~Opaque~De...] 0. secs (0.u,0.s)\nTactic call zesu_run ran for 4.395 secs (4.375u,0.006s) (success)\nClosed under the global context",
+      "compiled": true,
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "assumptions": [],
+      "normal_owned_closure": true
+    },
+    {
+      "entry": "0x8004210c",
+      "statement_sha256": "449b6d8b0f4796948424e01b2b3d127e9ab371bb3ece76f53730ce39d90b4f6e",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x8004210c/Boundary.v",
+        "sha256": "30a1a5536eea34fbda03f8c54aac51497f1d95ab24048bd5a6bce168b2a8a7cd",
+        "bytes": 4474
+      },
+      "original_evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-register-bounds799/native/block_0x8004210c/evidence.json",
+        "sha256": "0fd8df71a64a3088078f88357ca294025609b535e6585e3fa4ea252c7354ccb0",
+        "bytes": 21594
+      },
+      "interactive_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/_build/free-training2-validation809/block_0x8004210c/RESULT.json",
+        "sha256": "b4f8c7787f9f7686cc2ffce6cce34e6dc067f63cca5e0d7457d384da11140ea3",
+        "bytes": 17114
+      },
+      "kernel_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-kernel-validation810/block_0x8004210c/RESULT.json",
+        "sha256": "47281426f08f346a2c7c16d56cd6ec7606d67b6dfa09f7deea02b2bf94232b6d",
+        "bytes": 19435
+      },
+      "health": {
+        "success": true,
+        "ok": true,
+        "server_version": "0.3.1",
+        "switch": "islaris",
+        "switch_prefix": "/home/cody/islaris/_opam",
+        "switch_is_local": true,
+        "switch_source": "opam_env",
+        "toolchain": {
+          "coqc": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training2-6154/tools/rocq_coqc_guarded.sh",
+            "version": "8.19.2+lsp 4.14.4"
+          },
+          "pet": {
+            "path": "/home/cody/islaris/_opam/bin/pet",
+            "version": "0.2.4-dev",
+            "pytanque_importable": true
+          }
+        },
+        "pet": {
+          "running": false,
+          "pid": null
+        },
+        "warnings": []
+      },
+      "Qed_in_source": true,
+      "Print_Assumptions_output": "Chars 3097 - 3160 [#[global]Instance:~(LithiumUnf...] 0. secs (0.u,0.s)\nChars 3161 - 3210 [#[global]Typeclasses~Opaque~De...] 0. secs (0.u,0.s)\nTactic call zesu_run ran for 4.393 secs (4.365u,0.01s) (success)\nClosed under the global context",
+      "compiled": true,
+      "verification": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      },
+      "assumptions": [],
+      "normal_owned_closure": true
+    }
+  ],
+  "source_edits": false,
+  "other31_native_runs": 0,
+  "limits": [
+    "This supplement repairs frozen import availability. It does not revise the original 805 measurement.",
+    "Dune builds exact Sets/call dependency objects in the private build. No Automation source changes.",
+    "All 12 repaired-import interactive calls accept. Each retained source passes Qed, Print Assumptions, compilation and exact statement verification.",
+    "The 809 export checker fails after each accepted primary call. Its raw error payload is unavailable. Exceptions and accepted calls remain.",
+    "Job 810 repeats no interactive tactic. It compiles and verifies byte-identical copies.",
+    "No native command runs for the other 31 blocks.",
+    "The original discovery labels remain historical. This supplement supplies 12 later kernel validations."
+  ]
+}

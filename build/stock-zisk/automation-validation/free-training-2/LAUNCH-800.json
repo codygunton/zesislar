@@ -1,0 +1,25 @@
+{
+  "utc": "2026-10-16T13:52:31.291780+00:00",
+  "controller_pid": 1903527,
+  "discovery_pid": 1903541,
+  "discovery_start_ticks": 185807317,
+  "training_root": "3c8ab7b0f769176f509e16824faf675adef3674b",
+  "training_run": 2,
+  "command": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-launch800/COMMAND.txt",
+    "sha256": "3f2c1e7604ec14aa378cdacbb1d2c210c02c4e9fdbcc74802076d4d846c68223",
+    "bytes": 3615
+  },
+  "sealed_launch": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-launch800/SEALED-LAUNCH.json",
+    "sha256": "234103109cb1b5d8e4c86b838844463af599f6bdd7da683988a631397f45fb66",
+    "bytes": 275729
+  },
+  "posting": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training2-launch800/PREDICTION-POSTED.json",
+    "sha256": "c89277c8b358ee7d38ce52029023b5f5fe8eed5a74be73e9b236d0ba6b640619",
+    "bytes": 1221
+  },
+  "training_started": true,
+  "holdout_started": false
+}
