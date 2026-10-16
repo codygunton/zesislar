@@ -1,5 +1,6 @@
 """Validate bounded displays and complete term references from one sealed capture."""
 from collections.abc import Mapping
+from trace_block_compact_catalog import catalog_header, descriptor
 from trace_block_kernel_display import (MetadataEvidence, verify_kernel_display, verify_kernel_capture_reload, artifact,
     _fields, _same, _exact, _integer, _array, _bounded_text)
 
@@ -35,8 +36,8 @@ class BoundedCapture:
         self.sidecar=capture['complete_sidecar'];self.catalog_ref=capture['evar_catalog_ref']
         artifact(metadata.root,self.sidecar);artifact(metadata.root,self.catalog_ref)
         self.catalog=metadata.read(self.catalog_ref)
-        _fields(self.catalog,'schema complete_sidecar entries');_same(self.catalog,'schema',1)
-        _same(self.catalog,'complete_sidecar',self.sidecar)
+        raw_ids={group:[row['evar']for row in capture['notation'][group]]for group in ('goals','shelf','given_up')}
+        self.catalog_version=catalog_header(self.catalog,self.sidecar,raw_ids)
         if not isinstance(capture['displays'],Mapping):raise ValueError('The capture lacks its exact display map.')
         if version==2:
             verify_kernel_capture_reload(MetadataEvidence(metadata),capture,
@@ -106,16 +107,21 @@ class BoundedCapture:
                 _same(value,'type',entry['type']);_term(entry['type'],self.sidecar,stem+'conclusion')
                 if entry['body']is not None:raise ValueError('An undefined evar has a defined body.')
             context=entry['context'];filters=entry['filter']
-            if not _array(context)or not _array(filters)or any(type(v)is not bool for v in filters):
-                raise ValueError('The catalog lacks its exact context or filter.')
-            _same(entry,'context_declarations',len(context))
-            if len(filters)!=len(context):raise ValueError('The context filter has a different length.')
-            root=stem+('body'if entry['defined']else'conclusion')
-            for n,declaration in enumerate(context):
-                _fields(declaration,'name type body')
-                if not isinstance(declaration['name'],str):raise ValueError('A context binder lacks its exact name.')
-                _term(declaration['type'],self.sidecar,root+'@named:%d:type'%n)
-                if declaration['body']is not None:_term(declaration['body'],self.sidecar,root+'@named:%d:body'%n)
+            if self.catalog.get('schema')==2 and key not in self.catalog['selected_ids']:
+                count=entry['context_declarations'];_integer(count)
+                descriptor(context,self.sidecar,index,key,'context',count)
+                descriptor(filters,self.sidecar,index,key,'filter',count)
+            else:
+                if not _array(context)or not _array(filters)or any(type(v)is not bool for v in filters):
+                    raise ValueError('The catalog lacks its exact context or filter.')
+                _same(entry,'context_declarations',len(context))
+                if len(filters)!=len(context):raise ValueError('The context filter has a different length.')
+                root=stem+('body'if entry['defined']else'conclusion')
+                for n,declaration in enumerate(context):
+                    _fields(declaration,'name type body')
+                    if not isinstance(declaration['name'],str):raise ValueError('A context binder lacks its exact name.')
+                    _term(declaration['type'],self.sidecar,root+'@named:%d:type'%n)
+                    if declaration['body']is not None:_term(declaration['body'],self.sidecar,root+'@named:%d:body'%n)
             candidates=entry['candidates']
             if candidates is None:
                 if entry['candidate_count']is not None:raise ValueError('An absent candidate list has a count.')
@@ -127,6 +133,8 @@ class BoundedCapture:
             self.entries.append({'id':key,'name':entry['name'],'status':'defined'if entry['defined']else'undefined',
                 'type':value['type'],'body':value['body'],'context':value['context'],'entry_ref':value['entry_ref'],
                 'filter':filters,'candidates':candidates})
+        if self.catalog.get('schema')==2 and not set(self.catalog['selected_ids']).issubset(self.by_id):
+            raise ValueError('A compact selected identity is absent from the complete catalog.')
 
     def _goals(self,group):
         for mode in ('notation','no_notation'):

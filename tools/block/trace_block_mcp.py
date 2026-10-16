@@ -6,6 +6,7 @@ cannot establish internal coverage. Missing entry evidence makes a run incomplet
 """
 
 import asyncio
+from collections import Counter
 import datetime
 import hashlib
 import importlib.util
@@ -15,6 +16,7 @@ from pathlib import Path
 import resource
 import subprocess
 import sys
+from trace_block_raw_budget import RawBudget, from_environment as raw_budget_for, write_bytes as budget_write_bytes
 
 
 GROUPS = ("goals", "stack", "shelf", "given_up")
@@ -56,7 +58,10 @@ def save_json(path, value):
                           separators=(",", ":")) + "\n").encode()
     if path.exists() and path.read_bytes() != payload:
         raise ValueError("The evidence path already contains different bytes: " + str(path))
-    path.write_bytes(payload)
+    if raw_budget_for(path) is None:
+        path.write_bytes(payload)
+    elif not path.exists():
+        budget_write_bytes(path, payload, control=True)
     return {"path": str(path.resolve()),
             "sha256": hashlib.sha256(payload).hexdigest()}
 
@@ -393,7 +398,12 @@ def server_main():
                 else:
                     after = pet.run(state, command, timeout=None)
                 result = {"accepted": True, "message": None,
-                          "feedback": feedback(after), "option_feedback": option_log,
+                          "feedback": (feedback(after) if not os.environ.get("ZESU_TRACE_RAW_BUDGET")
+                                       or command.endswith("Ltac2 Eval trace_bounded_status ().")
+                                       else []), "option_feedback": option_log,
+                          **({"feedback_availability": "counters-only",
+                              "feedback_counts": dict(Counter(str(level) for level, _ in (after.feedback or [])))}
+                             if os.environ.get("ZESU_TRACE_RAW_BUDGET") and not command.endswith("Ltac2 Eval trace_bounded_status ().") else {}),
                           "after": ({"availability": "metadata-only", "proof_finished": after.proof_finished}
                                     if bounded else _snapshot(pet, after, False, allow_outside=True))}
             except Exception as error:
@@ -449,9 +459,20 @@ def filtered_environment(request):
     expected = {"plugin", "bridge", "coqpath"}
     if bounded_kernel(request):
         expected |= {"surface_policy", "kernel_reader", "kernel_toolchain"}
+    raw_policy = runtime.get("raw_policy") if isinstance(runtime, dict) else None
+    if bounded_kernel(request) and raw_policy is not None:
+        if raw_policy != "trigger-selected-raw-v2":
+            raise ValueError("The raw writer policy is unsupported.")
+        expected |= {"raw_policy", "raw_budget_writer"}
     if not isinstance(runtime, dict) or set(runtime) != expected:
         raise ValueError("The filtered observer runtime binding is invalid.")
     workspace = Path(request["workspace"]).resolve()
+    if raw_policy is not None:
+        from trace_block_kernel_runtime import checked_reference
+        helper = checked_reference(runtime["raw_budget_writer"], workspace=workspace)
+        local = Path(__file__).with_name("trace_block_raw_budget.py")
+        if helper["sha256"] != hashlib.sha256(local.read_bytes()).hexdigest():
+            raise ValueError("The raw budget helper differs from the bound runtime source.")
     coqpath = Path(runtime["coqpath"]).resolve()
     if not coqpath.is_dir() or not coqpath.is_relative_to(workspace):
         raise ValueError("The filtered bridge search path leaves its workspace.")
@@ -566,6 +587,40 @@ def selected_residual_identity(evidence_dir, reference, index_path, capture_read
                 "given_up_count": len(captured.root["notation"]["given_up"])}
 
 
+def prepare_raw_budget(request, out_dir):
+    runtime = request.get("observer_runtime") or {}
+    if runtime.get("raw_policy") != "trigger-selected-raw-v2":
+        raise ValueError("The raw writer policy is unsupported.")
+    from trace_block_kernel_runtime import checked_reference
+    workspace = Path(request["workspace"]).resolve()
+    helper = checked_reference(runtime["raw_budget_writer"], workspace=workspace)
+    if helper["sha256"] != hashlib.sha256(Path(__file__).with_name("trace_block_raw_budget.py").read_bytes()).hexdigest():
+        raise ValueError("The raw budget helper differs from the bound runtime source.")
+    root = Path(out_dir).resolve()
+    ledger = root / "evidence/RAW-BUDGET.json"
+    if ledger.exists():
+        if ledger.is_symlink() or os.environ.get("ZESU_TRACE_RAW_BUDGET") != str(ledger):
+            raise ValueError("The production capture has no inherited ledger identity.")
+        budget = RawBudget(ledger)
+        value = budget.read()
+        if (value["root"] != str(root) or value["limit_bytes"] != 2000000000
+                or value["control_reserve_bytes"] != 1048576):
+            raise ValueError("The inherited raw budget has a different scope.")
+        files = list(root.rglob("*"))
+        if any(path.is_symlink() for path in files):
+            raise ValueError("The production raw directory contains a link.")
+        if sum(path.stat().st_size for path in files if path.is_file()) > value["used_bytes"]:
+            raise ValueError("The production raw directory contains unaccounted bytes.")
+    else:
+        if root.exists() and any(path.is_file() or path.is_symlink() for path in root.rglob("*")):
+            raise ValueError("The production raw directory contains preexisting files.")
+        budget = RawBudget.create(root)
+    environment = {"ZESU_TRACE_RAW_BUDGET": str(ledger),
+                   "ZESU_TRACE_RAW_BUDGET_WRITER": helper["path"]}
+    os.environ.update(environment)
+    return budget, environment
+
+
 async def _run(request, out_dir, *, capture_only=False):
     from trace_block_prepare import writer_identity
     writer = writer_identity(request)
@@ -616,6 +671,15 @@ async def _run(request, out_dir, *, capture_only=False):
     admission = {"writer_id": writer, "cgroup": control_group, "memory_max": memory_limit,
                  "limits": Path("/proc/self/limits").read_text(),
                  "findlib_record_sha256": hashlib.sha256(findlib_path.read_bytes()).hexdigest()}
+    runtime_policy = (request.get("observer_runtime") or {}).get("raw_policy")
+    if runtime_policy is not None:
+        if runtime_policy != "trigger-selected-raw-v2" or not bounded_kernel(request):
+            raise ValueError("The raw writer policy is unsupported.")
+        raw_budget, budget_environment = prepare_raw_budget(request, out_dir)
+        helper = request["observer_runtime"]["raw_budget_writer"]
+        env.update(budget_environment)
+    elif os.environ.get("ZESU_TRACE_RAW_BUDGET"):
+        raise ValueError("A legacy request cannot inherit a raw budget.")
     env.update(filtered_environment(request))
     kernel_environment, kernel_binding = prepare_kernel_environment(request, evidence_dir)
     env.update(kernel_environment)
@@ -648,9 +712,12 @@ async def _run(request, out_dir, *, capture_only=False):
     if kernel_binding is not None:
         revision_paths += [Path(__file__).with_name(name) for name in (
             "trace_block_kernel_runtime.py", "trace_block_bounded_prepare.py",
-            "trace_block_bounded_package.py", "trace_block_event_ranges.py")]
+            "trace_block_bounded_package.py", "trace_block_event_ranges.py", "trace_block_raw_budget.py",
+            "trace_block_selected_feedback.py", "trace_block_raw_budget_validation.py")]
         revision_paths += [Path(kernel_binding[key]["path"]) for key in ("source_reader", "source_toolchain")]
         revision_paths += [Path(row["path"]) for row in kernel_binding["artifacts"]]
+    if runtime_policy is not None:
+        revision_paths.append(Path(helper["path"]))
     revisions = {str(path): hashlib.sha256(path.read_bytes()).hexdigest()
                  for path in revision_paths}
     for trial in residual_trials:
@@ -659,7 +726,7 @@ async def _run(request, out_dir, *, capture_only=False):
     used_backend = evidence_dir / "BACKEND-USED.py"
     if used_backend.exists():
         raise ValueError("The native backend snapshot already exists.")
-    used_backend.write_bytes(Path(__file__).read_bytes())
+    budget_write_bytes(used_backend, Path(__file__).read_bytes(), control=True)
     save_json(evidence_dir / "RUN-MANIFEST.json", {"revisions": revisions,
                "prepared_instrumentation": request["instrumentation"], "admission": admission,
                **({"kernel_runtime": kernel_binding} if kernel_binding is not None else {})})
@@ -896,6 +963,10 @@ async def _run(request, out_dir, *, capture_only=False):
                         try:
                             status_result = await operation(client, status_command(closure is not None), trial=True)
                             status_value = parse_observer_status(status_result)
+                            if runtime_policy is not None and status_value.get("raw_budget", {}).get("limit_bytes") != 2000000000:
+                                raise ValueError("The native observer omits its exact raw budget status.")
+                            if runtime_policy is not None and "selected_feedback" not in status_value:
+                                raise ValueError("The native observer omits its selected feedback status.")
                             observer_status = {"status": status_value,
                                 "operation": {key: operations[-1][key] for key in ("path", "sha256")}}
                         except Exception as caught:
@@ -924,6 +995,12 @@ async def _run(request, out_dir, *, capture_only=False):
     observation_ok = observation_complete(kernel_binding, kernel_loaded, error,
         unchanged, observer_status, observer_status_error, ownership) and bool(
             operation_ranges and operation_ranges["complete"])
+    raw_budget_record = None
+    if runtime_policy is not None:
+        ledger_value = raw_budget.read()
+        raw_budget_record = {"ledger_path": "evidence/RAW-BUDGET.json", "limit_bytes": 2000000000,
+                             "complete": ledger_value["complete"]}
+        observation_ok = observation_ok and ledger_value["complete"]
     runtime = save_json(evidence_dir / "SESSION.json", {
         "operations": operations, "ownership": ownership, "admission": admission,
         "source_unchanged": unchanged, "changed_revisions": changed_revisions,
@@ -936,6 +1013,7 @@ async def _run(request, out_dir, *, capture_only=False):
         "completed_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         **({"kernel_runtime": kernel_binding, "loaded_kernel_runtime": kernel_loaded,
              "observer_status": observer_status, "observer_status_error": observer_status_error,
+             **({"raw_budget": raw_budget_record} if raw_budget_record is not None else {}),
              "operation_ranges": operation_ranges, "observation_complete": observation_ok}
            if kernel_binding is not None else {})})
     if capture_only:
@@ -1161,6 +1239,8 @@ def _admit(request, out_dir, *, capture_only=False):
     directory.mkdir(parents=True, exist_ok=True)
     request_file = directory / "REQUEST.json"
     result_file = directory / ("CAPTURE.json" if capture_only else "BACKEND.json")
+    if (request.get("observer_runtime") or {}).get("raw_policy") is not None:
+        prepare_raw_budget(request, directory.parent)
     save_json(request_file, request)
     python = (sys.executable if importlib.util.find_spec("mcp") is not None
               else os.environ.get("ZESU_MCP_PYTHON"))

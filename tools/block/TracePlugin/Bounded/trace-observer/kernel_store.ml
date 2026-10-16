@@ -70,8 +70,7 @@ let reference root relative =
   {path=relative;sha256=Chunks.sha256_file path;bytes=(Unix.stat path).Unix.st_size}
 let write_bytes root relative emit =
   let path=full_path root relative in Chunks.mkdir (Filename.dirname path);
-  let channel=open_out_gen [Open_wronly;Open_creat;Open_excl;Open_binary] 0o600 path in
-  Fun.protect ~finally:(fun()->close_out channel) (fun()->emit channel;flush channel);
+  Trace_raw_budget.with_output path emit;
   reference root relative
 let write_marshal root relative value = write_bytes root relative (fun channel -> Marshal.to_channel channel value [])
 let write_json root relative value = Kernel_artifact.write root relative value; reference root relative
@@ -118,32 +117,52 @@ let snapshot ~toolchain_hash ~env ~sigma ~goals ~fresh_counter ~proofs =
    universe_state=Evd.evar_universe_context sigma;
    goals=List.map Evar.repr goals;shelf=List.map Evar.repr(Evd.shelf sigma);
    given_up=List.map Evar.repr(Evar.Set.elements(Evd.given_up sigma));fresh_counter}
-let catalog_json snapshot complete =
+let selected_ids snapshot=List.sort_uniq Int.compare(snapshot.goals @ snapshot.shelf @ snapshot.given_up)
+let emit_catalog ?(compact=true) output snapshot complete =
+  let text value=output value 0(String.length value)in
+  let json value=Kernel_artifact.emit_json output value in
+  let object_ fields=text "{";List.iteri(fun index(key,emit)->
+    if index>0 then text ",";json(`String key);text ":";emit())fields;text "}"in
+  let array emit values=text "[";List.iteri(fun index value->if index>0 then text ",";emit value)values;text "]"in
+  let selected=selected_ids snapshot in
   let term_ref id=`Assoc["availability",`String "referenced";
     "complete_sidecar",reference_json complete;"node_ref",node_json{root_id=id;child_path=[]}]in
-  `Assoc["schema",`Int 1;"complete_sidecar",reference_json complete;
-    "entries",`List(List.map(fun entry->
-      let base=Printf.sprintf "evar/%d/%s" entry.key(if entry.defined then "body"else"conclusion")in
-      `Assoc["id",`Int entry.key;"name",(match entry.name with None->`Null|Some name->`String name);
-      "defined",`Bool entry.defined;
-      "type",(if entry.defined then`Assoc["availability",`String "unavailable";
-        "reason",`String "Evd erases the conclusion of a defined evar"]else term_ref base);
-      "body",(if entry.defined then term_ref base else`Null);
-      "context",`List(List.mapi(fun index declaration->
-        let root field=Printf.sprintf "%s@named:%d:%s" base index field in
-        `Assoc["name",`String(Id.to_string(Context.Named.Declaration.get_id declaration));
-          "type",term_ref(root "type");"body",(match Context.Named.Declaration.get_value declaration with
-            None->`Null|Some _->term_ref(root "body"))])entry.context);
-      "context_declarations",`Int(List.length entry.context);
-      "filter",`List(List.map(fun value->`Bool value)entry.filter);
-      "candidates",(match entry.candidates with None->`Null|Some terms->`List(List.mapi(fun index _->
-        term_ref(Printf.sprintf "evar/%d/candidate/%d" entry.key index))terms));
-      "candidate_count",(match entry.candidates with None->`Null|Some terms->`Int(List.length terms))])snapshot.catalog)]
+  object_(["schema",(fun()->json(`Int(if compact then 2 else 1)));"complete_sidecar",(fun()->json(reference_json complete))] @
+    (if compact then ["selected_ids",(fun()->array(fun key->json(`Int key))selected)]else[]) @ [
+    "entries",(fun()->array(fun(index,entry)->
+      let base=Printf.sprintf "evar/%d/%s"entry.key(if entry.defined then "body"else"conclusion")in
+      let count=List.length entry.context in
+      let compact_field field count=`Assoc["availability",`String "referenced";
+        "complete_sidecar",reference_json complete;"catalog_index",`Int index;
+        "evar",`Int entry.key;"field",`String field;"count",`Int count]in
+      object_["id",(fun()->json(`Int entry.key));
+        "name",(fun()->json(match entry.name with None->`Null|Some name->`String name));
+        "defined",(fun()->json(`Bool entry.defined));
+        "type",(fun()->json(if entry.defined then`Assoc["availability",`String "unavailable";
+          "reason",`String "Evd erases the conclusion of a defined evar"]else term_ref base));
+        "body",(fun()->json(if entry.defined then term_ref base else`Null));
+        "context",(fun()->if not compact || List.mem entry.key selected then
+          array(fun(index,declaration)->
+            let root field=Printf.sprintf "%s@named:%d:%s"base index field in
+            json(`Assoc["name",`String(Id.to_string(Context.Named.Declaration.get_id declaration));
+              "type",term_ref(root "type");"body",(match Context.Named.Declaration.get_value declaration with
+                None->`Null|Some _->term_ref(root "body"))]))
+            (List.mapi(fun index declaration->index,declaration)entry.context)
+          else json(compact_field "context" count));
+        "context_declarations",(fun()->json(`Int count));
+        "filter",(fun()->if not compact || List.mem entry.key selected then array(fun value->json(`Bool value))entry.filter
+          else json(compact_field "filter"(List.length entry.filter)));
+        "candidates",(fun()->match entry.candidates with None->json`Null|Some values->
+          array(fun(index,_)->json(term_ref(Printf.sprintf "evar/%d/candidate/%d"entry.key index)))
+            (List.mapi(fun index term->index,term)values));
+        "candidate_count",(fun()->json(match entry.candidates with None->`Null|Some values->`Int(List.length values)))])
+      (List.mapi(fun index entry->index,entry)snapshot.catalog))])
 let create ~evidence_root ~directory ~toolchain_ref snapshot =
   if snapshot.toolchain_hash <> toolchain_ref.sha256 then failwith "Toolchain association mismatch";
   let complete=write_marshal evidence_root (directory^"/complete.marshal") snapshot in
-  let catalog_ref=write_json evidence_root (directory^"/evar-catalog.json")
-    (catalog_json snapshot complete) in
+  let catalog_path=directory^"/evar-catalog.json"in
+  Kernel_artifact.write_stream evidence_root catalog_path(fun output->emit_catalog output snapshot complete);
+  let catalog_ref=reference evidence_root catalog_path in
   {evidence_root;directory;snapshot;complete;catalog_ref;toolchain_ref;
    terms=Physical.create 1024;marker_count=0}
 let term_artifact store term =
@@ -291,6 +310,8 @@ let validate snapshot expected =
     check "conclusion"entry.conclusion;check "body"entry.body;
     Option.iter(List.iteri(fun index term->check("candidate/"^string_of_int index)(Some term)))entry.candidates;
     Hashtbl.add catalog entry.key entry)snapshot.catalog;
+  List.iter(fun key->if not(Hashtbl.mem catalog key)then failwith "Raw group has no catalog entry")
+    (snapshot.goals @ snapshot.shelf @ snapshot.given_up);
   let seen=Physical.create 4096 in
   let pending=Stack.create() in
   let add term=Stack.push term pending in

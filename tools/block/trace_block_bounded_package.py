@@ -9,21 +9,24 @@ BOUNDED = 'tools/block/TracePlugin/Bounded'
 BRIDGE = BOUNDED + '/TraceObserver.v'
 BRIDGE_IMPORT = 'From P0Bounded Require Import TraceObserver.'
 READER_TARGET = BOUNDED + '/trace-observer/kernel_reader.exe'
-# MCP feedback uses the unchanged, reviewed streaming writer.
-from trace_block_package import WRITER_TARGET
+# The new policy uses the budget-aware bounded writer.
+WRITER_TARGET = BOUNDED + '/trace-observer/chunk_control.exe'
 FILES = ('dune', 'TraceObserver.v', 'trace-observer/dune',
          'trace-observer/bounded_trace_plugin.ml', 'trace-observer/kernel_artifact.ml',
          'trace-observer/kernel_store.ml', 'trace-observer/kernel_display.ml',
          'trace-observer/kernel_capture.ml', 'trace-observer/kernel_reader.ml',
          'trace-observer/kernel_control.ml', 'trace-observer/artifact_control.ml',
-         'trace-observer/trace_block_chunks.ml')
+         'trace-observer/trace_block_chunks.ml', 'trace-observer/trace_raw_budget.ml',
+         'trace-observer/chunk_control.ml')
 INSTALL_TARGETS = ('p0-bounded-trace.install', READER_TARGET, WRITER_TARGET)
 PROTOCOL = 'bounded-kernel-v1'
+RAW_POLICY = 'trigger-selected-raw-v2'
+RAW_WRITER = 'tools/block/trace_block_raw_budget.py'
 
 
 def overlay_files(owner):
     import trace_block_package
-    names = [BOUNDED + '/' + name for name in FILES]
+    names = [BOUNDED + '/' + name for name in FILES] + [RAW_WRITER]
     names += trace_block_package.overlay_files(owner)
     for name in names:
         path = Path(owner) / name
@@ -89,7 +92,8 @@ def runtime_inputs(workspace, build):
     reader = build / 'default' / READER_TARGET
     compiled_bridge = build / 'default' / BRIDGE.replace('.v', '.vo')
     writer = build / 'default' / WRITER_TARGET
-    required = (plugin, codec, reader, compiled_bridge, writer)
+    raw_writer = workspace / RAW_WRITER
+    required = (plugin, codec, reader, compiled_bridge, writer, raw_writer)
     for path in required:
         if not path.is_file() or not path.resolve(strict=True).is_relative_to(workspace):
             raise ValueError('A bounded runtime artifact is absent or outside its workspace: ' + str(path))
@@ -124,6 +128,7 @@ def runtime_inputs(workspace, build):
         raise ValueError('The immutable bounded alias correspondence changed.')
     alias_path.write_bytes(alias_bytes)
     result = {'observer_runtime': {'surface_policy': PROTOCOL,
+              'raw_policy': RAW_POLICY, 'raw_budget_writer': reference(raw_writer),
               'plugin': reference(plugin, sized=False), 'bridge': reference(bridge, sized=False),
               'coqpath': str(coqpath), 'kernel_reader': reference(reader),
               'kernel_toolchain': reference(toolchain)}, 'chunk_writer': reference(writer, sized=False)}
@@ -135,8 +140,12 @@ def validate_runtime(request):
     """Use the same inventory checks as backend startup without writing evidence."""
     from trace_block_kernel_runtime import bounded_kernel, checked_reference
     runtime = request.get('observer_runtime')
-    if not bounded_kernel(request) or set(runtime) != {
-            'surface_policy', 'plugin', 'bridge', 'coqpath', 'kernel_reader', 'kernel_toolchain'}:
+    fields = {'surface_policy', 'plugin', 'bridge', 'coqpath', 'kernel_reader', 'kernel_toolchain'}
+    if isinstance(runtime, dict) and 'raw_policy' in runtime:
+        if runtime['raw_policy'] != RAW_POLICY:
+            raise ValueError('The preparation declares an unsupported raw policy.')
+        fields.update({'raw_policy', 'raw_budget_writer'})
+    if not bounded_kernel(request) or set(runtime) != fields:
         raise ValueError('The preparation lacks its complete bounded runtime.')
     workspace = Path(request['workspace']).resolve(strict=True)
     for item in (runtime['plugin'], runtime['bridge'], request.get('chunk_writer')):
@@ -152,6 +161,9 @@ def validate_runtime(request):
         raise ValueError('The bounded COQPATH leaves its workspace.')
     if Path(runtime['bridge']['path']).resolve() != coqpath / 'P0Bounded/TraceObserver.vo':
         raise ValueError('The bounded bridge differs from its owned P0Bounded path.')
+    raw_writer = None
+    if runtime.get('raw_policy') == RAW_POLICY:
+        raw_writer = checked_reference(runtime['raw_budget_writer'], workspace=workspace)
     reader = checked_reference(runtime['kernel_reader'], workspace=workspace)
     toolchain = checked_reference(runtime['kernel_toolchain'], workspace=workspace)
     value = json.loads(Path(toolchain['path']).read_text())
@@ -161,7 +173,10 @@ def validate_runtime(request):
     by_path = {row['path']: row for row in rows}
     if len(rows) != len(by_path) or toolchain['path'] in by_path:
         raise ValueError('The bounded inventory repeats a path or references itself.')
-    for item in (runtime['plugin'], runtime['bridge'], reader, request['chunk_writer']):
+    required = [runtime['plugin'], runtime['bridge'], reader, request['chunk_writer']]
+    if raw_writer is not None:
+        required.append(raw_writer)
+    for item in required:
         name = str(Path(item['path']).resolve(strict=True))
         if name not in by_path or by_path[name]['sha256'] != item['sha256']:
             raise ValueError('The bounded inventory omits a requested artifact.')

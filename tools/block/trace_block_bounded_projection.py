@@ -50,7 +50,7 @@ class ProjectionView:
     The caller must seal the complete raw root after normal capture closure.
     Operation maps require an independently sealed event-range record.
     """
-    def __init__(self, request, evidence_dir, *, index_dir, operation_bindings=None):
+    def __init__(self, request, evidence_dir, *, index_dir, operation_bindings=None, raw_seal_reference=None):
         self.request = request
         self.root = Path(evidence_dir).resolve(strict=True)
         self.index_dir = Path(index_dir).absolute()
@@ -59,9 +59,16 @@ class ProjectionView:
         self.session = json.loads((self.root / 'SESSION.json').read_text())
         self.session_reference = relative_reference(self.root / 'SESSION.json', self.root)
         self.session_id = logical_session_id(request)
+        from trace_block_selected_feedback import raw_policy
+        policy = raw_policy(request)
         runtime = request.get('observer_runtime', {})
         if runtime.get('surface_policy') != 'bounded-kernel-v1':
             raise ValueError('The bounded projection requires its exact surface policy.')
+        self.raw_budget = None
+        if policy == 'trigger-selected-raw-v2':
+            from trace_block_raw_budget_validation import verify_raw_budget
+            if raw_seal_reference is not None:
+                self.raw_budget = verify_raw_budget(self.root.parent, self.session, raw_seal_reference)
         self._session_identity()
         descriptors = bind_bounded_descriptors(request['entry_descriptors'])
         descriptors = {client: trial_plan(value) for client, value in descriptors.items()}
@@ -89,15 +96,37 @@ class ProjectionView:
                     expected_marker_plan=relative_reference(self.root / (prefix + 'PLAN.json'), self.root),
                     expected_arguments=[str(self.root), str(self.root / (prefix + 'PLAN.json')),
                                         kernel['toolchain_ref']['sha256'], '--result-ref'])
+                captures[number].event_reference = dict(reference)
+                captures[number].capture_envelope = event['capture']
+                captures[number].owned_process = dict(process)
+            from trace_block_rollback_reference import resolve_rollback_references
+            captures = resolve_rollback_references(self.events, captures)
+            self.checked_selected_feedback = None
+            if policy == 'trigger-selected-raw-v2':
+                self._status()
+                from trace_block_selected_feedback import bind_selected_feedback
+                record = self.session.get('observer_status')
+                self.checked_selected_feedback = bind_selected_feedback(self.events,
+                    None if record is None else record['status'])
             self.operation_bindings = operation_bindings
             operations = self._operations(captures)
-            self._status()
+            if policy != 'trigger-selected-raw-v2':
+                self._status()
             self.counter_projection = CounterProjection(descriptors, self.process)
             self.counter_projection.descriptors = descriptors
             for _, row in self.native_rows:
                 if row['kind'] == 'guard-counter':
                     self.counter_projection.add(row)
             self.points = BoundedPoints(self.native_events, captures, descriptors, self.session_id, operations)
+            self.selected_feedback = None
+            if policy == 'trigger-selected-raw-v2':
+                from trace_block_selected_feedback import apply_selected_feedback
+                status = self.session.get('observer_status')
+                self.selected_feedback = apply_selected_feedback(self.points.points,
+                    None if status is None else status['status'])
+                self.selected_feedback.update(self.checked_selected_feedback)
+                for point in self.points.points:
+                    point['hint_log']['selected_feedback'].update(self.checked_selected_feedback)
             self._residual(captures)
             self._record_rule_successes()
             verify_kernel_closure(self.session, request, evidence_dir=self.root)
@@ -174,13 +203,14 @@ class ProjectionView:
         if len(matches) != 1:
             raise ValueError('The observer status lacks its exact SESSION operation.')
         index, row = matches[0]
-        from trace_block_kernel_runtime import status_command, parse_observer_status
+        from trace_block_kernel_runtime import status_command, parse_observer_status_payload
         from trace_block_bounded_operation import _response
         operation = session_operation(self.root, self.session_reference, index,
             expected_command=status_command(self.session.get('closure_check') is not None),
             expected_source_state=row['arguments']['from_state'], expected_trial=True)
         response = _response(json.loads((self.root / operation['operation']['path']).read_text()))
-        if parse_observer_status(response) != record['status']:
+        from trace_block_selected_feedback import checked_status_payload
+        if parse_observer_status_payload(checked_status_payload(self.root, response)) != record['status']:
             raise ValueError('The observer status differs from its accepted query response.')
 
     def _operations(self, captures):
@@ -281,6 +311,14 @@ class ProjectionView:
 
     def _header(self, captures):
         reasons = []
+        from trace_block_selected_feedback import raw_policy
+        if raw_policy(self.request) == 'trigger-selected-raw-v2':
+            feedback = getattr(self, 'selected_feedback', None)
+            if not isinstance(feedback, dict) or feedback.get('availability') != 'complete':
+                reasons.append('The selected feedback is unavailable or incomplete.')
+            budget = getattr(self, 'raw_budget', None)
+            if not isinstance(budget, dict) or budget.get('complete') is not True:
+                reasons.append('The final raw budget lacks complete sealed validation.')
         counters = [(ref, row) for ref, row in self.native_rows if row['kind'] == 'guard-counter']
         rules = sorted({value['rule'] for value in self.request['entry_descriptors'].values()})
         attempted = {rule: 0 for rule in rules}

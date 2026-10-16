@@ -45,7 +45,11 @@ class ArtifactReader:
         if identity in self.cache:
             return self.cache[identity]
         record = _json(path)
-        if isinstance(record, dict) and (record.get('schema') == 2 or record.get('kind') == 'kernel-json-artifact'):
+        inline_catalog = (isinstance(record, dict) and type(record.get('schema')) is int
+                          and record['schema'] == 2
+                          and set(record) == {'schema', 'complete_sidecar', 'selected_ids', 'entries'})
+        if (not inline_catalog and isinstance(record, dict)
+                and (record.get('schema') == 2 or record.get('kind') == 'kernel-json-artifact')):
             _fields(record, 'schema kind logical_event logical_sha256 payload')
             if (type(record['schema']) is not int or record['schema'] != 2
                     or record['kind'] != 'kernel-json-artifact'):

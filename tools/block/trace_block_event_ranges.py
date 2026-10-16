@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+from trace_block_raw_budget import write_bytes
 import re
 
 from trace_block_mcp_chunks import PHYSICAL_BYTES, write_field
@@ -162,8 +163,10 @@ class EventRanges:
             data = (json.dumps(value, sort_keys=True, separators=(',', ':')) + '\n').encode()
             if len(data) > PHYSICAL_BYTES:
                 raise ValueError('The operation begin record exceeds 2 MiB.')
-            with (self.directory / ('operation-%06d-BEGIN.json' % index)).open('xb') as stream:
-                stream.write(data)
+            path = self.directory / ('operation-%06d-BEGIN.json' % index)
+            if path.exists():
+                raise FileExistsError(path)
+            write_bytes(path, data, control=True)
         except OBSERVATION_ERRORS as error:
             self._failure(errors, 'before-record', error)
         return state, errors

@@ -45,27 +45,27 @@ let rec emit_json output value =
   |`String value->quoted value
   |(`Null|`Bool _|`Int _|`Intlit _|`Float _)as value->text(Yojson.Safe.to_string value)
   |_->failwith "Unsupported kernel JSON value"
-let write root relative value =
+let write_stream root relative emit =
   let path=full root relative in Chunks.mkdir(Filename.dirname path);
   let buffer=Buffer.create 4096 in
   let exception Oversized in
-  let small=try emit_json(fun value offset count->
+  let small=try emit(fun value offset count->
       if count>Chunks.physical_limit-1-Buffer.length buffer then raise Oversized;
-      Buffer.add_substring buffer value offset count)value;Some(Buffer.contents buffer^"\n")
+      Buffer.add_substring buffer value offset count);Some(Buffer.contents buffer^"\n")
     with Oversized->None in
   let data=match small with
     |Some data->data
     |None->
         let logical_event="kernel-json/"^relative in
         let writer=Chunks.create ~evidence_root:root ~relative_directory:(relative^".chunks")~logical_event in
-        let logical_sha256=hash_stream(fun hash->emit_json(fun value offset count->
-          Chunks.substring writer value offset count;hash value offset count)value)in
+        let logical_sha256=hash_stream(fun hash->emit(fun value offset count->
+          Chunks.substring writer value offset count;hash value offset count))in
         let payload=Chunks.finish writer in
         Yojson.Safe.to_string(`Assoc["schema",`Int 2;"kind",`String "kernel-json-artifact";
           "logical_event",`String logical_event;"logical_sha256",`String logical_sha256;"payload",payload])^"\n" in
   if String.length data>Chunks.physical_limit then failwith "Kernel artifact wrapper exceeds 2 MiB";
-  let channel=open_out_gen[Open_wronly;Open_creat;Open_excl;Open_binary]0o600 path in
-  Fun.protect ~finally:(fun()->close_out channel)(fun()->output_string channel data;flush channel)
+  Trace_raw_budget.with_output path(fun channel->output_string channel data)
+let write root relative value=write_stream root relative(fun output->emit_json output value)
 let plain_json root reference =
   let relative=string(assoc "path" reference)in
   let path=full root relative in

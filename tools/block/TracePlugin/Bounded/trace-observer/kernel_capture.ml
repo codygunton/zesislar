@@ -21,6 +21,7 @@ let proof_terms () =
   |None->failwith "The bounded residual has no proof"
   |Some stack->Proof.partial_proof(Declare.Proof.get(Vernacstate.LemmaStack.get_top stack))
 let emit ~evidence_root ~directory ~number ~include_proof writer env sigma goals fresh_counter =
+  Trace_raw_budget.ensure_data();
   let manifest_path=match Sys.getenv_opt "ZESU_TRACE_KERNEL_MANIFEST"with
     |Some path->path|None->failwith "The bounded kernel manifest is unavailable"in
   if (Unix.stat manifest_path).Unix.st_size>Chunks.physical_limit then failwith "The bounded runtime manifest exceeds2MiB";
@@ -70,15 +71,16 @@ let emit ~evidence_root ~directory ~number ~include_proof writer env sigma goals
     "reader",reference_json reader;"receipt_prefix",`String(directory^"/reload");
     "markers",`List markers;"displays",`List displays])in
   let stdout_relative=directory^"/reader.stdout"and stderr_relative=directory^"/reader.stderr"in
-  let open_output relative=Unix.openfile(full_path evidence_root relative)[Unix.O_WRONLY;Unix.O_CREAT;Unix.O_EXCL;Unix.O_CLOEXEC]0o600 in
-  let stdout=open_output stdout_relative and stderr=open_output stderr_relative in
   let args=[evidence_root;full_path evidence_root plan.path;toolchain_ref.sha256;"--result-ref"]in
   let executable=full_path evidence_root reader.path in
-  let status=Fun.protect ~finally:(fun()->Unix.close stdout;Unix.close stderr)(fun()->
-    let null=Unix.openfile "/dev/null"[Unix.O_RDONLY;Unix.O_CLOEXEC]0 in
-    let pid=Fun.protect ~finally:(fun()->Unix.close null)(fun()->
-      Unix.create_process executable(Array.of_list(executable::args))null stdout stderr)in
-    snd(Unix.waitpid[]pid))in
+  let status=Trace_raw_budget.with_output (full_path evidence_root stdout_relative)(fun stdout->
+    Trace_raw_budget.with_output (full_path evidence_root stderr_relative)(fun stderr->
+      let null=Unix.openfile "/dev/null"[Unix.O_RDONLY;Unix.O_CLOEXEC]0 in
+      let pid=Fun.protect ~finally:(fun()->Unix.close null)(fun()->
+        Unix.create_process executable(Array.of_list(executable::args))null
+          (Unix.descr_of_out_channel stdout)(Unix.descr_of_out_channel stderr))in
+      let rec wait()=try snd(Unix.waitpid[]pid)with Unix.Unix_error(Unix.EINTR,_,_)->wait()in
+      wait()))in
   if status<>Unix.WEXITED 0 then failwith("Fresh kernel reload failed: "^stderr_relative);
   let result_ref=reference(assoc "result"(Kernel_artifact.read evidence_root stdout_relative))in
   let result=read evidence_root result_ref in

@@ -78,7 +78,7 @@ def write_bundle(request, out_dir, raw_root, manifest, *, operation_bindings=Non
     raw_seal = write_raw_seal(root, directory / 'RAW-SEAL.json', session_id)
     before = verify_root_seal(paths['session'].parent, session_id, Path(raw_seal['path']))
     with ProjectionView(retained, paths['session'].parent, index_dir=directory / 'projection-index',
-                        operation_bindings=operation_bindings) as view:
+                        operation_bindings=operation_bindings, raw_seal_reference=_reference(Path(raw_seal['path']))) as view:
         raw_trace = view.trace
         trace = raw_trace
         if manifest.get('admission_exit_status') not in (None, 0):
