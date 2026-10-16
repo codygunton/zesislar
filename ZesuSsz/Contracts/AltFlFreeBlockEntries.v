@@ -33,30 +33,30 @@ Definition freeBlockFacts (pc : Z) (args : FreeArgs)
   let alignment := freeLog2Alignment args in
   let sizeClass := freeSizeClassOfBytes size in
   match pc with
-  | 0x80041f58 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 0 <= size <= 2048
-  | 0x80041f60 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 0 <= size <= 64
-  | 0x80041f68 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 0 <= size <= 16
-  | 0x80041f80 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 2049 <= size
-  | 0x80041f8c => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 2049 <= size <= 262144
-  | 0x80041f98 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 2049 <= size <= 16384
-  | 0x80041fa4 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 2049 <= size <= 4096
-  | 0x80041fb8 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 65 <= size <= 2048
-  | 0x80041fc0 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 65 <= size <= 512
-  | 0x80041fc8 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 65 <= size <= 128
-  | 0x80041fdc => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 262145 <= size
-  | 0x80041fe8 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 262145 <= size <= 4194304
-  | 0x80041ff4 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 262145 <= size <= 1048576
-  | 0x80042014 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 17 <= size <= 64
-  | 0x8004202c => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 16385 <= size <= 262144
-  | 0x80042038 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 16385 <= size <= 65536
-  | 0x80042058 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 513 <= size <= 2048
-  | 0x80042074 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 4194305 <= size
-  | 0x80042080 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 4194305 <= size <= 8388608
-  | 0x80042094 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 4097 <= size <= 16384
-  | 0x800420b4 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 129 <= size <= 512
-  | 0x800420d0 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 1048577 <= size <= 4194304
-  | 0x800420f0 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 65537 <= size <= 262144
-  | 0x80042110 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 8388609 <= size
+  | 0x80041f58 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 0 <= bv_unsigned x12 <= 2048
+  | 0x80041f60 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 0 <= bv_unsigned x12 <= 64
+  | 0x80041f68 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 0 <= bv_unsigned x12 <= 16
+  | 0x80041f80 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 2049 <= bv_unsigned x12
+  | 0x80041f8c => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 2049 <= bv_unsigned x12 <= 262144
+  | 0x80041f98 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 2049 <= bv_unsigned x12 <= 16384
+  | 0x80041fa4 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 2049 <= bv_unsigned x12 <= 4096
+  | 0x80041fb8 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 65 <= bv_unsigned x12 <= 2048
+  | 0x80041fc0 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 65 <= bv_unsigned x12 <= 512
+  | 0x80041fc8 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 65 <= bv_unsigned x12 <= 128
+  | 0x80041fdc => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 262145 <= bv_unsigned x12
+  | 0x80041fe8 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 262145 <= bv_unsigned x12 <= 4194304
+  | 0x80041ff4 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 262145 <= bv_unsigned x12 <= 1048576
+  | 0x80042014 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 17 <= bv_unsigned x12 <= 64
+  | 0x8004202c => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 16385 <= bv_unsigned x12 <= 262144
+  | 0x80042038 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 16385 <= bv_unsigned x12 <= 65536
+  | 0x80042058 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 513 <= bv_unsigned x12 <= 2048
+  | 0x80042074 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 4194305 <= bv_unsigned x12
+  | 0x80042080 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 4194305 <= bv_unsigned x12 <= 8388608
+  | 0x80042094 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 4097 <= bv_unsigned x12 <= 16384
+  | 0x800420b4 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 129 <= bv_unsigned x12 <= 512
+  | 0x800420d0 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 1048577 <= bv_unsigned x12 <= 4194304
+  | 0x800420f0 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 65537 <= bv_unsigned x12 <= 262144
+  | 0x80042110 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 size /\ 8388609 <= bv_unsigned x12
   | 0x80041f7c => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 sizeClass /\
       x13 = x12 /\ x14 = freeAlignmentWord args /\ bv_unsigned x14 < bv_unsigned x12
   | 0x80041fb4 => x10 = Z_to_bv 64 alignment /\ x12 = Z_to_bv 64 sizeClass /\
