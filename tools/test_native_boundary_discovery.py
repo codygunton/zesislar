@@ -237,7 +237,7 @@ class FirstNativeRunTests(unittest.TestCase):
             return discovery.first_native_root(self.options(**changes),
                 argparse.ArgumentParser(), self.root)
 
-    def invoke(self, extra, *, binding_error=None, head_results=None):
+    def invoke(self, extra, *, binding_error=None, head_results=None, pool_effect=None):
         arguments = ['discovery.py', '--design', str(self.root/'design.json'),
             '--trace-import', 'Example.index', '--code-premises', str(self.root/'code.txt'),
             '--binding-report', str(self.root/'bindings.json'), '--cfg', str(self.root/'cfg.json'),
@@ -259,6 +259,8 @@ class FirstNativeRunTests(unittest.TestCase):
                 return_value={'source': 'abstract source'}))
             pool = stack.enter_context(patch('discovery.ProcessPoolExecutor'))
             pool.return_value.__enter__.return_value.map.return_value = [copy.deepcopy(self.record)]
+            if pool_effect is not None:
+                pool.return_value.__enter__.return_value.map.side_effect = pool_effect
             stack.enter_context(contextlib.redirect_stdout(io.StringIO()))
             stack.enter_context(contextlib.redirect_stderr(io.StringIO()))
             result = discovery.main()

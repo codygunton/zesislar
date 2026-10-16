@@ -628,6 +628,56 @@ def first_native_root(args, parser, workspace):
     return root
 
 
+TRAINING_LABEL = 'Free training after F42 and F43. The hold-out is spent.'
+
+
+def verify_training_inputs(root, sources, workspace):
+    """Reject a changed root, tracked patch, or retained input before publication."""
+    actual = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=workspace, text=True).strip()
+    if actual != root:
+        raise ValueError('The training root differs from workspace HEAD')
+    if subprocess.check_output(['git', 'diff', '--binary', 'HEAD'], cwd=workspace):
+        raise ValueError('The training workspace has tracked source changes')
+    for name, expected in sources.items():
+        path = Path(workspace) / name
+        try:
+            actual = digest(path)
+        except OSError as error:
+            raise ValueError('A training input became unavailable: ' + str(name)) from error
+        if actual != expected:
+            raise ValueError('A training input changed: ' + str(name))
+
+
+def training_native_root(args, parser, workspace):
+    """Bind a fresh training run without a first-run or comparison claim."""
+    root = args.training_root
+    if root is None:
+        return None
+    if not args.designed_successors:
+        parser.error('--training-root requires --designed-successors')
+    for name in ('first_native_run', 'native_baseline_report', 'native_resume_report',
+                 'resume_report', 'entries'):
+        if getattr(args, name):
+            parser.error('--training-root cannot use --' + name.replace('_', '-'))
+    if re.fullmatch(r'[0-9a-f]{40}', root) is None:
+        parser.error('--training-root requires a full lowercase root SHA')
+    if args.out.exists() or args.out.is_symlink():
+        parser.error('--training-root requires a nonexistent output path')
+    try:
+        verify_training_inputs(root, {}, workspace)
+    except ValueError as error:
+        parser.error(str(error))
+    return root
+
+
+def finish_training_report(report, root, workspace):
+    if root is None:
+        return
+    verify_training_inputs(root, report['inputs'], workspace)
+    report.update(label=TRAINING_LABEL, experiment_kind='training', training_root=root,
+                  first_native_run=False, measurement_root=root, inputs_unchanged=True)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--design', type=Path, required=True)
@@ -646,6 +696,8 @@ def main():
     parser.add_argument('--native-baseline-report', type=Path)
     parser.add_argument('--first-native-run', metavar='FROZEN_ROOT_SHA',
                         help='Run designed native proofs once at this exact root without a comparison baseline')
+    parser.add_argument('--training-root', metavar='TRAINING_ROOT_SHA',
+                        help='Run fresh designed native training at this exact root without a first-run or baseline claim')
     parser.add_argument('--terminal', required=True)
     parser.add_argument('--terminal-descriptor', type=Path,
                         help='Read a source-bound owned continuation for designed successor proofs')
@@ -657,9 +709,11 @@ def main():
     if not 1 <= args.jobs <= 6 or not 1 <= args.seconds <= 300:
         parser.error('The driver permits one to six workers and at most 300 seconds per MCP call')
     first_root = first_native_root(args, parser, Path.cwd())
+    training_root = training_native_root(args, parser, Path.cwd())
     if (args.native_resume_report or args.native_baseline_report) and not args.designed_successors:
         parser.error('Native comparison and reuse require --designed-successors')
-    if args.designed_successors and not args.native_baseline_report and first_root is None:
+    if (args.designed_successors and not args.native_baseline_report
+            and first_root is None and training_root is None):
         parser.error('Designed successor proofs require a frozen --native-baseline-report')
     if args.designed_successors and args.entries:
         parser.error('Designed successor proofs require the validated design schema')
@@ -671,6 +725,11 @@ def main():
         parser.error('Legacy entries already contain their probe options')
     if args.terminal_descriptor and not args.designed_successors:
         parser.error('--terminal-descriptor requires --designed-successors')
+    training_controls = {}
+    if training_root is not None:
+        training_controls = {str(path.resolve()): digest(path) for path in (
+            args.design, args.cfg, args.manifest, args.binding_report,
+            args.code_premises, args.terminal_descriptor) if path is not None}
     terminal_descriptor = (load_terminal_descriptor(args.terminal_descriptor, args.terminal, Path.cwd())
                            if args.terminal_descriptor else None)
     design = json.loads(args.design.read_text())
@@ -750,7 +809,10 @@ def main():
                                 and pair['target'] == target)['sources']['switch-on']
                 if hashlib.sha256(disabled['source'].encode()).hexdigest() != expected:
                     raise ValueError('A disabled native source differs from the frozen full-ON baseline')
-    args.out.mkdir(parents=True, exist_ok=True)
+    if training_root is not None:
+        verify_training_inputs(training_root, training_controls, Path.cwd())
+        verify_training_inputs(training_root, sources, Path.cwd())
+    args.out.mkdir(parents=True, exist_ok=training_root is None)
     options = {'workspace': str(Path.cwd()), 'out': str(args.out.resolve()),
                'mcp_command': args.mcp_command, 'terminal': args.terminal, 'seconds': args.seconds,
                'build_dir': str(args.build_dir.resolve()), 'design': str(args.design.resolve()),
@@ -831,6 +893,7 @@ def main():
         if actual != first_root:
             raise ValueError('The first native frozen root changed during execution')
         report['first_native_run'] = True
+    finish_training_report(report, training_root, Path.cwd())
     chain_root.atomic_json(args.out / 'report.json', report)
     print(json.dumps({'report': str(args.out / 'report.json'), 'sha256': digest(args.out / 'report.json'),
                       'classes': report['classes'], 'elapsed_seconds': elapsed}))
