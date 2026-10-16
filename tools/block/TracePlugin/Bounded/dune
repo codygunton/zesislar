@@ -1,0 +1,5 @@
+(coq.theory
+ (name P0Bounded)
+ (modules TraceObserver)
+ (theories Ltac2)
+ (plugins p0-bounded-trace.trace-observer))

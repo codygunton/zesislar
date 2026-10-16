@@ -739,6 +739,8 @@ def make_parser():
     parser.add_argument("--theorem")
     parser.add_argument("--prefix-file", type=Path)
     parser.add_argument("--writer")
+    parser.add_argument("--surface-policy", choices=("bounded-kernel-v1", "filtered-chunks-v1"),
+                        default="bounded-kernel-v1")
     return parser
 
 
@@ -754,6 +756,7 @@ def main(argv=None, backend=None):
                "source": str(args.source) if args.source else None,
                "theorem": args.theorem, "prefix_file": str(args.prefix_file) if args.prefix_file else None,
                "block_pc": args.block, "rule_set": args.rules, "stop": args.stop,
+               "capture_surface_policy": args.surface_policy,
                **({"writer_id": args.writer} if args.writer is not None else {})}
     try:
         request = resolve_request(request)
