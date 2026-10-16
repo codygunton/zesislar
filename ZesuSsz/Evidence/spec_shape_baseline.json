@@ -58,5 +58,13 @@
     "frame_parameters_in_closed_specs": 0,
     "unfold_without_typeclasses_opaque": 0,
     "_comment": "Decision 2: the public ABI owns fifteen existential caller-saved register values. This file-specific exception changes no global threshold."
+  },
+  "ZesuSsz/Compliance/NextUint64CallBridge.v": {
+    "uninferable_existentials": 1,
+    "predicates_without_unfold": 0,
+    "disjunctive_specs": 0,
+    "frame_parameters_in_closed_specs": 0,
+    "unfold_without_typeclasses_opaque": 0,
+    "reason": "Orch approved this file-specific exception for the exact renderer call state. Its existential args : DecodeItemCompositionalArgs is preserved by the installation bridge. No contract or global threshold changes."
   }
 }

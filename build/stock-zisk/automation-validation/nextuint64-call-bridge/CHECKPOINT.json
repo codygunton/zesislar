@@ -1,0 +1,51 @@
+{
+  "scope": "Exact callee installation; no caller block proof or native execution. Marker moved into the approved data-only module.",
+  "base": "6eb85c37374307001a3a407edb6d20d64ab37c2b",
+  "primary_MCP": {
+    "path": "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/nextuint64-call-bridge-certificate015/REPORT.json",
+    "sha256": "b938c48235483f2598afca2e63c2ad17f7b9687d7e48ebad04d9248474a7aacb",
+    "bindings": 40
+  },
+  "statement_sha256": "64fa0ad2beead16b06d65141e3d0885b9cb59d25830b418ae0111aac7dafce38",
+  "verification": {
+    "success": true,
+    "verification_method": "module_m",
+    "assumptions": []
+  },
+  "pre_Qed_groups": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "compiled_assumptions": "Closed under the global context",
+  "site_lines": 42,
+  "interface_total": 5174,
+  "composition_lines": 42,
+  "registration_lines": 7,
+  "gate": {
+    "command": [
+      "make",
+      "check-fast",
+      "CHECK_AGENT=spec-a",
+      "FAST_JOBS=6",
+      "AGENT_JOBS=6",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/agents/spec-a-nextuint64-profile-gate"
+    ],
+    "start_UTC": "2026-10-16T18:45:03.583258+00:00",
+    "exit_code": 0,
+    "wall_seconds": 103.44216954801232,
+    "user_seconds": 61.203296,
+    "system_seconds": 26.911899,
+    "peak_RSS_KiB": 1016152,
+    "unchanged_sources": true
+  },
+  "source_seals": {
+    "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/ZesuSsz/Compliance/NextUint64CallBridge.v": "f5f43d5273fca4b6f01061130e3db3b749617d56bf193529c500f2f7e4e6cf45",
+    "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/ZesuSsz/Compliance/NextUint64BridgeRegistrations.v": "e2dff5625a6cca8e2fd08354e5b17f40cf9145141634ebf17072fb05c348cc85",
+    "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/ZesuSsz/Compliance/NextUint64Hints.v": "5ac64ce9c668154a4ca36c5ae2f7ddd40d9f72c35efb05cba520500cfb360264",
+    "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/ZesuSsz/Evidence/nextUint64_function_text.json": "0887becfd4483e71a1b0376fba5653d61ec2c91534e823fec297cce1abc3b804",
+    "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/ZesuSsz/Evidence/spec_shape_baseline.json": "294311b8b7ae9d6a17ce6373fabcc846719cd71af3533a112a93a73b3415ed0a",
+    "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/ZesuSsz/Evidence/spec_shape_inventory.json": "33dbcd92c42c35c3905e1c07db9cf5dadec061e2bf6ee03c6d700c309600c651"
+  }
+}
