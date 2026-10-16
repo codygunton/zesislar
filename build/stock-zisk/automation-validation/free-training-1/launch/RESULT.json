@@ -1,0 +1,11 @@
+{
+  "exit_status": 0,
+  "elapsed_wall_seconds": 239.94073753105476,
+  "finished_utc": "2026-10-16T09:11:29.852710+00:00",
+  "training_root": "256955582e2adca68f48a3de97d3247eed691491",
+  "discovery_pid": 474361,
+  "discovery_start_ticks": 184097180,
+  "signals_sent_by_controller": 0,
+  "training": true,
+  "first_native_run": false
+}
