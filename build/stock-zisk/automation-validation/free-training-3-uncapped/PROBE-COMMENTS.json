@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "issue": "https://github.com/codygunton/zesislar/issues/10",
+  "comments": [
+    "https://github.com/codygunton/zesislar/issues/10#issuecomment-6220930546",
+    "https://github.com/codygunton/zesislar/issues/10#issuecomment-6220960278",
+    "https://github.com/codygunton/zesislar/issues/10#issuecomment-6221318016",
+    "https://github.com/codygunton/zesislar/issues/10#issuecomment-6221384578"
+  ],
+  "latest_response": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped-final872/ISSUE10-RESPONSE.json",
+    "sha256": "7d606f8b22bfbebe27d7c4484241b7f840ffea86e08a989979e746b626d52d3d",
+    "bytes": 2994
+  }
+}

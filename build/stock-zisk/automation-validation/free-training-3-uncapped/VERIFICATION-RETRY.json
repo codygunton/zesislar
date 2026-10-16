@@ -1,0 +1,209 @@
+{
+  "schema": 1,
+  "root": "3aebfa260c6a38ef1abc9eae5ea4b342410de422",
+  "task": {
+    "key": "ON-80041f7c",
+    "arm": "ON",
+    "pc": "0x80041f7c",
+    "original_source": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041f7c/Boundary.v",
+      "sha256": "9e6203eefafa37d04bd6a3e774e2f8c1e3faff4c7b179113136dd4111da5f5dc",
+      "bytes": 4606
+    },
+    "source": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-uncapped-inputs856/ON-80041f7c/Boundary.v",
+      "sha256": "9e6203eefafa37d04bd6a3e774e2f8c1e3faff4c7b179113136dd4111da5f5dc",
+      "bytes": 4606
+    },
+    "source_evidence": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-encoding-on821/native/block_0x80041f7c/evidence.json",
+      "sha256": "2d259e7b69c9738d06758f7b0efc93b5da8e8f17a7be92110651086982d1bbea",
+      "bytes": 19102
+    },
+    "statement_sha256": "d0978227e786306bf8c60ca8f98249da16ab0ad0efbffe485a34f2af6fbc5671",
+    "lemma": "DesignedBoundary_80041f7c",
+    "problem_statement": "Require Import ZesuSsz.Automation.All.\nSet Printing Width 200.\nRequire Import isla.isla.\nFrom iris.proofmode Require Import environments.\nRequire Import ZesuSsz.Stock.Free.index_free.\nRequire Import ZesuSsz.Contracts.AltFlFree.\nRequire Import ZesuSsz.Contracts.AltFlFreeContract.\nRequire Import ZesuSsz.Contracts.AltFlFreeBlockEntries.\nRequire Import ZesuSsz.Contracts.FreeSelected.\nRequire Import ZesuSsz.Compliance.FreeHints.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Automation.Switches.EncodingNormalization.\nRequire Import ZesuSsz.Automation.Sets.call.\nRequire Import ZesuSsz.Automation.Switches.ReturnBundle.\nRequire Import ZesuSsz.Automation.ReturnWand.\nRequire Import ZesuSsz.Automation.Switches.ReturnWand.\nLtac chain_print_environment marker environment :=\n  let environment := eval hnf in environment in\n  lazymatch environment with\n  | environments.Enil => idtac\n  | environments.Esnoc ?rest ?name ?resource =>\n      chain_print_environment marker rest;\n      idtac marker resource \"CHAIN-FIELD-END\"\n  end.\nLtac chain_print_goal phase :=\n  idtac \"CHAIN-GOAL-BEGIN\" phase;\n  try (multimatch goal with\n    | Hlocal : ?T |- _ =>\n      idtac \"CHAIN-GOAL-LOCAL\" Hlocal \":\" T \"CHAIN-FIELD-END\";\n      let S := type of T in\n      idtac \"CHAIN-GOAL-SORT\" Hlocal \":\" S \"CHAIN-FIELD-END\";\n      try (multimatch goal with\n        | Hdefinition := ?value : _ |- _ =>\n          constr_eq Hdefinition Hlocal;\n          idtac \"CHAIN-GOAL-VALUE\" Hlocal \":\" value \"CHAIN-FIELD-END\"\n        end);\n      fail\n    end);\n  lazymatch goal with\n  | |- envs_entails ?environment ?conclusion =>\n      idtac \"CHAIN-GOAL-ENV\" \"iris\" \"CHAIN-FIELD-END\";\n      let persistent := eval cbv [environments.env_intuitionistic] in\n        (environments.env_intuitionistic environment) in\n      let spatial := eval cbv [environments.env_spatial] in\n        (environments.env_spatial environment) in\n      chain_print_environment \"CHAIN-GOAL-PERSISTENT\" persistent;\n      chain_print_environment \"CHAIN-GOAL-SPATIAL\" spatial;\n      idtac \"CHAIN-GOAL-CONCLUSION\" conclusion \"CHAIN-FIELD-END\"\n  | |- ?conclusion =>\n      idtac \"CHAIN-GOAL-ENV\" \"coq\" \"CHAIN-FIELD-END\";\n      idtac \"CHAIN-GOAL-CONCLUSION\" conclusion \"CHAIN-FIELD-END\"\n  end.\n\n(* Native successor capture; no resources added. *)\nRequire Import ZesuSsz.Automation.All.\nRequire Import ZesuSsz.Automation.SealedCoverage.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Contracts.AltFlFree.\nRequire Import ZesuSsz.Contracts.AltFlFreeContract.\nRequire Import ZesuSsz.Contracts.AltFlFreeBlockEntries.\nRequire Import ZesuSsz.Contracts.FreeSelected.\nRequire Import ZesuSsz.Compliance.FreeHints.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Automation.Switches.EncodingNormalization.\n\nDefinition DesignedEntry_80041f7c\n    `{!islaG Sigma} `{!threadG} (args : FreeArgs) (x1 : bv 64) (x2 : bv 64) (x8 : bv 64) (x10 : bv 64) (x11 : bv 64) (x12 : bv 64) (x13 : bv 64) (x14 : bv 64) (bufferBytes : list byte) (listBytes : list byte) (frameBytes : list byte) : iProp Sigma :=\n  ((ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f7c (args) (x1) (x2) (x8) (x10) (x11) (x12) (x13) (x14) (bufferBytes) (listBytes) (frameBytes)) \u2217\n   True)%I.\nGlobal Instance : LithiumUnfold (@DesignedEntry_80041f7c) := I.\nGlobal Typeclasses Opaque DesignedEntry_80041f7c.\n\n\nRequire Import ZesuSsz.Contracts.AltFlFree.\nRequire Import ZesuSsz.Contracts.AltFlFreeContract.\nRequire Import ZesuSsz.Contracts.AltFlFreeBlockEntries.\nLemma DesignedBoundary_80041f7c `{!islaG Sigma} `{!threadG} (args : FreeArgs) (x1 : bv 64) (x2 : bv 64) (x8 : bv 64) (x10 : bv 64) (x11 : bv 64) (x12 : bv 64) (x13 : bv 64) (x14 : bv 64) (bufferBytes : list byte) (listBytes : list byte) (frameBytes : list byte)  :\n  instr_pre 0x80042134 (\u2203 (successor_x1 : bv 64) (successor_x2 : bv 64) (successor_x8 : bv 64) (successor_x10 : bv 64) (successor_x11 : bv 64) (successor_x12 : bv 64) (successor_x13 : bv 64) (successor_x14 : bv 64) (successor_bufferBytes : list byte) (successor_listBytes : list byte) (successor_frameBytes : list byte), ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042134 (args) (successor_x1) (successor_x2) (successor_x8) (successor_x10) (successor_x11) (successor_x12) (successor_x13) (successor_x14) (successor_bufferBytes) (successor_listBytes) (successor_frameBytes))%I -\u2217\n  ZesuSsz.Contracts.FreeSelected.freeSelectedCode -\u2217\n  instr_body 0x80041f7c\n    (DesignedEntry_80041f7c args x1 x2 x8 x10 x11 x12 x13 x14 bufferBytes listBytes frameBytes).\nAdmitted.\n",
+    "output": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041f7c",
+    "allowed_payload_sha256": [
+      "9e6203eefafa37d04bd6a3e774e2f8c1e3faff4c7b179113136dd4111da5f5dc",
+      "7db8fd9cca85e017a5402f426c536b5f5c950b32566cee0ebfca05e599ad9d84"
+    ],
+    "verification_template": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped856/VERIFY-ON-80041f7c.v",
+      "sha256": "7db8fd9cca85e017a5402f426c536b5f5c950b32566cee0ebfca05e599ad9d84",
+      "bytes": 9518
+    }
+  },
+  "original_result": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-final-verification858/ON-80041f7c/RESULT.json",
+    "sha256": "db911c7c8419f21553126f8c3662285a5df1e7f6f70d1adce444649d0bc4f348",
+    "bytes": 27706
+  },
+  "calls": [
+    {
+      "tool": "rocq_health",
+      "arguments": {},
+      "wall_seconds": 0.0743726419750601,
+      "raw": {
+        "meta": null,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"ok\":true,\"server_version\":\"0.3.1\",\"switch\":\"islaris\",\"switch_prefix\":\"/home/cody/islaris/_opam\",\"switch_is_local\":true,\"switch_source\":\"opam_env\",\"toolchain\":{\"coqc\":{\"path\":\"/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped856/coqc_wrapper.py\",\"version\":\"8.19.2+lsp 4.14.4\"},\"pet\":{\"path\":\"/home/cody/islaris/_opam/bin/pet\",\"version\":\"0.2.4-dev\",\"pytanque_importable\":true}},\"pet\":{\"running\":false,\"pid\":null},\"warnings\":[]}",
+            "annotations": null,
+            "meta": null
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "ok": true,
+          "server_version": "0.3.1",
+          "switch": "islaris",
+          "switch_prefix": "/home/cody/islaris/_opam",
+          "switch_is_local": true,
+          "switch_source": "opam_env",
+          "toolchain": {
+            "coqc": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped856/coqc_wrapper.py",
+              "version": "8.19.2+lsp 4.14.4"
+            },
+            "pet": {
+              "path": "/home/cody/islaris/_opam/bin/pet",
+              "version": "0.2.4-dev",
+              "pytanque_importable": true
+            }
+          },
+          "pet": {
+            "running": false,
+            "pid": null
+          },
+          "warnings": []
+        },
+        "isError": false
+      },
+      "result": {
+        "success": true,
+        "ok": true,
+        "server_version": "0.3.1",
+        "switch": "islaris",
+        "switch_prefix": "/home/cody/islaris/_opam",
+        "switch_is_local": true,
+        "switch_source": "opam_env",
+        "toolchain": {
+          "coqc": {
+            "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped856/coqc_wrapper.py",
+            "version": "8.19.2+lsp 4.14.4"
+          },
+          "pet": {
+            "path": "/home/cody/islaris/_opam/bin/pet",
+            "version": "0.2.4-dev",
+            "pytanque_importable": true
+          }
+        },
+        "pet": {
+          "running": false,
+          "pid": null
+        },
+        "warnings": []
+      }
+    },
+    {
+      "tool": "rocq_verify",
+      "arguments": {
+        "workspace": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair",
+        "problem_name": "DesignedBoundary_80041f7c",
+        "problem_statement": "Require Import ZesuSsz.Automation.All.\nSet Printing Width 200.\nRequire Import isla.isla.\nFrom iris.proofmode Require Import environments.\nRequire Import ZesuSsz.Stock.Free.index_free.\nRequire Import ZesuSsz.Contracts.AltFlFree.\nRequire Import ZesuSsz.Contracts.AltFlFreeContract.\nRequire Import ZesuSsz.Contracts.AltFlFreeBlockEntries.\nRequire Import ZesuSsz.Contracts.FreeSelected.\nRequire Import ZesuSsz.Compliance.FreeHints.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Automation.Switches.EncodingNormalization.\nRequire Import ZesuSsz.Automation.Sets.call.\nRequire Import ZesuSsz.Automation.Switches.ReturnBundle.\nRequire Import ZesuSsz.Automation.ReturnWand.\nRequire Import ZesuSsz.Automation.Switches.ReturnWand.\nLtac chain_print_environment marker environment :=\n  let environment := eval hnf in environment in\n  lazymatch environment with\n  | environments.Enil => idtac\n  | environments.Esnoc ?rest ?name ?resource =>\n      chain_print_environment marker rest;\n      idtac marker resource \"CHAIN-FIELD-END\"\n  end.\nLtac chain_print_goal phase :=\n  idtac \"CHAIN-GOAL-BEGIN\" phase;\n  try (multimatch goal with\n    | Hlocal : ?T |- _ =>\n      idtac \"CHAIN-GOAL-LOCAL\" Hlocal \":\" T \"CHAIN-FIELD-END\";\n      let S := type of T in\n      idtac \"CHAIN-GOAL-SORT\" Hlocal \":\" S \"CHAIN-FIELD-END\";\n      try (multimatch goal with\n        | Hdefinition := ?value : _ |- _ =>\n          constr_eq Hdefinition Hlocal;\n          idtac \"CHAIN-GOAL-VALUE\" Hlocal \":\" value \"CHAIN-FIELD-END\"\n        end);\n      fail\n    end);\n  lazymatch goal with\n  | |- envs_entails ?environment ?conclusion =>\n      idtac \"CHAIN-GOAL-ENV\" \"iris\" \"CHAIN-FIELD-END\";\n      let persistent := eval cbv [environments.env_intuitionistic] in\n        (environments.env_intuitionistic environment) in\n      let spatial := eval cbv [environments.env_spatial] in\n        (environments.env_spatial environment) in\n      chain_print_environment \"CHAIN-GOAL-PERSISTENT\" persistent;\n      chain_print_environment \"CHAIN-GOAL-SPATIAL\" spatial;\n      idtac \"CHAIN-GOAL-CONCLUSION\" conclusion \"CHAIN-FIELD-END\"\n  | |- ?conclusion =>\n      idtac \"CHAIN-GOAL-ENV\" \"coq\" \"CHAIN-FIELD-END\";\n      idtac \"CHAIN-GOAL-CONCLUSION\" conclusion \"CHAIN-FIELD-END\"\n  end.\n\n(* Native successor capture; no resources added. *)\nRequire Import ZesuSsz.Automation.All.\nRequire Import ZesuSsz.Automation.SealedCoverage.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Contracts.AltFlFree.\nRequire Import ZesuSsz.Contracts.AltFlFreeContract.\nRequire Import ZesuSsz.Contracts.AltFlFreeBlockEntries.\nRequire Import ZesuSsz.Contracts.FreeSelected.\nRequire Import ZesuSsz.Compliance.FreeHints.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Automation.Switches.EncodingNormalization.\n\nDefinition DesignedEntry_80041f7c\n    `{!islaG Sigma} `{!threadG} (args : FreeArgs) (x1 : bv 64) (x2 : bv 64) (x8 : bv 64) (x10 : bv 64) (x11 : bv 64) (x12 : bv 64) (x13 : bv 64) (x14 : bv 64) (bufferBytes : list byte) (listBytes : list byte) (frameBytes : list byte) : iProp Sigma :=\n  ((ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f7c (args) (x1) (x2) (x8) (x10) (x11) (x12) (x13) (x14) (bufferBytes) (listBytes) (frameBytes)) \u2217\n   True)%I.\nGlobal Instance : LithiumUnfold (@DesignedEntry_80041f7c) := I.\nGlobal Typeclasses Opaque DesignedEntry_80041f7c.\n\n\nRequire Import ZesuSsz.Contracts.AltFlFree.\nRequire Import ZesuSsz.Contracts.AltFlFreeContract.\nRequire Import ZesuSsz.Contracts.AltFlFreeBlockEntries.\nLemma DesignedBoundary_80041f7c `{!islaG Sigma} `{!threadG} (args : FreeArgs) (x1 : bv 64) (x2 : bv 64) (x8 : bv 64) (x10 : bv 64) (x11 : bv 64) (x12 : bv 64) (x13 : bv 64) (x14 : bv 64) (bufferBytes : list byte) (listBytes : list byte) (frameBytes : list byte)  :\n  instr_pre 0x80042134 (\u2203 (successor_x1 : bv 64) (successor_x2 : bv 64) (successor_x8 : bv 64) (successor_x10 : bv 64) (successor_x11 : bv 64) (successor_x12 : bv 64) (successor_x13 : bv 64) (successor_x14 : bv 64) (successor_bufferBytes : list byte) (successor_listBytes : list byte) (successor_frameBytes : list byte), ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042134 (args) (successor_x1) (successor_x2) (successor_x8) (successor_x10) (successor_x11) (successor_x12) (successor_x13) (successor_x14) (successor_bufferBytes) (successor_listBytes) (successor_frameBytes))%I -\u2217\n  ZesuSsz.Contracts.FreeSelected.freeSelectedCode -\u2217\n  instr_body 0x80041f7c\n    (DesignedEntry_80041f7c args x1 x2 x8 x10 x11 x12 x13 x14 bufferBytes listBytes frameBytes).\nAdmitted.\n",
+        "proof": "Require Import ZesuSsz.Automation.All.\nSet Printing Width 200.\nRequire Import isla.isla.\nFrom iris.proofmode Require Import environments.\nRequire Import ZesuSsz.Stock.Free.index_free.\nRequire Import ZesuSsz.Contracts.AltFlFree.\nRequire Import ZesuSsz.Contracts.AltFlFreeContract.\nRequire Import ZesuSsz.Contracts.AltFlFreeBlockEntries.\nRequire Import ZesuSsz.Contracts.FreeSelected.\nRequire Import ZesuSsz.Compliance.FreeHints.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Automation.Switches.EncodingNormalization.\nRequire Import ZesuSsz.Automation.Sets.call.\nRequire Import ZesuSsz.Automation.Switches.ReturnBundle.\nRequire Import ZesuSsz.Automation.ReturnWand.\nRequire Import ZesuSsz.Automation.Switches.ReturnWand.\nLtac chain_print_environment marker environment :=\n  let environment := eval hnf in environment in\n  lazymatch environment with\n  | environments.Enil => idtac\n  | environments.Esnoc ?rest ?name ?resource =>\n      chain_print_environment marker rest;\n      idtac marker resource \"CHAIN-FIELD-END\"\n  end.\nLtac chain_print_goal phase :=\n  idtac \"CHAIN-GOAL-BEGIN\" phase;\n  try (multimatch goal with\n    | Hlocal : ?T |- _ =>\n      idtac \"CHAIN-GOAL-LOCAL\" Hlocal \":\" T \"CHAIN-FIELD-END\";\n      let S := type of T in\n      idtac \"CHAIN-GOAL-SORT\" Hlocal \":\" S \"CHAIN-FIELD-END\";\n      try (multimatch goal with\n        | Hdefinition := ?value : _ |- _ =>\n          constr_eq Hdefinition Hlocal;\n          idtac \"CHAIN-GOAL-VALUE\" Hlocal \":\" value \"CHAIN-FIELD-END\"\n        end);\n      fail\n    end);\n  lazymatch goal with\n  | |- envs_entails ?environment ?conclusion =>\n      idtac \"CHAIN-GOAL-ENV\" \"iris\" \"CHAIN-FIELD-END\";\n      let persistent := eval cbv [environments.env_intuitionistic] in\n        (environments.env_intuitionistic environment) in\n      let spatial := eval cbv [environments.env_spatial] in\n        (environments.env_spatial environment) in\n      chain_print_environment \"CHAIN-GOAL-PERSISTENT\" persistent;\n      chain_print_environment \"CHAIN-GOAL-SPATIAL\" spatial;\n      idtac \"CHAIN-GOAL-CONCLUSION\" conclusion \"CHAIN-FIELD-END\"\n  | |- ?conclusion =>\n      idtac \"CHAIN-GOAL-ENV\" \"coq\" \"CHAIN-FIELD-END\";\n      idtac \"CHAIN-GOAL-CONCLUSION\" conclusion \"CHAIN-FIELD-END\"\n  end.\n\n(* Native successor capture; no resources added. *)\nRequire Import ZesuSsz.Automation.All.\nRequire Import ZesuSsz.Automation.SealedCoverage.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Contracts.AltFlFree.\nRequire Import ZesuSsz.Contracts.AltFlFreeContract.\nRequire Import ZesuSsz.Contracts.AltFlFreeBlockEntries.\nRequire Import ZesuSsz.Contracts.FreeSelected.\nRequire Import ZesuSsz.Compliance.FreeHints.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Automation.Switches.EncodingNormalization.\n\nDefinition DesignedEntry_80041f7c\n    `{!islaG Sigma} `{!threadG} (args : FreeArgs) (x1 : bv 64) (x2 : bv 64) (x8 : bv 64) (x10 : bv 64) (x11 : bv 64) (x12 : bv 64) (x13 : bv 64) (x14 : bv 64) (bufferBytes : list byte) (listBytes : list byte) (frameBytes : list byte) : iProp Sigma :=\n  ((ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80041f7c (args) (x1) (x2) (x8) (x10) (x11) (x12) (x13) (x14) (bufferBytes) (listBytes) (frameBytes)) \u2217\n   True)%I.\nGlobal Instance : LithiumUnfold (@DesignedEntry_80041f7c) := I.\nGlobal Typeclasses Opaque DesignedEntry_80041f7c.\n\n\nRequire Import ZesuSsz.Contracts.AltFlFree.\nRequire Import ZesuSsz.Contracts.AltFlFreeContract.\nRequire Import ZesuSsz.Contracts.AltFlFreeBlockEntries.\nLemma DesignedBoundary_80041f7c `{!islaG Sigma} `{!threadG} (args : FreeArgs) (x1 : bv 64) (x2 : bv 64) (x8 : bv 64) (x10 : bv 64) (x11 : bv 64) (x12 : bv 64) (x13 : bv 64) (x14 : bv 64) (bufferBytes : list byte) (listBytes : list byte) (frameBytes : list byte)  :\n  instr_pre 0x80042134 (\u2203 (successor_x1 : bv 64) (successor_x2 : bv 64) (successor_x8 : bv 64) (successor_x10 : bv 64) (successor_x11 : bv 64) (successor_x12 : bv 64) (successor_x13 : bv 64) (successor_x14 : bv 64) (successor_bufferBytes : list byte) (successor_listBytes : list byte) (successor_frameBytes : list byte), ZesuSsz.Contracts.AltFlFreeBlockEntries.freeEntryAt80042134 (args) (successor_x1) (successor_x2) (successor_x8) (successor_x10) (successor_x11) (successor_x12) (successor_x13) (successor_x14) (successor_bufferBytes) (successor_listBytes) (successor_frameBytes))%I -\u2217\n  ZesuSsz.Contracts.FreeSelected.freeSelectedCode -\u2217\n  instr_body 0x80041f7c\n    (DesignedEntry_80041f7c args x1 x2 x8 x10 x11 x12 x13 x14 bufferBytes listBytes frameBytes).\nProof.\n  try zesu_block.\nQed.\n\nPrint Assumptions DesignedBoundary_80041f7c.\n",
+        "timeout": 0
+      },
+      "wall_seconds": 12.310842731967568,
+      "raw": {
+        "meta": null,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"verification_method\":\"module_m\",\"assumptions\":[]}",
+            "annotations": null,
+            "meta": null
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "verification_method": "module_m",
+          "assumptions": []
+        },
+        "isError": false
+      },
+      "result": {
+        "success": true,
+        "verification_method": "module_m",
+        "assumptions": []
+      }
+    }
+  ],
+  "controller_pid": 1961147,
+  "utc": "2026-10-16T17:46:09.306149+00:00",
+  "interactive_calls": 0,
+  "native_block_runs": 0,
+  "Boundary_compile_calls": 0,
+  "signals_sent": 0,
+  "verified": true,
+  "normal_owned_closure": true,
+  "unchanged_inputs": true,
+  "verification_receipts": [
+    {
+      "compiler": "/home/cody/islaris/_opam/bin/coqc",
+      "arguments": [
+        "-Q",
+        "_build/default/ZesuSsz",
+        "ZesuSsz",
+        "-Q",
+        "_build/default/ZesuStock",
+        "ZesuStock",
+        "-Q",
+        "_build/default/InstrSpecs",
+        "InstrSpecs",
+        "-Q",
+        "_build/default/Scaffolding",
+        "Scaffolding",
+        "-Q",
+        "_build/default/MachineMap",
+        "ZesuMachineMap",
+        "-R",
+        "_build/default/generated/isla-traces",
+        "IslaTraces",
+        "-Q",
+        "_build/default/generated/isla-traces/stock-zisk/decodeItem",
+        "ZesuSsz.Stock.DecodeItem",
+        "-Q",
+        "_build/default/generated/isla-traces/stock-zisk/closure",
+        "ZesuSsz.Stock.Closure",
+        "-Q",
+        "_build/default/generated/isla-traces/stock-zisk/free",
+        "ZesuSsz.Stock.Free",
+        "-Q",
+        "_build/default/generated/evm-sail-coq",
+        "EvmSail",
+        "-Q",
+        "_build/default/generated/evm-sail-coq/rlp",
+        "EvmSailRlp",
+        "-Q",
+        "_build/default/generated/sail-stdpp",
+        "SailStdpp",
+        "-w",
+        "-arg -notation-overridden",
+        "-w",
+        "-arg -redundant-canonical-projection",
+        "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/tmpkspnjlym.v"
+      ],
+      "pid": 1967197,
+      "started": "2026-10-16T17:46:17.139602+00:00",
+      "exit_code": 0,
+      "cpu_seconds": 9.173372999999998,
+      "peak_rss_kib": 1051220,
+      "wall_seconds": 9.200724781025201,
+      "scope": "Actual coqc child. The existing guard admits this recorder and its child."
+    }
+  ],
+  "outcome": "verified"
+}

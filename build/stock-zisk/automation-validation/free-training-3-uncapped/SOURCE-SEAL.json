@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "report": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped-final872/REPORT.json",
+    "sha256": "494e2a303fb095948e5c9d379f5fbcfc3b18f92c84622de86fa8a0c88de76f1f",
+    "bytes": 42904
+  },
+  "table": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped-final872/TABLE.md",
+    "sha256": "c1ba1a95c2198d45a4a05438373fcba3ac03228d1408314aed07bd00099bf598",
+    "bytes": 1478
+  },
+  "partial": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped-partial866/REPORT.json",
+    "sha256": "3b287da2438a656c3e579e15e75bd740a1639a430d7228011f25e73d683a53b5",
+    "bytes": 39718
+  },
+  "failed_collection": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-uncapped-supplement864/collect.py",
+    "sha256": "2f42af214c1120d7e69f967d3ca3772aab25958e388912f412f9f372ea0157f1",
+    "bytes": 5834
+  },
+  "original_comparison": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training3-final855/REPORT.json",
+    "sha256": "7893c8833b32b848a991458c679f009a587c4d21a9a635873533663386cfa4bc",
+    "bytes": 11680
+  },
+  "verification_only_retry": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training3-pair/_build/free-training3-verification-retry868/ON-80041f7c/RESULT.json",
+    "sha256": "82b8f51b20b0135c0a3c52a4ba95441c30b01cce7d55f83db034ab4818ac715d",
+    "bytes": 21484
+  },
+  "native_or_interactive_runs": 0
+}
