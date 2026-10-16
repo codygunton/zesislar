@@ -333,8 +333,7 @@ def _bounded_semantic_violations(rows, documents, base, *, terminal_rule_success
             check_capture(point, session)
             require(isinstance(point["hint_log"], dict)
                     and point["hint_log"].get("availability") == "complete", "A point lacks complete hint logs.")
-        lookup = {name: (evidence, [Citation(m["path"], m["pointer"])
-                                  for m in CITATION.finditer(cites)])
+        lookup = {name: (evidence, parse_citations(cites)[0])
                   for _, name, evidence, cites in rows}
 
         def references(name):
@@ -460,8 +459,7 @@ def check(path, *, bundle, expected_map_sha256, expected_request, index_dir,
                            expected_request=expected_request, index_dir=index_dir) as checked:
             rows = legacy.table_rows(path.read_text())
             for _, _, _, text in rows:
-                for match in legacy.CITATION.finditer(text):
-                    citation = legacy.Citation(match['path'], match['pointer'])
+                for citation in legacy.parse_citations(text)[0]:
                     require((path.parent / citation.path).resolve() == checked.trace_path,
                             'The diagnosis cites another TRACE bundle.')
                     checked.resolve(citation.pointer)

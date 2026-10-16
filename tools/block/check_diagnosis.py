@@ -10,6 +10,7 @@ from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[2]
 CITATION = re.compile(r"(?P<path>[^\s`|#]+TRACE\.json|TRACE\.json)#(?P<pointer>[^\s`|]*)")
+MARKDOWN_LINK = re.compile(r"\[[^\]\n]+\]\((?P<target>[^()\s]+)\)")
 CYCLE = re.compile(r"cycle\.([1-9][0-9]*)\.(refusal|reason|normalization|next_refusal)")
 CYCLE_ROWS = ("refusal", "reason", "normalization", "next_refusal")
 PLACEHOLDER = re.compile(r"(?:TODO|TBD|PENDING|PLACEHOLDER)(?:\b.*)?|<(?:fill|insert|cite|placeholder)[^>]*>", re.IGNORECASE)
@@ -23,6 +24,30 @@ class Citation:
 
 class DiagnosisError(ValueError):
     """A diagnosis or its cited JSON cannot be checked."""
+
+
+def parse_citations(text: str):
+    """Read bare citations and renderer links in their original order."""
+    links = list(MARKDOWN_LINK.finditer(text))
+    spans = []
+    for link in links:
+        citation = CITATION.fullmatch(link["target"])
+        if citation is not None:
+            spans.append((link.start(), link.end(), citation))
+    for citation in CITATION.finditer(text):
+        # An unfinished link must not become a bare local path.
+        unfinished_link = re.search(r"\[[^\]\n]+\]\(", citation["path"])
+        if unfinished_link is None and not any(
+                link.start() <= citation.start() < link.end() for link in links):
+            spans.append((citation.start(), citation.end(), citation))
+    spans.sort(key=lambda span: span[0])
+    citations, remaining, end = [], [], 0
+    for start, stop, citation in spans:
+        remaining.append(text[end:start])
+        citations.append(Citation(citation["path"], citation["pointer"]))
+        end = stop
+    remaining.append(text[end:])
+    return citations, "".join(remaining).replace("`", "").strip(" ,;")
 
 
 def resolve_pointer(document, fragment: str):
@@ -282,8 +307,7 @@ def semantic_violations(rows, documents, base):
             check_capture(point, session)
             require(isinstance(point["hint_log"], dict)
                     and point["hint_log"].get("availability") == "complete", "A point lacks complete hint logs.")
-        lookup = {name: (evidence, [Citation(m["path"], m["pointer"])
-                                  for m in CITATION.finditer(cites)])
+        lookup = {name: (evidence, parse_citations(cites)[0])
                   for _, name, evidence, cites in rows}
 
         def references(name):
@@ -431,9 +455,7 @@ def violations(path: Path, template=False, structure_only=False) -> list[str]:
             continue
         if empty:
             errors.append(f"{location}: replace the evidence placeholder.")
-        citations = [Citation(match["path"], match["pointer"])
-                     for match in CITATION.finditer(citation_text)]
-        remaining = CITATION.sub("", citation_text).replace("`", "").strip(" ,;")
+        citations, remaining = parse_citations(citation_text)
         if remaining and not citation_placeholder:
             errors.append(f"{location}: use only TRACE.json citations in the citation cell.")
         if not citations:

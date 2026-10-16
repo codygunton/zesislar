@@ -2,10 +2,39 @@ import contextlib
 import io
 import json
 from pathlib import Path
+import re
 import tempfile
 import unittest
 
 from tools.block import check_diagnosis as checker
+
+
+class CitationFormatTests(unittest.TestCase):
+    def test_renderer_links_and_bare_citations_keep_order(self):
+        text = "[trace](one/TRACE.json#/a), `two/TRACE.json#/b`; [Checked command](TRACE.json#/c)"
+        citations, remaining = checker.parse_citations(text)
+        self.assertEqual(citations, [checker.Citation("one/TRACE.json", "/a"),
+                                     checker.Citation("two/TRACE.json", "/b"),
+                                     checker.Citation("TRACE.json", "/c")])
+        self.assertEqual(remaining, "")
+
+    def test_link_label_does_not_replace_the_target(self):
+        citations, remaining = checker.parse_citations("[TRACE.json#/false](TRACE.json#/true)")
+        self.assertEqual(citations, [checker.Citation("TRACE.json", "/true")])
+        self.assertEqual(remaining, "")
+
+    def test_links_preserve_pointer_escaping_and_empty_fragment(self):
+        for pointer in ("/a~1b/space%20key", "/%CE%BB", ""):
+            with self.subTest(pointer=pointer):
+                self.assertEqual(checker.parse_citations(f"[trace](TRACE.json#{pointer})"),
+                                 ([checker.Citation("TRACE.json", pointer)], ""))
+
+    def test_unsupported_or_malformed_links_leave_unchecked_text(self):
+        for text in ("[trace](other.json#/a)", "[trace](TRACE.json#/a", "prefix[trace](TRACE.json#/a",
+                     "[trace](TRACE.json#/a) prose",
+                     "[trace](TRACE.json#/a) [other](file.json#/b)"):
+            with self.subTest(text=text):
+                self.assertTrue(checker.parse_citations(text)[1])
 
 
 class PointerTests(unittest.TestCase):
@@ -135,6 +164,18 @@ class DiagnosisTests(unittest.TestCase):
 
     def test_complete_diagnosis_resolves_arbitrary_json_shape(self):
         self.assertEqual(self.errors(), [])
+
+    def markdown_links(self, text):
+        return re.sub(r"`([^`]*TRACE\.json#[^`]*)`", r"[trace](\1)", text)
+
+    def test_renderer_links_resolve_each_filled_row(self):
+        self.assertEqual(self.errors(self.markdown_links(self.text())), [])
+
+    def test_renderer_links_keep_pointer_and_local_file_checks(self):
+        for target in ("capture/TRACE.json#/missing", "https://host/TRACE.json#/anything/0"):
+            text = self.markdown_links(self.text()).replace("capture/TRACE.json#/anything/0", target)
+            with self.subTest(target=target):
+                self.assertTrue(self.errors(text))
 
     def test_every_filled_row_requires_its_own_citation(self):
         for name in ["trigger_goal", "cycle.1.refusal", "cycle.1.reason",
@@ -325,6 +366,15 @@ class CompletedDiagnosisTests(unittest.TestCase):
 
     def test_complete_same_session_normalization_and_actual_qed(self):
         self.assertEqual(self.errors(), [])
+
+    def test_markdown_links_preserve_completed_semantic_checks(self):
+        self.errors()
+        text = self.path.read_text()
+        self.path.write_text(re.sub(r"`(TRACE\.json#[^`]*)`", r"[trace](\1)", text))
+        self.assertEqual(checker.violations(self.path), [])
+        self.trace["verdict"].update(status="unresolved", evidence=None, scope="session")
+        self.trace_path.write_text(json.dumps(self.trace))
+        self.assertTrue(any("unresolved" in error for error in checker.violations(self.path)))
 
     def test_hidden_frames_absent_or_unavailable_are_accepted(self):
         self.trace["points"][0]["hidden_focus_frames"] = {"availability": "unavailable"}
