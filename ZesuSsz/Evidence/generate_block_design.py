@@ -10,7 +10,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools/block"))
 from function_names import FunctionNames, prefix_argument
-from generate_table import control, structure
+from generate_table import control, structure, resolved_calls
 from entry_bindings import validate_design
 
 
@@ -124,6 +124,7 @@ def build(inventory, name, profile, *, root=ROOT, generator=None):
     if inventory["elf_sha256"] != digest(root / "build/stock-zisk/zesu-zisk.elf"):
         raise ValueError("The inventory binds a different selected ELF.")
 
+    call_targets = resolved_calls(function)
     incoming = {pc: [] for pc in starts}
     uses, writes, terminators = {}, {}, {}
     backedges = {(int(edge["from"], 0), int(edge["to"], 0))
@@ -134,16 +135,16 @@ def build(inventory, name, profile, *, root=ROOT, generator=None):
         uses[pc], writes[pc] = set(), set()
         for at in range(pc, stop, 4):
             row = rows[at]
-            kind, targets, _, _ = control(row)
+            kind, targets, _, _ = control(row, call_targets)
             if row["kind"] != kind or set(row["successors"]) != set(targets):
                 raise ValueError(f"The instruction word and CFG differ at {address(at)}.")
-            if at + 4 != stop and targets != [at + 4]:
+            if at + 4 != stop and (kind == "call" or targets != [at + 4]):
                 raise ValueError("A control transfer occurs inside a block.")
             uses[pc].update(register_reads(row) - writes[pc])
             if kind in {"plain", "load"}:
                 writes[pc].update({row["rd"]} - {0})
         tail = rows[stop - 4]
-        kind, targets, guards, _ = control(tail)
+        kind, targets, guards, _ = control(tail, call_targets)
         terminators[pc] = kind
         if set(block["successors"]) != set(targets) or any(target not in starts for target in targets):
             raise ValueError("A block has an undeclared successor.")
@@ -153,7 +154,7 @@ def build(inventory, name, profile, *, root=ROOT, generator=None):
         for target, guard in zip(targets, guards):
             edge_kind = ("loop_backedge" if (tail["pc"], target) in backedges else
                          "conditional" if kind == "branch" else
-                         "jump" if kind == "jump" else "fallthrough")
+                         "jump" if kind == "jump" else "call" if kind == "call" else "fallthrough")
             incoming[target].append({"from_block": address(pc),
                 "from_instruction": address(tail["pc"]), "source_terminator": tail["mnemonic"],
                 "kind": edge_kind, "path_condition": guard})
@@ -202,6 +203,8 @@ def build(inventory, name, profile, *, root=ROOT, generator=None):
     refreshed = source_hashes(profile["hash_sources"].values(), root)
     result["hashes"] = {key: refreshed[path] for key, path in profile["hash_sources"].items()}
     result["hashes"]["generator_sha256"] = digest(generator or Path(__file__))
+    for call in result.get("calls", []):
+        call["source_hashes"] = source_hashes(call["source_hashes"], root)
     convention = result["table_convention"]
     convention["code_source_hashes"] = source_hashes(convention["code_source_hashes"], root)
     structure(inventory, result)

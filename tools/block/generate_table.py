@@ -89,6 +89,15 @@ def entry_source_hashes(design, root=ROOT):
             if name in hashes and hashes[name] != expected:
                 raise ValueError("The declarations bind different versions of one source.")
             hashes[name] = expected
+    for call in call_contracts(design):
+        fields = dict(entry_definition=call["contract_name"], resource_predicate=call["contract_name"],
+                      source_hashes=call["source_hashes"])
+        entry_schema.verify_sources(fields, root)
+        entry_schema.verify_declarations(fields, root)
+        for name, expected in fields["source_hashes"].items():
+            if name in hashes and hashes[name] != expected:
+                raise ValueError("The call contract binds another source version.")
+            hashes[name] = expected
     convention = design.get("table_convention", {})
     if "code_source_hashes" in convention:
         fields = {"source_hashes": convention["code_source_hashes"]}
@@ -129,7 +138,7 @@ def signed(value, width):
     return value - (1 << width) if value & (1 << (width - 1)) else value
 
 
-def control(row):
+def control(row, calls=None):
     """Decode targets from instruction bits; do not trust displacement metadata."""
     pc, word, size = address(row["pc"]), row["word"], row["size"]
     if size != 4 or not 0 <= word < 1 << 32 or word & 3 != 3:
@@ -157,12 +166,78 @@ def control(row):
         if rd != 0:
             raise ValueError("The selected region has an undeclared call.")
         return "jump", [pc + displacement], [{"op": "true"}], displacement
+    if opcode == 0x67 and calls is not None and pc in calls:
+        if rd != 1 or (word >> 12) & 7 or (word >> 15) & 31 != 1:
+            raise ValueError("The resolved call is not a supported jalr x1 through x1.")
+        return "call", [pc + size], [{"op": "true"}], signed(word >> 20, 12)
     if opcode == 0x67:
         if word != 0x8067:
             raise ValueError("The selected region has an unresolved indirect transfer.")
         return "return", [], [], 0
     kind = "load" if opcode == 0x03 else "store" if opcode == 0x23 else "plain"
     return kind, [pc + size], [{"op": "true"}], None
+
+
+CALL_FIELDS = frozenset({"call_site_pc", "callee_pc", "return_site_pc", "contract_name",
+                         "contract_arguments", "argument_type", "outcome_type", "source_hashes"})
+
+
+def resolved_calls(function):
+    """Resolve only an adjacent auipc/jalr pair and check the inventory twice."""
+    rows = {address(row["pc"]): row for row in function["rows"]}
+    result = {}
+    for item in function["calls"]:
+        if set(item) != {"pc", "target", "kind"} or item["kind"] != "call":
+            raise ValueError("The call inventory has unsupported fields.")
+        pc, target = address(item["pc"]), address(item["target"])
+        if pc in result or pc not in rows or pc - 4 not in rows:
+            raise ValueError("The call inventory repeats or omits an instruction.")
+        row, prior = rows[pc], rows[pc - 4]
+        word, upper = row["word"], prior["word"]
+        if (row["size"] != 4 or prior["size"] != 4 or word & 0x7f != 0x67 or
+                (word >> 7) & 31 != 1 or (word >> 15) & 31 != 1 or
+                (word >> 12) & 7 or upper & 0x7f != 0x17 or (upper >> 7) & 31 != 1):
+            raise ValueError("The call is not an adjacent auipc/jalr x1 pair.")
+        decoded = ((pc - 4 + signed(upper & 0xfffff000, 32) +
+                    signed(word >> 20, 12)) & ((1 << 64) - 1)) & ~1
+        if target != decoded or address(row.get("target", -1)) != decoded:
+            raise ValueError("The call target differs from the instruction words.")
+        result[pc] = target
+    if {pc for pc, row in rows.items() if row.get("kind") == "call"} != set(result):
+        raise ValueError("The call rows differ from the call inventory.")
+    return result
+
+
+def call_contracts(design):
+    """Keep each external contract explicit; an address never selects a contract."""
+    calls = design.get("calls", [])
+    if not isinstance(calls, list):
+        raise ValueError("The call contracts are not an ordered list.")
+    seen = set()
+    for call in calls:
+        if not isinstance(call, dict) or set(call) != CALL_FIELDS:
+            raise ValueError("The call contract has unsupported fields.")
+        pc = address(call["call_site_pc"])
+        if pc in seen:
+            raise ValueError("The call contract repeats an instruction.")
+        seen.add(pc)
+        for field in ("call_site_pc", "callee_pc", "return_site_pc"):
+            value = call[field]
+            if not isinstance(value, str) or not re.fullmatch(r"0x[0-9a-f]+", value):
+                raise ValueError("The call address is not canonical hexadecimal.")
+        if not isinstance(call["contract_name"], str) or not entry_schema.ROCQ_NAME.fullmatch(call["contract_name"]):
+            raise ValueError("The call contract name is not fully qualified.")
+        if not isinstance(call["contract_arguments"], list):
+            raise ValueError("The call contract arguments are not an ordered list.")
+        for value in call["contract_arguments"]:
+            entry_schema.expression(value, "call contract argument")
+        for field in ("argument_type", "outcome_type"):
+            entry_schema.expression(call[field], field)
+        # Reuse the exact source-path and hash schema used by block entries.
+        entry_schema.contract_fields(dict(entry_definition=call["contract_name"],
+            resource_predicate=call["contract_name"], binders=[], arguments=[],
+            source_hashes=call["source_hashes"]))
+    return calls
 
 
 def structure(cfg, design):
@@ -187,11 +262,20 @@ def structure(cfg, design):
     expected_pcs = set(range(root, end, 4))
     if set(row_map) != expected_pcs:
         raise ValueError("The instructions do not cover the selected function exactly.")
+    call_targets = resolved_calls(function)
+    declared_calls = {address(call["call_site_pc"]): call for call in call_contracts(design)}
+    if set(declared_calls) != set(call_targets):
+        raise ValueError("The selected function has undeclared call contracts.")
+    for pc, call in declared_calls.items():
+        if (address(call["callee_pc"]) != call_targets[pc] or
+                address(call["return_site_pc"]) != pc + 4):
+            raise ValueError("The call contract changes the callee or return site.")
     owners, returns, edges, metadata_errors = Counter(), [], [], []
+    call_edges = []
     instruction_edges = 0
     kinds = Counter()
     for pc, row in row_map.items():
-        kind, successors, guards, immediate = control(row)
+        kind, successors, guards, immediate = control(row, call_targets)
         kinds[kind] += 1
         if row.get("kind") != kind or set(map(address, row["successors"])) != set(successors):
             raise ValueError(f"Instruction control flow differs at {hex(pc)}.")
@@ -210,10 +294,10 @@ def structure(cfg, design):
             raise ValueError("The design has a different block boundary.")
         owners.update(pcs)
         for pc in pcs[:-1]:
-            if control(row_map[pc])[1] != [pc + row_map[pc]["size"]]:
+            if control(row_map[pc], call_targets)[0] == "call" or control(row_map[pc], call_targets)[1] != [pc + row_map[pc]["size"]]:
                 raise ValueError("A control transfer occurs inside a block.")
         tail = row_map[pcs[-1]]
-        kind, successors, guards, _ = control(tail)
+        kind, successors, guards, _ = control(tail, call_targets)
         if set(map(address, block["successors"])) != set(successors):
             raise ValueError("The block successors differ from its instruction word.")
         if set(map(address, designs[start]["successor_pcs"])) != set(successors):
@@ -223,6 +307,11 @@ def structure(cfg, design):
                 raise ValueError("The block has an undeclared external exit.")
             edges.append({"source": hex(start), "instruction": hex(address(tail["pc"])),
                           "target": hex(target), "condition": guard})
+        if kind == "call":
+            call = declared_calls[address(tail["pc"])]
+            call_edges.append({"source": hex(start), "instruction": call["call_site_pc"],
+                               "callee_pc": call["callee_pc"], "return_site_pc": call["return_site_pc"],
+                               "contract_name": call["contract_name"]})
         if kind == "return":
             clause = designs[start].get("return_clause", {})
             if address(clause.get("return_instruction_pc", -1)) != address(tail["pc"]):
@@ -260,8 +349,6 @@ def structure(cfg, design):
             edge["resource_alternative"] = selected
     if sorted(map(address, function["returns"])) != sorted(address(row["instruction"]) for row in returns):
         raise ValueError("The CFG return inventory differs from the block exits.")
-    if function["calls"]:
-        raise ValueError("The selected function has undeclared call contracts.")
     active, visited, loop_edges = set(), set(), []
     def visit(pc):
         if pc in visited:
@@ -278,14 +365,15 @@ def structure(cfg, design):
     if visited != set(block_map):
         raise ValueError("The CFG has a block outside the selected entry graph.")
     counts = {"instructions": len(rows), "blocks": len(blocks), "instruction_edges": instruction_edges,
-              "block_edges": len(edges), "returns": len(returns), "calls": 0,
+              "block_edges": len(edges), "returns": len(returns), "calls": len(call_edges),
               "conditional_branches": kinds["branch"], "loops": len(loop_edges)}
     for field, actual in (("instruction_count", len(rows)), ("block_count", len(blocks)),
                           ("conditional_branch_count", kinds["branch"]),
                           ("loop_count", len(loop_edges))):
         if design[field] != actual:
             raise ValueError(f"The design count differs: {field}.")
-    return {"coverage": counts, "edges": edges, "returns": returns, "loop_edges": loop_edges,
+    return {**({"calls": call_edges} if call_edges else {}),
+            "coverage": counts, "edges": edges, "returns": returns, "loop_edges": loop_edges,
             "displacement_metadata_discrepancies": metadata_errors,
             "missing_entry_definitions": [hex(pc) for pc, row in sorted(designs.items())
                                           if not row.get("entry_definition")]}
@@ -342,6 +430,11 @@ def render_table(design, report, *, name_prefix="decodeItem"):
         body = f"∃ {typed}, {application}" if typed else application
         name = names.state(address(block['entry_pc']))
         states.append((block, name, body))
+    calls = call_contracts(design)
+    if calls:
+        imports.add("ZesuSsz.Contracts.Level1")
+        for call in calls:
+            imports.update(entry_schema.source_module(path) for path in call["source_hashes"] if path.endswith(".v"))
     lines = ["Require Import ZesuSsz.Automation.All.",
              "Require Import isla.riscv64.riscv64.",
              "From Coq Require Import List ZArith.",
@@ -358,10 +451,28 @@ def render_table(design, report, *, name_prefix="decodeItem"):
     for block, name, body in states:
         lines += [f"(* Entry: {block['entry_definition']}. Body proof: pending. *)",
                   f"Definition {name} : iProp Sigma :=", f"  ({body})%I.", ""]
+    call_premises = []
+    for call in calls:
+        name = f"{names.prefix}CallState{address(call['call_site_pc']):x}"
+        args_type, out_type = call["argument_type"], call["outcome_type"]
+        model = call["contract_name"] + "".join(f" ({arg})" for arg in call["contract_arguments"])
+        lines += [f"(* External contract: {call['contract_name']}. Installation proof: pending. *)",
+                  f"Definition {name} : iProp Sigma :=",
+                  f"  let model := {model} in",
+                  f"  let resources := islarisContractResources ({args_type}) ({out_type}) model Sigma _ _ in",
+                  f"  (∃ args : {args_type},",
+                  f"    islarisEntry ({args_type}) ({out_type}) resources args ∗",
+                  f"    instr_pre {call['return_site_pc']} (∃ outcome : {out_type},",
+                  f"      ⌜islarisContractAllows ({args_type}) ({out_type}) model args outcome⌝ ∗",
+                  f"      islarisExit ({args_type}) ({out_type}) resources args outcome))%I.", ""]
+        call_premises.append(f"□ instr_pre {call['callee_pc']} {name}")
+    code = convention["code_resource"]
+    if call_premises:
+        code = "(" + " ∗ ".join([code] + call_premises) + ")%I"
     entries = ";\n   ".join(f"(0x{address(block['entry_pc']):x}, {name})"
                               for block, name, _ in states)
     lines += [f"Definition {names.table} : blockTable Sigma :=",
-              "  {| block_table_code := " + convention["code_resource"] + ";",
+              "  {| block_table_code := " + code + ";",
               f"     block_table_entries := [{entries}] |}}.", "",
               "(* Completion requires the persistent code resource and every block body. *)",
               f"Definition {names.table}_complete :=",
