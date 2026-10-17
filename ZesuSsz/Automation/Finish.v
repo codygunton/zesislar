@@ -8,6 +8,7 @@ Require Export ZesuSsz.Automation.ArrayCursors.
 Require Import ZesuSsz.Automation.ArrayByteValues.
 Require Import ZesuSsz.Automation.ArraySlices.
 Require Import ZesuSsz.Automation.Rewrites.
+Require Import ZesuSsz.Automation.EncodingNormalization.
 Require Import ZesuSsz.Automation.StackArrayIndices.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Automation.PackedWordValues.
@@ -357,6 +358,7 @@ Ltac zesu_finish_v2 :=
   zesu_finish_dispatch.
 
 Ltac zesu_finish :=
+  try zesu_encoding_normalization_if_enabled;
   try solve [zesu_natural_index_constraint_if_enabled];
   try solve [zesu_array_region_selection_if_enabled];
   tryif zesu_defer_unresolved_sidecondition_if_enabled then idtac else (
