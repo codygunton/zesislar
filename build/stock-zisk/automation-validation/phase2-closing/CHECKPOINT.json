@@ -1,0 +1,29 @@
+{
+  "item": "phase2-closing-tables",
+  "base": "f3cf9f9b6ff08ffb29565a10f63556b43287606f",
+  "report": "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/phase2-closing-final006/REPORT.json",
+  "report_sha256": "cece09813544260f2d293fcc842565dc7a9c36053a6a10d40f4600a46c7258d5",
+  "gate": {
+    "command": [
+      "make",
+      "check-fast",
+      "CHECK_AGENT=spec-a",
+      "FAST_JOBS=6",
+      "AGENT_JOBS=6",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/agents/spec-a-nextuint64-profile-gate"
+    ],
+    "start_UTC": "2026-10-17T04:58:25.044304+00:00",
+    "exit_code": 0,
+    "wall_seconds": 95.5487719331868,
+    "user_seconds": 54.839971,
+    "system_seconds": 25.38151,
+    "peak_RSS_KiB": 186196,
+    "unchanged_sources": true
+  },
+  "run_stages": 12,
+  "text_rows": 8,
+  "supported_last_count": 11307,
+  "final_candidate": null,
+  "source_scope": "Metrics plus retained issue13 only. Sources and exact hashes are bound in the full report.",
+  "limits": "Metadata only. No proof/native execution. Phase2 final comparison remains pending."
+}

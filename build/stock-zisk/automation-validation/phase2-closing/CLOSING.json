@@ -1,0 +1,384 @@
+{
+  "scope": "Metadata only. Sources are the owner metrics and issue13. No contract/source inspection, proof, compiler probe, or native run.",
+  "ruleset_freeze": {
+    "commit": "59437da5 (cp-av-rules-frozen, on ed2fe2de)",
+    "active": [
+      "EntryIntro",
+      "MaskNormalizer-Z",
+      "MaskNormalizer-bv",
+      "ConjunctMatch"
+    ],
+    "inactive": [
+      "ReturnRoute",
+      "FinishFacts",
+      "MemoryAccess"
+    ],
+    "approved_sha256": "3f2b79be209341d0f181055b81922d6e31027452519486d4bf6125caf4eea488",
+    "switch_json_sha256": "d6c252a2e79759420adcbb2f856f6df068a0578a483197e434451648320525e4",
+    "date": "2026-10-16T04:xxZ"
+  },
+  "run_rows": [
+    {
+      "run": "holdout724",
+      "root_as_recorded": "e8131be2",
+      "full_root": null,
+      "predicted_closures": 12,
+      "verified_closures": 0,
+      "residual_blocks": 43,
+      "comments": [
+        6209189220
+      ],
+      "ruleset": "Frozen EntryIntro + MaskNormalizer-Z + MaskNormalizer-bv + ConjunctMatch. Automation.Approved imported. ReturnRoute, FinishFacts, MemoryAccess inactive.",
+      "interactive_closures": null,
+      "pending_verification": 0,
+      "auto_controls": null,
+      "metrics_pointer": "/functions/alt_fl_alloc.free/holdout_result"
+    },
+    {
+      "run": "training1-758",
+      "root_as_recorded": "25695558",
+      "full_root": null,
+      "predicted_closures": 26,
+      "verified_closures": 0,
+      "residual_blocks": 43,
+      "comments": [
+        6212028138,
+        6212595451
+      ],
+      "ruleset": "Frozen rules unchanged. fresh successor binders and twelve introduction bundles.",
+      "interactive_closures": null,
+      "pending_verification": 0,
+      "auto_controls": null,
+      "metrics_pointer": "/functions/alt_fl_alloc.free/training_run_1"
+    },
+    {
+      "run": "training2-805",
+      "root_as_recorded": "3c8ab7b0f769176f509e16824faf675adef3674b",
+      "full_root": "3c8ab7b0f769176f509e16824faf675adef3674b",
+      "predicted_closures": 26,
+      "verified_closures": 0,
+      "residual_blocks": 31,
+      "comments": [
+        6216737745,
+        6216961043,
+        6217323866
+      ],
+      "ruleset": "Frozen rules unchanged. register-style contracts and candidate equation. No normalization rule.",
+      "interactive_closures": 12,
+      "pending_verification": 12,
+      "auto_controls": null,
+      "metrics_pointer": "/functions/alt_fl_alloc.free/training_run_2",
+      "scope": "Initial result before the compile-path correction."
+    },
+    {
+      "run": "training2-validation810",
+      "root_as_recorded": "3c8ab7b0f769176f509e16824faf675adef3674b",
+      "full_root": "3c8ab7b0f769176f509e16824faf675adef3674b",
+      "predicted_closures": 26,
+      "verified_closures": 12,
+      "residual_blocks": 31,
+      "comments": [
+        6219363359,
+        6216961043
+      ],
+      "ruleset": "Same training2 proof statements. Sets/call.vo loadpath repaired.",
+      "interactive_closures": 12,
+      "pending_verification": 0,
+      "auto_controls": null,
+      "metrics_pointer": "/functions/alt_fl_alloc.free/training_run_2/verification"
+    },
+    {
+      "run": "training3-854-OFF",
+      "root_as_recorded": "3aebfa260c6a38ef1abc9eae5ea4b342410de422",
+      "full_root": "3aebfa260c6a38ef1abc9eae5ea4b342410de422",
+      "predicted_closures": 12,
+      "verified_closures": 6,
+      "residual_blocks": 31,
+      "comments": [
+        6219363359,
+        6220748998
+      ],
+      "ruleset": "Frozen rules plus registered value bounds. whole EncodingNormalization switch OFF.",
+      "interactive_closures": 12,
+      "pending_verification": 6,
+      "auto_controls": {
+        "verified": 9,
+        "total": 9,
+        "failed": []
+      },
+      "metrics_pointer": "/functions/alt_fl_alloc.free/training_run_3/off"
+    },
+    {
+      "run": "training3-854-ON",
+      "root_as_recorded": "3aebfa260c6a38ef1abc9eae5ea4b342410de422",
+      "full_root": "3aebfa260c6a38ef1abc9eae5ea4b342410de422",
+      "predicted_closures": 40,
+      "verified_closures": 8,
+      "residual_blocks": 27,
+      "comments": [
+        6219363359,
+        6220748998
+      ],
+      "ruleset": "Frozen rules plus registered value bounds. EncodingNormalization switch ON (candidate).",
+      "interactive_closures": 16,
+      "pending_verification": 8,
+      "auto_controls": {
+        "verified": 7,
+        "total": 9,
+        "failed": [
+          "800d69e0",
+          "800d6a6c"
+        ]
+      },
+      "metrics_pointer": "/functions/alt_fl_alloc.free/training_run_3/on"
+    },
+    {
+      "run": "training3-uncapped872-OFF",
+      "root_as_recorded": "3aebfa260c6a38ef1abc9eae5ea4b342410de422",
+      "full_root": "3aebfa260c6a38ef1abc9eae5ea4b342410de422",
+      "predicted_closures": 12,
+      "verified_closures": 12,
+      "residual_blocks": 31,
+      "comments": [
+        6227257551,
+        6219363359
+      ],
+      "ruleset": "Same candidate/proof scope. Tool-side compilation timeouts removed. no new native comparison.",
+      "interactive_closures": null,
+      "pending_verification": 0,
+      "auto_controls": null,
+      "retained_auto_controls": "The earlier OFF9/9 and ON7/9 outcome remains. No new Auto repair is recorded.",
+      "metrics_pointer": "/functions/alt_fl_alloc.free/training_run_3/uncapped_supplement"
+    },
+    {
+      "run": "training3-uncapped872-ON",
+      "root_as_recorded": "3aebfa260c6a38ef1abc9eae5ea4b342410de422",
+      "full_root": "3aebfa260c6a38ef1abc9eae5ea4b342410de422",
+      "predicted_closures": 40,
+      "verified_closures": 16,
+      "residual_blocks": 27,
+      "comments": [
+        6227257551,
+        6219363359
+      ],
+      "ruleset": "Same candidate/proof scope. Tool-side compilation timeouts removed. no new native comparison.",
+      "interactive_closures": null,
+      "pending_verification": 0,
+      "auto_controls": null,
+      "retained_auto_controls": "The earlier OFF9/9 and ON7/9 outcome remains. No new Auto repair is recorded.",
+      "metrics_pointer": "/functions/alt_fl_alloc.free/training_run_3/uncapped_supplement"
+    },
+    {
+      "run": "training4-995-OFF",
+      "root_as_recorded": "0bf4b23c2e99e93312bc05243a48657c3992780a",
+      "full_root": "0bf4b23c2e99e93312bc05243a48657c3992780a",
+      "predicted_closures": 12,
+      "verified_closures": 12,
+      "residual_blocks": 31,
+      "comments": [
+        6227257551,
+        6228963505
+      ],
+      "ruleset": "Candidate includes conditional ite-form leaf facts. Whole encoding switch OFF.",
+      "interactive_closures": null,
+      "pending_verification": 0,
+      "auto_controls": {
+        "verified": 9,
+        "total": 9,
+        "max_cpu_change_percent": 4.94,
+        "scope": "Metrics gives9/9pass and maximum; separate arm counts are not specified."
+      },
+      "metrics_pointer": "/functions/alt_fl_alloc.free/training_run_4"
+    },
+    {
+      "run": "training4-995-ON",
+      "root_as_recorded": "0bf4b23c2e99e93312bc05243a48657c3992780a",
+      "full_root": "0bf4b23c2e99e93312bc05243a48657c3992780a",
+      "predicted_closures": 30,
+      "verified_closures": 12,
+      "residual_blocks": 31,
+      "comments": [
+        6227257551,
+        6228963505
+      ],
+      "ruleset": "Candidate includes conditional ite-form leaf facts. Repaired goal-only keyed encoding switch ON.",
+      "interactive_closures": null,
+      "pending_verification": 0,
+      "auto_controls": {
+        "verified": 9,
+        "total": 9,
+        "max_cpu_change_percent": 4.94,
+        "scope": "Metrics gives9/9pass and maximum; separate arm counts are not specified."
+      },
+      "metrics_pointer": "/functions/alt_fl_alloc.free/training_run_4"
+    },
+    {
+      "run": "FINAL-candidate-OFF",
+      "root_as_recorded": null,
+      "full_root": null,
+      "predicted_closures": null,
+      "verified_closures": null,
+      "residual_blocks": null,
+      "comments": [],
+      "ruleset": null,
+      "interactive_closures": null,
+      "pending_verification": null,
+      "auto_controls": null,
+      "scope": "No result supplied by the allowed sources."
+    },
+    {
+      "run": "FINAL-candidate-ON",
+      "root_as_recorded": null,
+      "full_root": null,
+      "predicted_closures": null,
+      "verified_closures": null,
+      "residual_blocks": null,
+      "comments": [],
+      "ruleset": null,
+      "interactive_closures": null,
+      "pending_verification": null,
+      "auto_controls": null,
+      "scope": "No result supplied by the allowed sources."
+    }
+  ],
+  "text_rows": [
+    {
+      "total": 983,
+      "requested_total": 983,
+      "delta": null,
+      "scope_expansion": null,
+      "within_inherited_scope_delta": null,
+      "source_comments": [
+        6184742238
+      ],
+      "metrics_pointer": null,
+      "benefit": "Initial pre-run contracts 571, introductions 113, exit meanings 57, registrations 131, generator JSON 111. No native benefit measured by this count."
+    },
+    {
+      "total": 1105,
+      "requested_total": 1105,
+      "delta": 122,
+      "scope_expansion": 0,
+      "within_inherited_scope_delta": 122,
+      "source_comments": [
+        6186102018
+      ],
+      "metrics_pointer": "/functions/alt_fl_alloc.free/interface_lines_prerun",
+      "benefit": "Exit meanings +52 and registrations +70. The integrated contract/data package exists; the later holdout still verifies 0/43."
+    },
+    {
+      "total": 1621,
+      "requested_total": 1621,
+      "delta": 516,
+      "scope_expansion": 0,
+      "within_inherited_scope_delta": 516,
+      "source_comments": [
+        6210027851,
+        6212595451
+      ],
+      "metrics_pointer": "/functions/alt_fl_alloc.free/interface_lines_training",
+      "benefit": "Twelve keyed leaf/class introductions address the omitted data route. Training 1 still verifies 0/43; generator repair also changed that run."
+    },
+    {
+      "total": 11040,
+      "requested_total": 11040,
+      "delta": 9419,
+      "scope_expansion": 9392,
+      "within_inherited_scope_delta": 27,
+      "inherited_scope_total": 1648,
+      "source_comments": [
+        6216737745,
+        6217323866
+      ],
+      "metrics_pointer": "/functions/alt_fl_alloc.free/interface_lines_register_bounds",
+      "benefit": "Full counting adds 9392 previously excluded lines. The inherited scope adds 27 net lines. Register bounds and candidate facts accompany 12 verified class closures. Fourteen range blocks remain open. These sources do not name each added file."
+    },
+    {
+      "total": 11135,
+      "requested_total": 11135,
+      "delta": 95,
+      "scope_expansion": 0,
+      "within_inherited_scope_delta": 95,
+      "source_comments": [
+        6219363359
+      ],
+      "metrics_pointer": "/functions/alt_fl_alloc.free/interface_lines_value_bounds",
+      "benefit": "The value-bound hints enter both training 3 arms. OFF keeps 12 verified closures. ON reaches 16 after validation. Two Auto controls regress. The records do not isolate the benefit of these 95 lines."
+    },
+    {
+      "total": 11306,
+      "requested_total": 11306,
+      "delta": 171,
+      "scope_expansion": 0,
+      "within_inherited_scope_delta": 171,
+      "source_comments": [
+        6226480623,
+        6227257551,
+        6228963505
+      ],
+      "metrics_pointer": "/functions/alt_fl_alloc.free/interface_lines_ite_facts",
+      "benefit": "The conditional ite-form facts support the keyed repair comparison. Training 4 verifies 12 closures in each arm. No leaf closure gain occurs."
+    },
+    {
+      "total": 11307,
+      "requested_total": 11307,
+      "delta": 1,
+      "scope_expansion": 0,
+      "within_inherited_scope_delta": 1,
+      "source_comments": [],
+      "metrics_pointer": "/functions/alt_fl_alloc.free/interface_lines_own_umbrella",
+      "benefit": "The own-function umbrella exports the existing FreeSelected module. The count adds one line at cp-av-free-own-umbrella (1a4e2008). No isolated closure benefit is measured."
+    },
+    {
+      "total": null,
+      "requested_total": null,
+      "delta": null,
+      "scope_expansion": null,
+      "within_inherited_scope_delta": null,
+      "source_comments": [],
+      "metrics_pointer": null,
+      "benefit": "FINAL candidate: no source-supported text count or result yet."
+    }
+  ],
+  "defects": [
+    {
+      "record": "706/F39",
+      "kind": "Void startup",
+      "fact": "Automation.Approved was omitted; zero machine instructions. This is not the recorded holdout724.",
+      "source": "metrics findingsF39/F41; issue6209189220"
+    },
+    {
+      "record": "797/798",
+      "kind": "Descriptor validation",
+      "fact": "Zero native arms/tactics. Command799 corrects only descriptor/output paths.",
+      "source": "issue6216961043"
+    },
+    {
+      "record": "805 to810",
+      "kind": "Compilation environment",
+      "fact": "Twelve interactive closures awaited Sets/call.vo loadpath repair. 810 verifies those statements with assumptions[].",
+      "source": "metrics training_run_2; issue6217323866/6219363359"
+    },
+    {
+      "record": "854 to uncapped872",
+      "kind": "Tool-side compile timeouts",
+      "fact": "OFF 6 / ON 8 pending compilation initially. Uncapped compiler CPU 7.7..24.1s. Final OFF 12 / ON 16 verified. No native rerun is inferred.",
+      "source": "metrics training_run_3/uncapped_supplement"
+    },
+    {
+      "record": "training4 startup",
+      "kind": "Admission/launcher defects",
+      "fact": "One admission deadlock and two launcher-packaging defects precede the isolated-writer restart. They have zero proof calls.995 is separate.",
+      "source": "issue6228413689"
+    }
+  ],
+  "limits": [
+    "The full holdout and training1 Root hashes are absent from the allowed source snapshot. The table preserves their exact recorded prefixes.",
+    "Auto controls remain null when no result exists in the allowed source fields.",
+    "Metrics top-level free.spent=false and pass_criteria.native=null are stale relative to holdout_result.status=spent. The explicit result controls this table.",
+    "Historical F50 recordsON 15 plus 1 pending. The explicit final uncapped field and issue6227257551 record ON 16. Both stages remain distinct.",
+    "A source comment initially called the failure an arithmetic deficit. Later F42/F43/F44 qualify that explanation. This report does not infer a new finisher comparison.",
+    "Final candidate fields remain null. These tables do not declare the pending final comparison complete."
+  ],
+  "publication_base_root": "f3cf9f9b6ff08ffb29565a10f63556b43287606f"
+}
