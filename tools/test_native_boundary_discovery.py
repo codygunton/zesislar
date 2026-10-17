@@ -210,6 +210,7 @@ class FirstNativeRunTests(unittest.TestCase):
         self.write_json('cfg.json', {'artifact_identity': 'code'})
         self.write_json('manifest.json', {'artifact_identity': 'code', 'elf_sha256': 'elf'})
         self.write_json('bindings.json', {})
+        self.write_json('entry-artifacts.json', {'schema': 1, 'function': 'fixture', 'objects': {}})
         (self.root/'code.txt').write_text('  Example.code -∗\n')
         self.block = {'start': '0x10', 'successors': []}
         self.state = {'imports': [], 'spatial': ['Example.Entries.caller args'],
@@ -237,12 +238,14 @@ class FirstNativeRunTests(unittest.TestCase):
             return discovery.first_native_root(self.options(**changes),
                 argparse.ArgumentParser(), self.root)
 
-    def invoke(self, extra, *, binding_error=None, head_results=None, pool_effect=None):
+    def invoke(self, extra, *, binding_error=None, head_results=None, pool_effect=None, preflight_error=None, entry_artifacts=True):
         arguments = ['discovery.py', '--design', str(self.root/'design.json'),
             '--trace-import', 'Example.index', '--code-premises', str(self.root/'code.txt'),
             '--binding-report', str(self.root/'bindings.json'), '--cfg', str(self.root/'cfg.json'),
             '--manifest', str(self.root/'manifest.json'), '--out', str(self.root/'out'),
             '--terminal', 'returnAddress args', *extra]
+        if '--designed-successors' in extra and entry_artifacts:
+            arguments.extend(['--entry-artifacts', str(self.root/'entry-artifacts.json')])
         with contextlib.ExitStack() as stack:
             stack.enter_context(patch.object(sys, 'argv', arguments))
             stack.enter_context(contextlib.chdir(self.root))
@@ -255,9 +258,12 @@ class FirstNativeRunTests(unittest.TestCase):
             stack.enter_context(patch('discovery.prepare',
                 return_value=([(self.row, self.block, self.state)], [])))
             stack.enter_context(patch('discovery.machine', return_value={}))
+            stack.enter_context(patch('discovery.preflight_native_entries',
+                return_value={'mocked_entry_gate': True}, side_effect=preflight_error))
             renderer = stack.enter_context(patch('successor_entailment.native_boundary_source',
                 return_value={'source': 'abstract source'}))
             pool = stack.enter_context(patch('discovery.ProcessPoolExecutor'))
+            self.last_pool = pool
             pool.return_value.__enter__.return_value.map.return_value = [copy.deepcopy(self.record)]
             if pool_effect is not None:
                 pool.return_value.__enter__.return_value.map.side_effect = pool_effect

@@ -29,6 +29,7 @@ import entry_schema
 import check_entry_bindings
 import native_diagnostics
 import setup_fallback
+from call_journal import ToolJournal
 from launch_imports import validate_launch_imports
 
 
@@ -36,8 +37,19 @@ def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def report_entry_class(row):
+    """Supply a reporting label without changing the executable design."""
+    if 'entry_class' in row:
+        value = row['entry_class']
+        if not isinstance(value, str) or not value:
+            raise ValueError('The existing entry class must be a nonempty string')
+        return {'entry_class': value}
+    return {'entry_class': 'unclassified-design-entry',
+            'entry_class_source': 'The checked design row omits entry_class; report-only default.'}
+
+
 def contract_gap(block, reason):
-    return {"entry": block["entry_pc"], "entry_class": block["entry_class"],
+    return {"entry": block["entry_pc"], **report_entry_class(block),
             "outcomes": ["contract-gap"], "executed": False,
             "first_residual": {"class": "spec", "reason": reason}, "captures": []}
 
@@ -49,6 +61,7 @@ def prepare(design, cfg, states, root, entry_errors=None):
         raise ValueError("The design and CFG do not identify the same blocks")
     ready, gaps = [], []
     for pc, row in declared.items():
+        report_entry_class(row)
         block = blocks[pc]
         if gen_block.address(row["end_pc_exclusive"]) != gen_block.address(block["end"]):
             raise ValueError("The design names a different block extent")
@@ -85,7 +98,7 @@ def summarize(row, captures):
                      record.get("pending_goals", []) + record.get("shelved_goals", [])), None)
     if residual is None:
         residual = next((record.get("error") for record in captures if record.get("error")), None)
-    return {"entry": row["entry_pc"], "entry_class": row["entry_class"],
+    return {"entry": row["entry_pc"], **report_entry_class(row),
             "outcomes": classes, "executed": any(record.get("proof_phase_entered", True) for record in captures),
             "first_residual": residual if classes != ["setup-error"] else None,
             "setup_error": residual if classes == ["setup-error"] else None,
@@ -260,6 +273,115 @@ async def fallback_designed_block(row, state, rendered, options, base, mcp_attem
         'secondary_diagnostics': []}
 
 
+def preflight_native_entries(ready, design, options):
+    """Require every declaration and resource lookup before the native worker pool."""
+    import launch_preflight
+    import launch_entries
+    import successor_entailment
+    workspace = Path(options['workspace']).resolve()
+    map_path = Path(options['entry_artifacts'])
+    mapping = json.loads(map_path.read_bytes())
+    if (not isinstance(mapping, dict) or set(mapping) != {'schema', 'function', 'objects', 'lookup'}
+            or type(mapping['schema']) is not int or mapping['schema'] != 2
+            or not isinstance(mapping['lookup'], dict)
+            or set(mapping['lookup']) != {'selected_code', 'index_module', 'index_source'}
+            or not isinstance(mapping['function'], str) or not mapping['function']
+            or mapping['function'] != design.get('function')
+            or not isinstance(mapping['objects'], dict)
+            or any(not isinstance(module, str) or not entry_schema.ROCQ_NAME.fullmatch(module)
+                   for module in mapping['objects'])):
+        raise ValueError('The native entry artifact map has an invalid schema or function')
+    objects = {module: launch_entries.checked_file(binding)
+               for module, binding in mapping['objects'].items()}
+    output = Path(options['out']).resolve()
+    if not output.is_relative_to(workspace):
+        raise ValueError('The native preflight output leaves its workspace')
+    sources = output/'entry-preflight-sources'
+    sources.mkdir(parents=True, exist_ok=False)
+    entries = []
+    for row, block, state in ready:
+        if not re.fullmatch(r'0x[0-9a-fA-F]+', row['entry_pc']):
+            raise ValueError('The native entry needs a hexadecimal block ID')
+        rendered = successor_entailment.native_boundary_source(
+            state, block, design, workspace, enabled=True,
+            terminal=designed_terminal(block, options))
+        source = sources/(row['entry_pc'] + '.v')
+        source.write_text(rendered['source'])
+        modules = launch_entries.require_modules(rendered['source'])
+        if not modules <= objects.keys():
+            raise ValueError('The artifact map omits direct entry imports: ' +
+                             ', '.join(sorted(modules - objects.keys())))
+        entries.append({'id': row['entry_pc'], 'source': launch_entries.file_reference(source),
+                        'theorem': rendered['lemma'],
+                        'artifacts': {module: objects[module]['binding'] for module in sorted(modules)}})
+    directory = Path(options['out'])/'entry-preflight'
+    resources = {entry['id']: {'pc': entry['id'], **mapping['lookup']} for entry in entries}
+    rows = [{'entry': entry, 'resource': resources[entry['id']]} for entry in entries]
+    manifest = Path(options['out'])/'entry-preflight-MANIFEST.json'
+    chain_root.atomic_json(manifest, {'schema': 1, 'workspace': str(workspace),
+                                     'function': mapping['function'], 'rows': rows})
+    receipt = asyncio.run(launch_preflight.check_launch(manifest, directory,
+        launch_entries.owned_sessions(options['mcp_command'], workspace)))
+    policy = {'artifact_map': launch_entries.file_reference(map_path), 'objects': objects,
+              'resources': resources,
+              'tools': [launch_entries.file_reference(Path(launch_entries.__file__)),
+                        launch_entries.file_reference(HERE/'launch_preflight.py'),
+                        launch_entries.file_reference(HERE/'launch_resources.py'),
+                        launch_entries.file_reference(HERE/'call_journal.py'),
+                        launch_entries.file_reference(HERE/'complete_goals_mcp.py'),
+                        launch_entries.file_reference(HERE/'complete_goals_mcp.sh')]}
+    chain_root.atomic_json(directory/'POLICY.json', policy)
+    if (receipt.get('passed') is not True
+            or type(receipt.get('selected_entries')) is not int
+            or type(receipt.get('checked_entries')) is not int
+            or receipt['selected_entries'] != len(entries) or receipt['checked_entries'] != len(entries)):
+        raise ValueError('A selected entry failed preflight. No native worker can start.')
+    launch_preflight.verify_release(launch_entries.file_reference(directory/'REPORT.json'), workspace, resources)
+    for artifact in objects.values():
+        launch_entries.unchanged_file(artifact)
+    return {'report': launch_entries.file_reference(directory/'REPORT.json'),
+            'policy': launch_entries.file_reference(directory/'POLICY.json'),
+            'source_hashes': {entry['id']: entry['source']['sha256'] for entry in entries}}
+
+
+def require_native_entry_preflight(rendered, options):
+    """Bind the actual source and artifacts to the completed entry barrier."""
+    import launch_entries
+    import launch_preflight
+    gate = options.get('entry_preflight')
+    if not isinstance(gate, dict) or set(gate) != {'report', 'policy', 'source_hashes'}:
+        raise ValueError('The native worker needs the completed entry preflight')
+    for key in ('report', 'policy'):
+        launch_entries.checked_file(gate[key], Path(options['workspace']).resolve())
+    policy = json.loads(Path(gate['policy']['path']).read_bytes())
+    receipt = launch_preflight.verify_release(gate['report'], Path(options['workspace']).resolve(),
+                                               policy['resources'])
+    pc = rendered.get('entry_pc')
+    if (receipt.get('passed') is not True
+            or type(receipt.get('selected_entries')) is not int
+            or type(receipt.get('checked_entries')) is not int
+            or receipt['selected_entries'] != receipt['checked_entries']
+            or receipt['selected_entries'] != len(gate['source_hashes'])
+            or gate['source_hashes'].get(pc) != hashlib.sha256(rendered['source'].encode()).hexdigest()):
+        raise ValueError('The worker source differs from the all-entry preflight')
+    entries = receipt.get('entries')
+    if (not isinstance(entries, list) or len(entries) != receipt['selected_entries']
+            or {entry['id'] for entry in entries} != set(gate['source_hashes'])
+            or any(entry.get('passed') is not True for entry in entries)):
+        raise ValueError('The native worker needs every selected entry receipt')
+    for entry in entries:
+        launch_entries.unchanged_file(entry['source'])
+    selected = [entry for entry in entries if entry['id'] == pc]
+    if (len(selected) != 1 or selected[0]['passed'] is not True
+            or selected[0]['source']['binding']['sha256'] != gate['source_hashes'][pc]):
+        raise ValueError('The worker lacks its exact successful entry receipt')
+    launch_entries.checked_file(policy['artifact_map'])
+    for artifact in policy['objects'].values():
+        launch_entries.unchanged_file(artifact)
+    for tool in policy['tools']:
+        launch_entries.checked_file(tool)
+
+
 async def probe_designed_block(row, block, state, options):
     """Run one native boundary proof through an owned guarded MCP session."""
     import successor_entailment
@@ -269,11 +391,14 @@ async def probe_designed_block(row, block, state, options):
         state, block, design, Path(options['workspace']), enabled=True,
         terminal=terminal)
     validate_launch_imports(rendered['source'], design.get('function'), options['workspace'])
+    require_native_entry_preflight(rendered, options)
     from mcp import ClientSession, StdioServerParameters
     from mcp.client.stdio import stdio_client
     base = Path(options['out'])/'native'/('block_' + row['entry_pc'])
     base.mkdir(parents=True, exist_ok=True)
     path = base/'Boundary.v'
+    journal = ToolJournal(base/'early-calls')
+    evidence, early_error = None, None
     env = {**os.environ, 'ROCQ_WORKSPACE': options['workspace'],
            'ROCQ_PET_TIMEOUT': str(options['seconds']),
            'ZESU_ROCQ_MCP_BINARY': str(HERE/'complete_goals_mcp.sh'),
@@ -292,13 +417,13 @@ async def probe_designed_block(row, block, state, options):
     try:
         async with stdio_client(parameters) as streams:
             async with ClientSession(*streams) as session:
-                await session.initialize()
+                await journal.initialize(session)
                 class ObservedSession:
                     async def call_tool(self, tool, arguments):
-                        result = await session.call_tool(tool, arguments)
+                        result = await journal.call_tool(session, tool, arguments)
                         if tool == 'rocq_start' and data(result).get('success'):
                             try:
-                                diagnostic = data(await session.call_tool('rocq_diag', {}))
+                                diagnostic = data(await journal.call_tool(session, 'rocq_diag', {}))
                                 diagnostics.append(diagnostic)
                                 pid = diagnostic.get('pet', {}).get('pid')
                                 if pid:
@@ -309,9 +434,16 @@ async def probe_designed_block(row, block, state, options):
                 evidence = await successor_entailment.check_boundary(
                     ObservedSession(), rendered, path, options['workspace'],
                     inherited_debts=chain_root.inherited_debts(state), seconds=options['seconds'])
+    except BaseException as error:
+        early_error = {'type': type(error).__name__, 'error': str(error),
+                       'traceback': traceback.format_exc()}
+        raise
     finally:
         stop.set()
         thread.join()
+        chain_root.atomic_json(base/'early-evidence.json', {
+            'evidence': evidence, 'error': early_error, 'journal': journal.snapshot(),
+            'scope': 'Early MCP evidence before fallback or summary handling'})
     if evidence.get('residual_class') == 'entry_unavailable':
         return await fallback_designed_block(row, state, rendered, options, base, evidence, started)
     elapsed = time.monotonic()-started
@@ -690,6 +822,7 @@ def main():
     parser.add_argument('--code-premises', type=Path, help='Read explicit code premises for design-schema entries')
     parser.add_argument('--probe-import', action='append', default=[], help='Import an explicit module in each design-schema probe')
     parser.add_argument('--binding-report', type=Path, help='Require successful source and application validation for design-schema entries')
+    parser.add_argument('--entry-artifacts', type=Path, help='Require an explicit object map for the all-entry MCP preflight')
     parser.add_argument('--cfg', type=Path, required=True)
     parser.add_argument('--manifest', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
@@ -727,11 +860,15 @@ def main():
         parser.error('Legacy entries already contain their probe options')
     if args.terminal_descriptor and not args.designed_successors:
         parser.error('--terminal-descriptor requires --designed-successors')
+    if args.designed_successors and args.entry_artifacts is None:
+        parser.error('Designed successor proofs require --entry-artifacts')
+    if args.entry_artifacts is not None and not args.designed_successors:
+        parser.error('--entry-artifacts requires --designed-successors')
     training_controls = {}
     if training_root is not None:
         training_controls = {str(path.resolve()): digest(path) for path in (
             args.design, args.cfg, args.manifest, args.binding_report,
-            args.code_premises, args.terminal_descriptor) if path is not None}
+            args.code_premises, args.terminal_descriptor, args.entry_artifacts) if path is not None}
     terminal_descriptor = (load_terminal_descriptor(args.terminal_descriptor, args.terminal, Path.cwd())
                            if args.terminal_descriptor else None)
     design = json.loads(args.design.read_text())
@@ -814,11 +951,15 @@ def main():
     if training_root is not None:
         verify_training_inputs(training_root, training_controls, Path.cwd())
         verify_training_inputs(training_root, sources, Path.cwd())
+    if args.designed_successors and not args.out.resolve().is_relative_to(Path.cwd().resolve()):
+        raise ValueError('The native preflight output leaves its workspace')
     args.out.mkdir(parents=True, exist_ok=training_root is None)
     options = {'workspace': str(Path.cwd()), 'out': str(args.out.resolve()),
                'mcp_command': args.mcp_command, 'terminal': args.terminal, 'seconds': args.seconds,
                'build_dir': str(args.build_dir.resolve()), 'design': str(args.design.resolve()),
                'designed_successors': args.designed_successors}
+    if args.entry_artifacts is not None:
+        options['entry_artifacts'] = str(args.entry_artifacts.resolve())
     if terminal_descriptor is not None:
         options['terminal_descriptor'] = terminal_descriptor
     reused = []
@@ -846,6 +987,11 @@ def main():
                 pending.append((row, block, state))
         ready = pending
         sources[str(args.resume_report)] = digest(args.resume_report)
+    if args.designed_successors:
+        if records:
+            raise ValueError('A selected declaration is unavailable. No native worker can start.')
+        if ready:
+            options['entry_preflight'] = preflight_native_entries(ready, design, options)
     before, started = machine(), time.monotonic()
     with ProcessPoolExecutor(max_workers=args.jobs) as pool:
         records += reused + list(pool.map(worker, [(row, block, state, options) for row, block, state in ready]))

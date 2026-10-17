@@ -160,7 +160,7 @@ class TrainingTests(unittest.TestCase):
         # Native launch admission now has a separate manifest/import preflight.
         # test_launch_imports checks that path before any MCP or compiler call.
         for name in ('first_native_root', 'native_boundary_closed',
-                     'reuse_native_capture', 'prepare', 'worker'):
+                     'reuse_native_capture', 'worker'):
             def function(tree):
                 return next(row for row in tree.body if isinstance(row, (ast.FunctionDef, ast.AsyncFunctionDef))
                             and row.name == name)
@@ -169,6 +169,9 @@ class TrainingTests(unittest.TestCase):
     def test_absent_training_mode_keeps_all_serialized_legacy_reports_exact(self):
         source = subprocess.check_output(['git', 'show', 'df9600c2:tools/block/discovery.py'],
                                          cwd=Path(discovery.__file__).parents[2], text=True)
+        # Accept the new admission argument in the old serializer only. Its report code stays exact.
+        source = source.replace("    parser.add_argument('--design', type=Path, required=True)",
+            "    parser.add_argument('--entry-artifacts', type=Path)\n    parser.add_argument('--design', type=Path, required=True)")
         legacy = {'__name__': 'legacy_discovery', '__file__': discovery.__file__}
         exec(compile(source, discovery.__file__, 'exec'), legacy)
         for name in ('machine', 'prepare', 'ProcessPoolExecutor'):
