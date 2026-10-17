@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "outcome": "all-nine-Auto-pairs-verified",
+  "completed_at": "2026-10-17T02:43:27.980757+00:00",
+  "root": "0bf4b23c2e99e93312bc05243a48657c3992780a",
+  "packet": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix-packet462/PACKET.json",
+    "sha256": "7e10264052c2817d6ac3f37019316c7a39fa0f52bd08ee63535bfdba23f6e2d3",
+    "bytes": 4846498
+  },
+  "parent_review": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix-packet462/PARENT-REVIEW.json",
+    "sha256": "c5e501e7bc035472cf5aa26924431d3d01ab4569dd21d925fdeb90f207208abd",
+    "bytes": 2954
+  },
+  "details": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-auto-audit992/DETAILS.json",
+    "sha256": "aeefdb7debce0769a33989acbda5f9f6a66137fde65988ff7661635b0244ec74",
+    "bytes": 67895
+  },
+  "table": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-auto-audit992/TABLE.md",
+    "sha256": "05672931e3a76f1d89cab9021c9f34328deb7bd8f1eefc8fca2376fc548995fc",
+    "bytes": 934
+  },
+  "verified_arms": 18,
+  "verified_pairs": 9,
+  "empty_assumptions": 18,
+  "normal_owned_closures": 18,
+  "proof_sources_unchanged": true,
+  "paired_statements_equal": true,
+  "paired_proof_bodies_equal": true,
+  "all_controller_and_watcher_identities_absent": true,
+  "largest_regression_percent": 4.935584338862387,
+  "regression_threshold_percent": 10,
+  "median_window_percent": [
+    8,
+    12
+  ],
+  "median_repeat_PCs": [],
+  "above_threshold_PCs": [],
+  "new_proof_calls_by_audit": 0,
+  "automatic_retries": 0,
+  "scope": "Auto control results only. This report makes no Free outcome or rule-cause claim."
+}

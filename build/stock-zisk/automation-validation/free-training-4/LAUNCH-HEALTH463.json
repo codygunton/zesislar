@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "scope": "initialize-and-health-only",
+  "calls": [
+    {
+      "tool": "rocq_health",
+      "arguments": {},
+      "raw": {
+        "meta": null,
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"ok\":true,\"server_version\":\"0.3.1\",\"switch\":\"islaris\",\"switch_prefix\":\"/home/cody/islaris/_opam\",\"switch_is_local\":true,\"switch_source\":\"opam_env\",\"toolchain\":{\"coqc\":{\"path\":\"/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-runtime412/coqc_wrapper.py\",\"version\":\"8.19.2+lsp 4.14.4\"},\"pet\":{\"path\":\"/home/cody/islaris/_opam/bin/pet\",\"version\":\"0.2.4-dev\",\"pytanque_importable\":true}},\"pet\":{\"running\":false,\"pid\":null},\"warnings\":[]}",
+            "annotations": null,
+            "meta": null
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "ok": true,
+          "server_version": "0.3.1",
+          "switch": "islaris",
+          "switch_prefix": "/home/cody/islaris/_opam",
+          "switch_is_local": true,
+          "switch_source": "opam_env",
+          "toolchain": {
+            "coqc": {
+              "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-runtime412/coqc_wrapper.py",
+              "version": "8.19.2+lsp 4.14.4"
+            },
+            "pet": {
+              "path": "/home/cody/islaris/_opam/bin/pet",
+              "version": "0.2.4-dev",
+              "pytanque_importable": true
+            }
+          },
+          "pet": {
+            "running": false,
+            "pid": null
+          },
+          "warnings": []
+        },
+        "isError": false
+      }
+    }
+  ],
+  "passed": true,
+  "root": "0bf4b23c2e99e93312bc05243a48657c3992780a",
+  "packet": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix-health463/CONTROL.json",
+    "sha256": "ad0aeed3f21c16fc131844fcf38d64a7aac18c266a85e369e5fab3fc610ade96",
+    "bytes": 37977
+  },
+  "review": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix-health463/REVIEW.json",
+    "sha256": "3afebfda1745d9e7ad9efec14aea219409f9d50531f022c5aeba07d4f7ceb9ca",
+    "bytes": 1704
+  },
+  "export_directories": {
+    "ZESU_COMPLETE_GOAL_DIR": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-launchfix-health463/complete",
+    "ZESU_FEEDBACK_DIR": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-launchfix-health463/feedback"
+  },
+  "native_primary_calls": 0,
+  "proof_calls": 0,
+  "compile_calls": 0,
+  "verify_calls": 0,
+  "initialization": {
+    "elapsed_seconds": 2.0576634488534182,
+    "raw": {
+      "meta": null,
+      "protocolVersion": "2025-11-25",
+      "capabilities": {
+        "experimental": {},
+        "logging": {},
+        "prompts": {
+          "listChanged": false
+        },
+        "resources": {
+          "subscribe": false,
+          "listChanged": false
+        },
+        "tools": {
+          "listChanged": true
+        },
+        "completions": null,
+        "tasks": null,
+        "extensions": {
+          "io.modelcontextprotocol/ui": {}
+        }
+      },
+      "serverInfo": {
+        "name": "rocq-mcp",
+        "title": null,
+        "version": "3.4.7",
+        "websiteUrl": null,
+        "icons": null
+      },
+      "instructions": null
+    }
+  },
+  "health_ok": true,
+  "normal_context_closure": true
+}

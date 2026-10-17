@@ -1,0 +1,1305 @@
+{
+  "schema": 1,
+  "root": "0bf4b23c2e99e93312bc05243a48657c3992780a",
+  "packet": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix-packet462/PACKET.json",
+    "sha256": "7e10264052c2817d6ac3f37019316c7a39fa0f52bd08ee63535bfdba23f6e2d3",
+    "bytes": 4846498
+  },
+  "pairs": [
+    {
+      "pc": "800d6974",
+      "OFF": {
+        "pc": "800d6974",
+        "arm": "OFF",
+        "verified": true,
+        "assumptions": [],
+        "normal_owned_closure": true,
+        "result": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6974/OFF/RESULT.json",
+          "sha256": "1d4b350ceb46bc72d8c827e0709f31c2b86ba213337dcffe025cb5a6248f15e0",
+          "bytes": 20433
+        },
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6974/OFF/Boundary.v",
+          "sha256": "ca7fb94a835a783c2d62c0a24e1e0d552ce2a76f65cd6ee7d277df32dfea9d6e",
+          "bytes": 2040
+        },
+        "original": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v",
+          "sha256": "ca7fb94a835a783c2d62c0a24e1e0d552ce2a76f65cd6ee7d277df32dfea9d6e",
+          "bytes": 2040
+        },
+        "statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+        "verification_payload_sha256": "dd6db31fd3f016b343c083f240669af7de983d3eb1b7b2923aea4726a8cb8883",
+        "compile_cpu_seconds": 419.97799399999997,
+        "compile_wall_seconds": 421.27531009097584,
+        "compile_peak_rss_kib": 2748480,
+        "verify_cpu_seconds": 456.835529,
+        "verify_peak_rss_kib": 2744300,
+        "compiler_receipts": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6974/OFF/COQC.jsonl",
+          "sha256": "b0856315af2f7cfccf7a59ac1caed2e099f440d84eb2848d54136edb65b4b112",
+          "bytes": 2516
+        },
+        "runtime_plan": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix461/runtime-plans/auto-800d6974-OFF.json",
+          "sha256": "e584394e5f9fd6292d71cb668990f506d34fae7c16dc52286baec928b183a1ff",
+          "bytes": 38416
+        },
+        "server_log": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6974/OFF/server.log",
+          "sha256": "fb3b266d49851154a7d2f688fe59c68310954b94943f1fa809e9460ece6b2010",
+          "bytes": 2592
+        },
+        "exit": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/commands/auto-800d6974-OFF/EXIT.json",
+          "sha256": "55f8cf80225434808cba4837e99d427cc187b5c431b252282a3995dc10edbef1",
+          "bytes": 830
+        },
+        "watcher_receipt": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6974-OFF.json",
+          "sha256": "6f1b1139877b6b6d3093b06b2398f390f1483fef2eb43f06b341af6cefed57f8",
+          "bytes": 812
+        },
+        "watcher_completion": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6974-OFF-COMPLETE.json",
+          "sha256": "98ff74478bcd9277c081ae2a550ccaf23ebc2dfb81bfcfc1be36e5695cea03a1",
+          "bytes": 1999
+        },
+        "watcher_log": {
+          "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-221217-worker2-c-training4r-auto-800d6974-off988.log",
+          "sha256": "b178ef2e9310e079c88da92e40a4c05f18473e236579fa79f1e5f5df58a59fa6",
+          "bytes": 195
+        },
+        "controller_pid": 619839,
+        "controller_start_ticks": 190245906,
+        "controller_absent": true,
+        "watcher_absent": true
+      },
+      "ON": {
+        "pc": "800d6974",
+        "arm": "ON",
+        "verified": true,
+        "assumptions": [],
+        "normal_owned_closure": true,
+        "result": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6974/ON/RESULT.json",
+          "sha256": "e181c697e743b51954335b4444476d3c86418b6e85a714cfa0be2e81066c449b",
+          "bytes": 20564
+        },
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6974/ON/Boundary.v",
+          "sha256": "9d915d37d4678727dcbc594335e1f6cba40299637dc981e061a8da04cff96ceb",
+          "bytes": 2106
+        },
+        "original": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v",
+          "sha256": "ca7fb94a835a783c2d62c0a24e1e0d552ce2a76f65cd6ee7d277df32dfea9d6e",
+          "bytes": 2040
+        },
+        "statement_sha256": "162e6f707b799beebe7cdc6239cc8390d09ba1cbf833ef0dcb8ca5cde06d4e59",
+        "verification_payload_sha256": "a50467f5f28183628044cd61b87f9786ab808b1faa61aa739a9cbc1e72a6bd99",
+        "compile_cpu_seconds": 435.66165499999994,
+        "compile_wall_seconds": 437.22375417500734,
+        "compile_peak_rss_kib": 2812676,
+        "verify_cpu_seconds": 450.540361,
+        "verify_peak_rss_kib": 2729508,
+        "compiler_receipts": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6974/ON/COQC.jsonl",
+          "sha256": "ee701ab3f3930d5ad580a1c6fc6c79545973fbb639ce442bbf75bf77141638da",
+          "bytes": 2516
+        },
+        "runtime_plan": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix461/runtime-plans/auto-800d6974-ON.json",
+          "sha256": "c0501096062b36902e0505a68f5da68fbce018b0b82baed24f2e8f4eabe90571",
+          "bytes": 38415
+        },
+        "server_log": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6974/ON/server.log",
+          "sha256": "5d70c9e92953138e7849224f4839e90a9cef79a3cde9a8ab06b89fa87528140e",
+          "bytes": 2592
+        },
+        "exit": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/commands/auto-800d6974-ON/EXIT.json",
+          "sha256": "06aa15b1c983066bc211f876cbc4fc739eb065bfb107480875fba03f0406d193",
+          "bytes": 828
+        },
+        "watcher_receipt": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6974-ON.json",
+          "sha256": "305451c075cbd141b17d5b9db6fa8ae14b9f5196b4ab34a75a9809519a939c53",
+          "bytes": 807
+        },
+        "watcher_completion": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6974-ON-COMPLETE.json",
+          "sha256": "e4f61175b48e0b0ffc7c0410ae373379c2ff30252be8c44439892d83d6e63707",
+          "bytes": 1990
+        },
+        "watcher_log": {
+          "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-221217-worker2-c-training4r-auto-800d6974-on988.log",
+          "sha256": "d81a66bafe73d91e8b970f65f05d7d1cd8bfe2c85ee54f45926f6c4b3331bb71",
+          "bytes": 193
+        },
+        "controller_pid": 619852,
+        "controller_start_ticks": 190245910,
+        "controller_absent": true,
+        "watcher_absent": true
+      },
+      "CPU_ratio_ON_over_OFF": 1.0373440066481197,
+      "CPU_regression_percent": 3.7344006648119654,
+      "median_window_eligible": false,
+      "above_10_percent": false
+    },
+    {
+      "pc": "800d69a4",
+      "OFF": {
+        "pc": "800d69a4",
+        "arm": "OFF",
+        "verified": true,
+        "assumptions": [],
+        "normal_owned_closure": true,
+        "result": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69a4/OFF/RESULT.json",
+          "sha256": "f669a028f5b4886dd3b6be3377c72dd8d57609664e77b9fc9bc50e20603a82bb",
+          "bytes": 17515
+        },
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69a4/OFF/Boundary.v",
+          "sha256": "fb2b2826f7602a0a9d45915dac6eadde126ec21dcfc5294e7f9bbecb6e65f5e1",
+          "bytes": 2227
+        },
+        "original": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/ZesuSsz/Proofs/DecodeItem/Auto/Block800d69a4.v",
+          "sha256": "fb2b2826f7602a0a9d45915dac6eadde126ec21dcfc5294e7f9bbecb6e65f5e1",
+          "bytes": 2227
+        },
+        "statement_sha256": "d3cf1dc28a76ce7896cb2a474ba6293904253f905cc3a0e0f20ddaadf5a29e65",
+        "verification_payload_sha256": "e87f0d7a7dc7b21b5aa6495eba51e8871f3ead4b073b231106e3de30db247d1d",
+        "compile_cpu_seconds": 13.121573,
+        "compile_wall_seconds": 13.168883767910302,
+        "compile_peak_rss_kib": 1173336,
+        "verify_cpu_seconds": 13.801974,
+        "verify_peak_rss_kib": 1276072,
+        "compiler_receipts": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69a4/OFF/COQC.jsonl",
+          "sha256": "ef4fdf72932d3807eca7f15dea17b6976b6a16bead70b97edee44e3bc5df16cd",
+          "bytes": 2507
+        },
+        "runtime_plan": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix461/runtime-plans/auto-800d69a4-OFF.json",
+          "sha256": "affbda335fe966c952ff88dabeef310a4b14437f8ace4330d0a6460f1d638a1c",
+          "bytes": 38416
+        },
+        "server_log": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69a4/OFF/server.log",
+          "sha256": "2a64f6b246bcffbf0ff906c9e2e530de89d2c93f5dfa7fb20a4d668159c5e2a1",
+          "bytes": 2592
+        },
+        "exit": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/commands/auto-800d69a4-OFF/EXIT.json",
+          "sha256": "3f81130b414aab7fce50b7bdb264b51e75f34c2a8aafa93be920b8d9d92c4c18",
+          "bytes": 830
+        },
+        "watcher_receipt": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d69a4-OFF.json",
+          "sha256": "b0e6557c8070cd9bc9a0bbe046ed770593fe5285fc4a95668c0561548664052c",
+          "bytes": 812
+        },
+        "watcher_completion": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d69a4-OFF-COMPLETE.json",
+          "sha256": "7f6659ef15743a16a42fd5b47a71b24e08cc4bd5a80308e08b3161db2a37520e",
+          "bytes": 1999
+        },
+        "watcher_log": {
+          "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-223042-worker2-c-training4r-auto-800d69a4-off988.log",
+          "sha256": "eaaa898293b9b15fa9c2a49b27444b876ac57c3043ce22894ca3553eb2160009",
+          "bytes": 195
+        },
+        "controller_pid": 915275,
+        "controller_start_ticks": 190356417,
+        "controller_absent": true,
+        "watcher_absent": true
+      },
+      "ON": {
+        "pc": "800d69a4",
+        "arm": "ON",
+        "verified": true,
+        "assumptions": [],
+        "normal_owned_closure": true,
+        "result": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69a4/ON/RESULT.json",
+          "sha256": "6f46cc7674e4f497d0cf781cc3d35a74939511739c94011f3a89373422f9b8c0",
+          "bytes": 17668
+        },
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69a4/ON/Boundary.v",
+          "sha256": "e2765ce934149654a66d410fee39c5d908554d74e98cf8762caf583262a2dcc0",
+          "bytes": 2293
+        },
+        "original": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/ZesuSsz/Proofs/DecodeItem/Auto/Block800d69a4.v",
+          "sha256": "fb2b2826f7602a0a9d45915dac6eadde126ec21dcfc5294e7f9bbecb6e65f5e1",
+          "bytes": 2227
+        },
+        "statement_sha256": "d3cf1dc28a76ce7896cb2a474ba6293904253f905cc3a0e0f20ddaadf5a29e65",
+        "verification_payload_sha256": "93cf178afde32901108be00b31fd45b83d70152bd4e85bec04c5308519b9c6f4",
+        "compile_cpu_seconds": 12.748588999999999,
+        "compile_wall_seconds": 12.794996910030022,
+        "compile_peak_rss_kib": 1173496,
+        "verify_cpu_seconds": 14.205807,
+        "verify_peak_rss_kib": 1279860,
+        "compiler_receipts": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69a4/ON/COQC.jsonl",
+          "sha256": "6767153c28ceac0d222baf418e231f0437026b3d8f66c221f5fdfc695c0c45b1",
+          "bytes": 2515
+        },
+        "runtime_plan": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix461/runtime-plans/auto-800d69a4-ON.json",
+          "sha256": "f1255ff26f1fde14a2d5f4e8e3b15bda60335ea13f31849f95f6d890d5e35988",
+          "bytes": 38415
+        },
+        "server_log": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69a4/ON/server.log",
+          "sha256": "a83166b50cc06d37ac6828880cb1d51d5b4cfea6016079978843f37f6d063a39",
+          "bytes": 2592
+        },
+        "exit": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/commands/auto-800d69a4-ON/EXIT.json",
+          "sha256": "0dbb0e3d06ecfd79b300e5bf7f8349723e493efecee7e1e211d102f43162e24b",
+          "bytes": 828
+        },
+        "watcher_receipt": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d69a4-ON.json",
+          "sha256": "f5afef04b4d9b7ac28b65bd4c9ec9bf4d9fee89e8ba1f7c6f34d1b7e8c3347b1",
+          "bytes": 807
+        },
+        "watcher_completion": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d69a4-ON-COMPLETE.json",
+          "sha256": "094d167c9a5848f7e5dd4d7a51da5fef52e1c41e058ec043a6c8455fc1110df6",
+          "bytes": 1990
+        },
+        "watcher_log": {
+          "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-223042-worker2-c-training4r-auto-800d69a4-on988.log",
+          "sha256": "76a1368734ab89fa0c86542a5b40a4840f2fa6975aaf3de314a66383511be678",
+          "bytes": 193
+        },
+        "controller_pid": 915277,
+        "controller_start_ticks": 190356421,
+        "controller_absent": true,
+        "watcher_absent": true
+      },
+      "CPU_ratio_ON_over_OFF": 0.9715747494602971,
+      "CPU_regression_percent": -2.8425250539702906,
+      "median_window_eligible": false,
+      "above_10_percent": false
+    },
+    {
+      "pc": "800d69d8",
+      "OFF": {
+        "pc": "800d69d8",
+        "arm": "OFF",
+        "verified": true,
+        "assumptions": [],
+        "normal_owned_closure": true,
+        "result": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69d8/OFF/RESULT.json",
+          "sha256": "18c64f453ae2482579ac594a87912bf4452cb34e4bf8eb5d25d61d04a99ab40c",
+          "bytes": 17206
+        },
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69d8/OFF/Boundary.v",
+          "sha256": "dba92683131b5c4697d52db787bb569b33cc8049ccfd7ebb2767bc2a71ab3be1",
+          "bytes": 2078
+        },
+        "original": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/ZesuSsz/Proofs/DecodeItem/Auto/Block800d69d8.v",
+          "sha256": "dba92683131b5c4697d52db787bb569b33cc8049ccfd7ebb2767bc2a71ab3be1",
+          "bytes": 2078
+        },
+        "statement_sha256": "b294c17a822648ee71de41f30e5bde7e9d78be4f54e628d6ef3d0e76b216a668",
+        "verification_payload_sha256": "8601a98c5b0426986a3fff06461c661c2066e4e6858a2e90350301ca2e2dd843",
+        "compile_cpu_seconds": 16.890591,
+        "compile_wall_seconds": 16.95540137705393,
+        "compile_peak_rss_kib": 1146896,
+        "verify_cpu_seconds": 18.160635000000003,
+        "verify_peak_rss_kib": 1245644,
+        "compiler_receipts": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69d8/OFF/COQC.jsonl",
+          "sha256": "4af0b343ddc6b0b25560fcab3a241976b0c49a5b8bcf2e0a299f03996f88c638",
+          "bytes": 2515
+        },
+        "runtime_plan": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix461/runtime-plans/auto-800d69d8-OFF.json",
+          "sha256": "b5c1a25681da87ab48838e7b96e5922194fefe803b239386a907b3aa3fed7ce7",
+          "bytes": 38416
+        },
+        "server_log": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69d8/OFF/server.log",
+          "sha256": "e88373d8b0de480daac484bdee12017a8c04e4502dc0f7494a8e510685cb4b1f",
+          "bytes": 2592
+        },
+        "exit": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/commands/auto-800d69d8-OFF/EXIT.json",
+          "sha256": "5bd5ce686f67f09ee32e555ae90cb523e3768ec7b9cd3f7a30a38a988a854f6f",
+          "bytes": 830
+        },
+        "watcher_receipt": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d69d8-OFF.json",
+          "sha256": "b74c6ce61edebcf6f64368d80aed9e1eb92b411b999a91f02660128f5d9d12f2",
+          "bytes": 812
+        },
+        "watcher_completion": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d69d8-OFF-COMPLETE.json",
+          "sha256": "a2b204ae3aa99697af1c8d03e4ab5b5378fb615377b295cf328fe29010a32b85",
+          "bytes": 1999
+        },
+        "watcher_log": {
+          "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-223142-worker2-c-training4r-auto-800d69d8-off988.log",
+          "sha256": "df6bc87657a56f2bde9ea851fe7a79461659329b96db01c7e490deaa6d7f2e3a",
+          "bytes": 195
+        },
+        "controller_pid": 930424,
+        "controller_start_ticks": 190362428,
+        "controller_absent": true,
+        "watcher_absent": true
+      },
+      "ON": {
+        "pc": "800d69d8",
+        "arm": "ON",
+        "verified": true,
+        "assumptions": [],
+        "normal_owned_closure": true,
+        "result": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69d8/ON/RESULT.json",
+          "sha256": "7d25633872e24ecabe0cd6daabbe77bc745fc4c990dab1a209f70550a9f44c31",
+          "bytes": 17335
+        },
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69d8/ON/Boundary.v",
+          "sha256": "4b6e8acef4ab6ca9ad6e2e0c8cd03cbfa426f315019f8fa61c647b30cd1bec6b",
+          "bytes": 2144
+        },
+        "original": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/ZesuSsz/Proofs/DecodeItem/Auto/Block800d69d8.v",
+          "sha256": "dba92683131b5c4697d52db787bb569b33cc8049ccfd7ebb2767bc2a71ab3be1",
+          "bytes": 2078
+        },
+        "statement_sha256": "b294c17a822648ee71de41f30e5bde7e9d78be4f54e628d6ef3d0e76b216a668",
+        "verification_payload_sha256": "ab367c083c1abd49f93a1f33d3a6c8d270473dcb13f7fd8d2758f029864e620f",
+        "compile_cpu_seconds": 16.339856,
+        "compile_wall_seconds": 16.395086938980967,
+        "compile_peak_rss_kib": 1150044,
+        "verify_cpu_seconds": 17.749588,
+        "verify_peak_rss_kib": 1253576,
+        "compiler_receipts": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69d8/ON/COQC.jsonl",
+          "sha256": "ad55a47e1ee950e36ae52cde8277571c563f66c6e9b1031f73348c65fc210bfd",
+          "bytes": 2505
+        },
+        "runtime_plan": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix461/runtime-plans/auto-800d69d8-ON.json",
+          "sha256": "27559a276224eb7f5b51b548fa43ac433bd438382d910b0d16b9c799c99f3f9f",
+          "bytes": 38415
+        },
+        "server_log": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69d8/ON/server.log",
+          "sha256": "cb30b13d68a4d4267e2cdb4ce3f3c15bfe55c51877259d33d1ee5ad641cd486e",
+          "bytes": 2592
+        },
+        "exit": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/commands/auto-800d69d8-ON/EXIT.json",
+          "sha256": "09155564deed48ad998f4030cd8ed9609221c99320f28b95f081c0207aa730dc",
+          "bytes": 828
+        },
+        "watcher_receipt": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d69d8-ON.json",
+          "sha256": "56e842867d29366923b7fa1457adab1eecd2260de77032524b9b4543dbde6740",
+          "bytes": 807
+        },
+        "watcher_completion": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d69d8-ON-COMPLETE.json",
+          "sha256": "e07ffafd415b7d296c215b5c01bac921a3151f3f4419ff8558707ea20b64bc27",
+          "bytes": 1990
+        },
+        "watcher_log": {
+          "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-223142-worker2-c-training4r-auto-800d69d8-on988.log",
+          "sha256": "f76ec59c7a0167b6d5b35d255dfa53302cb05d46b00e242a69374fec0df4506b",
+          "bytes": 193
+        },
+        "controller_pid": 930426,
+        "controller_start_ticks": 190362431,
+        "controller_absent": true,
+        "watcher_absent": true
+      },
+      "CPU_ratio_ON_over_OFF": 0.9673939769188656,
+      "CPU_regression_percent": -3.260602308113436,
+      "median_window_eligible": false,
+      "above_10_percent": false
+    },
+    {
+      "pc": "800d69e0",
+      "OFF": {
+        "pc": "800d69e0",
+        "arm": "OFF",
+        "verified": true,
+        "assumptions": [],
+        "normal_owned_closure": true,
+        "result": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69e0/OFF/RESULT.json",
+          "sha256": "73dcc713310acc9e001208aef4da877b27cbf0775545655b7106e64ce54903e8",
+          "bytes": 17331
+        },
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69e0/OFF/Boundary.v",
+          "sha256": "965212afed3fdce7dc86f114312e9f01f7b7d1b864a65ba7523944eda17269f4",
+          "bytes": 2126
+        },
+        "original": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/ZesuSsz/Proofs/DecodeItem/Auto/Block800d69e0.v",
+          "sha256": "965212afed3fdce7dc86f114312e9f01f7b7d1b864a65ba7523944eda17269f4",
+          "bytes": 2126
+        },
+        "statement_sha256": "c0613d6a425c33bc56f14a4111a4649511a277b5a888bbe41dd501155e23b271",
+        "verification_payload_sha256": "f5593d679c3f2115438afbe95cd6387ec022307361a6a4fbfc297185320ee504",
+        "compile_cpu_seconds": 15.872119999999999,
+        "compile_wall_seconds": 15.915306865936145,
+        "compile_peak_rss_kib": 1224604,
+        "verify_cpu_seconds": 17.808586,
+        "verify_peak_rss_kib": 1323320,
+        "compiler_receipts": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69e0/OFF/COQC.jsonl",
+          "sha256": "e991ee0e6f3d41596d98f1c90137414c38a9f843958b3fe8d4be0e76f8dd8682",
+          "bytes": 2515
+        },
+        "runtime_plan": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix461/runtime-plans/auto-800d69e0-OFF.json",
+          "sha256": "cbe9fa0f9325f49fd477df3c8051b1d18998a3cf82661198317a713ac39c96d8",
+          "bytes": 38416
+        },
+        "server_log": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69e0/OFF/server.log",
+          "sha256": "1c0b94556143fda28fa2d60c3a85d3abdd5aace8a4eb1ac8affb7e51919eb7df",
+          "bytes": 2592
+        },
+        "exit": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/commands/auto-800d69e0-OFF/EXIT.json",
+          "sha256": "eba868bc67354ae147e065d5fdd16254318db64e381a6b11d26a759a1af843b5",
+          "bytes": 830
+        },
+        "watcher_receipt": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d69e0-OFF.json",
+          "sha256": "f5ed2e30d2dd345fd7bf7040c8ee7bd85985c1e34199ce91c42bfabc662eeee9",
+          "bytes": 812
+        },
+        "watcher_completion": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d69e0-OFF-COMPLETE.json",
+          "sha256": "9b1b6ab17ff701bc62b0d07ce9016a93aa13de390a68dcf80a5d06d3aac3144c",
+          "bytes": 1999
+        },
+        "watcher_log": {
+          "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-223308-worker2-c-training4r-auto-800d69e0-off988.log",
+          "sha256": "ad87e27e6963503e50ab72e91d06e8674a5d6d037908574081978c34ea4f91d7",
+          "bytes": 195
+        },
+        "controller_pid": 950595,
+        "controller_start_ticks": 190371040,
+        "controller_absent": true,
+        "watcher_absent": true
+      },
+      "ON": {
+        "pc": "800d69e0",
+        "arm": "ON",
+        "verified": true,
+        "assumptions": [],
+        "normal_owned_closure": true,
+        "result": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69e0/ON/RESULT.json",
+          "sha256": "968ff0cbfa2fe0d2f98890935b4ab7cc333bfc2f1644762ef63cc19f43d7a07e",
+          "bytes": 17449
+        },
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69e0/ON/Boundary.v",
+          "sha256": "9fa400f08e3799087ab612ad0724f4b1b85f3732bc6d790b741de5b9c15df029",
+          "bytes": 2192
+        },
+        "original": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/ZesuSsz/Proofs/DecodeItem/Auto/Block800d69e0.v",
+          "sha256": "965212afed3fdce7dc86f114312e9f01f7b7d1b864a65ba7523944eda17269f4",
+          "bytes": 2126
+        },
+        "statement_sha256": "c0613d6a425c33bc56f14a4111a4649511a277b5a888bbe41dd501155e23b271",
+        "verification_payload_sha256": "fe8c90772eda7ecb7fc2a2786aa34a07f597106274dfeeed3954c7a6c99103c9",
+        "compile_cpu_seconds": 16.582267,
+        "compile_wall_seconds": 16.636946473037824,
+        "compile_peak_rss_kib": 1223280,
+        "verify_cpu_seconds": 17.931427,
+        "verify_peak_rss_kib": 1325932,
+        "compiler_receipts": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69e0/ON/COQC.jsonl",
+          "sha256": "1480dd3b0f23b71cd9623cb9f92067f478c40d0bda866db1d4fa98496139c169",
+          "bytes": 2506
+        },
+        "runtime_plan": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix461/runtime-plans/auto-800d69e0-ON.json",
+          "sha256": "c9b28adf48cb008316441e1a57c6b6050e6181c5287be789814a733311ec62cb",
+          "bytes": 38415
+        },
+        "server_log": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d69e0/ON/server.log",
+          "sha256": "bd93c88c4a5697abcb6e18a440183fe1fbd02cae4394cbbe0c2e13b4ac223128",
+          "bytes": 2592
+        },
+        "exit": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/commands/auto-800d69e0-ON/EXIT.json",
+          "sha256": "8c0df9ea1ef8943ceab4f009c65654b4c0ac33cb0cf9ed7a65d798d31e0a7c64",
+          "bytes": 828
+        },
+        "watcher_receipt": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d69e0-ON.json",
+          "sha256": "23c7c7ed5f4b7616fbd690e2a465a125dbd6acda772ec4f3f21e8ee8be09bcfa",
+          "bytes": 807
+        },
+        "watcher_completion": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d69e0-ON-COMPLETE.json",
+          "sha256": "acb65842a93951c158426c0f15ca2dbec7953e3034c9dd120397efa33dcccaa8",
+          "bytes": 1990
+        },
+        "watcher_log": {
+          "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-223308-worker2-c-training4r-auto-800d69e0-on988.log",
+          "sha256": "b1873d9bfc35b9e5984037dd917a6b2126142bd1c3699d15cdfe7afad4462f95",
+          "bytes": 193
+        },
+        "controller_pid": 950597,
+        "controller_start_ticks": 190371044,
+        "controller_absent": true,
+        "watcher_absent": true
+      },
+      "CPU_ratio_ON_over_OFF": 1.0447417862264148,
+      "CPU_regression_percent": 4.474178622641478,
+      "median_window_eligible": false,
+      "above_10_percent": false
+    },
+    {
+      "pc": "800d6a00",
+      "OFF": {
+        "pc": "800d6a00",
+        "arm": "OFF",
+        "verified": true,
+        "assumptions": [],
+        "normal_owned_closure": true,
+        "result": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a00/OFF/RESULT.json",
+          "sha256": "dc920665d35b9f85335e7168cb4bf6b77072b2db569fba78ca51cd32fd515a0b",
+          "bytes": 17220
+        },
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a00/OFF/Boundary.v",
+          "sha256": "1bd70384f6a5c0da5e568c44784ee09ecf257698363460f0ec08e8ae2513fbdf",
+          "bytes": 2078
+        },
+        "original": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a00.v",
+          "sha256": "1bd70384f6a5c0da5e568c44784ee09ecf257698363460f0ec08e8ae2513fbdf",
+          "bytes": 2078
+        },
+        "statement_sha256": "9cc28faf4111fdb126d37c3e6212af69a35755b85dc6032024c995a58267193c",
+        "verification_payload_sha256": "4f95e395c505ecb63321d3043dafe8356088f9b0e63ca667e50d33bd93da548b",
+        "compile_cpu_seconds": 19.032118999999998,
+        "compile_wall_seconds": 19.10790333803743,
+        "compile_peak_rss_kib": 1248264,
+        "verify_cpu_seconds": 21.24736,
+        "verify_peak_rss_kib": 1338372,
+        "compiler_receipts": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a00/OFF/COQC.jsonl",
+          "sha256": "f63b49d5d39a7b116d73fe3b3742ec8c8bb2099af3b7c816f5e04d506d6bdd87",
+          "bytes": 2514
+        },
+        "runtime_plan": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix461/runtime-plans/auto-800d6a00-OFF.json",
+          "sha256": "f7385eca82e1fd68175a729f66861fb2156a9bd665a0b6aff515427031d31bc6",
+          "bytes": 38416
+        },
+        "server_log": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a00/OFF/server.log",
+          "sha256": "765d0f2e02a31aa27399ac00a28d75d83209c85c07ae3b289afb4d0868523d41",
+          "bytes": 2592
+        },
+        "exit": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/commands/auto-800d6a00-OFF/EXIT.json",
+          "sha256": "ac7bce90fd143b7626b554e19572c4ed8a58626eb25c54ac49e56bfe49e00275",
+          "bytes": 830
+        },
+        "watcher_receipt": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6a00-OFF.json",
+          "sha256": "0947e4e5cd67a82285c46982e8b4596fd9d22fc37a3a910f34f984a938106ba5",
+          "bytes": 812
+        },
+        "watcher_completion": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6a00-OFF-COMPLETE.json",
+          "sha256": "061c2fb7e642faac15550d62bb13a951350d84229a93015f7ba190be37fca5bb",
+          "bytes": 1999
+        },
+        "watcher_log": {
+          "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-223452-worker2-c-training4r-auto-800d6a00-off988.log",
+          "sha256": "f93d3bd0ab3ceb50ffe08e5a95630f1352b75eeb7e7e56a6b715680fc1289e9d",
+          "bytes": 195
+        },
+        "controller_pid": 975104,
+        "controller_start_ticks": 190381456,
+        "controller_absent": true,
+        "watcher_absent": true
+      },
+      "ON": {
+        "pc": "800d6a00",
+        "arm": "ON",
+        "verified": true,
+        "assumptions": [],
+        "normal_owned_closure": true,
+        "result": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a00/ON/RESULT.json",
+          "sha256": "acd28e9b3950026023c03874b1013aa7c7d43916d77f75792a34f36b86719126",
+          "bytes": 17357
+        },
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a00/ON/Boundary.v",
+          "sha256": "edea5e691c440a607b033b8513dae47e7956a697b5d4e601735ed311ec0c1b05",
+          "bytes": 2144
+        },
+        "original": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a00.v",
+          "sha256": "1bd70384f6a5c0da5e568c44784ee09ecf257698363460f0ec08e8ae2513fbdf",
+          "bytes": 2078
+        },
+        "statement_sha256": "9cc28faf4111fdb126d37c3e6212af69a35755b85dc6032024c995a58267193c",
+        "verification_payload_sha256": "b2da3b99e9e4fd9ae6f57c837548046f12d1eeea941d5598714f3db9adddcd2c",
+        "compile_cpu_seconds": 18.941169000000002,
+        "compile_wall_seconds": 19.01798559189774,
+        "compile_peak_rss_kib": 1242820,
+        "verify_cpu_seconds": 21.218915000000003,
+        "verify_peak_rss_kib": 1343628,
+        "compiler_receipts": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a00/ON/COQC.jsonl",
+          "sha256": "de72097b980a4f219a532e25d6297cf3e0e4bd429d3e6930d0c6e382c3bd9c42",
+          "bytes": 2523
+        },
+        "runtime_plan": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix461/runtime-plans/auto-800d6a00-ON.json",
+          "sha256": "f818c8d77c09b2061bbfbe289ee4a55c73a7ffb41daede5909b8311584d1806d",
+          "bytes": 38415
+        },
+        "server_log": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a00/ON/server.log",
+          "sha256": "f57255441171fc9a41fc2d4d8a96a0821a33337c97dd985d7d59c90f03433982",
+          "bytes": 2592
+        },
+        "exit": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/commands/auto-800d6a00-ON/EXIT.json",
+          "sha256": "b96786d61d78559d13fcc5a06b7dd7d4b5c1ce548fae57c14cfcc53cf1de3dc0",
+          "bytes": 828
+        },
+        "watcher_receipt": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6a00-ON.json",
+          "sha256": "43b66ae38483c47d311b1f0912e3791501d6122b11f634dcb14f9c76c2460287",
+          "bytes": 807
+        },
+        "watcher_completion": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6a00-ON-COMPLETE.json",
+          "sha256": "bb037621e7b31174a624e57413fbeef026cec37eb6b2190e566793bdcaf118ab",
+          "bytes": 1990
+        },
+        "watcher_log": {
+          "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-223452-worker2-c-training4r-auto-800d6a00-on988.log",
+          "sha256": "18f46479d17d8e77d7f41916819aa77f879d4a591695e11f9d75b31f082560dc",
+          "bytes": 193
+        },
+        "controller_pid": 975110,
+        "controller_start_ticks": 190381460,
+        "controller_absent": true,
+        "watcher_absent": true
+      },
+      "CPU_ratio_ON_over_OFF": 0.9952212362690672,
+      "CPU_regression_percent": -0.4778763730932778,
+      "median_window_eligible": false,
+      "above_10_percent": false
+    },
+    {
+      "pc": "800d6a14",
+      "OFF": {
+        "pc": "800d6a14",
+        "arm": "OFF",
+        "verified": true,
+        "assumptions": [],
+        "normal_owned_closure": true,
+        "result": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a14/OFF/RESULT.json",
+          "sha256": "9e1d8144df8294e1e9f89eaa7468de775c13ad4e3ddbf9f3fca94cc1f8b5f5ef",
+          "bytes": 17123
+        },
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a14/OFF/Boundary.v",
+          "sha256": "70ea8da3ab43b2599ceded151460709de0c4bfc8777f246038759835507d41ee",
+          "bytes": 2136
+        },
+        "original": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a14.v",
+          "sha256": "70ea8da3ab43b2599ceded151460709de0c4bfc8777f246038759835507d41ee",
+          "bytes": 2136
+        },
+        "statement_sha256": "a58a51bcede39919116652c6768070bc7b9d134f36fffa177cdce592d3e3089b",
+        "verification_payload_sha256": "ec53861b65684aed5f665f448f6493b57375daff97834e412c36ca63a66f0d3f",
+        "compile_cpu_seconds": 8.930528,
+        "compile_wall_seconds": 8.96815707697533,
+        "compile_peak_rss_kib": 1105184,
+        "verify_cpu_seconds": 10.412667000000003,
+        "verify_peak_rss_kib": 1218068,
+        "compiler_receipts": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a14/OFF/COQC.jsonl",
+          "sha256": "6dfca145543173ca3a9d1978514920064540582bc969eef9de63db153916d683",
+          "bytes": 2515
+        },
+        "runtime_plan": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix461/runtime-plans/auto-800d6a14-OFF.json",
+          "sha256": "caa1bd66e4bcf2337a8c7541c6c1dac6e0a0e352a822fef45910b0a3b0884069",
+          "bytes": 38416
+        },
+        "server_log": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a14/OFF/server.log",
+          "sha256": "40b421159d73d883f0b54e0e2fed041330398fb4fb8b1bb6fc70a96f578a6dcd",
+          "bytes": 2592
+        },
+        "exit": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/commands/auto-800d6a14-OFF/EXIT.json",
+          "sha256": "11cfd2dc69a01becb7903ff1555b032f911b9fda65bfcb51ba3cd43f416594b5",
+          "bytes": 830
+        },
+        "watcher_receipt": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6a14-OFF.json",
+          "sha256": "4621ae398f74cc20cb9d902d09e489c42cde55981a7f5d803b5b4741774c2ef6",
+          "bytes": 812
+        },
+        "watcher_completion": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6a14-OFF-COMPLETE.json",
+          "sha256": "f5f25c36af5389f3291f9bf0c8ee8d00e0dd9396923e86947390e992e6cbd2e3",
+          "bytes": 1999
+        },
+        "watcher_log": {
+          "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-223606-worker2-c-training4r-auto-800d6a14-off988.log",
+          "sha256": "cd26ec511720cd42f41001a10b0306884963b7cb0e07795be08806b460e2520a",
+          "bytes": 195
+        },
+        "controller_pid": 993741,
+        "controller_start_ticks": 190388868,
+        "controller_absent": true,
+        "watcher_absent": true
+      },
+      "ON": {
+        "pc": "800d6a14",
+        "arm": "ON",
+        "verified": true,
+        "assumptions": [],
+        "normal_owned_closure": true,
+        "result": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a14/ON/RESULT.json",
+          "sha256": "8c2f668b4c1cf612358a45cfc54db81686988670c1d3cf808d3b776190cc1bf7",
+          "bytes": 17258
+        },
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a14/ON/Boundary.v",
+          "sha256": "f39ad14eef66c91bd5b310cd5a2977ecb408862d3ed6cb9138469c28b34092fa",
+          "bytes": 2202
+        },
+        "original": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a14.v",
+          "sha256": "70ea8da3ab43b2599ceded151460709de0c4bfc8777f246038759835507d41ee",
+          "bytes": 2136
+        },
+        "statement_sha256": "a58a51bcede39919116652c6768070bc7b9d134f36fffa177cdce592d3e3089b",
+        "verification_payload_sha256": "1bde6f12c90d5444eab30231fb0ec5c2f5fca7df3f29a657dc161ad25a91dbde",
+        "compile_cpu_seconds": 8.601703,
+        "compile_wall_seconds": 8.628596364054829,
+        "compile_peak_rss_kib": 1109664,
+        "verify_cpu_seconds": 10.213994,
+        "verify_peak_rss_kib": 1211084,
+        "compiler_receipts": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a14/ON/COQC.jsonl",
+          "sha256": "c3fda8bab7eb8c750bcd24705fd1c3eca9602516d9f59af2b26d6b193f2f730a",
+          "bytes": 2504
+        },
+        "runtime_plan": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix461/runtime-plans/auto-800d6a14-ON.json",
+          "sha256": "dc11a4adb92cbb718141e20447e35b407e39ce9ee231a83072694168f35cd182",
+          "bytes": 38415
+        },
+        "server_log": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a14/ON/server.log",
+          "sha256": "098ace78d8f48f11ec3acdcadf9f9c7414fd67df49ec2053097ae271b58188db",
+          "bytes": 2592
+        },
+        "exit": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/commands/auto-800d6a14-ON/EXIT.json",
+          "sha256": "52ec2dd8815043a62e93114cb88ee04769eb388fa3ff184374b344d28d5a90d2",
+          "bytes": 828
+        },
+        "watcher_receipt": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6a14-ON.json",
+          "sha256": "cc01e6ec462ca50545c8454b46f8f28c3d756d1b4a40851dbbcac227398a65ff",
+          "bytes": 807
+        },
+        "watcher_completion": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6a14-ON-COMPLETE.json",
+          "sha256": "973bd27dacefb2ddc2c885b2896b25ec4d0d0f09b814a39cd170444920fbfb27",
+          "bytes": 1990
+        },
+        "watcher_log": {
+          "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-223606-worker2-c-training4r-auto-800d6a14-on988.log",
+          "sha256": "ec845cf97c9baf0670e884bdfb0d4ffeb99cb24694913e60844b4cd67e00fa6a",
+          "bytes": 193
+        },
+        "controller_pid": 993743,
+        "controller_start_ticks": 190388873,
+        "controller_absent": true,
+        "watcher_absent": true
+      },
+      "CPU_ratio_ON_over_OFF": 0.9631796686601285,
+      "CPU_regression_percent": -3.6820331339871504,
+      "median_window_eligible": false,
+      "above_10_percent": false
+    },
+    {
+      "pc": "800d6a64",
+      "OFF": {
+        "pc": "800d6a64",
+        "arm": "OFF",
+        "verified": true,
+        "assumptions": [],
+        "normal_owned_closure": true,
+        "result": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a64/OFF/RESULT.json",
+          "sha256": "0456bc1b29e5ec9bccb18562dea2e717c9891050d43ce2a2d88ec1ef749bfc7d",
+          "bytes": 17222
+        },
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a64/OFF/Boundary.v",
+          "sha256": "38bffe264f180524e77970f58fa0a5cef6ff76edeeb2a9580a064d1bdc089aaa",
+          "bytes": 2078
+        },
+        "original": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a64.v",
+          "sha256": "38bffe264f180524e77970f58fa0a5cef6ff76edeeb2a9580a064d1bdc089aaa",
+          "bytes": 2078
+        },
+        "statement_sha256": "65b503d390be6994296a68b0597dde532b4bdcd8ea583ef02408aae3e302b61f",
+        "verification_payload_sha256": "23bbfeb8652629c2c98919de760ad7697c2a7ac46fb51fa9c75db918b8401a59",
+        "compile_cpu_seconds": 17.821132000000002,
+        "compile_wall_seconds": 17.880741730099544,
+        "compile_peak_rss_kib": 1242220,
+        "verify_cpu_seconds": 19.411554,
+        "verify_peak_rss_kib": 1354040,
+        "compiler_receipts": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a64/OFF/COQC.jsonl",
+          "sha256": "3faa814a3271c5ef5ff9833e241fd2bd34b1468814e92fc72e09ee81c3c08e5c",
+          "bytes": 2518
+        },
+        "runtime_plan": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix461/runtime-plans/auto-800d6a64-OFF.json",
+          "sha256": "a51eb463bbbd81eb3aa2ae5e0a3c254f7cd2c90bd3053e7bfbfcde3ef68ed077",
+          "bytes": 38416
+        },
+        "server_log": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a64/OFF/server.log",
+          "sha256": "b3b98b321d881eca576fe54e550332a4b2610b5d82e7fc3726cac3c2aa71b883",
+          "bytes": 2593
+        },
+        "exit": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/commands/auto-800d6a64-OFF/EXIT.json",
+          "sha256": "95b11a7f43b1fd4bf32789f50d1cb9018a40004f6726f5bf1590b280bd22b157",
+          "bytes": 831
+        },
+        "watcher_receipt": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6a64-OFF.json",
+          "sha256": "ff1abc374fa7fd2b06d077d78a2912c6dc56e40e2b5bb62e2dd3b5989ea023ac",
+          "bytes": 814
+        },
+        "watcher_completion": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6a64-OFF-COMPLETE.json",
+          "sha256": "b8c48d59e3be2145945e520c3841dc7e35badd71a1fd0a959e363d8feb5d9c4a",
+          "bytes": 2002
+        },
+        "watcher_log": {
+          "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-223704-worker2-c-training4r-auto-800d6a64-off988.log",
+          "sha256": "1e31817b072ad4000e882cb04a97a80d8d8f4aa2d78d12c7cee442f4c7367d48",
+          "bytes": 195
+        },
+        "controller_pid": 1007850,
+        "controller_start_ticks": 190394678,
+        "controller_absent": true,
+        "watcher_absent": true
+      },
+      "ON": {
+        "pc": "800d6a64",
+        "arm": "ON",
+        "verified": true,
+        "assumptions": [],
+        "normal_owned_closure": true,
+        "result": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a64/ON/RESULT.json",
+          "sha256": "d0048e436497b8da9695b9514fb40491273446fd152a446a563c805e3faede12",
+          "bytes": 17361
+        },
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a64/ON/Boundary.v",
+          "sha256": "a36596555f58ccbe6b6edb11ad6c645bb0f774e7a05549ae981093fb17d0019b",
+          "bytes": 2144
+        },
+        "original": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a64.v",
+          "sha256": "38bffe264f180524e77970f58fa0a5cef6ff76edeeb2a9580a064d1bdc089aaa",
+          "bytes": 2078
+        },
+        "statement_sha256": "65b503d390be6994296a68b0597dde532b4bdcd8ea583ef02408aae3e302b61f",
+        "verification_payload_sha256": "7de4c98df02d062d554814190c60eb38559413c6f06c068e103e0a0ab9d3f912",
+        "compile_cpu_seconds": 18.700708999999996,
+        "compile_wall_seconds": 18.774603676982224,
+        "compile_peak_rss_kib": 1239444,
+        "verify_cpu_seconds": 20.176409000000003,
+        "verify_peak_rss_kib": 1345708,
+        "compiler_receipts": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a64/ON/COQC.jsonl",
+          "sha256": "02929aa8134f44127eba80de7d4f75ef16479c026420f50361fca5cd732c764f",
+          "bytes": 2525
+        },
+        "runtime_plan": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix461/runtime-plans/auto-800d6a64-ON.json",
+          "sha256": "4120f82a20f53ddf56617603b298bf65102ba0356b51ded0837666aa3cbd3c14",
+          "bytes": 38415
+        },
+        "server_log": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a64/ON/server.log",
+          "sha256": "45fd40795aceca2b0fd9d9b0bb7cf138602b255e329d46250182a068398103d2",
+          "bytes": 2593
+        },
+        "exit": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/commands/auto-800d6a64-ON/EXIT.json",
+          "sha256": "20b26457a689a9ab97a4a175d436b35ffb75dbb4c1359ed810d68a4cf055bfe5",
+          "bytes": 829
+        },
+        "watcher_receipt": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6a64-ON.json",
+          "sha256": "e6f46628bcbde32d3e9f62f12e3b330ad20a6ff1532d228dd77f103fb01c6aea",
+          "bytes": 809
+        },
+        "watcher_completion": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6a64-ON-COMPLETE.json",
+          "sha256": "82ae667aa957eb13ddae6ea961f9e93bb11c273ade0effcfa41c0a72996e786a",
+          "bytes": 1993
+        },
+        "watcher_log": {
+          "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-223704-worker2-c-training4r-auto-800d6a64-on988.log",
+          "sha256": "25f53d257d1d46e219097471b95b43e6dcf480270294eaeb192e2ed61b432afb",
+          "bytes": 193
+        },
+        "controller_pid": 1007873,
+        "controller_start_ticks": 190394683,
+        "controller_absent": true,
+        "watcher_absent": true
+      },
+      "CPU_ratio_ON_over_OFF": 1.0493558433886239,
+      "CPU_regression_percent": 4.935584338862387,
+      "median_window_eligible": false,
+      "above_10_percent": false
+    },
+    {
+      "pc": "800d6a6c",
+      "OFF": {
+        "pc": "800d6a6c",
+        "arm": "OFF",
+        "verified": true,
+        "assumptions": [],
+        "normal_owned_closure": true,
+        "result": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a6c/OFF/RESULT.json",
+          "sha256": "909854df17b050d76aa83a32340cb776945c1a035139286c5bb83963fa36194f",
+          "bytes": 17076
+        },
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a6c/OFF/Boundary.v",
+          "sha256": "0363317d8a4cb2b61cecea5967f9d38222ddcc3a0b372eecac57bb72244fbf27",
+          "bytes": 2093
+        },
+        "original": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a6c.v",
+          "sha256": "0363317d8a4cb2b61cecea5967f9d38222ddcc3a0b372eecac57bb72244fbf27",
+          "bytes": 2093
+        },
+        "statement_sha256": "ea9491d8148d8cdf9209c48b3ad087ec81572553273ada1ca3b147ee5bdf1b83",
+        "verification_payload_sha256": "0e02f74e68afa72e9e08c7a0d61d6c11ed11952b306a12b2313a00f0425df8c1",
+        "compile_cpu_seconds": 22.921664000000003,
+        "compile_wall_seconds": 23.000224125105888,
+        "compile_peak_rss_kib": 1299216,
+        "verify_cpu_seconds": 24.414084,
+        "verify_peak_rss_kib": 1398708,
+        "compiler_receipts": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a6c/OFF/COQC.jsonl",
+          "sha256": "ec88ce9e4f9eb0f7176bf3e0df4de1dde2dc4f0f437ec4c82112ba9a3ccc1733",
+          "bytes": 2518
+        },
+        "runtime_plan": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix461/runtime-plans/auto-800d6a6c-OFF.json",
+          "sha256": "9b2840dfe17515036a54f7de1fd4e0995844f92111dce3c20e3e2d30f32969c1",
+          "bytes": 38416
+        },
+        "server_log": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a6c/OFF/server.log",
+          "sha256": "451b374e052adc7e07b4082e554bb0c1a7f4ae100d29b6343a004b3c1b45620d",
+          "bytes": 2593
+        },
+        "exit": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/commands/auto-800d6a6c-OFF/EXIT.json",
+          "sha256": "01fc26ad4e79c647f0c76ee1fc4b104f4ffe7245b0e3cf27276bbc8f94067d14",
+          "bytes": 831
+        },
+        "watcher_receipt": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6a6c-OFF.json",
+          "sha256": "a45a26c1024396c5e94b9ea64b6845dbb8043dcd59b0558fdf7316abafbdcfca",
+          "bytes": 814
+        },
+        "watcher_completion": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6a6c-OFF-COMPLETE.json",
+          "sha256": "a43a40566a1901517c52e316f954cddcbecb4601728fc2e879cf0935f5e30ac2",
+          "bytes": 2002
+        },
+        "watcher_log": {
+          "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-223836-worker2-c-training4r-auto-800d6a6c-off988.log",
+          "sha256": "3c3c61f442c959da55e1feef380b15b01d4b1f7e0da274f657f8da537638998d",
+          "bytes": 195
+        },
+        "controller_pid": 1031570,
+        "controller_start_ticks": 190403893,
+        "controller_absent": true,
+        "watcher_absent": true
+      },
+      "ON": {
+        "pc": "800d6a6c",
+        "arm": "ON",
+        "verified": true,
+        "assumptions": [],
+        "normal_owned_closure": true,
+        "result": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a6c/ON/RESULT.json",
+          "sha256": "5150cd9015be4cbce312a23e587482dd6146dd1a4589e4267ae9a7c987464ca6",
+          "bytes": 17204
+        },
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a6c/ON/Boundary.v",
+          "sha256": "db067ee1b0bd0ec01b63d1353eca557512e9cd1c52785e00e0a8d27c8f332fdf",
+          "bytes": 2159
+        },
+        "original": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a6c.v",
+          "sha256": "0363317d8a4cb2b61cecea5967f9d38222ddcc3a0b372eecac57bb72244fbf27",
+          "bytes": 2093
+        },
+        "statement_sha256": "ea9491d8148d8cdf9209c48b3ad087ec81572553273ada1ca3b147ee5bdf1b83",
+        "verification_payload_sha256": "b615b9afee1cdfa467ec7af00cf2376e9a5659c0496741b618432d59779dc6cc",
+        "compile_cpu_seconds": 22.812424000000004,
+        "compile_wall_seconds": 22.88441035314463,
+        "compile_peak_rss_kib": 1302220,
+        "verify_cpu_seconds": 24.489802,
+        "verify_peak_rss_kib": 1405424,
+        "compiler_receipts": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a6c/ON/COQC.jsonl",
+          "sha256": "da55dae94a935b4da3d9cb203e13941305892894871a8af8a1a3def0b031535a",
+          "bytes": 2516
+        },
+        "runtime_plan": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix461/runtime-plans/auto-800d6a6c-ON.json",
+          "sha256": "7143baff63b95b1c2ccb1dbd07ad4db8035d8f92f5f96fd37b2ebbe7f4b45836",
+          "bytes": 38415
+        },
+        "server_log": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6a6c/ON/server.log",
+          "sha256": "7209d1fc32f27fec66270626a036b79f76467bd02f7bf82fc974ac3e03a37431",
+          "bytes": 2593
+        },
+        "exit": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/commands/auto-800d6a6c-ON/EXIT.json",
+          "sha256": "c8c26871b8b10c7a4318c2c0e2b0ce4a7c3d17e61180791551b74e5568dec87e",
+          "bytes": 829
+        },
+        "watcher_receipt": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6a6c-ON.json",
+          "sha256": "a02e4f3f31be9498d0945263389dd3a4bbd8f217ebf122d2858a9d4b8fad6263",
+          "bytes": 809
+        },
+        "watcher_completion": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6a6c-ON-COMPLETE.json",
+          "sha256": "394a8ef3f4883517788dbbf241fc1b73030fcc78c59435e876d496a2fa5cd300",
+          "bytes": 1993
+        },
+        "watcher_log": {
+          "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-223837-worker2-c-training4r-auto-800d6a6c-on988.log",
+          "sha256": "64565affd6270ddd6edb467652c33403ae2445a4ef5df908c25caca852dae7c6",
+          "bytes": 193
+        },
+        "controller_pid": 1031572,
+        "controller_start_ticks": 190403897,
+        "controller_absent": true,
+        "watcher_absent": true
+      },
+      "CPU_ratio_ON_over_OFF": 0.9952342028920762,
+      "CPU_regression_percent": -0.4765797107923797,
+      "median_window_eligible": false,
+      "above_10_percent": false
+    },
+    {
+      "pc": "800d6ab4",
+      "OFF": {
+        "pc": "800d6ab4",
+        "arm": "OFF",
+        "verified": true,
+        "assumptions": [],
+        "normal_owned_closure": true,
+        "result": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6ab4/OFF/RESULT.json",
+          "sha256": "80ff0590ffbfce4112d7590b60ae0089cdfe933b3da0501dc23f3af297452453",
+          "bytes": 17138
+        },
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6ab4/OFF/Boundary.v",
+          "sha256": "656fd312196618cf0c55a52aa0258d6eb923ddd15a699d18f83d2a967a5f89ed",
+          "bytes": 2136
+        },
+        "original": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6ab4.v",
+          "sha256": "656fd312196618cf0c55a52aa0258d6eb923ddd15a699d18f83d2a967a5f89ed",
+          "bytes": 2136
+        },
+        "statement_sha256": "101f4543034625b1a94f38fe469f721cbf8ddb537ef3482e8463cb848c61bdd6",
+        "verification_payload_sha256": "ba3a48ffa12b984cb8df8dd0cdf283acbfa05c005a2a075adccfedab035bf201",
+        "compile_cpu_seconds": 8.769321000000001,
+        "compile_wall_seconds": 8.795289918081835,
+        "compile_peak_rss_kib": 1108236,
+        "verify_cpu_seconds": 10.28005,
+        "verify_peak_rss_kib": 1207408,
+        "compiler_receipts": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6ab4/OFF/COQC.jsonl",
+          "sha256": "882acfd659b0fb357f04bfbac651dd145909d81b4247bfbcd769d1597c542f4e",
+          "bytes": 2515
+        },
+        "runtime_plan": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix461/runtime-plans/auto-800d6ab4-OFF.json",
+          "sha256": "d97683d66ce434647a67c8e923ceeb66bb929bf0d241535ed4c4b52fa61a9e03",
+          "bytes": 38416
+        },
+        "server_log": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6ab4/OFF/server.log",
+          "sha256": "e63d46e5300d9b46a6c45c50155f4992588b2a8956ee99539c170f4cec0ea9e2",
+          "bytes": 2593
+        },
+        "exit": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/commands/auto-800d6ab4-OFF/EXIT.json",
+          "sha256": "5247dcc3b5d323b0e21c854ab15b2c84690ddacd3a6cc78c6bebc69f1f1530ec",
+          "bytes": 831
+        },
+        "watcher_receipt": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6ab4-OFF.json",
+          "sha256": "640025280acf8a32681709759546847c470f4210740c4a6fc3a8dcbd52519010",
+          "bytes": 814
+        },
+        "watcher_completion": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6ab4-OFF-COMPLETE.json",
+          "sha256": "cacc40f3a730a6f7ce5663f9def386da02a0fe2b4a76344efb5af854963acb67",
+          "bytes": 2002
+        },
+        "watcher_log": {
+          "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-224035-worker2-c-training4r-auto-800d6ab4-off988.log",
+          "sha256": "7faa116d29ee6b0194419c05d98ef855bc1008c30a666c589969855c61f2fc2f",
+          "bytes": 195
+        },
+        "controller_pid": 1061627,
+        "controller_start_ticks": 190415707,
+        "controller_absent": true,
+        "watcher_absent": true
+      },
+      "ON": {
+        "pc": "800d6ab4",
+        "arm": "ON",
+        "verified": true,
+        "assumptions": [],
+        "normal_owned_closure": true,
+        "result": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6ab4/ON/RESULT.json",
+          "sha256": "ce7627b293b92b5385fb9a5f1f9fec089724747e4db904be4a05ae9b6d218a81",
+          "bytes": 17268
+        },
+        "source": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6ab4/ON/Boundary.v",
+          "sha256": "ba7f4199d8b8d9b1cda081bfe0fd53a80b69d5ddf29c11e76271815f03330912",
+          "bytes": 2202
+        },
+        "original": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6ab4.v",
+          "sha256": "656fd312196618cf0c55a52aa0258d6eb923ddd15a699d18f83d2a967a5f89ed",
+          "bytes": 2136
+        },
+        "statement_sha256": "101f4543034625b1a94f38fe469f721cbf8ddb537ef3482e8463cb848c61bdd6",
+        "verification_payload_sha256": "7d4453a3923f04bb70c0bb0e73b4a00a4211104cf1bda7d6558afc446faf94dd",
+        "compile_cpu_seconds": 8.850991000000002,
+        "compile_wall_seconds": 8.888520366046578,
+        "compile_peak_rss_kib": 1107588,
+        "verify_cpu_seconds": 10.090793999999999,
+        "verify_peak_rss_kib": 1211976,
+        "compiler_receipts": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6ab4/ON/COQC.jsonl",
+          "sha256": "0a3ac383697868d4004aac54803ae613b7fdeb0f2ff6bb107f8a21f5f95c6e34",
+          "bytes": 2524
+        },
+        "runtime_plan": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launchfix461/runtime-plans/auto-800d6ab4-ON.json",
+          "sha256": "1e37ae9b998b5701864599b4ff945cab7dc5a97d2e3bdac00ed064c3c4dc6dbe",
+          "bytes": 38415
+        },
+        "server_log": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto462/800d6ab4/ON/server.log",
+          "sha256": "5c744ca7ed5f6a2fddeecb404a2425d4ff3cec6ff220f515fd0ae6a2456134c6",
+          "bytes": 2593
+        },
+        "exit": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/commands/auto-800d6ab4-ON/EXIT.json",
+          "sha256": "52909691f6e164a74129f684694d2c58dd58ed8f23454e8c3edb649e2a459d3e",
+          "bytes": 829
+        },
+        "watcher_receipt": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6ab4-ON.json",
+          "sha256": "a37bb6a6529ce062ea6f3c17179755947bdba96038134c528007f12d0d928f29",
+          "bytes": 809
+        },
+        "watcher_completion": {
+          "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/watchers/auto-800d6ab4-ON-COMPLETE.json",
+          "sha256": "8fee86fb233ec7fa75839036e95bd77c62957fdc39002638bcb3a0a3ee85ed83",
+          "bytes": 1993
+        },
+        "watcher_log": {
+          "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-224035-worker2-c-training4r-auto-800d6ab4-on988.log",
+          "sha256": "7bbc0d6ce223ef720290495e4d1e3f5c04eb03b79910339654ad486068c251ac",
+          "bytes": 193
+        },
+        "controller_pid": 1061640,
+        "controller_start_ticks": 190415711,
+        "controller_absent": true,
+        "watcher_absent": true
+      },
+      "CPU_ratio_ON_over_OFF": 1.0093131497866255,
+      "CPU_regression_percent": 0.9313149786625452,
+      "median_window_eligible": false,
+      "above_10_percent": false
+    }
+  ],
+  "scheduler": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch988/AUTO-SCHEDULE-RESULT.json",
+    "sha256": "d63ad89c7054811d52e143eec689d9ae3813dd86795ac06c99fa2f298b9d16e8",
+    "bytes": 39819
+  },
+  "source_policy": "OFF equals each committed Auto source. ON adds only its exact switch import. Statements and zesu_block proof bodies remain equal.",
+  "cost_policy": "Each ratio uses actual guarded coqc child CPU for Boundary.v compilation. Verification CPU remains separate. Watcher and admission wall times do not enter ratios."
+}

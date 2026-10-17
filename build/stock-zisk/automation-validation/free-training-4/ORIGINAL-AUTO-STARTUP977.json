@@ -1,0 +1,1338 @@
+{
+  "schema": 1,
+  "outcome": "original-auto-startup-audit",
+  "completed_at": "2026-10-17T01:51:12.079230+00:00",
+  "launches": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-launch974/LAUNCHES.json",
+    "sha256": "b4c6782655193a5e78fc4ae1d3c94bcf796fcbf9143a5007f323c358a187aa45",
+    "bytes": 25614
+  },
+  "packet": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PACKET.json",
+    "sha256": "e978eb047f6c74a991f02fdb23c1f0e9633fcdeb08929cd9688bd07faa99fd54",
+    "bytes": 4762058
+  },
+  "parent_review": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PARENT-REVIEW.json",
+    "sha256": "3bb7e730ca41526953415d1a3f1e33596fe17c87b546299a1e19096e76fad9e4",
+    "bytes": 1930
+  },
+  "controller": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-controller435/paired_controller.py",
+    "sha256": "4624bd4a258faaa9ddb4378de014576a75e0ec6e03b14125fde1c28927c33b89",
+    "bytes": 13870
+  },
+  "audit_script": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-auto-final-audit977/audit.py",
+    "sha256": "e8842b0bc5d28b9e03f1a392f2cc59c494294b8a3faa0dd632a91ee717aabe7b",
+    "bytes": 4117
+  },
+  "records": [
+    {
+      "name": "auto-800d6974-OFF",
+      "launch": {
+        "name": "auto-800d6974-OFF",
+        "label": "worker2-c-training4-auto-800d6974-off974",
+        "requested_at": "2026-10-17T01:07:16.089275+00:00",
+        "command": [
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-controller435/paired_controller.py",
+          "auto",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PACKET.json",
+          "--arm",
+          "OFF",
+          "--pc",
+          "800d6974"
+        ],
+        "command_sha256": "e688f1f51384294887b582325cd1b25c885e41077c7521bc919721708682d6bc",
+        "watcher_exit_status": 0,
+        "stdout": "watching 'worker2-c-training4-auto-800d6974-off974' (runner pid 3649974); output: /home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6974-off974.log\nYou will be woken when it exits, with the exit status and the last lines of the log, whether it succeeds or fails. You can end your turn now.\n",
+        "stderr": "",
+        "issue10": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6227749891",
+        "runner_pid": 3649974,
+        "runner_start_ticks": 189855801
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6974/OFF/RESULT.json",
+        "sha256": "334bf87dade9b7041f2a71708e69649f0a62d018d908c170f3e0a243d9ab0427",
+        "bytes": 762
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6974/OFF/server.log",
+        "sha256": "09c03cbf7eabcf7f35c1f51d182c8b5d28c2d42d070fc7019715671ae9eace09",
+        "bytes": 1426
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6974-off974.log",
+        "sha256": "f18c434ad598c291167e8466738d3022751ea10477c1ed505e85d734f90f4260",
+        "bytes": 3848
+      },
+      "retained_files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6974/OFF/Boundary.v",
+          "sha256": "ca7fb94a835a783c2d62c0a24e1e0d552ce2a76f65cd6ee7d277df32dfea9d6e",
+          "bytes": 2040
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6974/OFF/RESULT.json",
+          "sha256": "334bf87dade9b7041f2a71708e69649f0a62d018d908c170f3e0a243d9ab0427",
+          "bytes": 762
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6974/OFF/server.log",
+          "sha256": "09c03cbf7eabcf7f35c1f51d182c8b5d28c2d42d070fc7019715671ae9eace09",
+          "bytes": 1426
+        }
+      ],
+      "tool_calls": 0,
+      "compile_calls": 0,
+      "verify_calls": 0,
+      "primary_calls": 0,
+      "startup_cause": "KeyError: 'ZESU_COMPLETE_GOAL_DIR'",
+      "verified": false,
+      "controller_normal_owned_closure": null,
+      "stdin_owner": {
+        "pid": 3650218,
+        "start_ticks": 189856081
+      },
+      "stdin_owner_exited": true,
+      "runner_exited": true,
+      "compiler_receipt_exists": false
+    },
+    {
+      "name": "auto-800d69a4-OFF",
+      "launch": {
+        "name": "auto-800d69a4-OFF",
+        "label": "worker2-c-training4-auto-800d69a4-off974",
+        "requested_at": "2026-10-17T01:07:16.129250+00:00",
+        "command": [
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-controller435/paired_controller.py",
+          "auto",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PACKET.json",
+          "--arm",
+          "OFF",
+          "--pc",
+          "800d69a4"
+        ],
+        "command_sha256": "9ae1c69597ea6c59313c017954b7535b7858db380c2a99d70afb3dd739342f66",
+        "watcher_exit_status": 0,
+        "stdout": "watching 'worker2-c-training4-auto-800d69a4-off974' (runner pid 3649990); output: /home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d69a4-off974.log\nYou will be woken when it exits, with the exit status and the last lines of the log, whether it succeeds or fails. You can end your turn now.\n",
+        "stderr": "",
+        "issue10": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6227749891",
+        "runner_pid": 3649990,
+        "runner_start_ticks": 189855807
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69a4/OFF/RESULT.json",
+        "sha256": "e1927e3021a2c6808eeb2bd93386808fd3145338b2ac1f2ae592bd455f6f385d",
+        "bytes": 762
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69a4/OFF/server.log",
+        "sha256": "0a7ef41b926629ccb0667ae9959997ba6c34283543018a0478cb490a3456bd44",
+        "bytes": 1426
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d69a4-off974.log",
+        "sha256": "f18c434ad598c291167e8466738d3022751ea10477c1ed505e85d734f90f4260",
+        "bytes": 3848
+      },
+      "retained_files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69a4/OFF/Boundary.v",
+          "sha256": "fb2b2826f7602a0a9d45915dac6eadde126ec21dcfc5294e7f9bbecb6e65f5e1",
+          "bytes": 2227
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69a4/OFF/RESULT.json",
+          "sha256": "e1927e3021a2c6808eeb2bd93386808fd3145338b2ac1f2ae592bd455f6f385d",
+          "bytes": 762
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69a4/OFF/server.log",
+          "sha256": "0a7ef41b926629ccb0667ae9959997ba6c34283543018a0478cb490a3456bd44",
+          "bytes": 1426
+        }
+      ],
+      "tool_calls": 0,
+      "compile_calls": 0,
+      "verify_calls": 0,
+      "primary_calls": 0,
+      "startup_cause": "KeyError: 'ZESU_COMPLETE_GOAL_DIR'",
+      "verified": false,
+      "controller_normal_owned_closure": null,
+      "stdin_owner": {
+        "pid": 3650269,
+        "start_ticks": 189856088
+      },
+      "stdin_owner_exited": true,
+      "runner_exited": true,
+      "compiler_receipt_exists": false
+    },
+    {
+      "name": "auto-800d69d8-OFF",
+      "launch": {
+        "name": "auto-800d69d8-OFF",
+        "label": "worker2-c-training4-auto-800d69d8-off974",
+        "requested_at": "2026-10-17T01:07:16.190484+00:00",
+        "command": [
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-controller435/paired_controller.py",
+          "auto",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PACKET.json",
+          "--arm",
+          "OFF",
+          "--pc",
+          "800d69d8"
+        ],
+        "command_sha256": "af1d2f49e264ff20dd10db6b0adc22b2a594865d3b09ac1bad0172076b044039",
+        "watcher_exit_status": 0,
+        "stdout": "watching 'worker2-c-training4-auto-800d69d8-off974' (runner pid 3649994); output: /home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d69d8-off974.log\nYou will be woken when it exits, with the exit status and the last lines of the log, whether it succeeds or fails. You can end your turn now.\n",
+        "stderr": "",
+        "issue10": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6227749891",
+        "runner_pid": 3649994,
+        "runner_start_ticks": 189855811
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69d8/OFF/RESULT.json",
+        "sha256": "f13c5dc95ab04fbaae2765dc2cd76f0d7c829c951b7b0675e1c3c70472e5037d",
+        "bytes": 762
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69d8/OFF/server.log",
+        "sha256": "60e0eaa01416816984a0826205a1b6be89eef88a763a2864395de7409a5bb078",
+        "bytes": 1426
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d69d8-off974.log",
+        "sha256": "f18c434ad598c291167e8466738d3022751ea10477c1ed505e85d734f90f4260",
+        "bytes": 3848
+      },
+      "retained_files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69d8/OFF/Boundary.v",
+          "sha256": "dba92683131b5c4697d52db787bb569b33cc8049ccfd7ebb2767bc2a71ab3be1",
+          "bytes": 2078
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69d8/OFF/RESULT.json",
+          "sha256": "f13c5dc95ab04fbaae2765dc2cd76f0d7c829c951b7b0675e1c3c70472e5037d",
+          "bytes": 762
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69d8/OFF/server.log",
+          "sha256": "60e0eaa01416816984a0826205a1b6be89eef88a763a2864395de7409a5bb078",
+          "bytes": 1426
+        }
+      ],
+      "tool_calls": 0,
+      "compile_calls": 0,
+      "verify_calls": 0,
+      "primary_calls": 0,
+      "startup_cause": "KeyError: 'ZESU_COMPLETE_GOAL_DIR'",
+      "verified": false,
+      "controller_normal_owned_closure": null,
+      "stdin_owner": {
+        "pid": 3650222,
+        "start_ticks": 189856083
+      },
+      "stdin_owner_exited": true,
+      "runner_exited": true,
+      "compiler_receipt_exists": false
+    },
+    {
+      "name": "auto-800d69e0-OFF",
+      "launch": {
+        "name": "auto-800d69e0-OFF",
+        "label": "worker2-c-training4-auto-800d69e0-off974",
+        "requested_at": "2026-10-17T01:07:16.232124+00:00",
+        "command": [
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-controller435/paired_controller.py",
+          "auto",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PACKET.json",
+          "--arm",
+          "OFF",
+          "--pc",
+          "800d69e0"
+        ],
+        "command_sha256": "a7cc2a7368998b3928e2f8215a5f2125ca98e0aaa02053604674f2b4a229d9c4",
+        "watcher_exit_status": 0,
+        "stdout": "watching 'worker2-c-training4-auto-800d69e0-off974' (runner pid 3650002); output: /home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d69e0-off974.log\nYou will be woken when it exits, with the exit status and the last lines of the log, whether it succeeds or fails. You can end your turn now.\n",
+        "stderr": "",
+        "issue10": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6227749891",
+        "runner_pid": 3650002,
+        "runner_start_ticks": 189855815
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69e0/OFF/RESULT.json",
+        "sha256": "0044bdeec36080da9a293589dc8ec27ff9e1a872fd523aa33c84152a7701b18d",
+        "bytes": 762
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69e0/OFF/server.log",
+        "sha256": "5591b0c2dbbd81beca3a5700df7336fc9498ab49bab627422e4e6a35f43f1d85",
+        "bytes": 1426
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d69e0-off974.log",
+        "sha256": "f18c434ad598c291167e8466738d3022751ea10477c1ed505e85d734f90f4260",
+        "bytes": 3848
+      },
+      "retained_files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69e0/OFF/Boundary.v",
+          "sha256": "965212afed3fdce7dc86f114312e9f01f7b7d1b864a65ba7523944eda17269f4",
+          "bytes": 2126
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69e0/OFF/RESULT.json",
+          "sha256": "0044bdeec36080da9a293589dc8ec27ff9e1a872fd523aa33c84152a7701b18d",
+          "bytes": 762
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69e0/OFF/server.log",
+          "sha256": "5591b0c2dbbd81beca3a5700df7336fc9498ab49bab627422e4e6a35f43f1d85",
+          "bytes": 1426
+        }
+      ],
+      "tool_calls": 0,
+      "compile_calls": 0,
+      "verify_calls": 0,
+      "primary_calls": 0,
+      "startup_cause": "KeyError: 'ZESU_COMPLETE_GOAL_DIR'",
+      "verified": false,
+      "controller_normal_owned_closure": null,
+      "stdin_owner": {
+        "pid": 3650220,
+        "start_ticks": 189856081
+      },
+      "stdin_owner_exited": true,
+      "runner_exited": true,
+      "compiler_receipt_exists": false
+    },
+    {
+      "name": "auto-800d6a00-OFF",
+      "launch": {
+        "name": "auto-800d6a00-OFF",
+        "label": "worker2-c-training4-auto-800d6a00-off974",
+        "requested_at": "2026-10-17T01:07:16.272710+00:00",
+        "command": [
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-controller435/paired_controller.py",
+          "auto",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PACKET.json",
+          "--arm",
+          "OFF",
+          "--pc",
+          "800d6a00"
+        ],
+        "command_sha256": "fbdb057e644e6925c0ba0fbcc5fc306190ad4f9c0ec45e0e7ccf91ff457fd9d8",
+        "watcher_exit_status": 0,
+        "stdout": "watching 'worker2-c-training4-auto-800d6a00-off974' (runner pid 3650011); output: /home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6a00-off974.log\nYou will be woken when it exits, with the exit status and the last lines of the log, whether it succeeds or fails. You can end your turn now.\n",
+        "stderr": "",
+        "issue10": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6227749891",
+        "runner_pid": 3650011,
+        "runner_start_ticks": 189855819
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a00/OFF/RESULT.json",
+        "sha256": "09b0348c8f62ba5dea3524d82cd06069f4f12f0d422b1fd143669a234921faf2",
+        "bytes": 762
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a00/OFF/server.log",
+        "sha256": "cb661cee8348dd0a1487c3fd8803751c8fdd3350473e8ed7bf648d6ec4df3aa7",
+        "bytes": 1426
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6a00-off974.log",
+        "sha256": "f18c434ad598c291167e8466738d3022751ea10477c1ed505e85d734f90f4260",
+        "bytes": 3848
+      },
+      "retained_files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a00/OFF/Boundary.v",
+          "sha256": "1bd70384f6a5c0da5e568c44784ee09ecf257698363460f0ec08e8ae2513fbdf",
+          "bytes": 2078
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a00/OFF/RESULT.json",
+          "sha256": "09b0348c8f62ba5dea3524d82cd06069f4f12f0d422b1fd143669a234921faf2",
+          "bytes": 762
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a00/OFF/server.log",
+          "sha256": "cb661cee8348dd0a1487c3fd8803751c8fdd3350473e8ed7bf648d6ec4df3aa7",
+          "bytes": 1426
+        }
+      ],
+      "tool_calls": 0,
+      "compile_calls": 0,
+      "verify_calls": 0,
+      "primary_calls": 0,
+      "startup_cause": "KeyError: 'ZESU_COMPLETE_GOAL_DIR'",
+      "verified": false,
+      "controller_normal_owned_closure": null,
+      "stdin_owner": {
+        "pid": 3650261,
+        "start_ticks": 189856087
+      },
+      "stdin_owner_exited": true,
+      "runner_exited": true,
+      "compiler_receipt_exists": false
+    },
+    {
+      "name": "auto-800d6a14-OFF",
+      "launch": {
+        "name": "auto-800d6a14-OFF",
+        "label": "worker2-c-training4-auto-800d6a14-off974",
+        "requested_at": "2026-10-17T01:07:16.315250+00:00",
+        "command": [
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-controller435/paired_controller.py",
+          "auto",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PACKET.json",
+          "--arm",
+          "OFF",
+          "--pc",
+          "800d6a14"
+        ],
+        "command_sha256": "ecd0c44e8021f8c21880fd6358e8134f09aa688afa98e882991ae07d908feb68",
+        "watcher_exit_status": 0,
+        "stdout": "watching 'worker2-c-training4-auto-800d6a14-off974' (runner pid 3650020); output: /home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6a14-off974.log\nYou will be woken when it exits, with the exit status and the last lines of the log, whether it succeeds or fails. You can end your turn now.\n",
+        "stderr": "",
+        "issue10": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6227749891",
+        "runner_pid": 3650020,
+        "runner_start_ticks": 189855824
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a14/OFF/RESULT.json",
+        "sha256": "2143ead7592f7d0841ab60a366095c5933115701eec48e6c6aa9e23d8873f4c8",
+        "bytes": 762
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a14/OFF/server.log",
+        "sha256": "d0af53f4f83845949a682ba22900c33afd8be0e2d5d7d638dab5e683eebad945",
+        "bytes": 1426
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6a14-off974.log",
+        "sha256": "f18c434ad598c291167e8466738d3022751ea10477c1ed505e85d734f90f4260",
+        "bytes": 3848
+      },
+      "retained_files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a14/OFF/Boundary.v",
+          "sha256": "70ea8da3ab43b2599ceded151460709de0c4bfc8777f246038759835507d41ee",
+          "bytes": 2136
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a14/OFF/RESULT.json",
+          "sha256": "2143ead7592f7d0841ab60a366095c5933115701eec48e6c6aa9e23d8873f4c8",
+          "bytes": 762
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a14/OFF/server.log",
+          "sha256": "d0af53f4f83845949a682ba22900c33afd8be0e2d5d7d638dab5e683eebad945",
+          "bytes": 1426
+        }
+      ],
+      "tool_calls": 0,
+      "compile_calls": 0,
+      "verify_calls": 0,
+      "primary_calls": 0,
+      "startup_cause": "KeyError: 'ZESU_COMPLETE_GOAL_DIR'",
+      "verified": false,
+      "controller_normal_owned_closure": null,
+      "stdin_owner": {
+        "pid": 3650365,
+        "start_ticks": 189856094
+      },
+      "stdin_owner_exited": true,
+      "runner_exited": true,
+      "compiler_receipt_exists": false
+    },
+    {
+      "name": "auto-800d6a64-OFF",
+      "launch": {
+        "name": "auto-800d6a64-OFF",
+        "label": "worker2-c-training4-auto-800d6a64-off974",
+        "requested_at": "2026-10-17T01:07:16.359703+00:00",
+        "command": [
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-controller435/paired_controller.py",
+          "auto",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PACKET.json",
+          "--arm",
+          "OFF",
+          "--pc",
+          "800d6a64"
+        ],
+        "command_sha256": "5231bda3bae7d49a1a59b759a0943f29e958629130beee713870d0998ad9fd67",
+        "watcher_exit_status": 0,
+        "stdout": "watching 'worker2-c-training4-auto-800d6a64-off974' (runner pid 3650029); output: /home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6a64-off974.log\nYou will be woken when it exits, with the exit status and the last lines of the log, whether it succeeds or fails. You can end your turn now.\n",
+        "stderr": "",
+        "issue10": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6227749891",
+        "runner_pid": 3650029,
+        "runner_start_ticks": 189855828
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a64/OFF/RESULT.json",
+        "sha256": "9d9e4e84e25ef7ebee33129115db0ed0d883d76278a4cc0f284acfb0b5f18370",
+        "bytes": 762
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a64/OFF/server.log",
+        "sha256": "ea4a93697c54c9b36100f491a43b04be378c6da6066e814491fd09a292f7c507",
+        "bytes": 1426
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6a64-off974.log",
+        "sha256": "f18c434ad598c291167e8466738d3022751ea10477c1ed505e85d734f90f4260",
+        "bytes": 3848
+      },
+      "retained_files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a64/OFF/Boundary.v",
+          "sha256": "38bffe264f180524e77970f58fa0a5cef6ff76edeeb2a9580a064d1bdc089aaa",
+          "bytes": 2078
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a64/OFF/RESULT.json",
+          "sha256": "9d9e4e84e25ef7ebee33129115db0ed0d883d76278a4cc0f284acfb0b5f18370",
+          "bytes": 762
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a64/OFF/server.log",
+          "sha256": "ea4a93697c54c9b36100f491a43b04be378c6da6066e814491fd09a292f7c507",
+          "bytes": 1426
+        }
+      ],
+      "tool_calls": 0,
+      "compile_calls": 0,
+      "verify_calls": 0,
+      "primary_calls": 0,
+      "startup_cause": "KeyError: 'ZESU_COMPLETE_GOAL_DIR'",
+      "verified": false,
+      "controller_normal_owned_closure": null,
+      "stdin_owner": {
+        "pid": 3650440,
+        "start_ticks": 189856097
+      },
+      "stdin_owner_exited": true,
+      "runner_exited": true,
+      "compiler_receipt_exists": false
+    },
+    {
+      "name": "auto-800d6a6c-OFF",
+      "launch": {
+        "name": "auto-800d6a6c-OFF",
+        "label": "worker2-c-training4-auto-800d6a6c-off974",
+        "requested_at": "2026-10-17T01:07:16.401741+00:00",
+        "command": [
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-controller435/paired_controller.py",
+          "auto",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PACKET.json",
+          "--arm",
+          "OFF",
+          "--pc",
+          "800d6a6c"
+        ],
+        "command_sha256": "7ab209338c2bb2dc3a9c3d2d355a2a5f1c200f8c9133d786e23d9a6845009412",
+        "watcher_exit_status": 0,
+        "stdout": "watching 'worker2-c-training4-auto-800d6a6c-off974' (runner pid 3650038); output: /home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6a6c-off974.log\nYou will be woken when it exits, with the exit status and the last lines of the log, whether it succeeds or fails. You can end your turn now.\n",
+        "stderr": "",
+        "issue10": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6227749891",
+        "runner_pid": 3650038,
+        "runner_start_ticks": 189855832
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a6c/OFF/RESULT.json",
+        "sha256": "c4e7ee0e1989e6a2dbea32a7c24bee70b2a5f8ff0c0c56fe3decaa04345b10dc",
+        "bytes": 762
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a6c/OFF/server.log",
+        "sha256": "7c36b3ec45c74754b94e5fe0869c6a022e2a27d9ee3db3b0a9ebedf9e105939c",
+        "bytes": 1426
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6a6c-off974.log",
+        "sha256": "f18c434ad598c291167e8466738d3022751ea10477c1ed505e85d734f90f4260",
+        "bytes": 3848
+      },
+      "retained_files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a6c/OFF/Boundary.v",
+          "sha256": "0363317d8a4cb2b61cecea5967f9d38222ddcc3a0b372eecac57bb72244fbf27",
+          "bytes": 2093
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a6c/OFF/RESULT.json",
+          "sha256": "c4e7ee0e1989e6a2dbea32a7c24bee70b2a5f8ff0c0c56fe3decaa04345b10dc",
+          "bytes": 762
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a6c/OFF/server.log",
+          "sha256": "7c36b3ec45c74754b94e5fe0869c6a022e2a27d9ee3db3b0a9ebedf9e105939c",
+          "bytes": 1426
+        }
+      ],
+      "tool_calls": 0,
+      "compile_calls": 0,
+      "verify_calls": 0,
+      "primary_calls": 0,
+      "startup_cause": "KeyError: 'ZESU_COMPLETE_GOAL_DIR'",
+      "verified": false,
+      "controller_normal_owned_closure": null,
+      "stdin_owner": {
+        "pid": 3650531,
+        "start_ticks": 189856102
+      },
+      "stdin_owner_exited": true,
+      "runner_exited": true,
+      "compiler_receipt_exists": false
+    },
+    {
+      "name": "auto-800d6ab4-OFF",
+      "launch": {
+        "name": "auto-800d6ab4-OFF",
+        "label": "worker2-c-training4-auto-800d6ab4-off974",
+        "requested_at": "2026-10-17T01:07:16.444837+00:00",
+        "command": [
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-controller435/paired_controller.py",
+          "auto",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PACKET.json",
+          "--arm",
+          "OFF",
+          "--pc",
+          "800d6ab4"
+        ],
+        "command_sha256": "16a863911210c7b0b16e065872a5d21e9d7a668541c7b2639b5fa6a03b010090",
+        "watcher_exit_status": 0,
+        "stdout": "watching 'worker2-c-training4-auto-800d6ab4-off974' (runner pid 3650047); output: /home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6ab4-off974.log\nYou will be woken when it exits, with the exit status and the last lines of the log, whether it succeeds or fails. You can end your turn now.\n",
+        "stderr": "",
+        "issue10": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6227749891",
+        "runner_pid": 3650047,
+        "runner_start_ticks": 189855837
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6ab4/OFF/RESULT.json",
+        "sha256": "54fb635ca2a440afb8e12b6a20e40a0e66d96574f071d94b486601d07aa64dfe",
+        "bytes": 762
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6ab4/OFF/server.log",
+        "sha256": "5572aca78c91043906f98f5241909374416f969dbefa427e0920a0c3d3e1b4af",
+        "bytes": 1426
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6ab4-off974.log",
+        "sha256": "f18c434ad598c291167e8466738d3022751ea10477c1ed505e85d734f90f4260",
+        "bytes": 3848
+      },
+      "retained_files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6ab4/OFF/Boundary.v",
+          "sha256": "656fd312196618cf0c55a52aa0258d6eb923ddd15a699d18f83d2a967a5f89ed",
+          "bytes": 2136
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6ab4/OFF/RESULT.json",
+          "sha256": "54fb635ca2a440afb8e12b6a20e40a0e66d96574f071d94b486601d07aa64dfe",
+          "bytes": 762
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6ab4/OFF/server.log",
+          "sha256": "5572aca78c91043906f98f5241909374416f969dbefa427e0920a0c3d3e1b4af",
+          "bytes": 1426
+        }
+      ],
+      "tool_calls": 0,
+      "compile_calls": 0,
+      "verify_calls": 0,
+      "primary_calls": 0,
+      "startup_cause": "KeyError: 'ZESU_COMPLETE_GOAL_DIR'",
+      "verified": false,
+      "controller_normal_owned_closure": null,
+      "stdin_owner": {
+        "pid": 3650607,
+        "start_ticks": 189856106
+      },
+      "stdin_owner_exited": true,
+      "runner_exited": true,
+      "compiler_receipt_exists": false
+    },
+    {
+      "name": "auto-800d6974-ON",
+      "launch": {
+        "name": "auto-800d6974-ON",
+        "label": "worker2-c-training4-auto-800d6974-on974",
+        "requested_at": "2026-10-17T01:07:16.534734+00:00",
+        "command": [
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-controller435/paired_controller.py",
+          "auto",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PACKET.json",
+          "--arm",
+          "ON",
+          "--pc",
+          "800d6974"
+        ],
+        "command_sha256": "63e248d7558ad867f18b589ad10d91dfd14dc978a710f03d0d565534e37975d5",
+        "watcher_exit_status": 0,
+        "stdout": "watching 'worker2-c-training4-auto-800d6974-on974' (runner pid 3650065); output: /home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6974-on974.log\nYou will be woken when it exits, with the exit status and the last lines of the log, whether it succeeds or fails. You can end your turn now.\n",
+        "stderr": "",
+        "issue10": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6227749891",
+        "runner_pid": 3650065,
+        "runner_start_ticks": 189855846
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6974/ON/RESULT.json",
+        "sha256": "c8b47caa441797c9eb9b4d6ae821cdac5008c616cb4e7aa61689118daf0aaa5d",
+        "bytes": 760
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6974/ON/server.log",
+        "sha256": "2b3ad34f7eb14634224c804135fe1c4b000c134c218d9cda1d4a465200ae8cfc",
+        "bytes": 1426
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6974-on974.log",
+        "sha256": "f18c434ad598c291167e8466738d3022751ea10477c1ed505e85d734f90f4260",
+        "bytes": 3848
+      },
+      "retained_files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6974/ON/Boundary.v",
+          "sha256": "9d915d37d4678727dcbc594335e1f6cba40299637dc981e061a8da04cff96ceb",
+          "bytes": 2106
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6974/ON/RESULT.json",
+          "sha256": "c8b47caa441797c9eb9b4d6ae821cdac5008c616cb4e7aa61689118daf0aaa5d",
+          "bytes": 760
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6974/ON/server.log",
+          "sha256": "2b3ad34f7eb14634224c804135fe1c4b000c134c218d9cda1d4a465200ae8cfc",
+          "bytes": 1426
+        }
+      ],
+      "tool_calls": 0,
+      "compile_calls": 0,
+      "verify_calls": 0,
+      "primary_calls": 0,
+      "startup_cause": "KeyError: 'ZESU_COMPLETE_GOAL_DIR'",
+      "verified": false,
+      "controller_normal_owned_closure": null,
+      "stdin_owner": {
+        "pid": 3650763,
+        "start_ticks": 189856126
+      },
+      "stdin_owner_exited": true,
+      "runner_exited": true,
+      "compiler_receipt_exists": false
+    },
+    {
+      "name": "auto-800d69a4-ON",
+      "launch": {
+        "name": "auto-800d69a4-ON",
+        "label": "worker2-c-training4-auto-800d69a4-on974",
+        "requested_at": "2026-10-17T01:07:16.582025+00:00",
+        "command": [
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-controller435/paired_controller.py",
+          "auto",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PACKET.json",
+          "--arm",
+          "ON",
+          "--pc",
+          "800d69a4"
+        ],
+        "command_sha256": "cb1698115cd928a15e66227fc751e42b01f8ecdd94d963978f5c8aa016125636",
+        "watcher_exit_status": 0,
+        "stdout": "watching 'worker2-c-training4-auto-800d69a4-on974' (runner pid 3650074); output: /home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d69a4-on974.log\nYou will be woken when it exits, with the exit status and the last lines of the log, whether it succeeds or fails. You can end your turn now.\n",
+        "stderr": "",
+        "issue10": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6227749891",
+        "runner_pid": 3650074,
+        "runner_start_ticks": 189855850
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69a4/ON/RESULT.json",
+        "sha256": "579cd2233cf579627ef50fba5d5616e58d7bf924f715b01b3a0a0907aa535064",
+        "bytes": 760
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69a4/ON/server.log",
+        "sha256": "958720e9ac6ad7a3e3d02f4fb7e4953add5d71cf2ec10cd29f9bc8fcc3330714",
+        "bytes": 1426
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d69a4-on974.log",
+        "sha256": "f18c434ad598c291167e8466738d3022751ea10477c1ed505e85d734f90f4260",
+        "bytes": 3848
+      },
+      "retained_files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69a4/ON/Boundary.v",
+          "sha256": "e2765ce934149654a66d410fee39c5d908554d74e98cf8762caf583262a2dcc0",
+          "bytes": 2293
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69a4/ON/RESULT.json",
+          "sha256": "579cd2233cf579627ef50fba5d5616e58d7bf924f715b01b3a0a0907aa535064",
+          "bytes": 760
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69a4/ON/server.log",
+          "sha256": "958720e9ac6ad7a3e3d02f4fb7e4953add5d71cf2ec10cd29f9bc8fcc3330714",
+          "bytes": 1426
+        }
+      ],
+      "tool_calls": 0,
+      "compile_calls": 0,
+      "verify_calls": 0,
+      "primary_calls": 0,
+      "startup_cause": "KeyError: 'ZESU_COMPLETE_GOAL_DIR'",
+      "verified": false,
+      "controller_normal_owned_closure": null,
+      "stdin_owner": {
+        "pid": 3650761,
+        "start_ticks": 189856125
+      },
+      "stdin_owner_exited": true,
+      "runner_exited": true,
+      "compiler_receipt_exists": false
+    },
+    {
+      "name": "auto-800d69d8-ON",
+      "launch": {
+        "name": "auto-800d69d8-ON",
+        "label": "worker2-c-training4-auto-800d69d8-on974",
+        "requested_at": "2026-10-17T01:07:16.626028+00:00",
+        "command": [
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-controller435/paired_controller.py",
+          "auto",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PACKET.json",
+          "--arm",
+          "ON",
+          "--pc",
+          "800d69d8"
+        ],
+        "command_sha256": "9b38c9e50362784306ec4f12198b22283438e4c145017f48037dd1ec73357482",
+        "watcher_exit_status": 0,
+        "stdout": "watching 'worker2-c-training4-auto-800d69d8-on974' (runner pid 3650083); output: /home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d69d8-on974.log\nYou will be woken when it exits, with the exit status and the last lines of the log, whether it succeeds or fails. You can end your turn now.\n",
+        "stderr": "",
+        "issue10": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6227749891",
+        "runner_pid": 3650083,
+        "runner_start_ticks": 189855855
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69d8/ON/RESULT.json",
+        "sha256": "427029e5d3f18b655f69a7feffbae27b3b695f6bde80c09c8a3b9b1a7bcef658",
+        "bytes": 760
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69d8/ON/server.log",
+        "sha256": "f5edb6746ffe88f26f3cd64cf9c717ebbea0f92014464f8e71c929fcc5424383",
+        "bytes": 1426
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d69d8-on974.log",
+        "sha256": "f18c434ad598c291167e8466738d3022751ea10477c1ed505e85d734f90f4260",
+        "bytes": 3848
+      },
+      "retained_files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69d8/ON/Boundary.v",
+          "sha256": "4b6e8acef4ab6ca9ad6e2e0c8cd03cbfa426f315019f8fa61c647b30cd1bec6b",
+          "bytes": 2144
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69d8/ON/RESULT.json",
+          "sha256": "427029e5d3f18b655f69a7feffbae27b3b695f6bde80c09c8a3b9b1a7bcef658",
+          "bytes": 760
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69d8/ON/server.log",
+          "sha256": "f5edb6746ffe88f26f3cd64cf9c717ebbea0f92014464f8e71c929fcc5424383",
+          "bytes": 1426
+        }
+      ],
+      "tool_calls": 0,
+      "compile_calls": 0,
+      "verify_calls": 0,
+      "primary_calls": 0,
+      "startup_cause": "KeyError: 'ZESU_COMPLETE_GOAL_DIR'",
+      "verified": false,
+      "controller_normal_owned_closure": null,
+      "stdin_owner": {
+        "pid": 3650759,
+        "start_ticks": 189856124
+      },
+      "stdin_owner_exited": true,
+      "runner_exited": true,
+      "compiler_receipt_exists": false
+    },
+    {
+      "name": "auto-800d69e0-ON",
+      "launch": {
+        "name": "auto-800d69e0-ON",
+        "label": "worker2-c-training4-auto-800d69e0-on974",
+        "requested_at": "2026-10-17T01:07:16.669418+00:00",
+        "command": [
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-controller435/paired_controller.py",
+          "auto",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PACKET.json",
+          "--arm",
+          "ON",
+          "--pc",
+          "800d69e0"
+        ],
+        "command_sha256": "e6651ec77cfdf1c089f85d64bdb242efc3072c71dc533e9ddc97dfdab89cc913",
+        "watcher_exit_status": 0,
+        "stdout": "watching 'worker2-c-training4-auto-800d69e0-on974' (runner pid 3650092); output: /home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d69e0-on974.log\nYou will be woken when it exits, with the exit status and the last lines of the log, whether it succeeds or fails. You can end your turn now.\n",
+        "stderr": "",
+        "issue10": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6227749891",
+        "runner_pid": 3650092,
+        "runner_start_ticks": 189855859
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69e0/ON/RESULT.json",
+        "sha256": "aa4106168b7cf61afa91d6182c800b074b1d7bb4e9b61e397cb2e562a4581fa1",
+        "bytes": 760
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69e0/ON/server.log",
+        "sha256": "db121f468e807646cc743996ec738c7788e7d2c7cdab3fb4017fd7ed33d22a75",
+        "bytes": 1426
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d69e0-on974.log",
+        "sha256": "f18c434ad598c291167e8466738d3022751ea10477c1ed505e85d734f90f4260",
+        "bytes": 3848
+      },
+      "retained_files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69e0/ON/Boundary.v",
+          "sha256": "9fa400f08e3799087ab612ad0724f4b1b85f3732bc6d790b741de5b9c15df029",
+          "bytes": 2192
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69e0/ON/RESULT.json",
+          "sha256": "aa4106168b7cf61afa91d6182c800b074b1d7bb4e9b61e397cb2e562a4581fa1",
+          "bytes": 760
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d69e0/ON/server.log",
+          "sha256": "db121f468e807646cc743996ec738c7788e7d2c7cdab3fb4017fd7ed33d22a75",
+          "bytes": 1426
+        }
+      ],
+      "tool_calls": 0,
+      "compile_calls": 0,
+      "verify_calls": 0,
+      "primary_calls": 0,
+      "startup_cause": "KeyError: 'ZESU_COMPLETE_GOAL_DIR'",
+      "verified": false,
+      "controller_normal_owned_closure": null,
+      "stdin_owner": {
+        "pid": 3650765,
+        "start_ticks": 189856128
+      },
+      "stdin_owner_exited": true,
+      "runner_exited": true,
+      "compiler_receipt_exists": false
+    },
+    {
+      "name": "auto-800d6a00-ON",
+      "launch": {
+        "name": "auto-800d6a00-ON",
+        "label": "worker2-c-training4-auto-800d6a00-on974",
+        "requested_at": "2026-10-17T01:07:16.711204+00:00",
+        "command": [
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-controller435/paired_controller.py",
+          "auto",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PACKET.json",
+          "--arm",
+          "ON",
+          "--pc",
+          "800d6a00"
+        ],
+        "command_sha256": "ac879daf8d595be833d581db981f8c6c757b76982c54fd7abc7cc714dd402b82",
+        "watcher_exit_status": 0,
+        "stdout": "watching 'worker2-c-training4-auto-800d6a00-on974' (runner pid 3650101); output: /home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6a00-on974.log\nYou will be woken when it exits, with the exit status and the last lines of the log, whether it succeeds or fails. You can end your turn now.\n",
+        "stderr": "",
+        "issue10": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6227749891",
+        "runner_pid": 3650101,
+        "runner_start_ticks": 189855863
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a00/ON/RESULT.json",
+        "sha256": "e39cb0b3d8f9b4bfd37e6ed988d8d2fa16a47a7c2c6e29e8709f5bf6f4503d18",
+        "bytes": 760
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a00/ON/server.log",
+        "sha256": "f355dc1c9cc5738c7e3dc02c153e1807917edc7ec6c8fee153e598d044282624",
+        "bytes": 1426
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6a00-on974.log",
+        "sha256": "f18c434ad598c291167e8466738d3022751ea10477c1ed505e85d734f90f4260",
+        "bytes": 3848
+      },
+      "retained_files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a00/ON/Boundary.v",
+          "sha256": "edea5e691c440a607b033b8513dae47e7956a697b5d4e601735ed311ec0c1b05",
+          "bytes": 2144
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a00/ON/RESULT.json",
+          "sha256": "e39cb0b3d8f9b4bfd37e6ed988d8d2fa16a47a7c2c6e29e8709f5bf6f4503d18",
+          "bytes": 760
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a00/ON/server.log",
+          "sha256": "f355dc1c9cc5738c7e3dc02c153e1807917edc7ec6c8fee153e598d044282624",
+          "bytes": 1426
+        }
+      ],
+      "tool_calls": 0,
+      "compile_calls": 0,
+      "verify_calls": 0,
+      "primary_calls": 0,
+      "startup_cause": "KeyError: 'ZESU_COMPLETE_GOAL_DIR'",
+      "verified": false,
+      "controller_normal_owned_closure": null,
+      "stdin_owner": {
+        "pid": 3650810,
+        "start_ticks": 189856131
+      },
+      "stdin_owner_exited": true,
+      "runner_exited": true,
+      "compiler_receipt_exists": false
+    },
+    {
+      "name": "auto-800d6a14-ON",
+      "launch": {
+        "name": "auto-800d6a14-ON",
+        "label": "worker2-c-training4-auto-800d6a14-on974",
+        "requested_at": "2026-10-17T01:07:16.753190+00:00",
+        "command": [
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-controller435/paired_controller.py",
+          "auto",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PACKET.json",
+          "--arm",
+          "ON",
+          "--pc",
+          "800d6a14"
+        ],
+        "command_sha256": "8d6f826e3b0396047daa85261c818dbc76fd45e2981e9909fa70ddeaa78c34b6",
+        "watcher_exit_status": 0,
+        "stdout": "watching 'worker2-c-training4-auto-800d6a14-on974' (runner pid 3650117); output: /home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6a14-on974.log\nYou will be woken when it exits, with the exit status and the last lines of the log, whether it succeeds or fails. You can end your turn now.\n",
+        "stderr": "",
+        "issue10": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6227749891",
+        "runner_pid": 3650117,
+        "runner_start_ticks": 189855867
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a14/ON/RESULT.json",
+        "sha256": "5ddf72b6ab4272e762016fb84efc0675bd2d1f0c4eaaba9bc789684521e46ee1",
+        "bytes": 760
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a14/ON/server.log",
+        "sha256": "1a2a23de04b3253549ef014601fe43790963bd6d3b78a742142104df49f73956",
+        "bytes": 1426
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6a14-on974.log",
+        "sha256": "f18c434ad598c291167e8466738d3022751ea10477c1ed505e85d734f90f4260",
+        "bytes": 3848
+      },
+      "retained_files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a14/ON/Boundary.v",
+          "sha256": "f39ad14eef66c91bd5b310cd5a2977ecb408862d3ed6cb9138469c28b34092fa",
+          "bytes": 2202
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a14/ON/RESULT.json",
+          "sha256": "5ddf72b6ab4272e762016fb84efc0675bd2d1f0c4eaaba9bc789684521e46ee1",
+          "bytes": 760
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a14/ON/server.log",
+          "sha256": "1a2a23de04b3253549ef014601fe43790963bd6d3b78a742142104df49f73956",
+          "bytes": 1426
+        }
+      ],
+      "tool_calls": 0,
+      "compile_calls": 0,
+      "verify_calls": 0,
+      "primary_calls": 0,
+      "startup_cause": "KeyError: 'ZESU_COMPLETE_GOAL_DIR'",
+      "verified": false,
+      "controller_normal_owned_closure": null,
+      "stdin_owner": {
+        "pid": 3651084,
+        "start_ticks": 189856146
+      },
+      "stdin_owner_exited": true,
+      "runner_exited": true,
+      "compiler_receipt_exists": false
+    },
+    {
+      "name": "auto-800d6a64-ON",
+      "launch": {
+        "name": "auto-800d6a64-ON",
+        "label": "worker2-c-training4-auto-800d6a64-on974",
+        "requested_at": "2026-10-17T01:07:16.796346+00:00",
+        "command": [
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-controller435/paired_controller.py",
+          "auto",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PACKET.json",
+          "--arm",
+          "ON",
+          "--pc",
+          "800d6a64"
+        ],
+        "command_sha256": "70ed19b83266d5749899456a9e8029cb77cc65342caeb8a1c51982702c0a456e",
+        "watcher_exit_status": 0,
+        "stdout": "watching 'worker2-c-training4-auto-800d6a64-on974' (runner pid 3650126); output: /home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6a64-on974.log\nYou will be woken when it exits, with the exit status and the last lines of the log, whether it succeeds or fails. You can end your turn now.\n",
+        "stderr": "",
+        "issue10": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6227749891",
+        "runner_pid": 3650126,
+        "runner_start_ticks": 189855872
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a64/ON/RESULT.json",
+        "sha256": "f1c51a763ac541669f99f818a71c9c6e488a571d9f865643ae364ce6ac0abd2a",
+        "bytes": 760
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a64/ON/server.log",
+        "sha256": "260697002878fe2b4a05167418d615f0cd93d16e7a34094cd9fa6f727d79df26",
+        "bytes": 1426
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6a64-on974.log",
+        "sha256": "f18c434ad598c291167e8466738d3022751ea10477c1ed505e85d734f90f4260",
+        "bytes": 3848
+      },
+      "retained_files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a64/ON/Boundary.v",
+          "sha256": "a36596555f58ccbe6b6edb11ad6c645bb0f774e7a05549ae981093fb17d0019b",
+          "bytes": 2144
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a64/ON/RESULT.json",
+          "sha256": "f1c51a763ac541669f99f818a71c9c6e488a571d9f865643ae364ce6ac0abd2a",
+          "bytes": 760
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a64/ON/server.log",
+          "sha256": "260697002878fe2b4a05167418d615f0cd93d16e7a34094cd9fa6f727d79df26",
+          "bytes": 1426
+        }
+      ],
+      "tool_calls": 0,
+      "compile_calls": 0,
+      "verify_calls": 0,
+      "primary_calls": 0,
+      "startup_cause": "KeyError: 'ZESU_COMPLETE_GOAL_DIR'",
+      "verified": false,
+      "controller_normal_owned_closure": null,
+      "stdin_owner": {
+        "pid": 3650911,
+        "start_ticks": 189856137
+      },
+      "stdin_owner_exited": true,
+      "runner_exited": true,
+      "compiler_receipt_exists": false
+    },
+    {
+      "name": "auto-800d6a6c-ON",
+      "launch": {
+        "name": "auto-800d6a6c-ON",
+        "label": "worker2-c-training4-auto-800d6a6c-on974",
+        "requested_at": "2026-10-17T01:07:16.838969+00:00",
+        "command": [
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-controller435/paired_controller.py",
+          "auto",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PACKET.json",
+          "--arm",
+          "ON",
+          "--pc",
+          "800d6a6c"
+        ],
+        "command_sha256": "926bdcfc553dbfff0f34cd37ccd0033e5b9bb4e79288f55ad74c8a607e3c35df",
+        "watcher_exit_status": 0,
+        "stdout": "watching 'worker2-c-training4-auto-800d6a6c-on974' (runner pid 3650135); output: /home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6a6c-on974.log\nYou will be woken when it exits, with the exit status and the last lines of the log, whether it succeeds or fails. You can end your turn now.\n",
+        "stderr": "",
+        "issue10": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6227749891",
+        "runner_pid": 3650135,
+        "runner_start_ticks": 189855876
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a6c/ON/RESULT.json",
+        "sha256": "d379354575fe14ae7aedf2bb01154d161947322ed1fed4d876e46645a77768a5",
+        "bytes": 760
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a6c/ON/server.log",
+        "sha256": "7e475e2660ab2f96083bf4556dc725d09440d2a147a6463a3f8975b1ec875b24",
+        "bytes": 1426
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6a6c-on974.log",
+        "sha256": "f18c434ad598c291167e8466738d3022751ea10477c1ed505e85d734f90f4260",
+        "bytes": 3848
+      },
+      "retained_files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a6c/ON/Boundary.v",
+          "sha256": "db067ee1b0bd0ec01b63d1353eca557512e9cd1c52785e00e0a8d27c8f332fdf",
+          "bytes": 2159
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a6c/ON/RESULT.json",
+          "sha256": "d379354575fe14ae7aedf2bb01154d161947322ed1fed4d876e46645a77768a5",
+          "bytes": 760
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6a6c/ON/server.log",
+          "sha256": "7e475e2660ab2f96083bf4556dc725d09440d2a147a6463a3f8975b1ec875b24",
+          "bytes": 1426
+        }
+      ],
+      "tool_calls": 0,
+      "compile_calls": 0,
+      "verify_calls": 0,
+      "primary_calls": 0,
+      "startup_cause": "KeyError: 'ZESU_COMPLETE_GOAL_DIR'",
+      "verified": false,
+      "controller_normal_owned_closure": null,
+      "stdin_owner": {
+        "pid": 3651003,
+        "start_ticks": 189856142
+      },
+      "stdin_owner_exited": true,
+      "runner_exited": true,
+      "compiler_receipt_exists": false
+    },
+    {
+      "name": "auto-800d6ab4-ON",
+      "launch": {
+        "name": "auto-800d6ab4-ON",
+        "label": "worker2-c-training4-auto-800d6ab4-on974",
+        "requested_at": "2026-10-17T01:07:16.880281+00:00",
+        "command": [
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-controller435/paired_controller.py",
+          "auto",
+          "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-packet443/PACKET.json",
+          "--arm",
+          "ON",
+          "--pc",
+          "800d6ab4"
+        ],
+        "command_sha256": "727c6f707f53b5ea69c5a6f082ec3c8f91305c640e6a285a00b3b19e34cd3096",
+        "watcher_exit_status": 0,
+        "stdout": "watching 'worker2-c-training4-auto-800d6ab4-on974' (runner pid 3650144); output: /home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6ab4-on974.log\nYou will be woken when it exits, with the exit status and the last lines of the log, whether it succeeds or fails. You can end your turn now.\n",
+        "stderr": "",
+        "issue10": "https://github.com/codygunton/zesislar/issues/10#issuecomment-6227749891",
+        "runner_pid": 3650144,
+        "runner_start_ticks": 189855880
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6ab4/ON/RESULT.json",
+        "sha256": "ad64b10a0a67b9cdbad204e0d8dbd0dfe9ea8e55dc46e588902568aee5ac5199",
+        "bytes": 760
+      },
+      "server_log": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6ab4/ON/server.log",
+        "sha256": "75d40b73293c8b84bad753ff559d73af618bc71b1c1b2e7c3a71a8aa6e172c57",
+        "bytes": 1426
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-auto-800d6ab4-on974.log",
+        "sha256": "f18c434ad598c291167e8466738d3022751ea10477c1ed505e85d734f90f4260",
+        "bytes": 3848
+      },
+      "retained_files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6ab4/ON/Boundary.v",
+          "sha256": "ba7f4199d8b8d9b1cda081bfe0fd53a80b69d5ddf29c11e76271815f03330912",
+          "bytes": 2202
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6ab4/ON/RESULT.json",
+          "sha256": "ad64b10a0a67b9cdbad204e0d8dbd0dfe9ea8e55dc46e588902568aee5ac5199",
+          "bytes": 760
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto443/800d6ab4/ON/server.log",
+          "sha256": "75d40b73293c8b84bad753ff559d73af618bc71b1c1b2e7c3a71a8aa6e172c57",
+          "bytes": 1426
+        }
+      ],
+      "tool_calls": 0,
+      "compile_calls": 0,
+      "verify_calls": 0,
+      "primary_calls": 0,
+      "startup_cause": "KeyError: 'ZESU_COMPLETE_GOAL_DIR'",
+      "verified": false,
+      "controller_normal_owned_closure": null,
+      "stdin_owner": {
+        "pid": 3651154,
+        "start_ticks": 189856151
+      },
+      "stdin_owner_exited": true,
+      "runner_exited": true,
+      "compiler_receipt_exists": false
+    }
+  ],
+  "total_arms": 18,
+  "total_tool_calls": 0,
+  "total_compile_calls": 0,
+  "total_verify_calls": 0,
+  "total_primary_calls": 0,
+  "missing_variable_failures": 18,
+  "proof_sources_unchanged": true,
+  "automatic_retries": 0,
+  "free_scope": "The two original Free arms remain separate. This audit makes no Free execution claim.",
+  "closure_limit": "The controller did not record normal owned closure after initialization failure. Exact runner and retained stdin-owner absence are recorded separately."
+}
