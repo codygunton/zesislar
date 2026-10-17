@@ -90,14 +90,16 @@ def entry_source_hashes(design, root=ROOT):
                 raise ValueError("The declarations bind different versions of one source.")
             hashes[name] = expected
     for call in call_contracts(design):
-        fields = dict(entry_definition=call["contract_name"], resource_predicate=call["contract_name"],
-                      source_hashes=call["source_hashes"])
-        entry_schema.verify_sources(fields, root)
-        entry_schema.verify_declarations(fields, root)
-        for name, expected in fields["source_hashes"].items():
-            if name in hashes and hashes[name] != expected:
-                raise ValueError("The call contract binds another source version.")
-            hashes[name] = expected
+        for name_field, hashes_field in (("contract_name", "source_hashes"),
+                                        ("code_resource", "code_source_hashes")):
+            fields = dict(entry_definition=call[name_field], resource_predicate=call[name_field],
+                          source_hashes=call[hashes_field])
+            entry_schema.verify_sources(fields, root)
+            entry_schema.verify_declarations(fields, root)
+            for name, expected in fields["source_hashes"].items():
+                if name in hashes and hashes[name] != expected:
+                    raise ValueError("The call contract binds another source version.")
+                hashes[name] = expected
     convention = design.get("table_convention", {})
     if "code_source_hashes" in convention:
         fields = {"source_hashes": convention["code_source_hashes"]}
@@ -179,7 +181,8 @@ def control(row, calls=None):
 
 
 CALL_FIELDS = frozenset({"call_site_pc", "callee_pc", "return_site_pc", "contract_name",
-                         "contract_arguments", "argument_type", "outcome_type", "source_hashes"})
+                         "contract_arguments", "argument_type", "outcome_type", "source_hashes",
+                         "code_resource", "code_source_hashes"})
 
 
 def resolved_calls(function):
@@ -237,6 +240,12 @@ def call_contracts(design):
         entry_schema.contract_fields(dict(entry_definition=call["contract_name"],
             resource_predicate=call["contract_name"], binders=[], arguments=[],
             source_hashes=call["source_hashes"]))
+        entry_schema.contract_fields(dict(entry_definition=call["code_resource"],
+            resource_predicate=call["code_resource"], binders=[], arguments=[],
+            source_hashes=call["code_source_hashes"]))
+        module = call["code_resource"].rsplit(".", 1)[0]
+        if module.replace(".", "/") + ".v" not in call["code_source_hashes"]:
+            raise ValueError("The callee code declaration has no bound source.")
     return calls
 
 
@@ -435,6 +444,7 @@ def render_table(design, report, *, name_prefix="decodeItem"):
         imports.add("ZesuSsz.Contracts.Level1")
         for call in calls:
             imports.update(entry_schema.source_module(path) for path in call["source_hashes"] if path.endswith(".v"))
+            imports.update(entry_schema.source_module(path) for path in call["code_source_hashes"] if path.endswith(".v"))
     lines = ["Require Import ZesuSsz.Automation.All.",
              "Require Import isla.riscv64.riscv64.",
              "From Coq Require Import List ZArith.",
@@ -454,6 +464,7 @@ def render_table(design, report, *, name_prefix="decodeItem"):
     call_premises = []
     for call in calls:
         name = f"{names.prefix}CallState{address(call['call_site_pc']):x}"
+        installation = f"{names.prefix}CallInstallation{address(call['call_site_pc']):x}"
         args_type, out_type = call["argument_type"], call["outcome_type"]
         model = call["contract_name"] + "".join(f" ({arg})" for arg in call["contract_arguments"])
         lines += [f"(* External contract: {call['contract_name']}. Installation proof: pending. *)",
@@ -464,7 +475,11 @@ def render_table(design, report, *, name_prefix="decodeItem"):
                   f"    islarisEntry ({args_type}) ({out_type}) resources args ∗",
                   f"    instr_pre {call['return_site_pc']} (∃ outcome : {out_type},",
                   f"      ⌜islarisContractAllows ({args_type}) ({out_type}) model args outcome⌝ ∗",
-                  f"      islarisExit ({args_type}) ({out_type}) resources args outcome))%I.", ""]
+                  f"      islarisExit ({args_type}) ({out_type}) resources args outcome))%I.", "",
+                  "(* Discharge this obligation outside the block proofs. *)",
+                  f"Definition {installation} : iProp Sigma :=",
+                  f"  ({convention['code_resource']} ∗ {call['code_resource']} -∗",
+                  f"   □ instr_pre {call['callee_pc']} {name})%I.", ""]
         call_premises.append(f"□ instr_pre {call['callee_pc']} {name}")
     code = convention["code_resource"]
     if call_premises:

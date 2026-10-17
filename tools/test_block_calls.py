@@ -35,7 +35,9 @@ class CallTableTests(unittest.TestCase):
             call_site_pc='0x1004', callee_pc='0x2200', return_site_pc='0x1008',
             contract_name='Contracts.Callee.model', contract_arguments=['0x1008'],
             argument_type='CalleeArgs', outcome_type='CalleeOutcome',
-            source_hashes={'Contracts/Callee.v': '0' * 64})])
+            source_hashes={'Contracts/Callee.v': '0' * 64},
+            code_resource='Contracts.Callee.code',
+            code_source_hashes={'Contracts/Callee.v': '0' * 64})])
         return cfg, design
 
     def test_call_has_external_callee_and_local_return(self):
@@ -98,14 +100,75 @@ class CallTableTests(unittest.TestCase):
         self.assertIn('instr_pre 0x1008 (∃ outcome : CalleeOutcome,', output)
         self.assertIn('islarisContractAllows (CalleeArgs) (CalleeOutcome) model args outcome', output)
         self.assertIn('□ instr_pre 0x2200 callerCallState1004', output)
+        self.assertIn('Definition callerCallInstallation1004 : iProp Sigma :=\n'
+                      '  (Contracts.Code.fixtureCode ∗ Contracts.Callee.code -∗\n'
+                      '   □ instr_pre 0x2200 callerCallState1004)%I.', output)
+        self.assertIn('block_table_code := (Contracts.Code.fixtureCode ∗ '
+                      '□ instr_pre 0x2200 callerCallState1004)%I;', output)
+        self.assertIn('Definition callerBlockTable_complete :=\n'
+                      '  block_table_complete callerBlockTable.', output)
+        table = output.split('Definition callerBlockTable :', 1)[1]
+        self.assertNotIn('Contracts.Callee.code', table)
+        states = output.split('Definition callerCallState1004 :', 1)[0]
+        self.assertNotIn('Contracts.Callee.code', states)
         self.assertNotIn('(0x2200, callerState', output)
         self.assertIn('Installation proof: pending.', output)
+
+    def test_callee_code_binding_is_required_and_exact(self):
+        for mutation in ('missing-resource', 'missing-hashes', 'name', 'empty',
+                         'path', 'hash', 'module'):
+            cfg, design = self.fixture()
+            call = design['calls'][0]
+            if mutation == 'missing-resource': del call['code_resource']
+            elif mutation == 'missing-hashes': del call['code_source_hashes']
+            elif mutation == 'name': call['code_resource'] = 'guessed'
+            elif mutation == 'empty': call['code_source_hashes'] = {}
+            elif mutation == 'path': call['code_source_hashes'] = {'../Callee.v': '0' * 64}
+            elif mutation == 'hash': call['code_source_hashes'] = {'Contracts/Callee.v': 'short'}
+            else: call['code_source_hashes'] = {'Contracts/Other.v': '0' * 64}
+            with self.subTest(mutation=mutation), self.assertRaises(ValueError):
+                generate_table.structure(cfg, design)
 
     def test_actual_next_uint64_pair(self):
         root = Path(__file__).resolve().parents[1]
         cfg = json.loads((root / 'build/stock-zisk/cfg.json').read_text())
         f = next(f for f in cfg['functions'] if f['name'] == 'rlp_decode.nextUint64')
         self.assertEqual(generate_table.resolved_calls(f), {0x800d62b4: 0x800d6960})
+
+    def test_decode_item_render_preserves_published_bytes(self):
+        root = Path(__file__).resolve().parents[1]
+        published = root / 'ZesuSsz/Generated/DecodeItem/BlockTable.v'
+        before = published.read_bytes()
+        report = json.loads((published.parent / 'block_table_metadata.json').read_text())
+        design = json.loads((root / 'ZesuSsz/Evidence/decode_item_block_design.json').read_text())
+        # The published comment retains its historical producer identity.
+        comment = generate_table.PRODUCER_SHA_LINE.search(before.decode()).group()
+        report['source_hashes']['tools/block/generate_table.py'] = comment.split('SHA-256: ')[1].split('.')[0]
+        self.assertEqual(generate_table.render_table(design, report).encode(), before)
+
+    def test_callee_code_source_is_checked_independently(self):
+        _, design = self.fixture()
+        design['blocks'] = []
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'Contracts').mkdir()
+            model = root / 'Contracts/Callee.v'
+            model.write_text('Definition model := True.\n')
+            code = root / 'Contracts/Code.v'
+            code.write_text('Definition code := True.\n')
+            call = design['calls'][0]
+            call.update(source_hashes={'Contracts/Callee.v': generate_table.digest(model)},
+                        code_resource='Contracts.Code.code',
+                        code_source_hashes={'Contracts/Code.v': generate_table.digest(code)})
+            expected = dict(call['source_hashes'], **call['code_source_hashes'])
+            self.assertEqual(generate_table.entry_source_hashes(design, root), expected)
+            code.write_text('Definition code := False.\n')
+            with self.assertRaisesRegex(ValueError, 'hash'):
+                generate_table.entry_source_hashes(design, root)
+            code.write_text('Definition other := True.\n')
+            call['code_source_hashes']['Contracts/Code.v'] = generate_table.digest(code)
+            with self.assertRaisesRegex(ValueError, 'lacks Definition'):
+                generate_table.entry_source_hashes(design, root)
 
     def test_design_generator_preserves_call_kind(self):
         cfg, design = self.fixture()
@@ -117,7 +180,7 @@ class CallTableTests(unittest.TestCase):
             cfg['elf_sha256'] = generate_table.digest(elf)
             source = root / 'Contracts/Callee.v'
             source.parent.mkdir()
-            source.write_text('Definition model := True.\n')
+            source.write_text('Definition model := True.\nDefinition code := True.\n')
             design['table_convention'] = deepcopy(test_block_table.BlockTableTests().executable_fixture()[0]['table_convention'])
             design['table_convention']['code_resource'] = 'Contracts.Callee.model'
             design['table_convention']['code_source_hashes'] = ['Contracts/Callee.v']
@@ -128,6 +191,7 @@ class CallTableTests(unittest.TestCase):
             result = generator.build(cfg, 'fixture', profile, root=root)
             self.assertEqual(result['blocks'][1]['incoming_edges'][0]['kind'], 'call')
             self.assertEqual(result['calls'][0]['source_hashes']['Contracts/Callee.v'], generate_table.digest(source))
+            self.assertEqual(result['calls'][0]['code_source_hashes']['Contracts/Callee.v'], generate_table.digest(source))
 
 
 if __name__ == '__main__':
