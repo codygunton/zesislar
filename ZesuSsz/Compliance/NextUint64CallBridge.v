@@ -4,6 +4,7 @@ Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Contracts.DecodeItemCompositional.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.NextUint64Selected.
+Require Import ZesuSsz.Contracts.DecodeItemSelected.
 Require Import ZesuSsz.Compliance.DecodeItemCompositionalCompliance.
 Open Scope Z_scope.
 
@@ -19,7 +20,7 @@ Definition NextUint64CallState800d62b4 `{!islaG Sigma} `{!threadG} : iProp Sigma
       islarisExit DecodeItemCompositionalArgs DecodeItemOutcome resources args outcome))%I.
 
 Lemma nextUint64CalleeInstallation `{!islaG Sigma} `{!threadG} :
-  nextUint64SelectedCode -∗
+  nextUint64SelectedCode ∗ decodeItemSelectedCode -∗
   □ instr_pre 0x800d6960 NextUint64CallState800d62b4.
 Proof.
   rewrite /nextUint64SelectedCode

@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "function": "rlp_decode.nextUint64",
-  "status": "F55 selected-code lookup representation. Existing callee installation bridge rechecked. No native nextUint64 proof or run claim.",
-  "snapshot_base_root": "1c0be2b094abf6137c70e7fa5071f45ac0075fd7",
+  "status": "Own-map selected code with a separate table-level callee-code installation obligation. No native nextUint64 execution claim.",
+  "snapshot_base_root": "f3cf9f9b6ff08ffb29565a10f63556b43287606f",
   "umbrella": "ZesuSsz.Compliance.NextUint64Hints",
   "counting_rules": {
     "unit": "Physical lines including comments and blank lines. A final line without newline counts once.",
@@ -105,15 +105,15 @@
       "path": "ZesuSsz/Contracts/NextUint64Selected.v",
       "category": "contracts",
       "scope": "whole_file",
-      "sha256": "f4de10980f69c45b1122744cae6fb7665a119ef79c3bc27a81f7f826c5d8ee10",
-      "file_lines": 91,
+      "sha256": "895a07a3a322537d848aa1e190515e5163e3a4e50edd2f7d241358b2f7766640",
+      "file_lines": 90,
       "line_ranges": [
         [
           1,
-          91
+          90
         ]
       ],
-      "counted_lines": 91
+      "counted_lines": 90
     },
     {
       "path": "ZesuSsz/Contracts/NextUint64Contract.v",
@@ -287,14 +287,14 @@
       "scope": "whole_file",
       "sha256": null,
       "hash_rule": "No circular self-hash. The outer certificate binds final bytes.",
-      "file_lines": 484,
+      "file_lines": 482,
       "line_ranges": [
         [
           1,
-          484
+          482
         ]
       ],
-      "counted_lines": 484
+      "counted_lines": 482
     },
     {
       "path": "ZesuSsz/Compliance/NextUint64ExitMeanings.v",
@@ -390,43 +390,43 @@
       "path": "ZesuSsz/Evidence/next_uint64_block_profile.json",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "4aa9c0acc54de12121bb0b0d67dccc43be1456840503b8926dd6c638282e71a8",
-      "file_lines": 1913,
+      "sha256": "a445557603109b48f8ce7d088486077b4efe2ffe5086b2dcdc1cb3191cd7d977",
+      "file_lines": 1917,
       "line_ranges": [
         [
           1,
-          1913
+          1917
         ]
       ],
-      "counted_lines": 1913
+      "counted_lines": 1917
     },
     {
       "path": "ZesuSsz/Evidence/next_uint64_block_design.json",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "a39099105be9214b0b915ffeabd7b5edd7bd80f118e0e6ef7464ac9f5620b704",
-      "file_lines": 2207,
+      "sha256": "c4298c662f4ddc5ec805a7d809e85ca4c33413663b34cfd9ead938acd9fe3007",
+      "file_lines": 2211,
       "line_ranges": [
         [
           1,
-          2207
+          2211
         ]
       ],
-      "counted_lines": 2207
+      "counted_lines": 2211
     },
     {
       "path": "ZesuSsz/Compliance/NextUint64CallBridge.v",
       "category": "composition",
       "scope": "whole_file",
-      "sha256": "29b8d451207a988d679ec788bebc86c75c69d8d1866236fe76a0f297cd209b6e",
-      "file_lines": 43,
+      "sha256": "5e5dc02ef3510519a951a9ead6df362b3f36a9241bbfcb71c07c578afa8fc47b",
+      "file_lines": 44,
       "line_ranges": [
         [
           1,
-          43
+          44
         ]
       ],
-      "counted_lines": 43
+      "counted_lines": 44
     },
     {
       "path": "ZesuSsz/Compliance/NextUint64BridgeRegistrations.v",
@@ -459,19 +459,17 @@
     }
   ],
   "category_totals": {
-    "contracts": 644,
+    "contracts": 643,
     "loop_steps": 229,
     "registrations": 111,
-    "tests_and_exports": 1166,
+    "tests_and_exports": 1164,
     "exit_meanings": 79,
-    "generator_json": 4120,
-    "composition": 43,
-    "introductions": 0,
-    "block_proofs": 0
+    "generator_json": 4128,
+    "composition": 44
   },
-  "interface_total": 5183,
-  "overall_total": 6392,
-  "conservative_full_file_lines": 6962,
+  "interface_total": 5190,
+  "overall_total": 6398,
+  "conservative_full_file_lines": 6968,
   "historical_interface_total": 867,
   "selected_marker_repair": {
     "root": "ccd89437978d14ed07a8dcb49e4bd27dc89f74f6",

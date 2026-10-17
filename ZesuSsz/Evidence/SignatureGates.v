@@ -177,9 +177,8 @@ Check (eq_refl : parentHeaderMemcpySource = 0x80114fb8%Z).
 
 Definition ReviewedNextUint64SelectedCode `{!islaG Sigma} `{!threadG} :
     iProp Sigma :=
-  (instr_lookup_resources
-     (selectedCodeLookup ZesuSsz.Stock.Closure.index_nextUint64.instr_map) ∗
-   decodeItemSelectedCode)%I.
+  instr_lookup_resources
+    (selectedCodeLookup ZesuSsz.Stock.Closure.index_nextUint64.instr_map).
 
 Definition ReviewedParentHeaderSelectedCode `{!islaG Sigma} `{!threadG} :
     iProp Sigma :=

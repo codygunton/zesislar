@@ -10,7 +10,7 @@
     "code_persistence": "block_table_pre boxes the supplied code resource",
     "code_resource": "ZesuSsz.Contracts.NextUint64Selected.nextUint64SelectedCode",
     "code_source_hashes": {
-      "ZesuSsz/Contracts/NextUint64Selected.v": "f4de10980f69c45b1122744cae6fb7665a119ef79c3bc27a81f7f826c5d8ee10"
+      "ZesuSsz/Contracts/NextUint64Selected.v": "895a07a3a322537d848aa1e190515e5163e3a4e50edd2f7d241358b2f7766640"
     },
     "successor_root_parameters": [
       "params"
@@ -2187,6 +2187,10 @@
       "source_hashes": {
         "ZesuSsz/Contracts/DecodeItemCompositional.v": "50d8c05339ffe8a09838bc03d61bf9edb424494b75451d249a531e79da93a426",
         "ZesuSsz/Contracts/RlpDecodeItemContract.v": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a"
+      },
+      "code_resource": "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedCode",
+      "code_source_hashes": {
+        "ZesuSsz/Contracts/DecodeItemSelected.v": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804"
       }
     }
   ],
@@ -2202,6 +2206,6 @@
     "selected_elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
     "entry_source_sha256": "ab2a5fbd607d768abf278e6071263fc458c28a97571e713e5a7c64994e58c72b",
     "contract_sha256": "5bbb9c35376d8fd933deb5c295a8d10703c71de6da2f408835c94f2a2f15121f",
-    "generator_sha256": "4fcbfd1477def8d08ec9d60b0cf38a332890ec72e2eb166ef06d065444b98a08"
+    "generator_sha256": "bbe2f5ded8b19e545920add38aa8f15210b636fac7543dba189765a95daef9ff"
   }
 }
