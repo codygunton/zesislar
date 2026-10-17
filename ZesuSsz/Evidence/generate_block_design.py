@@ -205,6 +205,7 @@ def build(inventory, name, profile, *, root=ROOT, generator=None):
     result["hashes"]["generator_sha256"] = digest(generator or Path(__file__))
     for call in result.get("calls", []):
         call["source_hashes"] = source_hashes(call["source_hashes"], root)
+        call["code_source_hashes"] = source_hashes(call["code_source_hashes"], root)
     convention = result["table_convention"]
     convention["code_source_hashes"] = source_hashes(convention["code_source_hashes"], root)
     structure(inventory, result)
