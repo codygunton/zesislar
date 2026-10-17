@@ -1,0 +1,35 @@
+{
+  "item": "free-own-umbrella",
+  "source_base": "ccd89437978d14ed07a8dcb49e4bd27dc89f74f6",
+  "publication_base": "c5cef247bdfc9d8a3614799d769bd0fe4bc9a2cd",
+  "change": "FreeHints exports Contracts.FreeSelected. Existing marker unchanged.",
+  "interface_before": 11306,
+  "interface_after": 11307,
+  "interface_delta": 1,
+  "MCP_certificate": "/home/cody/zesislar/.worktrees/spec-b-av-matrix-free-d05f36e5/_build/free-umbrella-seal006/REPORT.json",
+  "MCP_certificate_sha256": "0a85af6470b4e0d247930506dbc9a239871d1079cc812db82c1635c2a70d979e",
+  "interactive_controls": 1,
+  "groups": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "actual_Qed": true,
+  "compiled_assumptions": [],
+  "limitations": [
+    "Own-umbrella import control; no native execution or native repair claim.",
+    "Root owns full Iris integration."
+  ],
+  "preserved_failures": [
+    "003: private object existed outside default loadpath.",
+    "004: copied stage paths changed without matching input hashes."
+  ],
+  "check_fast": {
+    "exit": 0,
+    "elapsed_seconds": 120.34973261505365,
+    "root": "c5cef247bdfc9d8a3614799d769bd0fe4bc9a2cd",
+    "receipt": "/home/cody/zesislar/.worktrees/spec-b-av-matrix-free-d05f36e5/_build/free-umbrella-fast007/RESULT.json",
+    "sha256": "10136aed87ff31f3803cd0fc5997d196ed3b975183502ef2a844be04b5c5d2cd"
+  }
+}

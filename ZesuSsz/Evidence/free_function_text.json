@@ -70,7 +70,8 @@
     "build/stock-zisk/automation-validation/free-exit-instances/CHECKPOINT.json",
     "build/stock-zisk/automation-validation/free-leaf-introductions/CHECKPOINT.json",
     "ZesuSsz/Evidence/FreeValueBoundsFixtures.v",
-    "build/stock-zisk/automation-validation/free-ite-facts/CHECKPOINT.json"
+    "build/stock-zisk/automation-validation/free-ite-facts/CHECKPOINT.json",
+    "build/stock-zisk/automation-validation/free-own-umbrella/CHECKPOINT.json"
   ],
   "lemmas": [
     "ZesuSsz/Compliance/FreeClassFacts.v",
@@ -268,15 +269,15 @@
       "path": "ZesuSsz/Compliance/FreeHints.v",
       "category": "registrations",
       "scope": "whole_file",
-      "sha256": "14283bb300581eee558fd1ba2bd9b66432fdfd50df88618b201bc91693e2cc9b",
-      "file_lines": 4,
+      "sha256": "e96df16d367e205a495b68c1c58632933e900307f2411cbf8947b65e10b3349c",
+      "file_lines": 5,
       "line_ranges": [
         [
           1,
-          4
+          5
         ]
       ],
-      "counted_lines": 4
+      "counted_lines": 5
     },
     {
       "path": "ZesuSsz/Compliance/FreeUnfoldRegistrations.v",
@@ -754,14 +755,14 @@
       "scope": "whole_file",
       "sha256": null,
       "hash_rule": "No circular self-hash. The outer certificate binds final bytes.",
-      "file_lines": 1044,
+      "file_lines": 1063,
       "line_ranges": [
         [
           1,
-          1044
+          1063
         ]
       ],
-      "counted_lines": 1044
+      "counted_lines": 1063
     },
     {
       "path": "ZesuSsz/Compliance/FreeReturnFacts.v",
@@ -948,26 +949,38 @@
         ]
       ],
       "counted_lines": 49
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/free-own-umbrella/CHECKPOINT.json",
+      "category": "tests_and_exports",
+      "role": "measurement_metadata",
+      "scope": "whole_file",
+      "sha256": "0c31af1c9e506054db3fb6eadc4a5f57e9ec3e1f390c44665a2f9cbf8d54df17",
+      "file_lines": 35,
+      "line_ranges": [
+        [
+          1,
+          35
+        ]
+      ],
+      "counted_lines": 35
     }
   ],
   "category_totals": {
     "contracts": 571,
     "generator_json": 9503,
     "introductions": 781,
-    "registrations": 342,
+    "registrations": 343,
     "exit_meanings": 109,
-    "tests_and_exports": 1699,
-    "loop_steps": 0,
-    "block_proofs": 0,
-    "composition": 0
+    "tests_and_exports": 1753
   },
-  "interface_total": 11306,
+  "interface_total": 11307,
   "conservative_source_file_lines": 15401,
   "block_records": [],
   "native_runs": 1,
   "holdout_spent": true,
   "freeze_requirement": "The frozen boundary is e8131be2. Result724 spent the hold-out. Later native runs are training.",
-  "overall_total": 13005,
+  "overall_total": 13060,
   "checked_class_dependency": "b7359b55f3609d22e28d1021570543f274d446b7",
   "previous_guarded_counts": {
     "commit": "1ab41c3d6a5719849d2c6a68ac9fc658e245d6bc",
@@ -1039,6 +1052,12 @@
     "implementation_base": "06da845196f69b215f2283e4c5d0b0a41d3d9049",
     "immediate_conditions": "Exact signed128 literal form authorized by Orch. Threshold9 has measured pre-rollback spelling.",
     "LUI_conditions": "Five proposed unsigned64 literal forms; training assumption only.",
+    "native_run": false
+  },
+  "own_umbrella_export": {
+    "previous_interface": 11306,
+    "interface_delta": 1,
+    "marker_added": false,
     "native_run": false
   }
 }
