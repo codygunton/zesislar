@@ -1,0 +1,44 @@
+{
+  "item": "umbrella-closure-audit",
+  "scope": "Read-only static source/import audit. No typeclass query, proof, compilation or native run.",
+  "audited_root": "ccd89437978d14ed07a8dcb49e4bd27dc89f74f6",
+  "tested_root": "ccd89437978d14ed07a8dcb49e4bd27dc89f74f6",
+  "report_path": "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/umbrella-closure-audit-final007/REPORT.json",
+  "report_sha256": "01180eb0454edce8da9e3bba7c9f5c500f2d3c01c6a3e677b1ec5ede3e8ea778",
+  "bindings": 457,
+  "predicate_rows": 182,
+  "actual_local_aliases": 105,
+  "actual_source_counts": {
+    "DecodeItem": 43,
+    "Free": 43,
+    "NextUint64": 21
+  },
+  "source_scope": {
+    "DecodeItem": "25 production/table sources plus 18 retained actual training3 OFF/ON scratches for nine Auto blocks. Historical Root 3aebfa260c6a38ef1abc9eae5ea4b342410de422. All 18 local aliases have markers. Current-root source closure does not establish historical runtime selection.",
+    "Free": "Forty-three actual OFF training3 boundary sources from the committed DETAILS ledger.",
+    "NextUint64": "Nine948 full+interactive sources, caller915 and instrumented callsite663. Run948 is a registration-launch defect, not a corrected launch."
+  },
+  "caller_helper": "Exact version900 source/object/load paths verified. The helper is a lemma, not a new predicate.",
+  "runtime_selection_claim": false,
+  "native_cause_claim": false,
+  "gate": {
+    "command": [
+      "make",
+      "check-fast",
+      "CHECK_AGENT=spec-a",
+      "FAST_JOBS=6",
+      "AGENT_JOBS=6",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/agents/spec-a-nextuint64-profile-gate"
+    ],
+    "start_UTC": "2026-10-17T00:29:54.421823+00:00",
+    "exit_code": 0,
+    "wall_seconds": 118.88243557419628,
+    "user_seconds": 63.461162,
+    "system_seconds": 28.001782,
+    "peak_RSS_KiB": 181584,
+    "unchanged_sources": true
+  },
+  "proof_runs": 0,
+  "native_runs": 0,
+  "protected_source_edits": false
+}
