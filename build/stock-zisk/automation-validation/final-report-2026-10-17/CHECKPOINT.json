@@ -1,0 +1,44 @@
+{
+  "item": "final-report-2026-10-17",
+  "root": "203bf7e8d9c82770d3ccfb2c66e0c0d48e2002e6",
+  "report": "docs/ai/AUTOMATION_VALIDATION_REPORT_2026-10-17.md",
+  "report_sha256": "39dee1dec0c73218a07368d8099251254a5d0c40e5c71790706cb3cd1674a194",
+  "issue13_comment": "https://github.com/codygunton/zesislar/issues/13#issuecomment-6234552318",
+  "issue13_comment_id": 6234552318,
+  "post_receipt": "/home/cody/zesislar/.worktrees/spec-b-av-matrix-free-d05f36e5/_build/final-report-publication001/POST-RECEIPT.json",
+  "post_receipt_sha256": "affac8e8c084f02a8cfe4b1b86ac3727c28caaf56fc1ef03063f69ea3ebb389b",
+  "full_certificate": "/home/cody/zesislar/.worktrees/spec-b-av-matrix-free-d05f36e5/_build/final-report-publication001/REPORT.json",
+  "source_bindings": 23,
+  "accepted_free_training": 12,
+  "free_holdout": "FINAL 0/43",
+  "diagnostic_unmerged_training": 16,
+  "training5": "not run; cancelled",
+  "nextUint64": "pending the bounded six-block continuation",
+  "alloc": "not run; reserved unread",
+  "interface_lines": {
+    "decodeItem": [
+      13876,
+      16888
+    ],
+    "free": [
+      983,
+      11307
+    ],
+    "nextUint64": 5190
+  },
+  "gate": {
+    "exit": 0,
+    "seconds": 1079.5781448690686,
+    "root": "203bf7e8d9c82770d3ccfb2c66e0c0d48e2002e6",
+    "receipt": "/home/cody/zesislar/.worktrees/spec-b-av-matrix-free-d05f36e5/_build/final-report-publication-fast003/RESULT.json",
+    "sha256": "f242a6b3497029b82308998e0802a769316ec054e5b68a1ccfca388e35dc68e2"
+  },
+  "previous_failure": "fast002 stale root binding; no gate executed",
+  "limits": [
+    "Metadata only. No proof/native run.",
+    "No completed instruction count or hang location inferred.",
+    "One amendment comment follows the completed A2 table.",
+    "Orch owns review, integration, and completion tag."
+  ],
+  "PartB": "Not assigned to this worker."
+}
