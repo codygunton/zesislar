@@ -1,0 +1,30 @@
+{
+  "item": "nextUint64-own-map",
+  "base": "f3cf9f9b6ff08ffb29565a10f63556b43287606f",
+  "source_commit": "321a95003ac8af4e44143c238524ec4f12ddd6c4",
+  "report": "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/own-map-final018/REPORT.json",
+  "report_sha256": "b7fdd1fc0d29591e23abbce4f3b0a2b539b3f795c8a4ae43f169e9416f81cbe0",
+  "interface_lines": 5190,
+  "composition_lines": 44,
+  "check_fast": {
+    "command": [
+      "make",
+      "check-fast",
+      "CHECK_AGENT=spec-a",
+      "FAST_JOBS=6",
+      "AGENT_JOBS=6",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/agents/spec-a-nextuint64-profile-gate"
+    ],
+    "start_UTC": "2026-10-17T04:52:57.951195+00:00",
+    "exit_code": 0,
+    "wall_seconds": 194.03886355808936,
+    "user_seconds": 266.217023,
+    "system_seconds": 44.292195,
+    "peak_RSS_KiB": 1216520,
+    "unchanged_sources": true
+  },
+  "MCP": "Bridge and generated obligation checked. Compiled assumptions closed.",
+  "consumers": "Ten entries, ten canonical boundaries, ten flat statement controls. Native bodies omitted.",
+  "publication_scope": "Bridge proof development occurred earlier. Publication ran no new proof or native execution.",
+  "root_gates": "Both integration gates required."
+}
