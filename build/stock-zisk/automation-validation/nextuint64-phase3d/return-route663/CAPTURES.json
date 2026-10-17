@@ -1,0 +1,135 @@
+[
+  {
+    "file": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-bundle663/raw-capture/evidence/capture-000001.json",
+      "sha256": "c4388910077e69581a14a03c8bfb2d9f5cf04a4e09c381b87633fea2fdaf8a09",
+      "bytes": 323
+    },
+    "retained": {
+      "accepted": true,
+      "message": null,
+      "feedback": [],
+      "option_feedback": [],
+      "feedback_availability": "counters-only",
+      "feedback_counts": {
+        "3": 1
+      },
+      "after": {
+        "availability": "metadata-only",
+        "proof_finished": false
+      },
+      "retained_state_hash_unchanged": true,
+      "retained_state_check": {
+        "method": "Pet.state_hash",
+        "before": 739006006,
+        "after": 739006006
+      }
+    }
+  },
+  {
+    "file": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-bundle663/raw-capture/evidence/capture-000002.json",
+      "sha256": "25aa20ee8d4215065e178083024ab4fd5ba784f75a3cf4b6570a081e1e6d9695",
+      "bytes": 323
+    },
+    "retained": {
+      "accepted": true,
+      "message": null,
+      "feedback": [],
+      "option_feedback": [],
+      "feedback_availability": "counters-only",
+      "feedback_counts": {
+        "4": 1
+      },
+      "after": {
+        "availability": "metadata-only",
+        "proof_finished": false
+      },
+      "retained_state_hash_unchanged": true,
+      "retained_state_check": {
+        "method": "Pet.state_hash",
+        "before": 739006006,
+        "after": 739006006
+      }
+    }
+  },
+  {
+    "file": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-bundle663/raw-capture/evidence/capture-000003.json",
+      "sha256": "25aa20ee8d4215065e178083024ab4fd5ba784f75a3cf4b6570a081e1e6d9695",
+      "bytes": 323
+    },
+    "retained": {
+      "accepted": true,
+      "message": null,
+      "feedback": [],
+      "option_feedback": [],
+      "feedback_availability": "counters-only",
+      "feedback_counts": {
+        "4": 1
+      },
+      "after": {
+        "availability": "metadata-only",
+        "proof_finished": false
+      },
+      "retained_state_hash_unchanged": true,
+      "retained_state_check": {
+        "method": "Pet.state_hash",
+        "before": 739006006,
+        "after": 739006006
+      }
+    }
+  },
+  {
+    "file": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-bundle663/raw-capture/evidence/capture-000004.json",
+      "sha256": "c4388910077e69581a14a03c8bfb2d9f5cf04a4e09c381b87633fea2fdaf8a09",
+      "bytes": 323
+    },
+    "retained": {
+      "accepted": true,
+      "message": null,
+      "feedback": [],
+      "option_feedback": [],
+      "feedback_availability": "counters-only",
+      "feedback_counts": {
+        "3": 1
+      },
+      "after": {
+        "availability": "metadata-only",
+        "proof_finished": false
+      },
+      "retained_state_hash_unchanged": true,
+      "retained_state_check": {
+        "method": "Pet.state_hash",
+        "before": 739006006,
+        "after": 739006006
+      }
+    }
+  },
+  {
+    "file": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-bundle663/raw-capture/evidence/capture-000005.json",
+      "sha256": "252e895564009f61eb7dc90bcd756832a2ff175d17071c68a7f402d9a8e1add7",
+      "bytes": 318
+    },
+    "retained": {
+      "accepted": true,
+      "message": null,
+      "feedback": [],
+      "option_feedback": [],
+      "feedback_availability": "counters-only",
+      "feedback_counts": {},
+      "after": {
+        "availability": "metadata-only",
+        "proof_finished": false
+      },
+      "retained_state_hash_unchanged": true,
+      "retained_state_check": {
+        "method": "Pet.state_hash",
+        "before": 739006006,
+        "after": 739006006
+      }
+    }
+  }
+]

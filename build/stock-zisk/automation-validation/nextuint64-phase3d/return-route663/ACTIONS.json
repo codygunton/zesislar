@@ -1,0 +1,71 @@
+[
+  {
+    "time": "2026-10-17T20:10:18.880590+00:00",
+    "identity": {
+      "pid": 3166482,
+      "ppid": 3165822,
+      "start_ticks": 189565853,
+      "state": "S",
+      "command_sha256": "ec58925aae2c1b145bfe1521c19a43dfe279bf7e004cdcad88a332187b173048",
+      "command": "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python /home/cody/zesislar/.worktrees/worker2-nextuint64-callsite-bdac600/_build/callsite-observer600/runtime618/tools/block/trace_block_mcp.py --capture-client /home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-bundle663/raw-capture/evidence/REQUEST.json /home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-bundle663/raw-capture/evidence/CAPTURE.json ",
+      "cgroup": "0::/user.slice/user-1000.slice/user@1000.service/app.slice/zesudet-writer-worker2-a-worker2-a-3165822-22710.scope"
+    },
+    "current_ancestry": [
+      {
+        "pid": 3166482,
+        "start_ticks": 189565853,
+        "ppid": 3165822
+      },
+      {
+        "pid": 3165822,
+        "start_ticks": 189565727,
+        "ppid": 3165323
+      },
+      {
+        "pid": 3165323,
+        "start_ticks": 189565625,
+        "ppid": 3165298
+      },
+      {
+        "pid": 3165298,
+        "start_ticks": 189565622,
+        "ppid": 1
+      }
+    ],
+    "signal": "SIGINT",
+    "action": "sent",
+    "reason": "Cancel the owned capture client and allow its existing cleanup."
+  },
+  {
+    "time": "2026-10-17T20:11:04.369535+00:00",
+    "identity": {
+      "pid": 3165822,
+      "ppid": 3165323,
+      "start_ticks": 189565727,
+      "state": "S",
+      "command_sha256": "07c330b54302c607648e69c2eaa5e48323ce52102016ab21981d2a063fa8b422",
+      "command": "bash /home/cody/zesislar/.worktrees/worker2-nextuint64-callsite-bdac600/tools/resource_guard.sh scope worker2-a --cpu unlimited -- /home/cody/.local/share/uv/tools/rocq-mcp/bin/python /home/cody/zesislar/.worktrees/worker2-nextuint64-callsite-bdac600/_build/callsite-observer600/runtime618/tools/block/trace_block_mcp.py --capture-client /home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-bundle663/raw-capture/evidence/REQUEST.json /home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-bundle663/raw-capture/evidence/CAPTURE.json ",
+      "cgroup": "0::/user.slice/user-1000.slice/session-12.scope"
+    },
+    "current_ancestry": [
+      {
+        "pid": 3165822,
+        "start_ticks": 189565727,
+        "ppid": 3165323
+      },
+      {
+        "pid": 3165323,
+        "start_ticks": 189565625,
+        "ppid": 3165298
+      },
+      {
+        "pid": 3165298,
+        "start_ticks": 189565622,
+        "ppid": 1
+      }
+    ],
+    "signal": "SIGTERM",
+    "action": "sent",
+    "reason": "Ask the exact guard to clean its own scope and reservation."
+  }
+]

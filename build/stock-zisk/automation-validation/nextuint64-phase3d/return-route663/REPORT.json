@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "outcome": "externally-stopped-partial-historical-capture",
+  "bundle": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-bundle663",
+  "stop": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-final-stop1066/REPORT.json",
+    "sha256": "2886346939f0ab9ff77c9b2013d626516269de6cde90d4a17dea255d819a07ff",
+    "bytes": 1217
+  },
+  "source_review_preserved": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-final-stop1066/SOURCE-REPORT.json",
+    "sha256": "f98b1d2d0ce4d18a61249670faed4eda777f48d026eb1cc487ab93b5f77f889b",
+    "bytes": 1424
+  },
+  "stop_release": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-final-stop1066/RELEASE.json",
+    "sha256": "afb02663d3f1ed688131f90092b07cf2c72b835777eb50495bea3e059e6c3599",
+    "bytes": 467
+  },
+  "launch_receipt": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-release670/LAUNCH-RECEIPT.json",
+    "sha256": "01c0e9a67a9aa5dc75f9de2b7d56a167811c68d263e89231611791a6631487c7",
+    "bytes": 1638
+  },
+  "completed_nine_row_result": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-final1065/REPORT.json",
+    "sha256": "41b47370c4b45b883e9ee816e09a68d1af57515bc7989189990aae7c5fedc109",
+    "bytes": 2037
+  },
+  "raw_inventory": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-final-seal1070/RAW-FILES.json",
+    "sha256": "c5e1119d4da69048872ddef949cda6be8c7c781d504bd31cabb1bfcf3d06266a",
+    "bytes": 114968417
+  },
+  "raw_file_count": 358834,
+  "raw_bytes": 1724486848,
+  "captures": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-final-seal1070/CAPTURES.json",
+    "sha256": "a315befc5f3bba77eb45717ad8178762a85780b96a21165347fb9182c5fe54a3",
+    "bytes": 3906
+  },
+  "request": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-final-seal1070/REQUEST.json",
+    "sha256": "191f7a40b87a55efbea8f2427afc73b48947e017580cb3070f418d41251d18b3",
+    "bytes": 22186
+  },
+  "ownership": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-final-seal1070/CURRENT-OWNERSHIP.json",
+    "sha256": "afee3b6db285c52679efc113bc7938d9f6c4cfddafd78555a7151d8a80e20583",
+    "bytes": 711
+  },
+  "SESSION_exists": false,
+  "projection_executed": false,
+  "normal_closure_claim": false,
+  "owned_writes_stopped": true,
+  "final_residual": "unavailable",
+  "instruction_progress": "unavailable",
+  "callsite_coverage": "Not established by this partial seal.",
+  "registry_edits": 0,
+  "new_proof_calls": 0,
+  "relaunches": 0,
+  "collector": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-final-seal1070/seal.py",
+    "sha256": "e28ca8498ad151e5a147ce8186a89502410896fe232a4af7f4b6b2f9c98fdd12",
+    "bytes": 4803
+  },
+  "readme": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-final-seal1070/README.md",
+    "sha256": "67c3bef3f03b2203023f49aade65336fd0a73042bb48596c9dad71931134660d",
+    "bytes": 714
+  },
+  "sealed_at": "2026-10-17T20:12:45.686787+00:00"
+}
