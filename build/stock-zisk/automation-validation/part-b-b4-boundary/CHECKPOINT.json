@@ -1,0 +1,17 @@
+{
+  "item": "Part B4 caller statement",
+  "publication_root": "6c8f30f7fd673fb6310b35a5399c8486ff3cddf8",
+  "measurement_root": "f58fde97947c16d1f8a4eebb9d3761ac1a066524",
+  "report": "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/part-b-b4-checked007/REPORT.json",
+  "report_sha256": "2d0be1e46cdf615b74c23c73b8ac9cbc77e4f77d4700eac3bfe2cb532492ab37",
+  "statement": "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/build/stock-zisk/automation-validation/part-b-b4-boundary/STATEMENT.txt",
+  "statement_sha256": "b62329bde6f05769ad4d894be2ac3b67a563dbf32b58e0734cc3b57606a695ca",
+  "caller_source": "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/build/stock-zisk/automation-validation/part-b-b4-boundary/CallerStatement.v",
+  "caller_source_sha256": "a43f22eb212e789a3180da9dbc25a9025d8fd40130df6a6c5017def45e08b8ff",
+  "untracked_sources": "B4GeneratedTable.v, InstallationBinding.v, CallerStatement.v, STATEMENT.txt, SUPPLEMENT.json remain untracked.",
+  "checks": "Primary MCP health. Generated table, existing bridge binding, and exact caller statement compile. Binding assumptions closed. Normal owned closure.",
+  "supplement": "F61 approved probe_options mapping copies the rendered table code. No native-renderer repair.",
+  "boundary": "Own code plus installed boxed callee premise. Callee code occurs only in the separate table-level installation obligation.",
+  "limits": "Caller body aborted without tactics. No block proof, native execution, or successful call-site residual claim.",
+  "publication_checks": "Exact source bindings and current Root correspondence checked. Metadata-only checkpoint, no broad gate."
+}
