@@ -1,0 +1,163 @@
+{
+  "schema": 1,
+  "outcome": "paired-results-verified",
+  "completed_at": "2026-10-17T02:57:32.040605+00:00",
+  "root": "0bf4b23c2e99e93312bc05243a48657c3992780a",
+  "prediction": {
+    "OFF": 12,
+    "ON": 30
+  },
+  "verified": {
+    "OFF": 12,
+    "ON": 12
+  },
+  "native_residuals": {
+    "OFF": 31,
+    "ON": 31
+  },
+  "ON_prediction_shortfall": 18,
+  "gains": [],
+  "losses": [],
+  "verified_PCs": [
+    "0x80041f7c",
+    "0x80041fb4",
+    "0x80041fd8",
+    "0x80042010",
+    "0x80042028",
+    "0x80042054",
+    "0x80042070",
+    "0x80042090",
+    "0x800420b0",
+    "0x800420cc",
+    "0x800420ec",
+    "0x8004210c"
+  ],
+  "missed_ON_PCs": [
+    "0x80041f58",
+    "0x80041f60",
+    "0x80041f68",
+    "0x80041fa4",
+    "0x80041fb8",
+    "0x80041fc0",
+    "0x80041fc8",
+    "0x80041ff4",
+    "0x80042014",
+    "0x80042038",
+    "0x80042058",
+    "0x80042080",
+    "0x80042094",
+    "0x800420b4",
+    "0x800420d0",
+    "0x800420f0",
+    "0x80042110",
+    "0x80042130"
+  ],
+  "residual_goal_shapes": {
+    "OFF": {
+      "list-witness": 2,
+      "memory-or-register-resource": 4,
+      "Iris-pure": 54,
+      "other": 1
+    },
+    "ON": {
+      "list-witness": 2,
+      "memory-or-register-resource": 4,
+      "Iris-pure": 54,
+      "other": 1
+    }
+  },
+  "compiler_totals": {
+    "OFF": {
+      "compile_cpu_seconds": 108.870717,
+      "verify_cpu_seconds": 122.968753,
+      "compile_peak_rss_kib": 960856
+    },
+    "ON": {
+      "compile_cpu_seconds": 109.39490599999999,
+      "verify_cpu_seconds": 122.565454,
+      "compile_peak_rss_kib": 961792
+    }
+  },
+  "all_24_verifications_have_empty_assumptions": true,
+  "interactive_empty_equals_verified": true,
+  "final_compile_failures": 0,
+  "paired_statements_equal": true,
+  "paired_primary_bodies_equal": true,
+  "source_inputs_unchanged": true,
+  "tracked_clean": true,
+  "controllers_and_retained_Pet_PIDs_absent": true,
+  "normal_context_closure_scope": "Both controllers returned normally after all owned session contexts. Exact retained PIDs are absent.",
+  "Auto_audit": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-auto-audit992/REPORT.json",
+    "sha256": "d6ccd7100e996e6db8d39565a39ee265c32635185a2c1e51330ebabbeaf2b14d",
+    "bytes": 1781
+  },
+  "Auto_verified_arms": 18,
+  "Auto_median_repeat_PCs": [],
+  "startup_history": [
+    {
+      "label": "original-Auto-startup-failures",
+      "record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-auto-final-audit977/REPORT.json",
+        "sha256": "a3fc7eee475f6467f3c323218ab631b6996ebdf655b47601c45be7d51309ebfe",
+        "bytes": 63675
+      }
+    },
+    {
+      "label": "original-Free-authorized-stop",
+      "record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-stop982/REPORT.json",
+        "sha256": "3dce236cad0daab69b82ca544039824471b096289375ca1f765d706767661f05",
+        "bytes": 25048
+      }
+    },
+    {
+      "label": "original-process-exit-barrier",
+      "record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-exit-barrier983/EXIT-BARRIER.json",
+        "sha256": "7e41e4b2b407832456022ccfd9312083d94276832ea94d1092ff26b2425c1e5c",
+        "bytes": 48190
+      }
+    },
+    {
+      "label": "permission-startup-failures",
+      "record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-startup985/REPORT.json",
+        "sha256": "1e176fec2013abb7699bd52a68c58f72018679ea33ac7989b3011512fea6b4ec",
+        "bytes": 50819
+      }
+    },
+    {
+      "label": "corrected-launch-health",
+      "record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-launchfix-health463/RESULT.json",
+        "sha256": "cd36f76a3dbf0a3d0b655ddd16919b2ae0f29225e8c5666e206c037f3d40c0cd",
+        "bytes": 3537
+      }
+    }
+  ],
+  "details": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-paired-audit995/DETAILS.json",
+    "sha256": "05d0254d05c57d966b1249da7683c04e836163ed2fa6dbfb4b4848609d9406ac",
+    "bytes": 2027879
+  },
+  "table": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-paired-audit995/TABLE.md",
+    "sha256": "5fd5694f48e72237f627269dfa85ad654f8f1bf6e1ad48f3fe31e23d095e4803",
+    "bytes": 4588
+  },
+  "inputs": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-paired-audit995/INPUTS.json",
+    "sha256": "68dfe33094db36f5b3d1c577febbaf9f6eb8f33628708b416b9681347b440fec",
+    "bytes": 125734
+  },
+  "collector": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-paired-audit995/collect.py",
+    "sha256": "9c2b7e973979487ee246bc2f89270dfd02b4f033762de11aaab9f3ef8ff133b0",
+    "bytes": 16413
+  },
+  "new_proof_calls": 0,
+  "automatic_retries": 0,
+  "full_function_contract_closures": 0,
+  "native_instruction_count": null
+}

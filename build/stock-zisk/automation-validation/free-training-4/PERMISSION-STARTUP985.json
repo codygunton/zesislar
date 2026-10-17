@@ -1,0 +1,1111 @@
+{
+  "schema": 1,
+  "outcome": "restart-launcher-permission-defect",
+  "completed_at": "2026-10-17T02:01:30.073659+00:00",
+  "packet": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-packet456/PACKET.json",
+    "sha256": "d834e19d78fc77cac747d317c453425077f1fb2440fe57f157f9ce770c3a3e04",
+    "bytes": 4793358
+  },
+  "parent_review": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-packet456/PARENT-REVIEW.json",
+    "sha256": "e6f0b1b80eac6167d40f4488001a1e1916ba650170b44860df910dfcf451b20d",
+    "bytes": 1878
+  },
+  "commands": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-packet456/COMMANDS.json",
+    "sha256": "421c8b75f631493b34b78b8f8b5de620f6053fb74d4146256fda1cd50c805f5c",
+    "bytes": 8189
+  },
+  "issue10": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/ISSUE10-POSTED.json",
+    "sha256": "4f0bef26c631620eedf61df1269410b15afe5b0ec6fed4e7f6de39794c775418",
+    "bytes": 302
+  },
+  "mode_audit": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-startup985/MODE-AUDIT.json",
+    "sha256": "339605bcf99d33c6ddb14be5c4e535263c36099cd13e607647ebad6cef810d24",
+    "bytes": 618
+  },
+  "launches": [
+    {
+      "name": "auto-800d6974-OFF",
+      "exit_status": 1,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6974-OFF/EXIT.json",
+        "sha256": "2040cbda6d16a7a0e0fbf42a40fa7f2a8e4c2d1db4274af4fc90ad60b5d2cf1e",
+        "bytes": 837
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6974-OFF/START.json",
+        "sha256": "7b12d0c4481131b51ad823d10251768239a79c20e7a6d5025521af96568ec490",
+        "bytes": 764
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/auto-800d6974-OFF.json",
+        "sha256": "db08b8647fcc7204a5f81ef27d743ab3ecc9d964ee09b047070cad4eeaac5d2a",
+        "bytes": 820
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220014-worker2-c-training4r-auto-800d6974-off984.log",
+        "sha256": "d44a75c5866f7b29355c369336667f598e49d373aea9e558cd28942a3291f114",
+        "bytes": 4182
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    },
+    {
+      "name": "auto-800d6974-ON",
+      "exit_status": 1,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6974-ON/EXIT.json",
+        "sha256": "c31b599d136c4f5aceea2f96e66ea2680ddb9268ac5f92658f00025e386faa9a",
+        "bytes": 835
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6974-ON/START.json",
+        "sha256": "c1fa98b42407537fb1c39f63e1f51e9db11489a819bd875aea33599826a0afbd",
+        "bytes": 762
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/auto-800d6974-ON.json",
+        "sha256": "52db26435cbdc9a7f8d5a9b23b683fc1afbf7cf90287d3603bd74fdf360051ed",
+        "bytes": 815
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220014-worker2-c-training4r-auto-800d6974-on984.log",
+        "sha256": "62850b15e58eb3e340c22e8703d166ecbbacf734e2d6e325e6e7ebf6ae489676",
+        "bytes": 4180
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    },
+    {
+      "name": "auto-800d69a4-OFF",
+      "exit_status": 1,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d69a4-OFF/EXIT.json",
+        "sha256": "456116ab64e955836fd39a348bf3196391c5e1a904fda8841d36144bfd5f266b",
+        "bytes": 837
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d69a4-OFF/START.json",
+        "sha256": "e85cabaae1c0bfa701984e4a391349288f4facc756ba5275517d0c3646d3382b",
+        "bytes": 764
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/auto-800d69a4-OFF.json",
+        "sha256": "3d1f973cda99368d8e64f7db051a4bf48bfec68e8829e8b5e76fc9f01d6ed11e",
+        "bytes": 820
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220019-worker2-c-training4r-auto-800d69a4-off984.log",
+        "sha256": "6f24f2213ea0dbb2d43182e04657ee7e43b6e35519cf02e71a9eacbc8f08bb23",
+        "bytes": 4182
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    },
+    {
+      "name": "auto-800d69a4-ON",
+      "exit_status": 1,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d69a4-ON/EXIT.json",
+        "sha256": "8f29708deab0c422a31a5c7bb07835a634948a7d6d4d77f7fdb851bbd870f1e3",
+        "bytes": 835
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d69a4-ON/START.json",
+        "sha256": "486dc5be1024fa70d90205bfd892a16776fd1ded3588e5838f1a8bda3ed239c9",
+        "bytes": 762
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/auto-800d69a4-ON.json",
+        "sha256": "f5794d6e832e599038241c40976f33578f7173a6ad15819da3f81e0e41531b36",
+        "bytes": 815
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220019-worker2-c-training4r-auto-800d69a4-on984.log",
+        "sha256": "89741f0ea3179a71ece593e1c1c05d18e24cc85940c01c6498a0a9aabaa79c84",
+        "bytes": 4180
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    },
+    {
+      "name": "auto-800d69d8-OFF",
+      "exit_status": 1,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d69d8-OFF/EXIT.json",
+        "sha256": "e7f5b88c9af5f764473e9278041e3a37f581c36689eba9c38c4a160729f0e357",
+        "bytes": 837
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d69d8-OFF/START.json",
+        "sha256": "172d90fe11c6c035fbb25e7656b054dd1292d76506f25cc1d412edb5e1d1e4c7",
+        "bytes": 764
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/auto-800d69d8-OFF.json",
+        "sha256": "9d420bf38cea8db54e146c996419f36a1ae28af0d3f8eccbe1b659cb6147b14f",
+        "bytes": 820
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220023-worker2-c-training4r-auto-800d69d8-off984.log",
+        "sha256": "2d1b4a983d724a1fc6a0b1104ce6132580e95e4d784e3745bbe63d2a700280d1",
+        "bytes": 4182
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    },
+    {
+      "name": "auto-800d69d8-ON",
+      "exit_status": 1,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d69d8-ON/EXIT.json",
+        "sha256": "9f6c4d92e17ccfa4825772af0f4723d59bed9cf52ead7368b7ab709b889e90dc",
+        "bytes": 835
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d69d8-ON/START.json",
+        "sha256": "36044d318ee4ceb292b42651496e27027a5b03067b716862c055e736e627979c",
+        "bytes": 762
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/auto-800d69d8-ON.json",
+        "sha256": "14730a1f3aff7fa171a68cbb59ee196fbf6b8ef04b25b6fa7b2054ecd326fd3e",
+        "bytes": 815
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220023-worker2-c-training4r-auto-800d69d8-on984.log",
+        "sha256": "9eddd5ad3e062935e2994317ba70bf39c30f0730991b755d83f14eaa3dcd46c3",
+        "bytes": 4180
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    },
+    {
+      "name": "auto-800d69e0-OFF",
+      "exit_status": 1,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d69e0-OFF/EXIT.json",
+        "sha256": "6aeb8041ae5fd6727a3a7bf93a264a2b8b3a354a5f943832585b2e299ea51c69",
+        "bytes": 837
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d69e0-OFF/START.json",
+        "sha256": "948e50c4d509702f43c4953ede9965c1a1549e4ec4d5eb92eb90a8a4685ace9f",
+        "bytes": 764
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/auto-800d69e0-OFF.json",
+        "sha256": "010bd2d0495c295f882c9aba189d7bc0d8b283abd9261ec5ae66ef9555865e0a",
+        "bytes": 820
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220027-worker2-c-training4r-auto-800d69e0-off984.log",
+        "sha256": "6157bebbf5a868a303d7cfb26f863a9da1c138e0f935396d35e116ff8d11d8c2",
+        "bytes": 4182
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    },
+    {
+      "name": "auto-800d69e0-ON",
+      "exit_status": 1,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d69e0-ON/EXIT.json",
+        "sha256": "44001b212cebcfeaa7d4188c363a1c0187b379409bb14cb2c3b21d7800e9e7ce",
+        "bytes": 835
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d69e0-ON/START.json",
+        "sha256": "42f73342f3dd538450a704e40f3d796b827604dd42f44ce927605871ec3209ab",
+        "bytes": 762
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/auto-800d69e0-ON.json",
+        "sha256": "53a29846ffe63b4a4b7be968c624e98a6fdaebac77d077a8f2e3620b939c1990",
+        "bytes": 815
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220027-worker2-c-training4r-auto-800d69e0-on984.log",
+        "sha256": "fd46fd0f25c96c9f250629b25659a1fc570a3a4fdcb91e218f4608cb1fe5d00e",
+        "bytes": 4180
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    },
+    {
+      "name": "auto-800d6a00-OFF",
+      "exit_status": 1,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6a00-OFF/EXIT.json",
+        "sha256": "eccc6fd7b4acb4195b306843d6b2e1de8f16e39c5c18a18d03ad29e3470cc9df",
+        "bytes": 837
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6a00-OFF/START.json",
+        "sha256": "2c9553f8856cf977759fd29050cf4ece41f2ef21fd756cdab91689af25a8abd6",
+        "bytes": 764
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/auto-800d6a00-OFF.json",
+        "sha256": "97ddb9fd09a6e05e5c72e227ddd46a0f508024f38d1f549c25cd1a95dc156924",
+        "bytes": 820
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220031-worker2-c-training4r-auto-800d6a00-off984.log",
+        "sha256": "26e558bb0fad514f5793d12599db217b975c5c9c066c30cd6404bb5c9d3ab68e",
+        "bytes": 4182
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    },
+    {
+      "name": "auto-800d6a00-ON",
+      "exit_status": 1,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6a00-ON/EXIT.json",
+        "sha256": "60b2c69e05411a002e29a8b00bc6b20e41832a82ca2bf4b931e7b9e6e927a433",
+        "bytes": 835
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6a00-ON/START.json",
+        "sha256": "a7ca2852a8098d6aa36cc8d40bac1bed3e2ff986504a7229fb66b4afd0eb26d0",
+        "bytes": 762
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/auto-800d6a00-ON.json",
+        "sha256": "8b6d4e4130c76cd4f20d20e749bdfca56e2f31224381f3b3944fb3ea77c7be3a",
+        "bytes": 815
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220031-worker2-c-training4r-auto-800d6a00-on984.log",
+        "sha256": "848e5f125166ce7117e59ecf3320b2648be5fa7cebccbe19b4ca2c4d57dac0d0",
+        "bytes": 4180
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    },
+    {
+      "name": "auto-800d6a14-OFF",
+      "exit_status": 1,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6a14-OFF/EXIT.json",
+        "sha256": "cd5a86341bd48b44c2d95249e8053a3c5f3a65e18183ba3fc248a84c7ed204ab",
+        "bytes": 837
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6a14-OFF/START.json",
+        "sha256": "1e1d03ad32bc44e5de954a94cce3bd76e056c0ffc4c05adabd635ffbe98114b4",
+        "bytes": 764
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/auto-800d6a14-OFF.json",
+        "sha256": "3fd6569ed1d85db24ad4fcf1f1aa9d69313fc9d2118d45e8df74af81d057b3c3",
+        "bytes": 820
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220035-worker2-c-training4r-auto-800d6a14-off984.log",
+        "sha256": "5b1387cbc479b4c371a13f85db6738a65200f827e7000616df647dcfdeea06f8",
+        "bytes": 4182
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    },
+    {
+      "name": "auto-800d6a14-ON",
+      "exit_status": 1,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6a14-ON/EXIT.json",
+        "sha256": "b297e59aeab1badc5a21ce04807b4ff88e2fd72aed6e196df194894297aac084",
+        "bytes": 835
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6a14-ON/START.json",
+        "sha256": "ba395b48e9d3383f592f1da5c5557e693556e56e2f44dbc1341d2f52e2a30b4f",
+        "bytes": 762
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/auto-800d6a14-ON.json",
+        "sha256": "ae1f6c06e603d7e9047e56d59833104ea79debfec3b9fb123bc0121a46d96eab",
+        "bytes": 815
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220035-worker2-c-training4r-auto-800d6a14-on984.log",
+        "sha256": "be83f7b7992af6cffb25949e37f3fde9c2d5efb040808ee31fda7fd4a0b523e9",
+        "bytes": 4180
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    },
+    {
+      "name": "auto-800d6a64-OFF",
+      "exit_status": 1,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6a64-OFF/EXIT.json",
+        "sha256": "58cb8f6e1eed1d70d5cbf33c89c93e5860b5402c4b6b15fe3ea778207c9d0b69",
+        "bytes": 837
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6a64-OFF/START.json",
+        "sha256": "a0472460bb24c4a40b7acae5a227229e06192a05d864d2c9b96653c670ffe26b",
+        "bytes": 764
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/auto-800d6a64-OFF.json",
+        "sha256": "87c91a19cfcaf2f12c0c3d119af07d2cb0a8d252c381b4292b3d4687502f030c",
+        "bytes": 820
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220039-worker2-c-training4r-auto-800d6a64-off984.log",
+        "sha256": "7a8521bcdd477fd92105400f7bfa1acfd516ad7af7db5ed04b81da486a6d4a1c",
+        "bytes": 4182
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    },
+    {
+      "name": "auto-800d6a64-ON",
+      "exit_status": 1,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6a64-ON/EXIT.json",
+        "sha256": "fae3f267623a83409b172f76216b97d3d3337d4a77e5cb2375ce700e1905a385",
+        "bytes": 835
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6a64-ON/START.json",
+        "sha256": "beeb483c81835d4120548269bd8feba011aebde7da8fec9656120cc5c8d236f0",
+        "bytes": 762
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/auto-800d6a64-ON.json",
+        "sha256": "4251269df0f752e18746289ce6535a93f27202f2e7753afb92fcb78bf2e3a164",
+        "bytes": 815
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220039-worker2-c-training4r-auto-800d6a64-on984.log",
+        "sha256": "542e2602b4dbe689022c6ac056820c6465b0164cb5c3e3cb9f693bf1ffa0516e",
+        "bytes": 4180
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    },
+    {
+      "name": "auto-800d6a6c-OFF",
+      "exit_status": 1,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6a6c-OFF/EXIT.json",
+        "sha256": "f6798ab8985997bef744751a19f6a2b0812413bdc6705f2f09d2d92b16dcd417",
+        "bytes": 837
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6a6c-OFF/START.json",
+        "sha256": "5707a9f78c8eb8a71a0b8a04683de5f80c347fe491e64a45f57d14819decc11f",
+        "bytes": 764
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/auto-800d6a6c-OFF.json",
+        "sha256": "61fbfd5d890335429512dcc8503a5e36a7a4115dedcb8646727d269c532257f5",
+        "bytes": 820
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220043-worker2-c-training4r-auto-800d6a6c-off984.log",
+        "sha256": "e3231258d14a4510128f0d383a09dd98ac7a0ce1db6410a6b48e34e69eed69aa",
+        "bytes": 4182
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    },
+    {
+      "name": "auto-800d6a6c-ON",
+      "exit_status": 1,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6a6c-ON/EXIT.json",
+        "sha256": "fa381d445d9adba5fd54973d22eff3d71ac68cd33b28d0b511dbcd18866a6bdd",
+        "bytes": 835
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6a6c-ON/START.json",
+        "sha256": "e112465f32166cfbae26cb5bf0bf5191e3e4e38e371763080f9f35bd1bda2004",
+        "bytes": 762
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/auto-800d6a6c-ON.json",
+        "sha256": "1af3ce32fcac62f7c08fbbedd70c922072a3126c32052b2db1462790f43cdeed",
+        "bytes": 815
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220043-worker2-c-training4r-auto-800d6a6c-on984.log",
+        "sha256": "0dbf61e8b6e87ff29cc7d44ed20dc1219fa093251bba3d1cf71740bfac57b87d",
+        "bytes": 4180
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    },
+    {
+      "name": "auto-800d6ab4-OFF",
+      "exit_status": 1,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6ab4-OFF/EXIT.json",
+        "sha256": "ccfa445c7fcecbf8ba1cb479c95e692a9ff6da981da25e01d34e1bf3c4e3e24e",
+        "bytes": 837
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6ab4-OFF/START.json",
+        "sha256": "c1fa55acb6adac8307695ca4bb3789c9d7afcf82d829b607ab08f5cd5aaa85c2",
+        "bytes": 764
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/auto-800d6ab4-OFF.json",
+        "sha256": "a594ee2bdf4f7c7960fbdefcac6f65222a8ee5b2b1146f0b6c151bc63ed8070e",
+        "bytes": 820
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220047-worker2-c-training4r-auto-800d6ab4-off984.log",
+        "sha256": "439c14871501d59ac08d31446db98cda44089554d29a0d87eed34fc2280e0e02",
+        "bytes": 4182
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    },
+    {
+      "name": "auto-800d6ab4-ON",
+      "exit_status": 1,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6ab4-ON/EXIT.json",
+        "sha256": "d19102ac875f733cba727bf5633b0fdc70749e66059166502e325f5c865b0b9f",
+        "bytes": 835
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/auto-800d6ab4-ON/START.json",
+        "sha256": "f9d6f6b6f0af47b386fca156ab046147da6ae5c037b0ef27eb87373865b4de11",
+        "bytes": 762
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/auto-800d6ab4-ON.json",
+        "sha256": "b037a04a771ec3506314fe61acef97aec14cee02c26d4fd0683e423a00744bd1",
+        "bytes": 815
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220047-worker2-c-training4r-auto-800d6ab4-on984.log",
+        "sha256": "200da4cd38983cd10f079f7b56040444a5a83e0c519da2886602bf7a751fc349",
+        "bytes": 4180
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    },
+    {
+      "name": "free-OFF",
+      "exit_status": 0,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/free-OFF/EXIT.json",
+        "sha256": "9d2f8d145d88c77a72f516abe1c67552cb58f45e86ed5d93e1ef13e1af9ba3bd",
+        "bytes": 800
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/free-OFF/START.json",
+        "sha256": "48feb4cb7ce1a18f7c823d331b51641a6f90ed53df95e92ad8bc361b1b72d00e",
+        "bytes": 727
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/free-OFF.json",
+        "sha256": "c84a36e45b57187db5a81b023b884f739fed1d1972e5d4759e2872afed9a1518",
+        "bytes": 775
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220014-worker2-c-training4r-free-off984.log",
+        "sha256": "fe2041a27773acbef9cea1df227be64bab6c0c93a86deb010c80a7dda18f4bef",
+        "bytes": 449
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    },
+    {
+      "name": "free-ON",
+      "exit_status": 0,
+      "exit_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/free-ON/EXIT.json",
+        "sha256": "af8e0798f33ea653902a34e826e9761d703d1af7287574bb95c7d6d8ced76c51",
+        "bytes": 798
+      },
+      "start_record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/commands/free-ON/START.json",
+        "sha256": "e36f178ffca43f04b60a3512028b8bc8e633e7034a41d68e520fd7f6c0c5b707",
+        "bytes": 725
+      },
+      "watcher_receipt": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/watchers/free-ON.json",
+        "sha256": "2c7dcaa4947a2418a768be35d08ba37a63cdbabc2e7d50937c66ffb62107afdd",
+        "bytes": 770
+      },
+      "watcher_log": {
+        "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-220014-worker2-c-training4r-free-on984.log",
+        "sha256": "246018beed12bffa943740976ab9061e602af14f607444073876197f673dce0a",
+        "bytes": 446
+      },
+      "controller_absent": true,
+      "watcher_absent": true
+    }
+  ],
+  "free": [
+    {
+      "arm": "OFF",
+      "report": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-off456/report.json",
+        "sha256": "e501fc474805891477fe71d2b48775f9763a5af5ea7376ad1d35a94add0e1260",
+        "bytes": 493665
+      },
+      "blocks": 43,
+      "classes": {
+        "setup-error": 43
+      },
+      "all_executed_flags_false": true,
+      "all_first_errors": "PermissionError: [Errno 13] Permission denied: controller455/mcp_launcher.py",
+      "raw_call_records": 0,
+      "native_evidence_json_files": 0,
+      "proof_sources": []
+    },
+    {
+      "arm": "ON",
+      "report": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on456/report.json",
+        "sha256": "cd4bd55854b76f20fc772e613f95fdd72ba2f95a7f9378eefc4988a389644b2a",
+        "bytes": 493849
+      },
+      "blocks": 43,
+      "classes": {
+        "setup-error": 43
+      },
+      "all_executed_flags_false": true,
+      "all_first_errors": "PermissionError: [Errno 13] Permission denied: controller455/mcp_launcher.py",
+      "raw_call_records": 0,
+      "native_evidence_json_files": 0,
+      "proof_sources": []
+    }
+  ],
+  "auto": [
+    {
+      "pc": "800d6974",
+      "arm": "OFF",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6974/OFF/RESULT.json",
+        "sha256": "7465e921cd7d9c665ad2ec7ebdf6dfdbdf1ceceffa6a25ef23f499a85f840a8c",
+        "bytes": 1079
+      },
+      "calls": 0,
+      "verified": false,
+      "files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6974/OFF/Boundary.v",
+          "sha256": "ca7fb94a835a783c2d62c0a24e1e0d552ce2a76f65cd6ee7d277df32dfea9d6e",
+          "bytes": 2040
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6974/OFF/RESULT.json",
+          "sha256": "7465e921cd7d9c665ad2ec7ebdf6dfdbdf1ceceffa6a25ef23f499a85f840a8c",
+          "bytes": 1079
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6974/OFF/server.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "pc": "800d6974",
+      "arm": "ON",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6974/ON/RESULT.json",
+        "sha256": "137a1021e8f7b12e576772bac99b58ddff059927adc8c8fa34de2b63b4324db0",
+        "bytes": 1075
+      },
+      "calls": 0,
+      "verified": false,
+      "files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6974/ON/Boundary.v",
+          "sha256": "9d915d37d4678727dcbc594335e1f6cba40299637dc981e061a8da04cff96ceb",
+          "bytes": 2106
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6974/ON/RESULT.json",
+          "sha256": "137a1021e8f7b12e576772bac99b58ddff059927adc8c8fa34de2b63b4324db0",
+          "bytes": 1075
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6974/ON/server.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "pc": "800d69a4",
+      "arm": "OFF",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69a4/OFF/RESULT.json",
+        "sha256": "83e1a1c51a57b9fb39d597b82913e853baa7725a73719fc81a28c8893d17af29",
+        "bytes": 1079
+      },
+      "calls": 0,
+      "verified": false,
+      "files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69a4/OFF/Boundary.v",
+          "sha256": "fb2b2826f7602a0a9d45915dac6eadde126ec21dcfc5294e7f9bbecb6e65f5e1",
+          "bytes": 2227
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69a4/OFF/RESULT.json",
+          "sha256": "83e1a1c51a57b9fb39d597b82913e853baa7725a73719fc81a28c8893d17af29",
+          "bytes": 1079
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69a4/OFF/server.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "pc": "800d69a4",
+      "arm": "ON",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69a4/ON/RESULT.json",
+        "sha256": "ba83191506f59b0222609f39ce8132aa752f16850f17ca81fe1cc32ec1d5048e",
+        "bytes": 1075
+      },
+      "calls": 0,
+      "verified": false,
+      "files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69a4/ON/Boundary.v",
+          "sha256": "e2765ce934149654a66d410fee39c5d908554d74e98cf8762caf583262a2dcc0",
+          "bytes": 2293
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69a4/ON/RESULT.json",
+          "sha256": "ba83191506f59b0222609f39ce8132aa752f16850f17ca81fe1cc32ec1d5048e",
+          "bytes": 1075
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69a4/ON/server.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "pc": "800d69d8",
+      "arm": "OFF",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69d8/OFF/RESULT.json",
+        "sha256": "a100624a1758ccc20dbcb72b3f66ad7c119843aaec434c2d4998842fa4c6b5d0",
+        "bytes": 1079
+      },
+      "calls": 0,
+      "verified": false,
+      "files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69d8/OFF/Boundary.v",
+          "sha256": "dba92683131b5c4697d52db787bb569b33cc8049ccfd7ebb2767bc2a71ab3be1",
+          "bytes": 2078
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69d8/OFF/RESULT.json",
+          "sha256": "a100624a1758ccc20dbcb72b3f66ad7c119843aaec434c2d4998842fa4c6b5d0",
+          "bytes": 1079
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69d8/OFF/server.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "pc": "800d69d8",
+      "arm": "ON",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69d8/ON/RESULT.json",
+        "sha256": "0cd7d5852a87fd1d0dc86b6bd568edeb75c4f3800604c6e469ea4374ef73f8f6",
+        "bytes": 1075
+      },
+      "calls": 0,
+      "verified": false,
+      "files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69d8/ON/Boundary.v",
+          "sha256": "4b6e8acef4ab6ca9ad6e2e0c8cd03cbfa426f315019f8fa61c647b30cd1bec6b",
+          "bytes": 2144
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69d8/ON/RESULT.json",
+          "sha256": "0cd7d5852a87fd1d0dc86b6bd568edeb75c4f3800604c6e469ea4374ef73f8f6",
+          "bytes": 1075
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69d8/ON/server.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "pc": "800d69e0",
+      "arm": "OFF",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69e0/OFF/RESULT.json",
+        "sha256": "3cc8e911e563ab2665fed3a153fe2e394b91ade9cbde49956c2e7cbfc0316cef",
+        "bytes": 1079
+      },
+      "calls": 0,
+      "verified": false,
+      "files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69e0/OFF/Boundary.v",
+          "sha256": "965212afed3fdce7dc86f114312e9f01f7b7d1b864a65ba7523944eda17269f4",
+          "bytes": 2126
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69e0/OFF/RESULT.json",
+          "sha256": "3cc8e911e563ab2665fed3a153fe2e394b91ade9cbde49956c2e7cbfc0316cef",
+          "bytes": 1079
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69e0/OFF/server.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "pc": "800d69e0",
+      "arm": "ON",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69e0/ON/RESULT.json",
+        "sha256": "14b1e0d022ff267b5e74fe0974fdb4dc2584b59518461877203f1d7ad496001f",
+        "bytes": 1075
+      },
+      "calls": 0,
+      "verified": false,
+      "files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69e0/ON/Boundary.v",
+          "sha256": "9fa400f08e3799087ab612ad0724f4b1b85f3732bc6d790b741de5b9c15df029",
+          "bytes": 2192
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69e0/ON/RESULT.json",
+          "sha256": "14b1e0d022ff267b5e74fe0974fdb4dc2584b59518461877203f1d7ad496001f",
+          "bytes": 1075
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d69e0/ON/server.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "pc": "800d6a00",
+      "arm": "OFF",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a00/OFF/RESULT.json",
+        "sha256": "117ce37d323d95c3a763ec8219285d87c39a52c4c8b53b02a37d7723744d4fd5",
+        "bytes": 1079
+      },
+      "calls": 0,
+      "verified": false,
+      "files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a00/OFF/Boundary.v",
+          "sha256": "1bd70384f6a5c0da5e568c44784ee09ecf257698363460f0ec08e8ae2513fbdf",
+          "bytes": 2078
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a00/OFF/RESULT.json",
+          "sha256": "117ce37d323d95c3a763ec8219285d87c39a52c4c8b53b02a37d7723744d4fd5",
+          "bytes": 1079
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a00/OFF/server.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "pc": "800d6a00",
+      "arm": "ON",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a00/ON/RESULT.json",
+        "sha256": "e65434575fe0a7d2b8fc56e9403164966210a5f4ee61a545d0c7442ca4c20464",
+        "bytes": 1075
+      },
+      "calls": 0,
+      "verified": false,
+      "files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a00/ON/Boundary.v",
+          "sha256": "edea5e691c440a607b033b8513dae47e7956a697b5d4e601735ed311ec0c1b05",
+          "bytes": 2144
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a00/ON/RESULT.json",
+          "sha256": "e65434575fe0a7d2b8fc56e9403164966210a5f4ee61a545d0c7442ca4c20464",
+          "bytes": 1075
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a00/ON/server.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "pc": "800d6a14",
+      "arm": "OFF",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a14/OFF/RESULT.json",
+        "sha256": "ba03330dff511516664833eda3c7dcbd9091fb39856b47e23b7e1ddf1344c27f",
+        "bytes": 1079
+      },
+      "calls": 0,
+      "verified": false,
+      "files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a14/OFF/Boundary.v",
+          "sha256": "70ea8da3ab43b2599ceded151460709de0c4bfc8777f246038759835507d41ee",
+          "bytes": 2136
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a14/OFF/RESULT.json",
+          "sha256": "ba03330dff511516664833eda3c7dcbd9091fb39856b47e23b7e1ddf1344c27f",
+          "bytes": 1079
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a14/OFF/server.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "pc": "800d6a14",
+      "arm": "ON",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a14/ON/RESULT.json",
+        "sha256": "f706c2eaeaf54309bfdd041957d435f3060939803174eaaf9c39ad150733a96b",
+        "bytes": 1075
+      },
+      "calls": 0,
+      "verified": false,
+      "files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a14/ON/Boundary.v",
+          "sha256": "f39ad14eef66c91bd5b310cd5a2977ecb408862d3ed6cb9138469c28b34092fa",
+          "bytes": 2202
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a14/ON/RESULT.json",
+          "sha256": "f706c2eaeaf54309bfdd041957d435f3060939803174eaaf9c39ad150733a96b",
+          "bytes": 1075
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a14/ON/server.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "pc": "800d6a64",
+      "arm": "OFF",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a64/OFF/RESULT.json",
+        "sha256": "aa529c3d8ffafa5a33ca752049723980759035f7b3d9d8ad39991090b4d0d666",
+        "bytes": 1079
+      },
+      "calls": 0,
+      "verified": false,
+      "files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a64/OFF/Boundary.v",
+          "sha256": "38bffe264f180524e77970f58fa0a5cef6ff76edeeb2a9580a064d1bdc089aaa",
+          "bytes": 2078
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a64/OFF/RESULT.json",
+          "sha256": "aa529c3d8ffafa5a33ca752049723980759035f7b3d9d8ad39991090b4d0d666",
+          "bytes": 1079
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a64/OFF/server.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "pc": "800d6a64",
+      "arm": "ON",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a64/ON/RESULT.json",
+        "sha256": "e6e0224c05382165c14f34242b1b44e81399cdc4a4f90595efa0ce0e123fa45a",
+        "bytes": 1075
+      },
+      "calls": 0,
+      "verified": false,
+      "files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a64/ON/Boundary.v",
+          "sha256": "a36596555f58ccbe6b6edb11ad6c645bb0f774e7a05549ae981093fb17d0019b",
+          "bytes": 2144
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a64/ON/RESULT.json",
+          "sha256": "e6e0224c05382165c14f34242b1b44e81399cdc4a4f90595efa0ce0e123fa45a",
+          "bytes": 1075
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a64/ON/server.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "pc": "800d6a6c",
+      "arm": "OFF",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a6c/OFF/RESULT.json",
+        "sha256": "c4414e0d96799f922bfed6f01c1c009c179f3dcc20a82179086fc0d890b6635e",
+        "bytes": 1079
+      },
+      "calls": 0,
+      "verified": false,
+      "files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a6c/OFF/Boundary.v",
+          "sha256": "0363317d8a4cb2b61cecea5967f9d38222ddcc3a0b372eecac57bb72244fbf27",
+          "bytes": 2093
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a6c/OFF/RESULT.json",
+          "sha256": "c4414e0d96799f922bfed6f01c1c009c179f3dcc20a82179086fc0d890b6635e",
+          "bytes": 1079
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a6c/OFF/server.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "pc": "800d6a6c",
+      "arm": "ON",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a6c/ON/RESULT.json",
+        "sha256": "c08d7f9e11a55e748d4a545dcc4cbb6bb6ebf3dfcdb3dd96d526996679865c5e",
+        "bytes": 1075
+      },
+      "calls": 0,
+      "verified": false,
+      "files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a6c/ON/Boundary.v",
+          "sha256": "db067ee1b0bd0ec01b63d1353eca557512e9cd1c52785e00e0a8d27c8f332fdf",
+          "bytes": 2159
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a6c/ON/RESULT.json",
+          "sha256": "c08d7f9e11a55e748d4a545dcc4cbb6bb6ebf3dfcdb3dd96d526996679865c5e",
+          "bytes": 1075
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6a6c/ON/server.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "pc": "800d6ab4",
+      "arm": "OFF",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6ab4/OFF/RESULT.json",
+        "sha256": "b5d5c1fbe171dd81ff120fed4f618bac1634d08a79a3509f897364029f3d70dc",
+        "bytes": 1079
+      },
+      "calls": 0,
+      "verified": false,
+      "files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6ab4/OFF/Boundary.v",
+          "sha256": "656fd312196618cf0c55a52aa0258d6eb923ddd15a699d18f83d2a967a5f89ed",
+          "bytes": 2136
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6ab4/OFF/RESULT.json",
+          "sha256": "b5d5c1fbe171dd81ff120fed4f618bac1634d08a79a3509f897364029f3d70dc",
+          "bytes": 1079
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6ab4/OFF/server.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "pc": "800d6ab4",
+      "arm": "ON",
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6ab4/ON/RESULT.json",
+        "sha256": "4ac1e95e0b8fc4cc66e3f3e99c222b94c60444d7aaa0198b4a5991a52997e61e",
+        "bytes": 1075
+      },
+      "calls": 0,
+      "verified": false,
+      "files": [
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6ab4/ON/Boundary.v",
+          "sha256": "ba7f4199d8b8d9b1cda081bfe0fd53a80b69d5ddf29c11e76271815f03330912",
+          "bytes": 2202
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6ab4/ON/RESULT.json",
+          "sha256": "4ac1e95e0b8fc4cc66e3f3e99c222b94c60444d7aaa0198b4a5991a52997e61e",
+          "bytes": 1075
+        },
+        {
+          "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-auto456/800d6ab4/ON/server.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ]
+    }
+  ],
+  "schedule": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-restart-launch984/AUTO-SCHEDULE-RESULT.json",
+    "sha256": "e66f01e7348867dc96d1272f081d799e39d504174520a5b908110ed0ca74b72d",
+    "bytes": 40215
+  },
+  "total_controllers": 20,
+  "MCP_initializations_started": 0,
+  "tool_calls": 0,
+  "primary_calls": 0,
+  "compile_calls": 0,
+  "verify_calls": 0,
+  "cause": "The copied mcp_launcher.py has mode0644. subprocess launch raises PermissionError before MCP initialization. Original435 has identical bytes and mode0755.",
+  "liveness_scope": "No compiler was admitted, so no proof liveness or compiler-cost measurement exists.",
+  "replacement_launches": 0,
+  "mode_changes_by_audit": 0,
+  "scheduler_stop_required": false,
+  "schedule_note": "All18 unique Auto commands completed before the shared mode defect was inspected. The scheduler waited for both watchers in each wave. No arm retried."
+}

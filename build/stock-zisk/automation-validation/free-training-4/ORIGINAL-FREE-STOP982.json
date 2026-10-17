@@ -1,0 +1,471 @@
+{
+  "schema": 1,
+  "outcome": "authorized-original-Free-stop",
+  "completed_at": "2026-10-17T01:51:00.025901+00:00",
+  "before": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-stop982/BEFORE.json",
+    "sha256": "7ef9abc81bbacce668ff92e571f9adb80672e50ddd6aecc69b67eec37d474c45",
+    "bytes": 120918
+  },
+  "actions": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/free-training4-stop982/ACTIONS.json",
+    "sha256": "8255b2b85750f3d608aca7ad7b5dc25cfef15d9a05d42d93cbd287614f550c00",
+    "bytes": 60851
+  },
+  "owned_units": [
+    {
+      "unit": "zesudet-writer-worker2-c-worker2-c-free-training4-3652226-21939.scope",
+      "returncode": 0,
+      "stdout": "ActiveState=inactive\nSubState=dead\nControlGroup=\n",
+      "stderr": ""
+    },
+    {
+      "unit": "zesudet-writer-worker2-c-worker2-c-free-training4-3652910-7484.scope",
+      "returncode": 0,
+      "stdout": "ActiveState=inactive\nSubState=dead\nControlGroup=\n",
+      "stderr": ""
+    }
+  ],
+  "remaining_exact_processes": [],
+  "owned_cleanup_complete": true,
+  "proof_sources_unchanged": true,
+  "reservation_cleanup": [
+    {
+      "original": "/run/user/1000/zesu-guard/coqc-reservations/3652226.15696.31273",
+      "exists": false
+    },
+    {
+      "original": "/run/user/1000/zesu-guard/coqc-reservations/3652910.26079.10352",
+      "exists": false
+    }
+  ],
+  "registry_edits_by_controller": 0,
+  "scope_stops_by_controller": 0,
+  "guard_cleanup_requested": true,
+  "retained_outputs": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-off443/native/block_0x80041f60/Boundary.v",
+      "sha256": "533d02eb53dbc3f4764f55a7dcde1608551478747dabb5e1b6c4da71c1ae2560",
+      "bytes": 5067
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-off443/native/block_0x80041f60/Boundary_interactive.v",
+      "sha256": "67f4b2745732d9fea99a6c5739f588683348351c3016ef1eaa4718e38b0ca82a",
+      "bytes": 5005
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-off443/native/block_0x80041f60/complete/state_1.json",
+      "sha256": "c1cd635b0326629fc44b77268b81fc6b51f74671353a1bbf14d5dea874fabbc5",
+      "bytes": 8297
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-off443/native/block_0x80041f60/complete/state_2.json",
+      "sha256": "1e83d6abb1efbaf9cf34957bea1e04ec6593d17cf1b4893413793bf5ce85b9ec",
+      "bytes": 18519
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-off443/native/block_0x80041f60/evidence.json",
+      "sha256": "d9335cf9f3ef4b71ad07ced1523371bafc6127e264ce77c9bdf100a34be45648",
+      "bytes": 40790
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-off443/native/block_0x80041f60/feedback/6705b25e07017f44fa8d42b2837bb68b2775c28cbb57d06771cfcdac2131c29e.json",
+      "sha256": "f975d829a5d3c259f9530c3af8363fd1329fdabb2c8aa92fd3d58080a9cb4f4b",
+      "bytes": 558
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-off443/native/block_0x80041f7c/Boundary.v",
+      "sha256": "02fbc75a17ad8230baaabdf37efaf3ef3ef95148ff0abb4f9b027ceb75ff9f4b",
+      "bytes": 4474
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-off443/native/block_0x80041f7c/Boundary_interactive.v",
+      "sha256": "f4ec40f3450c144008ea090c12a4cf984fa9917f10ab001ad2830d28afb8d044",
+      "bytes": 4412
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-off443/native/block_0x80041f7c/complete/state_1.json",
+      "sha256": "30e67993414eb9a3658b240b27c061a1edcf0bf565f0fd0736bef43f2807c786",
+      "bytes": 4900
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-off443/native/block_0x80041f7c/complete/state_2.json",
+      "sha256": "a64cd08ba25b75e26cbed775c005a9565f976fdb28845c07adda969be4d56944",
+      "bytes": 240
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-off443/native/block_0x80041f7c/feedback/bccdabd75d1c3ed353117b38d57f3263c43627b46a158d880f897c3b60f75d62.json",
+      "sha256": "3cbd5becf82c404647d4e3fcd4a572c67a1486c87083aef5d709eec72db88439",
+      "bytes": 269
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f38/Boundary.v",
+      "sha256": "330f1610587affc80d30a3bc5b7d844e889e9dd9c5cbd0943640222660d41aa7",
+      "bytes": 5125
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f38/Boundary_interactive.v",
+      "sha256": "89fd23681f09bee59eda88189e9f5f6f95d206c0852c12371b31e412a4e72f8c",
+      "bytes": 5063
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f38/complete/state_1.json",
+      "sha256": "b89c5556595a66d78fd53f6a9ed1f4950e57f097b2a7c8c2167e060c1719776d",
+      "bytes": 8249
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f38/complete/state_2.json",
+      "sha256": "82d1c88317b22afd7cdf8ac6c88bef6ac4252c51e248effc60130a840fdda83f",
+      "bytes": 267625
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f38/evidence.json",
+      "sha256": "c64edd473738809fd8d963c564637402c722baa81e30aefe307d25753a725769",
+      "bytes": 122299
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f38/feedback/9648e9007c3eafb96f186ccfe8bc55ba7427ec196de30f0c8b3f17be7088cfd8.json",
+      "sha256": "ebef99c38fe572ca8f5f21927853ce29d089a4cbd873edf2d15ea14c8f85612f",
+      "bytes": 844
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f60/Boundary.v",
+      "sha256": "5f5ffccfc292c4ad52b4e77c6de48262116fa96fed278e7c1cbfce9cb87e9b18",
+      "bytes": 5199
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f60/Boundary_interactive.v",
+      "sha256": "e723d07ccd316d4f3e53a600d6d7d9ab545a9b1cb2cb3508061eeae31184480f",
+      "bytes": 5137
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f60/complete/state_1.json",
+      "sha256": "c1cd635b0326629fc44b77268b81fc6b51f74671353a1bbf14d5dea874fabbc5",
+      "bytes": 8297
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f60/complete/state_2.json",
+      "sha256": "addd056363a864be607ecd50295133a86f39e122dbfdca45e849777c2cc7a9ed",
+      "bytes": 18519
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f60/evidence.json",
+      "sha256": "b4254c977979ed911b4bd88b4b741db6cc3140340adb56fcdd540f4a577976b9",
+      "bytes": 40774
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f60/feedback/59c7ca46285eb7e0b54bbfd2e8acfbedc8cd45478fa391249dbda6909fdfa241.json",
+      "sha256": "c341e2b38820457e30d0d0f1fbcae9988258713e7a84db31c0f12c0b4b977d30",
+      "bytes": 559
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f7c/Boundary.v",
+      "sha256": "9e6203eefafa37d04bd6a3e774e2f8c1e3faff4c7b179113136dd4111da5f5dc",
+      "bytes": 4606
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f7c/Boundary_interactive.v",
+      "sha256": "982337d11571f6352ae3e9a6950f7bba803e3cb81de5e4cc51648a60518af70c",
+      "bytes": 4544
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f7c/complete/state_1.json",
+      "sha256": "30e67993414eb9a3658b240b27c061a1edcf0bf565f0fd0736bef43f2807c786",
+      "bytes": 4900
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f7c/complete/state_2.json",
+      "sha256": "a64cd08ba25b75e26cbed775c005a9565f976fdb28845c07adda969be4d56944",
+      "bytes": 240
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f7c/feedback/c1d8c3c26cb428412f6b7ca5f38379408ce4d79d426eec51b6c68fa8310b0b95.json",
+      "sha256": "6e541bb8a53582072a41dba0b81a608ebe3508eecf6f13fda255d4a346c045f8",
+      "bytes": 269
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f8c/Boundary.v",
+      "sha256": "9accac276897d186bbf696d08a695250c9cab004a16da37e8d19dc270e87e955",
+      "bytes": 5199
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f8c/Boundary_interactive.v",
+      "sha256": "a244cb35693adcb485d494386f6ee558eb0744121e2e820e31487b6cfe54892f",
+      "bytes": 5137
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f8c/complete/state_1.json",
+      "sha256": "76466d02367d31b30a91954085a07080f5e255a1ecbdba7de3fe12bcc0d8ea13",
+      "bytes": 8297
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f8c/complete/state_2.json",
+      "sha256": "48f9facddd26e9644dcf26f613006e3c00420d588988b5a412bd6c43df4f9aa6",
+      "bytes": 21694
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f8c/evidence.json",
+      "sha256": "773549e46c5a43b2054ee871a81271467a8dd68d95c05553c119edb9a724dcbe",
+      "bytes": 43969
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-on443/native/block_0x80041f8c/feedback/3f4e1a4fe1f71de661989db25472ee9fb4ae538e96140b12501091b32654ff16.json",
+      "sha256": "cfa64ae1763dd5fcb871e7ea77ddde00b8d0a3dad0a5748c4842ac61f06ecf72",
+      "bytes": 559
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-OFF/3652144-3a892988ba834d25950f94e0b11e7d54.json",
+      "sha256": "54dc7ec69807286a752588995951ab9e464ca3346c33afee09c072628fa5f391",
+      "bytes": 1836
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-OFF/3652144-3c64dd1720dc4276919606fd145d9245.json",
+      "sha256": "6bff9886a7bb2c71e5c802dff8628e56ac763d93177e74b72878510e7e3be51b",
+      "bytes": 1133
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-OFF/3652144-8206511989d948678f7a2983f3460aa8.json",
+      "sha256": "147418dea6cee7837d18c47286ce81ca55a12899bba20d03362bd23e8de00007",
+      "bytes": 1131
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-OFF/3652144-861b85a7f5ea4ab9b29e34fe484a7527.json",
+      "sha256": "c7361a0ecab474176a3fa3ceae2aacd08ffd159261ffa1916413ceea31565d46",
+      "bytes": 1838
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-OFF/3652144-a39d383bf23a4070a320190b49625088.json",
+      "sha256": "27585635d6e052ec43424048bdf3427ad6a9b245acfd83819d6ba00a17328ac5",
+      "bytes": 8778
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-OFF/3652144-a7f31d1759ef4d98a46f115a679f36bc.json",
+      "sha256": "2c42cf491206306d58eee4abe5be45dbb0f1c90510a673ec3b9ea06fa4d9b2b7",
+      "bytes": 1498
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-OFF/3652144-ab05eaa185ef40379c4c33675f293319.json",
+      "sha256": "2253b994c3ad6fadff4fd2712c3d8187be043b1b4c2e72f26589018270a0e456",
+      "bytes": 4104
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-OFF/3652144-e2dd646442004571b86576dc030e4f90.json",
+      "sha256": "147418dea6cee7837d18c47286ce81ca55a12899bba20d03362bd23e8de00007",
+      "bytes": 1131
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-OFF/3652148-0c07a9ed89c74aeca4cf1c8eb1f48d62.json",
+      "sha256": "1c78848eeba8caadef7ec98c60244f4ad01e3b05cd782f144b98ad618c981c17",
+      "bytes": 1840
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-OFF/3652148-38407056765d4c6396aea1671bfee64d.json",
+      "sha256": "1db6d90cdcb628d0ae2861edaf1df39d082f790020d150c94ec1091e8fca7ed0",
+      "bytes": 1840
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-OFF/3652148-5da7e86ebec74659ac56c1897020b3d0.json",
+      "sha256": "74bebdf6ce02f25e2a1c875090fd2f7feaa2b62bb5c854dc399a528bdb9498bb",
+      "bytes": 1131
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-OFF/3652148-622832510821466c88083e5f096ffca2.json",
+      "sha256": "0d11cf6af1b0526ea8a1ef1d109588fd0c0fad3b16bee06327b41e6adda070d1",
+      "bytes": 2943
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-OFF/3652148-831d056abb4b46faa08283fa64c535dd.json",
+      "sha256": "3cc6b3a9b56f4a309cb212f9545ac14da61cd1acc354d73ed372a970e5cace38",
+      "bytes": 1386
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-OFF/3652148-917bfac6aaed4e95be776c73d6ffc02b.json",
+      "sha256": "1757410c74cc1172935caf54d2ddc790971e8b7a3dd2b388f7cf4c6ba5736a0d",
+      "bytes": 1129
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-OFF/3652148-b104c94bfc3f4051bb79c0bb2730472c.json",
+      "sha256": "2c42cf491206306d58eee4abe5be45dbb0f1c90510a673ec3b9ea06fa4d9b2b7",
+      "bytes": 1498
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-OFF/3652148-ef3e22726e9042a6af1c89543cc2aae5.json",
+      "sha256": "74bebdf6ce02f25e2a1c875090fd2f7feaa2b62bb5c854dc399a528bdb9498bb",
+      "bytes": 1131
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652800-0e08b2e121d0458a90a8da75d28e7b0a.json",
+      "sha256": "2c42cf491206306d58eee4abe5be45dbb0f1c90510a673ec3b9ea06fa4d9b2b7",
+      "bytes": 1498
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652800-2182ebab25d44501beaa8d29cf79243e.json",
+      "sha256": "5e27706bc32ec5bbe93cc6d57575d89da3b19fe81a025d3a228c15a49c5180be",
+      "bytes": 19587
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652800-2d18f334f3d24705a6c6ef961432fa1a.json",
+      "sha256": "da24caa4ec8129e60bbb0a3feac693f987b5432f93a6d8b8eb6188fac0bfd8be",
+      "bytes": 1129
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652800-898fe9fe40584541a115bbc31554d9c8.json",
+      "sha256": "7c630443f1d7cc922294d6e9a5164ea872ecf0fdaa5a093edb5ca187c6f0dd8c",
+      "bytes": 1834
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652800-8f732bd8cec64baca122fea8acf6567c.json",
+      "sha256": "78dc5e595d9f5e9ce2cc1880aa7870f58728437aeb3249e6f0038542e517a168",
+      "bytes": 1832
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652800-aebd657fb1cf469aab3feafeec0faa14.json",
+      "sha256": "7e0c8f4d9f72ae59056fc35868ee7963a2fec766f1a5d9c6a78c4dc408406ed7",
+      "bytes": 1133
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652800-dcb9c86e488049459fbe9d4248a6cdb0.json",
+      "sha256": "da24caa4ec8129e60bbb0a3feac693f987b5432f93a6d8b8eb6188fac0bfd8be",
+      "bytes": 1129
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652800-e7d404e785c84b6b881c3b35e309a74e.json",
+      "sha256": "eb4ed71095ee524b0c3296ecc52c417c31747de8c2a0777147c4352ad8d52b9e",
+      "bytes": 4055
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652807-1152c2e6747142c6ac0b29664e457f00.json",
+      "sha256": "2c42cf491206306d58eee4abe5be45dbb0f1c90510a673ec3b9ea06fa4d9b2b7",
+      "bytes": 1498
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652807-182ddba46bed4567b498efb73d027660.json",
+      "sha256": "07d42c3b114cfc451491eba346276a5bddff9b82c7c7cb8131ac22a418449efe",
+      "bytes": 8780
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652807-1d9b78267a7d456789e50c47bf146ad1.json",
+      "sha256": "0f164dd1b2f5fdab50336173025b0c846b3d2815014fe7044988223e5e854af5",
+      "bytes": 1131
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652807-2c9639192afb4cc0afc447e8513aed40.json",
+      "sha256": "3da4dd56f414aaa48330a1dbd89e8a4b9e0901db007e79baead4e3de92bd5b9d",
+      "bytes": 9634
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652807-317a32d77acc4df1887d771a18e5d1c9.json",
+      "sha256": "91b4a96357f3549a4e9dd807924aa02637b31c7d7e65755fdd0991fe40845705",
+      "bytes": 1840
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652807-38a4150f6c224d7392bd83f1833f7f9c.json",
+      "sha256": "ce4008764f97a9e15d355fa839dafba5e85819dba547c47b52bb785749ce49eb",
+      "bytes": 1129
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652807-4def003b25ab404381deff97717058d5.json",
+      "sha256": "7e308b46c813b3d62179ac7893e45096339c4a0a394a3047831c3096db7a8b45",
+      "bytes": 1131
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652807-6deb3f11129e4767b1521dfdd2217680.json",
+      "sha256": "bbf0d3ec27c485f5f984aeee3ae5c4cc4b826f712b291f495ccab19440ddef70",
+      "bytes": 1840
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652807-89e826e582b14bb397f95ce513fcdb8b.json",
+      "sha256": "96f23892feaf863e71a773cb7f13f327f33f9c433cd8f5c6c158d9dccb9e53ed",
+      "bytes": 4101
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652807-96dc25598bd643ea958d0f84e3670428.json",
+      "sha256": "a4468e397d31989ed0b0a6094e570dcbe7b723967a1e62b883a902c8def41826",
+      "bytes": 1129
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652807-9b3f736dc6a84305890efcbbfd007776.json",
+      "sha256": "ce4008764f97a9e15d355fa839dafba5e85819dba547c47b52bb785749ce49eb",
+      "bytes": 1129
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652807-9e45826c595a40f986805651f01772ef.json",
+      "sha256": "2c42cf491206306d58eee4abe5be45dbb0f1c90510a673ec3b9ea06fa4d9b2b7",
+      "bytes": 1498
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652807-b01260b9c27a40e6ade51f333ad703d3.json",
+      "sha256": "a4468e397d31989ed0b0a6094e570dcbe7b723967a1e62b883a902c8def41826",
+      "bytes": 1129
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652807-c4340ac0965b401a8ef8f060632f54bf.json",
+      "sha256": "ffdeb4fbed16c244cddc7d14c691f7e2251130d60dec5ecc0176fecccd5aa719",
+      "bytes": 1836
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652807-dad058571cbf4f73a204783f182304c7.json",
+      "sha256": "291b9ca52fa893dec67331215fd49049a3aba72d963a0e6d970b219c45dc2090",
+      "bytes": 4101
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652807-ed8414ecbb8d472f8e7b5c07db887899.json",
+      "sha256": "413370f1fb3fbe191304e20947b56d20c0994108bae6e435aef6704dc99ebdd8",
+      "bytes": 1834
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652813-165a22b7a7b04ffb959bf0d7c4c9f4f3.json",
+      "sha256": "2c42cf491206306d58eee4abe5be45dbb0f1c90510a673ec3b9ea06fa4d9b2b7",
+      "bytes": 1498
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652813-226231b4e6f948fea3a7e75bae27d31d.json",
+      "sha256": "5da9936e64320b4f10e3f3ef3cce3358a7863f409510ec8e2d29dc23e0f3cc8e",
+      "bytes": 1834
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652813-3b209e9504b04a87a72db5d2b2ed8c47.json",
+      "sha256": "bccc382cb37306f2166465829725582ab8ab260b6e1fc055ccfd5a352c47629e",
+      "bytes": 1129
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652813-3ca380a170a74f9d9d7862a6df85c157.json",
+      "sha256": "02a2d2fb7576d84d89287423dabd36136bdec96c39bbb190ff4f94a4b69be830",
+      "bytes": 1386
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652813-737ab1707ee54406af9c44c4349d0169.json",
+      "sha256": "907331e69a7edf28f35de22ae876d151a92f2bf94ee1ee396672dc7b5ea3454c",
+      "bytes": 1127
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652813-87b809e2b6f54340858a0093b9e91f94.json",
+      "sha256": "bccc382cb37306f2166465829725582ab8ab260b6e1fc055ccfd5a352c47629e",
+      "bytes": 1129
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652813-9fe06cd11c8d4e8894bd26f58c6bef65.json",
+      "sha256": "4b9a34534b6c13b3e0bae6c31a6a8ab61478e431f25ce012ea2c2d4135694f5e",
+      "bytes": 2940
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-c-free-training4-pair/_build/free-training4-raw443/free-ON/3652813-e9d938086bf54c4a8ea16549236f9924.json",
+      "sha256": "7ea792e5d8bf04f0c6d734bf3a4569dbea935a69fb63e1a8c282b85af10128ac",
+      "bytes": 1834
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-free-off974.log",
+      "sha256": "c40de005ed7b360f28451bd337de5886d0ce6c2046f17a82beaeb276cda869a0",
+      "bytes": 5186
+    },
+    {
+      "path": "/home/cody/zesislar/.ai-coord/jobs/worker-build-2-20261016-210716-worker2-c-training4-free-on974.log",
+      "sha256": "1d1a28d3865b3e2f4222687fa08b393dd19b95f5ebe628ac541eec45c08a0233",
+      "bytes": 10372
+    }
+  ],
+  "original_Auto_controllers_untouched": true,
+  "audit977_untouched": true,
+  "replacement_launches": 0,
+  "measurement_limit": "Interrupted original records remain historical. No completed-run result or instruction progress follows from this stop."
+}
