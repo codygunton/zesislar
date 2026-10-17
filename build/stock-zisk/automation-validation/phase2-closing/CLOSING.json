@@ -224,7 +224,8 @@
       "interactive_closures": null,
       "pending_verification": null,
       "auto_controls": null,
-      "scope": "No result supplied by the allowed sources."
+      "scope": "Training5 was cancelled by the 2026-10-17 redirection. No final candidate comparison ran.",
+      "status": "not run"
     },
     {
       "run": "FINAL-candidate-ON",
@@ -238,7 +239,8 @@
       "interactive_closures": null,
       "pending_verification": null,
       "auto_controls": null,
-      "scope": "No result supplied by the allowed sources."
+      "scope": "Training5 was cancelled by the 2026-10-17 redirection. No final candidate comparison ran.",
+      "status": "not run"
     }
   ],
   "text_rows": [
@@ -337,7 +339,8 @@
       "within_inherited_scope_delta": null,
       "source_comments": [],
       "metrics_pointer": null,
-      "benefit": "FINAL candidate: no source-supported text count or result yet."
+      "benefit": "FINAL candidate: not run. Training5 was cancelled.",
+      "status": "not run"
     }
   ],
   "defects": [
@@ -378,7 +381,16 @@
     "Metrics top-level free.spent=false and pass_criteria.native=null are stale relative to holdout_result.status=spent. The explicit result controls this table.",
     "Historical F50 recordsON 15 plus 1 pending. The explicit final uncapped field and issue6227257551 record ON 16. Both stages remain distinct.",
     "A source comment initially called the failure an arithmetic deficit. Later F42/F43/F44 qualify that explanation. This report does not infer a new finisher comparison.",
-    "Final candidate fields remain null. These tables do not declare the pending final comparison complete."
+    "Final candidate comparison: not run. Null numerical fields are unmeasured, not zero."
   ],
-  "publication_base_root": "f3cf9f9b6ff08ffb29565a10f63556b43287606f"
+  "publication_base_root": "f3cf9f9b6ff08ffb29565a10f63556b43287606f",
+  "closing_status": "final",
+  "redirection": {
+    "date": "2026-10-17",
+    "authority": "Base PLAN_AUTOMATION_VALIDATION.md, Redirection 2026-10-17, Part A1/A3",
+    "training5": "cancelled",
+    "final_training_run": 4,
+    "accepted_best_training_verified": 12,
+    "run3_ON_16": "Unmerged diagnostic evidence with two Auto regressions."
+  }
 }
