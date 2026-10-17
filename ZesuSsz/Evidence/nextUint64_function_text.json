@@ -83,7 +83,8 @@
     "ZesuSsz/Evidence/nextUint64_function_text.json",
     "build/stock-zisk/automation-validation/nextuint64-compile-evidence/COMPILE.template.json",
     "build/stock-zisk/automation-validation/nextuint64-compile-evidence/RESULT.template.json",
-    "build/stock-zisk/automation-validation/nextuint64-registrations/CHECKPOINT.json"
+    "build/stock-zisk/automation-validation/nextuint64-registrations/CHECKPOINT.json",
+    "build/stock-zisk/automation-validation/nextuint64-selected-markers/CHECKPOINT.json"
   ],
   "files": [
     {
@@ -146,15 +147,15 @@
       "path": "ZesuSsz/Compliance/NextUint64UnfoldRegistrations.v",
       "category": "registrations",
       "scope": "whole_file",
-      "sha256": "09660cab7a350c34357622de1b1a50a21bbcea09f682f0ad424e128726239190",
-      "file_lines": 35,
+      "sha256": "742b54d2b742e7fd1593729d2542841a3faf585a476a92f87a6d76f0fba310bf",
+      "file_lines": 43,
       "line_ranges": [
         [
           1,
-          35
+          43
         ]
       ],
-      "counted_lines": 35
+      "counted_lines": 43
     },
     {
       "path": "ZesuSsz/Compliance/NextUint64Hints.v",
@@ -286,14 +287,14 @@
       "scope": "whole_file",
       "sha256": null,
       "hash_rule": "No circular self-hash. The outer certificate binds final bytes.",
-      "file_lines": 460,
+      "file_lines": 484,
       "line_ranges": [
         [
           1,
-          460
+          484
         ]
       ],
-      "counted_lines": 460
+      "counted_lines": 484
     },
     {
       "path": "ZesuSsz/Compliance/NextUint64ExitMeanings.v",
@@ -440,21 +441,44 @@
         ]
       ],
       "counted_lines": 7
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/nextuint64-selected-markers/CHECKPOINT.json",
+      "category": "tests_and_exports",
+      "role": "measurement_metadata",
+      "scope": "whole_file",
+      "sha256": "e40da24135cd28eb070c2fe91eb8273f0c694892765f57ac318bdff531c3bd77",
+      "file_lines": 44,
+      "line_ranges": [
+        [
+          1,
+          44
+        ]
+      ],
+      "counted_lines": 44
     }
   ],
   "category_totals": {
     "contracts": 643,
-    "introductions": 0,
-    "exit_meanings": 79,
     "loop_steps": 229,
-    "registrations": 103,
+    "registrations": 111,
+    "tests_and_exports": 1166,
+    "exit_meanings": 79,
     "generator_json": 4120,
-    "block_proofs": 0,
     "composition": 42,
-    "tests_and_exports": 1098
+    "introductions": 0,
+    "block_proofs": 0
   },
-  "interface_total": 5174,
-  "overall_total": 6314,
+  "interface_total": 5182,
+  "overall_total": 6390,
   "conservative_full_file_lines": 6877,
-  "historical_interface_total": 867
+  "historical_interface_total": 867,
+  "selected_marker_repair": {
+    "root": "ccd89437978d14ed07a8dcb49e4bd27dc89f74f6",
+    "function_owned_markers": 3,
+    "interface_delta": 8,
+    "DecodeItem_registration_source_unchanged": true,
+    "native_run": false,
+    "limit": "Availability controls only. Native cause and closure remain unmeasured."
+  }
 }

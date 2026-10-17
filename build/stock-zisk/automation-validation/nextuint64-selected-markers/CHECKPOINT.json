@@ -1,0 +1,44 @@
+{
+  "item": "nextUint64 selected-resource markers",
+  "root": "ccd89437978d14ed07a8dcb49e4bd27dc89f74f6",
+  "source": "ZesuSsz/Compliance/NextUint64UnfoldRegistrations.v",
+  "added_markers": [
+    "nextUint64SelectedCodeUnfold",
+    "nextUint64SelectedEntryUnfold",
+    "nextUint64SelectedExitUnfold"
+  ],
+  "scope": "Function-owned unfolding markers; no definition or contract changed.",
+  "DecodeItemUnfoldRegistrations": "Byte-identical to Root. Old markers retained as explicitly instructed.",
+  "static_import_limit": "Old markers are indirectly reachable through the bridge/compositional/DecodeItem chain. This change removes the foreign ownership dependency.",
+  "native_limit": "No instruction-lookup cause, native closure, or relaunch is proved here.",
+  "interface_delta": 8,
+  "MCP": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-free-ite-80eed12d/_build/nextuint64-markers-seal005/REPORT.json",
+    "sha256": "aea5036181f7fca5086a65cdc7935ee360e98ee77d510414c29e890eb4c25fe1",
+    "bindings": 35,
+    "direct_controls": 3,
+    "umbrella_controls": 3,
+    "all_zero_exports_and_advancing_Qed": 6,
+    "module_m_checks": 9,
+    "closed_Print_Assumptions": 9,
+    "assumptions": []
+  },
+  "gate": {
+    "exit": 0,
+    "elapsed_seconds": 97.8885600019712,
+    "root": "ccd89437978d14ed07a8dcb49e4bd27dc89f74f6",
+    "record": "/home/cody/zesislar/.worktrees/spec-b-free-ite-80eed12d/_build/nextuint64-markers-fast006/RESULT.json",
+    "sha256": "0cb06db4a8b4b367a16901d5fafbcc144654c2a33e10ffc39ccb953df7970c61"
+  },
+  "native_run": false,
+  "actual_selection": {
+    "direct": "The three new named markers.",
+    "umbrella": "Existing foreign DecodeItemUnfoldRegistrations instances11,12,13. Old module intentionally remains unchanged."
+  },
+  "interface_total": 5182,
+  "additional_gap_scope": "A final source audit established no additional concrete marker target.",
+  "status": "Three owned markers verified; mandatory check-fast passed.",
+  "source_sha256": "742b54d2b742e7fd1593729d2542841a3faf585a476a92f87a6d76f0fba310bf",
+  "publication_certificate": "/home/cody/zesislar/.worktrees/spec-b-free-ite-80eed12d/_build/nextuint64-markers-final007/REPORT.json",
+  "publication_note": "The publication certificate binds this checkpoint; no circular self-hash."
+}
