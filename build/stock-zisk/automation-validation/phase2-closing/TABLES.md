@@ -24,8 +24,8 @@ OFF and ON name comparison arms. They do not state merge status.
 |training3-uncapped872-ON|3aebfa260c6a38ef1abc9eae5ea4b342410de422|Same candidate/proof scope. Tool-side compilation timeouts removed. no new native comparison.|40|null|16|27|No new result. Earlier OFF 9/9, ON 7/9 remain.|[#13:6227257551](https://github.com/codygunton/zesislar/issues/13#issuecomment-6227257551) [#13:6219363359](https://github.com/codygunton/zesislar/issues/13#issuecomment-6219363359)|
 |training4-995-OFF|0bf4b23c2e99e93312bc05243a48657c3992780a|Candidate includes conditional ite-form leaf facts. Whole encoding switch OFF.|12|null|12|31|9/9 verified; largest CPU change +4.94% (arm split not recorded)|[#13:6227257551](https://github.com/codygunton/zesislar/issues/13#issuecomment-6227257551) [#13:6228963505](https://github.com/codygunton/zesislar/issues/13#issuecomment-6228963505)|
 |training4-995-ON|0bf4b23c2e99e93312bc05243a48657c3992780a|Candidate includes conditional ite-form leaf facts. Repaired goal-only keyed encoding switch ON.|30|null|12|31|9/9 verified; largest CPU change +4.94% (arm split not recorded)|[#13:6227257551](https://github.com/codygunton/zesislar/issues/13#issuecomment-6227257551) [#13:6228963505](https://github.com/codygunton/zesislar/issues/13#issuecomment-6228963505)|
-|FINAL-candidate-OFF|null|null|null|null|null|null|null|null|
-|FINAL-candidate-ON|null|null|null|null|null|null|null|null|
+|FINAL-candidate-OFF|not run|null|null|null|null|null|null|Training5 cancelled|
+|FINAL-candidate-ON|not run|null|null|null|null|null|null|Training5 cancelled|
 
 The 805 row preserves the initial zero VERIFIED closures. Its twelve interactive closures become VERIFIED only at validation 810.
 The uncapped supplement validates existing training 3 closures. It is not another native comparison.
@@ -48,7 +48,7 @@ Generic automation text is outside this total. A larger interface does not itsel
 |11135|11135|95|0|95|The value-bound hints enter both training 3 arms. OFF keeps 12 verified closures. ON reaches 16 after validation. Two Auto controls regress. The records do not isolate the benefit of these 95 lines.|[#13:6219363359](https://github.com/codygunton/zesislar/issues/13#issuecomment-6219363359) Metrics `/functions/alt_fl_alloc.free/interface_lines_value_bounds`.|
 |11306|11306|171|0|171|The conditional ite-form facts support the keyed repair comparison. Training 4 verifies 12 closures in each arm. No leaf closure gain occurs.|[#13:6226480623](https://github.com/codygunton/zesislar/issues/13#issuecomment-6226480623) [#13:6227257551](https://github.com/codygunton/zesislar/issues/13#issuecomment-6227257551) [#13:6228963505](https://github.com/codygunton/zesislar/issues/13#issuecomment-6228963505) Metrics `/functions/alt_fl_alloc.free/interface_lines_ite_facts`.|
 |11307|11307|1|0|1|The own-function umbrella exports the existing FreeSelected module. The count adds one line at cp-av-free-own-umbrella (1a4e2008). No isolated closure benefit is measured.| Metrics `/functions/alt_fl_alloc.free/interface_lines_own_umbrella`.|
-|FINAL candidate|null|null|null|null|FINAL candidate: no source-supported text count or result yet.|null|
+|FINAL candidate|null|null|null|null|FINAL candidate: not run. Training5 was cancelled.|null|
 
 The 11040 fully counted scope includes an inherited-scope total of 1648.
 The count expansion is 11040 − 1648 = 9392 lines.
@@ -68,5 +68,8 @@ The allowed records do not identify every file responsible for this expansion.
 The stale top-level `free.spent=false` flag does not override the explicit spent holdout result.
 The initial arithmetic-only explanation was qualified by later contract, introduction, and successor-binder findings.
 This report does not infer a new finisher transition from a closed theorem.
-The final candidate rows remain null. This report does not declare its pending comparison complete.
+The final candidate comparison did not run. Training5 was cancelled.
+Numerical fields remain null because no measurement exists.
+Run4 is final. Accepted best training has 12 verified closures.
+Run3 ON16 remains unmerged diagnostic evidence with two Auto regressions.
 Raw source snapshots and hashes stay in the untracked checkpoint package.

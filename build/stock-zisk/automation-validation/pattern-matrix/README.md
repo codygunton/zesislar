@@ -4,19 +4,21 @@ This matrix records decodeItem observations, free measurements, and nextUint64 p
 A residual cell describes the cited automation experiment.
 It does not reopen a completed production proof.
 The free column separates the frozen hold-out from training.
-The alloc column remains null.
-Every nextUint64 cell has status `predicted`.
+The alloc column records `not run`.
+Every nextUint64 cell has status `pending`.
+The result is pending the bounded six-block continuation.
+Each cell retains its original prediction.
 
-| Pattern | decodeItem | free HOLD-OUT 0/43 | free BEST TRAINING run3 ON 16 VERIFIED | nextUint64 | alloc |
+| Pattern | decodeItem | free HOLD-OUT 0/43 | free DIAGNOSTIC run3 ON 16 VERIFIED | nextUint64 | alloc |
 |---|---|---|---|---|---|
-| propagate | closed: nine Auto blocks | 0/12; literal/register equalities | 4/12 verified; cast buffer-range conjunctions | predicted close:62b8,62c0,6304,6310 | null |
-| introduce | residual: two closures, other obligations remain | 0/28; equalities and pure conjunctions | 12/28 verified; XOR/literal/subtraction, alignment, and class conjunctions | predicted residual/hand:62cc,632c | null |
-| store-literal | residual: R2 stops at region/index selection | 0/1; list witness | 0/1; list witness | predicted residual/hand:6274,62d8,632c | null |
-| store-symbolic | null: no native sample | 0/1; memory selection | 0/1; memory selection | predicted absent in bound classification | null |
-| return-with-frame | residual: R3 suffix comparison | 0/2; memory selection | 0/2; memory selection | predicted residual/hand:62e4 | null |
-| return-without-frame | null: no native sample | no sample | no sample | predicted absent in bound classification | null |
-| loop | residual: fold-step equation | no sample | no sample | predicted residual/hand:6318 | null |
-| call | null: no native sample | no sample | no sample | predicted residual/hand:6274 | null |
+| propagate | closed: nine Auto blocks | 0/12; literal/register equalities | 4/12 verified; cast buffer-range conjunctions | predicted close:62b8,62c0,6304,6310 | not run |
+| introduce | residual: two closures, other obligations remain | 0/28; equalities and pure conjunctions | 12/28 verified; XOR/literal/subtraction, alignment, and class conjunctions | predicted residual/hand:62cc,632c | not run |
+| store-literal | residual: R2 stops at region/index selection | 0/1; list witness | 0/1; list witness | predicted residual/hand:6274,62d8,632c | not run |
+| store-symbolic | null: no native sample | 0/1; memory selection | 0/1; memory selection | predicted absent in bound classification | not run |
+| return-with-frame | residual: R3 suffix comparison | 0/2; memory selection | 0/2; memory selection | predicted residual/hand:62e4 | not run |
+| return-without-frame | null: no native sample | no sample | no sample | predicted absent in bound classification | not run |
+| loop | residual: fold-step equation | no sample | no sample | predicted residual/hand:6318 | not run |
+| call | null: no native sample | no sample | no sample | predicted residual/hand:6274 | not run |
 
 `MATRIX.json` binds the source snapshots and each issue comment.
 It lists exact sites, rule names, stopping findings, and scope limits.
@@ -39,7 +41,8 @@ No alloc source was read.
 ## Free measurement scope
 
 The frozen hold-out remains final at0/43.
-Training run3 ON has16 verified closures after the uncapped verification supplement.
+Accepted best training has 12 verified closures in runs2 and4.
+The historical run3 ON candidate has16 verified closures after the uncapped verification supplement.
 The original comparison records8 verified closures and8 compile timeouts.
 The supplement verifies those8 unchanged sources.
 The candidate remains unmerged because two decodeItem Auto controls regress.
@@ -66,9 +69,22 @@ The return instruction is6300 inside block62e4.
 
 The four propagate-only blocks are predicted to close.
 The other six blocks retain the posted residual/hand prediction.
-The two absent-pattern cells are also explicitly predicted.
-No cell reports a measured native result.
+The two absent-pattern cells retain their original predictions.
+No cell reports the pending nine-block result.
 All native time, memory, result, and residual fields remain null.
 Later checked data lemmas do not revise the accepted predictions.
 Their existence does not establish native selection or closure.
 The exact comment, inventory, criterion, and source pin are bound in MATRIX.json.
+
+## Part A completion boundary
+
+Training5 was cancelled by the 2026-10-17 redirection.
+The nextUint64 observation is pending the bounded six-block continuation.
+Caller6274 stays outside that observation.
+Its 7200CPU no-response measurement and proved bridge remain separate call deliverables.
+Alloc did not run. Its source remains unread.
+
+Caller6274 is excluded from the nine-block run.
+Its primary request gave no response after 7200.8CPU seconds under a 7200CPU limit.
+Instruction progress, return, and residual classification remain unknown.
+The proved bridge remains a separate call deliverable.
