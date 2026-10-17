@@ -1,0 +1,156 @@
+{
+  "block_pc": "0x800d6274",
+  "build_dir": "/home/cody/zesislar/.worktrees/worker2-nextuint64-callsite-bdac600/_build/callsite-observer600/full658/build-config",
+  "chunk_writer": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-nextuint64-callsite-bdac600/_build/callsite-observer600/full658/bin/chunk_control.exe",
+    "sha256": "df9b6e34b860829311ce7a6e8fc3e5fae6165445ef27da1fc8dadbcdcea68bd7"
+  },
+  "declaration": "Lemma DesignedBoundary_800d6274 `{!islaG Sigma} `{!threadG} (params : NextUint64Args) (x1 : bv 64) (x2 : bv 64) (x5 : bv 64) (x6 : bv 64) (x7 : bv 64) (x8 : bv 64) (x9 : bv 64) (x10 : bv 64) (x11 : bv 64) (x12 : bv 64) (x13 : bv 64) (x14 : bv 64) (x15 : bv 64) (x16 : bv 64) (x17 : bv 64) (x18 : bv 64) (x19 : bv 64) (x20 : bv 64) (x21 : bv 64) (x22 : bv 64) (x23 : bv 64) (x24 : bv 64) (x25 : bv 64) (x26 : bv 64) (x27 : bv 64) (x28 : bv 64) (x29 : bv 64) (x30 : bv 64) (x31 : bv 64) (inputBytes : list byte) (sliceBytes : list byte)  :\n  instr_pre 0x800d62b8 (\u2203 (successor_x1 : bv 64) (successor_x2 : bv 64) (successor_x5 : bv 64) (successor_x6 : bv 64) (successor_x7 : bv 64) (successor_x8 : bv 64) (successor_x9 : bv 64) (successor_x10 : bv 64) (successor_x11 : bv 64) (successor_x12 : bv 64) (successor_x13 : bv 64) (successor_x14 : bv 64) (successor_x15 : bv 64) (successor_x16 : bv 64) (successor_x17 : bv 64) (successor_x18 : bv 64) (successor_x19 : bv 64) (successor_x20 : bv 64) (successor_x21 : bv 64) (successor_x22 : bv 64) (successor_x23 : bv 64) (successor_x24 : bv 64) (successor_x25 : bv 64) (successor_x26 : bv 64) (successor_x27 : bv 64) (successor_x28 : bv 64) (successor_x29 : bv 64) (successor_x30 : bv 64) (successor_x31 : bv 64) (successor_inputBytes : list byte) (successor_sliceBytes : list byte) (successor_decoded : list byte) (successor_saved : list byte), ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62b8 (params) (successor_x1) (successor_x2) (successor_x5) (successor_x6) (successor_x7) (successor_x8) (successor_x9) (successor_x10) (successor_x11) (successor_x12) (successor_x13) (successor_x14) (successor_x15) (successor_x16) (successor_x17) (successor_x18) (successor_x19) (successor_x20) (successor_x21) (successor_x22) (successor_x23) (successor_x24) (successor_x25) (successor_x26) (successor_x27) (successor_x28) (successor_x29) (successor_x30) (successor_x31) (successor_inputBytes) (successor_sliceBytes) (successor_decoded) (successor_saved))%I -\u2217\n  ZesuSsz.Contracts.NextUint64Selected.nextUint64SelectedCode -\u2217\n  instr_body 0x800d6274\n    (DesignedEntry_800d6274 params x1 x2 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 x16 x17 x18 x19 x20 x21 x22 x23 x24 x25 x26 x27 x28 x29 x30 x31 inputBytes sliceBytes).\n",
+  "entry_descriptors": {
+    "Lookup": {
+      "commands": {
+        "whole-rule": "\n  zesu_switch_enabled constr:(ZesuStepInstructionLookup);\n  lazymatch goal with\n  | |- envs_entails _ (find_in_context (FindInstrKind _ _) _) =>\n      zesu_expose_environment_alias;\n      iMatchHyp ltac:(fun H body =>\n        lazymatch body with\n        | instr_lookup_resources _ => fail\n        | _ =>\n            let head := get_head body in\n            let expanded := eval cbv beta delta [head] in body in\n            lazymatch expanded with\n            | instr_lookup_resources _ =>\n                progress iEval (unfold head) in H;\n                iDestruct H as \"#?\"\n            end\n        end)\n  end"
+      },
+      "log_filter": [
+        "Lookup",
+        "FindInstrKind",
+        "instr_lookup_resources",
+        "instr_pre"
+      ],
+      "rule": "Lookup",
+      "trials": [
+        {
+          "clause": "whole-rule",
+          "command": "\n  zesu_switch_enabled constr:(ZesuStepInstructionLookup);\n  lazymatch goal with\n  | |- envs_entails _ (find_in_context (FindInstrKind _ _) _) =>\n      zesu_expose_environment_alias;\n      iMatchHyp ltac:(fun H body =>\n        lazymatch body with\n        | instr_lookup_resources _ => fail\n        | _ =>\n            let head := get_head body in\n            let expanded := eval cbv beta delta [head] in body in\n            lazymatch expanded with\n            | instr_lookup_resources _ =>\n                progress iEval (unfold head) in H;\n                iDestruct H as \"#?\"\n            end\n        end)\n  end",
+          "exposure": "not-exposed"
+        }
+      ],
+      "typed_guard": {
+        "command": "(fun () => trace_bounded_ltac1_guard (fun () => ltac1:(idtac)) ltac1val:(fun _ => lazymatch goal with | |- envs_entails _ (find_in_context (FindInstrKind (0x800d62b4%Z) _) _) => constr:(true) | _ => constr:(false) end))",
+        "semantics": "switch-independent-discarded",
+        "sha256": "ae83b99009d32d92a368ff06f979decf40e3cdd215bdcba21a4b57114183e93c"
+      }
+    }
+  },
+  "guard_manifest": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-nextuint64-callsite-bdac600/_build/callsite-observer600/GUARDS.json",
+    "sha256": "952e9bacafd38d392b5d30ddc1de56338e54bc0bcec5465106df8907d4b075db"
+  },
+  "initial_residual_scope": "all-current-v1",
+  "instrumentation": {
+    "descriptors": {
+      "Lookup": {
+        "commands": {
+          "whole-rule": "\n  zesu_switch_enabled constr:(ZesuStepInstructionLookup);\n  lazymatch goal with\n  | |- envs_entails _ (find_in_context (FindInstrKind _ _) _) =>\n      zesu_expose_environment_alias;\n      iMatchHyp ltac:(fun H body =>\n        lazymatch body with\n        | instr_lookup_resources _ => fail\n        | _ =>\n            let head := get_head body in\n            let expanded := eval cbv beta delta [head] in body in\n            lazymatch expanded with\n            | instr_lookup_resources _ =>\n                progress iEval (unfold head) in H;\n                iDestruct H as \"#?\"\n            end\n        end)\n  end"
+        },
+        "log_filter": [
+          "Lookup",
+          "FindInstrKind",
+          "instr_lookup_resources",
+          "instr_pre"
+        ],
+        "rule": "Lookup",
+        "trials": [
+          {
+            "clause": "whole-rule",
+            "command": "\n  zesu_switch_enabled constr:(ZesuStepInstructionLookup);\n  lazymatch goal with\n  | |- envs_entails _ (find_in_context (FindInstrKind _ _) _) =>\n      zesu_expose_environment_alias;\n      iMatchHyp ltac:(fun H body =>\n        lazymatch body with\n        | instr_lookup_resources _ => fail\n        | _ =>\n            let head := get_head body in\n            let expanded := eval cbv beta delta [head] in body in\n            lazymatch expanded with\n            | instr_lookup_resources _ =>\n                progress iEval (unfold head) in H;\n                iDestruct H as \"#?\"\n            end\n        end)\n  end",
+            "exposure": "not-exposed"
+          }
+        ],
+        "typed_guard": {
+          "command": "(fun () => trace_bounded_ltac1_guard (fun () => ltac1:(idtac)) ltac1val:(fun _ => lazymatch goal with | |- envs_entails _ (find_in_context (FindInstrKind (0x800d62b4%Z) _) _) => constr:(true) | _ => constr:(false) end))",
+          "semantics": "switch-independent-discarded",
+          "sha256": "ae83b99009d32d92a368ff06f979decf40e3cdd215bdcba21a4b57114183e93c"
+        }
+      }
+    },
+    "entry_coverage_complete": false,
+    "instruction_coverage_complete": false,
+    "method": "bounded-kernel-v1",
+    "prepared_source_hashes": {
+      "/home/cody/zesislar/.worktrees/worker2-nextuint64-callsite-bdac600/_build/callsite-observer600/bridge640/Caller_observed.v": "21cd212e8120164473496aa2d5caecc57aabf849a4a8cb14be89861ee5f0a171"
+    },
+    "schema": 2,
+    "scope_note": "Exact call-site lookup selection. No completed-instruction or full-coverage claim.",
+    "source_filtered": false
+  },
+  "native_command": "try zesu_block.",
+  "observer_runtime": {
+    "bridge": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-nextuint64-callsite-bdac600/_build/callsite-observer600/full658/coqpath/P0Bounded/TraceObserver.vo",
+      "sha256": "623a9f72079a549992f5eb73b966f227d55430dd5e785ffaa8f8c3db513fe6fc"
+    },
+    "coqpath": "/home/cody/zesislar/.worktrees/worker2-nextuint64-callsite-bdac600/_build/callsite-observer600/full658/coqpath",
+    "kernel_reader": {
+      "bytes": 91306640,
+      "path": "/home/cody/zesislar/.worktrees/worker2-nextuint64-callsite-bdac600/_build/callsite-observer600/full658/bin/kernel_reader.exe",
+      "sha256": "56a4641235997aba5e9fcf1d23dcd7f965f64700ce24d15ef7f52373c364a359"
+    },
+    "kernel_toolchain": {
+      "bytes": 955324,
+      "path": "/home/cody/zesislar/.worktrees/worker2-nextuint64-callsite-bdac600/_build/callsite-observer600/full658/TOOLCHAIN660.json",
+      "sha256": "752dcbcddca21076e3913c6ad1e2c70ae821b9124c58b32e3a0bae96e7bd4af7"
+    },
+    "plugin": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-nextuint64-callsite-bdac600/_build/callsite-observer600/full658/library/p0-bounded-trace/trace-observer/bounded_trace_plugin.cmxs",
+      "sha256": "00d8df3f9d9ec2ac69baaaffc3c8882a5a330a30f8c79ce2206736a63d02840d"
+    },
+    "raw_budget_writer": {
+      "bytes": 6705,
+      "path": "/home/cody/zesislar/.worktrees/worker2-nextuint64-callsite-bdac600/_build/callsite-observer600/runtime618/tools/block/trace_block_raw_budget.py",
+      "sha256": "6a5be14754fe73d7311e6d907f35223d5fdae55415f25c81b9a030950abce944"
+    },
+    "raw_policy": "trigger-selected-raw-v2",
+    "surface_policy": "bounded-kernel-v1"
+  },
+  "prefix_commands": [
+    "iIntros \"Hreturn Hselected\".\niDestruct (nextUint64CallerResources with \"Hselected\") as \"[Hblock #Hcall]\"."
+  ],
+  "prefix_text": "iIntros \"Hreturn Hselected\".\niDestruct (nextUint64CallerResources with \"Hselected\") as \"[Hblock #Hcall]\".",
+  "residual_trials": [],
+  "rule_set": [
+    {
+      "enabled": true,
+      "name": "Lookup"
+    }
+  ],
+  "schema_version": 1,
+  "scope": {
+    "approved_input": {
+      "bytes": 10280,
+      "path": "/home/cody/zesislar/.worktrees/worker2-nextuint64-callsite-bdac600/_build/callsite-observer600/bridge640/Caller_observed.v",
+      "sha256": "21cd212e8120164473496aa2d5caecc57aabf849a4a8cb14be89861ee5f0a171"
+    },
+    "bridge_observation": {
+      "after_label": "callsite-bridge-premise-after-local-success",
+      "before_label": "callsite-bridge-premise-before",
+      "callback_source_sha256": "a34d392ecd85d12a7e26eda8db2faa0983603cb48839e164466bde6e0bc3168c",
+      "claims": "attempt and local callback return only",
+      "kind": "bounded-copied-callback-checkpoints",
+      "original_callback_sha256": "e5815699451b105f3c33f6f6c7f3474ec15639611059e6ea992c7d64f5771878",
+      "proof_roots": "included for both exact labels",
+      "raw_ceiling_bytes": 2000000000,
+      "schema": 1,
+      "selector": "envs_entails _ (zesu_instr_pre_match (@ZesuSsz.Compliance.NextUint64CallBridge.NextUint64CallState800d62b4 _ _ _) _ _)"
+    },
+    "commands": {
+      "bytes": 1850,
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-bridge-checkpoints640/DECLARATIONS.txt",
+      "sha256": "24e6340ee32fa34029859e431b2aee8c56d084a71e6a5eb035e6fa697e71582e"
+    },
+    "root": "bdac7cf9f4f50beac9de8ac4a958c72f00e48166",
+    "statement_sha256": "dc6801b4c88a6892a88864ea58df301e0b0ac5f647f7aa30458bf239e431ab6f"
+  },
+  "selected_rules": [
+    "Lookup"
+  ],
+  "source": "/home/cody/zesislar/.worktrees/worker2-nextuint64-callsite-bdac600/_build/callsite-observer600/bridge640/Caller_observed.v",
+  "source_prefix": "Require Import ZesuSsz.Automation.All.\nRequire Import ZesuSsz.Compliance.NextUint64Hints.\nRequire Import CallerResources.\nSet Printing Width 200.\nRequire Import isla.isla.\nFrom iris.proofmode Require Import environments.\nRequire Import ZesuSsz.Stock.Closure.index_nextUint64.\nRequire Import ZesuSsz.Contracts.NextUint64BlockEntries.\nRequire Import ZesuSsz.Automation.Approved.\nRequire Import ZesuSsz.Automation.Sets.call.\nRequire Import ZesuSsz.Automation.Switches.ReturnBundle.\nRequire Import ZesuSsz.Automation.ReturnWand.\nRequire Import ZesuSsz.Automation.Switches.ReturnWand.\nLtac chain_print_environment marker environment :=\n  let environment := eval hnf in environment in\n  lazymatch environment with\n  | environments.Enil => idtac\n  | environments.Esnoc ?rest ?name ?resource =>\n      chain_print_environment marker rest;\n      idtac marker resource \"CHAIN-FIELD-END\"\n  end.\nLtac chain_print_goal phase :=\n  idtac \"CHAIN-GOAL-BEGIN\" phase;\n  try (multimatch goal with\n    | Hlocal : ?T |- _ =>\n      idtac \"CHAIN-GOAL-LOCAL\" Hlocal \":\" T \"CHAIN-FIELD-END\";\n      let S := type of T in\n      idtac \"CHAIN-GOAL-SORT\" Hlocal \":\" S \"CHAIN-FIELD-END\";\n      try (multimatch goal with\n        | Hdefinition := ?value : _ |- _ =>\n          constr_eq Hdefinition Hlocal;\n          idtac \"CHAIN-GOAL-VALUE\" Hlocal \":\" value \"CHAIN-FIELD-END\"\n        end);\n      fail\n    end);\n  lazymatch goal with\n  | |- envs_entails ?environment ?conclusion =>\n      idtac \"CHAIN-GOAL-ENV\" \"iris\" \"CHAIN-FIELD-END\";\n      let persistent := eval cbv [environments.env_intuitionistic] in\n        (environments.env_intuitionistic environment) in\n      let spatial := eval cbv [environments.env_spatial] in\n        (environments.env_spatial environment) in\n      chain_print_environment \"CHAIN-GOAL-PERSISTENT\" persistent;\n      chain_print_environment \"CHAIN-GOAL-SPATIAL\" spatial;\n      idtac \"CHAIN-GOAL-CONCLUSION\" conclusion \"CHAIN-FIELD-END\"\n  | |- ?conclusion =>\n      idtac \"CHAIN-GOAL-ENV\" \"coq\" \"CHAIN-FIELD-END\";\n      idtac \"CHAIN-GOAL-CONCLUSION\" conclusion \"CHAIN-FIELD-END\"\n  end.\n\n(* Native successor capture; no resources added. *)\nRequire Import ZesuSsz.Automation.All.\nRequire Import ZesuSsz.Automation.SealedCoverage.\nRequire Import isla.riscv64.riscv64.\nRequire Import ZesuSsz.Contracts.NextUint64BlockEntries.\nRequire Import ZesuSsz.Automation.Approved.\n\nDefinition DesignedEntry_800d6274\n    `{!islaG Sigma} `{!threadG} (params : NextUint64Args) (x1 : bv 64) (x2 : bv 64) (x5 : bv 64) (x6 : bv 64) (x7 : bv 64) (x8 : bv 64) (x9 : bv 64) (x10 : bv 64) (x11 : bv 64) (x12 : bv 64) (x13 : bv 64) (x14 : bv 64) (x15 : bv 64) (x16 : bv 64) (x17 : bv 64) (x18 : bv 64) (x19 : bv 64) (x20 : bv 64) (x21 : bv 64) (x22 : bv 64) (x23 : bv 64) (x24 : bv 64) (x25 : bv 64) (x26 : bv 64) (x27 : bv 64) (x28 : bv 64) (x29 : bv 64) (x30 : bv 64) (x31 : bv 64) (inputBytes : list byte) (sliceBytes : list byte) : iProp Sigma :=\n  ((ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d6274 (params) (x1) (x2) (x5) (x6) (x7) (x8) (x9) (x10) (x11) (x12) (x13) (x14) (x15) (x16) (x17) (x18) (x19) (x20) (x21) (x22) (x23) (x24) (x25) (x26) (x27) (x28) (x29) (x30) (x31) (inputBytes) (sliceBytes)) \u2217\n   True)%I.\nGlobal Instance : LithiumUnfold (@DesignedEntry_800d6274) := I.\nGlobal Typeclasses Opaque DesignedEntry_800d6274.\n\n\nRequire Import ZesuSsz.Compliance.NextUint64CallBridge.\nRequire Import ZesuSsz.Compliance.NextUint64BridgeRegistrations.\nRequire Import ZesuSsz.Contracts.NextUint64BlockEntries.\n\nFrom P0Bounded Require Import TraceObserver.\nImport ZesuSsz.Automation.Hooks.\nImport ZesuSsz.Automation.SwitchDispatch.\nLtac callsite_original := \n  zesu_switch_enabled constr:(ZesuStepInstructionLookup);\n  lazymatch goal with\n  | |- envs_entails _ (find_in_context (FindInstrKind _ _) _) =>\n      zesu_expose_environment_alias;\n      iMatchHyp ltac:(fun H body =>\n        lazymatch body with\n        | instr_lookup_resources _ => fail\n        | _ =>\n            let head := get_head body in\n            let expanded := eval cbv beta delta [head] in body in\n            lazymatch expanded with\n            | instr_lookup_resources _ =>\n                progress iEval (unfold head) in H;\n                iDestruct H as \"#?\"\n            end\n        end)\n  end.\nLtac callsite_observed := ltac2:(trace_bounded_filtered \"Lookup\" (fun () => trace_bounded_ltac1_guard (fun () => ltac1:(idtac)) ltac1val:(fun _ => lazymatch goal with | |- envs_entails _ (find_in_context (FindInstrKind (0x800d62b4%Z) _) _) => constr:(true) | _ => constr:(false) end)) [] (fun () => ltac1:(\n  zesu_switch_enabled constr:(ZesuStepInstructionLookup);\n  lazymatch goal with\n  | |- envs_entails _ (find_in_context (FindInstrKind _ _) _) =>\n      zesu_expose_environment_alias;\n      iMatchHyp ltac:(fun H body =>\n        lazymatch body with\n        | instr_lookup_resources _ => fail\n        | _ =>\n            let head := get_head body in\n            let expanded := eval cbv beta delta [head] in body in\n            lazymatch expanded with\n            | instr_lookup_resources _ =>\n                progress iEval (unfold head) in H;\n                iDestruct H as \"#?\"\n            end\n        end)\n  end))).\n\nLtac ZesuSsz.Automation.Hooks.zesu_expose_instruction_lookup ::= ltac2:(trace_bounded_filtered \"Lookup\" (fun () => trace_bounded_ltac1_guard (fun () => ltac1:(idtac)) ltac1val:(fun _ => lazymatch goal with | |- envs_entails _ (find_in_context (FindInstrKind (0x800d62b4%Z) _) _) => constr:(true) | _ => constr:(false) end)) [] (fun () => ltac1:(\n  zesu_switch_enabled constr:(ZesuStepInstructionLookup);\n  lazymatch goal with\n  | |- envs_entails _ (find_in_context (FindInstrKind _ _) _) =>\n      zesu_expose_environment_alias;\n      iMatchHyp ltac:(fun H body =>\n        lazymatch body with\n        | instr_lookup_resources _ => fail\n        | _ =>\n            let head := get_head body in\n            let expanded := eval cbv beta delta [head] in body in\n            lazymatch expanded with\n            | instr_lookup_resources _ =>\n                progress iEval (unfold head) in H;\n                iDestruct H as \"#?\"\n            end\n        end)\n  end))).\n\nLtac callsite_bridge_original :=\n  lazymatch goal with\n  | |- envs_entails _ (@bi_exist _ ?T ?body) =>\n      let witness := zesu_tuple_witness T in\n      let instantiated := eval cbv beta in (body witness) in\n      lazymatch instantiated with\n      | zesu_instr_pre_match _ _ _ =>\n          notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod\n      end\n  | |- envs_entails _ (zesu_instr_pre_match ?available ?requested _) =>\n      first\n        [ unify available requested with typeclass_instances;\n          notypeclasses refine\n            (tac_fast_apply\n              (zesu_instr_pre_match_identity _ _ _ eq_refl) _)\n        | assert_fails (has_evar requested);\n          notypeclasses refine\n            (tac_fast_apply (zesu_instr_pre_match_wand _ _ _) _) ]\n  end.\n\nLtac callsite_bridge_observed :=\n  lazymatch goal with\n  | |- envs_entails _ (zesu_instr_pre_match ?available _ _) =>\n      lazymatch available with\n      | @ZesuSsz.Compliance.NextUint64CallBridge.NextUint64CallState800d62b4 _ _ _ =>\n          ltac2:(trace_bounded_snapshot \"callsite-bridge-premise-before\");\n          callsite_bridge_original;\n          ltac2:(trace_bounded_snapshot \"callsite-bridge-premise-after-local-success\")\n      | _ => callsite_bridge_original\n      end\n  | _ => callsite_bridge_original\n  end.\n\nLtac ZesuSsz.Automation.Hooks.zesu_liInstrPreMatch ::=\n  lazymatch goal with\n  | |- envs_entails _ (zesu_instr_pre_match ?available _ _) =>\n      lazymatch available with\n      | @ZesuSsz.Compliance.NextUint64CallBridge.NextUint64CallState800d62b4 _ _ _ =>\n          ltac2:(trace_bounded_snapshot \"callsite-bridge-premise-before\");\n          callsite_bridge_original;\n          ltac2:(trace_bounded_snapshot \"callsite-bridge-premise-after-local-success\")\n      | _ => callsite_bridge_original\n      end\n  | _ => callsite_bridge_original\n  end.\nLemma DesignedBoundary_800d6274 `{!islaG Sigma} `{!threadG} (params : NextUint64Args) (x1 : bv 64) (x2 : bv 64) (x5 : bv 64) (x6 : bv 64) (x7 : bv 64) (x8 : bv 64) (x9 : bv 64) (x10 : bv 64) (x11 : bv 64) (x12 : bv 64) (x13 : bv 64) (x14 : bv 64) (x15 : bv 64) (x16 : bv 64) (x17 : bv 64) (x18 : bv 64) (x19 : bv 64) (x20 : bv 64) (x21 : bv 64) (x22 : bv 64) (x23 : bv 64) (x24 : bv 64) (x25 : bv 64) (x26 : bv 64) (x27 : bv 64) (x28 : bv 64) (x29 : bv 64) (x30 : bv 64) (x31 : bv 64) (inputBytes : list byte) (sliceBytes : list byte)  :\n  instr_pre 0x800d62b8 (\u2203 (successor_x1 : bv 64) (successor_x2 : bv 64) (successor_x5 : bv 64) (successor_x6 : bv 64) (successor_x7 : bv 64) (successor_x8 : bv 64) (successor_x9 : bv 64) (successor_x10 : bv 64) (successor_x11 : bv 64) (successor_x12 : bv 64) (successor_x13 : bv 64) (successor_x14 : bv 64) (successor_x15 : bv 64) (successor_x16 : bv 64) (successor_x17 : bv 64) (successor_x18 : bv 64) (successor_x19 : bv 64) (successor_x20 : bv 64) (successor_x21 : bv 64) (successor_x22 : bv 64) (successor_x23 : bv 64) (successor_x24 : bv 64) (successor_x25 : bv 64) (successor_x26 : bv 64) (successor_x27 : bv 64) (successor_x28 : bv 64) (successor_x29 : bv 64) (successor_x30 : bv 64) (successor_x31 : bv 64) (successor_inputBytes : list byte) (successor_sliceBytes : list byte) (successor_decoded : list byte) (successor_saved : list byte), ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64EntryAt800d62b8 (params) (successor_x1) (successor_x2) (successor_x5) (successor_x6) (successor_x7) (successor_x8) (successor_x9) (successor_x10) (successor_x11) (successor_x12) (successor_x13) (successor_x14) (successor_x15) (successor_x16) (successor_x17) (successor_x18) (successor_x19) (successor_x20) (successor_x21) (successor_x22) (successor_x23) (successor_x24) (successor_x25) (successor_x26) (successor_x27) (successor_x28) (successor_x29) (successor_x30) (successor_x31) (successor_inputBytes) (successor_sliceBytes) (successor_decoded) (successor_saved))%I -\u2217\n  ZesuSsz.Contracts.NextUint64Selected.nextUint64SelectedCode -\u2217\n  instr_body 0x800d6274\n    (DesignedEntry_800d6274 params x1 x2 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 x16 x17 x18 x19 x20 x21 x22 x23 x24 x25 x26 x27 x28 x29 x30 x31 inputBytes sliceBytes).\nProof.\n",
+  "stop": {
+    "kind": "rule",
+    "value": "Lookup"
+  },
+  "theorem": "DesignedBoundary_800d6274",
+  "workspace": "/home/cody/zesislar/.worktrees/worker2-nextuint64-callsite-bdac600",
+  "writer_id": "worker2-a"
+}

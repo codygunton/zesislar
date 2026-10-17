@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "result": null,
+  "changed_inputs": [],
+  "request": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-final662/REQUEST.json",
+    "sha256": "191f7a40b87a55efbea8f2427afc73b48947e017580cb3070f418d41251d18b3",
+    "bytes": 22186
+  },
+  "inventory": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-final662/INVENTORY.json",
+    "sha256": "58a8f82c0a243f1ccd4ca9e88543b7113ceade1ae44dcbe74200f7f2c5eeca73",
+    "bytes": 1070354
+  }
+}

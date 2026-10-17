@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "outcome": "authorized-historical-capture-stop",
+  "finished_at": "2026-10-17T20:11:05.925239+00:00",
+  "before": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-final-stop1066/BEFORE.json",
+    "sha256": "21625bc253b4a8eb9a3940d88afb4e8aa6754a9cc63102c5584443b1c2c341b8",
+    "bytes": 5625
+  },
+  "actions": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-callsite-final-stop1066/ACTIONS.json",
+    "sha256": "28bc13c1beef8d4cb0aa7107c4dc91ee292e7cbeafcc84556d4595a03026ed25",
+    "bytes": 2848
+  },
+  "remaining_owned_processes": [],
+  "owned_cleanup_complete": true,
+  "scope_status": {
+    "returncode": 0,
+    "stdout": "ActiveState=inactive\nSubState=dead\nControlGroup=\n",
+    "stderr": ""
+  },
+  "registry_edits": 0,
+  "reservation_cleanup": [
+    {
+      "original": "/run/user/1000/zesu-guard/coqc-reservations/3165822.23163.17948",
+      "exists": false
+    }
+  ],
+  "external_scope_stops": 0,
+  "relaunches": 0,
+  "SESSION_exists": false,
+  "normal_closure_claim": false,
+  "limit": "The final seal must retain actual SESSION status. External stop does not establish normal closure."
+}
