@@ -3,6 +3,8 @@ From stdpp Require Import bitvector.definitions.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Machine.
+Require Import InstrSpecs.Lookup.
+Require Import ZesuSsz.Contracts.SelectedCodeLookup.
 Require Import ZesuStock.CalleeIdentity.
 Require Import ZesuSsz.Stock.Closure.index_nextUint64.
 Require Import ZesuSsz.Contracts.AbiBytes.
@@ -15,9 +17,8 @@ Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
 Open Scope Z_scope.
 
 Definition nextUint64SelectedCode `{!islaG Sigma} `{!threadG} : iProp Sigma :=
-  (([∗ list] instruction ∈
-     ZesuSsz.Stock.Closure.index_nextUint64.instr_map,
-     instr instruction.1 (Some instruction.2)) ∗
+  (instr_lookup_resources
+     (selectedCodeLookup ZesuSsz.Stock.Closure.index_nextUint64.instr_map) ∗
    decodeItemSelectedCode)%I.
 
 Definition nextUint64SliceBefore (args : NextUint64Call) : list byte :=

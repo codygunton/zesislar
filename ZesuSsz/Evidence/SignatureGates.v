@@ -17,6 +17,8 @@ Require Import ZesuSsz.Contracts.ParentHeaderRung2.
 Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.
 Require Import ZesuSsz.Contracts.DecodeItemSelected.
 Require Import ZesuSsz.Contracts.NextUint64Selected.
+Require Import InstrSpecs.Lookup.
+Require Import ZesuSsz.Contracts.SelectedCodeLookup.
 Require Import ZesuSsz.Contracts.ParentHeaderSelected.
 Require Import ZesuSsz.Stock.Closure.index_nextUint64.
 Require Import ZesuSsz.Stock.Closure.index_decodeParentHeader.
@@ -175,9 +177,8 @@ Check (eq_refl : parentHeaderMemcpySource = 0x80114fb8%Z).
 
 Definition ReviewedNextUint64SelectedCode `{!islaG Sigma} `{!threadG} :
     iProp Sigma :=
-  (([∗ list] instruction ∈
-     ZesuSsz.Stock.Closure.index_nextUint64.instr_map,
-     instr instruction.1 (Some instruction.2)) ∗
+  (instr_lookup_resources
+     (selectedCodeLookup ZesuSsz.Stock.Closure.index_nextUint64.instr_map) ∗
    decodeItemSelectedCode)%I.
 
 Definition ReviewedParentHeaderSelectedCode `{!islaG Sigma} `{!threadG} :

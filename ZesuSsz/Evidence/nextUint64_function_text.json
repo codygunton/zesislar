@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "function": "rlp_decode.nextUint64",
-  "status": "Checked data registrations and callee installation bridge. No native caller proof or execution claim.",
-  "snapshot_base_root": "6eb85c37374307001a3a407edb6d20d64ab37c2b",
+  "status": "F55 selected-code lookup representation. Existing callee installation bridge rechecked. No native nextUint64 proof or run claim.",
+  "snapshot_base_root": "1c0be2b094abf6137c70e7fa5071f45ac0075fd7",
   "umbrella": "ZesuSsz.Compliance.NextUint64Hints",
   "counting_rules": {
     "unit": "Physical lines including comments and blank lines. A final line without newline counts once.",
@@ -105,15 +105,15 @@
       "path": "ZesuSsz/Contracts/NextUint64Selected.v",
       "category": "contracts",
       "scope": "whole_file",
-      "sha256": "56915c500d67b048c69bc14c75bfcbdb93e02ec3260206b4cafa5a6c3c4f6c07",
-      "file_lines": 90,
+      "sha256": "f4de10980f69c45b1122744cae6fb7665a119ef79c3bc27a81f7f826c5d8ee10",
+      "file_lines": 91,
       "line_ranges": [
         [
           1,
-          90
+          91
         ]
       ],
-      "counted_lines": 90
+      "counted_lines": 91
     },
     {
       "path": "ZesuSsz/Contracts/NextUint64Contract.v",
@@ -252,8 +252,8 @@
       "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "33dbcd92c42c35c3905e1c07db9cf5dadec061e2bf6ee03c6d700c309600c651",
-      "file_lines": 295,
+      "sha256": "1248aa3b25d2caf6785ea697d2891e9af2103c52bd9f4452b552ff30d6ba612d",
+      "file_lines": 302,
       "line_ranges": [
         [
           196,
@@ -404,7 +404,7 @@
       "path": "ZesuSsz/Evidence/next_uint64_block_design.json",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "81bc9305cd0a859fe42953aa95cccdc73b72f4e70fe3adff19d72bf77c727047",
+      "sha256": "a39099105be9214b0b915ffeabd7b5edd7bd80f118e0e6ef7464ac9f5620b704",
       "file_lines": 2207,
       "line_ranges": [
         [
@@ -418,15 +418,15 @@
       "path": "ZesuSsz/Compliance/NextUint64CallBridge.v",
       "category": "composition",
       "scope": "whole_file",
-      "sha256": "f5f43d5273fca4b6f01061130e3db3b749617d56bf193529c500f2f7e4e6cf45",
-      "file_lines": 42,
+      "sha256": "29b8d451207a988d679ec788bebc86c75c69d8d1866236fe76a0f297cd209b6e",
+      "file_lines": 43,
       "line_ranges": [
         [
           1,
-          42
+          43
         ]
       ],
-      "counted_lines": 42
+      "counted_lines": 43
     },
     {
       "path": "ZesuSsz/Compliance/NextUint64BridgeRegistrations.v",
@@ -459,19 +459,19 @@
     }
   ],
   "category_totals": {
-    "contracts": 643,
+    "contracts": 644,
     "loop_steps": 229,
     "registrations": 111,
     "tests_and_exports": 1166,
     "exit_meanings": 79,
     "generator_json": 4120,
-    "composition": 42,
+    "composition": 43,
     "introductions": 0,
     "block_proofs": 0
   },
-  "interface_total": 5182,
-  "overall_total": 6390,
-  "conservative_full_file_lines": 6877,
+  "interface_total": 5183,
+  "overall_total": 6392,
+  "conservative_full_file_lines": 6962,
   "historical_interface_total": 867,
   "selected_marker_repair": {
     "root": "ccd89437978d14ed07a8dcb49e4bd27dc89f74f6",
