@@ -1906,6 +1906,10 @@
         "source_hashes": {
           "ZesuSsz/Contracts/DecodeItemCompositional.v": "50d8c05339ffe8a09838bc03d61bf9edb424494b75451d249a531e79da93a426",
           "ZesuSsz/Contracts/RlpDecodeItemContract.v": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a"
+        },
+        "code_resource": "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedCode",
+        "code_source_hashes": {
+          "ZesuSsz/Contracts/DecodeItemSelected.v": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804"
         }
       }
     ]

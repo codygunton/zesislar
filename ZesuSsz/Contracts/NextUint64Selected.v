@@ -17,9 +17,8 @@ Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
 Open Scope Z_scope.
 
 Definition nextUint64SelectedCode `{!islaG Sigma} `{!threadG} : iProp Sigma :=
-  (instr_lookup_resources
-     (selectedCodeLookup ZesuSsz.Stock.Closure.index_nextUint64.instr_map) ∗
-   decodeItemSelectedCode)%I.
+  instr_lookup_resources
+    (selectedCodeLookup ZesuSsz.Stock.Closure.index_nextUint64.instr_map).
 
 Definition nextUint64SliceBefore (args : NextUint64Call) : list byte :=
   word64Bytes args.(nextInputPointer) ++
