@@ -1,0 +1,1217 @@
+[
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/early-calls/0008-rocq_check-request.json",
+    "sha256": "21a5545f1abe2c17b4658b4b22026be3945577581e069c5744dad721af627fcb",
+    "bytes": 241
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/early-calls/0008-rocq_check-raw.json",
+    "sha256": "00ab874aaa36edabe32cb9b747d2af0403f4e39f1846645d4328eb911d538fc6",
+    "bytes": 491
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/evidence.json",
+    "sha256": "105bff9f027dda90f5baf7adc51f3874506a7f00f391c4d1e04ba45376fecf3c",
+    "bytes": 22689
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/Boundary.v",
+    "sha256": "73591bf53604d023d602fd27570d31df1ae6299017b94c4bea0fc316eec15d56",
+    "bytes": 7803
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/Boundary_interactive.v",
+    "sha256": "5c7370a0358691b85ef4d397399bf9d282bf897b3accbf1dbad2554c78877ec3",
+    "bytes": 7741
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/early-evidence.json",
+    "sha256": "b24626d87cc4ddd911486884bcc6135a33ba9eee0dba1d59b3716e8c3e48dc28",
+    "bytes": 27702
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/early-calls/0001-initialize-request.json",
+    "sha256": "6af895c49b1013b904315a575fedf2c014c71ab0d0b1996def0c3361b35a709e",
+    "bytes": 167
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/early-calls/0001-initialize-raw.json",
+    "sha256": "f35a57e84ece51d3fd1e4662a2ca67c78b4a787758c89d9e198d19f261562d4f",
+    "bytes": 565
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/early-calls/0002-rocq_health-request.json",
+    "sha256": "daffc8a6985f057209663976506bfed8319aca87c8985ede63b7e119152a5960",
+    "bytes": 168
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/early-calls/0002-rocq_health-raw.json",
+    "sha256": "da21e7772644db11d30527c4a748e95dda0057ac335865c99bfe5ebdd2b11a58",
+    "bytes": 1389
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/early-calls/0003-rocq_start-request.json",
+    "sha256": "04b50b543aef920dc652df6684a60fe973c097c43639db4d2dba0ef8f23686a0",
+    "bytes": 485
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/early-calls/0003-rocq_start-raw.json",
+    "sha256": "5c1a4b816e9bd393bb819e18a8a7452a2bdde4460bd816726f692e836f3ebe54",
+    "bytes": 6170
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/early-calls/0004-rocq_diag-request.json",
+    "sha256": "aca6bbf51cfefd2456aa56eefeaef43d01713636e95f2e8574ed7edaad26f53b",
+    "bytes": 166
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/early-calls/0004-rocq_diag-raw.json",
+    "sha256": "3424933f4da14d557e3504e4ed78d675cafd19c6602e71b22fc0ef8e614c45ce",
+    "bytes": 1723
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/early-calls/0005-rocq_diag-request.json",
+    "sha256": "878c33ee327917d76c6b02f34ffef58dae1f08f016e5eeeed16be5e6a93e2766",
+    "bytes": 166
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/early-calls/0005-rocq_diag-raw.json",
+    "sha256": "6877be9804665fa73bce0b710f1bebe8472c60ac2e3ded66edb026da6c30f18b",
+    "bytes": 1723
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/early-calls/0006-rocq_complete_goals-request.json",
+    "sha256": "4b03beabc1b27af891f357fb1af8e1acea0fa666ba85ddf7454eb1f58d7b61ac",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/early-calls/0006-rocq_complete_goals-raw.json",
+    "sha256": "c061edb3734bf6460cd12c7181a944d25960210e79a0b7cdd41568c890f0b0d4",
+    "bytes": 1031
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/early-calls/0007-rocq_complete_goals-request.json",
+    "sha256": "bd5f38751115519ac1c59f85ef21e9f6a6db7e6333cab5d24eca91a0103d6952",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/early-calls/0007-rocq_complete_goals-raw.json",
+    "sha256": "c061edb3734bf6460cd12c7181a944d25960210e79a0b7cdd41568c890f0b0d4",
+    "bytes": 1031
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/complete/state_1.json",
+    "sha256": "41bab240444917939b68abf4cd1ede8ed2334a0c92bb3e71e986252f96888f3e",
+    "bytes": 25002
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/early-calls/0008-rocq_check-request.json",
+    "sha256": "415412506ea59ce1636f4160c7dc11512bc602db97f06202ed485ca2a9ee2320",
+    "bytes": 241
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/early-calls/0008-rocq_check-raw.json",
+    "sha256": "00ab874aaa36edabe32cb9b747d2af0403f4e39f1846645d4328eb911d538fc6",
+    "bytes": 491
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/evidence.json",
+    "sha256": "388510ea0506675adf9d8fc28e02105e97145013dc131757716c7ad64c69ebeb",
+    "bytes": 22692
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/Boundary.v",
+    "sha256": "5ca88f3051b1efa14a56eb16085fe67f389116ddd4049c59d07d08c7f15e2e84",
+    "bytes": 7803
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/Boundary_interactive.v",
+    "sha256": "3cbc30688d8f600214e6f29754a9518a46b1d22873f2a0176847cf8f16c8c499",
+    "bytes": 7741
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/early-evidence.json",
+    "sha256": "3637fa572f42c56b0a0ad2f326045de53eaf8bd7e8e6c6bb057052c229acbde4",
+    "bytes": 27702
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/early-calls/0001-initialize-request.json",
+    "sha256": "e4855aebd6e9d9a3dcbab2ed7fd1b695b29592044c0ca82754c1033556dccbd8",
+    "bytes": 167
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/early-calls/0001-initialize-raw.json",
+    "sha256": "f35a57e84ece51d3fd1e4662a2ca67c78b4a787758c89d9e198d19f261562d4f",
+    "bytes": 565
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/early-calls/0002-rocq_health-request.json",
+    "sha256": "51bc71cabee7f36842a16329dc899d78b7111ab6c30e34b9ef932160ce246fe5",
+    "bytes": 168
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/early-calls/0002-rocq_health-raw.json",
+    "sha256": "da21e7772644db11d30527c4a748e95dda0057ac335865c99bfe5ebdd2b11a58",
+    "bytes": 1389
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/early-calls/0003-rocq_start-request.json",
+    "sha256": "3b82dce60b3a1d3eb672cd017b5139bdda043e6d8a41cfe529af0fc3cc56e567",
+    "bytes": 485
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/early-calls/0003-rocq_start-raw.json",
+    "sha256": "2c653fb146874f52bc8b372c74e637c28b445e9b0d8e22291f8f54b073a189a4",
+    "bytes": 6170
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/early-calls/0004-rocq_diag-request.json",
+    "sha256": "b660876ab4767d76e2df6feb88737836889ce90b476ff82c208c5a0a5a312087",
+    "bytes": 166
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/early-calls/0004-rocq_diag-raw.json",
+    "sha256": "e2706657df28f8b126df750693a62eb258997a02f8b2773740048c82ec47971a",
+    "bytes": 1727
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/early-calls/0005-rocq_diag-request.json",
+    "sha256": "f023daac44dbeee52ac9526eb2fcce98b0e8c9f0b9c53267b5da104f47df58d0",
+    "bytes": 166
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/early-calls/0005-rocq_diag-raw.json",
+    "sha256": "1dd7a25a7cd7822901cf33c3bf9aa257f5932b1d56a9e01c40f6f4f117e49cea",
+    "bytes": 1727
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/early-calls/0006-rocq_complete_goals-request.json",
+    "sha256": "3f93555c02cf4c0fb204122601fc20df5d2c2934dcf13e0cc54d6cf02bcc21e8",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/early-calls/0006-rocq_complete_goals-raw.json",
+    "sha256": "d8bc830ab43d6ac359ad2a4928fd18530fb6748f610761ceda1c64dc080d8a54",
+    "bytes": 1031
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/early-calls/0007-rocq_complete_goals-request.json",
+    "sha256": "0c2c709d54d2b28b4a50cdfec6613bf384838fe2980bf548b49f43274b27492e",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/early-calls/0007-rocq_complete_goals-raw.json",
+    "sha256": "d8bc830ab43d6ac359ad2a4928fd18530fb6748f610761ceda1c64dc080d8a54",
+    "bytes": 1031
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/complete/state_1.json",
+    "sha256": "1f4a1da89a02a2d6ca24585501df602811d8497cef10541eb32c63a47ee00dce",
+    "bytes": 25002
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62cc/early-calls/0008-rocq_check-request.json",
+    "sha256": "3b8401bf709573b5e36f6cdafef33a7558f2c62c030c9c156d0db0cc7fe4a239",
+    "bytes": 241
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-stop1018/REPORT.json",
+    "sha256": "f5c1ec3814a967f4535908fa0d057e58539f96e2baa6859ba727f7443bef6e20",
+    "bytes": 1591
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62cc/Boundary.v",
+    "sha256": "2fd53bc811c8774a927cf0ddae6475eec7edc135025417b0261cdd81ccc2e510",
+    "bytes": 7803
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62cc/Boundary_interactive.v",
+    "sha256": "bebe2e85a4b07bfcd8b47b4f68dc78e5789d8fe08e71cd336ac40e6cced54ecc",
+    "bytes": 7741
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62cc/early-calls/0001-initialize-request.json",
+    "sha256": "6d496e4edb00a55b5800b745de990c786770fe98a8636f3eaec31fae77db44c9",
+    "bytes": 167
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62cc/early-calls/0001-initialize-raw.json",
+    "sha256": "f35a57e84ece51d3fd1e4662a2ca67c78b4a787758c89d9e198d19f261562d4f",
+    "bytes": 565
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62cc/early-calls/0002-rocq_health-request.json",
+    "sha256": "53db33eb2218f0ba4afbc9d7dde52dbd085d108eb6fed798d3f3d3a60bd95618",
+    "bytes": 168
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62cc/early-calls/0002-rocq_health-raw.json",
+    "sha256": "da21e7772644db11d30527c4a748e95dda0057ac335865c99bfe5ebdd2b11a58",
+    "bytes": 1389
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62cc/early-calls/0003-rocq_start-request.json",
+    "sha256": "ed5b06ff386f103fa137508aeadf099123909700b8afed4952921c0df01e8605",
+    "bytes": 485
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62cc/early-calls/0003-rocq_start-raw.json",
+    "sha256": "1004d90c1fffab02be1efc0a5d36af2e21ddf148fc907bcb82979e5d44cc42e5",
+    "bytes": 6170
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62cc/early-calls/0004-rocq_diag-request.json",
+    "sha256": "9f7568627ed024c3aaf45d7b1b87997751ab67613276cc1720eef629e2b2ffcc",
+    "bytes": 166
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62cc/early-calls/0004-rocq_diag-raw.json",
+    "sha256": "d5743b0c20f770d176f790d511dc2e4c49a7a795e097015106886614c09c3263",
+    "bytes": 1719
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62cc/early-calls/0005-rocq_diag-request.json",
+    "sha256": "94e3fa5bfd5c924fb95d5394325bff8874808990367d3ec9b691d2445f0708ba",
+    "bytes": 166
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62cc/early-calls/0005-rocq_diag-raw.json",
+    "sha256": "a283b81de53503d86c697fd783719296f4c1320e087be515afe4ff7aeb8051b3",
+    "bytes": 1717
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62cc/early-calls/0006-rocq_complete_goals-request.json",
+    "sha256": "875186c8d2b734eaf49eb9b1f028fce78eb9275dba18fc25f1251ce78e602f85",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62cc/early-calls/0006-rocq_complete_goals-raw.json",
+    "sha256": "92b75d4376a48da733d2573919a7a1703ff47d21999578df0dcc8e851bbd900d",
+    "bytes": 1031
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62cc/early-calls/0007-rocq_complete_goals-request.json",
+    "sha256": "5c8adb8f4597ce9ede8cae37450e60591b9e7173b76682596454b7d87c5f0093",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62cc/early-calls/0007-rocq_complete_goals-raw.json",
+    "sha256": "92b75d4376a48da733d2573919a7a1703ff47d21999578df0dcc8e851bbd900d",
+    "bytes": 1031
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62cc/complete/state_1.json",
+    "sha256": "4b6579a6433d0dd60f69de33bb6e3b147a2431905c8074f19328e9d909ab3458",
+    "bytes": 25002
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0008-rocq_check-request.json",
+    "sha256": "9fde750b2d95151bfd850db701d02b82c0ced8e596a6f4840b580d6bd07a0154",
+    "bytes": 241
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0008-rocq_check-raw.json",
+    "sha256": "3b7641311b98d03958cef6f878abf1f246add5159b1d8976d8bed4f33bd04290",
+    "bytes": 19197
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/evidence.json",
+    "sha256": "c22f66e284be2315b6961aa38db74530d7217bfa5be655b9086f1d34231bfb26",
+    "bytes": 150188
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/Boundary.v",
+    "sha256": "9c87fdb821083084ebb156782d10b18a172914ca5c2da61580bc466e02fd7d04",
+    "bytes": 6387
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/Boundary_interactive.v",
+    "sha256": "3f4beb86af436afb898fbacc9877630a5b318a5e44f2c993a5a6e53565656876",
+    "bytes": 6325
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/complete/state_2.json",
+    "sha256": "9f919ae3b5b748b46f2cc411fc0e3dbebe0594b98e7255eb35e88e87c6f99d3e",
+    "bytes": 1208356
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-continuation1022/results/0x800d62d8/RESULT.json",
+    "sha256": "a979f736115f0262e9464b152c8025df25295fb545dd9528706b74ec61297fc0",
+    "bytes": 39811
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-evidence.json",
+    "sha256": "f4804cba04b36f47692b0ab4d3b2370e633c6a413ad29f8c630b711b6aff36b3",
+    "bytes": 162342
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0001-initialize-request.json",
+    "sha256": "fd1c1c604a182b961e59e99759a2b14e97f656d78de37f8f6c8280d1e6ecb997",
+    "bytes": 167
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0001-initialize-raw.json",
+    "sha256": "f35a57e84ece51d3fd1e4662a2ca67c78b4a787758c89d9e198d19f261562d4f",
+    "bytes": 565
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0002-rocq_health-request.json",
+    "sha256": "344c12e8ca54ef001215996247ab0ed0c6f0e3beb50a7f350733222b45285e2d",
+    "bytes": 168
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0002-rocq_health-raw.json",
+    "sha256": "da21e7772644db11d30527c4a748e95dda0057ac335865c99bfe5ebdd2b11a58",
+    "bytes": 1389
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0003-rocq_start-request.json",
+    "sha256": "a329c80b653eb0403ac15c756b328d9f2691f4ac6dbfab058bd7650b30e5c0bc",
+    "bytes": 503
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0003-rocq_start-raw.json",
+    "sha256": "7f4ced7189c67aff84154a1750446c5220d7db3a9cd1f0e6d668ce82baf0cc73",
+    "bytes": 4123
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0004-rocq_diag-request.json",
+    "sha256": "238608944122092984497cc455bbfd14ba64bda191bfeaeb8d3738c52a129d2b",
+    "bytes": 166
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0004-rocq_diag-raw.json",
+    "sha256": "0598f0bfaf37ba01134a4a64c09e3c2ef2cc7b75fad0ba2c0f799b40b9d6ca5e",
+    "bytes": 1753
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0005-rocq_diag-request.json",
+    "sha256": "1d091459c59f21a501c8053be16b18250bfa58a3f304eb96ec8b6fd7f97324bd",
+    "bytes": 166
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0005-rocq_diag-raw.json",
+    "sha256": "8c71527197fd18a6d56a9a52308dfa3ea9f8eb05c90fcd782983cd4c1f24e7c9",
+    "bytes": 1753
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0006-rocq_complete_goals-request.json",
+    "sha256": "e6a6df5d4e45b42ed54aefda6cf6c71fd7aca089451c1d99fa1a23dc02847df5",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0006-rocq_complete_goals-raw.json",
+    "sha256": "4b58099a8717835359b1fdc9f969a5fcec8afbb2e651ee6304eafcced49b6159",
+    "bytes": 1067
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0007-rocq_complete_goals-request.json",
+    "sha256": "3dac835fdcab98046d2a84ad7d7ce58559d16383bd9cd527a3e7864026718bf3",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0007-rocq_complete_goals-raw.json",
+    "sha256": "4b58099a8717835359b1fdc9f969a5fcec8afbb2e651ee6304eafcced49b6159",
+    "bytes": 1067
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0009-rocq_complete_goals-request.json",
+    "sha256": "d14792989556f73ee4d63054957e9b56fd1f169fcd9543ff424071d755e9100b",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0009-rocq_complete_goals-raw.json",
+    "sha256": "72210349286493188111b2e418e84fe1bcdd7cf2d6bc805e697ecfaa96d50b5e",
+    "bytes": 1071
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/complete/state_1.json",
+    "sha256": "5038b2d7c2dff65797a240cbd3386c2df3645a69206dd0c2ad381c943c951010",
+    "bytes": 13858
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/feedback/ffdcff58eb1ff269fe8bc8ceb4d842dd70520dfa5e13feeb1de57093015892fc.json",
+    "sha256": "2427e87403b97c57c276a84e51f2d24c53d3b29bbef1437c83bc3749589c34ab",
+    "bytes": 704
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d62e4/native/block_0x800d62e4/early-calls/0008-rocq_check-request.json",
+    "sha256": "dddfec488abc01345939cf0bffe544823dbddbf390232a3a33c5775dd67cba59",
+    "bytes": 241
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row62e4-1057/REPORT.json",
+    "sha256": "b2b271648f5d2c9e98fa0d394cee1076702c8b89a39e579ebdad2ade446ff1e9",
+    "bytes": 8050
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/results/0x800d62e4/RESULT.json",
+    "sha256": "af661ca0812a209599348dd65b2f863bc1393da2ada1404c04b87919f3225efc",
+    "bytes": 1918
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row62e4-1057/INPUTS-CHECK.json",
+    "sha256": "1af09023b2844ab75f2d973ecbee0c0498796976afc66f7987f4d6b8fb519ac4",
+    "bytes": 38
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row62e4-1057/RAW-FILES.json",
+    "sha256": "9bc500f919c2e42ee5e450187aec4aa3f3c280d1f1a19124b14b8f3d6439a509",
+    "bytes": 58078
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row62e4-1057/RESERVATIONS.json",
+    "sha256": "92175cf5a50b0fbc178a22aa05c603451ef24ca442d612e92e7c5b7d499bb57e",
+    "bytes": 1232
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/wall-watch/0x800d62e4/REPORT.json",
+    "sha256": "cb77e8bfed69c444fe2c14ba8604f19877fdae6d037d5fd497e988dacf8fb9dc",
+    "bytes": 1031
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d62e4/native/block_0x800d62e4/Boundary.v",
+    "sha256": "cbac8b47fba9cfef9ba0ae07d67460dc4ad48b47fba8c56ae7334bc285c5259b",
+    "bytes": 4926
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d62e4/native/block_0x800d62e4/Boundary_interactive.v",
+    "sha256": "a63d7f1d2a5db094235b88c71c8127bcf40e89b551beb25c67134c3fc0ebe1cc",
+    "bytes": 4864
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d62e4/native/block_0x800d62e4/early-calls/0001-initialize-request.json",
+    "sha256": "b2cd3dfb347809073bb804800cb536af40fd66e427f1fa8d2889689120903766",
+    "bytes": 167
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d62e4/native/block_0x800d62e4/early-calls/0001-initialize-raw.json",
+    "sha256": "f35a57e84ece51d3fd1e4662a2ca67c78b4a787758c89d9e198d19f261562d4f",
+    "bytes": 565
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d62e4/native/block_0x800d62e4/early-calls/0002-rocq_health-request.json",
+    "sha256": "7a0dd37f8a763454ed33bc106eee6fd2707ecdbfcc868cab71aebeed03a16fef",
+    "bytes": 168
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d62e4/native/block_0x800d62e4/early-calls/0002-rocq_health-raw.json",
+    "sha256": "aef3adbc04f181aebb4a9f01b1089fc04d467ecb0874f9657ad9fbab01fe342f",
+    "bytes": 1405
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d62e4/native/block_0x800d62e4/early-calls/0003-rocq_start-request.json",
+    "sha256": "e5a40f37b2567555465c7e9df8d70e1417596c79ace053e94a6db1b41aae637d",
+    "bytes": 511
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d62e4/native/block_0x800d62e4/early-calls/0003-rocq_start-raw.json",
+    "sha256": "d0a54c737b516f775fe567ef80a0798332b1a3c16d3315c3388e04bfb1ba6bc8",
+    "bytes": 1929
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d62e4/native/block_0x800d62e4/early-calls/0004-rocq_diag-request.json",
+    "sha256": "65582f2e752e5edafe954bd3cd01ed65faa9f8e720fcd792363b5267a1e762b6",
+    "bytes": 166
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d62e4/native/block_0x800d62e4/early-calls/0004-rocq_diag-raw.json",
+    "sha256": "d625d125062129410e303e5aa6d1a1a21e314d225ec1b83419e5a3865aaf1188",
+    "bytes": 1765
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d62e4/native/block_0x800d62e4/early-calls/0005-rocq_diag-request.json",
+    "sha256": "cb71297687b57f140aac7a48ee1a10ca747e3f52467722b7d46f6544ba86391c",
+    "bytes": 166
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d62e4/native/block_0x800d62e4/early-calls/0005-rocq_diag-raw.json",
+    "sha256": "61f53eeed5156d4e1bd658195d6160d7ae58f7f18246b5c5576eb4e6856463d3",
+    "bytes": 1765
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d62e4/native/block_0x800d62e4/early-calls/0006-rocq_complete_goals-request.json",
+    "sha256": "f14616ea8fd96a110827a66a4fc6a44b0c3014d05fe3266ff97cacb820733948",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d62e4/native/block_0x800d62e4/early-calls/0006-rocq_complete_goals-raw.json",
+    "sha256": "a45dc6d5b2962cf4e4bca6ea55c3ca9e105c30469f9f986c8e888039f05de330",
+    "bytes": 1073
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d62e4/native/block_0x800d62e4/early-calls/0007-rocq_complete_goals-request.json",
+    "sha256": "67b5cb3c22c964e944be2696ec876c1fbc420cd0f7120f2a43796a51b9e608df",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d62e4/native/block_0x800d62e4/early-calls/0007-rocq_complete_goals-raw.json",
+    "sha256": "a45dc6d5b2962cf4e4bca6ea55c3ca9e105c30469f9f986c8e888039f05de330",
+    "bytes": 1073
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d62e4/native/block_0x800d62e4/complete/state_1.json",
+    "sha256": "24fff8dc1fe1f9b0b92d94a26a2b465a18abedb8d6b5b04e38e58937ada26a3f",
+    "bytes": 2105
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6304/native/block_0x800d6304/early-calls/0008-rocq_check-request.json",
+    "sha256": "77709cbcbe4d8b6dde228d66b66040dcecf319a50a5cd67150df3b7f063abcfd",
+    "bytes": 241
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row6304-1060/REPORT.json",
+    "sha256": "99a798e1196f1af9ee8e3ac09c40690479f9220e1fc7ff36f4e55cf0d8293698",
+    "bytes": 7978
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/results/0x800d6304/RESULT.json",
+    "sha256": "918624745089da05c4cfae342b3f9fab27c48c79e91433705d28f19155dae848",
+    "bytes": 1919
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row6304-1060/INPUTS-CHECK.json",
+    "sha256": "1af09023b2844ab75f2d973ecbee0c0498796976afc66f7987f4d6b8fb519ac4",
+    "bytes": 38
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row6304-1060/RAW-FILES.json",
+    "sha256": "e9ce4e8a6e892115da0d13c128d1a555ab7e1905e6df2776254439ba22322b13",
+    "bytes": 56750
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row6304-1060/RESERVATIONS.json",
+    "sha256": "ef22aa55c1a79d1c9bb4adb056f006df6310e138ff3b400fd7532bead9f19872",
+    "bytes": 1495
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/wall-watch/0x800d6304/REPORT.json",
+    "sha256": "92a144b11769c009770cd8ed92858931e1bab0fbe6c92d3a73bf13f0f1317fb0",
+    "bytes": 1030
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6304/native/block_0x800d6304/Boundary.v",
+    "sha256": "ab9935a5668e49fdae7494132ad044f521946bfa0b5283c9961ea081d2502002",
+    "bytes": 7803
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6304/native/block_0x800d6304/Boundary_interactive.v",
+    "sha256": "66496a7b073143e28587e2bb61d58e9ae821cc79f8dd5e231d65e6b3392ae912",
+    "bytes": 7741
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6304/native/block_0x800d6304/early-calls/0001-initialize-request.json",
+    "sha256": "db5765f8e182ea6883ff73e4b55217448bde0bb7937d78c4d234981646d69d56",
+    "bytes": 167
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6304/native/block_0x800d6304/early-calls/0001-initialize-raw.json",
+    "sha256": "f35a57e84ece51d3fd1e4662a2ca67c78b4a787758c89d9e198d19f261562d4f",
+    "bytes": 565
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6304/native/block_0x800d6304/early-calls/0002-rocq_health-request.json",
+    "sha256": "88969ed6e533bf9f2f9c11606fb0aa90f02e0323a751cdd8a2b0259c0dc3a22b",
+    "bytes": 168
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6304/native/block_0x800d6304/early-calls/0002-rocq_health-raw.json",
+    "sha256": "aef3adbc04f181aebb4a9f01b1089fc04d467ecb0874f9657ad9fbab01fe342f",
+    "bytes": 1405
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6304/native/block_0x800d6304/early-calls/0003-rocq_start-request.json",
+    "sha256": "68933959509e8066c69dba08131430ee57cf4f2bd32095f30a168b2f05844d1d",
+    "bytes": 511
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6304/native/block_0x800d6304/early-calls/0003-rocq_start-raw.json",
+    "sha256": "ff3056521d7fd8158506fcf32d42b39793d93208510eeb9eb4d967e28e22ee11",
+    "bytes": 6214
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6304/native/block_0x800d6304/early-calls/0004-rocq_diag-request.json",
+    "sha256": "f2b87996cddd879edbe6d8f1df5cd81d8e733bc31bf789cf42de1d7a493e0483",
+    "bytes": 166
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6304/native/block_0x800d6304/early-calls/0004-rocq_diag-raw.json",
+    "sha256": "f6fb009857d107c5f7ce3b5524cbc7f9350879f5894322c1e43381faa18fe653",
+    "bytes": 1769
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6304/native/block_0x800d6304/early-calls/0005-rocq_diag-request.json",
+    "sha256": "cbdb42aa1689803064fa03554857aee184cf2710e107bb0f1049640c37327028",
+    "bytes": 166
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6304/native/block_0x800d6304/early-calls/0005-rocq_diag-raw.json",
+    "sha256": "ba0b18d7df7a254a898aa5db94ebba5e52e798598a3b082d593b6fbc171cc456",
+    "bytes": 1767
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6304/native/block_0x800d6304/early-calls/0006-rocq_complete_goals-request.json",
+    "sha256": "fc35600d5c56f3d2123e19d874a66b0d37008fa9fc404860efd6e75f6af1d98b",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6304/native/block_0x800d6304/early-calls/0006-rocq_complete_goals-raw.json",
+    "sha256": "6e37d87a5bf498c90784e53d67b87c5106f6302622bbfaf9e53127bdcff2059d",
+    "bytes": 1075
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6304/native/block_0x800d6304/early-calls/0007-rocq_complete_goals-request.json",
+    "sha256": "289cbdc12c91729cdf60d561ca343cf1131bb99046f9acdd94305747959ec5c1",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6304/native/block_0x800d6304/early-calls/0007-rocq_complete_goals-raw.json",
+    "sha256": "6e37d87a5bf498c90784e53d67b87c5106f6302622bbfaf9e53127bdcff2059d",
+    "bytes": 1075
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6304/native/block_0x800d6304/complete/state_1.json",
+    "sha256": "d50b2123870ac2830848674f0b770c5df87426a87c8894daccdd4d5d13466645",
+    "bytes": 25002
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/early-calls/0008-rocq_check-request.json",
+    "sha256": "cfa1b60179e8ed58382fdb3d3996c6a6b8f96b77a3d760c7925fa357ba6264fd",
+    "bytes": 241
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/early-calls/0008-rocq_check-raw.json",
+    "sha256": "00ab874aaa36edabe32cb9b747d2af0403f4e39f1846645d4328eb911d538fc6",
+    "bytes": 491
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/evidence.json",
+    "sha256": "e7e8a608b6bfe0103513210380d25e3f1f0cd0cc798a818a8f8746bc971395ee",
+    "bytes": 19756
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/Boundary.v",
+    "sha256": "dff8d8ddd7424796494f19b0c045a7d4ce1a821adf60087842b20d1d6996e20a",
+    "bytes": 6437
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/Boundary_interactive.v",
+    "sha256": "d2727740ea1586ce9c81efbc94a30c5b9853b579d5eb35bb0af9f8ce0392b7ef",
+    "bytes": 6375
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row6310-1062/REPORT.json",
+    "sha256": "e50946268e4b54cb2d9e6803fd90e4725a6bbc0077f559264357e3bf57222f59",
+    "bytes": 5818
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/results/0x800d6310/RESULT.json",
+    "sha256": "d9b06755c64e955a9052e221da2140aeca74c3a8bf1133e62520071ebc987ff6",
+    "bytes": 1927
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row6310-1062/INPUTS-CHECK.json",
+    "sha256": "1af09023b2844ab75f2d973ecbee0c0498796976afc66f7987f4d6b8fb519ac4",
+    "bytes": 38
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row6310-1062/RAW-FILES.json",
+    "sha256": "4d918a5668583691b8d9d47dd20ac5bec79c4a7d78db978df80ec88d1dbdcb33",
+    "bytes": 60434
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/reservation-evidence/0x800d6310/RESULT.json",
+    "sha256": "ff287512fc1acdf6af80622ab1821ddf3ead54d8b79fab7fd2d28c5c1275a460",
+    "bytes": 827
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/wall-watch/0x800d6310/REPORT.json",
+    "sha256": "155ba0a0893dd24d597868a652fb6766f2021c69f38c37bd95ec703eb85c4807",
+    "bytes": 1031
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/early-evidence.json",
+    "sha256": "cd8b58d092721599027a87504c7b296f759896095a26f1796591cd21ef97138c",
+    "bytes": 25097
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/early-calls/0001-initialize-request.json",
+    "sha256": "75506d3546c69ec9153cb2cde3e1fbcb3c835ea3cf9a8524023d77ebc5f84180",
+    "bytes": 167
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/early-calls/0001-initialize-raw.json",
+    "sha256": "f35a57e84ece51d3fd1e4662a2ca67c78b4a787758c89d9e198d19f261562d4f",
+    "bytes": 565
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/early-calls/0002-rocq_health-request.json",
+    "sha256": "339c3bc1e5bf23f01f0b91f3895c627ae0d912b572c54a3e66d16c4d67bdfbc5",
+    "bytes": 168
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/early-calls/0002-rocq_health-raw.json",
+    "sha256": "aef3adbc04f181aebb4a9f01b1089fc04d467ecb0874f9657ad9fbab01fe342f",
+    "bytes": 1405
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/early-calls/0003-rocq_start-request.json",
+    "sha256": "8312dcfed9b23f5e10305aedbb3e166efd0505da4e0589b99871d6f0b55d3880",
+    "bytes": 511
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/early-calls/0003-rocq_start-raw.json",
+    "sha256": "20eb6b92dbf0195ec6f6773739fd32f9ae0d93bba52bf8899d5ff07a4a045940",
+    "bytes": 4043
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/early-calls/0004-rocq_diag-request.json",
+    "sha256": "e569169f557d84bb1549de1222162f997ba7537eb1585469ca890a1edfb378aa",
+    "bytes": 166
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/early-calls/0004-rocq_diag-raw.json",
+    "sha256": "40bfcff815d5c2105e3b1985bc454cfc4b6c1b74f7f7f043c99d9a93eb0f2695",
+    "bytes": 1763
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/early-calls/0005-rocq_diag-request.json",
+    "sha256": "3b7790a71d595b368bb4ca868faddd676acabdb326301b829d2db5a7daf25fd4",
+    "bytes": 166
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/early-calls/0005-rocq_diag-raw.json",
+    "sha256": "d027cdad2aaa0cf78a17aae14a4e29b01fd724f9cf6bc67fa5cf3dde08cec8c2",
+    "bytes": 1763
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/early-calls/0006-rocq_complete_goals-request.json",
+    "sha256": "b56ca23ddb61ca97db449c83a1e70de3d2e3315aa01ea4c44ea907b259d2c819",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/early-calls/0006-rocq_complete_goals-raw.json",
+    "sha256": "ccdaefaa998825fc63198cf1574695252feb34e013619358ce1b9f100eab8673",
+    "bytes": 1075
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/early-calls/0007-rocq_complete_goals-request.json",
+    "sha256": "c3ff887a9ddcb9f731eaffe39231f24fdce0028d2bebe18e3a75115f6d78300b",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/early-calls/0007-rocq_complete_goals-raw.json",
+    "sha256": "ccdaefaa998825fc63198cf1574695252feb34e013619358ce1b9f100eab8673",
+    "bytes": 1075
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/complete/state_1.json",
+    "sha256": "93a5d38ad3b3d6d7b41aec1d511cc277e33244cf253a2de9919f4ada88278355",
+    "bytes": 13412
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/early-calls/0008-rocq_check-request.json",
+    "sha256": "2ba3c9af8ac70bad7609251d2c1ed9a4bd9da87d79313e84678125ad616479a9",
+    "bytes": 241
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/early-calls/0008-rocq_check-raw.json",
+    "sha256": "00ab874aaa36edabe32cb9b747d2af0403f4e39f1846645d4328eb911d538fc6",
+    "bytes": 491
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/evidence.json",
+    "sha256": "65caee8e25dcbd5c638156ae34c0ac0694e25c919002dc759ee92b23d763ba61",
+    "bytes": 23042
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/Boundary.v",
+    "sha256": "b0d2e4636e392bbe92938759a9117f1491be13d19598e72aa5dbf0bcb49aa331",
+    "bytes": 8133
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/Boundary_interactive.v",
+    "sha256": "42121a1df3aaf55b25e47a0eea5884e766e7e549367c15ed3ac5eb73b7e16260",
+    "bytes": 8071
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row6318-1063/REPORT.json",
+    "sha256": "130f82e23c8dd57bf4e4a77f0fd2944c5ddf0389c0739a0b1d58d4019d3e13c1",
+    "bytes": 6635
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/results/0x800d6318/RESULT.json",
+    "sha256": "6df099a6bea0503205c4d1948de2c21758b80ceefe7966d36af7c593c2b974cc",
+    "bytes": 2678
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row6318-1063/INPUTS-CHECK.json",
+    "sha256": "1af09023b2844ab75f2d973ecbee0c0498796976afc66f7987f4d6b8fb519ac4",
+    "bytes": 38
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row6318-1063/RAW-FILES.json",
+    "sha256": "fd3cdc0960114e72500b69b5bbb419c0fbda05314ec985e56cbedb545260c6ba",
+    "bytes": 61260
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/reservation-evidence/0x800d6318/RESULT.json",
+    "sha256": "0ba7d7fb16b97cfd77171835727348075fde26fb2a0fa795f53d77b6cc68b3a7",
+    "bytes": 827
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/wall-watch/0x800d6318/REPORT.json",
+    "sha256": "f793bcba55733db5b5a05fb34327b04be0daa1046cb08c249e5147ff41330bdc",
+    "bytes": 1297
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/early-evidence.json",
+    "sha256": "c40475255f03413d5892594ef83e61a4d9f7519b62e98d8a4ac18126a8d62303",
+    "bytes": 28382
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/early-calls/0001-initialize-request.json",
+    "sha256": "4167bd3f75127133066522e06abeaf82198374eccde43e355cfe5d2e7791af07",
+    "bytes": 167
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/early-calls/0001-initialize-raw.json",
+    "sha256": "f35a57e84ece51d3fd1e4662a2ca67c78b4a787758c89d9e198d19f261562d4f",
+    "bytes": 565
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/early-calls/0002-rocq_health-request.json",
+    "sha256": "61f9eda831b3cf1b2eb4da15db80c1ad091293f4dfa0f5f79191a321464ca246",
+    "bytes": 168
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/early-calls/0002-rocq_health-raw.json",
+    "sha256": "aef3adbc04f181aebb4a9f01b1089fc04d467ecb0874f9657ad9fbab01fe342f",
+    "bytes": 1405
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/early-calls/0003-rocq_start-request.json",
+    "sha256": "f182bfc31b3cced8698899be338ff10cab6fd5484010158c16a2b1b535f95caf",
+    "bytes": 511
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/early-calls/0003-rocq_start-raw.json",
+    "sha256": "cc3af0461cc7abceefefaeea3be724dd13dccf998c7426ff7d56b0aa8e6d41c8",
+    "bytes": 6214
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/early-calls/0004-rocq_diag-request.json",
+    "sha256": "1f7bb6839b0a8b2cdb920c5303a302208022a7230e42ee48f6bebc36e4eef3b4",
+    "bytes": 166
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/early-calls/0004-rocq_diag-raw.json",
+    "sha256": "061a755e8d2c0628560b4238fe9adef5b34a583cf11ffdf01416a63267e2b9a8",
+    "bytes": 1769
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/early-calls/0005-rocq_diag-request.json",
+    "sha256": "26beeac90b6307d2df9c8eb58ee49072f94a2a1c611cabd56ae0d54f820825c5",
+    "bytes": 166
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/early-calls/0005-rocq_diag-raw.json",
+    "sha256": "33cf89928e44a56e702d92b0533ff2c67a8130b0333f64fcbe6198f6be9150fc",
+    "bytes": 1769
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/early-calls/0006-rocq_complete_goals-request.json",
+    "sha256": "0a12c1ad8be98a6ac1696bae13224e387bc6e555fc60737bc6b537cc0620b74f",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/early-calls/0006-rocq_complete_goals-raw.json",
+    "sha256": "d50d081a794daba3546f09131f073d33371b968facb8cf438130d9b747cb4ad3",
+    "bytes": 1075
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/early-calls/0007-rocq_complete_goals-request.json",
+    "sha256": "423b9ec573412fe2f065bdcae1ff9d15dd8fddf1aa122de4837779420fb21654",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/early-calls/0007-rocq_complete_goals-raw.json",
+    "sha256": "d50d081a794daba3546f09131f073d33371b968facb8cf438130d9b747cb4ad3",
+    "bytes": 1075
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/complete/state_1.json",
+    "sha256": "004924a1831cdb6fd5b22dc3ccde27b8d325d828a4d538d248ad4da5cd065600",
+    "bytes": 25002
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0008-rocq_check-request.json",
+    "sha256": "b1865f858d79359d9c96c9d6a02aeddb293004d86b9b73acb3f7c40130d2e906",
+    "bytes": 241
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0008-rocq_check-raw.json",
+    "sha256": "78c49b94fc713291d8d6642a4085b6497b5e3e0de7d1f4b06dabd32569d974c0",
+    "bytes": 19106
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/evidence.json",
+    "sha256": "c044efe7cf026d782bf6569675f3f1fab2d256ceb6ada34e1dce1121fc45a211",
+    "bytes": 160840
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/Boundary.v",
+    "sha256": "154600d9cea10a425c317e3280b1f57c986609f645a3eac0d7d6b1d2f44be838",
+    "bytes": 6387
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/Boundary_interactive.v",
+    "sha256": "c2c7c4e7273836f4a4b74686d64ec86c12b2f7ed94af12e31b20483b844df1ae",
+    "bytes": 6325
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/complete/state_2.json",
+    "sha256": "5716451023ac179afed58b3f5f83b4a9d7da6d91ae5d2709c7b68b1e476a4c87",
+    "bytes": 1218527
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row632c-1064/REPORT.json",
+    "sha256": "9cfe8bba7c386d26dffa057c185f4940e2a01c5423593cee18e6f04d13ef99b3",
+    "bytes": 5640
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/results/0x800d632c/RESULT.json",
+    "sha256": "34f09c287cdf563a4f2e4c1e22fc8e8fd90f69deb052dec69b035927828d2bf6",
+    "bytes": 1937
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row632c-1064/INPUTS-CHECK.json",
+    "sha256": "1af09023b2844ab75f2d973ecbee0c0498796976afc66f7987f4d6b8fb519ac4",
+    "bytes": 38
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row632c-1064/RAW-FILES.json",
+    "sha256": "34f0c91169285036b62f21e016ad39d91d82b4de1b2bd54be730dfcc36dfa877",
+    "bytes": 59123
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/reservation-evidence/0x800d632c/RESULT.json",
+    "sha256": "0f0fd1f8e9cbc6778eb32e598727ab01b3971d0ec7c43b0c360c3f2d35e630a2",
+    "bytes": 826
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/wall-watch/0x800d632c/REPORT.json",
+    "sha256": "737767832984a62eeabc4c75d6c2da575d859a75ec31bb64c8749d786f157cc6",
+    "bytes": 1031
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-evidence.json",
+    "sha256": "b0fd1445d23bae3f4143d631a59a09e0dbe5e7ec7ad20d7139e633032a76a8fe",
+    "bytes": 173573
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0001-initialize-request.json",
+    "sha256": "d4398aa9e8061baada53744431beae473a731a95c349db045e1dad23c6437a73",
+    "bytes": 167
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0001-initialize-raw.json",
+    "sha256": "f35a57e84ece51d3fd1e4662a2ca67c78b4a787758c89d9e198d19f261562d4f",
+    "bytes": 565
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0002-rocq_health-request.json",
+    "sha256": "731d8bd90b3f531c5a947c9f71eabb9aaf024f4f853b6653b7a3f0fec1507ba1",
+    "bytes": 168
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0002-rocq_health-raw.json",
+    "sha256": "aef3adbc04f181aebb4a9f01b1089fc04d467ecb0874f9657ad9fbab01fe342f",
+    "bytes": 1405
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0003-rocq_start-request.json",
+    "sha256": "7f7901951c0afe9a464b45d88e25893eb761d772476ebb5308dbc6f2d03ee4cb",
+    "bytes": 511
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0003-rocq_start-raw.json",
+    "sha256": "1be532fd6f54bc4295b96c6913a698b24be83558b83d0e7110b2351817f2aadf",
+    "bytes": 4131
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0004-rocq_diag-request.json",
+    "sha256": "99b66033cf582e3f99b15968156e491762fb0ba389ac8af62c1afe9fee88e0ea",
+    "bytes": 166
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0004-rocq_diag-raw.json",
+    "sha256": "e01ff10949fad77257f777e8532735fc5ca7633a51e28f408ed0de637fca796c",
+    "bytes": 1769
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0005-rocq_diag-request.json",
+    "sha256": "ed04287b162b5960558c7a6079ce06e01e863224077ad9da628ed573aae038d4",
+    "bytes": 166
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0005-rocq_diag-raw.json",
+    "sha256": "6f556eaabf628cc8513bdde5e163ad42607e421a42cfb33d9a738902c2c97065",
+    "bytes": 1767
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0006-rocq_complete_goals-request.json",
+    "sha256": "0d154eea3680c3efa659ab46cce484f7c8809de3e25c990ed824f00f302a8bca",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0006-rocq_complete_goals-raw.json",
+    "sha256": "557144d82e336fa66c171acbd4368acd9cbe34e814e1788b3230422430160736",
+    "bytes": 1075
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0007-rocq_complete_goals-request.json",
+    "sha256": "5bb4999d176dc6aaea86f690b034d50f9a963ae2577b482f2c62c1af3e619252",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0007-rocq_complete_goals-raw.json",
+    "sha256": "557144d82e336fa66c171acbd4368acd9cbe34e814e1788b3230422430160736",
+    "bytes": 1075
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0009-rocq_complete_goals-request.json",
+    "sha256": "43c4c840134806683d1b7be3a7a73e3b67b43782979cde631a0d282fec267b25",
+    "bytes": 199
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0009-rocq_complete_goals-raw.json",
+    "sha256": "cf38d35821ea3c4bc350fff2b8f3f0b173a29fff39ce57303bcd6f1dae7c987d",
+    "bytes": 1079
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/complete/state_1.json",
+    "sha256": "983641680f2e113be43ac40abe71554a5352196427918a4a12f3e52913ed8d9f",
+    "bytes": 13858
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/feedback/9929e716ee6cdad7f7113eae9b008c8a9aab6bc57da8d8a81b29dd79fb09dbbb.json",
+    "sha256": "6083a5a983168740712c44ee886832dc77ee92a88f9ad821d6c3b1e7b5277514",
+    "bytes": 704
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-packet1014/LAUNCHED.json",
+    "sha256": "21e0a20828c4b3b754d4a06b954ca0f5cf2d23ba9373c6fbfa7aae5c101b2768",
+    "bytes": 932
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-packet1014/WATCHER.json",
+    "sha256": "46c4f97e3323e0159db7f48c31898bfa21d3fec0203df6a04e2fd4374d3c5cbe",
+    "bytes": 2371
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-continuation1022/blocks/0x800d62d8/LAUNCHED.json",
+    "sha256": "6552328e27d281ec69a3f7649df4a662ab5cab8c467badac5dda0d573f356a9e",
+    "bytes": 872
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-continuation1022/watchers/0x800d62d8.json",
+    "sha256": "11ad5d076b741b7d66a5d75899b5c28ab48e122de09b16f682859305f73eb739",
+    "bytes": 1173
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/blocks/0x800d62e4/LAUNCHED.json",
+    "sha256": "c1c76f0a318491685506d749fbab30cbfb17f103dccdabe462699eef2484f383",
+    "bytes": 859
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/watchers/0x800d62e4/WATCHER.json",
+    "sha256": "cf3f842531c66bed198cbc839ae06a6edb789845c974a46d93e0740e3b0ed22f",
+    "bytes": 2146
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/blocks/0x800d6304/LAUNCHED.json",
+    "sha256": "8677da93f83b54bba6310cfb4cf316998e25c97ccab3c2006a5584000f6d0e3c",
+    "bytes": 860
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/watchers/0x800d6304/WATCHER.json",
+    "sha256": "49a46212ffd2dc6b50733e64f24580671cb8c1f3b8f0e95c8b266bd56460072d",
+    "bytes": 2539
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/blocks/0x800d6310/LAUNCHED.json",
+    "sha256": "ac51dbe7b6c50baa0446c38a593eba74e771ef5bfa40b9356d45d02eeaf5879e",
+    "bytes": 860
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/watchers/0x800d6310/WATCHER.json",
+    "sha256": "826fff4004081436a2720754ce6fdfc91a0a5f06901569b68152065e4b694c7f",
+    "bytes": 2532
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/blocks/0x800d6318/LAUNCHED.json",
+    "sha256": "8b011f9b983e7406807c0fb1bfda04b0f3f8daf28838e60af309ab075b764bd5",
+    "bytes": 860
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/watchers/0x800d6318/WATCHER.json",
+    "sha256": "12c28f31dd96cd6912af169ab746b9b7dcea3c155551d4d9f0963106270757ad",
+    "bytes": 2281
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/blocks/0x800d632c/LAUNCHED.json",
+    "sha256": "7a835453f7653e3ca014d20490204a9676ae9fb0e046f14a1eafffbb5b8afc69",
+    "bytes": 860
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/watchers/0x800d632c/WATCHER.json",
+    "sha256": "877f40400974f1014b77c4656eca7e936afeced63dd5b9c4daf9a1cb256fbe92",
+    "bytes": 2915
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-inputs1007/PREDICTION.json",
+    "sha256": "f9cf19d9687acf6aca4d31040d27b50239dc801076ee4981614b953e790daa06",
+    "bytes": 6145
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/SOURCE-EQUALITY.json",
+    "sha256": "921c07e53b41ef9d2805818db2f376edde958d9ac10d2d0c9e1a28bf9f47155a",
+    "bytes": 7075
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-preflight1054/MANIFEST.json",
+    "sha256": "40ea8582a0fd3c2f35409567efaa7d84b365c08eae651c24cacb8f2fa344215b",
+    "bytes": 49703
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-preflight1054/checked/REPORT.json",
+    "sha256": "751c98146fe1f76d3fe2b64d09190894759ab8422e5966b8599e43a755454a59",
+    "bytes": 247799
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-preflight1054/result/RESULT.json",
+    "sha256": "a93e69a224f570b006a655eacbcfa282c8174bd5745030a7e707fb286e7dad7e",
+    "bytes": 2117
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-health1053/RESULT.json",
+    "sha256": "5f92802c1c46fc15aa4b36ba101fd35b6db3c9da95917fd51a45b1895a4ea508",
+    "bytes": 3604
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-stale-reservation1058/REPORT.json",
+    "sha256": "028fc6e79a4a6afbf3795f3cae778c4e3e077a09b4c225ebbefd7989e9b3b2b5",
+    "bytes": 2463
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-cleanup-disposition1059/REPORT.json",
+    "sha256": "49b42b690899488b0231885429ba1e22557fb6c732c95106ba97fb9744f418f8",
+    "bytes": 1911
+  },
+  {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-stale-reservation1061/REPORT.json",
+    "sha256": "9b5340a5a103ac623b5f22bad1644a9238ef66c5a50b06c2f9aa750d42732d6f",
+    "bytes": 2554
+  }
+]

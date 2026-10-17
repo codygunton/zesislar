@@ -1,0 +1,189 @@
+{
+  "schema": 1,
+  "publication_base": "6c8f30f7fd673fb6310b35a5399c8486ff3cddf8",
+  "original_staging_base": "d0f26bb2be8b2e259b30cbbb37919251aaccb1d6",
+  "measurement_root": "f58fde97947c16d1f8a4eebb9d3761ac1a066524",
+  "scope": "Data and prose only. No proof, rule, contract, or executable changes.",
+  "fresh_check_fast": {
+    "target": "check-fast",
+    "exit_status": 0,
+    "elapsed_seconds": 94.86211969680153,
+    "command": [
+      "make",
+      "check-fast",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker2-av-nextuint64-nine-final/_build/agents/worker2-c-next-final-publication1025",
+      "FAST_JOBS=16",
+      "AGENT_JOBS=16"
+    ],
+    "log": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-publication-rebased1077/CHECK-FAST.log",
+      "sha256": "41564c5728dc54c96b5364e87d27ea5152e52c48f6096f4f1d08554e3a66a4cb",
+      "bytes": 12136
+    }
+  },
+  "fresh_check_iris": {
+    "target": "check-iris",
+    "exit_status": 0,
+    "elapsed_seconds": 93.99254208989441,
+    "command": [
+      "make",
+      "check-iris",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/worker2-av-nextuint64-nine-final/_build/agents/worker2-c-next-final-publication1025",
+      "FAST_JOBS=16",
+      "AGENT_JOBS=16"
+    ],
+    "log": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-publication-rebased1077/CHECK-IRIS.log",
+      "sha256": "332779c783aec7bbaf2a96748b503d4b5e06c168c6e363702546b9c6bb440f5b",
+      "bytes": 11689
+    }
+  },
+  "iris_inherited": false,
+  "gate_record": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-publication-rebased1077/RESULT.json",
+    "sha256": "d3ee2dbff724fe0cf118cc86685af395e8f6e8c27fe2758d9be565ec314090c3",
+    "bytes": 1475
+  },
+  "rebase": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-publication-rebased1077/REBASE.json",
+    "sha256": "491d38c0c34e653fd90b2b79f499c4048fdf37ce4f72b14e64d84ecfdad5a3d0",
+    "bytes": 2332
+  },
+  "base_delta": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-publication-rebase1076/BASE-DELTA.json",
+    "sha256": "1940c35943ed6a041dd24c18f25906a5d49a8f99c1e09fcceff60e7582ad240f",
+    "bytes": 1924
+  },
+  "rebase_review": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-publication-rebase-review559/REPORT.json",
+    "sha256": "2cdb98f39405630fb1b27697a0426e9a505e022d6af052eeab8de59475980d37",
+    "bytes": 2510
+  },
+  "validation_review": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-publication-rebase-review559/VALIDATION-REVIEW.json",
+    "sha256": "931c3378adb349b1b432a632c4a19b16238abac97067b71623823528706127a4",
+    "bytes": 983
+  },
+  "retained_prior_gate_records": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-publication1067/RESULT.json",
+      "sha256": "9d2bf8766730d4005449f685f82e3d92f9826e3e77b1c7b990207e63c87ca96c",
+      "bytes": 829
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-663-publication1069/RESULT.json",
+      "sha256": "f47f25ff7bdec10bbbcc46fd7aea349e8d474d2377e935bc2795dd4336d8f52b",
+      "bytes": 827
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-publication1073/RESULT.json",
+      "sha256": "0a50a6e37399d377a320d3e8da619a184977412f0e895e5761574ecd74298b85",
+      "bytes": 1459
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-publication1073/CHECK-FAST.json",
+      "sha256": "d871db95108dcdee09993d577138bbcffe0d40243d4f27e7fa03d94f88897d41",
+      "bytes": 563
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-publication1073/CHECK-IRIS.json",
+      "sha256": "56db22cd39bef26f88bec41de105229d9aab897ffb903f4239cbe1b32fbff78d",
+      "bytes": 563
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-663-publication1074/RESULT.json",
+      "sha256": "db02e89150232c91b352dbcbb6f824914a2a11b710091b78c1a52b90541aef2b",
+      "bytes": 1457
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-publication-iris1075/CHECK-IRIS.json",
+      "sha256": "d9bb0a5a5df88f04de3d2358525f06a59c28b273b1465d7bcbabb2e8f3cf8b8f",
+      "bytes": 568
+    }
+  ],
+  "old_Iris_disposition": "The actual1075 Iris check passed. Its driver then refused the changed main base. No old-base finalizer ran.",
+  "retained_contention": "The first1073 Iris invocation refused the held gate lock. This is not a proof failure.",
+  "reviewed_eight_blobs_unchanged": true,
+  "historical_checkpoint_base": "CHECKPOINT.json retains its original staging base. The publication base is recorded here.",
+  "staged_scope": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-publication-rebased1077/STAGED-SCOPE.json",
+    "sha256": "d82a57efdf3323a69d9e0bc8af25859cdb1cec4f53baf3b987699f0ffefe323f",
+    "bytes": 6894
+  },
+  "copies": [
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-final1065/REPORT.json",
+        "sha256": "41b47370c4b45b883e9ee816e09a68d1af57515bc7989189990aae7c5fedc109",
+        "bytes": 2037
+      },
+      "published": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-av-nextuint64-nine-final/build/stock-zisk/automation-validation/nextuint64-phase3d/nine-blocks/REPORT.json",
+        "sha256": "41b47370c4b45b883e9ee816e09a68d1af57515bc7989189990aae7c5fedc109",
+        "bytes": 2037
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-final1065/DETAILS.json",
+        "sha256": "4370133effd919db0b5f34d8a4df24d85b525bb9c7c926e1104b2531d294beec",
+        "bytes": 37317
+      },
+      "published": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-av-nextuint64-nine-final/build/stock-zisk/automation-validation/nextuint64-phase3d/nine-blocks/DETAILS.json",
+        "sha256": "4370133effd919db0b5f34d8a4df24d85b525bb9c7c926e1104b2531d294beec",
+        "bytes": 37317
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-final1065/TABLE.md",
+        "sha256": "f4f70128cfbe7ed5de82d195b7802f20ff95926c7afa0ede139926be9c4e03f3",
+        "bytes": 2450
+      },
+      "published": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-av-nextuint64-nine-final/build/stock-zisk/automation-validation/nextuint64-phase3d/nine-blocks/TABLE.md",
+        "sha256": "f4f70128cfbe7ed5de82d195b7802f20ff95926c7afa0ede139926be9c4e03f3",
+        "bytes": 2450
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-final1065/INPUTS.json",
+        "sha256": "835811e0ff1be472f74e91b86d64a383c67101f5d9b780bc48e91037afbe3d49",
+        "bytes": 71029
+      },
+      "published": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-av-nextuint64-nine-final/build/stock-zisk/automation-validation/nextuint64-phase3d/nine-blocks/INPUTS.json",
+        "sha256": "835811e0ff1be472f74e91b86d64a383c67101f5d9b780bc48e91037afbe3d49",
+        "bytes": 71029
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-final1065/EXITS.json",
+        "sha256": "c6f6f3aa37d2d25b437c2a516c614018edb2bc0fedaa23460f64ec58e2ee6097",
+        "bytes": 8980
+      },
+      "published": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-av-nextuint64-nine-final/build/stock-zisk/automation-validation/nextuint64-phase3d/nine-blocks/EXITS.json",
+        "sha256": "c6f6f3aa37d2d25b437c2a516c614018edb2bc0fedaa23460f64ec58e2ee6097",
+        "bytes": 8980
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-inputs1007/PREDICTION.json",
+        "sha256": "f9cf19d9687acf6aca4d31040d27b50239dc801076ee4981614b953e790daa06",
+        "bytes": 6145
+      },
+      "published": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-av-nextuint64-nine-final/build/stock-zisk/automation-validation/nextuint64-phase3d/nine-blocks/PREDICTION.json",
+        "sha256": "f9cf19d9687acf6aca4d31040d27b50239dc801076ee4981614b953e790daa06",
+        "bytes": 6145
+      }
+    }
+  ],
+  "native_measurement_runs_for_publication": 0,
+  "crash_memory_limit": "The nine-row record retains sampled worker-descendant peaks. RSS at the exact crash instant is unavailable."
+}

@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "scope": "Retained preparation and cleanup history. These records add no primary proof attempt.",
+  "records": [
+    {
+      "record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-startup930/REPORT.json",
+        "sha256": "9f2e44d5b4ad5af27c0ca12339cd9cbc83fc0a4bc473025079c64e5791640cbf",
+        "bytes": 2176
+      },
+      "limit": "The public CLI rejected seconds1200 before MCP."
+    },
+    {
+      "record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-failure1027/REPORT.json",
+        "sha256": "ac92c5b9616f6e8ba2cc1c4323fe8669f10a3192b09703822abe0fbe3c834fdb",
+        "bytes": 2721
+      },
+      "limit": "The process-snapshot monitor failed before a primary call for62e4."
+    },
+    {
+      "record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-launch-failure1041/REPORT.json",
+        "sha256": "54a1728360b08ce470a17e612f3042f4381496488267c0fc256500eb237e445f",
+        "bytes": 3446
+      },
+      "limit": "Strict object identity failed before a primary call."
+    },
+    {
+      "record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-stale-reservation1058/REPORT.json",
+        "sha256": "028fc6e79a4a6afbf3795f3cae778c4e3e077a09b4c225ebbefd7989e9b3b2b5",
+        "bytes": 2463
+      },
+      "limit": "The62e4 token was absent before this guard invocation."
+    },
+    {
+      "record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-cleanup-disposition1059/REPORT.json",
+        "sha256": "49b42b690899488b0231885429ba1e22557fb6c732c95106ba97fb9744f418f8",
+        "bytes": 1911
+      },
+      "limit": "The removing actor for62e4 remains unknown."
+    },
+    {
+      "record": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-stale-reservation1061/REPORT.json",
+        "sha256": "9b5340a5a103ac623b5f22bad1644a9238ef66c5a50b06c2f9aa750d42732d6f",
+        "bytes": 2554
+      },
+      "limit": "The guard removed the exact dead6304 token."
+    }
+  ],
+  "old_workspace_preserved": true,
+  "private_closure": "Fresh regular private copies preserve full identity checks.",
+  "ctime_policy": "Only ctime may differ when path, hash, device, inode, size, and mtime match. The checker retains both identities."
+}
