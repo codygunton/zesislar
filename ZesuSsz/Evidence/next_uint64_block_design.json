@@ -10,7 +10,7 @@
     "code_persistence": "block_table_pre boxes the supplied code resource",
     "code_resource": "ZesuSsz.Contracts.NextUint64Selected.nextUint64SelectedCode",
     "code_source_hashes": {
-      "ZesuSsz/Contracts/NextUint64Selected.v": "56915c500d67b048c69bc14c75bfcbdb93e02ec3260206b4cafa5a6c3c4f6c07"
+      "ZesuSsz/Contracts/NextUint64Selected.v": "f4de10980f69c45b1122744cae6fb7665a119ef79c3bc27a81f7f826c5d8ee10"
     },
     "successor_root_parameters": [
       "params"

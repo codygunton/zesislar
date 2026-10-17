@@ -30,7 +30,8 @@ Proof.
   iIntros "Hstate".
   iEval (unfold NextUint64CallState800d62b4) in "Hstate".
   iDestruct "Hstate" as (args) "[Hentry Hreturn]".
-  pose proof (decodeItemSelectedComplianceCompositional 0x800d62b8 Sigma islaG0 H)
+  pose proof (ZesuSsz.Compliance.DecodeItemCompositionalCompliance.decodeItemSelectedComplianceCompositional
+    0x800d62b8 Sigma islaG0 H)
     as Hcorrect.
   unfold IslarisContractSpec in Hcorrect.
   cbn [decodeItemSelectedModelCompositional decodeItemResourcesCompositional]

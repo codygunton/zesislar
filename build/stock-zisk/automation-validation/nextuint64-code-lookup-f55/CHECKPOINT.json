@@ -1,0 +1,68 @@
+{
+  "item": "F55-nextUint64-code-lookup",
+  "base": "1c0be2b094abf6137c70e7fa5071f45ac0075fd7",
+  "report_path": "/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/f55-final016/REPORT.json",
+  "report_sha256": "df5527089c3168b1353b1e3a6d9686369a505e7bae7e3414fc6ca743c227eb57",
+  "report_bindings": 3480,
+  "sources": {
+    "ZesuSsz/Compliance/NextUint64CallBridge.v": "29b8d451207a988d679ec788bebc86c75c69d8d1866236fe76a0f297cd209b6e",
+    "ZesuSsz/Contracts/NextUint64Selected.v": "f4de10980f69c45b1122744cae6fb7665a119ef79c3bc27a81f7f826c5d8ee10",
+    "ZesuSsz/Evidence/SignatureGates.v": "29c9e1d3f63bfea4aaf48f58c736abfc5ce8314d380399068ad0adf0401bfd27",
+    "ZesuSsz/Evidence/nextUint64_function_text.json": "5ef3154460f2816d375d0b9dac359d78e4254c934b8c076986126cb5f5a80963",
+    "ZesuSsz/Evidence/next_uint64_block_design.json": "a39099105be9214b0b915ffeabd7b5edd7bd80f118e0e6ef7464ac9f5620b704"
+  },
+  "bridge_verification": {
+    "exact_verification": "module_m",
+    "assumptions": [],
+    "compiled_Print_Assumptions": "Closed under the global context",
+    "complete_pre_Qed_groups": "0/0/0/0",
+    "actual_advancing_Qed": true,
+    "normal_owned_closure": true
+  },
+  "consumer_coverage": {
+    "entry_definitions": 10,
+    "exact_boundary_statements": 10,
+    "native_bodies": "Omitted with Admitted in untracked typecheck fixtures. No native proof claim.",
+    "other_consumers": [
+      "ParentHeaderSelected",
+      "NextUint64Contract",
+      "NextUint64UnfoldRegistrations",
+      "NextUint64BridgeRegistrations",
+      "NextUint64Hints",
+      "Generated NextUint64 table",
+      "SignatureGates reviewed representation (final check-fast)"
+    ]
+  },
+  "helper": {
+    "logical_module": "NextUint64LookupCallerResources",
+    "source_sha256": "a1274b08f506ccba100bdbdcfcfc71ba29162597993a2af657c98274ca151f51",
+    "object_sha256": "20c7e66928fb1124a6c3fd8cccae053e2017712a9bd38d6a739861fcf02601c5",
+    "verification_owner": "Infra",
+    "handoff687_report_sha256": "3fa3d405a11fdc3f857750c394653ca2c77440fa381aac93bfe94a26150caa4c",
+    "MCP_certificate_sha256": "266a415d33dde5e396da6ae740883690586ad99eb18a40bfcf2ef1e3a9272abf",
+    "native900_and_capture663": "Preserved unchanged; not replaced in this branch."
+  },
+  "interface_lines": 5183,
+  "composition_lines": 43,
+  "check_fast": {
+    "command": [
+      "make",
+      "check-fast",
+      "CHECK_AGENT=spec-a",
+      "FAST_JOBS=6",
+      "AGENT_JOBS=6",
+      "AGENT_BUILD_DIR=/home/cody/zesislar/.worktrees/spec-a-av-nextuint64-profile-3c8ab7b0/_build/agents/spec-a-nextuint64-profile-gate"
+    ],
+    "start_UTC": "2026-10-17T01:37:23.095871+00:00",
+    "exit_code": 0,
+    "wall_seconds": 200.27425678586587,
+    "user_seconds": 264.410745,
+    "system_seconds": 43.216268,
+    "peak_RSS_KiB": 1215604,
+    "unchanged_sources": true
+  },
+  "root_owns_both_integration_gates": true,
+  "native_nextUint64_runs": 0,
+  "native_boundary_bodies_checked": false,
+  "Level1_and_model_declarations_unchanged": true
+}
