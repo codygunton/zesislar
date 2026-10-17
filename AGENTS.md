@@ -9,6 +9,20 @@ Use the contract boundary that the compliance theorem consumes.
 Do not replace a contract proof with an instruction-body theorem.
 Do not use execution evidence as a proof premise.
 
+## Contract shape
+
+- State machine bounds on `bv_unsigned` of the register binder.
+  Never state them through a `Z_to_bv` cast of a Z quantity. (F44)
+- Keep the semantic link to the contract quantity as a separate pure conjunct. (F44)
+- Use existential successor binders.
+  Never fix a successor binder to a branch literal. (F43)
+- Give each entry that fixes a computed quantity a registered introduction keyed by that entry. (F42)
+- Define selected code as `instr_lookup_resources (selectedCodeLookup <its own map>)` only.
+  Introduce callee code only through the table-level bridge. (F55, F57)
+- Do not use Boolean path selectors in join entries. (E3)
+- Give each predicate one unfold instance, owned by its function's hint umbrella. (`cp-av-umbrella-closure-audit`)
+  Use the umbrella-closure audit and launch preflight as the mechanical checks.
+
 ## Proof pattern
 
 Prove machine code with Islaris and Lithium. Start every proof module with
