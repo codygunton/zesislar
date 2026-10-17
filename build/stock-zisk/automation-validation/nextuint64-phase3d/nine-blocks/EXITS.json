@@ -1,0 +1,200 @@
+[
+  {
+    "entry": "0x800d62b8",
+    "launch": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-packet1014/LAUNCHED.json",
+      "sha256": "21e0a20828c4b3b754d4a06b954ca0f5cf2d23ba9373c6fbfa7aae5c101b2768",
+      "bytes": 932
+    },
+    "watcher": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-packet1014/WATCHER.json",
+      "sha256": "46c4f97e3323e0159db7f48c31898bfa21d3fec0203df6a04e2fd4374d3c5cbe",
+      "bytes": 2371
+    },
+    "completion": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-stop1018/REPORT.json",
+      "sha256": "f5c1ec3814a967f4535908fa0d057e58539f96e2baa6859ba727f7443bef6e20",
+      "bytes": 1591
+    },
+    "controller_pid": 3189556,
+    "controller_start_ticks": 191899012,
+    "current": null,
+    "original_controller_absent_or_exited": true
+  },
+  {
+    "entry": "0x800d62c0",
+    "launch": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-packet1014/LAUNCHED.json",
+      "sha256": "21e0a20828c4b3b754d4a06b954ca0f5cf2d23ba9373c6fbfa7aae5c101b2768",
+      "bytes": 932
+    },
+    "watcher": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-packet1014/WATCHER.json",
+      "sha256": "46c4f97e3323e0159db7f48c31898bfa21d3fec0203df6a04e2fd4374d3c5cbe",
+      "bytes": 2371
+    },
+    "completion": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-stop1018/REPORT.json",
+      "sha256": "f5c1ec3814a967f4535908fa0d057e58539f96e2baa6859ba727f7443bef6e20",
+      "bytes": 1591
+    },
+    "controller_pid": 3189556,
+    "controller_start_ticks": 191899012,
+    "current": null,
+    "original_controller_absent_or_exited": true
+  },
+  {
+    "entry": "0x800d62cc",
+    "launch": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-packet1014/LAUNCHED.json",
+      "sha256": "21e0a20828c4b3b754d4a06b954ca0f5cf2d23ba9373c6fbfa7aae5c101b2768",
+      "bytes": 932
+    },
+    "watcher": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-packet1014/WATCHER.json",
+      "sha256": "46c4f97e3323e0159db7f48c31898bfa21d3fec0203df6a04e2fd4374d3c5cbe",
+      "bytes": 2371
+    },
+    "completion": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-stop1018/REPORT.json",
+      "sha256": "f5c1ec3814a967f4535908fa0d057e58539f96e2baa6859ba727f7443bef6e20",
+      "bytes": 1591
+    },
+    "controller_pid": 3189556,
+    "controller_start_ticks": 191899012,
+    "current": null,
+    "original_controller_absent_or_exited": true
+  },
+  {
+    "entry": "0x800d62d8",
+    "launch": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-continuation1022/blocks/0x800d62d8/LAUNCHED.json",
+      "sha256": "6552328e27d281ec69a3f7649df4a662ab5cab8c467badac5dda0d573f356a9e",
+      "bytes": 872
+    },
+    "watcher": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-continuation1022/watchers/0x800d62d8.json",
+      "sha256": "11ad5d076b741b7d66a5d75899b5c28ab48e122de09b16f682859305f73eb739",
+      "bytes": 1173
+    },
+    "completion": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-continuation1022/results/0x800d62d8/RESULT.json",
+      "sha256": "a979f736115f0262e9464b152c8025df25295fb545dd9528706b74ec61297fc0",
+      "bytes": 39811
+    },
+    "controller_pid": 3461620,
+    "controller_start_ticks": 193740624,
+    "current": null,
+    "original_controller_absent_or_exited": true
+  },
+  {
+    "entry": "0x800d62e4",
+    "launch": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/blocks/0x800d62e4/LAUNCHED.json",
+      "sha256": "c1c76f0a318491685506d749fbab30cbfb17f103dccdabe462699eef2484f383",
+      "bytes": 859
+    },
+    "watcher": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/watchers/0x800d62e4/WATCHER.json",
+      "sha256": "cf3f842531c66bed198cbc839ae06a6edb789845c974a46d93e0740e3b0ed22f",
+      "bytes": 2146
+    },
+    "completion": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/results/0x800d62e4/RESULT.json",
+      "sha256": "af661ca0812a209599348dd65b2f863bc1393da2ada1404c04b87919f3225efc",
+      "bytes": 1918
+    },
+    "controller_pid": 602184,
+    "controller_start_ticks": 195064633,
+    "current": null,
+    "original_controller_absent_or_exited": true
+  },
+  {
+    "entry": "0x800d6304",
+    "launch": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/blocks/0x800d6304/LAUNCHED.json",
+      "sha256": "8677da93f83b54bba6310cfb4cf316998e25c97ccab3c2006a5584000f6d0e3c",
+      "bytes": 860
+    },
+    "watcher": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/watchers/0x800d6304/WATCHER.json",
+      "sha256": "49a46212ffd2dc6b50733e64f24580671cb8c1f3b8f0e95c8b266bd56460072d",
+      "bytes": 2539
+    },
+    "completion": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/results/0x800d6304/RESULT.json",
+      "sha256": "918624745089da05c4cfae342b3f9fab27c48c79e91433705d28f19155dae848",
+      "bytes": 1919
+    },
+    "controller_pid": 1025226,
+    "controller_start_ticks": 195818487,
+    "current": null,
+    "original_controller_absent_or_exited": true
+  },
+  {
+    "entry": "0x800d6310",
+    "launch": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/blocks/0x800d6310/LAUNCHED.json",
+      "sha256": "ac51dbe7b6c50baa0446c38a593eba74e771ef5bfa40b9356d45d02eeaf5879e",
+      "bytes": 860
+    },
+    "watcher": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/watchers/0x800d6310/WATCHER.json",
+      "sha256": "826fff4004081436a2720754ce6fdfc91a0a5f06901569b68152065e4b694c7f",
+      "bytes": 2532
+    },
+    "completion": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/results/0x800d6310/RESULT.json",
+      "sha256": "d9b06755c64e955a9052e221da2140aeca74c3a8bf1133e62520071ebc987ff6",
+      "bytes": 1927
+    },
+    "controller_pid": 1791910,
+    "controller_start_ticks": 196565824,
+    "current": null,
+    "original_controller_absent_or_exited": true
+  },
+  {
+    "entry": "0x800d6318",
+    "launch": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/blocks/0x800d6318/LAUNCHED.json",
+      "sha256": "8b011f9b983e7406807c0fb1bfda04b0f3f8daf28838e60af309ab075b764bd5",
+      "bytes": 860
+    },
+    "watcher": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/watchers/0x800d6318/WATCHER.json",
+      "sha256": "12c28f31dd96cd6912af169ab746b9b7dcea3c155551d4d9f0963106270757ad",
+      "bytes": 2281
+    },
+    "completion": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/results/0x800d6318/RESULT.json",
+      "sha256": "6df099a6bea0503205c4d1948de2c21758b80ceefe7966d36af7c593c2b974cc",
+      "bytes": 2678
+    },
+    "controller_pid": 1801467,
+    "controller_start_ticks": 196617143,
+    "current": null,
+    "original_controller_absent_or_exited": true
+  },
+  {
+    "entry": "0x800d632c",
+    "launch": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/blocks/0x800d632c/LAUNCHED.json",
+      "sha256": "7a835453f7653e3ca014d20490204a9676ae9fb0e046f14a1eafffbb5b8afc69",
+      "bytes": 860
+    },
+    "watcher": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/watchers/0x800d632c/WATCHER.json",
+      "sha256": "877f40400974f1014b77c4656eca7e936afeced63dd5b9c4daf9a1cb256fbe92",
+      "bytes": 2915
+    },
+    "completion": {
+      "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/results/0x800d632c/RESULT.json",
+      "sha256": "34f09c287cdf563a4f2e4c1e22fc8e8fd90f69deb052dec69b035927828d2bf6",
+      "bytes": 1937
+    },
+    "controller_pid": 1809370,
+    "controller_start_ticks": 196648901,
+    "current": null,
+    "original_controller_absent_or_exited": true
+  }
+]

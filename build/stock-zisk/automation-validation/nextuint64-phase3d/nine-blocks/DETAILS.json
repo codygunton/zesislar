@@ -1,0 +1,489 @@
+{
+  "schema": 1,
+  "root": "f58fde97947c16d1f8a4eebb9d3761ac1a066524",
+  "selected": [
+    "0x800d62b8",
+    "0x800d62c0",
+    "0x800d62cc",
+    "0x800d62d8",
+    "0x800d62e4",
+    "0x800d6304",
+    "0x800d6310",
+    "0x800d6318",
+    "0x800d632c"
+  ],
+  "excluded": [
+    "0x800d6274"
+  ],
+  "prediction": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-inputs1007/PREDICTION.json",
+    "sha256": "f9cf19d9687acf6aca4d31040d27b50239dc801076ee4981614b953e790daa06",
+    "bytes": 6145
+  },
+  "rows": [
+    {
+      "entry": "0x800d62b8",
+      "prediction": "close",
+      "primary_request": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/early-calls/0008-rocq_check-request.json",
+        "sha256": "21a5545f1abe2c17b4658b4b22026be3945577581e069c5744dad721af627fcb",
+        "bytes": 241
+      },
+      "primary_response": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/early-calls/0008-rocq_check-raw.json",
+        "sha256": "00ab874aaa36edabe32cb9b747d2af0403f4e39f1846645d4328eb911d538fc6",
+        "bytes": 491
+      },
+      "verified_closure": false,
+      "completed_instructions": null,
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/evidence.json",
+        "sha256": "105bff9f027dda90f5baf7adc51f3874506a7f00f391c4d1e04ba45376fecf3c",
+        "bytes": 22689
+      },
+      "primary_result": {
+        "success": false,
+        "error": "Pet process died: No response from pet process",
+        "reason": "crashed",
+        "pet_restarted": true,
+        "commands_run": 0,
+        "proof_finished": null
+      },
+      "legacy_artifact_outcome": "residual",
+      "performance": {
+        "wall_seconds": 112.46401149313897,
+        "peak_mib": 3257.59375,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "statement_sha256": "556a2cf9a90103a670af4c26a5504e47ef682bb6778146bd232369cc983a990a",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/Boundary.v",
+        "sha256": "73591bf53604d023d602fd27570d31df1ae6299017b94c4bea0fc316eec15d56",
+        "bytes": 7803
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62b8/Boundary_interactive.v",
+        "sha256": "5c7370a0358691b85ef4d397399bf9d282bf897b3accbf1dbad2554c78877ec3",
+        "bytes": 7741
+      },
+      "classification": "Pet runtime failure",
+      "final_groups": null,
+      "final_residual": "unavailable",
+      "CPU_seconds": null,
+      "CPU_scope": "Aggregate CPU unavailable."
+    },
+    {
+      "entry": "0x800d62c0",
+      "prediction": "close",
+      "primary_request": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/early-calls/0008-rocq_check-request.json",
+        "sha256": "415412506ea59ce1636f4160c7dc11512bc602db97f06202ed485ca2a9ee2320",
+        "bytes": 241
+      },
+      "primary_response": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/early-calls/0008-rocq_check-raw.json",
+        "sha256": "00ab874aaa36edabe32cb9b747d2af0403f4e39f1846645d4328eb911d538fc6",
+        "bytes": 491
+      },
+      "verified_closure": false,
+      "completed_instructions": null,
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/evidence.json",
+        "sha256": "388510ea0506675adf9d8fc28e02105e97145013dc131757716c7ad64c69ebeb",
+        "bytes": 22692
+      },
+      "primary_result": {
+        "success": false,
+        "error": "Pet process died: No response from pet process",
+        "reason": "crashed",
+        "pet_restarted": true,
+        "commands_run": 0,
+        "proof_finished": null
+      },
+      "legacy_artifact_outcome": "residual",
+      "performance": {
+        "wall_seconds": 99.9622891601175,
+        "peak_mib": 2465.15234375,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "statement_sha256": "ec82b41102ab6a01913e2e96b13944c87b20731bf73026590e5a1fd6abf0c3c5",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/Boundary.v",
+        "sha256": "5ca88f3051b1efa14a56eb16085fe67f389116ddd4049c59d07d08c7f15e2e84",
+        "bytes": 7803
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62c0/Boundary_interactive.v",
+        "sha256": "3cbc30688d8f600214e6f29754a9518a46b1d22873f2a0176847cf8f16c8c499",
+        "bytes": 7741
+      },
+      "classification": "Pet runtime failure",
+      "final_groups": null,
+      "final_residual": "unavailable",
+      "CPU_seconds": null,
+      "CPU_scope": "Aggregate CPU unavailable."
+    },
+    {
+      "entry": "0x800d62cc",
+      "prediction": "residual/hand",
+      "primary_request": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-first1010/native/block_0x800d62cc/early-calls/0008-rocq_check-request.json",
+        "sha256": "3b8401bf709573b5e36f6cdafef33a7558f2c62c030c9c156d0db0cc7fe4a239",
+        "bytes": 241
+      },
+      "primary_response": null,
+      "verified_closure": false,
+      "completed_instructions": null,
+      "classification": "bound stop; no response",
+      "final_groups": null,
+      "final_residual": "unavailable",
+      "row_seal": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-stop1018/REPORT.json",
+        "sha256": "f5c1ec3814a967f4535908fa0d057e58539f96e2baa6859ba727f7443bef6e20",
+        "bytes": 1591
+      },
+      "CPU_seconds": 15856.67,
+      "CPU_scope": "Pet CPU only; final aggregate CPU unavailable.",
+      "peak_Pet_RSS_KiB": 1712656,
+      "historical_limit_label": "no response within 4.2 CPU-hours"
+    },
+    {
+      "entry": "0x800d62d8",
+      "prediction": "residual/hand",
+      "primary_request": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0008-rocq_check-request.json",
+        "sha256": "9fde750b2d95151bfd850db701d02b82c0ced8e596a6f4840b580d6bd07a0154",
+        "bytes": 241
+      },
+      "primary_response": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/early-calls/0008-rocq_check-raw.json",
+        "sha256": "3b7641311b98d03958cef6f878abf1f246add5159b1d8976d8bed4f33bd04290",
+        "bytes": 19197
+      },
+      "verified_closure": false,
+      "completed_instructions": null,
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/evidence.json",
+        "sha256": "c22f66e284be2315b6961aa38db74530d7217bfa5be655b9086f1d34231bfb26",
+        "bytes": 150188
+      },
+      "primary_result": {
+        "success": true,
+        "error": null,
+        "reason": null,
+        "pet_restarted": null,
+        "commands_run": 1,
+        "proof_finished": false
+      },
+      "legacy_artifact_outcome": "residual",
+      "performance": {
+        "wall_seconds": 94.40279766614549,
+        "peak_mib": 1694.4609375,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "statement_sha256": "271e3c627691fbba6f91892cb79dc503db5694b5ddb9833a2a2b7b6d2c05d051",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/Boundary.v",
+        "sha256": "9c87fdb821083084ebb156782d10b18a172914ca5c2da61580bc466e02fd7d04",
+        "bytes": 6387
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/Boundary_interactive.v",
+        "sha256": "3f4beb86af436afb898fbacc9877630a5b318a5e44f2c993a5a6e53565656876",
+        "bytes": 6325
+      },
+      "classification": "open residual",
+      "final_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-continuation1022/0x800d62d8/native/block_0x800d62d8/complete/state_2.json",
+        "sha256": "9f919ae3b5b748b46f2cc411fc0e3dbebe0594b98e7255eb35e88e87c6f99d3e",
+        "bytes": 1208356
+      },
+      "final_groups": {
+        "goals": 3,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "final_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n_ : instr_pre 2148360932\n      (\u2203 (successor_x1 successor_x2 successor_x5 successor_x6 successor_x7 successor_x8 successor_x9 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_x15 successor_x16\n          successor_x17 successor_x18 successor_x19 successor_x20 successor_x21 successor_x22 successor_x23 successor_x24 successor_x25 successor_x26 successor_x27 successor_x28 successor_x29\n          successor_x30 successor_x31 : bv 64) (successor_inputBytes successor_sliceBytes successor_decoded successor_saved successor_resultBytes : list (bv 8)),\n         nextUint64EntryAt800d62e4 params successor_x1 successor_x2 successor_x5 successor_x6 successor_x7 successor_x8 successor_x9 successor_x10 successor_x11 successor_x12 successor_x13\n           successor_x14 successor_x15 successor_x16 successor_x17 successor_x18 successor_x19 successor_x20 successor_x21 successor_x22 successor_x23 successor_x24 successor_x25 successor_x26\n           successor_x27 successor_x28 successor_x29 successor_x30 successor_x31 successor_inputBytes successor_sliceBytes successor_decoded successor_saved successor_resultBytes)\n_ : \"x1\" \u21a6\u1d63 RVal_Bits x1\n_ : \"x2\" \u21a6\u1d63 RVal_Bits x2\n_ : \"x5\" \u21a6\u1d63 RVal_Bits x5\n_ : \"x6\" \u21a6\u1d63 RVal_Bits x6\n_ : \"x7\" \u21a6\u1d63 RVal_Bits x7\n_ : \"x8\" \u21a6\u1d63 RVal_Bits x8\n_ : \"x11\" \u21a6\u1d63 RVal_Bits x11\n_ : \"x12\" \u21a6\u1d63 RVal_Bits x12\n_ : \"x13\" \u21a6\u1d63 RVal_Bits x13\n_ : \"x14\" \u21a6\u1d63 RVal_Bits x14\n_ : \"x15\" \u21a6\u1d63 RVal_Bits x15\n_ : \"x16\" \u21a6\u1d63 RVal_Bits x16\n_ : \"x17\" \u21a6\u1d63 RVal_Bits x17\n_ : \"x18\" \u21a6\u1d63 RVal_Bits x18\n_ : \"x19\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (ParentHeaderRootFacts.nextInputPointer (nextUint64Base params)))\n_ : \"x20\" \u21a6\u1d63 RVal_Bits x20\n_ : \"x21\" \u21a6\u1d63 RVal_Bits x21\n_ : \"x22\" \u21a6\u1d63 RVal_Bits x22\n_ : \"x23\" \u21a6\u1d63 RVal_Bits x23\n_ : \"x24\" \u21a6\u1d63 RVal_Bits x24\n_ : \"x25\" \u21a6\u1d63 RVal_Bits x25\n_ : \"x26\" \u21a6\u1d63 RVal_Bits x26\n_ : \"x27\" \u21a6\u1d63 RVal_Bits x27\n_ : \"x28\" \u21a6\u1d63 RVal_Bits x28\n_ : \"x29\" \u21a6\u1d63 RVal_Bits x29\n_ : \"x30\" \u21a6\u1d63 RVal_Bits x30\n_ : \"x31\" \u21a6\u1d63 RVal_Bits x31\n_ : ParentHeaderRootFacts.nextInputPointer (nextUint64Base params) \u21a6\u2098\u2217 inputBytes\n_ : ParentHeaderRootFacts.nextSlicePointer (nextUint64Base params)\n    \u21a6\u2098\u2217 nextUint64SliceImage (ParentHeaderRootFacts.nextInputPointer (nextUint64Base params)) (length (ParentHeaderRootFacts.nextInputBytes (nextUint64Base params)))\n_ : (ParentHeaderRootFacts.nextStackPointer (nextUint64Base params) - 96) \u21a6\u2098? 8\n_ : (ParentHeaderRootFacts.nextStackPointer (nextUint64Base params) - 88) \u21a6\u2098\u2217 decoded\n_ : (ParentHeaderRootFacts.nextStackPointer (nextUint64Base params) - 48) \u21a6\u2098\u2217 saved\n_ : (ParentHeaderRootFacts.nextStackPointer (nextUint64Base params) - 112) \u21a6\u2098? 16\n_ : ParentHeaderRootFacts.nextResultPointer (nextUint64Base params) \u21a6\u2098? 16\n_ : \"x10\" \u21a6\u1d63 RVal_Bits 3%bv\n_ : \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148360924)\n_ : \"x9\" \u21a6\u1d63 RVal_Bits x9\n_ : reg_col (nextUint64SysRegs params)\n--------------------------------------\u2217\nfind_in_context (FindMemMapsTo (bv_unsigned x9))\n  (\u03bb mk : mem_mapsto_kind,\n     match mk with\n     | MKMapsTo n' _ => \u231cn' = 64%N\u231d \u2217 (bv_unsigned x9 \u21a6\u2098 0 -\u2217 WPasm HIDDEN)\n     | MKArray n' a' values =>\n         if (n' =? 64)%N\n         then \u231c(bv_unsigned x9 - a') `mod` 8 = 0\u231d \u2217\n         \u2203 i : nat, \u231ci = (bv_unsigned x9 - a') `div` 8\u231d \u2217 \u231c(i < length values)%nat\u231d \u2217 \u2203 Heq : 64%N = n', a' \u21a6\u2098\u2217 <[i:=eq_rect 64%N bv 0%bv n' Heq]> values -\u2217 WPasm HIDDEN\n         else \u231cn' = 8%N\u231d \u2217\n         \u2203 i : nat, \u231ci = bv_unsigned x9 - a'\u231d \u2217 \u231c(i + N.to_nat 8 <= length values)%nat\u231d \u2217\n           (a'\n            \u21a6\u2098\u2217 (take i values ++\n                 Z_to_bv n' (Z.land (bv_unsigned 0) (Z.ones (Z.of_N n')))\n                 :: Z_to_bv n' (Z.land (bv_unsigned 0 \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                    :: Z_to_bv n' (Z.land ((bv_unsigned 0 \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                       :: Z_to_bv n' (Z.land (((bv_unsigned 0 \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                          :: Z_to_bv n' (Z.land ((((bv_unsigned 0 \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                             :: Z_to_bv n' (Z.land (((((bv_unsigned 0 \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                                :: Z_to_bv n' (Z.land ((((((bv_unsigned 0 \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                                   :: Z_to_bv n' (Z.land (((((((bv_unsigned 0 \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                                      :: drop (i + N.to_nat 8) values) -\u2217 WPasm HIDDEN)\n     | MKUninit a' length => \u231ca' \u2264 bv_unsigned x9\u231d \u2217 \u231cbv_unsigned x9 + 8 \u2264 a' + length\u231d \u2217\n         (bv_unsigned x9 \u21a6\u2098 0 -\u2217 a' \u21a6\u2098? (bv_unsigned x9 - a') -\u2217 (bv_unsigned x9 + 8) \u21a6\u2098? (a' + length - (bv_unsigned x9 + 8)) -\u2217 WPasm HIDDEN)\n     | MKMMIO a' length => \u231ca' \u2264 bv_unsigned x9\u231d \u2217 \u231cbv_unsigned x9 + 8 \u2264 a' + length\u231d \u2217 \u2203 Pks Pks' : spec, spec_trace Pks \u2217 \u231cscons (SWriteMem x9 0%bv) Pks' \u2286 Pks\u231d \u2217 (spec_trace Pks' -\u2217 WPasm HIDDEN)\n     end)",
+      "monitor": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-own-map-continuation1022/results/0x800d62d8/RESULT.json",
+        "sha256": "a979f736115f0262e9464b152c8025df25295fb545dd9528706b74ec61297fc0",
+        "bytes": 39811
+      },
+      "CPU_seconds": 100.66573000000001,
+      "CPU_scope": "Parent-first tree sampling and final wait4.",
+      "accounting_complete": true
+    },
+    {
+      "entry": "0x800d62e4",
+      "prediction": "residual/hand",
+      "primary_request": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d62e4/native/block_0x800d62e4/early-calls/0008-rocq_check-request.json",
+        "sha256": "dddfec488abc01345939cf0bffe544823dbddbf390232a3a33c5775dd67cba59",
+        "bytes": 241
+      },
+      "primary_response": null,
+      "verified_closure": false,
+      "completed_instructions": null,
+      "classification": "bound stop; no response",
+      "final_groups": null,
+      "final_residual": "unavailable",
+      "row_seal": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row62e4-1057/REPORT.json",
+        "sha256": "b2b271648f5d2c9e98fa0d394cee1076702c8b89a39e579ebdad2ade446ff1e9",
+        "bytes": 8050
+      },
+      "monitor": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/results/0x800d62e4/RESULT.json",
+        "sha256": "af661ca0812a209599348dd65b2f863bc1393da2ada1404c04b87919f3225efc",
+        "bytes": 1918
+      },
+      "CPU_seconds": 7200.084654,
+      "CPU_scope": "Hierarchical accounting slice plus monitor and reaped controller CPU.",
+      "accounting_complete": true,
+      "observe_only": false,
+      "CPU_beyond7200": 0.08465400000022782
+    },
+    {
+      "entry": "0x800d6304",
+      "prediction": "close",
+      "primary_request": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6304/native/block_0x800d6304/early-calls/0008-rocq_check-request.json",
+        "sha256": "77709cbcbe4d8b6dde228d66b66040dcecf319a50a5cd67150df3b7f063abcfd",
+        "bytes": 241
+      },
+      "primary_response": null,
+      "verified_closure": false,
+      "completed_instructions": null,
+      "classification": "bound stop; no response",
+      "final_groups": null,
+      "final_residual": "unavailable",
+      "row_seal": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row6304-1060/REPORT.json",
+        "sha256": "99a798e1196f1af9ee8e3ac09c40690479f9220e1fc7ff36f4e55cf0d8293698",
+        "bytes": 7978
+      },
+      "monitor": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/results/0x800d6304/RESULT.json",
+        "sha256": "918624745089da05c4cfae342b3f9fab27c48c79e91433705d28f19155dae848",
+        "bytes": 1919
+      },
+      "CPU_seconds": 7200.507358,
+      "CPU_scope": "Hierarchical accounting slice plus monitor and reaped controller CPU.",
+      "accounting_complete": true,
+      "observe_only": false,
+      "CPU_beyond7200": 0.5073579999998401
+    },
+    {
+      "entry": "0x800d6310",
+      "prediction": "close",
+      "primary_request": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/early-calls/0008-rocq_check-request.json",
+        "sha256": "cfa1b60179e8ed58382fdb3d3996c6a6b8f96b77a3d760c7925fa357ba6264fd",
+        "bytes": 241
+      },
+      "primary_response": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/early-calls/0008-rocq_check-raw.json",
+        "sha256": "00ab874aaa36edabe32cb9b747d2af0403f4e39f1846645d4328eb911d538fc6",
+        "bytes": 491
+      },
+      "verified_closure": false,
+      "completed_instructions": null,
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/evidence.json",
+        "sha256": "e7e8a608b6bfe0103513210380d25e3f1f0cd0cc798a818a8f8746bc971395ee",
+        "bytes": 19756
+      },
+      "primary_result": {
+        "success": false,
+        "error": "Pet process died: No response from pet process",
+        "reason": "crashed",
+        "pet_restarted": true,
+        "commands_run": 0,
+        "proof_finished": null
+      },
+      "legacy_artifact_outcome": "residual",
+      "performance": {
+        "wall_seconds": 394.9920882221777,
+        "peak_mib": 1874.63671875,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "statement_sha256": "fe26503de3f3156aba3468c3fc4d0e5735f27ca0b5d98d09b97262c03f93f084",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/Boundary.v",
+        "sha256": "dff8d8ddd7424796494f19b0c045a7d4ce1a821adf60087842b20d1d6996e20a",
+        "bytes": 6437
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6310/native/block_0x800d6310/Boundary_interactive.v",
+        "sha256": "d2727740ea1586ce9c81efbc94a30c5b9853b579d5eb35bb0af9f8ce0392b7ef",
+        "bytes": 6375
+      },
+      "classification": "Pet runtime failure",
+      "final_groups": null,
+      "final_residual": "unavailable",
+      "row_seal": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row6310-1062/REPORT.json",
+        "sha256": "e50946268e4b54cb2d9e6803fd90e4725a6bbc0077f559264357e3bf57222f59",
+        "bytes": 5818
+      },
+      "monitor": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/results/0x800d6310/RESULT.json",
+        "sha256": "d9b06755c64e955a9052e221da2140aeca74c3a8bf1133e62520071ebc987ff6",
+        "bytes": 1927
+      },
+      "CPU_seconds": 398.576871,
+      "CPU_scope": "Hierarchical accounting slice plus monitor and reaped controller CPU.",
+      "accounting_complete": true,
+      "observe_only": false,
+      "CPU_beyond7200": 0
+    },
+    {
+      "entry": "0x800d6318",
+      "prediction": "residual/hand",
+      "primary_request": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/early-calls/0008-rocq_check-request.json",
+        "sha256": "2ba3c9af8ac70bad7609251d2c1ed9a4bd9da87d79313e84678125ad616479a9",
+        "bytes": 241
+      },
+      "primary_response": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/early-calls/0008-rocq_check-raw.json",
+        "sha256": "00ab874aaa36edabe32cb9b747d2af0403f4e39f1846645d4328eb911d538fc6",
+        "bytes": 491
+      },
+      "verified_closure": false,
+      "completed_instructions": null,
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/evidence.json",
+        "sha256": "65caee8e25dcbd5c638156ae34c0ac0694e25c919002dc759ee92b23d763ba61",
+        "bytes": 23042
+      },
+      "primary_result": {
+        "success": false,
+        "error": "Pet process died: No response from pet process",
+        "reason": "crashed",
+        "pet_restarted": true,
+        "commands_run": 0,
+        "proof_finished": null
+      },
+      "legacy_artifact_outcome": "residual",
+      "performance": {
+        "wall_seconds": 84.97562128584832,
+        "peak_mib": 1844.80859375,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "statement_sha256": "cf3b0106761cf6c5a407902b3db79832fb83c198aba4fb88baf0ac57dd2b1fa9",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/Boundary.v",
+        "sha256": "b0d2e4636e392bbe92938759a9117f1491be13d19598e72aa5dbf0bcb49aa331",
+        "bytes": 8133
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d6318/native/block_0x800d6318/Boundary_interactive.v",
+        "sha256": "42121a1df3aaf55b25e47a0eea5884e766e7e549367c15ed3ac5eb73b7e16260",
+        "bytes": 8071
+      },
+      "classification": "Pet runtime failure",
+      "final_groups": null,
+      "final_residual": "unavailable",
+      "row_seal": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row6318-1063/REPORT.json",
+        "sha256": "130f82e23c8dd57bf4e4a77f0fd2944c5ddf0389c0739a0b1d58d4019d3e13c1",
+        "bytes": 6635
+      },
+      "monitor": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/results/0x800d6318/RESULT.json",
+        "sha256": "6df099a6bea0503205c4d1948de2c21758b80ceefe7966d36af7c593c2b974cc",
+        "bytes": 2678
+      },
+      "CPU_seconds": 87.229117,
+      "CPU_scope": "Last retained aggregate observation; final CPU unavailable.",
+      "accounting_complete": false,
+      "observe_only": true,
+      "CPU_beyond7200": 0
+    },
+    {
+      "entry": "0x800d632c",
+      "prediction": "residual/hand",
+      "primary_request": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0008-rocq_check-request.json",
+        "sha256": "b1865f858d79359d9c96c9d6a02aeddb293004d86b9b73acb3f7c40130d2e906",
+        "bytes": 241
+      },
+      "primary_response": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/early-calls/0008-rocq_check-raw.json",
+        "sha256": "78c49b94fc713291d8d6642a4085b6497b5e3e0de7d1f4b06dabd32569d974c0",
+        "bytes": 19106
+      },
+      "verified_closure": false,
+      "completed_instructions": null,
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/evidence.json",
+        "sha256": "c044efe7cf026d782bf6569675f3f1fab2d256ceb6ada34e1dce1121fc45a211",
+        "bytes": 160840
+      },
+      "primary_result": {
+        "success": true,
+        "error": null,
+        "reason": null,
+        "pet_restarted": null,
+        "commands_run": 1,
+        "proof_finished": false
+      },
+      "legacy_artifact_outcome": "residual",
+      "performance": {
+        "wall_seconds": 95.91088106506504,
+        "peak_mib": 1718.04296875,
+        "scope": "Worker descendants and learned Pet PIDs; failed-start Pet memory can be unknown"
+      },
+      "statement_sha256": "885b4946890d860dfc1cfa58c4a9e24110b49fe4489ce5748128e5bb8f8f4c13",
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/Boundary.v",
+        "sha256": "154600d9cea10a425c317e3280b1f57c986609f645a3eac0d7d6b1d2f44be838",
+        "bytes": 6387
+      },
+      "interactive_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/Boundary_interactive.v",
+        "sha256": "c2c7c4e7273836f4a4b74686d64ec86c12b2f7ed94af12e31b20483b844df1ae",
+        "bytes": 6325
+      },
+      "classification": "open residual",
+      "final_export": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-private-f58/_build/nextuint64-nine-observe-continuation1056/0x800d632c/native/block_0x800d632c/complete/state_2.json",
+        "sha256": "5716451023ac179afed58b3f5f83b4a9d7da6d91ae5d2709c7b68b1e476a4c87",
+        "bytes": 1218527
+      },
+      "final_groups": {
+        "goals": 3,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "final_residual": "_ : instr_lookup_resources (SelectedCodeLookup.selectedCodeLookup instr_map)\n--------------------------------------\u25a1\n_ : instr_pre 2148360932\n      (\u2203 (successor_x1 successor_x2 successor_x5 successor_x6 successor_x7 successor_x8 successor_x9 successor_x10 successor_x11 successor_x12 successor_x13 successor_x14 successor_x15 successor_x16\n          successor_x17 successor_x18 successor_x19 successor_x20 successor_x21 successor_x22 successor_x23 successor_x24 successor_x25 successor_x26 successor_x27 successor_x28 successor_x29\n          successor_x30 successor_x31 : bv 64) (successor_inputBytes successor_sliceBytes successor_decoded successor_saved successor_resultBytes : list (bv 8)),\n         nextUint64EntryAt800d62e4 params successor_x1 successor_x2 successor_x5 successor_x6 successor_x7 successor_x8 successor_x9 successor_x10 successor_x11 successor_x12 successor_x13\n           successor_x14 successor_x15 successor_x16 successor_x17 successor_x18 successor_x19 successor_x20 successor_x21 successor_x22 successor_x23 successor_x24 successor_x25 successor_x26\n           successor_x27 successor_x28 successor_x29 successor_x30 successor_x31 successor_inputBytes successor_sliceBytes successor_decoded successor_saved successor_resultBytes)\n_ : \"x1\" \u21a6\u1d63 RVal_Bits x1\n_ : \"x2\" \u21a6\u1d63 RVal_Bits x2\n_ : \"x5\" \u21a6\u1d63 RVal_Bits x5\n_ : \"x6\" \u21a6\u1d63 RVal_Bits x6\n_ : \"x7\" \u21a6\u1d63 RVal_Bits x7\n_ : \"x8\" \u21a6\u1d63 RVal_Bits x8\n_ : \"x9\" \u21a6\u1d63 RVal_Bits x9\n_ : \"x11\" \u21a6\u1d63 RVal_Bits x11\n_ : \"x12\" \u21a6\u1d63 RVal_Bits x12\n_ : \"x13\" \u21a6\u1d63 RVal_Bits x13\n_ : \"x14\" \u21a6\u1d63 RVal_Bits x14\n_ : \"x15\" \u21a6\u1d63 RVal_Bits x15\n_ : \"x16\" \u21a6\u1d63 RVal_Bits x16\n_ : \"x17\" \u21a6\u1d63 RVal_Bits x17\n_ : \"x21\" \u21a6\u1d63 RVal_Bits x21\n_ : \"x22\" \u21a6\u1d63 RVal_Bits x22\n_ : \"x23\" \u21a6\u1d63 RVal_Bits x23\n_ : \"x24\" \u21a6\u1d63 RVal_Bits x24\n_ : \"x25\" \u21a6\u1d63 RVal_Bits x25\n_ : \"x26\" \u21a6\u1d63 RVal_Bits x26\n_ : \"x27\" \u21a6\u1d63 RVal_Bits x27\n_ : \"x28\" \u21a6\u1d63 RVal_Bits x28\n_ : \"x29\" \u21a6\u1d63 RVal_Bits x29\n_ : \"x30\" \u21a6\u1d63 RVal_Bits x30\n_ : \"x31\" \u21a6\u1d63 RVal_Bits x31\n_ : ParentHeaderRootFacts.nextInputPointer (nextUint64Base params) \u21a6\u2098\u2217 inputBytes\n_ : ParentHeaderRootFacts.nextSlicePointer (nextUint64Base params)\n    \u21a6\u2098\u2217 nextUint64SliceImage (ParentHeaderRootFacts.nextInputPointer (nextUint64Base params)) (length (ParentHeaderRootFacts.nextInputBytes (nextUint64Base params)))\n_ : (ParentHeaderRootFacts.nextStackPointer (nextUint64Base params) - 96) \u21a6\u2098? 8\n_ : (ParentHeaderRootFacts.nextStackPointer (nextUint64Base params) - 88) \u21a6\u2098\u2217 decoded\n_ : (ParentHeaderRootFacts.nextStackPointer (nextUint64Base params) - 48) \u21a6\u2098\u2217 saved\n_ : (ParentHeaderRootFacts.nextStackPointer (nextUint64Base params) - 112) \u21a6\u2098? 16\n_ : ParentHeaderRootFacts.nextResultPointer (nextUint64Base params) \u21a6\u2098? 16\n_ : \"x20\" \u21a6\u1d63 RVal_Bits x20\n_ : \"x10\" \u21a6\u1d63 RVal_Bits (x20 - x10)%bv\n_ : \"PC\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 2148361012)\n_ : \"x18\" \u21a6\u1d63 RVal_Bits x18\n_ : reg_col (nextUint64SysRegs params)\n_ : \"x19\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (ParentHeaderRootFacts.nextInputPointer (nextUint64Base params)) + x10)%bv\n--------------------------------------\u2217\nfind_in_context (FindMemMapsTo (bv_unsigned x18))\n  (\u03bb mk : mem_mapsto_kind,\n     match mk with\n     | MKMapsTo n' _ => \u231cn' = 64%N\u231d \u2217 (bv_unsigned x18 \u21a6\u2098 (Z_to_bv 64 (ParentHeaderRootFacts.nextInputPointer (nextUint64Base params)) + x10) -\u2217 WPasm HIDDEN)\n     | MKArray n' a' values =>\n         if (n' =? 64)%N\n         then \u231c(bv_unsigned x18 - a') `mod` 8 = 0\u231d \u2217\n         \u2203 i : nat, \u231ci = (bv_unsigned x18 - a') `div` 8\u231d \u2217 \u231c(i < length values)%nat\u231d \u2217\n           \u2203 Heq : 64%N = n', a' \u21a6\u2098\u2217 <[i:=eq_rect 64%N bv (Z_to_bv 64 (ParentHeaderRootFacts.nextInputPointer (nextUint64Base params)) + x10)%bv n' Heq]> values -\u2217 WPasm HIDDEN\n         else \u231cn' = 8%N\u231d \u2217\n         \u2203 i : nat, \u231ci = bv_unsigned x18 - a'\u231d \u2217 \u231c(i + N.to_nat 8 <= length values)%nat\u231d \u2217\n           (a'\n            \u21a6\u2098\u2217 (take i values ++\n                 Z_to_bv n' (Z.land (bv_unsigned (Z_to_bv 64 (ParentHeaderRootFacts.nextInputPointer (nextUint64Base params)) + x10)) (Z.ones (Z.of_N n')))\n                 :: Z_to_bv n' (Z.land (bv_unsigned (Z_to_bv 64 (ParentHeaderRootFacts.nextInputPointer (nextUint64Base params)) + x10) \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                    :: Z_to_bv n' (Z.land ((bv_unsigned (Z_to_bv 64 (ParentHeaderRootFacts.nextInputPointer (nextUint64Base params)) + x10) \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                       :: Z_to_bv n'\n                            (Z.land (((bv_unsigned (Z_to_bv 64 (ParentHeaderRootFacts.nextInputPointer (nextUint64Base params)) + x10) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                          :: Z_to_bv n'\n                               (Z.land ((((bv_unsigned (Z_to_bv 64 (ParentHeaderRootFacts.nextInputPointer (nextUint64Base params)) + x10) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n')\n                                  (Z.ones (Z.of_N n')))\n                             :: Z_to_bv n'\n                                  (Z.land\n                                     (((((bv_unsigned (Z_to_bv 64 (ParentHeaderRootFacts.nextInputPointer (nextUint64Base params)) + x10) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n')\n                                      \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                                :: Z_to_bv n'\n                                     (Z.land\n                                        ((((((bv_unsigned (Z_to_bv 64 (ParentHeaderRootFacts.nextInputPointer (nextUint64Base params)) + x10) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n')\n                                          \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n')))\n                                   :: Z_to_bv n'\n                                        (Z.land\n                                           (((((((bv_unsigned (Z_to_bv 64 (ParentHeaderRootFacts.nextInputPointer (nextUint64Base params)) + x10) \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n')\n                                              \u226b Z.of_N n') \u226b Z.of_N n') \u226b Z.of_N n') (Z.ones (Z.of_N n'))) :: drop (i + N.to_nat 8) values) -\u2217 WPasm HIDDEN)\n     | MKUninit a' length => \u231ca' \u2264 bv_unsigned x18\u231d \u2217 \u231cbv_unsigned x18 + 8 \u2264 a' + length\u231d \u2217\n         (bv_unsigned x18 \u21a6\u2098 (Z_to_bv 64 (ParentHeaderRootFacts.nextInputPointer (nextUint64Base params)) + x10) -\u2217\n          a' \u21a6\u2098? (bv_unsigned x18 - a') -\u2217 (bv_unsigned x18 + 8) \u21a6\u2098? (a' + length - (bv_unsigned x18 + 8)) -\u2217 WPasm HIDDEN)\n     | MKMMIO a' length => \u231ca' \u2264 bv_unsigned x18\u231d \u2217 \u231cbv_unsigned x18 + 8 \u2264 a' + length\u231d \u2217\n         \u2203 Pks Pks' : spec, spec_trace Pks \u2217 \u231cscons (SWriteMem x18 (Z_to_bv 64 (ParentHeaderRootFacts.nextInputPointer (nextUint64Base params)) + x10)%bv) Pks' \u2286 Pks\u231d \u2217\n           (spec_trace Pks' -\u2217 WPasm HIDDEN)\n     end)",
+      "row_seal": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-row632c-1064/REPORT.json",
+        "sha256": "9cfe8bba7c386d26dffa057c185f4940e2a01c5423593cee18e6f04d13ef99b3",
+        "bytes": 5640
+      },
+      "monitor": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-observe-packet1056/results/0x800d632c/RESULT.json",
+        "sha256": "34f09c287cdf563a4f2e4c1e22fc8e8fd90f69deb052dec69b035927828d2bf6",
+        "bytes": 1937
+      },
+      "CPU_seconds": 101.680515,
+      "CPU_scope": "Hierarchical accounting slice plus monitor and reaped controller CPU.",
+      "accounting_complete": true,
+      "observe_only": false,
+      "CPU_beyond7200": 0
+    }
+  ],
+  "limits": [
+    "Instruction completion counts are unavailable.",
+    "Legacy native-residual labels do not classify Pet crashes.",
+    "Only two accepted primary responses have final exports.",
+    "The 6318 CPU endpoint is incomplete after monitor failure.",
+    "The 62cc endpoint measures Pet CPU only."
+  ],
+  "new_proof_calls": 0,
+  "retries": 0
+}

@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "outcome": "complete-nine-row-measurement",
+  "root": "f58fde97947c16d1f8a4eebb9d3761ac1a066524",
+  "selected": [
+    "0x800d62b8",
+    "0x800d62c0",
+    "0x800d62cc",
+    "0x800d62d8",
+    "0x800d62e4",
+    "0x800d6304",
+    "0x800d6310",
+    "0x800d6318",
+    "0x800d632c"
+  ],
+  "excluded": [
+    "0x800d6274"
+  ],
+  "counts": {
+    "Pet runtime failure": 4,
+    "bound stop; no response": 3,
+    "open residual": 2
+  },
+  "verified_closures": 0,
+  "predicted_closures": 4,
+  "accepted_open_residuals": 2,
+  "visible_final_active_goals": 6,
+  "unavailable_final_states": 7,
+  "details": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-final1065/DETAILS.json",
+    "sha256": "4370133effd919db0b5f34d8a4df24d85b525bb9c7c926e1104b2531d294beec",
+    "bytes": 37317
+  },
+  "table": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-final1065/TABLE.md",
+    "sha256": "f4f70128cfbe7ed5de82d195b7802f20ff95926c7afa0ede139926be9c4e03f3",
+    "bytes": 2450
+  },
+  "exits": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-final1065/EXITS.json",
+    "sha256": "c6f6f3aa37d2d25b437c2a516c614018edb2bc0fedaa23460f64ec58e2ee6097",
+    "bytes": 8980
+  },
+  "inputs": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-final1065/INPUTS.json",
+    "sha256": "835811e0ff1be472f74e91b86d64a383c67101f5d9b780bc48e91037afbe3d49",
+    "bytes": 71029
+  },
+  "collector": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-final1065/seal.py",
+    "sha256": "4c2fea730ebc920bbfb61337ce255b21391db27e46a5a8e2a8f0f65a22cbfdc6",
+    "bytes": 9693
+  },
+  "source_preservation": "Retained primary evidence hashes and SOURCE-EQUALITY.json remain exact.",
+  "all_selected_controllers_absent_or_exited": true,
+  "new_proof_calls": 0,
+  "new_signals": 0,
+  "sealed_at": "2026-10-17T20:07:27.735202+00:00"
+}

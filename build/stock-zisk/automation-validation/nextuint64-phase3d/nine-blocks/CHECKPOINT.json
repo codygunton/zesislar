@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "publication_base": "d0f26bb2be8b2e259b30cbbb37919251aaccb1d6",
+  "measurement_root": "f58fde97947c16d1f8a4eebb9d3761ac1a066524",
+  "scope": "Result data and prose only. No proof, contract, automation, or executable changes.",
+  "result": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-final1065/REPORT.json",
+    "sha256": "41b47370c4b45b883e9ee816e09a68d1af57515bc7989189990aae7c5fedc109",
+    "bytes": 2037
+  },
+  "copies": [
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-final1065/REPORT.json",
+        "sha256": "41b47370c4b45b883e9ee816e09a68d1af57515bc7989189990aae7c5fedc109",
+        "bytes": 2037
+      },
+      "published": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-av-nextuint64-nine-final/build/stock-zisk/automation-validation/nextuint64-phase3d/nine-blocks/REPORT.json",
+        "sha256": "41b47370c4b45b883e9ee816e09a68d1af57515bc7989189990aae7c5fedc109",
+        "bytes": 2037
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-final1065/DETAILS.json",
+        "sha256": "4370133effd919db0b5f34d8a4df24d85b525bb9c7c926e1104b2531d294beec",
+        "bytes": 37317
+      },
+      "published": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-av-nextuint64-nine-final/build/stock-zisk/automation-validation/nextuint64-phase3d/nine-blocks/DETAILS.json",
+        "sha256": "4370133effd919db0b5f34d8a4df24d85b525bb9c7c926e1104b2531d294beec",
+        "bytes": 37317
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-final1065/TABLE.md",
+        "sha256": "f4f70128cfbe7ed5de82d195b7802f20ff95926c7afa0ede139926be9c4e03f3",
+        "bytes": 2450
+      },
+      "published": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-av-nextuint64-nine-final/build/stock-zisk/automation-validation/nextuint64-phase3d/nine-blocks/TABLE.md",
+        "sha256": "f4f70128cfbe7ed5de82d195b7802f20ff95926c7afa0ede139926be9c4e03f3",
+        "bytes": 2450
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-final1065/INPUTS.json",
+        "sha256": "835811e0ff1be472f74e91b86d64a383c67101f5d9b780bc48e91037afbe3d49",
+        "bytes": 71029
+      },
+      "published": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-av-nextuint64-nine-final/build/stock-zisk/automation-validation/nextuint64-phase3d/nine-blocks/INPUTS.json",
+        "sha256": "835811e0ff1be472f74e91b86d64a383c67101f5d9b780bc48e91037afbe3d49",
+        "bytes": 71029
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-p0-native-trace-6f4d/_build/nextuint64-nine-final1065/EXITS.json",
+        "sha256": "c6f6f3aa37d2d25b437c2a516c614018edb2bc0fedaa23460f64ec58e2ee6097",
+        "bytes": 8980
+      },
+      "published": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-av-nextuint64-nine-final/build/stock-zisk/automation-validation/nextuint64-phase3d/nine-blocks/EXITS.json",
+        "sha256": "c6f6f3aa37d2d25b437c2a516c614018edb2bc0fedaa23460f64ec58e2ee6097",
+        "bytes": 8980
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-c-nextuint64-nine-own-map/_build/nextuint64-nine-own-map-inputs1007/PREDICTION.json",
+        "sha256": "f9cf19d9687acf6aca4d31040d27b50239dc801076ee4981614b953e790daa06",
+        "bytes": 6145
+      },
+      "published": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-av-nextuint64-nine-final/build/stock-zisk/automation-validation/nextuint64-phase3d/nine-blocks/PREDICTION.json",
+        "sha256": "f9cf19d9687acf6aca4d31040d27b50239dc801076ee4981614b953e790daa06",
+        "bytes": 6145
+      }
+    }
+  ],
+  "history": {
+    "path": "/home/cody/zesislar/.worktrees/worker2-av-nextuint64-nine-final/build/stock-zisk/automation-validation/nextuint64-phase3d/nine-blocks/HISTORY.json",
+    "sha256": "a849612af1b27120a493dd035fce5efca63ac188dd271140f253ee4e6130e25d",
+    "bytes": 2494
+  },
+  "counts": {
+    "Pet_runtime_failures": 4,
+    "bound_stops": 3,
+    "open_residuals": 2,
+    "verified_closures": 0
+  },
+  "prediction": "https://github.com/codygunton/zesislar/issues/13#issuecomment-6191876275",
+  "proof_calls_for_publication": 0
+}
