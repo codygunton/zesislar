@@ -119,6 +119,24 @@ class ScratchBlockTests(unittest.TestCase):
         self.assertIn("Compiler CPU is unavailable.", errors.getvalue())
         self.assertNotIn("compiler_cpu_seconds=", output.getvalue())
 
+    def test_command_selects_auto_from_another_workspace(self):
+        auto = self.hand.parent / "Auto"
+        auto.mkdir()
+        source = SOURCE.replace("800d6b08", "800d69a4")
+        (auto / "Block800d69a4.v").write_text(source)
+        build = self.workspace / "private-build"
+        build.mkdir()
+        def compile_source(scratch, output, private_build, *, policy):
+            self.assertEqual(scratch.read_text().split("Proof.")[0], source.split("Proof.")[0])
+            self.assertIn("Time all: zesu_block.\n  Show.\nAbort.", scratch.read_text())
+            self.assertEqual(private_build, build)
+            return (subprocess.CompletedProcess([], 0), "No more goals.\n", output / "compiler.log",
+                    {"measurement_complete": True, "cpu_seconds": 1, "peak_rss_kib": 1024}, None)
+        with patch.object(scratch_block.coqc_primary, "compile_source", side_effect=compile_source), \
+                contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(scratch_block.main(["69a4", "--source-workspace", str(self.workspace),
+                                                 "--build-dir", str(build)]), 0)
+
 
 if __name__ == "__main__":
     unittest.main()
