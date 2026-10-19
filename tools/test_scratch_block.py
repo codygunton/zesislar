@@ -36,14 +36,32 @@ class ScratchBlockTests(unittest.TestCase):
 
     def test_full_pc_and_unique_suffix_select_same_source(self):
         for pc in ("0x800d6b08", "800D6B08", "6b08"):
-            self.assertEqual(scratch_block.find_hand_block(self.workspace, pc), self.module)
+            self.assertEqual(scratch_block.find_block(self.workspace, pc), self.module)
 
     def test_missing_ambiguous_and_invalid_pc_are_rejected(self):
         (self.hand / "Block900d6b08.v").write_text(SOURCE)
         for pc in ("6b08", "missing", "0x1234", "../6b08"):
             with self.subTest(pc=pc), self.assertRaises(ValueError):
-                scratch_block.find_hand_block(self.workspace, pc)
-        self.assertEqual(scratch_block.find_hand_block(self.workspace, "800d6b08"), self.module)
+                scratch_block.find_block(self.workspace, pc)
+        self.assertEqual(scratch_block.find_block(self.workspace, "800d6b08"), self.module)
+
+    def test_auto_source_and_statement_are_preserved(self):
+        auto = self.hand.parent / "Auto"
+        auto.mkdir()
+        module = auto / "Block800d69a4.v"
+        source = SOURCE.replace("800d6b08", "800d69a4")
+        module.write_text(source)
+        self.assertEqual(scratch_block.find_block(self.workspace, "69a4"), module)
+        generated = scratch_block.scratch_source(module)
+        self.assertEqual(generated.split("Proof.")[0], source.split("Proof.")[0])
+        self.assertEqual(module.read_text(), source)
+
+    def test_duplicate_full_pc_across_directories_is_rejected(self):
+        auto = self.hand.parent / "Auto"
+        auto.mkdir()
+        (auto / self.module.name).write_text(SOURCE)
+        with self.assertRaises(ValueError):
+            scratch_block.find_block(self.workspace, "800d6b08")
 
     def test_exact_statement_and_prefix_survive_body_replacement(self):
         generated = scratch_block.scratch_source(self.module)
