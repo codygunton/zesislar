@@ -539,7 +539,7 @@ Ltac zesu_run_pass_steps :=
      zesu_open_requested_instr_bundle |
      zesu_open_requested_struct_sys_package |
      zesu_open_requested_saved_x9_package |
-     zesu_open_matching_resource_package | zesu_finish_pure_resources |
+     zesu_open_matching_resource_package | zesu_finish_pure_resources_step |
      zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal |
      zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume |
      zesu_prepare_initialized_array_read |
@@ -556,7 +556,7 @@ Ltac zesu_run_pass_v1 :=
      zesu_open_requested_instr_bundle |
      zesu_open_requested_struct_sys_package |
      zesu_open_requested_saved_x9_package |
-     zesu_open_matching_resource_package | zesu_finish_pure_resources |
+     zesu_open_matching_resource_package | zesu_finish_pure_resources_step |
      zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal |
      zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume |
      zesu_prepare_initialized_array_read |
