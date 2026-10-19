@@ -15,16 +15,7 @@ Proof.
   zesu_finish_lia.
 Qed.
 
-Lemma test_arithmetic_failure_retains_goal : True.
-Proof.
-  zesu_bounded_arithmetic ltac:(idtac).
-  Fail zesu_bounded_arithmetic_with 1
-    ltac:(fail 0 "The action failed.").
-  exact I.
-Qed.
-
 Print Assumptions test_byte_index_fact_selection.
-Print Assumptions test_arithmetic_failure_retains_goal.
 
 Lemma test_constant_solver_rejects_open_terms (value : bv 64) :
   value = value.

@@ -5,7 +5,8 @@
     "module": "ZesuSsz.Automation.Switches.ArrayStoreSelection",
     "class": "ZesuStepArrayStoreSelection",
     "instance": "zesu_switch_array_store_selection",
-    "status": "reserved"
+    "status": "retired",
+    "retirement_reason": "Phase 0.4 removed the unused class; the identifiers remain historical."
   },
   "reservation": {
     "path": "/home/cody/zesislar/.worktrees/worker2-child-map-i63-resource-first-pure-b214/_build/i63-array-store-identity-reservation-001/REPORT.json",

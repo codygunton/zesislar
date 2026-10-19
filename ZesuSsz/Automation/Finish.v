@@ -242,7 +242,7 @@ Ltac zesu_finish_v1 :=
   try (zesu_finish_pure_resources);
   try reflexivity;
   try (zesu_finish_integer_word_image);
-  try (zesu_bounded_arithmetic ltac:(zesu_finish_packed_word_equality));
+  try (zesu_finish_packed_word_equality);
   try ((lazymatch goal with
     | |- @eq (bv 64) _ (Z_to_bv 64
         (little_endian_to_bv 8 (take 8 (drop _ _)))) =>
@@ -251,21 +251,21 @@ Ltac zesu_finish_v1 :=
   try simpl;
   try done;
   try assumption;
-  try (zesu_bounded_arithmetic ltac:(zesu_finish_extract_alias));
+  try (zesu_finish_extract_alias);
   try (zesu_finish_list_slice_length);
   zesu_normalize_nat_powers;
-  try (zesu_bounded_arithmetic ltac:(zesu_finish_tag_bound));
-  try (zesu_bounded_arithmetic ltac:(zesu_finish_mask));
-  try (zesu_bounded_arithmetic ltac:(zesu_finish_array_byte_lookup));
+  try (zesu_finish_tag_bound);
+  try (zesu_finish_mask);
+  try (zesu_finish_array_byte_lookup);
   try zesu_finish_constant;
   try (apply Z.le_ge; assumption);
-  try (zesu_bounded_arithmetic ltac:(zesu_finish_ram_known));
-  try (zesu_bounded_arithmetic ltac:(zesu_finish_ram_address));
-  try (zesu_bounded_arithmetic ltac:(zesu_finish_pointer_alignment));
-  try (zesu_bounded_arithmetic ltac:(zesu_saturate_alignment));
+  try (zesu_finish_ram_known);
+  try (zesu_finish_ram_address);
+  try (zesu_finish_pointer_alignment);
+  try (zesu_saturate_alignment);
   try zesu_finish_lia;
-  try (zesu_bounded_arithmetic ltac:(bv_solve));
-  try (zesu_bounded_arithmetic ltac:(zesu_finish_little_endian)).
+  try (bv_solve);
+  try (zesu_finish_little_endian).
 
 Ltac zesu_finish_normalize :=
   try autorewrite with zesu_indices;
@@ -294,7 +294,7 @@ Ltac zesu_finish_entailment :=
      hypotheses that a later side condition is solved from, and leaving
      them out stops `repeat progress` one step early. *)
   zesu_normalize_nat_powers;
-  try (zesu_bounded_arithmetic ltac:(zesu_saturate_alignment)).
+  try (zesu_saturate_alignment).
 
 (* Anything else: the old chain, in the old order. *)
 Ltac zesu_finish_pure_goal :=
@@ -306,7 +306,7 @@ Ltac zesu_finish_pure_goal :=
   try (zesu_finish_pure_resources);
   try reflexivity;
   try (zesu_finish_integer_word_image);
-  try (zesu_bounded_arithmetic ltac:(zesu_finish_packed_word_equality));
+  try (zesu_finish_packed_word_equality);
   try ((lazymatch goal with
     | |- @eq (bv 64) _ (Z_to_bv 64
         (little_endian_to_bv 8 (take 8 (drop _ _)))) =>
@@ -315,27 +315,27 @@ Ltac zesu_finish_pure_goal :=
   try simpl;
   try done;
   try assumption;
-  try (zesu_bounded_arithmetic ltac:(zesu_finish_extract_alias));
+  try (zesu_finish_extract_alias);
   try (zesu_finish_list_slice_length);
   try zesu_finish_trace_tail;
   zesu_normalize_nat_powers;
-  try (zesu_bounded_arithmetic ltac:(zesu_finish_tag_bound));
-  try (zesu_bounded_arithmetic ltac:(zesu_finish_mask));
-  try (zesu_bounded_arithmetic ltac:(zesu_finish_array_byte_lookup));
+  try (zesu_finish_tag_bound);
+  try (zesu_finish_mask);
+  try (zesu_finish_array_byte_lookup);
   try zesu_finish_constant;
   try (apply Z.le_ge; assumption);
-  try (zesu_bounded_arithmetic ltac:(zesu_finish_ram_known));
-  try (zesu_bounded_arithmetic ltac:(zesu_finish_ram_address));
-  try (zesu_bounded_arithmetic ltac:(zesu_finish_pointer_alignment));
-  try (zesu_bounded_arithmetic ltac:(zesu_saturate_alignment));
+  try (zesu_finish_ram_known);
+  try (zesu_finish_ram_address);
+  try (zesu_finish_pointer_alignment);
+  try (zesu_saturate_alignment);
   try zesu_finish_lia;
-  try (zesu_bounded_arithmetic ltac:(bv_solve));
+  try (bv_solve);
   (* C6, last: the goal is arithmetic and everything above has refused it,
      so the facts it needs are still folded inside a hypothesis. Unfold
      them and ask once more. `solve` keeps the step honest: it either
      closes the goal or leaves it exactly as it was. *)
   try zesu_finish_witness_arithmetic;
-  try (zesu_bounded_arithmetic ltac:(zesu_finish_little_endian)).
+  try (zesu_finish_little_endian).
 
 Ltac zesu_finish_dispatch :=
   lazymatch goal with
@@ -357,14 +357,13 @@ Ltac zesu_finish_v2 :=
   zesu_finish_dispatch.
 
 Ltac zesu_finish :=
-  try solve [zesu_natural_index_constraint_if_enabled];
   try solve [zesu_array_region_selection_if_enabled];
   tryif zesu_defer_unresolved_sidecondition_if_enabled then idtac else (
   try solve [zesu_list_cons_witness_if_enabled |
     zesu_primitive_tuple_guard_if_enabled];
   tryif zesu_rule_set_v2_on
   then tryif let _ := constr:(_ : ZesuStepBoundedArithmetic) in idtac
-       then try (zesu_bounded_arithmetic ltac:(zesu_finish_v2))
+       then try (zesu_finish_v2)
        else zesu_finish_v2
   else zesu_finish_v1).
 
@@ -499,7 +498,7 @@ Ltac zesu_finish_initialized_array_read :=
    of its own tactics in `timeout`. *)
 Ltac zesu_run_pass_steps :=
   first
-    [zesu_registered_array_fact_if_enabled | zesu_target_registered_intro_if_enabled |
+    [zesu_target_registered_intro_if_enabled |
      zesu_open_requested_instr_bundle |
      zesu_open_requested_struct_sys_package |
      zesu_open_requested_saved_x9_package |
@@ -516,7 +515,7 @@ Ltac zesu_run_pass_v1 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [zesu_registered_array_fact_if_enabled | zesu_target_registered_intro_if_enabled |
+    [zesu_target_registered_intro_if_enabled |
      zesu_open_requested_instr_bundle |
      zesu_open_requested_struct_sys_package |
      zesu_open_requested_saved_x9_package |
@@ -536,7 +535,7 @@ Ltac zesu_run_pass_v2 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [zesu_registered_array_fact_if_enabled | zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps]; liShow;
+    [zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps]; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
@@ -562,7 +561,6 @@ Ltac zesu_search_switches := constr:([
   ZesuSsz.Automation.Hooks.ZesuStepRegionFaultNormalization; ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup;
   ZesuSsz.Automation.Hooks.ZesuStepStackWrite; ZesuSsz.Automation.Hooks.ZesuStepRamFault; ZesuSsz.Automation.Hooks.ZesuStepRegionFault;
   ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask; ZesuSsz.Automation.EntryIntro.ZesuStepEntryIntro; ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress; ZesuSsz.Automation.Hooks.ZesuStepRecordWitness;
-  ZesuSsz.Automation.Hooks.ZesuStepNaturalIndexConstraint;
   ZesuSsz.Automation.Hooks.ZesuStepArrayBounds; ZesuSsz.Automation.ByteArrays.ZesuStepWordArrayHandoff; ZesuSsz.Automation.ReturnBundle.ZesuStepReturnBundle;
   ZesuSsz.Automation.ReturnWand.ZesuStepReturnWand; ZesuSsz.Automation.BitvectorFacts.ZesuStepStrictSigned; ZesuSsz.Automation.Hooks.ZesuStepListWitness;
   ZesuSsz.Automation.Hooks.ZesuStepTupleWitness; ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds; ZesuSsz.Automation.Hooks.ZesuStepPureFactHints;
@@ -572,7 +570,10 @@ Ltac zesu_search_switches := constr:([
   ZesuSsz.Automation.Hooks.ZesuStepCanonicalAnchor;
   ZesuSsz.Automation.Hooks.ZesuStepCanonicalPureConjunction;
   ZesuSsz.Automation.Hooks.ZesuStepByteListContainment;
-  ZesuSsz.Automation.Hooks.ZesuStepRegionFaultCastHypotheses]).
+  ZesuSsz.Automation.Hooks.ZesuStepRegionFaultCastHypotheses;
+  ZesuSsz.Automation.BitvectorFacts.ZesuStepMaskNormalizer;
+  ZesuSsz.Automation.Hooks.ZesuStepPureFactExistential;
+  ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch]).
 
 Ltac zesu_run :=
   let switches := zesu_search_switches in
