@@ -1,3 +1,4 @@
+Require Export ZesuSsz.Contracts.DecodeItemCallSpec.
 Require Export ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
 Require Import isla.automation.
 Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
