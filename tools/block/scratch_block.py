@@ -56,11 +56,14 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("pc", help="The complete block PC or its unique hexadecimal suffix.")
     parser.add_argument("extra", type=Path, nargs="?", help="Optional imports, lemmas, or local hints.")
+    parser.add_argument("--source-workspace", type=Path,
+                        help="Read the selected source from another workspace with this compiler helper.")
     parser.add_argument("--build-dir", type=Path,
                         default=Path(os.environ.get("AGENT_BUILD_DIR", workspace / "_build/agents/infra")))
     args = parser.parse_args(argv)
     try:
-        module = find_block(workspace, args.pc)
+        source_workspace = args.source_workspace.resolve() if args.source_workspace else workspace
+        module = find_block(source_workspace, args.pc)
         additions = args.extra.read_text() if args.extra else ""
         build = args.build_dir.resolve()
         if not build.is_dir():
