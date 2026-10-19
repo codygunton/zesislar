@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compile a native scratch copy of a decodeItem hand block.
+"""Compile a native scratch copy of a decodeItem block.
 
 Optional local additions precede the original statement. The scratch proof
 ends with Abort, so its result does not certify the production theorem.
@@ -18,18 +18,19 @@ from residual.modules import parse_module
 import coqc_primary
 
 
-def find_hand_block(workspace, pc):
+def find_block(workspace, pc):
     digits = pc.lower().removeprefix("0x")
     if not re.fullmatch(r"[0-9a-f]+", digits):
         raise ValueError("The block PC must be hexadecimal.")
-    directory = workspace / "ZesuSsz/Proofs/DecodeItem/Hand"
-    matches = [path for path in directory.glob("Block*.v")
+    directory = workspace / "ZesuSsz/Proofs/DecodeItem"
+    matches = [path for kind in ("Hand", "Auto")
+               for path in (directory / kind).glob("Block*.v")
                if path.stem.removeprefix("Block").lower().endswith(digits)]
     exact = [path for path in matches
              if path.stem.removeprefix("Block").lower() == digits]
     selected = exact or matches
     if len(selected) != 1:
-        raise ValueError("The hand block is missing or ambiguous.")
+        raise ValueError("The block is missing or ambiguous.")
     return selected[0]
 
 
@@ -59,7 +60,7 @@ def main(argv=None):
                         default=Path(os.environ.get("AGENT_BUILD_DIR", workspace / "_build/agents/infra")))
     args = parser.parse_args(argv)
     try:
-        module = find_hand_block(workspace, args.pc)
+        module = find_block(workspace, args.pc)
         additions = args.extra.read_text() if args.extra else ""
         build = args.build_dir.resolve()
         if not build.is_dir():
