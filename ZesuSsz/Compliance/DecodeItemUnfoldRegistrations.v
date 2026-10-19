@@ -123,8 +123,7 @@ Global Instance : LithiumUnfold (@decodeItemReturnAt800d6a78) := I.
 Global Instance : LithiumUnfold (@decodeItemReturnAt800d6ae0) := I.
 Global Instance : LithiumUnfold (@decodeItemReturnAt800d6b08) := I.
 Global Typeclasses Opaque decodeItemJoinTransferObligation
-  decodeItemJoin698cTarget decodeItemJoin6ae0Target
-  decodeItemJoin698cFrom697c decodeItemJoin698cFrom69e8
+  decodeItemJoin6ae0Target
   decodeItemJoin6a24From6a14 decodeItemJoin6a24Backedge
   decodeItemJoin6ac4From6ab4 decodeItemJoin6ac4Backedge
   decodeItemJoin6ae0From6970 decodeItemJoin6ae0From69e0
@@ -132,10 +131,7 @@ Global Typeclasses Opaque decodeItemJoinTransferObligation
   decodeItemJoin6ae0From6a6c decodeItemJoin6ae0From6aa8
   decodeItemJoin6ae0From6ad8.
 Global Instance : LithiumUnfold (@decodeItemJoinTransferObligation) := I.
-Global Instance : LithiumUnfold (@decodeItemJoin698cTarget) := I.
 Global Instance : LithiumUnfold (@decodeItemJoin6ae0Target) := I.
-Global Instance : LithiumUnfold (@decodeItemJoin698cFrom697c) := I.
-Global Instance : LithiumUnfold (@decodeItemJoin698cFrom69e8) := I.
 Global Instance : LithiumUnfold (@decodeItemJoin6a24From6a14) := I.
 Global Instance : LithiumUnfold (@decodeItemJoin6a24Backedge) := I.
 Global Instance : LithiumUnfold (@decodeItemJoin6ac4From6ab4) := I.

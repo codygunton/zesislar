@@ -22,32 +22,10 @@ Definition decodeItemJoinTransferObligation `{!islaG Sigma} `{!threadG}
    instr_body sourcePc
      (sourceEntry ∗ instr_pre joinPc (joinEntry ∗ True) ∗ True))%I.
 
-Definition decodeItemJoin698cTarget `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (inputPrefix : byte) (rest : list byte)
-    (isLiteral : bool) : iProp Sigma :=
-  (∃ (locals : DecodeItemReturnLocals) (pointerBytes lengthBytes : list byte),
-    decodeItem698cCaseResources args locals pointerBytes lengthBytes inputPrefix rest isLiteral)%I.
-
 Definition decodeItemJoin6ae0Target `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) : iProp Sigma :=
   (∃ locals : DecodeItemReturnLocals,
     decodeItemEntryAt800d6ae0 args locals)%I.
-
-Definition decodeItemJoin698cFrom697c `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (frameBytes : list byte)
-    (prefix : bv 64)
-    (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  decodeItemJoinTransferObligation 0x800d697c 0x800d698c
-    (decodeItemEntryAt800d697c args frameBytes prefix inputPrefix rest)
-    (decodeItemJoin698cTarget args inputPrefix rest true).
-
-Definition decodeItemJoin698cFrom69e8 `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (frameBytes : list byte)
-    (payloadLength : bv 64)
-    (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  decodeItemJoinTransferObligation 0x800d69e8 0x800d698c
-    (decodeItemEntryAt800d69e8 args frameBytes payloadLength inputPrefix rest)
-    (decodeItemJoin698cTarget args inputPrefix rest false).
 
 Definition decodeItemJoin6a24From6a14 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (n payloadStart : Z)

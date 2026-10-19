@@ -14,10 +14,10 @@ Open Scope Z_scope.
 
 Lemma decodeItemReturn698cLiteralMeaning `{!islaG Sigma} `{!threadG}
     args (x11 x12 x13 x14 x15 x16 : bv 64)
-    (outputBytes frameBytes pointerBytes lengthBytes : list byte)
+    (outputBytes frameBytes : list byte)
     (inputPrefix : byte) (rest : list byte) :
   decodeItemEntryAt800d698cLiteral args x11 x12 x13 x14 x15 x16
-    outputBytes frameBytes pointerBytes lengthBytes inputPrefix rest ⊢
+    outputBytes frameBytes inputPrefix rest ⊢
   ⌜(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)
       (decodeItemBeforeStorage args) after (candidateSuccess false 0 1) ->
     DecodeMeaningModuloKnownBugs args after)%Z⌝.
@@ -26,7 +26,7 @@ Proof.
   iIntros "(Hcore & %Hfacts)".
   iDestruct "Hcore" as "(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)".
   iPureIntro. intros after Himage.
-  destruct Hfacts as (Hhead & Hprefix & Hpointer & Hlength & Hconsumed & Haccepted & _).
+  destruct Hfacts as (Hhead & Hprefix & Hpointer & Hconsumed & Haccepted & _).
   exact (decodeItemLiteralPostMeaning args after (proj2 (proj1 Hcore)) Haccepted Himage).
 Qed.
 
@@ -34,10 +34,10 @@ Print Assumptions decodeItemReturn698cLiteralMeaning.
 
 Lemma decodeItemReturn698cShortStringMeaning `{!islaG Sigma} `{!threadG}
     args (x11 x12 x13 x14 x15 x16 : bv 64)
-    (outputBytes frameBytes pointerBytes lengthBytes : list byte)
+    (outputBytes frameBytes : list byte)
     (inputPrefix : byte) (rest : list byte) :
   decodeItemEntryAt800d698cShortString args x11 x12 x13 x14 x15 x16
-    outputBytes frameBytes pointerBytes lengthBytes inputPrefix rest ⊢
+    outputBytes frameBytes inputPrefix rest ⊢
   ⌜(forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)
       (decodeItemBeforeStorage args) after (candidateSuccess false 1 (bv_unsigned inputPrefix - 128)) ->
     DecodeMeaningModuloKnownBugs args after)%Z⌝.

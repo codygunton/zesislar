@@ -17,10 +17,10 @@ Proof.
   iIntros "Hnext800d698c Hcode".
   iApply (DesignedBoundary_800d69e8 args frameBytes x13 inputPrefix rest with "[Hnext800d698c] Hcode").
   { iApply (instr_pre_wand with "Hnext800d698c []"); [done|done|].
-    iIntros "(%next800d698c_x11 & %next800d698c_x12 & %next800d698c_x13 & %next800d698c_x14 & %next800d698c_x15 & %next800d698c_x16 & %next800d698c_outputBytes & %next800d698c_frameBytes & %next800d698c_pointerBytes & %next800d698c_lengthBytes & %next800d698c_inputPrefix & %next800d698c_rest & Hentry)".
-    iAssert (ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698cShortString (args) (next800d698c_x11) (next800d698c_x12) (next800d698c_x13) (next800d698c_x14) (next800d698c_x15) (next800d698c_x16) (next800d698c_outputBytes) (next800d698c_frameBytes) (next800d698c_pointerBytes) (next800d698c_lengthBytes) (next800d698c_inputPrefix) (next800d698c_rest))%I with "[Hentry]" as "Hselected".
+    iIntros "(%next800d698c_x11 & %next800d698c_x12 & %next800d698c_x13 & %next800d698c_x14 & %next800d698c_x15 & %next800d698c_x16 & %next800d698c_outputBytes & %next800d698c_frameBytes & %next800d698c_inputPrefix & %next800d698c_rest & Hentry)".
+    iAssert (ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698cShortString (args) (next800d698c_x11) (next800d698c_x12) (next800d698c_x13) (next800d698c_x14) (next800d698c_x15) (next800d698c_x16) (next800d698c_outputBytes) (next800d698c_frameBytes) (next800d698c_inputPrefix) (next800d698c_rest))%I with "[Hentry]" as "Hselected".
     { iExact "Hentry". }
-    iExists next800d698c_x11, next800d698c_x12, next800d698c_x13, next800d698c_x14, next800d698c_x15, next800d698c_x16, next800d698c_outputBytes, next800d698c_frameBytes, next800d698c_pointerBytes, next800d698c_lengthBytes, next800d698c_inputPrefix, next800d698c_rest.
+    iExists next800d698c_x11, next800d698c_x12, next800d698c_x13, next800d698c_x14, next800d698c_x15, next800d698c_x16, next800d698c_outputBytes, next800d698c_frameBytes, next800d698c_inputPrefix, next800d698c_rest.
     rewrite /ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c.
     iFrame. }
 Qed.
