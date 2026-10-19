@@ -42,7 +42,7 @@ Local Ltac hand69e8_step :=
 Local Tactic Notation "hand69e8_recover" integer(count) := do count hand69e8_step.
 
 Lemma DesignedBoundary_800d69e8 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte)  :
-  instr_pre 0x800d698c (∃ (successor_x11 successor_x12 successor_x13 successor_x14 successor_x15 successor_x16 : bv 64) (successor_outputBytes successor_frameBytes successor_pointerBytes successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698cShortString args successor_x11 successor_x12 successor_x13 successor_x14 successor_x15 successor_x16 successor_outputBytes successor_frameBytes successor_pointerBytes successor_lengthBytes successor_inputPrefix successor_rest)%I -∗
+  instr_pre 0x800d698c (∃ (successor_x11 successor_x12 successor_x13 successor_x14 successor_x15 successor_x16 : bv 64) (successor_outputBytes successor_frameBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698cShortString args successor_x11 successor_x12 successor_x13 successor_x14 successor_x15 successor_x16 successor_outputBytes successor_frameBytes successor_inputPrefix successor_rest)%I -∗
   decodeItemSelectedCode -∗
   instr_body 0x800d69e8
     (DesignedEntry_800d69e8 args frameBytes x13 inputPrefix rest).
@@ -100,8 +100,7 @@ all: try hand69e8_index.
 1: assert (Hshort : bool_decide (bv_unsigned inputPrefix <= 127) = false) by (apply bool_decide_false; lia).
 1: iMatchHyp ltac:(fun name resource => lazymatch resource with
   (decodeItemOutputPointer args ↦ₘ∗ ?storage)%I =>
-    iExists LET5, LET0, x13, (Z_to_bv 64 183), x15, x16, storage, frameBytes,
-      (bv_to_little_endian 8 8 (bv_unsigned LET5)), (bv_to_little_endian 8 8 (bv_unsigned x13)), inputPrefix, rest end).
+    iExists LET5, LET0, x13, (Z_to_bv 64 183), x15, x16, storage, frameBytes, inputPrefix, rest end).
 1: unfold decodeItemEntryAt800d698cShortString, decodeItemReturnEntryCore; cbn [returnA1 returnA2 returnA3 returnA4 returnA5 returnA6 returnStorage returnFrame].
 1: iFrame.
 1: unfold decodeItemBranchContinuation, decodeItemBranchContinuationAt; iFrame.
@@ -110,9 +109,8 @@ all: try hand69e8_index.
 1: repeat first [progress rewrite length_drop | progress rewrite length_app | progress rewrite length_take | progress rewrite HarrayFact3 | progress cbn]; lia.
 1: iPureIntro; repeat (first [assumption | split]).
 1: apply (decodeItemRawInputSuccessor args inputPrefix rest); assumption.
-1: change (RlpDecodeItem.littleEndian (bv_to_little_endian 8 8 (bv_unsigned x13)) = bv_unsigned inputPrefix - 128); rewrite decodeItemStoredWordValue; exact H3.
 1: bv_solve.
-all: try (first [apply decodeItemStoredPointerImage | apply decodeItemStoredLengthImage | apply decodeItemStoredWordBytes]).
+all: try (rewrite <- decodeItemStoredWordBytes; first [apply decodeItemStoredPointerImage | apply decodeItemStoredLengthImage]).
 all: rewrite skipn_skipn; let p := constr:(bv_to_little_endian 8 8 (bv_unsigned ((Z_to_bv 64 (decodeItemInputPointer args)) + 1)%bv)) in let l := constr:(bv_to_little_endian 8 8 (bv_unsigned x13)) in first [apply (decodeItemRawOutputStatus (decodeItemBeforeStorage args) p l) | apply (decodeItemRawOutputPad17 (decodeItemBeforeStorage args) p l) | apply (decodeItemRawOutputPad34 (decodeItemBeforeStorage args) p l)]; [exact HarrayFact3 | reflexivity | reflexivity].
 Unshelve.
 all: unfold lithium.proof_state.SHELVED_SIDECOND.

@@ -322,14 +322,6 @@
             "type": "list byte"
           },
           {
-            "name": "pointerBytes",
-            "type": "list byte"
-          },
-          {
-            "name": "lengthBytes",
-            "type": "list byte"
-          },
-          {
             "name": "inputPrefix",
             "type": "byte"
           },
@@ -348,8 +340,6 @@
           "x16",
           "outputBytes",
           "frameBytes",
-          "pointerBytes",
-          "lengthBytes",
           "inputPrefix",
           "rest"
         ],

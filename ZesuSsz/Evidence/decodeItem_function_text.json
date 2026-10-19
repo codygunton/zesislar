@@ -643,15 +643,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemCompliance.v",
       "category": "composition",
       "scope": "whole_file",
-      "sha256": "97c189c8f5d6369aaee7e690e4724149790d614e5731cc71e82692f75860d03b",
-      "file_lines": 92,
+      "sha256": "fd00413167b121cae77608d52e11c3518cd71d0f42c23d87d4e306308a5ab9c7",
+      "file_lines": 70,
       "line_ranges": [
         [
           1,
-          92
+          70
         ]
       ],
-      "counted_lines": 92
+      "counted_lines": 70
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.v",
@@ -671,7 +671,7 @@
       "path": "ZesuSsz/Compliance/DecodeItemDataRegistrations.v",
       "category": "registrations",
       "scope": "whole_file",
-      "sha256": "a6215ba633835d194333103a0b1306f6ce18d233e56e003695018b20b6daffd6",
+      "sha256": "feb40a278c1f9e7a3170821095759b3b7e0a443b5b5cafe489a08d06b3ee6c9a",
       "file_lines": 131,
       "line_ranges": [
         [
@@ -783,7 +783,7 @@
       "path": "ZesuSsz/Compliance/DecodeItemExitMeanings.v",
       "category": "exit_meanings",
       "scope": "whole_file",
-      "sha256": "3e8de0d1e0d42198c734cc681fbde8fd87ef3daac0ceaab5c70d349682b4ef55",
+      "sha256": "88aa7c7c244b3bfa99eb75754e0a0bf6c89f449d1cc7c570106918f4dca65d00",
       "file_lines": 151,
       "line_ranges": [
         [
@@ -881,15 +881,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v",
       "category": "introductions",
       "scope": "whole_file",
-      "sha256": "10e478c0b9abc0cc5af58b09a44af762f4d785edfee2ad31c8766c850a2676f0",
-      "file_lines": 443,
+      "sha256": "d185284c611f34fcb3bcd5b23d8fe9e345400ceee950c59dc02a92ed2df4d73d",
+      "file_lines": 456,
       "line_ranges": [
         [
           1,
-          443
+          456
         ]
       ],
-      "counted_lines": 443
+      "counted_lines": 456
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemHints.v",
@@ -1035,15 +1035,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemOutputWitnessSelections.v",
       "category": "introductions",
       "scope": "whole_file",
-      "sha256": "83911c74f4fe426ab5ac99c28afadd42d8678e93321eb7565dd5992db08ebced",
-      "file_lines": 247,
+      "sha256": "1040a2d617f9da72e3bee67dd699779f02e67bfb7fffa42c3e97866039c09bd1",
+      "file_lines": 75,
       "line_ranges": [
         [
           1,
-          247
+          75
         ]
       ],
-      "counted_lines": 247
+      "counted_lines": 75
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemPathAgreement.v",
@@ -1259,15 +1259,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemUnfoldRegistrations.v",
       "category": "registrations",
       "scope": "whole_file",
-      "sha256": "26be2dae538fe6d101dc1f38e83d92ee1251c0555b109a999f08e0bc0354a565",
-      "file_lines": 151,
+      "sha256": "34fbb1ce0afc1b2b553666b2bd929961d8ce32ead7dda9496d0e49262d66b8ce",
+      "file_lines": 164,
       "line_ranges": [
         [
           1,
-          151
+          164
         ]
       ],
-      "counted_lines": 151
+      "counted_lines": 164
     },
     {
       "path": "ZesuSsz/Compliance/EvmSailAdapter.v",
@@ -1394,15 +1394,15 @@
       "path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
       "category": "contracts",
       "scope": "whole_file",
-      "sha256": "45c8d41da95e03677aab58d4cf8029171d9464dabf67e38881f0ccfd05a7c825",
-      "file_lines": 317,
+      "sha256": "3a26213468527356d4716688b0e5699a653639ab0e359c1b40e75e1bcd010b8b",
+      "file_lines": 318,
       "line_ranges": [
         [
           1,
-          317
+          318
         ]
       ],
-      "counted_lines": 317
+      "counted_lines": 318
     },
     {
       "path": "ZesuSsz/Contracts/DecodeItemErrorBranch.v",
@@ -1464,7 +1464,7 @@
       "path": "ZesuSsz/Contracts/NextUint64Selected.v",
       "category": "contracts",
       "scope": "mixed_file",
-      "sha256": "56915c500d67b048c69bc14c75bfcbdb93e02ec3260206b4cafa5a6c3c4f6c07",
+      "sha256": "895a07a3a322537d848aa1e190515e5163e3a4e50edd2f7d241358b2f7766640",
       "file_lines": 90,
       "line_ranges": [
         [
@@ -1619,15 +1619,15 @@
       "path": "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v",
       "category": "contracts",
       "scope": "whole_file",
-      "sha256": "537345226529da0c1e460444a0362bbd8110887c229de755ae5be47bc10a7c47",
-      "file_lines": 277,
+      "sha256": "dbde7a5579c890bb171b276a922c8c226babb927668e78191c2e24de6a1c1017",
+      "file_lines": 271,
       "line_ranges": [
         [
           1,
-          277
+          271
         ]
       ],
-      "counted_lines": 277
+      "counted_lines": 271
     },
     {
       "path": "ZesuSsz/Contracts/RlpDecodeItemByteFold.v",
@@ -1703,15 +1703,15 @@
       "path": "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.v",
       "category": "contracts",
       "scope": "whole_file",
-      "sha256": "5f5853af11abb1889336ea513c74ae063ded3076a2ac609d5616e24a1def12f9",
-      "file_lines": 183,
+      "sha256": "e4f91c31284ba55694ecc8163afb6bd46848887f7b0710fa7bcb9fa0dc7450dd",
+      "file_lines": 161,
       "line_ranges": [
         [
           1,
-          183
+          161
         ]
       ],
-      "counted_lines": 183
+      "counted_lines": 161
     },
     {
       "path": "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v",
@@ -1759,15 +1759,15 @@
       "path": "ZesuSsz/Contracts/decode_item_block_design.json",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "5f25507dee28a24946a43d3b053ff3dc840d38374d2a2f4cbc47b08f45006d06",
-      "file_lines": 1685,
+      "sha256": "838ccd27ee442831d8993a45432ca26b0acd10e466ef6600a0b57c555ff8408a",
+      "file_lines": 1675,
       "line_ranges": [
         [
           1,
-          1685
+          1675
         ]
       ],
-      "counted_lines": 1685
+      "counted_lines": 1675
     },
     {
       "path": "ZesuSsz/Evidence/DECODE_ITEM_VECTORS.json",
@@ -1801,7 +1801,7 @@
       "path": "ZesuSsz/Evidence/DecodeItemExitMeaningDraftFixtures.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "2ff2cdd7ac547f60223adf30a1109f1185f1aefef0260fb4c02c5e679830ed99",
+      "sha256": "747661922192bfd80283afc89b5f97366208e1dd5e74fe925df5b94831b64bd5",
       "file_lines": 39,
       "line_ranges": [
         [
@@ -2029,7 +2029,7 @@
       "path": "ZesuSsz/Evidence/SignatureGates.v",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "722a381479dc7d08470d08592732845a143c085743e17864286a96e984c5ec5d",
+      "sha256": "bff8a90ba5bc4a7071fbbc90f13143d836146fd1941610c8f7447f61020a0e72",
       "file_lines": 198,
       "line_ranges": [
         [
@@ -2083,8 +2083,8 @@
       "path": "ZesuSsz/Evidence/array_store/INDEX.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "a558cb62fedf92e56cf8f219b1c4a7171a8617b17dc91baa1ab0aaeec31eae5d",
-      "file_lines": 752,
+      "sha256": "79020ca1327c21b5a8b10041e4f79754b9a8f5fed8968b118ba845ccebe60400",
+      "file_lines": 753,
       "line_ranges": [
         [
           1,
@@ -2413,15 +2413,15 @@
       "path": "ZesuSsz/Evidence/check_decode_item_route_repair.py",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "dbd70cc7733c3e52b23420e982494fcd2487ef14225e02f943a8ad2fe0a44cfb",
-      "file_lines": 943,
+      "sha256": "930d6f95523334dbc3dc10d7c68ebacddfd4d64fbedf9abdf5784448fe5f4904",
+      "file_lines": 951,
       "line_ranges": [
         [
           1,
-          943
+          951
         ]
       ],
-      "counted_lines": 943,
+      "counted_lines": 951,
       "source_embedded_constants": [
         {
           "line_range": [
@@ -2571,14 +2571,14 @@
       "role": "measurement_metadata",
       "scope": "whole_file",
       "sha256": null,
-      "file_lines": 8111,
+      "file_lines": 8115,
       "line_ranges": [
         [
           1,
-          8111
+          8115
         ]
       ],
-      "counted_lines": 8111
+      "counted_lines": 8115
     },
     {
       "path": "ZesuSsz/Evidence/decode_item_auto_modules.json",
@@ -2598,15 +2598,15 @@
       "path": "ZesuSsz/Evidence/decode_item_block_design.json",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "b097f5f30803f6098f188476ee79da818a6e65a8bd62bb50911f6ad4b5749b34",
-      "file_lines": 2237,
+      "sha256": "7be45200ad85aa7fcd3ba5f8c093e6de869a1e70cfdbf2b16a46ac3b04de4a78",
+      "file_lines": 2227,
       "line_ranges": [
         [
           1,
-          2237
+          2227
         ]
       ],
-      "counted_lines": 2237
+      "counted_lines": 2227
     },
     {
       "path": "ZesuSsz/Evidence/generate_decode_item_block_design.py",
@@ -3762,8 +3762,8 @@
       "path": "ZesuSsz/Evidence/route_repair/INDEX.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "46e863e34d71f15f2944e0d80b62625a209b50cd320cffd91f6c3e82e86abf10",
-      "file_lines": 457,
+      "sha256": "9e03639f240b38db65efce93c2a018ae0cc58b910ee6c95c6129b3d8eeb571e2",
+      "file_lines": 458,
       "line_ranges": [
         [
           1,
@@ -3804,8 +3804,8 @@
       "path": "ZesuSsz/Evidence/spec_shape_baseline.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "912fe55516db8179f4656e74bf11194438d45445321f205652bb282166ef9a49",
-      "file_lines": 62,
+      "sha256": "294311b8b7ae9d6a17ce6373fabcc846719cd71af3533a112a93a73b3415ed0a",
+      "file_lines": 70,
       "line_ranges": [
         [
           1,
@@ -3819,8 +3819,8 @@
       "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "90b766d0cdf133b8d9304d3ae0c35b0785d612167cb889c2d9077de052909628",
-      "file_lines": 218,
+      "sha256": "c32d32e640ca6f9ee77e733abfc1881c8a9bd3c17ef5513ae5c2a18d34938f9c",
+      "file_lines": 323,
       "line_ranges": [
         [
           1,
@@ -3981,8 +3981,8 @@
       "path": "ZesuSsz/Evidence/test_route_repair_cli.py",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "ded15fd7d978492468e479a3c375132fcdba78436f1ea0b1ca1458ad815b51bd",
-      "file_lines": 153,
+      "sha256": "d72230d867a788c585d6d099e0b384015f11ae3d7ed6cdf6888ddd4ef14f4d29",
+      "file_lines": 157,
       "line_ranges": [
         [
           10,
@@ -4137,7 +4137,7 @@
       "path": "ZesuSsz/Generated/DecodeItem/BlockTable.v",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "263f000d69de5a18797465a1223e23304b7b1e6dde9bedb85e07690a23c1a51d",
+      "sha256": "1280dceaa62c3332f737a6e7b1344b732074fb9efbec87c11821530693f7d711",
       "file_lines": 209,
       "line_ranges": [
         [
@@ -4165,7 +4165,7 @@
       "path": "ZesuSsz/Generated/DecodeItem/block_table_metadata.json",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "802034e4f03fe3c11b5e30e82221ea4e1b86764546e55c0d09f08fef80c1d9d1",
+      "sha256": "5a3e093e79fc804493c8f5feafaeed8950b7da5c0caf4a14d2667deadda80279",
       "file_lines": 702,
       "line_ranges": [
         [
@@ -4377,7 +4377,7 @@
       "path": "ZesuSsz/Proofs/DecodeItem/Composition/CompleteNativeFamily.v",
       "category": "composition",
       "scope": "whole_file",
-      "sha256": "bd950cbcf0b54537c8985336210936f613c1a98703993b0f1e12b1126ee54cd9",
+      "sha256": "fd572e9b851c08d9196734f496dcef14f761a1cef70d483974ff4502d0ed454f",
       "file_lines": 138,
       "line_ranges": [
         [
@@ -4405,7 +4405,7 @@
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d697c.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "a270522ed2f05ea6bf3588acf95be1e728b69ca54c16969137b4d767b9786838",
+      "sha256": "1d7856b9dbff51998a2de239b82c71b0ffd3e2834c7fc8553b3f3e2b8b0dca4b",
       "file_lines": 99,
       "line_ranges": [
         [
@@ -4419,43 +4419,43 @@
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d698c.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "6312b484e32dba53f892e768a5232359d18d89fd4b1ba8025cad18a30ee99eb0",
-      "file_lines": 114,
+      "sha256": "39e98ca7dfcee9767e2d53ac18da73a54ac2b62b34a6b379a6c53aff6c88a1c2",
+      "file_lines": 115,
       "line_ranges": [
         [
           1,
-          114
+          115
         ]
       ],
-      "counted_lines": 114
+      "counted_lines": 115
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d69b0.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "d87cef685a02febcccd67e386e0c5e869295599210a6328981f2d38cf37baa42",
-      "file_lines": 129,
+      "sha256": "1e3cd4dd40d953b1620864eff79d1d6abb2a6a44d34961ab5308a00d9bb495aa",
+      "file_lines": 130,
       "line_ranges": [
         [
           1,
-          129
+          130
         ]
       ],
-      "counted_lines": 129
+      "counted_lines": 130
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d69e8.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "4e57fe69286783f5bd5475fb691b07444e91a3a7898ad855cabb5697a9bd05df",
-      "file_lines": 123,
+      "sha256": "e4418932128d17faaf6007edfcaa7728768bf87c6f30a7485e84719d06cf3da9",
+      "file_lines": 121,
       "line_ranges": [
         [
           1,
-          123
+          121
         ]
       ],
-      "counted_lines": 123
+      "counted_lines": 121
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a08.v",
@@ -4489,43 +4489,43 @@
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a38.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "3430f5a0d4e5d6c6847237abe56a89157eb45567f23e80581a734cf605195c80",
-      "file_lines": 70,
+      "sha256": "7cdd9ede0e53d541696238453c186768e0a069af1e328e92e25830d6392bdb22",
+      "file_lines": 43,
       "line_ranges": [
         [
           1,
-          70
+          43
         ]
       ],
-      "counted_lines": 70
+      "counted_lines": 43
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a40.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "f008583f9236ef3886affb0a2ef0a04fa8850860d7c8345733ff9a8b0781ce78",
-      "file_lines": 94,
+      "sha256": "0a590c69539da0865ec0f1441c8032c81f0227c6f8c2a9da7731ae0ad175a1f5",
+      "file_lines": 95,
       "line_ranges": [
         [
           1,
-          94
+          95
         ]
       ],
-      "counted_lines": 94
+      "counted_lines": 95
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a78.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "a8f2376b087798a1754901a8470d44b04546ebe338401f4e5aaf27af57df9848",
-      "file_lines": 124,
+      "sha256": "37b9e4a7b9a8aa1309cb58f5bc73ca35d3a4c7fc482bc4ef5811c388ada03c19",
+      "file_lines": 125,
       "line_ranges": [
         [
           1,
-          124
+          125
         ]
       ],
-      "counted_lines": 124
+      "counted_lines": 125
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6aa8.v",
@@ -4559,43 +4559,43 @@
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ad8.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "e83ba5f332fcdfa5d708593615d066e827b48473995b1050b48f1f8b0adf8299",
-      "file_lines": 107,
+      "sha256": "597578f336fa8984414923df7bf36f8948c1659951cd0c916eaa36ca4b5a6f64",
+      "file_lines": 43,
       "line_ranges": [
         [
           1,
-          107
+          43
         ]
       ],
-      "counted_lines": 107
+      "counted_lines": 43
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ae0.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "646797c7bf4bd547f5550eedc5b8fc2dc2ccef312548c7a4cd8aff96c1454b2d",
-      "file_lines": 107,
+      "sha256": "5baba19fcacc79add9ea15db9d4ba7ab66e0cd64b7c032450486f71cc23a3a3d",
+      "file_lines": 108,
       "line_ranges": [
         [
           1,
-          107
+          108
         ]
       ],
-      "counted_lines": 107
+      "counted_lines": 108
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "8cfaa1707943ea596b54f8698d9e26ac6666b1772b846bc3c65d1bab3e1dec28",
-      "file_lines": 58,
+      "sha256": "2927f6bbec9b7bbe5f1671bd6a0ed1d5a22fec6411a020d9947eede314c04e5d",
+      "file_lines": 59,
       "line_ranges": [
         [
           1,
-          58
+          59
         ]
       ],
-      "counted_lines": 58
+      "counted_lines": 59
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Common.v",
@@ -4671,7 +4671,7 @@
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d697c.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "369099488c1fa29e6e22ad46fc19c37be2ab08a6c061073a1101e2e137287b20",
+      "sha256": "daffca0c77a991b8fc3494bf855cf753fa2ab36d6e117dde2adc9ebf55432fb6",
       "file_lines": 27,
       "line_ranges": [
         [
@@ -4685,7 +4685,7 @@
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d697cConditional.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "806642014d544f8aba1c5b89b8c04bd9f52014b29a2ddb7c8d6d76632352b90f",
+      "sha256": "8250bbdcc9f9ffbde982576f0722823fda446878787c0a649ec2829388a5379b",
       "file_lines": 39,
       "line_ranges": [
         [
@@ -4713,15 +4713,15 @@
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d698cConditional.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "128ab4bf98d00ee910ff055da3ce4799b7a3260d5d3a888fd227958c4632fc77",
-      "file_lines": 46,
+      "sha256": "aa0bb4f39540f3eefc8e16eff5d88c17c28b6e068639932cd632d5d062bae00e",
+      "file_lines": 64,
       "line_ranges": [
         [
           1,
-          46
+          64
         ]
       ],
-      "counted_lines": 46
+      "counted_lines": 64
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69a4.v",
@@ -4797,7 +4797,7 @@
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69e8.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "50e583d79f37175a92a5196c06915e8286664eaed7208d2c0f17631c3dbcf3b0",
+      "sha256": "fbd1ef64e1ce11bac3436fae4e9794fcc4cc1b1686c59c7314db16ec0a688d98",
       "file_lines": 27,
       "line_ranges": [
         [
@@ -4811,7 +4811,7 @@
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69e8Conditional.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "dbce05951b958d7d29b26650cac7e200f2ce93a82cbd75a4baa3cc0a3ff866a6",
+      "sha256": "1b76c5625b742bf5e5f7722eb8cd0fb622206447ce5108f8a6ecef3802ce0e67",
       "file_lines": 39,
       "line_ranges": [
         [
@@ -5175,8 +5175,8 @@
       "path": "ZesuSsz/Proofs/Tests/ApprovedSwitches.v",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "0a3ae46f956b2949e12a2d224bf32b8469677fccc006d8f7c99b0350c53b7d7a",
-      "file_lines": 44,
+      "sha256": "7b20a39d1cdaff8824907a99591a51093d4ea2a8ba7b8001e8c8c834d4e6a343",
+      "file_lines": 66,
       "line_ranges": [
         [
           3,
@@ -5594,15 +5594,15 @@
       "path": "ZesuSsz/Proofs/Tests/DecodeItemOutputCanonicalLookup.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "0d40ed66197bb9d847d3fd62238229da757e0e295feb851d6b22a05f76d93acc",
-      "file_lines": 122,
+      "sha256": "91375105d244a1cd4a76b1cd43b27dea866bf20e553c006b3fd58a613bb47964",
+      "file_lines": 19,
       "line_ranges": [
         [
           1,
-          122
+          19
         ]
       ],
-      "counted_lines": 122
+      "counted_lines": 19
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemOutputOffset16Shapes.v",
@@ -5650,15 +5650,15 @@
       "path": "ZesuSsz/Proofs/Tests/DecodeItemOutputWitnessSelections.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "8177a19cbafbae2fbfb4560e40a7c822d95bb98fd3be46677acc7a903ebccd78",
-      "file_lines": 150,
+      "sha256": "9e83a4e96bfb7391da6549152701c09207d8419925a3f48596e18e62487781c4",
+      "file_lines": 21,
       "line_ranges": [
         [
           1,
-          150
+          21
         ]
       ],
-      "counted_lines": 150
+      "counted_lines": 21
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemRawOutputFacts.v",
@@ -5678,15 +5678,15 @@
       "path": "ZesuSsz/Proofs/Tests/DecodeItemRootEntry.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "e1cdb249d4fcd5701d58de92ba792601c9d260b358059e903d3e65b26375f2f3",
-      "file_lines": 45,
+      "sha256": "656cfc9b8e774c94232e7151026d51736ece9faa2f55b50751b681e51562b1d7",
+      "file_lines": 65,
       "line_ranges": [
         [
           1,
-          45
+          65
         ]
       ],
-      "counted_lines": 45
+      "counted_lines": 65
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemSavedFrameWitnesses.v",
@@ -5976,8 +5976,8 @@
       "path": "tools/block/PROMOTION.md",
       "category": "generator_json",
       "scope": "mixed_file",
-      "sha256": "d882f442b77bf722e7b7a0aeb3b2ff85e56b85b95226e7cbf03186c6dbdbd1ed",
-      "file_lines": 72,
+      "sha256": "0620ad28d8e93e609db941f6c38d5fca1caf1bce39f2332a4b264483560cf333",
+      "file_lines": 95,
       "line_ranges": [
         [
           11,
@@ -6097,8 +6097,8 @@
       "path": "tools/block/complete_promotion.py",
       "category": "generator_json",
       "scope": "mixed_file",
-      "sha256": "88756608ed800fa9156dab4f4655460cdde7d6c39df4b462a8ba4c62bb032583",
-      "file_lines": 379,
+      "sha256": "f426de5786a0d2ae5367eae94769ad31e2ba52dfc1dfeb3f4d9ebd42ea9bb4ff",
+      "file_lines": 421,
       "line_ranges": [
         [
           19,
@@ -6189,8 +6189,8 @@
       "path": "tools/block/coqc_primary.py",
       "category": "generator_json",
       "scope": "mixed_file",
-      "sha256": "4a7ca19c9ed90fa29724dd00c1ae2c13faea8fb377c2717f53d1d9cc5ab600e9",
-      "file_lines": 391,
+      "sha256": "c75d08dbf498ba7959b78aa0c8bb3f3999cfdae8efd7de7b7c64532624b7d6c4",
+      "file_lines": 393,
       "line_ranges": [
         [
           35,
@@ -6208,8 +6208,8 @@
       "path": "tools/block/discovery.py",
       "category": "generator_json",
       "scope": "mixed_file",
-      "sha256": "ac9c35286a347bff9297492ddb107b08534c5ef753310c2af73c5f7b4c2ae9ad",
-      "file_lines": 814,
+      "sha256": "1edff829dcea177c7fb156c4c29fb8449dde9f28bea021c0f3de52e87754b53e",
+      "file_lines": 1052,
       "line_ranges": [
         [
           183,
@@ -6253,8 +6253,8 @@
       "path": "tools/block/generate_table.py",
       "category": "generator_json",
       "scope": "mixed_file",
-      "sha256": "8d83838db904221dc5426394c6f4a72ee652c0c984ae3e2b1d54274e3b6df989",
-      "file_lines": 417,
+      "sha256": "809e1cb213a910d5409fe126979684b3239a5b20464ccb1ae887fe6f20cb21ac",
+      "file_lines": 543,
       "line_ranges": [
         [
           2,
@@ -6365,8 +6365,8 @@
       "path": "tools/block/promote_table.py",
       "category": "generator_json",
       "scope": "mixed_file",
-      "sha256": "e8b5ab00f4eef36cf4f9cf0207a2f7aefec651664cda7d9d8de2ca308856c1bd",
-      "file_lines": 208,
+      "sha256": "49780fa2f765fa06f1a54ba359d1428d2ae39d2f5ceba6fc3be76fb1a697ef14",
+      "file_lines": 216,
       "line_ranges": [
         [
           22,
@@ -6912,8 +6912,8 @@
       "path": "tools/test_complete_promotion.py",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "6002fd27f4cae3ffd0a728549e98e9d226d46d12a4c64dbbf0d7ac21b4f049de",
-      "file_lines": 348,
+      "sha256": "cf86dbc02fcfadea1e28c7df61334f15a3ad8dc99a0d580e37891a2746ccee0d",
+      "file_lines": 413,
       "line_ranges": [
         [
           16,
@@ -7113,8 +7113,8 @@
       "path": "tools/test_coqc_primary.py",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "14ab5bc0f4197ed0fa3e1393fed65245108735f076a34bd70aac8bd2671f02c9",
-      "file_lines": 468,
+      "sha256": "870731310e6174e6416c96afe599fdf3204cc5de26f31eac63e08e7424068a37",
+      "file_lines": 471,
       "line_ranges": [
         [
           105,
@@ -7270,8 +7270,8 @@
       "path": "tools/test_native_boundary_discovery.py",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "a97764bdeadebff6c2efe14f31a44603de4b66fdcc1003ffea06ec9b5b23eb7d",
-      "file_lines": 179,
+      "sha256": "3ca20e7dea4fd0b2f982967b01f2b7f47b4448f6cad6a638e74b0e296320df5a",
+      "file_lines": 379,
       "line_ranges": [
         [
           19,
@@ -7416,8 +7416,8 @@
       "path": "tools/test_rule_compare.py",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "8fbeb7465f7378f1d80f0e84e2e6df55f4a35c6251997559efcc62f661eea7c7",
-      "file_lines": 181,
+      "sha256": "c2979a4121d30a2105d315087e6c9d4628fbf50ba77e4480f6c0694aa526d10b",
+      "file_lines": 546,
       "line_ranges": [
         [
           10,
@@ -7455,8 +7455,8 @@
       "path": "tools/test_successor_entailment.py",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "7ea03aa1c55b773c157c488cf6399edcb12a088dc29efec72eb8f73da7edaecc",
-      "file_lines": 342,
+      "sha256": "dadbfdf9ed9d67da4526689b48ec7b2d84234c870cb27a48cbb55f2ad62ab60d",
+      "file_lines": 386,
       "line_ranges": [
         [
           87,
@@ -7627,7 +7627,7 @@
       "kind": "hand",
       "proof_qed_lines": 80,
       "tactic_lines": 78,
-      "file_lines": 114
+      "file_lines": 115
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d69a4.v",
@@ -7643,7 +7643,7 @@
       "kind": "hand",
       "proof_qed_lines": 92,
       "tactic_lines": 90,
-      "file_lines": 129
+      "file_lines": 130
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d69d8.v",
@@ -7665,9 +7665,9 @@
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d69e8.v",
       "pc": "0x800d69e8",
       "kind": "hand",
-      "proof_qed_lines": 75,
-      "tactic_lines": 73,
-      "file_lines": 123
+      "proof_qed_lines": 73,
+      "tactic_lines": 71,
+      "file_lines": 121
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a00.v",
@@ -7705,9 +7705,9 @@
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a38.v",
       "pc": "0x800d6a38",
       "kind": "hand",
-      "proof_qed_lines": 31,
-      "tactic_lines": 29,
-      "file_lines": 70
+      "proof_qed_lines": 3,
+      "tactic_lines": 1,
+      "file_lines": 43
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a40.v",
@@ -7715,7 +7715,7 @@
       "kind": "hand",
       "proof_qed_lines": 62,
       "tactic_lines": 60,
-      "file_lines": 94
+      "file_lines": 95
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a64.v",
@@ -7739,7 +7739,7 @@
       "kind": "hand",
       "proof_qed_lines": 91,
       "tactic_lines": 89,
-      "file_lines": 124
+      "file_lines": 125
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6aa8.v",
@@ -7769,9 +7769,9 @@
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ad8.v",
       "pc": "0x800d6ad8",
       "kind": "hand",
-      "proof_qed_lines": 68,
-      "tactic_lines": 66,
-      "file_lines": 107
+      "proof_qed_lines": 3,
+      "tactic_lines": 1,
+      "file_lines": 43
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ae0.v",
@@ -7779,7 +7779,7 @@
       "kind": "hand",
       "proof_qed_lines": 73,
       "tactic_lines": 71,
-      "file_lines": 107
+      "file_lines": 108
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.v",
@@ -7787,7 +7787,7 @@
       "kind": "hand",
       "proof_qed_lines": 23,
       "tactic_lines": 21,
-      "file_lines": 58
+      "file_lines": 59
     }
   ],
   "ambiguous_shared_json": [
@@ -7826,7 +7826,7 @@
       "line_ranges": [
         [
           1,
-          752
+          753
         ]
       ],
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
@@ -7926,7 +7926,7 @@
       "line_ranges": [
         [
           1,
-          457
+          458
         ]
       ],
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
@@ -7936,7 +7936,7 @@
       "line_ranges": [
         [
           1,
-          62
+          70
         ]
       ],
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
@@ -7946,7 +7946,7 @@
       "line_ranges": [
         [
           1,
-          218
+          323
         ]
       ],
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
@@ -7972,7 +7972,7 @@
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
     }
   ],
-  "conservative_shared_json_lines": 15099,
+  "conservative_shared_json_lines": 15214,
   "status": "Private immutable source scope: base e7eb0bce plus eighteen native-certificate018 sources. No Root integration credit.",
   "integration_scope": {
     "base": "e7eb0bcef249f2cf99dfc86cf60d8436ade29a31",
@@ -8010,19 +8010,19 @@
   },
   "base_manifest_sha256": "7deccbbc338d25231c300f1ba6824c5c10136917b0207e75589cd9a86f9d020a",
   "category_totals": {
-    "tests_and_exports": 35663,
-    "composition": 602,
+    "tests_and_exports": 35463,
+    "composition": 580,
     "loop_steps": 965,
-    "introductions": 3688,
+    "introductions": 3529,
     "exit_meanings": 3114,
-    "registrations": 327,
-    "contracts": 2590,
-    "generator_json": 6299,
-    "block_proofs": 3461
+    "registrations": 340,
+    "contracts": 2563,
+    "generator_json": 6279,
+    "block_proofs": 3392
   },
-  "interface_total": 16983,
-  "extra_total": 39726,
-  "overall_total": 56709,
+  "interface_total": 16790,
+  "extra_total": 39435,
+  "overall_total": 56225,
   "file_count": 370,
   "embedded_registration_ranges": [
     {
@@ -8106,6 +8106,10 @@
       "base": "76eab8cbe2ee8d76fc0040996fa19a498316d94f",
       "tip": "57900b192b9625fe653b603ef4b8a2d24b0faa85",
       "scope": "Classify all four new Rocq test modules in the P2 promotion stack as unscored tests_and_exports. Preserve the inherited scored inventory."
+    },
+    "phase6_rebase": {
+      "base": "35aabc21",
+      "scope": "Union both manifest scopes. Recompute current file fields and totals from merged sources. Preserve historical certificate fields."
     }
   }
 }
