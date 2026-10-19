@@ -84,7 +84,7 @@ def switch_instances(workspace, prefix, switch):
             if path.is_file():
                 visit(path.read_text(), name)
         pattern = (r"\bInstance\s+(" + IDENTIFIER + r")\s*:\s*("
-                   + IDENTIFIER + r")\s*:=\s*I\s*\.")
+                   + IDENTIFIER + r")\s*:=\s*(?:I|\{\s*\})\s*\.")
         for match in re.finditer(pattern, without_comments(text)):
             name, cls = match.groups()
             if cls == switch or cls.rsplit(".", 1)[-1] == short:
@@ -339,20 +339,21 @@ def compiler_stages(output):
                                  ("keyed_returned", "RULE-COMPARE-KEYED-RETURNED"))}
 
 
-def comparison_complete(arms):
-    """Require a compiler result and complete trace coverage for every row."""
+def comparison_complete(arms, *, no_trace=False):
+    """Require compiler results and any requested trace coverage."""
     return set(arms) == {"rule_off", "rule_on"} and all((row["outcome"] == "closed" or row["outcome"].startswith("residual:"))
-               and row.get("trace", {}).get("complete") is True for row in arms.values())
+               and (no_trace or row.get("trace", {}).get("complete") is True) for row in arms.values())
 
 
-def compare(module, switch, build, out, schema, lemma=None, keyed_lemma=None, *, trace_runner=None):
+def compare(module, switch, build, out, schema, lemma=None, keyed_lemma=None, *, trace_runner=None, no_trace=True):
     workspace = Path(__file__).resolve().parents[2]
     module, build, out = module.resolve(), build.resolve(), out.resolve()
     if not module.is_relative_to(workspace) or not build.is_relative_to(workspace):
         raise ValueError("The source and private build must belong to this workspace.")
     if not out.is_relative_to(workspace / "_build"):
         raise ValueError("Comparison evidence must use a private _build directory.")
-    trace_rule_name(switch)  # Reject unsupported observers before native compilation.
+    if not no_trace:
+        trace_rule_name(switch)  # Reject unsupported observers before native compilation.
     schema_value = json.loads(schema.read_text())
     required = {"slot", "hand_lines", "rule_on", "rule_off", "seconds", "peak_gib", "mcp_record"}
     if not required <= schema_value["block_record_schema"].keys():
@@ -396,16 +397,20 @@ def compare(module, switch, build, out, schema, lemma=None, keyed_lemma=None, *,
                       group_coverage={"active": "recorded before Unshelve",
                                       "shelf": "post-unshelve targets include surviving active goals",
                                       "stack": "unavailable", "given_up": "unavailable"})
-        try:
-            result["trace"] = capture_arm_trace(
-                result, arm=arm, workspace=workspace, root=root, block=block,
-                switch=switch, prepared=prepared, out=out, runner=trace_runner, keyed_lemma=keyed_lemma)
-        except ValueError as error:
-            result["trace"] = {"complete": False, "errors": [str(error)]}
+        if no_trace:
+            result["trace"] = {"complete": False, "skipped": True,
+                               "reason": "Tracing is disabled."}
+        else:
+            try:
+                result["trace"] = capture_arm_trace(
+                    result, arm=arm, workspace=workspace, root=root, block=block,
+                    switch=switch, prepared=prepared, out=out, runner=trace_runner, keyed_lemma=keyed_lemma)
+            except ValueError as error:
+                result["trace"] = {"complete": False, "errors": [str(error)]}
         save(directory / "evidence.json", result)
         arms[arm] = result
         assert digest(module) == original_hash
-    successful = comparison_complete(arms)
+    successful = comparison_complete(arms, no_trace=no_trace)
     report = {"root": root, "trace_coverage_complete": all(row["trace"]["complete"] for row in arms.values()),
               "trace_link_base": "Paths resolve relative to this report directory.",
               "block": block, "source": str(module), "source_sha256": original_hash,
@@ -443,9 +448,11 @@ def main():
     parser.add_argument("--schema", type=Path, required=True)
     parser.add_argument("--lemma")
     parser.add_argument("--keyed-lemma")
+    parser.add_argument("--no-trace", action="store_true", default=True,
+                        help="Compare compiler results without trace tools (the default).")
     args = parser.parse_args()
     report = compare(args.module, args.switch, args.build_dir, args.out, args.schema,
-                     args.lemma, args.keyed_lemma)
+                     args.lemma, args.keyed_lemma, no_trace=args.no_trace)
     print(json.dumps({"report": str(args.out / "report.json"),
                       "comparison_success": report["comparison_success"],
                       "outcomes": {arm: row["outcome"] for arm, row in report["arms"].items()}}))

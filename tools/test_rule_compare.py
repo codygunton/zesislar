@@ -72,6 +72,16 @@ class GenerationTests(unittest.TestCase):
                          {"removals": [], "local_additions": [], "expected_enabled": True})
         self.assertEqual(prepared["arm_instances"]["rule_off"]["removals"], ["Switch.enabled"])
 
+    def test_empty_record_switch_instance_is_removed_only_from_off(self):
+        (self.workspace / "Switch.v").write_text(
+            '#[export] Instance enabled : TestSwitch := {}.\n')
+        prepared = self.prepare()
+        self.assertEqual(prepared["existing_instances"], ["Switch.enabled"])
+        self.assertIn('Remove Hints Switch.enabled : typeclass_instances.',
+                      prepared["copies"]["rule_off"])
+        self.assertNotIn('Remove Hints', prepared["copies"]["rule_on"])
+        self.assertNotIn('#[local] Instance', prepared["copies"]["rule_on"])
+
     def test_future_switch_absent_from_approved_uses_only_local_on_instance(self):
         (self.workspace / "Switch.v").write_text('Class TestSwitch : Prop := constructor : True.\n')
         prepared = self.prepare()
@@ -185,6 +195,85 @@ class ClassificationTests(unittest.TestCase):
         self.assertEqual(rule_compare.classify(0, 'RULE-COMPARE-BEGIN\nClosed under the global context', closed)["outcome"], "closed")
         result = rule_compare.classify(0, RETURNED + 'Axioms:\nfixture : False', closed)
         self.assertEqual(result["outcome"], "compiler-error")
+
+
+class NoTraceTests(unittest.TestCase):
+    def test_cli_defaults_to_no_trace_and_accepts_explicit_flag(self):
+        import contextlib
+        import io
+        result = {"comparison_success": True, "arms": {}}
+        for flags in ([], ["--no-trace"]):
+            with self.subTest(flags=flags), \
+                    patch.object(sys, "argv", ["rule_compare.py", "Block.v", "TestSwitch",
+                         "--build-dir", "_build/private", "--out", "_build/compare",
+                         "--schema", "schema.json", *flags]), \
+                    patch.object(rule_compare, "compare", return_value=result) as compare, \
+                    patch.dict(sys.modules, {"trace_block": None, "trace_block_mcp": None}), \
+                    contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(rule_compare.main(), 0)
+                self.assertTrue(compare.call_args.kwargs["no_trace"])
+
+    def test_no_trace_requires_valid_compiler_outcomes(self):
+        arms = {arm: {"outcome": "residual:memory"}
+                for arm in ("rule_off", "rule_on")}
+        self.assertTrue(rule_compare.comparison_complete(arms, no_trace=True))
+        self.assertFalse(rule_compare.comparison_complete(arms))
+        arms["rule_on"]["outcome"] = "setup-error"
+        self.assertFalse(rule_compare.comparison_complete(arms, no_trace=True))
+
+    def test_compare_writes_outputs_without_trace_imports(self):
+        import builtins
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            module = workspace / "Block.v"
+            module.write_text(SOURCE)
+            build = workspace / "_build" / "private"
+            build.mkdir(parents=True)
+            (build / "coqc-ocamlpath.json").write_text(json.dumps({
+                "workspace": str(workspace), "private_build": str(build),
+                "OCAMLPATH": "/test/findlib"}))
+            schema = workspace / "schema.json"
+            schema.write_text(json.dumps({"block_record_schema": dict.fromkeys(
+                ["slot", "hand_lines", "rule_on", "rule_off", "seconds",
+                 "peak_gib", "mcp_record"])}))
+            out = workspace / "_build" / "comparison"
+            original_import = builtins.__import__
+
+            def without_trace(name, *args, **kwargs):
+                if name.startswith("trace_block"):
+                    raise AssertionError("A no-trace comparison imported trace tools.")
+                return original_import(name, *args, **kwargs)
+
+            def snapshot(build, destination):
+                destination.write_text("{}")
+                return rule_compare.digest(destination)
+
+            def compile_source(source, directory, build, *, policy):
+                log = directory / "compiler.log"
+                output = RETURNED + GOAL + INCOMPLETE
+                log.write_text(output)
+                compiler = {**COMPILER, "cpu_seconds": 1.5,
+                            "peak_rss_kib": 1024}
+                return SimpleNamespace(returncode=1), output, log, compiler, 2.0
+
+            with patch.object(rule_compare, "__file__", str(workspace / "tools/block/rule_compare.py")), \
+                    patch.object(rule_compare, "snapshot_recipe", side_effect=snapshot), \
+                    patch.object(rule_compare.subprocess, "check_output", return_value="a" * 40), \
+                    patch.object(rule_compare.coqc_primary, "compile_source", side_effect=compile_source), \
+                    patch.dict(rule_compare.os.environ), \
+                    patch("builtins.__import__", side_effect=without_trace):
+                report = rule_compare.compare(module, "TestSwitch", build, out,
+                                              schema)
+            self.assertTrue(report["comparison_success"])
+            self.assertFalse(report["trace_coverage_complete"])
+            self.assertEqual(json.loads((out / "report.json").read_text()), report)
+            metrics = json.loads((out / "metrics.json").read_text())
+            self.assertEqual(metrics["rule_on"], "residual:existential")
+            self.assertEqual(metrics["rule_off"], "residual:existential")
+            self.assertEqual(metrics["seconds"], 1.5)
+            for arm in report["arms"].values():
+                self.assertTrue(arm["trace"]["skipped"])
+                self.assertFalse(arm["trace"]["complete"])
 
 
 class TraceIntegrationTests(unittest.TestCase):
@@ -409,7 +498,7 @@ class TraceIntegrationTests(unittest.TestCase):
                  patch.object(rule_compare.subprocess, "check_output", return_value="a" * 40), \
                  patch.dict(rule_compare.os.environ):
                 report = rule_compare.compare(module, "ZesuStepReturnRoute", build,
-                    root / "comparison", schema, trace_runner=generate)
+                    root / "comparison", schema, trace_runner=generate, no_trace=False)
             self.assertFalse(report["comparison_success"])
             self.assertFalse(report["trace_coverage_complete"])
             self.assertEqual(set(report["arms"]), {"rule_off", "rule_on"})
