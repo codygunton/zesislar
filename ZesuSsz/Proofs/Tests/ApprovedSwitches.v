@@ -42,3 +42,25 @@ Proof.
 Qed.
 
 Print Assumptions approved_switch_inventory.
+
+Lemma approved_switch_dispatch_caches_normalizers : True.
+Proof.
+  let switches := ZesuSsz.Automation.Finish.zesu_search_switches in
+  ZesuSsz.Automation.SwitchDispatch.zesu_with_switches switches ltac:(fun _ =>
+    let rec require_enabled wanted entries :=
+      lazymatch entries with
+      | cons (?candidate, ?enabled) ?rest =>
+          tryif constr_eq wanted candidate
+          then constr_eq enabled true
+          else require_enabled wanted rest
+      end in
+    lazymatch goal with
+    | _ : ZesuSsz.Automation.SwitchDispatch.ZesuSwitchDispatchCache ?entries |- _ =>
+        require_enabled constr:(ZesuSsz.Automation.BitvectorFacts.ZesuStepMaskNormalizer) entries;
+        require_enabled constr:(ZesuSsz.Automation.Hooks.ZesuStepPureFactExistential) entries;
+        require_enabled constr:(ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch) entries
+    end;
+    exact I).
+Qed.
+
+Print Assumptions approved_switch_dispatch_caches_normalizers.

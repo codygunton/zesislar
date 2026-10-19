@@ -589,6 +589,8 @@ def loop_negative_controls(index, records, root=ROOT):
 
 
 def acceptance(index, bundle, root=ROOT):
+    require(index["repair_identity"].get("status") != "retired",
+            "A retired reservation cannot accept a rule.")
     inventory(index, root)
     require(bundle.get("version") == 2, "The linked version-2 evidence bundle is required.")
     require(bundle["repair_identity"] == {key: index["repair_identity"][key]
@@ -639,9 +641,9 @@ def array_store_schema(index):
                    "Both S152 correct-selection controls are required.")
     identity = index.get("repair_identity")
     require(isinstance(identity, dict), "The switch identity is required.")
-    require(identity.get("status") in ("placeholder", "reserved"),
+    require(identity.get("status") in ("placeholder", "reserved", "retired"),
                    "The switch reservation status is invalid.")
-    if identity["status"] == "reserved":
+    if identity["status"] in ("reserved", "retired"):
         require({key: identity.get(key) for key in ARRAY_STORE_IDENTITY} == ARRAY_STORE_IDENTITY,
                        "The switch differs from the reserved array-store identity.")
     else:
@@ -653,6 +655,8 @@ def array_store_schema(index):
 def array_store_missing(index):
     array_store_schema(index)
     result = []
+    if index["repair_identity"]["status"] == "retired":
+        result.append("retired switch reservation")
     if index["repair_identity"]["status"] == "placeholder":
         result.append("reserved switch identity")
     for case in index["cases"]:
@@ -814,13 +818,16 @@ def entry_normalization_acceptance(index, bundle, root=ROOT):
 
 def dry_run(index, root=ROOT, *, switch_source=None, bundle=None, array_store=False):
     """Check retained inputs and candidate identity without accepting a repair."""
+    retired = index["repair_identity"].get("status") == "retired"
+    require(not retired or (switch_source is None and bundle is None),
+            "A retired reservation cannot check candidate evidence.")
     if array_store:
         array_store_capture_inventory(index, root)
         pending = array_store_missing(index)
         controls = [control["id"] for control in index["controls"]]
     else:
         inventory(index, root)
-        pending = []
+        pending = ["retired switch reservation"] if retired else []
         controls = index["reject_controls"]
     identity = {key: index["repair_identity"][key] for key in ("module", "class", "instance")}
     source_reference = None
@@ -855,7 +862,8 @@ def dry_run(index, root=ROOT, *, switch_source=None, bundle=None, array_store=Fa
         checker = array_store_acceptance if array_store else acceptance
         checked = checker(index, bundle, root)
     return {"mode": "dry_run", "accepted": False, "workspace": str(root.resolve()),
-            "repair_identity": identity, "inventory_checked": True,
+            "repair_identity": identity, "reservation_status": ("retired" if retired else "active"),
+            "inventory_checked": True,
             "switch_source": source_reference, "runtime_activation_checked": bool(checked),
             "checked_native_cases": checked,
             "missing_certificates": ([] if complete else

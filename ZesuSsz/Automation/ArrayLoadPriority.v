@@ -74,7 +74,7 @@ Ltac zesu_array_load_contains address width spatial :=
                address + width <= start + Z.of_nat (length values) * stride)%Z)
                by (autorewrite with lithium_rewrite;
                    first [cbn; zesu_finish_lia
-                         | zesu_bounded_arithmetic ltac:(zesu_witness_arith)]);
+                         | zesu_witness_arith]);
              clear Hrange
             | zesu_array_load_contains address width rest]
   | Esnoc ?rest _ _ => zesu_array_load_contains address width rest

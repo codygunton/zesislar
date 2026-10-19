@@ -90,13 +90,17 @@ class AcceptanceCommandTests(unittest.TestCase):
                         ARRAY_STORE_IDENTITY["instance"] + "\n")
         result = self.command("--workspace", str(ROOT), "--array-store", "--dry-run",
                               "--switch-source", str(stub))
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("retired reservation", result.stderr)
+        result = self.command("--workspace", str(ROOT), "--array-store", "--dry-run")
         self.assertEqual(result.returncode, 0, result.stderr)
         report = json.loads(result.stdout)
         self.assertFalse(report["accepted"])
         self.assertFalse(report["runtime_activation_checked"])
         self.assertEqual(report["repair_identity"], ARRAY_STORE_IDENTITY)
+        self.assertEqual(report["reservation_status"], "retired")
         self.assertEqual(len(report["missing_certificates"]), 8)
-        self.assertTrue(report["pending_inventory"])
+        self.assertIn("retired switch reservation", report["pending_inventory"])
 
 
 class KernelGroupTests(unittest.TestCase):

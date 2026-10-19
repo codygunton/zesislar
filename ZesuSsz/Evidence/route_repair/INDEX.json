@@ -5,7 +5,8 @@
     "module": "ZesuSsz.Automation.Switches.ResourceFirstIntroduction",
     "class": "ZesuStepResourceFirstIntroduction",
     "instance": "zesu_switch_resource_first_introduction",
-    "status": "reserved; implementation not present"
+    "status": "retired",
+    "retirement_reason": "Phase 0.4 removed the unused class; the identifiers remain historical."
   },
   "ON_imports": [
     "ZesuSsz.Automation.All",
