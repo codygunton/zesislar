@@ -38,7 +38,8 @@
     "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.v",
     "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v",
     "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v",
-    "ZesuSsz/Contracts/RlpDecodeItemSchema.v"
+    "ZesuSsz/Contracts/RlpDecodeItemSchema.v",
+    "ZesuSsz/Contracts/DecodeItemCallSpec.v"
   ],
   "introductions": [
     "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v",
@@ -210,7 +211,8 @@
     "Scaffolding/DecodeItemComplianceStatement.v",
     "ZesuSsz/Compliance/DecodeItemCompliance.v",
     "ZesuSsz/Proofs/DecodeItem/Composition/CompleteFamily.v",
-    "ZesuSsz/Proofs/DecodeItem/Composition/CompleteNativeFamily.v"
+    "ZesuSsz/Proofs/DecodeItem/Composition/CompleteNativeFamily.v",
+    "ZesuSsz/Compliance/DecodeItemCallSpec.v"
   ],
   "tests_and_exports": [
     "Makefile",
@@ -889,15 +891,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemHints.v",
       "category": "registrations",
       "scope": "whole_file",
-      "sha256": "dd98993b9f6727bc927c6f72befe9c9b23dc63c6c3e22a4865e6c5b3890d9d81",
-      "file_lines": 44,
+      "sha256": "d9b44d00348151538459ca8ba8fc03f6edafc3e0a1366e22876609446a6397e7",
+      "file_lines": 45,
       "line_ranges": [
         [
           1,
-          44
+          45
         ]
       ],
-      "counted_lines": 44
+      "counted_lines": 45
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemInitializationPureFacts.v",
@@ -2565,14 +2567,14 @@
       "role": "measurement_metadata",
       "scope": "whole_file",
       "sha256": null,
-      "file_lines": 8012,
+      "file_lines": 8046,
       "line_ranges": [
         [
           1,
-          8012
+          8046
         ]
       ],
-      "counted_lines": 8012
+      "counted_lines": 8046
     },
     {
       "path": "ZesuSsz/Evidence/decode_item_auto_modules.json",
@@ -7504,6 +7506,34 @@
         ]
       ],
       "counted_lines": 112
+    },
+    {
+      "path": "ZesuSsz/Contracts/DecodeItemCallSpec.v",
+      "category": "contracts",
+      "scope": "whole_file",
+      "sha256": "f95b3e55839a7870d1ff864b27a9869757f321f73af7ad39eb4a360c51ad408a",
+      "file_lines": 94,
+      "line_ranges": [
+        [
+          1,
+          94
+        ]
+      ],
+      "counted_lines": 94
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemCallSpec.v",
+      "category": "composition",
+      "scope": "whole_file",
+      "sha256": "da78159d351b3aac8ef5090ec90ba20766dc149689af0f3be12b53550c4200fd",
+      "file_lines": 209,
+      "line_ranges": [
+        [
+          1,
+          209
+        ]
+      ],
+      "counted_lines": 209
     }
   ],
   "blocks": [
@@ -7920,20 +7950,20 @@
   },
   "base_manifest_sha256": "7deccbbc338d25231c300f1ba6824c5c10136917b0207e75589cd9a86f9d020a",
   "category_totals": {
-    "contracts": 2496,
+    "tests_and_exports": 35449,
+    "composition": 602,
+    "loop_steps": 965,
     "introductions": 3688,
     "exit_meanings": 3114,
-    "loop_steps": 965,
-    "registrations": 326,
+    "registrations": 327,
+    "contracts": 2590,
     "generator_json": 6299,
-    "block_proofs": 3461,
-    "composition": 393,
-    "tests_and_exports": 35415
+    "block_proofs": 3461
   },
-  "interface_total": 16888,
-  "extra_total": 39269,
-  "overall_total": 56157,
-  "file_count": 364,
+  "interface_total": 16983,
+  "extra_total": 39512,
+  "overall_total": 56495,
+  "file_count": 366,
   "embedded_registration_ranges": [
     {
       "path": "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
@@ -8007,6 +8037,10 @@
     "cleanup_status": "removed in the 2026-10-15 worktree cleanup; hash retained",
     "policy": "Historical inventory may lack explicitly removed worktree bytes. Present files must match. Native certificate reads remain strict.",
     "interface_change": 0,
-    "I75": "Count the complete affected I75 historical checker, index and tests as unscored text. Retained report comparisons remain verified; missing raw evidence remains unavailable."
+    "I75": "Count the complete affected I75 historical checker, index and tests as unscored text. Retained report comparisons remain verified; missing raw evidence remains unavailable.",
+    "call_spec": {
+      "base": "33f27d9a",
+      "scope": "Inherited manifest plus the approved call boundary and derived proofs. No global recount."
+    }
   }
 }
