@@ -104,7 +104,8 @@
   "registrations": [
     "ZesuSsz/Compliance/DecodeItemDataRegistrations.v",
     "ZesuSsz/Compliance/DecodeItemHints.v",
-    "ZesuSsz/Compliance/DecodeItemUnfoldRegistrations.v"
+    "ZesuSsz/Compliance/DecodeItemUnfoldRegistrations.v",
+    "ZesuSsz/Compliance/DecodeItemCanonicalEntryFacts.v"
   ],
   "generator_json": [
     "ZesuSsz/Contracts/decode_item_block_design.json",
@@ -408,7 +409,8 @@
     "ZesuSsz/Proofs/Tests/SimplAndFinish.v",
     "ZesuSsz/Proofs/Tests/ListConsFinish.v",
     "ZesuSsz/Proofs/Tests/IntegerReturn.v",
-    "ZesuSsz/Proofs/Tests/DecodeItemBranchContinuationOrder.v"
+    "ZesuSsz/Proofs/Tests/DecodeItemBranchContinuationOrder.v",
+    "ZesuSsz/Proofs/Tests/RawWordArrayWitness.v"
   ],
   "lemmas": [
     "ZesuSsz/Compliance/ByteFold.v",
@@ -464,7 +466,8 @@
     "ZesuSsz/Compliance/SailRun.v",
     "ZesuSsz/Compliance/SailVectorAuditIntegers.v",
     "ZesuSsz/Proofs/DecodeItem/ByteFoldPure.v",
-    "ZesuSsz/Compliance/DecodeItemExitDataFacts.v"
+    "ZesuSsz/Compliance/DecodeItemExitDataFacts.v",
+    "ZesuSsz/Compliance/DecodeItemCanonicalEntryFacts.v"
   ],
   "pending": [],
   "files": [
@@ -904,15 +907,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemHints.v",
       "category": "registrations",
       "scope": "whole_file",
-      "sha256": "d9b44d00348151538459ca8ba8fc03f6edafc3e0a1366e22876609446a6397e7",
-      "file_lines": 45,
+      "sha256": "6cd6ce3fd71f626a237f69dd7e5d513990bed47f03c23e62b108ee3ec14c6c99",
+      "file_lines": 46,
       "line_ranges": [
         [
           1,
-          45
+          46
         ]
       ],
-      "counted_lines": 45
+      "counted_lines": 46
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemInitializationPureFacts.v",
@@ -2589,14 +2592,14 @@
       "role": "measurement_metadata",
       "scope": "whole_file",
       "sha256": null,
-      "file_lines": 8389,
+      "file_lines": 8420,
       "line_ranges": [
         [
           1,
-          8389
+          8420
         ]
       ],
-      "counted_lines": 8389
+      "counted_lines": 8420
     },
     {
       "path": "ZesuSsz/Evidence/decode_item_auto_modules.json",
@@ -3837,8 +3840,8 @@
       "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "a6deb38b1cb2e7a84e01684987c59822fc5f732314ea98390649b5eeac66b529",
-      "file_lines": 344,
+      "sha256": "6c2d8fe187a76796902f1db738f7ab9f47b430f515706997abd8064a49062562",
+      "file_lines": 351,
       "line_ranges": [
         [
           1,
@@ -3850,7 +3853,7 @@
         ]
       ],
       "counted_lines": 225,
-      "selection": "Inherited mixed scope plus the exact new E2 inventory row. Recompute its range from the current JSON source."
+      "selection": "Inherited mixed scope, including the checked R4 data registration inventory row."
     },
     {
       "path": "ZesuSsz/Evidence/test_check_decode_item_hints.py",
@@ -4413,15 +4416,15 @@
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6960.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "464777e080f5f17e72a9ecb4c57c18181e0f22208161842afef9a5b16a38c491",
-      "file_lines": 116,
+      "sha256": "a020f08068bdbbcca4b3a30fbe0b80eaa1ed10e23a0c99c13ce38ac391b1b3aa",
+      "file_lines": 51,
       "line_ranges": [
         [
           1,
-          116
+          51
         ]
       ],
-      "counted_lines": 116
+      "counted_lines": 51
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a08.v",
@@ -7826,16 +7829,44 @@
       "file_lines": 40,
       "sha256": "7204168badc361d94a6393801ba1fba0ddbb3a513cc91296c880d7c28d09c852",
       "counted_lines": 40
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemCanonicalEntryFacts.v",
+      "category": "registrations",
+      "scope": "whole_file",
+      "sha256": "574ce584121ecc1762bec2fd5ff001830b8d4e2e1e17ae145e4670a9c92b9490",
+      "file_lines": 59,
+      "line_ranges": [
+        [
+          1,
+          59
+        ]
+      ],
+      "counted_lines": 59
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/RawWordArrayWitness.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "8ba93707a5b015faf709c32ece1a6c5435b5735813bd3b30e4a0670dc1868c44",
+      "file_lines": 72,
+      "line_ranges": [
+        [
+          1,
+          72
+        ]
+      ],
+      "counted_lines": 72
     }
   ],
   "blocks": [
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6960.v",
       "pc": "0x800d6960",
-      "kind": "hand",
-      "proof_qed_lines": 68,
-      "tactic_lines": 66,
-      "file_lines": 116
+      "kind": "auto",
+      "proof_qed_lines": 3,
+      "tactic_lines": 1,
+      "file_lines": 51
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v",
@@ -8196,7 +8227,7 @@
       "line_ranges": [
         [
           1,
-          344
+          351
         ]
       ],
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
@@ -8222,7 +8253,7 @@
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
     }
   ],
-  "conservative_shared_json_lines": 15237,
+  "conservative_shared_json_lines": 15244,
   "status": "Private immutable source scope: base e7eb0bce plus eighteen native-certificate018 sources. No Root integration credit.",
   "integration_scope": {
     "base": "e7eb0bcef249f2cf99dfc86cf60d8436ade29a31",
@@ -8260,20 +8291,20 @@
   },
   "base_manifest_sha256": "7deccbbc338d25231c300f1ba6824c5c10136917b0207e75589cd9a86f9d020a",
   "category_totals": {
-    "tests_and_exports": 36544,
+    "tests_and_exports": 36647,
     "composition": 584,
     "loop_steps": 1142,
     "introductions": 3530,
     "exit_meanings": 3525,
-    "registrations": 388,
+    "registrations": 448,
     "contracts": 2564,
     "generator_json": 6279,
-    "block_proofs": 2470
+    "block_proofs": 2405
   },
-  "interface_total": 17428,
-  "extra_total": 39598,
-  "overall_total": 57026,
-  "file_count": 385,
+  "interface_total": 17488,
+  "extra_total": 39636,
+  "overall_total": 57124,
+  "file_count": 387,
   "embedded_registration_ranges": [
     {
       "path": "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
