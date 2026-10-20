@@ -1172,15 +1172,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemSailIntroduction.v",
       "category": "exit_meanings",
       "scope": "whole_file",
-      "sha256": "784aae22bfd38bb96108854f4fb64ceffb9353a89d2f9d8ed066879452d17ed2",
-      "file_lines": 338,
+      "sha256": "296bc3f492bd8d30d16f745d80106e4958b3a1418b42d2e7164f0689b4a66b69",
+      "file_lines": 287,
       "line_ranges": [
         [
           1,
-          338
+          287
         ]
       ],
-      "counted_lines": 338
+      "counted_lines": 287
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemSavedFrameWitnesses.v",
@@ -8280,15 +8280,15 @@
     "composition": 584,
     "loop_steps": 1133,
     "introductions": 3524,
-    "exit_meanings": 2569,
+    "exit_meanings": 2518,
     "registrations": 448,
     "contracts": 2397,
     "generator_json": 6279,
     "block_proofs": 2375
   },
-  "interface_total": 16350,
+  "interface_total": 16299,
   "extra_total": 39627,
-  "overall_total": 55977,
+  "overall_total": 55926,
   "file_count": 386,
   "embedded_registration_ranges": [
     {
