@@ -29,6 +29,12 @@ Proof.
   intros Hsource Hself.
   Fail solve [zesu_finish_pure_goal_base].
   zesu_finish_pure_goal.
+  lazymatch goal with
+  | _ : (forall index : nat, index = fixtureSeed fixture -> fixtureResult fixture index) |- _ =>
+      fail 1 "per-pass finisher derived the deferred fact"
+  | _ => idtac
+  end.
+  zesu_finish_final_pure.
 Qed.
 
 Lemma derivedFinishMissing (fixture : MissingFinishFixture) :
@@ -36,7 +42,7 @@ Lemma derivedFinishMissing (fixture : MissingFinishFixture) :
 Proof.
   intros Hsource Hself.
   Fail assert (Hmissing : missingResult fixture (missingSeed fixture))
-    by solve [zesu_finish_pure_goal].
+    by solve [zesu_finish_final_pure].
   exact I.
 Qed.
 
@@ -44,7 +50,7 @@ Lemma derivedFinishOpenRetainsOnce (fixture : DerivedFinishFixture) :
   fixtureSource fixture -> fixtureOpen fixture.
 Proof.
   intro Hsource.
-  zesu_finish_pure_goal.
+  zesu_finish_final_pure.
   lazymatch goal with
   | _ : (forall index : nat, index = fixtureSeed fixture -> fixtureResult fixture index) |- _ => idtac
   end.

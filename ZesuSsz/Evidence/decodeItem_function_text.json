@@ -402,7 +402,8 @@
     "ZesuSsz/Proofs/Tests/ImplicationPair.v",
     "ZesuSsz/Proofs/Tests/PureResourceFinish.v",
     "ZesuSsz/Proofs/Tests/DerivedFactFinish.v",
-    "ZesuSsz/Proofs/Tests/SimplAndFinish.v"
+    "ZesuSsz/Proofs/Tests/SimplAndFinish.v",
+    "ZesuSsz/Proofs/Tests/ListConsFinish.v"
   ],
   "lemmas": [
     "ZesuSsz/Compliance/ByteFold.v",
@@ -2573,14 +2574,14 @@
       "role": "measurement_metadata",
       "scope": "whole_file",
       "sha256": null,
-      "file_lines": 8153,
+      "file_lines": 8172,
       "line_ranges": [
         [
           1,
-          8153
+          8172
         ]
       ],
-      "counted_lines": 8153
+      "counted_lines": 8172
     },
     {
       "path": "ZesuSsz/Evidence/decode_item_auto_modules.json",
@@ -7601,29 +7602,43 @@
       "path": "ZesuSsz/Proofs/Tests/DerivedFactFinish.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "cea366fe9688b1b2f3fb049392612176b44b78193264e034af3cb23d20b23bc4",
-      "file_lines": 57,
+      "sha256": "f6905b1e5c8cdce3ec5638a8d653e0447e10772f0a8ac9364067f372bc94efbe",
+      "file_lines": 63,
       "line_ranges": [
         [
           1,
-          57
+          63
         ]
       ],
-      "counted_lines": 57
+      "counted_lines": 63
     },
     {
       "path": "ZesuSsz/Proofs/Tests/SimplAndFinish.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "7e60636f20ed60a42f254970a7ab05539dac59f4f922e9644c5765725064c579",
-      "file_lines": 60,
+      "sha256": "d3e2ae3ddc6dd317b803f53c13b7db37ebdb971bc25db29dcf94f9527c39073c",
+      "file_lines": 62,
       "line_ranges": [
         [
           1,
-          60
+          62
         ]
       ],
-      "counted_lines": 60
+      "counted_lines": 62
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/ListConsFinish.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "678bd8111e54bf3e6ea256edc46b28a9a62242e9b1a7a940ecd7e088756a18ed",
+      "file_lines": 35,
+      "line_ranges": [
+        [
+          1,
+          35
+        ]
+      ],
+      "counted_lines": 35
     }
   ],
   "blocks": [
@@ -8040,7 +8055,7 @@
   },
   "base_manifest_sha256": "7deccbbc338d25231c300f1ba6824c5c10136917b0207e75589cd9a86f9d020a",
   "category_totals": {
-    "tests_and_exports": 35618,
+    "tests_and_exports": 35680,
     "composition": 580,
     "loop_steps": 965,
     "introductions": 3529,
@@ -8051,9 +8066,9 @@
     "block_proofs": 3301
   },
   "interface_total": 16790,
-  "extra_total": 39499,
-  "overall_total": 56289,
-  "file_count": 372,
+  "extra_total": 39561,
+  "overall_total": 56351,
+  "file_count": 373,
   "embedded_registration_ranges": [
     {
       "path": "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
@@ -8148,6 +8163,10 @@
     "p3p4_adaptations": {
       "base": "b44914e4",
       "scope": "Refresh the six adapted whole-file proof records. Preserve their current DesignedBoundary statements and the inherited mixed-file ranges."
+    },
+    "r1_final_only": {
+      "base": "824753c1",
+      "scope": "Update the final-only finisher tests and classify the generic list-cons regression module as unscored tests_and_exports."
     }
   }
 }

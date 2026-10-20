@@ -14,7 +14,8 @@ Lemma registeredLeafFinishes (fixture : DerivedFinishFixture) :
   fixtureOpen fixture.
 Proof.
   Fail solve [zesu_finish_pure_goal_base].
-  zesu_finish_pure_goal.
+  Fail solve [zesu_finish_pure_goal].
+  zesu_finish_final_pure.
 Qed.
 
 Lemma missingLeafRefuses (fixture : MissingFinishFixture) : True.
@@ -22,7 +23,7 @@ Proof.
   Fail assert (Hmissing : missingResult fixture (missingSeed fixture))
     by solve [zesu_finish_simpl_and_leaf].
   Fail assert (Hmissing : missingResult fixture (missingSeed fixture))
-    by solve [zesu_finish_pure_goal].
+    by solve [zesu_finish_final_pure].
   exact I.
 Qed.
 
@@ -55,6 +56,7 @@ Lemma registeredConjunctionFinishes (fixture : DerivedFinishFixture) (P : Prop) 
 Proof.
   intros Hsource HP.
   Fail solve [zesu_finish_pure_goal_base].
-  zesu_finish_pure_goal.
+  Fail solve [zesu_finish_pure_goal].
+  zesu_finish_final_pure.
 Qed.
 Print Assumptions registeredConjunctionFinishes.
