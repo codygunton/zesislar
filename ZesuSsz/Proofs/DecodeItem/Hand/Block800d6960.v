@@ -1,5 +1,4 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Proofs.DecodeItem.Hand.Common.
 Require Import ZesuSsz.Compliance.DecodeItemSavedFrameWitnesses.
 Require Import ZesuSsz.Compliance.DecodeItemReturnRestorationFacts.
 Require Import ZesuSsz.Compliance.DecodeItemMaskedReturnFacts.

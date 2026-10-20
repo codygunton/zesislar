@@ -261,28 +261,10 @@ Proof.
         eapply Z.le_lt_trans; eauto.
 Qed.
 
-Lemma decodeItemLongStringAccepted args prefix rest n payloadStart lengthBytes :
-  decodeItemC1BDomain args ->
-  decodeItemFoldProvenance args false prefix rest n payloadStart lengthBytes ->
-  1 + n <= Z.of_nat (List.length (decodeItemInputBytes args)) ->
-  (1 + n + bigEndian lengthBytes) mod word64Modulus <=
-    Z.of_nat (List.length (decodeItemInputBytes args)) ->
-  decodeItemLongAcceptedFacts args false (1 + n) (bigEndian lengthBytes).
-Proof. exact (decodeItemLongAccepted args false prefix rest n payloadStart lengthBytes). Qed.
 
-Lemma decodeItemLongListAccepted args prefix rest n payloadStart lengthBytes :
-  decodeItemC1BDomain args ->
-  decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes ->
-  1 + n <= Z.of_nat (List.length (decodeItemInputBytes args)) ->
-  (1 + n + bigEndian lengthBytes) mod word64Modulus <=
-    Z.of_nat (List.length (decodeItemInputBytes args)) ->
-  decodeItemLongAcceptedFacts args true (1 + n) (bigEndian lengthBytes).
-Proof. exact (decodeItemLongAccepted args true prefix rest n payloadStart lengthBytes). Qed.
 
 Print Assumptions decodeItemLongCandidateFromProvenance.
 Print Assumptions decodeItemLongAccepted.
-Print Assumptions decodeItemLongStringAccepted.
-Print Assumptions decodeItemLongListAccepted.
 
 Lemma decodeItemLongStringHeaderRejected args prefix rest :
   decodeItemC1BDomain args -> decodeItemInputHead args prefix rest ->
@@ -351,24 +333,6 @@ Proof.
     eapply Z.lt_le_trans; eauto.
 Qed.
 
-Lemma decodeItemLongStringPayloadRejected args prefix rest n payloadStart lengthBytes :
-  decodeItemC1BDomain args ->
-  decodeItemFoldProvenance args false prefix rest n payloadStart lengthBytes ->
-  1 + n <= Z.of_nat (List.length (decodeItemInputBytes args)) ->
-  Z.of_nat (List.length (decodeItemInputBytes args)) <
-    (1 + n + bigEndian lengthBytes) mod word64Modulus ->
-  decodeItemRejectedFacts args.
-Proof. exact (decodeItemLongPayloadRejected args false prefix rest n payloadStart lengthBytes). Qed.
 
-Lemma decodeItemLongListPayloadRejected args prefix rest n payloadStart lengthBytes :
-  decodeItemC1BDomain args ->
-  decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes ->
-  1 + n <= Z.of_nat (List.length (decodeItemInputBytes args)) ->
-  Z.of_nat (List.length (decodeItemInputBytes args)) <
-    (1 + n + bigEndian lengthBytes) mod word64Modulus ->
-  decodeItemRejectedFacts args.
-Proof. exact (decodeItemLongPayloadRejected args true prefix rest n payloadStart lengthBytes). Qed.
 
 Print Assumptions decodeItemLongPayloadRejected.
-Print Assumptions decodeItemLongStringPayloadRejected.
-Print Assumptions decodeItemLongListPayloadRejected.

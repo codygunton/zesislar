@@ -194,9 +194,3 @@ Proof. exact (decodeItemShortListUpdatedMeaning args locals inputPrefix rest). Q
 
 Print Assumptions decodeItemShortListUpdatedMeaning.
 Print Assumptions decodeItemShortListOutputDerivedFacts.
-
-Lemma decodeItemShortListOutputRegistration args locals inputPrefix rest :
-  ZesuDerivedFacts (decodeItemShortListOutputFacts args locals inputPrefix rest)
-    (DecodeMeaningModuloKnownBugs args (decodeItemShortListUpdatedImage locals)).
-Proof. exact (decodeItemShortListOutputDerivedFacts args locals inputPrefix rest). Qed.
-Print Assumptions decodeItemShortListOutputRegistration.

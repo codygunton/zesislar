@@ -96,19 +96,6 @@ Proof.
   eapply decodeItemErrorReturn; eauto.
 Qed.
 
-Lemma decodeItemSemanticExitResourcesIntro `{!islaG Sigma} `{!threadG}
-    args after :
-  decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
-  DecodeMeaningModuloKnownBugs args after ->
-  ⊢ (decodeItemExitResources args after -∗
-     ⌜decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args /\
-       DecodeMeaningModuloKnownBugs args after⌝ ∗
-     decodeItemExitResources args after ∗ True)%I.
-Proof.
-  intros Hdomain Hmeaning. iIntros "Hexit".
-  iSplit; first (iPureIntro; split; assumption).
-  iFrame.
-Qed.
 
 Print Assumptions decodeItemLiteralPostMeaning.
 Print Assumptions decodeItemEmptyStringPostMeaning.
@@ -117,4 +104,3 @@ Print Assumptions decodeItemShortListPostMeaning.
 Print Assumptions decodeItemLongStringPostMeaning.
 Print Assumptions decodeItemLongListPostMeaning.
 Print Assumptions decodeItemErrorPostMeaning.
-Print Assumptions decodeItemSemanticExitResourcesIntro.

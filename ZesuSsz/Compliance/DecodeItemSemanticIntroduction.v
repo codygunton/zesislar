@@ -61,11 +61,6 @@ Proof.
   unfold checkedPayload. rewrite (proj2 (Z.leb_le _ _) Hfits). reflexivity.
 Qed.
 
-Lemma decodeItemEmptyInputRejectedCandidateIntro args :
-  decodeItemInputBytes args = [] ->
-  candidateDecodeItem (decodeItemInputBytes args) = candidateError.
-Proof. intros Hinput. unfold candidateDecodeItem. now rewrite Hinput. Qed.
-
 Lemma decodeItemLongStringCandidateIntro args prefix rest :
   decodeItemInputHead args prefix rest ->
   184 <= bv_unsigned prefix <= 191 ->
@@ -115,7 +110,6 @@ Print Assumptions decodeItemLiteralCandidateIntro.
 Print Assumptions decodeItemEmptyCandidateIntro.
 Print Assumptions decodeItemShortStringCandidateIntro.
 Print Assumptions decodeItemShortListCandidateIntro.
-Print Assumptions decodeItemEmptyInputRejectedCandidateIntro.
 Print Assumptions decodeItemLongStringCandidateIntro.
 Print Assumptions decodeItemLongListCandidateIntro.
 
