@@ -710,15 +710,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemEmptyStringOutputMeaning.v",
       "category": "exit_meanings",
       "scope": "whole_file",
-      "sha256": "7aa4631dfab2636193f2b59fe643f28947ad9b188dc5cf37eb8df8bd2547fdad",
-      "file_lines": 783,
+      "sha256": "6260e932fcd0863dd4f4d3a9da8fd5526f7f33a07c657d435ea49bdf9a516ebb",
+      "file_lines": 71,
       "line_ranges": [
         [
           1,
-          783
+          71
         ]
       ],
-      "counted_lines": 783
+      "counted_lines": 71
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemEntryAdditionalFacts.v",
@@ -2591,14 +2591,14 @@
       "role": "measurement_metadata",
       "scope": "whole_file",
       "sha256": null,
-      "file_lines": 8416,
+      "file_lines": 8421,
       "line_ranges": [
         [
           1,
-          8416
+          8421
         ]
       ],
-      "counted_lines": 8416
+      "counted_lines": 8421
     },
     {
       "path": "ZesuSsz/Evidence/decode_item_auto_modules.json",
@@ -8276,19 +8276,19 @@
   },
   "base_manifest_sha256": "7deccbbc338d25231c300f1ba6824c5c10136917b0207e75589cd9a86f9d020a",
   "category_totals": {
-    "tests_and_exports": 36663,
+    "tests_and_exports": 36668,
     "composition": 584,
     "loop_steps": 1133,
     "introductions": 3524,
-    "exit_meanings": 3281,
+    "exit_meanings": 2569,
     "registrations": 448,
     "contracts": 2397,
     "generator_json": 6279,
     "block_proofs": 2375
   },
-  "interface_total": 17062,
-  "extra_total": 39622,
-  "overall_total": 56684,
+  "interface_total": 16350,
+  "extra_total": 39627,
+  "overall_total": 55977,
   "file_count": 386,
   "embedded_registration_ranges": [
     {
@@ -8411,6 +8411,11 @@
     "m2_support": {
       "base": "5d728195ba01ceae1891a7e856bf3c5405019548",
       "scope": "Remove unused plain helpers with their diagnostic Print commands and obsolete Common tactics. Preserve implicit registrations, public boundaries, provenance constants, pinned tests, and generator aliases. Classify 20 test lines separately."
+    },
+    "compact_empty_image": {
+      "base": "2617763d5a6e8ecd1389fbd1a489e83d79d8494b",
+      "reason": "Replace the expanded internal image with definitionally equal word-byte/list expressions. Public declarations remain unchanged.",
+      "guarded_equality_record": "_build/compact-meaning/EQUALITY001.json"
     }
   }
 }
