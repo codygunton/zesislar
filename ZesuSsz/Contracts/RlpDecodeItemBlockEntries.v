@@ -80,60 +80,54 @@ Definition decodeItem698cCaseResources `{!islaG Sigma} `{!threadG}
 (* Public join entries bind machine registers and complete byte arrays. *)
 Definition decodeItemEntryAt800d698cLiteral `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (x11 x12 x13 x14 x15 x16 : bv 64)
-    (outputBytes frameBytes pointerBytes lengthBytes : list byte)
+    (outputBytes frameBytes : list byte)
     (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
   (decodeItemReturnEntryCore args {| returnA1 := x11; returnA2 := x12; returnA3 := x13; returnA4 := x14; returnA5 := x15; returnA6 := x16; returnStorage := outputBytes; returnFrame := frameBytes |} ∗
    ⌜decodeItemInputHead args inputPrefix rest /\
      (bv_unsigned inputPrefix <= 127) /\
      bv_unsigned (x11) = (decodeItemInputPointer args +
        (0))%Z /\
-     littleEndian lengthBytes =
-       (1) /\
      bv_unsigned (x12) =
        (1)%Z /\
      decodeItemAcceptedFacts args false (0)
        (1) /\
-     fieldImage (outputBytes) 0 pointerBytes /\
-     fieldImage (outputBytes) 8 lengthBytes /\
+     fieldImage outputBytes 0 (word64Bytes (bv_unsigned x11)) /\
+     fieldImage outputBytes 8 (word64Bytes (bv_unsigned x12)) /\
      fieldImage (outputBytes) 32 [Z_to_bv 8 0; Z_to_bv 8 0] /\
-     pointerBytes = word64Bytes (bv_unsigned (x11)) /\
-     length lengthBytes = 8%nat /\
      preservedImage (decodeItemBeforeStorage args) (outputBytes) 17 7 /\
      preservedImage (decodeItemBeforeStorage args) (outputBytes) 34 6⌝)%I.
 
 
 Definition decodeItemEntryAt800d698cShortString `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (x11 x12 x13 x14 x15 x16 : bv 64)
-    (outputBytes frameBytes pointerBytes lengthBytes : list byte)
+    (outputBytes frameBytes : list byte)
     (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
   (decodeItemReturnEntryCore args {| returnA1 := x11; returnA2 := x12; returnA3 := x13; returnA4 := x14; returnA5 := x15; returnA6 := x16; returnStorage := outputBytes; returnFrame := frameBytes |} ∗
    ⌜decodeItemInputHead args inputPrefix rest /\
      (129 <= bv_unsigned inputPrefix <= 183) /\
      bv_unsigned (x11) = (decodeItemInputPointer args +
        (1))%Z /\
-     littleEndian lengthBytes =
+     bv_unsigned x13 =
        (bv_unsigned inputPrefix - 128) /\
      bv_unsigned (x12) =
        ((1 + (bv_unsigned inputPrefix - 128))%Z) /\
      decodeItemAcceptedFacts args false (1)
        (bv_unsigned inputPrefix - 128) /\
-     fieldImage (outputBytes) 0 pointerBytes /\
-     fieldImage (outputBytes) 8 lengthBytes /\
+     fieldImage outputBytes 0 (word64Bytes (bv_unsigned x11)) /\
+     fieldImage outputBytes 8 (word64Bytes (bv_unsigned x13)) /\
      fieldImage (outputBytes) 32 [Z_to_bv 8 0; Z_to_bv 8 0] /\
-     pointerBytes = word64Bytes (bv_unsigned (x11)) /\
-     length lengthBytes = 8%nat /\
      preservedImage (decodeItemBeforeStorage args) (outputBytes) 17 7 /\
      preservedImage (decodeItemBeforeStorage args) (outputBytes) 34 6⌝)%I.
 
 
 Definition decodeItemEntryAt800d698c `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (x11 x12 x13 x14 x15 x16 : bv 64)
-    (outputBytes frameBytes pointerBytes lengthBytes : list byte)
+    (outputBytes frameBytes : list byte)
     (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
   (decodeItemEntryAt800d698cLiteral args x11 x12 x13 x14 x15 x16
-     outputBytes frameBytes pointerBytes lengthBytes inputPrefix rest ∨
+     outputBytes frameBytes inputPrefix rest ∨
    decodeItemEntryAt800d698cShortString args x11 x12 x13 x14 x15 x16
-     outputBytes frameBytes pointerBytes lengthBytes inputPrefix rest)%I.
+     outputBytes frameBytes inputPrefix rest)%I.
 
 Definition decodeItemEntryAt800d69b0 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (locals : DecodeItemReturnLocals)

@@ -22,18 +22,18 @@ Require Import ZesuSsz.Compliance.DecodeItemDataRegistrations.
 #[local] Existing Instance decodeItemExitMeaning698cLiteralDraft.
 Lemma r3FactsOutput698cLiteral `{!islaG Sigma} `{!threadG}
     args (x11 x12 x13 x14 x15 x16 : bv 64)
-    (outputBytes frameBytes pointerBytes lengthBytes : list byte)
+    (outputBytes frameBytes : list byte)
     (inputPrefix : byte) (rest : list byte) :
   exists facts : Prop, ZesuExitMeaning (decodeItemEntryAt800d698cLiteral args x11 x12 x13 x14 x15 x16
-    outputBytes frameBytes pointerBytes lengthBytes inputPrefix rest) facts.
+    outputBytes frameBytes inputPrefix rest) facts.
 Proof. eexists. typeclasses eauto. Qed.
 
 #[local] Existing Instance decodeItemExitMeaning698cShortStringDraft.
 Lemma r3FactsOutput698cShortString `{!islaG Sigma} `{!threadG}
     args (x11 x12 x13 x14 x15 x16 : bv 64)
-    (outputBytes frameBytes pointerBytes lengthBytes : list byte)
+    (outputBytes frameBytes : list byte)
     (inputPrefix : byte) (rest : list byte) :
   exists facts : Prop, ZesuExitMeaning (decodeItemEntryAt800d698cShortString args x11 x12 x13 x14 x15 x16
-    outputBytes frameBytes pointerBytes lengthBytes inputPrefix rest) facts.
+    outputBytes frameBytes inputPrefix rest) facts.
 Proof. eexists. typeclasses eauto. Qed.
 

@@ -67,10 +67,10 @@ Require Import ZesuSsz.Automation.ReturnRoute.
    This scope registers five unchanged sources and two public 698c alternatives. *)
 Lemma decodeItemExitMeaning698cLiteralDraft `{!islaG Sigma} `{!threadG}
     args (x11 x12 x13 x14 x15 x16 : bv 64)
-    (outputBytes frameBytes pointerBytes lengthBytes : list byte)
+    (outputBytes frameBytes : list byte)
     (inputPrefix : byte) (rest : list byte) :
   ZesuExitMeaning (decodeItemEntryAt800d698cLiteral args x11 x12 x13 x14 x15 x16
-    outputBytes frameBytes pointerBytes lengthBytes inputPrefix rest) ((forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)
+    outputBytes frameBytes inputPrefix rest) ((forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)
       (decodeItemBeforeStorage args) after (candidateSuccess false 0 1) ->
     DecodeMeaningModuloKnownBugs args after)%Z).
 Proof. constructor. apply decodeItemReturn698cLiteralMeaning. Qed.
@@ -78,10 +78,10 @@ Proof. constructor. apply decodeItemReturn698cLiteralMeaning. Qed.
 
 Lemma decodeItemExitMeaning698cShortStringDraft `{!islaG Sigma} `{!threadG}
     args (x11 x12 x13 x14 x15 x16 : bv 64)
-    (outputBytes frameBytes pointerBytes lengthBytes : list byte)
+    (outputBytes frameBytes : list byte)
     (inputPrefix : byte) (rest : list byte) :
   ZesuExitMeaning (decodeItemEntryAt800d698cShortString args x11 x12 x13 x14 x15 x16
-    outputBytes frameBytes pointerBytes lengthBytes inputPrefix rest) ((forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)
+    outputBytes frameBytes inputPrefix rest) ((forall after, encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)
       (decodeItemBeforeStorage args) after (candidateSuccess false 1 (bv_unsigned inputPrefix - 128)) ->
     DecodeMeaningModuloKnownBugs args after)%Z).
 Proof. constructor. apply decodeItemReturn698cShortStringMeaning. Qed.
