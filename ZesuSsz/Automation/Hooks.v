@@ -354,20 +354,21 @@ Ltac zesu_normalize_find_mem_address :=
 
 Class ZesuStepStackWrite : Prop := zesu_step_stack_write : True.
 
-(* Check only the candidate term. Local aliases do not require context reduction. *)
+(* Normalize each selected candidate once. Check local alias bodies separately. *)
 Ltac zesu_stack_closed_term term :=
   tryif has_evar term then fail 0 else
   let expanded := eval cbv beta zeta in term in
-  tryif is_var expanded then
-    let body := eval unfold expanded in expanded in
-    zesu_stack_closed_term body
-  else lazymatch expanded with
-  | (fun _ => _) => fail 0
-  | (forall _, _) => fail 0
-  | ?function ?argument =>
-      zesu_stack_closed_term function; zesu_stack_closed_term argument
-  | _ => idtac
-  end.
+  let rec visit current :=
+    tryif is_var current then
+      let body := eval unfold current in current in
+      zesu_stack_closed_term body
+    else lazymatch current with
+    | (fun _ => _) => fail 0
+    | (forall _, _) => fail 0
+    | ?function ?argument => visit function; visit argument
+    | _ => idtac
+    end
+  in visit expanded.
 
 Ltac zesu_stack_reduce_closed term :=
   zesu_stack_closed_term term;
