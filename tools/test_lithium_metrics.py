@@ -183,5 +183,99 @@ class CountingTests(unittest.TestCase):
         self.assertEqual(report['kind_counts_label'], 'kind counts v2 (replacement classifier, 2026-10-19)')
 
 
+class SplitBlockTests(unittest.TestCase):
+    def split_commit(self, literal='zesu_block.', short='zesu_block.', umbrella=None):
+        baseline = lithium_metrics.Commit(Path(__file__).resolve().parents[1], '33f27d9a')
+        original = 'ZesuSsz/Proofs/DecodeItem/Hand/Block800d698c.v'
+        prefix = 'ZesuSsz/Proofs/DecodeItem/Auto/Block800d698c'
+        if umbrella is None:
+            umbrella = ('Require Export ZesuSsz.Proofs.DecodeItem.Auto.Block800d698cLiteral.\n'
+                        'Require Export ZesuSsz.Proofs.DecodeItem.Auto.Block800d698cShortString.\n')
+        sources = {prefix + '.v': umbrella.encode()}
+        for name, body in [('Literal', literal), ('ShortString', short)]:
+            if body is not None:
+                sources[prefix + name + '.v'] = (
+                    f'Lemma DesignedBoundary_800d698c{name} : True.\n'
+                    f'Proof.\n  {body}\nQed.\n').encode()
+        manifest = json.loads(baseline.read(lithium_metrics.MANIFEST))
+        manifest['files'] = [row for row in manifest['files'] if row['path'] != original]
+        manifest['files'].extend(dict(path=path, category='block_proofs', scope='whole_file')
+                                 for path in sources)
+        class Overlay:
+            sha = baseline.sha
+            paths = (baseline.paths - {original}) | set(sources)
+            def read(self, path):
+                if path in sources:
+                    return sources[path]
+                if path == lithium_metrics.MANIFEST:
+                    return json.dumps(manifest).encode()
+                data = baseline.read(path)
+                if path in lithium_metrics.CALL_SPEC_MODULES:
+                    data = data.replace(b'ZesuSsz.Proofs.DecodeItem.Hand.Block800d698c',
+                                        b'ZesuSsz.Proofs.DecodeItem.Auto.Block800d698c')
+                return data
+        return Overlay()
+
+    def count_split(self, commit):
+        with tempfile.TemporaryDirectory() as directory:
+            return lithium_metrics.block_counts(commit, directory)
+
+    def test_one_hand_branch_keeps_the_pc_hand(self):
+        blocks, paths = self.count_split(self.split_commit(short='exact I.'))
+        row = next(row for row in blocks if row['pc'] == '800d698c')
+        self.assertEqual(len(blocks), 24)
+        self.assertEqual(row['status'], 'hand')
+        self.assertEqual(row['lines'], 1)
+        self.assertEqual([branch['status'] for branch in row['branches']], ['native', 'hand'])
+        self.assertEqual(sum(row['status'] == 'native' for row in blocks), 11)
+        self.assertEqual(len([path for path in paths if 'Block800d698c' in path]), 3)
+
+    def test_both_native_branches_promote_one_pc(self):
+        blocks, _ = self.count_split(self.split_commit())
+        row = next(row for row in blocks if row['pc'] == '800d698c')
+        self.assertEqual(len(blocks), 24)
+        self.assertEqual(row['status'], 'native')
+        self.assertEqual(row['lines'], 0)
+        self.assertEqual(sum(row['status'] == 'native' for row in blocks), 12)
+
+    def test_hand_lines_sum_across_both_branches(self):
+        blocks, _ = self.count_split(self.split_commit(literal='exact I.', short='exact I.'))
+        row = next(row for row in blocks if row['pc'] == '800d698c')
+        self.assertEqual(row['status'], 'hand')
+        self.assertEqual(row['lines'], 2)
+        self.assertEqual(sum(row['kinds'].values()), 2)
+
+    def test_split_manifest_counts_only_non_native_body_lines_in_m2(self):
+        root = Path(__file__).resolve().parents[1]
+        baseline = lithium_metrics.count_commit(lithium_metrics.Commit(root, '33f27d9a'))
+        old = next(row for row in baseline['blocks']['rows'] if row['pc'] == '800d698c')
+        native = lithium_metrics.count_commit(self.split_commit())
+        for literal, short, hand_lines in [('zesu_block.', 'zesu_block.', 0),
+                                           ('zesu_block.', 'exact I.', 1),
+                                           ('exact I.', 'exact I.', 2)]:
+            with self.subTest(hand_lines=hand_lines):
+                report = lithium_metrics.count_commit(self.split_commit(literal, short))
+                self.assertEqual(report['blocks']['total'], 24)
+                row = next(row for row in report['blocks']['rows'] if row['pc'] == '800d698c')
+                self.assertEqual(row['status'], 'native' if hand_lines == 0 else 'hand')
+                self.assertEqual(report['block_support_categories']['proof_helpers'],
+                                 baseline['block_support_categories']['proof_helpers'])
+                self.assertEqual(report['block_support_lines'], baseline['block_support_lines'])
+                self.assertEqual(report['hand_suffix_lines'], baseline['hand_suffix_lines'] - old['lines'] + hand_lines)
+                self.assertEqual(report['m2_total_lines'], native['m2_total_lines'] + hand_lines)
+
+    def test_missing_branch_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, 'umbrella and both branches'):
+            self.count_split(self.split_commit(short=None))
+
+    def test_umbrella_must_export_both_branches(self):
+        with self.assertRaisesRegex(ValueError, 'must export both branches'):
+            self.count_split(self.split_commit(umbrella='Require Export ZesuSsz.Proofs.DecodeItem.Auto.Block800d698cLiteral.\n'))
+
+    def test_umbrella_cannot_contain_a_theorem(self):
+        with self.assertRaisesRegex(ValueError, 'only Require commands'):
+            self.count_split(self.split_commit(umbrella='Lemma unexpected : True.\nProof. exact I. Qed.\n'))
+
+
 if __name__ == '__main__':
     unittest.main()
