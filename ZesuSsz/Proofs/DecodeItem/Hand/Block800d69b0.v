@@ -109,22 +109,10 @@ match goal with Hselected : ((0 <= decodeItemReturnAddress args)%Z) |- _ => rena
 match goal with Hselected : ((decodeItemReturnAddress args < RlpDecodeItem.word64Modulus)%Z) |- _ => rename Hselected into HreturnUpper end.
 match goal with Hselected : ((decodeItemReturnAddress args mod 4 = 0)%Z) |- _ => rename Hselected into HreturnAligned end.
 match goal with Hselected : (length (returnFrame locals) = 16%nat) |- _ => rename Hselected into HretainedFrameLength end.
-hand_return_exit
- ltac:(assert (HreturnLowBit : bv_extract 0 1 (Z_to_bv 64 (decodeItemReturnAddress args)) = BV 1 0) by (clear -HreturnLower HreturnUpper HreturnAligned; unfold RlpDecodeItem.word64Modulus in *; bv_solve);
-pose proof (decodeItemMaskedReturnAddress _ HreturnLowBit) as HmaskedReturn)
- ltac:(repeat lazymatch goal with
-| |- envs_entails _ (normalize_instr_addr _ _) => fail 0
-| |- envs_entails _ (find_in_context (FindInstrKind ?address _) _) => lazymatch address with Zpos _ => zesu_liAStep | Z0 => zesu_liAStep | Zneg _ => zesu_liAStep | _ => fail 0 end
-| _ => zesu_liAStep
-end)
- ltac:(rewrite Z_to_bv_unsigned (bv_wrap_small 64 (decodeItemReturnAddress args)); last (unfold bv_modulus, RlpDecodeItem.word64Modulus in *; lia);
-liFindInContext)
- ltac:(iMatchHyp ltac:(fun H body => lazymatch body with | (decodeItemOutputPointer args ↦ₘ∗ ?image)%I => iExists image end))
- ltac:(idtac)
- ltac:(zesu_expose_environment_alias; unLET; rewrite (decodeItemStackEpilogueRestored args); hand_return_exit_resources ltac:(unfold decodeItemExitResourcesRegisters, decodeItemReturnedCallerRegisters, decodeItemExitResources; rewrite (bi.sep_comm ((decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes) ↦ₘ? RlpDecodeItem.decodeItemStackBytes)%I True%I)) HretainedFrameLength)
- ltac:(assert (HreturnSecondBit : bv_extract 0%N 1%N (bv_shiftr (bv_or (bv_and (bv_add (Z_to_bv 64%N (decodeItemReturnAddress args)) (BV 64%N 0%Z)) (BV 64%N 18446744073709551614%Z)) (BV 64%N 0%Z)) (BV 64%N 1%Z)) = BV 1%N 0%Z) by (clear -HreturnLower HreturnUpper HreturnAligned; unfold RlpDecodeItem.word64Modulus in *; bv_simplify_arith; assert (Hlow : bv_extract 0%N 1%N (Z_to_bv 64%N (decodeItemReturnAddress args)) = BV 1%N 0%Z) by bv_solve; pose proof (decodeItemMaskedReturnAddress (Z_to_bv 64%N (decodeItemReturnAddress args)) Hlow) as Hmask; bv_simplify_arith Hmask; rewrite Z.add_0_r Hmask (bv_wrap_small 64%N (decodeItemReturnAddress args)); last (change (0 <= decodeItemReturnAddress args < 2^64)%Z; lia); change ((decodeItemReturnAddress args / 2) mod 2 = 0)%Z; assert (Hmultiple : (decodeItemReturnAddress args = (decodeItemReturnAddress args / 4 * 2) * 2)%Z) by (pose proof (Z.div_mod (decodeItemReturnAddress args) 4%Z ltac:(lia)); lia); rewrite Hmultiple Z.div_mul; last lia; apply Z.mod_mul; lia);
-unLET; rename select (bv_extract 0 1 (_ ≫ 1) = 1%bv) into HreturnFault; rewrite HreturnSecondBit in HreturnFault; discriminate).
-1: iPureIntro; split; first exact H0; change (DecodeMeaningModuloKnownBugs args (decodeItemEmptyStringUpdatedImage locals)); assert (HoutputFacts : decodeItemEmptyStringOutputFacts args locals inputPrefix rest) by (unfold decodeItemEmptyStringOutputFacts; repeat first [assumption | split]); ZesuSsz.Automation.PureFacts.zesu_saturate_derived_facts; assumption.
+zesu_block.
+iMatchHyp ltac:(fun H body => lazymatch body with | (decodeItemOutputPointer args ↦ₘ∗ ?image)%I => liInst (λ x, x.1ₗ = image) end).
+zesu_block.
+1: change (DecodeMeaningModuloKnownBugs args (decodeItemEmptyStringUpdatedImage locals)); assert (HoutputFacts : decodeItemEmptyStringOutputFacts args locals inputPrefix rest) by (unfold decodeItemEmptyStringOutputFacts; repeat first [assumption | split]); ZesuSsz.Automation.PureFacts.zesu_saturate_derived_facts; assumption.
 Unshelve.
 all: zesu_finish.
 Qed.
