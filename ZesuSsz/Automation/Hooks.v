@@ -354,20 +354,21 @@ Ltac zesu_normalize_find_mem_address :=
 
 Class ZesuStepStackWrite : Prop := zesu_step_stack_write : True.
 
-(* Check only the candidate term. Local aliases do not require context reduction. *)
+(* Normalize each selected candidate once. Check local alias bodies separately. *)
 Ltac zesu_stack_closed_term term :=
   tryif has_evar term then fail 0 else
   let expanded := eval cbv beta zeta in term in
-  tryif is_var expanded then
-    let body := eval unfold expanded in expanded in
-    zesu_stack_closed_term body
-  else lazymatch expanded with
-  | (fun _ => _) => fail 0
-  | (forall _, _) => fail 0
-  | ?function ?argument =>
-      zesu_stack_closed_term function; zesu_stack_closed_term argument
-  | _ => idtac
-  end.
+  let rec visit current :=
+    tryif is_var current then
+      let body := eval unfold current in current in
+      zesu_stack_closed_term body
+    else lazymatch current with
+    | (fun _ => _) => fail 0
+    | (forall _, _) => fail 0
+    | ?function ?argument => visit function; visit argument
+    | _ => idtac
+    end
+  in visit expanded.
 
 Ltac zesu_stack_reduce_closed term :=
   zesu_stack_closed_term term;
@@ -1408,7 +1409,7 @@ Ltac zesu_region_fault_cast_hypotheses_if_enabled :=
       progress (rewrite (Z_to_bv_unsigned width value) in Hcast)
   end).
 
-Ltac zesu_region_fault_arithmetic :=
+Ltac zesu_region_fault_arithmetic_full :=
   lazymatch goal with |- ~ _ => intro | _ => idtac end;
   repeat first [progress zesu_split_folded_pure |
     match goal with H : _ /\ _ |- _ => destruct H end];
@@ -1443,6 +1444,9 @@ Ltac zesu_region_fault_arithmetic :=
       zesu_region_arithmetic_statement bound;
       exfalso; apply Hnegative; bv_solve
     end].
+
+Ltac zesu_region_fault_arithmetic :=
+  first [solve [assumption] | zesu_region_fault_arithmetic_full].
 
 Ltac zesu_region_fault_bound_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepRegionFault);

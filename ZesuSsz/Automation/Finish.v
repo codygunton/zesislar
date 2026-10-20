@@ -26,6 +26,8 @@ Require Import ZesuSsz.Automation.ArrayLoadPreselect.
 Require Import ZesuSsz.Automation.ReturnBundle.
 Require Import ZesuSsz.Automation.ReturnWand.
 From iris.proofmode Require Import environments.
+From Ltac2 Require Import Ltac2.
+Set Default Proof Mode "Classic".
 
 Ltac zesu_saturate_alignment :=
   match goal with
@@ -222,6 +224,41 @@ Ltac zesu_finish_selectors :=
    The two branches carry `time` labels in the WP1 probes, so the split can
    be measured. *)
 
+(* The per-pass lia input has at most 64 term nodes and 16 hypotheses. *)
+Ltac2 zesu_small_pure_context () :=
+  if Int.le (List.length (Control.hyps ())) 16 then ()
+  else Control.zero (Tactic_failure None).
+
+Ltac zesu_pure_term_budget term budget continuation :=
+  lazymatch budget with
+  | S ?rest =>
+      lazymatch term with
+      | forall _, _ => fail 0
+      | fun _ => _ => fail 0
+      | ?function ?argument =>
+          zesu_pure_term_budget function rest ltac:(fun remaining =>
+            zesu_pure_term_budget argument remaining continuation)
+      | _ => continuation rest
+      end
+  | O => fail 0
+  end.
+
+Ltac zesu_small_pure_lia :=
+  ltac2:(zesu_small_pure_context ());
+  lazymatch goal with
+  | |- ?statement => zesu_pure_term_budget statement constr:(64%nat) ltac:(fun _ => lia)
+  end.
+
+Ltac zesu_finish_pure_resources_step :=
+  lazymatch goal with
+  | |- envs_entails _ ?body =>
+      ZesuSsz.Automation.ResourceGroups.zesu_is_pure_resource body;
+      solve [repeat first
+        [solve [iPureIntro; assumption] | solve [iPureIntro; reflexivity] |
+         iSplit | solve [iPureIntro; zesu_small_pure_lia]]]
+  end.
+
+
 Ltac zesu_finish_v1 :=
   try autorewrite with zesu_indices;
   try (zesu_normalize_memory_constants);
@@ -239,7 +276,7 @@ Ltac zesu_finish_v1 :=
   try iAssumption;
   try (zesu_normalize_array_cursors);
   try (zesu_finish_known_list_shape);
-  try (zesu_finish_pure_resources);
+  try (zesu_finish_pure_resources_step);
   try reflexivity;
   try (zesu_finish_integer_word_image);
   try (zesu_finish_packed_word_equality);
@@ -281,11 +318,11 @@ Ltac zesu_finish_shelved :=
    ones that cannot close one: `reflexivity`, the bitvector entries, `lia`
    and `bv_solve`. Everything that can act on an entailment keeps its old
    position relative to the others. *)
-Ltac zesu_finish_entailment :=
+Ltac zesu_finish_entailment_base :=
   try autorewrite with zesu_indices;
   try iAssumption;
   try (zesu_normalize_array_cursors);
-  try (zesu_finish_pure_resources);
+  try (zesu_finish_pure_resources_step);
   try simpl;
   try done;
   try assumption;
@@ -297,13 +334,13 @@ Ltac zesu_finish_entailment :=
   try (zesu_saturate_alignment).
 
 (* Anything else: the old chain, in the old order. *)
-Ltac zesu_finish_pure_goal :=
+Ltac zesu_finish_pure_goal_base :=
   try zesu_finish_selectors;
   try autorewrite with zesu_indices;
   try iAssumption;
   try (zesu_normalize_array_cursors);
   try (zesu_finish_known_list_shape);
-  try (zesu_finish_pure_resources);
+  try (zesu_finish_pure_resources_step);
   try reflexivity;
   try (zesu_finish_integer_word_image);
   try (zesu_finish_packed_word_equality);
@@ -336,6 +373,77 @@ Ltac zesu_finish_pure_goal :=
      closes the goal or leaves it exactly as it was. *)
   try zesu_finish_witness_arithmetic;
   try (zesu_finish_little_endian).
+
+(* Normalize only facts already retained by the contract. *)
+Ltac zesu_finish_pure_shape :=
+  try zesu_saturate_derived_facts;
+  try autounfold with zesu_contract_constants in *;
+  repeat match goal with
+  | Hlength : Z.of_nat (length ?values) = ?count
+      |- context [firstn (Z.to_nat ?count) ?values] =>
+      rewrite (zesu_take_complete values count Hlength)
+  end;
+  repeat progress (rewrite ?zesu_Z_to_bv_add).
+
+Ltac zesu_finish_negated_ge :=
+  repeat match goal with
+  | Hnot : ~ (?left >= ?right)%Z |- _ =>
+      tryif has_evar left then fail 0 else idtac;
+      tryif has_evar right then fail 0 else idtac;
+      lazymatch goal with
+      | _ : (left < right)%Z |- _ => fail 0
+      | _ =>
+          let Hlt := fresh "HstrictBound" in
+          assert (Hlt : (left < right)%Z) by lia
+      end
+  end.
+
+(* Apply one implication pair. Closed types prevent witness assignment. *)
+Ltac zesu_finish_implication_pair :=
+  match goal with
+  | Houter : ?Middle -> ?Result, Hinner : ?Premise -> ?InnerResult |- _ =>
+      tryif has_evar Premise then fail 0 else idtac;
+      tryif has_evar Middle then fail 0 else idtac;
+      tryif has_evar InnerResult then fail 0 else idtac;
+      tryif has_evar Result then fail 0 else idtac;
+      tryif constr_eq Result False then fail 0 else idtac;
+      tryif (lazymatch goal with _ : Result |- _ => idtac end)
+      then fail 0 else idtac;
+      let Hp := fresh "HpairPremise" in
+      assert (Hp : Premise) by assumption;
+      let Hmiddle := fresh "HpairMiddle" in
+      assert (Hmiddle : Middle) by exact (Hinner Hp);
+      let Hresult := fresh "HpairResult" in
+      pose proof (Houter Hmiddle) as Hresult;
+      clear Hp Hmiddle;
+      hnf in Hresult;
+      zesu_integer_array_facts
+  end.
+
+Ltac zesu_finish_forall_leaf :=
+  lazymatch goal with
+  | |- ?target => tryif has_evar target then fail 0 else idtac
+  end;
+  match goal with
+  | Hrule : forall x : ?A, _ |- _ =>
+      solve [eapply Hrule; eassumption]
+  end.
+
+Ltac zesu_finish_pure_goal :=
+  zesu_finish_pure_goal_base;
+  try solve [
+    first [
+      zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
+      first [reflexivity | assumption | eassumption | lia | bv_solve |
+        zesu_finish_forall_leaf]
+    | repeat split; zesu_finish_forall_leaf]].
+
+Ltac zesu_finish_entailment :=
+  lazymatch goal with
+  | |- envs_entails _ (@bi_pure _ _) =>
+      iPureIntro; zesu_finish_pure_shape; zesu_finish_pure_goal
+  | _ => zesu_finish_entailment_base
+  end.
 
 Ltac zesu_finish_dispatch :=
   lazymatch goal with
@@ -502,7 +610,7 @@ Ltac zesu_run_pass_steps :=
      zesu_open_requested_instr_bundle |
      zesu_open_requested_struct_sys_package |
      zesu_open_requested_saved_x9_package |
-     zesu_open_matching_resource_package | zesu_finish_pure_resources |
+     zesu_open_matching_resource_package | zesu_finish_pure_resources_step |
      zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal |
      zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume |
      zesu_prepare_initialized_array_read |
@@ -519,7 +627,7 @@ Ltac zesu_run_pass_v1 :=
      zesu_open_requested_instr_bundle |
      zesu_open_requested_struct_sys_package |
      zesu_open_requested_saved_x9_package |
-     zesu_open_matching_resource_package | zesu_finish_pure_resources |
+     zesu_open_matching_resource_package | zesu_finish_pure_resources_step |
      zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal |
      zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume |
      zesu_prepare_initialized_array_read |
@@ -580,7 +688,9 @@ Ltac zesu_run :=
   zesu_dispatch_search switches ltac:(fun _ =>
     unshelve (repeat progress
       (zesu_run_pass; try zesu_solve_instances; zesu_finish));
-    try zesu_solve_instances).
+    try zesu_solve_instances;
+    try zesu_finish_pure_resources;
+    try zesu_finish).
 
 Ltac zesu_expose_code_list instructions :=
   lazymatch instructions with

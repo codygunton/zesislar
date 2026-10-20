@@ -2,6 +2,8 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.ByteArrays.
 Require Import ZesuSsz.Contracts.IslarisCode.
 
+Create HintDb zesu_contract_constants.
+
 Lemma zesu_bv_sign_extend_64_idemp (value : bv 64) :
   bv_sign_extend 64 value = value.
 Proof. apply bv_sign_extend_idemp. Qed.
@@ -66,3 +68,12 @@ Create HintDb zesu_selectors.
   : isla_coq_rewrite lithium_rewrite.
 #[export] Hint Rewrite Z_to_bv_add Z_to_bv_unsigned
   : lithium_rewrite.
+
+(* A retained extent identifies a complete prefix without choosing new data. *)
+Lemma zesu_take_complete {A : Type} (values : list A) (count : Z) :
+  Z.of_nat (length values) = count ->
+  firstn (Z.to_nat count) values = values.
+Proof.
+  intro Hlength. rewrite -Hlength Nat2Z.id. apply firstn_all.
+Qed.
+Print Assumptions zesu_take_complete.

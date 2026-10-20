@@ -172,20 +172,28 @@ def main():
     parser.add_argument('--production-module')
     parser.add_argument('--production-lemma')
     parser.add_argument('--native-status-table', type=Path)
+    parser.add_argument('--no-historical-evidence', action='store_true',
+                        help='Skip unavailable historical measurements, with an explicit reason.')
+    parser.add_argument('--reason', help='Record why historical evidence is unavailable.')
     parser.add_argument('--dry-run', action='store_true', help='Emit complete-promotion sources without verification or a success claim.')
     parser.add_argument('--verification-directory', type=Path)
     parser.add_argument('--mcp-python', help='Pinned Python interpreter with the rocq-mcp package.')
     args = parser.parse_args()
+    if args.no_historical_evidence and (args.complete_native is None or not args.reason or not args.reason.strip()):
+        parser.error('--no-historical-evidence requires --complete-native and a nonempty --reason.')
+    if args.reason is not None and not args.no_historical_evidence:
+        parser.error('--reason requires --no-historical-evidence.')
     if args.complete_native is not None:
         if not all((args.production_module, args.production_lemma)):
             parser.error('Complete promotion requires the named production module and lemma.')
-        if args.function == 'decodeItem' and args.native_status_table is None:
+        if args.function == 'decodeItem' and args.native_status_table is None and not args.no_historical_evidence:
             parser.error('Complete decodeItem promotion requires its retained status table.')
         from complete_promotion import complete
         complete(args.workspace, args.complete_native, args.production_module,
                  args.production_lemma, args.output, args.native_status_table,
                  dry_run=args.dry_run, verification_directory=args.verification_directory,
-                 mcp_python=args.mcp_python, name_prefix=args.function)
+                 mcp_python=args.mcp_python, name_prefix=args.function,
+                 no_historical_evidence=args.no_historical_evidence, reason=args.reason)
         return
     if not all((args.cfg, args.design, args.native_report)):
         parser.error('Coverage generation requires --cfg, --design, and --native-report.')

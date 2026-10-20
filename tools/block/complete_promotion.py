@@ -244,6 +244,18 @@ def refresh_counts(text, table, *, name_prefix="decodeItem"):
                    "Proof. reflexivity. Qed.\n")
 
 
+def remove_residual_count(text, pc, *, name_prefix="decodeItem"):
+    """Remove only the promoted row from the already recorded measurements."""
+    names = FunctionNames(name_prefix)
+    pattern = (r"(Definition " + re.escape(names.prefix) +
+               r"I67NativeResidualCounts[^\[]*\[)(.*?)(\]\.)")
+    def remove(match):
+        rows = match[2].split(';')
+        selected = r"\s*\(" + re.escape(hex(pc)) + r",\s*(?:Some \d+%nat|None)\)\s*"
+        return match[1] + ';'.join(row for row in rows if not re.fullmatch(selected, row)) + match[3]
+    return re.sub(pattern, remove, text, flags=re.S)
+
+
 def plan(workspace, pc, module, lemma, table=None, *, name_prefix="decodeItem"):
     names = FunctionNames(name_prefix)
     from promote_table import proof_module
@@ -276,9 +288,19 @@ def plan(workspace, pc, module, lemma, table=None, *, name_prefix="decodeItem"):
     compliance = f"ZesuSsz/Compliance/{names.module}Compliance.v"
     original = (workspace / compliance).read_text()
     remaining = re.findall(r"^  \((native[0-9a-f]+)\s*:", original, re.M)
-    if native not in remaining:
-        raise ValueError("The closure is not an open compliance hypothesis.")
-    remaining.remove(native)
+    already_closed = native not in remaining
+    if already_closed:
+        # A hand proof can already supply the exact slot before its body
+        # becomes native automation. Reverify that same recorded identity.
+        recorded_adapter = workspace / adapter
+        registered = re.search(r"Definition " + re.escape(names.prefix) +
+                               rf"PromotedBody{pc:x}\s*:", (workspace / promoted).read_text())
+        recorded = recorded_adapter.read_text() if recorded_adapter.exists() else ""
+        if (not registered or f"Require Import {module}." not in recorded or
+                not re.search(r"\b" + re.escape(theorem) + r"\b", recorded)):
+            raise ValueError("The closure is not an open compliance hypothesis or the recorded production proof.")
+    else:
+        remaining.remove(native)
     text = add_import(remove_binders(original, native), module)
     text = text.replace(f"({native} Sigma HG HT)", f"(@{theorem} Sigma HG HT)")
     outputs[compliance] = text
@@ -306,27 +328,45 @@ def plan(workspace, pc, module, lemma, table=None, *, name_prefix="decodeItem"):
     # open row; historical I62 counts remain unchanged.
     if table is not None:
         text = refresh_counts(text, table, name_prefix=name_prefix)
+    else:
+        text = remove_residual_count(text, pc, name_prefix=name_prefix)
     outputs[status] = text
     return outputs, {"production": binding(production), "conditional_adapter": binding(conditional),
                      "production_module": module, "production_lemma": lemma,
-                     "native_hypothesis_removed": native, "remaining_native_hypotheses": remaining}
+                     "native_hypothesis_removed": None if already_closed else native,
+                     "already_closed": already_closed, "remaining_native_hypotheses": remaining}
 
 
 def complete(workspace, pc, module, lemma, output, status_table, *, dry_run=False,
-             verification_directory=None, mcp_python=None, name_prefix="decodeItem"):
+             verification_directory=None, mcp_python=None, name_prefix="decodeItem",
+             no_historical_evidence=False, reason=None):
+    if no_historical_evidence and (not isinstance(reason, str) or not reason.strip()):
+        raise ValueError("Skipping historical evidence requires a nonempty reason.")
+    if reason is not None and not no_historical_evidence:
+        raise ValueError("A historical-evidence reason requires the explicit skip flag.")
     output = Path(output)
     directory = Path(verification_directory) if verification_directory else output.with_suffix('.verification')
     if output.exists() or (not dry_run and (directory.exists() or Path(str(directory) + '.inputs.json').exists())):
         raise ValueError("The promotion evidence already exists. Use a fresh output path.")
     status = None
-    table = json.loads(Path(status_table).read_text()) if status_table is not None else None
-    if name_prefix == "decodeItem":
+    table = (json.loads(Path(status_table).read_text())
+             if status_table is not None and not no_historical_evidence else None)
+    if name_prefix == "decodeItem" and not no_historical_evidence:
         sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "ZesuSsz/Evidence"))
         import generate_decode_item_native_status as status
         if status_table is None or binding(status_table)["sha256"] != status.I67_SHA256:
             raise ValueError("The retained I67 table hash differs.")
     outputs, provenance = plan(workspace, pc, module, lemma, table, name_prefix=name_prefix)
     workspace = Path(workspace).resolve()
+    if no_historical_evidence:
+        documentation = "tools/block/PROMOTION.md"
+        path = workspace / documentation
+        text = path.read_text() if path.exists() else "# Native promotion\n"
+        outputs[documentation] = (text.rstrip() + "\n\n## Historical evidence unavailable\n\n"
+                                  + f"Promotion of `{hex(pc)}` skips historical measurements.\n"
+                                  + reason.strip() + "\n"
+                                  + "MCP compilation and exact statement verification remain required.\n"
+                                  + "Both project gates and the paired M1 check remain required.\n")
     before = [binding(workspace / name) for name in outputs if (workspace / name).exists()]
     originals = {name: (workspace / name).read_bytes() if (workspace / name).exists() else None
                  for name in outputs}
@@ -352,12 +392,14 @@ def complete(workspace, pc, module, lemma, output, status_table, *, dry_run=Fals
               "generated_sources": [binding(workspace / name) for name in outputs],
               "native_status": native_status, "status": "dry_run" if dry_run else "verification_pending",
               "success": False, "limits": ["Execution evidence supplies no proof premise."]}
+    if no_historical_evidence:
+        report["historical_evidence"] = {"checked": False, "reason": reason.strip()}
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
     if not dry_run:
         from promotion_verification import verify_generated
         try:
-            report["verification"] = verify_generated(workspace, [workspace / name for name in outputs],
+            report["verification"] = verify_generated(workspace, [workspace / name for name in outputs if name.endswith('.v')],
                                                        pc, directory, python=mcp_python,
                                                        name_prefix=name_prefix)
             if report["verification"].get("success") is not True:
