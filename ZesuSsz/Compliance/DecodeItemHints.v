@@ -45,4 +45,5 @@ Global Instance : LithiumUnfold (@decodeItemEntryAt800d698c) := I.
 Global Typeclasses Opaque decodeItemEntryAt800d698c.
 Require Export ZesuSsz.Compliance.DecodeItemLoopDerivedFacts.
 Require Export ZesuSsz.Compliance.DecodeItemLoopInitialization.
+
 Require Export ZesuSsz.Compliance.DecodeItemExitDataFacts.
