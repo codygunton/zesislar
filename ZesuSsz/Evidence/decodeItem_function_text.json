@@ -403,7 +403,8 @@
     "ZesuSsz/Proofs/Tests/PureResourceFinish.v",
     "ZesuSsz/Proofs/Tests/DerivedFactFinish.v",
     "ZesuSsz/Proofs/Tests/SimplAndFinish.v",
-    "ZesuSsz/Proofs/Tests/ListConsFinish.v"
+    "ZesuSsz/Proofs/Tests/ListConsFinish.v",
+    "ZesuSsz/Proofs/Tests/IntegerReturn.v"
   ],
   "lemmas": [
     "ZesuSsz/Compliance/ByteFold.v",
@@ -2574,14 +2575,14 @@
       "role": "measurement_metadata",
       "scope": "whole_file",
       "sha256": null,
-      "file_lines": 8172,
+      "file_lines": 8191,
       "line_ranges": [
         [
           1,
-          8172
+          8191
         ]
       ],
-      "counted_lines": 8172
+      "counted_lines": 8191
     },
     {
       "path": "ZesuSsz/Evidence/decode_item_auto_modules.json",
@@ -7639,6 +7640,20 @@
         ]
       ],
       "counted_lines": 35
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/IntegerReturn.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "f4c655c2555f06a1f6f0c4b6b308287f69c1ccb72724152b8a81da8337efe483",
+      "file_lines": 191,
+      "line_ranges": [
+        [
+          1,
+          191
+        ]
+      ],
+      "counted_lines": 191
     }
   ],
   "blocks": [
@@ -8017,7 +8032,7 @@
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
     }
   ],
-  "conservative_shared_json_lines": 15214,
+  "conservative_shared_json_lines": 15233,
   "status": "Private immutable source scope: base e7eb0bce plus eighteen native-certificate018 sources. No Root integration credit.",
   "integration_scope": {
     "base": "e7eb0bcef249f2cf99dfc86cf60d8436ade29a31",
@@ -8055,7 +8070,7 @@
   },
   "base_manifest_sha256": "7deccbbc338d25231c300f1ba6824c5c10136917b0207e75589cd9a86f9d020a",
   "category_totals": {
-    "tests_and_exports": 35680,
+    "tests_and_exports": 35890,
     "composition": 580,
     "loop_steps": 965,
     "introductions": 3529,
@@ -8066,9 +8081,9 @@
     "block_proofs": 3301
   },
   "interface_total": 16790,
-  "extra_total": 39561,
-  "overall_total": 56351,
-  "file_count": 373,
+  "extra_total": 39771,
+  "overall_total": 56561,
+  "file_count": 374,
   "embedded_registration_ranges": [
     {
       "path": "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
@@ -8167,6 +8182,10 @@
     "r1_final_only": {
       "base": "824753c1",
       "scope": "Update the final-only finisher tests and classify the generic list-cons regression module as unscored tests_and_exports."
+    },
+    "r1_guard": {
+      "base": "5c820c36743af2ec731bf6560c77b873f7dce08c",
+      "scope": "Classify the exact return-alias regression controls as unscored tests_and_exports. Preserve inherited rows and historical fields."
     }
   }
 }

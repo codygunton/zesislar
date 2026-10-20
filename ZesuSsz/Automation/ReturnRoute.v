@@ -94,7 +94,33 @@ Proof.
   rewrite Z_to_bv_unsigned. apply bv_wrap_bv_wrap. apply N.le_refl.
 Qed.
 
+(* Inspect one local target alias before the context-wide LET expansion. *)
+Ltac zesu_return_masked_head target :=
+  lazymatch target with
+  | bv_or (bv_and _ _) _ => idtac
+  | _ =>
+      is_var target;
+      let exposed := eval cbv delta [target] in target in
+      lazymatch exposed with
+      | bv_or (bv_and _ _) _ => idtac
+      end
+  end.
+
+(* Inspect only the selected bit alias and its selected address alias. *)
+Ltac zesu_return_fault_bit_head bit :=
+  let inspect exposed :=
+    lazymatch exposed with
+    | bv_extract 0 1 (bv_shiftr ?target _) =>
+        zesu_return_masked_head target
+    end in
+  first [inspect bit | is_var bit;
+    let exposed := eval cbv delta [bit] in bit in inspect exposed].
+
 Ltac zesu_return_integer_normalize :=
+  lazymatch goal with
+  | |- LiTactic (normalize_instr_addr (bv_unsigned ?target)) =>
+      zesu_return_masked_head target
+  end;
   zesu_switch_enabled constr:(ZesuStepIntegerReturn);
   unLET;
   lazymatch goal with
@@ -110,6 +136,10 @@ Ltac zesu_return_integer_normalize :=
   end.
 
 Ltac zesu_return_integer_fault :=
+  lazymatch goal with
+  | |- SimplImpl (@eq _ ?bit _) _ =>
+      zesu_return_fault_bit_head bit
+  end;
   zesu_switch_enabled constr:(ZesuStepIntegerReturn);
   unLET;
   lazymatch goal with
