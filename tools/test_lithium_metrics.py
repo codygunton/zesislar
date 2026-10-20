@@ -66,7 +66,7 @@ class CountingTests(unittest.TestCase):
             self.assertEqual(result['blocks'], {'example': 4})
             self.assertEqual(result['m2_by_commit'], {'abc': {'commit': 'abc'}})
 
-    def test_call_spec_glue_is_counted_once_with_or_without_manifest_entry(self):
+    def test_call_spec_capability_is_separate_with_or_without_manifest_entry(self):
         root = Path(__file__).resolve().parents[1]
         baseline = lithium_metrics.Commit(root, '33f27d9a')
         original = lithium_metrics.count_commit(baseline)
@@ -89,8 +89,63 @@ class CountingTests(unittest.TestCase):
         for listed in (False, True):
             with self.subTest(listed=listed):
                 report = lithium_metrics.count_commit(Overlay(listed))
-                self.assertEqual(report['other_proof_text_lines'], original['other_proof_text_lines'] + 3)
-                self.assertEqual(len(report['call_spec_glue']), len(original['call_spec_glue']) + (0 if listed else 1))
+                self.assertEqual(report['m2_total_lines'], original['m2_total_lines'])
+                self.assertEqual(report['block_support_lines'], original['block_support_lines'])
+                self.assertEqual(report['call_spec_capability_lines'], original['call_spec_capability_lines'] + 3)
+                self.assertEqual(len(report['call_spec_capability']), len(original['call_spec_capability']) + 1)
+
+    def test_test_text_is_separate_but_contract_text_increases_m2(self):
+        root = Path(__file__).resolve().parents[1]
+        baseline = lithium_metrics.Commit(root, '33f27d9a')
+        original = lithium_metrics.count_commit(baseline)
+        test_path = 'ZesuSsz/Evidence/DecodeItemExitMeaningDraftFixtures.v'
+        contract_path = 'ZesuSsz/Contracts/DecodeItemCallSupport.v'
+        contents = b'Lemma example : True.\nProof. exact I.\nQed.\n'
+        class Overlay:
+            sha = baseline.sha
+            def __init__(self, contract):
+                self.contract = contract
+                self.paths = baseline.paths | ({contract_path} if contract else set())
+            def read(self, path):
+                if path == contract_path:
+                    return contents
+                data = baseline.read(path)
+                if path == test_path:
+                    return data + contents
+                if path == lithium_metrics.MANIFEST and self.contract:
+                    manifest = json.loads(data)
+                    manifest['files'].append(dict(path=contract_path, category='contracts', scope='whole_file'))
+                    return json.dumps(manifest).encode()
+                return data
+        tests_only = lithium_metrics.count_commit(Overlay(False))
+        self.assertEqual(tests_only['m2_total_lines'], original['m2_total_lines'])
+        self.assertEqual(tests_only['tests_and_exports_lines'], original['tests_and_exports_lines'] + 3)
+        with_contract = lithium_metrics.count_commit(Overlay(True))
+        self.assertEqual(with_contract['m2_total_lines'], original['m2_total_lines'] + 3)
+        self.assertEqual(with_contract['block_support_categories']['contracts'], original['block_support_categories']['contracts'] + 3)
+        self.assertEqual(with_contract['call_spec_capability'], original['call_spec_capability'])
+
+    def test_capability_report_lists_exact_modules_and_dependencies(self):
+        root = Path(__file__).resolve().parents[1]
+        report = lithium_metrics.count_commit(lithium_metrics.Commit(root, 'd45acb76'))
+        rows = {row['path']: row for row in report['call_spec_capability']}
+        self.assertEqual(set(rows), set(lithium_metrics.CALL_SPEC_MODULES))
+        self.assertIn('ZesuSsz.Contracts.DecodeItemCompositional',
+                      rows['ZesuSsz/Contracts/DecodeItemCallSpec.v']['requires_before_first_proof'])
+        self.assertIn('ZesuSsz.Compliance.DecodeItemCompositionalCompliance',
+                      rows['ZesuSsz/Compliance/DecodeItemCallSpec.v']['requires_before_first_proof'])
+        self.assertEqual(report['call_spec_capability_lines'], 610)
+
+    def test_comparison_table_reports_category_deltas(self):
+        report = dict(commit='12345678', blocks=dict(native=11, hand=13), hand_suffix_lines=10,
+                      block_support_categories=dict(contracts=20), block_support_lines=20,
+                      m2_total_lines=30, composition_lines=5, tests_and_exports_lines=100,
+                      call_spec_capability_lines=7, automation_lines=200)
+        changed = dict(report, commit='abcdef01', hand_suffix_lines=8, m2_total_lines=28)
+        table = lithium_metrics.comparison_table(report, changed)
+        self.assertIn('| Category | 12345678 | abcdef01 | Delta |', table)
+        self.assertIn('| M2 total | 30 | 28 | -2 |', table)
+        self.assertIn('| Tests and exports | 100 | 100 | +0 |', table)
 
     def test_new_function_module_requires_manifest_classification(self):
         root = Path(__file__).resolve().parents[1]
@@ -110,8 +165,11 @@ class CountingTests(unittest.TestCase):
         self.assertEqual(report['blocks']['hand'], 13)
         self.assertEqual(report['hand_suffix_lines'], 1033)
         self.assertEqual(report['automation_lines'], 8254)
-        self.assertEqual(report['other_proof_text_lines'], 12620)
-        self.assertEqual(report['m2_total_lines'], 13653)
+        self.assertEqual(report['block_support_lines'], 11942)
+        self.assertEqual(report['composition_lines'], 371)
+        self.assertEqual(report['call_spec_capability_lines'], 307)
+        self.assertEqual(report['tests_and_exports_lines'], 35435)
+        self.assertEqual(report['m2_total_lines'], 12975)
         self.assertEqual(report['function_text_categories'], {
             'contracts': 2497, 'introductions': 3688, 'exit_meanings': 3114,
             'loop_steps': 965, 'registrations': 343, 'generator_json': 6299,

@@ -13,6 +13,7 @@ import tempfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from residual.modules import parse_module
+from launch_imports import require_modules
 
 
 MANIFEST = 'ZesuSsz/Evidence/decodeItem_function_text.json'
@@ -74,7 +75,16 @@ def classify_lines(lines):
 
 
 TEXT_CATEGORIES = ('contracts', 'introductions', 'exit_meanings', 'loop_steps', 'registrations', 'generator_json', 'block_proofs', 'composition', 'tests_and_exports')
-PROOF_CATEGORIES = {'contracts', 'introductions', 'exit_meanings', 'loop_steps', 'registrations', 'composition'}
+PROOF_CATEGORIES = {'contracts', 'introductions', 'exit_meanings', 'loop_steps', 'registrations'}
+# Reviewed capability modules. Names alone do not classify other modules.
+CALL_SPEC_MODULES = {
+    'ZesuSsz/Contracts/DecodeItemCallSpec.v': 'Machine-call boundary contract',
+    'ZesuSsz/Compliance/DecodeItemCallSpec.v': 'Derived machine-call specification',
+    'ZesuSsz/Contracts/DecodeItemCompositional.v': 'Compositional call boundary',
+    'ZesuSsz/Compliance/DecodeItemCompositionalBridge.v': 'Bridge to the compositional call boundary',
+    'ZesuSsz/Compliance/DecodeItemCompositionalCompliance.v': 'Compositional compliance proof',
+    'ZesuSsz/Compliance/DecodeItemCompositionalWeakening.v': 'Call-exit resource weakening',
+}
 
 
 
@@ -132,7 +142,8 @@ def count_commit(commit):
     if len({row['pc'] for row in blocks}) != len(blocks) or len(blocks) != 24:
         raise ValueError('The commit must contain exactly 24 distinct blocks.')
     categories = Counter()
-    other_proof_text = 0
+    block_support = Counter()
+    composition_lines = 0
     changed_mixed = []
     listed = set()
     for row in manifest['files']:
@@ -151,26 +162,39 @@ def count_commit(commit):
             if row.get('sha256') and hashlib.sha256(data).hexdigest() != row['sha256']:
                 changed_mixed.append(path)
         categories[category] += count
+        if path in CALL_SPEC_MODULES:
+            continue
         if category in PROOF_CATEGORIES and path.endswith('.v'):
-            other_proof_text += count
+            block_support[category] += count
         elif category == 'block_proofs' and '/Proofs/DecodeItem/' in path and not re.search(r'/Block[0-9a-fA-F]+\.v$', path):
-            other_proof_text += count
-    call_glue = []
+            block_support['proof_helpers'] += count
+        elif category == 'composition' and path.endswith('.v'):
+            composition_lines += count
+    call_spec = []
     for path in sorted(commit.paths):
+        if path in CALL_SPEC_MODULES:
+            data = commit.read(path)
+            dependencies = sorted(require_modules(data.decode()))
+            for module in dependencies:
+                if module.startswith('ZesuSsz.') and module.replace('.', '/') + '.v' not in commit.paths:
+                    raise ValueError('A call-spec dependency is absent: ' + module)
+            call_spec.append(dict(path=path, role=CALL_SPEC_MODULES[path], lines=len(data.splitlines()),
+                                  requires_before_first_proof=dependencies))
+            continue
         if path in listed or not path.endswith('.v') or not re.search(r'decode_?item', path, re.I):
             continue
-        if not re.search(r'/(?:Contracts|Compliance)/DecodeItem(?:Call|Compositional)[^/]*\.v$', path):
-            raise ValueError('The function-text manifest omits a module: ' + path)
-        count = len(commit.read(path).splitlines())
-        call_glue.append(dict(path=path, lines=count))
-        other_proof_text += count
+        raise ValueError('The function-text manifest omits a module: ' + path)
     automation = {path: len(commit.read(path).splitlines()) for path in sorted(commit.paths)
                   if path.startswith('ZesuSsz/Automation/') and path.endswith('.v')}
     return dict(commit=commit.sha,
                 counting_rules={'hand': 'Nonblank boundary body lines, excluding native automation lines and Proof/Qed.',
                                 'kinds': KIND_LABEL,
                                 'function_text': 'Current whole-file lines; union of manifest ranges in mixed files.',
-                                'other_proof_text': 'Rocq files in contracts, introductions, exit_meanings, loop_steps, registrations, composition; non-block proof helpers; unlisted call-spec glue.',
+                                'm2': 'Hand suffix lines plus block support. Composition, tests, call-spec capability, and automation are separate.',
+                                'block_support': 'Rocq files in contracts, introductions, exit_meanings, loop_steps, registrations; non-block proof helpers. Composition and call-spec modules are separate.',
+                                'composition': 'Composition consumes block proofs and is reported separately from scored M2.',
+                                'call_spec_capability': 'The six explicitly reviewed call/compositional modules, counted once whether listed or unlisted. Each row retains its role and explicit imports.',
+                                'tests_and_exports': 'All manifest text in tests_and_exports, separate from M2.',
                                 'automation': 'Physical lines, including comments and blank lines.'},
                 classifier_provenance={'checkpoint': HAND_CHECKPOINT, 'historical_commit': checkpoint['audit_commit'],
                                        'original_classifier_available': False, 'priority': list(KINDS),
@@ -181,26 +205,53 @@ def count_commit(commit):
                 hand_suffix_lines=hand_lines, hand_suffix_kinds=dict(kind_totals),
                 mixed_lines=mixed_total, structural_lines=structural_total, kind_counts_label=KIND_LABEL,
                 function_text_categories={key: categories[key] for key in TEXT_CATEGORIES},
-                call_spec_glue=call_glue, other_proof_text_lines=other_proof_text,
-                m2_total_lines=hand_lines + other_proof_text,
+                block_support_categories={key: block_support[key] for key in (*sorted(PROOF_CATEGORIES), 'proof_helpers')},
+                block_support_lines=sum(block_support.values()),
+                composition_lines=composition_lines,
+                call_spec_capability=call_spec,
+                call_spec_capability_lines=sum(row['lines'] for row in call_spec),
+                tests_and_exports_lines=categories['tests_and_exports'],
+                m2_total_lines=hand_lines + sum(block_support.values()),
                 automation_lines=sum(automation.values()), automation_files=len(automation),
                 changed_mixed_manifest_files=changed_mixed)
+
+
+def comparison_table(before, after):
+    rows = [('Native blocks', before['blocks']['native'], after['blocks']['native']),
+            ('Hand blocks', before['blocks']['hand'], after['blocks']['hand']),
+            ('Hand suffix lines', before['hand_suffix_lines'], after['hand_suffix_lines'])]
+    for category in before['block_support_categories']:
+        rows.append((category, before['block_support_categories'][category], after['block_support_categories'][category]))
+    for label, key in [('Block support total', 'block_support_lines'), ('M2 total', 'm2_total_lines'),
+                       ('Composition', 'composition_lines'),
+                       ('Tests and exports', 'tests_and_exports_lines'),
+                       ('Call-spec capability', 'call_spec_capability_lines'), ('Automation', 'automation_lines')]:
+        rows.append((label, before[key], after[key]))
+    table = [f"| Category | {before['commit'][:8]} | {after['commit'][:8]} | Delta |",
+             '|---|---:|---:|---:|']
+    table.extend(f'| {label} | {old} | {new} | {new - old:+d} |' for label, old, new in rows)
+    return '\n'.join(table)
 
 
 def main(argv=None):
     root = Path(__file__).resolve().parents[2]
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--commit', default='HEAD')
+    parser.add_argument('--compare', help='Print a category table against this baseline commit.')
     parser.add_argument('--output', type=Path)
     args = parser.parse_args(argv)
     try:
         report = count_commit(Commit(root, args.commit))
+        before = count_commit(Commit(root, args.compare)) if args.compare else None
         common = Path(subprocess.check_output(['git', '-C', str(root), 'rev-parse', '--path-format=absolute', '--git-common-dir'], text=True).strip())
         output = args.output or common.parent / 'docs/ai/metrics/lithium_idioms.json'
         document = json.loads(output.read_text()) if output.exists() else {'schema_version': 1}
         if not isinstance(document, dict) or not isinstance(document.get('m2_by_commit', {}), dict):
             raise ValueError('The metrics document must contain an object of M2 counts.')
-        document.setdefault('m2_by_commit', {})[report['commit']] = report
+        measurements = document.setdefault('m2_by_commit', {})
+        if before:
+            measurements[before['commit']] = before
+        measurements[report['commit']] = report
         output.parent.mkdir(parents=True, exist_ok=True)
         with tempfile.NamedTemporaryFile(mode='w', dir=output.parent, prefix=output.name + '.', delete=False) as temporary:
             temporary.write(json.dumps(document, indent=2) + '\n')
@@ -211,7 +262,7 @@ def main(argv=None):
             pending.unlink(missing_ok=True)
     except (OSError, ValueError, subprocess.CalledProcessError) as error:
         parser.error(str(error))
-    print(json.dumps(report, indent=2))
+    print(comparison_table(before, report) if before else json.dumps(report, indent=2))
     return 0
 
 
