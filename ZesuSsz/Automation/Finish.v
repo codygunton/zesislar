@@ -454,15 +454,32 @@ Ltac zesu_finish_forall_leaf :=
       solve [eapply Hrule; eassumption]
   end.
 
+Ltac zesu_finish_simpl_and_leaf :=
+  lazymatch goal with
+  | |- ?target =>
+      tryif has_evar target then fail 0 else idtac;
+      let evidence := constr:(_ : SimplAnd target True) in
+      exact (proj1 evidence I)
+  end.
+
 Ltac zesu_finish_pure_goal :=
   zesu_finish_pure_goal_base;
+  zesu_saturate_derived_facts;
   try solve [
     first [
       zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
       first [reflexivity | assumption | eassumption | lia | bv_solve |
-        zesu_finish_forall_leaf | zesu_finish_contract_arithmetic]
+        zesu_finish_forall_leaf | zesu_finish_contract_arithmetic |
+        zesu_finish_simpl_and_leaf]
     | repeat split; zesu_finish_forall_leaf
-    | repeat split; zesu_finish_contract_arithmetic]].
+    | repeat split; first [zesu_finish_contract_arithmetic |
+        zesu_finish_simpl_and_leaf]
+    | let rec finish_leaf :=
+        first [reflexivity | assumption | eassumption | lia | bv_solve |
+          zesu_finish_forall_leaf | zesu_finish_contract_arithmetic |
+          zesu_finish_simpl_and_leaf |
+          lazymatch goal with |- and _ _ => split; finish_leaf end]
+      in finish_leaf]].
 
 Ltac zesu_finish_entailment :=
   lazymatch goal with
