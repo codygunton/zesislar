@@ -375,6 +375,23 @@ Ltac zesu_stack_reduce_closed term :=
   let reduced := eval vm_compute in term in
   change_no_check term with reduced in *.
 
+(* Skip canonical integers before closed-term traversal. *)
+Ltac zesu_stack_positive_literal term :=
+  tryif is_var term then fail 0 else
+  lazymatch term with
+  | BinNums.xH => idtac
+  | BinNums.xO ?tail => zesu_stack_positive_literal tail
+  | BinNums.xI ?tail => zesu_stack_positive_literal tail
+  end.
+Ltac zesu_stack_integer_literal term :=
+  tryif has_evar term then fail 0 else
+  tryif is_var term then fail 0 else
+  lazymatch term with
+  | Z0 => idtac
+  | Zpos ?positive => zesu_stack_positive_literal positive
+  | Zneg ?positive => zesu_stack_positive_literal positive
+  end.
+
 (* Normalize the selected hypothesis without searching other hypotheses. *)
 Ltac zesu_stack_normalize_hypothesis hypothesis := once (
   repeat (
@@ -382,6 +399,7 @@ Ltac zesu_stack_normalize_hypothesis hypothesis := once (
     match statement with
     | context[?term] =>
         lazymatch type of term with Z => progress (
+          tryif zesu_stack_integer_literal term then fail 0 else idtac;
           zesu_stack_closed_term term;
           let reduced := eval vm_compute in term in
           change_no_check term with reduced in * ) end
