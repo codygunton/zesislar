@@ -90,7 +90,11 @@ Section assertion_tests.
     ⊢ WPasm (Smt (Assert (Val (Val_Bool
       (bool_decide (bv_signed (bv_zero_extend 128 address) = minimum)))
       Mk_annot)) ann :t: es).
-  Proof. iStartProof. zesu_region_fault_if_enabled. Qed.
+  Proof.
+    iStartProof.
+    Fail zesu_region_fault_if_enabled.
+    zesu_region_fault_assert.
+  Qed.
 
   Lemma region_fault_assert_missing_bound (address : bv 64) :
     ⊢ WPasm (Smt (Assert (Unop Not (Val (Val_Bool
