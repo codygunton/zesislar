@@ -53,6 +53,17 @@ Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a40.
 Require Import ZesuSsz.Contracts.DecodeItemCompositional.
 Require Import ZesuSsz.Compliance.DecodeItemCompositionalBridge.
 
+Lemma decodeItemInstrPreExistOrder `{!islaG Sigma} `{!threadG}
+    (pc : Z) (A : Type) (resources : A -> iProp Sigma) (fact : A -> Prop) :
+  instr_pre pc (∃ x : A, resources x ∗ ⌜fact x⌝) ⊣⊢
+  instr_pre pc (∃ x : A, ⌜fact x⌝ ∗ resources x).
+Proof.
+  assert (Hswap : (∃ x : A, resources x ∗ ⌜fact x⌝)%I ⊣⊢
+                 (∃ x : A, ⌜fact x⌝ ∗ resources x)%I).
+  { apply bi.exist_proper. intros x. apply bi.sep_comm. }
+  rewrite instr_pre'_eq. unfold instr_pre'_def. rewrite Hswap. reflexivity.
+Qed.
+
 Lemma decodeItemSelectedComplianceRegisters :
   forall returnAddress,
     IslarisContractCorrect decodeItemEntry returnAddress
@@ -62,7 +73,10 @@ Proof.
   change (⊢ decodeItemSelectedCode -∗ ∀ args : DecodeItemArgs,
     instr_body decodeItemEntry
       (decodeItemEntryResources (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗
-       decodeItemBranchContinuationAt args returnAddress))%I.
+       instr_pre returnAddress (∃ after : DecodeItemOutcome,
+         ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args /\
+           DecodeMeaningModuloKnownBugs args after⌝ ∗
+         decodeItemExitResourcesRegisters args after)))%I.
   rewrite /decodeItemSelectedCode.
   iIntros "#Hcode" (args).
   iPoseProof (decodeItemBlockTable_complete_native_family
@@ -87,6 +101,7 @@ Proof.
   iApply (instr_pre_wand with "Hbody []"); [done|done|].
   iIntros "[Hentry Hreturn]". iExists returnAddress, args.
   unfold decodeItemEntryAt800d6960, decodeItemBranchContinuationAt.
+  rewrite decodeItemInstrPreExistOrder.
   iFrame.
 Qed.
 
