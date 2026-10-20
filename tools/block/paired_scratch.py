@@ -55,8 +55,10 @@ def promotion_policy(pc, baseline_cpu):
                 closure_check='required project gates; this run adds timing')
 
 
-def check_noise_reference(pcs, reference, sources, setup):
+def check_noise_reference(pcs, reference, sources, setup, metric='cpu'):
     """Refuse new-entry floors without a matching sub-300-second baseline."""
+    if reference is not None and reference.get('metric', 'cpu') != metric:
+        raise ValueError('The noise reference uses a different decision metric.')
     for pc in pcs:
         if entry_id(pc) not in PROMOTED_ENTRIES | R4_ENTRIES:
             continue
@@ -73,6 +75,20 @@ def check_noise_reference(pcs, reference, sources, setup):
         if reference.get('compiler_setups', {}).get('A') != setup:
             raise ValueError('The noise reference uses a different baseline compiler setup.')
 
+
+def noise_floor(report, pc, metric='cpu'):
+    """Read a completed A/A floor only in its recorded decision metric."""
+    if report.get('status') != 'complete' or report.get('mode') != 'noise':
+        raise ValueError('A decision floor requires a completed A/A report.')
+    if report.get('metric', 'cpu') != metric:
+        raise ValueError('The decision floor uses a different metric.')
+    block = report['blocks'][pc]
+    statistics = block['instruction_statistics'] if metric == 'instructions' else block
+    floor = statistics['median_absolute_deviation']
+    if not isinstance(floor, (int, float)) or not math.isfinite(floor) or floor < 0:
+        raise ValueError('The decision floor is invalid.')
+    return floor
+
 def ratios(pairs):
     values = [pair['B']['cpu_seconds'] / pair['A']['cpu_seconds'] for pair in pairs]
     median_a = statistics.median(pair['A']['cpu_seconds'] for pair in pairs)
@@ -82,6 +98,17 @@ def ratios(pairs):
                 median_absolute_deviation=statistics.median(abs(value - 1) for value in values),
                 absolute_median_deviation=abs(statistics.median(values) - 1))
 
+
+
+def instruction_ratios(pairs):
+    values = [pair['B']['user_instructions'] / pair['A']['user_instructions'] for pair in pairs]
+    median_a = statistics.median(pair['A']['user_instructions'] for pair in pairs)
+    median_b = statistics.median(pair['B']['user_instructions'] for pair in pairs)
+    return dict(paired_ratios=values, median_ratio=statistics.median(values),
+                median_instructions_A=median_a, median_instructions_B=median_b,
+                ratio_of_medians=median_b / median_a,
+                median_absolute_deviation=statistics.median(abs(value - 1) for value in values),
+                absolute_median_deviation=abs(statistics.median(values) - 1))
 
 def statement(module):
     name = 'DesignedBoundary_' + module.stem.removeprefix('Block')
@@ -137,7 +164,7 @@ def compiler_setup(build, recipe_path=None, ocamlpath=None):
                 working_dir=str(working), project_objects=str(project[0]), ocamlpath=ocamlpath)
 
 
-def run_pairs(pcs, sample, save, load=os.getloadavg):
+def run_pairs(pcs, sample, save, load=os.getloadavg, metric='cpu'):
     report = dict(status='running', load_policy='normal load; no quiet invalidation', blocks={})
     save(report)
     for pc in pcs:
@@ -155,8 +182,12 @@ def run_pairs(pcs, sample, save, load=os.getloadavg):
                 row = sample(pc, arm, number, retain)
                 pair[arm] = row
                 save(report)
+                instructions_valid = (metric != 'instructions' or
+                                      (row.get('instruction_measurement_complete') is True and
+                                       isinstance(row.get('user_instructions'), int) and
+                                       row['user_instructions'] > 0))
                 cpu = row.get('cpu_seconds')
-                if (row['exit_code'] != 0 or not row['measurement_complete']
+                if (not instructions_valid or row['exit_code'] != 0 or not row['measurement_complete']
                         or not isinstance(cpu, (int, float)) or not math.isfinite(cpu) or cpu <= 0):
                     pair['load_average_end'] = list(load())
                     report['status'] = 'sample-failed'
@@ -167,6 +198,11 @@ def run_pairs(pcs, sample, save, load=os.getloadavg):
         block.update(ratios(block['pairs']))
         block['method'] = 'median CPU ratio' if count == 3 else 'median of paired ratios'
         block['comparison_ratio'] = block['median_cpu_ratio'] if count == 3 else block['median_ratio']
+        if metric == 'instructions':
+            stats = instruction_ratios(block['pairs'])
+            block['instruction_statistics'] = stats
+            block['method'] = 'ratio of instruction medians' if count == 3 else 'median of paired instruction ratios'
+            block['comparison_ratio'] = stats['ratio_of_medians'] if count == 3 else stats['median_ratio']
         policy = promotion_policy(pc, block['median_cpu_A'])
         if policy is not None:
             block['timing_policy'] = policy
@@ -208,6 +244,9 @@ def watched_sample(pc, arm, number, retain, args):
                'ZESU_SCRATCH_RECIPE=' + setup['recipe'],
                'ZESU_SCRATCH_RECIPE_SHA256=' + setup['recipe_sha256'],
                str(Path(__file__).with_name('scratch_block.sh').resolve()), pc]
+    if getattr(args, 'metric', 'cpu') == 'instructions':
+        command.insert(command.index(str(Path(__file__).with_name('scratch_block.sh').resolve())),
+                       'ZESU_M1_METRIC=instructions')
     if extra:
         command.append(str(extra))
     command.extend(['--source-workspace', str(workspace)])
@@ -238,6 +277,12 @@ def watched_sample(pc, arm, number, retain, args):
         row.update(cpu_seconds=record['cpu_seconds'], peak_rss_kib=record['peak_rss_kib'],
                    measurement_complete=record['measurement_complete'], exit_code=record['exit_code'],
                    outcome='no goals' if 'No more goals.' in text else 'residual')
+        if getattr(args, 'metric', 'cpu') == 'instructions':
+            row.update(user_instructions=record.get('user_instructions'),
+                       instruction_measurement_complete=record.get('instruction_measurement_complete', False),
+                       cpu_scope=record.get('cpu_scope'),
+                       observed_compiler_cpu_seconds=record.get('observed_compiler_cpu_seconds'),
+                       instruction_error=record.get('instruction_error'))
     except (OSError, ValueError, StopIteration, KeyError) as error:
         row['error'] = str(error) or type(error).__name__
     return row
@@ -247,6 +292,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('pcs', nargs='+')
     parser.add_argument('--mode', choices=('noise', 'compare'), required=True)
+    parser.add_argument('--metric', choices=('cpu', 'instructions'), default='cpu',
+                        help='Instructions clear the three compiler caches before each sample.')
     parser.add_argument('--workspace', type=Path, required=True)
     parser.add_argument('--build-dir', type=Path, required=True)
     parser.add_argument('--changed-workspace', type=Path)
@@ -256,7 +303,8 @@ def main(argv=None):
     parser.add_argument('--ocamlpath')
     parser.add_argument('--changed-ocamlpath')
     parser.add_argument('--extra', type=Path)
-    parser.add_argument('--prior-results', type=Path)
+    parser.add_argument('--prior-results', type=Path,
+                        help='Retain historical results only; never use them as decision floors.')
     parser.add_argument('--noise-reference', type=Path,
                         help='Completed comparison for promotion A/A floors below 300 CPU seconds.')
     parser.add_argument('--writer-prefix', required=True)
@@ -276,7 +324,7 @@ def main(argv=None):
         tools = Path(__file__).resolve().parents[1]
         args.tool_versions = {str(tools / path): hashlib.sha256((tools / path).read_bytes()).hexdigest()
                               for path in ['block/paired_scratch.py', 'block/scratch_block.py',
-                                           'block/scratch_block.sh', 'block/coqc_primary.py',
+                                           'block/scratch_block.sh', 'block/coqc_primary.py', 'block/perf_measure.py',
                                            'coqc_scratch.sh', 'coqc_recipe.py']}
         for pc in args.pcs:
             entry_id(pc)
@@ -291,7 +339,7 @@ def main(argv=None):
         noise_bytes = args.noise_reference.read_bytes() if args.noise_reference else None
         noise_reference = json.loads(noise_bytes) if noise_bytes else None
         if args.mode == 'noise':
-            check_noise_reference(args.pcs, noise_reference, args.sources, args.compiler_setups['A'])
+            check_noise_reference(args.pcs, noise_reference, args.sources, args.compiler_setups['A'], args.metric)
         elif args.noise_reference:
             raise ValueError('Use --noise-reference only for A/A floors.')
         heads = {arm: subprocess.check_output(['git', '-C', str(workspace), 'rev-parse', 'HEAD'], text=True).strip()
@@ -308,17 +356,18 @@ def main(argv=None):
     args.output.parent.mkdir(parents=True, exist_ok=True)
 
     def save(report):
-        report.update(mode=args.mode, workspace_A=str(args.workspace), workspace_B=str(args.changed_workspace),
+        report.update(mode=args.mode, metric=args.metric, workspace_A=str(args.workspace), workspace_B=str(args.changed_workspace),
                       workspace_heads=heads, extra=str(args.extra) if args.extra else None,
                       extra_sha256=args.extra_hash, sources=args.sources, compiler_setups=args.compiler_setups,
-                      prior_results=prior, floor_definition='median(abs(B/A - 1))',
+                      prior_results=prior, prior_results_role='retained history; not a decision floor',
+                      floor_definition='median(abs(B/A - 1)) for the selected decision metric',
                       tool_versions=args.tool_versions,
                       noise_reference=str(args.noise_reference) if args.noise_reference else None,
                       noise_reference_sha256=hashlib.sha256(noise_bytes).hexdigest() if noise_bytes else None)
         args.output.write_text(json.dumps(report, indent=2) + '\n')
 
     try:
-        report = run_pairs(args.pcs, lambda *row: watched_sample(*row, args), save)
+        report = run_pairs(args.pcs, lambda *row: watched_sample(*row, args), save, metric=args.metric)
     except (OSError, ValueError, IndexError, subprocess.CalledProcessError, StopIteration) as error:
         report = json.loads(args.output.read_text())
         report.update(status='runner-error', error=str(error))

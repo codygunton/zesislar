@@ -103,6 +103,49 @@ class PairTests(unittest.TestCase):
         # The historical eight-entry noise command keeps its original interface.
         paired_scratch.check_noise_reference(['69a4'], None, {}, {})
 
+    def test_instruction_metric_selects_instruction_ratio_and_retains_cpu_statistics(self):
+        def sample(pc, arm, number, retain):
+            return {**row(10 if arm == 'A' else 20), 'user_instructions': 100,
+                    'instruction_measurement_complete': True}
+        report = paired_scratch.run_pairs(['69a4'], sample, lambda _: None, metric='instructions')
+        block = report['blocks']['69a4']
+        self.assertEqual(block['median_ratio'], 2)
+        self.assertEqual(block['comparison_ratio'], 1)
+        self.assertEqual(block['method'], 'median of paired instruction ratios')
+        self.assertEqual(block['instruction_statistics']['median_absolute_deviation'], 0)
+        values = iter([1, 3, 2, 2, 100, 100])
+        report = paired_scratch.run_pairs(['6974'],
+            lambda *_: {**row(), 'user_instructions': next(values), 'instruction_measurement_complete': True},
+            lambda _: None, metric='instructions')
+        self.assertEqual(report['blocks']['6974']['comparison_ratio'], 1.5)
+
+    def test_missing_instruction_count_stops_without_cpu_fallback_or_retry(self):
+        calls = []
+        def sample(*args):
+            calls.append(args[:3])
+            return {**row(), 'instruction_measurement_complete': False, 'user_instructions': None}
+        report = paired_scratch.run_pairs(['69a4'], sample, lambda _: None, metric='instructions')
+        self.assertEqual(report['status'], 'sample-failed')
+        self.assertEqual(calls, [('69a4', 'A', 1)])
+        self.assertIsNone(report['blocks']['69a4']['pairs'][0]['A']['user_instructions'])
+
+    def test_decision_floor_cannot_mix_cpu_and_instruction_metrics(self):
+        cpu = dict(status='complete', mode='noise', blocks={'69a4': dict(median_absolute_deviation=.3)})
+        instructions = dict(status='complete', mode='noise', metric='instructions',
+                            blocks={'69a4': dict(instruction_statistics=dict(median_absolute_deviation=.001))})
+        self.assertEqual(paired_scratch.noise_floor(cpu, '69a4'), .3)
+        self.assertEqual(paired_scratch.noise_floor(instructions, '69a4', 'instructions'), .001)
+        for report, metric in [(cpu, 'instructions'), (instructions, 'cpu')]:
+            with self.assertRaisesRegex(ValueError, 'different metric'):
+                paired_scratch.noise_floor(report, '69a4', metric)
+        for update in [dict(status='running'), dict(mode='compare')]:
+            with self.assertRaisesRegex(ValueError, 'completed A/A'):
+                paired_scratch.noise_floor({**instructions, **update}, '69a4', 'instructions')
+        with self.assertRaisesRegex(ValueError, 'different decision metric'):
+            paired_scratch.check_noise_reference(['69a4'], cpu, {}, {}, 'instructions')
+        with self.assertRaisesRegex(ValueError, 'different decision metric'):
+            paired_scratch.check_noise_reference(['69a4'], instructions, {}, {}, 'cpu')
+
     def test_both_noise_statistics_remain_distinct(self):
         pairs = [dict(A=row(), B=row(cpu)) for cpu in [8, 9, 10, 11, 12]]
         stats = paired_scratch.ratios(pairs)

@@ -421,6 +421,64 @@ class DiagnosticProbeBudgetTests(unittest.TestCase):
                 self.assertEqual(retained['cpu_seconds'], 1.25)
                 self.assertEqual(retained['peak_rss_kib'], 1234)
 
+    def test_instruction_wrapper_preserves_compiler_exit_and_exact_workload_telemetry(self):
+        from unittest.mock import MagicMock
+        import perf_measure
+        environment = coqc_primary.completion_environment(
+            coqc_primary.budget_policy(memory_gib=64, diagnostic_probe=True))
+        scope = {'memory_max_bytes': 64*1024**3, 'memory_swap_max_bytes': 0}
+        original_read = Path.read_text
+        for valid in [True, False]:
+            with self.subTest(valid=valid), tempfile.TemporaryDirectory() as directory:
+                output = Path(directory)
+                record = output / 'compiler.json'
+                perf_stat = output / 'perf-stat.csv'
+                perf_stat.write_text(('12345' if valid else '<not counted>') + ',,instructions:u,1000,100.00,,\n')
+                child = MagicMock(pid=123)
+                child.poll.side_effect = [None, 7]
+                child.wait.return_value = 7
+                workload = ['/home/cody/islaris/_opam/bin/coqc', '-time']
+                context = dict(command=['/usr/bin/perf', 'stat', '-x,', '-e', 'instructions:u', '--', *workload],
+                               workload_command=workload, perf_stat=str(perf_stat), cache_removals=[])
+                def read(path, *args, **kwargs):
+                    if str(path) == '/proc/456/status':
+                        return 'VmRSS:\t100 kB\n'
+                    if str(path) == '/proc/456/stat':
+                        fields = ['R'] + ['0'] * 23
+                        fields[11], fields[12] = '40', '20'
+                        return '456 (coqc) ' + ' '.join(fields)
+                    return original_read(path, *args, **kwargs)
+                with patch.dict(coqc_primary.os.environ, {**environment, 'ZESU_M1_METRIC': 'instructions',
+                        'ZESU_PRIMARY_COMPILER_RECORD': str(record)}, clear=True), \
+                        patch.object(coqc_primary, 'probe_scope_limits', return_value=scope), \
+                        patch.object(coqc_primary, 'probe_memory_events', return_value={'oom_kill': 0}), \
+                        patch.object(coqc_primary.resource, 'prlimit', return_value=(-1, -1)) as limits, \
+                        patch.object(coqc_primary.subprocess, 'Popen', return_value=child) as spawn, \
+                        patch.object(perf_measure, 'prepare', return_value=context) as prepare, \
+                        patch.object(perf_measure, 'workload_pid', return_value=456), \
+                        patch.object(coqc_primary.time, 'sleep'), patch.object(Path, 'read_text', read):
+                    self.assertEqual(coqc_primary.compiler_run([]), 7)
+                self.assertEqual(prepare.call_args.args[0], workload)
+                self.assertEqual(spawn.call_args.args[0], context['command'])
+                limits.assert_called_once_with(456, coqc_primary.resource.RLIMIT_CPU)
+                child.terminate.assert_not_called()
+                child.kill.assert_not_called()
+                retained = json.loads(record.read_text())
+                self.assertEqual(retained['compiler_pid'], 456)
+                self.assertEqual(retained['perf_pid'], 123)
+                self.assertEqual(retained['observed_compiler_peak_rss_kib'], 100)
+                self.assertEqual(retained['command'], workload)
+                self.assertEqual(retained['exit_code'], 7)
+                self.assertEqual(retained['observed_compiler_cpu_seconds'], 60 / coqc_primary.os.sysconf('SC_CLK_TCK'))
+                self.assertIn('perf driver', retained['cpu_scope'])
+                self.assertEqual(retained['instruction_measurement_complete'], valid)
+                if valid:
+                    self.assertEqual(retained['user_instructions'], 12345)
+                else:
+                    self.assertIsNone(retained['user_instructions'])
+                    self.assertIn('unavailable', retained['instruction_error'])
+                    self.assertEqual(Path(retained['instruction_measurement']['perf_stat']).read_text(), perf_stat.read_text())
+
     def test_missing_actual_limit_query_still_stops_owned_child(self):
         from unittest.mock import MagicMock
         environment = coqc_primary.completion_environment(
