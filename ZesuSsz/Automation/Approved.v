@@ -30,3 +30,5 @@ Require Export ZesuSsz.Automation.Switches.CanonicalPureConjunction.
 Require Export ZesuSsz.Automation.Switches.ByteListContainment.
 Require Export ZesuSsz.Automation.Switches.RegionFaultCastHypotheses.
 Require Export ZesuSsz.Automation.Switches.ConjunctMatch.
+Require Export ZesuSsz.Automation.Switches.IntegerReturn.
+Require Export ZesuSsz.Automation.Switches.ExitMeaning.
