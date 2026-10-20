@@ -5579,15 +5579,15 @@
       "path": "ZesuSsz/Proofs/Tests/DecodeItemRootEntry.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "656cfc9b8e774c94232e7151026d51736ece9faa2f55b50751b681e51562b1d7",
-      "file_lines": 65,
+      "sha256": "4f040230ee736dc89cf96e614bd9327e7937c9eb0092746279d9ea0368e99bbd",
+      "file_lines": 67,
       "line_ranges": [
         [
           1,
-          65
+          67
         ]
       ],
-      "counted_lines": 65
+      "counted_lines": 67
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemSavedFrameWitnesses.v",
@@ -8251,7 +8251,7 @@
   },
   "base_manifest_sha256": "7deccbbc338d25231c300f1ba6824c5c10136917b0207e75589cd9a86f9d020a",
   "category_totals": {
-    "tests_and_exports": 36421,
+    "tests_and_exports": 36423,
     "composition": 584,
     "loop_steps": 1142,
     "introductions": 3530,
@@ -8262,8 +8262,8 @@
     "block_proofs": 2455
   },
   "interface_total": 17432,
-  "extra_total": 39460,
-  "overall_total": 56892,
+  "extra_total": 39462,
+  "overall_total": 56894,
   "file_count": 385,
   "embedded_registration_ranges": [
     {

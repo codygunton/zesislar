@@ -4,6 +4,7 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.DecodeItemBranchEntries.
 Require Import ZesuSsz.Contracts.DecodeItemCompositional.
 Require Import ZesuSsz.Compliance.DecodeItemCompositionalWeakening.
+Require Import ZesuSsz.Compliance.DecodeItemCompositionalCompliance.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Generated.DecodeItem.BlockTable.
 
@@ -31,9 +32,9 @@ Lemma decodeItemRootInternalCallerContinuation `{!islaG Sigma} `{!threadG}
   decodeItemBranchContinuationAt args returnAddress =
     (instr_pre returnAddress
       (∃ outcome : DecodeItemOutcome,
+        decodeItemExitResourcesRegisters args outcome ∗
         ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args /\
-          DecodeMeaningModuloKnownBugs args outcome⌝ ∗
-        decodeItemExitResourcesRegisters args outcome))%I.
+          DecodeMeaningModuloKnownBugs args outcome⌝))%I.
 Proof. reflexivity. Qed.
 Print Assumptions decodeItemRootInternalCallerContinuation.
 
@@ -47,6 +48,7 @@ Lemma decodeItemRootCallerContinuation `{!islaG Sigma} `{!threadG}
   decodeItemBranchContinuationAt args returnAddress.
 Proof.
   unfold decodeItemBranchContinuationAt.
+  rewrite decodeItemInstrPreExistOrder.
   iIntros "Hpublic".
   iApply (instr_pre_wand with "Hpublic []"); [done|done|].
   iIntros "Hafter". iDestruct "Hafter" as (outcome) "[%Hallowed Hexit]".
