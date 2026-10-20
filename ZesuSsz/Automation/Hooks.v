@@ -1497,6 +1497,12 @@ Ltac zesu_region_fault_assert :=
 
 Ltac zesu_region_fault_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepRegionFault);
+  lazymatch goal with
+  | |- iris.proofmode.environments.envs_entails _
+      (WPasm (Smt (Assert (Unop Not _ _)) _ :t: _)) => idtac
+  | |- iris.proofmode.environments.envs_entails _
+      ((WPasm (Smt (Assert (Unop Not _ _)) _ :t: _)) ∧ True)%I => idtac
+  end;
   first [solve [zesu_region_fault_assert] |
     solve [lazymatch goal with
       | |- envs_entails _ ((WPasm _) ∧ True)%I =>
