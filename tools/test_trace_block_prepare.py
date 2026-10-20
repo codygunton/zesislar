@@ -33,6 +33,32 @@ class InstrumentationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "extra"):
             prepare.instrument_return_route(source + "\n#[export] Hint Extern 5 True => exact I : typeclass_instances.\n", STOP)
 
+    def test_integer_return_hints_remain_unselected_and_byte_exact(self):
+        source = (prepare.OWNER / "ZesuSsz/Automation/ReturnRoute.v").read_text()
+        result, entries = prepare.instrument_return_route(source, STOP)
+        for body in ("zesu_return_integer_normalize", "zesu_return_integer_fault"):
+            command = next(source[a:b] for a, b in prepare.command_spans(source)
+                           if "Hint Extern" in source[a:b]
+                           and "=>\n  " + body + " :" in source[a:b])
+            self.assertIn(command, result)
+            self.assertFalse(any(body in row["commands"]["whole-rule"]
+                                 for row in entries.values()))
+
+    def test_unrelated_hint_cannot_replace_reviewed_integer_hint(self):
+        source = (prepare.OWNER / "ZesuSsz/Automation/ReturnRoute.v").read_text()
+        changed = source.replace("zesu_return_integer_normalize : typeclass_instances.",
+                                 "exact I : typeclass_instances.", 1)
+        self.assertNotEqual(source, changed)
+        with self.assertRaisesRegex(ValueError, "unreviewed extra"):
+            prepare.instrument_return_route(changed, STOP)
+
+    def test_duplicate_integer_hint_is_rejected(self):
+        source = (prepare.OWNER / "ZesuSsz/Automation/ReturnRoute.v").read_text()
+        duplicate = ("\n#[export] Hint Extern 5 (SimplImpl _ _) =>\n"
+                     "  zesu_return_integer_fault : typeclass_instances.\n")
+        with self.assertRaisesRegex(ValueError, "unreviewed extra"):
+            prepare.instrument_return_route(source + duplicate, STOP)
+
     def test_hooks_keep_original_body_and_alternative_order(self):
         source = (prepare.OWNER / "ZesuSsz/Automation/Hooks.v").read_text()
         result, entries, step = prepare.instrument_hooks(source, {"kind": "rule", "value": "ConjunctMatch"}, True)

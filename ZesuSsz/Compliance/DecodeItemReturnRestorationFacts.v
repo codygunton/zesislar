@@ -100,3 +100,7 @@ Print Assumptions decodeItemStackEpilogueRestored.
 Print Assumptions decodeItemSavedFramePointerDecoder.
 Print Assumptions decodeItemReturnRestorationFacts.
 Print Assumptions decodeItemReturnRestorationDerivedFacts.
+
+#[export] Hint Rewrite decodeItemSavedReturnDecoder
+  decodeItemSavedFramePointerDecoder using assumption
+  : isla_coq_rewrite lithium_rewrite.
