@@ -7699,12 +7699,12 @@
       "line_ranges": [
         [
           1,
-          2
+          3
         ]
       ],
-      "file_lines": 2,
-      "sha256": "16bb0092ac0e187ef9d816177bca282ecc0445410edc8a1ea7774b5dbbfba8d2",
-      "counted_lines": 2
+      "file_lines": 3,
+      "sha256": "5fcdd5f1edb8235e917b5712650dc4018ff05157f51705e114b66bae164b80ef",
+      "counted_lines": 3
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d698cLiteral.v",
@@ -7850,7 +7850,7 @@
       "kind": "auto",
       "proof_qed_lines": 0,
       "tactic_lines": 0,
-      "file_lines": 2,
+      "file_lines": 3,
       "branches": [
         {
           "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d698cLiteral.v",
@@ -8259,11 +8259,11 @@
     "registrations": 392,
     "contracts": 2564,
     "generator_json": 6279,
-    "block_proofs": 2454
+    "block_proofs": 2455
   },
   "interface_total": 17432,
-  "extra_total": 39459,
-  "overall_total": 56891,
+  "extra_total": 39460,
+  "overall_total": 56892,
   "file_count": 385,
   "embedded_registration_ranges": [
     {
