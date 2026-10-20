@@ -34,21 +34,21 @@ Require Import ZesuSsz.Proofs.DecodeItem.Composition.CompleteNativeFamily.
 Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.
-Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d697c.
-Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d69e8.
+Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d697c.
+Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d69e8.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a08.
-Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6b08.
-Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d698c.
+Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d6b08.
+Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d698c.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a38.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6960.
-Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ae0.
+Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d6ae0.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ac4.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6aa8.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ad8.
-Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a78.
-Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d69b0.
-Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a40.
+Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a78.
+Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d69b0.
+Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a40.
 
 Require Import ZesuSsz.Contracts.DecodeItemCompositional.
 Require Import ZesuSsz.Compliance.DecodeItemCompositionalBridge.
@@ -69,7 +69,8 @@ Proof.
     (decodeItemSlotBody800d6960Conditional (@DesignedBoundary_800d6960 Sigma HG HT))
     (@DesignedBoundary_800d6974 Sigma HG HT)
     (@DesignedBoundary_800d697c Sigma HG HT)
-    (@DesignedBoundary_800d698c Sigma HG HT)
+    (@DesignedBoundary_800d698cLiteral Sigma HG HT)
+    (@DesignedBoundary_800d698cShortString Sigma HG HT)
     (@DesignedBoundary_800d69b0 Sigma HG HT)
     (@DesignedBoundary_800d69e8 Sigma HG HT)
     (@DesignedBoundary_800d6a08 Sigma HG HT)

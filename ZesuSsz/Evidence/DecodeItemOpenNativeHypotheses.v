@@ -62,17 +62,22 @@ Definition decodeItemOpenNativeClosure6974 : Prop :=
 
 Definition decodeItemOpenNativeClosure697c : Prop :=
   forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),
-  instr_pre 0x800d698c (∃ (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItem698cCaseResources (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -∗
+  instr_pre 0x800d698c (∃ (successor_x11 successor_x12 successor_x13 successor_x14 successor_x15 successor_x16 : bv 64) (successor_outputBytes successor_frameBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte), decodeItemEntryAt800d698cLiteral args successor_x11 successor_x12 successor_x13 successor_x14 successor_x15 successor_x16 successor_outputBytes successor_frameBytes successor_inputPrefix successor_rest)%I -∗
   decodeItemSelectedCode -∗
   instr_body 0x800d697c
     (decodeItemEntryAt800d697c args frameBytes x13 inputPrefix rest ∗ True).
 
-Definition decodeItemOpenNativeClosure698c : Prop :=
-  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (pointerBytes : list byte) (lengthBytes : list byte) (inputPrefix : byte) (rest : list byte) (isLiteral : bool),
+Definition decodeItemOpenNativeClosure698cLiteral : Prop :=
+  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (x11 x12 x13 x14 x15 x16 : bv 64) (outputBytes frameBytes : list byte) (inputPrefix : byte) (rest : list byte),
   decodeItemSelectedCode -∗
   instr_body 0x800d698c
-    (decodeItem698cCaseResources args locals pointerBytes lengthBytes inputPrefix rest isLiteral ∗ True).
+    (decodeItemEntryAt800d698cLiteral args x11 x12 x13 x14 x15 x16 outputBytes frameBytes inputPrefix rest ∗ True).
 
+Definition decodeItemOpenNativeClosure698cShortString : Prop :=
+  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (x11 x12 x13 x14 x15 x16 : bv 64) (outputBytes frameBytes : list byte) (inputPrefix : byte) (rest : list byte),
+  decodeItemSelectedCode -∗
+  instr_body 0x800d698c
+    (decodeItemEntryAt800d698cShortString args x11 x12 x13 x14 x15 x16 outputBytes frameBytes inputPrefix rest ∗ True).
 Definition decodeItemOpenNativeClosure69b0 : Prop :=
   forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),
   decodeItemSelectedCode -∗
@@ -81,7 +86,7 @@ Definition decodeItemOpenNativeClosure69b0 : Prop :=
 
 Definition decodeItemOpenNativeClosure69e8 : Prop :=
   forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG), forall (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte),
-  instr_pre 0x800d698c (∃ (successor_locals : DecodeItemReturnLocals) (successor_pointerBytes : list byte) (successor_lengthBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte) (successor_isLiteral : bool), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItem698cCaseResources (args) (successor_locals) (successor_pointerBytes) (successor_lengthBytes) (successor_inputPrefix) (successor_rest) (successor_isLiteral))%I -∗
+  instr_pre 0x800d698c (∃ (successor_x11 successor_x12 successor_x13 successor_x14 successor_x15 successor_x16 : bv 64) (successor_outputBytes successor_frameBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte), decodeItemEntryAt800d698cShortString args successor_x11 successor_x12 successor_x13 successor_x14 successor_x15 successor_x16 successor_outputBytes successor_frameBytes successor_inputPrefix successor_rest)%I -∗
   decodeItemSelectedCode -∗
   instr_body 0x800d69e8
     (decodeItemEntryAt800d69e8 args frameBytes x13 inputPrefix rest ∗ True).
@@ -163,21 +168,21 @@ Record DecodeItemOpenNativeHypotheses : Prop := {
 
 Definition decodeItemOpenNativeBlocks : list Z :=
   [].
-Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d697c.
-Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d69e8.
+Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d697c.
+Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d69e8.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a08.
-Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6b08.
-Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d698c.
+Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d6b08.
+Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d698c.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a38.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6960.
-Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ae0.
+Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d6ae0.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ac4.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6aa8.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ad8.
-Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a78.
-Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d69b0.
-Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a40.
+Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a78.
+Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d69b0.
+Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a40.
 
 Lemma decodeItemOpenNativeBlockCount : length decodeItemOpenNativeBlocks = 0%nat.
 Proof. reflexivity. Qed.
@@ -190,20 +195,21 @@ Proof.
   exact (@ZesuSsz.Proofs.DecodeItem.Composition.CompleteNativeFamily.decodeItemBlockTable_complete_native_family Sigma islaG0 H
     (@ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6960Conditional.decodeItemSlotBody800d6960Conditional Sigma islaG0 H (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6960.DesignedBoundary_800d6960 Sigma islaG0 H))
     (@ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.DesignedBoundary_800d6974 Sigma islaG0 H)
-    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d697c.DesignedBoundary_800d697c Sigma islaG0 H)
-    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d698c.DesignedBoundary_800d698c Sigma islaG0 H)
-    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d69b0.DesignedBoundary_800d69b0 Sigma islaG0 H)
-    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d69e8.DesignedBoundary_800d69e8 Sigma islaG0 H)
+    (@ZesuSsz.Proofs.DecodeItem.Auto.Block800d697c.DesignedBoundary_800d697c Sigma islaG0 H)
+    (@ZesuSsz.Proofs.DecodeItem.Auto.Block800d698c.DesignedBoundary_800d698cLiteral Sigma islaG0 H)
+    (@ZesuSsz.Proofs.DecodeItem.Auto.Block800d698c.DesignedBoundary_800d698cShortString Sigma islaG0 H)
+    (@ZesuSsz.Proofs.DecodeItem.Auto.Block800d69b0.DesignedBoundary_800d69b0 Sigma islaG0 H)
+    (@ZesuSsz.Proofs.DecodeItem.Auto.Block800d69e8.DesignedBoundary_800d69e8 Sigma islaG0 H)
     (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a08.DesignedBoundary_800d6a08 Sigma islaG0 H)
     (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24.DesignedBoundary_800d6a24 Sigma islaG0 H)
     (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a38.DesignedBoundary_800d6a38 Sigma islaG0 H)
-    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a40.DesignedBoundary_800d6a40 Sigma islaG0 H)
-    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a78.DesignedBoundary_800d6a78 Sigma islaG0 H)
+    (@ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a40.DesignedBoundary_800d6a40 Sigma islaG0 H)
+    (@ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a78.DesignedBoundary_800d6a78 Sigma islaG0 H)
     (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6aa8.DesignedBoundary_800d6aa8 Sigma islaG0 H)
     (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ac4.DesignedBoundary_800d6ac4 Sigma islaG0 H)
     (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ad8.DesignedBoundary_800d6ad8 Sigma islaG0 H)
-    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ae0.DesignedBoundary_800d6ae0 Sigma islaG0 H)
-    (@ZesuSsz.Proofs.DecodeItem.Hand.Block800d6b08.DesignedBoundary_800d6b08 Sigma islaG0 H)).
+    (@ZesuSsz.Proofs.DecodeItem.Auto.Block800d6ae0.DesignedBoundary_800d6ae0 Sigma islaG0 H)
+    (@ZesuSsz.Proofs.DecodeItem.Auto.Block800d6b08.DesignedBoundary_800d6b08 Sigma islaG0 H)).
 Qed.
 Print Assumptions decodeItemOpenNativeBlockCount.
 Print Assumptions decodeItemOpenNativeHypothesesTable.

@@ -51,10 +51,14 @@ Lemma decodeItemBlockTable_complete_native_family `{!islaG Sigma} `{!threadG}
   decodeItemSelectedCode -∗
   instr_body 0x800d697c
     (decodeItemEntryAt800d697c args frameBytes x13 inputPrefix rest ∗ True))
-  (native800d698c : forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (pointerBytes : list byte) (lengthBytes : list byte) (inputPrefix : byte) (rest : list byte) (isLiteral : bool),
+  (native800d698cLiteral : forall (args : DecodeItemArgs) (x11 x12 x13 x14 x15 x16 : bv 64) (outputBytes frameBytes : list byte) (inputPrefix : byte) (rest : list byte),
   decodeItemSelectedCode -∗
   instr_body 0x800d698c
-    (decodeItem698cCaseResources args locals pointerBytes lengthBytes inputPrefix rest isLiteral ∗ True))
+    (decodeItemEntryAt800d698cLiteral args x11 x12 x13 x14 x15 x16 outputBytes frameBytes inputPrefix rest ∗ True))
+  (native800d698cShortString : forall (args : DecodeItemArgs) (x11 x12 x13 x14 x15 x16 : bv 64) (outputBytes frameBytes : list byte) (inputPrefix : byte) (rest : list byte),
+  decodeItemSelectedCode -∗
+  instr_body 0x800d698c
+    (decodeItemEntryAt800d698cShortString args x11 x12 x13 x14 x15 x16 outputBytes frameBytes inputPrefix rest ∗ True))
   (native800d69b0 : forall (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte),
   decodeItemSelectedCode -∗
   instr_body 0x800d69b0
@@ -121,7 +125,7 @@ Proof.
   exact (decodeItemBlockTable_complete_family pending800d6960
     (decodeItemSlotBody800d6974Conditional native800d6974)
     (decodeItemSlotBody800d697cConditional native800d697c)
-    (decodeItemSlotBody800d698cConditional native800d698c)
+    (decodeItemSlotBody800d698cConditional native800d698cLiteral native800d698cShortString)
     (decodeItemSlotBody800d69b0Conditional native800d69b0)
     (decodeItemSlotBody800d69e8Conditional native800d69e8)
     (decodeItemSlotBody800d6a08Conditional native800d6a08)
