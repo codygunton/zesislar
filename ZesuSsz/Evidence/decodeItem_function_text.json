@@ -396,7 +396,11 @@
     "tools/test_successor_entailment.py",
     "ZesuSsz/Evidence/test_historical_evidence.py",
     "ZesuSsz/Evidence/i75/INDEX.json",
-    "ZesuSsz/Evidence/test_i75_evidence.py"
+    "ZesuSsz/Evidence/test_i75_evidence.py",
+    "ZesuSsz/Evidence/DecodeItemPromoted6a38Fixtures.v",
+    "ZesuSsz/Evidence/DecodeItemPromoted6ad8Fixtures.v",
+    "ZesuSsz/Proofs/Tests/ImplicationPair.v",
+    "ZesuSsz/Proofs/Tests/PureResourceFinish.v"
   ],
   "lemmas": [
     "ZesuSsz/Compliance/ByteFold.v",
@@ -2567,14 +2571,14 @@
       "role": "measurement_metadata",
       "scope": "whole_file",
       "sha256": null,
-      "file_lines": 8046,
+      "file_lines": 8111,
       "line_ranges": [
         [
           1,
-          8046
+          8111
         ]
       ],
-      "counted_lines": 8046
+      "counted_lines": 8111
     },
     {
       "path": "ZesuSsz/Evidence/decode_item_auto_modules.json",
@@ -7534,6 +7538,62 @@
         ]
       ],
       "counted_lines": 209
+    },
+    {
+      "path": "ZesuSsz/Evidence/DecodeItemPromoted6a38Fixtures.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "35412d97cae90acdbe997991cf42083795e58a194cfb76807ff527084f89da4d",
+      "file_lines": 17,
+      "line_ranges": [
+        [
+          1,
+          17
+        ]
+      ],
+      "counted_lines": 17
+    },
+    {
+      "path": "ZesuSsz/Evidence/DecodeItemPromoted6ad8Fixtures.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "db9448e4b54c9ba12b25a0aaec03470b77af7114beabc97d9e856614b506d46d",
+      "file_lines": 17,
+      "line_ranges": [
+        [
+          1,
+          17
+        ]
+      ],
+      "counted_lines": 17
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/ImplicationPair.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "9a96a42b8c7cd3ad499dd5f33db8438d06d393a874482b69ee02d528f3013555",
+      "file_lines": 93,
+      "line_ranges": [
+        [
+          1,
+          93
+        ]
+      ],
+      "counted_lines": 93
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/PureResourceFinish.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "49744cb8a307c0f3741fd9ff33b13b080d01eced27af9ccedfb562bd275bdfc3",
+      "file_lines": 22,
+      "line_ranges": [
+        [
+          1,
+          22
+        ]
+      ],
+      "counted_lines": 22
     }
   ],
   "blocks": [
@@ -7950,7 +8010,7 @@
   },
   "base_manifest_sha256": "7deccbbc338d25231c300f1ba6824c5c10136917b0207e75589cd9a86f9d020a",
   "category_totals": {
-    "tests_and_exports": 35449,
+    "tests_and_exports": 35663,
     "composition": 602,
     "loop_steps": 965,
     "introductions": 3688,
@@ -7961,9 +8021,9 @@
     "block_proofs": 3461
   },
   "interface_total": 16983,
-  "extra_total": 39512,
-  "overall_total": 56495,
-  "file_count": 366,
+  "extra_total": 39726,
+  "overall_total": 56709,
+  "file_count": 370,
   "embedded_registration_ranges": [
     {
       "path": "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
@@ -8041,6 +8101,11 @@
     "call_spec": {
       "base": "33f27d9a",
       "scope": "Inherited manifest plus the approved call boundary and derived proofs. No global recount."
+    },
+    "p2_promotions": {
+      "base": "76eab8cbe2ee8d76fc0040996fa19a498316d94f",
+      "tip": "57900b192b9625fe653b603ef4b8a2d24b0faa85",
+      "scope": "Classify all four new Rocq test modules in the P2 promotion stack as unscored tests_and_exports. Preserve the inherited scored inventory."
     }
   }
 }
