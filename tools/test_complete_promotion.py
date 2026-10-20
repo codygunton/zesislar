@@ -64,6 +64,21 @@ class CompletePromotionTests(unittest.TestCase):
             complete_promotion.plan(self.workspace, 0x800d6974, MODULE, MODULE + '.Missing')
         self.assertEqual(before, {name: (self.workspace / name).read_bytes() for name in INPUTS})
 
+    def test_existing_slot_reverifies_only_its_recorded_proof(self):
+        outputs, _ = complete_promotion.plan(self.workspace, 0x800d6974, MODULE, LEMMA)
+        for name, text in outputs.items():
+            path = self.workspace / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text)
+        repeated, provenance = complete_promotion.plan(self.workspace, 0x800d6974, MODULE, LEMMA)
+        self.assertEqual(outputs, repeated)
+        self.assertTrue(provenance['already_closed'])
+        self.assertIsNone(provenance['native_hypothesis_removed'])
+        adapter = self.workspace / 'ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6974.v'
+        adapter.write_text(adapter.read_text().replace(f'Require Import {MODULE}.', ''))
+        with self.assertRaisesRegex(ValueError, 'recorded production proof'):
+            complete_promotion.plan(self.workspace, 0x800d6974, MODULE, LEMMA)
+
     def test_record_fields_and_destruct_names_match_after_each_removal(self):
         status = 'ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v'
         compliance = 'ZesuSsz/Compliance/DecodeItemCompliance.v'
@@ -245,6 +260,56 @@ class CompletePromotionTests(unittest.TestCase):
         self.assertEqual(before, {name: (self.workspace / name).read_bytes() for name in INPUTS})
         self.assertFalse((self.workspace / 'report.json').exists())
         self.assertFalse((self.workspace / 'ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6974.v').exists())
+
+    def test_missing_history_still_verifies_sources_and_records_reason(self):
+        status = self.workspace / INPUTS[4]
+        status.write_text(status.read_text() +
+            '\nDefinition decodeItemI67NativeResidualCounts : list (Z * option nat) :=\n'
+            '  [(0x800d6974, Some 3%nat); (0x800d697c, None)].\n')
+        reason = 'The retained historical table is unavailable.'
+        with patch.object(complete_promotion.subprocess, 'check_output', return_value='fixture-root\n'), \
+             patch.object(native_status, 'generate', side_effect=AssertionError('historical access')), \
+             patch('promotion_verification.verify_generated', return_value={'success': True}) as verifier:
+            report = complete_promotion.complete(self.workspace, 0x800d6974, MODULE, LEMMA,
+                self.workspace / 'report.json', self.workspace / 'missing-table.json',
+                no_historical_evidence=True, reason=reason)
+        self.assertTrue(report['success'])
+        self.assertIsNone(report['native_status'])
+        self.assertEqual(report['historical_evidence'], {'checked': False, 'reason': reason})
+        self.assertIn(reason, (self.workspace / 'tools/block/PROMOTION.md').read_text())
+        self.assertNotIn('(0x800d6974, Some', status.read_text())
+        self.assertIn('(0x800d697c, None)', status.read_text())
+        verifier.assert_called_once()
+        self.assertEqual(len(verifier.call_args.args[1]), 5)
+        self.assertTrue(all(path.suffix == '.v' for path in verifier.call_args.args[1]))
+
+    def test_history_skip_requires_explicit_reason(self):
+        for reason in (None, '', '  '):
+            with self.subTest(reason=reason), self.assertRaisesRegex(ValueError, 'nonempty reason'):
+                complete_promotion.complete(self.workspace, 0x800d6974, MODULE, LEMMA,
+                    self.workspace / 'report.json', None, no_historical_evidence=True, reason=reason)
+        with self.assertRaisesRegex(ValueError, 'explicit skip flag'):
+            complete_promotion.complete(self.workspace, 0x800d6974, MODULE, LEMMA,
+                self.workspace / 'report.json', None, reason='Unavailable')
+        with self.assertRaisesRegex(ValueError, 'I67 table hash differs'):
+            complete_promotion.complete(self.workspace, 0x800d6974, MODULE, LEMMA,
+                self.workspace / 'report.json', None)
+
+    def test_history_skip_restores_documentation_after_failed_verification(self):
+        documentation = self.workspace / 'tools/block/PROMOTION.md'
+        documentation.parent.mkdir(parents=True)
+        documentation.write_text('Existing instructions.\n')
+        before = {name: (self.workspace / name).read_bytes() for name in INPUTS}
+        with patch.object(complete_promotion.subprocess, 'check_output', return_value='fixture-root\n'), \
+             patch('promotion_verification.verify_generated', side_effect=ValueError('MCP refused')), \
+             self.assertRaisesRegex(ValueError, 'MCP refused'):
+            complete_promotion.complete(self.workspace, 0x800d6974, MODULE, LEMMA,
+                self.workspace / 'report.json', None, no_historical_evidence=True, reason='Unavailable')
+        self.assertEqual(documentation.read_text(), 'Existing instructions.\n')
+        self.assertEqual(before, {name: (self.workspace / name).read_bytes() for name in INPUTS})
+        report = json.loads((self.workspace / 'report.json').read_text())
+        self.assertEqual(report['status'], 'verification_failed')
+        self.assertFalse(report['success'])
 
 
 

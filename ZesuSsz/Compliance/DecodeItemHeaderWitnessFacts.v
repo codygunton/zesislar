@@ -2,6 +2,7 @@ Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.Switches.PureFactHints.
 Require Import ZesuSsz.Automation.BitvectorFacts.
+Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
@@ -15,6 +16,8 @@ Require Export ZesuSsz.Compliance.DecodeItemEntryGuardFacts.
 Require Import ZesuSsz.Compliance.DecodeItemInputHeadWordFacts.
 From Coq Require Import List ZArith Lia.
 Open Scope Z_scope.
+
+#[export] Hint Unfold RlpDecodeItem.word64Modulus : zesu_contract_constants.
 
 Lemma decodeItemInputHeadWitnessFacts returnAddress args :
   decodeItemDomainAt returnAddress decodeItemC1BDomain args ->
@@ -441,3 +444,13 @@ Print Assumptions decodeItemCompletedFoldAlternateFitsContradiction.
         let Hfits := constr:(_ : SimplAnd (n < decodeItemInputLength args) True) in exact ((proj1 Hfits) I)]
     | intros _; exact I]
   end : typeclass_instances.
+
+#[export] Instance decodeItemByteFoldLengthFacts (args : DecodeItemArgs)
+    (n i payloadStart : Z) (bytes : list byte) :
+  ZesuDerivedFacts (decodeItemByteFoldFacts args n i payloadStart bytes)
+    (Z.of_nat (length bytes) = n).
+Proof.
+  unfold ZesuDerivedFacts. intro Hfold.
+  exact (proj1 (proj2 (proj2 (proj2 (proj2 Hfold))))).
+Qed.
+Print Assumptions decodeItemByteFoldLengthFacts.

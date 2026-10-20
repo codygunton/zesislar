@@ -318,7 +318,7 @@ Ltac zesu_finish_shelved :=
    ones that cannot close one: `reflexivity`, the bitvector entries, `lia`
    and `bv_solve`. Everything that can act on an entailment keeps its old
    position relative to the others. *)
-Ltac zesu_finish_entailment :=
+Ltac zesu_finish_entailment_base :=
   try autorewrite with zesu_indices;
   try iAssumption;
   try (zesu_normalize_array_cursors);
@@ -334,7 +334,7 @@ Ltac zesu_finish_entailment :=
   try (zesu_saturate_alignment).
 
 (* Anything else: the old chain, in the old order. *)
-Ltac zesu_finish_pure_goal :=
+Ltac zesu_finish_pure_goal_base :=
   try zesu_finish_selectors;
   try autorewrite with zesu_indices;
   try iAssumption;
@@ -373,6 +373,77 @@ Ltac zesu_finish_pure_goal :=
      closes the goal or leaves it exactly as it was. *)
   try zesu_finish_witness_arithmetic;
   try (zesu_finish_little_endian).
+
+(* Normalize only facts already retained by the contract. *)
+Ltac zesu_finish_pure_shape :=
+  try zesu_saturate_derived_facts;
+  try autounfold with zesu_contract_constants in *;
+  repeat match goal with
+  | Hlength : Z.of_nat (length ?values) = ?count
+      |- context [firstn (Z.to_nat ?count) ?values] =>
+      rewrite (zesu_take_complete values count Hlength)
+  end;
+  repeat progress (rewrite ?zesu_Z_to_bv_add).
+
+Ltac zesu_finish_negated_ge :=
+  repeat match goal with
+  | Hnot : ~ (?left >= ?right)%Z |- _ =>
+      tryif has_evar left then fail 0 else idtac;
+      tryif has_evar right then fail 0 else idtac;
+      lazymatch goal with
+      | _ : (left < right)%Z |- _ => fail 0
+      | _ =>
+          let Hlt := fresh "HstrictBound" in
+          assert (Hlt : (left < right)%Z) by lia
+      end
+  end.
+
+(* Apply one implication pair. Closed types prevent witness assignment. *)
+Ltac zesu_finish_implication_pair :=
+  match goal with
+  | Houter : ?Middle -> ?Result, Hinner : ?Premise -> ?InnerResult |- _ =>
+      tryif has_evar Premise then fail 0 else idtac;
+      tryif has_evar Middle then fail 0 else idtac;
+      tryif has_evar InnerResult then fail 0 else idtac;
+      tryif has_evar Result then fail 0 else idtac;
+      tryif constr_eq Result False then fail 0 else idtac;
+      tryif (lazymatch goal with _ : Result |- _ => idtac end)
+      then fail 0 else idtac;
+      let Hp := fresh "HpairPremise" in
+      assert (Hp : Premise) by assumption;
+      let Hmiddle := fresh "HpairMiddle" in
+      assert (Hmiddle : Middle) by exact (Hinner Hp);
+      let Hresult := fresh "HpairResult" in
+      pose proof (Houter Hmiddle) as Hresult;
+      clear Hp Hmiddle;
+      hnf in Hresult;
+      zesu_integer_array_facts
+  end.
+
+Ltac zesu_finish_forall_leaf :=
+  lazymatch goal with
+  | |- ?target => tryif has_evar target then fail 0 else idtac
+  end;
+  match goal with
+  | Hrule : forall x : ?A, _ |- _ =>
+      solve [eapply Hrule; eassumption]
+  end.
+
+Ltac zesu_finish_pure_goal :=
+  zesu_finish_pure_goal_base;
+  try solve [
+    first [
+      zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
+      first [reflexivity | assumption | eassumption | lia | bv_solve |
+        zesu_finish_forall_leaf]
+    | repeat split; zesu_finish_forall_leaf]].
+
+Ltac zesu_finish_entailment :=
+  lazymatch goal with
+  | |- envs_entails _ (@bi_pure _ _) =>
+      iPureIntro; zesu_finish_pure_shape; zesu_finish_pure_goal
+  | _ => zesu_finish_entailment_base
+  end.
 
 Ltac zesu_finish_dispatch :=
   lazymatch goal with
@@ -618,7 +689,8 @@ Ltac zesu_run :=
     unshelve (repeat progress
       (zesu_run_pass; try zesu_solve_instances; zesu_finish));
     try zesu_solve_instances;
-    try zesu_finish_pure_resources).
+    try zesu_finish_pure_resources;
+    try zesu_finish).
 
 Ltac zesu_expose_code_list instructions :=
   lazymatch instructions with

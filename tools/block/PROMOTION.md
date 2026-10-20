@@ -55,6 +55,15 @@ A failed verification restores the previous source files and records the failure
 A successful report sets `success` to `true` and `status` to `verified`.
 The final project gate remains required before a commit.
 
+If historical measurements are unavailable, use `--no-historical-evidence --reason TEXT`.
+This option skips the I67 table and its historical source and capture checks.
+The command records the reason in this document and the output record.
+It removes only the promoted row from the recorded residual counts.
+It still requires MCP compilation, exact statement verification, and empty assumptions.
+Both project gates and the paired M1 check remain required.
+If the slot already consumes the same production theorem, the command reverifies that identity.
+The output records that the slot was already closed and that no native hypothesis was removed.
+
 ## Hand gate preparation
 
 Complete MCP compilation and exact verification before this gate.
@@ -70,3 +79,17 @@ ai-coord watch --label hand-698c-check-fast -- python3 tools/block/prepare_hand_
   --module ZesuSsz/Proofs/DecodeItem/Hand/Block800d698c.v \
   --agent spec-a --jobs 6 --record-size --check-fast
 ```
+
+## Historical evidence unavailable
+
+Promotion of `0x800d6a38` skips historical measurements.
+historical I67 table removed in the 2026-10-15 worktree cleanup; sha256 e56b6babca8856a093fcbaec03346d044b8eda8ab601f6f5229efd3e7fc96082 retained
+MCP compilation and exact statement verification remain required.
+Both project gates and the paired M1 check remain required.
+
+## Historical evidence unavailable
+
+Promotion of `0x800d6ad8` skips historical measurements.
+historical I67 table removed in the 2026-10-15 worktree cleanup; sha256 e56b6babca8856a093fcbaec03346d044b8eda8ab601f6f5229efd3e7fc96082 retained
+MCP compilation and exact statement verification remain required.
+Both project gates and the paired M1 check remain required.
