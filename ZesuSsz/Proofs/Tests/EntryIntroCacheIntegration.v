@@ -18,7 +18,7 @@ Definition wrapper {Sigma} (tag value : Z) (resource frame : iProp Sigma) : iPro
 Global Instance : LithiumUnfold (@wrapper) := I.
 Global Typeclasses Opaque wrapper.
 
-#[local] Instance exit_on : ZesuStepReturnRoute := I.
+#[local] Instance exit_on : ZesuStepExitMeaning := I.
 #[local] Instance entry_evidence {Sigma} (tag value : Z) (resource : iProp Sigma) :
     ZesuEntryIntro (source tag value resource) (entry_fact tag value).
 Proof.

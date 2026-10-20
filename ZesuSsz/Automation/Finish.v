@@ -420,6 +420,31 @@ Ltac zesu_finish_implication_pair :=
       zesu_integer_array_facts
   end.
 
+(* Invoke only after the existing pure closers refuse the goal. *)
+Ltac zesu_finish_contract_arithmetic :=
+  lazymatch goal with
+  | |- @eq Z _ _ => idtac
+  | |- @eq nat _ _ => idtac
+  | |- @eq (bv _) _ _ => idtac
+  | |- Z.le _ _ => idtac
+  | |- Z.lt _ _ => idtac
+  | |- Z.ge _ _ => idtac
+  | |- Z.gt _ _ => idtac
+  | |- (_ <= _)%nat => idtac
+  | |- (_ < _)%nat => idtac
+  end;
+  lazymatch goal with
+  | |- ?target => tryif has_evar target then fail 0 else idtac
+  end;
+  solve [
+    try autounfold with zesu_contract_constants in *;
+    repeat progress (
+      rewrite ?length_app ?length_take ?length_drop ?length_insert;
+      rewrite ?length_bv_to_little_endian;
+      cbn [length N.to_nat]);
+    repeat progress (rewrite ?zesu_Z_to_bv_add);
+    first [lia | bv_solve]].
+
 Ltac zesu_finish_forall_leaf :=
   lazymatch goal with
   | |- ?target => tryif has_evar target then fail 0 else idtac
@@ -428,6 +453,47 @@ Ltac zesu_finish_forall_leaf :=
   | Hrule : forall x : ?A, _ |- _ =>
       solve [eapply Hrule; eassumption]
   end.
+
+Ltac zesu_finish_simpl_and_leaf :=
+  lazymatch goal with
+  | |- ?target =>
+      tryif has_evar target then fail 0 else idtac;
+      let evidence := constr:(_ : SimplAnd target True) in
+      exact (proj1 evidence I)
+  end.
+
+Ltac zesu_finish_list_cons_final :=
+  lazymatch goal with
+  | |- exists (head : ?A) (tail : list ?A),
+      ?values = head :: tail /\ length tail = ?count =>
+      tryif has_evar values then fail 0 else idtac;
+      apply zesu_list_cons_witness;
+      solve [zesu_finish_contract_arithmetic]
+  end.
+
+(* The search keeps the baseline closers. New work runs only in the tail. *)
+Ltac zesu_finish_final_pure :=
+  lazymatch goal with |- ?target =>
+    lazymatch type of target with Prop => idtac end
+  end;
+  zesu_saturate_derived_facts;
+  try solve [
+    first [
+      zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
+      first [reflexivity | assumption | eassumption | lia | bv_solve |
+        zesu_finish_forall_leaf | zesu_finish_contract_arithmetic |
+        zesu_finish_simpl_and_leaf]
+    | repeat split; zesu_finish_forall_leaf
+    | repeat split; first [zesu_finish_contract_arithmetic |
+        zesu_finish_simpl_and_leaf]
+    | let rec finish_leaf :=
+        first [reflexivity | assumption | eassumption | lia | bv_solve |
+          zesu_finish_forall_leaf | zesu_finish_contract_arithmetic |
+          zesu_finish_simpl_and_leaf |
+          lazymatch goal with |- and _ _ => split; finish_leaf end]
+      in finish_leaf
+    | zesu_finish_list_cons_final]].
+
 
 Ltac zesu_finish_pure_goal :=
   zesu_finish_pure_goal_base;
@@ -681,6 +747,8 @@ Ltac zesu_search_switches := constr:([
   ZesuSsz.Automation.Hooks.ZesuStepRegionFaultCastHypotheses;
   ZesuSsz.Automation.BitvectorFacts.ZesuStepMaskNormalizer;
   ZesuSsz.Automation.Hooks.ZesuStepPureFactExistential;
+  ZesuSsz.Automation.ReturnRoute.ZesuStepIntegerReturn;
+  ZesuSsz.Automation.ReturnRoute.ZesuStepExitMeaning;
   ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch]).
 
 Ltac zesu_run :=
@@ -690,7 +758,9 @@ Ltac zesu_run :=
       (zesu_run_pass; try zesu_solve_instances; zesu_finish));
     try zesu_solve_instances;
     try zesu_finish_pure_resources;
-    try zesu_finish).
+    try solve [zesu_array_bounds_if_enabled];
+    try zesu_finish;
+    try zesu_finish_final_pure).
 
 Ltac zesu_expose_code_list instructions :=
   lazymatch instructions with

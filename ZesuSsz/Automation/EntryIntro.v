@@ -196,7 +196,7 @@ Ltac zesu_entry_intro_goal_entry_registration Sigma source continuation :=
      end.
 
 Ltac zesu_entry_intro_goal_exit_registration Sigma source continuation :=
-  zesu_switch_enabled constr:(ZesuStepReturnRoute);
+  zesu_switch_enabled constr:(ZesuStepExitMeaning);
      let evidence := open_constr:(ltac:(ltac2:(zesu_unique_entry_registration ()))
        : @ZesuExitMeaning Sigma source _) in
      let evidenceType := type of evidence in

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.ListSplice.
 Require Import ZesuSsz.Automation.Approved.
 Require Import ZesuSsz.Compliance.DecodeItemHints.
 Require Import ZesuSsz.Compliance.DecodeItemReturnRestorationFacts.
@@ -25,8 +26,6 @@ Definition DesignedEntry_800d697c
 Global Instance : LithiumUnfold (@DesignedEntry_800d697c) := I.
 Global Typeclasses Opaque DesignedEntry_800d697c.
 
-Local Tactic Notation "hand697c_recover" integer(count) := do count zesu_liAStep.
-
 Lemma DesignedBoundary_800d697c `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte)  :
   instr_pre 0x800d698c (∃ (successor_x11 successor_x12 successor_x13 successor_x14 successor_x15 successor_x16 : bv 64) (successor_outputBytes successor_frameBytes : list byte) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698cLiteral args successor_x11 successor_x12 successor_x13 successor_x14 successor_x15 successor_x16 successor_outputBytes successor_frameBytes successor_inputPrefix successor_rest)%I -∗
   decodeItemSelectedCode -∗
@@ -38,31 +37,9 @@ zesu_expose_code_lists.
 repeat first [progress iIntros (?) | progress iIntros "#?" | progress iIntros "?"].
 zesu_reduce_introduced_code_lists.
 repeat iDestruct select (_ ∗ _)%I as "[? ?]".
-1: hand697c_recover 450.
-1: ZesuSsz.Automation.Hooks.zesu_liAWriteMemFocused.
-Unshelve.
-all: try (lazymatch goal with
-| |- lithium.proof_state.SHELVED_SIDECOND (Z.of_nat _ = _) =>
-  unfold lithium.proof_state.SHELVED_SIDECOND;
-  lazymatch goal with |- ?P => let evidence := ZesuSsz.Automation.Hooks.zesu_registered_pure_fact P in exact evidence end
+1: zesu_run_until ltac:(fun _ => lazymatch goal with
+| |- envs_entails _ ?P => lazymatch P with context [decodeItemEntryAt800d698cLiteral] => idtac end
 end).
-all: try (lazymatch goal with
-| |- lithium.proof_state.SHELVED_SIDECOND _ => shelve
-| |- nat => shelve
-end).
-1: hand697c_recover 3.
-1: liFindInContext.
-1: hand697c_recover 3.
-1: iSplit; [iPureIntro; lazymatch goal with |- ?P => let evidence := ZesuSsz.Automation.Hooks.zesu_registered_pure_fact P in exact evidence end | ].
-1: iSplit; [iPureIntro; eapply decodeItemFlagUpdatedBaseBound; [exact HarrayFact3 | lia] | ].
-1: hand697c_recover 171.
-1: liFindInContext.
-1: hand697c_recover 3.
-1: iSplit; [iPureIntro; lazymatch goal with |- ?P => let evidence := ZesuSsz.Automation.Hooks.zesu_registered_pure_fact P in exact evidence end | ].
-1: iSplit; [iPureIntro; solve [zesu_finish] | ].
-1: hand697c_recover 5.
-1: unfold TRACE.
-1: hand697c_recover 6.
 1: iMatchHyp ltac:(fun name resource => lazymatch resource with
   (decodeItemOutputPointer args ↦ₘ∗ ?storage)%I =>
     iExists (Z_to_bv 64 (decodeItemInputPointer args)), (Z_to_bv 64 1), (Z_to_bv 64 (bv_signed inputPrefix)), x14, x15, x16, storage, frameBytes, inputPrefix, rest end).
@@ -79,21 +56,31 @@ end).
 1: iPureIntro.
 1: repeat (first [assumption | split]).
 1: apply decodeItemRawInputPointer; assumption.
+all: repeat lazymatch goal with
+| |- context [ (?base + ?offset - ?base)%Z ] =>
+  replace (base + offset - base)%Z with offset by lia
+end.
+
 1: rewrite <- decodeItemStoredWordBytes.
 1: apply (decodeItemStoredPointerImage (Z_to_bv 64 (decodeItemInputPointer args)) (Z_to_bv 64 1)).
 1: rewrite <- decodeItemStoredWordBytes.
 1: apply (decodeItemStoredLengthImage (Z_to_bv 64 (decodeItemInputPointer args)) (Z_to_bv 64 1)).
-1: rewrite skipn_skipn.
+all: rewrite (image_adjacent_prefix_splice _
+    (bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args))))
+    (bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 1)))
+    8%nat 8%nat eq_refl eq_refl).
+1: rewrite ?skipn_skipn.
 1: apply (decodeItemRawOutputStatus (decodeItemBeforeStorage args) (bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)))) (bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 1)))); [exact HarrayFact3 | reflexivity | reflexivity].
-1: rewrite skipn_skipn.
+1: rewrite ?skipn_skipn.
 1: apply (decodeItemRawOutputPad17 (decodeItemBeforeStorage args) (bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)))) (bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 1)))); [exact HarrayFact3 | reflexivity | reflexivity].
-1: rewrite skipn_skipn.
+1: rewrite ?skipn_skipn.
 1: apply (decodeItemRawOutputPad34 (decodeItemBeforeStorage args) (bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)))) (bv_to_little_endian 8 8 (bv_unsigned (Z_to_bv 64 1)))); [exact HarrayFact3 | reflexivity | reflexivity].
 Unshelve.
 all: unfold lithium.proof_state.SHELVED_SIDECOND.
 all: try reflexivity.
 1: f_equal; f_equal; f_equal; apply bv_eq; reflexivity.
 all: try (lazymatch goal with |- @eq valu _ _ => f_equal; f_equal; f_equal; apply bv_eq; reflexivity end).
-2: rewrite HarrayFact3; cbn; lia.
+all: try solve [zesu_array_bounds_if_enabled].
+all: try solve [lia].
 all: f_equal; apply bool_decide_true; bv_solve.
 Qed.

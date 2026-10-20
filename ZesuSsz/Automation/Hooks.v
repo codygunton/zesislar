@@ -721,6 +721,10 @@ Ltac zesu_primitive_tuple_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepTupleWitness);
   zesu_expose_environment_alias;
   lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ nat _) =>
+      fail 0 "leave the nat index to Lithium"
+  | |- envs_entails _ (@bi_exist _ (li_prod nat _) _) =>
+      fail 0 "leave the protected nat index to Lithium"
   | |- envs_entails _ (@bi_exist _ (li_prod ?A ?B) ?body) =>
       let T := constr:(li_prod A B) in
       assert_fails (has_evar T);
@@ -1493,6 +1497,12 @@ Ltac zesu_region_fault_assert :=
 
 Ltac zesu_region_fault_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepRegionFault);
+  lazymatch goal with
+  | |- iris.proofmode.environments.envs_entails _
+      (WPasm (Smt (Assert (Unop Not _ _)) _ :t: _)) => idtac
+  | |- iris.proofmode.environments.envs_entails _
+      ((WPasm (Smt (Assert (Unop Not _ _)) _ :t: _)) ∧ True)%I => idtac
+  end;
   first [solve [zesu_region_fault_assert] |
     solve [lazymatch goal with
       | |- envs_entails _ ((WPasm _) ∧ True)%I =>
@@ -1619,27 +1629,10 @@ Ltac zesu_integer_pointer_root pointer continuation :=
   end.
 
 Ltac zesu_integer_array_emit_facts proof :=
-  let statement := type of proof in
-  let expanded := eval hnf in statement in
-  lazymatch expanded with
-  | ?left /\ ?right =>
-      let leftProof := constr:(@proj1 left right proof) in
-      let rightProof := constr:(@proj2 left right proof) in
-      zesu_integer_array_emit_facts leftProof;
-      zesu_integer_array_emit_facts rightProof
-  | _ =>
-      lazymatch goal with
-      | _ : statement |- _ => idtac
-      | _ => let name := fresh "HarrayFact" in pose proof proof as name
-      end
-  end.
+  ZesuSsz.Automation.PureFacts.zesu_integer_array_emit_facts proof.
 
 Ltac zesu_integer_array_facts :=
-  repeat match goal with
-  | H : ?statement |- _ =>
-      lazymatch type of statement with Prop => idtac end;
-      progress zesu_integer_array_emit_facts H
-  end.
+  ZesuSsz.Automation.PureFacts.zesu_integer_array_facts.
 
 Class ZesuStepArrayBounds : Prop :=
   zesu_step_array_bounds : True.
@@ -1708,7 +1701,7 @@ Ltac zesu_array_region_selection_if_enabled :=
                zesu_region_bounds]]
   end.
 
-Ltac zesu_array_bounds_if_enabled :=
+Ltac zesu_array_bounds_base :=
   zesu_switch_enabled constr:(ZesuStepArrayBounds);
   lazymatch goal with
   | |- SHELVED_SIDECOND _ => unshelve_sidecond
@@ -1730,7 +1723,61 @@ Ltac zesu_array_bounds_if_enabled :=
         end;
         rewrite ?length_app ?length_take ?length_drop;
         cbn [length]; lia]
+  | |- (?index < length ?storage)%nat =>
+      solve [
+        zesu_integer_array_facts;
+        zesu_array_bound_integer_casts;
+        repeat match goal with
+        | |- context [?base + ?offset - ?base] =>
+            replace (base + offset - base) with offset by lia
+        | |- context [?base - ?base] =>
+            replace (base - base) with 0 by lia
+        end;
+        rewrite ?length_app ?length_take ?length_drop;
+        cbn [length]; lia]
   end.
+
+Ltac zesu_array_bounds_extended :=
+  zesu_switch_enabled constr:(ZesuStepArrayBounds);
+  lazymatch goal with
+  | |- SHELVED_SIDECOND _ => unshelve_sidecond
+  | _ => idtac
+  end;
+  unLET;
+  lazymatch goal with
+  | |- 0 <= ?address - ?base =>
+      solve [try autounfold with zesu_contract_constants in *;
+        zesu_integer_array_facts; bv_solve | lia]
+  | |- (?index + ?width <= length ?storage)%nat =>
+      solve [
+        try autounfold with zesu_contract_constants in *;
+        zesu_integer_array_facts;
+        zesu_array_bound_integer_casts;
+        repeat match goal with
+        | |- context [?base + ?offset - ?base] =>
+            replace (base + offset - base) with offset by lia
+        | |- context [?base - ?base] =>
+            replace (base - base) with 0 by lia
+        end;
+        repeat progress (rewrite ?length_app ?length_take ?length_drop ?length_insert;
+          cbn [length N.to_nat]); lia]
+  | |- (?index < length ?storage)%nat =>
+      solve [
+        try autounfold with zesu_contract_constants in *;
+        zesu_integer_array_facts;
+        zesu_array_bound_integer_casts;
+        repeat match goal with
+        | |- context [?base + ?offset - ?base] =>
+            replace (base + offset - base) with offset by lia
+        | |- context [?base - ?base] =>
+            replace (base - base) with 0 by lia
+        end;
+        repeat progress (rewrite ?length_app ?length_take ?length_drop ?length_insert;
+          cbn [length N.to_nat]); lia]
+  end.
+
+Ltac zesu_array_bounds_if_enabled :=
+  first [zesu_array_bounds_base | zesu_array_bounds_extended].
 
 Ltac zesu_integer_array_address_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepIntegerArrayAddress);
