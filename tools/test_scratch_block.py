@@ -56,6 +56,27 @@ class ScratchBlockTests(unittest.TestCase):
         self.assertEqual(generated.split("Proof.")[0], source.split("Proof.")[0])
         self.assertEqual(module.read_text(), source)
 
+    def test_flat_branches_have_distinct_selectors_and_exact_statements(self):
+        auto = self.hand.parent / "Auto"
+        auto.mkdir()
+        umbrella = auto / "Block800d698c.v"
+        umbrella.write_text("Require Export Branches.\n")
+        for suffix in ("Literal", "ShortString"):
+            name = "800d698c" + suffix
+            module = auto / ("Block" + name + ".v")
+            source = SOURCE.replace("800d6b08", name)
+            module.write_text(source)
+            for selector in ("698c" + suffix, "0x" + name, name.upper()):
+                self.assertEqual(scratch_block.find_block(self.workspace, selector), module)
+            generated = scratch_block.scratch_source(module)
+            self.assertEqual(generated.split("Proof.")[0], source.split("Proof.")[0])
+            self.assertIn("Time all: zesu_block.\n  Show.\nAbort.", generated)
+        with self.assertRaisesRegex(ValueError, "one separate Proof"):
+            scratch_block.scratch_source(scratch_block.find_block(self.workspace, "698c"))
+        for selector in ("698cOther", "698cLiteral/../", "Literal"):
+            with self.assertRaises(ValueError):
+                scratch_block.find_block(self.workspace, selector)
+
     def test_duplicate_full_pc_across_directories_is_rejected(self):
         auto = self.hand.parent / "Auto"
         auto.mkdir()

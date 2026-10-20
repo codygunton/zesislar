@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Compare scratch compiler CPU with interleaved samples under normal load."""
+"""Compare scratch compiler CPU with interleaved samples under normal load.
+
+The original eleven entries keep their sampling rule. Promotion entries use
+three samples per arm, except 6960, which uses five interleaved pairs. Both
+698c branches require explicit Literal or ShortString selectors. R4 adds the
+remaining eight hand blocks. Promotion A/A floors require a completed matching
+comparison with baseline CPU below 300 seconds. Longer entries use a 10% limit.
+"""
 
 import argparse
 import hashlib
@@ -16,11 +23,55 @@ import scratch_block
 
 
 LARGE_BLOCKS = {'6974', '6a08', '6aa8'}
+PROMOTED_ENTRIES = {'6960', '6a38', '6ad8', '698cliteral', '698cshortstring', '697c'}
+# These entries join the timing set with R4, not with earlier releases.
+R4_ENTRIES = {'69e8', '69b0', '6ae0', '6a40', '6b08', '6a78', '6a24', '6ac4'}
+
+
+def entry_id(pc):
+    match = re.fullmatch(r'(?:0x)?(?:800d)?([0-9a-f]{4}(?:literal|shortstring)?)', pc.lower())
+    if not match:
+        raise ValueError('Use a decodeItem PC, optionally followed by Literal or ShortString.')
+    return match[1]
 
 
 def sample_count(pc):
-    return 3 if pc.lower()[-4:] in LARGE_BLOCKS else 5
+    entry = entry_id(pc)
+    return 3 if entry in LARGE_BLOCKS | (PROMOTED_ENTRIES - {'6960'}) | R4_ENTRIES else 5
 
+
+
+def promotion_policy(pc, baseline_cpu):
+    """Retain the new timing rule without changing the original eleven-entry rule."""
+    entry = entry_id(pc)
+    if entry not in PROMOTED_ENTRIES | R4_ENTRIES:
+        return None
+    short = baseline_cpu < 300
+    return dict(first_release=('R4' if entry in R4_ENTRIES | {'6960'} else
+                              'R1' if entry in {'6a38', '6ad8'} else 'R2-R3'),
+                aa_floor_required=short, cpu_boundary_seconds=300,
+                limit_rule='max(10%, twice the A/A floor)' if short else '10%',
+                fixed_limit=None if short else .1,
+                closure_check='required project gates; this run adds timing')
+
+
+def check_noise_reference(pcs, reference, sources, setup):
+    """Refuse new-entry floors without a matching sub-300-second baseline."""
+    for pc in pcs:
+        if entry_id(pc) not in PROMOTED_ENTRIES | R4_ENTRIES:
+            continue
+        if reference is None or reference.get('status') != 'complete' or reference.get('mode') != 'compare':
+            raise ValueError('Promotion noise requires a completed comparison reference.')
+        block = reference.get('blocks', {}).get(pc, {})
+        cpu = block.get('median_cpu_A')
+        if not isinstance(cpu, (int, float)) or not math.isfinite(cpu) or not 0 < cpu < 300:
+            raise ValueError('Promotion A/A floors require baseline CPU below 300 seconds: ' + pc)
+        old_source = reference.get('sources', {}).get(pc, {})
+        for key in ('statement_sha256', 'source_A_sha256'):
+            if old_source.get(key) != sources[pc][key]:
+                raise ValueError('The noise reference uses a different baseline source: ' + pc)
+        if reference.get('compiler_setups', {}).get('A') != setup:
+            raise ValueError('The noise reference uses a different baseline compiler setup.')
 
 def ratios(pairs):
     values = [pair['B']['cpu_seconds'] / pair['A']['cpu_seconds'] for pair in pairs]
@@ -116,6 +167,9 @@ def run_pairs(pcs, sample, save, load=os.getloadavg):
         block.update(ratios(block['pairs']))
         block['method'] = 'median CPU ratio' if count == 3 else 'median of paired ratios'
         block['comparison_ratio'] = block['median_cpu_ratio'] if count == 3 else block['median_ratio']
+        policy = promotion_policy(pc, block['median_cpu_A'])
+        if policy is not None:
+            block['timing_policy'] = policy
         for arm in ('A', 'B'):
             block['all_' + arm + '_no_goals'] = all(pair[arm]['outcome'] == 'no goals' for pair in block['pairs'])
         save(report)
@@ -203,6 +257,8 @@ def main(argv=None):
     parser.add_argument('--changed-ocamlpath')
     parser.add_argument('--extra', type=Path)
     parser.add_argument('--prior-results', type=Path)
+    parser.add_argument('--noise-reference', type=Path,
+                        help='Completed comparison for promotion A/A floors below 300 CPU seconds.')
     parser.add_argument('--writer-prefix', required=True)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args(argv)
@@ -222,12 +278,22 @@ def main(argv=None):
                               for path in ['block/paired_scratch.py', 'block/scratch_block.py',
                                            'block/scratch_block.sh', 'block/coqc_primary.py',
                                            'coqc_scratch.sh', 'coqc_recipe.py']}
+        for pc in args.pcs:
+            entry_id(pc)
+        if len({entry_id(pc) for pc in args.pcs}) != len(args.pcs):
+            raise ValueError('The entry list contains a duplicate boundary.')
         args.sources = source_scope(args)
         args.extra_hash = hashlib.sha256(args.extra.read_bytes()).hexdigest() if args.extra else None
         args.compiler_setups = {'A': compiler_setup(args.build_dir, args.recipe, args.ocamlpath),
                                 'B': compiler_setup(args.changed_build_dir, args.changed_recipe,
                                                     args.changed_ocamlpath or args.ocamlpath)}
         prior = json.loads(args.prior_results.read_text()) if args.prior_results else None
+        noise_bytes = args.noise_reference.read_bytes() if args.noise_reference else None
+        noise_reference = json.loads(noise_bytes) if noise_bytes else None
+        if args.mode == 'noise':
+            check_noise_reference(args.pcs, noise_reference, args.sources, args.compiler_setups['A'])
+        elif args.noise_reference:
+            raise ValueError('Use --noise-reference only for A/A floors.')
         heads = {arm: subprocess.check_output(['git', '-C', str(workspace), 'rev-parse', 'HEAD'], text=True).strip()
                  for arm, workspace in [('A', args.workspace), ('B', args.changed_workspace)]}
         if args.mode == 'noise' and (args.extra or args.workspace != args.changed_workspace
@@ -246,7 +312,9 @@ def main(argv=None):
                       workspace_heads=heads, extra=str(args.extra) if args.extra else None,
                       extra_sha256=args.extra_hash, sources=args.sources, compiler_setups=args.compiler_setups,
                       prior_results=prior, floor_definition='median(abs(B/A - 1))',
-                      tool_versions=args.tool_versions)
+                      tool_versions=args.tool_versions,
+                      noise_reference=str(args.noise_reference) if args.noise_reference else None,
+                      noise_reference_sha256=hashlib.sha256(noise_bytes).hexdigest() if noise_bytes else None)
         args.output.write_text(json.dumps(report, indent=2) + '\n')
 
     try:
