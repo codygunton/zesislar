@@ -113,7 +113,7 @@ class NativeAdmission(unittest.TestCase):
         memory = fixture.run_guard(script)
         self.assertEqual(memory.returncode, 0, memory.stderr)
         self.assertIn('memory', memory.stdout)
-        script = 'available_gib() { echo 26; }; coqc_count() { echo 48; }; load_five() { echo 0; }; blocked_count() { echo 0; }; hold_reason'
+        script = 'available_gib() { echo 36; }; coqc_count() { echo 48; }; load_five() { echo 0; }; blocked_count() { echo 0; }; hold_reason'
         compilers = fixture.run_guard(script)
         self.assertEqual(compilers.returncode, 0, compilers.stderr)
         self.assertIn('coqc 48', compilers.stdout)
