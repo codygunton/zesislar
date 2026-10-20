@@ -598,15 +598,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v",
       "category": "introductions",
       "scope": "whole_file",
-      "sha256": "fc9dc5b53e1c87c635ef6bbe5b4cd8447ec0613472e04ebb4e6906f15f9745c9",
-      "file_lines": 325,
+      "sha256": "7d498a16642b2005fc759c3d6bf49a271f574a1950c76387486235402face71e",
+      "file_lines": 294,
       "line_ranges": [
         [
           1,
-          325
+          294
         ]
       ],
-      "counted_lines": 325
+      "counted_lines": 294
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemC1BMeaning.v",
@@ -8279,16 +8279,16 @@
     "tests_and_exports": 36668,
     "composition": 584,
     "loop_steps": 1133,
-    "introductions": 3524,
+    "introductions": 3493,
     "exit_meanings": 2518,
     "registrations": 448,
     "contracts": 2397,
     "generator_json": 6279,
     "block_proofs": 2375
   },
-  "interface_total": 16299,
+  "interface_total": 16268,
   "extra_total": 39627,
-  "overall_total": 55926,
+  "overall_total": 55895,
   "file_count": 386,
   "embedded_registration_ranges": [
     {
