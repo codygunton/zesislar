@@ -110,6 +110,20 @@ def instruction_ratios(pairs):
                 median_absolute_deviation=statistics.median(abs(value - 1) for value in values),
                 absolute_median_deviation=abs(statistics.median(values) - 1))
 
+
+def instruction_consistency(pairs):
+    """Keep the spread explicit and refuse a timing verdict above one percent."""
+    arms = {}
+    for arm in ('A', 'B'):
+        values = [pair[arm]['user_instructions'] for pair in pairs]
+        ratio = max(values) / min(values)
+        arms[arm] = dict(min_instructions=min(values), max_instructions=max(values),
+                         max_min_ratio=ratio, spread=ratio - 1,
+                         method_defect=ratio > 1.01)
+    return dict(definition='spread = max(instructions) / min(instructions) - 1 per arm; '
+                           'method defect iff max/min > 1.01',
+                arms=arms, method_defect=any(arm['method_defect'] for arm in arms.values()))
+
 def statement(module):
     name = 'DesignedBoundary_' + module.stem.removeprefix('Block')
     proofs = [proof for proof in scratch_block.parse_module(module) if proof.name == name]
@@ -203,13 +217,25 @@ def run_pairs(pcs, sample, save, load=os.getloadavg, metric='cpu'):
             block['instruction_statistics'] = stats
             block['method'] = 'ratio of instruction medians' if count == 3 else 'median of paired instruction ratios'
             block['comparison_ratio'] = stats['ratio_of_medians'] if count == 3 else stats['median_ratio']
-        policy = promotion_policy(pc, block['median_cpu_A'])
+            consistency = instruction_consistency(block['pairs'])
+            block.update(consistency_check=consistency, method_defect=consistency['method_defect'],
+                         instruction_limit=.1,
+                         timing_verdict=(None if consistency['method_defect'] else
+                                         'pass' if block['comparison_ratio'] <= 1.1 else 'fail'),
+                         timing_policy=dict(decision_metric='user-space instructions', fixed_limit=.1,
+                                            additional_floors_required=False))
+        policy = promotion_policy(pc, block['median_cpu_A']) if metric == 'cpu' else None
         if policy is not None:
             block['timing_policy'] = policy
         for arm in ('A', 'B'):
             block['all_' + arm + '_no_goals'] = all(pair[arm]['outcome'] == 'no goals' for pair in block['pairs'])
         save(report)
     report['status'] = 'complete'
+    if metric == 'instructions':
+        report['method_defect_entries'] = [pc for pc, block in report['blocks'].items() if block['method_defect']]
+        report['timing_failure_entries'] = [pc for pc, block in report['blocks'].items() if block['timing_verdict'] == 'fail']
+        report['timing_verdict'] = (None if report['method_defect_entries'] else
+                                    'fail' if report['timing_failure_entries'] else 'pass')
     save(report)
     return report
 
@@ -281,6 +307,10 @@ def watched_sample(pc, arm, number, retain, args):
             row.update(user_instructions=record.get('user_instructions'),
                        instruction_measurement_complete=record.get('instruction_measurement_complete', False),
                        cpu_scope=record.get('cpu_scope'),
+                       rusage_including_perf=record.get('rusage_including_perf'),
+                       coqc_cpu_s=record.get('coqc_cpu_s'),
+                       coqc_peak_rss=record.get('coqc_peak_rss'),
+                       coqc_peak_rss_unit=record.get('coqc_peak_rss_unit'),
                        observed_compiler_cpu_seconds=record.get('observed_compiler_cpu_seconds'),
                        instruction_error=record.get('instruction_error'))
     except (OSError, ValueError, StopIteration, KeyError) as error:

@@ -471,6 +471,10 @@ class DiagnosticProbeBudgetTests(unittest.TestCase):
                 self.assertEqual(retained['exit_code'], 7)
                 self.assertEqual(retained['observed_compiler_cpu_seconds'], 60 / coqc_primary.os.sysconf('SC_CLK_TCK'))
                 self.assertIn('perf driver', retained['cpu_scope'])
+                self.assertEqual(retained['rusage_including_perf']['cpu_s'], retained['cpu_seconds'])
+                self.assertEqual(retained['coqc_cpu_s'], retained['observed_compiler_cpu_seconds'])
+                self.assertEqual(retained['coqc_peak_rss'], 100)
+                self.assertEqual(retained['coqc_peak_rss_unit'], 'KiB')
                 self.assertEqual(retained['instruction_measurement_complete'], valid)
                 if valid:
                     self.assertEqual(retained['user_instructions'], 12345)
