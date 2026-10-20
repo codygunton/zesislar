@@ -47,6 +47,62 @@ class PairTests(unittest.TestCase):
                 self.assertEqual(block['comparison_ratio'], 1.5)
                 self.assertEqual(block['median_ratio'], 1)
 
+    def test_promotions_preserve_interleaving_and_distinct_flat_entries(self):
+        pcs = ['6960', '6a38', '6ad8', '698cLiteral', '698cShortString', '697c',
+               '69e8', '69b0', '6ae0', '6a40', '6b08', '6a78', '6a24', '6ac4']
+        calls = []
+        def sample(pc, arm, number, retain):
+            calls.append((pc, arm, number))
+            return row()
+        result = paired_scratch.run_pairs(pcs, sample, lambda _: None)
+        for pc in pcs:
+            count = 5 if pc == '6960' else 3
+            self.assertEqual([call for call in calls if call[0] == pc],
+                             [(pc, arm, n) for n in range(1, count + 1) for arm in ['A', 'B']])
+            block = result['blocks'][pc]
+            self.assertEqual(block['samples_per_arm'], count)
+            self.assertEqual(block['method'], 'median of paired ratios' if count == 5 else 'median CPU ratio')
+        for pc in ('0x800d698cLiteral', '800D698CSHORTSTRING', '0x800d6a38'):
+            self.assertEqual(paired_scratch.sample_count(pc), 3)
+        self.assertEqual(paired_scratch.sample_count('0x800d6960'), 5)
+
+    def test_promotion_noise_and_fixed_limit_meet_at_300_seconds(self):
+        for pc in paired_scratch.PROMOTED_ENTRIES | paired_scratch.R4_ENTRIES:
+            short = paired_scratch.promotion_policy(pc, 299.999)
+            self.assertTrue(short['aa_floor_required'])
+            self.assertIsNone(short['fixed_limit'])
+            for cpu in (300, 1900):
+                long = paired_scratch.promotion_policy(pc, cpu)
+                self.assertFalse(long['aa_floor_required'])
+                self.assertEqual(long['fixed_limit'], .1)
+        self.assertEqual(paired_scratch.promotion_policy('6960', 31)['first_release'], 'R4')
+        self.assertEqual(paired_scratch.promotion_policy('69e8', 362)['first_release'], 'R4')
+        self.assertIsNone(paired_scratch.promotion_policy('6974', 400))
+        self.assertIsNone(paired_scratch.promotion_policy('69a4', 10))
+
+    def test_promotion_noise_requires_matching_short_baseline_reference(self):
+        sources = {'698cLiteral': dict(statement_sha256='statement', source_A_sha256='source')}
+        setup = dict(recipe='private', recipe_sha256='hash', ocamlpath='private-lib')
+        reference = dict(status='complete', mode='compare', sources=copy.deepcopy(sources),
+                         compiler_setups={'A': setup}, blocks={'698cLiteral': dict(median_cpu_A=216)})
+        paired_scratch.check_noise_reference(['698cLiteral'], reference, sources, setup)
+        for cpu in (300, 301, None, float('nan')):
+            changed = copy.deepcopy(reference)
+            changed['blocks']['698cLiteral']['median_cpu_A'] = cpu
+            with self.assertRaisesRegex(ValueError, 'below 300'):
+                paired_scratch.check_noise_reference(['698cLiteral'], changed, sources, setup)
+        for key in ('statement_sha256', 'source_A_sha256'):
+            changed = copy.deepcopy(reference)
+            changed['sources']['698cLiteral'][key] = 'different'
+            with self.assertRaisesRegex(ValueError, 'different baseline source'):
+                paired_scratch.check_noise_reference(['698cLiteral'], changed, sources, setup)
+        with self.assertRaisesRegex(ValueError, 'different baseline compiler'):
+            paired_scratch.check_noise_reference(['698cLiteral'], reference, sources, {})
+        with self.assertRaisesRegex(ValueError, 'completed comparison'):
+            paired_scratch.check_noise_reference(['698cLiteral'], None, sources, setup)
+        # The historical eight-entry noise command keeps its original interface.
+        paired_scratch.check_noise_reference(['69a4'], None, {}, {})
+
     def test_both_noise_statistics_remain_distinct(self):
         pairs = [dict(A=row(), B=row(cpu)) for cpu in [8, 9, 10, 11, 12]]
         stats = paired_scratch.ratios(pairs)

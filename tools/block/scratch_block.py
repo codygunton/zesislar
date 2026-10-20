@@ -20,8 +20,8 @@ import coqc_primary
 
 def find_block(workspace, pc):
     digits = pc.lower().removeprefix("0x")
-    if not re.fullmatch(r"[0-9a-f]+", digits):
-        raise ValueError("The block PC must be hexadecimal.")
+    if not re.fullmatch(r"[0-9a-f]+(?:literal|shortstring)?", digits):
+        raise ValueError("The block PC must be hexadecimal, with an optional Literal or ShortString suffix.")
     directory = workspace / "ZesuSsz/Proofs/DecodeItem"
     matches = [path for kind in ("Hand", "Auto")
                for path in (directory / kind).glob("Block*.v")
@@ -54,7 +54,7 @@ def scratch_source(module, additions=""):
 def main(argv=None):
     workspace = Path(__file__).resolve().parents[2]
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("pc", help="The complete block PC or its unique hexadecimal suffix.")
+    parser.add_argument("pc", help="The block PC or unique suffix, optionally followed by Literal or ShortString.")
     parser.add_argument("extra", type=Path, nargs="?", help="Optional imports, lemmas, or local hints.")
     parser.add_argument("--source-workspace", type=Path,
                         help="Read the selected source from another workspace with this compiler helper.")
