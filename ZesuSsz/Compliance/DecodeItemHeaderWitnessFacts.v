@@ -17,7 +17,8 @@ Require Import ZesuSsz.Compliance.DecodeItemInputHeadWordFacts.
 From Coq Require Import List ZArith Lia.
 Open Scope Z_scope.
 
-#[export] Hint Unfold RlpDecodeItem.word64Modulus : zesu_contract_constants.
+#[export] Hint Unfold RlpDecodeItem.word64Modulus
+  RlpDecodeItem.decodeItemStackBytes : zesu_contract_constants.
 
 Lemma decodeItemInputHeadWitnessFacts returnAddress args :
   decodeItemDomainAt returnAddress decodeItemC1BDomain args ->

@@ -164,15 +164,28 @@ def around(client, original, stop, rule, class_name, entry_guard=None):
 
 
 def instrument_return_route(text, stop):
-    """Wrap all three actual Hint Extern bodies. Keep each body byte-exact."""
+    """Wrap the three legacy hints and preserve the reviewed integer hints."""
     replacements, descriptors = [], {}
     names = ("normalize", "fault", "implication")
+    integer_hints = {
+        "#[export] Hint Extern 5 (LiTactic (normalize_instr_addr _)) => "
+        "zesu_return_integer_normalize : typeclass_instances.",
+        "#[export] Hint Extern 5 (SimplImpl _ _) => "
+        "zesu_return_integer_fault : typeclass_instances.",
+    }
+    seen_integer_hints = set()
     for start, end in command_spans(text):
         command = text[start:end]
         from rule_compare import without_comments
         masked = without_comments(command)
         match = re.search(r"#\[export\]\s+Hint\s+Extern\b", masked)
         if not match:
+            continue
+        signature = " ".join(masked.split())
+        if signature in integer_hints:
+            if signature in seen_integer_hints:
+                raise ValueError("ReturnRoute has an unreviewed extra Hint Extern.")
+            seen_integer_hints.add(signature)
             continue
         if len(descriptors) >= len(names):
             raise ValueError("ReturnRoute has an unreviewed extra Hint Extern.")

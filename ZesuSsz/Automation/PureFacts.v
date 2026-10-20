@@ -121,3 +121,27 @@ Ltac zesu_step_witness_arith_on :=
 
 Ltac zesu_witness_arith_if_enabled :=
   zesu_step_witness_arith_on; zesu_witness_arith.
+
+(* Expose retained conjunctions without changing their original hypotheses. *)
+Ltac zesu_integer_array_emit_facts proof :=
+  let statement := type of proof in
+  let expanded := eval hnf in statement in
+  lazymatch expanded with
+  | ?left /\ ?right =>
+      let leftProof := constr:(@proj1 left right proof) in
+      let rightProof := constr:(@proj2 left right proof) in
+      zesu_integer_array_emit_facts leftProof;
+      zesu_integer_array_emit_facts rightProof
+  | _ =>
+      lazymatch goal with
+      | _ : statement |- _ => idtac
+      | _ => let name := fresh "HarrayFact" in pose proof proof as name
+      end
+  end.
+
+Ltac zesu_integer_array_facts :=
+  repeat match goal with
+  | H : ?statement |- _ =>
+      lazymatch type of statement with Prop => idtac end;
+      progress zesu_integer_array_emit_facts H
+  end.

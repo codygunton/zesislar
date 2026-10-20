@@ -30,7 +30,9 @@
     "ZesuSsz.Automation.Switches.CanonicalPureConjunction",
     "ZesuSsz.Automation.Switches.ByteListContainment",
     "ZesuSsz.Automation.Switches.RegionFaultCastHypotheses",
-    "ZesuSsz.Automation.Switches.ConjunctMatch"
+    "ZesuSsz.Automation.Switches.ConjunctMatch",
+    "ZesuSsz.Automation.Switches.IntegerReturn",
+    "ZesuSsz.Automation.Switches.ExitMeaning"
   ],
   "exclusions": [
     {
