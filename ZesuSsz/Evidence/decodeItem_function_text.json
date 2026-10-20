@@ -98,12 +98,14 @@
     "ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.v",
     "ZesuSsz/Compliance/DecodeItemFoldZeroFacts.v",
     "ZesuSsz/Compliance/DecodeItemLoopSteps.v",
-    "ZesuSsz/Proofs/DecodeItem/ByteFoldPure.v"
+    "ZesuSsz/Proofs/DecodeItem/ByteFoldPure.v",
+    "ZesuSsz/Compliance/DecodeItemLoopDerivedFacts.v"
   ],
   "registrations": [
     "ZesuSsz/Compliance/DecodeItemDataRegistrations.v",
     "ZesuSsz/Compliance/DecodeItemHints.v",
-    "ZesuSsz/Compliance/DecodeItemUnfoldRegistrations.v"
+    "ZesuSsz/Compliance/DecodeItemUnfoldRegistrations.v",
+    "ZesuSsz/Compliance/DecodeItemLoopInitialization.v"
   ],
   "generator_json": [
     "ZesuSsz/Contracts/decode_item_block_design.json",
@@ -396,7 +398,11 @@
     "tools/test_successor_entailment.py",
     "ZesuSsz/Evidence/test_historical_evidence.py",
     "ZesuSsz/Evidence/i75/INDEX.json",
-    "ZesuSsz/Evidence/test_i75_evidence.py"
+    "ZesuSsz/Evidence/test_i75_evidence.py",
+    "ZesuSsz/Proofs/Tests/LoopIndexStep.v",
+    "ZesuSsz/Proofs/Tests/LoopFaultBounds.v",
+    "ZesuSsz/Proofs/Tests/LoopDerivedFacts.v",
+    "ZesuSsz/Proofs/Tests/LoopInitialization.v"
   ],
   "lemmas": [
     "ZesuSsz/Compliance/ByteFold.v",
@@ -451,7 +457,8 @@
     "ZesuSsz/Compliance/RlpInputBounds.v",
     "ZesuSsz/Compliance/SailRun.v",
     "ZesuSsz/Compliance/SailVectorAuditIntegers.v",
-    "ZesuSsz/Proofs/DecodeItem/ByteFoldPure.v"
+    "ZesuSsz/Proofs/DecodeItem/ByteFoldPure.v",
+    "ZesuSsz/Compliance/DecodeItemLoopDerivedFacts.v"
   ],
   "pending": [],
   "files": [
@@ -891,15 +898,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemHints.v",
       "category": "registrations",
       "scope": "whole_file",
-      "sha256": "d9b44d00348151538459ca8ba8fc03f6edafc3e0a1366e22876609446a6397e7",
-      "file_lines": 45,
+      "sha256": "182ba9998111e2994fdecb7d6a74b359e599695dd852adcdef3f7fe484bd2ffb",
+      "file_lines": 47,
       "line_ranges": [
         [
           1,
-          45
+          47
         ]
       ],
-      "counted_lines": 45
+      "counted_lines": 47
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemInitializationPureFacts.v",
@@ -1685,15 +1692,15 @@
       "path": "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v",
       "category": "contracts",
       "scope": "whole_file",
-      "sha256": "7b22b45607725212a23b90a195c8d94471a952ea00ba5ea6a7e1b2e8541b5dbe",
-      "file_lines": 60,
+      "sha256": "336ec1476a50d6c92c4c33ea42250eb24d79b87266a9f7bc834df82b9eee2bfe",
+      "file_lines": 61,
       "line_ranges": [
         [
           1,
-          60
+          61
         ]
       ],
-      "counted_lines": 60
+      "counted_lines": 61
     },
     {
       "path": "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.v",
@@ -2567,14 +2574,14 @@
       "role": "measurement_metadata",
       "scope": "whole_file",
       "sha256": null,
-      "file_lines": 8046,
+      "file_lines": 8129,
       "line_ranges": [
         [
           1,
-          8046
+          8129
         ]
       ],
-      "counted_lines": 8046
+      "counted_lines": 8129
     },
     {
       "path": "ZesuSsz/Evidence/decode_item_auto_modules.json",
@@ -2594,7 +2601,7 @@
       "path": "ZesuSsz/Evidence/decode_item_block_design.json",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "b097f5f30803f6098f188476ee79da818a6e65a8bd62bb50911f6ad4b5749b34",
+      "sha256": "e97feaeeede3b7bd470109f42c508fa240d74dc513cc7260b9c2a19e973e702a",
       "file_lines": 2237,
       "line_ranges": [
         [
@@ -3815,15 +3822,15 @@
       "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "90b766d0cdf133b8d9304d3ae0c35b0785d612167cb889c2d9077de052909628",
-      "file_lines": 218,
+      "sha256": "f0156c21b1a624bbd7c0c8f86739707f063416f3af4041d12378ebb09d274ca2",
+      "file_lines": 323,
       "line_ranges": [
         [
           1,
-          218
+          323
         ]
       ],
-      "counted_lines": 218,
+      "counted_lines": 323,
       "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
     },
     {
@@ -4133,7 +4140,7 @@
       "path": "ZesuSsz/Generated/DecodeItem/BlockTable.v",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "263f000d69de5a18797465a1223e23304b7b1e6dde9bedb85e07690a23c1a51d",
+      "sha256": "57bb630a2fc0c6b9df6d7e223dde07bf71832e51b1614cbecfb84fc489b983d1",
       "file_lines": 209,
       "line_ranges": [
         [
@@ -4161,7 +4168,7 @@
       "path": "ZesuSsz/Generated/DecodeItem/block_table_metadata.json",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "802034e4f03fe3c11b5e30e82221ea4e1b86764546e55c0d09f08fef80c1d9d1",
+      "sha256": "71b7e183b10821f09534a84a1cda23f39bc05178b76270fead27517f4ad567ed",
       "file_lines": 702,
       "line_ranges": [
         [
@@ -7534,6 +7541,90 @@
         ]
       ],
       "counted_lines": 209
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemLoopDerivedFacts.v",
+      "category": "loop_steps",
+      "scope": "whole_file",
+      "sha256": "8fef3929706c29f775109289121682c89c397c2c3c8e5394fee4fcf6826467e8",
+      "file_lines": 105,
+      "line_ranges": [
+        [
+          1,
+          105
+        ]
+      ],
+      "counted_lines": 105
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/LoopIndexStep.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "1a360677de4f58c8e58ef8e839d8056b8d4bc74aebf3d2fc1aca46e8958dec01",
+      "file_lines": 40,
+      "line_ranges": [
+        [
+          1,
+          40
+        ]
+      ],
+      "counted_lines": 40
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/LoopFaultBounds.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "40fd0bc6827df4129d2799b371e4925f47e5329362ada3f87a8d125565307a25",
+      "file_lines": 80,
+      "line_ranges": [
+        [
+          1,
+          80
+        ]
+      ],
+      "counted_lines": 80
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/LoopDerivedFacts.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "94b6fc8d4c9b2f6d5a9141586ae210dcda3b63cf88b983598aa9eeb5e5ac4d7f",
+      "file_lines": 42,
+      "line_ranges": [
+        [
+          1,
+          42
+        ]
+      ],
+      "counted_lines": 42
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemLoopInitialization.v",
+      "category": "registrations",
+      "scope": "whole_file",
+      "sha256": "600bec8afb86a708d6f55ae7add4517cc6bae7d2d138d313b8269f756eae180a",
+      "file_lines": 48,
+      "line_ranges": [
+        [
+          1,
+          48
+        ]
+      ],
+      "counted_lines": 48
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/LoopInitialization.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "33d45e2aef13976896440e6b6e0c7ff642c3f8ad9f0e16c2b55686f5a19937bb",
+      "file_lines": 50,
+      "line_ranges": [
+        [
+          1,
+          50
+        ]
+      ],
+      "counted_lines": 50
     }
   ],
   "blocks": [
@@ -7950,20 +8041,20 @@
   },
   "base_manifest_sha256": "7deccbbc338d25231c300f1ba6824c5c10136917b0207e75589cd9a86f9d020a",
   "category_totals": {
-    "tests_and_exports": 35449,
+    "tests_and_exports": 35849,
     "composition": 602,
-    "loop_steps": 965,
+    "loop_steps": 1070,
     "introductions": 3688,
     "exit_meanings": 3114,
-    "registrations": 327,
-    "contracts": 2590,
+    "registrations": 377,
+    "contracts": 2591,
     "generator_json": 6299,
     "block_proofs": 3461
   },
-  "interface_total": 16983,
-  "extra_total": 39512,
-  "overall_total": 56495,
-  "file_count": 366,
+  "interface_total": 17139,
+  "extra_total": 39912,
+  "overall_total": 57051,
+  "file_count": 372,
   "embedded_registration_ranges": [
     {
       "path": "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
@@ -8032,15 +8123,7 @@
     "scope": "Earlier same-source snapshot with thirteen test lines scored conservatively; preserved in packet001."
   },
   "metadata_refresh": {
-    "root": "a9110030a2455722f28d6fe085911b0d76afd577",
-    "scope": "Cleanup-status checker and affected unscored historical records only. Original scored source scope and interface total remain historical.",
-    "cleanup_status": "removed in the 2026-10-15 worktree cleanup; hash retained",
-    "policy": "Historical inventory may lack explicitly removed worktree bytes. Present files must match. Native certificate reads remain strict.",
-    "interface_change": 0,
-    "I75": "Count the complete affected I75 historical checker, index and tests as unscored text. Retained report comparisons remain verified; missing raw evidence remains unavailable.",
-    "call_spec": {
-      "base": "33f27d9a",
-      "scope": "Inherited manifest plus the approved call boundary and derived proofs. No global recount."
-    }
+    "base_commit": "76eab8cb",
+    "scope": "P7 loop preparation: tagged binders, derived facts, tests, and umbrella. No native closure claim."
   }
 }

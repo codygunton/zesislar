@@ -9,3 +9,4 @@ Require Export ZesuSsz.Automation.Hooks.
 Require Export ZesuSsz.Automation.UninitRegions.
 Require Export ZesuSsz.Automation.NatBitvectors.
 Require Export ZesuSsz.Automation.ArrayPacking.
+Require Export ZesuSsz.Automation.LoopIndex.
