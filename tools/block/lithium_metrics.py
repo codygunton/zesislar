@@ -14,6 +14,7 @@ import tempfile
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from residual.modules import parse_module
 from launch_imports import require_modules
+from check_data_only_lemmas import command_imports, rocq_commands
 
 
 MANIFEST = 'ZesuSsz/Evidence/decodeItem_function_text.json'
@@ -112,33 +113,76 @@ def range_count(lines, ranges):
     return len(selected)
 
 
+def boundary_counts(commit, path, directory):
+    temporary = Path(directory) / Path(path).name
+    temporary.write_bytes(commit.read(path))
+    proofs = [proof for proof in parse_module(temporary) if proof.name.startswith('DesignedBoundary_')]
+    expected = 'DesignedBoundary_' + Path(path).stem.removeprefix('Block')
+    if len(proofs) != 1 or proofs[0].name != expected:
+        raise ValueError('The block must contain its exact boundary theorem: ' + path)
+    proof = proofs[0]
+    native = proof.automation_only
+    kinds, mixed, structural = classify_lines(proof.hand_lines) if not native else (dict.fromkeys((*KINDS, 'other'), 0), 0, 0)
+    return dict(path=path, status='native' if native else 'hand',
+                lines=0 if native else len(proof.hand_lines), kinds=kinds,
+                mixed_lines=mixed, structural_lines=structural)
+
+
+def block_counts(commit, directory):
+    groups = {}
+    for path in sorted(commit.paths):
+        match = re.fullmatch(r'ZesuSsz/Proofs/DecodeItem/(?:Hand|Auto)/Block([0-9a-fA-F]+)(Literal|ShortString)?\.v', path)
+        if not match:
+            continue
+        pc, branch = match[1].lower(), match[2] or ''
+        group = groups.setdefault(pc, {})
+        if branch in group:
+            raise ValueError('The commit repeats a block module: ' + pc)
+        group[branch] = path
+    blocks = []
+    for pc, group in sorted(groups.items()):
+        if set(group) == {''}:
+            blocks.append(dict(pc=pc, **boundary_counts(commit, group[''], directory)))
+            continue
+        if set(group) != {'', 'Literal', 'ShortString'}:
+            raise ValueError('The split block requires its umbrella and both branches: ' + pc)
+        umbrella = group['']
+        if any(Path(path).parent != Path(umbrella).parent for path in group.values()):
+            raise ValueError('Split modules must share their umbrella directory: ' + pc)
+        exports = set()
+        for command in rocq_commands(commit.read(umbrella).decode()):
+            values = [token for token, _ in command]
+            if not values or (values[0] != 'Require' and not (values[0] == 'From' and 'Require' in values)):
+                raise ValueError('A split umbrella must contain only Require commands: ' + umbrella)
+            imported, exported = command_imports(values)
+            if exported:
+                exports.update(imported)
+        branches = [boundary_counts(commit, group[name], directory) for name in ('Literal', 'ShortString')]
+        required = {'.'.join(Path(row['path']).with_suffix('').parts) for row in branches}
+        if not required <= exports:
+            raise ValueError('The split umbrella must export both branches: ' + umbrella)
+        blocks.append(dict(pc=pc, path=umbrella, branches=branches,
+                           status='native' if all(row['status'] == 'native' for row in branches) else 'hand',
+                           lines=sum(row['lines'] for row in branches),
+                           kinds={kind: sum(row['kinds'][kind] for row in branches) for kind in (*KINDS, 'other')},
+                           mixed_lines=sum(row['mixed_lines'] for row in branches),
+                           structural_lines=sum(row['structural_lines'] for row in branches)))
+    return blocks, {path for group in groups.values() for path in group.values()}
+
+
 def count_commit(commit):
     manifest = json.loads(commit.read(MANIFEST))
     checkpoint = json.loads(commit.read(HAND_CHECKPOINT))
-    blocks = []
     hand_lines = 0
     kind_totals = Counter()
     mixed_total = structural_total = 0
     with tempfile.TemporaryDirectory(prefix='lithium-metrics-') as directory:
-        for path in sorted(commit.paths):
-            if not re.fullmatch(r'ZesuSsz/Proofs/DecodeItem/(?:Hand|Auto)/Block[0-9a-fA-F]+\.v', path):
-                continue
-            text = commit.read(path).decode()
-            temporary = Path(directory) / Path(path).name
-            temporary.write_text(text)
-            proofs = [proof for proof in parse_module(temporary) if proof.name.startswith('DesignedBoundary_')]
-            if len(proofs) != 1:
-                raise ValueError('The block must contain one boundary theorem: ' + path)
-            proof = proofs[0]
-            native = proof.automation_only
-            count = 0 if native else len(proof.hand_lines)
-            hand_lines += count
-            kinds, mixed, structural = classify_lines(proof.hand_lines) if not native else (dict.fromkeys((*KINDS, 'other'), 0), 0, 0)
-            kind_totals.update(kinds)
-            mixed_total += mixed
-            structural_total += structural
-            blocks.append(dict(pc=Path(path).stem.removeprefix('Block'), path=path,
-                               status='native' if native else 'hand', lines=count, kinds=kinds, mixed_lines=mixed, structural_lines=structural))
+        blocks, block_paths = block_counts(commit, directory)
+    for row in blocks:
+        hand_lines += row['lines']
+        kind_totals.update(row['kinds'])
+        mixed_total += row['mixed_lines']
+        structural_total += row['structural_lines']
     if len({row['pc'] for row in blocks}) != len(blocks) or len(blocks) != 24:
         raise ValueError('The commit must contain exactly 24 distinct blocks.')
     categories = Counter()
@@ -166,7 +210,7 @@ def count_commit(commit):
             continue
         if category in PROOF_CATEGORIES and path.endswith('.v'):
             block_support[category] += count
-        elif category == 'block_proofs' and '/Proofs/DecodeItem/' in path and not re.search(r'/Block[0-9a-fA-F]+\.v$', path):
+        elif category == 'block_proofs' and '/Proofs/DecodeItem/' in path and path not in block_paths:
             block_support['proof_helpers'] += count
         elif category == 'composition' and path.endswith('.v'):
             composition_lines += count
@@ -187,7 +231,8 @@ def count_commit(commit):
     automation = {path: len(commit.read(path).splitlines()) for path in sorted(commit.paths)
                   if path.startswith('ZesuSsz/Automation/') and path.endswith('.v')}
     return dict(commit=commit.sha,
-                counting_rules={'hand': 'Nonblank boundary body lines, excluding native automation lines and Proof/Qed.',
+        counting_rules={'hand': 'Nonblank boundary body lines, excluding native automation lines and Proof/Qed.',
+                                'split_blocks': 'An umbrella plus Literal and ShortString modules count as one PC. Both branches must use automation alone for native status. Sum hand lines across non-native branches.',
                                 'kinds': KIND_LABEL,
                                 'function_text': 'Current whole-file lines; union of manifest ranges in mixed files.',
                                 'm2': 'Hand suffix lines plus block support. Composition, tests, call-spec capability, and automation are separate.',
