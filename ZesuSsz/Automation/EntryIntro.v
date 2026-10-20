@@ -9,7 +9,8 @@ Class ZesuLoopStep {Sigma} (source : iProp Sigma) (facts : Prop) : Prop :=
 #[global] Hint Mode ZesuLoopStep + + - : typeclass_instances.
 
 Require Import ZesuSsz.Automation.SwitchDispatch.
-Require Import ZesuSsz.Automation.ReturnRoute.
+Require Import ZesuSsz.Automation.ExitMeaning.
+Require Import ZesuSsz.Automation.IntegerReturn.
 From iris.proofmode Require Import intro_patterns.
 From Ltac2 Require Import Ltac2 Constant Ind.
 Declare ML Module "zesu-signature-gates.plugin".

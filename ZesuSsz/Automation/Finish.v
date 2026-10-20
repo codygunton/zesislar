@@ -749,8 +749,8 @@ Ltac zesu_search_switches := constr:([
   ZesuSsz.Automation.Hooks.ZesuStepRegionFaultCastHypotheses;
   ZesuSsz.Automation.BitvectorFacts.ZesuStepMaskNormalizer;
   ZesuSsz.Automation.Hooks.ZesuStepPureFactExistential;
-  ZesuSsz.Automation.ReturnRoute.ZesuStepIntegerReturn;
-  ZesuSsz.Automation.ReturnRoute.ZesuStepExitMeaning;
+  ZesuSsz.Automation.IntegerReturn.ZesuStepIntegerReturn;
+  ZesuSsz.Automation.ExitMeaning.ZesuStepExitMeaning;
   ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch]).
 
 Ltac zesu_run :=

@@ -782,15 +782,15 @@
       "path": "ZesuSsz/Compliance/FreeExitRegistrations.v",
       "category": "registrations",
       "scope": "whole_file",
-      "sha256": "08aac01a4ad742201daad0350fb13f32095bcffb449e9b25839df1925e79fc05",
-      "file_lines": 69,
+      "sha256": "b127d631fe87b6781899a736dc56af01d7c73c610e549b4228f828ea8bf01631",
+      "file_lines": 70,
       "line_ranges": [
         [
           1,
-          69
+          70
         ]
       ],
-      "counted_lines": 69
+      "counted_lines": 70
     },
     {
       "path": "build/stock-zisk/automation-validation/free-exit-instances/CHECKPOINT.json",
@@ -970,17 +970,17 @@
     "contracts": 571,
     "generator_json": 9503,
     "introductions": 781,
-    "registrations": 343,
+    "registrations": 344,
     "exit_meanings": 109,
     "tests_and_exports": 1753
   },
-  "interface_total": 11307,
-  "conservative_source_file_lines": 15401,
+  "interface_total": 11308,
+  "conservative_source_file_lines": 15402,
   "block_records": [],
   "native_runs": 1,
   "holdout_spent": true,
   "freeze_requirement": "The frozen boundary is e8131be2. Result724 spent the hold-out. Later native runs are training.",
-  "overall_total": 13060,
+  "overall_total": 13061,
   "checked_class_dependency": "b7359b55f3609d22e28d1021570543f274d446b7",
   "previous_guarded_counts": {
     "commit": "1ab41c3d6a5719849d2c6a68ac9fc658e245d6bc",

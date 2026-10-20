@@ -14,7 +14,8 @@ Require Import ZesuSsz.Automation.InstrPre.
 Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.BitvectorFacts.
 Require Import ZesuSsz.Automation.PureFacts.
-Require Export ZesuSsz.Automation.ReturnRoute.
+Require Export ZesuSsz.Automation.ExitMeaning.
+Require Export ZesuSsz.Automation.IntegerReturn.
 Require Import ZesuSsz.Contracts.SelectedCodeLookup.
 Require Import InstrSpecs.Lookup.
 Require Import ZesuSsz.Automation.ResourceGroups.
