@@ -129,6 +129,43 @@ class PairTests(unittest.TestCase):
         self.assertEqual(calls, [('69a4', 'A', 1)])
         self.assertIsNone(report['blocks']['69a4']['pairs'][0]['A']['user_instructions'])
 
+    def test_instruction_spread_boundary_and_each_arm(self):
+        for arm in ['A', 'B']:
+            pairs = [dict(A={'user_instructions': 10000}, B={'user_instructions': 10000}) for _ in range(5)]
+            pairs[0][arm]['user_instructions'] = 10100
+            check = paired_scratch.instruction_consistency(pairs)
+            self.assertFalse(check['method_defect'])
+            self.assertAlmostEqual(check['arms'][arm]['spread'], .01)
+            pairs[0][arm]['user_instructions'] = 10101
+            self.assertTrue(paired_scratch.instruction_consistency(pairs)['method_defect'])
+
+    def test_instruction_spread_defect_withholds_verdict_but_retains_all_samples(self):
+        calls = []
+        def sample(pc, arm, number, retain):
+            calls.append((arm, number))
+            return {**row(), 'user_instructions': 102 if arm == 'A' and number == 1 else 100,
+                    'instruction_measurement_complete': True}
+        report = paired_scratch.run_pairs(['69a4'], sample, lambda _: None, metric='instructions')
+        self.assertEqual(len(calls), 10)
+        self.assertEqual(report['status'], 'complete')
+        self.assertTrue(report['blocks']['69a4']['method_defect'])
+        self.assertIsNone(report['blocks']['69a4']['timing_verdict'])
+        self.assertIsNone(report['timing_verdict'])
+        self.assertEqual(report['method_defect_entries'], ['69a4'])
+
+    def test_consistent_instruction_samples_use_ten_percent_limit(self):
+        for ratio, expected in [(1.1, 'pass'), (1.11, 'fail')]:
+            def sample(pc, arm, number, retain):
+                return {**row(), 'user_instructions': 100 if arm == 'A' else round(100 * ratio),
+                        'instruction_measurement_complete': True}
+            report = paired_scratch.run_pairs(['6a38'], sample, lambda _: None, metric='instructions')
+            block = report['blocks']['6a38']
+            self.assertFalse(block['method_defect'])
+            self.assertEqual(block['instruction_limit'], .1)
+            self.assertEqual(block['timing_verdict'], expected)
+            self.assertFalse(block['timing_policy']['additional_floors_required'])
+            self.assertEqual(report['timing_verdict'], expected)
+
     def test_decision_floor_cannot_mix_cpu_and_instruction_metrics(self):
         cpu = dict(status='complete', mode='noise', blocks={'69a4': dict(median_absolute_deviation=.3)})
         instructions = dict(status='complete', mode='noise', metric='instructions',

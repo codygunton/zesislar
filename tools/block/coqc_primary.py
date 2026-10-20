@@ -211,6 +211,11 @@ def compiler_run(arguments):
         if instruction_context:
             value.update(measurement_command=command, perf_pid=process.pid,
                          cpu_scope='perf driver plus compiler; child rusage',
+                         rusage_including_perf=({'cpu_s': cpu_used, 'peak_rss_kib': peak}
+                                                if code is not None else None),
+                         coqc_cpu_s=observed_compiler_cpu,
+                         coqc_peak_rss=observed_compiler_peak,
+                         coqc_peak_rss_unit='KiB',
                          peak_rss_scope='maximum child RSS, including the perf driver',
                          observed_compiler_cpu_seconds=observed_compiler_cpu,
                          observed_compiler_peak_rss_kib=observed_compiler_peak,
