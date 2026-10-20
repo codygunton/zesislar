@@ -29,7 +29,13 @@ probe = os.environ.get("ZESU_DIAGNOSTIC_PROBE", "0")
 if probe not in ("0", "1", "cpu-only"):
     raise SystemExit("the diagnostic probe flag must be zero, one, or cpu-only")
 wall_text = os.environ.get("ZESU_SCRATCH_WALL_SECONDS", "300")
-memory_gib = int(os.environ.get("ZESU_SCRATCH_MEMORY_GIB", "6"))
+if probe == "0":
+    guard = os.environ.get("ZESU_RESOURCE_GUARD", str(Path(sys.argv[4]) / "resource_guard.sh"))
+    gate_memory_gib = int(subprocess.run(
+        [guard, "gate-module-limit"], check=True, capture_output=True, text=True).stdout.strip())
+else:
+    gate_memory_gib = 6
+memory_gib = int(os.environ.get("ZESU_SCRATCH_MEMORY_GIB", str(gate_memory_gib)))
 if probe in ("1", "cpu-only"):
     if (wall_text != "none" or os.environ.get("ZESU_PRIMARY_CPU_LIMIT") != "none" or
             os.environ.get("ZESU_PROOF_CPU_LIMIT") != "unlimited" or memory_gib != (6 if probe == "cpu-only" else 64) or
@@ -49,7 +55,7 @@ else:
         if not 0 < wall_limit <= 300:
             raise SystemExit("the scratch wall budget must be between zero and 300 seconds")
 
-    if memory_gib not in (6, 12) or (memory_gib == 12 and
+    if memory_gib != gate_memory_gib and (memory_gib != 12 or
             (wall_limit is not None or os.environ.get("ZESU_COMPLETION_ENTRY") != "0x800d698c")):
         raise SystemExit("the memory exception requires completion entry0x800d698c")
 

@@ -7,7 +7,7 @@ coqc_binary=${ZESU_ROCQ_COQC_BINARY:-${OPAM_SWITCH_PREFIX:?run under the pinned 
 if [[ $# -eq 1 && $1 == --version ]]; then
   exec "$coqc_binary" "$@"
 fi
-export ZESU_MODULE_LIMIT_GIB=${ZESU_GATE_MODULE_LIMIT_GIB-6}
+export ZESU_MODULE_LIMIT_GIB=${ZESU_GATE_MODULE_LIMIT_GIB-16}
 if [[ ! "$ZESU_MODULE_LIMIT_GIB" =~ ^([6-9]|[12][0-9]|3[0-2])$ ]]; then
   echo "compiler gate memory limit must be an integer from 6 through 32 GiB" >&2
   exit 2

@@ -951,7 +951,7 @@ class GuardLockTest(unittest.TestCase):
                         self.assertIsNotNone(process.poll(), "scope startup did not complete")
                         stdout, stderr = process.communicate(timeout=1)
                         self.assertEqual(process.returncode, 0, stderr)
-                        self.assertIn("MemoryMax=6G", stdout)
+                        self.assertIn("MemoryMax=16G", stdout)
                         self.assertTrue(self.lock.read_text().startswith("state=wanted "))
                     finally:
                         if process.poll() is None:
@@ -998,8 +998,8 @@ class GuardLockTest(unittest.TestCase):
         self.assertEqual(int(self.guard("gate-jobs", "check-fast").stdout), 24)
 
     def test_available_memory_thresholds(self):
-        for used, expected in ((225, None), (226, "requires 26 GiB"),
-                               (231, "requires 26 GiB"),
+        for used, expected in ((215, None), (216, "requires 36 GiB"),
+                               (231, "requires 36 GiB"),
                                (232, "below the 20 GiB hold"),
                                (241, "below the 20 GiB hold")):
             with self.subTest(used=used):
@@ -1012,7 +1012,7 @@ class GuardLockTest(unittest.TestCase):
                     self.assertNotIn("memory", result.stdout)
 
     def test_scope_and_batch_memory_fences(self):
-        for arguments, fence in (("scope", "MemoryMax=6G"),
+        for arguments, fence in (("scope", "MemoryMax=16G"),
                                  ("batch", "MemoryMax=150G")):
             with self.subTest(arguments=arguments):
                 result = self.guard(arguments, "test", "--", "true")
@@ -1055,7 +1055,7 @@ class GuardLockTest(unittest.TestCase):
                 self.assertTrue(slices[0].startswith("--slice=zesuaggregate"))
                 self.assertEqual(slices[2], "--slice=app.slice")
                 self.assertIn(f"MemoryMax={limit}", scopes[0])
-                for row in scopes[1:]:self.assertIn("MemoryMax=6G", row)
+                for row in scopes[1:]:self.assertIn("MemoryMax=16G", row)
                 for row in scopes:self.assertIn("MemorySwapMax=0", row)
                 properties = json.loads(Path(self.environment["GUARD_TEST_SLICE_STATE"]).read_text())
                 self.assertEqual(properties[slices[0].split("=",1)[1]]["MemoryMax"], limit)

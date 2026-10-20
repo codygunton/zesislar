@@ -399,6 +399,7 @@ class ScratchCompilerGuard(unittest.TestCase):
             guard.write_text(
                 '#!/bin/sh\n'
                 'case "$1" in\n'
+                '  gate-module-limit) echo 16 ;;\n'
                 '  wait) echo wait >> "$SCRATCH_EVENTS"; '
                 'exit "${SCRATCH_GUARD_STATUS:-0}" ;;\n'
                 '  reserve-coqc) echo reserve >> "$SCRATCH_EVENTS"; '
