@@ -890,7 +890,7 @@
       "line_ranges": [
         [
           1,
-          456
+          457
         ]
       ],
       "counted_lines": 456
@@ -904,7 +904,7 @@
       "line_ranges": [
         [
           1,
-          45
+          47
         ]
       ],
       "counted_lines": 45
@@ -1114,7 +1114,7 @@
       "line_ranges": [
         [
           1,
-          102
+          106
         ]
       ],
       "counted_lines": 102
@@ -1698,7 +1698,7 @@
       "line_ranges": [
         [
           1,
-          60
+          61
         ]
       ],
       "counted_lines": 60
@@ -2579,7 +2579,7 @@
       "line_ranges": [
         [
           1,
-          8191
+          8270
         ]
       ],
       "counted_lines": 8191
@@ -7654,6 +7654,104 @@
         ]
       ],
       "counted_lines": 191
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemLoopDerivedFacts.v",
+      "category": "loop_steps",
+      "scope": "whole_file",
+      "sha256": "8751a058d73766725d8aabe53099ef08401e1951f43d2018b9453c6820c38566",
+      "file_lines": 177,
+      "line_ranges": [
+        [
+          1,
+          177
+        ]
+      ],
+      "counted_lines": 177
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/LoopIndexStep.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "9e7a6c4f8c7b47c9ba36d42790d3182e631917815b57b1a29aba91a43ff56c3a",
+      "file_lines": 46,
+      "line_ranges": [
+        [
+          1,
+          46
+        ]
+      ],
+      "counted_lines": 46
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/LoopFaultBounds.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "f40be7236f440a2a45dbde6cb3231c99a636fd08d612c4734946d26c471c1146",
+      "file_lines": 94,
+      "line_ranges": [
+        [
+          1,
+          94
+        ]
+      ],
+      "counted_lines": 94
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/LoopDerivedFacts.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "56a1f5b0f78f7c58f7da829af2f5d08c3945da73da61ae35cc79b45f2b31c6d3",
+      "file_lines": 79,
+      "line_ranges": [
+        [
+          1,
+          79
+        ]
+      ],
+      "counted_lines": 79
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemLoopInitialization.v",
+      "category": "registrations",
+      "scope": "whole_file",
+      "sha256": "600bec8afb86a708d6f55ae7add4517cc6bae7d2d138d313b8269f756eae180a",
+      "file_lines": 48,
+      "line_ranges": [
+        [
+          1,
+          48
+        ]
+      ],
+      "counted_lines": 48
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/LoopInitialization.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "33d45e2aef13976896440e6b6e0c7ff642c3f8ad9f0e16c2b55686f5a19937bb",
+      "file_lines": 50,
+      "line_ranges": [
+        [
+          1,
+          50
+        ]
+      ],
+      "counted_lines": 50
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/LoopHeaderOrder.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "920bcb6e1c1c47750b214c7b7928265beb157a595355532e330f1e4b662b957e",
+      "file_lines": 31,
+      "line_ranges": [
+        [
+          1,
+          31
+        ]
+      ],
+      "counted_lines": 31
     }
   ],
   "blocks": [

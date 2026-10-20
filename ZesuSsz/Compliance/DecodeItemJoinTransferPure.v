@@ -22,8 +22,8 @@ Lemma decodeItemStringHeaderIntro `{!islaG Sigma} `{!threadG}
 Proof.
   intros Hguard Hdomain Hframe Hprovenance. iIntros "[Hfold Hcont]".
   iExists n, i, payloadStart, lengthBytes, frameBytes, loaded.
-  iSplit; first (iPureIntro; split; [exact Hguard | split; [exact Hdomain | split; assumption]]).
   iFrame.
+  iPureIntro; split; [exact Hguard | split; [exact Hdomain | split; assumption]].
 Qed.
 
 Lemma decodeItemListHeaderIntro `{!islaG Sigma} `{!threadG}

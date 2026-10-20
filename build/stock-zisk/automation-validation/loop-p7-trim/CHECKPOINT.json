@@ -1,0 +1,37 @@
+{
+  "base": "5c820c36743af2ec731bf6560c77b873f7dce08c",
+  "scope": "R2: P7 repairs and two loop promotions, with overlapping proof support removed.",
+  "checked_scope": "Both trimmed loops verified on30b9; source bytes remain exact after replay onto repaired R1.",
+  "trim": "Removed unused aggregate lemma. Eight scalar outputs use the existing direct lemmas.",
+  "support_before": 11775,
+  "support_after": 12003,
+  "support_delta": 228,
+  "hand_before": 855,
+  "hand_after": 528,
+  "hand_delta": -327,
+  "m2_before": 12630,
+  "m2_after": 12531,
+  "m2_delta": -99,
+  "original_r2_m2_delta": -32,
+  "trim_delta": -67,
+  "native_results": "Both actual Qed; wrapper groups empty; Print Closed; module_m assumptions[].",
+  "facts_verification": "/home/cody/zesislar/.worktrees/spec-c-li-loop-r2-trim/_build/r2-trim-facts-verified/CALLS.json",
+  "native_records": [
+    "/home/cody/zesislar/.worktrees/spec-c-li-loop-r2-trim/_build/r2-trim-native-6a24/CALLS.json",
+    "/home/cody/zesislar/.worktrees/spec-c-li-loop-r2-trim/_build/r2-trim-native-6ac4/CALLS.json"
+  ],
+  "native_source_hashes": {
+    "6a24": "b738b3d42062a1cbcc02345eb89cb48df946a8507f32e2da1bc7609a671d9a9b",
+    "6ac4": "8f95db04a370083604b32e2fdf49ee3b3bd40fa7af6c26a74596a02014a1a4c8"
+  },
+  "preserved_rocq_paths": 17,
+  "hooks_fallback": "Approved focused Dune compilation for Hooks.v only. MCP error: Forbidden command 'Declare ML Module' (loads arbitrary OCaml plugins)",
+  "repaired_r1": "R1 supplies final-only saturation. No local override.",
+  "focused_metadata": "Shape checker, data-only checker, and git diff --check passed after replay.",
+  "release": "A stacks R3, then runs both combined gates and pushes. Infra owns one paired M1.",
+  "original_package": "spec-c-li-loop-p7-refreshed remains unchanged.",
+  "trimmed_objects": "spec-c-li-loop-r2-trim remains unchanged.",
+  "r4": "Separate package and separate M1.",
+  "local_commit_release": "Orch approved an unpublished local commit after focused checks. Combined R2+R3 gates remain mandatory before publication.",
+  "r1_followup": "Rebase onto the forthcoming pushed integer-return head guard before publication."
+}
