@@ -276,7 +276,7 @@ Ltac decodeItemExitDecoder after off value :=
 Ltac decodeItemExitImageLeaf :=
  first [assumption | reflexivity | apply decodeItemSliceField |
    solve [symmetry; apply preservedImage_slice; decodeItemExitImageSolve] |
-   decodeItemExitImageArithmetic | decodeItemExitImageSolve |
+   decodeItemExitImageSolve |
    lazymatch goal with
    | |- fieldImage ?after ?offset [?value] =>
      multimatch goal with Hfield : fieldImage ?before 32%nat [?first; ?second] |- _ =>
@@ -293,7 +293,7 @@ Ltac decodeItemExitImageLeaf :=
    | |- littleEndian (take 8%nat ?after) = ?value =>
      change (littleEndian (take 8%nat (drop 0%nat after)) = value);
      decodeItemExitDecoder after constr:(0%nat) value
-   end].
+   end | decodeItemExitImageArithmetic].
 Ltac decodeItemExitSuccessImage :=
  lazymatch goal with |- ?P =>
   lazymatch P with successResult40 _ _ _ _ _ _ => idtac end;
