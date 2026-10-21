@@ -334,6 +334,35 @@ Ltac zesu_finish_entailment_base :=
   zesu_normalize_nat_powers;
   try (zesu_saturate_alignment).
 
+(* Defer matching cancellation shapes to the later contract arithmetic. *)
+Ltac zesu_finish_same_closed_Z left right :=
+ stdpp.tactics.is_closed_term left;
+ stdpp.tactics.is_closed_term right;
+ let l := eval vm_compute in left in
+ let r := eval vm_compute in right in
+ constr_eq l r.
+Ltac zesu_finish_defer_cancel_shape :=
+ lazymatch goal with
+ | |- @eq (bv _) _ _ => idtac
+ | |- Z.le _ _ => idtac
+ end;
+ lazymatch goal with |- ?target => tryif has_evar target then fail 0 else idtac end;
+ lazymatch goal with
+ | |- @eq (bv ?n)
+       (@bv_add ?n (Z_to_bv ?n (Z.sub ?base ?amount)) (@BV ?n ?increment ?wf))
+       (Z_to_bv ?n ?base) => zesu_finish_same_closed_Z amount increment
+ | |- Z.le (Z.add (Z.sub ?base ?amount) (Z.of_nat (length ?values))) ?limit =>
+   multimatch goal with
+   | Hlength : length values = ?count |- _ =>
+     zesu_finish_same_closed_Z amount (Z.of_nat count);
+     first [
+       multimatch goal with Hupper : (base < ?bound)%Z |- _ =>
+         zesu_finish_same_closed_Z bound limit end |
+       multimatch goal with Hupper : (base <= ?bound)%Z |- _ =>
+         zesu_finish_same_closed_Z bound limit end]
+   end
+ end.
+
 (* Anything else: the old chain, in the old order. *)
 Ltac zesu_finish_pure_goal_base :=
   try zesu_finish_selectors;
@@ -367,7 +396,7 @@ Ltac zesu_finish_pure_goal_base :=
   try (zesu_finish_pointer_alignment);
   try (zesu_saturate_alignment);
   try zesu_finish_lia;
-  try (bv_solve);
+  try (tryif zesu_finish_defer_cancel_shape then idtac else bv_solve);
   (* C6, last: the goal is arithmetic and everything above has refused it,
      so the facts it needs are still folded inside a hypothesis. Unfold
      them and ask once more. `solve` keeps the step honest: it either
