@@ -44,38 +44,40 @@ Proof.
   simpl. lia.
 Qed.
 
+Ltac decodeItemReturnField :=
+  repeat match goal with |- length _ = _ -> _ => intro end;
+  unfold decodeItemOkBytes;
+  lazymatch goal with |- fieldImage ?image ?offset ?field =>
+    let finish prefix suffix := (
+      replace image with (prefix ++ field ++ suffix) by
+        (repeat rewrite app_assoc; cbn [app]; rewrite ?app_nil_r; reflexivity);
+      replace offset with (length prefix) by
+        (
+        repeat rewrite app_length;
+        rewrite ?firstn_length; rewrite ?skipn_length;
+        repeat match goal with H : length ?l = ?n |- context [length ?l] => rewrite H end;
+        cbn; lia);
+      apply fieldImage_middle) in
+    let rec seek prefix remaining :=
+      lazymatch remaining with
+      | ?head ++ ?tail =>
+          first [constr_eq head field; finish prefix tail |
+            let prefix := constr:(prefix ++ head) in seek prefix tail]
+      | _ => constr_eq remaining field; finish prefix constr:([] : list byte)
+      end in
+    seek constr:([] : list byte) image
+  end.
+
 Lemma decodeItemOkBytes_pointer before pointerBytes lengthBytes consumedBytes isList :
   fieldImage (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes isList)
     0 pointerBytes.
-Proof.
-  unfold decodeItemOkBytes.
-  change (fieldImage (([] : list byte) ++ pointerBytes ++
-    (lengthBytes ++ [Z_to_bv 8 (if isList then 1 else 0)] ++
-     firstn 7 (skipn 17 before) ++ consumedBytes ++
-     [Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before)))
-    (length ([] : list byte)) pointerBytes).
-  apply fieldImage_middle.
-Qed.
+Proof. decodeItemReturnField. Qed.
 
 Lemma decodeItemOkBytes_length_field before pointerBytes lengthBytes consumedBytes isList :
   (length pointerBytes = 8)%nat ->
   fieldImage (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes isList)
     8 lengthBytes.
-Proof.
-  intro Hp.
-  unfold decodeItemOkBytes.
-  replace (pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)] ++
-      firstn 7 (skipn 17 before) ++ consumedBytes ++
-      [Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before))
-    with (pointerBytes ++ lengthBytes ++
-      ([Z_to_bv 8 (if isList then 1 else 0)] ++
-       firstn 7 (skipn 17 before) ++ consumedBytes ++
-       [Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before)))
-    by (repeat rewrite app_assoc; reflexivity).
-  rewrite <- Hp.
-  apply fieldImage_middle.
-Qed.
+Proof. decodeItemReturnField. Qed.
 
 Lemma decodeItemOkBytes_consumed_field before pointerBytes lengthBytes consumedBytes isList :
   (length before = 40)%nat ->
@@ -83,25 +85,7 @@ Lemma decodeItemOkBytes_consumed_field before pointerBytes lengthBytes consumedB
   (length lengthBytes = 8)%nat ->
   fieldImage (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes isList)
     24 consumedBytes.
-Proof.
-  intros Hbefore Hp Hl.
-  unfold decodeItemOkBytes.
-  set (prefix := pointerBytes ++ lengthBytes ++
-    [Z_to_bv 8 (if isList then 1 else 0)] ++
-    firstn 7 (skipn 17 before)).
-  replace (pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)] ++
-      firstn 7 (skipn 17 before) ++ consumedBytes ++
-      [Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before))
-    with (prefix ++ consumedBytes ++
-      ([Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before)))
-    by (unfold prefix; repeat rewrite app_assoc; reflexivity).
-  replace 24%nat with (length prefix).
-  - apply fieldImage_middle.
-  - unfold prefix. repeat rewrite app_length.
-    rewrite Hp, Hl, (selectedPadLength before 17 7) by lia.
-    simpl. lia.
-Qed.
+Proof. decodeItemReturnField. Qed.
 
 Lemma preservedImage_of_slice before after offset count :
   (length before = 40)%nat ->
@@ -123,47 +107,14 @@ Lemma decodeItemOkBytes_flag_field before pointerBytes lengthBytes consumedBytes
   (length lengthBytes = 8)%nat ->
   fieldImage (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes isList)
     16 [Z_to_bv 8 (if isList then 1 else 0)].
-Proof.
-  intros Hp Hl.
-  unfold decodeItemOkBytes.
-  replace (pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)] ++
-      firstn 7 (skipn 17 before) ++ consumedBytes ++
-      [Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before))
-    with ((pointerBytes ++ lengthBytes) ++
-      [Z_to_bv 8 (if isList then 1 else 0)] ++
-      (firstn 7 (skipn 17 before) ++ consumedBytes ++
-       [Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before)))
-    by (repeat rewrite app_assoc; reflexivity).
-  replace 16%nat with (length (pointerBytes ++ lengthBytes)).
-  - apply fieldImage_middle.
-  - rewrite app_length, Hp, Hl. lia.
-Qed.
+Proof. decodeItemReturnField. Qed.
 
 Lemma decodeItemOkBytes_pad17_field before pointerBytes lengthBytes consumedBytes isList :
   (length pointerBytes = 8)%nat ->
   (length lengthBytes = 8)%nat ->
   fieldImage (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes isList)
     17 (firstn 7 (skipn 17 before)).
-Proof.
-  intros Hp Hl.
-  unfold decodeItemOkBytes.
-  replace (pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)] ++
-      firstn 7 (skipn 17 before) ++ consumedBytes ++
-      [Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before))
-    with ((pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)]) ++
-      firstn 7 (skipn 17 before) ++
-      (consumedBytes ++ [Z_to_bv 8 0; Z_to_bv 8 0] ++
-       firstn 6 (skipn 34 before)))
-    by (repeat rewrite app_assoc; reflexivity).
-  replace 17%nat with
-    (length (pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)])).
-  - apply fieldImage_middle.
-  - repeat rewrite app_length. rewrite Hp, Hl. simpl. lia.
-Qed.
+Proof. decodeItemReturnField. Qed.
 
 Lemma decodeItemOkBytes_status_field before pointerBytes lengthBytes consumedBytes isList :
   (length before = 40)%nat ->
@@ -172,25 +123,7 @@ Lemma decodeItemOkBytes_status_field before pointerBytes lengthBytes consumedByt
   (length consumedBytes = 8)%nat ->
   fieldImage (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes isList)
     32 [Z_to_bv 8 0; Z_to_bv 8 0].
-Proof.
-  intros Hbefore Hp Hl Hc.
-  unfold decodeItemOkBytes.
-  set (prefix := pointerBytes ++ lengthBytes ++
-    [Z_to_bv 8 (if isList then 1 else 0)] ++
-    firstn 7 (skipn 17 before) ++ consumedBytes).
-  replace (pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)] ++
-      firstn 7 (skipn 17 before) ++ consumedBytes ++
-      [Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before))
-    with (prefix ++ [Z_to_bv 8 0; Z_to_bv 8 0] ++
-      firstn 6 (skipn 34 before))
-    by (unfold prefix; repeat rewrite app_assoc; reflexivity).
-  replace 32%nat with (length prefix).
-  - apply fieldImage_middle.
-  - unfold prefix. repeat rewrite app_length.
-    rewrite Hp, Hl, Hc, (selectedPadLength before 17 7) by lia.
-    simpl. lia.
-Qed.
+Proof. decodeItemReturnField. Qed.
 
 Lemma decodeItemOkBytes_pad34_field before pointerBytes lengthBytes consumedBytes isList :
   (length before = 40)%nat ->
@@ -199,29 +132,7 @@ Lemma decodeItemOkBytes_pad34_field before pointerBytes lengthBytes consumedByte
   (length consumedBytes = 8)%nat ->
   fieldImage (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes isList)
     34 (firstn 6 (skipn 34 before)).
-Proof.
-  intros Hbefore Hp Hl Hc.
-  unfold decodeItemOkBytes.
-  replace (pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)] ++
-      firstn 7 (skipn 17 before) ++ consumedBytes ++
-      [Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before))
-    with ((pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)] ++
-      firstn 7 (skipn 17 before) ++ consumedBytes ++
-      [Z_to_bv 8 0; Z_to_bv 8 0]) ++
-      firstn 6 (skipn 34 before) ++ ([] : list byte))
-    by (repeat rewrite app_assoc; rewrite app_nil_r; reflexivity).
-  replace 34%nat with
-    (length (pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)] ++
-      firstn 7 (skipn 17 before) ++ consumedBytes ++
-      [Z_to_bv 8 0; Z_to_bv 8 0])).
-  - apply fieldImage_middle.
-  - repeat rewrite app_length.
-    rewrite Hp, Hl, Hc, (selectedPadLength before 17 7) by lia.
-    simpl. lia.
-Qed.
+Proof. decodeItemReturnField. Qed.
 
 Lemma byteAt_from_singleton_image after offset value :
   fieldImage after offset [Z_to_bv 8 value] ->
