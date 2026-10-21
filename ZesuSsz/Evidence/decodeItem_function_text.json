@@ -2591,14 +2591,14 @@
       "role": "measurement_metadata",
       "scope": "whole_file",
       "sha256": null,
-      "file_lines": 8421,
+      "file_lines": 8435,
       "line_ranges": [
         [
           1,
-          8421
+          8435
         ]
       ],
-      "counted_lines": 8421
+      "counted_lines": 8435
     },
     {
       "path": "ZesuSsz/Evidence/decode_item_auto_modules.json",
@@ -7842,6 +7842,20 @@
         ]
       ],
       "counted_lines": 72
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/DecodeItemImageArithmetic.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "8784422833f72e39960d635b57ad44f6c5212273f6e69073ee98cf882f171576",
+      "file_lines": 31,
+      "line_ranges": [
+        [
+          1,
+          31
+        ]
+      ],
+      "counted_lines": 31
     }
   ],
   "blocks": [
@@ -8276,7 +8290,7 @@
   },
   "base_manifest_sha256": "7deccbbc338d25231c300f1ba6824c5c10136917b0207e75589cd9a86f9d020a",
   "category_totals": {
-    "tests_and_exports": 36729,
+    "tests_and_exports": 36774,
     "composition": 584,
     "loop_steps": 864,
     "introductions": 3034,
@@ -8287,9 +8301,9 @@
     "block_proofs": 2375
   },
   "interface_total": 15202,
-  "extra_total": 39688,
-  "overall_total": 54890,
-  "file_count": 386,
+  "extra_total": 39733,
+  "overall_total": 54935,
+  "file_count": 387,
   "embedded_registration_ranges": [
     {
       "path": "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
