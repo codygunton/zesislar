@@ -1,5 +1,4 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Proofs.DecodeItem.Hand.Common.
 Require Import ZesuSsz.Compliance.DecodeItemShortListOutputMeaning.
 Require Import ZesuSsz.Compliance.DecodeItemReturnExitResources.
 Require Import ZesuSsz.Automation.Approved.

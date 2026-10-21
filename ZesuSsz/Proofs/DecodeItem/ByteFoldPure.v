@@ -63,15 +63,6 @@ Proof.
   lia.
 Qed.
 
-(* Both headers use the same byte fold. Their distinct PCs remain explicit. *)
-Lemma decodeItem_string_fold_pc :
-  decodeItemByteFoldHeader false = decodeItemStringFoldPC.
-Proof. reflexivity. Qed.
-
-Lemma decodeItem_list_fold_pc :
-  decodeItemByteFoldHeader true = decodeItemListFoldPC.
-Proof. reflexivity. Qed.
-
 Print Assumptions decodeItem_fold_entry.
 Print Assumptions decodeItem_fold_preservation.
 Print Assumptions decodeItem_fold_exit.

@@ -35,17 +35,54 @@ Proof.
   rewrite Hrun. reflexivity.
 Qed.
 
+Lemma decodeItemSailRejectFromPrompt args :
+  decodeItemC1BDomain args ->
+  runPrompt (EvmSailRlp.evm_rlp.rlp_decode_item (decodeItemSailCursor args))
+    (decodeItemInstalledState (decodeItemInputBytes args)) true =
+    (Reject RlpDecode, decodeItemInstalledState (decodeItemInputBytes args)) ->
+  runRlpDecodeItem (decodeItemInputBytes args) (decodeItemSailCursor args) = Reject RlpDecode.
+Proof.
+  intros Hdomain Hrun. unfold runRlpDecodeItem, SailRun.runDecoder.
+  rewrite (decodeItemSailInputSliceValid args Hdomain).
+  unfold SailStdpp.Prompt_monad.bind0.
+  erewrite decodeItemRunPromptBindSuccess with (value := tt)
+    (rs' := decodeItemInstalledState (decodeItemInputBytes args));
+    last apply decodeItemRunPromptInitialized.
+  rewrite Hrun. reflexivity.
+Qed.
+
+Ltac decodeItemSailBranch candidate execution :=
+  intros Hdomain Hinput Hclass; intros;
+  lazymatch goal with
+  | |- decodeItemAcceptedFacts _ _ _ _ =>
+      split;
+      [eapply candidate; eauto;
+        try (rewrite Z.mod_small; [assumption | unfold word64Modulus; lia]) |
+       eapply execution; eauto]
+  | |- decodeItemSailSuccess _ _ _ _ =>
+      apply decodeItemSailSuccessFromPrompt; [exact Hdomain |];
+      unfold decodeItemInputHead in Hinput; unfold decodeItemSailCursor;
+      rewrite Hinput in *;
+      eapply decodeItemRunPromptAcceptedHeader;
+      first [solve [assumption] | solve [reflexivity] | solve [lia] | solve [simpl; lia] |
+        solve [apply execution; try reflexivity; auto using decodeItemInstalledBytes; lia]]
+  | |- decodeItemRejectedFacts _ =>
+      split;
+      [eapply candidate; eauto;
+        try (rewrite Z.mod_small; [assumption | unfold word64Modulus; lia]) |
+       apply decodeItemSailRejectFromPrompt; [exact Hdomain |];
+       unfold decodeItemInputHead in Hinput; unfold decodeItemSailCursor;
+       rewrite Hinput in *;
+       first [eapply decodeItemRunPromptRejectedHeader;
+         [solve [apply execution; try reflexivity; auto using decodeItemInstalledBytes; lia] | assumption] |
+         apply decodeItemRunPromptHeaderReject; apply execution; try reflexivity;
+         auto using decodeItemInstalledBytes; lia]]
+  end.
+
 Lemma decodeItemLiteralSailSuccess args prefix rest :
   decodeItemC1BDomain args -> decodeItemInputHead args prefix rest ->
   bv_unsigned prefix <= 127 -> decodeItemSailSuccess args false 0 1.
-Proof.
-  intros Hdomain Hinput Hclass.
-  apply decodeItemSailSuccessFromPrompt; first exact Hdomain.
-  unfold decodeItemInputHead in Hinput. unfold decodeItemSailCursor. rewrite Hinput.
-  eapply decodeItemRunPromptAcceptedHeader; try reflexivity; try (simpl; lia).
-  apply decodeItemRunPromptLiteralHeader; try reflexivity;
-    auto using decodeItemInstalledBytes.
-Qed.
+Proof. decodeItemSailBranch decodeItemLiteralCandidateIntro decodeItemRunPromptLiteralHeader. Qed.
 
 Lemma decodeItemEmptySailSuccess args prefix rest :
   decodeItemC1BDomain args -> decodeItemInputHead args prefix rest ->
@@ -68,32 +105,14 @@ Lemma decodeItemShortStringSailSuccess args prefix rest :
   129 <= bv_unsigned prefix <= 183 ->
   1 + (bv_unsigned prefix - 128) <= Z.of_nat (List.length (decodeItemInputBytes args)) ->
   decodeItemSailSuccess args false 1 (bv_unsigned prefix - 128).
-Proof.
-  intros Hdomain Hinput Hclass Hfits.
-  apply decodeItemSailSuccessFromPrompt; first exact Hdomain.
-  unfold decodeItemInputHead in Hinput. rewrite Hinput in Hfits.
-  unfold decodeItemSailCursor. rewrite Hinput.
-  eapply decodeItemRunPromptAcceptedHeader; try reflexivity; try lia.
-  all: try exact Hfits.
-  apply decodeItemRunPromptShortStringHeader; try reflexivity;
-    auto using decodeItemInstalledBytes; lia.
-Qed.
+Proof. decodeItemSailBranch decodeItemShortStringCandidateIntro decodeItemRunPromptShortStringHeader. Qed.
 
 Lemma decodeItemShortListSailSuccess args prefix rest :
   decodeItemC1BDomain args -> decodeItemInputHead args prefix rest ->
   192 <= bv_unsigned prefix <= 247 ->
   1 + (bv_unsigned prefix - 192) <= Z.of_nat (List.length (decodeItemInputBytes args)) ->
   decodeItemSailSuccess args true 1 (bv_unsigned prefix - 192).
-Proof.
-  intros Hdomain Hinput Hclass Hfits.
-  apply decodeItemSailSuccessFromPrompt; first exact Hdomain.
-  unfold decodeItemInputHead in Hinput. rewrite Hinput in Hfits.
-  unfold decodeItemSailCursor. rewrite Hinput.
-  eapply decodeItemRunPromptAcceptedHeader; try reflexivity; try lia.
-  all: try exact Hfits.
-  apply decodeItemRunPromptShortListHeader; try reflexivity;
-    auto using decodeItemInstalledBytes; lia.
-Qed.
+Proof. decodeItemSailBranch decodeItemShortListCandidateIntro decodeItemRunPromptShortListHeader. Qed.
 
 Print Assumptions decodeItemSailSuccessFromPrompt.
 Print Assumptions decodeItemLiteralSailSuccess.
@@ -104,99 +123,47 @@ Print Assumptions decodeItemShortListSailSuccess.
 Lemma decodeItemLiteralAccepted args prefix rest :
   decodeItemC1BDomain args -> decodeItemInputHead args prefix rest ->
   bv_unsigned prefix <= 127 -> decodeItemAcceptedFacts args false 0 1.
-Proof.
-  intros Hdomain Hinput Hclass. split.
-  - eapply decodeItemLiteralCandidateIntro; eauto.
-  - eapply decodeItemLiteralSailSuccess; eauto.
-Qed.
+Proof. decodeItemSailBranch decodeItemLiteralCandidateIntro decodeItemLiteralSailSuccess. Qed.
 
 Lemma decodeItemEmptyAccepted args prefix rest :
   decodeItemC1BDomain args -> decodeItemInputHead args prefix rest ->
   bv_unsigned prefix = 128 -> decodeItemAcceptedFacts args false 1 0.
-Proof.
-  intros Hdomain Hinput Hclass. split.
-  - eapply decodeItemEmptyCandidateIntro; eauto.
-  - eapply decodeItemEmptySailSuccess; eauto.
-Qed.
+Proof. decodeItemSailBranch decodeItemEmptyCandidateIntro decodeItemEmptySailSuccess. Qed.
 
 Lemma decodeItemShortStringAccepted args prefix rest :
   decodeItemC1BDomain args -> decodeItemInputHead args prefix rest ->
   129 <= bv_unsigned prefix <= 183 ->
   1 + (bv_unsigned prefix - 128) <= Z.of_nat (List.length (decodeItemInputBytes args)) ->
   decodeItemAcceptedFacts args false 1 (bv_unsigned prefix - 128).
-Proof.
-  intros Hdomain Hinput Hclass Hfits. split.
-  - eapply decodeItemShortStringCandidateIntro; eauto.
-    rewrite Z.mod_small; first exact Hfits. unfold word64Modulus. lia.
-  - eapply decodeItemShortStringSailSuccess; eauto.
-Qed.
+Proof. decodeItemSailBranch decodeItemShortStringCandidateIntro decodeItemShortStringSailSuccess. Qed.
 
 Lemma decodeItemShortListAccepted args prefix rest :
   decodeItemC1BDomain args -> decodeItemInputHead args prefix rest ->
   192 <= bv_unsigned prefix <= 247 ->
   1 + (bv_unsigned prefix - 192) <= Z.of_nat (List.length (decodeItemInputBytes args)) ->
   decodeItemAcceptedFacts args true 1 (bv_unsigned prefix - 192).
-Proof.
-  intros Hdomain Hinput Hclass Hfits. split.
-  - eapply decodeItemShortListCandidateIntro; eauto.
-    rewrite Z.mod_small; first exact Hfits. unfold word64Modulus. lia.
-  - eapply decodeItemShortListSailSuccess; eauto.
-Qed.
+Proof. decodeItemSailBranch decodeItemShortListCandidateIntro decodeItemShortListSailSuccess. Qed.
 
 Print Assumptions decodeItemLiteralAccepted.
 Print Assumptions decodeItemEmptyAccepted.
 Print Assumptions decodeItemShortStringAccepted.
 Print Assumptions decodeItemShortListAccepted.
 
-Lemma decodeItemSailRejectFromPrompt args :
-  decodeItemC1BDomain args ->
-  runPrompt (EvmSailRlp.evm_rlp.rlp_decode_item (decodeItemSailCursor args))
-    (decodeItemInstalledState (decodeItemInputBytes args)) true =
-    (Reject RlpDecode, decodeItemInstalledState (decodeItemInputBytes args)) ->
-  runRlpDecodeItem (decodeItemInputBytes args) (decodeItemSailCursor args) = Reject RlpDecode.
-Proof.
-  intros Hdomain Hrun. unfold runRlpDecodeItem, SailRun.runDecoder.
-  rewrite (decodeItemSailInputSliceValid args Hdomain).
-  unfold SailStdpp.Prompt_monad.bind0.
-  erewrite decodeItemRunPromptBindSuccess with (value := tt)
-    (rs' := decodeItemInstalledState (decodeItemInputBytes args));
-    last apply decodeItemRunPromptInitialized.
-  rewrite Hrun. reflexivity.
-Qed.
+
 
 Lemma decodeItemShortStringRejected args prefix rest :
   decodeItemC1BDomain args -> decodeItemInputHead args prefix rest ->
   129 <= bv_unsigned prefix <= 183 ->
   Z.of_nat (List.length (decodeItemInputBytes args)) < 1 + (bv_unsigned prefix - 128) ->
   decodeItemRejectedFacts args.
-Proof.
-  intros Hdomain Hinput Hclass Hreject. split.
-  - eapply decodeItemShortStringRejectedCandidateIntro; eauto.
-    rewrite Z.mod_small; first exact Hreject. unfold word64Modulus. lia.
-  - apply decodeItemSailRejectFromPrompt; first exact Hdomain.
-    unfold decodeItemInputHead in Hinput. rewrite Hinput in Hreject.
-    unfold decodeItemSailCursor. rewrite Hinput.
-    eapply decodeItemRunPromptRejectedHeader; last exact Hreject.
-    apply decodeItemRunPromptShortStringHeader; try reflexivity;
-      auto using decodeItemInstalledBytes; lia.
-Qed.
+Proof. decodeItemSailBranch decodeItemShortStringRejectedCandidateIntro decodeItemRunPromptShortStringHeader. Qed.
 
 Lemma decodeItemShortListRejected args prefix rest :
   decodeItemC1BDomain args -> decodeItemInputHead args prefix rest ->
   192 <= bv_unsigned prefix <= 247 ->
   Z.of_nat (List.length (decodeItemInputBytes args)) < 1 + (bv_unsigned prefix - 192) ->
   decodeItemRejectedFacts args.
-Proof.
-  intros Hdomain Hinput Hclass Hreject. split.
-  - eapply decodeItemShortListRejectedCandidateIntro; eauto.
-    rewrite Z.mod_small; first exact Hreject. unfold word64Modulus. lia.
-  - apply decodeItemSailRejectFromPrompt; first exact Hdomain.
-    unfold decodeItemInputHead in Hinput. rewrite Hinput in Hreject.
-    unfold decodeItemSailCursor. rewrite Hinput.
-    eapply decodeItemRunPromptRejectedHeader; last exact Hreject.
-    apply decodeItemRunPromptShortListHeader; try reflexivity;
-      auto using decodeItemInstalledBytes; lia.
-Qed.
+Proof. decodeItemSailBranch decodeItemShortListRejectedCandidateIntro decodeItemRunPromptShortListHeader. Qed.
 
 Print Assumptions decodeItemSailRejectFromPrompt.
 Print Assumptions decodeItemShortStringRejected.
@@ -261,44 +228,17 @@ Proof.
         eapply Z.le_lt_trans; eauto.
 Qed.
 
-Lemma decodeItemLongStringAccepted args prefix rest n payloadStart lengthBytes :
-  decodeItemC1BDomain args ->
-  decodeItemFoldProvenance args false prefix rest n payloadStart lengthBytes ->
-  1 + n <= Z.of_nat (List.length (decodeItemInputBytes args)) ->
-  (1 + n + bigEndian lengthBytes) mod word64Modulus <=
-    Z.of_nat (List.length (decodeItemInputBytes args)) ->
-  decodeItemLongAcceptedFacts args false (1 + n) (bigEndian lengthBytes).
-Proof. exact (decodeItemLongAccepted args false prefix rest n payloadStart lengthBytes). Qed.
 
-Lemma decodeItemLongListAccepted args prefix rest n payloadStart lengthBytes :
-  decodeItemC1BDomain args ->
-  decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes ->
-  1 + n <= Z.of_nat (List.length (decodeItemInputBytes args)) ->
-  (1 + n + bigEndian lengthBytes) mod word64Modulus <=
-    Z.of_nat (List.length (decodeItemInputBytes args)) ->
-  decodeItemLongAcceptedFacts args true (1 + n) (bigEndian lengthBytes).
-Proof. exact (decodeItemLongAccepted args true prefix rest n payloadStart lengthBytes). Qed.
 
 Print Assumptions decodeItemLongCandidateFromProvenance.
 Print Assumptions decodeItemLongAccepted.
-Print Assumptions decodeItemLongStringAccepted.
-Print Assumptions decodeItemLongListAccepted.
 
 Lemma decodeItemLongStringHeaderRejected args prefix rest :
   decodeItemC1BDomain args -> decodeItemInputHead args prefix rest ->
   184 <= bv_unsigned prefix <= 191 ->
   Z.of_nat (List.length (decodeItemInputBytes args)) < 1 + (bv_unsigned prefix - 183) ->
   decodeItemRejectedFacts args.
-Proof.
-  intros Hdomain Hinput Hclass Hreject. split.
-  - eapply decodeItemLongStringHeaderRejectedCandidateIntro; eauto.
-  - apply decodeItemSailRejectFromPrompt; first exact Hdomain.
-    unfold decodeItemInputHead in Hinput. rewrite Hinput in Hreject.
-    unfold decodeItemSailCursor. rewrite Hinput.
-    apply decodeItemRunPromptHeaderReject.
-    apply decodeItemRunPromptLongStringHeaderRejected; try reflexivity;
-      auto using decodeItemInstalledBytes.
-Qed.
+Proof. decodeItemSailBranch decodeItemLongStringHeaderRejectedCandidateIntro decodeItemRunPromptLongStringHeaderRejected. Qed.
 
 Print Assumptions decodeItemLongStringHeaderRejected.
 
@@ -307,16 +247,7 @@ Lemma decodeItemLongListHeaderRejected args prefix rest :
   248 <= bv_unsigned prefix <= 255 ->
   Z.of_nat (List.length (decodeItemInputBytes args)) < 1 + (bv_unsigned prefix - 247) ->
   decodeItemRejectedFacts args.
-Proof.
-  intros Hdomain Hinput Hclass Hreject. split.
-  - eapply decodeItemLongListHeaderRejectedCandidateIntro; eauto.
-  - apply decodeItemSailRejectFromPrompt; first exact Hdomain.
-    unfold decodeItemInputHead in Hinput. rewrite Hinput in Hreject.
-    unfold decodeItemSailCursor. rewrite Hinput.
-    apply decodeItemRunPromptHeaderReject.
-    apply decodeItemRunPromptLongListHeaderRejected; try reflexivity;
-      auto using decodeItemInstalledBytes.
-Qed.
+Proof. decodeItemSailBranch decodeItemLongListHeaderRejectedCandidateIntro decodeItemRunPromptLongListHeaderRejected. Qed.
 
 Print Assumptions decodeItemLongListHeaderRejected.
 
@@ -351,24 +282,6 @@ Proof.
     eapply Z.lt_le_trans; eauto.
 Qed.
 
-Lemma decodeItemLongStringPayloadRejected args prefix rest n payloadStart lengthBytes :
-  decodeItemC1BDomain args ->
-  decodeItemFoldProvenance args false prefix rest n payloadStart lengthBytes ->
-  1 + n <= Z.of_nat (List.length (decodeItemInputBytes args)) ->
-  Z.of_nat (List.length (decodeItemInputBytes args)) <
-    (1 + n + bigEndian lengthBytes) mod word64Modulus ->
-  decodeItemRejectedFacts args.
-Proof. exact (decodeItemLongPayloadRejected args false prefix rest n payloadStart lengthBytes). Qed.
 
-Lemma decodeItemLongListPayloadRejected args prefix rest n payloadStart lengthBytes :
-  decodeItemC1BDomain args ->
-  decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes ->
-  1 + n <= Z.of_nat (List.length (decodeItemInputBytes args)) ->
-  Z.of_nat (List.length (decodeItemInputBytes args)) <
-    (1 + n + bigEndian lengthBytes) mod word64Modulus ->
-  decodeItemRejectedFacts args.
-Proof. exact (decodeItemLongPayloadRejected args true prefix rest n payloadStart lengthBytes). Qed.
 
 Print Assumptions decodeItemLongPayloadRejected.
-Print Assumptions decodeItemLongStringPayloadRejected.
-Print Assumptions decodeItemLongListPayloadRejected.

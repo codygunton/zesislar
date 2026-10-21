@@ -1,0 +1,52 @@
+[
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemCanonicalAnchors.v",
+    "sha256": "448d8e65114f8b7beb262e265fc5dcc7dcd142748808d5b2850f744eec79c144",
+    "physical_lines": 122
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.v",
+    "sha256": "6972578602990a382c96840152b7118c5ab6ff290b07adbf8b4b7101768316f3",
+    "physical_lines": 360
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemDataRegistrations.v",
+    "sha256": "975fecd73f924aa64f7a93492b15247fa2962cb43e89175bc1d2d27b6712dd2f",
+    "physical_lines": 107
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemEntryWitnessIntroductions.v",
+    "sha256": "70ce51bf9a8a6077c5c92f9384a2fbb08163e856982060da6a5afaba3df45955",
+    "physical_lines": 16
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemFoldBackEdgeWitnesses.v",
+    "sha256": "96a50ba0fb16d0d82448fbfbd93cee6f3985b7cf0bcbcf51fb47761324fa8632",
+    "physical_lines": 11
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.v",
+    "sha256": "552823d6e4efb3847f172d86eb80fe96f24c9b3eb9da60869b411add19e0f452",
+    "physical_lines": 196
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemOutcomeWitnessFacts.v",
+    "sha256": "496f97535e34adc21d836c352112406a479e60bbce4329707f5d2f81e3a824cb",
+    "physical_lines": 19
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemSavedFrameWitnesses.v",
+    "sha256": "f8f05d9e80481e2fe7f15fa8873e38a9578826ea5001c387feb8485379721a42",
+    "physical_lines": 98
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemStoreSelectionIntroductions.v",
+    "sha256": "9f9baf9f16aafebe524d1d08ec25a5395f9ed7f29e26e8fe51e894626a42c599",
+    "physical_lines": 11
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemStringSuccessorWitnesses.v",
+    "sha256": "580a7e2ace25f5bf165e8a4f54251b686e0af40fab90c416b2838146b495558a",
+    "physical_lines": 62
+  }
+]

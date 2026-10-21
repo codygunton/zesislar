@@ -44,38 +44,40 @@ Proof.
   simpl. lia.
 Qed.
 
+Ltac decodeItemReturnField :=
+  repeat match goal with |- length _ = _ -> _ => intro end;
+  unfold decodeItemOkBytes;
+  lazymatch goal with |- fieldImage ?image ?offset ?field =>
+    let finish prefix suffix := (
+      replace image with (prefix ++ field ++ suffix) by
+        (repeat rewrite app_assoc; cbn [app]; rewrite ?app_nil_r; reflexivity);
+      replace offset with (length prefix) by
+        (
+        repeat rewrite app_length;
+        rewrite ?firstn_length; rewrite ?skipn_length;
+        repeat match goal with H : length ?l = ?n |- context [length ?l] => rewrite H end;
+        cbn; lia);
+      apply fieldImage_middle) in
+    let rec seek prefix remaining :=
+      lazymatch remaining with
+      | ?head ++ ?tail =>
+          first [constr_eq head field; finish prefix tail |
+            let prefix := constr:(prefix ++ head) in seek prefix tail]
+      | _ => constr_eq remaining field; finish prefix constr:([] : list byte)
+      end in
+    seek constr:([] : list byte) image
+  end.
+
 Lemma decodeItemOkBytes_pointer before pointerBytes lengthBytes consumedBytes isList :
   fieldImage (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes isList)
     0 pointerBytes.
-Proof.
-  unfold decodeItemOkBytes.
-  change (fieldImage (([] : list byte) ++ pointerBytes ++
-    (lengthBytes ++ [Z_to_bv 8 (if isList then 1 else 0)] ++
-     firstn 7 (skipn 17 before) ++ consumedBytes ++
-     [Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before)))
-    (length ([] : list byte)) pointerBytes).
-  apply fieldImage_middle.
-Qed.
+Proof. decodeItemReturnField. Qed.
 
 Lemma decodeItemOkBytes_length_field before pointerBytes lengthBytes consumedBytes isList :
   (length pointerBytes = 8)%nat ->
   fieldImage (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes isList)
     8 lengthBytes.
-Proof.
-  intro Hp.
-  unfold decodeItemOkBytes.
-  replace (pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)] ++
-      firstn 7 (skipn 17 before) ++ consumedBytes ++
-      [Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before))
-    with (pointerBytes ++ lengthBytes ++
-      ([Z_to_bv 8 (if isList then 1 else 0)] ++
-       firstn 7 (skipn 17 before) ++ consumedBytes ++
-       [Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before)))
-    by (repeat rewrite app_assoc; reflexivity).
-  rewrite <- Hp.
-  apply fieldImage_middle.
-Qed.
+Proof. decodeItemReturnField. Qed.
 
 Lemma decodeItemOkBytes_consumed_field before pointerBytes lengthBytes consumedBytes isList :
   (length before = 40)%nat ->
@@ -83,25 +85,7 @@ Lemma decodeItemOkBytes_consumed_field before pointerBytes lengthBytes consumedB
   (length lengthBytes = 8)%nat ->
   fieldImage (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes isList)
     24 consumedBytes.
-Proof.
-  intros Hbefore Hp Hl.
-  unfold decodeItemOkBytes.
-  set (prefix := pointerBytes ++ lengthBytes ++
-    [Z_to_bv 8 (if isList then 1 else 0)] ++
-    firstn 7 (skipn 17 before)).
-  replace (pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)] ++
-      firstn 7 (skipn 17 before) ++ consumedBytes ++
-      [Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before))
-    with (prefix ++ consumedBytes ++
-      ([Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before)))
-    by (unfold prefix; repeat rewrite app_assoc; reflexivity).
-  replace 24%nat with (length prefix).
-  - apply fieldImage_middle.
-  - unfold prefix. repeat rewrite app_length.
-    rewrite Hp, Hl, (selectedPadLength before 17 7) by lia.
-    simpl. lia.
-Qed.
+Proof. decodeItemReturnField. Qed.
 
 Lemma preservedImage_of_slice before after offset count :
   (length before = 40)%nat ->
@@ -123,47 +107,14 @@ Lemma decodeItemOkBytes_flag_field before pointerBytes lengthBytes consumedBytes
   (length lengthBytes = 8)%nat ->
   fieldImage (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes isList)
     16 [Z_to_bv 8 (if isList then 1 else 0)].
-Proof.
-  intros Hp Hl.
-  unfold decodeItemOkBytes.
-  replace (pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)] ++
-      firstn 7 (skipn 17 before) ++ consumedBytes ++
-      [Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before))
-    with ((pointerBytes ++ lengthBytes) ++
-      [Z_to_bv 8 (if isList then 1 else 0)] ++
-      (firstn 7 (skipn 17 before) ++ consumedBytes ++
-       [Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before)))
-    by (repeat rewrite app_assoc; reflexivity).
-  replace 16%nat with (length (pointerBytes ++ lengthBytes)).
-  - apply fieldImage_middle.
-  - rewrite app_length, Hp, Hl. lia.
-Qed.
+Proof. decodeItemReturnField. Qed.
 
 Lemma decodeItemOkBytes_pad17_field before pointerBytes lengthBytes consumedBytes isList :
   (length pointerBytes = 8)%nat ->
   (length lengthBytes = 8)%nat ->
   fieldImage (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes isList)
     17 (firstn 7 (skipn 17 before)).
-Proof.
-  intros Hp Hl.
-  unfold decodeItemOkBytes.
-  replace (pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)] ++
-      firstn 7 (skipn 17 before) ++ consumedBytes ++
-      [Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before))
-    with ((pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)]) ++
-      firstn 7 (skipn 17 before) ++
-      (consumedBytes ++ [Z_to_bv 8 0; Z_to_bv 8 0] ++
-       firstn 6 (skipn 34 before)))
-    by (repeat rewrite app_assoc; reflexivity).
-  replace 17%nat with
-    (length (pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)])).
-  - apply fieldImage_middle.
-  - repeat rewrite app_length. rewrite Hp, Hl. simpl. lia.
-Qed.
+Proof. decodeItemReturnField. Qed.
 
 Lemma decodeItemOkBytes_status_field before pointerBytes lengthBytes consumedBytes isList :
   (length before = 40)%nat ->
@@ -172,25 +123,7 @@ Lemma decodeItemOkBytes_status_field before pointerBytes lengthBytes consumedByt
   (length consumedBytes = 8)%nat ->
   fieldImage (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes isList)
     32 [Z_to_bv 8 0; Z_to_bv 8 0].
-Proof.
-  intros Hbefore Hp Hl Hc.
-  unfold decodeItemOkBytes.
-  set (prefix := pointerBytes ++ lengthBytes ++
-    [Z_to_bv 8 (if isList then 1 else 0)] ++
-    firstn 7 (skipn 17 before) ++ consumedBytes).
-  replace (pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)] ++
-      firstn 7 (skipn 17 before) ++ consumedBytes ++
-      [Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before))
-    with (prefix ++ [Z_to_bv 8 0; Z_to_bv 8 0] ++
-      firstn 6 (skipn 34 before))
-    by (unfold prefix; repeat rewrite app_assoc; reflexivity).
-  replace 32%nat with (length prefix).
-  - apply fieldImage_middle.
-  - unfold prefix. repeat rewrite app_length.
-    rewrite Hp, Hl, Hc, (selectedPadLength before 17 7) by lia.
-    simpl. lia.
-Qed.
+Proof. decodeItemReturnField. Qed.
 
 Lemma decodeItemOkBytes_pad34_field before pointerBytes lengthBytes consumedBytes isList :
   (length before = 40)%nat ->
@@ -199,29 +132,7 @@ Lemma decodeItemOkBytes_pad34_field before pointerBytes lengthBytes consumedByte
   (length consumedBytes = 8)%nat ->
   fieldImage (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes isList)
     34 (firstn 6 (skipn 34 before)).
-Proof.
-  intros Hbefore Hp Hl Hc.
-  unfold decodeItemOkBytes.
-  replace (pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)] ++
-      firstn 7 (skipn 17 before) ++ consumedBytes ++
-      [Z_to_bv 8 0; Z_to_bv 8 0] ++ firstn 6 (skipn 34 before))
-    with ((pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)] ++
-      firstn 7 (skipn 17 before) ++ consumedBytes ++
-      [Z_to_bv 8 0; Z_to_bv 8 0]) ++
-      firstn 6 (skipn 34 before) ++ ([] : list byte))
-    by (repeat rewrite app_assoc; rewrite app_nil_r; reflexivity).
-  replace 34%nat with
-    (length (pointerBytes ++ lengthBytes ++
-      [Z_to_bv 8 (if isList then 1 else 0)] ++
-      firstn 7 (skipn 17 before) ++ consumedBytes ++
-      [Z_to_bv 8 0; Z_to_bv 8 0])).
-  - apply fieldImage_middle.
-  - repeat rewrite app_length.
-    rewrite Hp, Hl, Hc, (selectedPadLength before 17 7) by lia.
-    simpl. lia.
-Qed.
+Proof. decodeItemReturnField. Qed.
 
 Lemma byteAt_from_singleton_image after offset value :
   fieldImage after offset [Z_to_bv 8 value] ->
@@ -367,65 +278,9 @@ Proof.
       apply fieldImage_middle.
 Qed.
 
-Lemma decodeItemOkBytes_otherPrefix inputPointer prefix rest before
-    pointerBytes lengthBytes consumedBytes isList headerLength payloadLength :
-  bv_unsigned prefix <> 128 ->
-  (length before = 40)%nat ->
-  (length pointerBytes = 8)%nat ->
-  (length lengthBytes = 8)%nat ->
-  (length consumedBytes = 8)%nat ->
-  littleEndian pointerBytes = inputPointer + headerLength ->
-  littleEndian lengthBytes = payloadLength ->
-  littleEndian consumedBytes =
-    (headerLength + payloadLength) mod word64Modulus ->
-  encodeResult inputPointer (prefix :: rest) before
-    (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes isList)
-    (candidateSuccess isList headerLength payloadLength).
-Proof.
-  intros Hprefix Hbefore Hp Hl Hc Hpv Hlv Hcv.
-  apply decodeItemOkBytes_encodeSuccess; try assumption.
-  unfold itemPayloadPointer. simpl.
-  apply Z.eqb_neq in Hprefix. rewrite Hprefix.
-  exact Hpv.
-Qed.
 
 (* Return 0x800d69a0 has literal and short-string incoming edges. *)
-Lemma return_800d69a0_literal inputPointer prefix rest before
-    pointerBytes lengthBytes consumedBytes :
-  bv_unsigned prefix <= 127 ->
-  (length before = 40)%nat ->
-  (length pointerBytes = 8)%nat ->
-  (length lengthBytes = 8)%nat ->
-  (length consumedBytes = 8)%nat ->
-  littleEndian pointerBytes = inputPointer ->
-  littleEndian lengthBytes = 1 ->
-  littleEndian consumedBytes = 1 mod word64Modulus ->
-  encodeResult inputPointer (prefix :: rest) before
-    (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes false)
-    (candidateSuccess false 0 1).
-Proof.
-  intros Hprefix Hbefore Hp Hl Hc Hpv Hlv Hcv.
-  apply decodeItemOkBytes_otherPrefix; try assumption; lia.
-Qed.
 
-Lemma return_800d69a0_shortString inputPointer prefix rest before
-    pointerBytes lengthBytes consumedBytes :
-  129 <= bv_unsigned prefix <= 183 ->
-  (length before = 40)%nat ->
-  (length pointerBytes = 8)%nat ->
-  (length lengthBytes = 8)%nat ->
-  (length consumedBytes = 8)%nat ->
-  littleEndian pointerBytes = inputPointer + 1 ->
-  littleEndian lengthBytes = bv_unsigned prefix - 128 ->
-  littleEndian consumedBytes =
-    (1 + (bv_unsigned prefix - 128)) mod word64Modulus ->
-  encodeResult inputPointer (prefix :: rest) before
-    (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes false)
-    (candidateSuccess false 1 (bv_unsigned prefix - 128)).
-Proof.
-  intros Hprefix Hbefore Hp Hl Hc Hpv Hlv Hcv.
-  apply decodeItemOkBytes_otherPrefix; try assumption; lia.
-Qed.
 
 (* Return 0x800d69d4 uses the selected empty-string pointer sentinel. *)
 Lemma return_800d69d4_emptyString inputPointer prefix rest before
@@ -448,75 +303,3 @@ Proof.
 Qed.
 
 (* The long-string and long-list sites retain modular consumed length. *)
-Lemma return_800d6a60_longString inputPointer prefix rest before
-    pointerBytes lengthBytes consumedBytes :
-  184 <= bv_unsigned prefix <= 191 ->
-  (length before = 40)%nat ->
-  (length pointerBytes = 8)%nat ->
-  (length lengthBytes = 8)%nat ->
-  (length consumedBytes = 8)%nat ->
-  littleEndian pointerBytes = inputPointer + 1 + (bv_unsigned prefix - 183) ->
-  littleEndian lengthBytes =
-    bigEndian (firstn (Z.to_nat (bv_unsigned prefix - 183)) rest) ->
-  littleEndian consumedBytes =
-    (1 + (bv_unsigned prefix - 183) +
-     bigEndian (firstn (Z.to_nat (bv_unsigned prefix - 183)) rest))
-      mod word64Modulus ->
-  encodeResult inputPointer (prefix :: rest) before
-    (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes false)
-    (candidateSuccess false (1 + (bv_unsigned prefix - 183))
-      (bigEndian (firstn (Z.to_nat (bv_unsigned prefix - 183)) rest))).
-Proof.
-  intros Hprefix Hbefore Hp Hl Hc Hpv Hlv Hcv.
-  apply decodeItemOkBytes_otherPrefix; try assumption; lia.
-Qed.
-
-Lemma return_800d6aa4_shortList inputPointer prefix rest before
-    pointerBytes lengthBytes consumedBytes :
-  192 <= bv_unsigned prefix <= 247 ->
-  (length before = 40)%nat ->
-  (length pointerBytes = 8)%nat ->
-  (length lengthBytes = 8)%nat ->
-  (length consumedBytes = 8)%nat ->
-  littleEndian pointerBytes = inputPointer + 1 ->
-  littleEndian lengthBytes = bv_unsigned prefix - 192 ->
-  littleEndian consumedBytes =
-    (1 + (bv_unsigned prefix - 192)) mod word64Modulus ->
-  encodeResult inputPointer (prefix :: rest) before
-    (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes true)
-    (candidateSuccess true 1 (bv_unsigned prefix - 192)).
-Proof.
-  intros Hprefix Hbefore Hp Hl Hc Hpv Hlv Hcv.
-  apply decodeItemOkBytes_otherPrefix; try assumption; lia.
-Qed.
-
-Lemma return_800d6b04_error inputPointer input before :
-  errorResult40 errorEncoding /\
-  encodeResult inputPointer input before errorEncoding candidateError.
-Proof.
-  destruct errorReturnImage as [Himage Hencode].
-  split; [exact Himage|apply Hencode].
-Qed.
-
-Lemma return_800d6b2c_longList inputPointer prefix rest before
-    pointerBytes lengthBytes consumedBytes :
-  248 <= bv_unsigned prefix <= 255 ->
-  (length before = 40)%nat ->
-  (length pointerBytes = 8)%nat ->
-  (length lengthBytes = 8)%nat ->
-  (length consumedBytes = 8)%nat ->
-  littleEndian pointerBytes = inputPointer + 1 + (bv_unsigned prefix - 247) ->
-  littleEndian lengthBytes =
-    bigEndian (firstn (Z.to_nat (bv_unsigned prefix - 247)) rest) ->
-  littleEndian consumedBytes =
-    (1 + (bv_unsigned prefix - 247) +
-     bigEndian (firstn (Z.to_nat (bv_unsigned prefix - 247)) rest))
-      mod word64Modulus ->
-  encodeResult inputPointer (prefix :: rest) before
-    (decodeItemOkBytes before pointerBytes lengthBytes consumedBytes true)
-    (candidateSuccess true (1 + (bv_unsigned prefix - 247))
-      (bigEndian (firstn (Z.to_nat (bv_unsigned prefix - 247)) rest))).
-Proof.
-  intros Hprefix Hbefore Hp Hl Hc Hpv Hlv Hcv.
-  apply decodeItemOkBytes_otherPrefix; try assumption; lia.
-Qed.

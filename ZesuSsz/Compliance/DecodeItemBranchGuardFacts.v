@@ -10,6 +10,38 @@ Require Import ZesuSsz.Contracts.DecodeItemReturnFacts.
 Require Import ZesuSsz.Compliance.DecodeItemSemanticIntroduction.
 Open Scope Z_scope.
 
+Ltac decodeItemGuardFromMask candidate base :=
+  intros Hdomain Hhead Hclass Hvalue Hguard;
+  lazymatch type of Hhead with decodeItemInputHead ?args ?inputPrefix ?rest =>
+  lazymatch type of Hvalue with bv_unsigned ?register = bv_unsigned inputPrefix =>
+    let Hheader := fresh "Hheader" in
+    lazymatch type of Hguard with
+    | context [bv_and (register + ?add)%bv 255] => let integer := eval compute in (256 - base)%Z in
+        pose proof (decodeItemDomainInputLengthBounds args (proj2 Hdomain)) as Hlength;
+        assert (Hlen : 0 <= decodeItemInputLength args < word64Modulus) by
+          (unfold word64Modulus; lia);
+        assert (Hheader : bv_unsigned (bv_and (register + add) 255) = bv_unsigned inputPrefix - base);
+        [pose proof (zesu_unsigned_low_mask_add_integer 64 8 register 255 integer
+            ltac:(done) ltac:(reflexivity)) as Hlow;
+         rewrite Hlow Hvalue Z_to_bv_unsigned;
+         change ((bv_unsigned inputPrefix + integer) mod 256 = bv_unsigned inputPrefix - base);
+         replace (bv_unsigned inputPrefix + integer) with
+           ((bv_unsigned inputPrefix - base) + 1 * 256) by (cbn; ring);
+         rewrite Z.mod_add; [apply Z.mod_small; lia | lia] |];
+        rewrite !zesu_signed_zero_extend_64_128 Hheader
+          (Z_to_bv_small 64 (decodeItemInputLength args) Hlen) in Hguard
+    | context [bv_unsigned (Z_to_bv 8 (bv_unsigned register + ?add))] =>
+        assert (Hheader : bv_unsigned (Z_to_bv 8 (bv_unsigned register + add)) =
+          bv_unsigned inputPrefix - base) by bv_solve;
+        rewrite Hheader in Hguard
+    end;
+    eapply (candidate args inputPrefix rest);
+      [exact (proj2 Hdomain) | exact Hhead | exact Hclass |];
+    destruct (proj2 Hdomain) as [Hinput [Hstorage Hlayout]]; rewrite -Hinput;
+    first [rewrite Z.add_1_l; apply (proj2 (Z.lt_succ_r _ _)); exact (Z.ge_le _ _ Hguard) |
+      apply Znot_ge_lt in Hguard; rewrite Z.add_1_l; apply Z.le_succ_l; exact Hguard]
+  end end.
+
 Lemma decodeItemShortListGuardRejected args (prefix : bv 64)
     (inputPrefix : byte) (rest : list byte) :
   decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
@@ -19,28 +51,7 @@ Lemma decodeItemShortListGuardRejected args (prefix : bv 64)
   bv_signed (bv_zero_extend 128 (bv_and (prefix + 64) 255)) >=
     bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) ->
   decodeItemRejectedFacts args.
-Proof.
-  intros Hdomain Hhead Hclass Hprefix Hguard.
-  pose proof (decodeItemDomainInputLengthBounds args (proj2 Hdomain)) as Hlength.
-  assert (Hlen : 0 <= decodeItemInputLength args < word64Modulus) by
-    (unfold word64Modulus; lia).
-  assert (Hmask : bv_unsigned (bv_and (prefix + 64) 255) =
-    bv_unsigned inputPrefix - 192).
-  { pose proof (zesu_unsigned_low_mask_add_integer 64 8 prefix 255 64
-      ltac:(done) ltac:(reflexivity)) as Hlow.
-    rewrite Hlow Hprefix Z_to_bv_unsigned.
-    change ((bv_unsigned inputPrefix + 64) mod 256 = bv_unsigned inputPrefix - 192).
-    replace (bv_unsigned inputPrefix + 64) with
-      ((bv_unsigned inputPrefix - 192) + 1 * 256) by ring.
-    rewrite Z.mod_add; [apply Z.mod_small; lia | lia]. }
-  rewrite !zesu_signed_zero_extend_64_128 Hmask
-    (Z_to_bv_small 64 (decodeItemInputLength args) Hlen) in Hguard.
-  eapply (decodeItemShortListRejected args inputPrefix rest);
-    [exact (proj2 Hdomain) | exact Hhead | exact Hclass |].
-  destruct (proj2 Hdomain) as [Hinput [Hstorage Hlayout]].
-  rewrite -Hinput Z.add_1_l.
-  apply (proj2 (Z.lt_succ_r _ _)). exact (Z.ge_le _ _ Hguard).
-Qed.
+Proof. decodeItemGuardFromMask decodeItemShortListRejected constr:(192%Z). Qed.
 
 Lemma decodeItemShortListGuardAccepted args (prefix : bv 64)
     (inputPrefix : byte) (rest : list byte) :
@@ -51,29 +62,7 @@ Lemma decodeItemShortListGuardAccepted args (prefix : bv 64)
   ~ bv_signed (bv_zero_extend 128 (bv_and (prefix + 64) 255)) >=
     bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) ->
   decodeItemAcceptedFacts args true 1 (bv_unsigned inputPrefix - 192).
-Proof.
-  intros Hdomain Hhead Hclass Hprefix Hguard.
-  pose proof (decodeItemDomainInputLengthBounds args (proj2 Hdomain)) as Hlength.
-  assert (Hlen : 0 <= decodeItemInputLength args < word64Modulus) by
-    (unfold word64Modulus; lia).
-  assert (Hmask : bv_unsigned (bv_and (prefix + 64) 255) =
-    bv_unsigned inputPrefix - 192).
-  { pose proof (zesu_unsigned_low_mask_add_integer 64 8 prefix 255 64
-      ltac:(done) ltac:(reflexivity)) as Hlow.
-    rewrite Hlow Hprefix Z_to_bv_unsigned.
-    change ((bv_unsigned inputPrefix + 64) mod 256 = bv_unsigned inputPrefix - 192).
-    replace (bv_unsigned inputPrefix + 64) with
-      ((bv_unsigned inputPrefix - 192) + 1 * 256) by ring.
-    rewrite Z.mod_add; [apply Z.mod_small; lia | lia]. }
-  rewrite !zesu_signed_zero_extend_64_128 Hmask
-    (Z_to_bv_small 64 (decodeItemInputLength args) Hlen) in Hguard.
-  eapply (decodeItemShortListAccepted args inputPrefix rest);
-    [exact (proj2 Hdomain) | exact Hhead | exact Hclass |].
-  destruct (proj2 Hdomain) as [Hinput [Hstorage Hlayout]].
-  rewrite -Hinput.
-  apply Znot_ge_lt in Hguard.
-  rewrite Z.add_1_l. apply Z.le_succ_l. exact Hguard.
-Qed.
+Proof. decodeItemGuardFromMask decodeItemShortListAccepted constr:(192%Z). Qed.
 
 Lemma decodeItemNonemptyInputByteBound args :
   decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
@@ -221,17 +210,7 @@ Lemma decodeItemLongStringHeaderGuardRejected args (register : bv 64)
   bv_unsigned (Z_to_bv 8 (bv_unsigned register + 73)) >=
     decodeItemInputLength args ->
   decodeItemRejectedFacts args.
-Proof.
-  intros Hdomain Hhead Hclass Hvalue Hguard.
-  assert (Hheader : bv_unsigned (Z_to_bv 8 (bv_unsigned register + 73)) =
-    bv_unsigned inputPrefix - 183) by bv_solve.
-  rewrite Hheader in Hguard.
-  eapply (decodeItemLongStringHeaderRejected args inputPrefix rest);
-    [exact (proj2 Hdomain) | exact Hhead | exact Hclass |].
-  destruct (proj2 Hdomain) as [Hinput [Hstorage Hlayout]].
-  rewrite -Hinput Z.add_1_l.
-  apply (proj2 (Z.lt_succ_r _ _)). exact (Z.ge_le _ _ Hguard).
-Qed.
+Proof. decodeItemGuardFromMask decodeItemLongStringHeaderRejected constr:(183%Z). Qed.
 
 #[export] Hint Extern 1 (SimplAnd (decodeItemRejectedFacts ?args) True) =>
   match goal with
@@ -253,17 +232,7 @@ Lemma decodeItemLongListHeaderGuardRejected args (register : bv 64)
   bv_unsigned (Z_to_bv 8 (bv_unsigned register + 9)) >=
     decodeItemInputLength args ->
   decodeItemRejectedFacts args.
-Proof.
-  intros Hdomain Hhead Hclass Hvalue Hguard.
-  assert (Hheader : bv_unsigned (Z_to_bv 8 (bv_unsigned register + 9)) =
-    bv_unsigned inputPrefix - 247) by bv_solve.
-  rewrite Hheader in Hguard.
-  eapply (decodeItemLongListHeaderRejected args inputPrefix rest);
-    [exact (proj2 Hdomain) | exact Hhead | exact Hclass |].
-  destruct (proj2 Hdomain) as [Hinput [Hstorage Hlayout]].
-  rewrite -Hinput Z.add_1_l.
-  apply (proj2 (Z.lt_succ_r _ _)). exact (Z.ge_le _ _ Hguard).
-Qed.
+Proof. decodeItemGuardFromMask decodeItemLongListHeaderRejected constr:(247%Z). Qed.
 
 #[export] Hint Extern 1 (SimplAnd (decodeItemRejectedFacts ?args) True) =>
   match goal with

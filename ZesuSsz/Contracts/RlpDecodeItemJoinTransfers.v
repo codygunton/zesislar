@@ -39,16 +39,7 @@ Definition decodeItemJoin6a24From6a14 `{!islaG Sigma} `{!threadG}
 
 (* The backedge keeps args and frameBytes unchanged. These lemmas retain
    only their pure facts; they do not prove machine preservation. *)
-Lemma decodeItemBackedgeDomainAtPreserved (args : DecodeItemArgs) :
-  decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
-  decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args.
-Proof. exact (fun Hdomain => Hdomain). Qed.
 
-Lemma decodeItemBackedgeSavedFrameFactsPreserved
-    (args : DecodeItemArgs) (frameBytes : list byte) :
-  decodeItemSavedFrameFacts args frameBytes ->
-  decodeItemSavedFrameFacts args frameBytes.
-Proof. exact (fun Hframe => Hframe). Qed.
 
 Definition decodeItemJoin6a24Backedge `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (n i payloadStart : Z)

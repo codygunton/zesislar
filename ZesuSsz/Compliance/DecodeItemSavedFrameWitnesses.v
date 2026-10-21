@@ -92,19 +92,6 @@ Proof.
   tauto.
 Qed.
 
-#[export] Hint Extern 1 (@ZesuPureFactIntro ?Sigma _ _) =>
-  match goal with
-  | Hdomain : decodeItemDomainAt ?returnAddress decodeItemC1BDomain ?args,
-    Hzero : Z_to_bv 64 (decodeItemInputLength ?args) = 0%bv |- _ =>
-    exact (@decodeItemSavedFrameRejectedIntroduction Sigma _ _ returnAddress args Hdomain Hzero)
-  end : typeclass_instances.
-
-#[export] Hint Extern 1 (@ZesuPureFactIntro ?Sigma _ _) =>
-  match goal with
-  | Hdomain : decodeItemDomainAt ?returnAddress decodeItemC1BDomain ?args |- _ =>
-    exact (@decodeItemSavedFrameReturnIntroduction Sigma _ _ returnAddress args Hdomain)
-  end : typeclass_instances.
-
 Print Assumptions decodeItemSavedFrameWordsIntroduction.
 Print Assumptions decodeItemSavedFrameZeroRejected.
 Print Assumptions decodeItemSavedFrameReturnIntroduction.

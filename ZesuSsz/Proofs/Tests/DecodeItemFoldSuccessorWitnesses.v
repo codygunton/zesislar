@@ -15,6 +15,30 @@ Open Scope Z_scope.
 Require Import ZesuSsz.Compliance.DecodeItemFoldSuccessorWitnesses.
 Require Import ZesuSsz.Automation.Switches.CanonicalAnchor.
 
+(* These registrations belong only to the generic mechanism tests. *)
+#[local] Hint Extern 1 (@ZesuCanonicalAnchor ?Sigma _ _ _) =>
+  match goal with
+  | Hfold : decodeItemByteFoldFacts ?args ?n ?i ?payloadStart ?lengthBytes,
+    Hprovenance : decodeItemFoldProvenance ?args true ?prefix ?rest ?n ?payloadStart ?lengthBytes,
+    Hlookup : decodeItemInputBytes ?args !! Z.to_nat (1 + ?i) = Some ?next |- _ =>
+    first [exact (@decodeItemListSuccessorExistsCanonical Sigma _ _ args prefix rest n i payloadStart lengthBytes next)
+          | exact (@decodeItemListSuccessorNamedCanonical Sigma _ _ args prefix rest n i payloadStart lengthBytes next)]
+  end : typeclass_instances.
+
+#[local] Hint Extern 0 (@ZesuCanonicalAnchor ?Sigma _ ?target _) =>
+  assert_fails (is_evar target);
+  lazymatch target with
+  | @bi_exist _ Z _ => idtac
+  | @bi_exist _ byte _ => idtac
+  end;
+  match goal with
+  | Hfold : decodeItemByteFoldFacts ?args ?n ?i ?payloadStart ?lengthBytes,
+    Hprovenance : decodeItemFoldProvenance ?args true ?prefix ?rest ?n ?payloadStart ?lengthBytes,
+    Hlookup : decodeItemInputBytes ?args !! Z.to_nat (1 + ?i) = Some ?next |- _ =>
+    first [exact (@decodeItemListSuccessorExistsExpandedCanonical Sigma _ _ args prefix rest n i payloadStart lengthBytes next)
+          | exact (@decodeItemListSuccessorExpandedCanonical Sigma _ _ args prefix rest n i payloadStart lengthBytes next)]
+  end : typeclass_instances.
+
 Lemma listSuccessorNamed `{!islaG Sigma} `{!threadG}
     args (prefix : byte) (rest : list byte) (n i payloadStart : Z)
     (lengthBytes frameBytes : list byte) (next : byte) (loaded : bv 64) :
@@ -225,24 +249,6 @@ Proof.
   iPureIntro. exact (conj (conj Hlength Hfold) I).
 Qed.
 Print Assumptions listSuccessorExistsExpanded.
-
-Lemma listSuccessorUnconstrainedCanonical `{!islaG Sigma} `{!threadG}
-    args (prefix : byte) (rest : list byte) (n i payloadStart : Z)
-    (lengthBytes : list byte) (next : byte) :
-  decodeItemByteFoldFacts args n i payloadStart lengthBytes ->
-  decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes ->
-  decodeItemInputBytes args !! Z.to_nat (1 + i) = Some next ->
-  True.
-Proof.
-  intros.
-  let anchor := constr:(("x13" ↦ᵣ RVal_Bits (bv_or (Z_to_bv 64 (bigEndian (firstn (Z.to_nat i) lengthBytes)) ≪ 8) (bv_zero_extend 64 next)))%I) in
-  let registered := constr:(_ : ZesuCanonicalAnchor anchor _ _) in
-  lazymatch registered with
-  | @decodeItemListSuccessorExistsCanonical _ _ _ _ _ _ _ _ _ _ _ => exact I
-  | _ => fail "The unconstrained S68 selection changed"
-  end.
-Qed.
-Print Assumptions listSuccessorUnconstrainedCanonical.
 
 Lemma listSuccessorExpandedMissingFold `{!islaG Sigma} `{!threadG}
     args (prefix : byte) (rest : list byte) (n i payloadStart : Z)

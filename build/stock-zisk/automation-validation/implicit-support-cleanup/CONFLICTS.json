@@ -1,0 +1,14 @@
+[
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.v",
+    "removed_candidate_count": 4,
+    "sha256": "552823d6e4efb3847f172d86eb80fe96f24c9b3eb9da60869b411add19e0f452",
+    "resolution": "Preserve factored HEAD; remove the same accepted Instance/Hint commands and associated Print commands."
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemStringSuccessorWitnesses.v",
+    "removed_candidate_count": 3,
+    "sha256": "580a7e2ace25f5bf165e8a4f54251b686e0af40fab90c416b2838146b495558a",
+    "resolution": "Preserve factored HEAD; remove the same accepted Instance/Hint commands and associated Print commands."
+  }
+]

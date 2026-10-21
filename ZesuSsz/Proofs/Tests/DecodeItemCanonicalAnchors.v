@@ -18,6 +18,49 @@ Open Scope Z_scope.
 Require Import ZesuSsz.Automation.Switches.PureFactHints.
 Require Import ZesuSsz.Compliance.DecodeItemCanonicalAnchors.
 
+(* These registrations belong only to the generic mechanism tests. *)
+#[local] Hint Extern 1
+  (@ZesuCanonicalAnchor ?Sigma
+    (decodeItemByteFoldStringHeader ?args ?n 0 ?payloadStart ?bytes ?frameBytes ?loaded) _ _) =>
+  match goal with
+  | Hprovenance : decodeItemFoldProvenance args false ?prefix ?rest n payloadStart bytes |- _ =>
+    exact (@decodeItemStringInitializationAnchorCanonical Sigma _ _ args prefix rest n payloadStart bytes frameBytes loaded)
+  end : typeclass_instances.
+
+#[local] Hint Extern 1
+  (@ZesuCanonicalAnchor ?Sigma
+    (decodeItemByteFoldListHeader ?args ?n 0 ?payloadStart ?bytes ?frameBytes ?loaded) _ _) =>
+  match goal with
+  | Hprovenance : decodeItemFoldProvenance args true ?prefix ?rest n payloadStart bytes |- _ =>
+    exact (@decodeItemListInitializationAnchorCanonical Sigma _ _ args prefix rest n payloadStart bytes frameBytes loaded)
+  end : typeclass_instances.
+
+#[local] Hint Extern 1
+  (@ZesuCanonicalAnchor ?Sigma
+    (decodeItemFoldInitResources ?args ?n ?payloadStart ?bytes ?frameBytes ?oldAcc ?oldCursor ?loaded) _ _) =>
+  first [
+    match goal with
+    | Hprovenance : decodeItemFoldProvenance args false ?prefix ?rest n payloadStart bytes |- _ =>
+      exact (@decodeItemStringSliceWitnessCanonical Sigma _ _ args prefix rest frameBytes oldAcc oldCursor loaded)
+    end
+  | match goal with
+    | Hprovenance : decodeItemFoldProvenance args true ?prefix ?rest n payloadStart bytes |- _ =>
+      exact (@decodeItemListSliceWitnessCanonical Sigma _ _ args prefix rest frameBytes oldAcc oldCursor loaded)
+    end ] : typeclass_instances.
+
+#[local] Hint Extern 1
+  (@ZesuCanonicalAnchor ?Sigma
+    (decodeItemFoldCheckedResources ?args ?n ?payloadStart ?bytes ?frameBytes ?loaded) _ _) =>
+  first [
+    match goal with
+    | Hprovenance : decodeItemFoldProvenance args false ?prefix ?rest n payloadStart bytes |- _ =>
+      exact (@decodeItemStringReturnLengthWitnessCanonical Sigma _ _ args prefix rest n payloadStart bytes frameBytes loaded)
+    end
+  | match goal with
+    | Hprovenance : decodeItemFoldProvenance args true ?prefix ?rest n payloadStart bytes |- _ =>
+      exact (@decodeItemListReturnLengthWitnessCanonical Sigma _ _ args prefix rest n payloadStart bytes frameBytes loaded)
+    end ] : typeclass_instances.
+
 Lemma decodeItemStringInitializationAnchorCanonicalOff
     `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (prefix : byte) (rest : list byte)

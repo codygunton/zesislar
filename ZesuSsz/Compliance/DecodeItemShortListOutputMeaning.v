@@ -12,132 +12,14 @@ Require Import ZesuSsz.Compliance.DecodeItemReturnRestorationFacts.
 Open Scope Z_scope.
 
 (* This image is the exact retained five-store output. *)
+Import ListNotations.
 Definition decodeItemShortListUpdatedImage (locals : DecodeItemReturnLocals) : list byte :=
-  (@cons (bv (Npos (xO (xO (xO xH))))) (Z_to_bv (Npos (xO (xO (xO xH)))) (Z.land (@bv_unsigned (Npos
-  (xO (xO (xO (xO (xO (xO xH))))))) (@bv_add (Npos (xO (xO (xO (xO (xO (xO xH))))))) (returnA1 locals)
-  (@BV (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Zpos xH) I))) (Z.ones (Zpos (xO (xO (xO xH)))))))
-  (@cons (bv (Npos (xO (xO (xO xH))))) (Z_to_bv (Npos (xO (xO (xO xH)))) (Z.land (Z.shiftr
-  (@bv_unsigned (Npos (xO (xO (xO (xO (xO (xO xH))))))) (@bv_add (Npos (xO (xO (xO (xO (xO (xO
-  xH))))))) (returnA1 locals) (@BV (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Zpos xH) I))) (Zpos (xO
-  (xO (xO xH))))) (Z.ones (Zpos (xO (xO (xO xH))))))) (@cons (bv (Npos (xO (xO (xO xH))))) (Z_to_bv
-  (Npos (xO (xO (xO xH)))) (Z.land (Z.shiftr (Z.shiftr (@bv_unsigned (Npos (xO (xO (xO (xO (xO (xO
-  xH))))))) (@bv_add (Npos (xO (xO (xO (xO (xO (xO xH))))))) (returnA1 locals) (@BV (Npos (xO (xO (xO
-  (xO (xO (xO xH))))))) (Zpos xH) I))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Z.ones
-  (Zpos (xO (xO (xO xH))))))) (@cons (bv (Npos (xO (xO (xO xH))))) (Z_to_bv (Npos (xO (xO (xO xH))))
-  (Z.land (Z.shiftr (Z.shiftr (Z.shiftr (@bv_unsigned (Npos (xO (xO (xO (xO (xO (xO xH))))))) (@bv_add
-  (Npos (xO (xO (xO (xO (xO (xO xH))))))) (returnA1 locals) (@BV (Npos (xO (xO (xO (xO (xO (xO
-  xH))))))) (Zpos xH) I))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO
-  xH))))) (Z.ones (Zpos (xO (xO (xO xH))))))) (@cons (bv (Npos (xO (xO (xO xH))))) (Z_to_bv (Npos (xO
-  (xO (xO xH)))) (Z.land (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (@bv_unsigned (Npos (xO (xO (xO (xO
-  (xO (xO xH))))))) (@bv_add (Npos (xO (xO (xO (xO (xO (xO xH))))))) (returnA1 locals) (@BV (Npos (xO
-  (xO (xO (xO (xO (xO xH))))))) (Zpos xH) I))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH)))))
-  (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Z.ones (Zpos (xO (xO (xO xH))))))) (@cons (bv
-  (Npos (xO (xO (xO xH))))) (Z_to_bv (Npos (xO (xO (xO xH)))) (Z.land (Z.shiftr (Z.shiftr (Z.shiftr
-  (Z.shiftr (Z.shiftr (@bv_unsigned (Npos (xO (xO (xO (xO (xO (xO xH))))))) (@bv_add (Npos (xO (xO (xO
-  (xO (xO (xO xH))))))) (returnA1 locals) (@BV (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Zpos xH) I)))
-  (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO
-  xH))))) (Zpos (xO (xO (xO xH))))) (Z.ones (Zpos (xO (xO (xO xH))))))) (@cons (bv (Npos (xO (xO (xO
-  xH))))) (Z_to_bv (Npos (xO (xO (xO xH)))) (Z.land (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr
-  (Z.shiftr (@bv_unsigned (Npos (xO (xO (xO (xO (xO (xO xH))))))) (@bv_add (Npos (xO (xO (xO (xO (xO
-  (xO xH))))))) (returnA1 locals) (@BV (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Zpos xH) I))) (Zpos
-  (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH)))))
-  (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Z.ones (Zpos (xO (xO (xO xH))))))) (@cons (bv
-  (Npos (xO (xO (xO xH))))) (Z_to_bv (Npos (xO (xO (xO xH)))) (Z.land (Z.shiftr (Z.shiftr (Z.shiftr
-  (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (@bv_unsigned (Npos (xO (xO (xO (xO (xO (xO xH)))))))
-  (@bv_add (Npos (xO (xO (xO (xO (xO (xO xH))))))) (returnA1 locals) (@BV (Npos (xO (xO (xO (xO (xO
-  (xO xH))))))) (Zpos xH) I))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO
-  xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO
-  (xO xH))))) (Z.ones (Zpos (xO (xO (xO xH))))))) (@cons (bv (Npos (xO (xO (xO xH))))) (Z_to_bv (Npos
-  (xO (xO (xO xH)))) (Z.land (@bv_unsigned (Npos (xO (xO (xO (xO (xO (xO xH))))))) (returnA3 locals))
-  (Z.ones (Zpos (xO (xO (xO xH))))))) (@cons (bv (Npos (xO (xO (xO xH))))) (Z_to_bv (Npos (xO (xO (xO
-  xH)))) (Z.land (Z.shiftr (@bv_unsigned (Npos (xO (xO (xO (xO (xO (xO xH))))))) (returnA3 locals))
-  (Zpos (xO (xO (xO xH))))) (Z.ones (Zpos (xO (xO (xO xH))))))) (@cons (bv (Npos (xO (xO (xO xH)))))
-  (Z_to_bv (Npos (xO (xO (xO xH)))) (Z.land (Z.shiftr (Z.shiftr (@bv_unsigned (Npos (xO (xO (xO (xO
-  (xO (xO xH))))))) (returnA3 locals)) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Z.ones
-  (Zpos (xO (xO (xO xH))))))) (@cons (bv (Npos (xO (xO (xO xH))))) (Z_to_bv (Npos (xO (xO (xO xH))))
-  (Z.land (Z.shiftr (Z.shiftr (Z.shiftr (@bv_unsigned (Npos (xO (xO (xO (xO (xO (xO xH)))))))
-  (returnA3 locals)) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH)))))
-  (Z.ones (Zpos (xO (xO (xO xH))))))) (@cons (bv (Npos (xO (xO (xO xH))))) (Z_to_bv (Npos (xO (xO (xO
-  xH)))) (Z.land (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (@bv_unsigned (Npos (xO (xO (xO (xO (xO (xO
-  xH))))))) (returnA3 locals)) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO
-  xH))))) (Zpos (xO (xO (xO xH))))) (Z.ones (Zpos (xO (xO (xO xH))))))) (@cons (bv (Npos (xO (xO (xO
-  xH))))) (Z_to_bv (Npos (xO (xO (xO xH)))) (Z.land (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr
-  (@bv_unsigned (Npos (xO (xO (xO (xO (xO (xO xH))))))) (returnA3 locals)) (Zpos (xO (xO (xO xH)))))
-  (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO
-  xH))))) (Z.ones (Zpos (xO (xO (xO xH))))))) (@cons (bv (Npos (xO (xO (xO xH))))) (Z_to_bv (Npos (xO
-  (xO (xO xH)))) (Z.land (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (@bv_unsigned
-  (Npos (xO (xO (xO (xO (xO (xO xH))))))) (returnA3 locals)) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO
-  (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO
-  (xO (xO xH))))) (Z.ones (Zpos (xO (xO (xO xH))))))) (@cons (bv (Npos (xO (xO (xO xH))))) (Z_to_bv
-  (Npos (xO (xO (xO xH)))) (Z.land (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr
-  (Z.shiftr (@bv_unsigned (Npos (xO (xO (xO (xO (xO (xO xH))))))) (returnA3 locals)) (Zpos (xO (xO (xO
-  xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO
-  (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Z.ones (Zpos (xO (xO (xO xH)))))))
-  (@app (bv (Npos (xO (xO (xO xH))))) (@firstn (bv (Npos (xO (xO (xO xH))))) (S (S (S (S (S (S (S (S
-  O)))))))) (@insert nat (bv (Npos (xO (xO (xO xH))))) (list (bv (Npos (xO (xO (xO xH))))))
-  (@list_insert (bv (Npos (xO (xO (xO xH)))))) O (@bv_extract (Npos (xO (xO (xO (xO (xO (xO xH)))))))
-  N0 (Npos (xO (xO (xO xH)))) (@BV (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Zpos xH) I)) (@skipn (bv
-  (Npos (xO (xO (xO xH))))) (N.to_nat (Npos (xO (xO (xO xH))))) (@skipn (bv (Npos (xO (xO (xO xH)))))
-  (N.to_nat (Npos (xO (xO (xO xH))))) (@app (bv (Npos (xO (xO (xO xH))))) (@firstn (bv (Npos (xO (xO
-  (xO xH))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S
-  (S (S (S O)))))))))))))))))))))))))))))))) (returnStorage locals)) (@cons (bv (Npos (xO (xO (xO
-  xH))))) (Z_to_bv (Npos (xO (xO (xO xH)))) (Z.land (@bv_unsigned (Npos (xO (xO (xO (xO xH))))) (@BV
-  (Npos (xO (xO (xO (xO xH))))) Z0 I)) (Z.ones (Zpos (xO (xO (xO xH))))))) (@cons (bv (Npos (xO (xO
-  (xO xH))))) (Z_to_bv (Npos (xO (xO (xO xH)))) (Z.land (Z.shiftr (@bv_unsigned (Npos (xO (xO (xO (xO
-  xH))))) (@BV (Npos (xO (xO (xO (xO xH))))) Z0 I)) (Zpos (xO (xO (xO xH))))) (Z.ones (Zpos (xO (xO
-  (xO xH))))))) (@skipn (bv (Npos (xO (xO (xO xH))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S
-  (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (N.to_nat (Npos (xO
-  xH))))))))))))))))))))))))))))))))))) (returnStorage locals))))))))) (@cons (bv (Npos (xO (xO (xO
-  xH))))) (Z_to_bv (Npos (xO (xO (xO xH)))) (Z.land (@bv_unsigned (Npos (xO (xO (xO (xO (xO (xO
-  xH))))))) (@bv_add (Npos (xO (xO (xO (xO (xO (xO xH))))))) (returnA3 locals) (@BV (Npos (xO (xO (xO
-  (xO (xO (xO xH))))))) (Zpos xH) I))) (Z.ones (Zpos (xO (xO (xO xH))))))) (@cons (bv (Npos (xO (xO
-  (xO xH))))) (Z_to_bv (Npos (xO (xO (xO xH)))) (Z.land (Z.shiftr (@bv_unsigned (Npos (xO (xO (xO (xO
-  (xO (xO xH))))))) (@bv_add (Npos (xO (xO (xO (xO (xO (xO xH))))))) (returnA3 locals) (@BV (Npos (xO
-  (xO (xO (xO (xO (xO xH))))))) (Zpos xH) I))) (Zpos (xO (xO (xO xH))))) (Z.ones (Zpos (xO (xO (xO
-  xH))))))) (@cons (bv (Npos (xO (xO (xO xH))))) (Z_to_bv (Npos (xO (xO (xO xH)))) (Z.land (Z.shiftr
-  (Z.shiftr (@bv_unsigned (Npos (xO (xO (xO (xO (xO (xO xH))))))) (@bv_add (Npos (xO (xO (xO (xO (xO
-  (xO xH))))))) (returnA3 locals) (@BV (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Zpos xH) I))) (Zpos
-  (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Z.ones (Zpos (xO (xO (xO xH))))))) (@cons (bv (Npos
-  (xO (xO (xO xH))))) (Z_to_bv (Npos (xO (xO (xO xH)))) (Z.land (Z.shiftr (Z.shiftr (Z.shiftr
-  (@bv_unsigned (Npos (xO (xO (xO (xO (xO (xO xH))))))) (@bv_add (Npos (xO (xO (xO (xO (xO (xO
-  xH))))))) (returnA3 locals) (@BV (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Zpos xH) I))) (Zpos (xO
-  (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Z.ones (Zpos (xO (xO (xO
-  xH))))))) (@cons (bv (Npos (xO (xO (xO xH))))) (Z_to_bv (Npos (xO (xO (xO xH)))) (Z.land (Z.shiftr
-  (Z.shiftr (Z.shiftr (Z.shiftr (@bv_unsigned (Npos (xO (xO (xO (xO (xO (xO xH))))))) (@bv_add (Npos
-  (xO (xO (xO (xO (xO (xO xH))))))) (returnA3 locals) (@BV (Npos (xO (xO (xO (xO (xO (xO xH)))))))
-  (Zpos xH) I))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos
-  (xO (xO (xO xH))))) (Z.ones (Zpos (xO (xO (xO xH))))))) (@cons (bv (Npos (xO (xO (xO xH)))))
-  (Z_to_bv (Npos (xO (xO (xO xH)))) (Z.land (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr
-  (@bv_unsigned (Npos (xO (xO (xO (xO (xO (xO xH))))))) (@bv_add (Npos (xO (xO (xO (xO (xO (xO
-  xH))))))) (returnA3 locals) (@BV (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Zpos xH) I))) (Zpos (xO
-  (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos
-  (xO (xO (xO xH))))) (Z.ones (Zpos (xO (xO (xO xH))))))) (@cons (bv (Npos (xO (xO (xO xH)))))
-  (Z_to_bv (Npos (xO (xO (xO xH)))) (Z.land (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr
-  (Z.shiftr (@bv_unsigned (Npos (xO (xO (xO (xO (xO (xO xH))))))) (@bv_add (Npos (xO (xO (xO (xO (xO
-  (xO xH))))))) (returnA3 locals) (@BV (Npos (xO (xO (xO (xO (xO (xO xH))))))) (Zpos xH) I))) (Zpos
-  (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH)))))
-  (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Z.ones (Zpos (xO (xO (xO xH))))))) (@cons (bv
-  (Npos (xO (xO (xO xH))))) (Z_to_bv (Npos (xO (xO (xO xH)))) (Z.land (Z.shiftr (Z.shiftr (Z.shiftr
-  (Z.shiftr (Z.shiftr (Z.shiftr (Z.shiftr (@bv_unsigned (Npos (xO (xO (xO (xO (xO (xO xH)))))))
-  (@bv_add (Npos (xO (xO (xO (xO (xO (xO xH))))))) (returnA3 locals) (@BV (Npos (xO (xO (xO (xO (xO
-  (xO xH))))))) (Zpos xH) I))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO
-  xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO (xO xH))))) (Zpos (xO (xO
-  (xO xH))))) (Z.ones (Zpos (xO (xO (xO xH))))))) (@skipn (bv (Npos (xO (xO (xO xH))))) (S (S (S (S (S
-  (S (S (S (N.to_nat (Npos (xO (xO (xO xH))))))))))))) (@insert nat (bv (Npos (xO (xO (xO xH)))))
-  (list (bv (Npos (xO (xO (xO xH)))))) (@list_insert (bv (Npos (xO (xO (xO xH)))))) O (@bv_extract
-  (Npos (xO (xO (xO (xO (xO (xO xH))))))) N0 (Npos (xO (xO (xO xH)))) (@BV (Npos (xO (xO (xO (xO (xO
-  (xO xH))))))) (Zpos xH) I)) (@skipn (bv (Npos (xO (xO (xO xH))))) (N.to_nat (Npos (xO (xO (xO
-  xH))))) (@skipn (bv (Npos (xO (xO (xO xH))))) (N.to_nat (Npos (xO (xO (xO xH))))) (@app (bv (Npos
-  (xO (xO (xO xH))))) (@firstn (bv (Npos (xO (xO (xO xH))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S
-  (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S O))))))))))))))))))))))))))))))))
-  (returnStorage locals)) (@cons (bv (Npos (xO (xO (xO xH))))) (Z_to_bv (Npos (xO (xO (xO xH))))
-  (Z.land (@bv_unsigned (Npos (xO (xO (xO (xO xH))))) (@BV (Npos (xO (xO (xO (xO xH))))) Z0 I))
-  (Z.ones (Zpos (xO (xO (xO xH))))))) (@cons (bv (Npos (xO (xO (xO xH))))) (Z_to_bv (Npos (xO (xO (xO
-  xH)))) (Z.land (Z.shiftr (@bv_unsigned (Npos (xO (xO (xO (xO xH))))) (@BV (Npos (xO (xO (xO (xO
-  xH))))) Z0 I)) (Zpos (xO (xO (xO xH))))) (Z.ones (Zpos (xO (xO (xO xH))))))) (@skipn (bv (Npos (xO
-  (xO (xO xH))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S
-  (S (S (S (S (N.to_nat (Npos (xO xH))))))))))))))))))))))))))))))))))) (returnStorage
-  locals)))))))))))))))))))))))))))))))))).
+  let storage := returnStorage locals in
+  let tail := <[0%nat := Z_to_bv 8 1]>
+    (drop 8 (drop 8 (take 32 storage ++ bv_to_little_endian 2 8 0 ++ drop 34 storage))) in
+  bv_to_little_endian 8 8 (bv_unsigned ((returnA1 locals + 1)%bv)) ++
+  bv_to_little_endian 8 8 (bv_unsigned (returnA3 locals)) ++ take 8 tail ++
+  bv_to_little_endian 8 8 (bv_unsigned ((returnA3 locals + 1)%bv)) ++ drop 16 tail.
 
 Definition decodeItemShortListOutputFacts
     (args : DecodeItemArgs) (locals : DecodeItemReturnLocals)
@@ -194,9 +76,3 @@ Proof. exact (decodeItemShortListUpdatedMeaning args locals inputPrefix rest). Q
 
 Print Assumptions decodeItemShortListUpdatedMeaning.
 Print Assumptions decodeItemShortListOutputDerivedFacts.
-
-Lemma decodeItemShortListOutputRegistration args locals inputPrefix rest :
-  ZesuDerivedFacts (decodeItemShortListOutputFacts args locals inputPrefix rest)
-    (DecodeMeaningModuloKnownBugs args (decodeItemShortListUpdatedImage locals)).
-Proof. exact (decodeItemShortListOutputDerivedFacts args locals inputPrefix rest). Qed.
-Print Assumptions decodeItemShortListOutputRegistration.

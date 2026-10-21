@@ -11,6 +11,7 @@ Require Import ZesuSsz.Automation.Rewrites.
 Require Import ZesuSsz.Automation.StackArrayIndices.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Automation.PackedWordValues.
+Require Import ZesuSsz.Automation.RawWordArrayWitness.
 Require Export ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.NatBounds.
 Require Import ZesuSsz.Automation.PureFacts.
@@ -602,6 +603,7 @@ Ltac zesu_pack_shaped_register_goal :=
       end ].
 
 Ltac zesu_pack_owned_word_goal :=
+  first [zesu_raw_array_witness_if_enabled |
   lazymatch goal with
   | |- envs_entails _ (@bi_exist _ (li_prod (bv ?width) unit) ?body) =>
     lazymatch body with
@@ -613,7 +615,7 @@ Ltac zesu_pack_owned_word_goal :=
             iExists (value, tt)ₗ; iFrame H; try done
         end)
     end
-  end.
+  end ].
 
 Ltac zesu_pack_owned_register_goal :=
   lazymatch goal with

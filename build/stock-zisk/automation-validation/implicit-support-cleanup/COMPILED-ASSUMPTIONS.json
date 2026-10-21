@@ -1,0 +1,114 @@
+[
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974.DesignedBoundary_800d6974",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d697c.DesignedBoundary_800d697c",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d698cLiteral.DesignedBoundary_800d698cLiteral",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d698cShortString.DesignedBoundary_800d698cShortString",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69a4.DesignedBoundary_800d69a4",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69b0.DesignedBoundary_800d69b0",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69d8.DesignedBoundary_800d69d8",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69e0.DesignedBoundary_800d69e0",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69e8.DesignedBoundary_800d69e8",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a00.DesignedBoundary_800d6a00",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a14.DesignedBoundary_800d6a14",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a40.DesignedBoundary_800d6a40",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a64.DesignedBoundary_800d6a64",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a6c.DesignedBoundary_800d6a6c",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a78.DesignedBoundary_800d6a78",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6ab4.DesignedBoundary_800d6ab4",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6ae0.DesignedBoundary_800d6ae0",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6b08.DesignedBoundary_800d6b08",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6960.DesignedBoundary_800d6960",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a08.DesignedBoundary_800d6a08",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24.DesignedBoundary_800d6a24",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a38.DesignedBoundary_800d6a38",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6aa8.DesignedBoundary_800d6aa8",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ac4.DesignedBoundary_800d6ac4",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ad8.DesignedBoundary_800d6ad8",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Compliance.DecodeItemCompliance.decodeItemSelectedCompliance",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Compliance.DecodeItemCompositionalCompliance.decodeItemSelectedComplianceRegisters",
+    "result": "Closed under the global context"
+  },
+  {
+    "constant": "ZesuSsz.Compliance.DecodeItemCompositionalCompliance.decodeItemSelectedComplianceCompositional",
+    "result": "Closed under the global context"
+  }
+]
