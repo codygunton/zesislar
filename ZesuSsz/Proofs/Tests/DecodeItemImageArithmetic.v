@@ -25,7 +25,35 @@ Proof. intros Hle. Fail reflexivity. decodeItemExitImageArithmetic. Qed.
 Goal forall n : nat, n = 0%nat.
 Proof. intros n. Fail decodeItemExitImageArithmetic. Abort.
 
+Lemma exitImageClosedNat : (16 < 40)%nat.
+Proof. decodeItemExitImageClosedNat. Qed.
+
+Lemma exitImageClosedNatSymbolic (n : nat) : (n <= n)%nat.
+Proof.
+  Fail decodeItemExitImageClosedNat.
+  change (n <= n)%nat.
+  apply Nat.le_refl.
+Qed.
+
+Lemma exitImageClosedNatEvar : exists n : nat, n = 0%nat.
+Proof.
+  eexists.
+  Fail decodeItemExitImageClosedNat.
+  match goal with |- ?n = _ => is_evar n end.
+  reflexivity.
+Qed.
+
+Lemma exitImageClosedNatFalse : True.
+Proof.
+  Fail assert ((40 <= 16)%nat) by decodeItemExitImageClosedNat.
+  exact I.
+Qed.
+
 Print Assumptions exitImageLength.
 Print Assumptions exitImageSliceLength.
 Print Assumptions exitImageArithmeticNat.
 Print Assumptions exitImageArithmeticZ.
+Print Assumptions exitImageClosedNat.
+Print Assumptions exitImageClosedNatSymbolic.
+Print Assumptions exitImageClosedNatEvar.
+Print Assumptions exitImageClosedNatFalse.
