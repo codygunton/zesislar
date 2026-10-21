@@ -1,0 +1,262 @@
+[
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemCanonicalAnchors.v",
+    "baseline_line": 117,
+    "name": null,
+    "kind": "Hint",
+    "classes": [
+      "ZesuCanonicalAnchor"
+    ],
+    "declaration_sha256": "6d851798dd28dfa9c9703182b4844e3be1342f686cfcd0499bbd95f2e5e2856e"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemCanonicalAnchors.v",
+    "baseline_line": 125,
+    "name": null,
+    "kind": "Hint",
+    "classes": [
+      "ZesuCanonicalAnchor"
+    ],
+    "declaration_sha256": "a5976a5343a778c53a62fc6aa1dad1722e5f074c7a8bb300267cc710f12b632a"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemCanonicalAnchors.v",
+    "baseline_line": 133,
+    "name": null,
+    "kind": "Hint",
+    "classes": [
+      "ZesuCanonicalAnchor"
+    ],
+    "declaration_sha256": "cb37fb15d97188ef93d11ea7f4f17b4d6d1dfe38790597d4ee690c5461dbcd92"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemCanonicalAnchors.v",
+    "baseline_line": 146,
+    "name": null,
+    "kind": "Hint",
+    "classes": [
+      "ZesuCanonicalAnchor"
+    ],
+    "declaration_sha256": "851faf881794668cd459983bd74937fadeb8cc51b827738388eeef4c0cd88660"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.v",
+    "baseline_line": 347,
+    "name": null,
+    "kind": "Hint",
+    "classes": [
+      "ZesuPureFactAnchor"
+    ],
+    "declaration_sha256": "52936291824f6550091ce79316fc43420fa8974558f4480d67ed93dc0551b796"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemDataRegistrations.v",
+    "baseline_line": 44,
+    "name": "decodeItemHeader6a24StepRegistered",
+    "kind": "Instance",
+    "classes": [
+      "ZesuLoopStep"
+    ],
+    "declaration_sha256": "452b606fee54bdac6d45314ec36c2a327770e2a50a03ab8dd5562a47ab70a052"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemDataRegistrations.v",
+    "baseline_line": 55,
+    "name": "decodeItemHeader6ac4StepRegistered",
+    "kind": "Instance",
+    "classes": [
+      "ZesuLoopStep"
+    ],
+    "declaration_sha256": "028d61f7960cfc018f45021df2305f068dff13b40cc5deb774f40dea74ee72ea"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemEntryWitnessIntroductions.v",
+    "baseline_line": 18,
+    "name": "decodeItemLiteralEntryOutputFactsIntroduction",
+    "kind": "Instance",
+    "classes": [
+      "ZesuPureFactIntro"
+    ],
+    "declaration_sha256": "fe39401eaaa9e5dcb6b3cc7a081a14582ed3c2cb187fd3ba8e37da68f5b1dbfc"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemEntryWitnessIntroductions.v",
+    "baseline_line": 51,
+    "name": "decodeItemShortStringEntryOutputFactsIntroduction",
+    "kind": "Instance",
+    "classes": [
+      "ZesuPureFactIntro"
+    ],
+    "declaration_sha256": "897b1e57833620217e3354c461a6e51698fcb62871db0fc0ccbb433a20af0d46"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemEntryWitnessIntroductions.v",
+    "baseline_line": 84,
+    "name": "decodeItemCanonicalEntryFrameFactsIntroduction",
+    "kind": "Instance",
+    "classes": [
+      "ZesuPureFactIntro"
+    ],
+    "declaration_sha256": "45a3d7b753a9b2b0ea53be1fff037e5ff9a711f02c1bbe94f109af838f37a7ed"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemFoldBackEdgeWitnesses.v",
+    "baseline_line": 13,
+    "name": "decodeItemStringBackEdgeAnchor",
+    "kind": "Instance",
+    "classes": [
+      "ZesuPureFactAnchor"
+    ],
+    "declaration_sha256": "7f93d4476ea68097a2da272020e63a33cf03e7c3e42defd2310d720f3cd2bd1d"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemFoldBackEdgeWitnesses.v",
+    "baseline_line": 33,
+    "name": "decodeItemListBackEdgeAnchor",
+    "kind": "Instance",
+    "classes": [
+      "ZesuPureFactAnchor"
+    ],
+    "declaration_sha256": "661a15a3e899fe089aabf03c62f465b596b8f6c46751e96e10ac0932d30a0212"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.v",
+    "baseline_line": 135,
+    "name": null,
+    "kind": "Hint",
+    "classes": [
+      "ZesuCanonicalAnchor"
+    ],
+    "declaration_sha256": "27ee5843afa0575ce1de2e42ee422932023f81c4a00369cbe7cf9e8081428df7"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.v",
+    "baseline_line": 149,
+    "name": "decodeItemListSuccessorExpanded",
+    "kind": "Instance",
+    "classes": [
+      "ZesuPureFactAnchor"
+    ],
+    "declaration_sha256": "fc8a8d6543317ff21b215e5d20e7e047173687e64cfbb2d55e3f82017376375d"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.v",
+    "baseline_line": 207,
+    "name": "decodeItemListSuccessorExistsExpanded",
+    "kind": "Instance",
+    "classes": [
+      "ZesuPureFactAnchor"
+    ],
+    "declaration_sha256": "dca5172d8e4aa9e41acd5a84a45138e6330fdf5b7e4ec44f2483c4855805e166"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.v",
+    "baseline_line": 265,
+    "name": null,
+    "kind": "Hint",
+    "classes": [
+      "ZesuCanonicalAnchor"
+    ],
+    "declaration_sha256": "06655fadc3843240eb70494f1a9cf3151ad27e9e5cd8b366627ef8c3a846f475"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemOutcomeWitnessFacts.v",
+    "baseline_line": 19,
+    "name": null,
+    "kind": "Hint",
+    "classes": [
+      "ZesuPureFactIntro"
+    ],
+    "declaration_sha256": "a493b67d4bc5c7a97dab2edad9ab590e4bd5ee95fcd45a0551588e1fbc893215"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemSavedFrameWitnesses.v",
+    "baseline_line": 95,
+    "name": null,
+    "kind": "Hint",
+    "classes": [
+      "ZesuPureFactIntro"
+    ],
+    "declaration_sha256": "60958fdb5df75deebce7af0d4a236b2a8693507dfdcab31cb417e4590d1d32f4"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemSavedFrameWitnesses.v",
+    "baseline_line": 102,
+    "name": null,
+    "kind": "Hint",
+    "classes": [
+      "ZesuPureFactIntro"
+    ],
+    "declaration_sha256": "65737dafef02ec062232fe8cb9cae80f34062bff2e83da2a9d8fe412b0e62186"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemStoreSelectionIntroductions.v",
+    "baseline_line": 13,
+    "name": "decodeItemOutput24StoreIntroduction",
+    "kind": "Instance",
+    "classes": [
+      "ZesuPureFactIntro"
+    ],
+    "declaration_sha256": "cb9b2550d83641958ad56fc3b097ca941e1e39a3e2e4bb7217352647256077a7"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemStoreSelectionIntroductions.v",
+    "baseline_line": 33,
+    "name": "decodeItemOutput32WordStoreIntroduction",
+    "kind": "Instance",
+    "classes": [
+      "ZesuPureFactIntro"
+    ],
+    "declaration_sha256": "f20dcfe3a34926633626986ee347466097e0fea2f9950f6de109bd568c3f22a7"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemStoreSelectionIntroductions.v",
+    "baseline_line": 48,
+    "name": "decodeItemOutput32ShortStoreIntroduction",
+    "kind": "Instance",
+    "classes": [
+      "ZesuPureFactIntro"
+    ],
+    "declaration_sha256": "c2ad61b376c0c261d720a82a3d01a24e569bc266eee1afe6c44d060736ff3173"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemStoreSelectionIntroductions.v",
+    "baseline_line": 67,
+    "name": "decodeItemOutput16ByteStoreIntroduction",
+    "kind": "Instance",
+    "classes": [
+      "ZesuPureFactIntro"
+    ],
+    "declaration_sha256": "fa36a60cec9669eb311157774bdefb6ee71a454591627b4c0853d0ad3d992dd6"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemStringSuccessorWitnesses.v",
+    "baseline_line": 47,
+    "name": "decodeItemStringSuccessorNamed",
+    "kind": "Instance",
+    "classes": [
+      "ZesuPureFactAnchor"
+    ],
+    "declaration_sha256": "b2f1ae1bf432a3d2e49a66062aee467ec9818376838d60d335df4847bfa8c574"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemStringSuccessorWitnesses.v",
+    "baseline_line": 73,
+    "name": null,
+    "kind": "Hint",
+    "classes": [
+      "ZesuCanonicalAnchor"
+    ],
+    "declaration_sha256": "0922b9ea52ce4580bff7e54c4c2c20e8807c5aaaa891036e83b1c15f2904b14e"
+  },
+  {
+    "path": "ZesuSsz/Compliance/DecodeItemStringSuccessorWitnesses.v",
+    "baseline_line": 100,
+    "name": null,
+    "kind": "Hint",
+    "classes": [
+      "ZesuPureFactIntro"
+    ],
+    "declaration_sha256": "022a9a0fd215c5c4d8c89c1aa1393fd65232fe049acfd6f740c4b4e921ae1c1f"
+  }
+]

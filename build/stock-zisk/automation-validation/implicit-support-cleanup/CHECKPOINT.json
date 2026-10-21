@@ -1,0 +1,88 @@
+{
+  "status": "Local functional checkpoint; release gates and timing pending",
+  "base_commit": "fbbd898b18053d6ab354e32125c105d372888f36",
+  "accepted_removals": 26,
+  "changed_compliance_files": 10,
+  "manifest_sha256": "77613ca53a888071ff5a3c0d4d114c68f32697089089ac44193936cc6a93283d",
+  "native_pcs": 24,
+  "native_theorems": 25,
+  "compliance_constants": 3,
+  "compiled_assumptions": "All 28 constants print Closed under the global context.",
+  "source_scope": "Native and compliance theorem sources match the base exactly. Original Qed commands compile.",
+  "m2": {
+    "before": 10594,
+    "after": 10142,
+    "delta": -452,
+    "categories": {
+      "contracts": 0,
+      "exit_meanings": 0,
+      "introductions": -303,
+      "loop_steps": -125,
+      "registrations": -24,
+      "proof_helpers": 0
+    },
+    "native_pcs": 24,
+    "hand_pcs": 0,
+    "hand_lines": 0
+  },
+  "historical_overlay": {
+    "base": "2617763d5a6e8ecd1389fbd1a489e83d79d8494b",
+    "delta": -500,
+    "overlap_already_factored": 48
+  },
+  "conflicts": [
+    "ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.v",
+    "ZesuSsz/Compliance/DecodeItemStringSuccessorWitnesses.v"
+  ],
+  "resolution": "Preserve the base factoring and shared notation. Remove only the same accepted declarations and hints.",
+  "conflict_recheck": "All 24 PCs, both 698c branches, and both compliance modules recompiled successfully.",
+  "retained_hints": [
+    "decodeItemFoldArrayIndexWitness",
+    "decodeItemFoldWordArrayIndexWitness",
+    "decodeItemEntryByteIndexWitness"
+  ],
+  "hint_scope": "The fold-index pair suffices for tested loop failures. Individual necessity is untested. The entry-byte hint remains conservatively.",
+  "verification": {
+    "primary": "Owned rocq-mcp health and compiled Print Assumptions query",
+    "query_source_sha256": "0252a088ef7c87ab6f42ad2b48f891c050704b9764724dfae857d754a1ece420",
+    "query_record_sha256": "477d929363e68b7dde3896c8ab0665e65860076087c53de4b52871fa7c202515"
+  },
+  "local_commit_authority": "Orch accepted the local replay and commit. A owns final integration gates.",
+  "pending": [
+    "integration rebase if required",
+    "full check-fast/check-iris",
+    "paired M1",
+    "publication"
+  ],
+  "timing_scope": "Recorded build cost is aggregate. It is not per-module timing or M1 acceptance.",
+  "artifacts": [
+    {
+      "path": "build/stock-zisk/automation-validation/implicit-support-cleanup/BUILD-RESULT.json",
+      "sha256": "ba99e5bdb372c93ecb9ced40222c51a5281f28dc8e0df52cbdf935d974c6ed6b"
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/implicit-support-cleanup/COMPILED-ASSUMPTIONS.json",
+      "sha256": "61ee13fc64c553d405d99c6b571bdf15c735bd2c1ffea77cf6ee064ce119672e"
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/implicit-support-cleanup/CONFLICTS.json",
+      "sha256": "dab0e830df80cc6c00016ce0501f5fa510f2d10eb586815e632c9dbdf6e91be8"
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/implicit-support-cleanup/COUNTS.json",
+      "sha256": "6a4f6bcfe8fe2cd43408261936b4582dcb95425cae618d1ba544f5baf1ee3edd"
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/implicit-support-cleanup/OBJECTS.json",
+      "sha256": "b93aef6e74b93d1171d17e85f42a318258827262a2babe8c7b1a765583a256bb"
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/implicit-support-cleanup/REMOVALS.json",
+      "sha256": "371c6fd647f04587ef9aed9a88ed9a44b60f3b1db1c89e63b7927e69ec443825"
+    },
+    {
+      "path": "build/stock-zisk/automation-validation/implicit-support-cleanup/SOURCES.json",
+      "sha256": "bf725c4be9be1fac4b6379c5dba78e25b3798a80073a126a94998e30ea4cf652"
+    }
+  ]
+}

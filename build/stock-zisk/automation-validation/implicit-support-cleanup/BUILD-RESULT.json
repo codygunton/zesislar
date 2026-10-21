@@ -1,0 +1,8 @@
+{
+  "exit_code": 0,
+  "elapsed_seconds": 5963.280215017032,
+  "user_cpu_seconds": 11633.514119,
+  "system_cpu_seconds": 1625.703501,
+  "peak_rss_kib": 13089508,
+  "scope": "Aggregate dependency and 24-PC/compliance build; not paired timing"
+}

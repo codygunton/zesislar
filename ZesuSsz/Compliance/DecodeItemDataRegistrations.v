@@ -41,28 +41,6 @@ Require Import ZesuSsz.Automation.ReturnRoute.
   ZesuEntryIntro (decodeItemEntryAt800d6ad8 args n payloadStart lengthBytes frameBytes loaded prefix rest) _ :=
   decodeItemEntry6ad8Introduction args n payloadStart lengthBytes frameBytes loaded prefix rest.
 
-#[export] Instance decodeItemHeader6a24StepRegistered `{!islaG Sigma} `{!threadG}
-    args n i payloadStart lengthBytes frameBytes (loaded : bv 64) :
-  ZesuLoopStep
-    (decodeItemByteFoldStringHeader args n i payloadStart lengthBytes frameBytes loaded)
-    ((forall next : byte, i < n ->
-    nth_error lengthBytes (Z.to_nat i) = Some next ->
-    decodeItemByteFoldFacts args n (i + 1) payloadStart lengthBytes /\
-    bigEndian (firstn (Z.to_nat (i + 1)) lengthBytes) =
-      256 * bigEndian (firstn (Z.to_nat i) lengthBytes) + bv_unsigned next)%Z) :=
-  decodeItemHeader6a24Step args n i payloadStart lengthBytes frameBytes loaded.
-
-#[export] Instance decodeItemHeader6ac4StepRegistered `{!islaG Sigma} `{!threadG}
-    args n i payloadStart lengthBytes frameBytes (loaded : bv 64) :
-  ZesuLoopStep
-    (decodeItemByteFoldListHeader args n i payloadStart lengthBytes frameBytes loaded)
-    ((forall next : byte, i < n ->
-    nth_error lengthBytes (Z.to_nat i) = Some next ->
-    decodeItemByteFoldFacts args n (i + 1) payloadStart lengthBytes /\
-    bigEndian (firstn (Z.to_nat (i + 1)) lengthBytes) =
-      256 * bigEndian (firstn (Z.to_nat i) lengthBytes) + bv_unsigned next)%Z) :=
-  decodeItemHeader6ac4Step args n i payloadStart lengthBytes frameBytes loaded.
-
 (* Reviewed E3-integrated R3 registrations. Original class commit: 7d7a2ffc7bfe9d9cf43683f616d83b326dd74e7b.
    This scope registers five unchanged sources and two public 698c alternatives. *)
 Lemma decodeItemExitMeaning698cLiteralDraft `{!islaG Sigma} `{!threadG}
@@ -86,7 +64,6 @@ Lemma decodeItemExitMeaning698cShortStringDraft `{!islaG Sigma} `{!threadG}
     DecodeMeaningModuloKnownBugs args after)%Z).
 Proof. constructor. apply decodeItemReturn698cShortStringMeaning. Qed.
 #[export] Existing Instance decodeItemExitMeaning698cShortStringDraft.
-
 
 Lemma decodeItemExitMeaning69b0Draft `{!islaG Sigma} `{!threadG}
     args locals prefix rest :
@@ -128,4 +105,3 @@ Lemma decodeItemExitMeaning6b08Draft `{!islaG Sigma} `{!threadG}
     DecodeMeaningModuloKnownBugs args after)%Z).
 Proof. constructor. apply decodeItemReturn6b08Meaning. Qed.
 #[export] Existing Instance decodeItemExitMeaning6b08Draft.
-

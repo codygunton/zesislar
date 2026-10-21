@@ -132,48 +132,10 @@ Proof.
   exact (decodeItemListSuccessorExists args prefix rest n i payloadStart lengthBytes next).
 Qed.
 
-#[export] Hint Extern 1 (@ZesuCanonicalAnchor ?Sigma _ _ _) =>
-  match goal with
-  | Hfold : decodeItemByteFoldFacts ?args ?n ?i ?payloadStart ?lengthBytes,
-    Hprovenance : decodeItemFoldProvenance ?args true ?prefix ?rest ?n ?payloadStart ?lengthBytes,
-    Hlookup : decodeItemInputBytes ?args !! Z.to_nat (1 + ?i) = Some ?next |- _ =>
-    first [exact (@decodeItemListSuccessorExistsCanonical Sigma _ _ args prefix rest n i payloadStart lengthBytes next)
-          | exact (@decodeItemListSuccessorNamedCanonical Sigma _ _ args prefix rest n i payloadStart lengthBytes next)]
-  end : typeclass_instances.
-
 Print Assumptions decodeItemListSuccessorNamed.
 Print Assumptions decodeItemListSuccessorExists.
 Print Assumptions decodeItemListSuccessorNamedCanonical.
 Print Assumptions decodeItemListSuccessorExistsCanonical.
-
-#[export] Instance decodeItemListSuccessorExpanded `{!islaG Sigma} `{!threadG}
-    args (prefix : byte) rest (n i payloadStart : Z)
-    (lengthBytes : list byte) (next : byte) :
-  @ZesuPureFactAnchor Sigma (∃ (successorN successorI successorStart : Z) (successorLength successorFrame : list byte)
-       (successorLoaded : bv 64),
-    ⌜successorI < successorN /\
-      decodeItemDomainAt (decodeItemReturnAddress args)
-        decodeItemC1BDomain args /\
-      decodeItemSavedFrameFacts args successorFrame /\
-      decodeItemFoldProvenance args true prefix rest successorN successorStart successorLength⌝ ∗
-    decodeItemByteFoldListHeader args successorN successorI successorStart
-      successorLength successorFrame successorLoaded ∗
-    decodeItemBranchContinuation args)%I
-    ("x13" ↦ᵣ RVal_Bits (bv_or
-      (Z_to_bv 64 (bigEndian (firstn (Z.to_nat i) lengthBytes)) ≪ 8)
-      (bv_zero_extend 64 next)))%I
-    (∃ (frameBytes : list byte) (loaded : bv 64),
-    ⌜i < n /\
-      decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args /\
-      decodeItemSavedFrameFacts args frameBytes /\
-      decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes /\
-      decodeItemInputBytes args !! Z.to_nat (1 + i) = Some next /\
-      (Z_to_bv 64 (payloadStart + i) + 1)%bv <> Z_to_bv 64 (payloadStart + n)⌝ ∗
-      (listSuccessorRaw args n i payloadStart lengthBytes frameBytes next loaded) ∗ decodeItemBranchContinuation args)%I.
-Proof.
-  exact (decodeItemListSuccessorNamed args prefix rest n i payloadStart lengthBytes next).
-Qed.
-Print Assumptions decodeItemListSuccessorExpanded.
 
 Lemma decodeItemListSuccessorExpandedCanonical `{!islaG Sigma} `{!threadG}
     args (prefix : byte) rest (n i payloadStart : Z)
@@ -204,35 +166,6 @@ Proof.
 Qed.
 Print Assumptions decodeItemListSuccessorExpandedCanonical.
 
-#[export] Instance decodeItemListSuccessorExistsExpanded `{!islaG Sigma} `{!threadG}
-    args (prefix : byte) rest (n i payloadStart : Z)
-    (lengthBytes : list byte) (next : byte) :
-  @ZesuPureFactAnchor Sigma (∃ (successorPrefix : byte) (successorRest : list byte), (∃ (successorN successorI successorStart : Z) (successorLength successorFrame : list byte)
-       (successorLoaded : bv 64),
-    ⌜successorI < successorN /\
-      decodeItemDomainAt (decodeItemReturnAddress args)
-        decodeItemC1BDomain args /\
-      decodeItemSavedFrameFacts args successorFrame /\
-      decodeItemFoldProvenance args true successorPrefix successorRest successorN successorStart successorLength⌝ ∗
-    decodeItemByteFoldListHeader args successorN successorI successorStart
-      successorLength successorFrame successorLoaded ∗
-    decodeItemBranchContinuation args)%I)%I
-    ("x13" ↦ᵣ RVal_Bits (bv_or
-      (Z_to_bv 64 (bigEndian (firstn (Z.to_nat i) lengthBytes)) ≪ 8)
-      (bv_zero_extend 64 next)))%I
-    (∃ (frameBytes : list byte) (loaded : bv 64),
-    ⌜i < n /\
-      decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args /\
-      decodeItemSavedFrameFacts args frameBytes /\
-      decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes /\
-      decodeItemInputBytes args !! Z.to_nat (1 + i) = Some next /\
-      (Z_to_bv 64 (payloadStart + i) + 1)%bv <> Z_to_bv 64 (payloadStart + n)⌝ ∗
-      (listSuccessorRaw args n i payloadStart lengthBytes frameBytes next loaded) ∗ decodeItemBranchContinuation args)%I.
-Proof.
-  exact (decodeItemListSuccessorExists args prefix rest n i payloadStart lengthBytes next).
-Qed.
-Print Assumptions decodeItemListSuccessorExistsExpanded.
-
 Lemma decodeItemListSuccessorExistsExpandedCanonical `{!islaG Sigma} `{!threadG}
     args (prefix : byte) rest (n i payloadStart : Z)
     (lengthBytes : list byte) (next : byte) :
@@ -261,17 +194,3 @@ Proof.
   exact (decodeItemListSuccessorExistsCanonical args prefix rest n i payloadStart lengthBytes next).
 Qed.
 Print Assumptions decodeItemListSuccessorExistsExpandedCanonical.
-
-#[export] Hint Extern 0 (@ZesuCanonicalAnchor ?Sigma _ ?target _) =>
-  assert_fails (is_evar target);
-  lazymatch target with
-  | @bi_exist _ Z _ => idtac
-  | @bi_exist _ byte _ => idtac
-  end;
-  match goal with
-  | Hfold : decodeItemByteFoldFacts ?args ?n ?i ?payloadStart ?lengthBytes,
-    Hprovenance : decodeItemFoldProvenance ?args true ?prefix ?rest ?n ?payloadStart ?lengthBytes,
-    Hlookup : decodeItemInputBytes ?args !! Z.to_nat (1 + ?i) = Some ?next |- _ =>
-    first [exact (@decodeItemListSuccessorExistsExpandedCanonical Sigma _ _ args prefix rest n i payloadStart lengthBytes next)
-          | exact (@decodeItemListSuccessorExpandedCanonical Sigma _ _ args prefix rest n i payloadStart lengthBytes next)]
-  end : typeclass_instances.

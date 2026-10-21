@@ -1,0 +1,16 @@
+{
+  "before": 10594,
+  "after": 10142,
+  "delta": -452,
+  "categories": {
+    "contracts": 0,
+    "exit_meanings": 0,
+    "introductions": -303,
+    "loop_steps": -125,
+    "registrations": -24,
+    "proof_helpers": 0
+  },
+  "native_pcs": 24,
+  "hand_pcs": 0,
+  "hand_lines": 0
+}

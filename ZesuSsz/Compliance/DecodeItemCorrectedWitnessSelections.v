@@ -321,6 +321,21 @@ Proof.
   exact (decodeItemFoldWordArrayIndex args n i payloadStart bytes Hdomain Hfold).
 Qed.
 
+Print Assumptions decodeItemFoldArrayIndex.
+Print Assumptions decodeItemFoldWordArrayIndex.
+Print Assumptions decodeItemFoldWordArrayIndexWitness.
+Print Assumptions decodeItemFoldSteppedCursor.
+Print Assumptions decodeItemFoldByteAtSuccessor.
+Print Assumptions decodeItemFoldSteppedAccumulator.
+Print Assumptions decodeItemLengthBytesValueRange.
+Print Assumptions decodeItemCompletedFoldValueBounds.
+Print Assumptions decodeItemCompletedFoldWordValues.
+Print Assumptions decodeItemStringSliceWitness.
+Print Assumptions decodeItemListSliceWitness.
+Print Assumptions decodeItemFoldArrayIndexWitness.
+Print Assumptions decodeItemStringReturnLengthWitness.
+Print Assumptions decodeItemListReturnLengthWitness.
+
 #[export] Hint Extern 1
   (@ZesuPureFactIntro ?Sigma
     (∃ index : nat,
@@ -343,31 +358,3 @@ Qed.
     Hfold : decodeItemByteFoldFacts args ?n i payloadStart ?bytes |- _ =>
     exact (@decodeItemFoldWordArrayIndexWitness Sigma _ args n i payloadStart bytes continuation)
   end : typeclass_instances.
-
-#[export] Hint Extern 1
-  (@ZesuPureFactAnchor ?Sigma ?target
-    (decodeItemFoldCheckedResources ?args ?n ?payloadStart ?bytes ?frameBytes ?loaded) _) =>
-  first [
-    match goal with
-    | Hprovenance : decodeItemFoldProvenance args false ?prefix ?rest n payloadStart bytes |- _ =>
-      exact (@decodeItemStringReturnLengthWitness Sigma _ _ args prefix rest n payloadStart bytes frameBytes loaded)
-    end
-  | match goal with
-    | Hprovenance : decodeItemFoldProvenance args true ?prefix ?rest n payloadStart bytes |- _ =>
-      exact (@decodeItemListReturnLengthWitness Sigma _ _ args prefix rest n payloadStart bytes frameBytes loaded)
-    end ] : typeclass_instances.
-
-Print Assumptions decodeItemFoldArrayIndex.
-Print Assumptions decodeItemFoldWordArrayIndex.
-Print Assumptions decodeItemFoldWordArrayIndexWitness.
-Print Assumptions decodeItemFoldSteppedCursor.
-Print Assumptions decodeItemFoldByteAtSuccessor.
-Print Assumptions decodeItemFoldSteppedAccumulator.
-Print Assumptions decodeItemLengthBytesValueRange.
-Print Assumptions decodeItemCompletedFoldValueBounds.
-Print Assumptions decodeItemCompletedFoldWordValues.
-Print Assumptions decodeItemStringSliceWitness.
-Print Assumptions decodeItemListSliceWitness.
-Print Assumptions decodeItemFoldArrayIndexWitness.
-Print Assumptions decodeItemStringReturnLengthWitness.
-Print Assumptions decodeItemListReturnLengthWitness.
