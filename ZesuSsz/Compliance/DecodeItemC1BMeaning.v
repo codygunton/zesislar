@@ -9,6 +9,7 @@ Require Import ZesuSsz.Contracts.ResultImage.
 Require Import ZesuSsz.Contracts.RlpDecodeItemReturnImages.
 Require Import ZesuSsz.Automation.Approved.
 Require Import ZesuSsz.Compliance.DecodeItemHints.
+Require Import ZesuSsz.Compliance.DecodeItemExitDataFacts.
 Require Import ZesuSsz.Compliance.DecodeItemSailIntroduction.
 Require Import ZesuSsz.Compliance.DecodeItemSailFold.
 Import ListNotations.

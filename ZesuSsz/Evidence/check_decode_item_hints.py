@@ -9,9 +9,10 @@ import re
 ROOT = Path(__file__).resolve().parents[2]
 PREFIX = "ZesuSsz.Compliance."
 UMBRELLA = "DecodeItemHints.v"
-# These hints apply only at their declared block consumers.
+# These hints apply only at their declared consumers.
 SCOPED_HINT_IMPORTS = {
     PREFIX + "DecodeItemExitDataFacts": (
+        "ZesuSsz.Compliance.DecodeItemC1BMeaning",
         "ZesuSsz.Proofs.DecodeItem.Auto.Block800d697c",
         "ZesuSsz.Proofs.DecodeItem.Auto.Block800d698cLiteral",
         "ZesuSsz.Proofs.DecodeItem.Auto.Block800d698cShortString",

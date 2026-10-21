@@ -99,6 +99,19 @@ class FunctionHintCoverageTests(unittest.TestCase):
                     stream.write(f"Require Import {module}.\n")
         return compliance
 
+    def test_c1b_meaning_requires_the_scoped_error_image_registration(self):
+        module = "ZesuSsz.Compliance.DecodeItemExitDataFacts"
+        importer = "ZesuSsz.Compliance.DecodeItemC1BMeaning"
+        self.assertIn(importer, SCOPED_HINT_IMPORTS[module])
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.scoped_fixture(root)
+            path = root / (importer.replace(".", "/") + ".v")
+            self.assertEqual(manifest_errors(root)[0], [])
+            path.write_text("Require Import ZesuSsz.Compliance.DecodeItemHints.\n")
+            self.assertEqual(manifest_errors(root)[0], [
+                f"{importer} does not directly import {module}."])
+
     def test_scoped_hints_use_all_declared_direct_importers(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

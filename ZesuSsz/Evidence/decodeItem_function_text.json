@@ -612,15 +612,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemC1BMeaning.v",
       "category": "exit_meanings",
       "scope": "whole_file",
-      "sha256": "50196218aa7c0f5d149fde1005832fc7fd645d703115c4f9cff2e892714176de",
-      "file_lines": 151,
+      "sha256": "20b30349b54736fe18a5a890e0b1a9019c8eefbd47bb18e27d4ab41ef53df8b7",
+      "file_lines": 152,
       "line_ranges": [
         [
           1,
-          151
+          152
         ]
       ],
-      "counted_lines": 151
+      "counted_lines": 152
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemCanonicalAnchors.v",
@@ -2381,15 +2381,15 @@
       "path": "ZesuSsz/Evidence/check_decode_item_hints.py",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "6644ad05bd90476f835cb746fb15204fc71c95ccec121c71eb786b46f27797c2",
-      "file_lines": 211,
+      "sha256": "843f50f90fcffd8ba323ac69552faaa2098b7267fd5ad65d3598fedf47f99125",
+      "file_lines": 212,
       "line_ranges": [
         [
           1,
-          211
+          212
         ]
       ],
-      "counted_lines": 211,
+      "counted_lines": 212,
       "source_embedded_constants": [
         {
           "line_range": [
@@ -2421,7 +2421,7 @@
         {
           "line_range": [
             13,
-            35
+            36
           ],
           "names": [
             "SCOPED_HINT_IMPORTS"
@@ -3858,15 +3858,15 @@
       "path": "ZesuSsz/Evidence/test_check_decode_item_hints.py",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "6e7f41b365ba8960c1662c04102c3c3a8226febd82dc8128b72f489393eddf88",
-      "file_lines": 199,
+      "sha256": "15e521f6f54938c996baed0f0aeffb82b14ddd1d46561f7446f25b905f802663",
+      "file_lines": 212,
       "line_ranges": [
         [
           1,
-          199
+          212
         ]
       ],
-      "counted_lines": 199
+      "counted_lines": 212
     },
     {
       "path": "ZesuSsz/Evidence/test_check_proof_hygiene.py",
@@ -8276,19 +8276,19 @@
   },
   "base_manifest_sha256": "7deccbbc338d25231c300f1ba6824c5c10136917b0207e75589cd9a86f9d020a",
   "category_totals": {
-    "tests_and_exports": 36668,
+    "tests_and_exports": 36682,
     "composition": 584,
     "loop_steps": 864,
     "introductions": 3034,
-    "exit_meanings": 2340,
+    "exit_meanings": 2341,
     "registrations": 424,
     "contracts": 2259,
     "generator_json": 6279,
     "block_proofs": 2375
   },
-  "interface_total": 15200,
-  "extra_total": 39627,
-  "overall_total": 54827,
+  "interface_total": 15201,
+  "extra_total": 39641,
+  "overall_total": 54842,
   "file_count": 386,
   "embedded_registration_ranges": [
     {
