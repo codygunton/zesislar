@@ -1502,13 +1502,6 @@ Ltac zesu_region_fault_prepare :=
       clear H
   end;
   repeat match goal with
-  | H : ?left \/ ?right |- _ =>
-      zesu_region_arithmetic_statement left;
-      zesu_region_arithmetic_statement right;
-      destruct H;
-      repeat match goal with Hpair : _ /\ _ |- _ => destruct Hpair end
-  end;
-  repeat match goal with
   | H : context[?term] |- _ =>
       lazymatch type of term with Z => progress (zesu_region_reduce_closed term) end
   | |- context[?term] =>
@@ -1520,7 +1513,14 @@ Ltac zesu_region_fault_prepare :=
       rewrite (zesu_signed_zero_extend_64_128 value) in H
   end;
   rewrite ?zesu_signed_zero_extend_64_128;
-  try zesu_region_fault_cast_hypotheses_if_enabled.
+  try zesu_region_fault_cast_hypotheses_if_enabled;
+  repeat match goal with
+  | H : ?left \/ ?right |- _ =>
+      zesu_region_arithmetic_statement left;
+      zesu_region_arithmetic_statement right;
+      destruct H;
+      repeat match goal with Hpair : _ /\ _ |- _ => destruct Hpair end
+  end.
 
 Ltac zesu_region_fault_arithmetic_full :=
   zesu_region_fault_prepare;
