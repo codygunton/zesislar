@@ -2,6 +2,8 @@ Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Proofs.DecodeItem.Hand.Common.
 Require Import ZesuSsz.Automation.Approved.
 Require Import ZesuSsz.Compliance.DecodeItemHints.
+Require Import ZesuSsz.Compliance.DecodeItemLoopInitialization.
+Require Import ZesuSsz.Compliance.DecodeItemLoopDerivedFacts.
 
 Set Printing Width 200.
 Require Import isla.isla.

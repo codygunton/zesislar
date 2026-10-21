@@ -4,6 +4,7 @@ Require Import ZesuSsz.Compliance.DecodeItemShortListOutputMeaning.
 Require Import ZesuSsz.Compliance.DecodeItemReturnExitResources.
 Require Import ZesuSsz.Automation.Approved.
 Require Import ZesuSsz.Compliance.DecodeItemHints.
+Require Import ZesuSsz.Compliance.DecodeItemExitDataFacts.
 Require Import ZesuSsz.Contracts.DecodeItemCompositional.
 Require Import ZesuSsz.Compliance.DecodeItemReturnRestorationFacts.
 Require Import isla.isla.

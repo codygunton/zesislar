@@ -1,6 +1,7 @@
 Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Automation.Approved.
 Require Import ZesuSsz.Compliance.DecodeItemHints.
+Require Import ZesuSsz.Compliance.DecodeItemExitDataFacts.
 Require Import ZesuSsz.Compliance.DecodeItemReturnExitResources.
 Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Compliance.DecodeItemReturnRestorationFacts.
