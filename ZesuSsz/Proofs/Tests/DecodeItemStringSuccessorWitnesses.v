@@ -12,40 +12,6 @@ Require Import ZesuSsz.Compliance.DecodeItemFoldSuccessorWitnesses.
 From Coq Require Import List ZArith Lia.
 Open Scope Z_scope.
 
-Lemma stringSuccessorCanonicalLookup `{!islaG Sigma} `{!threadG}
-    args (prefix : byte) rest (n i payloadStart : Z)
-    (lengthBytes : list byte) (next : byte) :
-  decodeItemByteFoldFacts args n i payloadStart lengthBytes ->
-  decodeItemFoldProvenance args false prefix rest n payloadStart lengthBytes ->
-  decodeItemInputBytes args !! Z.to_nat (1 + i) = Some next ->
-  ∃ source : iProp Sigma,
-    ZesuCanonicalAnchor
-      ("x13" ↦ᵣ RVal_Bits (bv_or
-        (Z_to_bv 64 (bigEndian (firstn (Z.to_nat i) lengthBytes)) ≪ 8)
-        (bv_zero_extend 64 next)))%I
-      (decodeItemEntryAt800d6a24 args prefix rest) source.
-Proof.
-  intros Hfold Hprovenance Hlookup. eexists. typeclasses eauto.
-Qed.
-Print Assumptions stringSuccessorCanonicalLookup.
-
-Lemma listSuccessorCanonicalLookup `{!islaG Sigma} `{!threadG}
-    args (prefix : byte) rest (n i payloadStart : Z)
-    (lengthBytes : list byte) (next : byte) :
-  decodeItemByteFoldFacts args n i payloadStart lengthBytes ->
-  decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes ->
-  decodeItemInputBytes args !! Z.to_nat (1 + i) = Some next ->
-  ∃ source : iProp Sigma,
-    ZesuCanonicalAnchor
-      ("x13" ↦ᵣ RVal_Bits (bv_or
-        (Z_to_bv 64 (bigEndian (firstn (Z.to_nat i) lengthBytes)) ≪ 8)
-        (bv_zero_extend 64 next)))%I
-      (decodeItemEntryAt800d6ac4 args prefix rest) source.
-Proof.
-  intros Hfold Hprovenance Hlookup. eexists. typeclasses eauto.
-Qed.
-Print Assumptions listSuccessorCanonicalLookup.
-
 (* Conditional checks retain the pre-load frame and the pending machine trace. *)
 Definition stringSuccessorEvidence `{!islaG Sigma} `{!threadG}
     args (prefix : byte) rest (n i payloadStart : Z)

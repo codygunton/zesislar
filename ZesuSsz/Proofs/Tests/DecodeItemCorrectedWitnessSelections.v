@@ -20,6 +20,20 @@ Import ListNotations.
 Open Scope Z_scope.
 
 Require Import ZesuSsz.Compliance.DecodeItemCorrectedWitnessSelections.
+(* These registrations belong only to the generic mechanism tests. *)
+#[local] Hint Extern 1
+  (@ZesuPureFactAnchor ?Sigma ?target
+    (decodeItemFoldCheckedResources ?args ?n ?payloadStart ?bytes ?frameBytes ?loaded) _) =>
+  first [
+    match goal with
+    | Hprovenance : decodeItemFoldProvenance args false ?prefix ?rest n payloadStart bytes |- _ =>
+      exact (@decodeItemStringReturnLengthWitness Sigma _ _ args prefix rest n payloadStart bytes frameBytes loaded)
+    end
+  | match goal with
+    | Hprovenance : decodeItemFoldProvenance args true ?prefix ?rest n payloadStart bytes |- _ =>
+      exact (@decodeItemListReturnLengthWitness Sigma _ _ args prefix rest n payloadStart bytes frameBytes loaded)
+    end ] : typeclass_instances.
+
 Example decodeItemStringSliceWitnessActivation
     `{!islaG Sigma} `{!threadG}
     args (prefix : byte) (rest frameBytes : list byte) (oldAcc oldCursor loaded : bv 64)  :

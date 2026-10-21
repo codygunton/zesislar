@@ -11,35 +11,19 @@ From Coq Require Import List ZArith Lia.
 Open Scope Z_scope.
 
 
-Lemma savedFrameRootGoal9 `{!islaG Sigma} `{!threadG}
-    returnAddress args :
-  decodeItemDomainAt returnAddress decodeItemC1BDomain args ->
-  ZesuPureFactIntro
-    (∃ frameBytes : list byte,
-      (decodeItemStackPointer args + -16 + 0) ↦ₘ∗ frameBytes ∗
-      ⌜decodeItemSavedFrameFacts args frameBytes ∧
-        decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args⌝ ∗
-      decodeItemBranchContinuation args ∗ True)%I
-    ((decodeItemStackPointer args + -16 + 0) ↦ₘ decodeItemSavedFramePointer args ∗
-      (decodeItemStackPointer args + -16 + 8) ↦ₘ Z_to_bv 64 (decodeItemReturnAddress args) ∗
-      decodeItemBranchContinuationAt args returnAddress ∗ True)%I.
-Proof. intros Hdomain. typeclasses eauto. Qed.
+(* Local rules keep the guard refusal tests meaningful. *)
+#[local] Hint Extern 1 (@ZesuPureFactIntro ?Sigma _ _) =>
+  match goal with
+  | Hdomain : decodeItemDomainAt ?returnAddress decodeItemC1BDomain ?args,
+    Hzero : Z_to_bv 64 (decodeItemInputLength ?args) = 0%bv |- _ =>
+    exact (@decodeItemSavedFrameRejectedIntroduction Sigma _ _ returnAddress args Hdomain Hzero)
+  end : typeclass_instances.
 
-Lemma savedFrameRootGoal8 `{!islaG Sigma} `{!threadG}
-    returnAddress args :
-  decodeItemDomainAt returnAddress decodeItemC1BDomain args ->
-  Z_to_bv 64 (decodeItemInputLength args) = 0%bv ->
-  ZesuPureFactIntro
-    (∃ frameBytes : list byte,
-      ((decodeItemStackPointer args + -16 + 0) ↦ₘ∗ frameBytes ∗
-       (⌜decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ∧
-         decodeItemSavedFrameFacts args frameBytes ∧ length (decodeItemBeforeStorage args) = 40%nat⌝ ∗
-        decodeItemBranchContinuation args ∗ True)) ∗
-      ⌜decodeItemRejectedFacts args ∧ decodeItemBeforeStorage args = decodeItemBeforeStorage args⌝)%I
-    ((decodeItemStackPointer args + -16 + 0) ↦ₘ decodeItemSavedFramePointer args ∗
-      (decodeItemStackPointer args + -16 + 8) ↦ₘ Z_to_bv 64 (decodeItemReturnAddress args) ∗
-      decodeItemBranchContinuationAt args returnAddress ∗ True)%I.
-Proof. intros Hdomain Hzero. typeclasses eauto. Qed.
+#[local] Hint Extern 1 (@ZesuPureFactIntro ?Sigma _ _) =>
+  match goal with
+  | Hdomain : decodeItemDomainAt ?returnAddress decodeItemC1BDomain ?args |- _ =>
+    exact (@decodeItemSavedFrameReturnIntroduction Sigma _ _ returnAddress args Hdomain)
+  end : typeclass_instances.
 
 Lemma savedFrameMissingDomain `{!islaG Sigma} `{!threadG} (returnAddress : Z) (args : DecodeItemArgs) :
   True.

@@ -5254,15 +5254,15 @@
       "path": "ZesuSsz/Proofs/Tests/DecodeItemCanonicalAnchors.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "2cd75849ccba85b3318fa6ba2f592d0f2ccb3d0e9c10a5665cba0f601c10a2f5",
-      "file_lines": 482,
+      "sha256": "3e14dd076a300f32bc306662c1de6073ba02d639e48a604f3664795ab71dbf43",
+      "file_lines": 525,
       "line_ranges": [
         [
           1,
-          482
+          525
         ]
       ],
-      "counted_lines": 482
+      "counted_lines": 525
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemCompletedFoldContradictions.v",
@@ -5296,15 +5296,15 @@
       "path": "ZesuSsz/Proofs/Tests/DecodeItemCorrectedWitnessSelections.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "cdbdc87dbee31f55e16409a6cfcb69570e82a3915b4210694113a7c2c240d150",
-      "file_lines": 135,
+      "sha256": "1bb33987e4a583e1b89aee0b18ba99fe70571bdd962447e399804fc7a5fb9118",
+      "file_lines": 149,
       "line_ranges": [
         [
           1,
-          135
+          149
         ]
       ],
-      "counted_lines": 135
+      "counted_lines": 149
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemEntryByteIndexFacts.v",
@@ -5366,15 +5366,15 @@
       "path": "ZesuSsz/Proofs/Tests/DecodeItemFoldSuccessorWitnesses.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "6188f2e290f8e94e63a3f823eeaa03ed9a0e98e6981378fde0a34faaeacaf29d",
-      "file_lines": 492,
+      "sha256": "5abf0cf984352b790bb06f631c52f112ca6d38c9e5aa4426f245ca85cd6eecf1",
+      "file_lines": 498,
       "line_ranges": [
         [
           1,
-          492
+          498
         ]
       ],
-      "counted_lines": 492
+      "counted_lines": 498
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemInitializationPureFacts.v",
@@ -5590,15 +5590,15 @@
       "path": "ZesuSsz/Proofs/Tests/DecodeItemSavedFrameWitnesses.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "650ed989137cfd72da8648c0e705d36398da53b2c18993dfc03b5eb413ea27b8",
-      "file_lines": 76,
+      "sha256": "b80c8b149e347eb5f54275528c97249eb1064b4134b9edaba5406dc20d712ad9",
+      "file_lines": 60,
       "line_ranges": [
         [
           1,
-          76
+          60
         ]
       ],
-      "counted_lines": 76
+      "counted_lines": 60
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemShortStringNegatedGuard.v",
@@ -5618,29 +5618,29 @@
       "path": "ZesuSsz/Proofs/Tests/DecodeItemStoreSelectionIntroductions.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "ce2eb1a7fa5e545d462fec5c7f1a1bdf133fe968d63e2df47baab6234ed012fc",
-      "file_lines": 148,
+      "sha256": "971be145a5c0d6fc75e82678e02e097aa7fc970f5a67b85f2adc55db4b2aea53",
+      "file_lines": 180,
       "line_ranges": [
         [
           1,
-          148
+          180
         ]
       ],
-      "counted_lines": 148
+      "counted_lines": 180
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemStringSuccessorWitnesses.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "98ac065155d1bb86895d35f5f50cf5da0afb47689e4983312a2b990db57f8beb",
-      "file_lines": 230,
+      "sha256": "3fe01eef1bd6ea850fb5e36590549c10eb0aa269c8a4b86ee547456b84c12f2f",
+      "file_lines": 196,
       "line_ranges": [
         [
           1,
-          230
+          196
         ]
       ],
-      "counted_lines": 230
+      "counted_lines": 196
     },
     {
       "path": "ZesuSsz/Proofs/Tests/PlainRegisterCollectionSelection.v",
@@ -8276,7 +8276,7 @@
   },
   "base_manifest_sha256": "7deccbbc338d25231c300f1ba6824c5c10136917b0207e75589cd9a86f9d020a",
   "category_totals": {
-    "tests_and_exports": 36682,
+    "tests_and_exports": 36727,
     "composition": 584,
     "loop_steps": 864,
     "introductions": 3034,
@@ -8287,8 +8287,8 @@
     "block_proofs": 2375
   },
   "interface_total": 15201,
-  "extra_total": 39641,
-  "overall_total": 54842,
+  "extra_total": 39686,
+  "overall_total": 54887,
   "file_count": 386,
   "embedded_registration_ranges": [
     {
