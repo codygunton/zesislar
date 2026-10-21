@@ -23,6 +23,10 @@ Do not use execution evidence as a proof premise.
 - Give each predicate one unfold instance, owned by its function's hint umbrella. (`cp-av-umbrella-closure-audit`)
   Use the umbrella-closure audit and launch preflight as the mechanical checks.
 
+- Put owned resources before pure meaning facts when those resources fix an existential witness in a continuation.
+  Keep shared continuations and entries in the same order to prevent continuation-order wands.
+- Derive each call specification from its compositional theorem, with the shape `machine_call` requires.
+
 ## Proof pattern
 
 Prove machine code with Islaris and Lithium. Start every proof module with
@@ -57,6 +61,9 @@ Termination is proved separately in Phase 5 of the active plan with the
 verified executor in `Export/Executor.v`. Never prove termination by hand
 for each instruction.
 
+Ordinary hint modules must remain globally exported through their function's hint umbrella.
+Selected proofs may import scoped hints directly only through the explicit `SCOPED_HINT_IMPORTS` policy in `check_decode_item_hints.py`.
+
 ## File structure
 
 Keep one small umbrella file for each Level 1 contract.
@@ -79,6 +86,8 @@ lemmas across modules. Move shared definitions to `ZesuSsz/Contracts/` only
 after two proofs need the same definition.
 
 ## Build efficiency
+
+Measure timing and report it. A timing regression becomes an optimization item. Never reject a correct change for its performance.
 
 Use all safe parallelism for independent build targets.
 Use no more than 48 workers.
@@ -118,6 +127,9 @@ Use a wait of at least 60 seconds for a silent long build.
 Do useful independent work between build checks.
 Use bounded output and `rtk` for logs, searches, status checks, tests, and builds.
 Do not print generated traces or complete build logs unless the error requires that output.
+
+Remove Lia, Nia, and Csdp caches from the compiler's actual working directory before each timing sample.
+Decide cost changes from user-space instructions with identical compiler flags and measurement settings.
 
 ## Build discipline
 
@@ -201,6 +213,8 @@ its item re-dispatched with the exact first command. Probes run in the backgroun
 child. The coordinator never ends a turn with "nothing owed" while a child is idle.
 
 ## Integration gates and rule threshold
+
+Land each release as a pull request that references its plan's tracking issue. The coordinator merges it after both gates pass.
 
 During the frozen-list repair phase, a track commit needs green `make check-fast`
 and a preview that adds no Iris failure before merge.
