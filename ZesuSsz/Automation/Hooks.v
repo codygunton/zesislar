@@ -888,6 +888,65 @@ Ltac zesu_register_collection_selection_if_enabled :=
 Class ZesuStepKnownPairWitness : Prop :=
   zesu_step_known_pair_witness : True.
 
+(* Inspect explicit pure leaves without unfolding spatial predicates. *)
+Ltac zesu_known_pair_pure_leaf body continuation :=
+  lazymatch body with
+  | (fun x => @bi_sep _ (@?left x) (@?right x)) =>
+      first [zesu_known_pair_pure_leaf left continuation |
+             zesu_known_pair_pure_leaf right continuation]
+  | (fun x => @bi_pure _ (@?fact x)) =>
+      let rec conjunct fact :=
+        lazymatch fact with
+        | (fun x => @?left x /\ @?right x) =>
+            first [conjunct left | conjunct right]
+        | (fun x => ?predicate (li_fst x)) =>
+            lazymatch predicate with (fun _ => _) => fail | _ => idtac end;
+            assert_fails (has_evar predicate);
+            continuation predicate fact
+        end in conjunct fact
+  end.
+
+Ltac zesu_known_pair_has_evar term :=
+  first [has_evar term |
+    multimatch goal with
+    | local := ?value |- _ =>
+        lazymatch term with context[local] =>
+          zesu_known_pair_has_evar value
+        end
+    end].
+
+Ltac zesu_known_pair_context_value A predicate continuation :=
+  multimatch goal with
+  | H : ?head ?value |- _ =>
+      constr_eq head predicate;
+      let T := type of value in constr_eq T A;
+      assert_fails (zesu_known_pair_has_evar value);
+      let owned := type of H in
+      assert_fails (zesu_known_pair_has_evar owned);
+      continuation value owned
+  end.
+
+(* Select an existing value before early unfolding expands its resources. *)
+Ltac zesu_known_pair_conjunct_witness_if_enabled :=
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ (li_prod ?A unit) ?body) =>
+      assert_fails (has_evar A);
+      zesu_known_pair_pure_leaf body ltac:(fun predicate fact =>
+        zesu_switch_enabled constr:(ZesuStepKnownPairWitness);
+        zesu_known_pair_context_value A predicate ltac:(fun value owned =>
+          tryif (zesu_known_pair_pure_leaf body ltac:(fun other_predicate _ =>
+            zesu_known_pair_context_value A other_predicate ltac:(fun other _ =>
+              assert_fails (constr_eq value other))))
+          then fail 0 "Different facts select different witness values."
+          else
+            let witness := constr:(li_pair value tt) in
+            let selected := eval cbv beta iota delta [li_fst li_snd] in
+              (fact witness) in
+            constr_eq selected owned;
+            notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod)
+      )
+  end.
+
 (* An owned pure fact selects the value before resource matching starts. *)
 Ltac zesu_known_pair_witness_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepKnownPairWitness);
@@ -1945,6 +2004,7 @@ Ltac zesu_liAStep :=
   | liAExp
   | liAOther
   | zesu_pure_fact_hints_if_enabled
+  | zesu_known_pair_conjunct_witness_if_enabled
   | liUnfoldEarly
   | zesu_conjunct_head_if_enabled
   | zesu_known_pair_witness_if_enabled
