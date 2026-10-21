@@ -612,15 +612,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemC1BMeaning.v",
       "category": "exit_meanings",
       "scope": "whole_file",
-      "sha256": "45416f8c537b188da962c371a59d0f7bce31e7b4c2cc3b72d5dd9dc773deb78c",
-      "file_lines": 182,
+      "sha256": "50196218aa7c0f5d149fde1005832fc7fd645d703115c4f9cff2e892714176de",
+      "file_lines": 151,
       "line_ranges": [
         [
           1,
-          182
+          151
         ]
       ],
-      "counted_lines": 182
+      "counted_lines": 151
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemCanonicalAnchors.v",
@@ -8280,15 +8280,15 @@
     "composition": 584,
     "loop_steps": 1008,
     "introductions": 3400,
-    "exit_meanings": 2352,
+    "exit_meanings": 2321,
     "registrations": 448,
     "contracts": 2308,
     "generator_json": 6279,
     "block_proofs": 2375
   },
-  "interface_total": 15795,
+  "interface_total": 15764,
   "extra_total": 39627,
-  "overall_total": 55422,
+  "overall_total": 55391,
   "file_count": 386,
   "embedded_registration_ranges": [
     {

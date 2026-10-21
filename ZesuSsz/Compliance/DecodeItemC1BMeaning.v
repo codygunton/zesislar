@@ -27,28 +27,8 @@ Proof.
   unfold candidateResult40 in Hresult.
   destruct (candidateDecodeItem (decodeItemInputBytes args))
     as [|isList headerLength payloadLength].
-  - unfold encodeResult. destruct Hresult as [Hlength Hvalue].
-    apply nth_error_ext. intro i.
-    destruct (Nat.lt_ge_cases i 40) as [Hi|Hi].
-    + pose proof (Hvalue i Hi) as Hafter.
-      pose proof (errorEncoding_valueImage i Hi) as Hencoding.
-      change (byteAt errorEncoding i (if Nat.eqb i 32 then 4 else 0)) in Hencoding.
-      unfold byteAt in Hafter, Hencoding.
-      destruct (nth_error after i) as [a|] eqn:Ha.
-      * rewrite Ha in Hafter. simpl in Hafter.
-        destruct (nth_error errorEncoding i) as [b|] eqn:Hb.
-        -- simpl in Hencoding.
-           rewrite Ha. apply (f_equal (@Some _)).
-           apply (proj2 (stdpp.bitvector.definitions.bv_eq 8 a b)). congruence.
-        -- simpl in Hencoding. discriminate.
-      * rewrite Ha in Hafter. discriminate.
-    + assert (HafterNone : nth_error after i = None).
-      { apply (proj2 (nth_error_None after i)). rewrite Hlength. exact Hi. }
-      assert (HencodingNone : nth_error errorEncoding i = None).
-      { apply (proj2 (nth_error_None errorEncoding i)).
-        rewrite errorEncoding_length. exact Hi. }
-      rewrite HafterNone, HencodingNone.
-      reflexivity.
+  - unfold encodeResult.
+    exact (proj2 (decodeItemErrorImageRegistered after) Hresult).
   - apply encodeResult_success_from_padding; first exact Hresult.
     all: destruct Hresult as (_ & _ & _ & _ & _ & _ & _ & _ & Hpreserve).
     all: intros i Hi; apply Hpreserve; lia.
@@ -66,6 +46,13 @@ Proof.
   eapply decodeItemErrorPostMeaning; try eassumption.
   unfold encodeResult in Himage. subst after. exact (proj1 errorReturnImage).
 Qed.
+
+Local Ltac decodeItemMeaningCase image facts meaning :=
+  let Hfacts := fresh "Hfacts" in
+  pose proof facts as Hfacts;
+  rewrite (proj1 Hfacts) in image;
+  eapply meaning; eauto; cbv [MachineWord.MachineWord.Z_idx Z.to_N];
+    try lazymatch goal with |- ?lhs < word64Modulus => change (lhs < 18446744073709551616) end; Zify.zify; xlia zchecker.
 
 Lemma decodeItemLongClassMeaning args after (isList : bool) prefix rest :
   decodeItemC1BDomain args -> decodeItemInputHead args prefix rest ->
@@ -94,11 +81,10 @@ Proof.
       * eapply decodeItemLongListPostMeaning; eauto; lia.
       * eapply decodeItemLongStringPostMeaning; eauto; lia.
     + pose proof (Z.gt_lt _ _ Hreject) as HrejectLt.
-      pose proof (decodeItemLongPayloadRejected args isList prefix rest n
-        (decodeItemInputPointer args + 1) lengthBytes Hdomain Hprovenance Hheader HrejectLt)
-        as Hrejected.
-      rewrite (proj1 Hrejected) in Himage.
-      eapply decodeItemRejectedEncodedMeaning; eauto.
+      decodeItemMeaningCase Himage
+        (decodeItemLongPayloadRejected args isList prefix rest n
+          (decodeItemInputPointer args + 1) lengthBytes Hdomain Hprovenance Hheader HrejectLt)
+        decodeItemRejectedEncodedMeaning.
   - pose proof (Z.gt_lt _ _ Hheader) as HheaderLt.
     assert (Hrejected : decodeItemRejectedFacts args).
     { destruct isList.
@@ -124,59 +110,42 @@ Proof.
   intros Hdomain Hallows.
   pose proof (decodeItemC1BEncoded args after Hallows) as Himage.
   destruct (decodeItemInputBytes args) as [|prefix rest] eqn:Hinput.
-  - pose proof (decodeItemEmptyInputRejected args Hinput) as Hrejected.
-    rewrite <- Hinput in Himage.
-    rewrite (proj1 Hrejected) in Himage.
-    eapply decodeItemRejectedEncodedMeaning; eauto.
+  - rewrite <- Hinput in Himage.
+    decodeItemMeaningCase Himage (decodeItemEmptyInputRejected args Hinput)
+      decodeItemRejectedEncodedMeaning.
   - rewrite <- Hinput in Himage.
     change (decodeItemInputHead args prefix rest) in Hinput.
     assert (Hprefix : 0 <= bv_unsigned prefix <= 255) by bv_solve.
     destruct (Z_le_gt_dec (bv_unsigned prefix) 127) as [Hliteral|Hliteral].
-    + pose proof (decodeItemLiteralAccepted args prefix rest Hdomain Hinput Hliteral)
-        as Haccepted.
-      rewrite (proj1 Haccepted) in Himage.
-      eapply decodeItemLiteralPostMeaning; eauto.
+    + decodeItemMeaningCase Himage
+        (decodeItemLiteralAccepted args prefix rest Hdomain Hinput Hliteral)
+        decodeItemLiteralPostMeaning.
     + destruct (Z.eq_dec (bv_unsigned prefix) 128) as [Hempty|Hempty].
-      * pose proof (decodeItemEmptyAccepted args prefix rest Hdomain Hinput Hempty)
-          as Haccepted.
-        rewrite (proj1 Haccepted) in Himage.
-        eapply decodeItemEmptyStringPostMeaning; eauto.
+      * decodeItemMeaningCase Himage
+          (decodeItemEmptyAccepted args prefix rest Hdomain Hinput Hempty)
+          decodeItemEmptyStringPostMeaning.
       * destruct (Z_le_gt_dec (bv_unsigned prefix) 183) as [Hstring|Hstring].
         -- assert (Hclass : 129 <= bv_unsigned prefix <= 183) by lia.
            destruct (Z_le_gt_dec (1 + (bv_unsigned prefix - 128))
              (Z.of_nat (List.length (decodeItemInputBytes args)))) as [Hfits|Hreject].
-           ++ pose proof (decodeItemShortStringAccepted args prefix rest
-                Hdomain Hinput Hclass Hfits) as Haccepted.
-              rewrite (proj1 Haccepted) in Himage.
-              eapply (decodeItemShortStringPostMeaning args after
-                (bv_unsigned prefix - 128) Hdomain Haccepted Himage).
-              { Zify.zify. xlia zchecker. }
-              { change (1 + (bv_unsigned prefix - 128) < 18446744073709551616).
-                Zify.zify. xlia zchecker. }
-           ++ pose proof (Z.gt_lt _ _ Hreject) as HrejectLt.
-              pose proof (decodeItemShortStringRejected args prefix rest
-                Hdomain Hinput Hclass HrejectLt) as Hrejected.
-              rewrite (proj1 Hrejected) in Himage.
-              eapply decodeItemRejectedEncodedMeaning; eauto.
+           ++ decodeItemMeaningCase Himage
+                (decodeItemShortStringAccepted args prefix rest Hdomain Hinput Hclass Hfits)
+                decodeItemShortStringPostMeaning.
+           ++ decodeItemMeaningCase Himage
+                (decodeItemShortStringRejected args prefix rest Hdomain Hinput Hclass
+                  (Z.gt_lt _ _ Hreject)) decodeItemRejectedEncodedMeaning.
         -- destruct (Z_le_gt_dec (bv_unsigned prefix) 191) as [HlongString|HlongString].
            ++ eapply (decodeItemLongClassMeaning args after false prefix rest); eauto; simpl; lia.
            ++ destruct (Z_le_gt_dec (bv_unsigned prefix) 247) as [Hlist|Hlist].
               ** assert (Hclass : 192 <= bv_unsigned prefix <= 247) by lia.
                  destruct (Z_le_gt_dec (1 + (bv_unsigned prefix - 192))
                    (Z.of_nat (List.length (decodeItemInputBytes args)))) as [Hfits|Hreject].
-                 --- pose proof (decodeItemShortListAccepted args prefix rest
-                       Hdomain Hinput Hclass Hfits) as Haccepted.
-                     rewrite (proj1 Haccepted) in Himage.
-                     eapply (decodeItemShortListPostMeaning args after
-                (bv_unsigned prefix - 192) Hdomain Haccepted Himage).
-              { Zify.zify. xlia zchecker. }
-              { change (1 + (bv_unsigned prefix - 192) < 18446744073709551616).
-                Zify.zify. xlia zchecker. }
-                 --- pose proof (Z.gt_lt _ _ Hreject) as HrejectLt.
-                     pose proof (decodeItemShortListRejected args prefix rest
-                       Hdomain Hinput Hclass HrejectLt) as Hrejected.
-                     rewrite (proj1 Hrejected) in Himage.
-                     eapply decodeItemRejectedEncodedMeaning; eauto.
+                 --- decodeItemMeaningCase Himage
+                       (decodeItemShortListAccepted args prefix rest Hdomain Hinput Hclass Hfits)
+                       decodeItemShortListPostMeaning.
+                 --- decodeItemMeaningCase Himage
+                       (decodeItemShortListRejected args prefix rest Hdomain Hinput Hclass
+                         (Z.gt_lt _ _ Hreject)) decodeItemRejectedEncodedMeaning.
               ** eapply (decodeItemLongClassMeaning args after true prefix rest); eauto; simpl; lia.
 Qed.
 Print Assumptions decodeItemC1BMeaning.
