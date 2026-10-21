@@ -2379,15 +2379,15 @@
       "path": "ZesuSsz/Evidence/check_decode_item_hints.py",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "f19de9f42315cf081d5789e03f51135ebc6389b761d4b5dd801f6a233e442cf9",
-      "file_lines": 171,
+      "sha256": "6644ad05bd90476f835cb746fb15204fc71c95ccec121c71eb786b46f27797c2",
+      "file_lines": 211,
       "line_ranges": [
         [
           1,
-          171
+          211
         ]
       ],
-      "counted_lines": 171,
+      "counted_lines": 211,
       "source_embedded_constants": [
         {
           "line_range": [
@@ -2414,6 +2414,15 @@
           ],
           "names": [
             "UMBRELLA"
+          ]
+        },
+        {
+          "line_range": [
+            13,
+            35
+          ],
+          "names": [
+            "SCOPED_HINT_IMPORTS"
           ]
         }
       ]
@@ -2580,14 +2589,14 @@
       "role": "measurement_metadata",
       "scope": "whole_file",
       "sha256": null,
-      "file_lines": 8380,
+      "file_lines": 8389,
       "line_ranges": [
         [
           1,
-          8380
+          8389
         ]
       ],
-      "counted_lines": 8380
+      "counted_lines": 8389
     },
     {
       "path": "ZesuSsz/Evidence/decode_item_auto_modules.json",
@@ -3847,15 +3856,15 @@
       "path": "ZesuSsz/Evidence/test_check_decode_item_hints.py",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "f834165669d8627ce2d2b317c43a8083d15bd6741a430d5e6992e98421904ac0",
-      "file_lines": 127,
+      "sha256": "6e7f41b365ba8960c1662c04102c3c3a8226febd82dc8128b72f489393eddf88",
+      "file_lines": 199,
       "line_ranges": [
         [
           1,
-          127
+          199
         ]
       ],
-      "counted_lines": 127
+      "counted_lines": 199
     },
     {
       "path": "ZesuSsz/Evidence/test_check_proof_hygiene.py",
@@ -8251,7 +8260,7 @@
   },
   "base_manifest_sha256": "7deccbbc338d25231c300f1ba6824c5c10136917b0207e75589cd9a86f9d020a",
   "category_totals": {
-    "tests_and_exports": 36423,
+    "tests_and_exports": 36544,
     "composition": 584,
     "loop_steps": 1142,
     "introductions": 3530,
@@ -8262,8 +8271,8 @@
     "block_proofs": 2470
   },
   "interface_total": 17428,
-  "extra_total": 39477,
-  "overall_total": 56905,
+  "extra_total": 39598,
+  "overall_total": 57026,
   "file_count": 385,
   "embedded_registration_ranges": [
     {

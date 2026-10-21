@@ -4,7 +4,8 @@ import tempfile
 import unittest
 
 from check_decode_item_hints import (
-    ROOT, exported_modules, has_hint_registration, missing_hint_modules,
+    ROOT, SCOPED_HINT_IMPORTS, exported_modules, imported_modules,
+    has_hint_registration, missing_hint_modules,
     manifest_errors, manifest_umbrellas,
 )
 
@@ -59,6 +60,14 @@ class DecodeItemHintCoverageTests(unittest.TestCase):
             "From ZesuSsz.Compliance Require Export\nFact Other.\n"
         ), {"ZesuSsz.Compliance.Fact", "ZesuSsz.Compliance.Other"})
 
+    def test_direct_import_parser_rejects_exports_comments_and_strings(self):
+        self.assertEqual(imported_modules(
+            '(* Require Import ZesuSsz.Compliance.Comment. *)\n'
+            'Definition text := "Require Import ZesuSsz.Compliance.String.".\n'
+            'Require Export ZesuSsz.Compliance.Exported.\n'
+            'From ZesuSsz.Compliance Require Import\nFact Other.\n'
+        ), {"ZesuSsz.Compliance.Fact", "ZesuSsz.Compliance.Other"})
+
 
 class FunctionHintCoverageTests(unittest.TestCase):
     def fixture(self, root):
@@ -77,6 +86,69 @@ class FunctionHintCoverageTests(unittest.TestCase):
             (compliance / f"{prefix}DataRegistrations.v").write_text(
                 f"Global Instance {prefix}_fact : True := I.\n")
         return evidence, compliance
+
+    def scoped_fixture(self, root):
+        _, compliance = self.fixture(root)
+        for module, importers in SCOPED_HINT_IMPORTS.items():
+            (compliance / (module.rsplit(".", 1)[1] + ".v")).write_text(
+                "Global Instance scoped_fact : True := I.\n")
+            for importer in importers:
+                path = root / (importer.replace(".", "/") + ".v")
+                path.parent.mkdir(parents=True, exist_ok=True)
+                with path.open("a") as stream:
+                    stream.write(f"Require Import {module}.\n")
+        return compliance
+
+    def test_scoped_hints_use_all_declared_direct_importers(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.scoped_fixture(root)
+            self.assertEqual(manifest_errors(root), ([], 5))
+
+    def test_each_scoped_import_is_required(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.scoped_fixture(root)
+            for module, importers in SCOPED_HINT_IMPORTS.items():
+                for importer in importers:
+                    with self.subTest(module=module, importer=importer):
+                        path = root / (importer.replace(".", "/") + ".v")
+                        original = path.read_text()
+                        path.write_text(original.replace(f"Require Import {module}.\n", ""))
+                        self.assertEqual(manifest_errors(root)[0], [
+                            f"{importer} does not directly import {module}."])
+                        path.write_text(original)
+
+    def test_scoped_importer_must_exist(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.scoped_fixture(root)
+            importer = SCOPED_HINT_IMPORTS["ZesuSsz.Compliance.DecodeItemExitDataFacts"][0]
+            (root / (importer.replace(".", "/") + ".v")).unlink()
+            self.assertEqual(manifest_errors(root)[0], [
+                f"Scoped hint importer is missing: {importer}."])
+
+    def test_transitive_import_does_not_cover_a_scoped_hint(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            compliance = self.scoped_fixture(root)
+            module = "ZesuSsz.Compliance.DecodeItemExitDataFacts"
+            importer = SCOPED_HINT_IMPORTS[module][0]
+            (compliance / "Bridge.v").write_text(f"Require Export {module}.\n")
+            path = root / (importer.replace(".", "/") + ".v")
+            path.write_text("Require Import ZesuSsz.Compliance.Bridge.\n")
+            self.assertEqual(manifest_errors(root)[0], [
+                f"{importer} does not directly import {module}."])
+
+    def test_scoped_policy_keeps_ordinary_export_checks(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            compliance = self.scoped_fixture(root)
+            (compliance / "FreeHints.v").write_text("")
+            self.assertEqual(manifest_errors(root)[0], [
+                "Free_function_text.json: FreeHints.v does not export "
+                "ZesuSsz.Compliance.FreeDataRegistrations.",
+                "No function hint umbrella exports ZesuSsz.Compliance.FreeDataRegistrations."])
 
     def test_separate_umbrellas_cover_their_own_function(self):
         with tempfile.TemporaryDirectory() as temporary:
