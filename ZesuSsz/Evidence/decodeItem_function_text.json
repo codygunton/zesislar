@@ -864,15 +864,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.v",
       "category": "loop_steps",
       "scope": "whole_file",
-      "sha256": "312f2fa8b2b01338bc365aac83dac66609641e63e7d910e90d1fe06fb027af7d",
-      "file_lines": 421,
+      "sha256": "ff15d12b0be752a10c6d37b226d8646790045a0125df44078de72b28ac21ac4e",
+      "file_lines": 296,
       "line_ranges": [
         [
           1,
-          421
+          296
         ]
       ],
-      "counted_lines": 421
+      "counted_lines": 296
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemFoldZeroFacts.v",
@@ -8278,7 +8278,7 @@
   "category_totals": {
     "tests_and_exports": 36668,
     "composition": 584,
-    "loop_steps": 1133,
+    "loop_steps": 1008,
     "introductions": 3493,
     "exit_meanings": 2518,
     "registrations": 448,
@@ -8286,9 +8286,9 @@
     "generator_json": 6279,
     "block_proofs": 2375
   },
-  "interface_total": 16268,
+  "interface_total": 16143,
   "extra_total": 39627,
-  "overall_total": 55895,
+  "overall_total": 55770,
   "file_count": 386,
   "embedded_registration_ranges": [
     {

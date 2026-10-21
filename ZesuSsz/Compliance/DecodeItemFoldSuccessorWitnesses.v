@@ -12,16 +12,8 @@ Require Import ZesuSsz.Compliance.DecodeItemCorrectedWitnessSelections.
 From Coq Require Import List ZArith Lia.
 Open Scope Z_scope.
 
-Lemma decodeItemListSuccessorIntroduction `{!islaG Sigma} `{!threadG}
-    args (prefix : byte) rest (n i payloadStart : Z)
-    (lengthBytes frameBytes : list byte) (next : byte) (loaded : bv 64) :
-  i < n ->
-  decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
-  decodeItemSavedFrameFacts args frameBytes ->
-  decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes ->
-  decodeItemInputBytes args !! Z.to_nat (1 + i) = Some next ->
-  (Z_to_bv 64 (payloadStart + i) + 1)%bv <> Z_to_bv 64 (payloadStart + n) ->
-  ⊢ (  (reg_col (decodeItemSysRegs args) ∗
+Local Notation "'listSuccessorRaw' args n i payloadStart lengthBytes frameBytes next loaded" :=
+  (reg_col (decodeItemSysRegs args) ∗
    "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
    "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + n)) ∗
    "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) ∗
@@ -37,7 +29,18 @@ Lemma decodeItemListSuccessorIntroduction `{!islaG Sigma} `{!threadG}
    decodeItemOutputPointer args ↦ₘ∗ decodeItemBeforeStorage args ∗
    (decodeItemStackPointer args - decodeItemStackBytes) ↦ₘ∗ frameBytes ∗
    ⌜length frameBytes = 16%nat /\
-     decodeItemByteFoldFacts args n i payloadStart lengthBytes⌝ ∗ True)%I ∗ decodeItemBranchContinuation args -∗
+     decodeItemByteFoldFacts args n i payloadStart lengthBytes⌝ ∗ True)%I (at level 10, args, n, i, payloadStart, lengthBytes, frameBytes, next, loaded at level 9).
+
+Lemma decodeItemListSuccessorIntroduction `{!islaG Sigma} `{!threadG}
+    args (prefix : byte) rest (n i payloadStart : Z)
+    (lengthBytes frameBytes : list byte) (next : byte) (loaded : bv 64) :
+  i < n ->
+  decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
+  decodeItemSavedFrameFacts args frameBytes ->
+  decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes ->
+  decodeItemInputBytes args !! Z.to_nat (1 + i) = Some next ->
+  (Z_to_bv 64 (payloadStart + i) + 1)%bv <> Z_to_bv 64 (payloadStart + n) ->
+  ⊢ (  (listSuccessorRaw args n i payloadStart lengthBytes frameBytes next loaded) ∗ decodeItemBranchContinuation args -∗
      decodeItemEntryAt800d6ac4 args prefix rest)%I.
 Proof.
   intros Hguard Hdomain Hframe Hprovenance Hlookup Hbranch.
@@ -73,23 +76,7 @@ Print Assumptions decodeItemListSuccessorIntroduction.
       decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes /\
       decodeItemInputBytes args !! Z.to_nat (1 + i) = Some next /\
       (Z_to_bv 64 (payloadStart + i) + 1)%bv <> Z_to_bv 64 (payloadStart + n)⌝ ∗
-      (reg_col (decodeItemSysRegs args) ∗
-   "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
-   "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + n)) ∗
-   "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) ∗
-   "x13" ↦ᵣ RVal_Bits (bv_or (Z_to_bv 64 (bigEndian (firstn (Z.to_nat i) lengthBytes)) ≪ 8)
-     (bv_zero_extend 64 next)) ∗
-   "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 (n + 1)) ∗
-   "x15" ↦ᵣ RVal_Bits ((Z_to_bv 64 (payloadStart + i) + 1)%bv) ∗
-   "x16" ↦ᵣ RVal_Bits loaded ∗
-   "x2" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args - decodeItemStackBytes)) ∗
-   "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args)) ∗
-   "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args)) ∗
-   decodeItemInputPointer args ↦ₘ∗ decodeItemInputBytes args ∗
-   decodeItemOutputPointer args ↦ₘ∗ decodeItemBeforeStorage args ∗
-   (decodeItemStackPointer args - decodeItemStackBytes) ↦ₘ∗ frameBytes ∗
-   ⌜length frameBytes = 16%nat /\
-     decodeItemByteFoldFacts args n i payloadStart lengthBytes⌝ ∗ True)%I ∗ decodeItemBranchContinuation args)%I.
+      (listSuccessorRaw args n i payloadStart lengthBytes frameBytes next loaded) ∗ decodeItemBranchContinuation args)%I.
 Proof.
   unfold ZesuPureFactAnchor, ZesuPureFactIntro.
   iIntros "(%frameBytes & %loaded & %Hfacts & Hraw & Hcont)".
@@ -113,23 +100,7 @@ Lemma decodeItemListSuccessorNamedCanonical `{!islaG Sigma} `{!threadG}
       decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes /\
       decodeItemInputBytes args !! Z.to_nat (1 + i) = Some next /\
       (Z_to_bv 64 (payloadStart + i) + 1)%bv <> Z_to_bv 64 (payloadStart + n)⌝ ∗
-      (reg_col (decodeItemSysRegs args) ∗
-   "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
-   "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + n)) ∗
-   "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) ∗
-   "x13" ↦ᵣ RVal_Bits (bv_or (Z_to_bv 64 (bigEndian (firstn (Z.to_nat i) lengthBytes)) ≪ 8)
-     (bv_zero_extend 64 next)) ∗
-   "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 (n + 1)) ∗
-   "x15" ↦ᵣ RVal_Bits ((Z_to_bv 64 (payloadStart + i) + 1)%bv) ∗
-   "x16" ↦ᵣ RVal_Bits loaded ∗
-   "x2" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args - decodeItemStackBytes)) ∗
-   "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args)) ∗
-   "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args)) ∗
-   decodeItemInputPointer args ↦ₘ∗ decodeItemInputBytes args ∗
-   decodeItemOutputPointer args ↦ₘ∗ decodeItemBeforeStorage args ∗
-   (decodeItemStackPointer args - decodeItemStackBytes) ↦ₘ∗ frameBytes ∗
-   ⌜length frameBytes = 16%nat /\
-     decodeItemByteFoldFacts args n i payloadStart lengthBytes⌝ ∗ True)%I ∗ decodeItemBranchContinuation args)%I.
+      (listSuccessorRaw args n i payloadStart lengthBytes frameBytes next loaded) ∗ decodeItemBranchContinuation args)%I.
 Proof.
   unfold ZesuCanonicalAnchor.
   exact (decodeItemListSuccessorNamed args prefix rest n i payloadStart lengthBytes next).
@@ -149,23 +120,7 @@ Qed.
       decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes /\
       decodeItemInputBytes args !! Z.to_nat (1 + i) = Some next /\
       (Z_to_bv 64 (payloadStart + i) + 1)%bv <> Z_to_bv 64 (payloadStart + n)⌝ ∗
-      (reg_col (decodeItemSysRegs args) ∗
-   "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
-   "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + n)) ∗
-   "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) ∗
-   "x13" ↦ᵣ RVal_Bits (bv_or (Z_to_bv 64 (bigEndian (firstn (Z.to_nat i) lengthBytes)) ≪ 8)
-     (bv_zero_extend 64 next)) ∗
-   "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 (n + 1)) ∗
-   "x15" ↦ᵣ RVal_Bits ((Z_to_bv 64 (payloadStart + i) + 1)%bv) ∗
-   "x16" ↦ᵣ RVal_Bits loaded ∗
-   "x2" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args - decodeItemStackBytes)) ∗
-   "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args)) ∗
-   "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args)) ∗
-   decodeItemInputPointer args ↦ₘ∗ decodeItemInputBytes args ∗
-   decodeItemOutputPointer args ↦ₘ∗ decodeItemBeforeStorage args ∗
-   (decodeItemStackPointer args - decodeItemStackBytes) ↦ₘ∗ frameBytes ∗
-   ⌜length frameBytes = 16%nat /\
-     decodeItemByteFoldFacts args n i payloadStart lengthBytes⌝ ∗ True)%I ∗ decodeItemBranchContinuation args)%I.
+      (listSuccessorRaw args n i payloadStart lengthBytes frameBytes next loaded) ∗ decodeItemBranchContinuation args)%I.
 Proof.
   unfold ZesuPureFactAnchor, ZesuPureFactIntro.
   iIntros "(%frameBytes & %loaded & %Hfacts & Hraw & Hcont)".
@@ -190,23 +145,7 @@ Lemma decodeItemListSuccessorExistsCanonical `{!islaG Sigma} `{!threadG}
       decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes /\
       decodeItemInputBytes args !! Z.to_nat (1 + i) = Some next /\
       (Z_to_bv 64 (payloadStart + i) + 1)%bv <> Z_to_bv 64 (payloadStart + n)⌝ ∗
-      (reg_col (decodeItemSysRegs args) ∗
-   "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
-   "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + n)) ∗
-   "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) ∗
-   "x13" ↦ᵣ RVal_Bits (bv_or (Z_to_bv 64 (bigEndian (firstn (Z.to_nat i) lengthBytes)) ≪ 8)
-     (bv_zero_extend 64 next)) ∗
-   "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 (n + 1)) ∗
-   "x15" ↦ᵣ RVal_Bits ((Z_to_bv 64 (payloadStart + i) + 1)%bv) ∗
-   "x16" ↦ᵣ RVal_Bits loaded ∗
-   "x2" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args - decodeItemStackBytes)) ∗
-   "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args)) ∗
-   "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args)) ∗
-   decodeItemInputPointer args ↦ₘ∗ decodeItemInputBytes args ∗
-   decodeItemOutputPointer args ↦ₘ∗ decodeItemBeforeStorage args ∗
-   (decodeItemStackPointer args - decodeItemStackBytes) ↦ₘ∗ frameBytes ∗
-   ⌜length frameBytes = 16%nat /\
-     decodeItemByteFoldFacts args n i payloadStart lengthBytes⌝ ∗ True)%I ∗ decodeItemBranchContinuation args)%I.
+      (listSuccessorRaw args n i payloadStart lengthBytes frameBytes next loaded) ∗ decodeItemBranchContinuation args)%I.
 Proof.
   unfold ZesuCanonicalAnchor.
   exact (decodeItemListSuccessorExists args prefix rest n i payloadStart lengthBytes next).
@@ -249,23 +188,7 @@ Print Assumptions decodeItemListSuccessorExistsCanonical.
       decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes /\
       decodeItemInputBytes args !! Z.to_nat (1 + i) = Some next /\
       (Z_to_bv 64 (payloadStart + i) + 1)%bv <> Z_to_bv 64 (payloadStart + n)⌝ ∗
-      (reg_col (decodeItemSysRegs args) ∗
-   "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
-   "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + n)) ∗
-   "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) ∗
-   "x13" ↦ᵣ RVal_Bits (bv_or (Z_to_bv 64 (bigEndian (firstn (Z.to_nat i) lengthBytes)) ≪ 8)
-     (bv_zero_extend 64 next)) ∗
-   "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 (n + 1)) ∗
-   "x15" ↦ᵣ RVal_Bits ((Z_to_bv 64 (payloadStart + i) + 1)%bv) ∗
-   "x16" ↦ᵣ RVal_Bits loaded ∗
-   "x2" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args - decodeItemStackBytes)) ∗
-   "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args)) ∗
-   "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args)) ∗
-   decodeItemInputPointer args ↦ₘ∗ decodeItemInputBytes args ∗
-   decodeItemOutputPointer args ↦ₘ∗ decodeItemBeforeStorage args ∗
-   (decodeItemStackPointer args - decodeItemStackBytes) ↦ₘ∗ frameBytes ∗
-   ⌜length frameBytes = 16%nat /\
-     decodeItemByteFoldFacts args n i payloadStart lengthBytes⌝ ∗ True)%I ∗ decodeItemBranchContinuation args)%I.
+      (listSuccessorRaw args n i payloadStart lengthBytes frameBytes next loaded) ∗ decodeItemBranchContinuation args)%I.
 Proof.
   exact (decodeItemListSuccessorNamed args prefix rest n i payloadStart lengthBytes next).
 Qed.
@@ -294,23 +217,7 @@ Lemma decodeItemListSuccessorExpandedCanonical `{!islaG Sigma} `{!threadG}
       decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes /\
       decodeItemInputBytes args !! Z.to_nat (1 + i) = Some next /\
       (Z_to_bv 64 (payloadStart + i) + 1)%bv <> Z_to_bv 64 (payloadStart + n)⌝ ∗
-      (reg_col (decodeItemSysRegs args) ∗
-   "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
-   "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + n)) ∗
-   "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) ∗
-   "x13" ↦ᵣ RVal_Bits (bv_or (Z_to_bv 64 (bigEndian (firstn (Z.to_nat i) lengthBytes)) ≪ 8)
-     (bv_zero_extend 64 next)) ∗
-   "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 (n + 1)) ∗
-   "x15" ↦ᵣ RVal_Bits ((Z_to_bv 64 (payloadStart + i) + 1)%bv) ∗
-   "x16" ↦ᵣ RVal_Bits loaded ∗
-   "x2" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args - decodeItemStackBytes)) ∗
-   "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args)) ∗
-   "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args)) ∗
-   decodeItemInputPointer args ↦ₘ∗ decodeItemInputBytes args ∗
-   decodeItemOutputPointer args ↦ₘ∗ decodeItemBeforeStorage args ∗
-   (decodeItemStackPointer args - decodeItemStackBytes) ↦ₘ∗ frameBytes ∗
-   ⌜length frameBytes = 16%nat /\
-     decodeItemByteFoldFacts args n i payloadStart lengthBytes⌝ ∗ True)%I ∗ decodeItemBranchContinuation args)%I.
+      (listSuccessorRaw args n i payloadStart lengthBytes frameBytes next loaded) ∗ decodeItemBranchContinuation args)%I.
 Proof.
   exact (decodeItemListSuccessorNamedCanonical args prefix rest n i payloadStart lengthBytes next).
 Qed.
@@ -339,23 +246,7 @@ Print Assumptions decodeItemListSuccessorExpandedCanonical.
       decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes /\
       decodeItemInputBytes args !! Z.to_nat (1 + i) = Some next /\
       (Z_to_bv 64 (payloadStart + i) + 1)%bv <> Z_to_bv 64 (payloadStart + n)⌝ ∗
-      (reg_col (decodeItemSysRegs args) ∗
-   "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
-   "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + n)) ∗
-   "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) ∗
-   "x13" ↦ᵣ RVal_Bits (bv_or (Z_to_bv 64 (bigEndian (firstn (Z.to_nat i) lengthBytes)) ≪ 8)
-     (bv_zero_extend 64 next)) ∗
-   "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 (n + 1)) ∗
-   "x15" ↦ᵣ RVal_Bits ((Z_to_bv 64 (payloadStart + i) + 1)%bv) ∗
-   "x16" ↦ᵣ RVal_Bits loaded ∗
-   "x2" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args - decodeItemStackBytes)) ∗
-   "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args)) ∗
-   "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args)) ∗
-   decodeItemInputPointer args ↦ₘ∗ decodeItemInputBytes args ∗
-   decodeItemOutputPointer args ↦ₘ∗ decodeItemBeforeStorage args ∗
-   (decodeItemStackPointer args - decodeItemStackBytes) ↦ₘ∗ frameBytes ∗
-   ⌜length frameBytes = 16%nat /\
-     decodeItemByteFoldFacts args n i payloadStart lengthBytes⌝ ∗ True)%I ∗ decodeItemBranchContinuation args)%I.
+      (listSuccessorRaw args n i payloadStart lengthBytes frameBytes next loaded) ∗ decodeItemBranchContinuation args)%I.
 Proof.
   exact (decodeItemListSuccessorExists args prefix rest n i payloadStart lengthBytes next).
 Qed.
@@ -384,23 +275,7 @@ Lemma decodeItemListSuccessorExistsExpandedCanonical `{!islaG Sigma} `{!threadG}
       decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes /\
       decodeItemInputBytes args !! Z.to_nat (1 + i) = Some next /\
       (Z_to_bv 64 (payloadStart + i) + 1)%bv <> Z_to_bv 64 (payloadStart + n)⌝ ∗
-      (reg_col (decodeItemSysRegs args) ∗
-   "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) ∗
-   "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (payloadStart + n)) ∗
-   "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) ∗
-   "x13" ↦ᵣ RVal_Bits (bv_or (Z_to_bv 64 (bigEndian (firstn (Z.to_nat i) lengthBytes)) ≪ 8)
-     (bv_zero_extend 64 next)) ∗
-   "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 (n + 1)) ∗
-   "x15" ↦ᵣ RVal_Bits ((Z_to_bv 64 (payloadStart + i) + 1)%bv) ∗
-   "x16" ↦ᵣ RVal_Bits loaded ∗
-   "x2" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args - decodeItemStackBytes)) ∗
-   "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args)) ∗
-   "x8" ↦ᵣ RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args)) ∗
-   decodeItemInputPointer args ↦ₘ∗ decodeItemInputBytes args ∗
-   decodeItemOutputPointer args ↦ₘ∗ decodeItemBeforeStorage args ∗
-   (decodeItemStackPointer args - decodeItemStackBytes) ↦ₘ∗ frameBytes ∗
-   ⌜length frameBytes = 16%nat /\
-     decodeItemByteFoldFacts args n i payloadStart lengthBytes⌝ ∗ True)%I ∗ decodeItemBranchContinuation args)%I.
+      (listSuccessorRaw args n i payloadStart lengthBytes frameBytes next loaded) ∗ decodeItemBranchContinuation args)%I.
 Proof.
   exact (decodeItemListSuccessorExistsCanonical args prefix rest n i payloadStart lengthBytes next).
 Qed.
