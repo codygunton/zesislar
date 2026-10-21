@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check each function's declared hint umbrella without mixing function scopes."""
+"""Check each function's hint exports and declared scoped imports."""
 
 import json
 from pathlib import Path
@@ -9,6 +9,30 @@ import re
 ROOT = Path(__file__).resolve().parents[2]
 PREFIX = "ZesuSsz.Compliance."
 UMBRELLA = "DecodeItemHints.v"
+# These hints apply only at their declared block consumers.
+SCOPED_HINT_IMPORTS = {
+    PREFIX + "DecodeItemExitDataFacts": (
+        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d697c",
+        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d698cLiteral",
+        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d698cShortString",
+        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69b0",
+        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69e8",
+        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a40",
+        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a78",
+        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6ae0",
+        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6b08",
+    ),
+    PREFIX + "DecodeItemLoopDerivedFacts": (
+        "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24",
+        "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ac4",
+    ),
+    PREFIX + "DecodeItemLoopInitialization": (
+        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a14",
+        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6ab4",
+        "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24",
+        "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ac4",
+    ),
+}
 
 
 def source_commands(text: str) -> list[str]:
@@ -78,18 +102,26 @@ def hint_modules(directory: Path, umbrellas=(UMBRELLA,)) -> set[str]:
     }
 
 
-def exported_modules(text: str) -> set[str]:
+def required_modules(text: str, action: str) -> set[str]:
     modules = set()
     for command in source_commands(text):
-        match = re.fullmatch(r"\s*Require\s+Export\s+([\w.\s]+)\s*", command)
+        match = re.fullmatch(rf"\s*Require\s+{action}\s+([\w.\s]+)\s*", command)
         if match:
             modules.update(match[1].split())
         match = re.fullmatch(
-            r"\s*From\s+([\w.]+)\s+Require\s+Export\s+([\w.\s]+)\s*", command
+            rf"\s*From\s+([\w.]+)\s+Require\s+{action}\s+([\w.\s]+)\s*", command
         )
         if match:
             modules.update(match[1] + "." + module for module in match[2].split())
     return modules
+
+
+def exported_modules(text: str) -> set[str]:
+    return required_modules(text, "Export")
+
+
+def imported_modules(text: str) -> set[str]:
+    return required_modules(text, "Import")
 
 
 def missing_hint_modules(directory: Path) -> list[str]:
@@ -137,19 +169,27 @@ def manifest_umbrellas(root: Path) -> list[tuple[Path, Path, set[str]]]:
 
 
 def manifest_errors(root: Path) -> tuple[list[str], int]:
-    """Check declared ownership and reject hint modules outside every umbrella."""
+    """Check umbrella exports and the declared direct imports of scoped hints."""
     groups = manifest_umbrellas(root)
     directory = root / "ZesuSsz/Compliance"
     umbrellas = [path.relative_to(directory.resolve()) for _, path, _ in groups]
     modules = hint_modules(directory, umbrellas)
-    covered, errors = set(), []
+    scoped = modules & SCOPED_HINT_IMPORTS.keys()
+    covered, errors = set(scoped), []
     for manifest, umbrella, owned in groups:
         exports = exported_modules(umbrella.read_text())
         covered.update(exports)
-        for module in sorted(owned - exports):
+        for module in sorted(owned - exports - scoped):
             errors.append(f"{manifest.name}: {umbrella.name} does not export {module}.")
     for module in sorted(modules - covered):
         errors.append(f"No function hint umbrella exports {module}.")
+    for module in sorted(scoped):
+        for importer in SCOPED_HINT_IMPORTS[module]:
+            path = root / (importer.replace(".", "/") + ".v")
+            if not path.is_file():
+                errors.append(f"Scoped hint importer is missing: {importer}.")
+            elif module not in imported_modules(path.read_text()):
+                errors.append(f"{importer} does not directly import {module}.")
     return errors, len(modules)
 
 
@@ -163,7 +203,7 @@ def main() -> int:
         print(error)
     if errors:
         return 1
-    print(f"The hint umbrella exports all {count} Compliance hint modules.")
+    print(f"Umbrella exports and scoped imports cover all {count} Compliance hint modules.")
     return 0
 
 

@@ -19,9 +19,9 @@ Definition decodeItemBranchContinuationAt `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (returnAddress : Z) : iProp Sigma :=
   (instr_pre returnAddress
     (∃ outcome : DecodeItemOutcome,
+      decodeItemExitResourcesRegisters args outcome ∗
       ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args /\
-        DecodeMeaningModuloKnownBugs args outcome⌝ ∗
-      decodeItemExitResourcesRegisters args outcome))%I.
+        DecodeMeaningModuloKnownBugs args outcome⌝))%I.
 
 Definition decodeItemBranchContinuation `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) : iProp Sigma :=

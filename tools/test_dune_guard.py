@@ -395,7 +395,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
                                         cwd=self.root, env=environment,
                                         capture_output=True, text=True, timeout=5)
                 self.assertEqual(result.returncode, 0, result.stderr)
-                memory = limit or "6"
+                memory = limit or McpThresholdTest.guard_default_memory()
                 self.assertEqual(self.compiler_events()[-1]["memory"], memory)
                 scopes = [json.loads(line) for line in self.scope_log.read_text().splitlines()]
                 self.assertIn(f"MemoryMax={memory}G", scopes[-1])
@@ -585,7 +585,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
                                 capture_output=True, text=True, timeout=3)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.splitlines(), [str(self.wrapper), str(updated)])
-        self.assertIn("MemoryMax=6G", scope_log.read_text())
+        self.assertIn("MemoryMax=16G", scope_log.read_text())
         self.assertIn("MemorySwapMax=0", scope_log.read_text())
 
     def test_writer_dune_wrapper_keeps_its_two_slot_limit_during_gate(self):
@@ -641,7 +641,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
                                     capture_output=True, text=True, timeout=5)
             self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(len(self.compiler_events()), 2)
-        self.assertIn("MemoryMax=6G", scope_log.read_text())
+        self.assertIn("MemoryMax=16G", scope_log.read_text())
         self.assertIn("MemorySwapMax=0", scope_log.read_text())
         self.assertIn("-writer-tf2-", scope_log.read_text())
         reservations = Path(self.environment["ZESU_GUARD_STATE"]) / "coqc-reservations"
@@ -731,11 +731,11 @@ class DuneCompilerGuardTest(unittest.TestCase):
                 events = self.compiler_events()
                 self.assertEqual(len(events), 1)
                 self.assertEqual(events[0]["slots"], 1)
-                self.assertEqual(events[0]["cpu"], 1200)
+                self.assertEqual(events[0]["cpu"], 2400)
                 self.assertEqual(events[0]["scope"], events[0]["token"])
                 scopes = [json.loads(line) for line in self.scope_log.read_text().splitlines()]
                 self.assertEqual(len(scopes), 1)
-                self.assertIn("MemoryMax=6G", scopes[0])
+                self.assertIn("MemoryMax=16G", scopes[0])
                 self.assertIn("MemorySwapMax=0", scopes[0])
                 reservations = Path(self.environment["ZESU_GUARD_STATE"]) / "coqc-reservations"
                 self.assertEqual(list(reservations.iterdir()), [])
@@ -806,6 +806,13 @@ class DuneCompilerGuardTest(unittest.TestCase):
 
 
 class McpThresholdTest(unittest.TestCase):
+    @staticmethod
+    def guard_default_memory():
+        result = subprocess.run([str(TOOLS / "resource_guard.sh"), "gate-module-limit"],
+                                env=test_guard.fixture_environment(),
+                                check=True, capture_output=True, text=True)
+        return result.stdout.strip()
+
     def test_mcp_wrappers_preserve_explicit_hold_and_default_fence(self):
         self.check_wrappers("215")
 
@@ -863,7 +870,7 @@ class McpThresholdTest(unittest.TestCase):
                 rows = [json.loads(line) for line in events.read_text().splitlines()]
                 self.assertTrue(rows)
                 self.assertTrue(all(row["hold"] == (hold or "180") for row in rows))
-                memory = limit or "6"
+                memory = limit or McpThresholdTest.guard_default_memory()
                 self.assertTrue(all(row["memory"] == memory for row in rows))
                 if name == "rocq_mcp_guarded.sh":
                     self.assertIn(f"MemoryMax={memory}G", rows[0]["arguments"])

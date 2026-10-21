@@ -96,8 +96,9 @@ on search. During development, first bound the problem: run a search or a proof 
 with whatever memory and time it needs (the machine has 256 GiB; a 64 GiB cap and no CPU cap are
 normal for a probe), record its peak memory, CPU, and residual goals, and optimize afterwards
 from that measurement. A run that stops at a cap mid-search has measured nothing. Record each
-raised cap on issue #10 as a probe. The guard's `ZESU_PROOF_CPU_LIMIT` (1200 seconds default)
-applies to gates, not to diagnostics. Never split a basic block, cut a proof, or weaken a
+raised cap on issue #10 as a probe. The guard defaults are 2400 CPU seconds and 16 GiB per gate module,
+raised 2026-10-20 for native decodeItem proofs, issue #10.
+These gate defaults do not apply to diagnostics. Never split a basic block, cut a proof, or weaken a
 contract to fit a cap; bring a finished proof under the production goal by optimizing the rule
 cost, as the Prologue went from 435 to 218 seconds.
 Treat a non-proof module as over its production goal when it takes more than 60 seconds or uses

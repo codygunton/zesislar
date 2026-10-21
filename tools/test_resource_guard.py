@@ -260,7 +260,7 @@ PY_LIMITS
                 self.assertEqual(limits["cpu"], [expected_cpu, expected_cpu])
 
     def test_scope_exec_applies_limits_for_arms_and_both_probe_types(self):
-        cases = (({}, 1200),
+        cases = (({}, 2400),
                  ({"ZESU_DIAGNOSTIC_PROBE": "1", "ZESU_MODULE_LIMIT_GIB": "64",
                    "ZESU_PROOF_CPU_LIMIT": "unlimited", "ZESU_SCOPE_CPU": "unlimited",
                    "ZESU_PROBE_ISSUE": "10"}, -1),
@@ -369,6 +369,7 @@ if memory_kill_required; then echo killed; fi
 
     def test_available_policy_ignores_retired_used_thresholds(self):
         result = self.run_guard(r"""
+MODULE_LIMIT_GIB=6
 available_gib() { echo 26; }
 used_gib() { echo 230; }
 memory() { echo "0 0 $((26 * GIB))"; }
@@ -430,7 +431,7 @@ grep -q '^state=held ' "$GATE_LOCK" || exit 93
 MAX_COQC=1
 [ -n "$(compiler_admission_reason)" ] || exit 96
 available_gib() { echo 25; }
-[ "$(hold_reason)" = 'memory available 25 GiB, requires 26 GiB for a 6 GiB job' ] || exit 97
+[ "$(hold_reason)" = 'memory available 25 GiB, requires 36 GiB for a 16 GiB job' ] || exit 97
 mark_coqc "$fixture_marker" $$ || exit 98
 probe_record "$fixture_marker" || exit 99
 grep -Fxq 'scope=fixture-probe.scope' "$fixture_marker"
@@ -650,7 +651,7 @@ cat "$STATE_DIR/terminations.jsonl"
         self.assertIsNone(record["stack_limits"])
         self.assertFalse(record["stack_limits_available"])
 
-    def test_scope_fences_require_six_gib_or_valid_issue10_probe(self):
+    def test_scope_fences_require_configured_limit_or_valid_issue10_probe(self):
         cases = (({}, 0), ({"ZESU_MODULE_LIMIT_GIB": "64"}, 2),
                  ({"ZESU_MODULE_LIMIT_GIB": "12"}, 2),
                  ({"ZESU_DIAGNOSTIC_PROBE": "1", "ZESU_PROBE_ISSUE": "10",
@@ -660,6 +661,14 @@ cat "$STATE_DIR/terminations.jsonl"
             with self.subTest(variables=variables):
                 result = self.run_guard("validate_probe_scope", **variables)
                 self.assertEqual(result.returncode, expected, result.stderr)
+
+    def test_ordinary_scope_defaults_to_the_configured_gate_limit(self):
+        for memory in (6, 16, 32):
+            with self.subTest(memory=memory):
+                result = self.run_guard("validate_probe_scope && echo $MODULE_LIMIT_GIB",
+                                        ZESU_GATE_MODULE_LIMIT_GIB=str(memory))
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(result.stdout.strip(), str(memory))
 
     def test_ordinary_scope_accepts_every_configured_gate_limit(self):
         for memory in range(6, 33):

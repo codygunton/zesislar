@@ -449,7 +449,7 @@ Print Assumptions decodeItemCompletedFoldAlternateFitsContradiction.
 #[export] Instance decodeItemByteFoldLengthFacts (args : DecodeItemArgs)
     (n i payloadStart : Z) (bytes : list byte) :
   ZesuDerivedFacts (decodeItemByteFoldFacts args n i payloadStart bytes)
-    (Z.of_nat (length bytes) = n).
+    (Z.of_nat (length bytes) = n) | 2.
 Proof.
   unfold ZesuDerivedFacts. intro Hfold.
   exact (proj1 (proj2 (proj2 (proj2 (proj2 Hfold))))).

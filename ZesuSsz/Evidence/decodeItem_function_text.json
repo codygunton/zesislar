@@ -86,7 +86,8 @@
     "ZesuSsz/Compliance/DecodeItemShortListOutputMeaning.v",
     "ZesuSsz/Compliance/EvmSailAdapter.v",
     "ZesuSsz/Compliance/SailRun.v",
-    "ZesuSsz/Compliance/SailVectorAuditIntegers.v"
+    "ZesuSsz/Compliance/SailVectorAuditIntegers.v",
+    "ZesuSsz/Compliance/DecodeItemExitDataFacts.v"
   ],
   "loop_steps": [
     "ZesuSsz/Compliance/ByteFold.v",
@@ -150,20 +151,12 @@
     "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6ab4.v",
     "ZesuSsz/Proofs/DecodeItem/ByteFoldMachineObligations.v",
     "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6960.v",
-    "ZesuSsz/Proofs/DecodeItem/Hand/Block800d697c.v",
-    "ZesuSsz/Proofs/DecodeItem/Hand/Block800d698c.v",
-    "ZesuSsz/Proofs/DecodeItem/Hand/Block800d69b0.v",
-    "ZesuSsz/Proofs/DecodeItem/Hand/Block800d69e8.v",
     "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a08.v",
     "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a24.v",
     "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a38.v",
-    "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a40.v",
-    "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a78.v",
     "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6aa8.v",
     "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ac4.v",
     "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ad8.v",
-    "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ae0.v",
-    "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.v",
     "ZesuSsz/Proofs/DecodeItem/Hand/Common.v",
     "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6960.v",
     "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6960Conditional.v",
@@ -204,7 +197,17 @@
     "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ae0.v",
     "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ae0Conditional.v",
     "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6b08.v",
-    "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6b08Conditional.v"
+    "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6b08Conditional.v",
+    "ZesuSsz/Proofs/DecodeItem/Auto/Block800d697c.v",
+    "ZesuSsz/Proofs/DecodeItem/Auto/Block800d698c.v",
+    "ZesuSsz/Proofs/DecodeItem/Auto/Block800d698cLiteral.v",
+    "ZesuSsz/Proofs/DecodeItem/Auto/Block800d698cShortString.v",
+    "ZesuSsz/Proofs/DecodeItem/Auto/Block800d69b0.v",
+    "ZesuSsz/Proofs/DecodeItem/Auto/Block800d69e8.v",
+    "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a40.v",
+    "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a78.v",
+    "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6ae0.v",
+    "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6b08.v"
   ],
   "composition": [
     "Scaffolding/DecodeItemApplyChain.v",
@@ -404,7 +407,8 @@
     "ZesuSsz/Proofs/Tests/DerivedFactFinish.v",
     "ZesuSsz/Proofs/Tests/SimplAndFinish.v",
     "ZesuSsz/Proofs/Tests/ListConsFinish.v",
-    "ZesuSsz/Proofs/Tests/IntegerReturn.v"
+    "ZesuSsz/Proofs/Tests/IntegerReturn.v",
+    "ZesuSsz/Proofs/Tests/DecodeItemBranchContinuationOrder.v"
   ],
   "lemmas": [
     "ZesuSsz/Compliance/ByteFold.v",
@@ -459,7 +463,8 @@
     "ZesuSsz/Compliance/RlpInputBounds.v",
     "ZesuSsz/Compliance/SailRun.v",
     "ZesuSsz/Compliance/SailVectorAuditIntegers.v",
-    "ZesuSsz/Proofs/DecodeItem/ByteFoldPure.v"
+    "ZesuSsz/Proofs/DecodeItem/ByteFoldPure.v",
+    "ZesuSsz/Compliance/DecodeItemExitDataFacts.v"
   ],
   "pending": [],
   "files": [
@@ -647,7 +652,7 @@
       "path": "ZesuSsz/Compliance/DecodeItemCompliance.v",
       "category": "composition",
       "scope": "whole_file",
-      "sha256": "fd00413167b121cae77608d52e11c3518cd71d0f42c23d87d4e306308a5ab9c7",
+      "sha256": "674bd517957b22f6a79102d4b59ef4b2904eb4b4427dd8f70ca9dc8b80d24617",
       "file_lines": 70,
       "line_ranges": [
         [
@@ -885,15 +890,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v",
       "category": "introductions",
       "scope": "whole_file",
-      "sha256": "d185284c611f34fcb3bcd5b23d8fe9e345400ceee950c59dc02a92ed2df4d73d",
-      "file_lines": 456,
+      "sha256": "c1f2add192e6d28271f1cd777c0749598d7dc5472e8304584a2ea1eb2da81f9f",
+      "file_lines": 457,
       "line_ranges": [
         [
           1,
-          456
+          457
         ]
       ],
-      "counted_lines": 456
+      "counted_lines": 457
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemHints.v",
@@ -941,7 +946,7 @@
       "path": "ZesuSsz/Compliance/DecodeItemJoinTransferPure.v",
       "category": "exit_meanings",
       "scope": "whole_file",
-      "sha256": "698f251232cd2a06e725f2f542ca3276f6a31824048de5d48f13773526e29c0e",
+      "sha256": "a5c36f8de7f3d11b7459b3f5a77a21424988906423c7d46cfcc2b25d063f1fa7",
       "file_lines": 46,
       "line_ranges": [
         [
@@ -1109,15 +1114,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemReturnRestorationFacts.v",
       "category": "exit_meanings",
       "scope": "whole_file",
-      "sha256": "5421b684d1648dc5e0f4d04050212dbc2d723395c2a1a49d283c4064a38de305",
-      "file_lines": 102,
+      "sha256": "b9f3e3c20d5d283443636781410e37a4b4c1c16058c7656e5a95736b00043324",
+      "file_lines": 106,
       "line_ranges": [
         [
           1,
-          102
+          106
         ]
       ],
-      "counted_lines": 102
+      "counted_lines": 106
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemS40GuardFacts.v",
@@ -1398,7 +1403,7 @@
       "path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
       "category": "contracts",
       "scope": "whole_file",
-      "sha256": "3a26213468527356d4716688b0e5699a653639ab0e359c1b40e75e1bcd010b8b",
+      "sha256": "a206b82ea02ea581fe8c64b491c1b110c85ccdb90ed6ca0e8db9f286869bdaa6",
       "file_lines": 318,
       "line_ranges": [
         [
@@ -1693,15 +1698,15 @@
       "path": "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v",
       "category": "contracts",
       "scope": "whole_file",
-      "sha256": "7b22b45607725212a23b90a195c8d94471a952ea00ba5ea6a7e1b2e8541b5dbe",
-      "file_lines": 60,
+      "sha256": "b8a3d631d1825f15220d1f586bd34592b78aceee61781018a36450f353c4c57a",
+      "file_lines": 61,
       "line_ranges": [
         [
           1,
-          60
+          61
         ]
       ],
-      "counted_lines": 60
+      "counted_lines": 61
     },
     {
       "path": "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.v",
@@ -1819,15 +1824,15 @@
       "path": "ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "b287d0c2c4e27566a58b56451fc749e734d61eb25d7ba7766d52572ecf3b6743",
-      "file_lines": 245,
+      "sha256": "f199f800d75cfc8275b5e0d81c5f019b92f1cb8cabc606ea2532bf163d2b4c00",
+      "file_lines": 251,
       "line_ranges": [
         [
           1,
-          245
+          251
         ]
       ],
-      "counted_lines": 245
+      "counted_lines": 251
     },
     {
       "path": "ZesuSsz/Evidence/DecodeItemOutput24Selections.v",
@@ -2072,8 +2077,8 @@
       "path": "ZesuSsz/Evidence/approved_automation_switches.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "d6c252a2e79759420adcbb2f856f6df068a0578a483197e434451648320525e4",
-      "file_lines": 110,
+      "sha256": "3aaf89bea49fdf1c82438f02a07fae04bef2d50293dd5e97a61fd8f30884d752",
+      "file_lines": 112,
       "line_ranges": [
         [
           1,
@@ -2374,15 +2379,15 @@
       "path": "ZesuSsz/Evidence/check_decode_item_hints.py",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "f19de9f42315cf081d5789e03f51135ebc6389b761d4b5dd801f6a233e442cf9",
-      "file_lines": 171,
+      "sha256": "6644ad05bd90476f835cb746fb15204fc71c95ccec121c71eb786b46f27797c2",
+      "file_lines": 211,
       "line_ranges": [
         [
           1,
-          171
+          211
         ]
       ],
-      "counted_lines": 171,
+      "counted_lines": 211,
       "source_embedded_constants": [
         {
           "line_range": [
@@ -2409,6 +2414,15 @@
           ],
           "names": [
             "UMBRELLA"
+          ]
+        },
+        {
+          "line_range": [
+            13,
+            35
+          ],
+          "names": [
+            "SCOPED_HINT_IMPORTS"
           ]
         }
       ]
@@ -2575,14 +2589,14 @@
       "role": "measurement_metadata",
       "scope": "whole_file",
       "sha256": null,
-      "file_lines": 8191,
+      "file_lines": 8389,
       "line_ranges": [
         [
           1,
-          8191
+          8389
         ]
       ],
-      "counted_lines": 8191
+      "counted_lines": 8389
     },
     {
       "path": "ZesuSsz/Evidence/decode_item_auto_modules.json",
@@ -2602,7 +2616,7 @@
       "path": "ZesuSsz/Evidence/decode_item_block_design.json",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "7be45200ad85aa7fcd3ba5f8c093e6de869a1e70cfdbf2b16a46ac3b04de4a78",
+      "sha256": "282d73c5828e59e9a3a0f7c59c847b1dd85e576c4bd1d7e6aa6337f41e8e6c8c",
       "file_lines": 2227,
       "line_ranges": [
         [
@@ -3823,30 +3837,34 @@
       "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "c32d32e640ca6f9ee77e733abfc1881c8a9bd3c17ef5513ae5c2a18d34938f9c",
-      "file_lines": 323,
+      "sha256": "a6deb38b1cb2e7a84e01684987c59822fc5f732314ea98390649b5eeac66b529",
+      "file_lines": 344,
       "line_ranges": [
         [
           1,
           218
+        ],
+        [
+          336,
+          342
         ]
       ],
-      "counted_lines": 218,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "counted_lines": 225,
+      "selection": "Inherited mixed scope plus the exact new E2 inventory row. Recompute its range from the current JSON source."
     },
     {
       "path": "ZesuSsz/Evidence/test_check_decode_item_hints.py",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "f834165669d8627ce2d2b317c43a8083d15bd6741a430d5e6992e98421904ac0",
-      "file_lines": 127,
+      "sha256": "6e7f41b365ba8960c1662c04102c3c3a8226febd82dc8128b72f489393eddf88",
+      "file_lines": 199,
       "line_ranges": [
         [
           1,
-          127
+          199
         ]
       ],
-      "counted_lines": 127
+      "counted_lines": 199
     },
     {
       "path": "ZesuSsz/Evidence/test_check_proof_hygiene.py",
@@ -4141,7 +4159,7 @@
       "path": "ZesuSsz/Generated/DecodeItem/BlockTable.v",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "1280dceaa62c3332f737a6e7b1344b732074fb9efbec87c11821530693f7d711",
+      "sha256": "b756974617f0aa8c537cffd9f26abeb2f79cabd863adcaae7d9f569ef76d05f2",
       "file_lines": 209,
       "line_ranges": [
         [
@@ -4169,7 +4187,7 @@
       "path": "ZesuSsz/Generated/DecodeItem/block_table_metadata.json",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "5a3e093e79fc804493c8f5feafaeed8950b7da5c0caf4a14d2667deadda80279",
+      "sha256": "50bd909c904b1eca2e93bf7120166ae5616225589780c5caee135e9bce467a8d",
       "file_lines": 702,
       "line_ranges": [
         [
@@ -4283,15 +4301,15 @@
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a14.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "70ea8da3ab43b2599ceded151460709de0c4bfc8777f246038759835507d41ee",
-      "file_lines": 35,
+      "sha256": "03b9db6b4a09dc311b0227dc12e4ed5a840eca18348cd1ddcb0086dfdb04cc01",
+      "file_lines": 36,
       "line_ranges": [
         [
           1,
-          35
+          36
         ]
       ],
-      "counted_lines": 35
+      "counted_lines": 36
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a64.v",
@@ -4325,15 +4343,15 @@
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6ab4.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "656fd312196618cf0c55a52aa0258d6eb923ddd15a699d18f83d2a967a5f89ed",
-      "file_lines": 35,
+      "sha256": "93531592d04dc64a8f2170944df999124eed265833b64c9c9bd937fa1c1d62b5",
+      "file_lines": 36,
       "line_ranges": [
         [
           1,
-          35
+          36
         ]
       ],
-      "counted_lines": 35
+      "counted_lines": 36
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/ByteFoldMachineObligations.v",
@@ -4381,15 +4399,15 @@
       "path": "ZesuSsz/Proofs/DecodeItem/Composition/CompleteNativeFamily.v",
       "category": "composition",
       "scope": "whole_file",
-      "sha256": "fd572e9b851c08d9196734f496dcef14f761a1cef70d483974ff4502d0ed454f",
-      "file_lines": 138,
+      "sha256": "d210b8c723114aa2c736649837e6d5c79c53e618f3732a7385fb95b695f031d1",
+      "file_lines": 142,
       "line_ranges": [
         [
           1,
-          138
+          142
         ]
       ],
-      "counted_lines": 138
+      "counted_lines": 142
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6960.v",
@@ -4404,62 +4422,6 @@
         ]
       ],
       "counted_lines": 116
-    },
-    {
-      "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d697c.v",
-      "category": "block_proofs",
-      "scope": "whole_file",
-      "sha256": "35370aaebd49c8fa90ccf23eed9dc2f07e0f54bcae50daa3829970cb22ec3a26",
-      "file_lines": 86,
-      "line_ranges": [
-        [
-          1,
-          86
-        ]
-      ],
-      "counted_lines": 86
-    },
-    {
-      "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d698c.v",
-      "category": "block_proofs",
-      "scope": "whole_file",
-      "sha256": "58b62c5f86bd232c385914615cb76816a941f4aece98a2dcc369b23be032d6ef",
-      "file_lines": 110,
-      "line_ranges": [
-        [
-          1,
-          110
-        ]
-      ],
-      "counted_lines": 110
-    },
-    {
-      "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d69b0.v",
-      "category": "block_proofs",
-      "scope": "whole_file",
-      "sha256": "710986393cc4c9809bf967d9f46ddca01301bc8ee0860b1f5f58750d01b2aa20",
-      "file_lines": 118,
-      "line_ranges": [
-        [
-          1,
-          118
-        ]
-      ],
-      "counted_lines": 118
-    },
-    {
-      "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d69e8.v",
-      "category": "block_proofs",
-      "scope": "whole_file",
-      "sha256": "25e8368a6430816982fc3f503b8920af5e8f39e025d2fcadcfaf103b9ac321ad",
-      "file_lines": 74,
-      "line_ranges": [
-        [
-          1,
-          74
-        ]
-      ],
-      "counted_lines": 74
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a08.v",
@@ -4479,15 +4441,15 @@
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a24.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "ef70b799d664cfaf7fd888a01fa919d903946fc6b390d9e810b9ab40aa82c061",
-      "file_lines": 212,
+      "sha256": "1ba8d0edc148f29b8e4515c789cf2af27cea7a481e06d15fa9e207a4f1fea7fe",
+      "file_lines": 56,
       "line_ranges": [
         [
           1,
-          212
+          56
         ]
       ],
-      "counted_lines": 212
+      "counted_lines": 56
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a38.v",
@@ -4502,34 +4464,6 @@
         ]
       ],
       "counted_lines": 43
-    },
-    {
-      "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a40.v",
-      "category": "block_proofs",
-      "scope": "whole_file",
-      "sha256": "0a590c69539da0865ec0f1441c8032c81f0227c6f8c2a9da7731ae0ad175a1f5",
-      "file_lines": 95,
-      "line_ranges": [
-        [
-          1,
-          95
-        ]
-      ],
-      "counted_lines": 95
-    },
-    {
-      "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a78.v",
-      "category": "block_proofs",
-      "scope": "whole_file",
-      "sha256": "9f2fbbb89020e1e6e28d91a9aa12e1d94474524657c7ad840fe3c2dfcf1d8148",
-      "file_lines": 113,
-      "line_ranges": [
-        [
-          1,
-          113
-        ]
-      ],
-      "counted_lines": 113
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6aa8.v",
@@ -4549,15 +4483,15 @@
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ac4.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "5f974bbeedcd29bdb803679dd9ee5bb1d3e3aaa3044df5775dd40d350a3161be",
-      "file_lines": 222,
+      "sha256": "d5d6781fea85bbf7511917baa536e08031e90da0a3cf0e29af8eedef33e47dbb",
+      "file_lines": 56,
       "line_ranges": [
         [
           1,
-          222
+          56
         ]
       ],
-      "counted_lines": 222
+      "counted_lines": 56
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ad8.v",
@@ -4574,46 +4508,18 @@
       "counted_lines": 43
     },
     {
-      "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ae0.v",
-      "category": "block_proofs",
-      "scope": "whole_file",
-      "sha256": "5fd26beaa7273837aa25b6c8724d09cd8d6886021eeaae9adc37ecac26bbe34d",
-      "file_lines": 106,
-      "line_ranges": [
-        [
-          1,
-          106
-        ]
-      ],
-      "counted_lines": 106
-    },
-    {
-      "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.v",
-      "category": "block_proofs",
-      "scope": "whole_file",
-      "sha256": "2927f6bbec9b7bbe5f1671bd6a0ed1d5a22fec6411a020d9947eede314c04e5d",
-      "file_lines": 59,
-      "line_ranges": [
-        [
-          1,
-          59
-        ]
-      ],
-      "counted_lines": 59
-    },
-    {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Common.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "853a56efdeb4de3d25602afc7d01eb0c8d2c9be7f6bf320a7a4e07f7e245e2c4",
-      "file_lines": 65,
+      "sha256": "c39445d714d2d894b90ed6cccaa9f0afa42029b11275d2f2dffc5ef9e2487b00",
+      "file_lines": 26,
       "line_ranges": [
         [
           1,
-          65
+          26
         ]
       ],
-      "counted_lines": 65
+      "counted_lines": 26
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6960.v",
@@ -4675,7 +4581,7 @@
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d697c.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "daffca0c77a991b8fc3494bf855cf753fa2ab36d6e117dde2adc9ebf55432fb6",
+      "sha256": "d1c93ec8650a126622562968931014f648f514f804f71707e5cb64258923d288",
       "file_lines": 27,
       "line_ranges": [
         [
@@ -4703,7 +4609,7 @@
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d698c.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "c5bbdcea0828a30e8ff590d16870a37c6240465c27dafd46d824d3cd50bf9fd4",
+      "sha256": "8af609e0ed5dbeeee2e542eeb53d7d1601cc14a1a17f0754a955be6dd00e4e32",
       "file_lines": 18,
       "line_ranges": [
         [
@@ -4717,15 +4623,15 @@
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d698cConditional.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "aa0bb4f39540f3eefc8e16eff5d88c17c28b6e068639932cd632d5d062bae00e",
-      "file_lines": 64,
+      "sha256": "bd893564d228505b224fc3143749e3ae6dd6ba1265aca446dba03db90986bf59",
+      "file_lines": 38,
       "line_ranges": [
         [
           1,
-          64
+          38
         ]
       ],
-      "counted_lines": 64
+      "counted_lines": 38
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69a4.v",
@@ -4745,7 +4651,7 @@
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69b0.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "6953562d420b689ab40a5bfc00211b8293cc65fcb97bf5ecfe73c51d4b020af4",
+      "sha256": "35c1a69c896e7213984b6580ed01b67c66fc14b32398f5114c51ed730474511f",
       "file_lines": 18,
       "line_ranges": [
         [
@@ -4801,7 +4707,7 @@
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69e8.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "fbd1ef64e1ce11bac3436fae4e9794fcc4cc1b1686c59c7314db16ec0a688d98",
+      "sha256": "a7c43e9fd04c7d603221d1d86ed3754758e63c15bfd5f80d9853a78ef3c14b92",
       "file_lines": 27,
       "line_ranges": [
         [
@@ -4941,7 +4847,7 @@
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a40.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "900856c383c05d65ca305b89c5f9c712138d4f34483c5eb8d0bf5dea88d6ef5e",
+      "sha256": "63e2d1cf838bbc245ba9465bdba425fb7d3c86cdfeb0cd16cbbad5ce9f726bb6",
       "file_lines": 18,
       "line_ranges": [
         [
@@ -4997,7 +4903,7 @@
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a78.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "5e2967dcb2bd1006e100121338929e83cdd77aff375ee06c47dc2d7519658fe0",
+      "sha256": "7438217b4b6217fd1960a3bf81202f53a6966b7203300832f45aa7e4a04b25ee",
       "file_lines": 18,
       "line_ranges": [
         [
@@ -5123,7 +5029,7 @@
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ae0.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "3fd558cb053ffaa5cd4d0fe07dfef8218f1de8c32c6ba2b32b1b38beb41be88c",
+      "sha256": "a24bb698d5ef4c4c25168c0f1d6eb256bec5803e8563f0457d91e7f84b4a5d85",
       "file_lines": 18,
       "line_ranges": [
         [
@@ -5151,7 +5057,7 @@
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6b08.v",
       "category": "block_proofs",
       "scope": "whole_file",
-      "sha256": "127457c178148275e46bda57390457e6251e889f289046247fc86b773c7b0b8a",
+      "sha256": "33a566a8a91ca6a5efac50b641627d557f619334cdee2fc57c0c6fd94b2a944e",
       "file_lines": 18,
       "line_ranges": [
         [
@@ -5179,8 +5085,8 @@
       "path": "ZesuSsz/Proofs/Tests/ApprovedSwitches.v",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "7b20a39d1cdaff8824907a99591a51093d4ea2a8ba7b8001e8c8c834d4e6a343",
-      "file_lines": 66,
+      "sha256": "162736f844b615547306dd0617a1ff7dd3a724d32deae60018d34b92fe8886e6",
+      "file_lines": 70,
       "line_ranges": [
         [
           3,
@@ -5682,15 +5588,15 @@
       "path": "ZesuSsz/Proofs/Tests/DecodeItemRootEntry.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "656cfc9b8e774c94232e7151026d51736ece9faa2f55b50751b681e51562b1d7",
-      "file_lines": 65,
+      "sha256": "4f040230ee736dc89cf96e614bd9327e7937c9eb0092746279d9ea0368e99bbd",
+      "file_lines": 67,
       "line_ranges": [
         [
           1,
-          65
+          67
         ]
       ],
-      "counted_lines": 65
+      "counted_lines": 67
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemSavedFrameWitnesses.v",
@@ -5818,8 +5724,8 @@
       "path": "ZesuSsz/Proofs/Tests/RegionFault.v",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "ac0e626bf6043d8137e1e2f94caa26710f493aeccbb314db47ced724d4772b47",
-      "file_lines": 114,
+      "sha256": "33262b8269634bc27c8cc3e2899a3e04863f837aff02c2964cc1169bf3815303",
+      "file_lines": 118,
       "line_ranges": [
         [
           2,
@@ -6560,8 +6466,8 @@
       "path": "tools/coqc_scratch.sh",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "110de1499820ed558ab0f5123652f384e02c891f8490fcc806d1ce9df78fb2fd",
-      "file_lines": 140,
+      "sha256": "630a405e22a83ec15f52d09dd964d27a897bfd7095da88e63f685e699221ea49",
+      "file_lines": 146,
       "line_ranges": [
         [
           44,
@@ -7654,6 +7560,272 @@
         ]
       ],
       "counted_lines": 191
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemLoopDerivedFacts.v",
+      "category": "loop_steps",
+      "scope": "whole_file",
+      "sha256": "8751a058d73766725d8aabe53099ef08401e1951f43d2018b9453c6820c38566",
+      "file_lines": 177,
+      "line_ranges": [
+        [
+          1,
+          177
+        ]
+      ],
+      "counted_lines": 177
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/LoopIndexStep.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "9e7a6c4f8c7b47c9ba36d42790d3182e631917815b57b1a29aba91a43ff56c3a",
+      "file_lines": 46,
+      "line_ranges": [
+        [
+          1,
+          46
+        ]
+      ],
+      "counted_lines": 46
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/LoopFaultBounds.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "f40be7236f440a2a45dbde6cb3231c99a636fd08d612c4734946d26c471c1146",
+      "file_lines": 94,
+      "line_ranges": [
+        [
+          1,
+          94
+        ]
+      ],
+      "counted_lines": 94
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/LoopDerivedFacts.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "56a1f5b0f78f7c58f7da829af2f5d08c3945da73da61ae35cc79b45f2b31c6d3",
+      "file_lines": 79,
+      "line_ranges": [
+        [
+          1,
+          79
+        ]
+      ],
+      "counted_lines": 79
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemLoopInitialization.v",
+      "category": "registrations",
+      "scope": "whole_file",
+      "sha256": "600bec8afb86a708d6f55ae7add4517cc6bae7d2d138d313b8269f756eae180a",
+      "file_lines": 48,
+      "line_ranges": [
+        [
+          1,
+          48
+        ]
+      ],
+      "counted_lines": 48
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/LoopInitialization.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "33d45e2aef13976896440e6b6e0c7ff642c3f8ad9f0e16c2b55686f5a19937bb",
+      "file_lines": 50,
+      "line_ranges": [
+        [
+          1,
+          50
+        ]
+      ],
+      "counted_lines": 50
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/LoopHeaderOrder.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "920bcb6e1c1c47750b214c7b7928265beb157a595355532e330f1e4b662b957e",
+      "file_lines": 31,
+      "line_ranges": [
+        [
+          1,
+          31
+        ]
+      ],
+      "counted_lines": 31
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/DecodeItemBranchContinuationOrder.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "line_ranges": [
+        [
+          1,
+          29
+        ]
+      ],
+      "file_lines": 29,
+      "sha256": "bbd530c079701d8a47b0bb70691f47f313e8aa233bd42364ae07b98aebb17e08",
+      "counted_lines": 29
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemExitDataFacts.v",
+      "category": "exit_meanings",
+      "scope": "whole_file",
+      "line_ranges": [
+        [
+          1,
+          407
+        ]
+      ],
+      "file_lines": 407,
+      "sha256": "aa9af1dd5184a8953df8cac25f8d4713f27a7ace03e31ca5228a4b2be96624c4",
+      "counted_lines": 407
+    },
+    {
+      "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d697c.v",
+      "category": "block_proofs",
+      "scope": "whole_file",
+      "line_ranges": [
+        [
+          1,
+          37
+        ]
+      ],
+      "file_lines": 37,
+      "sha256": "c4113fa0546fec09a1b9a55dc9d941c500760c5c9671ef384b185069ee8e022c",
+      "counted_lines": 37
+    },
+    {
+      "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d698c.v",
+      "category": "block_proofs",
+      "scope": "whole_file",
+      "line_ranges": [
+        [
+          1,
+          3
+        ]
+      ],
+      "file_lines": 3,
+      "sha256": "5fcdd5f1edb8235e917b5712650dc4018ff05157f51705e114b66bae164b80ef",
+      "counted_lines": 3
+    },
+    {
+      "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d698cLiteral.v",
+      "category": "block_proofs",
+      "scope": "whole_file",
+      "line_ranges": [
+        [
+          1,
+          22
+        ]
+      ],
+      "file_lines": 22,
+      "sha256": "53dbe72e79a643c9e6e0f60433528919ea22afe70b562c81e2e8ad9404e621fe",
+      "counted_lines": 22
+    },
+    {
+      "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d698cShortString.v",
+      "category": "block_proofs",
+      "scope": "whole_file",
+      "line_ranges": [
+        [
+          1,
+          22
+        ]
+      ],
+      "file_lines": 22,
+      "sha256": "c817a3e535a0a833052ab2714f7544d527da4f8607609310759c2ac7a9505f47",
+      "counted_lines": 22
+    },
+    {
+      "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d69b0.v",
+      "category": "block_proofs",
+      "scope": "whole_file",
+      "line_ranges": [
+        [
+          1,
+          41
+        ]
+      ],
+      "file_lines": 41,
+      "sha256": "756a4f81cb1a835a7465d525f6892e376f2548881c84151ccedec252d0a3d29d",
+      "counted_lines": 41
+    },
+    {
+      "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d69e8.v",
+      "category": "block_proofs",
+      "scope": "whole_file",
+      "line_ranges": [
+        [
+          1,
+          37
+        ]
+      ],
+      "file_lines": 37,
+      "sha256": "5cfe5fcfcd2b56b2d5fe0c4cd41f592f84d79f0b1a712da6b749dc0c9486288f",
+      "counted_lines": 37
+    },
+    {
+      "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a40.v",
+      "category": "block_proofs",
+      "scope": "whole_file",
+      "line_ranges": [
+        [
+          1,
+          37
+        ]
+      ],
+      "file_lines": 37,
+      "sha256": "8a6b7d0b8d69d53400e8374777a5946b6af4ea5760559ceae48f01d20a3d1c45",
+      "counted_lines": 37
+    },
+    {
+      "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a78.v",
+      "category": "block_proofs",
+      "scope": "whole_file",
+      "line_ranges": [
+        [
+          1,
+          38
+        ]
+      ],
+      "file_lines": 38,
+      "sha256": "d9d3642f54128a58718d8785f382291a9769bb6d2f0b58a530727e9822a1ec9f",
+      "counted_lines": 38
+    },
+    {
+      "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6ae0.v",
+      "category": "block_proofs",
+      "scope": "whole_file",
+      "line_ranges": [
+        [
+          1,
+          38
+        ]
+      ],
+      "file_lines": 38,
+      "sha256": "861b68878ac8c3c37e1099e097b9da841b675d1c9d450f3e3cacfb782300a425",
+      "counted_lines": 38
+    },
+    {
+      "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6b08.v",
+      "category": "block_proofs",
+      "scope": "whole_file",
+      "line_ranges": [
+        [
+          1,
+          40
+        ]
+      ],
+      "file_lines": 40,
+      "sha256": "7204168badc361d94a6393801ba1fba0ddbb3a513cc91296c880d7c28d09c852",
+      "counted_lines": 40
     }
   ],
   "blocks": [
@@ -7674,20 +7846,38 @@
       "file_lines": 33
     },
     {
-      "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d697c.v",
+      "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d697c.v",
       "pc": "0x800d697c",
-      "kind": "hand",
-      "proof_qed_lines": 65,
-      "tactic_lines": 63,
-      "file_lines": 99
+      "kind": "auto",
+      "proof_qed_lines": 3,
+      "tactic_lines": 1,
+      "file_lines": 37
     },
     {
-      "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d698c.v",
+      "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d698c.v",
       "pc": "0x800d698c",
-      "kind": "hand",
-      "proof_qed_lines": 80,
-      "tactic_lines": 78,
-      "file_lines": 115
+      "kind": "auto",
+      "proof_qed_lines": 0,
+      "tactic_lines": 0,
+      "file_lines": 3,
+      "branches": [
+        {
+          "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d698cLiteral.v",
+          "pc": "0x800d698c",
+          "kind": "auto",
+          "proof_qed_lines": 3,
+          "tactic_lines": 1,
+          "file_lines": 21
+        },
+        {
+          "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d698cShortString.v",
+          "pc": "0x800d698c",
+          "kind": "auto",
+          "proof_qed_lines": 3,
+          "tactic_lines": 1,
+          "file_lines": 21
+        }
+      ]
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d69a4.v",
@@ -7698,12 +7888,12 @@
       "file_lines": 36
     },
     {
-      "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d69b0.v",
+      "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d69b0.v",
       "pc": "0x800d69b0",
-      "kind": "hand",
-      "proof_qed_lines": 92,
-      "tactic_lines": 90,
-      "file_lines": 130
+      "kind": "auto",
+      "proof_qed_lines": 3,
+      "tactic_lines": 1,
+      "file_lines": 41
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d69d8.v",
@@ -7722,12 +7912,12 @@
       "file_lines": 36
     },
     {
-      "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d69e8.v",
+      "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d69e8.v",
       "pc": "0x800d69e8",
-      "kind": "hand",
-      "proof_qed_lines": 73,
-      "tactic_lines": 71,
-      "file_lines": 121
+      "kind": "auto",
+      "proof_qed_lines": 3,
+      "tactic_lines": 1,
+      "file_lines": 37
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a00.v",
@@ -7740,7 +7930,7 @@
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a08.v",
       "pc": "0x800d6a08",
-      "kind": "hand",
+      "kind": "auto",
       "proof_qed_lines": 3,
       "tactic_lines": 1,
       "file_lines": 48
@@ -7751,31 +7941,31 @@
       "kind": "auto",
       "proof_qed_lines": 3,
       "tactic_lines": 1,
-      "file_lines": 35
+      "file_lines": 36
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a24.v",
       "pc": "0x800d6a24",
-      "kind": "hand",
-      "proof_qed_lines": 160,
-      "tactic_lines": 158,
-      "file_lines": 212
+      "kind": "auto",
+      "proof_qed_lines": 3,
+      "tactic_lines": 1,
+      "file_lines": 56
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a38.v",
       "pc": "0x800d6a38",
-      "kind": "hand",
+      "kind": "auto",
       "proof_qed_lines": 3,
       "tactic_lines": 1,
       "file_lines": 43
     },
     {
-      "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a40.v",
+      "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a40.v",
       "pc": "0x800d6a40",
-      "kind": "hand",
-      "proof_qed_lines": 62,
-      "tactic_lines": 60,
-      "file_lines": 95
+      "kind": "auto",
+      "proof_qed_lines": 3,
+      "tactic_lines": 1,
+      "file_lines": 37
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a64.v",
@@ -7794,17 +7984,17 @@
       "file_lines": 36
     },
     {
-      "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a78.v",
+      "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a78.v",
       "pc": "0x800d6a78",
-      "kind": "hand",
-      "proof_qed_lines": 91,
-      "tactic_lines": 89,
-      "file_lines": 125
+      "kind": "auto",
+      "proof_qed_lines": 3,
+      "tactic_lines": 1,
+      "file_lines": 38
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6aa8.v",
       "pc": "0x800d6aa8",
-      "kind": "hand",
+      "kind": "auto",
       "proof_qed_lines": 3,
       "tactic_lines": 1,
       "file_lines": 36
@@ -7815,39 +8005,39 @@
       "kind": "auto",
       "proof_qed_lines": 3,
       "tactic_lines": 1,
-      "file_lines": 35
+      "file_lines": 36
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ac4.v",
       "pc": "0x800d6ac4",
-      "kind": "hand",
-      "proof_qed_lines": 171,
-      "tactic_lines": 169,
-      "file_lines": 222
+      "kind": "auto",
+      "proof_qed_lines": 3,
+      "tactic_lines": 1,
+      "file_lines": 56
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ad8.v",
       "pc": "0x800d6ad8",
-      "kind": "hand",
+      "kind": "auto",
       "proof_qed_lines": 3,
       "tactic_lines": 1,
       "file_lines": 43
     },
     {
-      "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ae0.v",
+      "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6ae0.v",
       "pc": "0x800d6ae0",
-      "kind": "hand",
-      "proof_qed_lines": 73,
-      "tactic_lines": 71,
-      "file_lines": 108
+      "kind": "auto",
+      "proof_qed_lines": 3,
+      "tactic_lines": 1,
+      "file_lines": 38
     },
     {
-      "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6b08.v",
+      "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6b08.v",
       "pc": "0x800d6b08",
-      "kind": "hand",
-      "proof_qed_lines": 23,
-      "tactic_lines": 21,
-      "file_lines": 59
+      "kind": "auto",
+      "proof_qed_lines": 3,
+      "tactic_lines": 1,
+      "file_lines": 40
     }
   ],
   "ambiguous_shared_json": [
@@ -7876,7 +8066,7 @@
       "line_ranges": [
         [
           1,
-          110
+          112
         ]
       ],
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
@@ -8006,7 +8196,7 @@
       "line_ranges": [
         [
           1,
-          323
+          344
         ]
       ],
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
@@ -8032,7 +8222,7 @@
       "reason": "Shared JSON contains decodeItem records. Count the complete file; shared rows are included conservatively."
     }
   ],
-  "conservative_shared_json_lines": 15233,
+  "conservative_shared_json_lines": 15237,
   "status": "Private immutable source scope: base e7eb0bce plus eighteen native-certificate018 sources. No Root integration credit.",
   "integration_scope": {
     "base": "e7eb0bcef249f2cf99dfc86cf60d8436ade29a31",
@@ -8070,20 +8260,20 @@
   },
   "base_manifest_sha256": "7deccbbc338d25231c300f1ba6824c5c10136917b0207e75589cd9a86f9d020a",
   "category_totals": {
-    "tests_and_exports": 35890,
-    "composition": 580,
-    "loop_steps": 965,
-    "introductions": 3529,
-    "exit_meanings": 3114,
-    "registrations": 340,
-    "contracts": 2563,
+    "tests_and_exports": 36544,
+    "composition": 584,
+    "loop_steps": 1142,
+    "introductions": 3530,
+    "exit_meanings": 3525,
+    "registrations": 388,
+    "contracts": 2564,
     "generator_json": 6279,
-    "block_proofs": 3301
+    "block_proofs": 2470
   },
-  "interface_total": 16790,
-  "extra_total": 39771,
-  "overall_total": 56561,
-  "file_count": 374,
+  "interface_total": 17428,
+  "extra_total": 39598,
+  "overall_total": 57026,
+  "file_count": 385,
   "embedded_registration_ranges": [
     {
       "path": "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
@@ -8186,6 +8376,14 @@
     "r1_guard": {
       "base": "5c820c36743af2ec731bf6560c77b873f7dce08c",
       "scope": "Classify the exact return-alias regression controls as unscored tests_and_exports. Preserve inherited rows and historical fields."
+    },
+    "e1": {
+      "base": "30b9d3d6644c49e470063c7af7fae3173257f033",
+      "scope": "Resources-first continuation and its unscored equivalence unit. Recompute current derived fields; preserve historical certificates."
+    },
+    "r3": {
+      "base": "30b9d3d6644c49e470063c7af7fae3173257f033",
+      "scope": "Eight native PCs, split 698c umbrella and branches, unified exit data, and removal of dead return/decode tactics. Refresh current derived fields; preserve historical evidence."
     }
   }
 }

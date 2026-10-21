@@ -8,7 +8,7 @@ mcp_binary=${ZESU_ROCQ_MCP_BINARY:-$(command -v rocq-mcp)}
 # MCP clients can omit these variables from their subprocess environment.
 export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$UID}
 export DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS:-unix:path=$XDG_RUNTIME_DIR/bus}
-export ZESU_MODULE_LIMIT_GIB=${ZESU_GATE_MODULE_LIMIT_GIB-6}
+export ZESU_MODULE_LIMIT_GIB=${ZESU_GATE_MODULE_LIMIT_GIB-16}
 if [[ ! "$ZESU_MODULE_LIMIT_GIB" =~ ^([6-9]|[12][0-9]|3[0-2])$ ]]; then
   echo "compiler gate memory limit must be an integer from 6 through 32 GiB" >&2
   exit 2

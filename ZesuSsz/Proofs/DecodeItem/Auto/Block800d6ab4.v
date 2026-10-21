@@ -1,6 +1,7 @@
 Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Automation.Approved.
 Require Import ZesuSsz.Compliance.DecodeItemHints.
+Require Import ZesuSsz.Compliance.DecodeItemLoopInitialization.
 Require Import isla.isla.
 Require Import ZesuSsz.Stock.Closure.index_decodeItem.
 Require Import ZesuSsz.Contracts.DecodeItemBranchEntries.

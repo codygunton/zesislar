@@ -41,12 +41,12 @@ class RocqGuardedTests(unittest.TestCase):
                                 env=dict(self.environment, ZESU_ROCQ_MCP_BINARY="/test/mcp"),
                                 check=True, capture_output=True, text=True)
         record = json.loads(result.stdout)
-        self.assertIn("MemoryMax=6G", record["args"])
+        self.assertIn("MemoryMax=16G", record["args"])
         self.assertIn("MemorySwapMax=0", record["args"])
         self.assertTrue(any(value.startswith("--unit=rocq-writer-") for value in record["args"]))
         self.assertEqual(record["args"][-2:], ["/test/mcp", "argument"])
         self.assertEqual(record["compiler"], str(self.root / "rocq_coqc_guarded.sh"))
-        self.assertEqual(record["pet_limit"], "6144")
+        self.assertEqual(record["pet_limit"], "16384")
         self.assertEqual(record["hold"], "180")
 
     def test_compiler_waits_before_registered_scope(self):

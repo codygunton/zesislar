@@ -13,13 +13,14 @@
 # Subcommands:
 #   jobs                 the concurrency a batch may use right now
 #   gate-jobs [TARGET]   the concurrency a gate may use: 24
+#   gate-module-limit    print the configured per-module gate limit in GiB
 #   coqc-count [nonwriter] count actual compilers, excluding shell wrappers
 #   native-limit         read the native admission limit without changing state
 #   wait                 block until one more job may start
 #   reserve-coqc PID     request a compiler launch without holding a slot
 #   confirm-coqc TOKEN   admit a compiler launch atomically
 #   watch                the polling loop; kills the youngest scope at its memory boundary
-#   scope NAME [--cpu SECONDS] -- CMD    run CMD in its own 6 GiB scope, registered
+#   scope NAME [--cpu SECONDS] -- CMD    run CMD in its configured module scope, registered
 #   batch NAME -- CMD    run CMD in the batch scope, 150 GiB (a gate 120), swap off
 #   locked NAME -- CMD   run CMD holding the gate lock
 #   lock-status          print the gate lock, removing a stale one
@@ -66,8 +67,8 @@ fi
 
 # The hard per-job cap: what one `coqc` scope may use before the kernel
 # kills it. Ordinary wrappers use the configured gate module limit.
-MODULE_LIMIT_GIB=${ZESU_MODULE_LIMIT_GIB:-6}
-GATE_MODULE_LIMIT_GIB=${ZESU_GATE_MODULE_LIMIT_GIB-6}
+GATE_MODULE_LIMIT_GIB=${ZESU_GATE_MODULE_LIMIT_GIB-16}
+MODULE_LIMIT_GIB=${ZESU_MODULE_LIMIT_GIB:-$GATE_MODULE_LIMIT_GIB}
 # What a job actually costs, which is what the job count should be sized
 # against. Measured 2026-09-20: a clean `check-iris` at 25 jobs peaks at
 # 75 GiB, so 3.0 GiB per job; on 2026-09-22 batches 48 wide peaked at
@@ -1265,7 +1266,7 @@ validate_probe_scope() {
 }
 
 run_scope() {
-  local name=$1 cpu=${ZESU_PROOF_CPU_LIMIT:-1200}; shift
+  local name=$1 cpu=${ZESU_PROOF_CPU_LIMIT:-2400}; shift
   validate_probe_scope || return $?
   if [ "${1:-}" = "--cpu" ]; then
     cpu=${2:-}; shift 2
@@ -1429,12 +1430,18 @@ report() {
 # Apply proof limits inside the admitted scope, before the command starts.
 apply_scope_limits() {
   ulimit -s unlimited || return $?
-  ulimit -t "${ZESU_SCOPE_CPU:-${ZESU_PROOF_CPU_LIMIT:-1200}}" || return $?
+  ulimit -t "${ZESU_SCOPE_CPU:-${ZESU_PROOF_CPU_LIMIT:-2400}}" || return $?
 }
 
 prune_scope_registry
 
 case "${1:-report}" in
+  gate-module-limit)
+    if [[ ! "$GATE_MODULE_LIMIT_GIB" =~ ^([6-9]|[12][0-9]|3[0-2])$ ]]; then
+      echo "compiler gate memory limit must be an integer from 6 through 32 GiB" >&2
+      exit 2
+    fi
+    echo "$GATE_MODULE_LIMIT_GIB" ;;
   jobs)   guard_jobs ;;
   coqc-count)
     if [ "${2:-}" = nonwriter ]; then nonwriter_coqc_count; else coqc_count; fi ;;
@@ -1470,5 +1477,5 @@ case "${1:-report}" in
   hold)   r=$(hold_reason) || exit $?; echo "${r:-none}" ;;
   window) shift; python3 "$PROM" window "$@" ;;
   report) report ;;
-  *) echo "usage: $0 {jobs|gate-jobs [TARGET]|native-limit|wait|reserve-coqc PID|confirm-coqc TOKEN|mark-coqc TOKEN PID|release-coqc TOKEN|watch|scope NAME [--cpu SECONDS] -- CMD|batch NAME -- CMD|locked NAME -- CMD|lock-status|lock-want PID HOLDER|lock-hold PID|lock-release PID|hold|report|window ARGS|peak|reset-peak}" >&2; exit 2 ;;
+  *) echo "usage: $0 {jobs|gate-jobs [TARGET]|gate-module-limit|native-limit|wait|reserve-coqc PID|confirm-coqc TOKEN|mark-coqc TOKEN PID|release-coqc TOKEN|watch|scope NAME [--cpu SECONDS] -- CMD|batch NAME -- CMD|locked NAME -- CMD|lock-status|lock-want PID HOLDER|lock-hold PID|lock-release PID|hold|report|window ARGS|peak|reset-peak}" >&2; exit 2 ;;
 esac

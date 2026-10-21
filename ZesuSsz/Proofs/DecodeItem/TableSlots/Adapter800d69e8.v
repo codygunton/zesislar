@@ -5,7 +5,7 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.BlockTable.
 Require Import ZesuSsz.Generated.DecodeItem.BlockTable.
 Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d69e8Conditional.
-Require Import ZesuSsz.Proofs.DecodeItem.Hand.Block800d69e8.
+Require Import ZesuSsz.Proofs.DecodeItem.Auto.Block800d69e8.
 Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
 
 Lemma decodeItemSlotBody800d69e8 `{!islaG Sigma} `{!threadG} :

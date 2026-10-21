@@ -121,6 +121,7 @@ class ScratchSnapshotTests(unittest.TestCase):
         guard = root / 'guard'
         guard.write_text('''#!/bin/sh
 case "$1" in
+  gate-module-limit) echo 16 ;;
   reserve-coqc) echo fixture ;;
   scope) shift 2; exec "$@" ;;
 esac

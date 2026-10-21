@@ -888,6 +888,65 @@ Ltac zesu_register_collection_selection_if_enabled :=
 Class ZesuStepKnownPairWitness : Prop :=
   zesu_step_known_pair_witness : True.
 
+(* Inspect explicit pure leaves without unfolding spatial predicates. *)
+Ltac zesu_known_pair_pure_leaf body continuation :=
+  lazymatch body with
+  | (fun x => @bi_sep _ (@?left x) (@?right x)) =>
+      first [zesu_known_pair_pure_leaf left continuation |
+             zesu_known_pair_pure_leaf right continuation]
+  | (fun x => @bi_pure _ (@?fact x)) =>
+      let rec conjunct fact :=
+        lazymatch fact with
+        | (fun x => @?left x /\ @?right x) =>
+            first [conjunct left | conjunct right]
+        | (fun x => ?predicate (li_fst x)) =>
+            lazymatch predicate with (fun _ => _) => fail | _ => idtac end;
+            assert_fails (has_evar predicate);
+            continuation predicate fact
+        end in conjunct fact
+  end.
+
+Ltac zesu_known_pair_has_evar term :=
+  first [has_evar term |
+    multimatch goal with
+    | local := ?value |- _ =>
+        lazymatch term with context[local] =>
+          zesu_known_pair_has_evar value
+        end
+    end].
+
+Ltac zesu_known_pair_context_value A predicate continuation :=
+  multimatch goal with
+  | H : ?head ?value |- _ =>
+      constr_eq head predicate;
+      let T := type of value in constr_eq T A;
+      assert_fails (zesu_known_pair_has_evar value);
+      let owned := type of H in
+      assert_fails (zesu_known_pair_has_evar owned);
+      continuation value owned
+  end.
+
+(* Select an existing value before early unfolding expands its resources. *)
+Ltac zesu_known_pair_conjunct_witness_if_enabled :=
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ (li_prod ?A unit) ?body) =>
+      assert_fails (has_evar A);
+      zesu_known_pair_pure_leaf body ltac:(fun predicate fact =>
+        zesu_switch_enabled constr:(ZesuStepKnownPairWitness);
+        zesu_known_pair_context_value A predicate ltac:(fun value owned =>
+          tryif (zesu_known_pair_pure_leaf body ltac:(fun other_predicate _ =>
+            zesu_known_pair_context_value A other_predicate ltac:(fun other _ =>
+              assert_fails (constr_eq value other))))
+          then fail 0 "Different facts select different witness values."
+          else
+            let witness := constr:(li_pair value tt) in
+            let selected := eval cbv beta iota delta [li_fst li_snd] in
+              (fact witness) in
+            constr_eq selected owned;
+            notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod)
+      )
+  end.
+
 (* An owned pure fact selects the value before resource matching starts. *)
 Ltac zesu_known_pair_witness_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepKnownPairWitness);
@@ -1413,7 +1472,7 @@ Ltac zesu_region_fault_cast_hypotheses_if_enabled :=
       progress (rewrite (Z_to_bv_unsigned width value) in Hcast)
   end).
 
-Ltac zesu_region_fault_arithmetic_full :=
+Ltac zesu_region_fault_prepare :=
   lazymatch goal with |- ~ _ => intro | _ => idtac end;
   repeat first [progress zesu_split_folded_pure |
     match goal with H : _ /\ _ |- _ => destruct H end];
@@ -1442,7 +1501,10 @@ Ltac zesu_region_fault_arithmetic_full :=
       rewrite (zesu_signed_zero_extend_64_128 value) in H
   end;
   rewrite ?zesu_signed_zero_extend_64_128;
-  try zesu_region_fault_cast_hypotheses_if_enabled;
+  try zesu_region_fault_cast_hypotheses_if_enabled.
+
+Ltac zesu_region_fault_arithmetic_full :=
+  zesu_region_fault_prepare;
   first [bv_solve |
     match goal with Hnegative : ~ ?bound |- _ =>
       zesu_region_arithmetic_statement bound;
@@ -1495,19 +1557,121 @@ Ltac zesu_region_fault_assert :=
       end
   end.
 
+(* The late fault path retains the readable-region alternatives. *)
+Ltac zesu_region_fault_word_casts :=
+  repeat first [
+    match goal with
+    | Hcast : context[@bv_add ?width ?value ?amount] |- _ =>
+      let zero := constr:((0%bv : bv width)) in
+      constr_eq amount zero;
+      progress (rewrite (bv_add_0_r value zero ltac:(bv_solve)) in Hcast)
+    | |- context[@bv_add ?width ?value ?amount] =>
+      let zero := constr:((0%bv : bv width)) in
+      constr_eq amount zero;
+      progress (rewrite (bv_add_0_r value zero ltac:(bv_solve)))
+    end |
+    match goal with
+    | Hcast : context[@bv_unsigned ?width (Z_to_bv ?castWidth ?value)] |- _ =>
+      constr_eq width castWidth;
+      zesu_stack_closed_term width;
+      assert_fails (zesu_condition_has_unresolved_evar value);
+      let modulus := eval vm_compute in (bv_modulus width) in
+      let Hbound := fresh "HregionCastRange" in
+      assert (Hbound : (0 <= value < bv_modulus width)%Z) by
+        (change (0 <= value < modulus)%Z; lia);
+      progress (rewrite (Z_to_bv_small width value Hbound) in Hcast);
+      clear Hbound
+    | |- context[@bv_unsigned ?width (Z_to_bv ?castWidth ?value)] =>
+      constr_eq width castWidth;
+      zesu_stack_closed_term width;
+      assert_fails (zesu_condition_has_unresolved_evar value);
+      let modulus := eval vm_compute in (bv_modulus width) in
+      let Hbound := fresh "HregionCastRange" in
+      assert (Hbound : (0 <= value < bv_modulus width)%Z) by
+        (change (0 <= value < modulus)%Z; lia);
+      progress (rewrite (Z_to_bv_small width value Hbound));
+      clear Hbound
+    end].
+
+Ltac zesu_region_fault_late_arithmetic :=
+  zesu_region_fault_prepare;
+  zesu_region_fault_word_casts;
+  repeat match goal with
+  | H : context[?term] |- _ =>
+      lazymatch type of term with Z => progress (zesu_region_reduce_closed term) end
+  | |- context[?term] =>
+      lazymatch type of term with Z => progress (zesu_region_reduce_closed term) end
+  end;
+  first [lia | bv_solve].
+
+Ltac zesu_region_fault_array_address address :=
+  let address_value := lazymatch address with
+    (?cursor + 0)%Z => constr:(cursor) | _ => constr:(address) end in
+  match goal with Hfault : ~ ?bound |- _ =>
+    lazymatch bound with context[bv_zero_extend 128 ?word] =>
+      let word_value := lazymatch word with
+        (?cursor + 0)%bv => constr:(cursor) | _ => constr:(word) end in
+      lazymatch word_value with Z_to_bv 64 ?cursor =>
+        constr_eq address_value cursor
+      end
+    end
+  end.
+
+Ltac zesu_region_fault_readable_array_context :=
+  match goal with
+  | Hlookup : ?storage !! ?index = Some ?value |- _ =>
+    let value_type := type of value in
+    constr_eq value_type (bv 8);
+    assert_fails (has_evar storage);
+    first [
+      match goal with
+      | Hrange : (?base <= ?address < ?base + Z.of_nat (length storage) * ?stride)%Z,
+        Hreadable : ((?low0 <= ?base /\ ?base + ?extent <= ?high0) \/
+                     (?low1 <= ?base /\ ?base + ?extent <= ?high1))%Z |- _ =>
+        first [constr_eq stride 1%Z |
+          constr_eq stride (Z.of_N (8 `div` 8))];
+        zesu_region_fault_array_address address
+      end |
+      match goal with
+      | Hrange : (?base <= ?address < ?base + Z.of_nat (length storage))%Z,
+        Hreadable : ((?low0 <= ?base /\ ?base + ?extent <= ?high0) \/
+                     (?low1 <= ?base /\ ?base + ?extent <= ?high1))%Z |- _ =>
+        zesu_region_fault_array_address address
+      end]
+  end.
+
 Ltac zesu_region_fault_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepRegionFault);
-  lazymatch goal with
+  first [
+    lazymatch goal with
   | |- iris.proofmode.environments.envs_entails _
       (WPasm (Smt (Assert (Unop Not _ _)) _ :t: _)) => idtac
   | |- iris.proofmode.environments.envs_entails _
       ((WPasm (Smt (Assert (Unop Not _ _)) _ :t: _)) ∧ True)%I => idtac
   end;
-  first [solve [zesu_region_fault_assert] |
+    solve [zesu_region_fault_assert] |
+    lazymatch goal with
+  | |- iris.proofmode.environments.envs_entails _
+      (WPasm (Smt (Assert (Unop Not _ _)) _ :t: _)) => idtac
+  | |- iris.proofmode.environments.envs_entails _
+      ((WPasm (Smt (Assert (Unop Not _ _)) _ :t: _)) ∧ True)%I => idtac
+  end;
     solve [lazymatch goal with
       | |- envs_entails _ ((WPasm _) ∧ True)%I =>
           iSplit; [zesu_region_fault_assert | done]
-      end]].
+      end] |
+    lazymatch goal with
+    | |- False => idtac
+    | |- envs_entails _ (find_in_context (FindRegMapsTo "medeleg") _) => idtac
+    end;
+    unLET;
+    zesu_region_fault_readable_array_context;
+    match goal with
+    | Hfault : ~ ?bound |- _ =>
+      zesu_region_arithmetic_statement bound;
+      lazymatch bound with context[bv_zero_extend 128 _] => idtac end;
+      solve [exfalso; apply Hfault; zesu_region_fault_late_arithmetic]
+    end].
 
 (* Inspect applications without unfolding the proof context. *)
 Ltac zesu_handoff_closed_term term :=
@@ -1840,6 +2004,7 @@ Ltac zesu_liAStep :=
   | liAExp
   | liAOther
   | zesu_pure_fact_hints_if_enabled
+  | zesu_known_pair_conjunct_witness_if_enabled
   | liUnfoldEarly
   | zesu_conjunct_head_if_enabled
   | zesu_known_pair_witness_if_enabled
