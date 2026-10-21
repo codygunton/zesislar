@@ -112,20 +112,17 @@ def resource_parts(body: str) -> list[str]:
         comma = body.find(",", existence)
         if comma >= 0:
             body = body[comma + 1:]
-    depths = []
-    depth = 0
-    for offset, char in enumerate(body):
-        if char == "(":
-            depth += 1
-        elif char == ")":
-            depth -= 1
-        elif char == "∗" and (offset == 0 or body[offset - 1] != "ₘ"):
-            depths.append((offset, depth))
-    if not depths:
-        return [body]
-    outer = min(level for _, level in depths)
-    cuts = [offset for offset, level in depths if level == outer]
-    return [body[start:end] for start, end in zip([0] + [cut + 1 for cut in cuts], cuts + [len(body)])]
+            # Stop at the existential's enclosing argument, not a later chain.
+            depth = 0
+            for offset, char in enumerate(body):
+                if char == "(":
+                    depth += 1
+                elif char == ")":
+                    if depth == 0:
+                        body = body[:offset]
+                        break
+                    depth -= 1
+    return resource_chain(body)
 
 
 def existential_binders(body: str) -> list[str]:
@@ -149,7 +146,85 @@ def existential_binders(body: str) -> list[str]:
     return binders
 
 
+def resource_atom(part: str) -> str:
+    """Remove parentheses around a complete spatial or pure atom."""
+    part = re.sub(r"%I\s*$", "", part.strip()).strip()
+    while part.startswith("(") and part.endswith(")"):
+        depth = 0
+        for offset, char in enumerate(part):
+            depth += (char == "(") - (char == ")")
+            if depth == 0:
+                break
+        if offset != len(part) - 1:
+            break
+        part = part[1:-1].strip()
+    return part
+
+
+def resource_chain(body: str) -> list[str]:
+    """Flatten only separating conjunctions and their grouping parentheses."""
+    body = resource_atom(body)
+    cuts = []
+    depth = pure_depth = 0
+    for offset, char in enumerate(body):
+        if char == "(":
+            depth += 1
+        elif char == ")":
+            depth -= 1
+        elif char == "⌜":
+            pure_depth += 1
+        elif char == "⌝":
+            pure_depth -= 1
+        elif (char == "∗" and depth == pure_depth == 0
+              and (offset == 0 or body[offset - 1] not in "ₘ-")):
+            cuts.append(offset)
+    if not cuts:
+        return [body]
+    return [atom for start, end in zip([0] + [cut + 1 for cut in cuts],
+                                      cuts + [len(body)])
+            for atom in resource_chain(body[start:end])]
+
+
+def resource_before_pure(binder: str, parts: list[str]) -> bool:
+    """Recognize a direct resource argument before all pure uses in this chain.
+
+    Require a pure use for this additional idiom. Keep the existing checks for
+    resource-only binders, function arguments, and unknown nested expressions.
+    """
+    token = re.compile(r"(?<![\w.])" + re.escape(binder) + r"(?![\w.])")
+    resources, pure = [], []
+    for index, part in enumerate(parts):
+        part = resource_atom(part)
+        part = re.sub(r'"(?:[^"]|"")*"', lambda match: " " * len(match.group()), part)
+        # Parentheses around the binder alone do not make a function argument.
+        grouped = re.compile(r"\(\s*" + re.escape(binder) + r"\s*\)")
+        while grouped.search(part):
+            part = grouped.sub(binder, part)
+        if not token.search(part):
+            continue
+        if part.startswith("⌜") and part.endswith("⌝"):
+            pure.append(index)
+            continue
+        if any(char in part for char in "⌜⌝∗∧∨∃∀→"):
+            return False
+        head = re.match(CONSTANT + r"\b", part)
+        if head is None or head.group() == binder:
+            return False
+        # An occurrence below a function or another predicate cannot infer it.
+        direct = False
+        for match in token.finditer(part, head.end()):
+            prefix = part[head.end():match.start()]
+            if prefix.count("(") == prefix.count(")"):
+                direct = True
+        if not direct:
+            return False
+        resources.append(index)
+    return bool(resources and pure and min(resources) < min(pure))
+
+
 def binder_shape(binder: str, parts: list[str], unfolded: set[str]) -> str:
+    if resource_before_pure(binder, parts):
+        return "inferable"
     token = re.compile(r"\b" + re.escape(binder) + r"\b")
     for part in parts:
         if not token.search(part):

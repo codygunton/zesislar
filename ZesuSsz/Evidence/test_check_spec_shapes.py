@@ -167,6 +167,61 @@ class SpecShapeTests(unittest.TestCase):
         self.assertEqual(binder_shape("bytes", resource_parts(definitions(spec)[0][2]),
                                       {"exact"}), "pure_only")
 
+    def test_spatial_predicate_infers_binder_before_all_pure_facts(self):
+        for body, expected in (
+            ('exit_resources args outcome ∗ ⌜meaning args outcome⌝', 0),
+            ('⌜meaning args outcome⌝ ∗ exit_resources args outcome', 1),
+            ('exit_resources args outcome ∗ ⌜domain outcome⌝ ∗ '
+             '⌜meaning args outcome⌝', 0),
+            ('⌜domain outcome⌝ ∗ exit_resources args outcome ∗ '
+             '⌜meaning args outcome⌝', 1),
+            ('unrelated_resources args ∗ ⌜meaning args outcome⌝', 1),
+            ('(exit_resources args outcome)%I ∗ ⌜meaning args outcome⌝', 0),
+            ('(exit_resources outcome ∗ ⌜meaning outcome⌝)', 0),
+            ('((exit_resources outcome ∗ ⌜meaning outcome⌝))', 0),
+            ('exit_resources (outcome) ∗ ⌜meaning outcome⌝', 0),
+            ('exit_resources ((outcome)) ∗ ⌜meaning outcome⌝', 0),
+            ('(exit_resources outcome ∗ ⌜meaning outcome⌝) ∗ True', 0),
+            ('exit_resources outcome ∗ (⌜domain outcome⌝ ∗ '
+             '⌜meaning outcome⌝)', 0),
+            ('((⌜meaning outcome⌝ ∗ exit_resources outcome))', 1),
+        ):
+            with self.subTest(body=body):
+                spec = ('Definition exact : iProp Sigma := '
+                        '(∃ outcome : Outcome, ' + body + ')%I.')
+                self.assertEqual(shape_counts(spec, {"exact"})[
+                    "uninferable_existentials"], expected)
+
+    def test_resources_first_does_not_cross_nested_boundaries(self):
+        for body in (
+            'instr_pre pc (exit_resources outcome ∗ ⌜meaning outcome⌝)',
+            'exit_resources (transform outcome) ∗ ⌜meaning outcome⌝',
+            'exit_resources ((transform (outcome))) ∗ ⌜meaning outcome⌝',
+            '(∃ inner, exit_resources outcome inner) ∗ ⌜meaning outcome⌝',
+            'exit_resources outcome -∗ ⌜meaning outcome⌝',
+            'exit_resources outcome ∗ ⌜meaning outcome⌝ ∨ True',
+            'exit_resources outcomes ∗ ⌜meaning outcome⌝',
+            'exit_resources Constants.outcome ∗ ⌜meaning outcome⌝',
+            'exit_resources "outcome" ∗ ⌜meaning outcome⌝',
+        ):
+            with self.subTest(body=body):
+                spec = ('Definition exact : iProp Sigma := '
+                        '(∃ outcome : Outcome, ' + body + ')%I.')
+                self.assertEqual(shape_counts(spec, {"exact"})[
+                    "uninferable_existentials"], 1)
+
+    def test_resources_first_is_local_to_the_existential_conjunction(self):
+        nested = ('Definition exact : iProp Sigma := '
+                  'instr_pre pc (∃ outcome : Outcome, '
+                  'exit_resources outcome ∗ ⌜meaning outcome⌝).')
+        outside = ('Definition exact (outcome : Outcome) : iProp Sigma := '
+                   '((∃ outcome : Outcome, hidden_resource outcome) ∗ '
+                   '⌜meaning outcome⌝)%I.')
+        self.assertEqual(shape_counts(nested, {"exact"})[
+            "uninferable_existentials"], 0)
+        self.assertEqual(shape_counts(outside, {"exact"})[
+            "uninferable_existentials"], 1)
+
     def test_opaque_resource_and_disjunction_are_counted(self):
         spec = ('Definition exact : iProp Sigma := '
                 '(∃ (ret : bv 64), hidden_resource ret ∗ True ∨ False)%I.')
