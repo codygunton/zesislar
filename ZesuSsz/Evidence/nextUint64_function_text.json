@@ -300,15 +300,15 @@
       "path": "ZesuSsz/Compliance/NextUint64ExitMeanings.v",
       "category": "exit_meanings",
       "scope": "whole_file",
-      "sha256": "3714b659e5af6fd76e3bf17540fe98f12f138a0fba3b4f3f878c0e7557b2767d",
-      "file_lines": 79,
+      "sha256": "d1b5f6d8eec110ec1371fe74e3fc32c3f3365efccc95a29c6e32ece65f7593f6",
+      "file_lines": 80,
       "line_ranges": [
         [
           1,
-          79
+          80
         ]
       ],
-      "counted_lines": 79
+      "counted_lines": 80
     },
     {
       "path": "ZesuSsz/Compliance/NextUint64LoopSteps.v",
@@ -328,15 +328,15 @@
       "path": "ZesuSsz/Compliance/NextUint64DataRegistrations.v",
       "category": "registrations",
       "scope": "whole_file",
-      "sha256": "7d78d41a333aad513f8c01c220835166f6f0ea79bb34bfcffc4d7a5402a1472a",
-      "file_lines": 57,
+      "sha256": "dc4d3f4d8a604c148760299df35e5fe9ef7a18dcbe22c57dfd63872fb206370f",
+      "file_lines": 58,
       "line_ranges": [
         [
           1,
-          57
+          58
         ]
       ],
-      "counted_lines": 57
+      "counted_lines": 58
     },
     {
       "path": "build/stock-zisk/automation-validation/nextuint64-compile-evidence/COMPILE.template.json",
@@ -461,15 +461,15 @@
   "category_totals": {
     "contracts": 643,
     "loop_steps": 229,
-    "registrations": 111,
+    "registrations": 112,
     "tests_and_exports": 1164,
-    "exit_meanings": 79,
+    "exit_meanings": 80,
     "generator_json": 4128,
     "composition": 44
   },
-  "interface_total": 5190,
-  "overall_total": 6398,
-  "conservative_full_file_lines": 6968,
+  "interface_total": 5192,
+  "overall_total": 6400,
+  "conservative_full_file_lines": 6970,
   "historical_interface_total": 867,
   "selected_marker_repair": {
     "root": "ccd89437978d14ed07a8dcb49e4bd27dc89f74f6",

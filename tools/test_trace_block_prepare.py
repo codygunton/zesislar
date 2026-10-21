@@ -12,52 +12,18 @@ STOP = {"kind": "goal-head", "value": "mem_mapsto_kind"}
 
 
 class InstrumentationTests(unittest.TestCase):
-    def test_all_real_return_hints_keep_exact_bodies(self):
-        source = (prepare.OWNER / "ZesuSsz/Automation/ReturnRoute.v").read_text()
-        result, entries = prepare.instrument_return_route(source, STOP)
-        self.assertEqual(set(entries), {"ReturnRoute.normalize", "ReturnRoute.fault", "ReturnRoute.implication"})
-        self.assertEqual(result.count("trace_block_filtered"), 3)
-        self.assertEqual(result.count("Hint Extern"), source.count("Hint Extern"))
-        for entry in entries.values():
-            body = entry["commands"]["whole-rule"]
-            self.assertIn(body, source)
-            self.assertIn("ltac1:(" + body + ")", result)
-            self.assertEqual(entry["commands"]["liShow"], "liShow")
-            self.assertIn("requested-trigger", entry["commands"])
-        self.assertTrue(result.startswith("From P0Filtered Require Import TraceObserver."))
+    def test_legacy_return_preparation_is_retired(self):
+        with self.assertRaisesRegex(ValueError, "ReturnRoute preparation is retired"):
+            prepare.prepare_request({"rule_set": [{"name": "ReturnRoute"}]}, Path("unused"))
+        self.assertFalse(hasattr(prepare, "instrument_return_route"))
+        self.assertFalse(hasattr(prepare, "return_clause_commands"))
 
-    def test_unreviewed_return_entry_count_is_rejected(self):
-        source = (prepare.OWNER / "ZesuSsz/Automation/ReturnRoute.v").read_text()
-        with self.assertRaisesRegex(ValueError, "exactly three"):
-            prepare.instrument_return_route("", STOP)
-        with self.assertRaisesRegex(ValueError, "extra"):
-            prepare.instrument_return_route(source + "\n#[export] Hint Extern 5 True => exact I : typeclass_instances.\n", STOP)
-
-    def test_integer_return_hints_remain_unselected_and_byte_exact(self):
-        source = (prepare.OWNER / "ZesuSsz/Automation/ReturnRoute.v").read_text()
-        result, entries = prepare.instrument_return_route(source, STOP)
-        for body in ("zesu_return_integer_normalize", "zesu_return_integer_fault"):
-            command = next(source[a:b] for a, b in prepare.command_spans(source)
-                           if "Hint Extern" in source[a:b]
-                           and "=>\n  " + body + " :" in source[a:b])
-            self.assertIn(command, result)
-            self.assertFalse(any(body in row["commands"]["whole-rule"]
-                                 for row in entries.values()))
-
-    def test_unrelated_hint_cannot_replace_reviewed_integer_hint(self):
-        source = (prepare.OWNER / "ZesuSsz/Automation/ReturnRoute.v").read_text()
-        changed = source.replace("zesu_return_integer_normalize : typeclass_instances.",
-                                 "exact I : typeclass_instances.", 1)
-        self.assertNotEqual(source, changed)
-        with self.assertRaisesRegex(ValueError, "unreviewed extra"):
-            prepare.instrument_return_route(changed, STOP)
-
-    def test_duplicate_integer_hint_is_rejected(self):
-        source = (prepare.OWNER / "ZesuSsz/Automation/ReturnRoute.v").read_text()
-        duplicate = ("\n#[export] Hint Extern 5 (SimplImpl _ _) =>\n"
-                     "  zesu_return_integer_fault : typeclass_instances.\n")
-        with self.assertRaisesRegex(ValueError, "unreviewed extra"):
-            prepare.instrument_return_route(source + duplicate, STOP)
+    def test_legacy_return_refresh_is_retired(self):
+        with tempfile.TemporaryDirectory() as directory:
+            completed = Path(directory) / "PREPARED.json"
+            completed.write_text(json.dumps({"selected_rules": ["ReturnRoute"]}))
+            with self.assertRaisesRegex(ValueError, "ReturnRoute preparation is retired"):
+                prepare.refresh_preparation({}, completed, Path(directory) / "refresh", Path("unused"))
 
     def test_hooks_keep_original_body_and_alternative_order(self):
         source = (prepare.OWNER / "ZesuSsz/Automation/Hooks.v").read_text()
@@ -165,17 +131,6 @@ class CorrectionTests(unittest.TestCase):
         self.assertIn('envs_entails _ ?body', guard)
         self.assertIn('let rec head', guard)
         self.assertIn('constr_eq actual mem_mapsto_kind', guard)
-
-    def test_original_return_prefix_operations_are_named(self):
-        for client in ('ReturnRoute.normalize', 'ReturnRoute.fault', 'ReturnRoute.implication'):
-            commands = dict(prepare.return_clause_commands(client))
-            self.assertEqual(list(commands), ['switch-check', 'closed-ra', 'zesu_return_decode_facts',
-                'alignment-selector-after-decode', 'address-selection'])
-            self.assertIn('assert_fails (has_evar ra)', commands['closed-ra'])
-            self.assertIn('zesu_return_decode_facts', commands['alignment-selector-after-decode'])
-            self.assertIn('(?address mod 4 = 0)%Z', commands['alignment-selector-after-decode'])
-            self.assertIn('zesu_return_with_address ra', commands['address-selection'])
-            self.assertNotIn('decodeItem', ''.join(commands.values()))
 
     def test_native_inventory_binds_ignored_bytes_and_rejects_empty(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -289,11 +244,10 @@ class ReviewOwnershipTests(unittest.TestCase):
                 root = Path(directory); original = root / 'original'; original.mkdir()
                 subprocess.run(['git', 'init', '-q', str(original)], check=True)
                 for name, text in {
-                    'ZesuSsz/Automation/Hooks.v': 'Ltac zesu_liAStep := idtac.\n',
+                    'ZesuSsz/Automation/Hooks.v': 'Ltac zesu_conjunct_head_if_enabled := idtac.\nLtac zesu_liAStep := idtac.\n',
                     'ZesuSsz/Automation/All.v': '',
-                    'ZesuSsz/Automation/ReturnRoute.v': (prepare.OWNER / 'ZesuSsz/Automation/ReturnRoute.v').read_text(),
                     'ZesuSsz/Evidence/TraceObserver.v': '',
-                    'Switch.v': '' if enabled else '#[export] Instance enabled : ZesuStepReturnRoute := I.\n',
+                    'Switch.v': '' if enabled else '#[export] Instance enabled : ZesuStepConjunctMatch := I.\n',
                     'generated/isla-traces/index.v': 'exact native bytes',
                     prepare.PLUGIN + '/trace-observer/filtered_trace_plugin.ml': 'old plugin'}.items():
                     target = original / name; target.parent.mkdir(parents=True, exist_ok=True); target.write_text(text)
@@ -302,14 +256,14 @@ class ReviewOwnershipTests(unittest.TestCase):
                 source = original / 'Block.v'; source.write_text(prefix + 'Abort.\n')
                 request = {'workspace': str(original), 'source': str(source), 'source_prefix': prefix,
                     'declaration': declaration, 'scope': {'source_sha256': prepare.digest(source)},
-                    'rule_set': [{'name': 'ReturnRoute', 'enabled': enabled}],
+                    'rule_set': [{'name': 'ConjunctMatch', 'enabled': enabled}],
                     'stop': {'kind': 'residual', 'value': None}, 'writer_id': 'fixture-owner'}
                 owned = root / 'owned'; shutil.copytree(original, owned, ignore=shutil.ignore_patterns('.git'))
                 scratch = owned / '_build/trace-native/Block.v'; scratch.parent.mkdir(parents=True)
                 scratch.write_text(prefix + 'Abort.\n')
                 build = owned / '_build/agents/fixture-owner'; (build / 'default').mkdir(parents=True)
                 inputs = root / 'INPUTS.json'; prepare.save(inputs, {'inventory': prepare.source_inventory(original)})
-                names = ['ZesuSsz/Automation/Hooks.v', 'ZesuSsz/Automation/ReturnRoute.v',
+                names = ['ZesuSsz/Automation/Hooks.v',
                          prepare.PLUGIN + '/trace-observer/filtered_trace_plugin.ml', '_build/trace-native/Block.v']
                 for name in ('install/default/lib/p0-filtered-trace/trace-observer/filtered_trace_plugin.cmxs',
                              'default/' + prepare.package.BRIDGE.replace('.v','.vo'),
@@ -319,7 +273,7 @@ class ReviewOwnershipTests(unittest.TestCase):
                     artifact.write_bytes(b'compiled fixture artifact')
                 runtime=prepare.package.runtime_inputs(owned,build)
                 previous = dict(request, **runtime, workspace=str(owned), source=str(scratch), build_dir=str(build),
-                    selected_rules=['ReturnRoute'], instrumentation={'protocol':'filtered-chunks-v1', 'original_scope_record': str(inputs),
+                    selected_rules=['ConjunctMatch'], instrumentation={'protocol':'filtered-chunks-v1', 'original_scope_record': str(inputs),
                     'original_scope_sha256': prepare.digest(inputs),
                     'prepared_source_hashes': {name: prepare.digest(owned / name) for name in names}})
                 completed = root / 'PREPARED.json'; prepare.save(completed, previous)
@@ -328,7 +282,7 @@ class ReviewOwnershipTests(unittest.TestCase):
                 result = prepare.refresh_preparation(request, completed, root / 'refresh', plugin)
                 self.assertEqual(scratch.read_text(), prepare.insert_bridge_import(expected_prefix) + 'Abort.\n')
                 self.assertEqual(result['instrumentation']['switch_adjustments'], adjustments)
-                expected = '#[local] Instance : ZesuStepReturnRoute := I.' if enabled else 'Remove Hints Switch.enabled : typeclass_instances.'
+                expected = '#[local] Instance : ZesuStepConjunctMatch := I.' if enabled else 'Remove Hints Switch.enabled : typeclass_instances.'
                 self.assertEqual(scratch.read_text().count(expected), 1)
                 self.assertEqual(result['writer_id'], 'fixture-owner')
                 self.assertIs(result['focused_compilation']['success'], False)

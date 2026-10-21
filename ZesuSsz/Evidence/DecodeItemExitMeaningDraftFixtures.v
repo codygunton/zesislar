@@ -14,7 +14,8 @@ Open Scope Z_scope.
 
 Require Import ZesuSsz.Compliance.DecodeItemExitMeanings.
 
-Require Import ZesuSsz.Automation.ReturnRoute.
+Require Import ZesuSsz.Automation.ExitMeaning.
+Require Import ZesuSsz.Automation.IntegerReturn.
 
 (* UNEXPORTED E3-integrated R3 draft. Original class commit: 7d7a2ffc7bfe9d9cf43683f616d83b326dd74e7b.
    This scope registers five unchanged sources and two public 698c alternatives. *)

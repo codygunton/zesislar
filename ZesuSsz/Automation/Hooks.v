@@ -14,7 +14,8 @@ Require Import ZesuSsz.Automation.InstrPre.
 Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.BitvectorFacts.
 Require Import ZesuSsz.Automation.PureFacts.
-Require Export ZesuSsz.Automation.ReturnRoute.
+Require Export ZesuSsz.Automation.ExitMeaning.
+Require Export ZesuSsz.Automation.IntegerReturn.
 Require Import ZesuSsz.Contracts.SelectedCodeLookup.
 Require Import InstrSpecs.Lookup.
 Require Import ZesuSsz.Automation.ResourceGroups.
@@ -355,25 +356,75 @@ Ltac zesu_normalize_find_mem_address :=
 Class ZesuStepStackWrite : Prop := zesu_step_stack_write : True.
 
 (* Normalize each selected candidate once. Check local alias bodies separately. *)
-Ltac zesu_stack_closed_term term :=
-  tryif has_evar term then fail 0 else
-  let expanded := eval cbv beta zeta in term in
+From Ltac2 Require Import Ltac2.
+Set Default Proof Mode "Classic".
+
+(* Keep the original visitor for aliases, binders, and uncommon kernel forms. *)
+Ltac zesu_stack_closed_fallback recurse current :=
   let rec visit current :=
     tryif is_var current then
       let body := eval unfold current in current in
-      zesu_stack_closed_term body
+      recurse body
     else lazymatch current with
     | (fun _ => _) => fail 0
     | (forall _, _) => fail 0
     | ?function ?argument => visit function; visit argument
     | _ => idtac
     end
-  in visit expanded.
+  in visit current.
+
+(* Visit each application head and argument without Ltac1 spine matching. *)
+Ltac2 rec zesu_stack_closed_visit (term : constr) (fallback : Ltac1.t) :=
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.App head arguments =>
+      zesu_stack_closed_visit head fallback;
+      Array.iter (fun argument => zesu_stack_closed_visit argument fallback) arguments
+  | Constr.Unsafe.Constant _ _ => ()
+  | Constr.Unsafe.Constructor _ _ => ()
+  | Constr.Unsafe.Ind _ _ => ()
+  | Constr.Unsafe.Sort _ => ()
+  | _ => Ltac1.apply fallback [Ltac1.of_constr term] Ltac1.run
+  end.
+Ltac zesu_stack_closed_term term :=
+  tryif has_evar term then fail 0 else
+  let expanded := eval cbv beta zeta in term in
+  let check := ltac2:(value fallback |-
+    zesu_stack_closed_visit (Option.get (Ltac1.to_constr value)) fallback) in
+  check expanded ltac:(fun current =>
+    zesu_stack_closed_fallback zesu_stack_closed_term current).
 
 Ltac zesu_stack_reduce_closed term :=
   zesu_stack_closed_term term;
   let reduced := eval vm_compute in term in
   change_no_check term with reduced in *.
+
+(* Skip canonical integers with one syntactic constructor walk. *)
+(* Inspect the typed constructor tree without reduction or context access. *)
+Ltac2 rec zesu_stack_positive_literal_term (term : constr) :=
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.Constructor _ _ => Constr.equal term constr:(BinNums.xH)
+  | Constr.Unsafe.App head arguments =>
+      if Bool.and (Constr.is_constructor head) (Int.equal (Array.length arguments) 1)
+      then zesu_stack_positive_literal_term (Array.get arguments 0)
+      else false
+  | _ => false
+  end.
+Ltac2 zesu_stack_integer_literal_term (term : constr) :=
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.Constructor _ _ => Constr.equal term constr:(BinNums.Z0)
+  | Constr.Unsafe.App head arguments =>
+      if Bool.and (Int.equal (Array.length arguments) 1)
+          (Bool.or (Constr.equal head constr:(BinNums.Zpos))
+                   (Constr.equal head constr:(BinNums.Zneg)))
+      then zesu_stack_positive_literal_term (Array.get arguments 0)
+      else false
+  | _ => false
+  end.
+Ltac zesu_stack_integer_literal term :=
+  let check := ltac2:(value |-
+    if zesu_stack_integer_literal_term (Option.get (Ltac1.to_constr value))
+    then () else Control.zero (Tactic_failure None)) in
+  check term.
 
 (* Normalize the selected hypothesis without searching other hypotheses. *)
 Ltac zesu_stack_normalize_hypothesis hypothesis := once (
@@ -382,6 +433,7 @@ Ltac zesu_stack_normalize_hypothesis hypothesis := once (
     match statement with
     | context[?term] =>
         lazymatch type of term with Z => progress (
+          tryif zesu_stack_integer_literal term then fail 0 else idtac;
           zesu_stack_closed_term term;
           let reduced := eval vm_compute in term in
           change_no_check term with reduced in * ) end
@@ -1483,13 +1535,6 @@ Ltac zesu_region_fault_prepare :=
       clear H
   end;
   repeat match goal with
-  | H : ?left \/ ?right |- _ =>
-      zesu_region_arithmetic_statement left;
-      zesu_region_arithmetic_statement right;
-      destruct H;
-      repeat match goal with Hpair : _ /\ _ |- _ => destruct Hpair end
-  end;
-  repeat match goal with
   | H : context[?term] |- _ =>
       lazymatch type of term with Z => progress (zesu_region_reduce_closed term) end
   | |- context[?term] =>
@@ -1501,7 +1546,14 @@ Ltac zesu_region_fault_prepare :=
       rewrite (zesu_signed_zero_extend_64_128 value) in H
   end;
   rewrite ?zesu_signed_zero_extend_64_128;
-  try zesu_region_fault_cast_hypotheses_if_enabled.
+  try zesu_region_fault_cast_hypotheses_if_enabled;
+  repeat match goal with
+  | H : ?left \/ ?right |- _ =>
+      zesu_region_arithmetic_statement left;
+      zesu_region_arithmetic_statement right;
+      destruct H;
+      repeat match goal with Hpair : _ /\ _ |- _ => destruct Hpair end
+  end.
 
 Ltac zesu_region_fault_arithmetic_full :=
   zesu_region_fault_prepare;

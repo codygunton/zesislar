@@ -192,7 +192,7 @@ Ltac decodeItemExitImageArithmetic :=
    progress unfold word64Bytes | progress rewrite map_length |
    progress rewrite seq_length | progress cbn [length] |
    match goal with H : length ?l = ?n |- context[length ?l] => rewrite H end];
- lia.
+ first [reflexivity | lia].
 Ltac decodeItemExitLiteralField l bytes k off value :=
  is_closed_term bytes; is_closed_term value;
  is_closed_term k; is_closed_term off;

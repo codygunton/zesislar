@@ -108,43 +108,8 @@ def trigger_guard(stop):
     return None
 
 
-def return_clause_commands(client):
-    """Expose original prefixes without a new premise or normalization."""
-    common = "zesu_switch_enabled constr:(ZesuStepReturnRoute); unLET; "
-    full = "(bv_or (bv_and (bv_add ?ra (BV 64 0)) (BV 64 18446744073709551614)) (BV 64 0))"
-    reduced = "(bv_or (bv_and ?ra (BV 64 18446744073709551614)) (BV 64 0))"
-    def bind(action):
-        action = "assert_fails (has_evar ra); " + action
-        if client == "ReturnRoute.normalize":
-            target = ("lazymatch goal with "
-                "| |- LiTactic (normalize_instr_addr (bv_unsigned " + full + ")) => " + action + " "
-                "| |- LiTactic (normalize_instr_addr (bv_unsigned " + reduced + ")) => " + action + " end")
-        elif client == "ReturnRoute.fault":
-            target = ("lazymatch goal with |- SimplAnd (bv_extract 0 1 (bv_shiftr "
-                + full + " (BV 64 1)) = BV 1 1) False => " + action + " end")
-        elif client == "ReturnRoute.implication":
-            target = ("lazymatch goal with |- SimplImpl ?predicate ?simplified => "
-                "lazymatch predicate with bv_extract 0 1 (bv_shiftr " + full
-                + " (BV 64 1)) = BV 1 1 => unify simplified False; "
-                "change (SimplAnd predicate False); " + action + " end end")
-        else:
-            raise ValueError("The return client has no reviewed clause binding.")
-        return common + target
-    alignment = ("zesu_return_decode_facts; multimatch goal with "
-                 "Haligned : (?address mod 4 = 0)%Z |- _ => "
-                 "assert_fails (has_evar address) end")
-    return [("switch-check", "zesu_switch_enabled constr:(ZesuStepReturnRoute)"),
-            ("closed-ra", bind("idtac")),
-            ("zesu_return_decode_facts", bind("zesu_return_decode_facts")),
-            ("alignment-selector-after-decode", bind(alignment)),
-            ("address-selection", bind("zesu_return_with_address ra "
-                "ltac:(fun address Hrange Hvalue HraAligned => idtac)"))]
-
-
 def around(client, original, stop, rule, class_name, entry_guard=None):
     clauses = [("liShow", "liShow")]
-    if rule == "ReturnRoute":
-        clauses.extend(return_clause_commands(client))
     guard = trigger_guard(stop)
     if guard:
         clauses.append(("requested-trigger", guard))
@@ -161,48 +126,6 @@ def around(client, original, stop, rule, class_name, entry_guard=None):
                                  "zesu_conjunct_head_if_enabled", "zesu_match_resource_pure_heads"]}
     descriptor = bind_descriptors({client: descriptor})[client]
     return wrapped, descriptor
-
-
-def instrument_return_route(text, stop):
-    """Wrap the three legacy hints and preserve the reviewed integer hints."""
-    replacements, descriptors = [], {}
-    names = ("normalize", "fault", "implication")
-    integer_hints = {
-        "#[export] Hint Extern 5 (LiTactic (normalize_instr_addr _)) => "
-        "zesu_return_integer_normalize : typeclass_instances.",
-        "#[export] Hint Extern 5 (SimplImpl _ _) => "
-        "zesu_return_integer_fault : typeclass_instances.",
-    }
-    seen_integer_hints = set()
-    for start, end in command_spans(text):
-        command = text[start:end]
-        from rule_compare import without_comments
-        masked = without_comments(command)
-        match = re.search(r"#\[export\]\s+Hint\s+Extern\b", masked)
-        if not match:
-            continue
-        signature = " ".join(masked.split())
-        if signature in integer_hints:
-            if signature in seen_integer_hints:
-                raise ValueError("ReturnRoute has an unreviewed extra Hint Extern.")
-            seen_integer_hints.add(signature)
-            continue
-        if len(descriptors) >= len(names):
-            raise ValueError("ReturnRoute has an unreviewed extra Hint Extern.")
-        arrow = command.find("=>", match.end())
-        tail = re.search(r"\s*:\s*typeclass_instances\s*\.$", command)
-        if arrow < 0 or tail is None or tail.start() <= arrow:
-            raise ValueError("A ReturnRoute hint has an unsupported body boundary.")
-        body = command[arrow + 2:tail.start()]
-        client = "ReturnRoute." + names[len(descriptors)]
-        wrapped, descriptor = around(client, body, stop, "ReturnRoute", "ZesuStepReturnRoute")
-        descriptors[client] = descriptor
-        replacements.append((start + arrow + 2, start + tail.start(), "\n  " + wrapped))
-    if len(descriptors) != 3:
-        raise ValueError("ReturnRoute must expose exactly three reviewed Hint Extern entries.")
-    for start, end, replacement in reversed(replacements):
-        text = text[:start] + replacement + text[end:]
-    return package.BRIDGE_IMPORT + "\n" + text, descriptors
 
 
 def replace_ltac(text, name, transform):
@@ -450,6 +373,8 @@ def publish_prepared(request, record):
 
 
 def corrected_prepared(request):
+    if any(row["name"] == "ReturnRoute" for row in request.get("rule_set", [])):
+        raise ValueError("Legacy ReturnRoute preparation is retired.")
     runtime_package = preparation_package(request)
     path = OWNER / "_build/trace-preparation/corrected" / (request_key(request) + ".json")
     if not path.exists():
@@ -509,6 +434,8 @@ def refresh_preparation(request, completed_path, out_dir, plugin_source):
     from rule_compare import imported_modules
     completed_path, out_dir = Path(completed_path), Path(out_dir)
     previous = json.loads(completed_path.read_text())
+    if "ReturnRoute" in previous["selected_rules"]:
+        raise ValueError("Legacy ReturnRoute preparation is retired.")
     if previous["scope"] != request["scope"]:
         raise ValueError("The completed preparation has a different scope.")
     workspace, original = Path(previous["workspace"]), Path(request["workspace"])
@@ -546,12 +473,6 @@ def refresh_preparation(request, completed_path, out_dir, plugin_source):
     shutil.copy2(plugin_source, plugin)
     selected, entries = previous["selected_rules"], {}
     changed = []
-    if "ReturnRoute" in selected:
-        path = workspace / "ZesuSsz/Automation/ReturnRoute.v"
-        text, rows = instrument_return_route((original / path.relative_to(workspace)).read_text(), request["stop"])
-        path.write_text(text)
-        entries.update(rows)
-        changed.append("ZesuSsz.Automation.ReturnRoute")
     hooks = workspace / "ZesuSsz/Automation/Hooks.v"
     text, rows, step = instrument_hooks((original / hooks.relative_to(workspace)).read_text(),
                                        request["stop"], "ConjunctMatch" in selected)
@@ -666,7 +587,7 @@ def prepare_request(request, out_dir):
     if not source.is_relative_to(original):
         raise ValueError("The source leaves the original workspace.")
     selected = [row["name"] for row in request["rule_set"]]
-    if not selected or any(name not in {"ReturnRoute", "ConjunctMatch", "MemoryAccess"} for name in selected):
+    if not selected or any(name not in {"ConjunctMatch", "MemoryAccess"} for name in selected):
         raise ValueError("Every requested observer needs a reviewed descriptor.")
     root = _git(original, "rev-parse", "HEAD").decode().strip()
     if root != request["scope"]["root"] or digest(source) != request["scope"]["source_sha256"]:
@@ -714,15 +635,6 @@ def prepare_request(request, out_dir):
     configuration = runtime_package.configure(workspace)
     entries = {}
     changed = {}
-    route = workspace / "ZesuSsz/Automation/ReturnRoute.v"
-    if "ReturnRoute" in selected:
-        before = route.read_bytes()
-        after, descriptors = instrument_return_route(before.decode(), request["stop"])
-        if bounded:
-            after, descriptors = bounded_observation(before.decode(), after, descriptors)
-        route.write_text(after)
-        entries.update(descriptors)
-        changed[str(route.relative_to(workspace))] = {"before_sha256": hashlib.sha256(before).hexdigest(), "after_sha256": digest(route)}
     hooks = workspace / "ZesuSsz/Automation/Hooks.v"
     before = hooks.read_bytes()
     after, descriptors, original_step = instrument_hooks(before.decode(), request["stop"], "ConjunctMatch" in selected)

@@ -19,7 +19,8 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemSchema.
 Require Import ZesuSsz.Compliance.DecodeItemReturnExitResources.
 From Coq Require Import ZArith Lia.
 Require Import ZesuSsz.Compliance.DecodeItemExitMeanings.
-Require Import ZesuSsz.Automation.ReturnRoute.
+Require Import ZesuSsz.Automation.ExitMeaning.
+Require Import ZesuSsz.Automation.IntegerReturn.
 
 #[export] Instance decodeItemEntry6a08IntroductionRegistered `{!islaG Sigma} `{!threadG}
     args frameBytes (x13 : bv 64) prefix rest :

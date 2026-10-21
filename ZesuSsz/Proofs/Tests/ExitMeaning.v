@@ -1,72 +1,7 @@
 Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Automation.EntryIntro.
-Require Import ZesuSsz.Automation.Switches.ReturnRoute.
 Require Import ZesuSsz.Automation.Switches.ExitMeaning.
 Require Import isla.riscv64.riscv64.
-Require Import InstrSpecs.Machine.
-Require Import ZesuSsz.Stock.Closure.a800e06c8.
-From Coq Require Import List ZArith.
-Import ListNotations.
-Open Scope Z_scope.
-
-Definition r3_memcpy_ret_entry `{!islaG Sigma} `{!threadG}
-    (ret : bv 64) : iProp Sigma :=
-  ("x1" ↦ᵣ RVal_Bits ret ∗ ⌜(bv_unsigned ret mod 4 = 0)%Z⌝ ∗
-   reg_col zesu_sys_regs ∗
-   instr_pre (bv_unsigned ret) True ∗ True)%I.
-Global Instance : LithiumUnfold (@r3_memcpy_ret_entry) := I.
-Global Typeclasses Opaque r3_memcpy_ret_entry.
-
-Lemma r3_memcpy_ret_no_frame `{!islaG Sigma} `{!threadG} (ret : bv 64) :
-  instr 0x800e06c8 (Some ZesuSsz.Stock.Closure.a800e06c8.a800e06c8) -∗
-  instr_body 0x800e06c8 (r3_memcpy_ret_entry ret).
-Proof.
-zesu_block.
-Qed.
-
-Lemma r3_synthetic_no_frame `{!islaG Sigma} `{!threadG}
-    (pc : Z) (ret : bv 64) :
-  instr pc (Some ZesuSsz.Stock.Closure.a800e06c8.a800e06c8) -∗
-  instr_body pc (
-    reg_col zesu_sys_regs ∗ "x1" ↦ᵣ RVal_Bits ret ∗
-    ⌜(bv_unsigned ret mod 4 = 0)%Z⌝ ∗
-    instr_pre (bv_unsigned ret)
-      (reg_col zesu_sys_regs ∗ "x1" ↦ᵣ RVal_Bits ret ∗ True) ∗ True).
-Proof.
-zesu_block.
-Qed.
-
-Lemma r3_unknown_x1 `{!islaG Sigma} `{!threadG}
-    (pc : Z) (returnAddress : Z) : True.
-Proof.
-Fail assert (Htest : (⊢ instr pc (Some ZesuSsz.Stock.Closure.a800e06c8.a800e06c8) -∗
-  instr_body pc (
-    reg_col ((KindReg "x1", BitsShape 64) :: zesu_sys_regs) ∗
-    instr_pre returnAddress
-      (reg_col ((KindReg "x1", BitsShape 64) :: zesu_sys_regs) ∗ True) ∗ True))%I) by solve [zesu_block].
-exact I.
-Qed.
-
-Lemma r3_misaligned_frame `{!islaG Sigma} `{!threadG}
-    (pc frameBase : Z) (frameBytes : list (bv 8)) : True.
-Proof.
-Fail assert (Htest : (⊢ instr pc (Some ZesuSsz.Stock.Closure.a800e06c8.a800e06c8) -∗
-  instr_body pc (
-    reg_col zesu_sys_regs ∗
-    "x1" ↦ᵣ RVal_Bits
-      (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop 8 frameBytes)))) ∗
-    frameBase ↦ₘ∗ frameBytes ∗
-    ⌜(length frameBytes = 16)%nat⌝ ∗
-    ⌜(bv_unsigned (Z_to_bv 64
-      (little_endian_to_bv 8 (take 8 (drop 8 frameBytes)))) mod 4 = 2)%Z⌝ ∗
-    instr_pre (bv_unsigned (Z_to_bv 64
-      (little_endian_to_bv 8 (take 8 (drop 8 frameBytes)))))
-      (reg_col zesu_sys_regs ∗
-       "x1" ↦ᵣ RVal_Bits
-         (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop 8 frameBytes)))) ∗
-       frameBase ↦ₘ∗ frameBytes ∗ True) ∗ True))%I) by solve [zesu_block].
-exact I.
-Qed.
 
 (* The source remains intact when the second source-keyed class contributes facts. *)
 Definition r3_exit_control_source {Sigma} (facts : Prop)

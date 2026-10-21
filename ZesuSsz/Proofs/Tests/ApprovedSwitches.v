@@ -33,12 +33,10 @@ Lemma approved_switch_inventory :
   ZesuSsz.Automation.Hooks.ZesuStepCanonicalPureConjunction /\
   ZesuSsz.Automation.Hooks.ZesuStepByteListContainment /\
   ZesuSsz.Automation.Hooks.ZesuStepRegionFaultCastHypotheses /\
-  ZesuSsz.Automation.ReturnRoute.ZesuStepIntegerReturn /\
-  ZesuSsz.Automation.ReturnRoute.ZesuStepExitMeaning /\
+  ZesuSsz.Automation.IntegerReturn.ZesuStepIntegerReturn /\
+  ZesuSsz.Automation.ExitMeaning.ZesuStepExitMeaning /\
   ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch.
 Proof.
-  Fail assert (Hdisabled : ZesuSsz.Automation.ReturnRoute.ZesuStepReturnRoute)
-    by typeclasses eauto.
   repeat apply conj.
   all: typeclasses eauto.
 Qed.
@@ -60,8 +58,8 @@ Proof.
     | _ : ZesuSsz.Automation.SwitchDispatch.ZesuSwitchDispatchCache ?entries |- _ =>
         require_enabled constr:(ZesuSsz.Automation.BitvectorFacts.ZesuStepMaskNormalizer) entries;
         require_enabled constr:(ZesuSsz.Automation.Hooks.ZesuStepPureFactExistential) entries;
-        require_enabled constr:(ZesuSsz.Automation.ReturnRoute.ZesuStepIntegerReturn) entries;
-        require_enabled constr:(ZesuSsz.Automation.ReturnRoute.ZesuStepExitMeaning) entries;
+        require_enabled constr:(ZesuSsz.Automation.IntegerReturn.ZesuStepIntegerReturn) entries;
+        require_enabled constr:(ZesuSsz.Automation.ExitMeaning.ZesuStepExitMeaning) entries;
         require_enabled constr:(ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch) entries
     end;
     exact I).

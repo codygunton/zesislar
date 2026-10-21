@@ -682,15 +682,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemDataRegistrations.v",
       "category": "registrations",
       "scope": "whole_file",
-      "sha256": "975fecd73f924aa64f7a93492b15247fa2962cb43e89175bc1d2d27b6712dd2f",
-      "file_lines": 107,
+      "sha256": "f545254728adeebeb205518f719c8d1b33be58e352080d43257b62bdee21f86e",
+      "file_lines": 108,
       "line_ranges": [
         [
           1,
-          107
+          108
         ]
       ],
-      "counted_lines": 107
+      "counted_lines": 108
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemDataWitnessFacts.v",
@@ -1812,15 +1812,15 @@
       "path": "ZesuSsz/Evidence/DecodeItemExitMeaningDraftFixtures.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "747661922192bfd80283afc89b5f97366208e1dd5e74fe925df5b94831b64bd5",
-      "file_lines": 39,
+      "sha256": "23cfd046262043d661137cd65c9f9ec260d0fe1205460392d449e5c0db025138",
+      "file_lines": 40,
       "line_ranges": [
         [
           1,
-          39
+          40
         ]
       ],
-      "counted_lines": 39
+      "counted_lines": 40
     },
     {
       "path": "ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v",
@@ -2591,14 +2591,14 @@
       "role": "measurement_metadata",
       "scope": "whole_file",
       "sha256": null,
-      "file_lines": 8421,
+      "file_lines": 8435,
       "line_ranges": [
         [
           1,
-          8421
+          8435
         ]
       ],
-      "counted_lines": 8421
+      "counted_lines": 8435
     },
     {
       "path": "ZesuSsz/Evidence/decode_item_auto_modules.json",
@@ -5073,8 +5073,8 @@
       "path": "ZesuSsz/Proofs/Tests/ApprovedSwitches.v",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "162736f844b615547306dd0617a1ff7dd3a724d32deae60018d34b92fe8886e6",
-      "file_lines": 70,
+      "sha256": "7fb70cb0c67f88eb23bd38f40736a834d204232d9d46382fd59c2b0b3b249157",
+      "file_lines": 68,
       "line_ranges": [
         [
           3,
@@ -7539,15 +7539,15 @@
       "path": "ZesuSsz/Proofs/Tests/IntegerReturn.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "f4c655c2555f06a1f6f0c4b6b308287f69c1ccb72724152b8a81da8337efe483",
-      "file_lines": 191,
+      "sha256": "ad501ae0f19b7b676ba0d6163ff24c4a4f69e71bbbd5d9571c2c6e951769621f",
+      "file_lines": 192,
       "line_ranges": [
         [
           1,
-          191
+          192
         ]
       ],
-      "counted_lines": 191
+      "counted_lines": 192
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemLoopDerivedFacts.v",
@@ -7672,7 +7672,7 @@
         ]
       ],
       "file_lines": 407,
-      "sha256": "aa9af1dd5184a8953df8cac25f8d4713f27a7ace03e31ca5228a4b2be96624c4",
+      "sha256": "f46e84e79f8601a5b4f4102bb74ddd3c59cc325799245a175fa3c8363899c2d7",
       "counted_lines": 407
     },
     {
@@ -7842,6 +7842,20 @@
         ]
       ],
       "counted_lines": 72
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/DecodeItemImageArithmetic.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "8784422833f72e39960d635b57ad44f6c5212273f6e69073ee98cf882f171576",
+      "file_lines": 31,
+      "line_ranges": [
+        [
+          1,
+          31
+        ]
+      ],
+      "counted_lines": 31
     }
   ],
   "blocks": [
@@ -8276,20 +8290,20 @@
   },
   "base_manifest_sha256": "7deccbbc338d25231c300f1ba6824c5c10136917b0207e75589cd9a86f9d020a",
   "category_totals": {
-    "tests_and_exports": 36727,
+    "tests_and_exports": 36774,
     "composition": 584,
     "loop_steps": 864,
     "introductions": 3034,
     "exit_meanings": 2341,
-    "registrations": 424,
+    "registrations": 425,
     "contracts": 2259,
     "generator_json": 6279,
     "block_proofs": 2375
   },
-  "interface_total": 15201,
-  "extra_total": 39686,
-  "overall_total": 54887,
-  "file_count": 386,
+  "interface_total": 15202,
+  "extra_total": 39733,
+  "overall_total": 54935,
+  "file_count": 387,
   "embedded_registration_ranges": [
     {
       "path": "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",

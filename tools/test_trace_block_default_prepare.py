@@ -15,15 +15,14 @@ import trace_block_package as package
 
 class DefaultPreparationTests(unittest.TestCase):
     def test_default_pipeline_installs_plugin_before_compiling_clients(self):
-        route=(prepare.OWNER/'ZesuSsz/Automation/ReturnRoute.v').read_text()
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);original=root/'original';owner=root/'owner'
             files={'ZesuSsz/Automation/All.v':'Require Export ZesuSsz.Automation.Hooks.\n',
-                   'ZesuSsz/Automation/Hooks.v':'Ltac zesu_liAStep := idtac.\n',
-                   'ZesuSsz/Automation/ReturnRoute.v':route,'dune-project':'(lang dune 3.8)\n(package (name zesu-signature-gates))\n',
+                   'ZesuSsz/Automation/Hooks.v':'Ltac zesu_conjunct_head_if_enabled := idtac.\nLtac zesu_liAStep := idtac.\n',
+                   'dune-project':'(lang dune 3.8)\n(package (name zesu-signature-gates))\n',
                    'ZesuSsz/dune':'(coq.theory (name ZesuSsz) (theories iris stdpp RecordUpdate Ltac2))\n'}
             declaration='Lemma target : True.\n'
-            prefix='Require Import ZesuSsz.Automation.All.\nRequire Import ZesuSsz.Automation.ReturnRoute.\n'+declaration+'Proof.\n'
+            prefix='Require Import ZesuSsz.Automation.All.\n'+declaration+'Proof.\n'
             files['Block.v']=prefix+'Abort.\n'
             for name,text in files.items():
                 path=original/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text(text)
@@ -56,7 +55,7 @@ class DefaultPreparationTests(unittest.TestCase):
                         (build/'coqc-ocamlpath.json').write_text(json.dumps({'workspace':str(workspace),'private_build':str(build)}))
                 return type('Result',(),{'returncode':0})()
             request={'workspace':str(original),'source':str(original/'Block.v'),'source_prefix':prefix,
-                     'declaration':declaration,'prefix_text':'','rule_set':[{'name':'ReturnRoute','enabled':True}],
+                     'declaration':declaration,'prefix_text':'','rule_set':[{'name':'ConjunctMatch','enabled':True}],
                      'stop':{'kind':'residual','value':None},'writer_id':'fixture-owner','block_pc':'0x1000',
                      'scope':{'root':'a'*40,'source_sha256':prepare.digest(original/'Block.v')}}
             with patch.object(prepare,'OWNER',owner),patch.object(prepare,'RUNTIME_FILES',()),patch.object(prepare,'_git',side_effect=git),patch.object(prepare.subprocess,'run',side_effect=run),patch.object(prepare.shutil,'which',return_value='/fixture/opam'):
