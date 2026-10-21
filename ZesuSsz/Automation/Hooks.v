@@ -376,22 +376,36 @@ Ltac zesu_stack_reduce_closed term :=
   let reduced := eval vm_compute in term in
   change_no_check term with reduced in *.
 
-(* Skip canonical integers before closed-term traversal. *)
-Ltac zesu_stack_positive_literal term :=
-  tryif is_var term then fail 0 else
-  lazymatch term with
-  | BinNums.xH => idtac
-  | BinNums.xO ?tail => zesu_stack_positive_literal tail
-  | BinNums.xI ?tail => zesu_stack_positive_literal tail
+From Ltac2 Require Import Ltac2.
+Set Default Proof Mode "Classic".
+
+(* Skip canonical integers with one syntactic constructor walk. *)
+(* Inspect the typed constructor tree without reduction or context access. *)
+Ltac2 rec zesu_stack_positive_literal_term (term : constr) :=
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.Constructor _ _ => Constr.equal term constr:(BinNums.xH)
+  | Constr.Unsafe.App head arguments =>
+      if Bool.and (Constr.is_constructor head) (Int.equal (Array.length arguments) 1)
+      then zesu_stack_positive_literal_term (Array.get arguments 0)
+      else false
+  | _ => false
+  end.
+Ltac2 zesu_stack_integer_literal_term (term : constr) :=
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.Constructor _ _ => Constr.equal term constr:(BinNums.Z0)
+  | Constr.Unsafe.App head arguments =>
+      if Bool.and (Int.equal (Array.length arguments) 1)
+          (Bool.or (Constr.equal head constr:(BinNums.Zpos))
+                   (Constr.equal head constr:(BinNums.Zneg)))
+      then zesu_stack_positive_literal_term (Array.get arguments 0)
+      else false
+  | _ => false
   end.
 Ltac zesu_stack_integer_literal term :=
-  tryif has_evar term then fail 0 else
-  tryif is_var term then fail 0 else
-  lazymatch term with
-  | Z0 => idtac
-  | Zpos ?positive => zesu_stack_positive_literal positive
-  | Zneg ?positive => zesu_stack_positive_literal positive
-  end.
+  let check := ltac2:(value |-
+    if zesu_stack_integer_literal_term (Option.get (Ltac1.to_constr value))
+    then () else Control.zero (Tactic_failure None)) in
+  check term.
 
 (* Normalize the selected hypothesis without searching other hypotheses. *)
 Ltac zesu_stack_normalize_hypothesis hypothesis := once (

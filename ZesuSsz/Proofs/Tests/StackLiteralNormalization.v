@@ -67,3 +67,21 @@ Proof.
   exact I.
 Qed.
 Print Assumptions stackLiteralRejectsSymbolic.
+
+Lemma stackConstructorNestedRefusals (positive_value : positive) : True.
+Proof.
+  Fail zesu_stack_integer_literal constr:(BinNums.Zpos positive_value).
+  pose (positive_alias := BinNums.xH).
+  Fail zesu_stack_integer_literal constr:(BinNums.Zpos positive_alias).
+  pose (integer_alias := BinNums.Zpos (BinNums.xO BinNums.xH)).
+  Fail zesu_stack_integer_literal integer_alias.
+  Fail zesu_stack_integer_literal constr:(O).
+  Fail zesu_stack_integer_literal constr:(true).
+  let unknown := open_constr:(_ : positive) in
+  has_evar unknown;
+  let value := constr:(BinNums.Zpos (BinNums.xO unknown)) in
+  tryif zesu_stack_integer_literal value then fail 1 "UNEXPECTED NESTED EVAR MATCH"
+  else (has_evar unknown; unify unknown BinNums.xH).
+  exact I.
+Qed.
+Print Assumptions stackConstructorNestedRefusals.
