@@ -1158,15 +1158,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemSailFold.v",
       "category": "exit_meanings",
       "scope": "whole_file",
-      "sha256": "3782a0690f0dae23db99255e12ae7f767d12a9b3198b6bcdfed45b041e882895",
-      "file_lines": 216,
+      "sha256": "e94dbe3a51a6844866949c58826f3b28ff58a15ee3d77655d616a85fc879b275",
+      "file_lines": 168,
       "line_ranges": [
         [
           1,
-          216
+          168
         ]
       ],
-      "counted_lines": 216
+      "counted_lines": 168
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemSailIntroduction.v",
@@ -8280,15 +8280,15 @@
     "composition": 584,
     "loop_steps": 1008,
     "introductions": 3400,
-    "exit_meanings": 2400,
+    "exit_meanings": 2352,
     "registrations": 448,
     "contracts": 2308,
     "generator_json": 6279,
     "block_proofs": 2375
   },
-  "interface_total": 15843,
+  "interface_total": 15795,
   "extra_total": 39627,
-  "overall_total": 55470,
+  "overall_total": 55422,
   "file_count": 386,
   "embedded_registration_ranges": [
     {
