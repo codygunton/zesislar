@@ -356,28 +356,47 @@ Ltac zesu_normalize_find_mem_address :=
 Class ZesuStepStackWrite : Prop := zesu_step_stack_write : True.
 
 (* Normalize each selected candidate once. Check local alias bodies separately. *)
-Ltac zesu_stack_closed_term term :=
-  tryif has_evar term then fail 0 else
-  let expanded := eval cbv beta zeta in term in
+From Ltac2 Require Import Ltac2.
+Set Default Proof Mode "Classic".
+
+(* Keep the original visitor for aliases, binders, and uncommon kernel forms. *)
+Ltac zesu_stack_closed_fallback recurse current :=
   let rec visit current :=
     tryif is_var current then
       let body := eval unfold current in current in
-      zesu_stack_closed_term body
+      recurse body
     else lazymatch current with
     | (fun _ => _) => fail 0
     | (forall _, _) => fail 0
     | ?function ?argument => visit function; visit argument
     | _ => idtac
     end
-  in visit expanded.
+  in visit current.
+
+(* Visit each application head and argument without Ltac1 spine matching. *)
+Ltac2 rec zesu_stack_closed_visit (term : constr) (fallback : Ltac1.t) :=
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.App head arguments =>
+      zesu_stack_closed_visit head fallback;
+      Array.iter (fun argument => zesu_stack_closed_visit argument fallback) arguments
+  | Constr.Unsafe.Constant _ _ => ()
+  | Constr.Unsafe.Constructor _ _ => ()
+  | Constr.Unsafe.Ind _ _ => ()
+  | Constr.Unsafe.Sort _ => ()
+  | _ => Ltac1.apply fallback [Ltac1.of_constr term] Ltac1.run
+  end.
+Ltac zesu_stack_closed_term term :=
+  tryif has_evar term then fail 0 else
+  let expanded := eval cbv beta zeta in term in
+  let check := ltac2:(value fallback |-
+    zesu_stack_closed_visit (Option.get (Ltac1.to_constr value)) fallback) in
+  check expanded ltac:(fun current =>
+    zesu_stack_closed_fallback zesu_stack_closed_term current).
 
 Ltac zesu_stack_reduce_closed term :=
   zesu_stack_closed_term term;
   let reduced := eval vm_compute in term in
   change_no_check term with reduced in *.
-
-From Ltac2 Require Import Ltac2.
-Set Default Proof Mode "Classic".
 
 (* Skip canonical integers with one syntactic constructor walk. *)
 (* Inspect the typed constructor tree without reduction or context access. *)
