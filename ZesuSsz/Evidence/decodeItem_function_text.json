@@ -1228,15 +1228,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemShortListOutputMeaning.v",
       "category": "exit_meanings",
       "scope": "whole_file",
-      "sha256": "eba283e74a892f62da98e66a37f926bd73ad5ca70c2e06ad9d2059dd0c2f8312",
-      "file_lines": 196,
+      "sha256": "6ba93ee2b2b5d3299fdf6f941bd448de6e2a9fe4a50405f9e139bfd84175bd37",
+      "file_lines": 78,
       "line_ranges": [
         [
           1,
-          196
+          78
         ]
       ],
-      "counted_lines": 196
+      "counted_lines": 78
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemStoreSelectionIntroductions.v",
@@ -8280,15 +8280,15 @@
     "composition": 584,
     "loop_steps": 1008,
     "introductions": 3493,
-    "exit_meanings": 2518,
+    "exit_meanings": 2400,
     "registrations": 448,
     "contracts": 2308,
     "generator_json": 6279,
     "block_proofs": 2375
   },
-  "interface_total": 16054,
+  "interface_total": 15936,
   "extra_total": 39627,
-  "overall_total": 55681,
+  "overall_total": 55563,
   "file_count": 386,
   "embedded_registration_ranges": [
     {
