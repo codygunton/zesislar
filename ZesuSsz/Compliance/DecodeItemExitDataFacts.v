@@ -185,6 +185,17 @@ Ltac decodeItemExitWriteParts tail original continuation :=
  | drop ?ending original => let bytes := eval cbn [List.app] in acc in continuation bytes ending
  | ?head :: ?rest' => scan rest' constr:(acc ++ [head])
  end in scan tail constr:(@nil byte).
+Ltac decodeItemExitImageClosedNat :=
+  lazymatch goal with
+  | |- (@eq nat _ _) => idtac
+  | |- (_ <= _)%nat => idtac
+  | |- (_ < _)%nat => idtac
+  end;
+  lazymatch goal with |- ?statement =>
+    ZesuSsz.Automation.Hooks.zesu_handoff_closed_term statement;
+    apply (proj1 (stdpp.decidable.bool_decide_eq_true statement));
+    vm_compute; reflexivity
+  end.
 Ltac decodeItemExitImageArithmetic :=
  cbn [N.to_nat Pos.to_nat];
  repeat first [progress rewrite length_app | progress rewrite length_take |
@@ -192,7 +203,7 @@ Ltac decodeItemExitImageArithmetic :=
    progress unfold word64Bytes | progress rewrite map_length |
    progress rewrite seq_length | progress cbn [length] |
    match goal with H : length ?l = ?n |- context[length ?l] => rewrite H end];
- first [reflexivity | lia].
+ first [reflexivity | decodeItemExitImageClosedNat | lia].
 Ltac decodeItemExitLiteralField l bytes k off value :=
  is_closed_term bytes; is_closed_term value;
  is_closed_term k; is_closed_term off;

@@ -7668,12 +7668,12 @@
       "line_ranges": [
         [
           1,
-          407
+          418
         ]
       ],
-      "file_lines": 407,
-      "sha256": "f46e84e79f8601a5b4f4102bb74ddd3c59cc325799245a175fa3c8363899c2d7",
-      "counted_lines": 407
+      "file_lines": 418,
+      "sha256": "7b5f6509af495195941901bb92e07f6d2327474c711b7159d5f4196f30cf74e7",
+      "counted_lines": 418
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d697c.v",
@@ -7847,15 +7847,15 @@
       "path": "ZesuSsz/Proofs/Tests/DecodeItemImageArithmetic.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "8784422833f72e39960d635b57ad44f6c5212273f6e69073ee98cf882f171576",
-      "file_lines": 31,
+      "sha256": "8c1c20ce05164155ed2db575cd52638f10509a27ca1ab8bf5bfddc666b31a185",
+      "file_lines": 59,
       "line_ranges": [
         [
           1,
-          31
+          59
         ]
       ],
-      "counted_lines": 31
+      "counted_lines": 59
     }
   ],
   "blocks": [
@@ -8290,19 +8290,19 @@
   },
   "base_manifest_sha256": "7deccbbc338d25231c300f1ba6824c5c10136917b0207e75589cd9a86f9d020a",
   "category_totals": {
-    "tests_and_exports": 36774,
+    "tests_and_exports": 36802,
     "composition": 584,
     "loop_steps": 864,
     "introductions": 3034,
-    "exit_meanings": 2290,
+    "exit_meanings": 2301,
     "registrations": 425,
     "contracts": 2259,
     "generator_json": 6279,
     "block_proofs": 2375
   },
-  "interface_total": 15151,
-  "extra_total": 39733,
-  "overall_total": 54884,
+  "interface_total": 15162,
+  "extra_total": 39761,
+  "overall_total": 54923,
   "file_count": 387,
   "embedded_registration_ranges": [
     {
