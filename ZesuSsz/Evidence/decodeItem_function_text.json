@@ -1200,15 +1200,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemSemanticIntroduction.v",
       "category": "introductions",
       "scope": "whole_file",
-      "sha256": "c3c6682b47a28c323ad314870ccbe676992785751b6289ac398232976606b352",
-      "file_lines": 300,
+      "sha256": "3ef3aff737f367be4e1cb6a108940fc1fb340f14f52b99dc2a0511288c7ef90b",
+      "file_lines": 207,
       "line_ranges": [
         [
           1,
-          300
+          207
         ]
       ],
-      "counted_lines": 300
+      "counted_lines": 207
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemShortListHandoffFacts.v",
@@ -8279,16 +8279,16 @@
     "tests_and_exports": 36668,
     "composition": 584,
     "loop_steps": 1008,
-    "introductions": 3493,
+    "introductions": 3400,
     "exit_meanings": 2400,
     "registrations": 448,
     "contracts": 2308,
     "generator_json": 6279,
     "block_proofs": 2375
   },
-  "interface_total": 15936,
+  "interface_total": 15843,
   "extra_total": 39627,
-  "overall_total": 55563,
+  "overall_total": 55470,
   "file_count": 386,
   "embedded_registration_ranges": [
     {
