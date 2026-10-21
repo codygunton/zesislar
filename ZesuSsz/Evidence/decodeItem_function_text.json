@@ -864,15 +864,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.v",
       "category": "loop_steps",
       "scope": "whole_file",
-      "sha256": "ff15d12b0be752a10c6d37b226d8646790045a0125df44078de72b28ac21ac4e",
-      "file_lines": 296,
+      "sha256": "884b6ff07e3af9640b9104d1f5ef6ece53798fddd12482ccccd8c28029e1d51a",
+      "file_lines": 277,
       "line_ranges": [
         [
           1,
-          296
+          277
         ]
       ],
-      "counted_lines": 296
+      "counted_lines": 277
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemFoldZeroFacts.v",
@@ -948,15 +948,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemJoinTransferPure.v",
       "category": "exit_meanings",
       "scope": "whole_file",
-      "sha256": "a5c36f8de7f3d11b7459b3f5a77a21424988906423c7d46cfcc2b25d063f1fa7",
-      "file_lines": 46,
+      "sha256": "e46c68b58f2424794dba4450fca95f774e8b1d5ddada5d2308051e6a180dd3b5",
+      "file_lines": 65,
       "line_ranges": [
         [
           1,
-          46
+          65
         ]
       ],
-      "counted_lines": 46
+      "counted_lines": 65
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemLoadedEntryFacts.v",
@@ -1256,15 +1256,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemStringSuccessorWitnesses.v",
       "category": "introductions",
       "scope": "whole_file",
-      "sha256": "053cf1d03f68aa045d249ec7e54d51ba62dc558fe7fb0b5fdddda5030ade9d95",
-      "file_lines": 162,
+      "sha256": "7ccbb1fced822483d1d7130f6171f4df165c61d7c1366e4c66d8057eacec8bb8",
+      "file_lines": 130,
       "line_ranges": [
         [
           1,
-          162
+          130
         ]
       ],
-      "counted_lines": 162
+      "counted_lines": 130
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemUnfoldRegistrations.v",
@@ -8278,17 +8278,17 @@
   "category_totals": {
     "tests_and_exports": 36668,
     "composition": 584,
-    "loop_steps": 1008,
-    "introductions": 3369,
-    "exit_meanings": 2321,
+    "loop_steps": 989,
+    "introductions": 3337,
+    "exit_meanings": 2340,
     "registrations": 448,
     "contracts": 2308,
     "generator_json": 6279,
     "block_proofs": 2375
   },
-  "interface_total": 15733,
+  "interface_total": 15701,
   "extra_total": 39627,
-  "overall_total": 55360,
+  "overall_total": 55328,
   "file_count": 386,
   "embedded_registration_ranges": [
     {
