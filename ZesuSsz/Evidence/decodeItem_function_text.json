@@ -766,15 +766,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v",
       "category": "introductions",
       "scope": "whole_file",
-      "sha256": "666b0ffe663d463c0899ebee9ea86cabd0f7d842c435353e21d026cc43d9f930",
-      "file_lines": 169,
+      "sha256": "ea90ebffdf1837e19d6cb656087a103686e0ea142dd962097657add2ffcf2791",
+      "file_lines": 138,
       "line_ranges": [
         [
           1,
-          169
+          138
         ]
       ],
-      "counted_lines": 169
+      "counted_lines": 138
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemEntryWitnessIntroductions.v",
@@ -8279,16 +8279,16 @@
     "tests_and_exports": 36668,
     "composition": 584,
     "loop_steps": 1008,
-    "introductions": 3400,
+    "introductions": 3369,
     "exit_meanings": 2321,
     "registrations": 448,
     "contracts": 2308,
     "generator_json": 6279,
     "block_proofs": 2375
   },
-  "interface_total": 15764,
+  "interface_total": 15733,
   "extra_total": 39627,
-  "overall_total": 55391,
+  "overall_total": 55360,
   "file_count": 386,
   "embedded_registration_ranges": [
     {
