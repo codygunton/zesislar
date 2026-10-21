@@ -63,6 +63,13 @@ Definition decodeItemBranchBase `{!islaG Sigma} `{!threadG}
        decodeItemC1BDomain args⌝ ∗
    decodeItemBranchContinuation args ∗ True)%I.
 
+Local Notation "'dispatchEntry' args frameBytes x13 x14 inputPrefix rest facts" :=
+  (∃ (x15 x16 : bv 64), ⌜decodeItemInputHead args inputPrefix rest /\ facts⌝ ∗
+   "x13" ↦ᵣ RVal_Bits x13 ∗ "x14" ↦ᵣ RVal_Bits x14 ∗
+   "x15" ↦ᵣ RVal_Bits x15 ∗ "x16" ↦ᵣ RVal_Bits x16 ∗
+   decodeItemBranchBase args frameBytes (Z_to_bv 64 (decodeItemInputPointer args)))%I
+  (at level 10, args, frameBytes, x13, x14, inputPrefix, rest, facts at level 9).
+
 (* 0x800d6970: beq a2, zero, error. *)
 Definition decodeItemEntryAt800d6974 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (frameBytes : list byte)
@@ -116,86 +123,51 @@ Definition decodeItemEntryAt800d69d8 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (frameBytes : list byte)
     (x13 : bv 64)
     (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (∃ (x15 x16 : bv 64),
-   ⌜decodeItemInputHead args inputPrefix rest /\
-     129 <= bv_unsigned inputPrefix <= 255 /\
+  (dispatchEntry args frameBytes x13 (Z_to_bv 64 128) inputPrefix rest
+     (129 <= bv_unsigned inputPrefix <= 255 /\
      bv_unsigned x13 = bv_unsigned inputPrefix /\
-     x13 <> Z_to_bv 64 128⌝ ∗
-   "x13" ↦ᵣ RVal_Bits x13 ∗
-   "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 128) ∗
-   "x15" ↦ᵣ RVal_Bits x15 ∗
-   "x16" ↦ᵣ RVal_Bits x16 ∗
-   decodeItemBranchBase args frameBytes
-     (Z_to_bv 64 (decodeItemInputPointer args)))%I.
+     x13 <> Z_to_bv 64 128))%I.
 
 (* 0x800d69dc: bltu a4, a3, long-string dispatch. *)
 Definition decodeItemEntryAt800d69e0 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (frameBytes : list byte)
     (x13 : bv 64)
     (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (∃ (x15 x16 : bv 64),
-   ⌜decodeItemInputHead args inputPrefix rest /\
-     129 <= bv_unsigned inputPrefix <= 183 /\
+  (dispatchEntry args frameBytes x13 (Z_to_bv 64 183) inputPrefix rest
+     (129 <= bv_unsigned inputPrefix <= 183 /\
      bv_unsigned x13 = bv_unsigned inputPrefix /\
-     bv_unsigned (Z_to_bv 64 183) >= bv_unsigned x13⌝ ∗
-   "x13" ↦ᵣ RVal_Bits x13 ∗
-   "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 183) ∗
-   "x15" ↦ᵣ RVal_Bits x15 ∗
-   "x16" ↦ᵣ RVal_Bits x16 ∗
-   decodeItemBranchBase args frameBytes
-     (Z_to_bv 64 (decodeItemInputPointer args)))%I.
+     bv_unsigned (Z_to_bv 64 183) >= bv_unsigned x13))%I.
 
 (* 0x800d69e4: bgeu a3, a2, error. *)
 Definition decodeItemEntryAt800d69e8 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (frameBytes : list byte)
     (x13 : bv 64)
     (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (∃ (x15 x16 : bv 64),
-   ⌜decodeItemInputHead args inputPrefix rest /\
-     129 <= bv_unsigned inputPrefix <= 183 /\
+  (dispatchEntry args frameBytes x13 (Z_to_bv 64 183) inputPrefix rest
+     (129 <= bv_unsigned inputPrefix <= 183 /\
      bv_unsigned x13 = bv_unsigned inputPrefix - 128 /\
      decodeItemAcceptedFacts args false 1 (bv_unsigned inputPrefix - 128) /\
      bv_unsigned x13 <
-      bv_unsigned (Z_to_bv 64 (decodeItemInputLength args))⌝ ∗
-   "x13" ↦ᵣ RVal_Bits x13 ∗
-   "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 183) ∗
-   "x15" ↦ᵣ RVal_Bits x15 ∗
-   "x16" ↦ᵣ RVal_Bits x16 ∗
-   decodeItemBranchBase args frameBytes
-     (Z_to_bv 64 (decodeItemInputPointer args)))%I.
+      bv_unsigned (Z_to_bv 64 (decodeItemInputLength args))))%I.
 
 Definition decodeItemEntryAt800d6a00 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (frameBytes : list byte)
     (x13 : bv 64)
     (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (∃ (x15 x16 : bv 64),
-   ⌜decodeItemInputHead args inputPrefix rest /\
-     184 <= bv_unsigned inputPrefix <= 255 /\
+  (dispatchEntry args frameBytes x13 (Z_to_bv 64 183) inputPrefix rest
+     (184 <= bv_unsigned inputPrefix <= 255 /\
      bv_unsigned x13 = bv_unsigned inputPrefix /\
-     bv_unsigned (Z_to_bv 64 183) < bv_unsigned x13⌝ ∗
-   "x13" ↦ᵣ RVal_Bits x13 ∗
-   "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 183) ∗
-   "x15" ↦ᵣ RVal_Bits x15 ∗
-   "x16" ↦ᵣ RVal_Bits x16 ∗
-   decodeItemBranchBase args frameBytes
-     (Z_to_bv 64 (decodeItemInputPointer args)))%I.
+     bv_unsigned (Z_to_bv 64 183) < bv_unsigned x13))%I.
 
 (* 0x800d6a04: bgeu a3, a4, list dispatch. *)
 Definition decodeItemEntryAt800d6a08 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (frameBytes : list byte)
     (x13 : bv 64)
     (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (∃ (x15 x16 : bv 64),
-   ⌜decodeItemInputHead args inputPrefix rest /\
-     184 <= bv_unsigned inputPrefix <= 191 /\
+  (dispatchEntry args frameBytes x13 (Z_to_bv 64 192) inputPrefix rest
+     (184 <= bv_unsigned inputPrefix <= 191 /\
      bv_unsigned x13 = bv_unsigned inputPrefix /\
-     bv_unsigned x13 < bv_unsigned (Z_to_bv 64 192)⌝ ∗
-   "x13" ↦ᵣ RVal_Bits x13 ∗
-   "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 192) ∗
-   "x15" ↦ᵣ RVal_Bits x15 ∗
-   "x16" ↦ᵣ RVal_Bits x16 ∗
-   decodeItemBranchBase args frameBytes
-     (Z_to_bv 64 (decodeItemInputPointer args)))%I.
+     bv_unsigned x13 < bv_unsigned (Z_to_bv 64 192)))%I.
 
 (* The Q20 initialization resource fixes a4 to n and the input slice. *)
 Definition decodeItemEntryAt800d6a14 `{!islaG Sigma} `{!threadG}
@@ -230,50 +202,29 @@ Definition decodeItemEntryAt800d6a64 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (frameBytes : list byte)
     (x13 : bv 64)
     (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (∃ (x15 x16 : bv 64),
-   ⌜decodeItemInputHead args inputPrefix rest /\
-     192 <= bv_unsigned inputPrefix <= 255 /\
+  (dispatchEntry args frameBytes x13 (Z_to_bv 64 192) inputPrefix rest
+     (192 <= bv_unsigned inputPrefix <= 255 /\
      bv_unsigned x13 = bv_unsigned inputPrefix /\
-     bv_unsigned x13 >= bv_unsigned (Z_to_bv 64 192)⌝ ∗
-   "x13" ↦ᵣ RVal_Bits x13 ∗
-   "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 192) ∗
-   "x15" ↦ᵣ RVal_Bits x15 ∗
-   "x16" ↦ᵣ RVal_Bits x16 ∗
-   decodeItemBranchBase args frameBytes
-     (Z_to_bv 64 (decodeItemInputPointer args)))%I.
+     bv_unsigned x13 >= bv_unsigned (Z_to_bv 64 192)))%I.
 
 (* 0x800d6a68: bgeu a3, a4, long-list class test. *)
 Definition decodeItemEntryAt800d6a6c `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (frameBytes : list byte)
     (x13 : bv 64)
     (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (∃ (x15 x16 : bv 64),
-   ⌜decodeItemInputHead args inputPrefix rest /\
-     192 <= bv_unsigned inputPrefix <= 247 /\
+  (dispatchEntry args frameBytes x13 (Z_to_bv 64 248) inputPrefix rest
+     (192 <= bv_unsigned inputPrefix <= 247 /\
      bv_unsigned x13 = bv_unsigned inputPrefix /\
-     bv_unsigned x13 < bv_unsigned (Z_to_bv 64 248)⌝ ∗
-   "x13" ↦ᵣ RVal_Bits x13 ∗
-   "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 248) ∗
-   "x15" ↦ᵣ RVal_Bits x15 ∗
-   "x16" ↦ᵣ RVal_Bits x16 ∗
-   decodeItemBranchBase args frameBytes
-     (Z_to_bv 64 (decodeItemInputPointer args)))%I.
+     bv_unsigned x13 < bv_unsigned (Z_to_bv 64 248)))%I.
 
 Definition decodeItemEntryAt800d6aa8 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (frameBytes : list byte)
     (x13 : bv 64)
     (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (∃ (x15 x16 : bv 64),
-   ⌜decodeItemInputHead args inputPrefix rest /\
-     248 <= bv_unsigned inputPrefix <= 255 /\
+  (dispatchEntry args frameBytes x13 (Z_to_bv 64 248) inputPrefix rest
+     (248 <= bv_unsigned inputPrefix <= 255 /\
      bv_unsigned x13 = bv_unsigned inputPrefix /\
-     bv_unsigned x13 >= bv_unsigned (Z_to_bv 64 248)⌝ ∗
-   "x13" ↦ᵣ RVal_Bits x13 ∗
-   "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 248) ∗
-   "x15" ↦ᵣ RVal_Bits x15 ∗
-   "x16" ↦ᵣ RVal_Bits x16 ∗
-   decodeItemBranchBase args frameBytes
-     (Z_to_bv 64 (decodeItemInputPointer args)))%I.
+     bv_unsigned x13 >= bv_unsigned (Z_to_bv 64 248)))%I.
 
 Definition decodeItemEntryAt800d6ab4 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (n payloadStart : Z)

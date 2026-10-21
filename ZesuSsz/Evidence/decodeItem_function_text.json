@@ -1405,15 +1405,15 @@
       "path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
       "category": "contracts",
       "scope": "whole_file",
-      "sha256": "a206b82ea02ea581fe8c64b491c1b110c85ccdb90ed6ca0e8db9f286869bdaa6",
-      "file_lines": 318,
+      "sha256": "d23cc2feb59429955539750f9b0774548a62de0bda0dd93d41261f537911bf46",
+      "file_lines": 269,
       "line_ranges": [
         [
           1,
-          318
+          269
         ]
       ],
-      "counted_lines": 318
+      "counted_lines": 269
     },
     {
       "path": "ZesuSsz/Contracts/DecodeItemErrorBranch.v",
@@ -2618,7 +2618,7 @@
       "path": "ZesuSsz/Evidence/decode_item_block_design.json",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "3412eb7aaadb76eb2a8fecfac23dcb2763f56060884e765cb3c12601db739dd9",
+      "sha256": "3addd80011026c0923fb1a3742765c227674856b45a5f10bebe3c3e8ac363e2e",
       "file_lines": 2227,
       "line_ranges": [
         [
@@ -4161,7 +4161,7 @@
       "path": "ZesuSsz/Generated/DecodeItem/BlockTable.v",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "90f6f70095b5d7a769f12c849e538f8c2a658c4bcc38e461d52bec3ab612a67c",
+      "sha256": "03b9bd09f339702efe1116785b347eb43791117ea1ae456b853bbee6b67cc0e7",
       "file_lines": 209,
       "line_ranges": [
         [
@@ -4189,7 +4189,7 @@
       "path": "ZesuSsz/Generated/DecodeItem/block_table_metadata.json",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "340f0bc7a9316138b555df90b4ff76651c00e7a76b09c6bd635b862075cea08e",
+      "sha256": "ea8e72210c82f9aa4400ac9d787a1b0dad583af578cf1d33c992ece7bb22fb4a",
       "file_lines": 702,
       "line_ranges": [
         [
@@ -8282,13 +8282,13 @@
     "introductions": 3034,
     "exit_meanings": 2340,
     "registrations": 424,
-    "contracts": 2308,
+    "contracts": 2259,
     "generator_json": 6279,
     "block_proofs": 2375
   },
-  "interface_total": 15249,
+  "interface_total": 15200,
   "extra_total": 39627,
-  "overall_total": 54876,
+  "overall_total": 54827,
   "file_count": 386,
   "embedded_registration_ranges": [
     {
