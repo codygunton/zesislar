@@ -28,15 +28,6 @@ Proof.
   iApply (big_sepL_elem_of _ _ (address, state) with "Htable"). exact Hentry.
 Qed.
 
-(* Fold proved bodies into the table interface without comparing states. *)
-Lemma block_table_cases_from_bodies (table : blockTable Sigma) :
-  ([∗ list] entry ∈ block_table_entries table, instr_body entry.1 entry.2) -∗
-  ∀ address state, ⌜(address, state) ∈ block_table_entries table⌝ -∗ instr_body address state.
-Proof.
-  iIntros "Hbodies" (address state Hentry).
-  iApply (big_sepL_elem_of _ _ (address, state) with "Hbodies"). exact Hentry.
-Qed.
-
 (* Each block starts without a later. Successor contracts carry the guard. *)
 Lemma block_table_complete (table : blockTable Sigma) :
   □ block_table_code table -∗

@@ -169,6 +169,19 @@ def compiler_run(arguments):
     memory_limit = int(os.environ.get('ZESU_PRIMARY_MEMORY_GIB', '6'))*1024*1024
     before_memory_events = probe_memory_events(os.getpid()) if probe else None
     after_memory_events = None
+    instruction_context = None
+    instruction_result = None
+    instruction_error = None
+    observed_compiler_pid = None
+    observed_compiler_cpu = None
+    observed_compiler_peak = 0
+    workload_command = command
+    if os.environ.get('ZESU_M1_METRIC') == 'instructions':
+        if not probe:
+            raise ValueError('Instruction measurement requires the diagnostic probe policy.')
+        import perf_measure
+        instruction_context = perf_measure.prepare(command, record.parent, Path.cwd())
+        command = instruction_context['command']
     before_cpu = resource.getrusage(resource.RUSAGE_CHILDREN)
     def set_cpu_limit():
         if probe:
@@ -183,7 +196,8 @@ def compiler_run(arguments):
     cpu_used = 0.0
     peak, limit, saved = 0, None, started
     def save(code=None, compiled=None):
-        value = {'compiler_pid': process.pid, 'command': command, 'cwd': os.getcwd(),
+        value = {'compiler_pid': observed_compiler_pid if instruction_context else process.pid,
+            'command': workload_command, 'cwd': os.getcwd(),
             'elapsed_seconds': time.monotonic()-started, 'peak_rss_kib': peak,
             'exit_code': code, 'limit': limit, 'compiled_object': compiled,
             'measurement_complete': code is not None,
@@ -194,17 +208,45 @@ def compiler_run(arguments):
             'scope_memory_events_before': before_memory_events,
             'scope_memory_events_after': after_memory_events,
             'limits': {'module_seconds': wall_limit, 'cpu_seconds': cpu_limit, 'rss_kib': memory_limit}}
+        if instruction_context:
+            value.update(measurement_command=command, perf_pid=process.pid,
+                         cpu_scope='perf driver plus compiler; child rusage',
+                         rusage_including_perf=({'cpu_s': cpu_used, 'peak_rss_kib': peak}
+                                                if code is not None else None),
+                         coqc_cpu_s=observed_compiler_cpu,
+                         coqc_peak_rss=observed_compiler_peak,
+                         coqc_peak_rss_unit='KiB',
+                         peak_rss_scope='maximum child RSS, including the perf driver',
+                         observed_compiler_cpu_seconds=observed_compiler_cpu,
+                         observed_compiler_peak_rss_kib=observed_compiler_peak,
+                         observed_compiler_cpu_precision_seconds=1 / os.sysconf('SC_CLK_TCK'),
+                         instruction_measurement=instruction_result or instruction_context,
+                         instruction_error=instruction_error,
+                         instruction_measurement_complete=instruction_result is not None,
+                         user_instructions=(instruction_result or {}).get('user_instructions'))
         temporary = record.with_suffix('.tmp')
         temporary.write_text(json.dumps(value, indent=2)+'\n')
         temporary.replace(record)
     save()
     while process.poll() is None:
+        target_pid = process.pid
+        if instruction_context:
+            try:
+                target_pid = perf_measure.workload_pid(process.pid, workload_command)
+                if target_pid is not None:
+                    observed_compiler_pid = target_pid
+            except (OSError, ValueError) as error:
+                target_pid = None
+                instruction_error = str(error)
+        if target_pid is None:
+            time.sleep(0.025)
+            continue
         if probe and actual_cpu_limits is None:
             try:
-                soft, hard = resource.prlimit(process.pid, resource.RLIMIT_CPU)
+                soft, hard = resource.prlimit(target_pid, resource.RLIMIT_CPU)
                 actual_cpu_limits = {'soft': None if soft == resource.RLIM_INFINITY else soft,
                                      'hard': None if hard == resource.RLIM_INFINITY else hard}
-                actual_scope_limits = probe_scope_limits(process.pid)
+                actual_scope_limits = probe_scope_limits(target_pid)
                 if (actual_cpu_limits != {'soft': None, 'hard': None} or
                         actual_scope_limits != {'memory_max_bytes': 64*1024**3, 'memory_swap_max_bytes': 0}):
                     raise ValueError('The diagnostic child limits differ from the probe policy')
@@ -215,9 +257,12 @@ def compiler_run(arguments):
                     policy_error = str(error)
         try:
             peak = max(peak, next(int(line.split()[1]) for line in
-                Path(f'/proc/{process.pid}/status').read_text().splitlines() if line.startswith('VmRSS:')))
-            fields = Path(f'/proc/{process.pid}/stat').read_text().rsplit(')', 1)[1].split()
+                Path(f'/proc/{target_pid}/status').read_text().splitlines() if line.startswith('VmRSS:')))
+            fields = Path(f'/proc/{target_pid}/stat').read_text().rsplit(')', 1)[1].split()
             cpu_used = (int(fields[11]) + int(fields[12])) / os.sysconf('SC_CLK_TCK')
+            if instruction_context:
+                observed_compiler_cpu = cpu_used
+                observed_compiler_peak = peak
         except (OSError, ValueError, StopIteration) as error:
             # A proc entry or VmRSS can disappear while the child exits.
             sample = {'elapsed_seconds': time.monotonic()-started,
@@ -266,6 +311,11 @@ def compiler_run(arguments):
             retained = Path(os.environ['ZESU_PRIMARY_COMPILED_OBJECT'])
             shutil.copyfile(generated, retained)
             compiled = {'path': str(retained), 'sha256': digest(retained)}
+    if instruction_context:
+        try:
+            instruction_result = perf_measure.finish(instruction_context)
+        except (OSError, ValueError) as error:
+            instruction_error = str(error)
     save(code, compiled)
     return code if limit is None else 1
 

@@ -794,15 +794,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemExitMeanings.v",
       "category": "exit_meanings",
       "scope": "whole_file",
-      "sha256": "88aa7c7c244b3bfa99eb75754e0a0bf6c89f449d1cc7c570106918f4dca65d00",
-      "file_lines": 151,
+      "sha256": "c0892db50fde08e91d2ddde4ae2dd1e43bca03d477a4076649a63f29e0efc4a5",
+      "file_lines": 100,
       "line_ranges": [
         [
           1,
-          151
+          100
         ]
       ],
-      "counted_lines": 151
+      "counted_lines": 100
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemFoldBackEdgeWitnesses.v",
@@ -3899,8 +3899,8 @@
       "path": "ZesuSsz/Evidence/test_check_spec_shapes.py",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "a8ea60bb0c3b9ef2fc1388f98e7fc63a250ad70af468c74ad44f67ed8cfbfae4",
-      "file_lines": 314,
+      "sha256": "6771e22f6f0319219e6767162afbad13526ce47be93c7a1fd659ea4564c774b3",
+      "file_lines": 369,
       "line_ranges": [
         [
           51,
@@ -6087,8 +6087,8 @@
       "path": "tools/block/coqc_primary.py",
       "category": "generator_json",
       "scope": "mixed_file",
-      "sha256": "c75d08dbf498ba7959b78aa0c8bb3f3999cfdae8efd7de7b7c64532624b7d6c4",
-      "file_lines": 393,
+      "sha256": "6862dff511698fada2539020151ee5dc4454eeb4a92e9a2c16544510b2341ece",
+      "file_lines": 443,
       "line_ranges": [
         [
           35,
@@ -7011,8 +7011,8 @@
       "path": "tools/test_coqc_primary.py",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "870731310e6174e6416c96afe599fdf3204cc5de26f31eac63e08e7424068a37",
-      "file_lines": 471,
+      "sha256": "3ab10161d2cc6f7170975bf886b6fea2bc6b4dea19855a26707b79a181af5270",
+      "file_lines": 533,
       "line_ranges": [
         [
           105,
@@ -8294,15 +8294,15 @@
     "composition": 584,
     "loop_steps": 864,
     "introductions": 3034,
-    "exit_meanings": 2341,
+    "exit_meanings": 2290,
     "registrations": 425,
     "contracts": 2259,
     "generator_json": 6279,
     "block_proofs": 2375
   },
-  "interface_total": 15202,
+  "interface_total": 15151,
   "extra_total": 39733,
-  "overall_total": 54935,
+  "overall_total": 54884,
   "file_count": 387,
   "embedded_registration_ranges": [
     {
