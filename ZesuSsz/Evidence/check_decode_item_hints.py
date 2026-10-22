@@ -129,17 +129,20 @@ def missing_hint_modules(directory: Path) -> list[str]:
     return sorted(hint_modules(directory) - exported_modules((directory / UMBRELLA).read_text()))
 
 
-def manifest_umbrellas(root: Path) -> list[tuple[Path, Path, set[str]]]:
+def manifest_umbrellas(root: Path) -> list[tuple[Path, Path | None, set[str]]]:
     """Read the single Hints module listed in each registration category."""
     result = []
     for manifest in sorted((root / "ZesuSsz/Evidence").glob("*_function_text.json")):
         data = json.loads(manifest.read_text())
+        inventory_only = data.get("inventory_only", False)
+        if not isinstance(inventory_only, bool):
+            raise ValueError(f"Invalid inventory_only flag in {manifest.name}.")
         registrations = data.get("registrations", [])
         if not isinstance(registrations, list) or any(not isinstance(path, str)
                                                       for path in registrations):
             raise ValueError(f"Invalid registrations in {manifest.name}.")
         umbrellas = [path for path in registrations if Path(path).name.endswith("Hints.v")]
-        if len(umbrellas) != 1:
+        if len(umbrellas) != 1 and not (inventory_only and not umbrellas):
             raise ValueError(f"The manifest must list one hint umbrella: {manifest.name}.")
         listed = set()
         for category in ("contracts", "introductions", "exit_meanings", "loop_steps", "registrations"):
@@ -158,6 +161,9 @@ def manifest_umbrellas(root: Path) -> list[tuple[Path, Path, set[str]]]:
                     raise ValueError(f"The listed Compliance source is missing: {name}.")
                 if has_hint_registration(path.read_text()):
                     owned.add(PREFIX + ".".join(path.relative_to(compliance.resolve()).with_suffix("").parts))
+        if inventory_only and not umbrellas:
+            result.append((manifest, None, owned))
+            continue
         umbrella = (root / umbrellas[0]).resolve()
         if not umbrella.is_relative_to(compliance.resolve()) or not umbrella.is_file():
             raise ValueError(f"The hint umbrella is not a Compliance source: {umbrellas[0]}.")
@@ -173,11 +179,14 @@ def manifest_errors(root: Path) -> tuple[list[str], int]:
     """Check umbrella exports and the declared direct imports of scoped hints."""
     groups = manifest_umbrellas(root)
     directory = root / "ZesuSsz/Compliance"
-    umbrellas = [path.relative_to(directory.resolve()) for _, path, _ in groups]
+    umbrellas = [path.relative_to(directory.resolve()) for _, path, _ in groups if path is not None]
     modules = hint_modules(directory, umbrellas)
     scoped = modules & SCOPED_HINT_IMPORTS.keys()
     covered, errors = set(scoped), []
     for manifest, umbrella, owned in groups:
+        if umbrella is None:
+            covered.update(owned)  # Inventory mode skips only missing umbrella coverage.
+            continue
         exports = exported_modules(umbrella.read_text())
         covered.update(exports)
         for module in sorted(owned - exports - scoped):

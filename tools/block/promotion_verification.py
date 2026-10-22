@@ -21,6 +21,29 @@ def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def launcher_bindings(workspace, mcp_launcher=None, compiler_launcher=None):
+    """Bind explicit executable paths without replacing virtual-environment paths."""
+    selected = {
+        'mcp': mcp_launcher if mcp_launcher is not None else Path(workspace) / 'tools/rocq_mcp_guarded.sh',
+        'compiler': compiler_launcher if compiler_launcher is not None else Path(workspace) / 'tools/rocq_coqc_guarded.sh',
+    }
+    result = {}
+    for label, value in selected.items():
+        path = Path(value).absolute()
+        if not path.is_file() or not os.access(path, os.X_OK):
+            raise ValueError('The selected ' + label + ' launcher is missing or not executable: ' + str(path))
+        result[label] = dict(path=str(path), resolved_path=str(path.resolve()), sha256=digest(path))
+    return result
+
+
+def unchanged_launchers(bindings):
+    for label, record in bindings.items():
+        path = Path(record['path'])
+        if (not path.is_file() or not os.access(path, os.X_OK) or
+                str(path.resolve()) != record['resolved_path'] or digest(path) != record['sha256']):
+            raise ValueError('The selected ' + label + ' launcher changed during verification.')
+
+
 def retained_compile_result(source, artifact, retained):
     if (retained['source'] != str(source) or
             Path(retained['private_artifact']).resolve() != artifact.resolve() or
@@ -160,7 +183,9 @@ def owned_pet(health, owner):
 
 
 async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_checks=None,
-                 name_prefix="decodeItem"):
+                 name_prefix="decodeItem", mcp_launcher=None, compiler_launcher=None):
+    workspace = Path(workspace).resolve()
+    launchers = launcher_bindings(workspace, mcp_launcher, compiler_launcher)
     from mcp import ClientSession, StdioServerParameters
     from mcp.client.stdio import stdio_client
     directory = Path(directory)
@@ -168,7 +193,7 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
     private = (workspace / '_build/default').resolve()
     if not private.is_dir() or not private.is_relative_to(workspace.resolve()):
         raise ValueError('The owned private artifact directory is unavailable.')
-    report = {'private_artifact_directory': str(private), 'success': False, 'calls': [], 'closures': [], 'sources': [], 'checks': []}
+    report = {'private_artifact_directory': str(private), 'launchers': launchers, 'success': False, 'calls': [], 'closures': [], 'sources': [], 'checks': []}
 
     def save():
         (directory / 'RESULT.json').write_text(json.dumps(report, indent=2) + '\n')
@@ -176,9 +201,10 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
     async def operation(label, tool, arguments):
         owner = pet = None
         normal = False
+        unchanged_launchers(launchers)
         env = dict(os.environ)
         env.update(ROCQ_WORKSPACE=str(workspace), ROCQ_DUNE_BUILD='1',
-                   ZESU_ROCQ_COQC_WRAPPER=str(workspace / 'tools/rocq_coqc_guarded.sh'))
+                   ZESU_ROCQ_COQC_WRAPPER=launchers['compiler']['path'])
         # The existing compiler wrapper supplies normal guarded admission.
         command = directory / (label + '.sh')
         command.write_text('#!/bin/sh\nset -eu\nexec "$ZESU_MCP_PYTHON" "$ZESU_PROMOTION_SERVER"\n')
@@ -186,7 +212,7 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
         env.update(ZESU_MCP_PYTHON=sys.executable,
                    ZESU_PROMOTION_SERVER=str(HERE / 'promotion_verify_server.py'),
                    ZESU_ROCQ_MCP_BINARY=str(command))
-        parameters = StdioServerParameters(command=str(workspace / 'tools/rocq_mcp_guarded.sh'), env=env)
+        parameters = StdioServerParameters(command=launchers['mcp']['path'], env=env)
         result = None
         try:
             async with stdio_client(parameters) as streams:
@@ -205,6 +231,10 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
                     health = await call('rocq_health', {})
                     if not health.get('ok'):
                         raise ValueError('Rocq MCP health failed.')
+                    if mcp_launcher is not None or compiler_launcher is not None:
+                        actual = health.get('toolchain', {}).get('coqc', {}).get('path')
+                        if not isinstance(actual, str) or str(Path(actual).absolute()) != launchers['compiler']['path']:
+                            raise ValueError('MCP health reports a different compiler launcher.')
                     owner = await call('rocq_promotion_owner', {})
                     if not owner.get('success') or not live(owner):
                         raise ValueError('The MCP server identity is unavailable.')
@@ -276,7 +306,8 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
         raise
 
 
-def verify_generated(workspace, sources, pc, directory, python=None, *, name_prefix="decodeItem"):
+def verify_generated(workspace, sources, pc, directory, python=None, *, name_prefix="decodeItem",
+                     mcp_launcher=None, compiler_launcher=None):
     """Use the pinned MCP Python, never a shell compiler fallback."""
     if not os.environ.get('OPAM_SWITCH_PREFIX') or not shutil.which('pet'):
         raise ValueError('Run complete promotion under the pinned opam environment with pet on PATH.')
@@ -288,7 +319,9 @@ def verify_generated(workspace, sources, pc, directory, python=None, *, name_pre
     FunctionNames(name_prefix)
     manifest.write_text(json.dumps({'workspace': str(workspace), 'sources': list(map(str, sources)),
                                     'pc': pc, 'directory': str(directory),
-                                    'name_prefix': name_prefix}, indent=2) + '\n')
+                                    'name_prefix': name_prefix,
+                                    'mcp_launcher': str(mcp_launcher) if mcp_launcher is not None else None,
+                                    'compiler_launcher': str(compiler_launcher) if compiler_launcher is not None else None}, indent=2) + '\n')
     subprocess.run([python, str(Path(__file__).resolve()), '--inputs', str(manifest)], check=True)
     result = json.loads((Path(directory) / 'RESULT.json').read_text())
     if result.get('success') is not True:
@@ -302,4 +335,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     inputs = json.loads(args.inputs.read_text())
     asyncio.run(verify(Path(inputs['workspace']), inputs['sources'], inputs['pc'], inputs['directory'],
-                       name_prefix=inputs.get('name_prefix', 'decodeItem')))
+                       name_prefix=inputs.get('name_prefix', 'decodeItem'),
+                       mcp_launcher=inputs.get('mcp_launcher'),
+                       compiler_launcher=inputs.get('compiler_launcher')))

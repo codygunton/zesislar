@@ -26,6 +26,11 @@ def function_hints(function, workspace):
     if len(matches) != 1:
         raise ValueError("The native launch needs one function manifest: " + function)
     path, manifest = matches[0]
+    inventory_only = manifest.get("inventory_only", False)
+    if not isinstance(inventory_only, bool):
+        raise ValueError("The inventory_only flag must be boolean: " + path.name)
+    if inventory_only:
+        raise ValueError("An inventory_only manifest cannot launch native proofs: " + path.name)
     registrations = manifest.get("registrations")
     if not isinstance(registrations, list) or any(not isinstance(item, str)
                                                   for item in registrations):

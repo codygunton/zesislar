@@ -79,6 +79,23 @@ class ManifestFixture:
 
 
 class DataOnlyLemmaTests(ManifestFixture, unittest.TestCase):
+    def test_inventory_only_keeps_data_and_declaration_checks(self):
+        self.manifest['inventory_only'] = True
+        self.add_file('introductions', 'Lemma bad : instr_pre. Admitted.')
+        self.write_manifest()
+        self.assertTrue(any('instr_pre' in error for error in check_data_only_lemmas.violations(self.root)))
+        self.manifest['introductions'] = []
+        self.add_file('registrations', 'Instance : ZesuEntryIntro entry True.')
+        self.write_manifest()
+        self.assertTrue(any('explicit instance name' in error for error in check_data_only_lemmas.violations(self.root)))
+        self.manifest['registrations'] = []
+        self.manifest['introductions'] = ['Missing.v']
+        self.write_manifest()
+        self.assertTrue(any('missing' in error for error in check_data_only_lemmas.violations(self.root)))
+        self.manifest['introductions'] = 'invalid'
+        self.write_manifest()
+        self.assertTrue(any('file list' in error for error in check_data_only_lemmas.violations(self.root)))
+
     def test_data_facts_pass(self):
         self.add_file("introductions", "Lemma length_fact : length [] = 0. Proof. reflexivity. Qed.")
         self.write_manifest()

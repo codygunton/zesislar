@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "function": "rlp_decode.nextUint64",
   "status": "Own-map selected code with a separate table-level callee-code installation obligation. No native nextUint64 execution claim.",
   "snapshot_base_root": "f3cf9f9b6ff08ffb29565a10f63556b43287606f",
@@ -99,7 +99,8 @@
           365
         ]
       ],
-      "counted_lines": 365
+      "counted_lines": 365,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/NextUint64Selected.v",
@@ -113,7 +114,8 @@
           90
         ]
       ],
-      "counted_lines": 90
+      "counted_lines": 90,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/NextUint64Contract.v",
@@ -127,7 +129,8 @@
           69
         ]
       ],
-      "counted_lines": 69
+      "counted_lines": 69,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/NextUint64FoldFacts.v",
@@ -141,7 +144,8 @@
           187
         ]
       ],
-      "counted_lines": 187
+      "counted_lines": 187,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/NextUint64UnfoldRegistrations.v",
@@ -155,7 +159,8 @@
           43
         ]
       ],
-      "counted_lines": 43
+      "counted_lines": 43,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/NextUint64Hints.v",
@@ -169,7 +174,8 @@
           4
         ]
       ],
-      "counted_lines": 4
+      "counted_lines": 4,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/ParentHeaderRootFacts.v",
@@ -196,7 +202,8 @@
         ]
       ],
       "counted_lines": 63,
-      "selection": "Own stack/return constants, layout, call/result records, and result relation."
+      "selection": "Own stack/return constants, layout, call/result records, and result relation.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/ParentHeader.v",
@@ -215,7 +222,8 @@
         ]
       ],
       "counted_lines": 27,
-      "selection": "Own range constants, byte fold, output encoding, and its two data lemmas with adjacent comments."
+      "selection": "Own range constants, byte fold, output encoding, and its two data lemmas with adjacent comments.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/ParentHeaderLevel1.v",
@@ -230,7 +238,8 @@
         ]
       ],
       "counted_lines": 29,
-      "selection": "Own domain, allowed result, and internal handoff statements with their shared introductory comment."
+      "selection": "Own domain, allowed result, and internal handoff statements with their shared introductory comment.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/spec_shape_baseline.json",
@@ -246,7 +255,8 @@
       ],
       "counted_lines": 16,
       "role": "measurement_metadata",
-      "selection": "Only the nextUint64 shape rows; complete source hash is bound."
+      "selection": "Only the nextUint64 shape rows; complete source hash is bound.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
@@ -262,7 +272,8 @@
       ],
       "counted_lines": 42,
       "role": "measurement_metadata",
-      "selection": "Only the nextUint64 shape rows; complete source hash is bound."
+      "selection": "Only the nextUint64 shape rows; complete source hash is bound.",
+      "text_kind": "hand_written"
     },
     {
       "path": "build/stock-zisk/automation-validation/nextuint64-function-text/CHECKPOINT.json",
@@ -278,7 +289,8 @@
       ],
       "counted_lines": 49,
       "role": "measurement_metadata",
-      "hash_rule": "No circular report hash; the outer push receipt binds this checkpoint."
+      "hash_rule": "No circular report hash; the outer push receipt binds this checkpoint.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/nextUint64_function_text.json",
@@ -294,7 +306,8 @@
           482
         ]
       ],
-      "counted_lines": 482
+      "counted_lines": 482,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/NextUint64ExitMeanings.v",
@@ -308,7 +321,8 @@
           80
         ]
       ],
-      "counted_lines": 80
+      "counted_lines": 80,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/NextUint64LoopSteps.v",
@@ -322,7 +336,8 @@
           42
         ]
       ],
-      "counted_lines": 42
+      "counted_lines": 42,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/NextUint64DataRegistrations.v",
@@ -336,7 +351,8 @@
           58
         ]
       ],
-      "counted_lines": 58
+      "counted_lines": 58,
+      "text_kind": "hand_written"
     },
     {
       "path": "build/stock-zisk/automation-validation/nextuint64-compile-evidence/COMPILE.template.json",
@@ -352,7 +368,8 @@
       ],
       "counted_lines": 257,
       "role": "measurement_metadata",
-      "hash_rule": "The outer certificate binds these metadata bytes; internal hashes would be circular."
+      "hash_rule": "The outer certificate binds these metadata bytes; internal hashes would be circular.",
+      "text_kind": "hand_written"
     },
     {
       "path": "build/stock-zisk/automation-validation/nextuint64-compile-evidence/RESULT.template.json",
@@ -368,7 +385,8 @@
       ],
       "counted_lines": 228,
       "role": "measurement_metadata",
-      "hash_rule": "The outer certificate binds these metadata bytes; internal hashes would be circular."
+      "hash_rule": "The outer certificate binds these metadata bytes; internal hashes would be circular.",
+      "text_kind": "hand_written"
     },
     {
       "path": "build/stock-zisk/automation-validation/nextuint64-registrations/CHECKPOINT.json",
@@ -384,7 +402,8 @@
       ],
       "counted_lines": 46,
       "role": "measurement_metadata",
-      "hash_rule": "The outer certificate binds these metadata bytes; internal hashes would be circular."
+      "hash_rule": "The outer certificate binds these metadata bytes; internal hashes would be circular.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/next_uint64_block_profile.json",
@@ -398,7 +417,8 @@
           1917
         ]
       ],
-      "counted_lines": 1917
+      "counted_lines": 1917,
+      "text_kind": "data_table"
     },
     {
       "path": "ZesuSsz/Evidence/next_uint64_block_design.json",
@@ -412,7 +432,8 @@
           2211
         ]
       ],
-      "counted_lines": 2211
+      "counted_lines": 2211,
+      "text_kind": "data_table"
     },
     {
       "path": "ZesuSsz/Compliance/NextUint64CallBridge.v",
@@ -426,7 +447,8 @@
           44
         ]
       ],
-      "counted_lines": 44
+      "counted_lines": 44,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/NextUint64BridgeRegistrations.v",
@@ -440,7 +462,8 @@
           7
         ]
       ],
-      "counted_lines": 7
+      "counted_lines": 7,
+      "text_kind": "hand_written"
     },
     {
       "path": "build/stock-zisk/automation-validation/nextuint64-selected-markers/CHECKPOINT.json",
@@ -455,7 +478,8 @@
           44
         ]
       ],
-      "counted_lines": 44
+      "counted_lines": 44,
+      "text_kind": "hand_written"
     }
   ],
   "category_totals": {
@@ -478,5 +502,8 @@
     "DecodeItem_registration_source_unchanged": true,
     "native_run": false,
     "limit": "Availability controls only. Native cause and closure remain unmeasured."
-  }
+  },
+  "scope_id": "nextUint64-function-support-v2",
+  "legacy_metadata_notice": "Existing totals, hashes, ranges, and history describe the schema-1 inventory. Schema-2 reports recount selected current source lines.",
+  "text_kind_rules": "Every row declares its kind. Unchecked generated text receives no generated credit."
 }

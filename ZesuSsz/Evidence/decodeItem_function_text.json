@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "function": "decodeItem",
   "snapshot_commit": "e7eb0bcef249f2cf99dfc86cf60d8436ade29a31",
   "counting_rules": {
@@ -15,18 +15,11 @@
     "recount": "For each files record, read path.splitlines(), union inclusive line_ranges, and count the union. Sum by category; compare category_totals. Verify sha256 except this manifest."
   },
   "contracts": [
-    "ZesuSsz/Contracts/Candidates/ParentHeaderDomain.v",
     "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
     "ZesuSsz/Contracts/DecodeItemErrorBranch.v",
     "ZesuSsz/Contracts/DecodeItemFrameImage.v",
     "ZesuSsz/Contracts/DecodeItemReturnFacts.v",
     "ZesuSsz/Contracts/DecodeItemSelected.v",
-    "ZesuSsz/Contracts/NextUint64Selected.v",
-    "ZesuSsz/Contracts/ParentHeader.v",
-    "ZesuSsz/Contracts/ParentHeaderLevel1.v",
-    "ZesuSsz/Contracts/ParentHeaderRequiredFields.v",
-    "ZesuSsz/Contracts/ParentHeaderRootFacts.v",
-    "ZesuSsz/Contracts/ParentHeaderSelected.v",
     "ZesuSsz/Contracts/ResultImage.v",
     "ZesuSsz/Contracts/RlpDecodeItem.v",
     "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v",
@@ -233,8 +226,6 @@
     "ZesuSsz/Evidence/DecodeItemS152StageDIndex32.v",
     "ZesuSsz/Evidence/DecodeItemVectorOracle.v",
     "ZesuSsz/Evidence/PARENT_HEADER_VECTORS.json",
-    "ZesuSsz/Evidence/ParentHeaderDifferential.v",
-    "ZesuSsz/Evidence/PendingParentHeaderSignatureGates.v",
     "ZesuSsz/Evidence/SAIL_VECTOR_AUDIT.json",
     "ZesuSsz/Evidence/SailVectorAudit.v",
     "ZesuSsz/Evidence/SignatureGateFixtures.v",
@@ -507,7 +498,8 @@
         ]
       ],
       "counted_lines": 9,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "Scaffolding/DecodeItemApplyChain.v",
@@ -521,7 +513,8 @@
           54
         ]
       ],
-      "counted_lines": 54
+      "counted_lines": 54,
+      "text_kind": "hand_written"
     },
     {
       "path": "Scaffolding/DecodeItemComplianceStatement.v",
@@ -535,7 +528,8 @@
           13
         ]
       ],
-      "counted_lines": 13
+      "counted_lines": 13,
+      "text_kind": "hand_written"
     },
     {
       "path": "Scaffolding/DecodeItemSemanticEntryFixtures.v",
@@ -549,7 +543,8 @@
           68
         ]
       ],
-      "counted_lines": 68
+      "counted_lines": 68,
+      "text_kind": "hand_written"
     },
     {
       "path": "Scaffolding/DecodeItemSignatureFixtures.v",
@@ -563,7 +558,8 @@
           144
         ]
       ],
-      "counted_lines": 144
+      "counted_lines": 144,
+      "text_kind": "hand_written"
     },
     {
       "path": "Scaffolding/DecodeItemSignatureGates.v",
@@ -577,7 +573,8 @@
           41
         ]
       ],
-      "counted_lines": 41
+      "counted_lines": 41,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/ByteFold.v",
@@ -592,7 +589,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v",
@@ -606,7 +604,8 @@
           294
         ]
       ],
-      "counted_lines": 294
+      "counted_lines": 294,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemC1BMeaning.v",
@@ -620,7 +619,8 @@
           152
         ]
       ],
-      "counted_lines": 152
+      "counted_lines": 152,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemCanonicalAnchors.v",
@@ -634,7 +634,8 @@
           122
         ]
       ],
-      "counted_lines": 122
+      "counted_lines": 122,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemCompletedFoldFacts.v",
@@ -648,7 +649,8 @@
           26
         ]
       ],
-      "counted_lines": 26
+      "counted_lines": 26,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemCompliance.v",
@@ -662,7 +664,8 @@
           70
         ]
       ],
-      "counted_lines": 70
+      "counted_lines": 70,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.v",
@@ -676,7 +679,8 @@
           360
         ]
       ],
-      "counted_lines": 360
+      "counted_lines": 360,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemDataRegistrations.v",
@@ -690,7 +694,8 @@
           108
         ]
       ],
-      "counted_lines": 108
+      "counted_lines": 108,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemDataWitnessFacts.v",
@@ -704,7 +709,8 @@
           58
         ]
       ],
-      "counted_lines": 58
+      "counted_lines": 58,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemEmptyStringOutputMeaning.v",
@@ -718,7 +724,8 @@
           71
         ]
       ],
-      "counted_lines": 71
+      "counted_lines": 71,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemEntryAdditionalFacts.v",
@@ -732,7 +739,8 @@
           1
         ]
       ],
-      "counted_lines": 1
+      "counted_lines": 1,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemEntryByteIndexFacts.v",
@@ -746,7 +754,8 @@
           77
         ]
       ],
-      "counted_lines": 77
+      "counted_lines": 77,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
@@ -760,7 +769,8 @@
           135
         ]
       ],
-      "counted_lines": 135
+      "counted_lines": 135,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v",
@@ -774,7 +784,8 @@
           138
         ]
       ],
-      "counted_lines": 138
+      "counted_lines": 138,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemEntryWitnessIntroductions.v",
@@ -788,7 +799,8 @@
           16
         ]
       ],
-      "counted_lines": 16
+      "counted_lines": 16,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemExitMeanings.v",
@@ -802,7 +814,8 @@
           100
         ]
       ],
-      "counted_lines": 100
+      "counted_lines": 100,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemFoldBackEdgeWitnesses.v",
@@ -816,7 +829,8 @@
           11
         ]
       ],
-      "counted_lines": 11
+      "counted_lines": 11,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemFoldExitFacts.v",
@@ -830,7 +844,8 @@
           106
         ]
       ],
-      "counted_lines": 106
+      "counted_lines": 106,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemFoldInitializationWitnesses.v",
@@ -844,7 +859,8 @@
           127
         ]
       ],
-      "counted_lines": 127
+      "counted_lines": 127,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemFoldRejectionFacts.v",
@@ -858,7 +874,8 @@
           62
         ]
       ],
-      "counted_lines": 62
+      "counted_lines": 62,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.v",
@@ -872,7 +889,8 @@
           196
         ]
       ],
-      "counted_lines": 196
+      "counted_lines": 196,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemFoldZeroFacts.v",
@@ -886,7 +904,8 @@
           39
         ]
       ],
-      "counted_lines": 39
+      "counted_lines": 39,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v",
@@ -900,7 +919,8 @@
           457
         ]
       ],
-      "counted_lines": 457
+      "counted_lines": 457,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemHints.v",
@@ -914,7 +934,8 @@
           46
         ]
       ],
-      "counted_lines": 46
+      "counted_lines": 46,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemInitializationPureFacts.v",
@@ -928,7 +949,8 @@
           60
         ]
       ],
-      "counted_lines": 60
+      "counted_lines": 60,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemInputHeadWordFacts.v",
@@ -942,7 +964,8 @@
           68
         ]
       ],
-      "counted_lines": 68
+      "counted_lines": 68,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemJoinTransferPure.v",
@@ -956,7 +979,8 @@
           65
         ]
       ],
-      "counted_lines": 65
+      "counted_lines": 65,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemLoadedEntryFacts.v",
@@ -970,7 +994,8 @@
           154
         ]
       ],
-      "counted_lines": 154
+      "counted_lines": 154,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemLongStringOutputMeaning.v",
@@ -984,7 +1009,8 @@
           65
         ]
       ],
-      "counted_lines": 65
+      "counted_lines": 65,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemLoopSteps.v",
@@ -998,7 +1024,8 @@
           51
         ]
       ],
-      "counted_lines": 51
+      "counted_lines": 51,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemMaskedReturnFacts.v",
@@ -1012,7 +1039,8 @@
           23
         ]
       ],
-      "counted_lines": 23
+      "counted_lines": 23,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemOutcomeWitnessFacts.v",
@@ -1026,7 +1054,8 @@
           19
         ]
       ],
-      "counted_lines": 19
+      "counted_lines": 19,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemOutputBaseWitnessFacts.v",
@@ -1040,7 +1069,8 @@
           150
         ]
       ],
-      "counted_lines": 150
+      "counted_lines": 150,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemOutputWitnessSelections.v",
@@ -1054,7 +1084,8 @@
           75
         ]
       ],
-      "counted_lines": 75
+      "counted_lines": 75,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemPathAgreement.v",
@@ -1068,7 +1099,8 @@
           265
         ]
       ],
-      "counted_lines": 265
+      "counted_lines": 265,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemRawOutputFacts.v",
@@ -1082,7 +1114,8 @@
           160
         ]
       ],
-      "counted_lines": 160
+      "counted_lines": 160,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemReturnExitPure.v",
@@ -1096,7 +1129,8 @@
           45
         ]
       ],
-      "counted_lines": 45
+      "counted_lines": 45,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemReturnExitResources.v",
@@ -1110,7 +1144,8 @@
           106
         ]
       ],
-      "counted_lines": 106
+      "counted_lines": 106,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemReturnRestorationFacts.v",
@@ -1124,7 +1159,8 @@
           106
         ]
       ],
-      "counted_lines": 106
+      "counted_lines": 106,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemS40GuardFacts.v",
@@ -1138,7 +1174,8 @@
           266
         ]
       ],
-      "counted_lines": 266
+      "counted_lines": 266,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemSailEvaluation.v",
@@ -1152,7 +1189,8 @@
           338
         ]
       ],
-      "counted_lines": 338
+      "counted_lines": 338,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemSailFold.v",
@@ -1166,7 +1204,8 @@
           168
         ]
       ],
-      "counted_lines": 168
+      "counted_lines": 168,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemSailIntroduction.v",
@@ -1180,7 +1219,8 @@
           287
         ]
       ],
-      "counted_lines": 287
+      "counted_lines": 287,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemSavedFrameWitnesses.v",
@@ -1194,7 +1234,8 @@
           98
         ]
       ],
-      "counted_lines": 98
+      "counted_lines": 98,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemSemanticIntroduction.v",
@@ -1208,7 +1249,8 @@
           207
         ]
       ],
-      "counted_lines": 207
+      "counted_lines": 207,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemShortListHandoffFacts.v",
@@ -1222,7 +1264,8 @@
           27
         ]
       ],
-      "counted_lines": 27
+      "counted_lines": 27,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemShortListOutputMeaning.v",
@@ -1236,7 +1279,8 @@
           78
         ]
       ],
-      "counted_lines": 78
+      "counted_lines": 78,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemStoreSelectionIntroductions.v",
@@ -1250,7 +1294,8 @@
           11
         ]
       ],
-      "counted_lines": 11
+      "counted_lines": 11,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemStringSuccessorWitnesses.v",
@@ -1264,7 +1309,8 @@
           62
         ]
       ],
-      "counted_lines": 62
+      "counted_lines": 62,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemUnfoldRegistrations.v",
@@ -1278,7 +1324,8 @@
           164
         ]
       ],
-      "counted_lines": 164
+      "counted_lines": 164,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/EvmSailAdapter.v",
@@ -1293,7 +1340,8 @@
         ]
       ],
       "counted_lines": 10,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/KnownBugs.v",
@@ -1308,7 +1356,8 @@
         ]
       ],
       "counted_lines": 10,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/ProjectionTransaction.v",
@@ -1323,7 +1372,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/RlpInputBounds.v",
@@ -1338,7 +1388,8 @@
         ]
       ],
       "counted_lines": 8,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/SailRun.v",
@@ -1353,7 +1404,8 @@
         ]
       ],
       "counted_lines": 4,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/SailVectorAuditIntegers.v",
@@ -1368,38 +1420,8 @@
         ]
       ],
       "counted_lines": 20,
-      "selection": "The selected 20 lines belong to a standalone pinned-vector test. No proof imports this module or uses these declarations. Preserve the test and exclude these lines from scored support."
-    },
-    {
-      "path": "ZesuSsz/Contracts/Candidates/ParentHeaderDomain.v",
-      "category": "contracts",
-      "scope": "mixed_file",
-      "sha256": "3274d42169d1fbe2374a0a50c35ff460bd0d130d5b96c6615161c66447a049d6",
-      "file_lines": 142,
-      "line_ranges": [
-        [
-          3,
-          3
-        ],
-        [
-          10,
-          17
-        ],
-        [
-          39,
-          82
-        ],
-        [
-          103,
-          111
-        ],
-        [
-          122,
-          134
-        ]
-      ],
-      "counted_lines": 75,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "The selected 20 lines belong to a standalone pinned-vector test. No proof imports this module or uses these declarations. Preserve the test and exclude these lines from scored support.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
@@ -1413,7 +1435,8 @@
           269
         ]
       ],
-      "counted_lines": 269
+      "counted_lines": 269,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/DecodeItemErrorBranch.v",
@@ -1427,7 +1450,8 @@
           27
         ]
       ],
-      "counted_lines": 27
+      "counted_lines": 27,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/DecodeItemFrameImage.v",
@@ -1441,7 +1465,8 @@
           115
         ]
       ],
-      "counted_lines": 115
+      "counted_lines": 115,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/DecodeItemReturnFacts.v",
@@ -1455,7 +1480,8 @@
           59
         ]
       ],
-      "counted_lines": 59
+      "counted_lines": 59,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/DecodeItemSelected.v",
@@ -1469,133 +1495,8 @@
           29
         ]
       ],
-      "counted_lines": 29
-    },
-    {
-      "path": "ZesuSsz/Contracts/NextUint64Selected.v",
-      "category": "contracts",
-      "scope": "mixed_file",
-      "sha256": "895a07a3a322537d848aa1e190515e5163e3a4e50edd2f7d241358b2f7766640",
-      "file_lines": 90,
-      "line_ranges": [
-        [
-          9,
-          9
-        ],
-        [
-          16,
-          21
-        ],
-        [
-          73,
-          85
-        ]
-      ],
-      "counted_lines": 20,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
-    },
-    {
-      "path": "ZesuSsz/Contracts/ParentHeader.v",
-      "category": "contracts",
-      "scope": "mixed_file",
-      "sha256": "efbb3d6b1a4697ea190c8baaa69dbaa08e685cd26d4661f099e58d98562c8d82",
-      "file_lines": 106,
-      "line_ranges": [
-        [
-          5,
-          5
-        ],
-        [
-          89,
-          97
-        ]
-      ],
-      "counted_lines": 10,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
-    },
-    {
-      "path": "ZesuSsz/Contracts/ParentHeaderLevel1.v",
-      "category": "contracts",
-      "scope": "mixed_file",
-      "sha256": "7d665aa12d4c32fbb08f1e41421744501a2ca8d0c2dae8c3870405da75a78ba6",
-      "file_lines": 136,
-      "line_ranges": [
-        [
-          6,
-          6
-        ]
-      ],
-      "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
-    },
-    {
-      "path": "ZesuSsz/Contracts/ParentHeaderRequiredFields.v",
-      "category": "contracts",
-      "scope": "mixed_file",
-      "sha256": "57a73c2ae79c5f91542596f995a84d4e2eae1080668f9487f17415f8640fe6db",
-      "file_lines": 68,
-      "line_ranges": [
-        [
-          5,
-          5
-        ],
-        [
-          23,
-          42
-        ],
-        [
-          46,
-          56
-        ]
-      ],
-      "counted_lines": 32,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
-    },
-    {
-      "path": "ZesuSsz/Contracts/ParentHeaderRootFacts.v",
-      "category": "contracts",
-      "scope": "mixed_file",
-      "sha256": "3032c34f795903497012cf5488f102e5d46da2f5ccbc4f4d063b034717318461",
-      "file_lines": 133,
-      "line_ranges": [
-        [
-          5,
-          5
-        ],
-        [
-          37,
-          47
-        ],
-        [
-          51,
-          57
-        ],
-        [
-          111,
-          133
-        ]
-      ],
-      "counted_lines": 42,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
-    },
-    {
-      "path": "ZesuSsz/Contracts/ParentHeaderSelected.v",
-      "category": "contracts",
-      "scope": "mixed_file",
-      "sha256": "21c4ae10ca952f07291508caba10dcc836a78afad4260661a4ffc26acfd74f7c",
-      "file_lines": 142,
-      "line_ranges": [
-        [
-          11,
-          11
-        ],
-        [
-          121,
-          137
-        ]
-      ],
-      "counted_lines": 18,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "counted_lines": 29,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/ResultImage.v",
@@ -1610,7 +1511,8 @@
         ]
       ],
       "counted_lines": 2,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/RlpDecodeItem.v",
@@ -1624,7 +1526,8 @@
           174
         ]
       ],
-      "counted_lines": 174
+      "counted_lines": 174,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v",
@@ -1638,7 +1541,8 @@
           271
         ]
       ],
-      "counted_lines": 271
+      "counted_lines": 271,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/RlpDecodeItemByteFold.v",
@@ -1652,7 +1556,8 @@
           94
         ]
       ],
-      "counted_lines": 94
+      "counted_lines": 94,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v",
@@ -1666,7 +1571,8 @@
           125
         ]
       ],
-      "counted_lines": 125
+      "counted_lines": 125,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v",
@@ -1680,7 +1586,8 @@
           30
         ]
       ],
-      "counted_lines": 30
+      "counted_lines": 30,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/RlpDecodeItemContract.v",
@@ -1694,7 +1601,8 @@
           150
         ]
       ],
-      "counted_lines": 150
+      "counted_lines": 150,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v",
@@ -1708,7 +1616,8 @@
           61
         ]
       ],
-      "counted_lines": 61
+      "counted_lines": 61,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.v",
@@ -1722,7 +1631,8 @@
           152
         ]
       ],
-      "counted_lines": 152
+      "counted_lines": 152,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v",
@@ -1736,7 +1646,8 @@
           11
         ]
       ],
-      "counted_lines": 11
+      "counted_lines": 11,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v",
@@ -1750,7 +1661,8 @@
           305
         ]
       ],
-      "counted_lines": 305
+      "counted_lines": 305,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/RlpDecodeItemSchema.v",
@@ -1764,7 +1676,8 @@
           93
         ]
       ],
-      "counted_lines": 93
+      "counted_lines": 93,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/decode_item_block_design.json",
@@ -1778,7 +1691,8 @@
           1675
         ]
       ],
-      "counted_lines": 1675
+      "counted_lines": 1675,
+      "text_kind": "data_table"
     },
     {
       "path": "ZesuSsz/Evidence/DECODE_ITEM_VECTORS.json",
@@ -1792,7 +1706,8 @@
           1125
         ]
       ],
-      "counted_lines": 1125
+      "counted_lines": 1125,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/DecodeItemClosureReport.json",
@@ -1806,7 +1721,8 @@
           131
         ]
       ],
-      "counted_lines": 131
+      "counted_lines": 131,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/DecodeItemExitMeaningDraftFixtures.v",
@@ -1820,7 +1736,8 @@
           40
         ]
       ],
-      "counted_lines": 40
+      "counted_lines": 40,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v",
@@ -1834,7 +1751,8 @@
           251
         ]
       ],
-      "counted_lines": 251
+      "counted_lines": 251,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/DecodeItemOutput24Selections.v",
@@ -1848,7 +1766,8 @@
           108
         ]
       ],
-      "counted_lines": 108
+      "counted_lines": 108,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/DecodeItemPrecommitmentLedger.v",
@@ -1862,7 +1781,8 @@
           77
         ]
       ],
-      "counted_lines": 77
+      "counted_lines": 77,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/DecodeItemPrecommitmentWitnessFixtures.v",
@@ -1876,7 +1796,8 @@
           204
         ]
       ],
-      "counted_lines": 204
+      "counted_lines": 204,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/DecodeItemRouteRepairAcceptance.v",
@@ -1890,7 +1811,8 @@
           55
         ]
       ],
-      "counted_lines": 55
+      "counted_lines": 55,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/DecodeItemS152Selected6b08.v",
@@ -1904,7 +1826,8 @@
           17
         ]
       ],
-      "counted_lines": 17
+      "counted_lines": 17,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/DecodeItemS152StageDIndex32.v",
@@ -1918,7 +1841,8 @@
           18
         ]
       ],
-      "counted_lines": 18
+      "counted_lines": 18,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/DecodeItemVectorOracle.v",
@@ -1932,7 +1856,8 @@
           77
         ]
       ],
-      "counted_lines": 77
+      "counted_lines": 77,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/PARENT_HEADER_VECTORS.json",
@@ -1947,41 +1872,8 @@
         ]
       ],
       "counted_lines": 10364,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
-    },
-    {
-      "path": "ZesuSsz/Evidence/ParentHeaderDifferential.v",
-      "category": "tests_and_exports",
-      "scope": "mixed_file",
-      "sha256": "486c26e5b3103681756d88f4dd7ca329462d181952d8d0ca369f120e93683efe",
-      "file_lines": 242,
-      "line_ranges": [
-        [
-          5,
-          5
-        ]
-      ],
-      "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
-    },
-    {
-      "path": "ZesuSsz/Evidence/PendingParentHeaderSignatureGates.v",
-      "category": "tests_and_exports",
-      "scope": "mixed_file",
-      "sha256": "1679ad7028c9b953a6affc9d485fcbd40fd72e94d259d1c111186b0b65629819",
-      "file_lines": 32,
-      "line_ranges": [
-        [
-          3,
-          3
-        ],
-        [
-          8,
-          20
-        ]
-      ],
-      "counted_lines": 14,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/SAIL_VECTOR_AUDIT.json",
@@ -1996,7 +1888,8 @@
         ]
       ],
       "counted_lines": 43,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/SailVectorAudit.v",
@@ -2011,7 +1904,8 @@
         ]
       ],
       "counted_lines": 9,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/SignatureGateFixtures.v",
@@ -2034,7 +1928,8 @@
         ]
       ],
       "counted_lines": 10,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/SignatureGates.v",
@@ -2073,7 +1968,8 @@
         ]
       ],
       "counted_lines": 40,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/approved_automation_switches.json",
@@ -2088,7 +1984,8 @@
         ]
       ],
       "counted_lines": 110,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/array_store/INDEX.json",
@@ -2103,7 +2000,8 @@
         ]
       ],
       "counted_lines": 752,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/array_store/README.md",
@@ -2122,7 +2020,8 @@
         ]
       ],
       "counted_lines": 2,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/array_store/frozen_scope/hints.v.txt",
@@ -2137,7 +2036,8 @@
         ]
       ],
       "counted_lines": 25,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/array_store/statements/698c.txt",
@@ -2152,7 +2052,8 @@
         ]
       ],
       "counted_lines": 4,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/array_store/statements/69b0.txt",
@@ -2167,7 +2068,8 @@
         ]
       ],
       "counted_lines": 4,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/array_store/statements/6a40.txt",
@@ -2182,7 +2084,8 @@
         ]
       ],
       "counted_lines": 4,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/array_store/statements/6a78.txt",
@@ -2197,7 +2100,8 @@
         ]
       ],
       "counted_lines": 4,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/array_store/statements/6ae0.txt",
@@ -2212,7 +2116,8 @@
         ]
       ],
       "counted_lines": 4,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/array_store/statements/6b08.txt",
@@ -2227,7 +2132,8 @@
         ]
       ],
       "counted_lines": 4,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/array_store/statements/decodeItemEntry69b0Output24Selection.txt",
@@ -2241,7 +2147,8 @@
           5
         ]
       ],
-      "counted_lines": 5
+      "counted_lines": 5,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/array_store/statements/decodeItemEntry6a40Output24Selection.txt",
@@ -2255,7 +2162,8 @@
           5
         ]
       ],
-      "counted_lines": 5
+      "counted_lines": 5,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/array_store/statements/decodeItemEntry6a78Output24Selection.txt",
@@ -2269,7 +2177,8 @@
           5
         ]
       ],
-      "counted_lines": 5
+      "counted_lines": 5,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/array_store/statements/decodeItemOutput24SelectionFacts.txt",
@@ -2283,7 +2192,8 @@
           6
         ]
       ],
-      "counted_lines": 6
+      "counted_lines": 6,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/array_store/statements/decodeItemOutput24UpdatedExtent.txt",
@@ -2297,7 +2207,8 @@
           6
         ]
       ],
-      "counted_lines": 6
+      "counted_lines": 6,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/array_store/statements/decodeItemReturnEntryOutput24Selection.txt",
@@ -2311,7 +2222,8 @@
           4
         ]
       ],
-      "counted_lines": 4
+      "counted_lines": 4,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/array_store/statements/s152b_entry_698c_output_facts.txt",
@@ -2326,7 +2238,8 @@
         ]
       ],
       "counted_lines": 3,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/array_store/statements/s152b_entry_6ae0_output_facts.txt",
@@ -2345,7 +2258,8 @@
         ]
       ],
       "counted_lines": 6,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/array_store/statements/s152b_entry_6b08_output_facts.txt",
@@ -2360,7 +2274,8 @@
         ]
       ],
       "counted_lines": 3,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/av_statement_baseline.json",
@@ -2375,7 +2290,8 @@
         ]
       ],
       "counted_lines": 490,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/check_decode_item_hints.py",
@@ -2427,7 +2343,8 @@
             "SCOPED_HINT_IMPORTS"
           ]
         }
-      ]
+      ],
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/check_decode_item_route_repair.py",
@@ -2542,7 +2459,8 @@
             "ENTRY_NORMALIZATION_IDENTITY"
           ]
         }
-      ]
+      ],
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/check_i75_evidence.py",
@@ -2557,7 +2475,8 @@
         ]
       ],
       "counted_lines": 127,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/check_proof_hygiene.py",
@@ -2583,7 +2502,8 @@
             "RETIRED_PROOF_MODULES"
           ]
         }
-      ]
+      ],
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/decodeItem_function_text.json",
@@ -2598,7 +2518,8 @@
           8435
         ]
       ],
-      "counted_lines": 8435
+      "counted_lines": 8435,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/decode_item_auto_modules.json",
@@ -2612,7 +2533,8 @@
           94
         ]
       ],
-      "counted_lines": 94
+      "counted_lines": 94,
+      "text_kind": "data_table"
     },
     {
       "path": "ZesuSsz/Evidence/decode_item_block_design.json",
@@ -2626,7 +2548,8 @@
           2227
         ]
       ],
-      "counted_lines": 2227
+      "counted_lines": 2227,
+      "text_kind": "data_table"
     },
     {
       "path": "ZesuSsz/Evidence/generate_decode_item_block_design.py",
@@ -2777,7 +2700,8 @@
             "BRANCH_CONSTANTS"
           ]
         }
-      ]
+      ],
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/generate_decode_item_native_status.py",
@@ -2829,7 +2753,8 @@
             "I67_SHA256"
           ]
         }
-      ]
+      ],
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/6960.ledger-target.txt",
@@ -2844,7 +2769,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/697c.ledger-target.txt",
@@ -2911,7 +2837,8 @@
         ]
       ],
       "counted_lines": 38,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/698c.ledger-target.txt",
@@ -2966,7 +2893,8 @@
         ]
       ],
       "counted_lines": 15,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/69b0.ledger-target.txt",
@@ -3017,7 +2945,8 @@
         ]
       ],
       "counted_lines": 14,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/69e8.ledger-target.txt",
@@ -3088,7 +3017,8 @@
         ]
       ],
       "counted_lines": 38,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/6a08.json",
@@ -3103,7 +3033,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/6a08.ledger-target.txt",
@@ -3134,7 +3065,8 @@
         ]
       ],
       "counted_lines": 14,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/6a24.ledger-target.txt",
@@ -3153,7 +3085,8 @@
         ]
       ],
       "counted_lines": 2,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/6a38.json",
@@ -3168,7 +3101,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/6a38.ledger-target.txt",
@@ -3191,7 +3125,8 @@
         ]
       ],
       "counted_lines": 15,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/6a40.ledger-target.txt",
@@ -3242,7 +3177,8 @@
         ]
       ],
       "counted_lines": 14,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/6a78.ledger-target.txt",
@@ -3293,7 +3229,8 @@
         ]
       ],
       "counted_lines": 14,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/6aa8.json",
@@ -3308,7 +3245,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/6aa8.ledger-target.txt",
@@ -3339,7 +3277,8 @@
         ]
       ],
       "counted_lines": 14,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/6ac4.ledger-target.txt",
@@ -3358,7 +3297,8 @@
         ]
       ],
       "counted_lines": 2,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/6ad8.json",
@@ -3373,7 +3313,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/6ad8.ledger-target.txt",
@@ -3396,7 +3337,8 @@
         ]
       ],
       "counted_lines": 15,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/6ae0.ledger-target.txt",
@@ -3447,7 +3389,8 @@
         ]
       ],
       "counted_lines": 14,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/6b08.ledger-target.txt",
@@ -3498,7 +3441,8 @@
         ]
       ],
       "counted_lines": 14,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/INDEX.json",
@@ -3513,7 +3457,8 @@
         ]
       ],
       "counted_lines": 179,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/precommitment/LEDGER.json",
@@ -3528,7 +3473,8 @@
         ]
       ],
       "counted_lines": 1838,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/proof_size_baseline.json",
@@ -3543,7 +3489,8 @@
         ]
       ],
       "counted_lines": 55,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/route_repair/6960.statement.txt",
@@ -3558,7 +3505,8 @@
         ]
       ],
       "counted_lines": 6,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/route_repair/697c.statement.txt",
@@ -3573,7 +3521,8 @@
         ]
       ],
       "counted_lines": 5,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/route_repair/69e8.statement.txt",
@@ -3588,7 +3537,8 @@
         ]
       ],
       "counted_lines": 5,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/route_repair/6a08.statement.txt",
@@ -3603,7 +3553,8 @@
         ]
       ],
       "counted_lines": 6,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/route_repair/6a24.old-cursor.kernel.txt",
@@ -3622,7 +3573,8 @@
         ]
       ],
       "counted_lines": 2,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/route_repair/6a24.statement.txt",
@@ -3637,7 +3589,8 @@
         ]
       ],
       "counted_lines": 6,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/route_repair/6a24.successor-cursor.statement.txt",
@@ -3652,7 +3605,8 @@
         ]
       ],
       "counted_lines": 3,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/route_repair/6a38.statement.txt",
@@ -3667,7 +3621,8 @@
         ]
       ],
       "counted_lines": 6,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/route_repair/6aa8.statement.txt",
@@ -3682,7 +3637,8 @@
         ]
       ],
       "counted_lines": 6,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/route_repair/6ac4.old-cursor.kernel.txt",
@@ -3701,7 +3657,8 @@
         ]
       ],
       "counted_lines": 2,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/route_repair/6ac4.statement.txt",
@@ -3716,7 +3673,8 @@
         ]
       ],
       "counted_lines": 6,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/route_repair/6ac4.successor-cursor.statement.txt",
@@ -3731,7 +3689,8 @@
         ]
       ],
       "counted_lines": 3,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/route_repair/6ad8.statement.txt",
@@ -3746,7 +3705,8 @@
         ]
       ],
       "counted_lines": 6,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/route_repair/ENTRY_NORMALIZATION.json",
@@ -3761,7 +3721,8 @@
         ]
       ],
       "counted_lines": 462,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/route_repair/EVIDENCE-FORMAT.md",
@@ -3776,7 +3737,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/route_repair/INDEX.json",
@@ -3791,7 +3753,8 @@
         ]
       ],
       "counted_lines": 457,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/route_repair/README.md",
@@ -3818,7 +3781,8 @@
         ]
       ],
       "counted_lines": 4,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/spec_shape_baseline.json",
@@ -3833,7 +3797,8 @@
         ]
       ],
       "counted_lines": 62,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
@@ -3852,7 +3817,8 @@
         ]
       ],
       "counted_lines": 225,
-      "selection": "Inherited mixed scope, including the checked R4 data registration inventory row."
+      "selection": "Inherited mixed scope, including the checked R4 data registration inventory row.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/test_check_decode_item_hints.py",
@@ -3866,7 +3832,8 @@
           212
         ]
       ],
-      "counted_lines": 212
+      "counted_lines": 212,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/test_check_proof_hygiene.py",
@@ -3893,7 +3860,8 @@
         ]
       ],
       "counted_lines": 11,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/test_check_spec_shapes.py",
@@ -3912,7 +3880,8 @@
         ]
       ],
       "counted_lines": 3,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/test_decode_item_array_store.py",
@@ -3926,7 +3895,8 @@
           151
         ]
       ],
-      "counted_lines": 151
+      "counted_lines": 151,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/test_decode_item_route_repair.py",
@@ -3940,7 +3910,8 @@
           47
         ]
       ],
-      "counted_lines": 47
+      "counted_lines": 47,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/test_entry_normalization_acceptance.py",
@@ -3955,7 +3926,8 @@
         ]
       ],
       "counted_lines": 4,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/test_generate_decode_item_native_status.py",
@@ -3969,7 +3941,8 @@
           91
         ]
       ],
-      "counted_lines": 91
+      "counted_lines": 91,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/test_loop_negative_controls.py",
@@ -3984,7 +3957,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/test_precommitment_ledger.py",
@@ -3999,7 +3973,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/test_route_repair_cli.py",
@@ -4018,7 +3993,8 @@
         ]
       ],
       "counted_lines": 6,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/test_route_repair_linked_evidence.py",
@@ -4045,7 +4021,8 @@
         ]
       ],
       "counted_lines": 12,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/test_route_repair_startup.py",
@@ -4072,7 +4049,8 @@
         ]
       ],
       "counted_lines": 6,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/test_sail_fatal_sites.py",
@@ -4111,7 +4089,8 @@
             "APPROVED_ROOTS"
           ]
         }
-      ]
+      ],
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/EvmSail/Rlp/BLOB_EXPERIMENT.json",
@@ -4126,7 +4105,8 @@
         ]
       ],
       "counted_lines": 52,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/EvmSail/Rlp/slice.commands",
@@ -4141,7 +4121,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Export/DecodeItemTermination.v",
@@ -4155,7 +4136,8 @@
           170
         ]
       ],
-      "counted_lines": 170
+      "counted_lines": 170,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Generated/DecodeItem/BlockTable.v",
@@ -4169,7 +4151,8 @@
           209
         ]
       ],
-      "counted_lines": 209
+      "counted_lines": 209,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Generated/DecodeItem/PromotedBodies.v",
@@ -4183,7 +4166,8 @@
           157
         ]
       ],
-      "counted_lines": 157
+      "counted_lines": 157,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Generated/DecodeItem/block_table_metadata.json",
@@ -4197,7 +4181,8 @@
           702
         ]
       ],
-      "counted_lines": 702
+      "counted_lines": 702,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Generated/TestTraces/EntryAddi.v",
@@ -4212,7 +4197,8 @@
         ]
       ],
       "counted_lines": 3,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Generated/TestTraces/SdX1X2Off8.v",
@@ -4227,7 +4213,8 @@
         ]
       ],
       "counted_lines": 3,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v",
@@ -4241,7 +4228,8 @@
           33
         ]
       ],
-      "counted_lines": 33
+      "counted_lines": 33,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d69a4.v",
@@ -4255,7 +4243,8 @@
           36
         ]
       ],
-      "counted_lines": 36
+      "counted_lines": 36,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d69d8.v",
@@ -4269,7 +4258,8 @@
           33
         ]
       ],
-      "counted_lines": 33
+      "counted_lines": 33,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d69e0.v",
@@ -4283,7 +4273,8 @@
           36
         ]
       ],
-      "counted_lines": 36
+      "counted_lines": 36,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a00.v",
@@ -4297,7 +4288,8 @@
           33
         ]
       ],
-      "counted_lines": 33
+      "counted_lines": 33,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a14.v",
@@ -4311,7 +4303,8 @@
           36
         ]
       ],
-      "counted_lines": 36
+      "counted_lines": 36,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a64.v",
@@ -4325,7 +4318,8 @@
           33
         ]
       ],
-      "counted_lines": 33
+      "counted_lines": 33,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a6c.v",
@@ -4339,7 +4333,8 @@
           36
         ]
       ],
-      "counted_lines": 36
+      "counted_lines": 36,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6ab4.v",
@@ -4353,7 +4348,8 @@
           36
         ]
       ],
-      "counted_lines": 36
+      "counted_lines": 36,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/ByteFoldMachineObligations.v",
@@ -4367,7 +4363,8 @@
           16
         ]
       ],
-      "counted_lines": 16
+      "counted_lines": 16,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/ByteFoldPure.v",
@@ -4381,7 +4378,8 @@
           68
         ]
       ],
-      "counted_lines": 68
+      "counted_lines": 68,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Composition/CompleteFamily.v",
@@ -4395,7 +4393,8 @@
           96
         ]
       ],
-      "counted_lines": 96
+      "counted_lines": 96,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Composition/CompleteNativeFamily.v",
@@ -4409,7 +4408,8 @@
           142
         ]
       ],
-      "counted_lines": 142
+      "counted_lines": 142,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6960.v",
@@ -4423,7 +4423,8 @@
           50
         ]
       ],
-      "counted_lines": 50
+      "counted_lines": 50,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a08.v",
@@ -4437,7 +4438,8 @@
           48
         ]
       ],
-      "counted_lines": 48
+      "counted_lines": 48,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a24.v",
@@ -4451,7 +4453,8 @@
           55
         ]
       ],
-      "counted_lines": 55
+      "counted_lines": 55,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a38.v",
@@ -4465,7 +4468,8 @@
           43
         ]
       ],
-      "counted_lines": 43
+      "counted_lines": 43,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6aa8.v",
@@ -4479,7 +4483,8 @@
           36
         ]
       ],
-      "counted_lines": 36
+      "counted_lines": 36,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ac4.v",
@@ -4493,7 +4498,8 @@
           55
         ]
       ],
-      "counted_lines": 55
+      "counted_lines": 55,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ad8.v",
@@ -4507,7 +4513,8 @@
           43
         ]
       ],
-      "counted_lines": 43
+      "counted_lines": 43,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6960.v",
@@ -4521,7 +4528,8 @@
           18
         ]
       ],
-      "counted_lines": 18
+      "counted_lines": 18,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6960Conditional.v",
@@ -4535,7 +4543,8 @@
           43
         ]
       ],
-      "counted_lines": 43
+      "counted_lines": 43,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6974.v",
@@ -4549,7 +4558,8 @@
           18
         ]
       ],
-      "counted_lines": 18
+      "counted_lines": 18,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6974Conditional.v",
@@ -4563,7 +4573,8 @@
           51
         ]
       ],
-      "counted_lines": 51
+      "counted_lines": 51,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d697c.v",
@@ -4577,7 +4588,8 @@
           27
         ]
       ],
-      "counted_lines": 27
+      "counted_lines": 27,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d697cConditional.v",
@@ -4591,7 +4603,8 @@
           39
         ]
       ],
-      "counted_lines": 39
+      "counted_lines": 39,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d698c.v",
@@ -4605,7 +4618,8 @@
           18
         ]
       ],
-      "counted_lines": 18
+      "counted_lines": 18,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d698cConditional.v",
@@ -4619,7 +4633,8 @@
           38
         ]
       ],
-      "counted_lines": 38
+      "counted_lines": 38,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69a4.v",
@@ -4633,7 +4648,8 @@
           41
         ]
       ],
-      "counted_lines": 41
+      "counted_lines": 41,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69b0.v",
@@ -4647,7 +4663,8 @@
           18
         ]
       ],
-      "counted_lines": 18
+      "counted_lines": 18,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69b0Conditional.v",
@@ -4661,7 +4678,8 @@
           30
         ]
       ],
-      "counted_lines": 30
+      "counted_lines": 30,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69d8.v",
@@ -4675,7 +4693,8 @@
           41
         ]
       ],
-      "counted_lines": 41
+      "counted_lines": 41,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69e0.v",
@@ -4689,7 +4708,8 @@
           41
         ]
       ],
-      "counted_lines": 41
+      "counted_lines": 41,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69e8.v",
@@ -4703,7 +4723,8 @@
           27
         ]
       ],
-      "counted_lines": 27
+      "counted_lines": 27,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d69e8Conditional.v",
@@ -4717,7 +4738,8 @@
           39
         ]
       ],
-      "counted_lines": 39
+      "counted_lines": 39,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a00.v",
@@ -4731,7 +4753,8 @@
           41
         ]
       ],
-      "counted_lines": 41
+      "counted_lines": 41,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a08.v",
@@ -4745,7 +4768,8 @@
           18
         ]
       ],
-      "counted_lines": 18
+      "counted_lines": 18,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a08Conditional.v",
@@ -4759,7 +4783,8 @@
           44
         ]
       ],
-      "counted_lines": 44
+      "counted_lines": 44,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a14.v",
@@ -4773,7 +4798,8 @@
           34
         ]
       ],
-      "counted_lines": 34
+      "counted_lines": 34,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a24.v",
@@ -4787,7 +4813,8 @@
           18
         ]
       ],
-      "counted_lines": 18
+      "counted_lines": 18,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a24Conditional.v",
@@ -4801,7 +4828,8 @@
           46
         ]
       ],
-      "counted_lines": 46
+      "counted_lines": 46,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a38.v",
@@ -4815,7 +4843,8 @@
           18
         ]
       ],
-      "counted_lines": 18
+      "counted_lines": 18,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a38Conditional.v",
@@ -4829,7 +4858,8 @@
           43
         ]
       ],
-      "counted_lines": 43
+      "counted_lines": 43,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a40.v",
@@ -4843,7 +4873,8 @@
           18
         ]
       ],
-      "counted_lines": 18
+      "counted_lines": 18,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a40Conditional.v",
@@ -4857,7 +4888,8 @@
           30
         ]
       ],
-      "counted_lines": 30
+      "counted_lines": 30,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a64.v",
@@ -4871,7 +4903,8 @@
           41
         ]
       ],
-      "counted_lines": 41
+      "counted_lines": 41,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a6c.v",
@@ -4885,7 +4918,8 @@
           41
         ]
       ],
-      "counted_lines": 41
+      "counted_lines": 41,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a78.v",
@@ -4899,7 +4933,8 @@
           18
         ]
       ],
-      "counted_lines": 18
+      "counted_lines": 18,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6a78Conditional.v",
@@ -4913,7 +4948,8 @@
           30
         ]
       ],
-      "counted_lines": 30
+      "counted_lines": 30,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6aa8.v",
@@ -4927,7 +4963,8 @@
           18
         ]
       ],
-      "counted_lines": 18
+      "counted_lines": 18,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6aa8Conditional.v",
@@ -4941,7 +4978,8 @@
           44
         ]
       ],
-      "counted_lines": 44
+      "counted_lines": 44,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ab4.v",
@@ -4955,7 +4993,8 @@
           34
         ]
       ],
-      "counted_lines": 34
+      "counted_lines": 34,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ac4.v",
@@ -4969,7 +5008,8 @@
           18
         ]
       ],
-      "counted_lines": 18
+      "counted_lines": 18,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ac4Conditional.v",
@@ -4983,7 +5023,8 @@
           46
         ]
       ],
-      "counted_lines": 46
+      "counted_lines": 46,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ad8.v",
@@ -4997,7 +5038,8 @@
           18
         ]
       ],
-      "counted_lines": 18
+      "counted_lines": 18,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ad8Conditional.v",
@@ -5011,7 +5053,8 @@
           43
         ]
       ],
-      "counted_lines": 43
+      "counted_lines": 43,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ae0.v",
@@ -5025,7 +5068,8 @@
           18
         ]
       ],
-      "counted_lines": 18
+      "counted_lines": 18,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6ae0Conditional.v",
@@ -5039,7 +5083,8 @@
           30
         ]
       ],
-      "counted_lines": 30
+      "counted_lines": 30,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6b08.v",
@@ -5053,7 +5098,8 @@
           18
         ]
       ],
-      "counted_lines": 18
+      "counted_lines": 18,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6b08Conditional.v",
@@ -5067,7 +5113,8 @@
           30
         ]
       ],
-      "counted_lines": 30
+      "counted_lines": 30,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/ApprovedSwitches.v",
@@ -5082,7 +5129,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/ArrayBoundsAddressCast.v",
@@ -5105,7 +5153,8 @@
         ]
       ],
       "counted_lines": 13,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/ArrayRegionBounds.v",
@@ -5136,7 +5185,8 @@
         ]
       ],
       "counted_lines": 59,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/ArrayRegionCast.v",
@@ -5159,7 +5209,8 @@
         ]
       ],
       "counted_lines": 14,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/ArrayRegionSearch.v",
@@ -5190,7 +5241,8 @@
         ]
       ],
       "counted_lines": 58,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/ByteArraysWrite.v",
@@ -5205,7 +5257,8 @@
         ]
       ],
       "counted_lines": 21,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/ConjunctHead.v",
@@ -5220,7 +5273,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemArrayIndexShapes.v",
@@ -5234,7 +5288,8 @@
           133
         ]
       ],
-      "counted_lines": 133
+      "counted_lines": 133,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemBranchGuardFacts.v",
@@ -5248,7 +5303,8 @@
           32
         ]
       ],
-      "counted_lines": 32
+      "counted_lines": 32,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemCanonicalAnchors.v",
@@ -5262,7 +5318,8 @@
           525
         ]
       ],
-      "counted_lines": 525
+      "counted_lines": 525,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemCompletedFoldContradictions.v",
@@ -5276,7 +5333,8 @@
           132
         ]
       ],
-      "counted_lines": 132
+      "counted_lines": 132,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemCompletedFoldFacts.v",
@@ -5290,7 +5348,8 @@
           26
         ]
       ],
-      "counted_lines": 26
+      "counted_lines": 26,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemCorrectedWitnessSelections.v",
@@ -5304,7 +5363,8 @@
           149
         ]
       ],
-      "counted_lines": 149
+      "counted_lines": 149,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemEntryByteIndexFacts.v",
@@ -5318,7 +5378,8 @@
           130
         ]
       ],
-      "counted_lines": 130
+      "counted_lines": 130,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemEntryGuardFacts.v",
@@ -5332,7 +5393,8 @@
           202
         ]
       ],
-      "counted_lines": 202
+      "counted_lines": 202,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemFoldExitFacts.v",
@@ -5346,7 +5408,8 @@
           144
         ]
       ],
-      "counted_lines": 144
+      "counted_lines": 144,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemFoldRejectionFacts.v",
@@ -5360,7 +5423,8 @@
           28
         ]
       ],
-      "counted_lines": 28
+      "counted_lines": 28,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemFoldSuccessorWitnesses.v",
@@ -5374,7 +5438,8 @@
           498
         ]
       ],
-      "counted_lines": 498
+      "counted_lines": 498,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemInitializationPureFacts.v",
@@ -5388,7 +5453,8 @@
           35
         ]
       ],
-      "counted_lines": 35
+      "counted_lines": 35,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemInputEndColumn.v",
@@ -5402,7 +5468,8 @@
           13
         ]
       ],
-      "counted_lines": 13
+      "counted_lines": 13,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemInputHeadWordFacts.v",
@@ -5416,7 +5483,8 @@
           90
         ]
       ],
-      "counted_lines": 90
+      "counted_lines": 90,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemLiteralPrefixBound.v",
@@ -5430,7 +5498,8 @@
           100
         ]
       ],
-      "counted_lines": 100
+      "counted_lines": 100,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemLoadedEntryFacts.v",
@@ -5444,7 +5513,8 @@
           2293
         ]
       ],
-      "counted_lines": 2293
+      "counted_lines": 2293,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemMaskedReturnFacts.v",
@@ -5458,7 +5528,8 @@
           29
         ]
       ],
-      "counted_lines": 29
+      "counted_lines": 29,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemNativePrefixGuard.v",
@@ -5472,7 +5543,8 @@
           72
         ]
       ],
-      "counted_lines": 72
+      "counted_lines": 72,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemNativeRegistrationScope.v",
@@ -5486,7 +5558,8 @@
           208
         ]
       ],
-      "counted_lines": 208
+      "counted_lines": 208,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemOutputCanonicalLookup.v",
@@ -5500,7 +5573,8 @@
           19
         ]
       ],
-      "counted_lines": 19
+      "counted_lines": 19,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemOutputOffset16Shapes.v",
@@ -5514,7 +5588,8 @@
           50
         ]
       ],
-      "counted_lines": 50
+      "counted_lines": 50,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemOutputOffset8Shapes.v",
@@ -5528,7 +5603,8 @@
           24
         ]
       ],
-      "counted_lines": 24
+      "counted_lines": 24,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemOutputStorageExtents.v",
@@ -5542,7 +5618,8 @@
           143
         ]
       ],
-      "counted_lines": 143
+      "counted_lines": 143,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemOutputWitnessSelections.v",
@@ -5556,7 +5633,8 @@
           21
         ]
       ],
-      "counted_lines": 21
+      "counted_lines": 21,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemRawOutputFacts.v",
@@ -5570,7 +5648,8 @@
           109
         ]
       ],
-      "counted_lines": 109
+      "counted_lines": 109,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemRootEntry.v",
@@ -5584,7 +5663,8 @@
           67
         ]
       ],
-      "counted_lines": 67
+      "counted_lines": 67,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemSavedFrameWitnesses.v",
@@ -5598,7 +5678,8 @@
           60
         ]
       ],
-      "counted_lines": 60
+      "counted_lines": 60,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemShortStringNegatedGuard.v",
@@ -5612,7 +5693,8 @@
           45
         ]
       ],
-      "counted_lines": 45
+      "counted_lines": 45,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemStoreSelectionIntroductions.v",
@@ -5626,7 +5708,8 @@
           180
         ]
       ],
-      "counted_lines": 180
+      "counted_lines": 180,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemStringSuccessorWitnesses.v",
@@ -5640,7 +5723,8 @@
           196
         ]
       ],
-      "counted_lines": 196
+      "counted_lines": 196,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/PlainRegisterCollectionSelection.v",
@@ -5663,7 +5747,8 @@
         ]
       ],
       "counted_lines": 17,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/PureFactExistential.v",
@@ -5706,7 +5791,8 @@
         ]
       ],
       "counted_lines": 102,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/RegionFault.v",
@@ -5757,7 +5843,8 @@
         ]
       ],
       "counted_lines": 53,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/SelectedLookupSeal.v",
@@ -5784,7 +5871,8 @@
         ]
       ],
       "counted_lines": 8,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/StockExecutor.v",
@@ -5803,7 +5891,8 @@
         ]
       ],
       "counted_lines": 25,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/SuccessorTupleGuard.v",
@@ -5834,7 +5923,8 @@
         ]
       ],
       "counted_lines": 46,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/dune",
@@ -5849,7 +5939,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/DISCOVERY.md",
@@ -5868,7 +5959,8 @@
         ]
       ],
       "counted_lines": 2,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/PROMOTION.md",
@@ -5887,7 +5979,8 @@
         ]
       ],
       "counted_lines": 4,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/chain_root.py",
@@ -5902,7 +5995,8 @@
         ]
       ],
       "counted_lines": 2,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/check_approved_switches.py",
@@ -5917,7 +6011,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/check_entry_bindings.py",
@@ -5944,7 +6039,8 @@
         ]
       ],
       "counted_lines": 7,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/check_generic_automation.py",
@@ -5970,7 +6066,8 @@
             "FORBIDDEN"
           ]
         }
-      ]
+      ],
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/compare_ram_fault.py",
@@ -5989,7 +6086,8 @@
         ]
       ],
       "counted_lines": 35,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/complete_promotion.py",
@@ -6043,7 +6141,8 @@
             "PREFIX"
           ]
         }
-      ]
+      ],
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/coqc_certificate.py",
@@ -6062,7 +6161,8 @@
         ]
       ],
       "counted_lines": 12,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/coqc_discovery.py",
@@ -6081,7 +6181,8 @@
         ]
       ],
       "counted_lines": 3,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/coqc_primary.py",
@@ -6100,7 +6201,8 @@
         ]
       ],
       "counted_lines": 3,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/discovery.py",
@@ -6115,7 +6217,8 @@
         ]
       ],
       "counted_lines": 4,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/entry_bindings.py",
@@ -6130,7 +6233,8 @@
         ]
       ],
       "counted_lines": 21,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/function_names.py",
@@ -6145,7 +6249,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/generate_table.py",
@@ -6168,7 +6273,8 @@
         ]
       ],
       "counted_lines": 62,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/marginal_switches.py",
@@ -6187,7 +6293,8 @@
         ]
       ],
       "counted_lines": 32,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/prepare_hand_gate.py",
@@ -6202,7 +6309,8 @@
         ]
       ],
       "counted_lines": 2,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/production_modules.py",
@@ -6257,7 +6365,8 @@
             "REQUIRED_IMPORTS"
           ]
         }
-      ]
+      ],
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/promote_table.py",
@@ -6292,7 +6401,8 @@
         ]
       ],
       "counted_lines": 94,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/promotion_verification.py",
@@ -6319,7 +6429,8 @@
         ]
       ],
       "counted_lines": 160,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/retry_unavailable.py",
@@ -6338,7 +6449,8 @@
         ]
       ],
       "counted_lines": 20,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/setup_fallback.py",
@@ -6353,7 +6465,8 @@
         ]
       ],
       "counted_lines": 3,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/test_automation_lints.py",
@@ -6394,7 +6507,8 @@
       "counted_lines": 13,
       "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
       "role": "test",
-      "classification": "Coordinator ruling: these thirteen test lines are unscored."
+      "classification": "Coordinator ruling: these thirteen test lines are unscored.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/testdata/truncated_root_recorder.txt",
@@ -6433,7 +6547,8 @@
         ]
       ],
       "counted_lines": 18,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/block/testdata/unfolded_header_target.json",
@@ -6448,7 +6563,8 @@
         ]
       ],
       "counted_lines": 13,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/coqc_scratch.sh",
@@ -6467,7 +6583,8 @@
         ]
       ],
       "counted_lines": 3,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/stock_zisk/closure.py",
@@ -6501,7 +6618,8 @@
             "ROOTS"
           ]
         }
-      ]
+      ],
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/stock_zisk/inventory.py",
@@ -6527,7 +6645,8 @@
             "DECODERS"
           ]
         }
-      ]
+      ],
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/stock_zisk/platform/bind_traces.py",
@@ -6542,7 +6661,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/stock_zisk/platform/indexes.py",
@@ -6568,7 +6688,8 @@
             "FUNCTION_NAMES"
           ]
         }
-      ]
+      ],
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/stock_zisk/platform/test_build.py",
@@ -6603,7 +6724,8 @@
         ]
       ],
       "counted_lines": 26,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/stock_zisk/platform/test_function_binding.py",
@@ -6622,7 +6744,8 @@
         ]
       ],
       "counted_lines": 2,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/stock_zisk/platform/traces.py",
@@ -6661,7 +6784,8 @@
         ]
       ],
       "counted_lines": 125,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/stock_zisk/static_sites/collect.py",
@@ -6687,7 +6811,8 @@
             "SITES"
           ]
         }
-      ]
+      ],
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/test_block_discovery.py",
@@ -6702,7 +6827,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/test_block_table.py",
@@ -6745,7 +6871,8 @@
         ]
       ],
       "counted_lines": 10,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/test_chain_root.py",
@@ -6804,7 +6931,8 @@
         ]
       ],
       "counted_lines": 30,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/test_complete_promotion.py",
@@ -6986,7 +7114,8 @@
             "HISTORICAL_NAMES"
           ]
         }
-      ]
+      ],
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/test_coqc_discovery.py",
@@ -7005,7 +7134,8 @@
         ]
       ],
       "counted_lines": 8,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/test_coqc_primary.py",
@@ -7040,7 +7170,8 @@
         ]
       ],
       "counted_lines": 22,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/test_decode_item_vectors.py",
@@ -7065,7 +7196,8 @@
             "ROOT"
           ]
         }
-      ]
+      ],
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/test_entry_bindings.py",
@@ -7088,7 +7220,8 @@
         ]
       ],
       "counted_lines": 4,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/test_entry_schema.py",
@@ -7107,7 +7240,8 @@
         ]
       ],
       "counted_lines": 12,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/test_function_names.py",
@@ -7162,7 +7296,8 @@
         ]
       ],
       "counted_lines": 18,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/test_native_boundary_discovery.py",
@@ -7185,7 +7320,8 @@
         ]
       ],
       "counted_lines": 7,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/test_parent_header_candidate_map.py",
@@ -7200,7 +7336,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/test_prepare_hand_gate.py",
@@ -7215,7 +7352,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/test_production_modules.py",
@@ -7238,7 +7376,8 @@
         ]
       ],
       "counted_lines": 6,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/test_promote_table.py",
@@ -7253,7 +7392,8 @@
         ]
       ],
       "counted_lines": 1,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/test_promotion_verification.py",
@@ -7308,7 +7448,8 @@
         ]
       ],
       "counted_lines": 19,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/test_rule_compare.py",
@@ -7347,7 +7488,8 @@
             "INCOMPLETE"
           ]
         }
-      ]
+      ],
+      "text_kind": "hand_written"
     },
     {
       "path": "tools/test_successor_entailment.py",
@@ -7362,7 +7504,8 @@
         ]
       ],
       "counted_lines": 2,
-      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full."
+      "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/test_historical_evidence.py",
@@ -7377,7 +7520,8 @@
           72
         ]
       ],
-      "counted_lines": 72
+      "counted_lines": 72,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/i75/INDEX.json",
@@ -7392,7 +7536,8 @@
           458
         ]
       ],
-      "counted_lines": 458
+      "counted_lines": 458,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/test_i75_evidence.py",
@@ -7407,7 +7552,8 @@
           112
         ]
       ],
-      "counted_lines": 112
+      "counted_lines": 112,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Contracts/DecodeItemCallSpec.v",
@@ -7421,7 +7567,8 @@
           94
         ]
       ],
-      "counted_lines": 94
+      "counted_lines": 94,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemCallSpec.v",
@@ -7435,7 +7582,8 @@
           209
         ]
       ],
-      "counted_lines": 209
+      "counted_lines": 209,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/DecodeItemPromoted6a38Fixtures.v",
@@ -7449,7 +7597,8 @@
           17
         ]
       ],
-      "counted_lines": 17
+      "counted_lines": 17,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Evidence/DecodeItemPromoted6ad8Fixtures.v",
@@ -7463,7 +7612,8 @@
           17
         ]
       ],
-      "counted_lines": 17
+      "counted_lines": 17,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/ImplicationPair.v",
@@ -7477,7 +7627,8 @@
           93
         ]
       ],
-      "counted_lines": 93
+      "counted_lines": 93,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/PureResourceFinish.v",
@@ -7491,7 +7642,8 @@
           22
         ]
       ],
-      "counted_lines": 22
+      "counted_lines": 22,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DerivedFactFinish.v",
@@ -7505,7 +7657,8 @@
           63
         ]
       ],
-      "counted_lines": 63
+      "counted_lines": 63,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/SimplAndFinish.v",
@@ -7519,7 +7672,8 @@
           62
         ]
       ],
-      "counted_lines": 62
+      "counted_lines": 62,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/ListConsFinish.v",
@@ -7533,7 +7687,8 @@
           35
         ]
       ],
-      "counted_lines": 35
+      "counted_lines": 35,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/IntegerReturn.v",
@@ -7547,7 +7702,8 @@
           192
         ]
       ],
-      "counted_lines": 192
+      "counted_lines": 192,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemLoopDerivedFacts.v",
@@ -7561,7 +7717,8 @@
           177
         ]
       ],
-      "counted_lines": 177
+      "counted_lines": 177,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/LoopIndexStep.v",
@@ -7575,7 +7732,8 @@
           46
         ]
       ],
-      "counted_lines": 46
+      "counted_lines": 46,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/LoopFaultBounds.v",
@@ -7589,7 +7747,8 @@
           94
         ]
       ],
-      "counted_lines": 94
+      "counted_lines": 94,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/LoopDerivedFacts.v",
@@ -7603,7 +7762,8 @@
           79
         ]
       ],
-      "counted_lines": 79
+      "counted_lines": 79,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemLoopInitialization.v",
@@ -7617,7 +7777,8 @@
           48
         ]
       ],
-      "counted_lines": 48
+      "counted_lines": 48,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/LoopInitialization.v",
@@ -7631,7 +7792,8 @@
           50
         ]
       ],
-      "counted_lines": 50
+      "counted_lines": 50,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/LoopHeaderOrder.v",
@@ -7645,7 +7807,8 @@
           31
         ]
       ],
-      "counted_lines": 31
+      "counted_lines": 31,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemBranchContinuationOrder.v",
@@ -7659,7 +7822,8 @@
       ],
       "file_lines": 29,
       "sha256": "bbd530c079701d8a47b0bb70691f47f313e8aa233bd42364ae07b98aebb17e08",
-      "counted_lines": 29
+      "counted_lines": 29,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemExitDataFacts.v",
@@ -7673,7 +7837,8 @@
       ],
       "file_lines": 418,
       "sha256": "7b5f6509af495195941901bb92e07f6d2327474c711b7159d5f4196f30cf74e7",
-      "counted_lines": 418
+      "counted_lines": 418,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d697c.v",
@@ -7687,7 +7852,8 @@
       ],
       "file_lines": 37,
       "sha256": "c4113fa0546fec09a1b9a55dc9d941c500760c5c9671ef384b185069ee8e022c",
-      "counted_lines": 37
+      "counted_lines": 37,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d698c.v",
@@ -7701,7 +7867,8 @@
       ],
       "file_lines": 3,
       "sha256": "5fcdd5f1edb8235e917b5712650dc4018ff05157f51705e114b66bae164b80ef",
-      "counted_lines": 3
+      "counted_lines": 3,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d698cLiteral.v",
@@ -7715,7 +7882,8 @@
       ],
       "file_lines": 22,
       "sha256": "53dbe72e79a643c9e6e0f60433528919ea22afe70b562c81e2e8ad9404e621fe",
-      "counted_lines": 22
+      "counted_lines": 22,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d698cShortString.v",
@@ -7729,7 +7897,8 @@
       ],
       "file_lines": 22,
       "sha256": "c817a3e535a0a833052ab2714f7544d527da4f8607609310759c2ac7a9505f47",
-      "counted_lines": 22
+      "counted_lines": 22,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d69b0.v",
@@ -7743,7 +7912,8 @@
       ],
       "file_lines": 41,
       "sha256": "756a4f81cb1a835a7465d525f6892e376f2548881c84151ccedec252d0a3d29d",
-      "counted_lines": 41
+      "counted_lines": 41,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d69e8.v",
@@ -7757,7 +7927,8 @@
       ],
       "file_lines": 37,
       "sha256": "5cfe5fcfcd2b56b2d5fe0c4cd41f592f84d79f0b1a712da6b749dc0c9486288f",
-      "counted_lines": 37
+      "counted_lines": 37,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a40.v",
@@ -7771,7 +7942,8 @@
       ],
       "file_lines": 37,
       "sha256": "8a6b7d0b8d69d53400e8374777a5946b6af4ea5760559ceae48f01d20a3d1c45",
-      "counted_lines": 37
+      "counted_lines": 37,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a78.v",
@@ -7785,7 +7957,8 @@
       ],
       "file_lines": 37,
       "sha256": "95876f1bd371b0b42d8fe935fdfbdd79774dadbc0c317e3eab060ae672589367",
-      "counted_lines": 37
+      "counted_lines": 37,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6ae0.v",
@@ -7799,7 +7972,8 @@
       ],
       "file_lines": 38,
       "sha256": "861b68878ac8c3c37e1099e097b9da841b675d1c9d450f3e3cacfb782300a425",
-      "counted_lines": 38
+      "counted_lines": 38,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/DecodeItem/Auto/Block800d6b08.v",
@@ -7813,7 +7987,8 @@
       ],
       "file_lines": 40,
       "sha256": "7204168badc361d94a6393801ba1fba0ddbb3a513cc91296c880d7c28d09c852",
-      "counted_lines": 40
+      "counted_lines": 40,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemCanonicalEntryFacts.v",
@@ -7827,7 +8002,8 @@
           59
         ]
       ],
-      "counted_lines": 59
+      "counted_lines": 59,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/RawWordArrayWitness.v",
@@ -7841,7 +8017,8 @@
           72
         ]
       ],
-      "counted_lines": 72
+      "counted_lines": 72,
+      "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemImageArithmetic.v",
@@ -7855,7 +8032,8 @@
           59
         ]
       ],
-      "counted_lines": 59
+      "counted_lines": 59,
+      "text_kind": "hand_written"
     }
   ],
   "blocks": [
@@ -8431,5 +8609,46 @@
       "reason": "Replace the expanded internal image with definitionally equal word-byte/list expressions. Public declarations remain unchanged.",
       "guarded_equality_record": "_build/compact-meaning/EQUALITY001.json"
     }
-  }
+  },
+  "scope_id": "decodeItem-function-support-v2",
+  "legacy_metadata_notice": "Existing totals, hashes, ranges, and history describe the schema-1 inventory. Schema-2 reports recount selected current source lines.",
+  "text_kind_rules": "Every row declares its kind. Unchecked generated text receives no generated credit.",
+  "removed_attribution": [
+    {
+      "path": "ZesuSsz/Contracts/Candidates/ParentHeaderDomain.v",
+      "function": "rlp_decode.decodeParentHeader"
+    },
+    {
+      "path": "ZesuSsz/Contracts/NextUint64Selected.v",
+      "function": "rlp_decode.nextUint64"
+    },
+    {
+      "path": "ZesuSsz/Contracts/ParentHeader.v",
+      "function": "rlp_decode.decodeParentHeader"
+    },
+    {
+      "path": "ZesuSsz/Contracts/ParentHeaderLevel1.v",
+      "function": "rlp_decode.decodeParentHeader"
+    },
+    {
+      "path": "ZesuSsz/Contracts/ParentHeaderRequiredFields.v",
+      "function": "rlp_decode.decodeParentHeader"
+    },
+    {
+      "path": "ZesuSsz/Contracts/ParentHeaderRootFacts.v",
+      "function": "rlp_decode.decodeParentHeader"
+    },
+    {
+      "path": "ZesuSsz/Contracts/ParentHeaderSelected.v",
+      "function": "rlp_decode.decodeParentHeader"
+    },
+    {
+      "path": "ZesuSsz/Evidence/ParentHeaderDifferential.v",
+      "function": "rlp_decode.decodeParentHeader"
+    },
+    {
+      "path": "ZesuSsz/Evidence/PendingParentHeaderSignatureGates.v",
+      "function": "rlp_decode.decodeParentHeader"
+    }
+  ]
 }

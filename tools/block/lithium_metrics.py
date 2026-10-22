@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Count decodeItem source text at a commit without running a proof."""
+"""Count per-function source text at a commit without running a proof."""
 
 import argparse
 from collections import Counter
@@ -170,7 +170,7 @@ def block_counts(commit, directory):
     return blocks, {path for group in groups.values() for path in group.values()}
 
 
-def count_commit(commit):
+def count_legacy_commit(commit):
     manifest = json.loads(commit.read(MANIFEST))
     checkpoint = json.loads(commit.read(HAND_CHECKPOINT))
     hand_lines = 0
@@ -261,7 +261,215 @@ def count_commit(commit):
                 changed_mixed_manifest_files=changed_mixed)
 
 
+TEXT_KINDS = ('hand_written', 'generated', 'data_table')
+
+
+def manifest_path(commit, function):
+    matches = []
+    for path in sorted(commit.paths):
+        if path.startswith('ZesuSsz/Evidence/') and path.endswith('_function_text.json'):
+            data = json.loads(commit.read(path))
+            name = data.get('function')
+            if name == function or (isinstance(name, str) and name.rsplit('.', 1)[-1] == function):
+                matches.append((path, data))
+    if len(matches) != 1:
+        raise ValueError('The counter needs one function manifest: ' + function)
+    return matches[0]
+
+
+def selected_indices(lines, row):
+    if row['scope'] == 'whole_file':
+        return set(range(len(lines)))
+    if row['scope'] != 'mixed_file':
+        raise ValueError('The manifest has an unknown scope: ' + row['path'])
+    indices = set()
+    if not isinstance(row.get('line_ranges'), list):
+        raise ValueError('A mixed-file row needs line_ranges.')
+    for bounds in row['line_ranges']:
+        if (not isinstance(bounds, list) or len(bounds) != 2 or
+                any(type(value) is not int for value in bounds)):
+            raise ValueError('A manifest range needs two integer bounds.')
+        first, last = bounds
+        if not 1 <= first <= last <= len(lines):
+            raise ValueError('A manifest range is outside its file.')
+        current = set(range(first - 1, last))
+        if indices & current:
+            raise ValueError('The manifest overlaps a selected line: ' + row['path'])
+        indices.update(current)
+    return indices
+
+
+def freshness_binding(commit, manifest, generator, receipt):
+    """Accept generated credit only for an exact successful check on this tree."""
+    generators = manifest.get('generators', {})
+    if not isinstance(generators, dict):
+        raise ValueError('Manifest generators must be an object.')
+    specification = generators.get(generator)
+    if not isinstance(specification, dict):
+        raise ValueError('A generated row needs a declared generator: ' + str(generator))
+    command = specification.get('command')
+    if not isinstance(command, list) or '--check' not in command or any(not isinstance(x, str) for x in command):
+        raise ValueError('A generator needs an explicit --check command.')
+    inputs, outputs = specification.get('inputs'), specification.get('outputs')
+    for paths in (inputs, outputs):
+        if not isinstance(paths, list) or not paths or any(not isinstance(x, str) for x in paths) or len(paths) != len(set(paths)):
+            raise ValueError('A generator needs explicit unique input and output lists.')
+    if not isinstance(specification.get('tool'), str) or specification['tool'] not in inputs:
+        raise ValueError('The generator tool must be an explicit input.')
+    if receipt is None:
+        return None
+    tree = commit.git('rev-parse', commit.sha + '^{tree}').strip()
+    if not isinstance(receipt, dict) or receipt.get('schema_version') != 1 or receipt.get('tree') != tree:
+        raise ValueError('The freshness record does not bind this source tree.')
+    if not isinstance(receipt.get('checks'), dict):
+        raise ValueError('The freshness checks must be an object.')
+    checked = receipt['checks'].get(generator)
+    if not isinstance(checked, dict) or type(checked.get('exit_code')) is not int or checked['exit_code'] != 0:
+        raise ValueError('The generator has no successful freshness check: ' + generator)
+    if checked.get('command') != command:
+        raise ValueError('The freshness command differs from its manifest.')
+    for label, paths in (('inputs', inputs), ('outputs', outputs)):
+        expected = {path: hashlib.sha256(commit.read(path)).hexdigest() for path in paths}
+        if checked.get(label) != expected:
+            raise ValueError('The freshness ' + label + ' differ from this source tree.')
+    return checked
+
+
+def count_schema2(commit, path, manifest, freshness=None):
+    if not isinstance(manifest.get('scope_id'), str) or not manifest['scope_id'].strip():
+        raise ValueError('A schema-2 manifest needs an explicit scope_id.')
+    if not isinstance(manifest.get('inventory_only', False), bool):
+        raise ValueError('The inventory_only flag must be boolean.')
+    groups = {category: {kind: dict(physical=0, nonblank=0) for kind in TEXT_KINDS}
+              for category in TEXT_CATEGORIES}
+    support = {kind: dict(physical=0, nonblank=0) for kind in TEXT_KINDS}
+    selected, rows, checks = {}, [], {}
+    function = manifest['function']
+    is_decode_item = function.rsplit('.', 1)[-1] == 'decodeItem'
+    blocks, block_paths = [], set()
+    if is_decode_item:
+        with tempfile.TemporaryDirectory(prefix='lithium-metrics-') as directory:
+            blocks, block_paths = block_counts(commit, directory)
+        if len(blocks) != 24:
+            raise ValueError('The commit must contain exactly 24 distinct blocks.')
+    if not isinstance(manifest.get('files'), list):
+        raise ValueError('The manifest files must be a list.')
+    for row in manifest['files']:
+        if not isinstance(row, dict) or not isinstance(row.get('path'), str) or not isinstance(row.get('category'), str):
+            raise ValueError('Each manifest row needs a path and category.')
+        source, category, kind = row['path'], row['category'], row.get('text_kind')
+        relative = Path(source)
+        if relative.is_absolute() or '..' in relative.parts or not source or source not in commit.paths:
+            raise ValueError('The manifest path leaves the source tree: ' + source)
+        if category not in groups or kind not in TEXT_KINDS:
+            raise ValueError('The manifest needs an explicit category and text_kind: ' + source)
+        data = commit.read(source)
+        lines = data.splitlines()
+        indices = selected_indices(lines, row)
+        if selected.setdefault(source, set()) & indices:
+            raise ValueError('The manifest overlaps a selected line: ' + source)
+        selected[source].update(indices)
+        effective, status = kind, 'not_required'
+        if kind == 'generated':
+            generator = row.get('generator')
+            if not isinstance(generator, str) or not generator:
+                raise ValueError('A generated row needs a named generator: ' + source)
+            if generator not in checks:
+                checks[generator] = freshness_binding(commit, manifest, generator, freshness)
+            if source not in manifest['generators'][generator]['outputs']:
+                raise ValueError('The generated source is absent from its output list: ' + source)
+            status = 'passed' if checks[generator] is not None else 'unchecked'
+            if status != 'passed':
+                effective = 'hand_written'
+        counts = dict(physical=len(indices), nonblank=sum(bool(lines[i].strip()) for i in indices))
+        for unit, count in counts.items():
+            groups[category][effective][unit] += count
+        contributes = (source not in CALL_SPEC_MODULES and
+                       ((category in PROOF_CATEGORIES and source.endswith('.v')) or
+                        (category == 'block_proofs' and source not in block_paths and
+                         source.startswith('ZesuSsz/Proofs/' + function.rsplit('.', 1)[-1][:1].upper() + function.rsplit('.', 1)[-1][1:] + '/'))))
+        if contributes:
+            for unit, count in counts.items():
+                support[effective][unit] += count
+        rows.append(dict(path=source, category=category, text_kind=kind, effective_text_kind=effective,
+                         freshness=status, sha256=hashlib.sha256(data).hexdigest(),
+                         scope=row['scope'], line_ranges=row.get('line_ranges'), counts=counts,
+                         block_support=contributes))
+    if is_decode_item:
+        for source in commit.paths:
+            if source.endswith('.v') and re.search(r'decode_?item', source, re.I) and source not in selected and source not in CALL_SPEC_MODULES:
+                raise ValueError('The function-text manifest omits a module: ' + source)
+    automation = {source: commit.read(source).splitlines() for source in sorted(commit.paths)
+                  if source.startswith('ZesuSsz/Automation/') and source.endswith('.v')}
+    hand = sum(row['lines'] for row in blocks)
+    categories = {category: sum(cell['physical'] for cell in kinds.values()) for category, kinds in groups.items()}
+    call_spec = []
+    for source, role in sorted(CALL_SPEC_MODULES.items()):
+        if not is_decode_item or source not in commit.paths:
+            continue
+        data = commit.read(source)
+        dependencies = sorted(require_modules(data.decode()))
+        for module in dependencies:
+            if module.startswith('ZesuSsz.') and module.replace('.', '/') + '.v' not in commit.paths:
+                raise ValueError('A call-spec dependency is absent: ' + module)
+        call_spec.append(dict(path=source, role=role, lines=len(data.splitlines()),
+                              nonblank_lines=sum(bool(line.strip()) for line in data.splitlines()),
+                              requires_before_first_proof=dependencies))
+    return dict(commit=commit.sha, schema_version=2, function=function,
+                tree=commit.git('rev-parse', commit.sha + '^{tree}').strip(),
+                scope_id=manifest['scope_id'], manifest=dict(path=path, sha256=hashlib.sha256(commit.read(path)).hexdigest()),
+                inventory_only=manifest.get('inventory_only', False),
+                counting_rules={'text_kind': 'Explicit manifest metadata only. Unchecked generated text counts as hand-written.',
+                                'units': 'Physical lines include blank lines. Nonblank lines exclude whitespace-only lines.',
+                                'overlap': 'Reject repeated selected lines within this function.',
+                                'm2_total_lines': 'Mixed compatibility unit: nonblank hand suffix lines plus physical hand-written support lines.',
+                                'm2_nonblank_lines': 'Uniform headline: nonblank hand suffix lines plus nonblank hand-written support lines. Generated and data-table support stay separate.',
+                                'attribution': 'Per-function totals include explicitly shared ranges. Their sum is not a unique project total.'},
+                blocks=dict(total=len(blocks), native=sum(row['status'] == 'native' for row in blocks),
+                            hand=sum(row['status'] == 'hand' for row in blocks), rows=blocks,
+                            coverage='committed boundary bodies' if is_decode_item else 'not_measured'),
+                hand_suffix_lines=hand, hand_suffix_unit='nonblank',
+                function_text_categories=categories, function_text_by_kind=groups, files=rows,
+                block_support_by_kind=support, block_support_lines=sum(cell['physical'] for cell in support.values()),
+                hand_written_support_lines=support['hand_written']['nonblank'],
+                m2_total_lines=hand + support['hand_written']['physical'],
+                m2_nonblank_lines=hand + support['hand_written']['nonblank'],
+                composition_lines=categories['composition'], tests_and_exports_lines=categories['tests_and_exports'],
+                call_spec_capability=call_spec, call_spec_capability_lines=sum(row['lines'] for row in call_spec),
+                automation_lines=sum(len(lines) for lines in automation.values()),
+                automation_nonblank_lines=sum(bool(line.strip()) for lines in automation.values() for line in lines),
+                automation_files=len(automation),
+                freshness_record_hash_format='SHA256 of JSON with sorted keys and default separators',
+                freshness_record_sha256=(hashlib.sha256(json.dumps(freshness, sort_keys=True).encode()).hexdigest() if freshness is not None else None))
+
+
+def count_commit(commit, function='decodeItem', freshness=None):
+    path, manifest = manifest_path(commit, function)
+    if manifest.get('schema_version') == 1:
+        if path != MANIFEST:
+            raise ValueError('Schema-1 historical counting supports decodeItem only.')
+        report = count_legacy_commit(commit)
+        report.update(schema_version=1, scope_id='decodeItem-legacy-schema-1', function=manifest['function'])
+        return report
+    if manifest.get('schema_version') != 2:
+        raise ValueError('The counter supports manifest schema 1 or 2.')
+    return count_schema2(commit, path, manifest, freshness)
+
+
 def comparison_table(before, after):
+    if before.get('scope_id') != after.get('scope_id'):
+        return ('Noncomparable scopes: ' + str(before.get('scope_id')) + ' versus ' +
+                str(after.get('scope_id')) + '. No delta is reported.')
+    if before.get('schema_version') == 2:
+        rows = []
+        for category in TEXT_CATEGORIES:
+            for kind in TEXT_KINDS:
+                for unit in ('physical', 'nonblank'):
+                    rows.append((category + '/' + kind + '/' + unit,
+                                 before['function_text_by_kind'][category][kind][unit],
+                                 after['function_text_by_kind'][category][kind][unit]))
+        table = ['| Category/kind/unit | Before | After | Delta |', '|---|---:|---:|---:|']
+        return '\n'.join(table + [f'| {label} | {old} | {new} | {new - old:+d} |' for label, old, new in rows])
     rows = [('Native blocks', before['blocks']['native'], after['blocks']['native']),
             ('Hand blocks', before['blocks']['hand'], after['blocks']['hand']),
             ('Hand suffix lines', before['hand_suffix_lines'], after['hand_suffix_lines'])]
@@ -284,19 +492,49 @@ def main(argv=None):
     parser.add_argument('--commit', default='HEAD')
     parser.add_argument('--compare', help='Print a category table against this baseline commit.')
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--function', default='decodeItem')
+    parser.add_argument('--freshness', type=Path, help='Exact successful generator checks for this tree.')
     args = parser.parse_args(argv)
     try:
-        report = count_commit(Commit(root, args.commit))
-        before = count_commit(Commit(root, args.compare)) if args.compare else None
+        freshness = json.loads(args.freshness.read_text()) if args.freshness else None
+        def measure(revision):
+            commit = Commit(root, revision)
+            if args.function == 'all':
+                functions = [json.loads(commit.read(path))['function'] for path in sorted(commit.paths)
+                             if path.startswith('ZesuSsz/Evidence/') and path.endswith('_function_text.json')]
+                reports = {function: count_commit(commit, function, freshness) for function in functions}
+                attribution = {}
+                for function, result in reports.items():
+                    for row in result.get('files', []):
+                        attribution.setdefault(row['path'], []).append(function)
+                return dict(commit=commit.sha, functions=reports, shared_attribution={path: sorted(set(names)) for path, names in attribution.items() if len(set(names)) > 1})
+            return count_commit(commit) if args.function == 'decodeItem' and freshness is None else count_commit(commit, args.function, freshness)
+        report = measure(args.commit)
+        before = measure(args.compare) if args.compare else None
+        if args.function == 'all' and args.compare:
+            raise ValueError('--compare requires one explicit function.')
         common = Path(subprocess.check_output(['git', '-C', str(root), 'rev-parse', '--path-format=absolute', '--git-common-dir'], text=True).strip())
         output = args.output or common.parent / 'docs/ai/metrics/lithium_idioms.json'
         document = json.loads(output.read_text()) if output.exists() else {'schema_version': 1}
         if not isinstance(document, dict) or not isinstance(document.get('m2_by_commit', {}), dict):
             raise ValueError('The metrics document must contain an object of M2 counts.')
-        measurements = document.setdefault('m2_by_commit', {})
-        if before:
-            measurements[before['commit']] = before
-        measurements[report['commit']] = report
+        if args.function == 'decodeItem':
+            measurements = document.setdefault('m2_by_commit', {})
+            if before:
+                measurements[before['commit']] = before
+            measurements[report['commit']] = report
+        else:
+            measurements = document.setdefault('function_text_by_commit', {})
+            if not isinstance(measurements, dict):
+                raise ValueError('The function metrics must be an object.')
+            for result in ([before, report] if before else [report]):
+                functions = result['functions'] if args.function == 'all' else {result['function']: result}
+                existing = measurements.setdefault(result['commit'], {})
+                if not isinstance(existing, dict):
+                    raise ValueError('The commit function metrics must be an object.')
+                existing.update(functions)
+                if args.function == 'all':
+                    document.setdefault('shared_function_attribution_by_commit', {})[result['commit']] = result['shared_attribution']
         output.parent.mkdir(parents=True, exist_ok=True)
         with tempfile.NamedTemporaryFile(mode='w', dir=output.parent, prefix=output.name + '.', delete=False) as temporary:
             temporary.write(json.dumps(document, indent=2) + '\n')
