@@ -190,6 +190,80 @@ class SupportRendererTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "must precede"):
                 renderer.render_support(design, root, name_prefix="fixture")
 
+    def bootstrap(self, design):
+        return {
+            "imports": [{"mode": "import", "module": "isla.automation"},
+                        {"mode": "import", "module": "Contracts.Fixture"}],
+            "source_hashes": deepcopy(design["blocks"][0]["source_hashes"]),
+            "unfold_sources": ["Contracts.Fixture.continuationAt", "Contracts.Fixture.base"],
+            "regcol_unfold_sources": ["Contracts.Fixture.head"],
+        }
+
+    def test_bootstrap_uses_separate_hashes_ordered_sources_and_fixed_commands(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            design = self.fixture(root)
+            original = renderer.render_support(design, root, name_prefix="fixture")
+            design["support"]["bootstrap"] = self.bootstrap(design)
+            outputs = renderer.render_support(design, root, name_prefix="fixture")
+            self.assertEqual(len(outputs), 3)
+            self.assertTrue(all(outputs[path] == text for path, text in original.items()))
+            source = outputs[Path("ZesuSsz/Generated/Fixture/BootstrapRegistrations.v")]
+            fragments = ["Require Import isla.automation.", "Require Import Contracts.Fixture.",
+                         "LithiumUnfold (@Contracts.Fixture.continuationAt)",
+                         "Global Typeclasses Opaque Contracts.Fixture.continuationAt.",
+                         "LithiumUnfold (@Contracts.Fixture.base)",
+                         "Global Hint Unfold Contracts.Fixture.head : regcol_compute_unfold."]
+            positions = [source.index(value) for value in fragments]
+            self.assertEqual(positions, sorted(positions))
+            self.assertNotIn("Automation.All", source)
+            self.assertNotIn("Generated.Fixture.Entries", source)
+            self.assertNotIn("Proof.", source)
+            design["support"]["bootstrap"]["source_hashes"]["Contracts/Fixture.v"] = "0" * 64
+            with self.assertRaisesRegex(ValueError, "hash changed"):
+                renderer.render_support(design, root, name_prefix="fixture")
+
+    def test_bootstrap_refuses_injection_duplicates_outputs_and_unrelated_imports(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            original = self.fixture(root)
+            cases = [
+                {"unfold_sources": ["Contracts.Fixture.base"] * 2},
+                {"regcol_unfold_sources": ["Contracts.Fixture.head"] * 2},
+                {"unfold_sources": ["Contracts.Fixture.entry"]},
+                {"unfold_sources": ["ZesuSsz.Generated.Other.Entries.entry"]},
+                {"unfold_sources": ["Contracts.Fixture.missing"]},
+                {"regcol_unfold_sources": ["Contracts.Fixture.head. Proof. exact I. Qed."]},
+                {"imports": [{"mode": "import", "module": "ZesuSsz.Automation.All"}]},
+                {"imports": [{"mode": "import", "module": "ZesuSsz.Generated.Fixture.Entries"}]},
+                {"imports": [{"mode": "export", "module": "Contracts.Fixture"}]},
+                {"source_hashes": {"ZesuSsz/Generated/Other/BootstrapRegistrations.v": "0" * 64}},
+                {"script": "exact I"},
+            ]
+            for change in cases:
+                design = deepcopy(original)
+                design["support"]["bootstrap"] = self.bootstrap(design)
+                design["support"]["bootstrap"].update(change)
+                with self.assertRaises(ValueError):
+                    renderer.render_support(design, root, name_prefix="fixture")
+
+    def test_bootstrap_freshness_checks_the_optional_output_without_writes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            design = self.fixture(root)
+            design["support"]["bootstrap"] = self.bootstrap(design)
+            path = root / "design.json"
+            path.write_text(json.dumps(design))
+            argv = ["render_support.py", "--function", "fixture", "--design", str(path)]
+            with patch.object(renderer, "ROOT", root), patch.object(sys, "argv", argv):
+                renderer.main()
+                target = root / "ZesuSsz/Generated/Fixture/BootstrapRegistrations.v"
+                before = target.read_bytes() + b"\n"
+                target.write_bytes(before)
+                with patch.object(sys, "argv", argv + ["--check"]):
+                    with self.assertRaisesRegex(ValueError, "stale"):
+                        renderer.main()
+                self.assertEqual(target.read_bytes(), before)
     def test_explicit_memory_lets_true_and_continuation_keep_component_order(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

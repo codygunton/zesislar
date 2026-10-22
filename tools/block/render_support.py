@@ -540,6 +540,53 @@ def scope_names(values, label):
     return names
 
 
+def unfold_pairs(names):
+    lines = []
+    for name in names:
+        lines.extend([f"Global Instance : LithiumUnfold (@{name}) := I.",
+                      f"Global Typeclasses Opaque {name}.", ""])
+    return lines
+
+
+def bootstrap_source(value, root, generated, ordinary_sources):
+    """Render a registry that imports only its defining modules and class."""
+    keys = {"imports", "source_hashes", "unfold_sources"}
+    if (not isinstance(value, dict) or not keys.issubset(value) or
+            set(value) - keys - {"regcol_unfold_sources"}):
+        raise ValueError("The bootstrap has missing or unsupported fields.")
+    lines = imports(value["imports"])
+    if any(item["mode"] != "import" for item in value["imports"]):
+        raise ValueError("The bootstrap imports must use import mode.")
+    fields = contract_fields({"entry_definition": "Support.Source.input",
+                              "resource_predicate": "Support.Source.input", "binders": [],
+                              "arguments": [], "source_hashes": value["source_hashes"]})
+    if any(path.startswith("ZesuSsz/Generated/") for path in fields["source_hashes"]):
+        raise ValueError("The bootstrap binds a generated output as an input source.")
+    verify_sources(fields, root)
+    owners = set()
+    lists = {}
+    for key in ("unfold_sources", "regcol_unfold_sources"):
+        names = [identifier(name, "bootstrap source", qualified=True)
+                 for name in sequence(value.get(key, []), key)]
+        if len(set(names)) != len(names):
+            raise ValueError("The bootstrap source is repeated.")
+        for name in names:
+            if (name.startswith("ZesuSsz.Generated.") or
+                    name.rsplit(".", 1)[-1] in generated["declared"] or
+                    name in ordinary_sources):
+                raise ValueError("The bootstrap source overlaps another generated registration.")
+            owner, _, _ = bound_symbol(name, fields, root)
+            owners.add(source_module(owner))
+        lists[key] = names
+    modules = {item["module"] for item in value["imports"]}
+    if modules != owners | {"isla.automation"}:
+        raise ValueError("The bootstrap must import exactly its defining modules and isla.automation.")
+    lines += [""] + unfold_pairs(lists["unfold_sources"])
+    lines += [f"Global Hint Unfold {name} : regcol_compute_unfold."
+              for name in lists["regcol_unfold_sources"]]
+    return HEADER + "\n".join(lines).rstrip() + "\n"
+
+
 def render_support(design, root, *, name_prefix="decodeItem"):
     """Validate both outputs before a caller writes either output."""
     root = Path(root)
@@ -553,7 +600,7 @@ def render_support(design, root, *, name_prefix="decodeItem"):
         "version", "entries_imports", "entries_scopes", "registrations_imports",
         "unfold_entries", "introductions", "hint_umbrella", "scoped_imports", "facts"}
     if (not isinstance(metadata, dict) or not keys.issubset(metadata) or
-            set(metadata) - keys - {"source_hashes", "registrations_scopes", "unfold_sources"}):
+            set(metadata) - keys - {"source_hashes", "registrations_scopes", "unfold_sources", "bootstrap"}):
         raise ValueError("The function support has missing or unsupported fields.")
     if type(metadata["version"]) is not int or metadata["version"] != 1:
         raise ValueError("The function support version is unsupported.")
@@ -564,7 +611,8 @@ def render_support(design, root, *, name_prefix="decodeItem"):
     scopes = scope_names(metadata["entries_scopes"], "scope")
     registration_scopes = scope_names(metadata.get("registrations_scopes", []), "registration scope")
     directory = Path("ZesuSsz/Generated") / names.module
-    generated_paths = {str(directory / filename) for filename in ("Entries.v", "Registrations.v")}
+    generated_paths = {str(directory / filename) for filename in
+                       ("Entries.v", "Registrations.v", "BootstrapRegistrations.v")}
     rows = support_declarations(design)
     generated = {"module": str(directory / "Entries").replace("/", "."), "available": {},
                  "declared": {row["entry_definition"].rsplit(".", 1)[-1] for row in rows}}
@@ -614,15 +662,17 @@ def render_support(design, root, *, name_prefix="decodeItem"):
     registration_lines += scoped["registrations"]
     registration_lines += [f"Open Scope {scope}." for scope in registration_scopes] + [""]
     # Keep generated pairs first, then the supplied handwritten-source order.
-    for name in registered + unfold_sources:
-        registration_lines.extend([f"Global Instance : LithiumUnfold (@{name}) := I.",
-                                   f"Global Typeclasses Opaque {name}.", ""])
+    registration_lines.extend(unfold_pairs(registered + unfold_sources))
     registration_lines.extend(source.rstrip() + "\n" for _, source in facts)
     registration_lines.extend(source.rstrip() + "\n" for _, source in introductions)
     registration_lines.extend(umbrella)
     registrations_text = HEADER + "\n".join(registration_lines).rstrip() + "\n"
-    return {directory / "Entries.v": entries_text,
-            directory / "Registrations.v": registrations_text}
+    outputs = {directory / "Entries.v": entries_text,
+               directory / "Registrations.v": registrations_text}
+    if "bootstrap" in metadata:
+        outputs[directory / "BootstrapRegistrations.v"] = bootstrap_source(
+            metadata["bootstrap"], root, generated, unfold_sources)
+    return outputs
 
 
 def validate_support(design, root, *, name_prefix="decodeItem"):
