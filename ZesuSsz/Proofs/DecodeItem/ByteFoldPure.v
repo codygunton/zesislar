@@ -62,7 +62,3 @@ Proof.
   split; [rewrite <- Hlength; rewrite Nat2Z.id; rewrite firstn_all; reflexivity|].
   lia.
 Qed.
-
-Print Assumptions decodeItem_fold_entry.
-Print Assumptions decodeItem_fold_preservation.
-Print Assumptions decodeItem_fold_exit.

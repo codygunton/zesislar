@@ -73,6 +73,3 @@ Qed.
   ZesuDerivedFacts (decodeItemShortListOutputFacts args locals inputPrefix rest)
     (DecodeMeaningModuloKnownBugs args (decodeItemShortListUpdatedImage locals)).
 Proof. exact (decodeItemShortListUpdatedMeaning args locals inputPrefix rest). Qed.
-
-Print Assumptions decodeItemShortListUpdatedMeaning.
-Print Assumptions decodeItemShortListOutputDerivedFacts.

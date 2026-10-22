@@ -91,8 +91,3 @@ Proof.
   pose proof (decodeItemSavedFrameZeroRejected returnAddress args Hdomain Hzero) as Hrejected.
   tauto.
 Qed.
-
-Print Assumptions decodeItemSavedFrameWordsIntroduction.
-Print Assumptions decodeItemSavedFrameZeroRejected.
-Print Assumptions decodeItemSavedFrameReturnIntroduction.
-Print Assumptions decodeItemSavedFrameRejectedIntroduction.

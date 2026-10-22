@@ -252,14 +252,3 @@ Proof.
   - unfold decodeItemSailCursor. rewrite Hbytes.
     exact (proj1 q23WrapSailRejects).
 Qed.
-
-Print Assumptions decodeItemLiteralReturn.
-Print Assumptions decodeItemShortStringReturn.
-Print Assumptions decodeItemEmptyStringReturn.
-Print Assumptions decodeItemLongStringReturn.
-Print Assumptions decodeItemShortListReturn.
-Print Assumptions decodeItemLongListReturn.
-Print Assumptions decodeItemErrorReturn.
-Print Assumptions q23WrapCandidateClasses.
-Print Assumptions q23WrapSailRejects.
-Print Assumptions q23LongStringWrapMeaning.

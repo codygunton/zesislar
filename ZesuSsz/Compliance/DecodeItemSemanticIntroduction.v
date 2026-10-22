@@ -79,12 +79,6 @@ Lemma decodeItemLongListCandidateIntro args prefix rest :
       (bigEndian (firstn (Z.to_nat (bv_unsigned prefix - 247)) rest)).
 Proof. decodeItemCandidateBranch. Qed.
 
-Print Assumptions decodeItemLiteralCandidateIntro.
-Print Assumptions decodeItemEmptyCandidateIntro.
-Print Assumptions decodeItemShortStringCandidateIntro.
-Print Assumptions decodeItemShortListCandidateIntro.
-Print Assumptions decodeItemLongStringCandidateIntro.
-Print Assumptions decodeItemLongListCandidateIntro.
 
 Lemma decodeItemCheckedPayloadRejected inputLength headerLength payloadLength isList :
   inputLength < (headerLength + payloadLength) mod word64Modulus ->
@@ -102,7 +96,6 @@ Lemma decodeItemShortStringRejectedCandidateIntro args prefix rest :
   candidateDecodeItem (decodeItemInputBytes args) = candidateError.
 Proof. decodeItemCandidateBranch. Qed.
 
-Print Assumptions decodeItemShortStringRejectedCandidateIntro.
 
 Lemma decodeItemShortListRejectedCandidateIntro args prefix rest :
   decodeItemInputHead args prefix rest ->
@@ -112,7 +105,6 @@ Lemma decodeItemShortListRejectedCandidateIntro args prefix rest :
   candidateDecodeItem (decodeItemInputBytes args) = candidateError.
 Proof. decodeItemCandidateBranch. Qed.
 
-Print Assumptions decodeItemShortListRejectedCandidateIntro.
 
 Lemma decodeItemLongStringHeaderRejectedCandidateIntro args prefix rest :
   decodeItemInputHead args prefix rest ->
@@ -121,7 +113,6 @@ Lemma decodeItemLongStringHeaderRejectedCandidateIntro args prefix rest :
   candidateDecodeItem (decodeItemInputBytes args) = candidateError.
 Proof. decodeItemCandidateBranch. Qed.
 
-Print Assumptions decodeItemLongStringHeaderRejectedCandidateIntro.
 
 Lemma decodeItemLongListHeaderRejectedCandidateIntro args prefix rest :
   decodeItemInputHead args prefix rest ->
@@ -130,7 +121,6 @@ Lemma decodeItemLongListHeaderRejectedCandidateIntro args prefix rest :
   candidateDecodeItem (decodeItemInputBytes args) = candidateError.
 Proof. decodeItemCandidateBranch. Qed.
 
-Print Assumptions decodeItemLongListHeaderRejectedCandidateIntro.
 
 Lemma decodeItemLongStringPayloadRejectedCandidateIntro args prefix rest :
   decodeItemInputHead args prefix rest ->
@@ -143,7 +133,6 @@ Lemma decodeItemLongStringPayloadRejectedCandidateIntro args prefix rest :
   candidateDecodeItem (decodeItemInputBytes args) = candidateError.
 Proof. decodeItemCandidateBranch. Qed.
 
-Print Assumptions decodeItemLongStringPayloadRejectedCandidateIntro.
 
 Lemma decodeItemLongListPayloadRejectedCandidateIntro args prefix rest :
   decodeItemInputHead args prefix rest ->
@@ -156,9 +145,7 @@ Lemma decodeItemLongListPayloadRejectedCandidateIntro args prefix rest :
   candidateDecodeItem (decodeItemInputBytes args) = candidateError.
 Proof. decodeItemCandidateBranch. Qed.
 
-Print Assumptions decodeItemLongListPayloadRejectedCandidateIntro.
 
-Print Assumptions decodeItemCheckedPayloadRejected.
 
 Lemma decodeItemDomainInputLengthBounds args :
   decodeItemC1BDomain args ->
@@ -180,7 +167,6 @@ Proof.
     in Hreadable.
   destruct Hreadable as [[Hbase Hend]|[Hbase Hend]]; lia.
 Qed.
-Print Assumptions decodeItemDomainInputLengthBounds.
 
 Lemma decodeItemEmptyInputRejected args :
   decodeItemInputBytes args = [] -> decodeItemRejectedFacts args.
@@ -189,7 +175,6 @@ Proof.
   unfold decodeItemRejectedFacts, decodeItemSailCursor.
   rewrite Hinput. split; [reflexivity|vm_compute; reflexivity].
 Qed.
-Print Assumptions decodeItemEmptyInputRejected.
 
 Lemma decodeItemDomainNonemptyInputHead returnAddress args :
   decodeItemDomainAt returnAddress decodeItemC1BDomain args ->
@@ -204,4 +189,3 @@ Proof.
     rewrite Hlength in Hnonzero. exfalso. apply Hnonzero. reflexivity.
   - exists prefix, rest. exact Hinput.
 Qed.
-Print Assumptions decodeItemDomainNonemptyInputHead.

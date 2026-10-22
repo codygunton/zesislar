@@ -122,9 +122,6 @@ Qed.
     unfold SimplAnd; split; [intros _; exfalso; exact (Hfault Hbound) | intros _; exact I]
   end : typeclass_instances.
 
-Print Assumptions decodeItemShortListGuardRejected.
-Print Assumptions decodeItemShortListGuardAccepted.
-Print Assumptions decodeItemNonemptyInputByteBound.
 
 Lemma decodeItemNonemptyInputReadableBounds args :
   decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
@@ -198,8 +195,6 @@ Qed.
     unfold SimplAnd; split; [intros _; exfalso; exact (Hfault Hbound) | intros _; exact I]
   end : typeclass_instances.
 
-Print Assumptions decodeItemNonemptyInputReadableBounds.
-Print Assumptions decodeItemNonemptyInputPhysicalByteBounds.
 
 Lemma decodeItemLongStringHeaderGuardRejected args (register : bv 64)
     (inputPrefix : byte) (rest : list byte) :
@@ -221,7 +216,6 @@ Proof. decodeItemGuardFromMask decodeItemLongStringHeaderRejected constr:(183%Z)
         solve [eassumption | split; assumption] | intros _; exact I]
   end : typeclass_instances.
 
-Print Assumptions decodeItemLongStringHeaderGuardRejected.
 
 Lemma decodeItemLongListHeaderGuardRejected args (register : bv 64)
     (inputPrefix : byte) (rest : list byte) :
@@ -243,7 +237,6 @@ Proof. decodeItemGuardFromMask decodeItemLongListHeaderRejected constr:(247%Z). 
         solve [eassumption | split; assumption] | intros _; exact I]
   end : typeclass_instances.
 
-Print Assumptions decodeItemLongListHeaderGuardRejected.
 
 Lemma decodeItemNonemptyStringPrefixGuard (inputPrefix : byte) :
   128 <= bv_unsigned inputPrefix <= 255 ->
@@ -289,6 +282,3 @@ Qed.
       apply (decodeItemShortStringMaskGuard register prefix);
         [split; assumption | exact Hvalue] | intros _; exact I]
   end : typeclass_instances.
-
-Print Assumptions decodeItemNonemptyStringPrefixGuard.
-Print Assumptions decodeItemShortStringMaskGuard.

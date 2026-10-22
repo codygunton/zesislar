@@ -53,10 +53,6 @@ Proof.
 Qed.
 
 
-Print Assumptions decodeItemStoredWordBytes.
-Print Assumptions decodeItemStoredWordValue.
-Print Assumptions decodeItemStoredPointerImage.
-Print Assumptions decodeItemStoredLengthImage.
 
 #[export] Hint Extern 1
   (SimplAnd (fieldImage (bv_to_little_endian 8 8 (bv_unsigned ?pointer) ++

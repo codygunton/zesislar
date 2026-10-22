@@ -64,7 +64,6 @@ Proof.
     split; assumption.
 Qed.
 
-Print Assumptions decodeItemSavedFrameFacts_two_words.
 
 Lemma decodeItemSavedFrameFacts_machine_words (args : DecodeItemArgs) :
   decodeItemC1BDomain args ->
@@ -96,8 +95,6 @@ Proof.
       unfold bv_modulus in H. exact H.
 Qed.
 
-Print Assumptions littleEndian_machine_bytes.
-Print Assumptions decodeItemSavedFrameFacts_machine_words.
 
 Global Instance decodeItemSavedFrameFacts_derived
     (returnAddress : Z) (args : DecodeItemArgs)

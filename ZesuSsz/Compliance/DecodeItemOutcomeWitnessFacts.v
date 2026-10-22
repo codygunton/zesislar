@@ -15,5 +15,3 @@ Proof.
   unfold ZesuPureFactIntro. iIntros "[Hmeaning Hexit]".
   iExists (outcome, tt)ₗ. iFrame.
 Qed.
-
-Print Assumptions decodeItemOutcomeRepackWitness.
