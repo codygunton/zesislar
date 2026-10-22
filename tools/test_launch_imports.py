@@ -42,6 +42,21 @@ class LaunchImportTests(unittest.TestCase):
         return [(module, self.source.replace(f"Require Import {module}.\n", ""))
                 for module in (self.module, launch_imports.APPROVED)]
 
+    def test_inventory_only_never_admits_native_launch(self):
+        self.data['inventory_only'] = True
+        for registrations in (["ZesuSsz/Compliance/DeclaredHints.v"], []):
+            self.data['registrations'] = registrations
+            self.write_manifest()
+            with self.assertRaisesRegex(ValueError, 'inventory_only'):
+                self.check(self.source)
+
+    def test_inventory_only_requires_boolean(self):
+        for value in (1, 'true', None):
+            self.data['inventory_only'] = value
+            self.write_manifest()
+            with self.assertRaisesRegex(ValueError, 'boolean'):
+                self.check(self.source)
+
     def test_registration_entry_selects_the_umbrella(self):
         checked = self.check(self.source)
         self.assertEqual(checked["required"], [self.module, launch_imports.APPROVED])

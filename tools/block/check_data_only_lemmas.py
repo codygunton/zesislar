@@ -396,6 +396,8 @@ def manifest_files(manifest: dict, root: Path) -> dict[str, list[Path]]:
     if not isinstance(manifest, dict) or not isinstance(manifest.get("function"), str) \
             or not manifest["function"].strip():
         raise ValueError("The manifest requires a nonempty function name.")
+    if not isinstance(manifest.get("inventory_only", False), bool):
+        raise ValueError("The inventory_only flag must be boolean.")
     files = {}
     for category in CATEGORIES:
         values = manifest.get(category)

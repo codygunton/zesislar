@@ -277,5 +277,140 @@ class SplitBlockTests(unittest.TestCase):
             self.count_split(self.split_commit(umbrella='Lemma unexpected : True.\nProof. exact I. Qed.\n'))
 
 
+
+class SchemaTwoTests(unittest.TestCase):
+    class Tree:
+        sha = 'fixed-commit'
+        def __init__(self, files):
+            self.files = files
+            self.paths = set(files)
+        def read(self, path):
+            return self.files[path]
+        def git(self, *args):
+            return 'fixed-tree\n'
+
+    def fixture(self, rows=None):
+        path = 'ZesuSsz/Evidence/demo_function_text.json'
+        manifest = dict(schema_version=2, function='demo.function', scope_id='demo-v2',
+                        files=rows or [dict(path='neutral.v', category='contracts',
+                                           scope='whole_file', text_kind='hand_written')])
+        tree = self.Tree({path: json.dumps(manifest).encode(), 'neutral.v': b'A\n\nB\n'})
+        return tree, path, manifest
+
+    def count(self, tree, path, manifest, freshness=None):
+        tree.files[path] = json.dumps(manifest).encode()
+        tree.paths = set(tree.files)
+        return lithium_metrics.count_commit(tree, 'demo.function', freshness)
+
+    def test_explicit_kinds_and_units_do_not_depend_on_names(self):
+        tree, path, manifest = self.fixture()
+        for kind in lithium_metrics.TEXT_KINDS:
+            with self.subTest(kind=kind):
+                manifest['files'][0]['text_kind'] = kind
+                if kind == 'generated':
+                    continue  # The next test supplies exact freshness bindings.
+                report = self.count(tree, path, manifest)
+                self.assertEqual(report['function_text_by_kind']['contracts'][kind], dict(physical=3, nonblank=2))
+                self.assertEqual(report['m2_nonblank_lines'], 2 if kind == 'hand_written' else 0)
+                self.assertIn('Mixed compatibility unit', report['counting_rules']['m2_total_lines'])
+                self.assertIn('Uniform headline', report['counting_rules']['m2_nonblank_lines'])
+
+    def test_cli_preserves_other_function_results_at_one_commit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / 'metrics.json'
+            def measured(commit, function='decodeItem', freshness=None):
+                return dict(commit='abc', function=function, scope_id=function + '-v2')
+            with patch.object(lithium_metrics, 'Commit'), patch.object(lithium_metrics, 'count_commit', side_effect=measured), patch('builtins.print'):
+                for function in ('first', 'second'):
+                    self.assertEqual(lithium_metrics.main(['--function', function, '--output', str(output)]), 0)
+            self.assertEqual(set(json.loads(output.read_text())['function_text_by_commit']['abc']), {'first', 'second'})
+
+    def test_unknown_or_missing_kind_is_rejected(self):
+        tree, path, manifest = self.fixture()
+        for value in (None, 'generated_by_name'):
+            manifest['files'][0]['text_kind'] = value
+            with self.assertRaisesRegex(ValueError, 'explicit category and text_kind'):
+                self.count(tree, path, manifest)
+
+    def test_ranges_and_rows_cannot_overlap(self):
+        tree, path, manifest = self.fixture()
+        row = manifest['files'][0]
+        row.update(scope='mixed_file', line_ranges=[[1, 2], [2, 3]])
+        with self.assertRaisesRegex(ValueError, 'overlaps'):
+            self.count(tree, path, manifest)
+        row['line_ranges'] = [[1, 2]]
+        manifest['files'].append(dict(row, line_ranges=[[2, 3]]))
+        with self.assertRaisesRegex(ValueError, 'overlaps'):
+            self.count(tree, path, manifest)
+        manifest['files'][1]['line_ranges'] = [[3, 3]]
+        self.assertEqual(self.count(tree, path, manifest)['function_text_categories']['contracts'], 3)
+
+    def generated_fixture(self):
+        import hashlib
+        tree, path, manifest = self.fixture()
+        manifest['files'][0].update(text_kind='generated', generator='support')
+        tree.files['renderer.py'] = b'print("renderer")\n'
+        tree.files['design.json'] = b'{}\n'
+        manifest['generators'] = {'support': dict(tool='renderer.py', command=['python3', 'renderer.py', '--check'], inputs=['renderer.py', 'design.json'], outputs=['neutral.v'])}
+        check = dict(command=manifest['generators']['support']['command'], exit_code=0,
+                     inputs={name: hashlib.sha256(tree.files[name]).hexdigest() for name in ('renderer.py', 'design.json')},
+                     outputs={'neutral.v': hashlib.sha256(tree.files['neutral.v']).hexdigest()})
+        receipt = dict(schema_version=1, tree='fixed-tree', checks={'support': check})
+        return tree, path, manifest, receipt
+
+    def test_generated_credit_requires_exact_successful_freshness(self):
+        tree, path, manifest, receipt = self.generated_fixture()
+        unchecked = self.count(tree, path, manifest)
+        self.assertEqual(unchecked['files'][0]['effective_text_kind'], 'hand_written')
+        self.assertEqual(unchecked['files'][0]['freshness'], 'unchecked')
+        checked = self.count(tree, path, manifest, receipt)
+        self.assertEqual(checked['block_support_by_kind']['generated'], dict(physical=3, nonblank=2))
+        self.assertEqual(checked['m2_nonblank_lines'], 0)
+        for key, value in [('tree', 'other-tree'), ('schema_version', 2)]:
+            with self.subTest(key=key), self.assertRaisesRegex(ValueError, 'source tree'):
+                self.count(tree, path, manifest, dict(receipt, **{key: value}))
+        import copy
+        for key, value in [('exit_code', 1), ('exit_code', False), ('command', ['different', '--check']), ('inputs', {}), ('outputs', {})]:
+            bad = copy.deepcopy(receipt)
+            bad['checks']['support'][key] = value
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                self.count(tree, path, manifest, bad)
+        tree.files['renderer.py'] += b'# changed\n'
+        with self.assertRaisesRegex(ValueError, 'inputs'):
+            self.count(tree, path, manifest, receipt)
+
+    def test_comparison_refuses_different_scope(self):
+        text = lithium_metrics.comparison_table(dict(scope_id='legacy'), dict(scope_id='corrected'))
+        self.assertIn('Noncomparable', text)
+        self.assertIn('No delta', text)
+
+    def test_function_selection_and_attribution_are_explicit(self):
+        tree, path, manifest = self.fixture()
+        manifest['inventory_only'] = True
+        result = self.count(tree, path, manifest)
+        self.assertTrue(result['inventory_only'])
+        self.assertEqual(result['blocks']['coverage'], 'not_measured')
+        with self.assertRaisesRegex(ValueError, 'one function manifest'):
+            lithium_metrics.count_commit(tree, 'unlisted')
+        second = 'ZesuSsz/Evidence/duplicate_function_text.json'
+        tree.files[second] = tree.files[path]
+        tree.paths.add(second)
+        with self.assertRaisesRegex(ValueError, 'one function manifest'):
+            lithium_metrics.count_commit(tree, 'demo.function')
+
+    def test_current_manifest_split_preserves_function_attribution(self):
+        root = Path(__file__).resolve().parents[1]
+        manifests = {name: json.loads((root / f'ZesuSsz/Evidence/{name}_function_text.json').read_text())
+                     for name in ('decodeItem', 'nextUint64', 'free', 'decodeParentHeader')}
+        decode = {row['path'] for row in manifests['decodeItem']['files']}
+        parent = {row['path'] for row in manifests['decodeParentHeader']['files']}
+        following = {row['path'] for row in manifests['nextUint64']['files']}
+        for row in manifests['decodeItem']['removed_attribution']:
+            self.assertNotIn(row['path'], decode)
+            self.assertIn(row['path'], following if row['function'].endswith('nextUint64') else parent)
+        for manifest in manifests.values():
+            self.assertEqual(manifest['schema_version'], 2)
+            self.assertTrue(all(row['text_kind'] in lithium_metrics.TEXT_KINDS for row in manifest['files']))
+
 if __name__ == '__main__':
     unittest.main()

@@ -99,6 +99,42 @@ class FunctionHintCoverageTests(unittest.TestCase):
                     stream.write(f"Require Import {module}.\n")
         return compliance
 
+    def test_inventory_only_skips_only_missing_umbrella(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            evidence, compliance = self.fixture(root)
+            manifest = evidence / 'Parent_function_text.json'
+            data = dict(function='parent', inventory_only=True,
+                        registrations=['ZesuSsz/Compliance/ParentFacts.v'])
+            (compliance / 'ParentFacts.v').write_text('Global Instance parent_fact : True := I.\n')
+            manifest.write_text(json.dumps(data))
+            self.assertEqual(manifest_errors(root)[0], [])
+            data['introductions'] = 'invalid'
+            manifest.write_text(json.dumps(data))
+            with self.assertRaisesRegex(ValueError, 'Invalid introductions'):
+                manifest_umbrellas(root)
+            data['introductions'] = ['ZesuSsz/Compliance/Missing.v']
+            manifest.write_text(json.dumps(data))
+            with self.assertRaisesRegex(ValueError, 'missing'):
+                manifest_umbrellas(root)
+            data['introductions'] = []
+            data['inventory_only'] = 'true'
+            manifest.write_text(json.dumps(data))
+            with self.assertRaisesRegex(ValueError, 'inventory_only'):
+                manifest_umbrellas(root)
+
+    def test_inventory_only_does_not_skip_existing_umbrella_coverage(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            evidence, compliance = self.fixture(root)
+            manifest = evidence / 'Free_function_text.json'
+            data = json.loads(manifest.read_text())
+            data['inventory_only'] = True
+            manifest.write_text(json.dumps(data))
+            (compliance / 'FreeHints.v').write_text('(* Missing exports. *)\n')
+            errors, _ = manifest_errors(root)
+            self.assertIn('Free_function_text.json: FreeHints.v does not export ZesuSsz.Compliance.FreeDataRegistrations.', errors)
+
     def test_c1b_meaning_requires_the_scoped_error_image_registration(self):
         module = "ZesuSsz.Compliance.DecodeItemExitDataFacts"
         importer = "ZesuSsz.Compliance.DecodeItemC1BMeaning"

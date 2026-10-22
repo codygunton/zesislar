@@ -1,0 +1,104 @@
+{
+  "schema_version": 2,
+  "function": "rlp_decode.decodeParentHeader",
+  "scope_id": "decodeParentHeader-function-support-v2",
+  "inventory_only": true,
+  "contracts": [
+    "ZesuSsz/Contracts/Candidates/ParentHeaderDomain.v",
+    "ZesuSsz/Contracts/ParentHeader.v",
+    "ZesuSsz/Contracts/ParentHeaderLevel1.v",
+    "ZesuSsz/Contracts/ParentHeaderMemcpyService.v",
+    "ZesuSsz/Contracts/ParentHeaderRequiredFields.v",
+    "ZesuSsz/Contracts/ParentHeaderRootFacts.v",
+    "ZesuSsz/Contracts/ParentHeaderRung2.v",
+    "ZesuSsz/Contracts/ParentHeaderSelected.v"
+  ],
+  "introductions": [],
+  "exit_meanings": [
+    "ZesuSsz/Compliance/ProjectionParentHeader.v"
+  ],
+  "loop_steps": [],
+  "registrations": [],
+  "generator_json": [],
+  "files": [
+    {
+      "path": "ZesuSsz/Contracts/Candidates/ParentHeaderDomain.v",
+      "category": "contracts",
+      "scope": "whole_file",
+      "text_kind": "hand_written"
+    },
+    {
+      "path": "ZesuSsz/Contracts/ParentHeader.v",
+      "category": "contracts",
+      "scope": "whole_file",
+      "text_kind": "hand_written"
+    },
+    {
+      "path": "ZesuSsz/Contracts/ParentHeaderLevel1.v",
+      "category": "contracts",
+      "scope": "whole_file",
+      "text_kind": "hand_written"
+    },
+    {
+      "path": "ZesuSsz/Contracts/ParentHeaderMemcpyService.v",
+      "category": "contracts",
+      "scope": "whole_file",
+      "text_kind": "hand_written"
+    },
+    {
+      "path": "ZesuSsz/Contracts/ParentHeaderRequiredFields.v",
+      "category": "contracts",
+      "scope": "whole_file",
+      "text_kind": "hand_written"
+    },
+    {
+      "path": "ZesuSsz/Contracts/ParentHeaderRootFacts.v",
+      "category": "contracts",
+      "scope": "whole_file",
+      "text_kind": "hand_written"
+    },
+    {
+      "path": "ZesuSsz/Contracts/ParentHeaderRung2.v",
+      "category": "contracts",
+      "scope": "whole_file",
+      "text_kind": "hand_written"
+    },
+    {
+      "path": "ZesuSsz/Contracts/ParentHeaderSelected.v",
+      "category": "contracts",
+      "scope": "whole_file",
+      "text_kind": "hand_written"
+    },
+    {
+      "path": "ZesuSsz/Compliance/ProjectionParentHeader.v",
+      "category": "exit_meanings",
+      "scope": "whole_file",
+      "text_kind": "hand_written"
+    },
+    {
+      "path": "ZesuSsz/Compliance/ParentHeaderVectorAudit.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "text_kind": "hand_written"
+    },
+    {
+      "path": "ZesuSsz/Evidence/ParentHeaderDifferential.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "text_kind": "hand_written"
+    },
+    {
+      "path": "ZesuSsz/Evidence/PendingParentHeaderSignatureFixtures.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "text_kind": "hand_written"
+    },
+    {
+      "path": "ZesuSsz/Evidence/PendingParentHeaderSignatureGates.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "text_kind": "hand_written"
+    }
+  ],
+  "attribution_note": "Whole-file ParentHeader ownership. Other function inventories retain their explicit shared ranges. This inventory does not authorize native launches."
+}
