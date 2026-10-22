@@ -135,6 +135,74 @@ def unchanged_protected_expectations(records):
                 raise ValueError('A protected expectation input changed during verification.')
 
 
+def prepare_verification_imports(workspace, protected, records):
+    """Adapt explicit imports without changing a protected declaration or its hash."""
+    if records is None:
+        return {}
+    if not isinstance(records, list) or not records:
+        raise ValueError('Verification imports must be a nonempty list.')
+    workspace = Path(workspace).resolve()
+    required = {'candidate_source', 'name', 'statement_sha256',
+                'verification_statement_sha256', 'imports'}
+    result = {}
+    module_pattern = r"[A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)+"
+    for row in records:
+        if not isinstance(row, dict) or set(row) != required:
+            raise ValueError('A verification-import adapter has missing or invalid fields.')
+        if not isinstance(row['candidate_source'], str) or not Path(row['candidate_source']).is_absolute():
+            raise ValueError('A verification-import adapter needs an absolute candidate source.')
+        key = (str(Path(row['candidate_source']).resolve()), row['name'])
+        if key not in protected:
+            raise ValueError('A verification-import adapter names an unused expectation.')
+        if key in result:
+            raise ValueError('The verification-import adapters repeat an expectation.')
+        expected = protected[key]
+        if row['statement_sha256'] != expected['statement_sha256']:
+            raise ValueError('A verification-import adapter changes its baseline statement binding.')
+        if not isinstance(row['imports'], list) or not row['imports']:
+            raise ValueError('A verification-import adapter needs explicit imports.')
+        statement = expected['statement']
+        # Only import commands before the selected declaration can change.
+        declaration = re.search(r'^Lemma\s+' + re.escape(row['name']) + r'\b', statement, re.M)
+        if declaration is None:
+            raise ValueError('A verification-import adapter has no literal declaration.')
+        prefix, declaration_text = statement[:declaration.start()], statement[declaration.start():]
+        seen = set()
+        for item in row['imports']:
+            if not isinstance(item, dict) or set(item) != {'old_module', 'new_module', 'source_sha256'}:
+                raise ValueError('A verification import has missing or invalid fields.')
+            old, new = item['old_module'], item['new_module']
+            if (not isinstance(old, str) or not isinstance(new, str) or
+                    not re.fullmatch(module_pattern, old) or not re.fullmatch(module_pattern, new) or old == new):
+                raise ValueError('A verification adapter may replace only a qualified import.')
+            if old in seen:
+                raise ValueError('A verification-import adapter repeats an import.')
+            seen.add(old)
+            before, after = 'Require Import ' + old + '.\n', 'Require Import ' + new + '.\n'
+            pattern = r'^' + re.escape(before)
+            if len(re.findall(pattern, prefix, re.M)) != 1:
+                raise ValueError('A verification import is missing, ambiguous, or unused.')
+            source = workspace / (new.replace('.', '/') + '.v')
+            if (not source.is_file() or not source.resolve().is_relative_to(workspace) or
+                    digest(source) != item['source_sha256']):
+                raise ValueError('A verification-import source differs from its binding.')
+            prefix = re.sub(pattern, lambda _: after, prefix, count=1, flags=re.M)
+        adapted = prefix + declaration_text
+        if hashlib.sha256(adapted.encode()).hexdigest() != row['verification_statement_sha256']:
+            raise ValueError('The verification statement hash differs.')
+        result[key] = {**row, 'candidate_source': key[0], 'verification_statement': adapted}
+    return result
+
+
+def unchanged_verification_imports(workspace, records):
+    for row in records.values():
+        for item in row['imports']:
+            source = Path(workspace) / (item['new_module'].replace('.', '/') + '.v')
+            if (not source.is_file() or not source.resolve().is_relative_to(Path(workspace).resolve()) or
+                    digest(source) != item['source_sha256']):
+                raise ValueError('A verification-import source changed during verification.')
+
+
 def retained_compile_result(source, artifact, retained):
     if (retained['source'] != str(source) or
             Path(retained['private_artifact']).resolve() != artifact.resolve() or
@@ -275,10 +343,11 @@ def owned_pet(health, owner):
 
 async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_checks=None,
                  name_prefix="decodeItem", mcp_launcher=None, compiler_launcher=None,
-                 protected_expectations=None, operation_observer=None):
+                 protected_expectations=None, verification_imports=None, operation_observer=None):
     workspace = Path(workspace).resolve()
     launchers = launcher_bindings(workspace, mcp_launcher, compiler_launcher)
     protected = prepare_protected_expectations(workspace, sources, protected_expectations)
+    import_adapters = prepare_verification_imports(workspace, protected, verification_imports)
     from mcp import ClientSession, StdioServerParameters
     from mcp.client.stdio import stdio_client
     directory = Path(directory)
@@ -286,7 +355,7 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
     private = (workspace / '_build/default').resolve()
     if not private.is_dir() or not private.is_relative_to(workspace.resolve()):
         raise ValueError('The owned private artifact directory is unavailable.')
-    report = {'private_artifact_directory': str(private), 'launchers': launchers, 'protected_expectations': list(protected.values()), 'success': False, 'calls': [], 'closures': [], 'sources': [], 'checks': []}
+    report = {'private_artifact_directory': str(private), 'launchers': launchers, 'protected_expectations': list(protected.values()), 'verification_imports': list(import_adapters.values()), 'success': False, 'calls': [], 'closures': [], 'sources': [], 'checks': []}
 
     def save():
         (directory / 'RESULT.json').write_text(json.dumps(report, indent=2) + '\n')
@@ -296,6 +365,7 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
         normal = False
         unchanged_launchers(launchers)
         unchanged_protected_expectations(protected)
+        unchanged_verification_imports(workspace, import_adapters)
         env = dict(os.environ)
         env.update(ROCQ_WORKSPACE=str(workspace), ROCQ_DUNE_BUILD='1',
                    AGENT_BUILD_DIR=str(private.parent),
@@ -396,8 +466,9 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
                 if key in protected:
                     statement = protected[key]['statement']
                     used_protected.add(key)
+                verification_statement = import_adapters[key]['verification_statement'] if key in import_adapters else statement
                 checked = await operation(f'verify-{index}-{number}', 'rocq_verify',
-                    {'workspace': str(workspace), 'problem_statement': statement,
+                    {'workspace': str(workspace), 'problem_statement': verification_statement,
                      'proof': proof, 'problem_name': name, 'timeout': timeout})
                 if checked.get('verification_method') != 'module_m':
                     raise ValueError('The generated statement lacks exact module_m verification.')
@@ -405,6 +476,8 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
                     raise ValueError('The generated statement has assumptions or unavailable assumptions.')
                 report['checks'][-1]['statements'].append(
                     {'name': name, 'exact_statement': statement,
+                     'verification_statement': verification_statement,
+                     'verification_statement_sha256': hashlib.sha256(verification_statement.encode()).hexdigest(),
                      'expectation_origin': 'baseline' if key in protected else 'candidate',
                      'verification': checked})
                 save()
@@ -413,6 +486,7 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
         if used_protected != set(protected):
             raise ValueError('A protected expectation was unused during verification.')
         unchanged_protected_expectations(protected)
+        unchanged_verification_imports(workspace, import_adapters)
         report['success'] = True
         save()
         return report
@@ -423,7 +497,8 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
 
 
 def verify_generated(workspace, sources, pc, directory, python=None, *, name_prefix="decodeItem",
-                     mcp_launcher=None, compiler_launcher=None, protected_expectations=None):
+                     mcp_launcher=None, compiler_launcher=None, protected_expectations=None,
+                     verification_imports=None):
     """Use the pinned MCP Python, never a shell compiler fallback."""
     if not os.environ.get('OPAM_SWITCH_PREFIX') or not shutil.which('pet'):
         raise ValueError('Run complete promotion under the pinned opam environment with pet on PATH.')
@@ -437,6 +512,7 @@ def verify_generated(workspace, sources, pc, directory, python=None, *, name_pre
                                     'pc': pc, 'directory': str(directory),
                                     'name_prefix': name_prefix,
                                     'protected_expectations': protected_expectations,
+                                    'verification_imports': verification_imports,
                                     'mcp_launcher': str(mcp_launcher) if mcp_launcher is not None else None,
                                     'compiler_launcher': str(compiler_launcher) if compiler_launcher is not None else None}, indent=2) + '\n')
     subprocess.run([python, str(Path(__file__).resolve()), '--inputs', str(manifest)], check=True)
@@ -455,4 +531,5 @@ if __name__ == '__main__':
                        name_prefix=inputs.get('name_prefix', 'decodeItem'),
                        mcp_launcher=inputs.get('mcp_launcher'),
                        compiler_launcher=inputs.get('compiler_launcher'),
-                       protected_expectations=inputs.get('protected_expectations')))
+                       protected_expectations=inputs.get('protected_expectations'),
+                       verification_imports=inputs.get('verification_imports')))

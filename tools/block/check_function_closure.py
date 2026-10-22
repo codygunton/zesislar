@@ -14,7 +14,8 @@ from coqc_findlib import active_build, check_record
 from lithium_metrics import Commit, block_counts, count_commit
 from launch_imports import function_hints
 from promotion_verification import (digest, launcher_bindings, prepare_protected_expectations,
-                                    unchanged_launchers, unchanged_protected_expectations, verify)
+                                    unchanged_launchers, unchanged_protected_expectations,
+                                    prepare_verification_imports, unchanged_verification_imports, verify)
 from closure_receipts import ClosureObserver, ObjectBindings, validate_physical_receipt
 from residual.modules import parse_module
 
@@ -218,7 +219,7 @@ def baseline_verification(record, baseline, protected, executable):
 
 
 def prepare(inputs, *, protected_baseline_only=False):
-    if (not isinstance(inputs, dict) or set(inputs) != {'schema_version', 'function', 'baseline',
+    if (not isinstance(inputs, dict) or set(inputs) - {'verification_imports'} != {'schema_version', 'function', 'baseline',
             'candidate', 'protected_expectations', 'freshness', 'mcp_launcher',
             'compiler_launcher', 'rpc_timeout', 'physical_compiler', 'physical_admission',
             'baseline_verification'} or type(inputs['schema_version']) is not int or inputs['schema_version'] != 1 or
@@ -233,6 +234,9 @@ def prepare(inputs, *, protected_baseline_only=False):
     function_hints('decodeItem', root)  # Preserve inventory-only and umbrella refusals.
     coverage = native_rows(commit)
     protected = public_mapping(root, baseline, inputs['protected_expectations'])
+    if protected_baseline_only and inputs.get('verification_imports') is not None:
+        raise ValueError('Protected baseline verification cannot adapt imports.')
+    imports = prepare_verification_imports(root, protected, inputs.get('verification_imports'))
     contexts = []
     for relative in PUBLIC_CONTEXTS:
         old, new = baseline_commit.read(relative), commit.read(relative)
@@ -272,6 +276,7 @@ def prepare(inputs, *, protected_baseline_only=False):
     return dict(schema_version=1, function='decodeItem', baseline=baseline, candidate=candidate,
                 scope='protected-baseline-only' if protected_baseline_only else 'native-and-compliance',
                 coverage=coverage, selected=selected, protected_expectations=list(protected.values()),
+                verification_imports=list(imports.values()),
                 public_contexts=contexts, metrics=metrics, launchers=launchers,
                 freshness=inputs['freshness'],
                 physical_compiler=inputs['physical_compiler'], physical_admission=inputs['physical_admission'],
@@ -296,6 +301,8 @@ def unchanged_preparation(report):
             bound_json(bound[label], Path(bound['workspace']).resolve())
     protected = {(row['candidate_source'], row['name']): row for row in report['protected_expectations']}
     unchanged_protected_expectations(protected)
+    adapters = {(row['candidate_source'], row['name']): row for row in report['verification_imports']}
+    unchanged_verification_imports(report['candidate']['workspace'], adapters)
     metrics = report['metrics']
     root = Path(report['candidate']['workspace'])
     for row in [metrics['manifest'], *metrics['files']]:
@@ -339,10 +346,13 @@ async def run(inputs, directory, *, prepare_only=False, protected_baseline_only=
             unchanged_preparation(report)
             rows = [row for row in inputs['protected_expectations']
                     if str(Path(row['candidate_source']).resolve()) == selected['source']]
+            adapters = [row for row in inputs.get('verification_imports', [])
+                        if str(Path(row['candidate_source']).resolve()) == selected['source']]
             result_directory = directory / f'verify-{index:02d}'
             result = await verify(root, [Path(selected['source'])], 0, result_directory,
                 timeout=report['rpc_timeout'], mcp_launcher=inputs['mcp_launcher'],
                 compiler_launcher=inputs['compiler_launcher'], protected_expectations=rows or None,
+                verification_imports=adapters or None,
                 operation_observer=observer)
             if result.get('success') is not True:
                 raise ValueError('The selected module has no successful verification result.')
