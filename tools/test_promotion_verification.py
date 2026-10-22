@@ -1,5 +1,7 @@
 """Check exact statement extraction and mandatory verification failures."""
 import asyncio
+import copy
+import hashlib
 from contextlib import asynccontextmanager
 import json
 import os
@@ -156,6 +158,110 @@ class PromotionVerificationTests(unittest.TestCase):
                 verification.verify_generated(Path(temp), [], 0x800d6974, directory)
 
 
+def protected_fixture(directory, name='protected'):
+    root = Path(directory)
+    baseline, candidate = root / 'baseline', root / 'candidate'
+    baseline.mkdir()
+    candidate.mkdir()
+    source = baseline / 'Fixture.v'
+    source.write_text('(* Literal baseline expectation. *)\nLemma ' + name + ' : True.\nProof. exact I. Qed.\n')
+    current = candidate / 'Fixture.v'
+    current.write_text('Lemma ' + name + ' : True.\nProof. exact I. Qed.\n')
+    subprocess.run(['git', '-c', 'init.defaultBranch=main', 'init', '-q', str(baseline)], check=True)
+    subprocess.run(['git', '-C', str(baseline), 'add', 'Fixture.v'], check=True)
+    subprocess.run(['git', '-C', str(baseline), '-c', 'user.name=Fixture', '-c',
+                    'user.email=fixture@example.invalid', '-c', 'commit.gpgsign=false',
+                    'commit', '-qm', 'Fixture'], check=True)
+    commit = subprocess.check_output(['git', '-C', str(baseline), 'rev-parse', 'HEAD'], text=True).strip()
+    build = baseline / '_build/owned'
+    copied = build / 'default/Fixture.v'
+    copied.parent.mkdir(parents=True)
+    copied.write_bytes(source.read_bytes())
+    artifact = copied.with_suffix('.vo')
+    artifact.write_bytes(b'Bound baseline object fixture')
+    statement = verification.statements(source.read_text(), 0)[0][1]
+    row = dict(candidate_source=str(current), candidate_source_sha256=verification.digest(current),
+               name=name, baseline_workspace=str(baseline), baseline_commit=commit,
+               baseline_build_dir=str(build), baseline_source=str(source),
+               baseline_source_sha256=verification.digest(source), baseline_object=str(artifact),
+               baseline_object_sha256=verification.digest(artifact), statement=statement,
+               statement_sha256=hashlib.sha256(statement.encode()).hexdigest())
+    return candidate, current, row
+
+
+class ProtectedExpectationTests(unittest.TestCase):
+    def test_expectation_binds_baseline_and_candidate_separately(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, current, row = protected_fixture(directory)
+            checked = verification.prepare_protected_expectations(root, [current], [row])
+            self.assertEqual(set(checked), {(str(current), 'protected')})
+            result = checked[(str(current), 'protected')]
+            self.assertEqual(result['baseline_commit'], row['baseline_commit'])
+            self.assertNotEqual(result['candidate_source_sha256'], result['baseline_source_sha256'])
+            self.assertEqual(result['statement_sha256'], hashlib.sha256(result['statement'].encode()).hexdigest())
+            verification.unchanged_protected_expectations(checked)
+
+    def test_missing_duplicate_and_unused_expectations_refuse(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, current, row = protected_fixture(directory)
+            missing = dict(row)
+            missing.pop('baseline_object_sha256')
+            for records, message in [([], 'nonempty'), ([missing], 'missing'),
+                                     ([row, row], 'repeat')]:
+                with self.subTest(message=message), self.assertRaisesRegex(ValueError, message):
+                    verification.prepare_protected_expectations(root, [current], records)
+            with self.assertRaisesRegex(ValueError, 'unused candidate source'):
+                verification.prepare_protected_expectations(root, [], [row])
+            current.write_text(current.read_text().replace('Lemma protected', 'Lemma renamed'))
+            changed = dict(row, candidate_source_sha256=verification.digest(current))
+            with self.assertRaisesRegex(ValueError, 'unused declaration'):
+                verification.prepare_protected_expectations(root, [current], [changed])
+
+    def test_commit_source_object_and_text_mismatches_refuse(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, current, row = protected_fixture(directory)
+            changes = [('baseline_commit', '0' * 40), ('candidate_source_sha256', '0' * 64),
+                       ('baseline_source_sha256', '0' * 64), ('baseline_object_sha256', '0' * 64),
+                       ('statement_sha256', '0' * 64), ('statement', 'Lemma protected : False.\n')]
+            for key, value in changes:
+                with self.subTest(key=key), self.assertRaises(ValueError):
+                    verification.prepare_protected_expectations(root, [current], [dict(row, **{key: value})])
+            Path(row['baseline_object']).with_suffix('.v').write_text('Changed private source copy.')
+            with self.assertRaisesRegex(ValueError, 'source or object'):
+                verification.prepare_protected_expectations(root, [current], [row])
+
+    def test_wrong_object_mapping_and_relative_paths_refuse(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, current, row = protected_fixture(directory)
+            other = Path(row['baseline_object']).with_name('Other.vo')
+            other.write_bytes(Path(row['baseline_object']).read_bytes())
+            for changed in (dict(row, baseline_object=str(other)), dict(row, baseline_source='Fixture.v')):
+                with self.assertRaises(ValueError):
+                    verification.prepare_protected_expectations(root, [current], [changed])
+
+    def test_changed_input_refuses_after_preparation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, current, row = protected_fixture(directory)
+            checked = verification.prepare_protected_expectations(root, [current], [row])
+            Path(row['baseline_object']).write_bytes(b'Changed baseline object')
+            with self.assertRaisesRegex(ValueError, 'changed during verification'):
+                verification.unchanged_protected_expectations(checked)
+
+    def test_verify_generated_retains_explicit_expectations_in_inputs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, current, row = protected_fixture(directory)
+            output = root / 'verification'
+            def emit_success(*args, **kwargs):
+                output.mkdir()
+                (output / 'RESULT.json').write_text(json.dumps({'success': True}))
+            with patch.dict(os.environ, {'OPAM_SWITCH_PREFIX': '/pinned'}), \
+                    patch.object(verification.shutil, 'which', return_value='/pinned/bin/pet'), \
+                    patch.object(verification.subprocess, 'run', side_effect=emit_success):
+                verification.verify_generated(root, [current], 0, output, protected_expectations=[row])
+            manifest = json.loads(Path(str(output) + '.inputs.json').read_text())
+            self.assertEqual(manifest['protected_expectations'], [row])
+
+
 class LauncherSelectionTests(unittest.TestCase):
     def launchers(self, root):
         tools = root / 'tools'
@@ -201,7 +307,8 @@ class LauncherSelectionTests(unittest.TestCase):
                         asyncio.run(verification.verify(root, [], 0, root / 'unused', **{label: selected}))
                     self.assertFalse((root / 'unused').exists())
 
-    def fake_verification(self, root, overrides=False, wrong_health=False):
+    def fake_verification(self, root, overrides=False, wrong_health=False, protected_expectations=None,
+                          verification_method='module_m'):
         tools = self.launchers(root)
         private = root / '_build/default'
         private.mkdir(parents=True)
@@ -214,6 +321,8 @@ class LauncherSelectionTests(unittest.TestCase):
                 path.write_text('#!/bin/sh\nexit 0\n')
                 path.chmod(0o755)
                 selected[label + '_launcher'] = path
+        if protected_expectations is not None:
+            selected['protected_expectations'] = protected_expectations
         seen, calls, active = [], [], [False]
         def parameters(**values):
             seen.append(values)
@@ -243,7 +352,7 @@ class LauncherSelectionTests(unittest.TestCase):
                     (private / 'Fixture.vo').write_bytes(b'owned fixture object')
                     result = dict(success=True)
                 else:
-                    result = dict(success=True, assumptions=[])
+                    result = dict(success=True, assumptions=[], verification_method=verification_method)
                 return SimpleNamespace(payload=result, model_dump=lambda **kwargs: result)
         mcp = ModuleType('mcp')
         mcp.ClientSession = lambda *args: Session()
@@ -256,6 +365,9 @@ class LauncherSelectionTests(unittest.TestCase):
                 patch.object(verification, 'live', side_effect=lambda identity: bool(identity) and active[0]):
             if wrong_health:
                 with self.assertRaisesRegex(ValueError, 'different compiler launcher'):
+                    asyncio.run(verification.verify(root, [source], 0x800d6a08, root / 'result', **selected))
+            elif verification_method != 'module_m':
+                with self.assertRaisesRegex(ValueError, 'module_m verification'):
                     asyncio.run(verification.verify(root, [source], 0x800d6a08, root / 'result', **selected))
             else:
                 asyncio.run(verification.verify(root, [source], 0x800d6a08, root / 'result', **selected))
@@ -282,11 +394,30 @@ class LauncherSelectionTests(unittest.TestCase):
             self.assertEqual(calls.count('rocq_promotion_owner'), 2)
             self.assertEqual(report['checks'][0]['statements'][0]['verification']['assumptions'], [])
 
+    def test_protected_verification_uses_literal_baseline_expectation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, current, row = protected_fixture(directory, name='checked')
+            report, _, _, _ = self.fake_verification(root, protected_expectations=[row])
+            statement = report['checks'][0]['statements'][0]
+            self.assertTrue(report['success'])
+            self.assertEqual(statement['exact_statement'], row['statement'])
+            self.assertEqual(statement['expectation_origin'], 'baseline')
+            request = next(call for call in report['calls'] if call['tool'] == 'rocq_verify')
+            self.assertEqual(request['arguments']['problem_statement'], row['statement'])
+            self.assertEqual(report['protected_expectations'][0]['baseline_commit'], row['baseline_commit'])
+
     def test_override_cannot_silently_select_a_different_compiler(self):
         with tempfile.TemporaryDirectory() as directory:
             report, _, calls, _ = self.fake_verification(Path(directory), overrides=True, wrong_health=True)
             self.assertFalse(report['success'])
             self.assertNotIn('rocq_compile_file', calls)
+
+    def test_shared_defs_with_empty_assumptions_is_not_exact_verification(self):
+        for method in ('shared_defs', None, 'unknown'):
+            with self.subTest(method=method), tempfile.TemporaryDirectory() as directory:
+                report, _, _, _ = self.fake_verification(Path(directory), verification_method=method)
+                self.assertFalse(report['success'])
+                self.assertIn('module_m', report['error']['message'])
 
 
 if __name__ == '__main__':

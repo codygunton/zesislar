@@ -44,6 +44,97 @@ def unchanged_launchers(bindings):
             raise ValueError('The selected ' + label + ' launcher changed during verification.')
 
 
+def prepare_protected_expectations(workspace, sources, records):
+    """Bind literal baseline expectations before starting any transport."""
+    workspace = Path(workspace).resolve()
+    if records is None:
+        return {}
+    if not isinstance(records, list) or not records:
+        raise ValueError('Protected expectations must be a nonempty list.')
+    required = {'candidate_source', 'candidate_source_sha256', 'name',
+                'baseline_workspace', 'baseline_commit', 'baseline_build_dir',
+                'baseline_source', 'baseline_source_sha256',
+                'baseline_object', 'baseline_object_sha256',
+                'statement', 'statement_sha256'}
+    selected = {Path(source).resolve() for source in sources}
+    result = {}
+    for row in records:
+        if (not isinstance(row, dict) or set(row) != required or
+                any(not isinstance(value, str) or not value for value in row.values())):
+            raise ValueError('A protected expectation has missing or invalid fields.')
+        if any(not Path(row[name]).is_absolute() for name in ('candidate_source', 'baseline_workspace',
+                   'baseline_build_dir', 'baseline_source', 'baseline_object')):
+            raise ValueError('Protected expectation paths must be absolute.')
+        candidate = Path(row['candidate_source']).resolve(strict=True)
+        if candidate not in selected or not candidate.is_relative_to(workspace):
+            raise ValueError('A protected expectation names an unused candidate source.')
+        key = (str(candidate), row['name'])
+        if key in result:
+            raise ValueError('The protected expectations repeat a source and name.')
+        if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_']*", row['name']):
+            raise ValueError('A protected expectation needs an exact declaration name.')
+        for name in ('candidate_source_sha256', 'baseline_source_sha256',
+                     'baseline_object_sha256', 'statement_sha256'):
+            if not re.fullmatch(r'[0-9a-f]{64}', row[name]):
+                raise ValueError('A protected expectation needs exact SHA256 values.')
+        if not re.fullmatch(r'[0-9a-f]{40}', row['baseline_commit']):
+            raise ValueError('A protected expectation needs an exact baseline commit.')
+        baseline = Path(row['baseline_workspace']).resolve(strict=True)
+        source = Path(row['baseline_source']).resolve(strict=True)
+        build = Path(row['baseline_build_dir']).resolve(strict=True)
+        artifact = Path(row['baseline_object']).resolve(strict=True)
+        if (not source.is_relative_to(baseline) or not build.is_relative_to(baseline) or
+                source.suffix != '.v' or artifact.suffix != '.vo'):
+            raise ValueError('A protected expectation leaves its baseline workspace.')
+        relative = candidate.relative_to(workspace)
+        if source.relative_to(baseline) != relative or artifact != build / 'default' / relative.with_suffix('.vo'):
+            raise ValueError('A protected baseline source/object mapping differs.')
+        head = subprocess.check_output(['git', '-C', str(baseline), 'rev-parse', 'HEAD'], text=True).strip()
+        if head != row['baseline_commit']:
+            raise ValueError('The protected baseline commit differs.')
+        committed = subprocess.check_output(['git', '-C', str(baseline), 'show', head + ':' + relative.as_posix()])
+        copied = build / 'default' / relative
+        if not copied.resolve().is_relative_to(baseline):
+            raise ValueError('A protected baseline source copy leaves its workspace.')
+        if (hashlib.sha256(committed).hexdigest() != row['baseline_source_sha256'] or
+                digest(source) != row['baseline_source_sha256'] or
+                not copied.is_file() or digest(copied) != row['baseline_source_sha256'] or
+                digest(artifact) != row['baseline_object_sha256'] or
+                digest(candidate) != row['candidate_source_sha256']):
+            raise ValueError('A protected source or object differs from its binding.')
+        # Source mode supports literal global declarations. A Section needs a
+        # separately retained baseline kernel type, never a candidate type query.
+        matches = [statement for name, statement, _ in statements(committed.decode(), 0)
+                   if name == row['name']]
+        if len(matches) != 1 or matches[0] != row['statement']:
+            raise ValueError('The protected statement differs from its baseline source.')
+        if hashlib.sha256(row['statement'].encode()).hexdigest() != row['statement_sha256']:
+            raise ValueError('The protected statement hash differs.')
+        candidate_names = [name for name, _, _ in statements(candidate.read_text(), 0,
+                           '.'.join(relative.with_suffix('').parts))]
+        if candidate_names.count(row['name']) != 1:
+            raise ValueError('A protected expectation names an unused declaration.')
+        result[key] = {**row, 'baseline_workspace': str(baseline),
+                       'baseline_source': str(source), 'baseline_object': str(artifact),
+                       'baseline_source_copy': str(copied), 'candidate_source': str(candidate),
+                       'origin': 'literal baseline source'}
+    return result
+
+
+def unchanged_protected_expectations(records):
+    for row in records.values():
+        head = subprocess.check_output(['git', '-C', row['baseline_workspace'],
+                                        'rev-parse', 'HEAD'], text=True).strip()
+        if head != row['baseline_commit']:
+            raise ValueError('The protected baseline commit changed during verification.')
+        for path, expected in ((row['candidate_source'], row['candidate_source_sha256']),
+                               (row['baseline_source'], row['baseline_source_sha256']),
+                               (row['baseline_source_copy'], row['baseline_source_sha256']),
+                               (row['baseline_object'], row['baseline_object_sha256'])):
+            if digest(path) != expected:
+                raise ValueError('A protected expectation input changed during verification.')
+
+
 def retained_compile_result(source, artifact, retained):
     if (retained['source'] != str(source) or
             Path(retained['private_artifact']).resolve() != artifact.resolve() or
@@ -183,9 +274,11 @@ def owned_pet(health, owner):
 
 
 async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_checks=None,
-                 name_prefix="decodeItem", mcp_launcher=None, compiler_launcher=None):
+                 name_prefix="decodeItem", mcp_launcher=None, compiler_launcher=None,
+                 protected_expectations=None, operation_observer=None):
     workspace = Path(workspace).resolve()
     launchers = launcher_bindings(workspace, mcp_launcher, compiler_launcher)
+    protected = prepare_protected_expectations(workspace, sources, protected_expectations)
     from mcp import ClientSession, StdioServerParameters
     from mcp.client.stdio import stdio_client
     directory = Path(directory)
@@ -193,7 +286,7 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
     private = (workspace / '_build/default').resolve()
     if not private.is_dir() or not private.is_relative_to(workspace.resolve()):
         raise ValueError('The owned private artifact directory is unavailable.')
-    report = {'private_artifact_directory': str(private), 'launchers': launchers, 'success': False, 'calls': [], 'closures': [], 'sources': [], 'checks': []}
+    report = {'private_artifact_directory': str(private), 'launchers': launchers, 'protected_expectations': list(protected.values()), 'success': False, 'calls': [], 'closures': [], 'sources': [], 'checks': []}
 
     def save():
         (directory / 'RESULT.json').write_text(json.dumps(report, indent=2) + '\n')
@@ -202,8 +295,10 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
         owner = pet = None
         normal = False
         unchanged_launchers(launchers)
+        unchanged_protected_expectations(protected)
         env = dict(os.environ)
         env.update(ROCQ_WORKSPACE=str(workspace), ROCQ_DUNE_BUILD='1',
+                   AGENT_BUILD_DIR=str(private.parent),
                    ZESU_ROCQ_COQC_WRAPPER=launchers['compiler']['path'])
         # The existing compiler wrapper supplies normal guarded admission.
         command = directory / (label + '.sh')
@@ -223,9 +318,13 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
                         record = {'tool': name, 'arguments': args,
                                   'request_UTC': datetime.now(timezone.utc).isoformat()}
                         report['calls'].append(record); save()
-                        response = await session.call_tool(name, args)
-                        record['raw_response'] = response.model_dump(mode='json')
-                        record['result'] = _result(response); save()
+                        try:
+                            response = await session.call_tool(name, args)
+                            record['raw_response'] = response.model_dump(mode='json')
+                            record['result'] = _result(response); save()
+                        except BaseException as error:
+                            record['error'] = dict(type=type(error).__name__, message=str(error)); save()
+                            raise
                         return record['result']
 
                     health = await call('rocq_health', {})
@@ -241,7 +340,12 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
                     if health.get('pet', {}).get('running'):
                         raise ValueError('A fresh compilation transport has an active Pet.')
                     try:
-                        result = await call(tool, arguments)
+                        token = await operation_observer.start(label, owner, tool, arguments) if operation_observer else None
+                        try:
+                            result = await call(tool, arguments)
+                        finally:
+                            if operation_observer:
+                                await operation_observer.finish(token, result)
                     finally:
                         pet = owned_pet(await call('rocq_health', {}), owner)
             normal = True
@@ -262,6 +366,7 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
         return result
 
     try:
+        used_protected = set()
         report['requested_sources'] = list(map(str, sources))
         for index, source in enumerate(compilation_sources(workspace, sources)):
             source = Path(source)
@@ -287,16 +392,27 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
             for number, (name, statement, proof) in enumerate(statements(
                     copy.read_text(), pc, '.'.join(source.relative_to(workspace).with_suffix('').parts),
                     name_prefix=name_prefix)):
+                key = (str(source.resolve()), name)
+                if key in protected:
+                    statement = protected[key]['statement']
+                    used_protected.add(key)
                 checked = await operation(f'verify-{index}-{number}', 'rocq_verify',
                     {'workspace': str(workspace), 'problem_statement': statement,
                      'proof': proof, 'problem_name': name, 'timeout': timeout})
+                if checked.get('verification_method') != 'module_m':
+                    raise ValueError('The generated statement lacks exact module_m verification.')
                 if checked.get('assumptions') != []:
                     raise ValueError('The generated statement has assumptions or unavailable assumptions.')
                 report['checks'][-1]['statements'].append(
-                    {'name': name, 'exact_statement': statement, 'verification': checked})
+                    {'name': name, 'exact_statement': statement,
+                     'expectation_origin': 'baseline' if key in protected else 'candidate',
+                     'verification': checked})
                 save()
             if digest(source) != report['sources'][-1]['sha256']:
                 raise ValueError('A generated source changed during verification.')
+        if used_protected != set(protected):
+            raise ValueError('A protected expectation was unused during verification.')
+        unchanged_protected_expectations(protected)
         report['success'] = True
         save()
         return report
@@ -307,7 +423,7 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
 
 
 def verify_generated(workspace, sources, pc, directory, python=None, *, name_prefix="decodeItem",
-                     mcp_launcher=None, compiler_launcher=None):
+                     mcp_launcher=None, compiler_launcher=None, protected_expectations=None):
     """Use the pinned MCP Python, never a shell compiler fallback."""
     if not os.environ.get('OPAM_SWITCH_PREFIX') or not shutil.which('pet'):
         raise ValueError('Run complete promotion under the pinned opam environment with pet on PATH.')
@@ -320,6 +436,7 @@ def verify_generated(workspace, sources, pc, directory, python=None, *, name_pre
     manifest.write_text(json.dumps({'workspace': str(workspace), 'sources': list(map(str, sources)),
                                     'pc': pc, 'directory': str(directory),
                                     'name_prefix': name_prefix,
+                                    'protected_expectations': protected_expectations,
                                     'mcp_launcher': str(mcp_launcher) if mcp_launcher is not None else None,
                                     'compiler_launcher': str(compiler_launcher) if compiler_launcher is not None else None}, indent=2) + '\n')
     subprocess.run([python, str(Path(__file__).resolve()), '--inputs', str(manifest)], check=True)
@@ -337,4 +454,5 @@ if __name__ == '__main__':
     asyncio.run(verify(Path(inputs['workspace']), inputs['sources'], inputs['pc'], inputs['directory'],
                        name_prefix=inputs.get('name_prefix', 'decodeItem'),
                        mcp_launcher=inputs.get('mcp_launcher'),
-                       compiler_launcher=inputs.get('compiler_launcher')))
+                       compiler_launcher=inputs.get('compiler_launcher'),
+                       protected_expectations=inputs.get('protected_expectations')))
