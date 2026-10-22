@@ -95,12 +95,3 @@ Proof.
   intros Hdomain [Hcandidate Hreject] Herror Himage.
   eapply decodeItemErrorReturn; eauto.
 Qed.
-
-
-Print Assumptions decodeItemLiteralPostMeaning.
-Print Assumptions decodeItemEmptyStringPostMeaning.
-Print Assumptions decodeItemShortStringPostMeaning.
-Print Assumptions decodeItemShortListPostMeaning.
-Print Assumptions decodeItemLongStringPostMeaning.
-Print Assumptions decodeItemLongListPostMeaning.
-Print Assumptions decodeItemErrorPostMeaning.

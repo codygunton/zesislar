@@ -37,9 +37,3 @@ Proof.
   eapply decodeItemEmptyStringReturn; [exact Hdomain|exact Hcandidate| |exact Hsail].
   rewrite Hinput. eapply return_800d69d4_emptyString; eauto.
 Qed.
-
-
-
-
-
-Print Assumptions returnExitEmptyString.

@@ -18,6 +18,3 @@ Qed.
     (bv_unsigned (bv_or (bv_and ret (BV 64 18446744073709551614)) (BV 64 0)) =
       bv_unsigned ret).
 Proof. exact (decodeItemMaskedReturnAddress ret). Qed.
-
-Print Assumptions decodeItemMaskedReturnAddress.
-Print Assumptions decodeItemMaskedReturnDerivedFacts.

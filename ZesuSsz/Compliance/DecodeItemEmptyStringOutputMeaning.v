@@ -65,7 +65,3 @@ Qed.
  ZesuDerivedFacts (decodeItemEmptyStringOutputFacts args locals inputPrefix rest)
   (DecodeMeaningModuloKnownBugs args (decodeItemEmptyStringUpdatedImage locals)).
 Proof. exact (decodeItemEmptyStringUpdatedMeaning args locals inputPrefix rest). Qed.
-
-
-Print Assumptions decodeItemEmptyStringUpdatedMeaning.
-Print Assumptions decodeItemEmptyStringOutputDerivedFacts.

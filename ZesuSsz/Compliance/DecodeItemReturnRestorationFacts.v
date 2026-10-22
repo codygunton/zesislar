@@ -94,12 +94,6 @@ Global Instance decodeItemReturnRestorationDerivedFacts
     (decodeItemReturnRestoration args frameBytes).
 Proof. exact (decodeItemReturnRestorationFacts args frameBytes). Qed.
 
-Print Assumptions decodeItemByteDecoderBridge.
-Print Assumptions decodeItemSavedReturnDecoder.
-Print Assumptions decodeItemStackEpilogueRestored.
-Print Assumptions decodeItemSavedFramePointerDecoder.
-Print Assumptions decodeItemReturnRestorationFacts.
-Print Assumptions decodeItemReturnRestorationDerivedFacts.
 
 #[export] Hint Rewrite decodeItemSavedReturnDecoder
   decodeItemSavedFramePointerDecoder using assumption

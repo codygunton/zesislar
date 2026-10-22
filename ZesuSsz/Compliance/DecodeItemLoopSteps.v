@@ -28,7 +28,6 @@ Proof.
     (proj2 Hfacts) Hguard Hnext).
 Qed.
 
-Print Assumptions decodeItemHeader6a24Step.
 
 Lemma decodeItemHeader6ac4Step `{!islaG Sigma} `{!threadG}
     args n i payloadStart lengthBytes frameBytes (loaded : bv 64) :
@@ -46,6 +45,3 @@ Proof.
   exact (decodeItem_fold_preservation args n i payloadStart lengthBytes next
     (proj2 Hfacts) Hguard Hnext).
 Qed.
-
-Print Assumptions decodeItemHeader6ac4Step.
-
