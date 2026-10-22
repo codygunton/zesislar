@@ -2120,3 +2120,157 @@ Ltac zesu_finish_trace_tail :=
       unify open tail;
       exact (zesu_scons_subseteq_scons _ _)
   end.
+
+(* Branch guards share the existing normalization and SimplImpl paths. *)
+Ltac zesu_branch_guard_head proposition :=
+  lazymatch proposition with
+  | @eq (bv _) _ _ => idtac
+  | @eq Z _ _ => idtac
+  | Z.le _ _ => idtac
+  | Z.lt _ _ => idtac
+  | Z.ge _ _ => idtac
+  | Z.gt _ _ => idtac
+  | not ?inner => zesu_branch_guard_head inner
+  end.
+
+Ltac zesu_branch_guard_mask width mask continuation :=
+  zesu_stack_closed_term width;
+  zesu_stack_closed_term mask;
+  let low := eval vm_compute in (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
+  let modulus := eval vm_compute in (bv_modulus low) in
+  let Hwidth := fresh "HguardWidth" in
+  let Hmask := fresh "HguardMask" in
+  assert (Hwidth : (low <= width)%N) by (vm_compute; congruence);
+  assert (Hmask : bv_unsigned mask = Z.ones (Z.of_N low)) by
+    (vm_compute; reflexivity);
+  continuation low modulus Hwidth Hmask;
+  clear Hwidth Hmask.
+
+Ltac zesu_branch_guard_rewrite :=
+  repeat first
+  [ match goal with
+    | |- context [@eq (bv ?width) (bv_and (Z_to_bv ?width (bv_signed ?word)) ?mask) ?right] =>
+        tryif has_evar word then fail 0 else
+        tryif has_evar right then fail 0 else
+        zesu_branch_guard_mask width mask ltac:(fun low modulus Hwidth Hmask =>
+          lazymatch type of word with bv ?source => constr_eq low source end;
+          rewrite (zesu_guard_bv_eq_iff width (bv_and (Z_to_bv width (bv_signed word)) mask) right))
+    end
+  | match goal with
+    | |- context [bv_signed (bv_sign_extend ?width ?word)] =>
+        tryif has_evar word then fail 0 else
+        lazymatch type of word with bv ?source =>
+          zesu_stack_closed_term width;
+          zesu_stack_closed_term source;
+          rewrite (bv_sign_extend_signed width word ltac:(vm_compute; congruence))
+        end
+    end
+  | match goal with
+    | |- context [bv_signed ?word] =>
+        zesu_stack_closed_term word;
+        let reduced := eval vm_compute in (bv_signed word) in
+        progress (change_no_check (bv_signed word) with reduced)
+    end
+  | match goal with
+    | |- context [bv_unsigned ?word] =>
+        zesu_stack_closed_term word;
+        let reduced := eval vm_compute in (bv_unsigned word) in
+        progress (change_no_check (bv_unsigned word) with reduced)
+    end
+  | match goal with
+    | |- context [bv_signed (bv_zero_extend 128 ?word)] =>
+        lazymatch type of word with bv 64 => idtac end;
+        tryif has_evar word then fail 0 else
+        rewrite (zesu_signed_zero_extend_64_128 word)
+    end
+  | match goal with
+    | |- context [bv_unsigned (bv_and (Z_to_bv ?width (bv_signed ?word)) ?mask)] =>
+        tryif has_evar word then fail 0 else
+        lazymatch type of word with bv ?low =>
+        zesu_branch_guard_mask width mask ltac:(fun found modulus Hwidth Hmask =>
+          constr_eq low found;
+          rewrite (zesu_guard_mask_signed_value width low word mask Hwidth Hmask))
+        end
+    end
+  | match goal with
+    | |- context [bv_unsigned (bv_and (bv_add ?word ?offset) ?mask)] =>
+        tryif has_evar word then fail 0 else
+        zesu_stack_closed_term offset;
+        lazymatch type of word with bv ?width =>
+        zesu_branch_guard_mask width mask ltac:(fun low modulus Hwidth Hmask =>
+          let integer := eval vm_compute in (bv_unsigned offset) in
+          let Hoffset := fresh "HguardOffset" in
+          let Hrange := fresh "HguardRange" in
+          assert (Hoffset : offset = Z_to_bv width integer) by
+            (apply bv_eq; vm_compute; reflexivity);
+          assert (Hrange : modulus <= bv_unsigned word + integer < 2 * modulus) by lia;
+          rewrite Hoffset;
+          rewrite (zesu_unsigned_low_mask_add_sub_modulus width low word mask integer
+            Hwidth Hmask Hrange);
+          change_no_check (bv_modulus low) with modulus;
+          let base := eval vm_compute in (modulus - integer) in
+          replace (bv_unsigned word + integer - modulus) with
+            (bv_unsigned word - base) by ring;
+          clear Hoffset Hrange)
+        end
+    end
+  | match goal with
+    | |- context [bv_unsigned (bv_and ?word ?mask)] =>
+        tryif has_evar word then fail 0 else
+        lazymatch type of word with bv ?width =>
+        zesu_branch_guard_mask width mask ltac:(fun low modulus Hwidth Hmask =>
+          let Hrange := fresh "HguardRange" in
+          assert (Hrange : modulus <= bv_unsigned word < 2 * modulus) by lia;
+          rewrite (zesu_guard_low_mask_one_wrap width low word mask Hwidth Hmask Hrange);
+          change_no_check (bv_modulus low) with modulus;
+          clear Hrange)
+        end
+    end
+  | match goal with
+    | |- context [bv_signed ?word < 0] =>
+        tryif has_evar word then fail 0 else
+        lazymatch type of word with bv ?width =>
+          zesu_stack_closed_term width;
+          rewrite (zesu_guard_signed_negative width word ltac:(vm_compute; congruence));
+          let half := eval vm_compute in (bv_half_modulus width) in
+          change_no_check (bv_half_modulus width) with half
+        end
+    end ].
+
+Ltac zesu_branch_guard_simpl_impl :=
+  lazymatch goal with |- SimplImpl ?proposition _ =>
+    zesu_branch_guard_head proposition;
+    tryif has_evar proposition then fail 0 else
+    zesu_switch_enabled constr:(ZesuStepBranchGuards);
+    unLET;
+    unfold SimplImpl;
+    progress zesu_branch_guard_rewrite;
+    reflexivity
+  end.
+(* Derive normalized facts beside the original guard. Saturation is idempotent. *)
+Ltac zesu_branch_guard_derived_facts :=
+  lazymatch goal with |- ZesuDerivedFacts ?proposition _ =>
+    zesu_branch_guard_head proposition;
+    tryif has_evar proposition then fail 0 else
+    let normalized := open_constr:(_ : Prop) in
+    let bridge := constr:(ltac:(zesu_branch_guard_simpl_impl) : SimplImpl proposition normalized) in
+    unfold ZesuDerivedFacts;
+    exact (proj2 bridge)
+  end.
+#[export] Hint Extern 4 (ZesuDerivedFacts _ _) => zesu_branch_guard_derived_facts : typeclass_instances.
+
+
+Ltac zesu_branch_guard_normalize_hook :=
+  zesu_switch_enabled constr:(ZesuStepBranchGuards);
+  progress zesu_branch_guard_rewrite; exact: eq_refl.
+Ltac zesu_branch_guard_solve_if_enabled :=
+  zesu_switch_enabled constr:(ZesuStepBranchGuards);
+  progress zesu_branch_guard_rewrite; first [reflexivity | lia].
+
+(* Keep the original normalizer and low-mask alternatives after the new rule. *)
+Ltac zesu_low_mask_sub_modulus_if_enabled ::=
+  first [solve [zesu_branch_guard_solve_if_enabled]
+    | (zesu_switch_enabled constr:(ZesuStepMaskNormalizer);
+       first [solve [zesu_low_mask_sub_modulus_goal]
+         | solve [zesu_low_mask_bv_goal]
+         | solve [progress zesu_low_mask_branch_hypotheses; lia]])].

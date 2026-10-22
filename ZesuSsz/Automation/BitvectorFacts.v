@@ -127,3 +127,56 @@ Proof.
   symmetry. apply bv_wrap_small.
   pose proof (bv_modulus_le_mono low width Hwidth). lia.
 Qed.
+
+(* Normalize supported branch conditions before general arithmetic. *)
+Class ZesuStepBranchGuards : Prop := zesu_step_branch_guards : True.
+
+Local Open Scope Z_scope.
+Lemma zesu_guard_low_mask_one_wrap (width low : N) (value mask : bv width) :
+  (low <= width)%N ->
+  bv_unsigned mask = Z.ones (Z.of_N low) ->
+  bv_modulus low <= bv_unsigned value < 2 * bv_modulus low ->
+  bv_unsigned (bv_and value mask) = bv_unsigned value - bv_modulus low.
+Proof.
+  intros Hwidth Hmask Hrange.
+  rewrite bv_and_unsigned Hmask.
+  rewrite <- (bv_wrap_land low (bv_unsigned value)).
+  rewrite <- (bv_wrap_sub_modulus_1 low (bv_unsigned value)).
+  apply bv_wrap_small. lia.
+Qed.
+
+Lemma zesu_guard_mask_signed_value (width low : N) (value : bv low) (mask : bv width) :
+  (low <= width)%N ->
+  bv_unsigned mask = Z.ones (Z.of_N low) ->
+  bv_unsigned (bv_and (Z_to_bv width (bv_signed value)) mask) = bv_unsigned value.
+Proof.
+  intros Hwidth Hmask.
+  rewrite bv_and_unsigned Hmask.
+  rewrite <- (bv_wrap_land low (bv_unsigned (Z_to_bv width (bv_signed value)))).
+  rewrite Z_to_bv_unsigned bv_wrap_bv_wrap; last exact Hwidth.
+  unfold bv_signed, bv_swrap. rewrite bv_wrap_sub_idemp_l.
+  replace (bv_unsigned value + bv_half_modulus low - bv_half_modulus low)
+    with (bv_unsigned value) by ring.
+  apply bv_wrap_bv_unsigned.
+Qed.
+
+Lemma zesu_guard_signed_negative (width : N) (value : bv width) :
+  width <> 0%N ->
+  (bv_signed value < 0 <-> bv_half_modulus width <= bv_unsigned value).
+Proof.
+  intro Hwidth.
+  pose proof (bv_unsigned_in_range width value) as Hrange.
+  pose proof (bv_half_modulus_nonneg width) as Hhalf.
+  pose proof (bv_half_modulus_twice width Hwidth) as Hmodulus.
+  unfold bv_signed, bv_swrap.
+  destruct (Z_le_gt_dec (bv_half_modulus width) (bv_unsigned value)).
+  - rewrite <- (bv_wrap_sub_modulus_1 width
+      (bv_unsigned value + bv_half_modulus width)).
+    rewrite bv_wrap_small; lia.
+  - rewrite bv_wrap_small; lia.
+Qed.
+
+
+Lemma zesu_guard_bv_eq_iff (width : N) (left right : bv width) :
+  left = right <-> bv_unsigned left = bv_unsigned right.
+Proof. split; [apply f_equal | apply bv_eq]. Qed.

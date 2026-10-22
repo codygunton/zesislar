@@ -9,6 +9,7 @@ Lemma approved_switch_inventory :
   ZesuSsz.Automation.Hooks.ZesuStepRegionFault /\
   ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask /\
   ZesuSsz.Automation.BitvectorFacts.ZesuStepMaskNormalizer /\
+  ZesuSsz.Automation.BitvectorFacts.ZesuStepBranchGuards /\
   ZesuSsz.Automation.EntryIntro.ZesuStepEntryIntro /\
   ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress /\
   ZesuSsz.Automation.Hooks.ZesuStepRecordWitness /\
@@ -57,6 +58,7 @@ Proof.
     lazymatch goal with
     | _ : ZesuSsz.Automation.SwitchDispatch.ZesuSwitchDispatchCache ?entries |- _ =>
         require_enabled constr:(ZesuSsz.Automation.BitvectorFacts.ZesuStepMaskNormalizer) entries;
+        require_enabled constr:(ZesuSsz.Automation.BitvectorFacts.ZesuStepBranchGuards) entries;
         require_enabled constr:(ZesuSsz.Automation.Hooks.ZesuStepPureFactExistential) entries;
         require_enabled constr:(ZesuSsz.Automation.IntegerReturn.ZesuStepIntegerReturn) entries;
         require_enabled constr:(ZesuSsz.Automation.ExitMeaning.ZesuStepExitMeaning) entries;
