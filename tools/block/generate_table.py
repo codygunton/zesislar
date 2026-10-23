@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 import re
 import entry_schema
+from entry_bindings import rendered_entry_views
 from function_names import FunctionNames, prefix_argument
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -388,7 +389,7 @@ def structure(cfg, design):
                                           if not row.get("entry_definition")]}
 
 
-def bound_inputs(recipe_path, cfg_path, design_path):
+def bound_inputs(recipe_path, cfg_path, design_path, *, name_prefix=None, root=ROOT):
     recipe = json.loads(recipe_path.read_text())
     cfg, design = json.loads(cfg_path.read_text()), json.loads(design_path.read_text())
     identity = recipe["artifact_identity"]
@@ -406,12 +407,31 @@ def bound_inputs(recipe_path, cfg_path, design_path):
         raise ValueError("The design inventory hash differs from the bound inventory.")
     report = structure(cfg, design)
     hashes = {path_label(path): digest(path) for path in (recipe_path, cfg_path, design_path, inventory)}
-    hashes.update(entry_source_hashes(design))
+    selected_prefix = prefix_argument(design['function']) if name_prefix is None else name_prefix
+    views = rendered_entry_views(design, root, name_prefix=selected_prefix)
+    hashes.update(views['input_source_hashes'])
+    hashes.update(entry_source_hashes(views['table_design'], root))
     hashes[path_label(Path(__file__))] = digest(__file__)
-    return {"schema_version": 1, "artifact_identity": identity,
+    result = {"schema_version": 1, "artifact_identity": identity,
             "label": "Structural wiring coverage; no machine contract proof",
             "source_hashes": hashes,
             **report}
+    if views['name_mapping']:
+        for edge in result['edges']:
+            if 'resource_alternative' in edge:
+                edge['resource_alternative'] = views['name_mapping'].get(
+                    edge['resource_alternative'], edge['resource_alternative'])
+        result['entry_bindings'] = {key: views[key] for key in (
+            'name_mapping', 'input_source_hashes', 'output_source_hashes',
+            'primary_count', 'auxiliary_count')}
+        tools = ('ZesuSsz/Evidence/generate_block_design.py', 'tools/block/render_support.py',
+                 'tools/block/entry_bindings.py', 'tools/block/entry_schema.py',
+                 'tools/block/check_data_only_lemmas.py', 'tools/block/function_names.py',
+                 'tools/block/trace_registers.py')
+        tool_hashes = {path: digest(Path(root)/path) for path in tools}
+        hashes.update(tool_hashes)
+        result['entry_bindings']['tool_hashes'] = tool_hashes
+    return result
 
 
 def render_table(design, report, *, name_prefix="decodeItem"):
@@ -449,6 +469,9 @@ def render_table(design, report, *, name_prefix="decodeItem"):
              "Require Import isla.riscv64.riscv64.",
              "From Coq Require Import List ZArith.",
              "Require Import ZesuSsz.Automation.BlockTable."]
+    if "support" in design and any("support" in block for block in blocks):
+        from render_support import imports as support_imports
+        lines.extend(support_imports(design["support"]["entries_imports"]))
     lines.extend(f"Require Import {module}." for module in sorted(imports))
     lines += ["Import ListNotations.", "Open Scope Z_scope.", "",
               "(* Generated resource wiring. No block-body proof is supplied. *)"]
@@ -517,7 +540,9 @@ def main():
     report = bound_inputs(args.recipe, args.cfg, args.design)
     if args.output:
         design = json.loads(args.design.read_text())
-        source = render_table(design, report, name_prefix=args.function)
+        views = rendered_entry_views(design, ROOT, name_prefix=args.function)
+        promoted = views['table_design']
+        source = render_table(promoted, report, name_prefix=args.function)
         if args.check:
             if not args.output.is_file() or not rocq_outputs_equal(
                     args.output.read_bytes().decode("utf-8"), source):
@@ -529,7 +554,7 @@ def main():
         report["generated_hashes"] = {path_label(args.output): digest(args.output)}
         report["proof_slots"] = [{"pc": block["entry_pc"], "entry_definition": block["entry_definition"],
                                   "resource_predicate": block["resource_predicate"], "proof_lemma": None}
-                                 for block in design["blocks"]]
+                                 for block in promoted["blocks"]]
     rendered = json.dumps(report, indent=2) + "\n"
     if args.check:
         if not args.coverage.is_file() or args.coverage.read_text() != rendered:

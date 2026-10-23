@@ -1,5 +1,7 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.Entries.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 Require Import ZesuSsz.Compliance.ByteFold.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import List ZArith Lia.
@@ -7,7 +9,6 @@ Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.
-Require Import ZesuSsz.Contracts.RlpDecodeItemFoldEntries.
 Require Import ZesuSsz.Contracts.DecodeItemBranchEntries.
 Require Import ZesuSsz.Contracts.DecodeItemReturnFacts.
 Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
@@ -135,7 +136,6 @@ Example decodeItem6ac4SteppedAccumulatorActivation args n i payloadStart bytes n
   bv_or (Z_to_bv 64 (bigEndian (firstn (Z.to_nat i) bytes)) ≪ 8)
     (bv_zero_extend 64 next) = Z_to_bv 64 (bigEndian (firstn (Z.to_nat (i + 1)) bytes)).
 Proof. intros Hfold Hguard Hnext. zesu_pure_fact_hints_if_enabled. Qed.
-
 
 Print Assumptions decodeItemStringSliceWitnessActivation.
 Print Assumptions decodeItemListSliceWitnessActivation.

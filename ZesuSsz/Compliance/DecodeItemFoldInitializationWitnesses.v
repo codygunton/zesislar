@@ -1,10 +1,10 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Generated.DecodeItem.Entries.
 From Coq Require Import ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Compliance.DecodeItemJoinTransferPure.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
-Require Import ZesuSsz.Contracts.RlpDecodeItemFoldEntries.
 Require Import ZesuSsz.Contracts.DecodeItemReturnFacts.
 Require Import ZesuSsz.Contracts.DecodeItemBranchEntries.
 Require Import ZesuSsz.Automation.Switches.PureFactHints.
@@ -88,7 +88,6 @@ Qed.
 
 Print Assumptions decodeItemListInitializationWitness.
 
-
 #[export] Instance decodeItemStringInitializationAnchor
     `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (prefix : byte) (rest : list byte)
@@ -124,4 +123,3 @@ Proof.
 Qed.
 
 Print Assumptions decodeItemListInitializationAnchor.
-

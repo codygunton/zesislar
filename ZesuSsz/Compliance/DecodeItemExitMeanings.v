@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Generated.DecodeItem.Entries.
 Require Import isla.riscv64.riscv64.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
@@ -97,4 +98,3 @@ Lemma decodeItemReturn6b08Meaning `{!islaG Sigma} `{!threadG}
 Proof. decodeItemReturnMeaning ltac:(unfold decodeItemEntryAt800d6b08) decodeItemLongListPostMeaning. Qed.
 
 Print Assumptions decodeItemReturn6b08Meaning.
-

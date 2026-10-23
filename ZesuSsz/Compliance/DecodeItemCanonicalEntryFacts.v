@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Generated.DecodeItem.Entries.
 Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Automation.EntryIntro.
 Require Import isla.riscv64.riscv64.
@@ -12,13 +13,13 @@ Require Import ZesuSsz.Compliance.DecodeItemInputHeadWordFacts.
 Open Scope Z_scope.
 
 Lemma route_a_entry_equality `{!islaG Sigma} `{!threadG} returnAddress args :
- ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6960 returnAddress args ⊢
+ ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6960 returnAddress args ⊢
  ⌜decodeItemReturnAddress args = returnAddress /\
    (bv_unsigned (Z_to_bv 64 (decodeItemInputLength args)) <> 0 ->
     decodeItemInputHead args (List.hd (0%bv) (decodeItemInputBytes args))
       (List.tl (decodeItemInputBytes args)))⌝.
 Proof.
- rewrite /ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6960 /decodeItemEntryResources.
+ rewrite /ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6960 /decodeItemEntryResources.
  iIntros "[Hentry _]".
  iDestruct "Hentry" as (a3 a4 a5 a6) "(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hd & _)".
  iPureIntro. split.
@@ -30,7 +31,7 @@ Proof.
 Qed.
 #[export] Instance decodeItemCanonicalHeadEntryIntro
  `{!islaG Sigma} `{!threadG} returnAddress args :
- ZesuEntryIntro (ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6960 returnAddress args)
+ ZesuEntryIntro (ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6960 returnAddress args)
  (decodeItemReturnAddress args = returnAddress /\
    (bv_unsigned (Z_to_bv 64 (decodeItemInputLength args)) <> 0 ->
     decodeItemInputHead args (List.hd (0%bv) (decodeItemInputBytes args))
@@ -47,13 +48,5 @@ Qed.
  | Hdomain : decodeItemDomainAt ?ra decodeItemC1BDomain args |- _ =>
    unfold SimplAnd; split;
    [intros _; exact (decodeItemSavedFrameFacts_machine_words args (proj2 Hdomain))
-   |intros _; exact I]
- end : typeclass_instances.
-#[export] Hint Extern 1 (SimplAnd (decodeItemRejectedFacts ?args) True) =>
- match goal with
- | Hdomain : decodeItemDomainAt ?ra decodeItemC1BDomain args,
-   Hzero : Z_to_bv 64 (decodeItemInputLength args) = 0%bv |- _ =>
-   unfold SimplAnd; split;
-   [intros _; exact (decodeItemSavedFrameZeroRejected ra args Hdomain Hzero)
    |intros _; exact I]
  end : typeclass_instances.

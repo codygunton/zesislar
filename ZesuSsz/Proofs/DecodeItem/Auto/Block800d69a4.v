@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Generated.DecodeItem.Entries.
 Require Import ZesuSsz.Automation.Approved.
 Require Import ZesuSsz.Compliance.DecodeItemHints.
 Require Import isla.isla.
@@ -18,14 +19,14 @@ From iris.proofmode Require Import environments.
 
 Definition DesignedEntry_800d69a4
     `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  ((ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69a4 (args) (frameBytes) (x13) (inputPrefix) (rest)) ∗
+  ((ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d69a4 (args) (frameBytes) (x13) (inputPrefix) (rest)) ∗
    True)%I.
 Global Instance : LithiumUnfold (@DesignedEntry_800d69a4) := I.
 Global Typeclasses Opaque DesignedEntry_800d69a4.
 
 Lemma DesignedBoundary_800d69a4 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (inputPrefix : byte) (rest : list byte)   :
-  instr_pre 0x800d69b0 (∃ (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0 (args) (successor_locals) (successor_inputPrefix) (successor_rest))%I -∗
-  instr_pre 0x800d69d8 (∃ (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -∗
+  instr_pre 0x800d69b0 (∃ (successor_locals : DecodeItemReturnLocals) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d69b0 (args) (successor_locals) (successor_inputPrefix) (successor_rest))%I -∗
+  instr_pre 0x800d69d8 (∃ (successor_frameBytes : list byte) (successor_x13 : bv 64) (successor_inputPrefix : byte) (successor_rest : list byte), ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d69d8 (args) (successor_frameBytes) (successor_x13) (successor_inputPrefix) (successor_rest))%I -∗
   decodeItemSelectedCode -∗
   instr_body 0x800d69a4
     (DesignedEntry_800d69a4 args frameBytes x13 inputPrefix rest).

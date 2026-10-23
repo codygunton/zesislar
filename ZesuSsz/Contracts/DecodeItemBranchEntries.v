@@ -27,14 +27,6 @@ Definition decodeItemBranchContinuation `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) : iProp Sigma :=
   decodeItemBranchContinuationAt args (decodeItemReturnAddress args).
 
-Definition decodeItemEntryAt800d6960 `{!islaG Sigma} `{!threadG}
-    (returnAddress : Z) (args : DecodeItemArgs) : iProp Sigma :=
-  (decodeItemEntryResources
-     (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗
-   decodeItemBranchContinuationAt args returnAddress)%I.
-
-Global Instance : LithiumUnfold (@decodeItemEntryAt800d6960) := I.
-Global Typeclasses Opaque decodeItemEntryAt800d6960.
 
 Definition decodeItemSavedFrameFacts (args : DecodeItemArgs)
     (frameBytes : list byte) : Prop :=
@@ -71,199 +63,19 @@ Local Notation "'dispatchEntry' args frameBytes x13 x14 inputPrefix rest facts" 
   (at level 10, args, frameBytes, x13, x14, inputPrefix, rest, facts at level 9).
 
 (* 0x800d6970: beq a2, zero, error. *)
-Definition decodeItemEntryAt800d6974 `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (frameBytes : list byte)
-    (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (∃ (x13 x14 x15 x16 : bv 64),
-   ⌜decodeItemInputHead args inputPrefix rest /\
-     bv_unsigned (Z_to_bv 64 (decodeItemInputLength args)) <> 0⌝ ∗
-   "x13" ↦ᵣ RVal_Bits x13 ∗
-   "x14" ↦ᵣ RVal_Bits x14 ∗
-   "x15" ↦ᵣ RVal_Bits x15 ∗
-   "x16" ↦ᵣ RVal_Bits x16 ∗
-   decodeItemBranchBase args frameBytes
-     (Z_to_bv 64 (decodeItemInputPointer args)))%I.
 
 (* 0x800d6978: blt a3, zero, high-prefix dispatch. *)
-Definition decodeItemEntryAt800d697c `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (frameBytes : list byte)
-    (x13 : bv 64)
-    (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (∃ (x14 x15 x16 : bv 64),
-   ⌜decodeItemInputHead args inputPrefix rest /\
-     bv_unsigned inputPrefix <= 127 /\
-     x13 = Z_to_bv 64 (bv_signed inputPrefix) /\
-     decodeItemAcceptedFacts args false 0 1 /\
-     0 <= bv_signed x13⌝ ∗
-   "x13" ↦ᵣ RVal_Bits x13 ∗
-   "x14" ↦ᵣ RVal_Bits x14 ∗
-   "x15" ↦ᵣ RVal_Bits x15 ∗
-   "x16" ↦ᵣ RVal_Bits x16 ∗
-   decodeItemBranchBase args frameBytes
-     (Z_to_bv 64 (decodeItemInputPointer args)))%I.
-
-Definition decodeItemEntryAt800d69a4 `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (frameBytes : list byte)
-    (x13 : bv 64)
-    (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (∃ (x14 x15 x16 : bv 64),
-   ⌜decodeItemInputHead args inputPrefix rest /\
-     128 <= bv_unsigned inputPrefix <= 255 /\
-     x13 = Z_to_bv 64 (bv_signed inputPrefix) /\
-     bv_signed x13 < 0⌝ ∗
-   "x13" ↦ᵣ RVal_Bits x13 ∗
-   "x14" ↦ᵣ RVal_Bits x14 ∗
-   "x15" ↦ᵣ RVal_Bits x15 ∗
-   "x16" ↦ᵣ RVal_Bits x16 ∗
-   decodeItemBranchBase args frameBytes
-     (Z_to_bv 64 (decodeItemInputPointer args)))%I.
 
 (* 0x800d69ac: bne a3, a4, short-string class test. *)
-Definition decodeItemEntryAt800d69d8 `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (frameBytes : list byte)
-    (x13 : bv 64)
-    (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (dispatchEntry args frameBytes x13 (Z_to_bv 64 128) inputPrefix rest
-     (129 <= bv_unsigned inputPrefix <= 255 /\
-     bv_unsigned x13 = bv_unsigned inputPrefix /\
-     x13 <> Z_to_bv 64 128))%I.
 
 (* 0x800d69dc: bltu a4, a3, long-string dispatch. *)
-Definition decodeItemEntryAt800d69e0 `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (frameBytes : list byte)
-    (x13 : bv 64)
-    (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (dispatchEntry args frameBytes x13 (Z_to_bv 64 183) inputPrefix rest
-     (129 <= bv_unsigned inputPrefix <= 183 /\
-     bv_unsigned x13 = bv_unsigned inputPrefix /\
-     bv_unsigned (Z_to_bv 64 183) >= bv_unsigned x13))%I.
 
 (* 0x800d69e4: bgeu a3, a2, error. *)
-Definition decodeItemEntryAt800d69e8 `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (frameBytes : list byte)
-    (x13 : bv 64)
-    (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (dispatchEntry args frameBytes x13 (Z_to_bv 64 183) inputPrefix rest
-     (129 <= bv_unsigned inputPrefix <= 183 /\
-     bv_unsigned x13 = bv_unsigned inputPrefix - 128 /\
-     decodeItemAcceptedFacts args false 1 (bv_unsigned inputPrefix - 128) /\
-     bv_unsigned x13 <
-      bv_unsigned (Z_to_bv 64 (decodeItemInputLength args))))%I.
-
-Definition decodeItemEntryAt800d6a00 `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (frameBytes : list byte)
-    (x13 : bv 64)
-    (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (dispatchEntry args frameBytes x13 (Z_to_bv 64 183) inputPrefix rest
-     (184 <= bv_unsigned inputPrefix <= 255 /\
-     bv_unsigned x13 = bv_unsigned inputPrefix /\
-     bv_unsigned (Z_to_bv 64 183) < bv_unsigned x13))%I.
 
 (* 0x800d6a04: bgeu a3, a4, list dispatch. *)
-Definition decodeItemEntryAt800d6a08 `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (frameBytes : list byte)
-    (x13 : bv 64)
-    (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (dispatchEntry args frameBytes x13 (Z_to_bv 64 192) inputPrefix rest
-     (184 <= bv_unsigned inputPrefix <= 191 /\
-     bv_unsigned x13 = bv_unsigned inputPrefix /\
-     bv_unsigned x13 < bv_unsigned (Z_to_bv 64 192)))%I.
 
 (* The Q20 initialization resource fixes a4 to n and the input slice. *)
-Definition decodeItemEntryAt800d6a14 `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (n payloadStart : Z)
-    (lengthBytes frameBytes : list byte)
-    (oldAcc oldCursor loaded : bv 64)
-    (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (⌜decodeItemC1BDomain args /\
-     decodeItemFoldProvenance args false
-     inputPrefix rest n payloadStart lengthBytes /\
-     bv_unsigned (Z_to_bv 64 n) <
-      bv_unsigned (Z_to_bv 64 (decodeItemInputLength args)) /\
-    decodeItemSavedFrameFacts args frameBytes⌝ ∗
-   decodeItemFoldInitResources args n payloadStart lengthBytes frameBytes
-     oldAcc oldCursor loaded ∗
-   decodeItemBranchContinuation args)%I.
 
 (* Q20 fixes both a5 and a1 to payloadStart+n at loop exit. *)
-Definition decodeItemEntryAt800d6a38 `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (n payloadStart : Z)
-    (lengthBytes frameBytes : list byte) (loaded : bv 64)
-    (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (⌜decodeItemC1BDomain args /\
-     decodeItemFoldProvenance args false
-     inputPrefix rest n payloadStart lengthBytes /\
-     decodeItemSavedFrameFacts args frameBytes⌝ ∗
-   decodeItemByteFoldResources args false n n payloadStart
-     lengthBytes frameBytes loaded ∗
-   decodeItemBranchContinuation args)%I.
-
-Definition decodeItemEntryAt800d6a64 `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (frameBytes : list byte)
-    (x13 : bv 64)
-    (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (dispatchEntry args frameBytes x13 (Z_to_bv 64 192) inputPrefix rest
-     (192 <= bv_unsigned inputPrefix <= 255 /\
-     bv_unsigned x13 = bv_unsigned inputPrefix /\
-     bv_unsigned x13 >= bv_unsigned (Z_to_bv 64 192)))%I.
 
 (* 0x800d6a68: bgeu a3, a4, long-list class test. *)
-Definition decodeItemEntryAt800d6a6c `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (frameBytes : list byte)
-    (x13 : bv 64)
-    (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (dispatchEntry args frameBytes x13 (Z_to_bv 64 248) inputPrefix rest
-     (192 <= bv_unsigned inputPrefix <= 247 /\
-     bv_unsigned x13 = bv_unsigned inputPrefix /\
-     bv_unsigned x13 < bv_unsigned (Z_to_bv 64 248)))%I.
-
-Definition decodeItemEntryAt800d6aa8 `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (frameBytes : list byte)
-    (x13 : bv 64)
-    (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (dispatchEntry args frameBytes x13 (Z_to_bv 64 248) inputPrefix rest
-     (248 <= bv_unsigned inputPrefix <= 255 /\
-     bv_unsigned x13 = bv_unsigned inputPrefix /\
-     bv_unsigned x13 >= bv_unsigned (Z_to_bv 64 248)))%I.
-
-Definition decodeItemEntryAt800d6ab4 `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (n payloadStart : Z)
-    (lengthBytes frameBytes : list byte)
-    (oldAcc oldCursor loaded : bv 64)
-    (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (⌜decodeItemC1BDomain args /\
-     decodeItemFoldProvenance args true
-     inputPrefix rest n payloadStart lengthBytes /\
-     bv_unsigned (Z_to_bv 64 n) <
-      bv_unsigned (Z_to_bv 64 (decodeItemInputLength args)) /\
-    decodeItemSavedFrameFacts args frameBytes⌝ ∗
-   decodeItemFoldInitResources args n payloadStart lengthBytes frameBytes
-     oldAcc oldCursor loaded ∗
-   decodeItemBranchContinuation args)%I.
-
-Definition decodeItemEntryAt800d6ad8 `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (n payloadStart : Z)
-    (lengthBytes frameBytes : list byte) (loaded : bv 64)
-    (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  (⌜decodeItemC1BDomain args /\
-     decodeItemFoldProvenance args true
-     inputPrefix rest n payloadStart lengthBytes /\
-     decodeItemSavedFrameFacts args frameBytes⌝ ∗
-   decodeItemByteFoldResources args true n n payloadStart
-     lengthBytes frameBytes loaded ∗
-   decodeItemBranchContinuation args)%I.
-
-(* Pending machine bridge. The prologue must create the exact saved frame
-   before the nonempty branch can supply its first successor entry. *)
-Definition decodeItemPrologueTo6974Bridge : Prop :=
-  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG)
-    (returnAddress : Z) (args : DecodeItemArgs),
-    bv_unsigned (Z_to_bv 64 (decodeItemInputLength args)) <> 0 ->
-    ⊢ (decodeItemSelectedCode -∗
-       instr_body decodeItemEntry
-         (decodeItemEntryResources
-            (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗
-          decodeItemBranchContinuationAt args returnAddress ∗
-          instr_pre 0x800d6974
-            (∃ (frameBytes : list byte) (inputPrefix : byte) (rest : list byte),
-              decodeItemEntryAt800d6974 args frameBytes inputPrefix rest ∗ True) ∗ True))%I.

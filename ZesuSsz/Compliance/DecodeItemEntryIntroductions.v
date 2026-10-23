@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Generated.DecodeItem.Entries.
 Require Import isla.riscv64.riscv64.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
@@ -22,6 +23,7 @@ Local Ltac decodeItemEntryIntroduction openEntry isList base :=
     iEval (unfold decodeItemBranchBase) in "Hbase";
     iDestruct "Hbase" as "(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hbase & _)";
     iPureIntro; destruct Hfacts as (Hhead & Hclass & Hvalue & Hguard);
+    cbv [MachineWord.MachineWord.Z_idx Z.to_N] in Hclass;
     exists (bv_unsigned prefix - base), (decodeItemInputPointer args + 1),
       (firstn (Z.to_nat (bv_unsigned prefix - base)) rest);
     split; [unfold decodeItemFoldProvenance; simpl;

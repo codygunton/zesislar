@@ -222,6 +222,21 @@ class BlockTableTests(unittest.TestCase):
         self.assertNotIn("Axiom ", source)
         self.assertNotIn("Admitted", source)
 
+    def test_generated_entry_view_renders_only_primary_states(self):
+        from tools import test_entry_bindings as fixtures
+        from entry_bindings import rendered_entry_views
+        fixtures.RenderedEntryViewTests.setUp(self)
+        design, _ = self.executable_fixture()
+        self.design['table_convention'] = design['table_convention']
+        views = rendered_entry_views(self.design, self.root)
+        source = generate_table.render_table(views['table_design'], dict(edges=[], returns=[]))
+        self.assertEqual(source.count('Definition decodeItemState'), 3)
+        self.assertIn('ZesuSsz.Generated.DecodeItem.Entries.Entry698c (n) (i)', source)
+        self.assertIn('ZesuSsz.Generated.DecodeItem.Entries.Entry6a24 (n) (i)', source)
+        self.assertNotIn('Handwritten.Entry', source)
+        self.assertNotIn('Body6a24', source)
+        self.assertEqual(len(views['application_design']['blocks']), 7)
+
     def test_rendering_leaves_parameter_free_entries_unquantified(self):
         design, report = self.executable_fixture()
         design["blocks"][0]["binders"] = []
@@ -237,6 +252,50 @@ class BlockTableTests(unittest.TestCase):
         shared = "Require Import Contracts.ArgumentTypes."
         self.assertEqual(source.count(shared), 1)
         self.assertLess(source.index(shared), source.index("(args : FixtureArgs)"))
+
+    def test_generated_entries_retain_declared_binder_type_imports(self):
+        design, report = self.executable_fixture()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            types = root / "Fixture/ZetaTypes.v"
+            types.parent.mkdir(parents=True)
+            types.write_text("Inductive FixtureArgs := fixtureArgs.\n")
+            (types.parent / "AlphaTypes.v").write_text("Definition fixtureOtherType := nat.\n")
+            entries = root / "Generated/Fixture/Entries.v"
+            entries.parent.mkdir(parents=True)
+            entries.write_text("Require Import Fixture.ZetaTypes.\n" + "".join(
+                f"Definition entry{address_suffix(block['entry_pc'])} "
+                "(args : FixtureArgs) (frameBytes : list nat) := True.\n"
+                for block in design["blocks"]))
+            design["support"] = {"version": 1, "entries_imports": [
+                {"mode": "export", "module": "Fixture.ZetaTypes"},
+                {"mode": "import", "module": "Fixture.AlphaTypes"},
+            ]}
+            for block in design["blocks"]:
+                name = "Generated.Fixture.Entries.entry" + address_suffix(block["entry_pc"])
+                block["binders"][1]["type"] = "list nat"
+                block.update(entry_definition=name, resource_predicate=name,
+                             source_hashes={"Generated/Fixture/Entries.v":
+                                            generate_table.digest(entries)},
+                             support={"version": 1})
+            legacy = deepcopy(design)
+            del legacy["support"]
+            self.assertNotIn("Require Export Fixture.ZetaTypes.",
+                             generate_table.render_table(legacy, report))
+            source = generate_table.render_table(design, report)
+            environment = ("Require Export Fixture.ZetaTypes.\n"
+                           "Require Import Fixture.AlphaTypes.\n")
+            self.assertIn(environment, source)
+            self.assertLess(source.index(environment), source.index("(args : FixtureArgs)"))
+            self.assertIn("Generated.Fixture.Entries.entry1000 (args) (frameBytes)", source)
+
+    def test_declared_support_imports_leave_legacy_rows_unchanged(self):
+        design, report = self.executable_fixture()
+        before = generate_table.render_table(design, report)
+        design["support"] = {"version": 1, "entries_imports": [
+            {"mode": "import", "module": "Fixture.ArgumentTypes"},
+        ]}
+        self.assertEqual(generate_table.render_table(design, report), before)
 
     def test_rendering_rejects_missing_entries_and_duplicate_binders(self):
         design, report = self.executable_fixture()
@@ -294,14 +353,17 @@ class BlockTableTests(unittest.TestCase):
 
     def test_design_generator_uses_approved_table_convention(self):
         root = Path(__file__).resolve().parents[1]
-        path = root / "ZesuSsz/Evidence/generate_decode_item_block_design.py"
-        spec = importlib.util.spec_from_file_location("decode_item_block_design", path)
+        path = root / "ZesuSsz/Evidence/generate_block_design.py"
+        spec = importlib.util.spec_from_file_location("block_design", path)
         generator = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(generator)
-        design = generator.build()
+        inventory = json.loads((root / "build/stock-zisk/inventory.json").read_text())
+        profile = json.loads((root / "ZesuSsz/Contracts/decode_item_block_design.json").read_text())
+        design = generator.build(inventory, profile["function"], profile, root=root)
         convention = generate_table.table_convention(design)
         self.assertNotIn("universal_binders", convention)
-        source_hashes = generate_table.entry_source_hashes(design, root)
+        views = generate_table.rendered_entry_views(design, root)
+        source_hashes = generate_table.entry_source_hashes(views["table_design"], root)
         for path, expected in convention["code_source_hashes"].items():
             self.assertEqual(source_hashes[path], expected)
 

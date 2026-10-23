@@ -36,33 +36,3 @@ Qed.
 Print Assumptions decodeItemInputLengthWordNonzero.
 Print Assumptions decodeItemWordNonzeroInputHead.
 Print Assumptions decodeItemWordNonzeroInputHeadFacts.
-
-#[export] Hint Extern 1
-  (SimplAnd (bv_unsigned (Z_to_bv 64 (decodeItemInputLength ?args)) <> 0) True) =>
-  match goal with
-  | Hword : Z_to_bv 64 (decodeItemInputLength args) <> 0%bv |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemInputLengthWordNonzero args Hword)
-    | intros _; exact I]
-  end : typeclass_instances.
-
-#[export] Hint Extern 1
-  (SimplAnd (exists prefix rest, decodeItemInputHead ?args prefix rest) True) =>
-  match goal with
-  | Hdomain : decodeItemDomainAt ?returnAddress decodeItemC1BDomain args,
-    Hword : Z_to_bv 64 (decodeItemInputLength args) <> 0%bv |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemWordNonzeroInputHead returnAddress args Hdomain Hword)
-    | intros _; exact I]
-  end : typeclass_instances.
-
-#[export] Hint Extern 1
-  (SimplAnd (exists prefix rest, decodeItemInputHead ?args prefix rest /\
-    bv_unsigned (Z_to_bv 64 (decodeItemInputLength ?args)) <> 0) True) =>
-  match goal with
-  | Hdomain : decodeItemDomainAt ?returnAddress decodeItemC1BDomain args,
-    Hword : Z_to_bv 64 (decodeItemInputLength args) <> 0%bv |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemWordNonzeroInputHeadFacts returnAddress args Hdomain Hword)
-    | intros _; exact I]
-  end : typeclass_instances.

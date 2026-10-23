@@ -1,5 +1,5 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemReturnFacts.
@@ -30,6 +30,7 @@ Lemma rootHeadFactsOff (returnAddress : Z) (args : DecodeItemArgs) :
 Proof. intros. root_word_absent (exists prefix rest, decodeItemInputHead args prefix rest /\ bv_unsigned (Z_to_bv 64 (decodeItemInputLength args)) <> 0). Qed.
 
 Require Import ZesuSsz.Compliance.DecodeItemInputHeadWordFacts.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 
 Lemma rootUnsignedOn (returnAddress : Z) (args : DecodeItemArgs) :
   Z_to_bv 64 (decodeItemInputLength args) <> 0%bv ->

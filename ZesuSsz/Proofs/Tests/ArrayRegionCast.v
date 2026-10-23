@@ -1,5 +1,5 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
@@ -11,6 +11,7 @@ Proof.
 Qed.
 
 Require Import ZesuSsz.Automation.Switches.ArrayRegionBounds.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 
 Lemma array_region_cast_at_base `{!islaG Sigma}
     (base : Z) (bytes : list byte)

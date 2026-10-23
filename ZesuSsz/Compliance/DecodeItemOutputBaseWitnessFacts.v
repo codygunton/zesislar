@@ -10,11 +10,6 @@ Lemma decodeItemOutputBaseOffset (args : DecodeItemArgs) :
   Z.of_nat 0 = decodeItemOutputPointer args + 0 - decodeItemOutputPointer args.
 Proof. lia. Qed.
 
-#[export] Instance decodeItemOutputBaseOffsetHint (args : DecodeItemArgs) :
-  SimplAnd (Z.of_nat 0 =
-    decodeItemOutputPointer args + 0 - decodeItemOutputPointer args) True.
-Proof. unfold SimplAnd; split; [intros _; apply decodeItemOutputBaseOffset | intros _; exact I]. Qed.
-
 Lemma decodeItemFlagUpdatedBaseBound (storage : list byte) (first second : byte) (width : N) :
   length storage = 40%nat -> (width <= 8)%N ->
   (0 + N.to_nat width <= length (firstn 32 storage ++ first :: second :: skipn 34 storage))%nat.
@@ -33,33 +28,20 @@ Qed.
   : typeclass_instances.
 
 Print Assumptions decodeItemOutputBaseOffset.
-Print Assumptions decodeItemOutputBaseOffsetHint.
 Print Assumptions decodeItemFlagUpdatedBaseBound.
 
 Lemma decodeItemOutputOffset8 (args : DecodeItemArgs) :
   Z.of_nat 8 = decodeItemOutputPointer args + 8 - decodeItemOutputPointer args.
 Proof. lia. Qed.
 
-#[export] Instance decodeItemOutputOffset8Hint (args : DecodeItemArgs) :
-  SimplAnd (Z.of_nat 8 =
-    decodeItemOutputPointer args + 8 - decodeItemOutputPointer args) True.
-Proof. unfold SimplAnd; split; [intros _; apply decodeItemOutputOffset8 | intros _; exact I]. Qed.
-
 Print Assumptions decodeItemOutputOffset8.
-Print Assumptions decodeItemOutputOffset8Hint.
 
 Lemma decodeItemOutputOffset16 (args : DecodeItemArgs) :
   Z.of_nat 16 =
     (decodeItemOutputPointer args + 16 - decodeItemOutputPointer args) `div` 1.
 Proof. rewrite Z.div_1_r. lia. Qed.
 
-#[export] Instance decodeItemOutputOffset16Hint (args : DecodeItemArgs) :
-  SimplAnd (Z.of_nat 16 =
-    (decodeItemOutputPointer args + 16 - decodeItemOutputPointer args) `div` 1) True.
-Proof. unfold SimplAnd; split; [intros _; apply decodeItemOutputOffset16 | intros _; exact I]. Qed.
-
 Print Assumptions decodeItemOutputOffset16.
-Print Assumptions decodeItemOutputOffset16Hint.
 
 Lemma decodeItemOutputStorageExtent16 (base : Z) (storage : list byte) :
   length storage = 40%nat ->

@@ -1,5 +1,5 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
@@ -12,6 +12,7 @@ Proof.
 Qed.
 
 Require Import ZesuSsz.Automation.Switches.RegisterCollectionSelection.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 
 Lemma plain_register_selection_array_first `{!islaG Sigma} `{!threadG}
     (address : Z) (bytes : list byte) (shape : valu_shape)

@@ -254,13 +254,15 @@ def binder_shape(binder: str, parts: list[str], unfolded: set[str]) -> str:
     return "under_function"
 
 
-def shape_counts(source: str, unfolded: set[str]) -> dict[str, int]:
+def shape_counts(source: str, unfolded: set[str], *, module: str | None = None) -> dict[str, int]:
     specs = definitions(source)
     sealed = sealed_predicates(source)
     counts = dict.fromkeys(METRICS, 0)
     for name, signature, body in specs:
         counts["predicates_without_unfold"] += (
-            name not in unfolded and name not in sealed
+            name not in unfolded and
+            (module is None or module + "." + name not in unfolded) and
+            name not in sealed
         )
         counts["disjunctive_specs"] += "∨" in body
         counts["frame_parameters_in_closed_specs"] += bool(
@@ -317,7 +319,7 @@ def main() -> int:
     }
     errors = scoped_inventory_errors(inventory, texts)
     for name, source in texts.items():
-        counts = (shape_counts(source, unfolded)
+        counts = (shape_counts(source, unfolded, module=".".join(Path(name).with_suffix("").parts))
                   if name.startswith(("ZesuSsz/Contracts/", "ZesuSsz/Proofs/"))
                   or name in inventory["modules"]
                   else dict.fromkeys(METRICS, 0))

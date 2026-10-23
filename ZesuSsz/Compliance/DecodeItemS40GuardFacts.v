@@ -127,30 +127,6 @@ Qed.
       solve [eassumption | split; assumption] | intros _; exact I]
   end : typeclass_instances.
 
-#[export] Instance decodeItemSignedPrefixMaskHint (prefix : byte) :
-  SimplAnd (bv_unsigned (bv_and (Z_to_bv 64 (bv_signed prefix)) 255) =
-    bv_unsigned prefix) True.
-Proof. unfold SimplAnd; split; [intros _; apply decodeItemSignedPrefixMask | intros _; exact I]. Qed.
-
-#[export] Hint Extern 1 (SimplAnd ((16 < length ?storage)%nat) True) =>
-  match goal with Hlength : length storage = 40%nat |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemOutputByte16Bound storage Hlength) | intros _; exact I]
-  end : typeclass_instances.
-
-#[export] Hint Extern 1 (SimplAnd (decodeItemRejectedFacts ?args) True) =>
-  match goal with
-  | Hdomain : decodeItemC1BDomain args,
-    Hprovenance : decodeItemFoldProvenance args true ?prefix ?rest ?n ?payloadStart ?bytes,
-    Hfold : decodeItemByteFoldFacts args ?n ?n ?payloadStart ?bytes,
-    Hguard : ~ bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) >=
-      bv_signed (bv_zero_extend 128
-        (Z_to_bv 64 (bigEndian (take (Z.to_nat ?n) ?bytes)) + Z_to_bv 64 (?n + 1))) |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemCompletedListFoldAlternateRejected args prefix rest n payloadStart bytes
-      Hdomain Hprovenance Hfold Hguard) | intros _; exact I]
-  end : typeclass_instances.
-
 Print Assumptions decodeItemShortStringGuardRejected.
 
 Print Assumptions decodeItemShortStringGuardAccepted.
@@ -161,17 +137,6 @@ Print Assumptions decodeItemOutputByte16Bound.
 
 Print Assumptions decodeItemCompletedListFoldAlternateRejected.
 
-Print Assumptions decodeItemSignedPrefixMaskHint.
-
-#[export] Hint Extern 1 (SimplAnd (decodeItemAcceptedFacts ?args false 1 0) True) =>
-  match goal with
-  | Hdomain : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args,
-    Hhead : decodeItemInputHead args ?prefix ?rest,
-    Hmask : bv_and (Z_to_bv 64 (bv_signed ?prefix)) 255 = Z_to_bv 64 128 |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemMaskedEmptyStringAccepted args prefix rest Hdomain Hhead Hmask)
-    | intros _; exact I]
-  end : typeclass_instances.
 Print Assumptions decodeItemMaskedEmptyStringAccepted.
 
 Lemma decodeItemShortStringNegatedGuardUnsigned args (prefix : bv 64) :
@@ -183,17 +148,6 @@ Proof.
   intros Hguard. rewrite !zesu_signed_zero_extend_64_128 in Hguard.
   apply Znot_ge_lt in Hguard. exact Hguard.
 Qed.
-
-#[export] Hint Extern 1
-  (SimplAnd (bv_unsigned (bv_and ?prefix 127) <
-    bv_unsigned (Z_to_bv 64 (decodeItemInputLength ?args))) True) =>
-  match goal with
-  | Hguard : ~ bv_signed (bv_zero_extend 128 (bv_and prefix 127)) >=
-      bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemShortStringNegatedGuardUnsigned args prefix Hguard)
-    | intros _; exact I]
-  end : typeclass_instances.
 
 Print Assumptions decodeItemShortStringNegatedGuardUnsigned.
 
@@ -234,31 +188,6 @@ Proof.
   apply (decodeItemMaskedEmptyStringAccepted args prefix rest Hdomain Hhead).
   rewrite <- decodeItemNativeMaskConstant. exact Hmask.
 Qed.
-
-#[export] Hint Extern 1
-  (SimplAnd (bv_and (Z_to_bv 64 (bv_signed ?prefix)) 255 <> Z_to_bv 64 128) True) =>
-  match goal with
-  | Hmask : bv_and (Z_to_bv 64 (bv_signed ?prefix)) 255 <> 128%bv |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemNativeMaskNonempty prefix Hmask) | intros _; exact I]
-  end : typeclass_instances.
-
-#[export] Hint Extern 1 (SimplAnd (bv_unsigned ?prefix = 128) True) =>
-  match goal with
-  | Hmask : bv_and (Z_to_bv 64 (bv_signed ?prefix)) 255 = 128%bv |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemNativeMaskEmptyPrefix prefix Hmask) | intros _; exact I]
-  end : typeclass_instances.
-
-#[export] Hint Extern 1 (SimplAnd (decodeItemAcceptedFacts ?args false 1 0) True) =>
-  match goal with
-  | Hdomain : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args,
-    Hhead : decodeItemInputHead args ?prefix ?rest,
-    Hmask : bv_and (Z_to_bv 64 (bv_signed ?prefix)) 255 = 128%bv |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemNativeMaskEmptyAccepted args prefix rest Hdomain Hhead Hmask)
-    | intros _; exact I]
-  end : typeclass_instances.
 
 Print Assumptions decodeItemNativeMaskConstant.
 Print Assumptions decodeItemNativeMaskNonempty.

@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Generated.DecodeItem.Entries.
 Require Import isla.riscv64.riscv64.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
@@ -21,26 +22,6 @@ From Coq Require Import ZArith Lia.
 Require Import ZesuSsz.Compliance.DecodeItemExitMeanings.
 Require Import ZesuSsz.Automation.ExitMeaning.
 Require Import ZesuSsz.Automation.IntegerReturn.
-
-#[export] Instance decodeItemEntry6a08IntroductionRegistered `{!islaG Sigma} `{!threadG}
-    args frameBytes (x13 : bv 64) prefix rest :
-  ZesuEntryIntro (decodeItemEntryAt800d6a08 args frameBytes x13 prefix rest) _ :=
-  decodeItemEntry6a08Introduction args frameBytes x13 prefix rest.
-
-#[export] Instance decodeItemEntry6aa8IntroductionRegistered `{!islaG Sigma} `{!threadG}
-    args frameBytes (x13 : bv 64) prefix rest :
-  ZesuEntryIntro (decodeItemEntryAt800d6aa8 args frameBytes x13 prefix rest) _ :=
-  decodeItemEntry6aa8Introduction args frameBytes x13 prefix rest.
-
-#[export] Instance decodeItemEntry6a38IntroductionRegistered `{!islaG Sigma} `{!threadG}
-    args n payloadStart lengthBytes frameBytes (loaded : bv 64) prefix rest :
-  ZesuEntryIntro (decodeItemEntryAt800d6a38 args n payloadStart lengthBytes frameBytes loaded prefix rest) _ :=
-  decodeItemEntry6a38Introduction args n payloadStart lengthBytes frameBytes loaded prefix rest.
-
-#[export] Instance decodeItemEntry6ad8IntroductionRegistered `{!islaG Sigma} `{!threadG}
-    args n payloadStart lengthBytes frameBytes (loaded : bv 64) prefix rest :
-  ZesuEntryIntro (decodeItemEntryAt800d6ad8 args n payloadStart lengthBytes frameBytes loaded prefix rest) _ :=
-  decodeItemEntry6ad8Introduction args n payloadStart lengthBytes frameBytes loaded prefix rest.
 
 (* Reviewed E3-integrated R3 registrations. Original class commit: 7d7a2ffc7bfe9d9cf43683f616d83b326dd74e7b.
    This scope registers five unchanged sources and two public 698c alternatives. *)

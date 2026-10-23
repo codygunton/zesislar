@@ -1,5 +1,7 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.Entries.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.DecodeItemBranchEntries.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.

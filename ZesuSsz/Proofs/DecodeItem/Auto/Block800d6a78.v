@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Generated.DecodeItem.Entries.
 Require Import ZesuSsz.Compliance.DecodeItemShortListOutputMeaning.
 Require Import ZesuSsz.Compliance.DecodeItemReturnExitResources.
 Require Import ZesuSsz.Automation.Approved.
@@ -23,7 +24,7 @@ From iris.proofmode Require Import environments.
 
 Definition DesignedEntry_800d6a78
     `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (locals : DecodeItemReturnLocals) (inputPrefix : byte) (rest : list byte) : iProp Sigma :=
-  ((ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78 (args) (locals) (inputPrefix) (rest)) ∗
+  ((ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a78 (args) (locals) (inputPrefix) (rest)) ∗
    True)%I.
 Global Instance : LithiumUnfold (@DesignedEntry_800d6a78) := I.
 Global Typeclasses Opaque DesignedEntry_800d6a78.

@@ -1,5 +1,5 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
@@ -20,6 +20,7 @@ Proof.
 Qed.
 
 Require Import ZesuSsz.Compliance.DecodeItemRawOutputFacts.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 
 Ltac raw_output_registered :=
   cbn [app length];

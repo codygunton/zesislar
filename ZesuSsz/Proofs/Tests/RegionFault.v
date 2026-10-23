@@ -1,5 +1,5 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 From Coq Require Import ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
@@ -11,11 +11,11 @@ Open Scope Z_scope.
 
 Require Import ZesuSsz.Automation.Hooks.
 
-
 Lemma region_fault_disabled : True.
 Proof. Fail zesu_region_fault_if_enabled. exact I. Qed.
 
 Require Import ZesuSsz.Automation.Switches.RegionFault.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 Lemma region_input_cursor_lower (args : DecodeItemArgs) (n i start : Z)
     (bytes : list byte)
     (Hdomain : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args)

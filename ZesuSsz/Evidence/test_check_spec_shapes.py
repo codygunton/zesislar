@@ -365,5 +365,49 @@ class SpecShapeTests(unittest.TestCase):
                     self.assertEqual(check_spec_shapes.main(), 0)
 
 
+class QualifiedUnfoldTests(unittest.TestCase):
+    def test_qualified_target_matches_only_its_defining_module(self):
+        source = 'Definition exact : iProp Sigma := True%I.\n'
+        for targets, module, missing in [
+            ({'ZesuSsz.Contracts.First.exact'}, 'ZesuSsz.Contracts.First', 0),
+            ({'ZesuSsz.Contracts.Second.exact'}, 'ZesuSsz.Contracts.First', 1),
+            ({'ZesuSsz.Contracts.Outer.First.exact'}, 'ZesuSsz.Contracts.First', 1),
+            ({'ZesuSsz.Contracts.First.exact'}, 'ZesuSsz.Contracts.Second', 1),
+            ({'ZesuSsz.Contracts.First.exact'}, None, 1),
+            ({'exact'}, 'ZesuSsz.Contracts.First', 0),
+        ]:
+            with self.subTest(targets=targets, module=module):
+                self.assertEqual(shape_counts(source, targets, module=module)[
+                    'predicates_without_unfold'], missing)
+
+    def test_main_refuses_a_foreign_same_name_registration(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first = 'ZesuSsz/Contracts/First.v'
+            second = 'ZesuSsz/Contracts/Second.v'
+            generated = 'ZesuSsz/Generated/Example/BootstrapRegistrations.v'
+            sources = {first: 'Definition exact : iProp Sigma := True%I.\n',
+                       second: 'Definition exact : iProp Sigma := True%I.\n',
+                       generated: 'Global Instance : LithiumUnfold (@ZesuSsz.Contracts.First.exact) := I.\n'
+                                  'Global Typeclasses Opaque ZesuSsz.Contracts.First.exact.\n'}
+            for name, source in sources.items():
+                path = root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(source)
+            baseline = root / 'baseline.json'
+            baseline.write_text('{}')
+            inventory = root / 'inventory.json'
+            inventory.write_text(json.dumps({'base_commit': 'fixture', 'modules': {}}))
+            errors = io.StringIO()
+            with patch.object(check_spec_shapes, 'ROOT', root), \
+                    patch.object(check_spec_shapes, 'BASELINE', baseline), \
+                    patch.object(check_spec_shapes, 'INVENTORY', inventory), \
+                    patch.object(check_spec_shapes, 'scoped_inventory_errors', return_value=[]), \
+                    patch.object(check_spec_shapes.subprocess, 'check_output', return_value='\n'.join(sources)), \
+                    contextlib.redirect_stderr(errors):
+                self.assertEqual(check_spec_shapes.main(), 1)
+            self.assertEqual(errors.getvalue(), second + ': predicates_without_unfold: 1 > 0\n')
+
+
 if __name__ == "__main__":
     unittest.main()

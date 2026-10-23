@@ -144,7 +144,8 @@ class CallTableTests(unittest.TestCase):
         # The published comment retains its historical producer identity.
         comment = generate_table.PRODUCER_SHA_LINE.search(before.decode()).group()
         report['source_hashes']['tools/block/generate_table.py'] = comment.split('SHA-256: ')[1].split('.')[0]
-        self.assertEqual(generate_table.render_table(design, report).encode(), before)
+        views = generate_table.rendered_entry_views(design, root)
+        self.assertEqual(generate_table.render_table(views['table_design'], report).encode(), before)
 
     def test_callee_code_source_is_checked_independently(self):
         _, design = self.fixture()

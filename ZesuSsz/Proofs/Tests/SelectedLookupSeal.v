@@ -1,9 +1,10 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 From iris.proofmode Require Import environments.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.SelectedCodeLookup.
 Require Import ZesuSsz.Stock.Closure.index_decodeItem.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 
 Section tests.
   Context `{!islaG Sigma} `{!threadG}.

@@ -1,5 +1,5 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import ZesuSsz.Automation.PureFacts.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
@@ -12,6 +12,7 @@ Require Import ZesuSsz.Compliance.DecodeItemSailIntroduction.
 Open Scope Z_scope.
 
 Require Import ZesuSsz.Compliance.DecodeItemFoldRejectionFacts.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 
 Lemma decodeItemCompletedFoldHint args (isList : bool)
     (inputPrefix : byte) (rest : list byte) (n payloadStart : Z)
