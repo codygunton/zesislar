@@ -95,6 +95,182 @@ class FunctionDesignTests(unittest.TestCase):
             self.assertEqual(edges[0]["path_condition"], {"op": "ne", "left": "0", "right": "0"})
             self.assertEqual(design["blocks"][0]["successor_pcs"], ["0x00001008", "0x00001004"])
 
+    def support_fixture(self, root):
+        inventory, profile = self.fixture(root)
+        source = root / "Contracts/Fixture.v"
+        source.write_text(source.read_text() +
+                          "\nDefinition base (args : FixtureArgs) (frameBytes : list byte) : iProp Sigma := True%I.\n" +
+                          "Definition continuationAt (args : FixtureArgs) : iProp Sigma := True%I.\n")
+        row = profile["design"]["blocks"][0]
+        row["support"] = {
+            "version": 1, "existentials": [],
+            "components": [{"kind": "base", "predicate": "Contracts.Fixture.base",
+                            "arguments": ["args", "frameBytes"], "memory_deltas": []}],
+            "loop": None, "additional_definitions": [],
+            "continuation": {"mode": "included_in_base", "component_index": 0,
+                             "predicate": "Contracts.Fixture.continuationAt",
+                             "arguments": ["args"], "order": "resources_first"}}
+        profile["design"]["support"] = {
+            "version": 1, "entries_imports": [], "entries_scopes": [],
+            "registrations_imports": [], "unfold_entries": ["entry1000"],
+            "introductions": [], "hint_umbrella": [], "scoped_imports": [], "facts": []}
+        return inventory, profile
+
+    def test_mixed_design_keeps_legacy_binding_validation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            inventory, profile = self.support_fixture(root)
+            design = generator.build(inventory, "fixture", profile, root=root)
+            self.assertEqual(len(design["blocks"]), 3)
+            source = root / "Contracts/Fixture.v"
+            source.write_text(source.read_text().replace("Definition entry1004", "Definition missing1004"))
+            with self.assertRaisesRegex(ValueError, "source bindings"):
+                generator.build(inventory, "fixture", profile, root=root)
+
+    def test_generation_without_old_entry_or_outputs_then_binds_fresh_output(self):
+        import render_support
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            inventory, profile = self.support_fixture(root)
+            source = root / "Contracts/Fixture.v"
+            source.write_text("\n".join(line for line in source.read_text().splitlines()
+                                      if not line.startswith("Definition entry1000")))
+            original = deepcopy(profile)
+            design = generator.build(inventory, "fixture", profile, root=root)
+            outputs = render_support.render_support(design, root, name_prefix="fixture")
+            for path, text in outputs.items():
+                (root / path).parent.mkdir(parents=True, exist_ok=True)
+                (root / path).write_text(text)
+            bindings = generator.verify_rendered_entries(design, root, name_prefix="fixture")
+            self.assertEqual(len(bindings), 1)
+            self.assertEqual(bindings[0]["entry_definition"],
+                             "ZesuSsz.Generated.Fixture.Entries.entry1000")
+            self.assertEqual(profile, original)
+            self.assertNotIn("ZesuSsz/Generated/Fixture/Entries.v", design["blocks"][0]["source_hashes"])
+            generated = root / "ZesuSsz/Generated/Fixture/Entries.v"
+            generated.write_text(generated.read_text().replace(" (frameBytes : list byte)", ""))
+            with self.assertRaisesRegex(ValueError, "argument count"):
+                generator.verify_rendered_entries(design, root, name_prefix="fixture")
+
+    def test_supported_input_hash_tampering_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            inventory, profile = self.support_fixture(root)
+            design = generator.build(inventory, "fixture", profile, root=root)
+            design["blocks"][0]["source_hashes"]["Contracts/Fixture.v"] = "0" * 64
+            with self.assertRaisesRegex(ValueError, "source hash changed"):
+                generator.validate_resources(design, root, "fixture")
+
+    def test_post_render_binding_includes_body_aliases(self):
+        import render_support
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            inventory, profile = self.support_fixture(root)
+            design = generator.build(inventory, "fixture", profile, root=root)
+            body = deepcopy(design["blocks"][0])
+            body.update(entry_definition="Contracts.Fixture.body1000",
+                        resource_predicate="Contracts.Fixture.body1000")
+            design["blocks"].append(body)
+            design["support"]["unfold_entries"].append("body1000")
+            for path, text in render_support.render_support(design, root, name_prefix="fixture").items():
+                (root / path).parent.mkdir(parents=True, exist_ok=True)
+                (root / path).write_text(text)
+            bindings = generator.verify_rendered_entries(design, root, name_prefix="fixture")
+            self.assertEqual([row["entry_definition"] for row in bindings], [
+                "ZesuSsz.Generated.Fixture.Entries.entry1000",
+                "ZesuSsz.Generated.Fixture.Entries.body1000"])
+
+    def test_nested_body_binding_preserves_cfg_and_checks_parameters(self):
+        import render_support
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            inventory, profile = self.support_fixture(root)
+            primary = profile["design"]["blocks"][0]
+            body = deepcopy(primary)
+            body.update(entry_definition="Contracts.Fixture.body1000",
+                        resource_predicate="Contracts.Fixture.body1000")
+            primary["support"]["additional_definitions"] = [
+                {"position": "after", "declaration": body}]
+            profile["design"]["support"]["unfold_entries"].append("body1000")
+            design = generator.build(inventory, "fixture", profile, root=root)
+            self.assertEqual(len(design["blocks"]), 3)
+            for path, text in render_support.render_support(design, root, name_prefix="fixture").items():
+                (root / path).parent.mkdir(parents=True, exist_ok=True)
+                (root / path).write_text(text)
+            bindings = generator.verify_rendered_entries(design, root, name_prefix="fixture")
+            self.assertEqual(len(bindings), 2)
+            self.assertTrue(bindings[1]["entry_definition"].endswith(".body1000"))
+            output = root / "ZesuSsz/Generated/Fixture/Entries.v"
+            prefix, body_text = output.read_text().split("Definition body1000", 1)
+            output.write_text(prefix + "Definition body1000" +
+                              body_text.replace(" (frameBytes : list byte)", "", 1))
+            with self.assertRaisesRegex(ValueError, "argument count"):
+                generator.verify_rendered_entries(design, root, name_prefix="fixture")
+            body["binders"][1]["name"] = "args"
+            with self.assertRaisesRegex(ValueError, "binder"):
+                generator.build(inventory, "fixture", profile, root=root)
+
+    def test_shared_source_hashes_refresh_without_output_prerequisites(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            inventory, profile = self.support_fixture(root)
+            profile["design"]["support"]["source_hashes"] = {"Contracts/Fixture.v": "refresh"}
+            design = generator.build(inventory, "fixture", profile, root=root)
+            self.assertEqual(design["support"]["source_hashes"], {
+                "Contracts/Fixture.v": generator.digest(root / "Contracts/Fixture.v")})
+            profile["design"]["support"]["source_hashes"] = {
+                "ZesuSsz/Generated/Fixture/Registrations.v": "refresh"}
+            with self.assertRaisesRegex(ValueError, "generated output"):
+                generator.build(inventory, "fixture", profile, root=root)
+
+    def test_malformed_support_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            inventory, profile = self.support_fixture(root)
+            profile["design"]["blocks"][0]["support"]["version"] = 2
+            with self.assertRaisesRegex(ValueError, "version"):
+                generator.build(inventory, "fixture", profile, root=root)
+
+    def test_generated_output_cannot_be_an_input_prerequisite(self):
+        cases = [(location, filename)
+                 for location in ("row", "global", "shared", "bootstrap")
+                 for filename in ("Entries.v", "Registrations.v", "BootstrapRegistrations.v")]
+        for location, filename in cases:
+            with self.subTest(location=location, output=filename), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                inventory, profile = self.support_fixture(root)
+                output = "ZesuSsz/Generated/Fixture/" + filename
+                if location == "row":
+                    profile["design"]["blocks"][0]["source_hashes"][output] = "0" * 64
+                elif location == "global":
+                    profile["hash_sources"]["output"] = output
+                elif location == "shared":
+                    profile["design"]["support"]["source_hashes"] = {output: "refresh"}
+                else:
+                    profile["design"]["support"]["bootstrap"] = {"source_hashes": {output: "refresh"}}
+                with self.assertRaisesRegex(ValueError, "generated output"):
+                    generator.build(inventory, "fixture", profile, root=root)
+
+    def test_bootstrap_sources_refresh_independently_without_outputs(self):
+        import render_support
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            inventory, profile = self.support_fixture(root)
+            source = root / "Contracts/Retained.v"
+            source.write_text("Definition retained : Prop := True.\n")
+            profile["design"]["support"]["bootstrap"] = {
+                "imports": [{"mode": "import", "module": "isla.automation"},
+                            {"mode": "import", "module": "Contracts.Retained"}],
+                "source_hashes": {"Contracts/Retained.v": "refresh"},
+                "unfold_sources": ["Contracts.Retained.retained"],
+                "regcol_unfold_sources": []}
+            design = generator.build(inventory, "fixture", profile, root=root)
+            self.assertEqual(design["support"]["bootstrap"]["source_hashes"], {
+                "Contracts/Retained.v": generator.digest(source)})
+            outputs = render_support.render_support(design, root, name_prefix="fixture")
+            self.assertIn(Path("ZesuSsz/Generated/Fixture/BootstrapRegistrations.v"), outputs)
+            self.assertFalse((root / "ZesuSsz/Generated").exists())
+
     def test_profile_binders_and_alternatives_remain_exact(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

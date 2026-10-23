@@ -1,5 +1,5 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Open Scope Z_scope.
@@ -23,6 +23,7 @@ Proof.
 Qed.
 
 Require Import ZesuSsz.Compliance.DecodeItemOutputBaseWitnessFacts.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 
 Lemma decodeItemOutputOffset16LiteralOn (args : DecodeItemArgs) :
   SimplAnd (Z.of_nat 16 =

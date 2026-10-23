@@ -1,7 +1,8 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 
 Lemma decodeItemInputEndColumnLookup (Sigma : gFunctors)
     (args : DecodeItemArgs) :

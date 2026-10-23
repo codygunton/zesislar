@@ -1,8 +1,11 @@
 """Bind source signatures and retain application-local JSON variables."""
 from pathlib import Path
+from copy import deepcopy
+import importlib.util
+import hashlib
 import re
 
-from entry_schema import contract_fields, source_module, verify_sources
+from entry_schema import FIELDS, contract_fields, source_module, verify_sources
 from trace_registers import tokens
 from function_names import FunctionNames
 
@@ -90,15 +93,130 @@ def check_binders(block, root):
 def validate_design(design, root):
     """Require complete, source-bound declarations for every designed row."""
     errors = {}
-    for row in design['blocks']:
+    for index, row in enumerate(design['blocks']):
         try:
             check_binders(row, root)
         except (ValueError, OSError) as error:
-            errors[row['entry_pc']] = str(error)
+            errors[str(row.get('entry_pc', row.get('entry_definition', index)))] = str(error)
     if errors:
         raise ValueError('The executable design has invalid source bindings: ' +
                          '; '.join(pc + ': ' + reason for pc, reason in errors.items()))
     return len(design['blocks'])
+
+
+def _rendered_producer(root):
+    """Load the workspace producer after the table module initializes."""
+    path = Path(root) / 'ZesuSsz/Evidence/generate_block_design.py'
+    spec = importlib.util.spec_from_file_location('_entry_design_producer', path)
+    producer = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(producer)
+    # The producer adds this workspace's tools/block directory to sys.path.
+    import render_support
+    if Path(render_support.__file__).resolve() != (Path(root)/'tools/block/render_support.py').resolve():
+        raise ValueError('The entry renderer comes from a different workspace')
+    return producer, render_support
+
+
+def rendered_entry_views(design, root, *, name_prefix="decodeItem"):
+    """Keep input prerequisites separate from fresh declaration applications."""
+    names = FunctionNames(name_prefix)
+    primary = design['blocks']
+    supported = [row for row in primary if 'support' in row]
+    table = deepcopy(design)
+    applications = deepcopy(design)
+    mapping, input_hashes, output_hashes = {}, {}, {}
+
+    def collect(target, hashes):
+        for path, sha in hashes.items():
+            if path in target and target[path] != sha:
+                raise ValueError('The entry bindings contain different source hashes: ' + path)
+            target[path] = sha
+
+    if not supported:
+        for row in primary:
+            fields = contract_fields(row)
+            if fields:
+                collect(input_hashes, fields['source_hashes'])
+        return dict(table_design=table, application_design=applications, name_mapping=mapping,
+                    input_source_hashes=input_hashes, output_source_hashes=output_hashes,
+                    primary_count=len(primary), auxiliary_count=0)
+
+    producer, renderer = _rendered_producer(root)
+    for path, source in renderer.render_support(design, root, name_prefix=name_prefix).items():
+        output = Path(root)/path
+        expected = source.encode('utf-8')
+        if not output.is_file() or output.read_bytes() != expected:
+            raise ValueError('The generated support output is stale: ' + str(path))
+        output_hashes[str(path)] = hashlib.sha256(expected).hexdigest()
+    originals = renderer.support_declarations(design)
+    fresh = producer.verify_rendered_entries(design, root, name_prefix=name_prefix)
+    if len(originals) != len(fresh):
+        raise ValueError('The rendered declaration inventory has missing or unused bindings')
+    replacements = {}
+    generated = f'ZesuSsz/Generated/{names.module}/Entries.v'
+    generated_module = source_module(generated)
+    output_names = set()
+    for original, bound in zip(originals, fresh):
+        fields = contract_fields(original)
+        current = contract_fields(bound)
+        old = fields['entry_definition']
+        expected_name = generated_module + '.' + old.rsplit('.', 1)[-1]
+        if old in replacements or expected_name in output_names:
+            raise ValueError('The rendered declaration inventory contains duplicate bindings')
+        expected = deepcopy(original)
+        expected.update(entry_definition=expected_name, resource_predicate=expected_name,
+                        source_hashes=current['source_hashes'])
+        if (fields['resource_predicate'] != old or bound != expected or
+                set(current['source_hashes']) != {generated}):
+            raise ValueError('The rendered declaration binding differs from its ordered input: ' + old)
+        # Old labels remain prerequisites, but only fresh declarations need to exist.
+        verify_sources(fields, root)
+        check_binders(bound, root)
+        collect(input_hashes, fields['source_hashes'])
+        collect(output_hashes, current['source_hashes'])
+        mapping[old] = expected_name
+        output_names.add(expected_name)
+        replacements[old] = deepcopy(bound)
+
+    def promoted(row):
+        result = deepcopy(row)
+        if 'support' in row:
+            old = contract_fields(row)['entry_definition']
+            if old not in replacements:
+                raise ValueError('The primary entry has no rendered binding: ' + old)
+            result.update(contract_fields(replacements[old]))
+        else:
+            check_binders(row, root)
+            collect(input_hashes, contract_fields(row)['source_hashes'])
+        for edge in result.get('incoming_edges', []):
+            if 'resource_alternative' in edge:
+                old = edge['resource_alternative']
+                if 'support' in row:
+                    if old not in mapping:
+                        raise ValueError('The resource alternative has no rendered binding: ' + old)
+                    edge['resource_alternative'] = mapping[old]
+        return result
+
+    table['blocks'] = [promoted(row) for row in primary]
+    # Keep the producer's order, including before/after auxiliary declarations.
+    applications['blocks'] = [promoted(row) for row in originals]
+    applications['blocks'].extend(promoted(row) for row in primary if 'support' not in row)
+    primary_names = [row['entry_definition'] for row in supported]
+    if len(set(primary_names)) != len(primary_names):
+        raise ValueError('The primary entry inventory contains duplicate bindings')
+    if not set(primary_names).issubset(replacements):
+        raise ValueError('The primary entry inventory has missing bindings')
+    for group in (design.get('support', {}), design.get('support', {}).get('bootstrap', {})):
+        if group.get('source_hashes'):
+            verify_sources(group, root)
+            collect(input_hashes, group['source_hashes'])
+    if set(input_hashes) & set(output_hashes):
+        raise ValueError('A generated output cannot be an entry input prerequisite')
+    validate_design(table, root)
+    validate_design(applications, root)
+    return dict(table_design=table, application_design=applications, name_mapping=mapping,
+                input_source_hashes=input_hashes, output_source_hashes=output_hashes,
+                primary_count=len(primary), auxiliary_count=len(originals)-len(supported))
 
 
 def application_source(design, *, name_prefix="decodeItem"):

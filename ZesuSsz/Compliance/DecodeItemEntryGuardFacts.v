@@ -71,14 +71,6 @@ Proof.
   apply (proj2 (Z.lt_succ_r _ _)). exact (Z.ge_le _ _ Hguard).
 Qed.
 
-#[export] Instance decodeItemStackSubtractionHint args :
-  SimplAnd ((Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600)%bv =
-    Z_to_bv 64 (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)) True.
-Proof.
-  unfold SimplAnd; split;
-    [intros _; apply decodeItemStackSubtraction | intros _; exact I].
-Qed.
-
 #[export] Hint Extern 1 (SimplAnd (decodeItemRejectedFacts ?args) True) =>
   match goal with
   | Hdomain : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args,
@@ -106,7 +98,6 @@ Qed.
 Print Assumptions decodeItemStackSubtraction.
 Print Assumptions decodeItemMaskedStringHeaderRejected.
 Print Assumptions decodeItemMaskedListHeaderRejected.
-Print Assumptions decodeItemStackSubtractionHint.
 
 #[export] Hint Extern 1 (SimplAnd (decodeItemRejectedFacts ?args) True) =>
   match goal with

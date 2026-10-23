@@ -1,5 +1,5 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import List.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
@@ -23,6 +23,7 @@ Proof.
 Qed.
 
 Require Import ZesuSsz.Automation.Switches.ArrayRegionBounds.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 
 Lemma array_region_search_unresolved_on (p : Z) (bytes : list (bv 8)) : True.
 Proof.

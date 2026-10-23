@@ -1,5 +1,5 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
@@ -20,6 +20,7 @@ Proof.
   exact (decodeItemNativeMaskNonempty prefix H9).
 Qed.
 End Off.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 
 Lemma nativePrefixNonemptyOn (inputPrefix : byte) :
   128 <= bv_unsigned inputPrefix -> bv_unsigned inputPrefix <= 255 ->

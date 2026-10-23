@@ -1,5 +1,5 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
@@ -50,6 +50,7 @@ Proof.
 Qed.
 
 Require Import ZesuSsz.Automation.Switches.PureFactExistential.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 
 Lemma pure_fact_existential_dependent_load `{!islaG Sigma}
     args n i payloadStart lengthBytes (n2 : bv 8) (result : iProp Sigma) :

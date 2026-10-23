@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools/block"))
 from function_names import FunctionNames, prefix_argument
 from generate_table import control, structure, resolved_calls
-from entry_bindings import validate_design
+from entry_bindings import check_binders, validate_design
 
 
 def digest(path):
@@ -102,6 +102,69 @@ def source_hashes(paths, root):
     return result
 
 
+def validate_resources(design, root, name_prefix):
+    """Keep legacy bindings strict and validate generated rows independently."""
+    supported = [row for row in design["blocks"] if "support" in row]
+    if not supported:
+        validate_design(design, root)
+        return
+    from render_support import validate_support
+    legacy = dict(design, blocks=[row for row in design["blocks"] if "support" not in row])
+    validate_design(legacy, root)
+    validate_support(design, root, name_prefix=name_prefix)
+
+
+def verify_rendered_entries(design, root, *, name_prefix="decodeItem"):
+    """Bind fresh declarations after rendering, without changing input metadata."""
+    from render_support import support_declarations
+    names = FunctionNames(name_prefix)
+    path = Path("ZesuSsz/Generated") / names.module / "Entries.v"
+    bindings = []
+    for row in support_declarations(design):
+        fields = deepcopy(row)
+        declaration = row["entry_definition"].rsplit(".", 1)[-1]
+        qualified = f"ZesuSsz.Generated.{names.module}.Entries.{declaration}"
+        fields.update(entry_definition=qualified, resource_predicate=qualified,
+                      source_hashes={str(path): digest(Path(root) / path)})
+        check_binders(fields, root)
+        bindings.append(fields)
+    return bindings
+
+
+def refresh_supported_sources(design, root, generated_paths):
+    """Refresh primary, auxiliary, and shared inputs before renderer validation."""
+    rows = []
+    for block in design["blocks"]:
+        if "support" not in block:
+            continue
+        rows.append(block)
+        support = block["support"]
+        if not isinstance(support, dict):
+            raise ValueError("The entry support is not a record.")
+        extras = support.get("additional_definitions", [])
+        if not isinstance(extras, list):
+            raise ValueError("The additional definitions are not a list.")
+        for extra in extras:
+            if not isinstance(extra, dict) or not isinstance(extra.get("declaration"), dict):
+                raise ValueError("The additional definition lacks a declaration record.")
+            rows.append(extra["declaration"])
+    for row in rows:
+        if generated_paths.intersection(row["source_hashes"]):
+            raise ValueError("The profile binds a generated output as an input source.")
+        row["source_hashes"] = source_hashes(row["source_hashes"], root)
+    metadata = design.get("support")
+    if isinstance(metadata, dict):
+        groups = [metadata]
+        if isinstance(metadata.get("bootstrap"), dict):
+            groups.append(metadata["bootstrap"])
+        for group in groups:
+            if "source_hashes" not in group:
+                continue
+            if generated_paths.intersection(group["source_hashes"]):
+                raise ValueError("The profile binds a generated output as an input source.")
+            group["source_hashes"] = source_hashes(group["source_hashes"], root)
+
+
 def build(inventory, name, profile, *, root=ROOT, generator=None):
     """Preserve supplied resource declarations while checking the selected CFG."""
     root = Path(root)
@@ -109,6 +172,14 @@ def build(inventory, name, profile, *, root=ROOT, generator=None):
     if profile.get("function") != function["name"]:
         raise ValueError("The profile and inventory name different functions.")
     result = deepcopy(profile["design"])
+    names = FunctionNames(prefix_argument(name))
+    generated_paths = {str(Path("ZesuSsz/Generated") / names.module / filename)
+                       for filename in ("Entries.v", "Registrations.v", "BootstrapRegistrations.v")}
+    supported = [row for row in result["blocks"] if "support" in row]
+    if supported:
+        if generated_paths.intersection(profile["hash_sources"].values()):
+            raise ValueError("The profile binds a generated output as an input source.")
+        refresh_supported_sources(result, root, generated_paths)
     blocks = sorted(function["blocks"], key=lambda block: block["start"])
     rows = {row["pc"]: row for row in function["rows"]}
     starts = {block["start"] for block in blocks}
@@ -209,7 +280,7 @@ def build(inventory, name, profile, *, root=ROOT, generator=None):
     convention = result["table_convention"]
     convention["code_source_hashes"] = source_hashes(convention["code_source_hashes"], root)
     structure(inventory, result)
-    validate_design(result, root)
+    validate_resources(result, root, names.prefix)
     return result
 
 

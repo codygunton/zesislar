@@ -1,10 +1,11 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
 Require Import ZesuSsz.Automation.Switches.ArrayBounds.
 From Coq Require Import List Lia.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 
 Lemma output_updated_array_bound (args : DecodeItemArgs)
     (locals : DecodeItemReturnLocals)

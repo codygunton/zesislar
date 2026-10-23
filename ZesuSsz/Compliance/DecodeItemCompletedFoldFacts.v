@@ -15,12 +15,4 @@ Proof.
   repeat split; try assumption; lia.
 Qed.
 
-#[export] Hint Extern 1
-  (SimplAnd (decodeItemByteFoldFacts ?args ?n ?n ?payloadStart ?bytes) True) =>
-  match goal with Hfold : decodeItemByteFoldFacts args n ?i payloadStart bytes |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemCompletedFoldFacts args n i payloadStart bytes Hfold)
-    | intros _; exact I]
-  end : typeclass_instances.
-
 Print Assumptions decodeItemCompletedFoldFacts.

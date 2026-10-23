@@ -73,21 +73,6 @@ rewrite (bv_wrap_small 64 _ Hcursor).
 lia.
 Qed.
 
-#[export] Hint Extern 1
-  (SimplAnd (bv_or (Z_to_bv 64 (bigEndian (firstn (Z.to_nat ?i) ?bytes)) ≪ 8)
-    (bv_zero_extend 64 ?next) = Z_to_bv 64 (bigEndian (firstn (Z.to_nat ?n) ?bytes))) True) =>
-  match goal with
-  | Hfold : decodeItemByteFoldFacts ?args n i ?payloadStart bytes,
-    Hguard : i < n,
-    Hp : 0 <= decodeItemInputPointer ?args,
-    Hnowrap : decodeItemInputPointer ?args + decodeItemInputLength ?args < word64Modulus,
-    Heq : (Z_to_bv 64 (?payloadStart + i) + 1)%bv = Z_to_bv 64 (?payloadStart + n),
-    Hlookup : decodeItemInputBytes ?args !! Z.to_nat (1 + i) = Some next |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemFoldExitAccumulator args n i payloadStart bytes next
-      Hfold Hguard Hp Hnowrap Heq Hlookup) | intros _; exact I]
-  end : typeclass_instances.
-
 #[export] Hint Extern 1 (SimplAnd ?P True) =>
   match goal with
   | Hfold : decodeItemByteFoldFacts ?args ?n ?i ?payloadStart ?bytes,

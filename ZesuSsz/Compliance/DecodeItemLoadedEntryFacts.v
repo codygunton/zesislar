@@ -83,62 +83,6 @@ Proof.
   exact (decodeItemLoadedEntryNonnegative args prefix rest loaded Hhead Hlookup Hguard).
 Qed.
 
-#[export] Hint Extern 1
-  (SimplAnd (128 <= bv_unsigned ?prefix) True) =>
-  match goal with
-  | Hhead : decodeItemInputHead ?args ?prefix ?rest,
-    Hlookup : decodeItemInputBytes ?args !! 0%nat = Some ?loaded,
-    Hguard : bv_signed (bv_sign_extend 128 (bv_sign_extend 64 ?loaded)) < bv_signed (0%bv : bv 128) |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemLoadedEntryNegative args prefix rest loaded Hhead Hlookup Hguard) | intros _; exact I]
-  end : typeclass_instances.
-
-#[export] Hint Extern 1
-  (SimplAnd (bv_unsigned ?prefix <= 127) True) =>
-  match goal with
-  | Hhead : decodeItemInputHead ?args ?prefix ?rest,
-    Hlookup : decodeItemInputBytes ?args !! 0%nat = Some ?loaded,
-    Hguard : ~ bv_signed (bv_sign_extend 128 (bv_sign_extend 64 ?loaded)) < bv_signed (0%bv : bv 128) |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemLoadedEntryNonnegative args prefix rest loaded Hhead Hlookup Hguard) | intros _; exact I]
-  end : typeclass_instances.
-
-#[export] Hint Extern 1
-  (SimplAnd (bv_sign_extend 64 ?loaded = Z_to_bv 64 (bv_signed ?prefix)) True) =>
-  match goal with
-  | Hhead : decodeItemInputHead ?args ?prefix ?rest,
-    Hlookup : decodeItemInputBytes ?args !! 0%nat = Some loaded |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemLoadedEntrySign args prefix rest loaded Hhead Hlookup) | intros _; exact I]
-  end : typeclass_instances.
-
-#[export] Hint Extern 1
-  (SimplAnd (bv_signed (bv_sign_extend 64 ?loaded) < 0) True) =>
-  match goal with
-  | Hguard : bv_signed (bv_sign_extend 128 (bv_sign_extend 64 ?loaded)) < bv_signed (0%bv : bv 128) |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemLoadedEntrySignedNegative loaded Hguard) | intros _; exact I]
-  end : typeclass_instances.
-
-#[export] Hint Extern 1
-  (SimplAnd (0 <= bv_signed (bv_sign_extend 64 ?loaded)) True) =>
-  match goal with
-  | Hguard : ~ bv_signed (bv_sign_extend 128 (bv_sign_extend 64 ?loaded)) < bv_signed (0%bv : bv 128) |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemLoadedEntrySignedNonnegative loaded Hguard) | intros _; exact I]
-  end : typeclass_instances.
-
-#[export] Hint Extern 1
-  (SimplAnd (decodeItemAcceptedFacts ?args false 0 1) True) =>
-  match goal with
-  | Hhead : decodeItemInputHead ?args ?prefix ?rest,
-    Hlookup : decodeItemInputBytes ?args !! 0%nat = Some ?loaded,
-    Hdomain : decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args,
-    Hguard : ~ bv_signed (bv_sign_extend 128 (bv_sign_extend 64 ?loaded)) < bv_signed (0%bv : bv 128) |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemLoadedEntryLiteral args prefix rest loaded Hdomain Hhead Hlookup Hguard) | intros _; exact I]
-  end : typeclass_instances.
-
 Print Assumptions decodeItemLoadedEntryByte.
 
 Print Assumptions decodeItemLoadedEntrySign.

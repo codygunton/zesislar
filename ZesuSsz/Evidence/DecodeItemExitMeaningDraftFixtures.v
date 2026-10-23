@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Generated.DecodeItem.Entries.
 Require Import isla.riscv64.riscv64.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
@@ -37,4 +38,3 @@ Lemma r3FactsOutput698cShortString `{!islaG Sigma} `{!threadG}
   exists facts : Prop, ZesuExitMeaning (decodeItemEntryAt800d698cShortString args x11 x12 x13 x14 x15 x16
     outputBytes frameBytes inputPrefix rest) facts.
 Proof. eexists. typeclasses eauto. Qed.
-

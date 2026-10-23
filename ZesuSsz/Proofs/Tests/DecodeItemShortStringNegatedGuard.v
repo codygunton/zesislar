@@ -1,5 +1,5 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Compliance.DecodeItemS40GuardFacts.
@@ -19,6 +19,7 @@ Proof.
   exact (decodeItemShortStringNegatedGuardUnsigned args x13 H9).
 Qed.
 End Off.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 
 Module On.
 Lemma shortStringNegatedGuardOn args (x13 : bv 64) :

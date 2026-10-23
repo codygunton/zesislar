@@ -5,20 +5,58 @@
   "source_hashes": {
     "build/stock-zisk/build-recipe.json": "ed8196f2d359dc1a60827a9ccb0267247e8b27f97f2d09763315af159c662e99",
     "build/stock-zisk/cfg.json": "98c4614e6ff7b6e1cb85bdc3b9e600dd85eccd5afacda8b1c5b75ff66db16fc2",
-    "ZesuSsz/Evidence/decode_item_block_design.json": "3addd80011026c0923fb1a3742765c227674856b45a5f10bebe3c3e8ac363e2e",
+    "ZesuSsz/Evidence/decode_item_block_design.json": "1586067a1fbf70e0527f9399e17d21310f85d96563193d0d0c2ffda5a17823f7",
     "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
-    "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
-    "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "d23cc2feb59429955539750f9b0774548a62de0bda0dd93d41261f537911bf46",
+    "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "85a6a567952243f919c2f170cc3bebca6eeb60d14399fb73de8af5a53e9956e0",
     "ZesuSsz/Contracts/RlpDecodeItemContract.v": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+    "ZesuSsz/Contracts/ResultImage.v": "25304efe309a5644c10bd39a98bcd914c42d30c51a5eeed62ba231c97e4a209d",
+    "ZesuSsz/Contracts/AbiBytes.v": "007990c44de0b1d546b3fdcd39a828d25cfb24b4a56bdb6891cff3e74323470c",
+    "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
     "ZesuSsz/Contracts/DecodeItemReturnFacts.v": "9da33c0898953f7ff5f270dc6e1f66681f4de045c7bb774b7701676399da1cf5",
-    "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "dbde7a5579c890bb171b276a922c8c226babb927668e78191c2e24de6a1c1017",
-    "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v": "9e53a7c256d3a41bc0c560c8ccbdb5ccd90e3f0434610f7891253ff4e6f57ed2",
-    "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v": "bf85e61fe8c5a6554b371df3943d119315447673d17143070f5bbfefeef6fce0",
     "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "6f80226eadadd5468b46aebc8c48561f54815f94c1989e465d530f6896e4237d",
     "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "a504dfa090e1ec91f709ad3c3b5c7df1823dc64159b0b53960a0606a5ffe92a9",
-    "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v": "b8a3d631d1825f15220d1f586bd34592b78aceee61781018a36450f353c4c57a",
+    "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "cc0c5d1d6872d48549fc0a06b9630f0a89ff942afc39db29321548e30dc055d4",
+    "ZesuSsz/Contracts/RlpDecodeItem.v": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e",
+    "ZesuSsz/Automation/FactRegistry.v": "d80aa53c39eeeb0bffff6d08f2e99737bf68e287059337945a339a3e7fb17579",
+    "ZesuSsz/Compliance/DecodeItemDataWitnessFacts.v": "5e7cd8b75c656c76a4d4f844169689168fa2daef9c6264c19f0db135ecfdc6ca",
+    "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v": "d96d27d5498b56384a95a82d590a58fa6bf808ccf3e929127dd42db2755bbf58",
+    "ZesuSsz/Compliance/DecodeItemFoldZeroFacts.v": "7d70400d781b7e57b3c055f480bb25be311b77c163465159ee7800bccaba3329",
+    "ZesuSsz/Compliance/DecodeItemInitializationPureFacts.v": "aa44528a44e4b822be82b2873e0be5c4dee85d5aeed45e3f4c48f79aabe8a8fc",
+    "ZesuSsz/Compliance/DecodeItemOutputBaseWitnessFacts.v": "48871704304b9066a327e6621197bfd6a800f73eeb06976d4bbc44dd2d9a2a49",
+    "ZesuSsz/Compliance/DecodeItemRawOutputFacts.v": "929943837cc0be7ed21229be7b2e6278d36d20455d8fe3a93a5711cf0bfb327b",
+    "ZesuSsz/Compliance/DecodeItemS40GuardFacts.v": "d546dbf6201e9d855a3c797899ed9d4691d354cbbd5961a70fb4c91c8570592a",
+    "ZesuSsz/Compliance/DecodeItemSavedFrameWitnesses.v": "235553259498fc159ae74ddc605abeb671d72f4221d01751069570eb4a59439d",
+    "ZesuSsz/Compliance/DecodeItemCompletedFoldFacts.v": "2b131dc937232c6374fd19a48ea24ec963ee636a3c0c601f155bc2c329f0c96a",
+    "ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.v": "05cc674c44f798c454f1d9e23d37412fde9438d666908e44ca2a98457475caf5",
+    "ZesuSsz/Compliance/DecodeItemEntryByteIndexFacts.v": "8409339748f5a2be73e385242154bce842ba8c466bda2f3ed625478fcb436bb9",
+    "ZesuSsz/Compliance/DecodeItemFoldExitFacts.v": "9d89aac84ba047be03a22d1e9219f70d8c874190eec05a9e1918ce5c82d642e4",
+    "ZesuSsz/Compliance/DecodeItemFoldRejectionFacts.v": "d59450a91a32744178cd6ff279c922143a49cb78e2911f2d6ef88959ad5677b9",
+    "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v": "fe9612e88576de35cf2b003b036a3853b9141974c2e785ca6492e7114c1a1d14",
+    "ZesuSsz/Compliance/DecodeItemInputHeadWordFacts.v": "1ea98710f86f2f25597cb55747859f2823a8d446a1bf9901b57d93f1a58dcdfe",
+    "ZesuSsz/Compliance/DecodeItemLoadedEntryFacts.v": "c7a97e0a0f41eb3dc02b83175c7d990526ddff4f8951641604472dc02dd5c10d",
+    "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v": "d24b23fea22af288e72a562181f28555539fa6e332e2b6566227cc1eda49c029",
+    "ZesuSsz/Automation/EntryIntro.v": "2e212eb5cc73c578b946a3e06c00827e268ddb3e938682ee4e6f5cc5ebd519b9",
+    "ZesuSsz/Compliance/DecodeItemDataRegistrations.v": "e8ac3680b9ef7647a0196f0494b1608e017c9a72256f295677728ed31e9bf647",
+    "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v": "f17ca99f236502cce858eead20ef691af2a98abffcd36a961f6bf171ee7f90aa",
+    "ZesuSsz/Contracts/Level1.v": "45e31b086c53807d6887a91578033c2c9ffdd1d55000631f063018a6f61e9d4f",
+    "ZesuSsz/Contracts/ParentHeaderLevel1.v": "7d665aa12d4c32fbb08f1e41421744501a2ca8d0c2dae8c3870405da75a78ba6",
     "ZesuSsz/Contracts/DecodeItemSelected.v": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804",
-    "tools/block/generate_table.py": "809e1cb213a910d5409fe126979684b3239a5b20464ccb1ae887fe6f20cb21ac"
+    "ZesuSsz/Contracts/ParentHeaderMemcpyService.v": "77248046b593e864631350b0092743d3ccbf5a5fe144968317adb8911f6998c8",
+    "ZesuSsz/Contracts/NextUint64Selected.v": "895a07a3a322537d848aa1e190515e5163e3a4e50edd2f7d241358b2f7766640",
+    "ZesuSsz/Contracts/ParentHeaderSelected.v": "21c4ae10ca952f07291508caba10dcc836a78afad4260661a4ffc26acfd74f7c",
+    "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v": "8f8a64ac921387fef087cafeb68204e045dc5e40f7c2ec9d55c4475b9981bee3",
+    "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.v": "d17f7b4e2affd52fff52190393c07a48625521c6489be269bbb12fe8490e47f6",
+    "ZesuSsz/Contracts/DecodeItemErrorBranch.v": "08ab01e045cc08e6eb5cceff9e542ed53ce1fd1e34fcd9b4a50c8ba324e83ee7",
+    "ZesuSsz/Contracts/DecodeItemCompositional.v": "50d8c05339ffe8a09838bc03d61bf9edb424494b75451d249a531e79da93a426",
+    "ZesuSsz/Generated/DecodeItem/Entries.v": "a33f75c0a200167d71c9840f1577d761fe51ef45e52c4b3002d61f0b5a0ce333",
+    "tools/block/generate_table.py": "e2a481374162f2e633750925abd4592aee116c72749da4d2315a649859450714",
+    "ZesuSsz/Evidence/generate_block_design.py": "240299adc6ab36b4dae6d47a98457245a375f58d3c77956ad8d2383324e944b5",
+    "tools/block/render_support.py": "fdd6d0f3dc019b84fc55a867f1d01eae1ea77bfad729c7aa32d283a28dbf33ff",
+    "tools/block/entry_bindings.py": "f68373d49d74fd715204d48189480a8eaa0f816a2438b5763c459165753bc39a",
+    "tools/block/entry_schema.py": "3f91d05aced7cb0eaec0b0363d073f0f6dc59bdf638a469d72abda954059a167",
+    "tools/block/check_data_only_lemmas.py": "dd6f978329f3e9b7d48995335d207532e7ff94260d027da1867565e3a60ab87c",
+    "tools/block/function_names.py": "619eb4b97f110e5158e950fa84f91753210605512dd921a603c55bded6bdd5e9",
+    "tools/block/trace_registers.py": "0fe25ade825c1fd600f433d83a56dcc1a5ee187c7081860205f7ea383bfb405d"
   },
   "coverage": {
     "instructions": 116,
@@ -78,7 +116,7 @@
       "condition": {
         "op": "true"
       },
-      "resource_alternative": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698cLiteral"
+      "resource_alternative": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d698cLiteral"
     },
     {
       "source": "0x800d69a4",
@@ -147,7 +185,7 @@
       "condition": {
         "op": "true"
       },
-      "resource_alternative": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698cShortString"
+      "resource_alternative": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d698cShortString"
     },
     {
       "source": "0x800d6a00",
@@ -467,6 +505,98 @@
     }
   ],
   "missing_entry_definitions": [],
+  "entry_bindings": {
+    "name_mapping": {
+      "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6960": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6960",
+      "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6974",
+      "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d697c": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d697c",
+      "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698cLiteral": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d698cLiteral",
+      "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698cShortString": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d698cShortString",
+      "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d698c",
+      "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69a4": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d69a4",
+      "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d69b0",
+      "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d69d8",
+      "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d69e0",
+      "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e8": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d69e8",
+      "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a00",
+      "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a08": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a08",
+      "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a14",
+      "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a24",
+      "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemBodyAt800d6a24": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemBodyAt800d6a24",
+      "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a38": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a38",
+      "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a40": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a40",
+      "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a64",
+      "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a6c",
+      "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a78",
+      "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6aa8": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6aa8",
+      "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6ab4",
+      "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6ac4",
+      "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemBodyAt800d6ac4": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemBodyAt800d6ac4",
+      "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6ad8",
+      "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6ae0",
+      "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6b08"
+    },
+    "input_source_hashes": {
+      "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "85a6a567952243f919c2f170cc3bebca6eeb60d14399fb73de8af5a53e9956e0",
+      "ZesuSsz/Contracts/RlpDecodeItemContract.v": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+      "ZesuSsz/Contracts/ResultImage.v": "25304efe309a5644c10bd39a98bcd914c42d30c51a5eeed62ba231c97e4a209d",
+      "ZesuSsz/Contracts/AbiBytes.v": "007990c44de0b1d546b3fdcd39a828d25cfb24b4a56bdb6891cff3e74323470c",
+      "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+      "build/stock-zisk/decodeItem.raw.dump": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+      "ZesuSsz/Contracts/DecodeItemReturnFacts.v": "9da33c0898953f7ff5f270dc6e1f66681f4de045c7bb774b7701676399da1cf5",
+      "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "6f80226eadadd5468b46aebc8c48561f54815f94c1989e465d530f6896e4237d",
+      "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "a504dfa090e1ec91f709ad3c3b5c7df1823dc64159b0b53960a0606a5ffe92a9",
+      "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": "cc0c5d1d6872d48549fc0a06b9630f0a89ff942afc39db29321548e30dc055d4",
+      "ZesuSsz/Contracts/RlpDecodeItem.v": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e",
+      "ZesuSsz/Automation/FactRegistry.v": "d80aa53c39eeeb0bffff6d08f2e99737bf68e287059337945a339a3e7fb17579",
+      "ZesuSsz/Compliance/DecodeItemDataWitnessFacts.v": "5e7cd8b75c656c76a4d4f844169689168fa2daef9c6264c19f0db135ecfdc6ca",
+      "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v": "d96d27d5498b56384a95a82d590a58fa6bf808ccf3e929127dd42db2755bbf58",
+      "ZesuSsz/Compliance/DecodeItemFoldZeroFacts.v": "7d70400d781b7e57b3c055f480bb25be311b77c163465159ee7800bccaba3329",
+      "ZesuSsz/Compliance/DecodeItemInitializationPureFacts.v": "aa44528a44e4b822be82b2873e0be5c4dee85d5aeed45e3f4c48f79aabe8a8fc",
+      "ZesuSsz/Compliance/DecodeItemOutputBaseWitnessFacts.v": "48871704304b9066a327e6621197bfd6a800f73eeb06976d4bbc44dd2d9a2a49",
+      "ZesuSsz/Compliance/DecodeItemRawOutputFacts.v": "929943837cc0be7ed21229be7b2e6278d36d20455d8fe3a93a5711cf0bfb327b",
+      "ZesuSsz/Compliance/DecodeItemS40GuardFacts.v": "d546dbf6201e9d855a3c797899ed9d4691d354cbbd5961a70fb4c91c8570592a",
+      "ZesuSsz/Compliance/DecodeItemSavedFrameWitnesses.v": "235553259498fc159ae74ddc605abeb671d72f4221d01751069570eb4a59439d",
+      "ZesuSsz/Compliance/DecodeItemCompletedFoldFacts.v": "2b131dc937232c6374fd19a48ea24ec963ee636a3c0c601f155bc2c329f0c96a",
+      "ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.v": "05cc674c44f798c454f1d9e23d37412fde9438d666908e44ca2a98457475caf5",
+      "ZesuSsz/Compliance/DecodeItemEntryByteIndexFacts.v": "8409339748f5a2be73e385242154bce842ba8c466bda2f3ed625478fcb436bb9",
+      "ZesuSsz/Compliance/DecodeItemFoldExitFacts.v": "9d89aac84ba047be03a22d1e9219f70d8c874190eec05a9e1918ce5c82d642e4",
+      "ZesuSsz/Compliance/DecodeItemFoldRejectionFacts.v": "d59450a91a32744178cd6ff279c922143a49cb78e2911f2d6ef88959ad5677b9",
+      "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v": "fe9612e88576de35cf2b003b036a3853b9141974c2e785ca6492e7114c1a1d14",
+      "ZesuSsz/Compliance/DecodeItemInputHeadWordFacts.v": "1ea98710f86f2f25597cb55747859f2823a8d446a1bf9901b57d93f1a58dcdfe",
+      "ZesuSsz/Compliance/DecodeItemLoadedEntryFacts.v": "c7a97e0a0f41eb3dc02b83175c7d990526ddff4f8951641604472dc02dd5c10d",
+      "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v": "d24b23fea22af288e72a562181f28555539fa6e332e2b6566227cc1eda49c029",
+      "ZesuSsz/Automation/EntryIntro.v": "2e212eb5cc73c578b946a3e06c00827e268ddb3e938682ee4e6f5cc5ebd519b9",
+      "ZesuSsz/Compliance/DecodeItemDataRegistrations.v": "e8ac3680b9ef7647a0196f0494b1608e017c9a72256f295677728ed31e9bf647",
+      "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v": "f17ca99f236502cce858eead20ef691af2a98abffcd36a961f6bf171ee7f90aa",
+      "ZesuSsz/Contracts/Level1.v": "45e31b086c53807d6887a91578033c2c9ffdd1d55000631f063018a6f61e9d4f",
+      "ZesuSsz/Contracts/ParentHeaderLevel1.v": "7d665aa12d4c32fbb08f1e41421744501a2ca8d0c2dae8c3870405da75a78ba6",
+      "ZesuSsz/Contracts/DecodeItemSelected.v": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804",
+      "ZesuSsz/Contracts/ParentHeaderMemcpyService.v": "77248046b593e864631350b0092743d3ccbf5a5fe144968317adb8911f6998c8",
+      "ZesuSsz/Contracts/NextUint64Selected.v": "895a07a3a322537d848aa1e190515e5163e3a4e50edd2f7d241358b2f7766640",
+      "ZesuSsz/Contracts/ParentHeaderSelected.v": "21c4ae10ca952f07291508caba10dcc836a78afad4260661a4ffc26acfd74f7c",
+      "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v": "8f8a64ac921387fef087cafeb68204e045dc5e40f7c2ec9d55c4475b9981bee3",
+      "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.v": "d17f7b4e2affd52fff52190393c07a48625521c6489be269bbb12fe8490e47f6",
+      "ZesuSsz/Contracts/DecodeItemErrorBranch.v": "08ab01e045cc08e6eb5cceff9e542ed53ce1fd1e34fcd9b4a50c8ba324e83ee7",
+      "ZesuSsz/Contracts/DecodeItemCompositional.v": "50d8c05339ffe8a09838bc03d61bf9edb424494b75451d249a531e79da93a426"
+    },
+    "output_source_hashes": {
+      "ZesuSsz/Generated/DecodeItem/Entries.v": "a33f75c0a200167d71c9840f1577d761fe51ef45e52c4b3002d61f0b5a0ce333",
+      "ZesuSsz/Generated/DecodeItem/Registrations.v": "65183f4c36846cef97170bd44e51bc4ef35b9dae587b97d7f14faf665787abe5",
+      "ZesuSsz/Generated/DecodeItem/BootstrapRegistrations.v": "5e5960f5a5388ff6dda71501552e73e54b838869620c94710118665f980aba99"
+    },
+    "primary_count": 24,
+    "auxiliary_count": 4,
+    "tool_hashes": {
+      "ZesuSsz/Evidence/generate_block_design.py": "240299adc6ab36b4dae6d47a98457245a375f58d3c77956ad8d2383324e944b5",
+      "tools/block/render_support.py": "fdd6d0f3dc019b84fc55a867f1d01eae1ea77bfad729c7aa32d283a28dbf33ff",
+      "tools/block/entry_bindings.py": "f68373d49d74fd715204d48189480a8eaa0f816a2438b5763c459165753bc39a",
+      "tools/block/entry_schema.py": "3f91d05aced7cb0eaec0b0363d073f0f6dc59bdf638a469d72abda954059a167",
+      "tools/block/check_data_only_lemmas.py": "dd6f978329f3e9b7d48995335d207532e7ff94260d027da1867565e3a60ab87c",
+      "tools/block/function_names.py": "619eb4b97f110e5158e950fa84f91753210605512dd921a603c55bded6bdd5e9",
+      "tools/block/trace_registers.py": "0fe25ade825c1fd600f433d83a56dcc1a5ee187c7081860205f7ea383bfb405d"
+    }
+  },
   "table_convention": {
     "entry_type": "(Z * iProp Sigma)",
     "pc_ownership": "instr_pre pc state supplies PC; entry predicates do not own PC",
@@ -551,151 +681,151 @@
     }
   },
   "generated_hashes": {
-    "ZesuSsz/Generated/DecodeItem/BlockTable.v": "03b9bd09f339702efe1116785b347eb43791117ea1ae456b853bbee6b67cc0e7"
+    "ZesuSsz/Generated/DecodeItem/BlockTable.v": "bca5b4524696667927728d43a650be889517bd318c783275bac4f036a19b7213"
   },
   "proof_slots": [
     {
       "pc": "0x800d6960",
-      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6960",
-      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6960",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6960",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6960",
       "proof_lemma": null
     },
     {
       "pc": "0x800d6974",
-      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974",
-      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6974",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6974",
       "proof_lemma": null
     },
     {
       "pc": "0x800d697c",
-      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d697c",
-      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d697c",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d697c",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d697c",
       "proof_lemma": null
     },
     {
       "pc": "0x800d698c",
-      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c",
-      "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d698c",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d698c",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d698c",
       "proof_lemma": null
     },
     {
       "pc": "0x800d69a4",
-      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69a4",
-      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69a4",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d69a4",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d69a4",
       "proof_lemma": null
     },
     {
       "pc": "0x800d69b0",
-      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0",
-      "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d69b0",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d69b0",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d69b0",
       "proof_lemma": null
     },
     {
       "pc": "0x800d69d8",
-      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8",
-      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69d8",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d69d8",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d69d8",
       "proof_lemma": null
     },
     {
       "pc": "0x800d69e0",
-      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0",
-      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e0",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d69e0",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d69e0",
       "proof_lemma": null
     },
     {
       "pc": "0x800d69e8",
-      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e8",
-      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d69e8",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d69e8",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d69e8",
       "proof_lemma": null
     },
     {
       "pc": "0x800d6a00",
-      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00",
-      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a00",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a00",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a00",
       "proof_lemma": null
     },
     {
       "pc": "0x800d6a08",
-      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a08",
-      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a08",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a08",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a08",
       "proof_lemma": null
     },
     {
       "pc": "0x800d6a14",
-      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14",
-      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a14",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a14",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a14",
       "proof_lemma": null
     },
     {
       "pc": "0x800d6a24",
-      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24",
-      "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6a24",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a24",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a24",
       "proof_lemma": null
     },
     {
       "pc": "0x800d6a38",
-      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a38",
-      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a38",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a38",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a38",
       "proof_lemma": null
     },
     {
       "pc": "0x800d6a40",
-      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a40",
-      "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a40",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a40",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a40",
       "proof_lemma": null
     },
     {
       "pc": "0x800d6a64",
-      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64",
-      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a64",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a64",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a64",
       "proof_lemma": null
     },
     {
       "pc": "0x800d6a6c",
-      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c",
-      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6a6c",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a6c",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a6c",
       "proof_lemma": null
     },
     {
       "pc": "0x800d6a78",
-      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78",
-      "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6a78",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a78",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a78",
       "proof_lemma": null
     },
     {
       "pc": "0x800d6aa8",
-      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6aa8",
-      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6aa8",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6aa8",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6aa8",
       "proof_lemma": null
     },
     {
       "pc": "0x800d6ab4",
-      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4",
-      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ab4",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6ab4",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6ab4",
       "proof_lemma": null
     },
     {
       "pc": "0x800d6ac4",
-      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4",
-      "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemFoldEntries.decodeItemEntryAt800d6ac4",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6ac4",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6ac4",
       "proof_lemma": null
     },
     {
       "pc": "0x800d6ad8",
-      "entry_definition": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8",
-      "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6ad8",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6ad8",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6ad8",
       "proof_lemma": null
     },
     {
       "pc": "0x800d6ae0",
-      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0",
-      "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6ae0",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6ae0",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6ae0",
       "proof_lemma": null
     },
     {
       "pc": "0x800d6b08",
-      "entry_definition": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08",
-      "resource_predicate": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemEntryAt800d6b08",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6b08",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6b08",
       "proof_lemma": null
     }
   ]

@@ -112,6 +112,14 @@ check-evm-sail-snapshot:
 regenerate-evm-sail-snapshot:
 	bash ZesuSsz/EvmSail/regenerate_snapshot.sh
 
+.PHONY: check-support-freshness
+check-support-freshness: stock-native-indexes
+	$(PYTHON) ZesuSsz/Evidence/generate_block_design.py --function decodeItem --check
+	$(PYTHON) tools/block/render_support.py --function decodeItem --check
+	$(PYTHON) tools/block/generate_table.py --function decodeItem --recipe build/stock-zisk/build-recipe.json --cfg build/stock-zisk/cfg.json --design ZesuSsz/Evidence/decode_item_block_design.json --coverage ZesuSsz/Generated/DecodeItem/block_table_metadata.json --output ZesuSsz/Generated/DecodeItem/BlockTable.v --check
+
+check-evidence-tools: check-support-freshness
+
 .PHONY: check-evidence-tools
 check-evidence-tools:
 	@echo "uncached checks: machine config, tests, hygiene, spec shapes"

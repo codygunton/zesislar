@@ -195,16 +195,6 @@ Qed.
     unfold SimplAnd; split; [intros _; exact (proj2 Hdomain) | intros _; exact I]
   end : typeclass_instances.
 
-#[export] Hint Extern 1
-  (SimplAnd (exists prefix rest, decodeItemInputHead ?args prefix rest) True) =>
-  match goal with
-  | Hdomain : decodeItemDomainAt ?returnAddress decodeItemC1BDomain args,
-    Hnonzero : bv_unsigned (Z_to_bv 64 (decodeItemInputLength args)) <> 0 |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemInputHeadWitnessFacts returnAddress args Hdomain Hnonzero)
-    | intros _; exact I]
-  end : typeclass_instances.
-
 #[export] Hint Extern 1 (SimplAnd (1 <= bv_unsigned ?prefix - 183 <= 8) True) =>
   match goal with Hlow : 184 <= bv_unsigned prefix, Hhigh : bv_unsigned prefix <= 191 |- _ =>
     unfold SimplAnd; split;
@@ -286,34 +276,8 @@ Print Assumptions decodeItemListHeaderReadGuardFacts.
     | intros _; exact I]
   end : typeclass_instances.
 
-#[export] Hint Extern 1
-  (SimplAnd (decodeItemLongAcceptedFacts ?args ?isList (1 + ?n) (bigEndian ?lengthBytes)) True) =>
-  match goal with
-  | Hdomain : decodeItemC1BDomain args,
-    Hprovenance : decodeItemFoldProvenance args isList ?prefix ?rest n ?payloadStart lengthBytes,
-    Hfold : decodeItemByteFoldFacts args n n ?payloadStart lengthBytes,
-    Hfits : decodeItemFoldLengthFits args n lengthBytes = true |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemCompletedFoldAcceptedWitnessFacts args isList prefix rest n
-      payloadStart lengthBytes Hdomain Hprovenance Hfold Hfits) | intros _; exact I]
-  end : typeclass_instances.
-
 Print Assumptions decodeItemHeaderUnsignedReadGuardFacts.
 Print Assumptions decodeItemCompletedFoldAcceptedWitnessFacts.
-
-#[export] Hint Extern 1 (SimplAnd (decodeItemFoldLengthFits ?args ?n ?lengthBytes = true) True) =>
-  match goal with Hfold : decodeItemByteFoldFacts args n n ?payloadStart lengthBytes |- _ =>
-    unfold SimplAnd; split;
-    [intros _; apply (decodeItemCompletedFoldFitsGuard args n payloadStart lengthBytes Hfold); assumption
-    | intros _; exact I]
-  end : typeclass_instances.
-
-#[export] Hint Extern 1 (SimplAnd (decodeItemFoldLengthFits ?args ?n ?lengthBytes = false) True) =>
-  match goal with Hfold : decodeItemByteFoldFacts args n n ?payloadStart lengthBytes |- _ =>
-    unfold SimplAnd; split;
-    [intros _; apply (decodeItemCompletedFoldRejectGuard args n payloadStart lengthBytes Hfold); assumption
-    | intros _; exact I]
-  end : typeclass_instances.
 
 #[export] Hint Extern 1 (SimplAnd (decodeItemRejectedFacts ?args) True) =>
   match goal with
@@ -341,14 +305,6 @@ Print Assumptions decodeItemCompletedFoldAcceptedWitnessFacts.
 Print Assumptions decodeItemCompletedFoldConsumedWord.
 Print Assumptions decodeItemCompletedFoldFitsGuard.
 Print Assumptions decodeItemCompletedFoldRejectGuard.
-
-#[export] Hint Extern 1
-  (SimplAnd (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer ?args)) = decodeItemInputPointer ?args) True) =>
-  match goal with Hdomain : decodeItemDomainAt ?returnAddress decodeItemC1BDomain args |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemInputPointerCastWitnessFacts returnAddress args Hdomain)
-    | intros _; exact I]
-  end : typeclass_instances.
 
 Print Assumptions decodeItemInputPointerCastWitnessFacts.
 

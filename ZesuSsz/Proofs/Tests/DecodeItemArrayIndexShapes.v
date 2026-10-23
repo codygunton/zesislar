@@ -1,5 +1,5 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
@@ -39,6 +39,7 @@ Proof.
 Qed.
 
 Require Import ZesuSsz.Automation.Switches.PureFactHints.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 
 Lemma decodeItemIntegerIndexLiteralOn `{!islaG Sigma}
     args n i payloadStart bytes (continuation : nat -> iProp Sigma) :

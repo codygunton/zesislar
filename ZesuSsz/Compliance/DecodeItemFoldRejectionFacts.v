@@ -36,17 +36,6 @@ Proof.
 Qed.
 Print Assumptions decodeItemCompletedFoldRejected.
 
-#[export] Hint Extern 1 (SimplAnd (decodeItemRejectedFacts ?args) True) =>
-  match goal with
-  | Hdomain : decodeItemC1BDomain ?args,
-    Hprovenance : decodeItemFoldProvenance ?args ?isList ?inputPrefix ?rest ?n ?payloadStart ?lengthBytes,
-    Hfold : decodeItemByteFoldFacts ?args ?n ?n ?payloadStart ?lengthBytes,
-    Hfits : decodeItemFoldLengthFits ?args ?n ?lengthBytes = false |- _ =>
-      unfold SimplAnd; split;
-      [intros _; exact (decodeItemCompletedFoldRejected args isList inputPrefix rest n
-        payloadStart lengthBytes Hdomain Hprovenance Hfold Hfits) | intros _; exact I]
-  end : typeclass_instances.
-
 #[export] Instance decodeItemDomainFoldDerivedFacts args :
   ZesuDerivedFacts (decodeItemC1BDomain args)
     (decodeItemInputLength args = Z.of_nat (length (decodeItemInputBytes args)) /\

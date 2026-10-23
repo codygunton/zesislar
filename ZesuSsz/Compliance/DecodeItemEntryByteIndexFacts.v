@@ -64,13 +64,6 @@ Qed.
   [intros _; exact (decodeItemEntryByteBound args Hrange) | intros _; exact I]
   : typeclass_instances.
 
-#[export] Hint Extern 1
-  (SimplAnd (decodeItemInputBytes ?args !! 0%nat = Some ?prefix) True) =>
-  match goal with Hhead : decodeItemInputHead args prefix ?rest |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemEntryByteLookup args prefix rest Hhead) | intros _; exact I]
-  end : typeclass_instances.
-
 Print Assumptions decodeItemEntryByteIndex.
 Print Assumptions decodeItemEntryByteBound.
 Print Assumptions decodeItemEntryByteLookup.

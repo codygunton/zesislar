@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Generated.DecodeItem.Entries.
 From Coq Require Import List ZArith.
 From lithium Require Import lvar.
 Require Import isla.riscv64.riscv64.
@@ -7,7 +8,6 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemBranchEntries.
 Require Import ZesuSsz.Contracts.DecodeItemReturnFacts.
 
-Require Import ZesuSsz.Contracts.RlpDecodeItemFoldEntries.
 Lemma loop_header_resource_first_equiv `{!islaG Sigma} `{!threadG}
  (args : DecodeItemArgs) (prefix : byte) (rest : list byte) :
  decodeItemEntryAt800d6a24 args prefix rest ⊣⊢ (∃ (n : lvar "zesuLoopCount" Z) (i : lvar "zesuLoopIndex" Z) (payloadStart : Z) (lengthBytes frameBytes : list byte)

@@ -1,5 +1,5 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
@@ -44,6 +44,7 @@ Lemma entryListOff (args : DecodeItemArgs) (register : bv 64) (prefix : byte) (r
 Proof. intros. entry_guard_absent args. Qed.
 
 Require Import ZesuSsz.Compliance.DecodeItemEntryGuardFacts.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 
 Lemma entryStackOn args :
   (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600)%bv =

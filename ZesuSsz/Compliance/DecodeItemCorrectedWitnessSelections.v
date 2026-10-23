@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Generated.DecodeItem.Entries.
 Require Import ZesuSsz.Compliance.ByteFold.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import List ZArith Lia.
@@ -6,7 +7,6 @@ Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.
-Require Import ZesuSsz.Contracts.RlpDecodeItemFoldEntries.
 Require Import ZesuSsz.Contracts.DecodeItemBranchEntries.
 Require Import ZesuSsz.Contracts.DecodeItemReturnFacts.
 Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
@@ -150,27 +150,6 @@ Proof.
   iExists (Z.to_nat (1 + i)). iFrame. iPureIntro.
   exact (decodeItemFoldArrayIndex args n i payloadStart bytes Hfold).
 Qed.
-
-#[export] Hint Extern 1
-  (SimplAnd ((Z_to_bv 64 (?payloadStart + ?i) + 1)%bv =
-    Z_to_bv 64 (?payloadStart + (?i + 1))) True) =>
-  match goal with Hfold : decodeItemByteFoldFacts ?args ?n i payloadStart ?bytes |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemFoldSteppedCursor args n i payloadStart bytes Hfold)
-    | intros _; exact I]
-  end : typeclass_instances.
-
-#[export] Hint Extern 1
-  (SimplAnd (bv_or (Z_to_bv 64 (bigEndian (firstn (Z.to_nat ?i) ?bytes)) ≪ 8)
-    (bv_zero_extend 64 ?next) =
-    Z_to_bv 64 (bigEndian (firstn (Z.to_nat (?i + 1)) ?bytes))) True) =>
-  match goal with Hfold : decodeItemByteFoldFacts ?args ?n i ?payloadStart bytes,
-    Hguard : i < ?n,
-    Hnext : nth_error (decodeItemInputBytes ?args) (Z.to_nat (1 + i)) = Some next |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemFoldSteppedAccumulator args n i payloadStart bytes next
-      Hfold Hguard Hnext) | intros _; exact I]
-  end : typeclass_instances.
 
 Definition decodeItemCompletedFoldLocals args n payloadStart bytes frameBytes loaded :
     DecodeItemReturnLocals :=

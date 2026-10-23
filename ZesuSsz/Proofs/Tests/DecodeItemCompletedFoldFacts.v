@@ -1,10 +1,11 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
 Require Import ZesuSsz.Compliance.DecodeItemCompletedFoldFacts.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 Open Scope Z_scope.
 
 Lemma decodeItemCompletedFoldActivation args n i payloadStart bytes :

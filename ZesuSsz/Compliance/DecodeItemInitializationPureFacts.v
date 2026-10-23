@@ -28,33 +28,5 @@ Proof.
   rewrite Hstart. bv_solve.
 Qed.
 
-#[export] Hint Extern 1 (SimplAnd (0 < ?n) True) =>
-  match goal with
-  | Hfold : decodeItemByteFoldFacts ?args n 0 ?payloadStart ?bytes |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemByteFoldFirstGuard args n payloadStart bytes Hfold)
-    | intros _; exact I]
-  end : typeclass_instances.
-
-#[export] Hint Extern 1
-  (SimplAnd ((Z_to_bv 64 (decodeItemInputPointer ?args) + (Z_to_bv 64 ?n + 1))%bv =
-    Z_to_bv 64 (?payloadStart + ?n)) True) =>
-  match goal with
-  | Hprovenance : decodeItemFoldProvenance args ?isList ?prefix ?rest n payloadStart ?bytes |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemInitializationCursor args isList prefix rest n payloadStart bytes Hprovenance)
-    | intros _; exact I]
-  end : typeclass_instances.
-
-#[export] Hint Extern 1
-  (SimplAnd ((Z_to_bv 64 (decodeItemInputPointer ?args) + 1)%bv =
-    Z_to_bv 64 (?payloadStart + 0)) True) =>
-  match goal with
-  | Hprovenance : decodeItemFoldProvenance args ?isList ?prefix ?rest ?n payloadStart ?bytes |- _ =>
-    unfold SimplAnd; split;
-    [intros _; exact (decodeItemInitializationStartCursor args isList prefix rest n payloadStart bytes Hprovenance)
-    | intros _; exact I]
-  end : typeclass_instances.
-
 Print Assumptions decodeItemInitializationCursor.
 Print Assumptions decodeItemInitializationStartCursor.

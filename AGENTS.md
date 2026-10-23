@@ -42,7 +42,9 @@ theorem with `IslarisContractCorrect`. State observable output through
 `Export/Adequacy.v`.
 
 Do not write an operational lemma per instruction. Do not write a template
-generator. Do not transliterate an Iris invariant into an operational one.
+generator.
+Generators may render declarations (entry statements, registrations, hint umbrellas) from design tables; they never render proof scripts. 'Do not write a template generator' refers to proof templates.
+Do not transliterate an Iris invariant into an operational one.
 Do not write a `//@spec:` for a load or store from an array. Do not split an
 array in a proof script. Do not redefine a Lithium hook outside
 `ZesuSsz/Automation/Hooks.v`. Do not use a wall-clock deadline (`timeout`, a timed `first` or `try`, a

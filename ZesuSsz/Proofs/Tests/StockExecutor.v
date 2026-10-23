@@ -1,5 +1,5 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Export.Adequacy.
 Require Import ZesuSsz.Export.Executor.
@@ -8,6 +8,7 @@ Require Import ZesuSsz.Generated.TestTraces.EntryAddi.
 
 From Coq Require Import Lists.List.
 Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 Import ListNotations.
 
 (** This fixture executes the selected decodeItem entry instruction.

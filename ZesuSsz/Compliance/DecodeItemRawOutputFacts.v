@@ -8,7 +8,6 @@ From Coq Require Import List ZArith Lia.
 Import ListNotations.
 Open Scope Z_scope.
 
-
 Lemma decodeItemRawOutputStatus (before pointerBytes lengthBytes : list byte) :
   length before = 40%nat -> length pointerBytes = 8%nat -> length lengthBytes = 8%nat ->
   fieldImage (pointerBytes ++ lengthBytes ++
@@ -97,22 +96,6 @@ Qed.
   match goal with Hlength : length before = 40%nat |- _ =>
     unfold SimplAnd; split;
     [intros _; exact (decodeItemRawOutputExtent before first second Hlength)
-    | intros _; exact I]
-  end : typeclass_instances.
-
-#[export] Hint Extern 1
-  (SimplAnd (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer ?args)) =
-    decodeItemInputPointer ?args + 0) True) =>
-  unfold SimplAnd; split;
-  [intros _; apply decodeItemRawInputPointer; assumption | intros _; exact I]
-  : typeclass_instances.
-
-#[export] Hint Extern 1
-  (SimplAnd (bv_unsigned (bv_add (Z_to_bv 64 (decodeItemInputPointer ?args)) 1) =
-    decodeItemInputPointer ?args + 1) True) =>
-  match goal with Hhead : decodeItemInputHead args ?prefix ?rest |- _ =>
-    unfold SimplAnd; split;
-    [intros _; apply (decodeItemRawInputSuccessor args prefix rest); assumption
     | intros _; exact I]
   end : typeclass_instances.
 

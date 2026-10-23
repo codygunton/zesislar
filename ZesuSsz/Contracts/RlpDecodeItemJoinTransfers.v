@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Generated.DecodeItem.Entries.
 From Coq Require Import List ZArith.
 From stdpp Require Import bitvector.definitions.
 Require Import EvmSailRlp.evm_rlp_types.
@@ -8,7 +9,6 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemBranchEntries.
 Require Import ZesuSsz.Contracts.DecodeItemReturnFacts.
 Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
-Require Import ZesuSsz.Contracts.RlpDecodeItemFoldEntries.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.
 Import ListNotations.
@@ -39,7 +39,6 @@ Definition decodeItemJoin6a24From6a14 `{!islaG Sigma} `{!threadG}
 
 (* The backedge keeps args and frameBytes unchanged. These lemmas retain
    only their pure facts; they do not prove machine preservation. *)
-
 
 Definition decodeItemJoin6a24Backedge `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (n i payloadStart : Z)

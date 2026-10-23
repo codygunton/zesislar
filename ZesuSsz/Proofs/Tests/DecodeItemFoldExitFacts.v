@@ -1,5 +1,5 @@
 Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemUnfoldRegistrations.
+Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
@@ -26,6 +26,7 @@ Qed.
 
 Require Import ZesuSsz.Compliance.DecodeItemFoldExitFacts.
 Require Import ZesuSsz.Compliance.DecodeItemCompletedFoldFacts.
+Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 
 Ltac fold_exit_registered :=
   match goal with |- ?P =>

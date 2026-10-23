@@ -158,13 +158,13 @@ class PromotionVerificationTests(unittest.TestCase):
                 verification.verify_generated(Path(temp), [], 0x800d6974, directory)
 
 
-def protected_fixture(directory, name='protected'):
+def protected_fixture(directory, name='protected', prefix='(* Literal baseline expectation. *)\n'):
     root = Path(directory)
     baseline, candidate = root / 'baseline', root / 'candidate'
     baseline.mkdir()
     candidate.mkdir()
     source = baseline / 'Fixture.v'
-    source.write_text('(* Literal baseline expectation. *)\nLemma ' + name + ' : True.\nProof. exact I. Qed.\n')
+    source.write_text(prefix + 'Lemma ' + name + ' : True.\nProof. exact I. Qed.\n')
     current = candidate / 'Fixture.v'
     current.write_text('Lemma ' + name + ' : True.\nProof. exact I. Qed.\n')
     subprocess.run(['git', '-c', 'init.defaultBranch=main', 'init', '-q', str(baseline)], check=True)
@@ -262,6 +262,80 @@ class ProtectedExpectationTests(unittest.TestCase):
             self.assertEqual(manifest['protected_expectations'], [row])
 
 
+class VerificationImportTests(unittest.TestCase):
+    def fixture(self, directory):
+        root = Path(directory)
+        source = root / 'New/Entries.v'
+        source.parent.mkdir()
+        source.write_text('Definition entry := True.\n')
+        statement = 'Require Import Old.Entries.\nLemma kept : True.\n'
+        key = (str(root / 'Proof.v'), 'kept')
+        expected = dict(candidate_source=key[0], name='kept', statement=statement,
+                        statement_sha256=hashlib.sha256(statement.encode()).hexdigest())
+        adapted = statement.replace('Require Import Old.Entries.', 'Require Import New.Entries.')
+        row = dict(candidate_source=key[0], name='kept', statement_sha256=expected['statement_sha256'],
+                   verification_statement_sha256=hashlib.sha256(adapted.encode()).hexdigest(),
+                   imports=[dict(old_module='Old.Entries', new_module='New.Entries',
+                                 source_sha256=verification.digest(source))])
+        return root, key, expected, row, source, adapted
+
+    def test_import_adapter_preserves_literal_baseline_and_declaration(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, key, expected, row, _, adapted = self.fixture(directory)
+            original = copy.deepcopy(expected)
+            result = verification.prepare_verification_imports(root, {key: expected}, [row])
+            self.assertEqual(expected, original)
+            self.assertEqual(result[key]['verification_statement'], adapted)
+            self.assertEqual(expected['statement'].split('Lemma', 1)[1], adapted.split('Lemma', 1)[1])
+            verification.unchanged_verification_imports(root, result)
+            self.assertEqual(verification.prepare_verification_imports(root, {key: expected}, None), {})
+
+    def test_missing_duplicate_unused_and_invalid_import_adapters_refuse(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, key, expected, row, _, _ = self.fixture(directory)
+            changes = [[], [dict(row, name='unused')], [row, row],
+                       [dict(row, statement_sha256='0' * 64)],
+                       [dict(row, verification_statement_sha256='0' * 64)],
+                       [dict(row, imports=[])], [dict(row, unexpected=True)]]
+            for records in changes:
+                with self.subTest(records=records), self.assertRaises(ValueError):
+                    verification.prepare_verification_imports(root, {key: expected}, records)
+            for item in [dict(row['imports'][0], old_module='Missing.Entries'),
+                         dict(row['imports'][0], new_module='New.Missing'),
+                         dict(row['imports'][0], old_module='Lemma kept : False'),
+                         dict(row['imports'][0], new_module='New.Entries.\nAxiom bad : False'),
+                         dict(row['imports'][0], source_sha256='0' * 64)]:
+                with self.subTest(item=item), self.assertRaises(ValueError):
+                    verification.prepare_verification_imports(root, {key: expected}, [dict(row, imports=[item])])
+            with self.assertRaisesRegex(ValueError, 'repeats an import'):
+                verification.prepare_verification_imports(root, {key: expected},
+                    [dict(row, imports=row['imports'] * 2)])
+
+    def test_ambiguous_import_and_changed_import_source_refuse(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, key, expected, row, source, _ = self.fixture(directory)
+            repeated = dict(expected, statement='Require Import Old.Entries.\n' + expected['statement'])
+            with self.assertRaisesRegex(ValueError, 'ambiguous'):
+                verification.prepare_verification_imports(root, {key: repeated}, [row])
+            result = verification.prepare_verification_imports(root, {key: expected}, [row])
+            source.write_text('Definition entry := False.\n')
+            with self.assertRaisesRegex(ValueError, 'changed during verification'):
+                verification.unchanged_verification_imports(root, result)
+
+    def test_verify_generated_retains_import_adapter_in_inputs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, _, _, row, _, _ = self.fixture(directory)
+            output = root / 'verification'
+            def emit_success(*args, **kwargs):
+                output.mkdir()
+                (output / 'RESULT.json').write_text(json.dumps({'success': True}))
+            with patch.dict(os.environ, {'OPAM_SWITCH_PREFIX': '/pinned'}), \
+                    patch.object(verification.shutil, 'which', return_value='/pinned/bin/pet'), \
+                    patch.object(verification.subprocess, 'run', side_effect=emit_success):
+                verification.verify_generated(root, [], 0, output, verification_imports=[row])
+            self.assertEqual(json.loads(Path(str(output) + '.inputs.json').read_text())['verification_imports'], [row])
+
+
 class LauncherSelectionTests(unittest.TestCase):
     def launchers(self, root):
         tools = root / 'tools'
@@ -308,7 +382,7 @@ class LauncherSelectionTests(unittest.TestCase):
                     self.assertFalse((root / 'unused').exists())
 
     def fake_verification(self, root, overrides=False, wrong_health=False, protected_expectations=None,
-                          verification_method='module_m'):
+                          verification_method='module_m', verification_imports=None):
         tools = self.launchers(root)
         private = root / '_build/default'
         private.mkdir(parents=True)
@@ -323,6 +397,8 @@ class LauncherSelectionTests(unittest.TestCase):
                 selected[label + '_launcher'] = path
         if protected_expectations is not None:
             selected['protected_expectations'] = protected_expectations
+        if verification_imports is not None:
+            selected['verification_imports'] = verification_imports
         seen, calls, active = [], [], [False]
         def parameters(**values):
             seen.append(values)
@@ -405,6 +481,27 @@ class LauncherSelectionTests(unittest.TestCase):
             request = next(call for call in report['calls'] if call['tool'] == 'rocq_verify')
             self.assertEqual(request['arguments']['problem_statement'], row['statement'])
             self.assertEqual(report['protected_expectations'][0]['baseline_commit'], row['baseline_commit'])
+
+    def test_import_adapter_sends_separate_harness_and_retains_expected_bytes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, current, row = protected_fixture(directory, name='checked',
+                prefix='Require Import Old.Entries.\n')
+            imported = root / 'New/Entries.v'
+            imported.parent.mkdir()
+            imported.write_text('Definition entry := True.\n')
+            adapted = row['statement'].replace('Require Import Old.Entries.', 'Require Import New.Entries.')
+            adapter = dict(candidate_source=str(current), name='checked', statement_sha256=row['statement_sha256'],
+                verification_statement_sha256=hashlib.sha256(adapted.encode()).hexdigest(),
+                imports=[dict(old_module='Old.Entries', new_module='New.Entries',
+                              source_sha256=verification.digest(imported))])
+            report, _, _, _ = self.fake_verification(root, protected_expectations=[row],
+                                                     verification_imports=[adapter])
+            request = next(call for call in report['calls'] if call['tool'] == 'rocq_verify')
+            self.assertEqual(request['arguments']['problem_statement'], adapted)
+            self.assertEqual(report['checks'][0]['statements'][0]['exact_statement'], row['statement'])
+            self.assertEqual(report['checks'][0]['statements'][0]['verification_statement'], adapted)
+            self.assertEqual(report['protected_expectations'][0]['statement_sha256'], row['statement_sha256'])
+            self.assertTrue(report['success'])
 
     def test_override_cannot_silently_select_a_different_compiler(self):
         with tempfile.TemporaryDirectory() as directory:
