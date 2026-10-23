@@ -84,6 +84,8 @@ def remember_recipe(build_dir: Path):
         return cached
     if recipe is not None:
         recipe["working_dir"] = recipe["working_dir"] or str(build_dir / "default")
+        from dune_build_dir import physical_working_dir
+        recipe["working_dir"] = physical_working_dir(build_dir, recipe["working_dir"])
         with tempfile.TemporaryDirectory(dir=build_dir, prefix=".coqc-recipe-") as directory:
             pending = Path(directory) / "recipe.json"
             pending.write_text(json.dumps(recipe) + "\n")

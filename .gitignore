@@ -1,5 +1,6 @@
 /build/
 /_build/
+/_dune-cache
 /_build_*/
 /._build_*/
 __pycache__/

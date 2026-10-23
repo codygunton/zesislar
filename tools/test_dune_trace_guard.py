@@ -16,6 +16,26 @@ from archive_discovery import store
 
 
 class DuneTraceGuardTests(unittest.TestCase):
+    def test_canonical_wrapper_scrubs_the_physical_failed_trace(self):
+        header, compiler = self.trace()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            build = root / '_build/agents/private'
+            dune = root / 'dune'
+            dune.write_text('#!' + sys.executable + '\n'
+                            'import pathlib,sys\n'
+                            'build=pathlib.Path(sys.argv[sys.argv.index("--build-dir")+1])\n'
+                            f'(build/"trace.csexp").write_bytes({header + compiler!r})\n'
+                            'raise SystemExit(7)\n')
+            dune.chmod(0o755)
+            result = subprocess.run([sys.executable, str(Path(__file__).with_name('dune_trace_guard.py')),
+                                     '--canonical-build-dir', '--', str(dune), 'build',
+                                     '--root', str(root), '--build-dir', str(build)],
+                                    cwd=root, capture_output=True)
+            self.assertEqual(result.returncode, 7, result.stderr)
+            self.assertEqual((build / 'trace.csexp').read_bytes(), compiler)
+            self.assertNotIn(b'private-value', result.stdout + result.stderr)
+
     def trace(self):
         header = csexp(["config", "init", "1", ["env", ["TEST_KEY=private-value"]]])
         compiler = csexp(["process", "start", "2", ["prog", "/switch/bin/coqc"],

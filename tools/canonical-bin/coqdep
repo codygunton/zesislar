@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+"""Keep findlib dependencies relative to the physical Coq build directory."""
+
+import os
+from pathlib import Path
+import shutil
+import sys
+
+
+def compiler_environment(environment):
+    result = dict(environment)
+    if "OCAMLPATH" in result:
+        result["OCAMLPATH"] = os.pathsep.join(
+            str(Path(path).resolve()) if path else path
+            for path in result["OCAMLPATH"].split(os.pathsep))
+    return result
+
+
+def main():
+    shim_directory = Path(__file__).resolve().parent
+    search = os.pathsep.join(path for path in os.environ.get("PATH", "").split(os.pathsep)
+                             if Path(path).resolve() != shim_directory)
+    compiler = shutil.which("coqdep", path=search)
+    if compiler is None:
+        raise SystemExit("The original coqdep executable is unavailable.")
+    os.execve(compiler, [compiler, *sys.argv[1:]], compiler_environment(os.environ))
+
+
+if __name__ == "__main__":
+    main()

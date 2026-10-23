@@ -355,7 +355,7 @@ def main(argv=None):
         args.tool_versions = {str(tools / path): hashlib.sha256((tools / path).read_bytes()).hexdigest()
                               for path in ['block/paired_scratch.py', 'block/scratch_block.py',
                                            'block/scratch_block.sh', 'block/coqc_primary.py', 'block/perf_measure.py',
-                                           'coqc_scratch.sh', 'coqc_recipe.py']}
+                                           'coqc_scratch.sh', 'coqc_recipe.py', 'dune_build_dir.py', 'canonical-bin/coqdep']}
         for pc in args.pcs:
             entry_id(pc)
         if len({entry_id(pc) for pc in args.pcs}) != len(args.pcs):
