@@ -5,6 +5,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from contextlib import nullcontext
 
 from coqc_recipe import trace_environment_header, trace_records
 
@@ -62,14 +63,23 @@ def trace_paths(command):
 
 def main():
     command = sys.argv[1:]
+    canonical = command[:1] == ["--canonical-build-dir"]
+    if canonical:
+        command = command[1:]
     if command[:1] == ["--"]:
         command = command[1:]
     if not command:
         raise SystemExit("A build command is required")
     paths = trace_paths(command)
-    result = subprocess.run(command, check=False)
-    for path in paths:
-        scrub_trace(path)
+    if canonical:
+        from dune_build_dir import canonical_command
+        context = canonical_command(command)
+    else:
+        context = nullcontext(command)
+    with context as rewritten:
+        result = subprocess.run(rewritten, check=False)
+        for path in paths:
+            scrub_trace(path)
     return result.returncode
 
 

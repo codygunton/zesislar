@@ -19,6 +19,24 @@ def csexp(value):
 
 
 class CompilerRecipeTests(unittest.TestCase):
+    def test_logical_build_recipe_keeps_its_private_directory(self):
+        from dune_build_dir import ALIAS, canonical_command
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            build = root / '_build/agents/first'
+            command = ['dune', 'build', '--root', str(root), '--build-dir', str(build)]
+            with canonical_command(command):
+                event = ['process', 'start', '1', ['prog', '/switch/bin/coqc'],
+                         ['process_args', ['ZesuSsz/Test.v']],
+                         ['dir', str(root / ALIAS / 'default')]]
+                (build / 'trace.csexp').write_bytes(csexp(event))
+                recipe = remember_recipe(build)
+            self.assertEqual(recipe['working_dir'], str(build / 'default'))
+            with patch('dune_build_dir.active_dune', return_value=False):
+                with canonical_command(command[:-1] + [str(root / '_build/agents/second')]):
+                    self.assertEqual(remember_recipe(build), recipe)
+
     def test_preserves_recipe_after_cached_build(self):
         event = ["process", "start", "1", ["prog", "/switch/bin/coqc"],
                  ["process_args", ["-q", "-Q", "ZesuSsz", "ZesuSsz", "Test.v"]],

@@ -169,6 +169,7 @@ check-fast: stock-native-indexes check-evidence-tools check-signatures
 
 .PHONY: check-signatures
 check-signatures:
+	$(PYTHON) tools/dune_trace_guard.py --canonical-build-dir -- \
 	$(OPAM) dune build --root . --build-dir $(AGENT_BUILD_DIR) \
 	  --cache=enabled -j$(FAST_JOBS) @install \
 	  ZesuSsz/Evidence/SignatureGateFixtures.vo \
