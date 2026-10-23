@@ -14,75 +14,21 @@ Import ListNotations.
 Open Scope Z_scope.
 Open Scope list_scope.
 
-Lemma decodeItemRunPromptLengthFold prefix rest rs len count width fuel
-    (slice : StatelessInputSliceFields 1 len)
-    (access : Acc (Zwf 0) fuel) :
-  width = Z.of_nat count -> fuel = width ->
-  register_lookup shim_input_bytes rs = prefix :: rest ->
-  width <= len -> len <= Z.of_nat (List.length rest) ->
-  runPrompt (EvmSailRlp.evm_rlp._rec_rlp_uint64_width slice
-    width fuel access) rs true =
-    (Success (bigEndian (firstn count rest)), rs).
-Proof.
-  revert width fuel access. induction count as [|count IH];
-    intros width fuel access Hcount Hfuel Hbytes Hwidth Hlen; subst width; subst fuel.
-  - destruct access. reflexivity.
-  - destruct access as [access].
-    destruct (nth_error rest count) as [next|] eqn:Hnext.
-    2: { apply nth_error_None in Hnext. lia. }
-    cbn [EvmSailRlp.evm_rlp._rec_rlp_uint64_width].
-    replace (Z.of_nat (S count) - 1) with (Z.of_nat count) by lia.
-    erewrite decodeItemRunPromptBindSuccess with
-      (value := bigEndian (firstn count rest)) (rs' := rs).
-    2: { eapply IH; eauto; lia. }
-    erewrite decodeItemRunPromptBindSuccess with (value := next) (rs' := rs).
-    2: {
-      apply decodeItemRunPromptSliceByte with (bytes := prefix :: rest);
-        try exact Hbytes; try (simpl; lia).
-      replace (Z.to_nat (1 + (Z.of_nat (S count) - 1))) with (S count) by lia.
-      exact Hnext.
-    }
-    unfold EvmSailRlp.evm_rlp.rlp_uint64_append.
-    rewrite decodeItemUintByte.
-    rewrite (decodeItem_firstn_snoc rest count next Hnext).
-    rewrite zesu_bigEndian_snoc.
-    cbn [EvmSailRlp.evm_rlp_types.returnM SailStdpp.Prompt_monad.returnm runPrompt].
-    rewrite (Z.mul_comm (bigEndian (firstn count rest)) 256). reflexivity.
-Qed.
-
-Print Assumptions decodeItemRunPromptLengthFold.
-
-Local Ltac decodeItemLongHeader prefix rest rs :=
-  intros Hbytes Hlength Hclass Hbound;
-  unfold EvmSailRlp.evm_rlp.rlp_ref_hdr; rewrite Hlength;
-  cbn [SailStdpp.Prompt_monad.bind0 EvmSailRlp.evm_rlp_types.returnM
-    SailStdpp.Prompt_monad.returnm SailStdpp.Prompt_monad.bind];
-  first [lazymatch goal with
-    | |- _ = (Success (?kind, Build_source_pointer ?header, ?payload), _) =>
-      erewrite decodeItemRunPromptBindSuccess with
-        (value := (kind, header, payload)) (rs' := rs); [reflexivity|]
-    end | apply decodeItemRunPromptBindReject];
-  erewrite decodeItemRunPromptBindSuccess with (value := prefix) (rs' := rs);
-  [|apply decodeItemRunPromptHeadByte; exact Hbytes];
-  rewrite decodeItemUintByte;
-  repeat match goal with
-  | |- context [Z.ltb ?x ?y] =>
-    first [rewrite (proj2 (Z.ltb_lt x y) ltac:(lia))
-          |rewrite (proj2 (Z.ltb_ge x y) ltac:(lia))]
-  | |- context [Z.leb ?x ?y] =>
-    first [rewrite (proj2 (Z.leb_le x y) ltac:(lia))
-          |rewrite (proj2 (Z.leb_gt x y) ltac:(lia))]
-  end;
-  first [reflexivity|
-    lazymatch goal with
-    | |- _ = (Success (_, _, ?payload), _) =>
-      erewrite decodeItemRunPromptBindSuccess with
-        (value := payload) (rs' := rs); [reflexivity|]
-    end;
-    unfold EvmSailRlp.evm_rlp.rlp_uint64_width;
-    eapply decodeItemRunPromptLengthFold; try exact Hbytes;
-      try reflexivity; try (rewrite Z2Nat.id; lia);
-    cbn [List.length] in Hbound; rewrite Nat2Z.inj_succ in Hbound; lia].
+Require Import ZesuSsz.Automation.SailEval.
+Require Import ZesuSsz.Compliance.RlpInputBounds.
+Require Import ZesuSsz.Contracts.RlpDecodeItem.
+Require Import ZesuSsz.Compliance.ByteFold.
+Import ListNotations.
+Open Scope Z_scope.
+#[local] Hint Unfold EvmSailRlp.evm_rlp.rlp_ref_hdr
+  EvmSailRlp.evm_rlp.stateless_input_slice_byte
+  EvmSailRlp.evm_rlp.stateless_input_byte_at
+  EvmSailRlp.evm_rlp_types.returnM EvmSailRlp.evm_rlp_types.read_reg
+  EvmSailRlp.evm_rlp.rlp_uint64_width
+  EvmSailRlp.evm_rlp.stateless_input_sub_slice
+  EvmSailRlp.evm_rlp.rlp_uint64_append bigEndian : sail.
+#[local] Hint Rewrite shimInputLengthExact : zesu_sail.
+#[local] Hint Unfold EvmSailRlp.evm_rlp._rec_rlp_uint64_width : zesu_sail_rec.
 
 Lemma decodeItemRunPromptLongStringHeader prefix rest rs
     (slice : StatelessInputSliceFields 0 (Z.of_nat (List.length (prefix :: rest)))) :
@@ -93,7 +39,7 @@ Lemma decodeItemRunPromptLongStringHeader prefix rest rs
   runPrompt (EvmSailRlp.evm_rlp.rlp_ref_hdr slice) rs true =
     (Success (false, Build_source_pointer (1 + (bv_unsigned prefix - 183)),
       bigEndian (firstn (Z.to_nat (bv_unsigned prefix - 183)) rest)), rs).
-Proof. decodeItemLongHeader prefix rest rs. Qed.
+Proof. sail_eval. Qed.
 
 Lemma decodeItemRunPromptLongListHeader prefix rest rs
     (slice : StatelessInputSliceFields 0 (Z.of_nat (List.length (prefix :: rest)))) :
@@ -104,7 +50,7 @@ Lemma decodeItemRunPromptLongListHeader prefix rest rs
   runPrompt (EvmSailRlp.evm_rlp.rlp_ref_hdr slice) rs true =
     (Success (true, Build_source_pointer (1 + (bv_unsigned prefix - 247)),
       bigEndian (firstn (Z.to_nat (bv_unsigned prefix - 247)) rest)), rs).
-Proof. decodeItemLongHeader prefix rest rs. Qed.
+Proof. sail_eval. Qed.
 
 Print Assumptions decodeItemRunPromptLongStringHeader.
 Print Assumptions decodeItemRunPromptLongListHeader.
@@ -153,7 +99,7 @@ Lemma decodeItemRunPromptLongStringHeaderRejected prefix rest rs
   184 <= bv_unsigned prefix <= 191 ->
   Z.of_nat (List.length (prefix :: rest)) < 1 + (bv_unsigned prefix - 183) ->
   runPrompt (EvmSailRlp.evm_rlp.rlp_ref_hdr slice) rs true = (Reject RlpDecode, rs).
-Proof. decodeItemLongHeader prefix rest rs. Qed.
+Proof. sail_eval. Qed.
 
 Lemma decodeItemRunPromptLongListHeaderRejected prefix rest rs
     (slice : StatelessInputSliceFields 0 (Z.of_nat (List.length (prefix :: rest)))) :
@@ -162,7 +108,7 @@ Lemma decodeItemRunPromptLongListHeaderRejected prefix rest rs
   248 <= bv_unsigned prefix <= 255 ->
   Z.of_nat (List.length (prefix :: rest)) < 1 + (bv_unsigned prefix - 247) ->
   runPrompt (EvmSailRlp.evm_rlp.rlp_ref_hdr slice) rs true = (Reject RlpDecode, rs).
-Proof. decodeItemLongHeader prefix rest rs. Qed.
+Proof. sail_eval. Qed.
 
 Print Assumptions decodeItemRunPromptLongStringHeaderRejected.
 Print Assumptions decodeItemRunPromptLongListHeaderRejected.

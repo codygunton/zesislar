@@ -51,6 +51,24 @@ Proof.
   rewrite Hrun. reflexivity.
 Qed.
 
+Require Import ZesuSsz.Automation.SailEval.
+Require Import ZesuSsz.Compliance.RlpInputBounds.
+Require Import ZesuSsz.Contracts.RlpDecodeItem.
+Require Import ZesuSsz.Compliance.ByteFold.
+Import ListNotations.
+Open Scope Z_scope.
+#[local] Hint Unfold EvmSailRlp.evm_rlp.rlp_ref_hdr
+  EvmSailRlp.evm_rlp.stateless_input_slice_byte
+  EvmSailRlp.evm_rlp.stateless_input_byte_at
+  EvmSailRlp.evm_rlp_types.returnM EvmSailRlp.evm_rlp_types.read_reg
+  EvmSailRlp.evm_rlp.rlp_uint64_width
+  EvmSailRlp.evm_rlp.stateless_input_sub_slice
+  EvmSailRlp.evm_rlp.rlp_uint64_append bigEndian : sail.
+#[local] Hint Rewrite shimInputLengthExact : zesu_sail.
+#[local] Hint Unfold EvmSailRlp.evm_rlp._rec_rlp_uint64_width : zesu_sail_rec.
+
+#[local] Hint Rewrite decodeItemInstalledBytes : zesu_sail.
+
 Ltac decodeItemSailBranch candidate execution :=
   intros Hdomain Hinput Hclass; intros;
   lazymatch goal with
@@ -92,12 +110,7 @@ Proof.
   apply decodeItemSailSuccessFromPrompt; first exact Hdomain.
   unfold decodeItemInputHead in Hinput. unfold decodeItemSailCursor. rewrite Hinput.
   eapply decodeItemRunPromptAcceptedHeader; try reflexivity; try (simpl; lia).
-  match goal with
-  | |- runPrompt (EvmSailRlp.evm_rlp.rlp_ref_hdr ?slice) ?rs true = _ =>
-      pose proof (decodeItemRunPromptShortStringHeader prefix rest rs slice
-        (decodeItemInstalledBytes _) eq_refl ltac:(lia)) as Hheader
-  end.
-  rewrite Hclass in Hheader. exact Hheader.
+  sail_eval.
 Qed.
 
 Lemma decodeItemShortStringSailSuccess args prefix rest :

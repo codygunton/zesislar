@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.SailEval.
 From Coq Require Import Bool List String ZArith Lia.
 Require Import SailStdpp.MachineWord SailStdpp.Prompt_monad.
 Require Import SailStdpp.Prompt.
@@ -15,19 +16,21 @@ Import ListNotations.
 Open Scope string_scope.
 Open Scope Z_scope.
 
+#[local] Hint Unfold EvmSailRlp.evm_rlp.rlp_ref_hdr
+  EvmSailRlp.evm_rlp.rlp_decode_item
+  EvmSailRlp.evm_rlp.stateless_input_slice_byte
+  EvmSailRlp.evm_rlp.stateless_input_byte_at
+  EvmSailRlp.evm_rlp_types.returnM EvmSailRlp.evm_rlp_types.read_reg : sail.
+#[local] Hint Rewrite shimInputLengthExact : zesu_sail.
+
 Lemma decodeItemRunPromptBindSuccess {A B} (action : M A) (next : A -> M B)
     rs value rs' :
   runPrompt action rs true = (Success value, rs') ->
   runPrompt (SailStdpp.Prompt_monad.bind action next) rs true =
     runPrompt (next value) rs' true.
 Proof.
-  revert rs value rs'.
-  induction action; intros rs value rs' Heval; cbn in Heval;
-    try discriminate.
-  - inversion Heval; subst. reflexivity.
-  - cbn. eapply H. exact Heval.
-  - cbn. eapply IHaction. exact Heval.
-  - destruct (String.eqb s "exit"); discriminate.
+  intros Hrun. etransitivity; [apply sail_run_bind |].
+  rewrite Hrun. reflexivity.
 Qed.
 
 Print Assumptions decodeItemRunPromptBindSuccess.
@@ -37,33 +40,12 @@ Lemma decodeItemRunPromptHeadByte prefix rest rs
   register_lookup shim_input_bytes rs = prefix :: rest ->
   runPrompt (EvmSailRlp.evm_rlp.stateless_input_slice_byte slice 0) rs true =
     (Success prefix, rs).
-Proof.
-  intros Hbytes.
-  unfold EvmSailRlp.evm_rlp.stateless_input_slice_byte.
-  assert (Hnonempty : (0 <? Z.of_nat (List.length (prefix :: rest))) = true).
-  { apply Z.ltb_lt. simpl. lia. }
-  try rewrite Hnonempty.
-  unfold EvmSailRlp.evm_rlp.stateless_input_byte_at.
-  cbv [EvmSailRlp.evm_rlp_types.returnM EvmSailRlp.evm_rlp_types.read_reg
-    SailStdpp.Prompt.and_boolM SailStdpp.Prompt_monad.returnm SailStdpp.Prompt_monad.read_reg
-    SailStdpp.Prompt_monad.bind runPrompt].
-  simpl.
-  rewrite Hbytes. rewrite shimInputLengthExact.
-  rewrite Z.leb_refl.
-  cbn [assert_exp' SailStdpp.Prompt_monad.returnm SailStdpp.Prompt_monad.bind runPrompt].
-  try rewrite Hnonempty.
-  cbn [assert_exp' SailStdpp.Prompt_monad.returnm SailStdpp.Prompt_monad.bind runPrompt read_reg].
-  rewrite Hbytes. reflexivity.
-Qed.
+Proof. sail_eval. Qed.
 
 Print Assumptions decodeItemRunPromptHeadByte.
 
 Lemma decodeItemUintByte (value : byte) : uint value = bv_unsigned value.
-Proof.
-  unfold uint, MachineWord.word_to_N, SailStdpp.Values.get_word.
-  rewrite Z2N.id; first reflexivity.
-  exact (proj1 (bv_unsigned_in_range _ value)).
-Qed.
+Proof. apply sail_uint_unsigned. Qed.
 
 Lemma decodeItemRunPromptLiteralHeader prefix rest rs
     (slice : StatelessInputSliceFields 0 (Z.of_nat (List.length (prefix :: rest)))) :
@@ -72,21 +54,7 @@ Lemma decodeItemRunPromptLiteralHeader prefix rest rs
   bv_unsigned prefix <= 127 ->
   runPrompt (EvmSailRlp.evm_rlp.rlp_ref_hdr slice) rs true =
     (Success (false, Build_source_pointer 0, 1), rs).
-Proof.
-  intros Hbytes Hlength Hclass.
-  unfold EvmSailRlp.evm_rlp.rlp_ref_hdr.
-  rewrite Hlength.
-  cbn [SailStdpp.Prompt_monad.bind0 EvmSailRlp.evm_rlp_types.returnM
-    SailStdpp.Prompt_monad.returnm SailStdpp.Prompt_monad.bind].
-  erewrite decodeItemRunPromptBindSuccess with
-    (value := (false, 0%Z, 1%Z)) (rs' := rs).
-  - reflexivity.
-  - erewrite decodeItemRunPromptBindSuccess with (value := prefix) (rs' := rs).
-    + rewrite decodeItemUintByte.
-      rewrite (proj2 (Z.ltb_lt (bv_unsigned prefix) 128) ltac:(lia)).
-      reflexivity.
-    + apply decodeItemRunPromptHeadByte. exact Hbytes.
-Qed.
+Proof. sail_eval. Qed.
 
 Print Assumptions decodeItemUintByte.
 Print Assumptions decodeItemRunPromptLiteralHeader.
@@ -98,21 +66,7 @@ Lemma decodeItemRunPromptShortStringHeader prefix rest rs
   128 <= bv_unsigned prefix <= 183 ->
   runPrompt (EvmSailRlp.evm_rlp.rlp_ref_hdr slice) rs true =
     (Success (false, Build_source_pointer 1, bv_unsigned prefix - 128), rs).
-Proof.
-  intros Hbytes Hlength Hclass.
-  unfold EvmSailRlp.evm_rlp.rlp_ref_hdr. rewrite Hlength.
-  cbn [SailStdpp.Prompt_monad.bind0 EvmSailRlp.evm_rlp_types.returnM
-    SailStdpp.Prompt_monad.returnm SailStdpp.Prompt_monad.bind].
-  erewrite decodeItemRunPromptBindSuccess with
-    (value := (false, 1%Z, bv_unsigned prefix - 128)) (rs' := rs).
-  - reflexivity.
-  - erewrite decodeItemRunPromptBindSuccess with (value := prefix) (rs' := rs).
-    + rewrite decodeItemUintByte.
-      rewrite (proj2 (Z.ltb_ge (bv_unsigned prefix) 128) ltac:(lia)).
-      rewrite (proj2 (Z.ltb_lt (bv_unsigned prefix) 184) ltac:(lia)).
-      reflexivity.
-    + apply decodeItemRunPromptHeadByte. exact Hbytes.
-Qed.
+Proof. sail_eval. Qed.
 
 Lemma decodeItemRunPromptShortListHeader prefix rest rs
     (slice : StatelessInputSliceFields 0 (Z.of_nat (List.length (prefix :: rest)))) :
@@ -121,23 +75,7 @@ Lemma decodeItemRunPromptShortListHeader prefix rest rs
   192 <= bv_unsigned prefix <= 247 ->
   runPrompt (EvmSailRlp.evm_rlp.rlp_ref_hdr slice) rs true =
     (Success (true, Build_source_pointer 1, bv_unsigned prefix - 192), rs).
-Proof.
-  intros Hbytes Hlength Hclass.
-  unfold EvmSailRlp.evm_rlp.rlp_ref_hdr. rewrite Hlength.
-  cbn [SailStdpp.Prompt_monad.bind0 EvmSailRlp.evm_rlp_types.returnM
-    SailStdpp.Prompt_monad.returnm SailStdpp.Prompt_monad.bind].
-  erewrite decodeItemRunPromptBindSuccess with
-    (value := (true, 1%Z, bv_unsigned prefix - 192)) (rs' := rs).
-  - reflexivity.
-  - erewrite decodeItemRunPromptBindSuccess with (value := prefix) (rs' := rs).
-    + rewrite decodeItemUintByte.
-      rewrite (proj2 (Z.ltb_ge (bv_unsigned prefix) 128) ltac:(lia)).
-      rewrite (proj2 (Z.ltb_ge (bv_unsigned prefix) 184) ltac:(lia)).
-      rewrite (proj2 (Z.ltb_ge (bv_unsigned prefix) 192) ltac:(lia)).
-      rewrite (proj2 (Z.ltb_lt (bv_unsigned prefix) 248) ltac:(lia)).
-      reflexivity.
-    + apply decodeItemRunPromptHeadByte. exact Hbytes.
-Qed.
+Proof. sail_eval. Qed.
 
 Definition decodeItemInstalledState bytes : regstate :=
   register_set shim_input_bytes bytes
@@ -227,14 +165,7 @@ Lemma decodeItemRunPromptShimByte bytes index value rs :
   nth_error bytes index = Some value ->
   runPrompt (EvmSailRlp.evm_rlp.shim_byte_at bytes (Z.of_nat index)) rs true =
     (Success value, rs).
-Proof.
-  revert index value. induction bytes as [|head tail IH]; intros [|index] value Hlookup;
-    simpl in Hlookup; try discriminate.
-  - inversion Hlookup; subst. reflexivity.
-  - cbn [EvmSailRlp.evm_rlp.shim_byte_at].
-    replace (Z.of_nat (S index) - 1) with (Z.of_nat index) by lia.
-    apply IH. exact Hlookup.
-Qed.
+Proof. apply sail_run_shim_byte_nat. Qed.
 
 Lemma decodeItemRunPromptSliceByte bytes base len off value rs
     (slice : StatelessInputSliceFields base len) :
@@ -243,34 +174,7 @@ Lemma decodeItemRunPromptSliceByte bytes base len off value rs
   0 <= off < len -> nth_error bytes (Z.to_nat (base + off)) = Some value ->
   runPrompt (EvmSailRlp.evm_rlp.stateless_input_slice_byte slice off) rs true =
     (Success value, rs).
-Proof.
-  intros Hbytes Hbase Hlen Hbounds Hoff Hlookup.
-  unfold EvmSailRlp.evm_rlp.stateless_input_slice_byte.
-  rewrite (proj2 (Z.ltb_lt off len) ltac:(lia)).
-  unfold EvmSailRlp.evm_rlp.stateless_input_byte_at.
-  cbv [EvmSailRlp.evm_rlp_types.returnM EvmSailRlp.evm_rlp_types.read_reg
-    SailStdpp.Prompt.and_boolM SailStdpp.Prompt_monad.returnm SailStdpp.Prompt_monad.read_reg
-    SailStdpp.Prompt_monad.bind runPrompt].
-  rewrite (proj2 (Z.leb_le 0 base) Hbase).
-  rewrite (proj2 (Z.leb_le 0 len) Hlen).
-  cbn [SailStdpp.Prompt_monad.bind runPrompt].
-  rewrite Hbytes. rewrite shimInputLengthExact.
-  rewrite (proj2 (Z.leb_le _ _) Hbounds).
-  cbn [assert_exp' SailStdpp.Prompt_monad.bind runPrompt].
-  change (runPrompt
-    (assert_exp' ((0 <=? off) && (off <? len)) "input byte offset outside slice" >>=
-      (fun _ => EvmSailRlp.evm_rlp_types.read_reg shim_input_bytes >>=
-        fun input => EvmSailRlp.evm_rlp.shim_byte_at input (base + off))) rs true =
-    (Success value, rs)).
-  rewrite (proj2 (Z.leb_le 0 off) ltac:(lia)).
-  rewrite (proj2 (Z.ltb_lt off len) ltac:(lia)).
-  simpl.
-  cbv [assert_exp' EvmSailRlp.evm_rlp_types.read_reg SailStdpp.Prompt_monad.read_reg
-    SailStdpp.Prompt_monad.bind runPrompt].
-  rewrite Hbytes.
-  replace (base + off) with (Z.of_nat (Z.to_nat (base + off))) by (rewrite Z2Nat.id; lia).
-  apply decodeItemRunPromptShimByte. exact Hlookup.
-Qed.
+Proof. sail_eval. eapply sail_run_shim_byte; [lia | eassumption]. Qed.
 
 Print Assumptions decodeItemRunPromptShimByte.
 Print Assumptions decodeItemRunPromptSliceByte.
@@ -307,14 +211,7 @@ Lemma decodeItemRunPromptBindReject {A B} (action : M A) (next : A -> M B)
     rs reason rs' :
   runPrompt action rs true = (Reject reason, rs') ->
   runPrompt (SailStdpp.Prompt_monad.bind action next) rs true = (Reject reason, rs').
-Proof.
-  revert rs reason rs'.
-  induction action; intros rs reason rs' Heval; cbn in Heval; try discriminate.
-  - cbn. eapply H. exact Heval.
-  - cbn. eapply IHaction. exact Heval.
-  - destruct (String.eqb s "exit") eqn:Hmessage; inversion Heval; subst.
-    cbn [SailStdpp.Prompt_monad.bind runPrompt]. rewrite Hmessage. reflexivity.
-Qed.
+Proof. intros Hrun. rewrite sail_run_bind. rewrite Hrun. reflexivity. Qed.
 
 Print Assumptions decodeItemRunPromptBindReject.
 
