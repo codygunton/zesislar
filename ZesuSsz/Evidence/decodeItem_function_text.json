@@ -411,7 +411,8 @@
     "ZesuSsz/Proofs/Tests/RawWordArrayWitness.v",
     "ZesuSsz/Proofs/Tests/DecodeItemImageArithmetic.v",
     "tools/test_check_entry_bindings.py",
-    "tools/test_block_calls.py"
+    "tools/test_block_calls.py",
+    "ZesuSsz/Proofs/Tests/SailEvalParent.v"
   ],
   "lemmas": [
     "ZesuSsz/Compliance/ByteFold.v",
@@ -1196,45 +1197,45 @@
       "path": "ZesuSsz/Compliance/DecodeItemSailEvaluation.v",
       "category": "exit_meanings",
       "scope": "whole_file",
-      "sha256": "0fbe05f5d6c3a7e40abfa52e73efddf3ec316a59f97d62bff47fb0e4907de958",
-      "file_lines": 338,
+      "sha256": "2d4fdcbc52364a4bf29ec17dfa452de2f4ba1291bdb63db863ab9c7d7e4aa866",
+      "file_lines": 235,
       "line_ranges": [
         [
           1,
-          338
+          235
         ]
       ],
-      "counted_lines": 338,
+      "counted_lines": 235,
       "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemSailFold.v",
       "category": "exit_meanings",
       "scope": "whole_file",
-      "sha256": "e94dbe3a51a6844866949c58826f3b28ff58a15ee3d77655d616a85fc879b275",
-      "file_lines": 168,
+      "sha256": "6f61a90e42e3956fed51a4782c33e29f4e00b3747e8e032d77c74d475ea500d6",
+      "file_lines": 114,
       "line_ranges": [
         [
           1,
-          168
+          114
         ]
       ],
-      "counted_lines": 168,
+      "counted_lines": 114,
       "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Compliance/DecodeItemSailIntroduction.v",
       "category": "exit_meanings",
       "scope": "whole_file",
-      "sha256": "296bc3f492bd8d30d16f745d80106e4958b3a1418b42d2e7164f0689b4a66b69",
-      "file_lines": 287,
+      "sha256": "15df17e3645f69f4b659122d83c40b6bb79876dabf1b442ef244a6ebce196d71",
+      "file_lines": 300,
       "line_ranges": [
         [
           1,
-          287
+          300
         ]
       ],
-      "counted_lines": 287,
+      "counted_lines": 300,
       "text_kind": "hand_written"
     },
     {
@@ -2496,14 +2497,14 @@
       "role": "measurement_metadata",
       "scope": "whole_file",
       "sha256": null,
-      "file_lines": 9185,
+      "file_lines": 9201,
       "line_ranges": [
         [
           1,
-          9185
+          9201
         ]
       ],
-      "counted_lines": 9185,
+      "counted_lines": 9201,
       "text_kind": "hand_written"
     },
     {
@@ -3789,8 +3790,8 @@
       "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "0973b1cd29306016b24cced2b81abea06b0cf308f5bdedf24a25cdb157264757",
-      "file_lines": 351,
+      "sha256": "2e0de5798ffebde3c4bf22269bd540f8c4c743d9268a8bb42e200cc11f6aad4a",
+      "file_lines": 358,
       "line_ranges": [
         [
           1,
@@ -3801,8 +3802,8 @@
           335
         ],
         [
-          343,
-          349
+          350,
+          356
         ]
       ],
       "counted_lines": 225,
@@ -8138,6 +8139,21 @@
         ]
       ],
       "counted_lines": 90
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/SailEvalParent.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "f5f9703bd8100434e5588f94a4480dfed6cba3fa4b4595db7a4c9e6600c19b24",
+      "file_lines": 204,
+      "line_ranges": [
+        [
+          1,
+          204
+        ]
+      ],
+      "counted_lines": 204,
+      "text_kind": "hand_written"
     }
   ],
   "blocks": [
