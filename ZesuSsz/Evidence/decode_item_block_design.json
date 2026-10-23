@@ -5127,25 +5127,6 @@
         "locality": "export"
       },
       {
-        "name": "decodeItemSignedPrefixMaskHint",
-        "parameters": [
-          {
-            "name": "prefix",
-            "type": "byte",
-            "implicit": false
-          }
-        ],
-        "premises": [],
-        "conclusion": "(bv_unsigned (bv_and (Z_to_bv 64 (bv_signed prefix)) 255) =\n    bv_unsigned prefix)",
-        "lemma": "ZesuSsz.Compliance.DecodeItemS40GuardFacts.decodeItemSignedPrefixMask",
-        "arguments": [
-          "prefix"
-        ],
-        "explicit_lemma": false,
-        "priority": null,
-        "locality": "export"
-      },
-      {
         "name": "decodeItemSavedFrameZeroRejectedRegisteredFact",
         "parameters": [
           {
@@ -6470,190 +6451,6 @@
         "explicit_lemma": false,
         "priority": 1,
         "locality": "export"
-      },
-      {
-        "name": "decodeItemMaskedEmptyStringAcceptedRegisteredFact",
-        "parameters": [
-          {
-            "name": "args",
-            "type": "DecodeItemArgs",
-            "implicit": false
-          },
-          {
-            "name": "prefix",
-            "type": "byte",
-            "implicit": false
-          },
-          {
-            "name": "rest",
-            "type": "list byte",
-            "implicit": false
-          }
-        ],
-        "premises": [
-          {
-            "name": "Hfact1",
-            "type": "decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args",
-            "implicit": false
-          },
-          {
-            "name": "Hfact2",
-            "type": "decodeItemInputHead args prefix rest",
-            "implicit": false
-          },
-          {
-            "name": "Hfact3",
-            "type": "bv_and (Z_to_bv 64 (bv_signed prefix)) 255 = Z_to_bv 64 128",
-            "implicit": false
-          }
-        ],
-        "conclusion": "decodeItemAcceptedFacts args false 1 0",
-        "lemma": "ZesuSsz.Compliance.DecodeItemS40GuardFacts.decodeItemMaskedEmptyStringAccepted",
-        "arguments": [
-          "args",
-          "prefix",
-          "rest",
-          "@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact1",
-          "@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact2",
-          "@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact3"
-        ],
-        "explicit_lemma": false,
-        "priority": 1,
-        "locality": "export"
-      },
-      {
-        "name": "decodeItemShortStringNegatedGuardUnsignedRegisteredFact",
-        "parameters": [
-          {
-            "name": "args",
-            "type": "DecodeItemArgs",
-            "implicit": false
-          },
-          {
-            "name": "prefix",
-            "type": "bv 64",
-            "implicit": false
-          }
-        ],
-        "premises": [
-          {
-            "name": "Hfact1",
-            "type": "~ bv_signed (bv_zero_extend 128 (bv_and prefix 127)) >=\n      bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args)))",
-            "implicit": false
-          }
-        ],
-        "conclusion": "bv_unsigned (bv_and prefix 127) <\n    bv_unsigned (Z_to_bv 64 (decodeItemInputLength args))",
-        "lemma": "ZesuSsz.Compliance.DecodeItemS40GuardFacts.decodeItemShortStringNegatedGuardUnsigned",
-        "arguments": [
-          "args",
-          "prefix",
-          "@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact1"
-        ],
-        "explicit_lemma": false,
-        "priority": 1,
-        "locality": "export"
-      },
-      {
-        "name": "decodeItemNativeMaskNonemptyRegisteredFact",
-        "parameters": [
-          {
-            "name": "prefix",
-            "type": "byte",
-            "implicit": false
-          }
-        ],
-        "premises": [
-          {
-            "name": "Hfact1",
-            "type": "bv_and (Z_to_bv 64 (bv_signed prefix)) 255 <> 128%bv",
-            "implicit": false
-          }
-        ],
-        "conclusion": "bv_and (Z_to_bv 64 (bv_signed prefix)) 255 <> Z_to_bv 64 128",
-        "lemma": "ZesuSsz.Compliance.DecodeItemS40GuardFacts.decodeItemNativeMaskNonempty",
-        "arguments": [
-          "prefix",
-          "@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact1"
-        ],
-        "explicit_lemma": false,
-        "priority": 1,
-        "locality": "export"
-      },
-      {
-        "name": "decodeItemNativeMaskEmptyPrefixRegisteredFact",
-        "parameters": [
-          {
-            "name": "prefix",
-            "type": "byte",
-            "implicit": false
-          }
-        ],
-        "premises": [
-          {
-            "name": "Hfact1",
-            "type": "bv_and (Z_to_bv 64 (bv_signed prefix)) 255 = 128%bv",
-            "implicit": false
-          }
-        ],
-        "conclusion": "bv_unsigned prefix = 128",
-        "lemma": "ZesuSsz.Compliance.DecodeItemS40GuardFacts.decodeItemNativeMaskEmptyPrefix",
-        "arguments": [
-          "prefix",
-          "@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact1"
-        ],
-        "explicit_lemma": false,
-        "priority": 1,
-        "locality": "export"
-      },
-      {
-        "name": "decodeItemNativeMaskEmptyAcceptedRegisteredFact",
-        "parameters": [
-          {
-            "name": "args",
-            "type": "DecodeItemArgs",
-            "implicit": false
-          },
-          {
-            "name": "prefix",
-            "type": "byte",
-            "implicit": false
-          },
-          {
-            "name": "rest",
-            "type": "list byte",
-            "implicit": false
-          }
-        ],
-        "premises": [
-          {
-            "name": "Hfact1",
-            "type": "decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args",
-            "implicit": false
-          },
-          {
-            "name": "Hfact2",
-            "type": "decodeItemInputHead args prefix rest",
-            "implicit": false
-          },
-          {
-            "name": "Hfact3",
-            "type": "bv_and (Z_to_bv 64 (bv_signed prefix)) 255 = 128%bv",
-            "implicit": false
-          }
-        ],
-        "conclusion": "decodeItemAcceptedFacts args false 1 0",
-        "lemma": "ZesuSsz.Compliance.DecodeItemS40GuardFacts.decodeItemNativeMaskEmptyAccepted",
-        "arguments": [
-          "args",
-          "prefix",
-          "rest",
-          "@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact1",
-          "@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact2",
-          "@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact3"
-        ],
-        "explicit_lemma": false,
-        "priority": 1,
-        "locality": "export"
       }
     ],
     "bootstrap": {
@@ -6808,12 +6605,12 @@
     "source_hashes": {
       "ZesuSsz/Automation/FactRegistry.v": "d80aa53c39eeeb0bffff6d08f2e99737bf68e287059337945a339a3e7fb17579",
       "ZesuSsz/Compliance/DecodeItemDataWitnessFacts.v": "5e7cd8b75c656c76a4d4f844169689168fa2daef9c6264c19f0db135ecfdc6ca",
-      "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v": "d96d27d5498b56384a95a82d590a58fa6bf808ccf3e929127dd42db2755bbf58",
+      "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v": "df511fc887a5d1eb46bdeb71e35e7cfa4b80003a7d9cae3ccb16ca48d46fc5eb",
       "ZesuSsz/Compliance/DecodeItemFoldZeroFacts.v": "7d70400d781b7e57b3c055f480bb25be311b77c163465159ee7800bccaba3329",
       "ZesuSsz/Compliance/DecodeItemInitializationPureFacts.v": "aa44528a44e4b822be82b2873e0be5c4dee85d5aeed45e3f4c48f79aabe8a8fc",
       "ZesuSsz/Compliance/DecodeItemOutputBaseWitnessFacts.v": "48871704304b9066a327e6621197bfd6a800f73eeb06976d4bbc44dd2d9a2a49",
       "ZesuSsz/Compliance/DecodeItemRawOutputFacts.v": "929943837cc0be7ed21229be7b2e6278d36d20455d8fe3a93a5711cf0bfb327b",
-      "ZesuSsz/Compliance/DecodeItemS40GuardFacts.v": "d546dbf6201e9d855a3c797899ed9d4691d354cbbd5961a70fb4c91c8570592a",
+      "ZesuSsz/Compliance/DecodeItemS40GuardFacts.v": "5358a97cf74fb1f7280226333c4fd58bbafe2c1e70799e8c2aa0ff33b7e05932",
       "ZesuSsz/Contracts/RlpDecodeItem.v": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e",
       "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "6f80226eadadd5468b46aebc8c48561f54815f94c1989e465d530f6896e4237d",
       "ZesuSsz/Contracts/AbiBytes.v": "007990c44de0b1d546b3fdcd39a828d25cfb24b4a56bdb6891cff3e74323470c",
@@ -6826,7 +6623,7 @@
       "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v": "fe9612e88576de35cf2b003b036a3853b9141974c2e785ca6492e7114c1a1d14",
       "ZesuSsz/Compliance/DecodeItemInputHeadWordFacts.v": "1ea98710f86f2f25597cb55747859f2823a8d446a1bf9901b57d93f1a58dcdfe",
       "ZesuSsz/Compliance/DecodeItemLoadedEntryFacts.v": "c7a97e0a0f41eb3dc02b83175c7d990526ddff4f8951641604472dc02dd5c10d",
-      "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v": "d24b23fea22af288e72a562181f28555539fa6e332e2b6566227cc1eda49c029",
+      "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v": "7a7daa02f4516a33a9ca00724d0b5cc0f993173012a3a5962bb2b7b3a26b419c",
       "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "a504dfa090e1ec91f709ad3c3b5c7df1823dc64159b0b53960a0606a5ffe92a9",
       "ZesuSsz/Automation/EntryIntro.v": "2e212eb5cc73c578b946a3e06c00827e268ddb3e938682ee4e6f5cc5ebd519b9",
       "ZesuSsz/Compliance/DecodeItemDataRegistrations.v": "e8ac3680b9ef7647a0196f0494b1608e017c9a72256f295677728ed31e9bf647",

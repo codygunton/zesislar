@@ -780,7 +780,8 @@ Ltac zesu_search_switches := constr:([
   ZesuSsz.Automation.Hooks.ZesuStepPureFactExistential;
   ZesuSsz.Automation.IntegerReturn.ZesuStepIntegerReturn;
   ZesuSsz.Automation.ExitMeaning.ZesuStepExitMeaning;
-  ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch]).
+  ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch;
+  ZesuSsz.Automation.BitvectorFacts.ZesuStepBranchGuards]).
 
 Ltac zesu_run :=
   let switches := zesu_search_switches in

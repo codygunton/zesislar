@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
@@ -8,6 +9,8 @@ Require Import ZesuSsz.Compliance.DecodeItemBranchGuardFacts.
 Open Scope Z_scope.
 
 Ltac entry_guard_registered :=
+  repeat match goal with Hrange : (_ <= _) /\ (_ <= _) |- _ => destruct Hrange end;
+  zesu_saturate_derived_facts;
   lazymatch goal with |- ?P =>
     let evidence := constr:(_ : SimplAnd P True) in exact (proj1 evidence I)
   end.
@@ -44,6 +47,8 @@ Lemma entryListOff (args : DecodeItemArgs) (register : bv 64) (prefix : byte) (r
 Proof. intros. entry_guard_absent args. Qed.
 
 Require Import ZesuSsz.Compliance.DecodeItemEntryGuardFacts.
+Require Import ZesuSsz.Automation.Switches.BranchGuards.
+Require Import ZesuSsz.Compliance.DecodeItemNormalizedGuardRegistrations.
 Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 
 Lemma entryStackOn args :
@@ -59,7 +64,7 @@ Lemma entryStringOn (args : DecodeItemArgs) (register : bv 64) (prefix : byte) (
   bv_signed (bv_zero_extend 128 (bv_and (register + 73) 255)) >=
     bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) ->
   decodeItemRejectedFacts args.
-Proof. intros. entry_guard_registered. Qed.
+Proof. intros. zesu_saturate_derived_facts. entry_guard_registered. Qed.
 
 Lemma entryStringMissingDomain (args : DecodeItemArgs) (register : bv 64) (prefix : byte) (rest : list byte) :
   decodeItemInputHead args prefix rest ->
@@ -114,7 +119,7 @@ Lemma entryListOn (args : DecodeItemArgs) (register : bv 64) (prefix : byte) (re
   bv_signed (bv_zero_extend 128 (bv_and (register + 9) 255)) >=
     bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) ->
   decodeItemRejectedFacts args.
-Proof. intros. entry_guard_registered. Qed.
+Proof. intros. zesu_saturate_derived_facts. entry_guard_registered. Qed.
 
 Lemma entryListMissingDomain (args : DecodeItemArgs) (register : bv 64) (prefix : byte) (rest : list byte) :
   decodeItemInputHead args prefix rest ->

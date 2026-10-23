@@ -32,7 +32,8 @@
     "ZesuSsz.Automation.Switches.RegionFaultCastHypotheses",
     "ZesuSsz.Automation.Switches.ConjunctMatch",
     "ZesuSsz.Automation.Switches.IntegerReturn",
-    "ZesuSsz.Automation.Switches.ExitMeaning"
+    "ZesuSsz.Automation.Switches.ExitMeaning",
+    "ZesuSsz.Automation.Switches.BranchGuards"
   ],
   "exclusions": [
     {

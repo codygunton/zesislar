@@ -10,59 +10,8 @@ Require Import ZesuSsz.Contracts.DecodeItemReturnFacts.
 Require Import ZesuSsz.Compliance.DecodeItemSemanticIntroduction.
 Open Scope Z_scope.
 
-Ltac decodeItemGuardFromMask candidate base :=
-  intros Hdomain Hhead Hclass Hvalue Hguard;
-  lazymatch type of Hhead with decodeItemInputHead ?args ?inputPrefix ?rest =>
-  lazymatch type of Hvalue with bv_unsigned ?register = bv_unsigned inputPrefix =>
-    let Hheader := fresh "Hheader" in
-    lazymatch type of Hguard with
-    | context [bv_and (register + ?add)%bv 255] => let integer := eval compute in (256 - base)%Z in
-        pose proof (decodeItemDomainInputLengthBounds args (proj2 Hdomain)) as Hlength;
-        assert (Hlen : 0 <= decodeItemInputLength args < word64Modulus) by
-          (unfold word64Modulus; lia);
-        assert (Hheader : bv_unsigned (bv_and (register + add) 255) = bv_unsigned inputPrefix - base);
-        [pose proof (zesu_unsigned_low_mask_add_integer 64 8 register 255 integer
-            ltac:(done) ltac:(reflexivity)) as Hlow;
-         rewrite Hlow Hvalue Z_to_bv_unsigned;
-         change ((bv_unsigned inputPrefix + integer) mod 256 = bv_unsigned inputPrefix - base);
-         replace (bv_unsigned inputPrefix + integer) with
-           ((bv_unsigned inputPrefix - base) + 1 * 256) by (cbn; ring);
-         rewrite Z.mod_add; [apply Z.mod_small; lia | lia] |];
-        rewrite !zesu_signed_zero_extend_64_128 Hheader
-          (Z_to_bv_small 64 (decodeItemInputLength args) Hlen) in Hguard
-    | context [bv_unsigned (Z_to_bv 8 (bv_unsigned register + ?add))] =>
-        assert (Hheader : bv_unsigned (Z_to_bv 8 (bv_unsigned register + add)) =
-          bv_unsigned inputPrefix - base) by bv_solve;
-        rewrite Hheader in Hguard
-    end;
-    eapply (candidate args inputPrefix rest);
-      [exact (proj2 Hdomain) | exact Hhead | exact Hclass |];
-    destruct (proj2 Hdomain) as [Hinput [Hstorage Hlayout]]; rewrite -Hinput;
-    first [rewrite Z.add_1_l; apply (proj2 (Z.lt_succ_r _ _)); exact (Z.ge_le _ _ Hguard) |
-      apply Znot_ge_lt in Hguard; rewrite Z.add_1_l; apply Z.le_succ_l; exact Hguard]
-  end end.
 
-Lemma decodeItemShortListGuardRejected args (prefix : bv 64)
-    (inputPrefix : byte) (rest : list byte) :
-  decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
-  decodeItemInputHead args inputPrefix rest ->
-  192 <= bv_unsigned inputPrefix <= 247 ->
-  bv_unsigned prefix = bv_unsigned inputPrefix ->
-  bv_signed (bv_zero_extend 128 (bv_and (prefix + 64) 255)) >=
-    bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) ->
-  decodeItemRejectedFacts args.
-Proof. decodeItemGuardFromMask decodeItemShortListRejected constr:(192%Z). Qed.
 
-Lemma decodeItemShortListGuardAccepted args (prefix : bv 64)
-    (inputPrefix : byte) (rest : list byte) :
-  decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
-  decodeItemInputHead args inputPrefix rest ->
-  192 <= bv_unsigned inputPrefix <= 247 ->
-  bv_unsigned prefix = bv_unsigned inputPrefix ->
-  ~ bv_signed (bv_zero_extend 128 (bv_and (prefix + 64) 255)) >=
-    bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) ->
-  decodeItemAcceptedFacts args true 1 (bv_unsigned inputPrefix - 192).
-Proof. decodeItemGuardFromMask decodeItemShortListAccepted constr:(192%Z). Qed.
 
 Lemma decodeItemNonemptyInputByteBound args :
   decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
@@ -93,24 +42,9 @@ Proof.
   change (decodeItemInputPointer args + 1 <= decodeItemInputEnd args). lia.
 Qed.
 
-#[export] Hint Extern 1 (SimplAnd (decodeItemRejectedFacts ?args) True) =>
-  match goal with
-  | Hhead : decodeItemInputHead args ?prefix ?rest,
-    Hvalue : bv_unsigned ?register = bv_unsigned ?prefix |- _ =>
-    unfold SimplAnd; split; [intros _;
-      eapply (decodeItemShortListGuardRejected args register prefix rest);
-        solve [eassumption | split; assumption] | intros _; exact I]
-  end : typeclass_instances.
 
-#[export] Hint Extern 1
-  (SimplAnd (decodeItemAcceptedFacts ?args true 1 _) True) =>
-  match goal with
-  | Hhead : decodeItemInputHead args ?prefix ?rest,
-    Hvalue : bv_unsigned ?register = bv_unsigned ?prefix |- _ =>
-    unfold SimplAnd; split; [intros _;
-      eapply (decodeItemShortListGuardAccepted args register prefix rest);
-        solve [eassumption | split; assumption] | intros _; exact I]
-  end : typeclass_instances.
+
+
 
 #[export] Hint Extern 1 (SimplAnd ?P True) =>
   match goal with
@@ -193,92 +127,4 @@ Qed.
       bv_signed (Z_to_bv 128 0x80000000) |- _ =>
     let Hbound := constr:(proj2 (decodeItemNonemptyInputPhysicalByteBounds args Hdomain Hnonzero) Hlower) in
     unfold SimplAnd; split; [intros _; exfalso; exact (Hfault Hbound) | intros _; exact I]
-  end : typeclass_instances.
-
-
-Lemma decodeItemLongStringHeaderGuardRejected args (register : bv 64)
-    (inputPrefix : byte) (rest : list byte) :
-  decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
-  decodeItemInputHead args inputPrefix rest ->
-  184 <= bv_unsigned inputPrefix <= 191 ->
-  bv_unsigned register = bv_unsigned inputPrefix ->
-  bv_unsigned (Z_to_bv 8 (bv_unsigned register + 73)) >=
-    decodeItemInputLength args ->
-  decodeItemRejectedFacts args.
-Proof. decodeItemGuardFromMask decodeItemLongStringHeaderRejected constr:(183%Z). Qed.
-
-#[export] Hint Extern 1 (SimplAnd (decodeItemRejectedFacts ?args) True) =>
-  match goal with
-  | Hhead : decodeItemInputHead args ?prefix ?rest,
-    Hvalue : bv_unsigned ?register = bv_unsigned ?prefix |- _ =>
-    unfold SimplAnd; split; [intros _;
-      eapply (decodeItemLongStringHeaderGuardRejected args register prefix rest);
-        solve [eassumption | split; assumption] | intros _; exact I]
-  end : typeclass_instances.
-
-
-Lemma decodeItemLongListHeaderGuardRejected args (register : bv 64)
-    (inputPrefix : byte) (rest : list byte) :
-  decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
-  decodeItemInputHead args inputPrefix rest ->
-  248 <= bv_unsigned inputPrefix <= 255 ->
-  bv_unsigned register = bv_unsigned inputPrefix ->
-  bv_unsigned (Z_to_bv 8 (bv_unsigned register + 9)) >=
-    decodeItemInputLength args ->
-  decodeItemRejectedFacts args.
-Proof. decodeItemGuardFromMask decodeItemLongListHeaderRejected constr:(247%Z). Qed.
-
-#[export] Hint Extern 1 (SimplAnd (decodeItemRejectedFacts ?args) True) =>
-  match goal with
-  | Hhead : decodeItemInputHead args ?prefix ?rest,
-    Hvalue : bv_unsigned ?register = bv_unsigned ?prefix |- _ =>
-    unfold SimplAnd; split; [intros _;
-      eapply (decodeItemLongListHeaderGuardRejected args register prefix rest);
-        solve [eassumption | split; assumption] | intros _; exact I]
-  end : typeclass_instances.
-
-
-Lemma decodeItemNonemptyStringPrefixGuard (inputPrefix : byte) :
-  128 <= bv_unsigned inputPrefix <= 255 ->
-  bv_and (Z_to_bv 64 (bv_signed inputPrefix)) 255 <> Z_to_bv 64 128 ->
-  129 <= bv_unsigned inputPrefix.
-Proof.
-  intros Hclass Hguard.
-  assert (Hneq : bv_unsigned inputPrefix <> 128).
-  { intros Hvalue.
-    assert (Hprefix : inputPrefix = Z_to_bv 8 128) by bv_solve.
-    apply Hguard. rewrite Hprefix. apply bv_eq. vm_compute. reflexivity. }
-  lia.
-Qed.
-
-Lemma decodeItemShortStringMaskGuard (register : bv 64) (inputPrefix : byte) :
-  129 <= bv_unsigned inputPrefix <= 183 ->
-  bv_unsigned register = bv_unsigned inputPrefix ->
-  bv_unsigned (bv_and register 127) = bv_unsigned inputPrefix - 128.
-Proof.
-  intros Hclass Hvalue. rewrite bv_and_unsigned.
-  change (Z.land (bv_unsigned register) (Z.ones (Z.of_N 7%N)) =
-    bv_unsigned inputPrefix - 128).
-  rewrite <- (bv_wrap_land 7 (bv_unsigned register)), Hvalue.
-  change (bv_unsigned inputPrefix mod 128 = bv_unsigned inputPrefix - 128).
-  replace (bv_unsigned inputPrefix) with
-    ((bv_unsigned inputPrefix - 128) + 1 * 128) at 1 by ring.
-  rewrite Z.mod_add; [apply Z.mod_small; lia | lia].
-Qed.
-
-#[export] Hint Extern 1 (SimplAnd (129 <= bv_unsigned ?prefix) True) =>
-  match goal with
-  | Hguard : bv_and (Z_to_bv 64 (bv_signed prefix)) 255 <> Z_to_bv 64 128 |- _ =>
-    unfold SimplAnd; split; [intros _;
-      apply (decodeItemNonemptyStringPrefixGuard prefix);
-        [split; assumption | exact Hguard] | intros _; exact I]
-  end : typeclass_instances.
-
-#[export] Hint Extern 1
-  (SimplAnd (bv_unsigned (bv_and ?register 127) = bv_unsigned ?prefix - 128) True) =>
-  match goal with
-  | Hvalue : bv_unsigned register = bv_unsigned prefix |- _ =>
-    unfold SimplAnd; split; [intros _;
-      apply (decodeItemShortStringMaskGuard register prefix);
-        [split; assumption | exact Hvalue] | intros _; exact I]
   end : typeclass_instances.
