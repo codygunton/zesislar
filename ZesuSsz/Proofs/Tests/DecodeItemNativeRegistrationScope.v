@@ -1,4 +1,6 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Automation.Switches.BranchGuards.
 Require Import ZesuSsz.Compliance.DecodeItemHints.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
@@ -10,10 +12,12 @@ Import ListNotations.
 Open Scope Z_scope.
 
 Ltac registered_native_fact :=
+  zesu_saturate_derived_facts;
+  first [assumption |
   match goal with |- ?P =>
     let target := constr:(SimplAnd P True) in
     let evidence := constr:(_ : target) in exact (proj1 evidence I)
-  end.
+  end].
 
 Lemma nativeRegistered_6960_5 (args : DecodeItemArgs) :
   ((Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600)%bv = Z_to_bv 64 (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes)).

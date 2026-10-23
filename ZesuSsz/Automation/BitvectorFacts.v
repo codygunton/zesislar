@@ -180,3 +180,12 @@ Qed.
 Lemma zesu_guard_bv_eq_iff (width : N) (left right : bv width) :
   left = right <-> bv_unsigned left = bv_unsigned right.
 Proof. split; [apply f_equal | apply bv_eq]. Qed.
+
+Lemma guard_truncate_one_wrap (width : N) (value : Z) :
+  bv_modulus width <= value < 2 * bv_modulus width ->
+  bv_unsigned (Z_to_bv width value) = value - bv_modulus width.
+Proof.
+  intro Hrange. rewrite Z_to_bv_unsigned.
+  rewrite <- (bv_wrap_sub_modulus_1 width value).
+  apply bv_wrap_small. lia.
+Qed.

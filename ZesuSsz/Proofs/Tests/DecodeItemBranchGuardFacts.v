@@ -1,4 +1,7 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Automation.Switches.BranchGuards.
+Require Import ZesuSsz.Compliance.DecodeItemNormalizedGuardRegistrations.
 Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
@@ -18,16 +21,16 @@ Lemma rejected_hint
  (Hguard : bv_signed (bv_zero_extend 128 (bv_and (prefix + 64) 255)) >=
    bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args)))) :
  SimplAnd (decodeItemRejectedFacts args) True.
-Proof using All. typeclasses eauto. Qed.
+Proof using All. zesu_saturate_derived_facts; typeclasses eauto. Qed.
 Lemma accepted_hint
  (Hguard : ~ bv_signed (bv_zero_extend 128 (bv_and (prefix + 64) 255)) >=
    bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args)))) :
  SimplAnd (decodeItemAcceptedFacts args true 1 (bv_unsigned inputPrefix - 192)) True.
-Proof using All. typeclasses eauto. Qed.
+Proof using All. zesu_saturate_derived_facts; typeclasses eauto. Qed.
 Lemma fault_hint
  (Hnonzero : bv_unsigned (Z_to_bv 64 (decodeItemInputLength args)) <> 0)
  (Hfault : ~ bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputPointer args) + 0) + 1) <=
    bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputEnd args)))) :
  SimplAnd (bv_unsigned inputPrefix <= 127) True.
-Proof using All. typeclasses eauto. Qed.
+Proof using All. zesu_saturate_derived_facts; typeclasses eauto. Qed.
 End Tests.

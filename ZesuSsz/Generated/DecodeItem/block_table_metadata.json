@@ -5,7 +5,7 @@
   "source_hashes": {
     "build/stock-zisk/build-recipe.json": "ed8196f2d359dc1a60827a9ccb0267247e8b27f97f2d09763315af159c662e99",
     "build/stock-zisk/cfg.json": "98c4614e6ff7b6e1cb85bdc3b9e600dd85eccd5afacda8b1c5b75ff66db16fc2",
-    "ZesuSsz/Evidence/decode_item_block_design.json": "1586067a1fbf70e0527f9399e17d21310f85d96563193d0d0c2ffda5a17823f7",
+    "ZesuSsz/Evidence/decode_item_block_design.json": "22134823cd69f084814860d86634696d2f8581ec08bbf2f7d1328189a271e7d2",
     "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
     "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "85a6a567952243f919c2f170cc3bebca6eeb60d14399fb73de8af5a53e9956e0",
     "ZesuSsz/Contracts/RlpDecodeItemContract.v": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
@@ -19,12 +19,12 @@
     "ZesuSsz/Contracts/RlpDecodeItem.v": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e",
     "ZesuSsz/Automation/FactRegistry.v": "d80aa53c39eeeb0bffff6d08f2e99737bf68e287059337945a339a3e7fb17579",
     "ZesuSsz/Compliance/DecodeItemDataWitnessFacts.v": "5e7cd8b75c656c76a4d4f844169689168fa2daef9c6264c19f0db135ecfdc6ca",
-    "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v": "d96d27d5498b56384a95a82d590a58fa6bf808ccf3e929127dd42db2755bbf58",
+    "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v": "df511fc887a5d1eb46bdeb71e35e7cfa4b80003a7d9cae3ccb16ca48d46fc5eb",
     "ZesuSsz/Compliance/DecodeItemFoldZeroFacts.v": "7d70400d781b7e57b3c055f480bb25be311b77c163465159ee7800bccaba3329",
     "ZesuSsz/Compliance/DecodeItemInitializationPureFacts.v": "aa44528a44e4b822be82b2873e0be5c4dee85d5aeed45e3f4c48f79aabe8a8fc",
     "ZesuSsz/Compliance/DecodeItemOutputBaseWitnessFacts.v": "48871704304b9066a327e6621197bfd6a800f73eeb06976d4bbc44dd2d9a2a49",
     "ZesuSsz/Compliance/DecodeItemRawOutputFacts.v": "929943837cc0be7ed21229be7b2e6278d36d20455d8fe3a93a5711cf0bfb327b",
-    "ZesuSsz/Compliance/DecodeItemS40GuardFacts.v": "d546dbf6201e9d855a3c797899ed9d4691d354cbbd5961a70fb4c91c8570592a",
+    "ZesuSsz/Compliance/DecodeItemS40GuardFacts.v": "5358a97cf74fb1f7280226333c4fd58bbafe2c1e70799e8c2aa0ff33b7e05932",
     "ZesuSsz/Compliance/DecodeItemSavedFrameWitnesses.v": "235553259498fc159ae74ddc605abeb671d72f4221d01751069570eb4a59439d",
     "ZesuSsz/Compliance/DecodeItemCompletedFoldFacts.v": "2b131dc937232c6374fd19a48ea24ec963ee636a3c0c601f155bc2c329f0c96a",
     "ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.v": "05cc674c44f798c454f1d9e23d37412fde9438d666908e44ca2a98457475caf5",
@@ -34,7 +34,7 @@
     "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v": "fe9612e88576de35cf2b003b036a3853b9141974c2e785ca6492e7114c1a1d14",
     "ZesuSsz/Compliance/DecodeItemInputHeadWordFacts.v": "1ea98710f86f2f25597cb55747859f2823a8d446a1bf9901b57d93f1a58dcdfe",
     "ZesuSsz/Compliance/DecodeItemLoadedEntryFacts.v": "c7a97e0a0f41eb3dc02b83175c7d990526ddff4f8951641604472dc02dd5c10d",
-    "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v": "d24b23fea22af288e72a562181f28555539fa6e332e2b6566227cc1eda49c029",
+    "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v": "7a7daa02f4516a33a9ca00724d0b5cc0f993173012a3a5962bb2b7b3a26b419c",
     "ZesuSsz/Automation/EntryIntro.v": "2e212eb5cc73c578b946a3e06c00827e268ddb3e938682ee4e6f5cc5ebd519b9",
     "ZesuSsz/Compliance/DecodeItemDataRegistrations.v": "e8ac3680b9ef7647a0196f0494b1608e017c9a72256f295677728ed31e9bf647",
     "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v": "f17ca99f236502cce858eead20ef691af2a98abffcd36a961f6bf171ee7f90aa",
@@ -550,12 +550,12 @@
       "ZesuSsz/Contracts/RlpDecodeItem.v": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e",
       "ZesuSsz/Automation/FactRegistry.v": "d80aa53c39eeeb0bffff6d08f2e99737bf68e287059337945a339a3e7fb17579",
       "ZesuSsz/Compliance/DecodeItemDataWitnessFacts.v": "5e7cd8b75c656c76a4d4f844169689168fa2daef9c6264c19f0db135ecfdc6ca",
-      "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v": "d96d27d5498b56384a95a82d590a58fa6bf808ccf3e929127dd42db2755bbf58",
+      "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v": "df511fc887a5d1eb46bdeb71e35e7cfa4b80003a7d9cae3ccb16ca48d46fc5eb",
       "ZesuSsz/Compliance/DecodeItemFoldZeroFacts.v": "7d70400d781b7e57b3c055f480bb25be311b77c163465159ee7800bccaba3329",
       "ZesuSsz/Compliance/DecodeItemInitializationPureFacts.v": "aa44528a44e4b822be82b2873e0be5c4dee85d5aeed45e3f4c48f79aabe8a8fc",
       "ZesuSsz/Compliance/DecodeItemOutputBaseWitnessFacts.v": "48871704304b9066a327e6621197bfd6a800f73eeb06976d4bbc44dd2d9a2a49",
       "ZesuSsz/Compliance/DecodeItemRawOutputFacts.v": "929943837cc0be7ed21229be7b2e6278d36d20455d8fe3a93a5711cf0bfb327b",
-      "ZesuSsz/Compliance/DecodeItemS40GuardFacts.v": "d546dbf6201e9d855a3c797899ed9d4691d354cbbd5961a70fb4c91c8570592a",
+      "ZesuSsz/Compliance/DecodeItemS40GuardFacts.v": "5358a97cf74fb1f7280226333c4fd58bbafe2c1e70799e8c2aa0ff33b7e05932",
       "ZesuSsz/Compliance/DecodeItemSavedFrameWitnesses.v": "235553259498fc159ae74ddc605abeb671d72f4221d01751069570eb4a59439d",
       "ZesuSsz/Compliance/DecodeItemCompletedFoldFacts.v": "2b131dc937232c6374fd19a48ea24ec963ee636a3c0c601f155bc2c329f0c96a",
       "ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.v": "05cc674c44f798c454f1d9e23d37412fde9438d666908e44ca2a98457475caf5",
@@ -565,7 +565,7 @@
       "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v": "fe9612e88576de35cf2b003b036a3853b9141974c2e785ca6492e7114c1a1d14",
       "ZesuSsz/Compliance/DecodeItemInputHeadWordFacts.v": "1ea98710f86f2f25597cb55747859f2823a8d446a1bf9901b57d93f1a58dcdfe",
       "ZesuSsz/Compliance/DecodeItemLoadedEntryFacts.v": "c7a97e0a0f41eb3dc02b83175c7d990526ddff4f8951641604472dc02dd5c10d",
-      "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v": "d24b23fea22af288e72a562181f28555539fa6e332e2b6566227cc1eda49c029",
+      "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v": "7a7daa02f4516a33a9ca00724d0b5cc0f993173012a3a5962bb2b7b3a26b419c",
       "ZesuSsz/Automation/EntryIntro.v": "2e212eb5cc73c578b946a3e06c00827e268ddb3e938682ee4e6f5cc5ebd519b9",
       "ZesuSsz/Compliance/DecodeItemDataRegistrations.v": "e8ac3680b9ef7647a0196f0494b1608e017c9a72256f295677728ed31e9bf647",
       "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v": "f17ca99f236502cce858eead20ef691af2a98abffcd36a961f6bf171ee7f90aa",
@@ -582,7 +582,7 @@
     },
     "output_source_hashes": {
       "ZesuSsz/Generated/DecodeItem/Entries.v": "a33f75c0a200167d71c9840f1577d761fe51ef45e52c4b3002d61f0b5a0ce333",
-      "ZesuSsz/Generated/DecodeItem/Registrations.v": "65183f4c36846cef97170bd44e51bc4ef35b9dae587b97d7f14faf665787abe5",
+      "ZesuSsz/Generated/DecodeItem/Registrations.v": "0135fd04da8ea674630cf4ecca1cbb9e22067d1f17517bdc069654434999fcab",
       "ZesuSsz/Generated/DecodeItem/BootstrapRegistrations.v": "5e5960f5a5388ff6dda71501552e73e54b838869620c94710118665f980aba99"
     },
     "primary_count": 24,
@@ -681,7 +681,7 @@
     }
   },
   "generated_hashes": {
-    "ZesuSsz/Generated/DecodeItem/BlockTable.v": "bca5b4524696667927728d43a650be889517bd318c783275bac4f036a19b7213"
+    "ZesuSsz/Generated/DecodeItem/BlockTable.v": "fa4b7cbbf021946e7ebe4677a9dd4e351d152cb4c246ebf7ee28f96b407836c1"
   },
   "proof_slots": [
     {

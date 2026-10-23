@@ -21,6 +21,7 @@ Require Export ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts.
 Require Export ZesuSsz.Compliance.DecodeItemInitializationPureFacts.
 Require Export ZesuSsz.Compliance.DecodeItemInputHeadWordFacts.
 Require Export ZesuSsz.Compliance.DecodeItemLoadedEntryFacts.
+Require Export ZesuSsz.Compliance.DecodeItemNormalizedGuardRegistrations.
 Require Export ZesuSsz.Compliance.DecodeItemOutcomeWitnessFacts.
 Require Export ZesuSsz.Compliance.DecodeItemOutputBaseWitnessFacts.
 Require Export ZesuSsz.Compliance.DecodeItemOutputWitnessSelections.

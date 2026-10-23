@@ -156,10 +156,6 @@ Global Typeclasses Opaque decodeItemEntryAt800d6b08.
     (decodeItemOutputPointer args + 16 - decodeItemOutputPointer args) `div` 1)) True :=
   ZesuSsz.Automation.FactRegistry.zesu_simpl_and_fact (ZesuSsz.Compliance.DecodeItemOutputBaseWitnessFacts.decodeItemOutputOffset16 (args)).
 
-#[export] Instance decodeItemSignedPrefixMaskHint (prefix : byte) : SimplAnd ((bv_unsigned (bv_and (Z_to_bv 64 (bv_signed prefix)) 255) =
-    bv_unsigned prefix)) True :=
-  ZesuSsz.Automation.FactRegistry.zesu_simpl_and_fact (ZesuSsz.Compliance.DecodeItemS40GuardFacts.decodeItemSignedPrefixMask (prefix)).
-
 #[export] Instance decodeItemSavedFrameZeroRejectedRegisteredFact (returnAddress : Z) (args : DecodeItemArgs) (Hfact1 : ZesuSsz.Automation.FactRegistry.ZesuFactEvidence (decodeItemDomainAt returnAddress decodeItemC1BDomain args)) (Hfact2 : ZesuSsz.Automation.FactRegistry.ZesuFactEvidence (Z_to_bv 64 (decodeItemInputLength args) = 0%bv)) : SimplAnd (decodeItemRejectedFacts args) True | 1 :=
   ZesuSsz.Automation.FactRegistry.zesu_simpl_and_fact (ZesuSsz.Compliance.DecodeItemSavedFrameWitnesses.decodeItemSavedFrameZeroRejected (returnAddress) (args) (@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact1) (@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact2)).
 
@@ -251,23 +247,6 @@ Global Typeclasses Opaque decodeItemEntryAt800d6b08.
     bv_signed (bv_zero_extend 128
       (Z_to_bv 64 (bigEndian (take (Z.to_nat n) bytes)) + Z_to_bv 64 (n + 1))))) : SimplAnd (decodeItemRejectedFacts args) True | 1 :=
   ZesuSsz.Automation.FactRegistry.zesu_simpl_and_fact (ZesuSsz.Compliance.DecodeItemS40GuardFacts.decodeItemCompletedListFoldAlternateRejected (args) (prefix) (rest) (n) (payloadStart) (bytes) (@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact1) (@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact2) (@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact3) (@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact4)).
-
-#[export] Instance decodeItemMaskedEmptyStringAcceptedRegisteredFact (args : DecodeItemArgs) (prefix : byte) (rest : list byte) (Hfact1 : ZesuSsz.Automation.FactRegistry.ZesuFactEvidence (decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args)) (Hfact2 : ZesuSsz.Automation.FactRegistry.ZesuFactEvidence (decodeItemInputHead args prefix rest)) (Hfact3 : ZesuSsz.Automation.FactRegistry.ZesuFactEvidence (bv_and (Z_to_bv 64 (bv_signed prefix)) 255 = Z_to_bv 64 128)) : SimplAnd (decodeItemAcceptedFacts args false 1 0) True | 1 :=
-  ZesuSsz.Automation.FactRegistry.zesu_simpl_and_fact (ZesuSsz.Compliance.DecodeItemS40GuardFacts.decodeItemMaskedEmptyStringAccepted (args) (prefix) (rest) (@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact1) (@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact2) (@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact3)).
-
-#[export] Instance decodeItemShortStringNegatedGuardUnsignedRegisteredFact (args : DecodeItemArgs) (prefix : bv 64) (Hfact1 : ZesuSsz.Automation.FactRegistry.ZesuFactEvidence (~ bv_signed (bv_zero_extend 128 (bv_and prefix 127)) >=
-      bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))))) : SimplAnd (bv_unsigned (bv_and prefix 127) <
-    bv_unsigned (Z_to_bv 64 (decodeItemInputLength args))) True | 1 :=
-  ZesuSsz.Automation.FactRegistry.zesu_simpl_and_fact (ZesuSsz.Compliance.DecodeItemS40GuardFacts.decodeItemShortStringNegatedGuardUnsigned (args) (prefix) (@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact1)).
-
-#[export] Instance decodeItemNativeMaskNonemptyRegisteredFact (prefix : byte) (Hfact1 : ZesuSsz.Automation.FactRegistry.ZesuFactEvidence (bv_and (Z_to_bv 64 (bv_signed prefix)) 255 <> 128%bv)) : SimplAnd (bv_and (Z_to_bv 64 (bv_signed prefix)) 255 <> Z_to_bv 64 128) True | 1 :=
-  ZesuSsz.Automation.FactRegistry.zesu_simpl_and_fact (ZesuSsz.Compliance.DecodeItemS40GuardFacts.decodeItemNativeMaskNonempty (prefix) (@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact1)).
-
-#[export] Instance decodeItemNativeMaskEmptyPrefixRegisteredFact (prefix : byte) (Hfact1 : ZesuSsz.Automation.FactRegistry.ZesuFactEvidence (bv_and (Z_to_bv 64 (bv_signed prefix)) 255 = 128%bv)) : SimplAnd (bv_unsigned prefix = 128) True | 1 :=
-  ZesuSsz.Automation.FactRegistry.zesu_simpl_and_fact (ZesuSsz.Compliance.DecodeItemS40GuardFacts.decodeItemNativeMaskEmptyPrefix (prefix) (@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact1)).
-
-#[export] Instance decodeItemNativeMaskEmptyAcceptedRegisteredFact (args : DecodeItemArgs) (prefix : byte) (rest : list byte) (Hfact1 : ZesuSsz.Automation.FactRegistry.ZesuFactEvidence (decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args)) (Hfact2 : ZesuSsz.Automation.FactRegistry.ZesuFactEvidence (decodeItemInputHead args prefix rest)) (Hfact3 : ZesuSsz.Automation.FactRegistry.ZesuFactEvidence (bv_and (Z_to_bv 64 (bv_signed prefix)) 255 = 128%bv)) : SimplAnd (decodeItemAcceptedFacts args false 1 0) True | 1 :=
-  ZesuSsz.Automation.FactRegistry.zesu_simpl_and_fact (ZesuSsz.Compliance.DecodeItemS40GuardFacts.decodeItemNativeMaskEmptyAccepted (args) (prefix) (rest) (@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact1) (@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact2) (@ZesuSsz.Automation.FactRegistry.zesu_fact_evidence _ Hfact3)).
 
 #[export] Instance decodeItemEntry6a08IntroductionRegistered `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (frameBytes : list byte) (x13 : bv 64) (prefix : byte) (rest : list byte) : ZesuSsz.Automation.EntryIntro.ZesuEntryIntro (ZesuSsz.Generated.DecodeItem.Entries.decodeItemEntryAt800d6a08 (args) (frameBytes) (x13) (prefix) (rest)) ((exists (n payloadStart : Z) (lengthBytes : list byte),
     (n = bv_unsigned prefix - 183 /\

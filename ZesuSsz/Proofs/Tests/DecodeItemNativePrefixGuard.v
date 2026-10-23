@@ -1,4 +1,7 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Automation.Switches.BranchGuards.
+Require Import ZesuSsz.Compliance.DecodeItemNormalizedGuardRegistrations.
 Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
@@ -17,7 +20,9 @@ Lemma nativePrefixMaskOff (prefix : byte) :
   bv_and (Z_to_bv 64 (bv_signed prefix)) 255 <> Z_to_bv 64 128.
 Proof.
   intros H9. Fail zesu_pure_fact_hints_if_enabled.
-  exact (decodeItemNativeMaskNonempty prefix H9).
+  assert (Hliteral : (128%bv : bv 64) = Z_to_bv 64 128) by
+    (apply bv_eq; vm_compute; reflexivity).
+  now rewrite <- Hliteral.
 Qed.
 End Off.
 Require Import ZesuSsz.Generated.DecodeItem.Registrations.
@@ -29,14 +34,15 @@ Lemma nativePrefixNonemptyOn (inputPrefix : byte) :
 Proof.
   intros H1 H2 H9.
   assert (Hmask : bv_and (Z_to_bv 64 (bv_signed inputPrefix)) 255 <> Z_to_bv 64 128)
-    by zesu_pure_fact_hints_if_enabled.
+    by (apply nativePrefixMaskOff; exact H9).
+  zesu_saturate_derived_facts.
   zesu_pure_fact_hints_if_enabled.
 Qed.
 
 Lemma nativePrefixMaskOn (inputPrefix : byte) :
   bv_and (Z_to_bv 64 (bv_signed inputPrefix)) 255 <> 128%bv ->
   bv_and (Z_to_bv 64 (bv_signed inputPrefix)) 255 <> Z_to_bv 64 128.
-Proof. intros H9. zesu_pure_fact_hints_if_enabled. Qed.
+Proof. apply nativePrefixMaskOff. Qed.
 
 Lemma nativePrefixEmptyOn `{!islaG Sigma} `{!threadG} args (inputPrefix : byte)
     (rest frameBytes : list byte) :
@@ -54,7 +60,8 @@ Lemma nativePrefixEmptyOn `{!islaG Sigma} `{!threadG} args (inputPrefix : byte)
     Z_to_bv 64 (decodeItemInputLength args) = Z_to_bv 64 (decodeItemInputLength args)⌝ : iProp Sigma).
 Proof.
   intros H0 H1 H2 H3 H4 H5 H9.
-  assert (Hprefix : bv_unsigned inputPrefix = 128) by zesu_pure_fact_hints_if_enabled.
+  zesu_saturate_derived_facts.
+  assert (Hprefix : bv_unsigned inputPrefix = 128) by assumption.
   assert (Haccepted : decodeItemAcceptedFacts args false 1 0) by zesu_pure_fact_hints_if_enabled.
   iPureIntro. tauto.
 Qed.

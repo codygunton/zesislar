@@ -51,7 +51,7 @@ Proof.
   let retained := type of Hguard in constr_eq original retained.
   let witness := constr:(_ : SimplAnd (decodeItemRejectedFacts args) True) in
   lazymatch witness with
-  | context [decodeItemShortListGuardRejected] => exact ((proj1 witness) I)
+  | context [ZesuSsz.Compliance.DecodeItemSailIntroduction.decodeItemShortListRejected] => exact ((proj1 witness) I)
   end.
 Qed.
 Lemma branch_guard_preserve_short_string_old_consumer args (prefix : bv 64)
@@ -71,7 +71,7 @@ Proof.
   let witness := constr:(_ : SimplAnd
     (decodeItemAcceptedFacts args false 1 (bv_unsigned inputPrefix - 128)) True) in
   lazymatch witness with
-  | context [decodeItemShortStringGuardAccepted] => exact ((proj1 witness) I)
+  | context [ZesuSsz.Compliance.DecodeItemSailIntroduction.decodeItemShortStringAccepted] => exact ((proj1 witness) I)
   end.
 Qed.
 Print Assumptions branch_guard_preserve_original_guard.

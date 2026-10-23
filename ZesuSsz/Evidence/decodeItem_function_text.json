@@ -100,7 +100,8 @@
     "ZesuSsz/Compliance/DecodeItemLoopInitialization.v",
     "ZesuSsz/Compliance/DecodeItemCanonicalEntryFacts.v",
     "ZesuSsz/Generated/DecodeItem/Registrations.v",
-    "ZesuSsz/Generated/DecodeItem/BootstrapRegistrations.v"
+    "ZesuSsz/Generated/DecodeItem/BootstrapRegistrations.v",
+    "ZesuSsz/Compliance/DecodeItemNormalizedGuardRegistrations.v"
   ],
   "generator_json": [
     "ZesuSsz/Contracts/decode_item_block_design.json",
@@ -612,15 +613,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v",
       "category": "introductions",
       "scope": "whole_file",
-      "sha256": "d24b23fea22af288e72a562181f28555539fa6e332e2b6566227cc1eda49c029",
-      "file_lines": 284,
+      "sha256": "7a7daa02f4516a33a9ca00724d0b5cc0f993173012a3a5962bb2b7b3a26b419c",
+      "file_lines": 130,
       "line_ranges": [
         [
           1,
-          284
+          130
         ]
       ],
-      "counted_lines": 284,
+      "counted_lines": 130,
       "text_kind": "hand_written"
     },
     {
@@ -777,15 +778,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
       "category": "introductions",
       "scope": "whole_file",
-      "sha256": "d96d27d5498b56384a95a82d590a58fa6bf808ccf3e929127dd42db2755bbf58",
-      "file_lines": 126,
+      "sha256": "df511fc887a5d1eb46bdeb71e35e7cfa4b80003a7d9cae3ccb16ca48d46fc5eb",
+      "file_lines": 24,
       "line_ranges": [
         [
           1,
-          126
+          24
         ]
       ],
-      "counted_lines": 126,
+      "counted_lines": 24,
       "text_kind": "hand_written"
     },
     {
@@ -942,15 +943,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemHints.v",
       "category": "registrations",
       "scope": "whole_file",
-      "sha256": "32624d08ccb1d4eb32140f3670dabf0cea5b3a8b1cf30e3b536c04650f8cb5d2",
-      "file_lines": 41,
+      "sha256": "7218411c9e92634a48660098e910333e90a445865a0771eef4edce4d844b5d05",
+      "file_lines": 42,
       "line_ranges": [
         [
           1,
-          41
+          42
         ]
       ],
-      "counted_lines": 41,
+      "counted_lines": 42,
       "text_kind": "hand_written"
     },
     {
@@ -1182,15 +1183,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemS40GuardFacts.v",
       "category": "introductions",
       "scope": "whole_file",
-      "sha256": "d546dbf6201e9d855a3c797899ed9d4691d354cbbd5961a70fb4c91c8570592a",
-      "file_lines": 195,
+      "sha256": "5358a97cf74fb1f7280226333c4fd58bbafe2c1e70799e8c2aa0ff33b7e05932",
+      "file_lines": 48,
       "line_ranges": [
         [
           1,
-          195
+          48
         ]
       ],
-      "counted_lines": 195,
+      "counted_lines": 48,
       "text_kind": "hand_written"
     },
     {
@@ -1669,15 +1670,15 @@
       "path": "ZesuSsz/Contracts/decode_item_block_design.json",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "5ac1eefb82c1b4f148dd1db220fc31a4bda8ab964fe090573a9d804e861fe373",
-      "file_lines": 6853,
+      "sha256": "a6037e61169ca38375ede6a3abca73e1552563e0a8a503650a0c0069f129a2d6",
+      "file_lines": 6650,
       "line_ranges": [
         [
           1,
-          6853
+          6650
         ]
       ],
-      "counted_lines": 6853,
+      "counted_lines": 6650,
       "text_kind": "data_table"
     },
     {
@@ -1961,15 +1962,15 @@
       "path": "ZesuSsz/Evidence/approved_automation_switches.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "3aaf89bea49fdf1c82438f02a07fae04bef2d50293dd5e97a61fd8f30884d752",
-      "file_lines": 112,
+      "sha256": "542898975810b6014b2100d05c47851235e752cbcb890de8de4191cc0e4f3c0b",
+      "file_lines": 113,
       "line_ranges": [
         [
           1,
-          110
+          111
         ]
       ],
-      "counted_lines": 110,
+      "counted_lines": 111,
       "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
       "text_kind": "hand_written"
     },
@@ -2497,14 +2498,14 @@
       "role": "measurement_metadata",
       "scope": "whole_file",
       "sha256": null,
-      "file_lines": 9201,
+      "file_lines": 9342,
       "line_ranges": [
         [
           1,
-          9201
+          9342
         ]
       ],
-      "counted_lines": 9201,
+      "counted_lines": 9342,
       "text_kind": "hand_written"
     },
     {
@@ -2526,15 +2527,15 @@
       "path": "ZesuSsz/Evidence/decode_item_block_design.json",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "1586067a1fbf70e0527f9399e17d21310f85d96563193d0d0c2ffda5a17823f7",
-      "file_lines": 6839,
+      "sha256": "22134823cd69f084814860d86634696d2f8581ec08bbf2f7d1328189a271e7d2",
+      "file_lines": 6636,
       "line_ranges": [
         [
           1,
-          6839
+          6636
         ]
       ],
-      "counted_lines": 6839,
+      "counted_lines": 6636,
       "text_kind": "data_table"
     },
     {
@@ -3790,8 +3791,8 @@
       "path": "ZesuSsz/Evidence/spec_shape_inventory.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "2e0de5798ffebde3c4bf22269bd540f8c4c743d9268a8bb42e200cc11f6aad4a",
-      "file_lines": 358,
+      "sha256": "5a9851c1767128755f2231af3acdf7171d26f81406a97b24b6421d6807c579d6",
+      "file_lines": 365,
       "line_ranges": [
         [
           1,
@@ -3803,7 +3804,11 @@
         ],
         [
           350,
-          356
+          355
+        ],
+        [
+          363,
+          363
         ]
       ],
       "counted_lines": 225,
@@ -4133,7 +4138,7 @@
       "path": "ZesuSsz/Generated/DecodeItem/BlockTable.v",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "bca5b4524696667927728d43a650be889517bd318c783275bac4f036a19b7213",
+      "sha256": "fa4b7cbbf021946e7ebe4677a9dd4e351d152cb4c246ebf7ee28f96b407836c1",
       "file_lines": 254,
       "line_ranges": [
         [
@@ -4164,7 +4169,7 @@
       "path": "ZesuSsz/Generated/DecodeItem/block_table_metadata.json",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "c735436da2eeeb3332ecc339b122bda3d6973a6e28661b04ba1cb2c9adf43ac0",
+      "sha256": "300537b3e67fd43f8e107eff2fa20376d33fb9081341d10acdc75d218582f5d7",
       "file_lines": 832,
       "line_ranges": [
         [
@@ -5111,8 +5116,8 @@
       "path": "ZesuSsz/Proofs/Tests/ApprovedSwitches.v",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "7fb70cb0c67f88eb23bd38f40736a834d204232d9d46382fd59c2b0b3b249157",
-      "file_lines": 68,
+      "sha256": "319c513dfa569337ab8fc945b12f503924d30d61193c0f237faef5e9a2015ab3",
+      "file_lines": 70,
       "line_ranges": [
         [
           3,
@@ -5298,15 +5303,15 @@
       "path": "ZesuSsz/Proofs/Tests/DecodeItemBranchGuardFacts.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "d13dbcb2a565bbc6f4c5f60921a7a1a4e1a6eb210c889bc04bb6f174c8872c6d",
-      "file_lines": 33,
+      "sha256": "8c58ebc730bb66dc1e218c0a42882e3a0420e7f20afeaca17c8c43d2a727c2fb",
+      "file_lines": 36,
       "line_ranges": [
         [
           1,
-          33
+          36
         ]
       ],
-      "counted_lines": 33,
+      "counted_lines": 36,
       "text_kind": "hand_written"
     },
     {
@@ -5388,15 +5393,15 @@
       "path": "ZesuSsz/Proofs/Tests/DecodeItemEntryGuardFacts.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "0c4800bb461a44adbc8594bebe1a75d7f6b63c58c15801973f16849d919bd7a3",
-      "file_lines": 203,
+      "sha256": "7209f149c0567826da497b9563ad9fb7a02452ee9c5583fe47b79d3f5d8bcdc7",
+      "file_lines": 208,
       "line_ranges": [
         [
           1,
-          203
+          208
         ]
       ],
-      "counted_lines": 203,
+      "counted_lines": 208,
       "text_kind": "hand_written"
     },
     {
@@ -5493,15 +5498,15 @@
       "path": "ZesuSsz/Proofs/Tests/DecodeItemLiteralPrefixBound.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "5e12b87200b24a1bd73586fc6da80ff9c0364a24f04a37eeb81c5dc680495a1f",
-      "file_lines": 101,
+      "sha256": "45d2a812917af02938310d4e091eb2bda35ea063931f95fce765db0b2dd86e4e",
+      "file_lines": 102,
       "line_ranges": [
         [
           1,
-          101
+          102
         ]
       ],
-      "counted_lines": 101,
+      "counted_lines": 102,
       "text_kind": "hand_written"
     },
     {
@@ -5538,30 +5543,30 @@
       "path": "ZesuSsz/Proofs/Tests/DecodeItemNativePrefixGuard.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "b291d2231ae629fd34f3098ca0e6d531137694cd273c3f4c28a1195bcc65501b",
-      "file_lines": 73,
+      "sha256": "1a8b0e50fae086b436ff2e29a285d3dcbbe8bbbce531ef97a78cfa2b7659aa23",
+      "file_lines": 80,
       "line_ranges": [
         [
           1,
-          73
+          80
         ]
       ],
-      "counted_lines": 73,
+      "counted_lines": 80,
       "text_kind": "hand_written"
     },
     {
       "path": "ZesuSsz/Proofs/Tests/DecodeItemNativeRegistrationScope.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "cd62711d77ab76d2c9d312ed3ad4c699bd09ad6a7bb44d8b7e5818a7a431cdd5",
-      "file_lines": 208,
+      "sha256": "3cbea493b6b21dbb00027ded0edd8a3b872cbc161a9615c5c0f1d8c4863ca8df",
+      "file_lines": 212,
       "line_ranges": [
         [
           1,
-          208
+          212
         ]
       ],
-      "counted_lines": 208,
+      "counted_lines": 212,
       "text_kind": "hand_written"
     },
     {
@@ -5688,15 +5693,15 @@
       "path": "ZesuSsz/Proofs/Tests/DecodeItemShortStringNegatedGuard.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "3b51e2b408dcfb9724ec5063de5b0e85583364044f0a1a73a8cf09589315cd5d",
-      "file_lines": 46,
+      "sha256": "72aae7e74719dac9d10f02a5c19d81bf420646709f83578edc74b7defe38ca18",
+      "file_lines": 49,
       "line_ranges": [
         [
           1,
-          46
+          49
         ]
       ],
-      "counted_lines": 46,
+      "counted_lines": 49,
       "text_kind": "hand_written"
     },
     {
@@ -8068,15 +8073,15 @@
       "scope": "whole_file",
       "text_kind": "generated",
       "generator": "decodeItem-support",
-      "file_lines": 338,
+      "file_lines": 317,
       "line_ranges": [
         [
           1,
-          338
+          317
         ]
       ],
-      "counted_lines": 338,
-      "sha256": "65183f4c36846cef97170bd44e51bc4ef35b9dae587b97d7f14faf665787abe5"
+      "counted_lines": 317,
+      "sha256": "0135fd04da8ea674630cf4ecca1cbb9e22067d1f17517bdc069654434999fcab"
     },
     {
       "path": "ZesuSsz/Generated/DecodeItem/BootstrapRegistrations.v",
@@ -8130,15 +8135,15 @@
       "category": "tests_and_exports",
       "scope": "whole_file",
       "text_kind": "hand_written",
-      "sha256": "e4fa57155d0b442eb36aa750c903c6c9701084afe6c47ec5cc56c8553eb094ff",
-      "file_lines": 90,
+      "sha256": "c70e62235ed0a8b1800c2b091b5e0fe63f0d5333888139b7256e98078d8014c8",
+      "file_lines": 84,
       "line_ranges": [
         [
           1,
-          90
+          84
         ]
       ],
-      "counted_lines": 90
+      "counted_lines": 84
     },
     {
       "path": "ZesuSsz/Proofs/Tests/SailEvalParent.v",
@@ -8153,6 +8158,21 @@
         ]
       ],
       "counted_lines": 204,
+      "text_kind": "hand_written"
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemNormalizedGuardRegistrations.v",
+      "category": "registrations",
+      "scope": "whole_file",
+      "sha256": "164fe315c81bec33219e0080fb13bb5ed9527dc63122bdc9c2c8608c36546219",
+      "file_lines": 173,
+      "line_ranges": [
+        [
+          1,
+          173
+        ]
+      ],
+      "counted_lines": 173,
       "text_kind": "hand_written"
     }
   ],
@@ -8604,50 +8624,6 @@
   "file_count": 382,
   "embedded_registration_ranges": [
     {
-      "path": "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
-      "line_range": [
-        74,
-        84
-      ],
-      "counted_lines": 11,
-      "hint_count": 1,
-      "count_category": "introductions",
-      "rule": "The whole-file row includes this command once. This index adds no counted lines."
-    },
-    {
-      "path": "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
-      "line_range": [
-        86,
-        96
-      ],
-      "counted_lines": 11,
-      "hint_count": 1,
-      "count_category": "introductions",
-      "rule": "The whole-file row includes this command once. This index adds no counted lines."
-    },
-    {
-      "path": "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
-      "line_range": [
-        102,
-        113
-      ],
-      "counted_lines": 12,
-      "hint_count": 1,
-      "count_category": "introductions",
-      "rule": "The whole-file row includes this command once. This index adds no counted lines."
-    },
-    {
-      "path": "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
-      "line_range": [
-        115,
-        126
-      ],
-      "counted_lines": 12,
-      "hint_count": 1,
-      "count_category": "introductions",
-      "rule": "The whole-file row includes this command once. This index adds no counted lines."
-    },
-    {
       "path": "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v",
       "line_range": [
         20,
@@ -8832,6 +8808,171 @@
       "counted_lines": 14,
       "hint_count": 1,
       "count_category": "introductions",
+      "rule": "The whole-file row includes this command once. This index adds no counted lines."
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v",
+      "line_range": [
+        49,
+        57
+      ],
+      "counted_lines": 9,
+      "hint_count": 1,
+      "count_category": "introductions",
+      "rule": "The whole-file row includes this command once. This index adds no counted lines."
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v",
+      "line_range": [
+        110,
+        118
+      ],
+      "counted_lines": 9,
+      "hint_count": 1,
+      "count_category": "introductions",
+      "rule": "The whole-file row includes this command once. This index adds no counted lines."
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v",
+      "line_range": [
+        120,
+        130
+      ],
+      "counted_lines": 11,
+      "hint_count": 1,
+      "count_category": "introductions",
+      "rule": "The whole-file row includes this command once. This index adds no counted lines."
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemNormalizedGuardRegistrations.v",
+      "line_range": [
+        56,
+        60
+      ],
+      "counted_lines": 5,
+      "hint_count": 1,
+      "count_category": "registrations",
+      "rule": "The whole-file row includes this command once. This index adds no counted lines."
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemNormalizedGuardRegistrations.v",
+      "line_range": [
+        61,
+        64
+      ],
+      "counted_lines": 4,
+      "hint_count": 1,
+      "count_category": "registrations",
+      "rule": "The whole-file row includes this command once. This index adds no counted lines."
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemNormalizedGuardRegistrations.v",
+      "line_range": [
+        66,
+        70
+      ],
+      "counted_lines": 5,
+      "hint_count": 1,
+      "count_category": "registrations",
+      "rule": "The whole-file row includes this command once. This index adds no counted lines."
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemNormalizedGuardRegistrations.v",
+      "line_range": [
+        71,
+        74
+      ],
+      "counted_lines": 4,
+      "hint_count": 1,
+      "count_category": "registrations",
+      "rule": "The whole-file row includes this command once. This index adds no counted lines."
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemNormalizedGuardRegistrations.v",
+      "line_range": [
+        76,
+        79
+      ],
+      "counted_lines": 4,
+      "hint_count": 1,
+      "count_category": "registrations",
+      "rule": "The whole-file row includes this command once. This index adds no counted lines."
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemNormalizedGuardRegistrations.v",
+      "line_range": [
+        82,
+        104
+      ],
+      "counted_lines": 23,
+      "hint_count": 1,
+      "count_category": "registrations",
+      "rule": "The whole-file row includes this command once. This index adds no counted lines."
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemNormalizedGuardRegistrations.v",
+      "line_range": [
+        106,
+        109
+      ],
+      "counted_lines": 4,
+      "hint_count": 1,
+      "count_category": "registrations",
+      "rule": "The whole-file row includes this command once. This index adds no counted lines."
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemNormalizedGuardRegistrations.v",
+      "line_range": [
+        111,
+        122
+      ],
+      "counted_lines": 12,
+      "hint_count": 1,
+      "count_category": "registrations",
+      "rule": "The whole-file row includes this command once. This index adds no counted lines."
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemNormalizedGuardRegistrations.v",
+      "line_range": [
+        123,
+        133
+      ],
+      "counted_lines": 11,
+      "hint_count": 1,
+      "count_category": "registrations",
+      "rule": "The whole-file row includes this command once. This index adds no counted lines."
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemNormalizedGuardRegistrations.v",
+      "line_range": [
+        136,
+        144
+      ],
+      "counted_lines": 9,
+      "hint_count": 1,
+      "count_category": "registrations",
+      "rule": "The whole-file row includes this command once. This index adds no counted lines."
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemNormalizedGuardRegistrations.v",
+      "line_range": [
+        145,
+        156
+      ],
+      "counted_lines": 12,
+      "hint_count": 1,
+      "count_category": "registrations",
+      "rule": "The whole-file row includes this command once. This index adds no counted lines."
+    },
+    {
+      "path": "ZesuSsz/Compliance/DecodeItemNormalizedGuardRegistrations.v",
+      "line_range": [
+        157,
+        173
+      ],
+      "counted_lines": 17,
+      "hint_count": 1,
+      "count_category": "registrations",
       "rule": "The whole-file row includes this command once. This index adds no counted lines."
     }
   ],

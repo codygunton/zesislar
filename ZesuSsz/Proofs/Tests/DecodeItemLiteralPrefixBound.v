@@ -1,4 +1,7 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Automation.Switches.BranchGuards.
+Require Import ZesuSsz.Compliance.DecodeItemNormalizedGuardRegistrations.
 Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
@@ -18,8 +21,7 @@ Lemma literalPrefixBoundOff (prefix : byte) :
   129 <= bv_unsigned prefix.
 Proof.
   intros H1 H2 H9. Fail zesu_pure_fact_hints_if_enabled.
-  exact (decodeItemNonemptyStringPrefixGuard prefix (conj H1 H2)
-    (decodeItemNativeMaskNonempty prefix H9)).
+  zesu_saturate_derived_facts. lia.
 Qed.
 End Off.
 Require Import ZesuSsz.Generated.DecodeItem.Registrations.
@@ -28,18 +30,17 @@ Lemma literalPrefixBoundOn (prefix : byte) :
   128 <= bv_unsigned prefix -> bv_unsigned prefix <= 255 ->
   bv_and (Z_to_bv 64 (bv_signed prefix)) 255 <> 128%bv ->
   129 <= bv_unsigned prefix.
-Proof. intros H1 H2 H9. zesu_pure_fact_hints_if_enabled. Qed.
+Proof. intros H1 H2 H9. zesu_saturate_derived_facts. zesu_pure_fact_hints_if_enabled. Qed.
 
 Lemma literalPrefixBoundSimplAnd (prefix : byte)
     (H1 : 128 <= bv_unsigned prefix) (H2 : bv_unsigned prefix <= 255)
     (H9 : bv_and (Z_to_bv 64 (bv_signed prefix)) 255 <> 128%bv) :
   SimplAnd (129 <= bv_unsigned prefix) True.
 Proof.
+  zesu_saturate_derived_facts.
+  match goal with Hnormalized : bv_unsigned prefix <> 128 |- _ => idtac end.
   let Hbound := constr:(ltac:(typeclasses eauto) : SimplAnd (129 <= bv_unsigned prefix) True) in
-  lazymatch Hbound with
-  | context [decodeItemNativeMaskNonempty _ _] => exact Hbound
-  | _ => fail "The literal bridge did not occur in the selected proof"
-  end.
+  exact Hbound.
 Qed.
 
 Lemma literalPrefixBoundRetained `{!islaG Sigma} `{!threadG} args
@@ -51,7 +52,7 @@ Lemma literalPrefixBoundRetained `{!islaG Sigma} `{!threadG} args
   decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args ->
   bv_and (Z_to_bv 64 (bv_signed inputPrefix)) 255 <> 128%bv ->
   129 <= bv_unsigned inputPrefix.
-Proof. intros H0 H1 H2 H3 H4 H5 H9. zesu_pure_fact_hints_if_enabled. Qed.
+Proof. intros H0 H1 H2 H3 H4 H5 H9. zesu_saturate_derived_facts. zesu_pure_fact_hints_if_enabled. Qed.
 
 Lemma literalPrefixBoundMissingLower (prefix : byte)
     (H2 : bv_unsigned prefix <= 255)
@@ -88,7 +89,7 @@ Lemma normalizedPrefixBoundControl (prefix : byte)
     (H1 : 128 <= bv_unsigned prefix) (H2 : bv_unsigned prefix <= 255)
     (H9 : bv_and (Z_to_bv 64 (bv_signed prefix)) 255 <> Z_to_bv 64 128) :
   129 <= bv_unsigned prefix.
-Proof. zesu_pure_fact_hints_if_enabled. Qed.
+Proof. zesu_saturate_derived_facts. zesu_pure_fact_hints_if_enabled. Qed.
 
 Print Assumptions literalPrefixBoundOff.
 Print Assumptions literalPrefixBoundOn.

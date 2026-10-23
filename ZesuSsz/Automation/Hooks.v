@@ -2146,15 +2146,40 @@ Ltac zesu_branch_guard_mask width mask continuation :=
   continuation low modulus Hwidth Hmask;
   clear Hwidth Hmask.
 
+Ltac zesu_branch_guard_closed_width word continuation :=
+  let kind := type of word in
+  let kind := eval hnf in kind in
+  lazymatch kind with bv ?width =>
+    ZesuSsz.Automation.Hooks.zesu_stack_closed_term width;
+    let normalized := eval vm_compute in width in
+    continuation normalized
+  end.
+
 Ltac zesu_branch_guard_rewrite :=
   repeat first
   [ match goal with
+    | |- context [bv_unsigned (Z_to_bv ?low (bv_unsigned ?word + ?offset))] =>
+        tryif has_evar word then fail 0 else
+        zesu_stack_closed_term low;
+        zesu_stack_closed_term offset;
+        let modulus := eval vm_compute in (bv_modulus low) in
+        let Hrange := fresh "HguardTruncateRange" in
+        assert (Hrange : modulus <= bv_unsigned word + offset < 2 * modulus) by lia;
+        rewrite (guard_truncate_one_wrap low (bv_unsigned word + offset) Hrange);
+        change_no_check (bv_modulus low) with modulus;
+        let base := eval vm_compute in (modulus - offset) in
+        replace (bv_unsigned word + offset - modulus) with
+          (bv_unsigned word - base) by ring;
+        clear Hrange
+    end
+  | match goal with
     | |- context [@eq (bv ?width) (bv_and (Z_to_bv ?width (bv_signed ?word)) ?mask) ?right] =>
         tryif has_evar word then fail 0 else
         tryif has_evar right then fail 0 else
         zesu_branch_guard_mask width mask ltac:(fun low modulus Hwidth Hmask =>
-          lazymatch type of word with bv ?source => constr_eq low source end;
-          rewrite (zesu_guard_bv_eq_iff width (bv_and (Z_to_bv width (bv_signed word)) mask) right))
+          zesu_branch_guard_closed_width word ltac:(fun source =>
+            constr_eq low source;
+            rewrite (zesu_guard_bv_eq_iff width (bv_and (Z_to_bv width (bv_signed word)) mask) right)))
     end
   | match goal with
     | |- context [bv_signed (bv_sign_extend ?width ?word)] =>
@@ -2186,11 +2211,10 @@ Ltac zesu_branch_guard_rewrite :=
   | match goal with
     | |- context [bv_unsigned (bv_and (Z_to_bv ?width (bv_signed ?word)) ?mask)] =>
         tryif has_evar word then fail 0 else
-        lazymatch type of word with bv ?low =>
-        zesu_branch_guard_mask width mask ltac:(fun found modulus Hwidth Hmask =>
-          constr_eq low found;
-          rewrite (zesu_guard_mask_signed_value width low word mask Hwidth Hmask))
-        end
+        zesu_branch_guard_closed_width word ltac:(fun low =>
+          zesu_branch_guard_mask width mask ltac:(fun found modulus Hwidth Hmask =>
+            constr_eq low found;
+            rewrite (zesu_guard_mask_signed_value width low word mask Hwidth Hmask)))
     end
   | match goal with
     | |- context [bv_unsigned (bv_and (bv_add ?word ?offset) ?mask)] =>
@@ -2236,6 +2260,7 @@ Ltac zesu_branch_guard_rewrite :=
           change_no_check (bv_half_modulus width) with half
         end
     end ].
+
 
 Ltac zesu_branch_guard_simpl_impl :=
   lazymatch goal with |- SimplImpl ?proposition _ =>
