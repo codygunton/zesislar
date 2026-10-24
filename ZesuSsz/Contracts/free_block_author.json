@@ -1,0 +1,2819 @@
+{
+  "schema": "p1b.compact-profile.v2",
+  "function": {
+    "inventory_name": "alt_fl_alloc.free",
+    "prefix": "free",
+    "root": {
+      "name": "args",
+      "type": "FreeArgs"
+    },
+    "handwritten_owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries",
+    "register_policy": "decoded_function_accessed_gprs",
+    "profile_layout": "expanded_cfg"
+  },
+  "symbols": [
+    {
+      "name": "bufferBytes",
+      "type": "list byte"
+    },
+    {
+      "name": "listBytes",
+      "type": "list byte"
+    },
+    {
+      "name": "frameBytes",
+      "type": "list byte"
+    }
+  ],
+  "shared": {
+    "design_metadata": {
+      "schema_version": 1,
+      "label": "Structural wiring coverage; no machine contract proof",
+      "proof_status": "No native block body proof",
+      "table_convention": {
+        "entry_type": "(Z * iProp Sigma)",
+        "pc_ownership": "instr_pre pc state supplies PC; entry predicates do not own PC",
+        "existential_binders": "Each row's binders, in their listed order",
+        "resource_application": "Apply resource_predicate to arguments in order",
+        "code_persistence": "block_table_pre boxes the supplied code resource",
+        "code_resource": "ZesuSsz.Contracts.FreeSelected.freeSelectedCode",
+        "code_source_hashes": {
+          "ZesuSsz/Contracts/FreeSelected.v": null
+        },
+        "successor_root_parameters": [
+          "args"
+        ],
+        "successor_existentials": "Each successor row's remaining binders, in their listed order, including every register, array and frame binder"
+      }
+    },
+    "support_metadata": {
+      "entries_imports": [
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Automation.All"
+        },
+        {
+          "mode": "import",
+          "module": "isla.riscv64.riscv64"
+        },
+        {
+          "mode": "import",
+          "module": "stdpp.bitvector.definitions"
+        },
+        {
+          "mode": "import",
+          "module": "SailStdpp.MachineWord"
+        },
+        {
+          "mode": "import",
+          "module": "EvmSailRlp.evm_rlp_types"
+        },
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Contracts.RlpDecodeItemContract"
+        },
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Contracts.DecodeItemReturnFacts"
+        },
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+        },
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+        },
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Contracts.AltFlFreeContract"
+        },
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Contracts.AltFlFree"
+        },
+        {
+          "mode": "import",
+          "module": "InstrSpecs.Machine"
+        }
+      ],
+      "entries_scopes": [
+        "Z_scope"
+      ],
+      "registrations_imports": [
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Automation.All"
+        },
+        {
+          "mode": "import",
+          "module": "isla.automation"
+        }
+      ],
+      "introductions": [],
+      "hint_umbrella": [],
+      "scoped_imports": [
+        {
+          "target": "entries",
+          "module": "ListNotations"
+        }
+      ],
+      "facts": []
+    },
+    "row_source_paths": {
+      "function_entry": [
+        "ZesuSsz/Contracts/AltFlFreeBlockEntries.v",
+        "ZesuSsz/Contracts/AltFlFreeContract.v",
+        "ZesuSsz/Contracts/AltFlFree.v",
+        "InstrSpecs/Machine.v"
+      ],
+      "other_blocks": [
+        "ZesuSsz/Contracts/AltFlFreeBlockEntries.v",
+        "ZesuSsz/Contracts/AltFlFree.v",
+        "InstrSpecs/Machine.v"
+      ]
+    },
+    "input_digest_sources": {
+      "inventory_sha256": "build/stock-zisk/inventory.json",
+      "selected_elf_sha256": "build/stock-zisk/zesu-zisk.elf",
+      "contract_sha256": "ZesuSsz/Contracts/AltFlFreeContract.v",
+      "data_semantics_sha256": "ZesuSsz/Contracts/AltFlFree.v",
+      "entry_source_sha256": "ZesuSsz/Contracts/AltFlFreeBlockEntries.v"
+    },
+    "lets": [],
+    "continuation": {
+      "mode": "included_in_base",
+      "predicate": {
+        "kind": "global_ref",
+        "name": "freeCaller",
+        "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries",
+        "role": "handwritten_helper"
+      },
+      "arguments": [
+        {
+          "kind": "symbol_ref",
+          "name": "args"
+        }
+      ],
+      "order": "resources_first"
+    },
+    "loop_annotations": [],
+    "historical_design_metadata": {
+      "hashes": {
+        "inventory_sha256": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "selected_elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
+        "contract_sha256": "3fcd39fd28cec6ba5f4830bc1bf152515e283332a7d44dff9714c8e7d58cc708",
+        "data_semantics_sha256": "3ca6901033c34b143f13618505c64bf0aeb5a8809769fe5266aa98d6b6f5bd4d",
+        "entry_source_sha256": "0859944a5dfc6a678e789fc42c090cb0660c07411315a8e26b10415267a1618d",
+        "generator_sha256": "74d6984f924436f376352389485e0b0c68ae9e53845419099c916ea34ac4d2d8"
+      }
+    }
+  },
+  "bodies": [
+    {
+      "at": "0x80041f38",
+      "lets": [],
+      "continuation": {
+        "mode": "explicit",
+        "predicate": {
+          "kind": "global_ref",
+          "name": "freeCaller",
+          "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries",
+          "role": "handwritten_helper"
+        },
+        "arguments": [
+          {
+            "kind": "symbol_ref",
+            "name": "args"
+          }
+        ],
+        "order": "resources_first"
+      },
+      "components": [
+        {
+          "kind": "register_collection",
+          "value": "zesu_sys_regs"
+        },
+        {
+          "kind": "register_resources",
+          "registers": {
+            "policy": "function"
+          },
+          "value_constructor": "RVal_Bits"
+        },
+        {
+          "kind": "byte_array",
+          "address": "freeBufferPointer args",
+          "value": {
+            "kind": "symbol_ref",
+            "name": "bufferBytes"
+          }
+        },
+        {
+          "kind": "byte_array",
+          "address": "freeListsPointer",
+          "value": {
+            "kind": "symbol_ref",
+            "name": "listBytes"
+          }
+        },
+        {
+          "kind": "unknown_byte_array",
+          "address": "freeStackPointer args - freeStackBytes",
+          "length": "freeStackBytes"
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "freeArgsWellFormed args /\\ x1 = Z_to_bv 64 (freeReturnAddress args) /\\\n     x2 = Z_to_bv 64 (freeStackPointer args) /\\ x8 = freeSavedFramePointer args /\\\n     x11 = Z_to_bv 64 (freeBufferPointer args) /\\\n     x12 = Z_to_bv 64 (freeBufferLength args) /\\\n     x13 = Z_to_bv 64 (freeLog2Alignment args) /\\\n     bufferBytes = freeBeforeBuffer args /\\ listBytes = freeBeforeLists args"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeContract.freeArgsWellFormed"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "continuation",
+          "predicate": {
+            "name": "freeCaller",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            }
+          ]
+        },
+        {
+          "kind": "true"
+        }
+      ]
+    },
+    {
+      "at": "0x80041f58",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80041f60",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80041f68",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80041f7c",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80041f80",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80041f8c",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80041f98",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80041fa4",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80041fb4",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80041fb8",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80041fc0",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80041fc8",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80041fd8",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80041fdc",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80041fe8",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80041ff4",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80042010",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80042014",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80042028",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x8004202c",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80042038",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80042054",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80042058",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80042070",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80042074",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80042080",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80042090",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80042094",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x800420b0",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x800420b4",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x800420cc",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x800420d0",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x800420ec",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x800420f0",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x8004210c",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80042110",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80042130",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80042134",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x8004213c",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80042144",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80042154",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "at": "0x80042160",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "freeBlockCore",
+            "owner": "ZesuSsz.Contracts.AltFlFreeBlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "args"
+            },
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "bufferBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "listBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "frameBytes"
+            }
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "freeBlockFacts "
+                  },
+                  {
+                    "kind": "block_pc_ref",
+                    "format": "hex8"
+                  },
+                  {
+                    "kind": "text",
+                    "value": " args x10 x12 x13 x14"
+                  }
+                ]
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.AltFlFreeBlockEntries.freeBlockFacts"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
