@@ -14,6 +14,59 @@ DISPATCH = "case " + GUARD.read_text().split("\nprune_scope_registry\n\ncase ", 
 
 
 class ResourceGuard(unittest.TestCase):
+    def test_profile_mode_opens_dune_width_without_changing_default_width(self):
+        script = "memory() { echo $((200*GIB)) 0 $((100*GIB)); }; gate_jobs check-fast"
+        result = self.run_guard(script, ZESU_MODULE_MEMORY_PROFILE="fixture")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "48")
+        result = self.run_guard(script)
+        self.assertEqual(result.stdout.strip(), "23")
+
+    def test_profile_mode_uses_the_module_claim_for_headroom(self):
+        result = self.run_guard("memory() { echo $((100*GIB)) 0 $((25*GIB)); }; memory_hold_reason",
+                                ZESU_MODULE_MEMORY_PROFILE="fixture", ZESU_MODULE_CLAIM_BYTES=str(1024 ** 3))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, "")
+
+    def test_profile_memory_admission_is_atomic_across_requests(self):
+        with tempfile.TemporaryDirectory() as directory:
+            result = self.run_guard(r'''
+hold_reason() { :; }
+compiler_pids() { :; }
+memory() { echo $((100*GIB)) 0 $((40*GIB)); }
+POLL_SECONDS=0.01
+worker() {
+  local owner=$BASHPID marker
+  marker=$(reserve_coqc "$owner") || return
+  confirm_coqc "$marker" || return
+  printf 'start %s\n' "$owner" >> "$STATE_DIR/events"
+  sleep 0.1
+  printf 'end %s\n' "$owner" >> "$STATE_DIR/events"
+  release_coqc "$marker"
+}
+worker & first=$!
+worker & second=$!
+wait "$first" || exit 11
+wait "$second" || exit 12
+cat "$STATE_DIR/events"
+''', ZESU_IN_BATCH="1", ZESU_MODULE_MEMORY_PROFILE="fixture",
+                ZESU_MODULE_MEMORY_TOOL=str(GUARD.with_name("module_memory.py")),
+                ZESU_MODULE_CLAIM_BYTES=str(12 * 1024 ** 3), ZESU_PROC_ROOT=directory)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        active = set()
+        starts = peak = 0
+        for line in result.stdout.splitlines():
+            event, pid = line.split()
+            if event == "start":
+                active.add(pid)
+                starts += 1
+                peak = max(peak, len(active))
+            else:
+                active.remove(pid)
+        self.assertEqual(starts, 2)
+        self.assertEqual(peak, 1)
+        self.assertFalse(active)
+
     def test_disk_trim_threshold_uses_decimal_bytes(self):
         for free, trimmed in ((60000000000, False), (59999999999, True)):
             with self.subTest(free=free):
