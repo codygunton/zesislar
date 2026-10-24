@@ -11,6 +11,7 @@ import unittest
 from coqc_findlib import (RECORD_NAME, compiler_environment,
                          record_dune_environment)
 from test_guard import fixture_environment
+from module_memory import GIB, make_profile
 
 
 TOOLS = Path(__file__).resolve().parent
@@ -191,6 +192,45 @@ class CompilerFindlibTests(unittest.TestCase):
         self.assertEqual(records[2]["args"], ["scope", "rocq-mcp-coqc", "--", str(compiler), *arguments])
         self.assertTrue(all(record["OCAMLPATH"] == str(self.library) for record in records))
         # The fake guard records each route and never executes a Rocq compiler.
+
+    def test_dune_wrapper_selects_weights_and_preserves_physical_fences(self):
+        (self.tools / "guard-bin").mkdir()
+        (self.tools / "det").mkdir()
+        for name in ("coqc_findlib.py", "module_memory.py"):
+            shutil.copy2(TOOLS / name, self.tools / name)
+        shutil.copy2(TOOLS / "det/coqc_slots.py", self.tools / "det/coqc_slots.py")
+        wrapper = self.tools / "guard-bin/coqc"
+        shutil.copy2(TOOLS / "dune_coqc_guarded.sh", wrapper)
+        compiler = self.root / "switch/bin/coqc"
+        compiler.parent.mkdir(parents=True)
+        compiler.write_text("#!/bin/sh\nexit 99\n")
+        compiler.chmod(0o755)
+        source = self.build / "default/Probe.v"
+        source.write_text("Check nat.\n")
+        observation = {"exe": str(compiler), "cwd": str(source.parent),
+                       "command": str(compiler) + " Probe.v", "observed_peak_rss_kib": 600000}
+        profile = self.root / "profile.json"
+        profile.write_text(json.dumps(make_profile([observation], {"exit_code": 0}, compiler)))
+        log = self.root / "weights.jsonl"
+        guard = self.tools / "resource_guard.sh"
+        guard.write_text("#!/usr/bin/env python3\nimport json,os\n"
+                         "with open(os.environ['TEST_RECORD'],'a') as stream:\n"
+                         " stream.write(json.dumps({k:os.environ.get(k) for k in "
+                         "['ZESU_MODULE_CLAIM_BYTES','ZESU_MODULE_LIMIT_GIB']})+'\\n')\n")
+        guard.chmod(0o755)
+        environment = fixture_environment(OPAM_SWITCH_PREFIX=str(compiler.parent.parent),
+            OCAMLPATH=str(self.library), TEST_RECORD=str(log), ZESU_MODULE_MEMORY_PROFILE=str(profile))
+        subprocess.run([str(wrapper), "Probe.v"], cwd=source.parent, env=environment, check=True)
+        source.write_text("Check unit.\n")
+        subprocess.run([str(wrapper), "Probe.v"], cwd=source.parent, env=environment, check=True)
+        rows = [json.loads(line) for line in log.read_text().splitlines()]
+        self.assertEqual([int(row["ZESU_MODULE_CLAIM_BYTES"]) for row in rows], [GIB, 16 * GIB])
+        self.assertTrue(all(row["ZESU_MODULE_LIMIT_GIB"] == "16" for row in rows))
+        profile.write_text("invalid JSON")
+        result = subprocess.run([str(wrapper), "Probe.v"], cwd=source.parent, env=environment,
+                                text=True, capture_output=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(len(log.read_text().splitlines()), 2)
 
 
 if __name__ == "__main__":

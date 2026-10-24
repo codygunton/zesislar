@@ -31,6 +31,13 @@ esac
 # Preserve only the findlib path from this exact private Dune recipe.
 python3 "$tools_dir/coqc_findlib.py" record --tools-directory "$tools_dir"
 
+if [[ -n "${ZESU_MODULE_MEMORY_PROFILE:-}" ]]; then
+  ZESU_MODULE_CLAIM_BYTES=$(python3 "$tools_dir/module_memory.py" claim \
+    --profile "$ZESU_MODULE_MEMORY_PROFILE" --cwd "$PWD" --compiler "$coqc_binary" \
+    --fallback-bytes "$(( ZESU_MODULE_LIMIT_GIB * 1024 * 1024 * 1024 ))" -- "$@")
+  export ZESU_MODULE_CLAIM_BYTES
+fi
+
 # The scope borrows an existing scratch token or owns one new token.
 # A compiler already inside the same job scope does not create another scope.
 "$guard" scope dune-coqc -- "$coqc_binary" "$@" &

@@ -131,6 +131,14 @@ mkdir -p "$COQC_RESERVATIONS"
 touch "$REGISTRY" "$LOG" "$PEAK"
 
 GIB=$((1024 * 1024 * 1024))
+MEMORY_TOOL=${ZESU_MODULE_MEMORY_TOOL:-$(dirname "$0")/module_memory.py}
+if ! [[ "$MODULE_LIMIT_GIB" =~ ^[1-9][0-9]{0,2}$ ]]; then
+  echo "resource guard: invalid module memory limit" >&2; exit 2
+fi
+MEMORY_CLAIM_BYTES=${ZESU_MODULE_CLAIM_BYTES:-$(( MODULE_LIMIT_GIB * GIB ))}
+if ! [[ "$MEMORY_CLAIM_BYTES" =~ ^[1-9][0-9]{0,11}$ ]]; then
+  echo "resource guard: invalid module memory reservation" >&2; exit 2
+fi
 
 note() { printf '%s %s\n' "$(date -Is)" "$*" >> "$LOG"; }
 
@@ -191,14 +199,17 @@ available_gib() {
 }
 
 memory_hold_reason() {
-  local available used required
+  local available used required job_gib=$MODULE_LIMIT_GIB
+  if [ -n "${ZESU_MODULE_MEMORY_PROFILE:-}" ]; then
+    job_gib=$(( (MEMORY_CLAIM_BYTES + GIB - 1) / GIB ))
+  fi
   if [ "$MEMORY_POLICY" = available ]; then
     available=$(available_gib)
-    required=$(( MODULE_LIMIT_GIB + MEMORY_HEADROOM_GIB ))
+    required=$(( job_gib + MEMORY_HEADROOM_GIB ))
     if (( available < MEMORY_HEADROOM_GIB )); then
       echo "memory available $available GiB, below the 20 GiB hold"
     elif (( available < required )); then
-      echo "memory available $available GiB, requires $required GiB for a $MODULE_LIMIT_GIB GiB job"
+      echo "memory available $available GiB, requires $required GiB for a $job_gib GiB job"
     fi
   else
     used=$(used_gib)
@@ -661,6 +672,20 @@ compiler_admission_reason() {
   fi
 }
 
+# confirm_coqc holds GATE_MUTEX while this function refreshes live claims.
+module_memory_admission_reason() {
+  [ -n "${ZESU_MODULE_MEMORY_PROFILE:-}" ] || return 0
+  local total used available marker
+  local -a markers=()
+  while IFS= read -r marker; do
+    [ -n "$marker" ] && markers+=("$marker")
+  done < <(live_reservations)
+  read -r total used available < <(memory)
+  python3 "$MEMORY_TOOL" admission --request-bytes "$MEMORY_CLAIM_BYTES" \
+    --available-bytes "$available" --headroom-bytes "$(( MEMORY_HEADROOM_GIB * GIB ))" \
+    --maximum-compilers "$MAX_COQC" --proc "$PROC_ROOT" "${markers[@]}"
+}
+
 reservation_class() {
   if [ -n "${ZESU_IN_GATE:-}" ]; then echo gate
   elif [ -n "${ZESU_IN_BATCH:-}" ]; then echo batch
@@ -754,6 +779,12 @@ confirm_coqc() {
       status=$?; echo "resource guard: confirmation admission check failed ($status)" >&2
       flock -u 7; exec 7>&-; return "$status"
     }
+    if [ -z "$admission" ]; then
+      admission=$(module_memory_admission_reason) || {
+        status=$?; echo "resource guard: module memory check failed ($status)" >&2
+        flock -u 7; exec 7>&-; return "$status"
+      }
+    fi
     if diagnostic_probe && (( $(probe_count) >= 6 )); then
       admission="issue10 probes at their six-probe limit"
     fi
@@ -768,6 +799,10 @@ confirm_coqc() {
         rm -f -- "$replacement"
         flock -u 7; exec 7>&-; return 2
       fi
+      printf 'memory_claim_bytes=%s\nmemory_fence_bytes=%s\n' \
+        "$MEMORY_CLAIM_BYTES" "$(( MODULE_LIMIT_GIB * GIB ))" >> "$replacement" || {
+          rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
+        }
       if diagnostic_probe; then
         local probe_tag=issue10
         [ "${ZESU_DIAGNOSTIC_PROBE:-0}" != cpu-only ] || probe_tag=issue10-cpu-only
@@ -917,6 +952,9 @@ ramp() {
 # Keep the memory headroom when choosing the batch width.
 guard_jobs() {
   local limit available budget headroom
+  if [ -n "${ZESU_MODULE_MEMORY_PROFILE:-}" ]; then
+    echo "$MAX_JOBS"; return 0
+  fi
   available=$(available_gib)
   budget=$(( available * 70 / 100 ))
   headroom=$(( available - MEMORY_HEADROOM_GIB ))
@@ -950,6 +988,10 @@ guard_jobs() {
 # Both gates stay at 24 while the writer reservation applies.
 # The memory formula stays as the ceiling for both.
 GATE_MAX_JOBS=${ZESU_GATE_MAX_JOBS:-24}
+if [ -n "${ZESU_MODULE_MEMORY_PROFILE:-}" ]; then
+  GATE_MAX_JOBS=${ZESU_GATE_MAX_JOBS:-48}
+  FAST_MAX_JOBS=${ZESU_FAST_MAX_JOBS:-48}
+fi
 
 gate_jobs() {
   local target=${1:-check-iris} cap allowed
