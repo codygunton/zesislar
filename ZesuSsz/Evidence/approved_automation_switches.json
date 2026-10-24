@@ -33,7 +33,9 @@
     "ZesuSsz.Automation.Switches.ConjunctMatch",
     "ZesuSsz.Automation.Switches.IntegerReturn",
     "ZesuSsz.Automation.Switches.ExitMeaning",
-    "ZesuSsz.Automation.Switches.BranchGuards"
+    "ZesuSsz.Automation.Switches.BranchGuards",
+    "ZesuSsz.Automation.Switches.ContextCollection",
+    "ZesuSsz.Automation.Switches.FinisherOnce"
   ],
   "exclusions": [
     {

@@ -1,5 +1,6 @@
 Require Import ZesuSsz.Automation.EntryIntro.
 Require Import ZesuSsz.Automation.SwitchDispatch.
+Require Import ZesuSsz.Automation.ContextCollection.
 (** Project-wide Lithium hook redefinitions belong in this module. *)
 
 From iris.proofmode Require Import environments.
@@ -262,7 +263,7 @@ Ltac zesu_strict_signed_if_enabled :=
   end.
 
 (* Library solvers also call these primitives without the project finisher. *)
-Ltac bv_solve ::= first [solve [zesu_strict_signed_if_enabled] |
+Ltac bv_solve ::= zesu_context_filter ltac:(first [solve [zesu_strict_signed_if_enabled] |
   solve [zesu_low_mask_sub_modulus_if_enabled] |
   solve [zesu_low_mask_if_enabled] |
   (
@@ -270,7 +271,7 @@ Ltac bv_solve ::= first [solve [zesu_strict_signed_if_enabled] |
   bv_saturate_unsigned;
   bv_solve_unfold_tac;
   unfold bv_signed, bv_swrap, bv_wrap, bv_half_modulus, bv_modulus, bv_unsigned in *;
-  simpl; lia)].
+  simpl; lia)]).
 
 Ltac zesu_solve_machine_bounds :=
   first [solve [zesu_low_mask_sub_modulus_if_enabled] |
@@ -2299,3 +2300,48 @@ Ltac zesu_low_mask_sub_modulus_if_enabled ::=
        first [solve [zesu_low_mask_sub_modulus_goal]
          | solve [zesu_low_mask_bv_goal]
          | solve [progress zesu_low_mask_branch_hypotheses; lia]])].
+
+(* Collect only at complete trace leaders. A failed branch restores its context. *)
+Ltac liAAsm ::=
+  lazymatch goal with
+  | |- envs_entails ?Δ (WPasm ?es) =>
+    lazymatch es with
+    | tnil => notypeclasses refine (tac_fast_apply (li_wp_next_instr) _)
+    | tcases _ => notypeclasses refine (tac_fast_apply (li_wp_cases _) _)
+    | ?e :t: _ =>
+      lazymatch e with
+      | ReadReg _ [] _ _ => notypeclasses refine (tac_fast_apply (li_wp_read_reg _ _ _ _) _)
+      | ReadReg _ [Field _] _ _ => notypeclasses refine (tac_fast_apply (li_wp_read_reg_struct _ _ _ _ _) _)
+      | AssumeReg _ [] _ _ => notypeclasses refine (tac_fast_apply (li_wp_assume_reg _ _ _ _) _)
+      | AssumeReg _ [Field _] _ _ => notypeclasses refine (tac_fast_apply (li_wp_assume_reg_struct _ _ _ _ _) _)
+      | WriteReg _ [] _ _ => notypeclasses refine (tac_fast_apply (li_wp_write_reg _ _ _ _) _)
+      | WriteReg _ [Field _] _ _ => notypeclasses refine (tac_fast_apply (li_wp_write_reg_struct _ _ _ _ _) _)
+      | BranchAddress _ _ => notypeclasses refine (tac_fast_apply (li_wp_branch_address _ _ _) _)
+      | Branch _ _ _ => notypeclasses refine (tac_fast_apply (li_wp_branch _ _ _ _) _)
+      | ReadMem _ _ _ _ _ _ => notypeclasses refine (tac_fast_apply (li_wp_read_mem _ _ _ _ _ _ _ _) _)
+      | WriteMem _ _ _ _ _ _ _ => notypeclasses refine (tac_fast_apply (li_wp_write_mem _ _ _ _ _ _ _ _ _) _)
+      | Smt (DeclareConst _ (Ty_BitVec _)) _ => notypeclasses refine (tac_fast_apply (li_wp_declare_const_bv _ _ _ _) _)
+      | Smt (DeclareConst _ Ty_Bool) _ => notypeclasses refine (tac_fast_apply (li_wp_declare_const_bool _ _ _) _)
+      | Smt (DeclareConst _ (Ty_Enum _)) _ => notypeclasses refine (tac_fast_apply (li_wp_declare_const_enum _ _ _ _) _)
+      | Smt (DefineConst _ _) _ => notypeclasses refine (tac_fast_apply (li_wp_define_const _ _ _ _) _)
+      | Smt (Assert _) _ => notypeclasses refine (tac_fast_apply (li_wp_assert _ _ _) _)
+      | Assume _ _ => notypeclasses refine (tac_fast_apply (li_wp_assume _ _ _) _)
+      | Barrier _ _ => notypeclasses refine (tac_fast_apply (li_wp_barrier _ _ _) _)
+      | AbstractPrimop _ _ _ _ => notypeclasses refine (tac_fast_apply (li_wp_abstract_primop _ _ _ _ _) _)
+      end
+    | parametric_trace _ _ => iEval (unfold parametric_trace)
+    | ?def => first [
+                 try unfold TRACE_LET in def; iEval (unfold def); try clear def; zesu_collect_if_enabled
+               | fail "liAAsm: unknown asm" es
+               ]
+    end
+  | |- envs_entails ?Δ (instr_pre' _ _ _) =>
+    notypeclasses refine (tac_fast_apply (li_instr_pre _ _ _) _)
+  | |- envs_entails ?Δ (wpreadreg _ [] _) =>
+     notypeclasses refine (tac_fast_apply (li_wpreadreg_nil _ _) _)
+  | |- envs_entails ?Δ (wpreadreg _ [Field _] _) =>
+     notypeclasses refine (tac_fast_apply (li_wpreadreg_field _ _ _) _)
+  end.
+
+
+Ltac lia ::= zesu_context_filter ltac:(Zify.zify; xlia Lia.zchecker).
