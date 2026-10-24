@@ -4,6 +4,7 @@ Require Import ZesuMachineMap.Machine.
 Require Export ZesuSsz.Automation.ByteArrays.
 Require Export ZesuSsz.Automation.Hooks.
 Require Import ZesuSsz.Automation.SwitchDispatch.
+Require Import ZesuSsz.Automation.ContextCollection.
 Require Export ZesuSsz.Automation.ArrayCursors.
 Require Import ZesuSsz.Automation.ArrayByteValues.
 Require Import ZesuSsz.Automation.ArraySlices.
@@ -560,7 +561,7 @@ Ltac zesu_finish_v2 :=
   end;
   zesu_finish_dispatch.
 
-Ltac zesu_finish :=
+Ltac zesu_finish_base :=
   try solve [zesu_array_region_selection_if_enabled];
   tryif zesu_defer_unresolved_sidecondition_if_enabled then idtac else (
   try solve [zesu_list_cons_witness_if_enabled |
@@ -570,6 +571,8 @@ Ltac zesu_finish :=
        then try (zesu_finish_v2)
        else zesu_finish_v2
   else zesu_finish_v1).
+
+Ltac zesu_finish := zesu_finish_once_if_enabled ltac:(zesu_finish_base).
 
 Ltac zesu_finish_framed_wand :=
   lazymatch goal with
@@ -763,6 +766,7 @@ Ltac zesu_run_pass :=
 
 (* Resolve the approved switch set in the current search context. *)
 Ltac zesu_search_switches := constr:([
+  ZesuStepContextCollection; ZesuStepFinisherOnce;
   ZesuSsz.Automation.Hooks.ZesuStepRegionFaultNormalization; ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup;
   ZesuSsz.Automation.Hooks.ZesuStepStackWrite; ZesuSsz.Automation.Hooks.ZesuStepRamFault; ZesuSsz.Automation.Hooks.ZesuStepRegionFault;
   ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask; ZesuSsz.Automation.EntryIntro.ZesuStepEntryIntro; ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress; ZesuSsz.Automation.Hooks.ZesuStepRecordWitness;
@@ -848,9 +852,17 @@ Ltac zesu_block_v2 :=
     zesu_run)
   else first [solve [zesu_finish] | idtac].
 
-Ltac zesu_block :=
+Ltac zesu_block_base :=
   try zesu_entry_intro_goal_if_enabled;
   tryif zesu_rule_set_v2_on then zesu_block_v2 else zesu_block_v1.
+
+Ltac zesu_block :=
+  tryif zesu_switch_enabled constr:(ZesuStepContextCollection)
+  then first [solve [zesu_block_base] |
+    idtac "ZESU_COLLECTION_FALLBACK";
+    pose proof zesu_context_collection_off_intro;
+    zesu_block_base]
+  else zesu_block_base.
 
 Ltac zesu_block_simpl :=
   iStartProof;
