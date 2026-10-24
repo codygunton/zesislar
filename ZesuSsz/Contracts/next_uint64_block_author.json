@@ -1,0 +1,946 @@
+{
+  "schema": "p1b.compact-profile.v2",
+  "function": {
+    "inventory_name": "rlp_decode.nextUint64",
+    "prefix": "nextUint64",
+    "root": {
+      "name": "params",
+      "type": "NextUint64Args"
+    },
+    "handwritten_owner": "ZesuSsz.Contracts.NextUint64BlockEntries",
+    "register_policy": "rv64_integer_abi_owned_full",
+    "profile_layout": "sparse_cfg_placeholders"
+  },
+  "symbols": [
+    {
+      "name": "inputBytes",
+      "type": "list byte"
+    },
+    {
+      "name": "sliceBytes",
+      "type": "list byte"
+    },
+    {
+      "name": "decoded",
+      "type": "list byte"
+    },
+    {
+      "name": "saved",
+      "type": "list byte"
+    },
+    {
+      "name": "resultBytes",
+      "type": "list byte"
+    }
+  ],
+  "shared": {
+    "design_metadata": {
+      "schema_version": 1,
+      "label": "Structural call wiring and explicit entry declarations; no native proof or execution",
+      "proof_status": "Native bodies and boxed callee installation remain unproved",
+      "table_convention": {
+        "entry_type": "(Z * iProp Sigma)",
+        "pc_ownership": "instr_pre pc state supplies PC; entry predicates do not own PC",
+        "existential_binders": "Each row's binders, in their listed order",
+        "resource_application": "Apply resource_predicate to arguments in order",
+        "code_persistence": "block_table_pre boxes the supplied code resource",
+        "code_resource": "ZesuSsz.Contracts.NextUint64Selected.nextUint64SelectedCode",
+        "code_source_hashes": [
+          "ZesuSsz/Contracts/NextUint64Selected.v"
+        ],
+        "successor_root_parameters": [
+          "params"
+        ],
+        "successor_existentials": "Each successor row's remaining binders, in their listed order, including every register, array and frame binder"
+      },
+      "calls": [
+        {
+          "call_site_pc": "0x800d62b4",
+          "callee_pc": "0x800d6960",
+          "return_site_pc": "0x800d62b8",
+          "contract_name": "ZesuSsz.Contracts.DecodeItemCompositional.decodeItemSelectedModelCompositional",
+          "contract_arguments": [
+            "0x800d62b8"
+          ],
+          "argument_type": "DecodeItemCompositionalArgs",
+          "outcome_type": "DecodeItemOutcome",
+          "source_hashes": {
+            "ZesuSsz/Contracts/DecodeItemCompositional.v": "50d8c05339ffe8a09838bc03d61bf9edb424494b75451d249a531e79da93a426",
+            "ZesuSsz/Contracts/RlpDecodeItemContract.v": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a"
+          },
+          "code_resource": "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedCode",
+          "code_source_hashes": {
+            "ZesuSsz/Contracts/DecodeItemSelected.v": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804"
+          }
+        }
+      ]
+    },
+    "support_metadata": {
+      "entries_imports": [
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Automation.All"
+        },
+        {
+          "mode": "import",
+          "module": "isla.riscv64.riscv64"
+        },
+        {
+          "mode": "import",
+          "module": "stdpp.bitvector.definitions"
+        },
+        {
+          "mode": "import",
+          "module": "SailStdpp.MachineWord"
+        },
+        {
+          "mode": "import",
+          "module": "EvmSailRlp.evm_rlp_types"
+        },
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Contracts.RlpDecodeItemContract"
+        },
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Contracts.DecodeItemReturnFacts"
+        },
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+        },
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Contracts.NextUint64BlockEntries"
+        },
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Contracts.ParentHeaderRootFacts"
+        },
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Contracts.RlpDecodeItem"
+        }
+      ],
+      "entries_scopes": [
+        "Z_scope"
+      ],
+      "registrations_imports": [
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Automation.All"
+        },
+        {
+          "mode": "import",
+          "module": "isla.automation"
+        }
+      ],
+      "introductions": [],
+      "hint_umbrella": [],
+      "scoped_imports": [
+        {
+          "target": "entries",
+          "module": "ListNotations"
+        }
+      ],
+      "facts": []
+    },
+    "row_source_paths": [
+      "ZesuSsz/Contracts/NextUint64BlockEntries.v",
+      "ZesuSsz/Contracts/ParentHeaderRootFacts.v",
+      "ZesuSsz/Contracts/RlpDecodeItem.v"
+    ],
+    "input_digest_sources": {
+      "inventory_sha256": "build/stock-zisk/inventory.json",
+      "selected_elf_sha256": "build/stock-zisk/zesu-zisk.elf",
+      "entry_source_sha256": "ZesuSsz/Contracts/NextUint64BlockEntries.v",
+      "contract_sha256": "ZesuSsz/Contracts/NextUint64Contract.v"
+    },
+    "lets": [
+      {
+        "name": "args",
+        "type": "NextUint64Call",
+        "value": "nextUint64Base params"
+      }
+    ],
+    "continuation": {
+      "mode": "none"
+    },
+    "loop_annotations": [
+      {
+        "loop_index": 0,
+        "annotation": {
+          "header_pc": {
+            "kind": "block_pc_ref",
+            "format": "hex8"
+          },
+          "rocq_predicate": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64FoldInvariant",
+          "pure_lemmas": {
+            "preservation": "ZesuSsz.Compliance.NextUint64FoldFacts.nextUint64FoldStep",
+            "exit": "ZesuSsz.Compliance.NextUint64FoldFacts.nextUint64FoldLast"
+          },
+          "registered_step": "ZesuSsz.Compliance.NextUint64LoopSteps.nextUint64Header6318Step",
+          "register_roles": {
+            "current": "x12",
+            "limit": "x13",
+            "accumulator": "x11"
+          },
+          "scope": "Data-only conditional facts. The next-byte lookup and step/last guards remain premises."
+        }
+      }
+    ],
+    "historical_design_metadata": {}
+  },
+  "bodies": [
+    {
+      "at": "0x800d6274",
+      "continuation": {
+        "mode": "none"
+      },
+      "components": [
+        {
+          "kind": "register_collection",
+          "value": "nextUint64SysRegs params"
+        },
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "nextUint64Registers",
+            "owner": "ZesuSsz.Contracts.NextUint64BlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            }
+          ]
+        },
+        {
+          "kind": "byte_array",
+          "address": "nextInputPointer args",
+          "value": {
+            "kind": "symbol_ref",
+            "name": "inputBytes"
+          }
+        },
+        {
+          "kind": "byte_array",
+          "address": "nextSlicePointer args",
+          "value": {
+            "kind": "symbol_ref",
+            "name": "sliceBytes"
+          }
+        },
+        {
+          "kind": "unknown_byte_array",
+          "address": "nextResultPointer args",
+          "length": "16"
+        },
+        {
+          "kind": "unknown_byte_array",
+          "address": "nextStackPointer args - 96",
+          "length": "96"
+        },
+        {
+          "kind": "unknown_byte_array",
+          "address": "nextStackPointer args - 112",
+          "length": "16"
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "nextUint64BoundaryDomain params /\\\n     inputBytes = nextInputBytes args /\\\n     sliceBytes = nextUint64SliceImage (nextInputPointer args) (Z.of_nat (length (nextInputBytes args))) /\\\n     x1 = Z_to_bv 64 (nextReturnAddress args) /\\\n     x2 = Z_to_bv 64 (nextStackPointer args) /\\\n     x8 = nextSavedS0 args /\\\n     x9 = nextSavedS1 args /\\\n     x10 = Z_to_bv 64 (nextResultPointer args) /\\\n     x11 = Z_to_bv 64 (nextSlicePointer args) /\\\n     x18 = nextSavedS2 args /\\\n     x19 = nextSavedS3 args /\\\n     x20 = nextSavedS4 args /\\\n     x21 = nextUint64SavedX21 params /\\\n     x22 = nextUint64SavedX22 params /\\\n     x23 = nextUint64SavedX23 params /\\\n     x24 = nextUint64SavedX24 params /\\\n     x25 = nextUint64SavedX25 params /\\\n     x26 = nextUint64SavedX26 params /\\\n     x27 = nextUint64SavedX27 params"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64BoundaryDomain"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "true"
+        }
+      ]
+    },
+    {
+      "at": "0x800d62b8",
+      "continuation": {
+        "mode": "none"
+      },
+      "components": [
+        {
+          "kind": "register_collection",
+          "value": "nextUint64SysRegs params"
+        },
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "nextUint64Registers",
+            "owner": "ZesuSsz.Contracts.NextUint64BlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            }
+          ]
+        },
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "nextUint64PostMemory",
+            "owner": "ZesuSsz.Contracts.NextUint64BlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "params"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "inputBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "sliceBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "decoded"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "saved"
+            }
+          ]
+        },
+        {
+          "kind": "unknown_byte_array",
+          "address": "nextResultPointer args",
+          "length": "16"
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "nextUint64PostFacts params x1 x2 x8 x9 x18 x19 x20 x21 x22 x23 x24 x25 x26 x27 inputBytes decoded saved /\\\n     x19 = Z_to_bv 64 (nextInputPointer args) /\\\n     sliceBytes = nextUint64SliceImage (nextInputPointer args) (Z.of_nat (length (nextInputBytes args))) /\\\n     nextUint64DecodedFacts params decoded"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64PostFacts"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "true"
+        }
+      ]
+    },
+    {
+      "at": "0x800d62c0",
+      "continuation": {
+        "mode": "none"
+      },
+      "components": [
+        {
+          "kind": "register_collection",
+          "value": "nextUint64SysRegs params"
+        },
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "nextUint64Registers",
+            "owner": "ZesuSsz.Contracts.NextUint64BlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            }
+          ]
+        },
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "nextUint64PostMemory",
+            "owner": "ZesuSsz.Contracts.NextUint64BlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "params"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "inputBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "sliceBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "decoded"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "saved"
+            }
+          ]
+        },
+        {
+          "kind": "unknown_byte_array",
+          "address": "nextResultPointer args",
+          "length": "16"
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "nextUint64PostFacts params x1 x2 x8 x9 x18 x19 x20 x21 x22 x23 x24 x25 x26 x27 inputBytes decoded saved /\\\n     x19 = Z_to_bv 64 (nextInputPointer args) /\\\n     sliceBytes = nextUint64SliceImage (nextInputPointer args) (Z.of_nat (length (nextInputBytes args))) /\\\n     nextUint64DecodedFacts params decoded /\\\n     nextUint64DecodedStatus decoded = 0 /\\\n     x10 = Z_to_bv 64 0"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64PostFacts"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "true"
+        }
+      ]
+    },
+    {
+      "at": "0x800d62cc",
+      "continuation": {
+        "mode": "none"
+      },
+      "components": [
+        {
+          "kind": "register_collection",
+          "value": "nextUint64SysRegs params"
+        },
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "nextUint64Registers",
+            "owner": "ZesuSsz.Contracts.NextUint64BlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            }
+          ]
+        },
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "nextUint64PostMemory",
+            "owner": "ZesuSsz.Contracts.NextUint64BlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "params"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "inputBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "sliceBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "decoded"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "saved"
+            }
+          ]
+        },
+        {
+          "kind": "unknown_byte_array",
+          "address": "nextResultPointer args",
+          "length": "16"
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "nextUint64PostFacts params x1 x2 x8 x9 x18 x19 x20 x21 x22 x23 x24 x25 x26 x27 inputBytes decoded saved /\\\n     x19 = Z_to_bv 64 (nextInputPointer args) /\\\n     sliceBytes = nextUint64SliceImage (nextInputPointer args) (Z.of_nat (length (nextInputBytes args))) /\\\n     nextUint64DecodedFacts params decoded /\\\n     nextUint64DecodedStatus decoded = 0 /\\\n     Z.land (nextUint64DecodedTag decoded) 1 = 0 /\\\n     x10 = Z_to_bv 64 0"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64PostFacts"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "true"
+        }
+      ]
+    },
+    {
+      "at": "0x800d62d8",
+      "continuation": {
+        "mode": "none"
+      },
+      "components": [
+        {
+          "kind": "register_collection",
+          "value": "nextUint64SysRegs params"
+        },
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "nextUint64Registers",
+            "owner": "ZesuSsz.Contracts.NextUint64BlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            }
+          ]
+        },
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "nextUint64PostMemory",
+            "owner": "ZesuSsz.Contracts.NextUint64BlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "params"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "inputBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "sliceBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "decoded"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "saved"
+            }
+          ]
+        },
+        {
+          "kind": "unknown_byte_array",
+          "address": "nextResultPointer args",
+          "length": "16"
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "nextUint64PostFacts params x1 x2 x8 x9 x18 x19 x20 x21 x22 x23 x24 x25 x26 x27 inputBytes decoded saved /\\\n     x19 = Z_to_bv 64 (nextInputPointer args) /\\\n     sliceBytes = nextUint64SliceImage (nextInputPointer args) (Z.of_nat (length (nextInputBytes args))) /\\\n     nextUint64Rejects args"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64PostFacts"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "true"
+        }
+      ]
+    },
+    {
+      "at": "0x800d62e4",
+      "continuation": {
+        "mode": "none"
+      },
+      "components": [
+        {
+          "kind": "register_collection",
+          "value": "nextUint64SysRegs params"
+        },
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "nextUint64Registers",
+            "owner": "ZesuSsz.Contracts.NextUint64BlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            }
+          ]
+        },
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "nextUint64PostMemory",
+            "owner": "ZesuSsz.Contracts.NextUint64BlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "params"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "inputBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "sliceBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "decoded"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "saved"
+            }
+          ]
+        },
+        {
+          "kind": "byte_array",
+          "address": "nextResultPointer args",
+          "value": {
+            "kind": "symbol_ref",
+            "name": "resultBytes"
+          }
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "nextUint64PostFacts params x1 x2 x8 x9 x18 x19 x20 x21 x22 x23 x24 x25 x26 x27 inputBytes decoded saved /\\\n     exists result : NextUint64Return, nextResultBytes result = resultBytes /\\ nextUint64RootResult args result /\\ sliceBytes = nextUint64SliceImage (nextRestPointer result) (nextRestLength result) /\\\n     length resultBytes = 16%nat /\\\n     bv_unsigned x19 = littleEndian (firstn 8 sliceBytes)"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64PostFacts"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "true"
+        }
+      ]
+    },
+    {
+      "at": "0x800d6304",
+      "continuation": {
+        "mode": "none"
+      },
+      "components": [
+        {
+          "kind": "register_collection",
+          "value": "nextUint64SysRegs params"
+        },
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "nextUint64Registers",
+            "owner": "ZesuSsz.Contracts.NextUint64BlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            }
+          ]
+        },
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "nextUint64PostMemory",
+            "owner": "ZesuSsz.Contracts.NextUint64BlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "params"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "inputBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "sliceBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "decoded"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "saved"
+            }
+          ]
+        },
+        {
+          "kind": "unknown_byte_array",
+          "address": "nextResultPointer args",
+          "length": "16"
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "nextUint64PostFacts params x1 x2 x8 x9 x18 x19 x20 x21 x22 x23 x24 x25 x26 x27 inputBytes decoded saved /\\\n     x19 = Z_to_bv 64 (nextInputPointer args) /\\\n     sliceBytes = nextUint64SliceImage (nextInputPointer args) (Z.of_nat (length (nextInputBytes args))) /\\\n     nextUint64AcceptedBytes args decoded /\\\n     bv_unsigned x13 = nextUint64DecodedLength decoded /\\\n     x10 = Z_to_bv 64 8"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64PostFacts"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "true"
+        }
+      ]
+    },
+    {
+      "at": "0x800d6310",
+      "continuation": {
+        "mode": "none"
+      },
+      "components": [
+        {
+          "kind": "register_collection",
+          "value": "nextUint64SysRegs params"
+        },
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "nextUint64Registers",
+            "owner": "ZesuSsz.Contracts.NextUint64BlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            }
+          ]
+        },
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "nextUint64PostMemory",
+            "owner": "ZesuSsz.Contracts.NextUint64BlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "params"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "inputBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "sliceBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "decoded"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "saved"
+            }
+          ]
+        },
+        {
+          "kind": "unknown_byte_array",
+          "address": "nextResultPointer args",
+          "length": "16"
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "nextUint64PostFacts params x1 x2 x8 x9 x18 x19 x20 x21 x22 x23 x24 x25 x26 x27 inputBytes decoded saved /\\\n     x19 = Z_to_bv 64 (nextInputPointer args) /\\\n     sliceBytes = nextUint64SliceImage (nextInputPointer args) (Z.of_nat (length (nextInputBytes args))) /\\\n     nextUint64AcceptedBytes args decoded /\\\n     nextUint64DecodedLength decoded <> 0 /\\\n     bv_unsigned x13 = nextUint64DecodedLength decoded /\\\n     bv_unsigned x10 = nextUint64DecodedConsumed decoded /\\\n     x11 = Z_to_bv 64 0"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64PostFacts"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "true"
+        }
+      ]
+    },
+    {
+      "at": "0x800d6318",
+      "continuation": {
+        "mode": "none"
+      },
+      "components": [
+        {
+          "kind": "register_collection",
+          "value": "nextUint64SysRegs params"
+        },
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "nextUint64Registers",
+            "owner": "ZesuSsz.Contracts.NextUint64BlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            }
+          ]
+        },
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "nextUint64PostMemory",
+            "owner": "ZesuSsz.Contracts.NextUint64BlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "params"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "inputBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "sliceBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "decoded"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "saved"
+            }
+          ]
+        },
+        {
+          "kind": "unknown_byte_array",
+          "address": "nextResultPointer args",
+          "length": "16"
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "nextUint64PostFacts params x1 x2 x8 x9 x18 x19 x20 x21 x22 x23 x24 x25 x26 x27 inputBytes decoded saved /\\\n     x19 = Z_to_bv 64 (nextInputPointer args) /\\\n     sliceBytes = nextUint64SliceImage (nextInputPointer args) (Z.of_nat (length (nextInputBytes args))) /\\\n     nextUint64FoldInvariant args decoded x12 x13 x11 /\\\n     bv_unsigned x10 = nextUint64DecodedConsumed decoded"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64PostFacts"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "true"
+        }
+      ]
+    },
+    {
+      "at": "0x800d632c",
+      "continuation": {
+        "mode": "none"
+      },
+      "components": [
+        {
+          "kind": "register_collection",
+          "value": "nextUint64SysRegs params"
+        },
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "nextUint64Registers",
+            "owner": "ZesuSsz.Contracts.NextUint64BlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "gpr_group_ref",
+              "policy": "function"
+            }
+          ]
+        },
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "nextUint64PostMemory",
+            "owner": "ZesuSsz.Contracts.NextUint64BlockEntries"
+          },
+          "arguments": [
+            {
+              "kind": "symbol_ref",
+              "name": "params"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "inputBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "sliceBytes"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "decoded"
+            },
+            {
+              "kind": "symbol_ref",
+              "name": "saved"
+            }
+          ]
+        },
+        {
+          "kind": "unknown_byte_array",
+          "address": "nextResultPointer args",
+          "length": "16"
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "nextUint64PostFacts params x1 x2 x8 x9 x18 x19 x20 x21 x22 x23 x24 x25 x26 x27 inputBytes decoded saved /\\\n     x19 = Z_to_bv 64 (nextInputPointer args) /\\\n     sliceBytes = nextUint64SliceImage (nextInputPointer args) (Z.of_nat (length (nextInputBytes args))) /\\\n     nextUint64FoldComplete args decoded x11 /\\\n     bv_unsigned x10 = nextUint64DecodedConsumed decoded"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.NextUint64BlockEntries.nextUint64PostFacts"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "true"
+        }
+      ]
+    }
+  ]
+}

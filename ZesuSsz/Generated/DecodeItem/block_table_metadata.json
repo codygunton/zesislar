@@ -5,7 +5,7 @@
   "source_hashes": {
     "build/stock-zisk/build-recipe.json": "ed8196f2d359dc1a60827a9ccb0267247e8b27f97f2d09763315af159c662e99",
     "build/stock-zisk/cfg.json": "98c4614e6ff7b6e1cb85bdc3b9e600dd85eccd5afacda8b1c5b75ff66db16fc2",
-    "ZesuSsz/Evidence/decode_item_block_design.json": "22134823cd69f084814860d86634696d2f8581ec08bbf2f7d1328189a271e7d2",
+    "ZesuSsz/Evidence/decode_item_block_design.json": "7972636e410074d7d2b3f9ecbe1e80ee4a64fb109b84a0b29c2ee511ab18636c",
     "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
     "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "85a6a567952243f919c2f170cc3bebca6eeb60d14399fb73de8af5a53e9956e0",
     "ZesuSsz/Contracts/RlpDecodeItemContract.v": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
@@ -50,7 +50,7 @@
     "ZesuSsz/Contracts/DecodeItemCompositional.v": "50d8c05339ffe8a09838bc03d61bf9edb424494b75451d249a531e79da93a426",
     "ZesuSsz/Generated/DecodeItem/Entries.v": "a33f75c0a200167d71c9840f1577d761fe51ef45e52c4b3002d61f0b5a0ce333",
     "tools/block/generate_table.py": "e2a481374162f2e633750925abd4592aee116c72749da4d2315a649859450714",
-    "ZesuSsz/Evidence/generate_block_design.py": "240299adc6ab36b4dae6d47a98457245a375f58d3c77956ad8d2383324e944b5",
+    "ZesuSsz/Evidence/generate_block_design.py": "a1de40fde4c6b56e8342b642b4fd89d37887c81b84aad86ba1d62943b4acabed",
     "tools/block/render_support.py": "fdd6d0f3dc019b84fc55a867f1d01eae1ea77bfad729c7aa32d283a28dbf33ff",
     "tools/block/entry_bindings.py": "f68373d49d74fd715204d48189480a8eaa0f816a2438b5763c459165753bc39a",
     "tools/block/entry_schema.py": "3f91d05aced7cb0eaec0b0363d073f0f6dc59bdf638a469d72abda954059a167",
@@ -588,7 +588,7 @@
     "primary_count": 24,
     "auxiliary_count": 4,
     "tool_hashes": {
-      "ZesuSsz/Evidence/generate_block_design.py": "240299adc6ab36b4dae6d47a98457245a375f58d3c77956ad8d2383324e944b5",
+      "ZesuSsz/Evidence/generate_block_design.py": "a1de40fde4c6b56e8342b642b4fd89d37887c81b84aad86ba1d62943b4acabed",
       "tools/block/render_support.py": "fdd6d0f3dc019b84fc55a867f1d01eae1ea77bfad729c7aa32d283a28dbf33ff",
       "tools/block/entry_bindings.py": "f68373d49d74fd715204d48189480a8eaa0f816a2438b5763c459165753bc39a",
       "tools/block/entry_schema.py": "3f91d05aced7cb0eaec0b0363d073f0f6dc59bdf638a469d72abda954059a167",
@@ -681,7 +681,7 @@
     }
   },
   "generated_hashes": {
-    "ZesuSsz/Generated/DecodeItem/BlockTable.v": "fa4b7cbbf021946e7ebe4677a9dd4e351d152cb4c246ebf7ee28f96b407836c1"
+    "ZesuSsz/Generated/DecodeItem/BlockTable.v": "23e0b15c9d851015b534ac60f13b6ef763e6a4e5705be54c9b387106c38597c9"
   },
   "proof_slots": [
     {

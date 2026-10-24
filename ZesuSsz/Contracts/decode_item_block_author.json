@@ -1,0 +1,2980 @@
+{
+  "schema": "p1b.compact-profile.v2",
+  "function": {
+    "inventory_name": "rlp.decodeItem",
+    "prefix": "decodeItem",
+    "root": {
+      "name": "args",
+      "type": "DecodeItemArgs"
+    },
+    "handwritten_owner": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries",
+    "register_policy": "resource_free_gprs",
+    "parameter_order": "semantic_anchor",
+    "profile_layout": "expanded_cfg",
+    "helper_family_owners": {
+      "ZesuSsz.Contracts.RlpDecodeItemContract": "ZesuSsz.Contracts.DecodeItemBranchEntries",
+      "ZesuSsz.Contracts.DecodeItemBranchEntries": "ZesuSsz.Contracts.DecodeItemBranchEntries",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFold": "ZesuSsz.Contracts.RlpDecodeItemFoldEntries",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks": "ZesuSsz.Contracts.DecodeItemBranchEntries",
+      "ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldResources": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+    }
+  },
+  "symbols": [
+    {
+      "name": "returnAddress",
+      "type": "Z"
+    },
+    {
+      "name": "frameBytes",
+      "type": "list (bv 8)"
+    },
+    {
+      "name": "inputPrefix",
+      "type": "bv 8"
+    },
+    {
+      "name": "prefix",
+      "type": "bv 8"
+    },
+    {
+      "name": "rest",
+      "type": "list (bv 8)"
+    },
+    {
+      "name": "outputBytes",
+      "type": "list (bv 8)"
+    },
+    {
+      "name": "locals",
+      "type": "DecodeItemReturnLocals"
+    },
+    {
+      "name": "n",
+      "type": "Z"
+    },
+    {
+      "name": "payloadStart",
+      "type": "Z"
+    },
+    {
+      "name": "lengthBytes",
+      "type": "list (bv 8)"
+    },
+    {
+      "name": "oldAcc",
+      "type": "bv 64"
+    },
+    {
+      "name": "oldCursor",
+      "type": "bv 64"
+    },
+    {
+      "name": "loaded",
+      "type": "bv 64"
+    },
+    {
+      "name": "headerLength",
+      "type": "Z"
+    },
+    {
+      "name": "payloadLength",
+      "type": "Z"
+    }
+  ],
+  "shared": {
+    "design_metadata": {
+      "schema_version": 1,
+      "label": "Static CFG design and invariant hints; no block proof or ELF execution",
+      "proof_status": "design_only",
+      "table_convention": {
+        "entry_type": "(Z * iProp Sigma)",
+        "pc_ownership": "instr_pre pc state supplies PC; entry predicates do not own PC",
+        "existential_binders": "Each row's binders, in their listed order",
+        "resource_application": "Apply resource_predicate to arguments in order",
+        "other_entries": "Each table state stores existential entry parameters. Instruction preconditions convert these families to universal continuations.",
+        "continuations": "Outcome existentials inside shared continuations are not table locals",
+        "code_persistence": "block_table_pre boxes the supplied code resource",
+        "code_resource": "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedCode",
+        "code_source_hashes": {
+          "ZesuSsz/Contracts/DecodeItemSelected.v": null
+        }
+      }
+    },
+    "support_metadata": {
+      "entries_scopes": [
+        "Z_scope"
+      ],
+      "hint_umbrella": [],
+      "scoped_imports": [
+        {
+          "target": "entries",
+          "module": "ListNotations"
+        }
+      ],
+      "registrations_scopes": [
+        "Z_scope"
+      ],
+      "source_hashes": {
+        "ZesuSsz/Automation/FactRegistry.v": null,
+        "ZesuSsz/Compliance/DecodeItemDataWitnessFacts.v": null,
+        "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v": null,
+        "ZesuSsz/Compliance/DecodeItemFoldZeroFacts.v": null,
+        "ZesuSsz/Compliance/DecodeItemInitializationPureFacts.v": null,
+        "ZesuSsz/Compliance/DecodeItemOutputBaseWitnessFacts.v": null,
+        "ZesuSsz/Compliance/DecodeItemRawOutputFacts.v": null,
+        "ZesuSsz/Compliance/DecodeItemS40GuardFacts.v": null,
+        "ZesuSsz/Contracts/RlpDecodeItem.v": null,
+        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": null,
+        "ZesuSsz/Contracts/AbiBytes.v": null,
+        "ZesuSsz/Compliance/DecodeItemSavedFrameWitnesses.v": null,
+        "ZesuSsz/Compliance/DecodeItemCompletedFoldFacts.v": null,
+        "ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.v": null,
+        "ZesuSsz/Compliance/DecodeItemEntryByteIndexFacts.v": null,
+        "ZesuSsz/Compliance/DecodeItemFoldExitFacts.v": null,
+        "ZesuSsz/Compliance/DecodeItemFoldRejectionFacts.v": null,
+        "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v": null,
+        "ZesuSsz/Compliance/DecodeItemInputHeadWordFacts.v": null,
+        "ZesuSsz/Compliance/DecodeItemLoadedEntryFacts.v": null,
+        "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v": null,
+        "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": null,
+        "ZesuSsz/Automation/EntryIntro.v": null,
+        "ZesuSsz/Compliance/DecodeItemDataRegistrations.v": null,
+        "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v": null,
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v": null,
+        "ZesuSsz/Contracts/DecodeItemReturnFacts.v": null,
+        "ZesuSsz/Contracts/RlpDecodeItemContract.v": null
+      }
+    },
+    "source_policies": {
+      "root_boundary": [
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+        "ZesuSsz/Contracts/RlpDecodeItemContract.v",
+        "ZesuSsz/Contracts/ResultImage.v",
+        "ZesuSsz/Contracts/AbiBytes.v"
+      ],
+      "trace_boundary": [
+        "build/stock-zisk/inventory.json",
+        "build/stock-zisk/decodeItem.raw.dump",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+        "ZesuSsz/Contracts/DecodeItemReturnFacts.v"
+      ],
+      "shared_handoff": [
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+        "ZesuSsz/Contracts/RlpDecodeItemContract.v",
+        "ZesuSsz/Contracts/DecodeItemReturnFacts.v",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v",
+        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v",
+        "ZesuSsz/Contracts/RlpDecodeItem.v",
+        "ZesuSsz/Contracts/ResultImage.v",
+        "ZesuSsz/Contracts/AbiBytes.v"
+      ],
+      "return_aggregate": [
+        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v",
+        "ZesuSsz/Contracts/ResultImage.v",
+        "ZesuSsz/Contracts/AbiBytes.v"
+      ],
+      "selected_guard": [
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+        "ZesuSsz/Contracts/RlpDecodeItemContract.v",
+        "ZesuSsz/Contracts/DecodeItemReturnFacts.v",
+        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v"
+      ],
+      "loop_header": [
+        "ZesuSsz/Contracts/RlpDecodeItemByteFold.v",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+        "ZesuSsz/Contracts/DecodeItemReturnFacts.v",
+        "ZesuSsz/Contracts/ResultImage.v",
+        "ZesuSsz/Contracts/AbiBytes.v"
+      ],
+      "return_variant": [
+        "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v",
+        "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
+        "ZesuSsz/Contracts/DecodeItemReturnFacts.v",
+        "ZesuSsz/Contracts/ResultImage.v",
+        "ZesuSsz/Contracts/AbiBytes.v"
+      ]
+    },
+    "input_digest_sources": {
+      "inventory_sha256": "build/stock-zisk/inventory.json",
+      "selected_elf_sha256": "build/stock-zisk/zesu-zisk.elf",
+      "raw_dump_sha256": "build/stock-zisk/decodeItem.raw.dump",
+      "level1_contract_sha256": "ZesuSsz/Contracts/RlpDecodeItemContract.v",
+      "byte_fold_schema_sha256": "ZesuSsz/Contracts/RlpDecodeItemByteFold.v",
+      "byte_fold_sites_sha256": "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v",
+      "byte_fold_blocks_sha256": "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v",
+      "byte_fold_pure_sha256": "ZesuSsz/Proofs/DecodeItem/ByteFoldPure.v",
+      "byte_fold_machine_obligations_sha256": "ZesuSsz/Proofs/DecodeItem/ByteFoldMachineObligations.v"
+    },
+    "lets": [],
+    "continuation": {
+      "mode": "none"
+    },
+    "loop_annotations": [
+      {
+        "loop_index": 0,
+        "annotation": {
+          "header_pc": {
+            "kind": "block_pc_ref",
+            "format": "hex8"
+          },
+          "rocq_predicate": "ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.decodeItemListFoldAt",
+          "header_resource": "ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldResources",
+          "init_resource": "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldInitResources",
+          "checked_resource": "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldCheckedResources",
+          "pure_lemmas": {
+            "entry": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure.decodeItem_fold_entry",
+            "preservation": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure.decodeItem_fold_preservation",
+            "exit": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure.decodeItem_fold_exit"
+          },
+          "machine_obligations": {
+            "entry": "ZesuSsz.Proofs.DecodeItem.ByteFoldMachineObligations.decodeItemListFoldEntry",
+            "preservation": "ZesuSsz.Proofs.DecodeItem.ByteFoldMachineObligations.decodeItemListFoldPreservation",
+            "exit": "ZesuSsz.Proofs.DecodeItem.ByteFoldMachineObligations.decodeItemListFoldExit"
+          },
+          "symbolic_parameters": {
+            "i": {
+              "register": "x15",
+              "register_value": "payloadStart + i"
+            },
+            "n": {
+              "register": "x14",
+              "register_value": "n + 1"
+            },
+            "pointer": {
+              "symbol": "payloadStart",
+              "register_bindings": {
+                "x11": "payloadStart + n",
+                "x15": "payloadStart + i"
+              }
+            },
+            "accumulator": {
+              "register": "x13",
+              "register_value": "bigEndian(firstn i lengthBytes)"
+            }
+          },
+          "body_edge_condition": "i < n",
+          "preheader": "0x800d6ab4",
+          "backedge": "0x800d6ad4",
+          "exit": "0x800d6ad8",
+          "register_bindings": {
+            "x10": "outputPointer",
+            "x11": "payloadStart + n",
+            "x12": "inputLength",
+            "x13": "bigEndian(firstn i lengthBytes)",
+            "x14": "n + 1",
+            "x15": "payloadStart + i",
+            "x16": "arbitrary loaded byte register",
+            "x2": "stackPointer - 16",
+            "x1": "returnAddress",
+            "x8": "stackPointer"
+          },
+          "body_guard": "0 <= i < n <= 8 and 1 <= n"
+        }
+      },
+      {
+        "loop_index": 1,
+        "annotation": {
+          "header_pc": {
+            "kind": "block_pc_ref",
+            "format": "hex8"
+          },
+          "rocq_predicate": "ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.decodeItemStringFoldAt",
+          "header_resource": "ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldResources",
+          "init_resource": "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldInitResources",
+          "checked_resource": "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldCheckedResources",
+          "pure_lemmas": {
+            "entry": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure.decodeItem_fold_entry",
+            "preservation": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure.decodeItem_fold_preservation",
+            "exit": "ZesuSsz.Proofs.DecodeItem.ByteFoldPure.decodeItem_fold_exit"
+          },
+          "machine_obligations": {
+            "entry": "ZesuSsz.Proofs.DecodeItem.ByteFoldMachineObligations.decodeItemStringFoldEntry",
+            "preservation": "ZesuSsz.Proofs.DecodeItem.ByteFoldMachineObligations.decodeItemStringFoldPreservation",
+            "exit": "ZesuSsz.Proofs.DecodeItem.ByteFoldMachineObligations.decodeItemStringFoldExit"
+          },
+          "symbolic_parameters": {
+            "i": {
+              "register": "x15",
+              "register_value": "payloadStart + i"
+            },
+            "n": {
+              "register": "x14",
+              "register_value": "n + 1"
+            },
+            "pointer": {
+              "symbol": "payloadStart",
+              "register_bindings": {
+                "x11": "payloadStart + n",
+                "x15": "payloadStart + i"
+              }
+            },
+            "accumulator": {
+              "register": "x13",
+              "register_value": "bigEndian(firstn i lengthBytes)"
+            }
+          },
+          "body_edge_condition": "i < n",
+          "preheader": "0x800d6a14",
+          "backedge": "0x800d6a34",
+          "exit": "0x800d6a38",
+          "register_bindings": {
+            "x10": "outputPointer",
+            "x11": "payloadStart + n",
+            "x12": "inputLength",
+            "x13": "bigEndian(firstn i lengthBytes)",
+            "x14": "n + 1",
+            "x15": "payloadStart + i",
+            "x16": "arbitrary loaded byte register",
+            "x2": "stackPointer - 16",
+            "x1": "returnAddress",
+            "x8": "stackPointer"
+          },
+          "body_guard": "0 <= i < n <= 8 and 1 <= n"
+        }
+      }
+    ],
+    "historical_design_metadata": {
+      "hashes": {
+        "inventory_sha256": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
+        "selected_elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
+        "raw_dump_sha256": "411a66f2da6ccf7604a95353f3ff89868cb4382b4cf304196926311a95330f7a",
+        "level1_contract_sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+        "byte_fold_schema_sha256": "6f80226eadadd5468b46aebc8c48561f54815f94c1989e465d530f6896e4237d",
+        "byte_fold_sites_sha256": "8f8a64ac921387fef087cafeb68204e045dc5e40f7c2ec9d55c4475b9981bee3",
+        "byte_fold_blocks_sha256": "a504dfa090e1ec91f709ad3c3b5c7df1823dc64159b0b53960a0606a5ffe92a9",
+        "byte_fold_pure_sha256": "2f2e46ac33b6775e884d1e4bc4f989eece0bf476310198837d4224c0b85482d0",
+        "byte_fold_machine_obligations_sha256": "e7d0144db5007b2755bd07c632b336d7f05408a78e8f7a79b7272a0ac6981c0e",
+        "generator_sha256": "43675a39eef56bf77cea5cbaa93152a7148b405549d8e02c9c7b727b650a686a"
+      }
+    },
+    "helper_summaries": {
+      "schema": "p1b.resource-helper-summary.v1",
+      "summaries": [
+        {
+          "schema": "p1b.resource-helper-summary.v1",
+          "helper": {
+            "kind": "global_ref",
+            "name": "decodeItemEntryResources",
+            "owner": "ZesuSsz.Contracts.RlpDecodeItemContract",
+            "role": "handwritten_helper"
+          },
+          "exposure": "top_level_spatial_existentials",
+          "resource_existentials": [
+            {
+              "name": "a3",
+              "type": "bv 64",
+              "register_resource": {
+                "kind": "register",
+                "name": "x13",
+                "value": "RVal_Bits a3"
+              }
+            },
+            {
+              "name": "a4",
+              "type": "bv 64",
+              "register_resource": {
+                "kind": "register",
+                "name": "x14",
+                "value": "RVal_Bits a4"
+              }
+            },
+            {
+              "name": "a5",
+              "type": "bv 64",
+              "register_resource": {
+                "kind": "register",
+                "name": "x15",
+                "value": "RVal_Bits a5"
+              }
+            },
+            {
+              "name": "a6",
+              "type": "bv 64",
+              "register_resource": {
+                "kind": "register",
+                "name": "x16",
+                "value": "RVal_Bits a6"
+              }
+            }
+          ],
+          "source_binding_role": "from_bound_definition"
+        }
+      ]
+    },
+    "derived_table_metadata": {
+      "register_existentials": "primary_top_level_register_resources_and_helper_summaries",
+      "internal_existentials": "primary_loop_bodies_with_equal_ordered_existentials"
+    },
+    "introduction_defaults": {
+      "class": "ZesuSsz.Automation.EntryIntro.ZesuEntryIntro",
+      "iris_contexts": [
+        "!islaG Sigma",
+        "!threadG"
+      ],
+      "parameter_policy": "constructed_entry_binders",
+      "parameter_renames": {
+        "inputPrefix": "prefix"
+      },
+      "type_spelling_policy": {
+        "bv 8": "byte",
+        "list (bv 8)": "list byte"
+      },
+      "instance_name_rule": "PREFIX + Entry + shortHex4(parentPC) + IntroductionRegistered",
+      "explicit_lemma": false,
+      "priority": null,
+      "locality": "export"
+    },
+    "annotation_defaults": {
+      "needed_resources": {
+        "system_register_collection": "reg_col (decodeItemSysRegs args)",
+        "input": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "output": "owned 40-byte result array at decodeItemOutputPointer args",
+        "stack": "(stackPointer - 16) \u21a6\u2098\u2217 frameBytes; length frameBytes = 16",
+        "return_continuation": "decodeItemReturnAddress args and saved x8"
+      },
+      "rocq_entry": {
+        "kind": "constructed_declaration_ref",
+        "role": "entry",
+        "namespace": "generated"
+      }
+    },
+    "selection_order": {
+      "introductions": [
+        "0x800d6a08",
+        "0x800d6aa8",
+        "0x800d6a38",
+        "0x800d6ad8"
+      ]
+    },
+    "registry_defaults": {
+      "locality": "export",
+      "priority": null,
+      "explicit_lemma": false,
+      "constructor_role": "simpl_and_true_fact"
+    },
+    "fact_choices": [
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemS40GuardFacts.decodeItemOutputByte16Bound",
+        "activation_premises": [
+          {
+            "name": "Hlength",
+            "source_premise": 0
+          }
+        ],
+        "priority": 1,
+        "instance_suffix": "Fact"
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemRawOutputFacts.decodeItemRawInputPointer",
+        "activation_premises": [
+          {
+            "name": "Hp",
+            "source_premise": 0
+          },
+          {
+            "name": "Hl",
+            "source_premise": 1
+          },
+          {
+            "name": "Hnowrap",
+            "source_premise": 2
+          }
+        ],
+        "priority": 1,
+        "instance_suffix": "Fact"
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemInitializationPureFacts.decodeItemInitializationCursor",
+        "activation_premises": [
+          {
+            "name": "Hprovenance",
+            "source_premise": 0
+          }
+        ],
+        "priority": 1,
+        "instance_suffix": "Fact"
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemDataWitnessFacts.decodeItemOutputFlagOffset",
+        "activation_premises": [],
+        "instance_suffix": "Hint"
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemEntryGuardFacts.decodeItemStackSubtraction",
+        "activation_premises": [],
+        "instance_suffix": "Hint"
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemFoldZeroFacts.decodeItemFoldZeroAccumulator",
+        "activation_premises": [],
+        "instance_suffix": "Hint"
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemFoldZeroFacts.decodeItemFoldZeroCursor",
+        "activation_premises": [],
+        "instance_suffix": "Hint"
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemOutputBaseWitnessFacts.decodeItemOutputBaseOffset",
+        "activation_premises": [],
+        "instance_suffix": "Hint"
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemOutputBaseWitnessFacts.decodeItemOutputOffset8",
+        "activation_premises": [],
+        "instance_suffix": "Hint"
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemOutputBaseWitnessFacts.decodeItemOutputOffset16",
+        "activation_premises": [],
+        "instance_suffix": "Hint"
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemSavedFrameWitnesses.decodeItemSavedFrameZeroRejected",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          },
+          {
+            "source_premise": 1
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemCompletedFoldFacts.decodeItemCompletedFoldFacts",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemCorrectedWitnessSelections.decodeItemFoldSteppedCursor",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemCorrectedWitnessSelections.decodeItemFoldSteppedAccumulator",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          },
+          {
+            "source_premise": 1
+          },
+          {
+            "source_premise": 2
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemDataWitnessFacts.decodeItemLongStringHeaderWidth",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemDataWitnessFacts.decodeItemLongListHeaderWidth",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemEntryByteIndexFacts.decodeItemEntryByteLookup",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemFoldExitFacts.decodeItemFoldExitAccumulator",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          },
+          {
+            "source_premise": 1
+          },
+          {
+            "source_premise": 2
+          },
+          {
+            "source_premise": 3
+          },
+          {
+            "source_premise": 4
+          },
+          {
+            "source_premise": 5
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemFoldRejectionFacts.decodeItemCompletedFoldRejected",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          },
+          {
+            "source_premise": 1
+          },
+          {
+            "source_premise": 2
+          },
+          {
+            "source_premise": 3
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts.decodeItemInputHeadWitnessFacts",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          },
+          {
+            "source_premise": 1
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts.decodeItemCompletedFoldAcceptedWitnessFacts",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          },
+          {
+            "source_premise": 1
+          },
+          {
+            "source_premise": 2
+          },
+          {
+            "source_premise": 3
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts.decodeItemCompletedFoldFitsGuard",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          },
+          {
+            "source_premise": 1
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts.decodeItemCompletedFoldRejectGuard",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          },
+          {
+            "source_premise": 1
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts.decodeItemInputPointerCastWitnessFacts",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldFirstGuard",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemInitializationPureFacts.decodeItemInitializationStartCursor",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemInputHeadWordFacts.decodeItemInputLengthWordNonzero",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemInputHeadWordFacts.decodeItemWordNonzeroInputHead",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          },
+          {
+            "source_premise": 1
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemInputHeadWordFacts.decodeItemWordNonzeroInputHeadFacts",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          },
+          {
+            "source_premise": 1
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemLoadedEntryFacts.decodeItemLoadedEntryNegative",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          },
+          {
+            "source_premise": 1
+          },
+          {
+            "source_premise": 2
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemLoadedEntryFacts.decodeItemLoadedEntryNonnegative",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          },
+          {
+            "source_premise": 1
+          },
+          {
+            "source_premise": 2
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemLoadedEntryFacts.decodeItemLoadedEntrySign",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          },
+          {
+            "source_premise": 1
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemLoadedEntryFacts.decodeItemLoadedEntrySignedNegative",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemLoadedEntryFacts.decodeItemLoadedEntrySignedNonnegative",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemLoadedEntryFacts.decodeItemLoadedEntryLiteral",
+        "activation_premises": [
+          {
+            "source_premise": 1
+          },
+          {
+            "source_premise": 2
+          },
+          {
+            "source_premise": 0
+          },
+          {
+            "source_premise": 3
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemRawOutputFacts.decodeItemRawInputSuccessor",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          },
+          {
+            "source_premise": 1
+          },
+          {
+            "source_premise": 2
+          },
+          {
+            "source_premise": 3
+          }
+        ],
+        "priority": 1
+      },
+      {
+        "helper": "ZesuSsz.Compliance.DecodeItemS40GuardFacts.decodeItemCompletedListFoldAlternateRejected",
+        "activation_premises": [
+          {
+            "source_premise": 0
+          },
+          {
+            "source_premise": 1
+          },
+          {
+            "source_premise": 2
+          },
+          {
+            "source_premise": 3
+          }
+        ],
+        "priority": 1
+      }
+    ],
+    "bootstrap_choices": [
+      {
+        "unfold": "ZesuSsz.Contracts.Level1.IslarisContractSpec"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.ParentHeaderLevel1.NextUint64InternalHandoffSpec"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.ParentHeaderLevel1.ParentHeaderDirectHandoffSpec"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.ParentHeaderLevel1.ParentHeaderTailHandoffSpec"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemEntryResources"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemExitResources"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedCode"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.ParentHeaderMemcpyService.ziskMemcpyServiceEntry"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.ParentHeaderMemcpyService.ziskMemcpyServiceExit"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.ParentHeaderMemcpyService.ziskMemcpyServiceInstrSpec"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.ParentHeaderMemcpyService.memcpyServicePremise"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.NextUint64Selected.nextUint64SelectedCode"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.NextUint64Selected.nextUint64SelectedEntry"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.NextUint64Selected.nextUint64SelectedExit"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.ParentHeaderSelected.parentHeaderSelectedCode"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.ParentHeaderSelected.parentHeaderSelectedEntry"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.ParentHeaderSelected.parentHeaderSelectedExit"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldResources"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldStringHeader"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldListHeader"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.decodeItemStringFoldAt"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.decodeItemListFoldAt"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldInitResources"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldCheckedResources"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldEntryObligation"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldPreservationObligation"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldExitObligation"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemBranchContinuationAt"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemBranchContinuation"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemBranchBase"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemReturnEntryCore"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItem698cCaseResources"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemReturnOkExit"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemReturnErrorExit"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemReturnBlockObligation"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoinTransferObligation"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0Target"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6a24From6a14"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6a24Backedge"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ac4From6ab4"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ac4Backedge"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6970"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From69e0"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6a08"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6a38"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6a6c"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6aa8"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6ad8"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.DecodeItemErrorBranch.decodeItemErrorBranchEntry"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.DecodeItemCompositional.decodeItemReturnedCallerRegisters"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.DecodeItemCompositional.decodeItemOtherCallerRegisters"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.DecodeItemCompositional.decodeItemOtherCalleeRegisters"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.DecodeItemCompositional.decodeItemUntouchedRegisters"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.DecodeItemCompositional.decodeItemExitResourcesRegisters"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.DecodeItemCompositional.decodeItemEntryResourcesCompositional"
+      },
+      {
+        "unfold": "ZesuSsz.Contracts.DecodeItemCompositional.decodeItemExitResourcesCompositional"
+      },
+      {
+        "regcol": "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemSysRegs"
+      }
+    ],
+    "import_choices": {
+      "entries_imports": [
+        "ZesuSsz.Automation.All",
+        "isla.riscv64.riscv64",
+        "stdpp.bitvector.definitions",
+        "SailStdpp.MachineWord",
+        "EvmSailRlp.evm_rlp_types",
+        "ZesuSsz.Contracts.RlpDecodeItemContract",
+        "ZesuSsz.Contracts.DecodeItemReturnFacts",
+        "ZesuSsz.Contracts.DecodeItemBranchEntries",
+        "ZesuSsz.Contracts.RlpDecodeItemBlockEntries",
+        "ZesuSsz.Contracts.RlpDecodeItemByteFold",
+        "ZesuSsz.Contracts.ResultImage",
+        "ZesuSsz.Contracts.AbiBytes",
+        "lithium.lvar",
+        "ZesuSsz.Contracts.RlpDecodeItem",
+        "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks"
+      ],
+      "registrations_imports": [
+        "ZesuSsz.Automation.All",
+        "isla.automation",
+        "isla.riscv64.riscv64",
+        "lithium.simpl_classes",
+        "stdpp.bitvector.definitions",
+        "SailStdpp.MachineWord",
+        "EvmSailRlp.evm_rlp_types",
+        "ZesuSsz.Contracts.RlpDecodeItemContract",
+        "ZesuSsz.Contracts.DecodeItemReturnFacts",
+        "ZesuSsz.Automation.FactRegistry",
+        "ZesuSsz.Compliance.DecodeItemDataWitnessFacts",
+        "ZesuSsz.Compliance.DecodeItemEntryGuardFacts",
+        "ZesuSsz.Compliance.DecodeItemFoldZeroFacts",
+        "ZesuSsz.Compliance.DecodeItemInitializationPureFacts",
+        "ZesuSsz.Compliance.DecodeItemOutputBaseWitnessFacts",
+        "ZesuSsz.Compliance.DecodeItemRawOutputFacts",
+        "ZesuSsz.Compliance.DecodeItemS40GuardFacts",
+        "ZesuSsz.Contracts.RlpDecodeItem",
+        "ZesuSsz.Contracts.RlpDecodeItemByteFold",
+        "ZesuSsz.Contracts.AbiBytes",
+        "ZesuSsz.Compliance.DecodeItemSavedFrameWitnesses",
+        "ZesuSsz.Compliance.DecodeItemCompletedFoldFacts",
+        "ZesuSsz.Compliance.DecodeItemCorrectedWitnessSelections",
+        "ZesuSsz.Compliance.DecodeItemEntryByteIndexFacts",
+        "ZesuSsz.Compliance.DecodeItemFoldExitFacts",
+        "ZesuSsz.Compliance.DecodeItemFoldRejectionFacts",
+        "ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts",
+        "ZesuSsz.Compliance.DecodeItemInputHeadWordFacts",
+        "ZesuSsz.Compliance.DecodeItemLoadedEntryFacts",
+        "ZesuSsz.Compliance.DecodeItemBranchGuardFacts",
+        "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks",
+        "ZesuSsz.Contracts.DecodeItemBranchEntries",
+        "ZesuSsz.Automation.EntryIntro",
+        "ZesuSsz.Compliance.DecodeItemEntryIntroductions"
+      ]
+    },
+    "metadata_profiles": {
+      "metadata_0": {
+        "lets": [],
+        "existentials": [],
+        "loop": null,
+        "continuation": {
+          "mode": "from_resource_component",
+          "resource_component": 1,
+          "placement": "explicit",
+          "order": "resources_first"
+        }
+      },
+      "metadata_1": {
+        "existentials": [
+          {
+            "name": "x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "x15",
+            "type": "bv 64"
+          },
+          {
+            "name": "x16",
+            "type": "bv 64"
+          }
+        ],
+        "loop": null,
+        "continuation": {
+          "mode": "from_resource_component",
+          "resource_component": 5,
+          "placement": "included_in_base",
+          "order": "resources_first",
+          "helper_summary": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemBranchBase"
+        }
+      },
+      "metadata_2": {
+        "lets": [],
+        "existentials": [
+          {
+            "name": "x14",
+            "type": "bv 64"
+          },
+          {
+            "name": "x15",
+            "type": "bv 64"
+          },
+          {
+            "name": "x16",
+            "type": "bv 64"
+          }
+        ],
+        "loop": null,
+        "continuation": {
+          "mode": "from_resource_component",
+          "resource_component": 5,
+          "placement": "included_in_base",
+          "order": "resources_first",
+          "helper_summary": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemBranchBase"
+        }
+      },
+      "metadata_3": {
+        "lets": [],
+        "existentials": [],
+        "loop": null,
+        "continuation": {
+          "mode": "none"
+        }
+      },
+      "metadata_4": {
+        "lets": [],
+        "existentials": [],
+        "loop": null,
+        "continuation": {
+          "mode": "from_resource_component",
+          "resource_component": 0,
+          "placement": "included_in_base",
+          "order": "resources_first",
+          "helper_summary": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemReturnEntryCore"
+        }
+      },
+      "metadata_5": {
+        "lets": [],
+        "existentials": [
+          {
+            "name": "x15",
+            "type": "bv 64"
+          },
+          {
+            "name": "x16",
+            "type": "bv 64"
+          }
+        ],
+        "loop": null,
+        "continuation": {
+          "mode": "from_resource_component",
+          "resource_component": 5,
+          "placement": "included_in_base",
+          "order": "resources_first",
+          "helper_summary": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemBranchBase"
+        }
+      },
+      "metadata_6": {
+        "lets": [],
+        "existentials": [],
+        "loop": null,
+        "continuation": {
+          "mode": "from_resource_component",
+          "resource_component": 2,
+          "placement": "explicit",
+          "order": "resources_first"
+        }
+      },
+      "metadata_7": {
+        "lets": [],
+        "existentials": [
+          {
+            "name": "n",
+            "type": "lvar \"zesuLoopCount\" Z"
+          },
+          {
+            "name": "i",
+            "type": "lvar \"zesuLoopIndex\" Z"
+          },
+          {
+            "name": "payloadStart",
+            "type": "Z"
+          },
+          {
+            "name": "lengthBytes",
+            "type": "list (bv 8)"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list (bv 8)"
+          },
+          {
+            "name": "loaded",
+            "type": "bv 64"
+          }
+        ],
+        "loop": {
+          "count": {
+            "name": "n",
+            "label": "zesuLoopCount"
+          },
+          "index": {
+            "name": "i",
+            "label": "zesuLoopIndex"
+          },
+          "invariant": {
+            "resource_component": 0
+          }
+        },
+        "continuation": {
+          "mode": "from_resource_component",
+          "resource_component": 2,
+          "placement": "explicit",
+          "order": "resources_first"
+        }
+      },
+      "metadata_8": {
+        "lets": [],
+        "existentials": [
+          {
+            "name": "n",
+            "type": "lvar \"zesuLoopCount\" Z"
+          },
+          {
+            "name": "i",
+            "type": "lvar \"zesuLoopIndex\" Z"
+          },
+          {
+            "name": "payloadStart",
+            "type": "Z"
+          },
+          {
+            "name": "lengthBytes",
+            "type": "list (bv 8)"
+          },
+          {
+            "name": "frameBytes",
+            "type": "list (bv 8)"
+          },
+          {
+            "name": "loaded",
+            "type": "bv 64"
+          }
+        ],
+        "loop": {
+          "count": {
+            "name": "n",
+            "label": "zesuLoopCount"
+          },
+          "index": {
+            "name": "i",
+            "label": "zesuLoopIndex"
+          },
+          "invariant": {
+            "resource_component": 1
+          }
+        },
+        "continuation": {
+          "mode": "from_resource_component",
+          "resource_component": 2,
+          "placement": "explicit",
+          "order": "resources_first"
+        }
+      }
+    },
+    "continuation_summaries": {
+      "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemBranchBase": {
+        "selected_application": {
+          "callee": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemBranchContinuation",
+          "require_unique": true
+        },
+        "explicit_alias_steps": [
+          "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemBranchContinuation"
+        ],
+        "binding_role": "from_bound_definition"
+      },
+      "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemReturnEntryCore": {
+        "selected_application": {
+          "callee": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemBranchContinuation",
+          "require_unique": true
+        },
+        "explicit_alias_steps": [
+          "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemBranchContinuation"
+        ],
+        "binding_role": "from_bound_definition"
+      }
+    },
+    "fact_name_policy": {
+      "activation_names": "source_position_hfact",
+      "instance_suffix_default": "RegisteredFact"
+    }
+  },
+  "bodies": [
+    {
+      "at": "0x800d6960",
+      "source_policy": "root_boundary",
+      "components": [
+        {
+          "kind": "application",
+          "predicate": {
+            "name": "decodeItemEntryResources",
+            "owner": "ZesuSsz.Contracts.RlpDecodeItemContract"
+          },
+          "arguments": [
+            "decodeItemDomainAt returnAddress decodeItemC1BDomain",
+            "args"
+          ]
+        },
+        {
+          "kind": "continuation",
+          "predicate": {
+            "name": "decodeItemBranchContinuationAt",
+            "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+          },
+          "arguments": [
+            "args",
+            "returnAddress"
+          ]
+        }
+      ],
+      "annotations": {
+        "entry_class": "entry_prologue",
+        "needed_resources": {
+          "stack": "(stackPointer - 16) \u21a6\u2098? 16",
+          "return_continuation": "decodeItemBranchContinuationAt args returnAddress"
+        }
+      },
+      "metadata_profile": "metadata_0"
+    },
+    {
+      "at": "0x800d6974",
+      "source_policy": "trace_boundary",
+      "components": [
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemInputHead args inputPrefix rest"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemInputHead"
+              }
+            },
+            {
+              "term": {
+                "value": "bv_unsigned (Z_to_bv 64 (decodeItemInputLength args)) <> 0"
+              },
+              "provenance": {
+                "from_block": "0x800d6960",
+                "from_instruction": "0x800d6970"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "register",
+          "name": "x13",
+          "value": "RVal_Bits x13"
+        },
+        {
+          "kind": "register",
+          "name": "x14",
+          "value": "RVal_Bits x14"
+        },
+        {
+          "kind": "register",
+          "name": "x15",
+          "value": "RVal_Bits x15"
+        },
+        {
+          "kind": "register",
+          "name": "x16",
+          "value": "RVal_Bits x16"
+        },
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemBranchBase",
+            "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+          },
+          "arguments": [
+            "args",
+            "frameBytes",
+            "Z_to_bv 64 (decodeItemInputPointer args)"
+          ],
+          "memory_deltas": []
+        }
+      ],
+      "annotations": {
+        "entry_class": "prefix_load"
+      },
+      "metadata_profile": "metadata_1"
+    },
+    {
+      "at": "0x800d697c",
+      "source_policy": "shared_handoff",
+      "components": [
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemInputHead args inputPrefix rest /\\\n     bv_unsigned inputPrefix <= 127 /\\\n     x13 = Z_to_bv 64 (bv_signed inputPrefix) /\\\n     decodeItemAcceptedFacts args false 0 1 /\\\n     0 <= bv_signed x13"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemInputHead"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "register",
+          "name": "x13",
+          "value": "RVal_Bits x13"
+        },
+        {
+          "kind": "register",
+          "name": "x14",
+          "value": "RVal_Bits x14"
+        },
+        {
+          "kind": "register",
+          "name": "x15",
+          "value": "RVal_Bits x15"
+        },
+        {
+          "kind": "register",
+          "name": "x16",
+          "value": "RVal_Bits x16"
+        },
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemBranchBase",
+            "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+          },
+          "arguments": [
+            "args",
+            "frameBytes",
+            "Z_to_bv 64 (decodeItemInputPointer args)"
+          ],
+          "memory_deltas": []
+        }
+      ],
+      "annotations": {
+        "entry_class": "literal_byte_write"
+      },
+      "metadata_profile": "metadata_2"
+    },
+    {
+      "at": "0x800d698c",
+      "source_policy": "return_aggregate",
+      "components": [
+        {
+          "kind": "disjunction",
+          "alternatives": [
+            {
+              "kind": "application",
+              "predicate": {
+                "suffix": "Literal"
+              },
+              "arguments": [
+                "args",
+                "x11",
+                "x12",
+                "x13",
+                "x14",
+                "x15",
+                "x16",
+                "outputBytes",
+                "frameBytes",
+                "inputPrefix",
+                "rest"
+              ]
+            },
+            {
+              "kind": "application",
+              "predicate": {
+                "suffix": "ShortString"
+              },
+              "arguments": [
+                "args",
+                "x11",
+                "x12",
+                "x13",
+                "x14",
+                "x15",
+                "x16",
+                "outputBytes",
+                "frameBytes",
+                "inputPrefix",
+                "rest"
+              ]
+            }
+          ]
+        }
+      ],
+      "additional_definitions": [
+        {
+          "position": "before",
+          "role": "entry_variant",
+          "suffix": "Literal",
+          "handwritten_owner": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries",
+          "body": {
+            "source_policy": "return_variant",
+            "components": [
+              {
+                "kind": "base",
+                "predicate": {
+                  "name": "decodeItemReturnEntryCore",
+                  "owner": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries"
+                },
+                "arguments": [
+                  "args",
+                  "({| returnA1 := x11; returnA2 := x12; returnA3 := x13; returnA4 := x14; returnA5 := x15; returnA6 := x16; returnStorage := decodeItemBeforeStorage args; returnFrame := frameBytes |} : DecodeItemReturnLocals)"
+                ],
+                "memory_deltas": [
+                  {
+                    "argument_index": 1,
+                    "value": "({| returnA1 := x11; returnA2 := x12; returnA3 := x13; returnA4 := x14; returnA5 := x15; returnA6 := x16; returnStorage := outputBytes; returnFrame := frameBytes |} : DecodeItemReturnLocals)"
+                  }
+                ]
+              },
+              {
+                "kind": "pure",
+                "terms": [
+                  {
+                    "term": {
+                      "value": "decodeItemInputHead args inputPrefix rest /\\\n     (bv_unsigned inputPrefix <= 127) /\\\n     bv_unsigned (x11) = (decodeItemInputPointer args +\n       (0))%Z /\\\n     bv_unsigned (x12) =\n       (1)%Z /\\\n     decodeItemAcceptedFacts args false (0)\n       (1) /\\\n     fieldImage outputBytes 0 (word64Bytes (bv_unsigned x11)) /\\\n     fieldImage outputBytes 8 (word64Bytes (bv_unsigned x12)) /\\\n     fieldImage (outputBytes) 32 [Z_to_bv 8 0; Z_to_bv 8 0] /\\\n     preservedImage (decodeItemBeforeStorage args) (outputBytes) 17 7 /\\\n     preservedImage (decodeItemBeforeStorage args) (outputBytes) 34 6"
+                    },
+                    "provenance": {
+                      "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemInputHead"
+                    }
+                  }
+                ]
+              }
+            ],
+            "metadata_profile": "metadata_4"
+          }
+        },
+        {
+          "position": "before",
+          "role": "entry_variant",
+          "suffix": "ShortString",
+          "handwritten_owner": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries",
+          "body": {
+            "source_policy": "return_variant",
+            "components": [
+              {
+                "kind": "base",
+                "predicate": {
+                  "name": "decodeItemReturnEntryCore",
+                  "owner": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries"
+                },
+                "arguments": [
+                  "args",
+                  "({| returnA1 := x11; returnA2 := x12; returnA3 := x13; returnA4 := x14; returnA5 := x15; returnA6 := x16; returnStorage := decodeItemBeforeStorage args; returnFrame := frameBytes |} : DecodeItemReturnLocals)"
+                ],
+                "memory_deltas": [
+                  {
+                    "argument_index": 1,
+                    "value": "({| returnA1 := x11; returnA2 := x12; returnA3 := x13; returnA4 := x14; returnA5 := x15; returnA6 := x16; returnStorage := outputBytes; returnFrame := frameBytes |} : DecodeItemReturnLocals)"
+                  }
+                ]
+              },
+              {
+                "kind": "pure",
+                "terms": [
+                  {
+                    "term": {
+                      "value": "decodeItemInputHead args inputPrefix rest /\\\n     (129 <= bv_unsigned inputPrefix <= 183) /\\\n     bv_unsigned (x11) = (decodeItemInputPointer args +\n       (1))%Z /\\\n     bv_unsigned x13 =\n       (bv_unsigned inputPrefix - 128) /\\\n     bv_unsigned (x12) =\n       ((1 + (bv_unsigned inputPrefix - 128))%Z) /\\\n     decodeItemAcceptedFacts args false (1)\n       (bv_unsigned inputPrefix - 128) /\\\n     fieldImage outputBytes 0 (word64Bytes (bv_unsigned x11)) /\\\n     fieldImage outputBytes 8 (word64Bytes (bv_unsigned x13)) /\\\n     fieldImage (outputBytes) 32 [Z_to_bv 8 0; Z_to_bv 8 0] /\\\n     preservedImage (decodeItemBeforeStorage args) (outputBytes) 17 7 /\\\n     preservedImage (decodeItemBeforeStorage args) (outputBytes) 34 6"
+                    },
+                    "provenance": {
+                      "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemInputHead"
+                    }
+                  }
+                ]
+              }
+            ],
+            "metadata_profile": "metadata_4"
+          }
+        }
+      ],
+      "annotations": {
+        "entry_class": "literal_or_short_string_return",
+        "return_clause": {
+          "contract": "C1AResult or C1BResult / candidateResult40 / successResult40",
+          "cases": [
+            {
+              "incoming_from": "0x800d697c",
+              "candidate": "candidateSuccess false 0 1",
+              "payload_pointer": "inputPointer"
+            },
+            {
+              "incoming_from": "0x800d69e8",
+              "candidate": "candidateSuccess false 1 (prefix - 128)",
+              "payload_pointer": "inputPointer + 1"
+            }
+          ]
+        },
+        "incoming_edge_variants": [
+          {
+            "from_block": "0x800d697c",
+            "declaration": {
+              "kind": "local_declaration_ref",
+              "role": "entry_variant",
+              "suffix": "Literal",
+              "namespace": "handwritten"
+            }
+          },
+          {
+            "from_block": "0x800d69e8",
+            "declaration": {
+              "kind": "local_declaration_ref",
+              "role": "entry_variant",
+              "suffix": "ShortString",
+              "namespace": "handwritten"
+            }
+          }
+        ]
+      },
+      "metadata_profile": "metadata_3"
+    },
+    {
+      "at": "0x800d69a4",
+      "source_policy": "shared_handoff",
+      "components": [
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemInputHead args inputPrefix rest /\\\n     128 <= bv_unsigned inputPrefix <= 255 /\\\n     x13 = Z_to_bv 64 (bv_signed inputPrefix) /\\\n     bv_signed x13 < 0"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemInputHead"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "register",
+          "name": "x13",
+          "value": "RVal_Bits x13"
+        },
+        {
+          "kind": "register",
+          "name": "x14",
+          "value": "RVal_Bits x14"
+        },
+        {
+          "kind": "register",
+          "name": "x15",
+          "value": "RVal_Bits x15"
+        },
+        {
+          "kind": "register",
+          "name": "x16",
+          "value": "RVal_Bits x16"
+        },
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemBranchBase",
+            "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+          },
+          "arguments": [
+            "args",
+            "frameBytes",
+            "Z_to_bv 64 (decodeItemInputPointer args)"
+          ],
+          "memory_deltas": []
+        }
+      ],
+      "annotations": {
+        "entry_class": "high_prefix_dispatch",
+        "branch_constant_facts": {
+          "x14": 128
+        }
+      },
+      "metadata_profile": "metadata_2"
+    },
+    {
+      "at": "0x800d69b0",
+      "source_policy": "shared_handoff",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemReturnEntryCore",
+            "owner": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries"
+          },
+          "arguments": [
+            "args",
+            "locals"
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemInputHead args inputPrefix rest /\\\n     bv_unsigned inputPrefix = 128 /\\\n     decodeItemAcceptedFacts args false 1 0 /\\\n     returnStorage locals = decodeItemBeforeStorage args /\\\n     returnA1 locals = Z_to_bv 64 (decodeItemInputPointer args) /\\\n     returnA2 locals = Z_to_bv 64 (decodeItemInputLength args)"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemInputHead"
+              }
+            }
+          ]
+        }
+      ],
+      "annotations": {
+        "entry_class": "empty_string_return",
+        "return_clause": {
+          "contract": "C1AResult or C1BResult / candidateResult40 / successResult40",
+          "cases": [
+            {
+              "candidate": "candidateSuccess false 1 0",
+              "payload_pointer": "1 (empty-string sentinel)"
+            }
+          ]
+        }
+      },
+      "metadata_profile": "metadata_4"
+    },
+    {
+      "at": "0x800d69d8",
+      "source_policy": "shared_handoff",
+      "components": [
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemInputHead args inputPrefix rest"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemInputHead"
+              }
+            },
+            {
+              "term": {
+                "value": "129 <= bv_unsigned inputPrefix <= 255 /\\\n     bv_unsigned x13 = bv_unsigned inputPrefix /\\\n     x13 <> Z_to_bv 64 128"
+              },
+              "provenance": {
+                "from_block": "0x800d69a4",
+                "from_instruction": "0x800d69ac"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "register",
+          "name": "x13",
+          "value": "RVal_Bits x13"
+        },
+        {
+          "kind": "register",
+          "name": "x14",
+          "value": "RVal_Bits (Z_to_bv 64 128)"
+        },
+        {
+          "kind": "register",
+          "name": "x15",
+          "value": "RVal_Bits x15"
+        },
+        {
+          "kind": "register",
+          "name": "x16",
+          "value": "RVal_Bits x16"
+        },
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemBranchBase",
+            "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+          },
+          "arguments": [
+            "args",
+            "frameBytes",
+            "Z_to_bv 64 (decodeItemInputPointer args)"
+          ],
+          "memory_deltas": []
+        }
+      ],
+      "annotations": {
+        "entry_class": "short_string_class_test",
+        "branch_constant_facts": {
+          "x14": 183
+        }
+      },
+      "metadata_profile": "metadata_5"
+    },
+    {
+      "at": "0x800d69e0",
+      "source_policy": "shared_handoff",
+      "components": [
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemInputHead args inputPrefix rest"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemInputHead"
+              }
+            },
+            {
+              "term": {
+                "value": "129 <= bv_unsigned inputPrefix <= 183 /\\\n     bv_unsigned x13 = bv_unsigned inputPrefix /\\\n     bv_unsigned (Z_to_bv 64 183) >= bv_unsigned x13"
+              },
+              "provenance": {
+                "from_block": "0x800d69d8",
+                "from_instruction": "0x800d69dc"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "register",
+          "name": "x13",
+          "value": "RVal_Bits x13"
+        },
+        {
+          "kind": "register",
+          "name": "x14",
+          "value": "RVal_Bits (Z_to_bv 64 183)"
+        },
+        {
+          "kind": "register",
+          "name": "x15",
+          "value": "RVal_Bits x15"
+        },
+        {
+          "kind": "register",
+          "name": "x16",
+          "value": "RVal_Bits x16"
+        },
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemBranchBase",
+            "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+          },
+          "arguments": [
+            "args",
+            "frameBytes",
+            "Z_to_bv 64 (decodeItemInputPointer args)"
+          ],
+          "memory_deltas": []
+        }
+      ],
+      "annotations": {
+        "entry_class": "short_string_length_test"
+      },
+      "metadata_profile": "metadata_5"
+    },
+    {
+      "at": "0x800d69e8",
+      "source_policy": "shared_handoff",
+      "components": [
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemInputHead args inputPrefix rest"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemInputHead"
+              }
+            },
+            {
+              "term": {
+                "value": "129 <= bv_unsigned inputPrefix <= 183 /\\\n     bv_unsigned x13 = bv_unsigned inputPrefix - 128 /\\\n     decodeItemAcceptedFacts args false 1 (bv_unsigned inputPrefix - 128) /\\\n     bv_unsigned x13 <\n      bv_unsigned (Z_to_bv 64 (decodeItemInputLength args))"
+              },
+              "provenance": {
+                "from_block": "0x800d69e0",
+                "from_instruction": "0x800d69e4"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "register",
+          "name": "x13",
+          "value": "RVal_Bits x13"
+        },
+        {
+          "kind": "register",
+          "name": "x14",
+          "value": "RVal_Bits (Z_to_bv 64 183)"
+        },
+        {
+          "kind": "register",
+          "name": "x15",
+          "value": "RVal_Bits x15"
+        },
+        {
+          "kind": "register",
+          "name": "x16",
+          "value": "RVal_Bits x16"
+        },
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemBranchBase",
+            "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+          },
+          "arguments": [
+            "args",
+            "frameBytes",
+            "Z_to_bv 64 (decodeItemInputPointer args)"
+          ],
+          "memory_deltas": []
+        }
+      ],
+      "annotations": {
+        "entry_class": "short_string_write"
+      },
+      "metadata_profile": "metadata_5"
+    },
+    {
+      "at": "0x800d6a00",
+      "source_policy": "shared_handoff",
+      "components": [
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemInputHead args inputPrefix rest"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemInputHead"
+              }
+            },
+            {
+              "term": {
+                "value": "184 <= bv_unsigned inputPrefix <= 255 /\\\n     bv_unsigned x13 = bv_unsigned inputPrefix /\\\n     bv_unsigned (Z_to_bv 64 183) < bv_unsigned x13"
+              },
+              "provenance": {
+                "from_block": "0x800d69d8",
+                "from_instruction": "0x800d69dc"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "register",
+          "name": "x13",
+          "value": "RVal_Bits x13"
+        },
+        {
+          "kind": "register",
+          "name": "x14",
+          "value": "RVal_Bits (Z_to_bv 64 183)"
+        },
+        {
+          "kind": "register",
+          "name": "x15",
+          "value": "RVal_Bits x15"
+        },
+        {
+          "kind": "register",
+          "name": "x16",
+          "value": "RVal_Bits x16"
+        },
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemBranchBase",
+            "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+          },
+          "arguments": [
+            "args",
+            "frameBytes",
+            "Z_to_bv 64 (decodeItemInputPointer args)"
+          ],
+          "memory_deltas": []
+        }
+      ],
+      "annotations": {
+        "entry_class": "list_or_long_string_dispatch",
+        "branch_constant_facts": {
+          "x14": 192
+        }
+      },
+      "metadata_profile": "metadata_5"
+    },
+    {
+      "at": "0x800d6a08",
+      "source_policy": "selected_guard",
+      "components": [
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemInputHead args inputPrefix rest"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemInputHead"
+              }
+            },
+            {
+              "term": {
+                "value": "184 <= bv_unsigned inputPrefix <= 191 /\\\n     bv_unsigned x13 = bv_unsigned inputPrefix /\\\n     bv_unsigned x13 < bv_unsigned (Z_to_bv 64 192)"
+              },
+              "provenance": {
+                "from_block": "0x800d6a00",
+                "from_instruction": "0x800d6a04"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "register",
+          "name": "x13",
+          "value": "RVal_Bits x13"
+        },
+        {
+          "kind": "register",
+          "name": "x14",
+          "value": "RVal_Bits (Z_to_bv 64 192)"
+        },
+        {
+          "kind": "register",
+          "name": "x15",
+          "value": "RVal_Bits x15"
+        },
+        {
+          "kind": "register",
+          "name": "x16",
+          "value": "RVal_Bits x16"
+        },
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemBranchBase",
+            "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+          },
+          "arguments": [
+            "args",
+            "frameBytes",
+            "Z_to_bv 64 (decodeItemInputPointer args)"
+          ],
+          "memory_deltas": []
+        }
+      ],
+      "introduction": {
+        "helper": {
+          "kind": "global_ref",
+          "name": "decodeItemEntry6a08Introduction",
+          "owner": "ZesuSsz.Compliance.DecodeItemEntryIntroductions",
+          "role": "handwritten_helper"
+        },
+        "facts": {
+          "kind": "text",
+          "value": "(exists (n payloadStart : Z) (lengthBytes : list byte),\n    (n = bv_unsigned prefix - 183 /\\\n    payloadStart = decodeItemInputPointer args + 1 /\\\n    lengthBytes = firstn (Z.to_nat n) rest /\\\n    1 <= n <= 8 /\\\n    decodeItemFoldProvenance args false prefix rest n payloadStart lengthBytes) /\\\n    decodeItemC1BDomain args /\\\n    decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args /\\\n    decodeItemSavedFrameFacts args frameBytes)%Z"
+        }
+      },
+      "annotations": {
+        "entry_class": "long_string_width_test"
+      },
+      "metadata_profile": "metadata_5"
+    },
+    {
+      "at": "0x800d6a14",
+      "source_policy": "shared_handoff",
+      "components": [
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemC1BDomain args /\\\n     decodeItemFoldProvenance args false\n     inputPrefix rest n payloadStart lengthBytes /\\\n     bv_unsigned (Z_to_bv 64 n) <\n      bv_unsigned (Z_to_bv 64 (decodeItemInputLength args)) /\\\n    decodeItemSavedFrameFacts args frameBytes"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemC1BDomain"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemFoldInitResources",
+            "owner": "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks"
+          },
+          "arguments": [
+            "args",
+            "n",
+            "payloadStart",
+            "lengthBytes",
+            "frameBytes",
+            "oldAcc",
+            "oldCursor",
+            "loaded"
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "continuation",
+          "predicate": {
+            "name": "decodeItemBranchContinuation",
+            "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+          },
+          "arguments": [
+            "args"
+          ]
+        }
+      ],
+      "annotations": {
+        "entry_class": "long_string_fold_initialization"
+      },
+      "metadata_profile": "metadata_6"
+    },
+    {
+      "at": "0x800d6a24",
+      "source_policy": "loop_header",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemByteFoldStringHeader",
+            "owner": "ZesuSsz.Contracts.RlpDecodeItemByteFold"
+          },
+          "arguments": [
+            "args",
+            "n",
+            "i",
+            "payloadStart",
+            "lengthBytes",
+            "frameBytes",
+            "loaded"
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "i < n /\\\n      decodeItemDomainAt (decodeItemReturnAddress args)\n        decodeItemC1BDomain args /\\\n      decodeItemSavedFrameFacts args frameBytes /\\\n      decodeItemFoldProvenance args false prefix rest n payloadStart lengthBytes"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemFoldProvenance"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "continuation",
+          "predicate": {
+            "name": "decodeItemBranchContinuation",
+            "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+          },
+          "arguments": [
+            "args"
+          ]
+        }
+      ],
+      "additional_definitions": [
+        {
+          "position": "after",
+          "role": "body",
+          "suffix": "",
+          "handwritten_owner": "ZesuSsz.Contracts.RlpDecodeItemFoldEntries",
+          "body": {
+            "source_policy": "loop_header",
+            "components": [
+              {
+                "kind": "pure",
+                "terms": [
+                  {
+                    "term": {
+                      "value": "i < n /\\\n      decodeItemDomainAt (decodeItemReturnAddress args)\n        decodeItemC1BDomain args /\\\n      decodeItemSavedFrameFacts args frameBytes /\\\n      decodeItemFoldProvenance args false prefix rest n payloadStart lengthBytes"
+                    },
+                    "provenance": {
+                      "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemFoldProvenance"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "base",
+                "predicate": {
+                  "name": "decodeItemByteFoldStringHeader",
+                  "owner": "ZesuSsz.Contracts.RlpDecodeItemByteFold"
+                },
+                "arguments": [
+                  "args",
+                  "n",
+                  "i",
+                  "payloadStart",
+                  "lengthBytes",
+                  "frameBytes",
+                  "loaded"
+                ],
+                "memory_deltas": []
+              },
+              {
+                "kind": "continuation",
+                "predicate": {
+                  "name": "decodeItemBranchContinuation",
+                  "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+                },
+                "arguments": [
+                  "args"
+                ]
+              }
+            ],
+            "metadata_profile": "metadata_8"
+          }
+        }
+      ],
+      "annotations": {
+        "entry_class": "long_string_fold_header"
+      },
+      "metadata_profile": "metadata_7"
+    },
+    {
+      "at": "0x800d6a38",
+      "source_policy": "selected_guard",
+      "components": [
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemC1BDomain args"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemC1BDomain"
+              }
+            },
+            {
+              "term": {
+                "value": "decodeItemFoldProvenance args false inputPrefix rest n payloadStart lengthBytes"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemFoldProvenance"
+              }
+            },
+            {
+              "term": {
+                "value": "decodeItemSavedFrameFacts args frameBytes"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemSavedFrameFacts"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemByteFoldResources",
+            "owner": "ZesuSsz.Contracts.RlpDecodeItemByteFold"
+          },
+          "arguments": [
+            "args",
+            "false",
+            "n",
+            "n",
+            "payloadStart",
+            "lengthBytes",
+            "frameBytes",
+            "loaded"
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "continuation",
+          "predicate": {
+            "name": "decodeItemBranchContinuation",
+            "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+          },
+          "arguments": [
+            "args"
+          ]
+        }
+      ],
+      "introduction": {
+        "helper": {
+          "kind": "global_ref",
+          "name": "decodeItemEntry6a38Introduction",
+          "owner": "ZesuSsz.Compliance.DecodeItemEntryIntroductions",
+          "role": "handwritten_helper"
+        },
+        "facts": {
+          "kind": "text",
+          "value": "(exists (headerLength payloadLength : Z),\n    (headerLength = 1 + n /\\ payloadLength = bigEndian lengthBytes /\\\n    (decodeItemFoldLengthFits args n lengthBytes = true ->\n      decodeItemLongAcceptedFacts args false headerLength payloadLength)) /\\\n    decodeItemC1BDomain args /\\\n    decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args /\\\n    decodeItemFoldProvenance args false prefix rest n payloadStart lengthBytes /\\\n    decodeItemSavedFrameFacts args frameBytes /\\\n    decodeItemByteFoldFacts args n n payloadStart lengthBytes /\\\n    decodeItemInputHead args prefix rest /\\ 184 <= bv_unsigned prefix <= 191 /\\\n    n = bv_unsigned prefix - 183 /\\ payloadStart = decodeItemInputPointer args + 1 /\\\n    lengthBytes = firstn (Z.to_nat n) rest /\\\n    (~ bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) <\n    bv_signed (bv_zero_extend 128\n      (Z_to_bv 64 (bigEndian (take (Z.to_nat n) lengthBytes)) + Z_to_bv 64 (n + 1))) ->\n      decodeItemFoldLengthFits args n lengthBytes = true) /\\\n    0 <= payloadLength < word64Modulus /\\\n    bv_unsigned (Z_to_bv 64 (payloadStart + n)) = decodeItemInputPointer args + headerLength /\\\n    bv_unsigned (Z_to_bv 64 (bigEndian lengthBytes)) = payloadLength /\\\n    bv_unsigned (Z_to_bv 64 (bigEndian lengthBytes + n + 1)) =\n      ((headerLength + payloadLength) mod word64Modulus))%Z"
+        }
+      },
+      "annotations": {
+        "entry_class": "long_string_length_check"
+      },
+      "metadata_profile": "metadata_6"
+    },
+    {
+      "at": "0x800d6a40",
+      "source_policy": "shared_handoff",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemReturnEntryCore",
+            "owner": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries"
+          },
+          "arguments": [
+            "args",
+            "locals"
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemInputHead args inputPrefix rest /\\\n     184 <= bv_unsigned inputPrefix <= 191 /\\\n     headerLength = (1 + (bv_unsigned inputPrefix - 183))%Z /\\\n     payloadLength = bigEndian (firstn (Z.to_nat (bv_unsigned inputPrefix - 183)) rest) /\\\n     0 <= payloadLength /\\\n     bv_unsigned (returnA1 locals) = (decodeItemInputPointer args + headerLength)%Z /\\\n     bv_unsigned (returnA3 locals) = payloadLength /\\\n     bv_unsigned (returnA4 locals) = ((headerLength + payloadLength) mod word64Modulus)%Z /\\\n     decodeItemLongAcceptedFacts args false headerLength payloadLength /\\\n     returnStorage locals = decodeItemBeforeStorage args /\\\n     returnA2 locals = Z_to_bv 64 (decodeItemInputLength args)"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemInputHead"
+              }
+            }
+          ]
+        }
+      ],
+      "annotations": {
+        "entry_class": "long_string_return",
+        "return_clause": {
+          "contract": "C1AResult or C1BResult / candidateResult40 / successResult40",
+          "cases": [
+            {
+              "candidate": "candidateSuccess false (1 + width) bigEndian(lengthBytes)",
+              "payload_pointer": "inputPointer + 1 + width",
+              "wrap": "C1A requires headerFits; C1B records binaryWrapCase"
+            }
+          ]
+        }
+      },
+      "metadata_profile": "metadata_4"
+    },
+    {
+      "at": "0x800d6a64",
+      "source_policy": "shared_handoff",
+      "components": [
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemInputHead args inputPrefix rest"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemInputHead"
+              }
+            },
+            {
+              "term": {
+                "value": "192 <= bv_unsigned inputPrefix <= 255 /\\\n     bv_unsigned x13 = bv_unsigned inputPrefix /\\\n     bv_unsigned x13 >= bv_unsigned (Z_to_bv 64 192)"
+              },
+              "provenance": {
+                "from_block": "0x800d6a00",
+                "from_instruction": "0x800d6a04"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "register",
+          "name": "x13",
+          "value": "RVal_Bits x13"
+        },
+        {
+          "kind": "register",
+          "name": "x14",
+          "value": "RVal_Bits (Z_to_bv 64 192)"
+        },
+        {
+          "kind": "register",
+          "name": "x15",
+          "value": "RVal_Bits x15"
+        },
+        {
+          "kind": "register",
+          "name": "x16",
+          "value": "RVal_Bits x16"
+        },
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemBranchBase",
+            "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+          },
+          "arguments": [
+            "args",
+            "frameBytes",
+            "Z_to_bv 64 (decodeItemInputPointer args)"
+          ],
+          "memory_deltas": []
+        }
+      ],
+      "annotations": {
+        "entry_class": "short_or_long_list_dispatch",
+        "branch_constant_facts": {
+          "x14": 248
+        }
+      },
+      "metadata_profile": "metadata_5"
+    },
+    {
+      "at": "0x800d6a6c",
+      "source_policy": "shared_handoff",
+      "components": [
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemInputHead args inputPrefix rest"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemInputHead"
+              }
+            },
+            {
+              "term": {
+                "value": "192 <= bv_unsigned inputPrefix <= 247 /\\\n     bv_unsigned x13 = bv_unsigned inputPrefix /\\\n     bv_unsigned x13 < bv_unsigned (Z_to_bv 64 248)"
+              },
+              "provenance": {
+                "from_block": "0x800d6a64",
+                "from_instruction": "0x800d6a68"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "register",
+          "name": "x13",
+          "value": "RVal_Bits x13"
+        },
+        {
+          "kind": "register",
+          "name": "x14",
+          "value": "RVal_Bits (Z_to_bv 64 248)"
+        },
+        {
+          "kind": "register",
+          "name": "x15",
+          "value": "RVal_Bits x15"
+        },
+        {
+          "kind": "register",
+          "name": "x16",
+          "value": "RVal_Bits x16"
+        },
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemBranchBase",
+            "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+          },
+          "arguments": [
+            "args",
+            "frameBytes",
+            "Z_to_bv 64 (decodeItemInputPointer args)"
+          ],
+          "memory_deltas": []
+        }
+      ],
+      "annotations": {
+        "entry_class": "short_list_length_test"
+      },
+      "metadata_profile": "metadata_5"
+    },
+    {
+      "at": "0x800d6a78",
+      "source_policy": "shared_handoff",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemReturnEntryCore",
+            "owner": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries"
+          },
+          "arguments": [
+            "args",
+            "locals"
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemInputHead args inputPrefix rest /\\\n     192 <= bv_unsigned inputPrefix <= 247 /\\\n     bv_unsigned (returnA1 locals) = decodeItemInputPointer args /\\\n     bv_unsigned (returnA3 locals) = bv_unsigned inputPrefix - 192 /\\\n     decodeItemAcceptedFacts args true 1 (bv_unsigned inputPrefix - 192) /\\\n     returnStorage locals = decodeItemBeforeStorage args /\\\n     returnA2 locals = Z_to_bv 64 (decodeItemInputLength args)"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemInputHead"
+              }
+            }
+          ]
+        }
+      ],
+      "annotations": {
+        "entry_class": "short_list_return",
+        "return_clause": {
+          "contract": "C1AResult or C1BResult / candidateResult40 / successResult40",
+          "cases": [
+            {
+              "candidate": "candidateSuccess true 1 (prefix - 192)",
+              "payload_pointer": "inputPointer + 1"
+            }
+          ]
+        }
+      },
+      "metadata_profile": "metadata_4"
+    },
+    {
+      "at": "0x800d6aa8",
+      "source_policy": "selected_guard",
+      "components": [
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemInputHead args inputPrefix rest"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemInputHead"
+              }
+            },
+            {
+              "term": {
+                "value": "248 <= bv_unsigned inputPrefix <= 255 /\\\n     bv_unsigned x13 = bv_unsigned inputPrefix /\\\n     bv_unsigned x13 >= bv_unsigned (Z_to_bv 64 248)"
+              },
+              "provenance": {
+                "from_block": "0x800d6a64",
+                "from_instruction": "0x800d6a68"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "register",
+          "name": "x13",
+          "value": "RVal_Bits x13"
+        },
+        {
+          "kind": "register",
+          "name": "x14",
+          "value": "RVal_Bits (Z_to_bv 64 248)"
+        },
+        {
+          "kind": "register",
+          "name": "x15",
+          "value": "RVal_Bits x15"
+        },
+        {
+          "kind": "register",
+          "name": "x16",
+          "value": "RVal_Bits x16"
+        },
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemBranchBase",
+            "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+          },
+          "arguments": [
+            "args",
+            "frameBytes",
+            "Z_to_bv 64 (decodeItemInputPointer args)"
+          ],
+          "memory_deltas": []
+        }
+      ],
+      "introduction": {
+        "helper": {
+          "kind": "global_ref",
+          "name": "decodeItemEntry6aa8Introduction",
+          "owner": "ZesuSsz.Compliance.DecodeItemEntryIntroductions",
+          "role": "handwritten_helper"
+        },
+        "facts": {
+          "kind": "text",
+          "value": "(exists (n payloadStart : Z) (lengthBytes : list byte),\n    (n = bv_unsigned prefix - 247 /\\\n    payloadStart = decodeItemInputPointer args + 1 /\\\n    lengthBytes = firstn (Z.to_nat n) rest /\\\n    1 <= n <= 8 /\\\n    decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes) /\\\n    decodeItemC1BDomain args /\\\n    decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args /\\\n    decodeItemSavedFrameFacts args frameBytes)%Z"
+        }
+      },
+      "annotations": {
+        "entry_class": "long_list_width_test"
+      },
+      "metadata_profile": "metadata_5"
+    },
+    {
+      "at": "0x800d6ab4",
+      "source_policy": "shared_handoff",
+      "components": [
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemC1BDomain args /\\\n     decodeItemFoldProvenance args true\n     inputPrefix rest n payloadStart lengthBytes /\\\n     bv_unsigned (Z_to_bv 64 n) <\n      bv_unsigned (Z_to_bv 64 (decodeItemInputLength args)) /\\\n    decodeItemSavedFrameFacts args frameBytes"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemC1BDomain"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemFoldInitResources",
+            "owner": "ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks"
+          },
+          "arguments": [
+            "args",
+            "n",
+            "payloadStart",
+            "lengthBytes",
+            "frameBytes",
+            "oldAcc",
+            "oldCursor",
+            "loaded"
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "continuation",
+          "predicate": {
+            "name": "decodeItemBranchContinuation",
+            "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+          },
+          "arguments": [
+            "args"
+          ]
+        }
+      ],
+      "annotations": {
+        "entry_class": "long_list_fold_initialization"
+      },
+      "metadata_profile": "metadata_6"
+    },
+    {
+      "at": "0x800d6ac4",
+      "source_policy": "loop_header",
+      "components": [
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "i < n /\\\n      decodeItemDomainAt (decodeItemReturnAddress args)\n        decodeItemC1BDomain args /\\\n      decodeItemSavedFrameFacts args frameBytes /\\\n      decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemFoldProvenance"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemByteFoldListHeader",
+            "owner": "ZesuSsz.Contracts.RlpDecodeItemByteFold"
+          },
+          "arguments": [
+            "args",
+            "n",
+            "i",
+            "payloadStart",
+            "lengthBytes",
+            "frameBytes",
+            "loaded"
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "continuation",
+          "predicate": {
+            "name": "decodeItemBranchContinuation",
+            "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+          },
+          "arguments": [
+            "args"
+          ]
+        }
+      ],
+      "additional_definitions": [
+        {
+          "position": "after",
+          "role": "body",
+          "suffix": "",
+          "handwritten_owner": "ZesuSsz.Contracts.RlpDecodeItemFoldEntries",
+          "body": {
+            "source_policy": "loop_header",
+            "components": [
+              {
+                "kind": "pure",
+                "terms": [
+                  {
+                    "term": {
+                      "value": "i < n /\\\n      decodeItemDomainAt (decodeItemReturnAddress args)\n        decodeItemC1BDomain args /\\\n      decodeItemSavedFrameFacts args frameBytes /\\\n      decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes"
+                    },
+                    "provenance": {
+                      "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemFoldProvenance"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "base",
+                "predicate": {
+                  "name": "decodeItemByteFoldListHeader",
+                  "owner": "ZesuSsz.Contracts.RlpDecodeItemByteFold"
+                },
+                "arguments": [
+                  "args",
+                  "n",
+                  "i",
+                  "payloadStart",
+                  "lengthBytes",
+                  "frameBytes",
+                  "loaded"
+                ],
+                "memory_deltas": []
+              },
+              {
+                "kind": "continuation",
+                "predicate": {
+                  "name": "decodeItemBranchContinuation",
+                  "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+                },
+                "arguments": [
+                  "args"
+                ]
+              }
+            ],
+            "metadata_profile": "metadata_8"
+          }
+        }
+      ],
+      "annotations": {
+        "entry_class": "long_list_fold_header"
+      },
+      "metadata_profile": "metadata_8"
+    },
+    {
+      "at": "0x800d6ad8",
+      "source_policy": "selected_guard",
+      "components": [
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemC1BDomain args"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemC1BDomain"
+              }
+            },
+            {
+              "term": {
+                "value": "decodeItemFoldProvenance args true inputPrefix rest n payloadStart lengthBytes"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemFoldProvenance"
+              }
+            },
+            {
+              "term": {
+                "value": "decodeItemSavedFrameFacts args frameBytes"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemSavedFrameFacts"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemByteFoldResources",
+            "owner": "ZesuSsz.Contracts.RlpDecodeItemByteFold"
+          },
+          "arguments": [
+            "args",
+            "true",
+            "n",
+            "n",
+            "payloadStart",
+            "lengthBytes",
+            "frameBytes",
+            "loaded"
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "continuation",
+          "predicate": {
+            "name": "decodeItemBranchContinuation",
+            "owner": "ZesuSsz.Contracts.DecodeItemBranchEntries"
+          },
+          "arguments": [
+            "args"
+          ]
+        }
+      ],
+      "introduction": {
+        "helper": {
+          "kind": "global_ref",
+          "name": "decodeItemEntry6ad8Introduction",
+          "owner": "ZesuSsz.Compliance.DecodeItemEntryIntroductions",
+          "role": "handwritten_helper"
+        },
+        "facts": {
+          "kind": "text",
+          "value": "(exists (headerLength payloadLength : Z),\n    (headerLength = 1 + n /\\ payloadLength = bigEndian lengthBytes /\\\n    (decodeItemFoldLengthFits args n lengthBytes = true ->\n      decodeItemLongAcceptedFacts args true headerLength payloadLength)) /\\\n    decodeItemC1BDomain args /\\\n    decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args /\\\n    decodeItemFoldProvenance args true prefix rest n payloadStart lengthBytes /\\\n    decodeItemSavedFrameFacts args frameBytes /\\\n    decodeItemByteFoldFacts args n n payloadStart lengthBytes /\\\n    decodeItemInputHead args prefix rest /\\ 248 <= bv_unsigned prefix <= 255 /\\\n    n = bv_unsigned prefix - 247 /\\ payloadStart = decodeItemInputPointer args + 1 /\\\n    lengthBytes = firstn (Z.to_nat n) rest /\\\n    (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemInputLength args))) >=\n    bv_signed (bv_zero_extend 128\n      (Z_to_bv 64 (bigEndian (take (Z.to_nat n) lengthBytes)) + Z_to_bv 64 (n + 1))) ->\n      decodeItemFoldLengthFits args n lengthBytes = true) /\\\n    0 <= payloadLength < word64Modulus /\\\n    bv_unsigned (Z_to_bv 64 (payloadStart + n)) = decodeItemInputPointer args + headerLength /\\\n    bv_unsigned (Z_to_bv 64 (bigEndian lengthBytes)) = payloadLength /\\\n    bv_unsigned (Z_to_bv 64 (bigEndian lengthBytes + n + 1)) =\n      ((headerLength + payloadLength) mod word64Modulus))%Z"
+        }
+      },
+      "annotations": {
+        "entry_class": "long_list_length_check"
+      },
+      "metadata_profile": "metadata_6"
+    },
+    {
+      "at": "0x800d6ae0",
+      "source_policy": "shared_handoff",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemReturnEntryCore",
+            "owner": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries"
+          },
+          "arguments": [
+            "args",
+            "locals"
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemRejectedFacts args /\\\n     returnStorage locals = decodeItemBeforeStorage args"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemRejectedFacts"
+              }
+            }
+          ]
+        }
+      ],
+      "annotations": {
+        "entry_class": "error_return",
+        "return_clause": {
+          "contract": "C1AResult or C1BResult / candidateResult40 / errorResult40",
+          "cases": [
+            {
+              "candidate": "candidateError",
+              "error_byte_at_32": 4
+            }
+          ]
+        }
+      },
+      "metadata_profile": "metadata_4"
+    },
+    {
+      "at": "0x800d6b08",
+      "source_policy": "shared_handoff",
+      "components": [
+        {
+          "kind": "base",
+          "predicate": {
+            "name": "decodeItemReturnEntryCore",
+            "owner": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries"
+          },
+          "arguments": [
+            "args",
+            "locals"
+          ],
+          "memory_deltas": []
+        },
+        {
+          "kind": "pure",
+          "terms": [
+            {
+              "term": {
+                "value": "decodeItemInputHead args inputPrefix rest /\\\n     248 <= bv_unsigned inputPrefix <= 255 /\\\n     headerLength = (1 + (bv_unsigned inputPrefix - 247))%Z /\\\n     payloadLength = bigEndian (firstn (Z.to_nat (bv_unsigned inputPrefix - 247)) rest) /\\\n     0 <= payloadLength /\\\n     bv_unsigned (returnA1 locals) = (decodeItemInputPointer args + headerLength)%Z /\\\n     bv_unsigned (returnA3 locals) = payloadLength /\\\n     bv_unsigned (returnA4 locals) = ((headerLength + payloadLength) mod word64Modulus)%Z /\\\n     decodeItemLongAcceptedFacts args true headerLength payloadLength /\\\n     returnStorage locals = decodeItemBeforeStorage args /\\\n     returnA2 locals = Z_to_bv 64 (decodeItemInputLength args)"
+              },
+              "provenance": {
+                "source": "ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemInputHead"
+              }
+            }
+          ]
+        }
+      ],
+      "annotations": {
+        "entry_class": "long_list_return",
+        "return_clause": {
+          "contract": "C1AResult or C1BResult / candidateResult40 / successResult40",
+          "cases": [
+            {
+              "candidate": "candidateSuccess true (1 + width) bigEndian(lengthBytes)",
+              "payload_pointer": "inputPointer + 1 + width",
+              "wrap": "C1A requires headerFits; C1B records binaryWrapCase"
+            }
+          ]
+        }
+      },
+      "metadata_profile": "metadata_4"
+    }
+  ]
+}
