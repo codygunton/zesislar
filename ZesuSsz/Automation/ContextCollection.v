@@ -134,6 +134,15 @@ Ltac2 zesu_context_collect_live (roots : constr list) :=
     end) hyps;
   let seeds := List.fold_left (fun found root =>
     zesu_context_union found (zesu_context_variables root)) (zesu_context_variables target) roots in
+  (* Local definitions can carry facts required by the continuation. *)
+  let seeds := List.fold_left (fun found declaration =>
+    let (name, body, ty) := declaration in
+    match body with
+    | None => found
+    | Some value =>
+        zesu_context_add
+          (zesu_context_union found (zesu_context_declaration_variables body ty)) name
+    end) seeds hyps in
   let kept := zesu_context_dependencies hyps (zesu_context_relevance hyps seeds) in
   List.iter (fun declaration =>
     let (name, _, _) := declaration in
