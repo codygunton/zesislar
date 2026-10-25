@@ -29,10 +29,6 @@
     "reason": "Four fold entries package six Q46 locals each. The predecessor resources carry concrete witnesses. The compiled entailment adapter must introduce those witnesses at each edge; raw register inference is not assumed.",
     "uninferable_existentials": 24
   },
-  "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.v": {
-    "reason": "The 698c and 6ae0 join targets package four output witnesses. The machine edge proof supplies their concrete values from register and memory resources.",
-    "uninferable_existentials": 4
-  },
   "ZesuSsz/Proofs/Tests/CanonicalPureConjunction.v": {
     "reason": "Synthetic fixtures test registered witness selection and failed lookup for six intentionally uninferable existentials.",
     "uninferable_existentials": 6

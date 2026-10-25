@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Proofs.Tests.DecodeItemSuccessorHelpers.
 Require Import ZesuSsz.Generated.DecodeItem.Entries.
 Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import ZesuSsz.Generated.DecodeItem.Registrations.
@@ -8,8 +9,6 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
 Require Import ZesuSsz.Contracts.DecodeItemReturnFacts.
 Require Import ZesuSsz.Contracts.DecodeItemBranchEntries.
-Require Import ZesuSsz.Compliance.DecodeItemStringSuccessorWitnesses.
-Require Import ZesuSsz.Compliance.DecodeItemFoldSuccessorWitnesses.
 From Coq Require Import List ZArith Lia.
 Open Scope Z_scope.
 

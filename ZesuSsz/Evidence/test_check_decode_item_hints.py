@@ -137,7 +137,7 @@ class FunctionHintCoverageTests(unittest.TestCase):
 
     def test_c1b_meaning_requires_the_scoped_error_image_registration(self):
         module = "ZesuSsz.Compliance.DecodeItemExitDataFacts"
-        importer = "ZesuSsz.Compliance.DecodeItemC1BMeaning"
+        importer = "Scaffolding.DecodeItemC1BMeaning"
         self.assertIn(importer, SCOPED_HINT_IMPORTS[module])
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

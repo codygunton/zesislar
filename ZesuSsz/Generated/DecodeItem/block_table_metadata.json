@@ -5,7 +5,7 @@
   "source_hashes": {
     "build/stock-zisk/build-recipe.json": "ed8196f2d359dc1a60827a9ccb0267247e8b27f97f2d09763315af159c662e99",
     "build/stock-zisk/cfg.json": "98c4614e6ff7b6e1cb85bdc3b9e600dd85eccd5afacda8b1c5b75ff66db16fc2",
-    "ZesuSsz/Evidence/decode_item_block_design.json": "7972636e410074d7d2b3f9ecbe1e80ee4a64fb109b84a0b29c2ee511ab18636c",
+    "ZesuSsz/Evidence/decode_item_block_design.json": "ea5f117e720286b56b8a02f806c7d767e9e71745d1269a1978c88ac64c225d34",
     "build/stock-zisk/inventory.json": "7ac1a2169d150975aec1e66369e4cb19a4a7f20e12a485f5c1a3ac46e224e12d",
     "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "85a6a567952243f919c2f170cc3bebca6eeb60d14399fb73de8af5a53e9956e0",
     "ZesuSsz/Contracts/RlpDecodeItemContract.v": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
@@ -45,7 +45,6 @@
     "ZesuSsz/Contracts/NextUint64Selected.v": "895a07a3a322537d848aa1e190515e5163e3a4e50edd2f7d241358b2f7766640",
     "ZesuSsz/Contracts/ParentHeaderSelected.v": "21c4ae10ca952f07291508caba10dcc836a78afad4260661a4ffc26acfd74f7c",
     "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v": "8f8a64ac921387fef087cafeb68204e045dc5e40f7c2ec9d55c4475b9981bee3",
-    "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.v": "d17f7b4e2affd52fff52190393c07a48625521c6489be269bbb12fe8490e47f6",
     "ZesuSsz/Contracts/DecodeItemErrorBranch.v": "08ab01e045cc08e6eb5cceff9e542ed53ce1fd1e34fcd9b4a50c8ba324e83ee7",
     "ZesuSsz/Contracts/DecodeItemCompositional.v": "50d8c05339ffe8a09838bc03d61bf9edb424494b75451d249a531e79da93a426",
     "ZesuSsz/Generated/DecodeItem/Entries.v": "a33f75c0a200167d71c9840f1577d761fe51ef45e52c4b3002d61f0b5a0ce333",
@@ -576,14 +575,13 @@
       "ZesuSsz/Contracts/NextUint64Selected.v": "895a07a3a322537d848aa1e190515e5163e3a4e50edd2f7d241358b2f7766640",
       "ZesuSsz/Contracts/ParentHeaderSelected.v": "21c4ae10ca952f07291508caba10dcc836a78afad4260661a4ffc26acfd74f7c",
       "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v": "8f8a64ac921387fef087cafeb68204e045dc5e40f7c2ec9d55c4475b9981bee3",
-      "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.v": "d17f7b4e2affd52fff52190393c07a48625521c6489be269bbb12fe8490e47f6",
       "ZesuSsz/Contracts/DecodeItemErrorBranch.v": "08ab01e045cc08e6eb5cceff9e542ed53ce1fd1e34fcd9b4a50c8ba324e83ee7",
       "ZesuSsz/Contracts/DecodeItemCompositional.v": "50d8c05339ffe8a09838bc03d61bf9edb424494b75451d249a531e79da93a426"
     },
     "output_source_hashes": {
       "ZesuSsz/Generated/DecodeItem/Entries.v": "a33f75c0a200167d71c9840f1577d761fe51ef45e52c4b3002d61f0b5a0ce333",
       "ZesuSsz/Generated/DecodeItem/Registrations.v": "0135fd04da8ea674630cf4ecca1cbb9e22067d1f17517bdc069654434999fcab",
-      "ZesuSsz/Generated/DecodeItem/BootstrapRegistrations.v": "5e5960f5a5388ff6dda71501552e73e54b838869620c94710118665f980aba99"
+      "ZesuSsz/Generated/DecodeItem/BootstrapRegistrations.v": "79c92dee11ad87bde78f21eacac1d8a86e34a235bd8129c8add1e21c74a06090"
     },
     "primary_count": 24,
     "auxiliary_count": 4,
@@ -602,19 +600,12 @@
     "pc_ownership": "instr_pre pc state supplies PC; entry predicates do not own PC",
     "existential_binders": "Each row's binders, in their listed order",
     "resource_application": "Apply resource_predicate to arguments in order",
-    "internal_existentials": {
-      "entry_pcs": [
-        "0x800d6a24",
-        "0x800d6ac4"
-      ],
-      "binders": [
-        "n",
-        "i",
-        "payloadStart",
-        "lengthBytes",
-        "frameBytes",
-        "loaded"
-      ]
+    "other_entries": "Each table state stores existential entry parameters. Instruction preconditions convert these families to universal continuations.",
+    "continuations": "Outcome existentials inside shared continuations are not table locals",
+    "code_persistence": "block_table_pre boxes the supplied code resource",
+    "code_resource": "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedCode",
+    "code_source_hashes": {
+      "ZesuSsz/Contracts/DecodeItemSelected.v": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804"
     },
     "register_existentials": {
       "0x800d6960": [
@@ -672,16 +663,23 @@
         "x16"
       ]
     },
-    "other_entries": "Each table state stores existential entry parameters. Instruction preconditions convert these families to universal continuations.",
-    "continuations": "Outcome existentials inside shared continuations are not table locals",
-    "code_persistence": "block_table_pre boxes the supplied code resource",
-    "code_resource": "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedCode",
-    "code_source_hashes": {
-      "ZesuSsz/Contracts/DecodeItemSelected.v": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804"
+    "internal_existentials": {
+      "entry_pcs": [
+        "0x800d6a24",
+        "0x800d6ac4"
+      ],
+      "binders": [
+        "n",
+        "i",
+        "payloadStart",
+        "lengthBytes",
+        "frameBytes",
+        "loaded"
+      ]
     }
   },
   "generated_hashes": {
-    "ZesuSsz/Generated/DecodeItem/BlockTable.v": "23e0b15c9d851015b534ac60f13b6ef763e6a4e5705be54c9b387106c38597c9"
+    "ZesuSsz/Generated/DecodeItem/BlockTable.v": "d678d08e914729d5b3bef143149a205e160807c76d868cbcd908dc7f20318c44"
   },
   "proof_slots": [
     {

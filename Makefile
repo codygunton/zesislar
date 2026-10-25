@@ -168,7 +168,7 @@ check-fast: stock-native-indexes check-evidence-tools check-signatures
 	  $(RETAINED_TARGETS)
 
 .PHONY: check-signatures
-check-signatures:
+check-signatures: gate-workspace
 	$(PYTHON) tools/dune_trace_guard.py --canonical-build-dir -- \
 	$(OPAM) dune build --root . --build-dir $(AGENT_BUILD_DIR) \
 	  --cache=enabled -j$(FAST_JOBS) @install \
@@ -383,7 +383,11 @@ traces-closure-indexes:
 # Restore tracked native index datasets before checkers or Dune start.
 STOCK_NATIVE_TRACE_CACHE_DIR ?= $(CURDIR)/_build/stock-zisk/native-trace-cache
 .PHONY: stock-native-indexes
-stock-native-indexes:
+.PHONY: gate-workspace
+gate-workspace:
+	$(PYTHON) tools/gate_workspace.py --workspace . $(if $(GATE_SOURCE_WORKSPACE),--source-workspace $(GATE_SOURCE_WORKSPACE),)
+
+stock-native-indexes: gate-workspace
 	$(PYTHON) $(STOCK_TRACE_DRIVER) --ensure-native-indexes \
 	  --manifest $(STOCK_TRACE_MANIFEST) --cache-dir $(STOCK_NATIVE_TRACE_CACHE_DIR) \
 	  --decode-out $(STOCK_DECODE_TRACE_DIR) --closure-out $(STOCK_CLOSURE_TRACE_DIR) \

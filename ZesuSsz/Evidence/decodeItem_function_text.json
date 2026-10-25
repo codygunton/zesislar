@@ -27,7 +27,6 @@
     "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v",
     "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v",
     "ZesuSsz/Contracts/RlpDecodeItemContract.v",
-    "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.v",
     "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v",
     "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v",
     "ZesuSsz/Contracts/RlpDecodeItemSchema.v",
@@ -36,7 +35,6 @@
   ],
   "introductions": [
     "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v",
-    "ZesuSsz/Compliance/DecodeItemCanonicalAnchors.v",
     "ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.v",
     "ZesuSsz/Compliance/DecodeItemDataWitnessFacts.v",
     "ZesuSsz/Compliance/DecodeItemEntryAdditionalFacts.v",
@@ -57,13 +55,11 @@
     "ZesuSsz/Compliance/DecodeItemSemanticIntroduction.v",
     "ZesuSsz/Compliance/DecodeItemShortListHandoffFacts.v",
     "ZesuSsz/Compliance/DecodeItemStoreSelectionIntroductions.v",
-    "ZesuSsz/Compliance/DecodeItemStringSuccessorWitnesses.v",
     "ZesuSsz/Compliance/KnownBugs.v",
     "ZesuSsz/Compliance/ProjectionTransaction.v",
     "ZesuSsz/Compliance/RlpInputBounds.v"
   ],
   "exit_meanings": [
-    "ZesuSsz/Compliance/DecodeItemC1BMeaning.v",
     "ZesuSsz/Compliance/DecodeItemEmptyStringOutputMeaning.v",
     "ZesuSsz/Compliance/DecodeItemExitMeanings.v",
     "ZesuSsz/Compliance/DecodeItemJoinTransferPure.v",
@@ -88,7 +84,6 @@
     "ZesuSsz/Compliance/DecodeItemFoldExitFacts.v",
     "ZesuSsz/Compliance/DecodeItemFoldInitializationWitnesses.v",
     "ZesuSsz/Compliance/DecodeItemFoldRejectionFacts.v",
-    "ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.v",
     "ZesuSsz/Compliance/DecodeItemFoldZeroFacts.v",
     "ZesuSsz/Compliance/DecodeItemLoopSteps.v",
     "ZesuSsz/Proofs/DecodeItem/ByteFoldPure.v",
@@ -133,7 +128,8 @@
     "tools/block/retry_unavailable.py",
     "tools/block/setup_fallback.py",
     "tools/block/testdata/truncated_root_recorder.txt",
-    "tools/block/testdata/unfolded_header_target.json"
+    "tools/block/testdata/unfolded_header_target.json",
+    "ZesuSsz/Contracts/decode_item_block_author.json"
   ],
   "block_proofs": [
     "ZesuSsz/Generated/DecodeItem/PromotedBodies.v",
@@ -211,7 +207,8 @@
     "ZesuSsz/Compliance/DecodeItemCompliance.v",
     "ZesuSsz/Proofs/DecodeItem/Composition/CompleteFamily.v",
     "ZesuSsz/Proofs/DecodeItem/Composition/CompleteNativeFamily.v",
-    "ZesuSsz/Compliance/DecodeItemCallSpec.v"
+    "ZesuSsz/Compliance/DecodeItemCallSpec.v",
+    "Scaffolding/DecodeItemC1BMeaning.v"
   ],
   "tests_and_exports": [
     "Makefile",
@@ -413,13 +410,12 @@
     "ZesuSsz/Proofs/Tests/DecodeItemImageArithmetic.v",
     "tools/test_check_entry_bindings.py",
     "tools/test_block_calls.py",
-    "ZesuSsz/Proofs/Tests/SailEvalParent.v"
+    "ZesuSsz/Proofs/Tests/SailEvalParent.v",
+    "ZesuSsz/Proofs/Tests/DecodeItemSuccessorHelpers.v"
   ],
   "lemmas": [
     "ZesuSsz/Compliance/ByteFold.v",
     "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v",
-    "ZesuSsz/Compliance/DecodeItemC1BMeaning.v",
-    "ZesuSsz/Compliance/DecodeItemCanonicalAnchors.v",
     "ZesuSsz/Compliance/DecodeItemCompletedFoldFacts.v",
     "ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.v",
     "ZesuSsz/Compliance/DecodeItemDataWitnessFacts.v",
@@ -434,7 +430,6 @@
     "ZesuSsz/Compliance/DecodeItemFoldExitFacts.v",
     "ZesuSsz/Compliance/DecodeItemFoldInitializationWitnesses.v",
     "ZesuSsz/Compliance/DecodeItemFoldRejectionFacts.v",
-    "ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.v",
     "ZesuSsz/Compliance/DecodeItemFoldZeroFacts.v",
     "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v",
     "ZesuSsz/Compliance/DecodeItemInitializationPureFacts.v",
@@ -461,7 +456,6 @@
     "ZesuSsz/Compliance/DecodeItemShortListHandoffFacts.v",
     "ZesuSsz/Compliance/DecodeItemShortListOutputMeaning.v",
     "ZesuSsz/Compliance/DecodeItemStoreSelectionIntroductions.v",
-    "ZesuSsz/Compliance/DecodeItemStringSuccessorWitnesses.v",
     "ZesuSsz/Compliance/EvmSailAdapter.v",
     "ZesuSsz/Compliance/KnownBugs.v",
     "ZesuSsz/Compliance/ProjectionTransaction.v",
@@ -478,8 +472,8 @@
       "path": "Makefile",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "7af33bfc945a7f9f3e75a19b039341e3b9a4f3f160e573a43ba8b5983738192e",
-      "file_lines": 400,
+      "sha256": "7cbf4d9ff96f970a58cfc0038aabc0c6d0f10014cb05f272b833518e8cb1652d",
+      "file_lines": 405,
       "line_ranges": [
         [
           47,
@@ -494,24 +488,24 @@
           119
         ],
         [
-          177,
-          177
+          178,
+          178
         ],
         [
-          305,
-          306
+          306,
+          307
         ],
         [
-          366,
-          366
+          367,
+          367
         ],
         [
-          372,
-          373
+          373,
+          374
         ],
         [
-          375,
-          375
+          376,
+          376
         ]
       ],
       "counted_lines": 12,
@@ -522,7 +516,7 @@
       "path": "Scaffolding/DecodeItemApplyChain.v",
       "category": "composition",
       "scope": "whole_file",
-      "sha256": "b121363063cd74cd2a21c60c5fa665c6abc8ca0a97bdec0a3028472daae51f22",
+      "sha256": "42b6d4c951cc5333f06634d5354c4388a4d4dc6f34604c697963c5693623d4ee",
       "file_lines": 54,
       "line_ranges": [
         [
@@ -622,36 +616,6 @@
         ]
       ],
       "counted_lines": 130,
-      "text_kind": "hand_written"
-    },
-    {
-      "path": "ZesuSsz/Compliance/DecodeItemC1BMeaning.v",
-      "category": "exit_meanings",
-      "scope": "whole_file",
-      "sha256": "20b30349b54736fe18a5a890e0b1a9019c8eefbd47bb18e27d4ab41ef53df8b7",
-      "file_lines": 152,
-      "line_ranges": [
-        [
-          1,
-          152
-        ]
-      ],
-      "counted_lines": 152,
-      "text_kind": "hand_written"
-    },
-    {
-      "path": "ZesuSsz/Compliance/DecodeItemCanonicalAnchors.v",
-      "category": "introductions",
-      "scope": "whole_file",
-      "sha256": "67fb2e98ce96bb8301b679f88069010a2c25a28f00555644bb68e304d62c8e9c",
-      "file_lines": 122,
-      "line_ranges": [
-        [
-          1,
-          122
-        ]
-      ],
-      "counted_lines": 122,
       "text_kind": "hand_written"
     },
     {
@@ -895,21 +859,6 @@
       "text_kind": "hand_written"
     },
     {
-      "path": "ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.v",
-      "category": "loop_steps",
-      "scope": "whole_file",
-      "sha256": "23042e2ce396d29df316cc59a9765f21a38137fe9ed5ee97d7ca239cf0f296aa",
-      "file_lines": 196,
-      "line_ranges": [
-        [
-          1,
-          196
-        ]
-      ],
-      "counted_lines": 196,
-      "text_kind": "hand_written"
-    },
-    {
       "path": "ZesuSsz/Compliance/DecodeItemFoldZeroFacts.v",
       "category": "loop_steps",
       "scope": "whole_file",
@@ -943,15 +892,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemHints.v",
       "category": "registrations",
       "scope": "whole_file",
-      "sha256": "7218411c9e92634a48660098e910333e90a445865a0771eef4edce4d844b5d05",
-      "file_lines": 42,
+      "sha256": "392a2ec1756b32db83fc419ec94e9bd80ee14f922d4e343b752eeebb6963ad46",
+      "file_lines": 39,
       "line_ranges": [
         [
           1,
-          42
+          39
         ]
       ],
-      "counted_lines": 42,
+      "counted_lines": 39,
       "text_kind": "hand_written"
     },
     {
@@ -1108,15 +1057,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemPathAgreement.v",
       "category": "exit_meanings",
       "scope": "whole_file",
-      "sha256": "d0093d2032924b81ef1e92d72c5d446f8832afbfd0e7905c3357ad326cd241b4",
-      "file_lines": 254,
+      "sha256": "5bcbea855055b79774a53c77a5a9721059d8ef48588c624cc1c0c6b7ef585fb6",
+      "file_lines": 233,
       "line_ranges": [
         [
           1,
-          254
+          233
         ]
       ],
-      "counted_lines": 254,
+      "counted_lines": 233,
       "text_kind": "hand_written"
     },
     {
@@ -1153,15 +1102,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemReturnExitResources.v",
       "category": "exit_meanings",
       "scope": "whole_file",
-      "sha256": "b053984a9dbfefecf8d5d2e6f087649db1fa9006c36ba234f79e769c30ec7ba3",
-      "file_lines": 97,
+      "sha256": "3f6ba83d725fc5eaab42ce991150601a6b9349fc2d066c7660fe5979c6afb055",
+      "file_lines": 83,
       "line_ranges": [
         [
           1,
-          97
+          83
         ]
       ],
-      "counted_lines": 97,
+      "counted_lines": 83,
       "text_kind": "hand_written"
     },
     {
@@ -1258,15 +1207,15 @@
       "path": "ZesuSsz/Compliance/DecodeItemSemanticIntroduction.v",
       "category": "introductions",
       "scope": "whole_file",
-      "sha256": "3648040cdc1b86178e273cbe4b243a1bcbf6d102af80ffead88d34d2b81553de",
-      "file_lines": 191,
+      "sha256": "ae3516c15bf351eeb9334d9775cbdbee0d8ffba842899237654b25de6037cfcb",
+      "file_lines": 178,
       "line_ranges": [
         [
           1,
-          191
+          178
         ]
       ],
-      "counted_lines": 191,
+      "counted_lines": 178,
       "text_kind": "hand_written"
     },
     {
@@ -1312,21 +1261,6 @@
         ]
       ],
       "counted_lines": 11,
-      "text_kind": "hand_written"
-    },
-    {
-      "path": "ZesuSsz/Compliance/DecodeItemStringSuccessorWitnesses.v",
-      "category": "introductions",
-      "scope": "whole_file",
-      "sha256": "e9f76770e24a2d8213e14c4c1d300153e1941e7ead6aca6af9347c002b2aac60",
-      "file_lines": 62,
-      "line_ranges": [
-        [
-          1,
-          62
-        ]
-      ],
-      "counted_lines": 62,
       "text_kind": "hand_written"
     },
     {
@@ -1607,21 +1541,6 @@
       "text_kind": "hand_written"
     },
     {
-      "path": "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.v",
-      "category": "contracts",
-      "scope": "whole_file",
-      "sha256": "d17f7b4e2affd52fff52190393c07a48625521c6489be269bbb12fe8490e47f6",
-      "file_lines": 151,
-      "line_ranges": [
-        [
-          1,
-          151
-        ]
-      ],
-      "counted_lines": 151,
-      "text_kind": "hand_written"
-    },
-    {
       "path": "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v",
       "category": "contracts",
       "scope": "whole_file",
@@ -1670,15 +1589,15 @@
       "path": "ZesuSsz/Contracts/decode_item_block_design.json",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "a6037e61169ca38375ede6a3abca73e1552563e0a8a503650a0c0069f129a2d6",
-      "file_lines": 6650,
+      "sha256": "df6faca09478a50836074c5c0e4f1a7a45e2c80a89398758c80ba714fb14088a",
+      "file_lines": 6632,
       "line_ranges": [
         [
           1,
-          6650
+          6632
         ]
       ],
-      "counted_lines": 6650,
+      "counted_lines": 6632,
       "text_kind": "data_table"
     },
     {
@@ -2284,7 +2203,7 @@
       "path": "ZesuSsz/Evidence/check_decode_item_hints.py",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "8ab326c28aed857c0c96ffe5fa658db36c57a445cf9e5a434d04dade345f193d",
+      "sha256": "ea539fe49fc287440f66a612f2d01b1d041a1e5a9aa6cdc6d32156463d0c1029",
       "file_lines": 221,
       "line_ranges": [
         [
@@ -2498,14 +2417,14 @@
       "role": "measurement_metadata",
       "scope": "whole_file",
       "sha256": null,
-      "file_lines": 9342,
+      "file_lines": 9320,
       "line_ranges": [
         [
           1,
-          9342
+          9320
         ]
       ],
-      "counted_lines": 9342,
+      "counted_lines": 9320,
       "text_kind": "hand_written"
     },
     {
@@ -2527,15 +2446,15 @@
       "path": "ZesuSsz/Evidence/decode_item_block_design.json",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "22134823cd69f084814860d86634696d2f8581ec08bbf2f7d1328189a271e7d2",
-      "file_lines": 6636,
+      "sha256": "ea5f117e720286b56b8a02f806c7d767e9e71745d1269a1978c88ac64c225d34",
+      "file_lines": 6618,
       "line_ranges": [
         [
           1,
-          6636
+          6618
         ]
       ],
-      "counted_lines": 6636,
+      "counted_lines": 6618,
       "text_kind": "data_table"
     },
     {
@@ -3775,15 +3694,15 @@
       "path": "ZesuSsz/Evidence/spec_shape_baseline.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "294311b8b7ae9d6a17ce6373fabcc846719cd71af3533a112a93a73b3415ed0a",
-      "file_lines": 70,
+      "sha256": "e481a1dc4f045d5ecf5b6d34453c4086d5e4ca6f02976c6366b9b90b7b6b78ce",
+      "file_lines": 66,
       "line_ranges": [
         [
           1,
-          62
+          58
         ]
       ],
-      "counted_lines": 62,
+      "counted_lines": 58,
       "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
       "text_kind": "hand_written"
     },
@@ -3819,7 +3738,7 @@
       "path": "ZesuSsz/Evidence/test_check_decode_item_hints.py",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "dd7fe08f2d989de3c8fc851053e508d4df88f7c18976d446d38c411a289e53fe",
+      "sha256": "d493cab44aabc9659142c76964b0d5dd004277bfb8d39c0aa914597f43184c84",
       "file_lines": 248,
       "line_ranges": [
         [
@@ -4138,15 +4057,15 @@
       "path": "ZesuSsz/Generated/DecodeItem/BlockTable.v",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "fa4b7cbbf021946e7ebe4677a9dd4e351d152cb4c246ebf7ee28f96b407836c1",
-      "file_lines": 254,
+      "sha256": "d678d08e914729d5b3bef143149a205e160807c76d868cbcd908dc7f20318c44",
+      "file_lines": 253,
       "line_ranges": [
         [
           1,
-          254
+          253
         ]
       ],
-      "counted_lines": 254,
+      "counted_lines": 253,
       "text_kind": "generated",
       "generator": "decodeItem-table"
     },
@@ -4169,15 +4088,15 @@
       "path": "ZesuSsz/Generated/DecodeItem/block_table_metadata.json",
       "category": "generator_json",
       "scope": "whole_file",
-      "sha256": "300537b3e67fd43f8e107eff2fa20376d33fb9081341d10acdc75d218582f5d7",
-      "file_lines": 832,
+      "sha256": "e2138e2a191e49172c843380ec1853ac427a9223423357fb57435b159238b15e",
+      "file_lines": 830,
       "line_ranges": [
         [
           1,
-          832
+          830
         ]
       ],
-      "counted_lines": 832,
+      "counted_lines": 830,
       "text_kind": "data_table"
     },
     {
@@ -5318,15 +5237,15 @@
       "path": "ZesuSsz/Proofs/Tests/DecodeItemCanonicalAnchors.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "5283baf42961ae9ce7abe5d40f2c7c646499ddaa0f7a41f81419176b12ffdac7",
-      "file_lines": 526,
+      "sha256": "7434590cccc13db01b2824cab3a2c17d4ba79c026a407e32c464b7338b89f003",
+      "file_lines": 647,
       "line_ranges": [
         [
           1,
-          526
+          647
         ]
       ],
-      "counted_lines": 526,
+      "counted_lines": 647,
       "text_kind": "hand_written"
     },
     {
@@ -5438,7 +5357,7 @@
       "path": "ZesuSsz/Proofs/Tests/DecodeItemFoldSuccessorWitnesses.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "727b94e85ad5adf777a47298d17fb6f623df0baa4141d10f64afdf232b31305a",
+      "sha256": "02f9740c75d49fcbd621f3840c26209a79341d1aa43e6d0c14b3eb51cc85bd18",
       "file_lines": 499,
       "line_ranges": [
         [
@@ -5723,15 +5642,15 @@
       "path": "ZesuSsz/Proofs/Tests/DecodeItemStringSuccessorWitnesses.v",
       "category": "tests_and_exports",
       "scope": "whole_file",
-      "sha256": "b1b63fd53c769198d63d1c67d1ef9b6c9f5352e2db27b2ab2b32e943309f7d75",
-      "file_lines": 196,
+      "sha256": "5953286d9503850c262c16eeec113eda72cc59a14cc494358384280331f8a46c",
+      "file_lines": 195,
       "line_ranges": [
         [
           1,
-          196
+          195
         ]
       ],
-      "counted_lines": 196,
+      "counted_lines": 195,
       "text_kind": "hand_written"
     },
     {
@@ -8089,15 +8008,15 @@
       "scope": "whole_file",
       "text_kind": "generated",
       "generator": "decodeItem-support",
-      "file_lines": 187,
+      "file_lines": 147,
       "line_ranges": [
         [
           1,
-          187
+          147
         ]
       ],
-      "counted_lines": 187,
-      "sha256": "5e5960f5a5388ff6dda71501552e73e54b838869620c94710118665f980aba99"
+      "counted_lines": 147,
+      "sha256": "79c92dee11ad87bde78f21eacac1d8a86e34a235bd8129c8add1e21c74a06090"
     },
     {
       "path": "tools/test_check_entry_bindings.py",
@@ -8174,6 +8093,51 @@
       ],
       "counted_lines": 173,
       "text_kind": "hand_written"
+    },
+    {
+      "path": "Scaffolding/DecodeItemC1BMeaning.v",
+      "category": "composition",
+      "scope": "whole_file",
+      "sha256": "20b30349b54736fe18a5a890e0b1a9019c8eefbd47bb18e27d4ab41ef53df8b7",
+      "file_lines": 152,
+      "line_ranges": [
+        [
+          1,
+          152
+        ]
+      ],
+      "counted_lines": 152,
+      "text_kind": "hand_written"
+    },
+    {
+      "path": "ZesuSsz/Proofs/Tests/DecodeItemSuccessorHelpers.v",
+      "category": "tests_and_exports",
+      "scope": "whole_file",
+      "sha256": "3326bb9a393339251abdad3077abac743c69c76749089f9f465edbf0c30c7b36",
+      "file_lines": 259,
+      "line_ranges": [
+        [
+          1,
+          259
+        ]
+      ],
+      "counted_lines": 259,
+      "text_kind": "hand_written"
+    },
+    {
+      "path": "ZesuSsz/Contracts/decode_item_block_author.json",
+      "category": "generator_json",
+      "scope": "whole_file",
+      "text_kind": "data_table",
+      "sha256": "8f57a52129210340cc8dadff1fc5a39542410014ec151bf645bab7eabe13551e",
+      "file_lines": 2941,
+      "line_ranges": [
+        [
+          1,
+          2941
+        ]
+      ],
+      "counted_lines": 2941
     }
   ],
   "blocks": [
@@ -8608,19 +8572,19 @@
   },
   "base_manifest_sha256": "7deccbbc338d25231c300f1ba6824c5c10136917b0207e75589cd9a86f9d020a",
   "category_totals": {
-    "tests_and_exports": 37798,
-    "composition": 583,
-    "loop_steps": 802,
-    "introductions": 2678,
-    "exit_meanings": 2259,
-    "registrations": 755,
-    "contracts": 1994,
-    "generator_json": 16292,
+    "tests_and_exports": 38530,
+    "composition": 735,
+    "loop_steps": 606,
+    "introductions": 2078,
+    "exit_meanings": 1928,
+    "registrations": 865,
+    "contracts": 1843,
+    "generator_json": 18788,
     "block_proofs": 2401
   },
-  "interface_total": 24780,
-  "extra_total": 40782,
-  "overall_total": 65562,
+  "interface_total": 26108,
+  "extra_total": 41666,
+  "overall_total": 67774,
   "file_count": 382,
   "embedded_registration_ranges": [
     {
@@ -9134,6 +9098,20 @@
       "adapter": "181aafeb8785b9b7c53dec9530cc24c6222cb46c",
       "reviewed_P1_tree": "7817a66abe829c89f8f11518d0b46867bde3e23a",
       "scope": "Retain P1 generated ownership and P2 diagnostic relocation. Preserve every category and selected statement identity. No proof deletion is claimed for relocated diagnostics."
+    },
+    "cleanup_e8dc": {
+      "parent": "e8dc2126d1707f42442bd153159894597731eed1",
+      "scope": "Refresh the approved cleanup source boundary on current main. Preserve retained categories and text kinds.",
+      "removed_modules": [
+        "ZesuSsz/Compliance/DecodeItemC1BMeaning.v",
+        "ZesuSsz/Compliance/DecodeItemCanonicalAnchors.v",
+        "ZesuSsz/Compliance/DecodeItemFoldSuccessorWitnesses.v",
+        "ZesuSsz/Compliance/DecodeItemStringSuccessorWitnesses.v",
+        "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.v"
+      ],
+      "new_author_attribution": "Count the P1b compact author as a complete data table. Its 13-choice removal is cleanup deletion, not producer inference.",
+      "makefile_range_projection": "Preserve exact selected lines from ec9e9c56 across T1\u2019s one inserted generic line.",
+      "producer_inference_credit": 0
     }
   },
   "scope_id": "decodeItem-function-support-v2",
@@ -9227,7 +9205,6 @@
         "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v",
         "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v",
         "ZesuSsz/Contracts/RlpDecodeItemContract.v",
-        "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.v",
         "ZesuSsz/Contracts/decode_item_block_design.json",
         "ZesuSsz/Evidence/decode_item_block_design.json",
         "ZesuSsz/Evidence/generate_block_design.py",
@@ -9243,7 +9220,8 @@
         "tools/block/render_support.py",
         "tools/block/trace_registers.py",
         "tools/resource_guard.sh",
-        "tools/rocq_mcp_guarded.sh"
+        "tools/rocq_mcp_guarded.sh",
+        "ZesuSsz/Contracts/decode_item_block_author.json"
       ],
       "outputs": [
         "ZesuSsz/Generated/DecodeItem/Entries.v",
@@ -9310,7 +9288,6 @@
         "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v",
         "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v",
         "ZesuSsz/Contracts/RlpDecodeItemContract.v",
-        "ZesuSsz/Contracts/RlpDecodeItemJoinTransfers.v",
         "ZesuSsz/Contracts/decode_item_block_design.json",
         "ZesuSsz/Evidence/decode_item_block_design.json",
         "ZesuSsz/Evidence/generate_block_design.py",
@@ -9331,7 +9308,8 @@
         "tools/block/render_support.py",
         "tools/block/trace_registers.py",
         "tools/resource_guard.sh",
-        "tools/rocq_mcp_guarded.sh"
+        "tools/rocq_mcp_guarded.sh",
+        "ZesuSsz/Contracts/decode_item_block_author.json"
       ],
       "outputs": [
         "ZesuSsz/Generated/DecodeItem/block_table_metadata.json",

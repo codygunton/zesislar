@@ -35,49 +35,41 @@ Lemma decodeItemEmptyCandidateIntro args prefix rest :
   candidateDecodeItem (decodeItemInputBytes args) = candidateSuccess false 1 0.
 Proof. decodeItemCandidateBranch. Qed.
 
-Lemma decodeItemShortStringCandidateIntro args prefix rest :
+Lemma decodeItemShortClassCandidateIntro (isList : bool) args prefix rest :
   decodeItemInputHead args prefix rest ->
-  129 <= bv_unsigned prefix <= 183 ->
-  (1 + (bv_unsigned prefix - 128)) mod word64Modulus <=
+  (if isList then 192 else 129) <= bv_unsigned prefix <= (if isList then 247 else 183) ->
+  (1 + (bv_unsigned prefix - (if isList then 192 else 128))) mod word64Modulus <=
     Z.of_nat (length (decodeItemInputBytes args)) ->
   candidateDecodeItem (decodeItemInputBytes args) =
-    candidateSuccess false 1 (bv_unsigned prefix - 128).
-Proof. decodeItemCandidateBranch. Qed.
+    candidateSuccess isList 1 (bv_unsigned prefix - (if isList then 192 else 128)).
+Proof. destruct isList; cbv beta iota zeta; decodeItemCandidateBranch. Qed.
 
-Lemma decodeItemShortListCandidateIntro args prefix rest :
-  decodeItemInputHead args prefix rest ->
-  192 <= bv_unsigned prefix <= 247 ->
-  (1 + (bv_unsigned prefix - 192)) mod word64Modulus <=
-    Z.of_nat (length (decodeItemInputBytes args)) ->
-  candidateDecodeItem (decodeItemInputBytes args) =
-    candidateSuccess true 1 (bv_unsigned prefix - 192).
-Proof. decodeItemCandidateBranch. Qed.
+Definition decodeItemShortStringCandidateIntro args prefix rest :=
+  decodeItemShortClassCandidateIntro false args prefix rest.
+Definition decodeItemShortListCandidateIntro args prefix rest :=
+  decodeItemShortClassCandidateIntro true args prefix rest.
 
-Lemma decodeItemLongStringCandidateIntro args prefix rest :
+
+
+Lemma decodeItemLongClassCandidateIntro (isList : bool) args prefix rest :
   decodeItemInputHead args prefix rest ->
-  184 <= bv_unsigned prefix <= 191 ->
-  1 + (bv_unsigned prefix - 183) <=
+  (if isList then 248 else 184) <= bv_unsigned prefix <= (if isList then 255 else 191) ->
+  1 + (bv_unsigned prefix - (if isList then 247 else 183)) <=
     Z.of_nat (length (decodeItemInputBytes args)) ->
-  (1 + (bv_unsigned prefix - 183) +
-    bigEndian (firstn (Z.to_nat (bv_unsigned prefix - 183)) rest))
+  (1 + (bv_unsigned prefix - (if isList then 247 else 183)) +
+    bigEndian (firstn (Z.to_nat (bv_unsigned prefix - (if isList then 247 else 183))) rest))
     mod word64Modulus <= Z.of_nat (length (decodeItemInputBytes args)) ->
   candidateDecodeItem (decodeItemInputBytes args) =
-    candidateSuccess false (1 + (bv_unsigned prefix - 183))
-      (bigEndian (firstn (Z.to_nat (bv_unsigned prefix - 183)) rest)).
-Proof. decodeItemCandidateBranch. Qed.
+    candidateSuccess isList (1 + (bv_unsigned prefix - (if isList then 247 else 183)))
+      (bigEndian (firstn (Z.to_nat (bv_unsigned prefix - (if isList then 247 else 183))) rest)).
+Proof. destruct isList; cbv beta iota zeta; decodeItemCandidateBranch. Qed.
 
-Lemma decodeItemLongListCandidateIntro args prefix rest :
-  decodeItemInputHead args prefix rest ->
-  248 <= bv_unsigned prefix <= 255 ->
-  1 + (bv_unsigned prefix - 247) <=
-    Z.of_nat (length (decodeItemInputBytes args)) ->
-  (1 + (bv_unsigned prefix - 247) +
-    bigEndian (firstn (Z.to_nat (bv_unsigned prefix - 247)) rest))
-    mod word64Modulus <= Z.of_nat (length (decodeItemInputBytes args)) ->
-  candidateDecodeItem (decodeItemInputBytes args) =
-    candidateSuccess true (1 + (bv_unsigned prefix - 247))
-      (bigEndian (firstn (Z.to_nat (bv_unsigned prefix - 247)) rest)).
-Proof. decodeItemCandidateBranch. Qed.
+Definition decodeItemLongStringCandidateIntro args prefix rest :=
+  decodeItemLongClassCandidateIntro false args prefix rest.
+Definition decodeItemLongListCandidateIntro args prefix rest :=
+  decodeItemLongClassCandidateIntro true args prefix rest.
+
+
 
 
 Lemma decodeItemCheckedPayloadRejected inputLength headerLength payloadLength isList :
@@ -88,62 +80,57 @@ Proof.
   rewrite (proj2 (Z.leb_gt _ _) Hreject). reflexivity.
 Qed.
 
-Lemma decodeItemShortStringRejectedCandidateIntro args prefix rest :
+Lemma decodeItemShortClassRejectedCandidateIntro (isList : bool) args prefix rest :
   decodeItemInputHead args prefix rest ->
-  129 <= bv_unsigned prefix <= 183 ->
+  (if isList then 192 else 129) <= bv_unsigned prefix <= (if isList then 247 else 183) ->
   Z.of_nat (length (decodeItemInputBytes args)) <
-    (1 + (bv_unsigned prefix - 128)) mod word64Modulus ->
+    (1 + (bv_unsigned prefix - (if isList then 192 else 128))) mod word64Modulus ->
   candidateDecodeItem (decodeItemInputBytes args) = candidateError.
-Proof. decodeItemCandidateBranch. Qed.
+Proof. destruct isList; cbv beta iota zeta; decodeItemCandidateBranch. Qed.
+
+Definition decodeItemShortStringRejectedCandidateIntro args prefix rest :=
+  decodeItemShortClassRejectedCandidateIntro false args prefix rest.
+Definition decodeItemShortListRejectedCandidateIntro args prefix rest :=
+  decodeItemShortClassRejectedCandidateIntro true args prefix rest.
 
 
-Lemma decodeItemShortListRejectedCandidateIntro args prefix rest :
+
+
+
+Lemma decodeItemLongClassHeaderRejectedCandidateIntro (isList : bool) args prefix rest :
   decodeItemInputHead args prefix rest ->
-  192 <= bv_unsigned prefix <= 247 ->
+  (if isList then 248 else 184) <= bv_unsigned prefix <= (if isList then 255 else 191) ->
+  Z.of_nat (length (decodeItemInputBytes args)) < 1 + (bv_unsigned prefix - (if isList then 247 else 183)) ->
+  candidateDecodeItem (decodeItemInputBytes args) = candidateError.
+Proof. destruct isList; cbv beta iota zeta; decodeItemCandidateBranch. Qed.
+
+Definition decodeItemLongStringHeaderRejectedCandidateIntro args prefix rest :=
+  decodeItemLongClassHeaderRejectedCandidateIntro false args prefix rest.
+Definition decodeItemLongListHeaderRejectedCandidateIntro args prefix rest :=
+  decodeItemLongClassHeaderRejectedCandidateIntro true args prefix rest.
+
+
+
+
+
+Lemma decodeItemLongClassPayloadRejectedCandidateIntro (isList : bool) args prefix rest :
+  decodeItemInputHead args prefix rest ->
+  (if isList then 248 else 184) <= bv_unsigned prefix <= (if isList then 255 else 191) ->
+  1 + (bv_unsigned prefix - (if isList then 247 else 183)) <= Z.of_nat (length (decodeItemInputBytes args)) ->
   Z.of_nat (length (decodeItemInputBytes args)) <
-    (1 + (bv_unsigned prefix - 192)) mod word64Modulus ->
-  candidateDecodeItem (decodeItemInputBytes args) = candidateError.
-Proof. decodeItemCandidateBranch. Qed.
-
-
-Lemma decodeItemLongStringHeaderRejectedCandidateIntro args prefix rest :
-  decodeItemInputHead args prefix rest ->
-  184 <= bv_unsigned prefix <= 191 ->
-  Z.of_nat (length (decodeItemInputBytes args)) < 1 + (bv_unsigned prefix - 183) ->
-  candidateDecodeItem (decodeItemInputBytes args) = candidateError.
-Proof. decodeItemCandidateBranch. Qed.
-
-
-Lemma decodeItemLongListHeaderRejectedCandidateIntro args prefix rest :
-  decodeItemInputHead args prefix rest ->
-  248 <= bv_unsigned prefix <= 255 ->
-  Z.of_nat (length (decodeItemInputBytes args)) < 1 + (bv_unsigned prefix - 247) ->
-  candidateDecodeItem (decodeItemInputBytes args) = candidateError.
-Proof. decodeItemCandidateBranch. Qed.
-
-
-Lemma decodeItemLongStringPayloadRejectedCandidateIntro args prefix rest :
-  decodeItemInputHead args prefix rest ->
-  184 <= bv_unsigned prefix <= 191 ->
-  1 + (bv_unsigned prefix - 183) <= Z.of_nat (length (decodeItemInputBytes args)) ->
-  Z.of_nat (length (decodeItemInputBytes args)) <
-    (1 + (bv_unsigned prefix - 183) +
-      bigEndian (firstn (Z.to_nat (bv_unsigned prefix - 183)) rest))
+    (1 + (bv_unsigned prefix - (if isList then 247 else 183)) +
+      bigEndian (firstn (Z.to_nat (bv_unsigned prefix - (if isList then 247 else 183))) rest))
       mod word64Modulus ->
   candidateDecodeItem (decodeItemInputBytes args) = candidateError.
-Proof. decodeItemCandidateBranch. Qed.
+Proof. destruct isList; cbv beta iota zeta; decodeItemCandidateBranch. Qed.
+
+Definition decodeItemLongStringPayloadRejectedCandidateIntro args prefix rest :=
+  decodeItemLongClassPayloadRejectedCandidateIntro false args prefix rest.
+Definition decodeItemLongListPayloadRejectedCandidateIntro args prefix rest :=
+  decodeItemLongClassPayloadRejectedCandidateIntro true args prefix rest.
 
 
-Lemma decodeItemLongListPayloadRejectedCandidateIntro args prefix rest :
-  decodeItemInputHead args prefix rest ->
-  248 <= bv_unsigned prefix <= 255 ->
-  1 + (bv_unsigned prefix - 247) <= Z.of_nat (length (decodeItemInputBytes args)) ->
-  Z.of_nat (length (decodeItemInputBytes args)) <
-    (1 + (bv_unsigned prefix - 247) +
-      bigEndian (firstn (Z.to_nat (bv_unsigned prefix - 247)) rest))
-      mod word64Modulus ->
-  candidateDecodeItem (decodeItemInputBytes args) = candidateError.
-Proof. decodeItemCandidateBranch. Qed.
+
 
 
 

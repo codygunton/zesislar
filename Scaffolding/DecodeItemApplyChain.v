@@ -6,7 +6,7 @@ Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Contracts.DecodeItemSelected.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
-Require Import ZesuSsz.Compliance.DecodeItemC1BMeaning.
+Require Import Scaffolding.DecodeItemC1BMeaning.
 Require Import Scaffolding.DecodeItemComplianceStatement.
 Require Import Scaffolding.DecodeItemSignatureGates.
 

@@ -12,7 +12,7 @@ UMBRELLA = "DecodeItemHints.v"
 # These hints apply only at their declared consumers.
 SCOPED_HINT_IMPORTS = {
     PREFIX + "DecodeItemExitDataFacts": (
-        "ZesuSsz.Compliance.DecodeItemC1BMeaning",
+        "Scaffolding.DecodeItemC1BMeaning",
         "ZesuSsz.Proofs.DecodeItem.Auto.Block800d697c",
         "ZesuSsz.Proofs.DecodeItem.Auto.Block800d698cLiteral",
         "ZesuSsz.Proofs.DecodeItem.Auto.Block800d698cShortString",
