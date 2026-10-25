@@ -25,19 +25,23 @@ class FunctionPreparationTests(unittest.TestCase):
                        "STOCK_DECODE_TRACE_DIR=custom/decode",
                        "STOCK_CLOSURE_TRACE_DIR=custom/closure",
                        "STOCK_TRACE_MANIFEST=custom/recipe.json",
-                       "STOCK_NATIVE_TRACE_CACHE_DIR=custom/cache"]
+                       "STOCK_NATIVE_TRACE_CACHE_DIR=custom/cache",
+                       "GATE_SOURCE_WORKSPACE=custom/source",
+                       "DUMP=custom/program.raw.dump", "TRACE_JOBS=3"]
             result = subprocess.run(command, cwd=root, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             calls = [json.loads(line) for line in log.read_text().splitlines()]
-            self.assertEqual(len(calls), 2)
-            self.assertEqual(calls[0][0], "tools/stock_zisk/platform/traces.py")
-            self.assertIn("--ensure-native-indexes", calls[0])
-            for flag, value in [("--decode-out", "custom/decode"),
-                                ("--closure-out", "custom/closure"),
-                                ("--manifest", "custom/recipe.json"),
-                                ("--cache-dir", "custom/cache")]:
-                self.assertEqual(calls[0][calls[0].index(flag) + 1], value)
-            self.assertEqual(calls[1], ["tools/stock_zisk/selected/bind_traces.py",
+            self.assertEqual(len(calls), 3)
+            self.assertEqual(calls[0], ["tools/gate_workspace.py", "--workspace", ".",
+                                      "--source-workspace", "custom/source"])
+            self.assertEqual(calls[1], ["tools/stock_zisk/platform/traces.py",
+                                      "--ensure-native-indexes",
+                                      "--manifest", "custom/recipe.json",
+                                      "--cache-dir", "custom/cache",
+                                      "--decode-out", "custom/decode",
+                                      "--closure-out", "custom/closure",
+                                      "--dump", "custom/program.raw.dump", "--jobs", "3"])
+            self.assertEqual(calls[2], ["tools/stock_zisk/selected/bind_traces.py",
                                       "--out", "custom/closure", "--function",
                                       "alt_fl_alloc.free", "--trace-name", "free"])
 
