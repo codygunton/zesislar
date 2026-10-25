@@ -1881,15 +1881,15 @@
       "path": "ZesuSsz/Evidence/approved_automation_switches.json",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "542898975810b6014b2100d05c47851235e752cbcb890de8de4191cc0e4f3c0b",
-      "file_lines": 113,
+      "sha256": "1a241f971cfac39d12e04c8d149b870d9da2d7c29ac88291280cfdbeaa5782ca",
+      "file_lines": 115,
       "line_ranges": [
         [
           1,
-          111
+          113
         ]
       ],
-      "counted_lines": 111,
+      "counted_lines": 113,
       "selection": "Complete matched Rocq/Python statements; matched lines for other text. Shared JSON is counted in full.",
       "text_kind": "hand_written"
     },
@@ -8572,7 +8572,7 @@
   },
   "base_manifest_sha256": "7deccbbc338d25231c300f1ba6824c5c10136917b0207e75589cd9a86f9d020a",
   "category_totals": {
-    "tests_and_exports": 38530,
+    "tests_and_exports": 38532,
     "composition": 735,
     "loop_steps": 606,
     "introductions": 2078,
@@ -8583,8 +8583,8 @@
     "block_proofs": 2401
   },
   "interface_total": 26108,
-  "extra_total": 41666,
-  "overall_total": 67774,
+  "extra_total": 41668,
+  "overall_total": 67776,
   "file_count": 382,
   "embedded_registration_ranges": [
     {
