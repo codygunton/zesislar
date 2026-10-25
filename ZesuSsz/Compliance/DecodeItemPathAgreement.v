@@ -120,17 +120,20 @@ Lemma decodeItemLiteralReturn args after :
   DecodeMeaningModuloKnownBugs args after.
 Proof. intros. eapply decodeItemSuccessAgreement; eauto; unfold word64Modulus; lia. Qed.
 
-Lemma decodeItemShortStringReturn args after payloadLength :
+Lemma decodeItemClassShortReturn args after payloadLength (isList : bool) :
   decodeItemC1BDomain args ->
   candidateDecodeItem (decodeItemInputBytes args) =
-    candidateSuccess false 1 payloadLength ->
+    candidateSuccess isList 1 payloadLength ->
   encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)
     (decodeItemBeforeStorage args) after
-    (candidateSuccess false 1 payloadLength) ->
+    (candidateSuccess isList 1 payloadLength) ->
   0 <= payloadLength -> 1 + payloadLength < word64Modulus ->
-  decodeItemSailSuccess args false 1 payloadLength ->
+  decodeItemSailSuccess args isList 1 payloadLength ->
   DecodeMeaningModuloKnownBugs args after.
 Proof. intros. eapply decodeItemSuccessAgreement; eauto; unfold word64Modulus; lia. Qed.
+
+Definition decodeItemShortStringReturn args after payloadLength :=
+  decodeItemClassShortReturn args after payloadLength false.
 
 (* 0x800d69d4 returns the empty-string sentinel pointer. *)
 Lemma decodeItemEmptyStringReturn args after :
@@ -143,29 +146,20 @@ Lemma decodeItemEmptyStringReturn args after :
 Proof. intros. eapply decodeItemSuccessAgreement; eauto; unfold word64Modulus; lia. Qed.
 
 (* 0x800d6aa4 is the short-list return. *)
-Lemma decodeItemShortListReturn args after payloadLength :
-  decodeItemC1BDomain args ->
-  candidateDecodeItem (decodeItemInputBytes args) =
-    candidateSuccess true 1 payloadLength ->
-  encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)
-    (decodeItemBeforeStorage args) after
-    (candidateSuccess true 1 payloadLength) ->
-  0 <= payloadLength -> 1 + payloadLength < word64Modulus ->
-  decodeItemSailSuccess args true 1 payloadLength ->
-  DecodeMeaningModuloKnownBugs args after.
-Proof. intros. eapply decodeItemSuccessAgreement; eauto; unfold word64Modulus; lia. Qed.
+Definition decodeItemShortListReturn args after payloadLength :=
+  decodeItemClassShortReturn args after payloadLength true.
 
 (* 0x800d6a60 and 0x800d6b2c each allow the selected wrap bug. *)
-Lemma decodeItemLongStringReturn args after headerLength payloadLength :
+Lemma decodeItemClassLongReturn args after headerLength payloadLength (isList : bool) :
   decodeItemC1BDomain args ->
   candidateDecodeItem (decodeItemInputBytes args) =
-    candidateSuccess false headerLength payloadLength ->
+    candidateSuccess isList headerLength payloadLength ->
   encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)
     (decodeItemBeforeStorage args) after
-    (candidateSuccess false headerLength payloadLength) ->
+    (candidateSuccess isList headerLength payloadLength) ->
   (2 <= headerLength <= 9) -> 0 <= payloadLength ->
   ((headerLength + payloadLength < word64Modulus /\
-    decodeItemSailSuccess args false headerLength payloadLength) \/
+    decodeItemSailSuccess args isList headerLength payloadLength) \/
    (binaryWrapCase headerLength payloadLength
       ((headerLength + payloadLength) mod word64Modulus) /\
     runRlpDecodeItem (decodeItemInputBytes args) (decodeItemSailCursor args) =
@@ -177,26 +171,11 @@ Proof.
   - eapply decodeItemWrapAgreement; eauto.
 Qed.
 
-Lemma decodeItemLongListReturn args after headerLength payloadLength :
-  decodeItemC1BDomain args ->
-  candidateDecodeItem (decodeItemInputBytes args) =
-    candidateSuccess true headerLength payloadLength ->
-  encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)
-    (decodeItemBeforeStorage args) after
-    (candidateSuccess true headerLength payloadLength) ->
-  (2 <= headerLength <= 9) -> 0 <= payloadLength ->
-  ((headerLength + payloadLength < word64Modulus /\
-    decodeItemSailSuccess args true headerLength payloadLength) \/
-   (binaryWrapCase headerLength payloadLength
-      ((headerLength + payloadLength) mod word64Modulus) /\
-    runRlpDecodeItem (decodeItemInputBytes args) (decodeItemSailCursor args) =
-      Reject RlpDecode)) ->
-  DecodeMeaningModuloKnownBugs args after.
-Proof.
-  intros Hdomain Hcandidate Himage Hwidth Hpayload [[Hfits Hsail]|[Hwrap Hreject]].
-  - eapply decodeItemSuccessAgreement; eauto; lia.
-  - eapply decodeItemWrapAgreement; eauto.
-Qed.
+Definition decodeItemLongStringReturn args after headerLength payloadLength :=
+  decodeItemClassLongReturn args after headerLength payloadLength false.
+
+Definition decodeItemLongListReturn args after headerLength payloadLength :=
+  decodeItemClassLongReturn args after headerLength payloadLength true.
 
 (* 0x800d6b04 covers every rejected header or payload check. *)
 Lemma decodeItemErrorReturn args after :

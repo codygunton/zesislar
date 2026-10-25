@@ -12,7 +12,6 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.
 Require Import ZesuSsz.Contracts.DecodeItemBranchEntries.
 Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
-Require Import ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.
 Require Import ZesuSsz.Contracts.DecodeItemErrorBranch.
 Require Import ZesuSsz.Contracts.DecodeItemCompositional.
 
@@ -120,45 +119,6 @@ Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItem
 
 Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemReturnBlockObligation) := I.
 Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemReturnBlockObligation.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoinTransferObligation) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoinTransferObligation.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0Target) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0Target.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6a24From6a14) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6a24From6a14.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6a24Backedge) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6a24Backedge.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ac4From6ab4) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ac4From6ab4.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ac4Backedge) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ac4Backedge.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6970) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6970.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From69e0) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From69e0.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6a08) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6a08.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6a38) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6a38.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6a6c) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6a6c.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6aa8) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6aa8.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6ad8) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6ad8.
 
 Global Instance : LithiumUnfold (@ZesuSsz.Contracts.DecodeItemErrorBranch.decodeItemErrorBranchEntry) := I.
 Global Typeclasses Opaque ZesuSsz.Contracts.DecodeItemErrorBranch.decodeItemErrorBranchEntry.

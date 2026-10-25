@@ -980,45 +980,6 @@
         "unfold": "ZesuSsz.Contracts.RlpDecodeItemBlockEntries.decodeItemReturnBlockObligation"
       },
       {
-        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoinTransferObligation"
-      },
-      {
-        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0Target"
-      },
-      {
-        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6a24From6a14"
-      },
-      {
-        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6a24Backedge"
-      },
-      {
-        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ac4From6ab4"
-      },
-      {
-        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ac4Backedge"
-      },
-      {
-        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6970"
-      },
-      {
-        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From69e0"
-      },
-      {
-        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6a08"
-      },
-      {
-        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6a38"
-      },
-      {
-        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6a6c"
-      },
-      {
-        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6aa8"
-      },
-      {
-        "unfold": "ZesuSsz.Contracts.RlpDecodeItemJoinTransfers.decodeItemJoin6ae0From6ad8"
-      },
-      {
         "unfold": "ZesuSsz.Contracts.DecodeItemErrorBranch.decodeItemErrorBranchEntry"
       },
       {

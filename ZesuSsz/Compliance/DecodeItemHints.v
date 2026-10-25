@@ -5,7 +5,6 @@ Require Export ZesuSsz.Generated.DecodeItem.Registrations.
 Require Import isla.automation.
 Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
 Require Export ZesuSsz.Compliance.DecodeItemBranchGuardFacts.
-Require Export ZesuSsz.Compliance.DecodeItemCanonicalAnchors.
 Require Export ZesuSsz.Compliance.DecodeItemCompletedFoldFacts.
 Require Export ZesuSsz.Compliance.DecodeItemCorrectedWitnessSelections.
 Require Export ZesuSsz.Compliance.DecodeItemDataWitnessFacts.
@@ -15,7 +14,6 @@ Require Export ZesuSsz.Compliance.DecodeItemFoldBackEdgeWitnesses.
 Require Export ZesuSsz.Compliance.DecodeItemFoldExitFacts.
 Require Export ZesuSsz.Compliance.DecodeItemFoldInitializationWitnesses.
 Require Export ZesuSsz.Compliance.DecodeItemFoldRejectionFacts.
-Require Export ZesuSsz.Compliance.DecodeItemFoldSuccessorWitnesses.
 Require Export ZesuSsz.Compliance.DecodeItemFoldZeroFacts.
 Require Export ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts.
 Require Export ZesuSsz.Compliance.DecodeItemInitializationPureFacts.
@@ -29,7 +27,6 @@ Require Export ZesuSsz.Compliance.DecodeItemRawOutputFacts.
 Require Export ZesuSsz.Compliance.DecodeItemS40GuardFacts.
 Require Export ZesuSsz.Compliance.DecodeItemSavedFrameWitnesses.
 Require Export ZesuSsz.Compliance.DecodeItemShortListHandoffFacts.
-Require Export ZesuSsz.Compliance.DecodeItemStringSuccessorWitnesses.
 Require Export ZesuSsz.Compliance.DecodeItemEntryWitnessIntroductions.
 Require Export ZesuSsz.Compliance.DecodeItemStoreSelectionIntroductions.
 Require Export ZesuSsz.Compliance.DecodeItemMaskedReturnFacts.

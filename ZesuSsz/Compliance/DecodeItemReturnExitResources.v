@@ -32,57 +32,43 @@ Proof.
   eapply decodeItemEmptyStringReturn; eauto.
 Qed.
 
-Lemma decodeItemShortStringPostMeaning args after payloadLength :
+Lemma decodeItemClassShortPostMeaning args after payloadLength (isList : bool) :
   decodeItemC1BDomain args ->
-  decodeItemAcceptedFacts args false 1 payloadLength ->
+  decodeItemAcceptedFacts args isList 1 payloadLength ->
   encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)
     (decodeItemBeforeStorage args) after
-    (candidateSuccess false 1 payloadLength) ->
+    (candidateSuccess isList 1 payloadLength) ->
   0 <= payloadLength -> 1 + payloadLength < word64Modulus ->
   DecodeMeaningModuloKnownBugs args after.
 Proof.
   intros Hdomain [Hcandidate Hsail] Himage Hnonnegative Hbound.
-  eapply decodeItemShortStringReturn; eauto.
+  eapply decodeItemClassShortReturn; eauto.
 Qed.
 
-Lemma decodeItemShortListPostMeaning args after payloadLength :
-  decodeItemC1BDomain args ->
-  decodeItemAcceptedFacts args true 1 payloadLength ->
-  encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)
-    (decodeItemBeforeStorage args) after
-    (candidateSuccess true 1 payloadLength) ->
-  0 <= payloadLength -> 1 + payloadLength < word64Modulus ->
-  DecodeMeaningModuloKnownBugs args after.
-Proof.
-  intros Hdomain [Hcandidate Hsail] Himage Hnonnegative Hbound.
-  eapply decodeItemShortListReturn; eauto.
-Qed.
+Definition decodeItemShortStringPostMeaning args after payloadLength :=
+  decodeItemClassShortPostMeaning args after payloadLength false.
 
-Lemma decodeItemLongStringPostMeaning args after headerLength payloadLength :
+Definition decodeItemShortListPostMeaning args after payloadLength :=
+  decodeItemClassShortPostMeaning args after payloadLength true.
+
+Lemma decodeItemClassLongPostMeaning args after headerLength payloadLength (isList : bool) :
   decodeItemC1BDomain args ->
-  decodeItemLongAcceptedFacts args false headerLength payloadLength ->
+  decodeItemLongAcceptedFacts args isList headerLength payloadLength ->
   encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)
     (decodeItemBeforeStorage args) after
-    (candidateSuccess false headerLength payloadLength) ->
+    (candidateSuccess isList headerLength payloadLength) ->
   2 <= headerLength <= 9 -> 0 <= payloadLength ->
   DecodeMeaningModuloKnownBugs args after.
 Proof.
   intros Hdomain [Hcandidate Hpath] Himage Hwidth Hnonnegative.
-  eapply decodeItemLongStringReturn; eauto.
+  eapply decodeItemClassLongReturn; eauto.
 Qed.
 
-Lemma decodeItemLongListPostMeaning args after headerLength payloadLength :
-  decodeItemC1BDomain args ->
-  decodeItemLongAcceptedFacts args true headerLength payloadLength ->
-  encodeResult (decodeItemInputPointer args) (decodeItemInputBytes args)
-    (decodeItemBeforeStorage args) after
-    (candidateSuccess true headerLength payloadLength) ->
-  2 <= headerLength <= 9 -> 0 <= payloadLength ->
-  DecodeMeaningModuloKnownBugs args after.
-Proof.
-  intros Hdomain [Hcandidate Hpath] Himage Hwidth Hnonnegative.
-  eapply decodeItemLongListReturn; eauto.
-Qed.
+Definition decodeItemLongStringPostMeaning args after headerLength payloadLength :=
+  decodeItemClassLongPostMeaning args after headerLength payloadLength false.
+
+Definition decodeItemLongListPostMeaning args after headerLength payloadLength :=
+  decodeItemClassLongPostMeaning args after headerLength payloadLength true.
 
 Lemma decodeItemErrorPostMeaning args after :
   decodeItemC1BDomain args ->

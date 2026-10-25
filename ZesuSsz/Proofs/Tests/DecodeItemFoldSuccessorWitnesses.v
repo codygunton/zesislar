@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Proofs.Tests.DecodeItemSuccessorHelpers.
 Require Import ZesuSsz.Generated.DecodeItem.Entries.
 Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import ZesuSsz.Generated.DecodeItem.Registrations.
@@ -13,7 +14,6 @@ Require Import ZesuSsz.Compliance.DecodeItemFoldExitFacts.
 Require Import ZesuSsz.Compliance.DecodeItemCorrectedWitnessSelections.
 From Coq Require Import List ZArith Lia.
 Open Scope Z_scope.
-Require Import ZesuSsz.Compliance.DecodeItemFoldSuccessorWitnesses.
 Require Import ZesuSsz.Automation.Switches.CanonicalAnchor.
 
 (* These registrations belong only to the generic mechanism tests. *)

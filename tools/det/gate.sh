@@ -14,6 +14,9 @@ reservations="${ZESU_GUARD_STATE:-${XDG_RUNTIME_DIR:-/tmp}/zesu-guard}/coqc-rese
 target=${1:-check-iris}
 log=${2:-_build/agents/infra/gate-$target.log}
 
+# Prepare the recorded source checkouts before any checker can start Dune.
+python3 tools/gate_workspace.py --workspace .
+
 # The lock is wanted from here to exit: no new batch starts behind it.
 $guard lock-status >/dev/null
 $guard lock-want $$ "${COORD_AGENT:-$USER}:gate-$target:$root" || exit $?

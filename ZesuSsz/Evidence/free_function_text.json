@@ -608,12 +608,12 @@
       "path": "tools/test_function_preparation.py",
       "category": "tests_and_exports",
       "scope": "mixed_file",
-      "sha256": "ba98f463a3d4d96d790c9c5453df9c359d617cba7603985f337a1ae5dcc78663",
-      "file_lines": 46,
+      "sha256": "acb46bad7804416b9195555f84f3a792ecaf1e52fbcc796bd2fb128f20eb4540",
+      "file_lines": 50,
       "line_ranges": [
         [
-          40,
-          42
+          44,
+          46
         ]
       ],
       "counted_lines": 3,
