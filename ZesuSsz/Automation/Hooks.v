@@ -2263,12 +2263,25 @@ Ltac zesu_branch_guard_rewrite :=
     end ].
 
 
+Ltac zesu_branch_guard_unfold_local guard :=
+  repeat match goal with
+  | name := _ |- _ =>
+      tryif constr_eq name guard then fail 0 else
+      (progress (unfold name in guard))
+  end.
+
 Ltac zesu_branch_guard_simpl_impl :=
-  lazymatch goal with |- SimplImpl ?proposition _ =>
+  lazymatch goal with |- SimplImpl ?proposition ?normalized =>
     zesu_branch_guard_head proposition;
     tryif has_evar proposition then fail 0 else
     zesu_switch_enabled constr:(ZesuStepBranchGuards);
-    unLET;
+    let guard := fresh "ZesuGuard" in
+    pose (guard := proposition);
+    zesu_branch_guard_unfold_local guard;
+    let expanded := eval unfold guard in guard in
+    clear guard;
+    change (SimplImpl expanded normalized);
+    try (is_var normalized; unfold normalized);
     unfold SimplImpl;
     progress zesu_branch_guard_rewrite;
     reflexivity
