@@ -37,3 +37,21 @@ Require Export ZesuSsz.Compliance.DecodeItemLongStringOutputMeaning.
 Require Export ZesuSsz.Compliance.DecodeItemEntryAdditionalFacts.
 Require Export ZesuSsz.Compliance.DecodeItemDataRegistrations.
 Require Export ZesuSsz.Compliance.DecodeItemCanonicalEntryFacts.
+
+(* Derive the source domain and its exact length interval together. *)
+#[export] Instance decodeItemDomainAtLengthDerivedFacts
+    (returnAddress : Coq.Numbers.BinNums.Z) (args : ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs) :
+  ZesuSsz.Automation.PureFacts.ZesuDerivedFacts
+    (ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemDomainAt
+      returnAddress ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemC1BDomain args)
+    (ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemC1BDomain args /\
+     (0 <= ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemInputLength args <
+       stdpp.bitvector.definitions.bv_modulus 64%N)%Z).
+Proof.
+  intro Hdomain.
+  exact (Coq.Init.Logic.conj (Coq.Init.Logic.proj2 Hdomain)
+    (Coq.Init.Logic.proj2 (Coq.Init.Logic.proj2
+      (ZesuSsz.Compliance.DecodeItemFoldRejectionFacts.decodeItemDomainFoldDerivedFacts
+        args (Coq.Init.Logic.proj2 Hdomain))))).
+Qed.
+Print Assumptions decodeItemDomainAtLengthDerivedFacts.
