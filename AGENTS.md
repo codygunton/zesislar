@@ -138,7 +138,10 @@ Decide cost changes from user-space instructions with identical compiler flags a
 Never block a turn on a build. Use your own build directory
 `_build/agents/<name>` with `--cache=enabled` and `-j32`. Test one lemma
 with `tools/coqc_scratch.sh`, never by compiling a whole module. Run
-`make check-fast` before every commit. Production goals are 300 seconds and
+`make check-fast` before every pull request and merge; before an ordinary
+commit on a work branch, run the focused targets that the change affects.
+Correctness gates take no exclusive machine lock; only timing measurements
+do. Production goals are 300 seconds and
 6 GiB for proof modules, 60 seconds and 2 GiB elsewhere; they are goals for
 finished modules, not caps on search.
 
@@ -167,7 +170,7 @@ Call `rocq_health` before proof work.
 Use `rocq_start`, `rocq_check`, and `rocq_step_multi` during proof development.
 Use `rocq_compile_file` and `rocq_verify` for final proof verification.
 Run focused trace and proof targets during development.
-Run `make check-fast` before each commit.
+Run `make check-fast` before each pull request and merge.
 Run `make check-iris` before each checkpoint.
 
 ## MCP discipline
@@ -236,7 +239,7 @@ After the repair phase, do not merge an ordinary commit while the last full
 Only measured gate-repair commits can enter an isolated recovery preview then.
 Run full `make check-iris` in the preview before merging a commit that touches
 `ZesuSsz/Automation/`, `InstrSpecs/`, `ZesuSsz/Contracts/`, or `ZesuSsz/Export/`.
-Keep the mandatory `make check-fast` check before each commit.
+Keep the mandatory `make check-fast` check before each pull request and merge.
 After the repair phase, only a full green Iris gate on Root releases ordinary merges.
 During the approved frozen-list repair, a red full preview may proceed only
 when its failing set is within the shrinking active list.
