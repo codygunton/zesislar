@@ -206,7 +206,8 @@ def inside(out):
     save(out / "BATCH.json", {"actors": [identity(os.getpid())], "aggregate_paths": [str(aggregate)]})
     started = time.monotonic()
     try:
-        return subprocess.run(request["command"], cwd=request["workspace"], check=False).returncode
+        return subprocess.run(request["command"], cwd=request["workspace"],
+                              env=gate_environment(os.environ), check=False).returncode
     finally:
         cpu = dict(line.split() for line in (aggregate / "cpu.stat").read_text().splitlines())
         save(out / "METRICS.json", {"aggregate_peak_bytes": int((aggregate / "memory.peak").read_text()),
@@ -214,7 +215,12 @@ def inside(out):
               "measurement_scope": "Complete owned stock aggregate before guard cleanup."})
 
 
+def gate_environment(environment):
+    return dict(environment, ZESU_PROOF_CACHE='off')
+
+
 def run(args):
+    os.environ['ZESU_PROOF_CACHE'] = 'off'
     run_started = int(os.environ.get("ZESU_GATE_STARTED_MONOTONIC_NS", time.monotonic_ns()))
     workspace = Path.cwd().resolve()
     if not os.environ.get("ZESU_RUN_ID"):
@@ -257,7 +263,7 @@ def run(args):
     reserve(policy, owner, out / "ADMISSION.json")
     admission_wall = time.monotonic() - admission_started
     guard = Path(os.environ.get("ZESU_RESOURCE_GUARD", workspace / "tools/resource_guard.sh")).resolve()
-    env = dict(os.environ, ZESU_IO="gate", ZESU_RUN_REGISTRY_TOOL=str(Path(__file__).with_name("run_registry.py")),
+    env = dict(gate_environment(os.environ), ZESU_IO="gate", ZESU_RUN_REGISTRY_TOOL=str(Path(__file__).with_name("run_registry.py")),
                ZESU_REGISTRY_PYTHON=sys.executable)
     child = subprocess.Popen([str(guard), "batch", args.target, "--", sys.executable,
                               str(Path(__file__).resolve()), "inside", str(out)], cwd=workspace, env=env)

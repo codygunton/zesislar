@@ -7,6 +7,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'block'))
 import proof_cache_key as keys
@@ -15,6 +16,9 @@ import result_cache as cache
 
 class ProofCacheKeyTests(unittest.TestCase):
     def setUp(self):
+        environment = patch.dict('os.environ', {'ZESU_PROOF_CACHE': 'on', 'ZESU_IO': 'unit-control'})
+        environment.start()
+        self.addCleanup(environment.stop)
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
@@ -35,6 +39,8 @@ class ProofCacheKeyTests(unittest.TestCase):
             return {'kind': 'literal', 'value': text}
         path = {'kind': 'path', 'value': str(self.work), 'root_role': 'workspace'}
         config = {'argv': [literal('-q'), literal('-Q'), path, literal('Test')],
+                  'execution_vectors': [{'role': 'python-provider', 'argv': [literal('python'), literal('provider.py')],
+                                         'cwd': path}],
                   'load_paths': [{'flag': '-Q', 'physical_root_role': 'workspace',
                                   'relative_path': '.', 'logical_prefix': 'Test', 'ordinal': 0}],
                   'cwd': path, 'environment': {name: {'kind': 'paths', 'values': []}
@@ -93,6 +99,7 @@ class ProofCacheKeyTests(unittest.TestCase):
         config = relocated['recipe']['configuration']
         config['argv'][2]['value'] = str(second)
         config['cwd']['value'] = str(second)
+        config['execution_vectors'][0]['cwd']['value'] = str(second)
         self.assertEqual(before, self.build(relocated))
 
     def test_object_and_file_set_order_do_not_change_keys(self):
@@ -240,6 +247,33 @@ class ProofCacheKeyTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'cycle'):
             self.build()
 
+    def test_named_execution_vectors_are_semantic(self):
+        before = self.build()['recipe_key']
+        self.spec['recipe']['configuration']['execution_vectors'][0]['argv'].append(
+            {'kind': 'literal', 'value': '--different'})
+        self.assertNotEqual(before, self.build()['recipe_key'])
+
+    def test_transport_envelope_is_separately_checked_not_a_semantic_hash(self):
+        envelope = self.work / 'runtime.json'
+        envelope.write_text('{"claim":"first","output":"first"}')
+        def transport():
+            return {'kind': 'transport', 'role': 'entry-chain-runtime', 'encoding': 'sha256',
+                    'binding': {'path': str(envelope), 'sha256': keys.file_digest(envelope),
+                                'root_role': 'workspace'},
+                    'semantic_projection': 'provider.py',
+                    'semantic_dependencies': ['Proof.v', 'Entries.v', 'Hints.v', 'provider.py']}
+        env = self.spec['recipe']['configuration']['environment']
+        env['ENTRY_CHAIN_RUNTIME_SHA256'] = transport()
+        before = self.build()
+        envelope.write_text('{"claim":"second","output":"second"}')
+        with self.assertRaisesRegex(ValueError, 'transport envelope changed'):
+            self.build()
+        env['ENTRY_CHAIN_RUNTIME_SHA256'] = transport()
+        self.assertEqual(before, self.build())
+        env['ENTRY_CHAIN_RUNTIME_SHA256']['semantic_dependencies'].append('missing')
+        with self.assertRaisesRegex(ValueError, 'unresolved'):
+            self.build()
+
     def test_unchanged_closed_observation_hits_without_search(self):
         key = cache.build_key(self.spec, key_function=keys.normalize)
         state = self.work / 'state.json'
@@ -259,7 +293,11 @@ class ProofCacheKeyTests(unittest.TestCase):
         result_file.write_text(json.dumps(result))
         cache_dir = self.root / 'cache'
         cache.store(cache_dir, key, result_file)
-        hit = cache.lookup(cache_dir, cache.build_key(self.spec, key_function=keys.normalize))
+        def kernel_check(hit):
+            return {'success': True, 'method': 'coqchk', 'checked_key': hit['key'],
+                    'recursive': True, 'admitted_modules': []}
+        hit = cache.lookup(cache_dir, cache.build_key(self.spec, key_function=keys.normalize),
+                           verify_closed=kernel_check)
         self.assertEqual(hit['key'], self.build()['attempt_key'])
         self.assertEqual(hit['fresh_search_cpu_seconds'], 0)
         self.assertEqual(hit['cache_status'], 'cached')

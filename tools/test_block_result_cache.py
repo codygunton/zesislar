@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'block'))
 import result_cache as cache
@@ -13,6 +14,9 @@ import result_cache as cache
 
 class ResultCacheTests(unittest.TestCase):
     def setUp(self):
+        environment = patch.dict('os.environ', {'ZESU_PROOF_CACHE': 'on', 'ZESU_IO': 'unit-control'})
+        environment.start()
+        self.addCleanup(environment.stop)
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
@@ -52,7 +56,13 @@ class ResultCacheTests(unittest.TestCase):
 
     def save(self):
         self.result_file.write_text(json.dumps(self.result))
-        return cache.store(self.store, cache.build_key(self.spec), self.result_file)
+        key = cache.build_key(self.spec)
+        cache.store(self.store, key, self.result_file)
+        return cache.lookup(self.store, key, verify_closed=self.kernel_check)
+
+    def kernel_check(self, hit):
+        return {'success': True, 'method': 'coqchk', 'checked_key': hit['key'],
+                'recursive': True, 'admitted_modules': []}
 
     def test_each_semantic_input_invalidates(self):
         original = cache.build_key(self.spec)['sha256']
@@ -97,7 +107,7 @@ class ResultCacheTests(unittest.TestCase):
         self.source.unlink()
         self.obj.unlink()
         self.state.unlink()
-        hit = cache.lookup(self.store, key)
+        hit = cache.lookup(self.store, key, verify_closed=self.kernel_check)
         self.assertTrue(hit['result']['success'])
         self.assertEqual(hit['fresh_search_cpu_seconds'], 0)
         self.assertEqual(hit['historical_cpu']['cpu_seconds'], 91)
@@ -163,8 +173,14 @@ class ResultCacheTests(unittest.TestCase):
         hit = self.save()
         path = Path(hit['result']['complete_state']['path'])
         path.write_text('corrupt')
-        with self.assertRaisesRegex(ValueError, 'artifact changed'):
-            cache.lookup(self.store, cache.build_key(self.spec))
+        key = cache.build_key(self.spec)
+        defects = []
+        self.assertIsNone(cache.lookup(self.store, key, verify_closed=self.kernel_check,
+                                       on_defect=defects.append))
+        self.assertEqual(len(defects), 1)
+        self.assertIn('artifact changed', defects[0]['reason'])
+        self.assertFalse((self.store / key['sha256']).exists())
+        self.assertTrue(Path(defects[0]['archive']).is_dir())
 
     def test_concurrent_writers_keep_one_complete_entry(self):
         self.result_file.write_text(json.dumps(self.result))
@@ -188,8 +204,8 @@ class ResultCacheTests(unittest.TestCase):
         key = cache.build_key(a, key_function=normalize)
         self.assertEqual(key, cache.build_key(b, key_function=normalize))
         self.result_file.write_text(json.dumps(self.result))
-        hit = cache.store(self.store, key, self.result_file)
-        self.assertEqual(hit['key'], key['sha256'])
+        stored = cache.store(self.store, key, self.result_file)
+        self.assertEqual(stored['key'], key['sha256'])
         b['proof_text'] += 'changed'
         self.assertNotEqual(key, cache.build_key(b, key_function=normalize))
 
@@ -202,16 +218,74 @@ class ResultCacheTests(unittest.TestCase):
         self.spec['search'] = dict(reversed(list(self.spec['search'].items())))
         self.assertEqual(a, cache.build_key(dict(reversed(list(self.spec.items())))))
 
-    def test_open_pretty_groups_without_shared_state_refuse(self):
+    def test_open_verdict_reuses_diagnostic_groups_without_state_reconstruction(self):
         self.result.update(success=False, status='native_open', native_receipts={},
                            normal_tactic_return=True, proof_finished=False)
-        with self.assertRaisesRegex(ValueError, 'shared evar state'):
-            self.save()
+        hit = self.save()
+        self.assertEqual(hit['cached_verdict'], {'status': 'open', 'accepted': False})
+        self.assertEqual(hit['reuse_kind'], 'open-verdict')
+        self.assertEqual(hit['cache_status'], 'cached open (not re-run)')
+        self.assertEqual(hit['residual_role'], 'diagnostic')
+        self.assertFalse(hit['state_reconstruction_supported'])
+        self.assertEqual(hit['fresh_search_cpu_seconds'], 0)
 
     def test_vos_object_refuses_closed_acceptance(self):
         self.result['native_receipts']['block']['object'] = str(self.obj.with_suffix('.vos'))
         with self.assertRaisesRegex(ValueError, 'full proof object'):
             self.save()
+
+    def test_every_closed_hit_requires_a_new_kernel_check(self):
+        self.save()
+        key = cache.build_key(self.spec)
+        with self.assertRaisesRegex(ValueError, 'current kernel verifier'):
+            cache.lookup(self.store, key)
+        checked = []
+        def verifier(hit):
+            checked.append(hit['key'])
+            return self.kernel_check(hit)
+        for _ in range(2):
+            self.assertIsNotNone(cache.lookup(self.store, key, verify_closed=verifier))
+        self.assertEqual(checked, [key['sha256']] * 2)
+
+    def test_failed_kernel_check_evicts_and_requests_a_fresh_run(self):
+        self.save()
+        key = cache.build_key(self.spec)
+        defects = []
+        hit = cache.lookup(self.store, key, verify_closed=lambda _: {'success': False},
+                           on_defect=defects.append)
+        self.assertIsNone(hit)
+        self.assertEqual(len(defects), 1)
+        self.assertIn('kernel check', defects[0]['reason'])
+        self.assertIsNone(cache.lookup(self.store, key))
+        self.assertFalse((self.store / key['sha256']).exists())
+
+    def test_tampered_vo_is_evicted_before_reporting_closed(self):
+        hit = self.save()
+        Path(hit['result']['native_receipts']['block']['object']).write_bytes(b'tampered vo')
+        defects = []
+        self.assertIsNone(cache.lookup(self.store, cache.build_key(self.spec),
+                                       verify_closed=self.kernel_check, on_defect=defects.append))
+        self.assertEqual(len(defects), 1)
+
+    def test_unchecked_kernel_failure_cannot_be_silent(self):
+        self.save()
+        with self.assertRaises(cache.CacheDefect):
+            cache.lookup(self.store, cache.build_key(self.spec), verify_closed=lambda _: {})
+
+    def test_cache_off_bypasses_lookup_and_storage(self):
+        with patch.dict('os.environ', {'ZESU_PROOF_CACHE': 'off'}):
+            self.assertIsNone(cache.lookup(self.store, {}))
+            self.assertEqual(cache.store(self.store, {}, 'missing'), {'cache_status': 'disabled'})
+        self.assertFalse(self.store.exists())
+
+    def test_gate_merge_and_confirmation_cannot_use_cache(self):
+        for purpose in ['gate', 'merge', 'confirmation']:
+            with self.subTest(purpose=purpose):
+                self.assertIsNone(cache.lookup(self.store, {}, purpose=purpose))
+                self.assertEqual(cache.store(self.store, {}, 'missing', purpose=purpose),
+                                 {'cache_status': 'disabled'})
+        with patch.dict('os.environ', {'ZESU_IO': 'gate'}):
+            self.assertIsNone(cache.lookup(self.store, {}))
 
 
 if __name__ == '__main__':

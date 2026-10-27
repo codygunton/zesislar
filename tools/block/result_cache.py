@@ -14,10 +14,27 @@ from pathlib import Path
 import re
 import shutil
 import tempfile
+import time
+import uuid
 
 
 SCHEMA = 'entry-chain.result-cache.v1'
 KEY_SCHEMA = 'entry-chain.result-key.v1'
+
+
+class CacheDefect(ValueError):
+    def __init__(self, record):
+        self.record = record
+        super().__init__('The cache entry failed validation and was evicted.')
+
+
+def enabled(purpose='exploration'):
+    if purpose not in {'exploration', 'confirmation', 'gate', 'merge'}:
+        raise ValueError('The cache purpose is unsupported.')
+    setting = os.environ.get('ZESU_PROOF_CACHE', 'on')
+    if setting not in {'on', 'off'}:
+        raise ValueError('ZESU_PROOF_CACHE must be on or off.')
+    return purpose == 'exploration' and setting == 'on' and os.environ.get('ZESU_IO') != 'gate'
 
 
 def digest(path):
@@ -202,13 +219,8 @@ def validate_state(result):
         raise ValueError('The retained focus frames differ from their reported count.')
     if result['success'] and any(kernel[name] for name in names):
         raise ValueError('A closed result retains kernel goals.')
-    if not result['success']:
-        shared = state.get('shared_state')
-        if not isinstance(shared, dict) or shared.get('complete') is not True:
-            raise ValueError('An open result omits the complete shared evar state.')
-        required = {'evar_assignments', 'universe_constraints', 'shared_context'}
-        if not required.issubset(shared) or not isinstance(shared['evar_assignments'], dict) or not isinstance(shared['universe_constraints'], list):
-            raise ValueError('An open result omits shared assignments or universe constraints.')
+    # An open hit reuses only the exact attempt's verdict. The retained groups
+    # are diagnostics. The cache never reconstructs a proof state or resumes it.
 
 
 def relocated(value, paths):
@@ -219,8 +231,10 @@ def relocated(value, paths):
     return paths.get(value, value) if isinstance(value, str) else value
 
 
-def store(cache_dir, key, result_path, artifacts=()):
+def store(cache_dir, key, result_path, artifacts=(), *, purpose='exploration'):
     """Copy evidence atomically. artifacts is an iterable of file bindings."""
+    if not enabled(purpose):
+        return {'cache_status': 'disabled'}
     validate_key(key)
     raw = Path(result_path).read_bytes()
     result = json.loads(raw)
@@ -244,7 +258,8 @@ def store(cache_dir, key, result_path, artifacts=()):
     root.mkdir(parents=True, exist_ok=True)
     target = root / key['sha256']
     if target.exists():
-        return lookup(root, key)
+        return {'cache_status': 'already-stored', 'key': key['sha256'],
+                'manifest': str(target / 'MANIFEST.json')}
     staging = Path(tempfile.mkdtemp(prefix='.cache-', dir=root))
     try:
         blobs = staging / 'files'
@@ -277,14 +292,15 @@ def store(cache_dir, key, result_path, artifacts=()):
         except OSError:
             if not target.is_dir():
                 raise
-        return lookup(root, key)
+        return {'cache_status': 'stored', 'key': key['sha256'],
+                'manifest': str(target / 'MANIFEST.json')}
     finally:
         if staging.exists():
             shutil.rmtree(staging)
 
 
-def lookup(cache_dir, key):
-    """Return None on a miss; refuse damaged entries instead of rerunning."""
+def _read_entry(cache_dir, key):
+    """Validate retained evidence. This internal operation permits no reuse."""
     validate_key(key)
     target = Path(cache_dir) / key['sha256']
     if not target.exists():
@@ -319,10 +335,87 @@ def lookup(cache_dir, key):
     validate_state(result)
     return {'cache_status': 'cached', 'key': key['sha256'],
             'result': result,
+            'cached_verdict': {'status': 'closed' if result['success'] else 'open',
+                               'accepted': result['success']},
+            'reuse_kind': 'closed-proof-evidence' if result['success'] else 'open-verdict',
+            'state_reconstruction_supported': False,
+            'residual_role': 'empty-final-state' if result['success'] else 'diagnostic',
             'original_result': str(target / 'RESULT.json'),
             'manifest': str(target / 'MANIFEST.json'),
             'fresh_search_cpu_seconds': 0,
             'historical_cpu': result.get('CPU'), 'paths': paths}
+
+
+def evict(cache_dir, key, reason):
+    """Remove an active entry while retaining the failed evidence for audit."""
+    root = Path(cache_dir)
+    target = root / key['sha256']
+    archive = root / '.defects' / (key['sha256'] + '-' + uuid.uuid4().hex)
+    archive.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        os.rename(target, archive)
+    except FileNotFoundError:
+        archive = None
+    record = {'schema': 'entry-chain.cache-defect.v1', 'key': key['sha256'],
+              'reason': reason, 'time_ns': time.time_ns(),
+              'evicted_entry': str(target), 'archive': str(archive) if archive else None}
+    receipt = archive / 'DEFECT.json' if archive else root / '.defects' / (uuid.uuid4().hex + '.json')
+    receipt.write_bytes(encoded(record))
+    record['receipt'] = str(receipt)
+    return record
+
+
+def checked_closed_verdict(hit, check):
+    if not isinstance(check, dict) or check.get('success') is not True or check.get('checked_key') != hit['key']:
+        return False
+    if check.get('method') == 'coqchk':
+        return check.get('recursive') is True and check.get('admitted_modules') == []
+    if check.get('method') == 'load-exact-statement':
+        expected = hit['result'].get('statement_sha256')
+        return bool(expected and check.get('statement_sha256') == expected and
+                    check.get('assumptions') == [] and check.get('vo_loaded') is True)
+    return False
+
+
+def lookup(cache_dir, key, *, verify_closed=None, on_defect=None, purpose='exploration'):
+    """Check every closed hit with the current kernel before permitting reuse.
+
+    The adapter supplies canonical admission and current dependencies to its
+    verifier. A failed check evicts the entry. on_defect records the mismatch,
+    then None instructs the adapter to run fresh. No proof search runs here.
+    """
+    if not enabled(purpose):
+        return None
+    validate_key(key)
+    try:
+        hit = _read_entry(cache_dir, key)
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        defect = evict(cache_dir, key, 'integrity: ' + str(error))
+        if on_defect is None:
+            raise CacheDefect(defect) from error
+        on_defect(defect)
+        return None
+    if hit is None:
+        return None
+    if hit['result']['success']:
+        if not callable(verify_closed):
+            raise ValueError('A closed cache hit requires a current kernel verifier.')
+        try:
+            check = verify_closed(hit)
+            valid = checked_closed_verdict(hit, check)
+            reason = 'kernel check rejected the cached proof'
+        except Exception as error:
+            valid, reason = False, 'kernel check raised: ' + str(error)
+        if not valid:
+            defect = evict(cache_dir, key, reason)
+            if on_defect is None:
+                raise CacheDefect(defect)
+            on_defect(defect)
+            return None
+        hit['kernel_recheck'] = check
+    else:
+        hit['cache_status'] = 'cached open (not re-run)'
+    return hit
 
 
 def main():
