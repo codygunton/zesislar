@@ -8,7 +8,7 @@ import subprocess
 import tempfile
 import unittest
 
-from coqc_findlib import (RECORD_NAME, compiler_environment,
+from coqc_findlib import (RECORD_NAME, compiler_environment, preflight,
                          record_dune_environment)
 from test_guard import fixture_environment
 from module_memory import GIB, make_profile
@@ -63,6 +63,44 @@ class CompilerFindlibTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "record changed"):
             record_dune_environment(self.tools, {"OCAMLPATH": "/different/lib"})
         self.assertEqual(self.record.read_bytes(), original)
+
+    def test_logical_and_physical_dune_library_are_one_identity(self):
+        alias = self.root / "_dune-cache"
+        alias.symlink_to(self.build, target_is_directory=True)
+        logical = alias / "install/default/lib"
+        self.write_record()
+        original = self.record.read_bytes()
+        record_dune_environment(self.tools, {"OCAMLPATH": str(logical)})
+        self.assertEqual(self.record.read_bytes(), original)
+        self.assertEqual(compiler_environment(self.root, {})["OCAMLPATH"], str(self.library))
+
+    def test_legacy_alias_record_is_preserved_after_identity_comparison(self):
+        alias = self.root / "_dune-cache"
+        alias.symlink_to(self.build, target_is_directory=True)
+        self.write_record()
+        value = json.loads(self.record.read_text())
+        value["OCAMLPATH"] = str(alias / "install/default/lib")
+        self.record.write_text(json.dumps(value) + "\n")
+        original = self.record.read_bytes()
+        record_dune_environment(self.tools, {"OCAMLPATH": str(self.library)})
+        self.assertEqual(self.record.read_bytes(), original)
+        self.assertTrue(preflight(self.root, self.build)["record_present"])
+
+    def test_preflight_refuses_foreign_build_before_admission(self):
+        self.write_record()
+        value = json.loads(self.record.read_text())
+        value["private_build"] = str(self.root / "_build/agents/other")
+        self.record.write_text(json.dumps(value))
+        with self.assertRaisesRegex(ValueError, "different workspace or build"):
+            preflight(self.root, self.build)
+
+    def test_preflight_refuses_library_from_another_private_build(self):
+        self.write_record()
+        value = json.loads(self.record.read_text())
+        value["OCAMLPATH"] = str(self.root / "_build/agents/other/install/default/lib")
+        self.record.write_text(json.dumps(value))
+        with self.assertRaisesRegex(ValueError, "another private build"):
+            preflight(self.root, self.build)
 
     def test_malformed_record_is_rejected(self):
         self.record.write_text("not JSON")

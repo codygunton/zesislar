@@ -77,9 +77,19 @@ class GateCapTest(unittest.TestCase):
 
     def gate(self, **changes):
         return subprocess.run(["bash", str(self.root / "tools/det/gate.sh"),
-                               "check-iris", "gate.log"], cwd=self.root,
+                               "--timing", "check-iris", "gate.log"], cwd=self.root,
                               env=dict(self.environment, **changes),
                               capture_output=True, text=True, timeout=8)
+
+    def test_default_correctness_route_does_not_take_the_gate_lock(self):
+        (self.root / "Makefile").write_text("check-iris:\n\t@echo correctness-unlocked\n")
+        result = subprocess.run(["bash", str(self.root / "tools/det/gate.sh"), "check-iris"],
+                                cwd=self.root, env=self.environment,
+                                capture_output=True, text=True, timeout=8)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("correctness-unlocked", result.stdout)
+        self.assertFalse(self.batch_log.exists())
+        self.assertFalse((self.root / "gate.lock").exists())
 
     def test_memory_drain_refuses_batch_with_controlled_high_memory(self):
         result = self.gate(GATE_TEST_AVAILABLE_BYTES="0", ZESU_GATE_DRAIN_SECONDS="0")

@@ -343,7 +343,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
         (tools / "guard-bin").mkdir(parents=True)
         (tools / "det").mkdir()
         for name in ("resource_guard.sh", "dune_coqc_guarded.sh", "coqc_scratch.sh",
-                     "coqc_recipe.py", "coqc_findlib.py", "module_memory.py",
+                     "coqc_recipe.py", "coqc_findlib.py", "module_memory.py", "run_registry.py",
                      "det/coqc_slots.py", "guard-bin/dune"):
             shutil.copy2(TOOLS / name, tools / name)
         self.wrapper = tools / "guard-bin/coqc"

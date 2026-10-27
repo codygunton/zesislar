@@ -879,6 +879,10 @@ release_aggregate_reservations() {
 run_locked() {
   local name=$1; shift
   [ "${1:-}" = "--" ] && shift
+  case "$name" in
+    check-fast|check-iris)
+      if [ "${ZESU_TIMING_RUN:-0}" != 1 ]; then exec "$@"; fi ;;
+  esac
   # A gate that already holds the lock runs `make`, which comes back here.
   # A benchmark arm's build is batch work, not a gate (ZESU_ARM).
   if [ -n "${ZESU_IN_GATE:-}${ZESU_ARM:-}" ]; then exec "$@"; fi
@@ -886,6 +890,15 @@ run_locked() {
   trap 'lock_release $$' EXIT
   lock_hold $$ || exit $?
   ZESU_IN_GATE=1 "$@"
+}
+
+register_run_actor() {
+  [ -n "${ZESU_RUN_ID:-}" ] || return 0
+  local actor=${1:-$BASHPID} ticks registry
+  ticks=$(gate_process_start "$actor") || return 2
+  registry=${ZESU_RUN_REGISTRY_TOOL:-$(dirname "$(realpath "$0")")/run_registry.py}
+  "${ZESU_REGISTRY_PYTHON:-python3}" "$registry" register-job \
+    --run-id "$ZESU_RUN_ID" --pid "$actor" --startticks "$ticks"
 }
 
 # The busiest whole disk, in percent, over one second. A fifth of a
@@ -1345,6 +1358,7 @@ run_scope() {
   # Only scope-exec sets this token after systemd creates the job fence.
   if [ "${ZESU_COQC_SCOPE:-}" = "$reservation" ]; then
     mark_coqc "$reservation" "$BASHPID" || return $?
+    register_run_actor || return $?
     exec "$@"
   fi
   local unit="${SCOPE_PREFIX}-${name}-$$-${RANDOM}"
@@ -1436,6 +1450,7 @@ run_batch() {
   env ZESU_IN_BATCH=1 ZESU_AGGREGATE_SLICE="$slice" ZESU_AGGREGATE_LIMIT="$limit" \
     systemd-run --user --scope --quiet --unit="$unit" --slice="$slice" \
     -p "MemoryMax=$limit" -p MemorySwapMax=0 -- $(io_class) \
+    "$(realpath "$0")" batch-exec -- \
     python3 "$(dirname "$(realpath "$0")")/dune_trace_guard.py" --canonical-build-dir -- "$@" &
   child=$!
   wait "$child"
@@ -1477,6 +1492,20 @@ apply_scope_limits() {
 
 prune_scope_registry
 
+# Register a standalone batch or scope before its detached systemd actors start.
+# Nested scopes inherit the exact run ID. A new run never implies replacement.
+case "${1:-report}" in
+  batch|scope)
+    if [ -z "${ZESU_RUN_ID:-}" ] && [ -z "${ZESU_IN_BATCH:-}${ZESU_IN_GATE:-}" ]; then
+      registry=${ZESU_RUN_REGISTRY_TOOL:-$(dirname "$(realpath "$0")")/run_registry.py}
+      registry_args=(run --kind "stock-$1" --owner "${COORD_AGENT:-$USER}")
+      if [ -n "${ZESU_SUPERSEDES_RUN:-}" ]; then
+        registry_args+=(--supersedes "$ZESU_SUPERSEDES_RUN")
+      fi
+      exec "${ZESU_REGISTRY_PYTHON:-python3}" "$registry" "${registry_args[@]}" -- "$(realpath "$0")" "$@"
+    fi ;;
+esac
+
 case "${1:-report}" in
   gate-module-limit)
     if [[ ! "$GATE_MODULE_LIMIT_GIB" =~ ^([6-9]|[12][0-9]|3[0-2])$ ]]; then
@@ -1493,7 +1522,7 @@ case "${1:-report}" in
   wait)   guard_wait ;;
   reserve-coqc) reserve_coqc "$2" ;;
   confirm-coqc) confirm_coqc "$2" ;;
-  mark-coqc) mark_coqc "$2" "$3" ;;
+  mark-coqc) mark_coqc "$2" "$3" && register_run_actor "$3" ;;
   release-coqc) release_coqc "$2" ;;
   watch)  guard_watch ;;
   scope)  shift; run_scope "$@" ;;
@@ -1508,6 +1537,11 @@ case "${1:-report}" in
     mark_coqc "$token" $$ || exit $?
     export ZESU_COQC_RESERVATION="$token" ZESU_COQC_SCOPE="$token"
     apply_scope_limits || exit $?
+    register_run_actor || exit $?
+    exec "$@" ;;
+  batch-exec)
+    shift; [ "${1:-}" = -- ] && shift
+    register_run_actor || exit $?
     exec "$@" ;;
   batch)  shift; run_batch "$@" ;;
   locked) shift; run_locked "$@" ;;

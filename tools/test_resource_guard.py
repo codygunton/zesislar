@@ -9,8 +9,10 @@ import unittest
 
 
 GUARD = Path(__file__).with_name("resource_guard.sh")
-LIBRARY = GUARD.read_text().split("\nprune_scope_registry\n\ncase ", 1)[0]
-DISPATCH = "case " + GUARD.read_text().split("\nprune_scope_registry\n\ncase ", 1)[1]
+SOURCE = GUARD.read_text()
+LIBRARY = SOURCE.split("\nprune_scope_registry\n", 1)[0]
+DISPATCH_MARKER = '\ncase "${1:-report}" in\n'
+DISPATCH = DISPATCH_MARKER.lstrip("\n") + SOURCE.rsplit(DISPATCH_MARKER, 1)[1]
 
 
 class ResourceGuard(unittest.TestCase):
@@ -807,6 +809,8 @@ live_scopes
                            if not key.startswith("ZESU_")}
             environment.update(ZESU_GUARD_STATE=directory,
                                ZESU_GATE_LOCK=str(Path(directory) / "gate.lock"),
+                               ZESU_RUN_REGISTRY=str(Path(directory) / "run-registry"),
+                               ZESU_RUN_REGISTRY_TOOL=str(GUARD.with_name("run_registry.py")),
                                **variables)
             # Legacy fixtures never inspect or trim the shared host cache.
             prefix = "\nhome_free_bytes() { echo 60000000000; }\n"

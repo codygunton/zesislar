@@ -28,9 +28,8 @@ GUARD ?= $(CURDIR)/tools/resource_guard.sh
 GUARD_BATCH = $(if $(wildcard $(GUARD)),$(GUARD) batch,env ZESU_NO_GUARD=1)
 GATE_JOBS := $(shell test -x $(GUARD) && $(GUARD) gate-jobs 2>/dev/null || echo 24)
 FAST_JOBS := $(shell test -x $(GUARD) && $(GUARD) gate-jobs check-fast 2>/dev/null || echo 48)
-# `check-iris` runs alone across agents: it holds /tmp/zesu-gate.lock, and
-# every guard holds its launches while the lock is live.
-GUARD_LOCKED = $(if $(wildcard $(GUARD)),$(GUARD) locked $(1) --,)
+# Correctness gates reserve memory without excluding independent proof jobs.
+# Only an explicit timing run takes the exclusive gate lock.
 
 CHECK_LOCAL_BUILD_DIR ?= $(CURDIR)/_build/agents/check-local
 CHECK_LOCAL_JOBS ?= $(AGENT_JOBS)
@@ -160,7 +159,12 @@ RETAINED_TARGETS := \
   @ZesuSsz/Proofs/Tests/all \
   @ZesuSsz/Tests/all
 .PHONY: check-fast
-check-fast: stock-native-indexes check-evidence-tools check-signatures
+check-fast:
+	$(PYTHON) tools/correctness_gate.py run --target check-fast --build-dir $(AGENT_BUILD_DIR) -- \
+	  $(MAKE) --no-print-directory _check-fast
+
+.PHONY: _check-fast
+_check-fast: stock-native-indexes check-evidence-tools check-signatures
 	$(GUARD_BATCH) check-fast -- \
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-fast -- $(OPAM) dune build --root . \
@@ -178,20 +182,23 @@ check-signatures: gate-workspace
 	  Scaffolding/DecodeItemSignatureFixtures.vo
 
 .PHONY: check-iris
-check-iris: stock-native-indexes check-evidence-tools
-	$(call GUARD_LOCKED,check-iris) $(GUARD_BATCH) check-iris -- \
+check-iris:
+	$(PYTHON) tools/correctness_gate.py run --target check-iris --build-dir $(AGENT_BUILD_DIR) -- \
+	  $(MAKE) --no-print-directory _check-iris
+
+.PHONY: _check-iris
+_check-iris: stock-native-indexes check-evidence-tools
+	$(GUARD_BATCH) check-iris -- \
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-iris -- $(OPAM) dune build --root . \
 	  --build-dir $(AGENT_BUILD_DIR) --cache=enabled -j$(AGENT_JOBS) \
 	  @all
 
-# One gate, alone: `gate.sh` wants the gate lock first, so no new batch
-# starts, waits for running job scopes to finish, runs the uncached
-# checkers itself, and logs the run.
+# Correctness is unlocked. Use TIMING=1 only for exclusive measurements.
 TARGET ?= check-iris
 .PHONY: gate
 gate:
-	bash tools/det/gate.sh $(TARGET)
+	bash tools/det/gate.sh $(if $(filter 1,$(TIMING)),--timing,) $(TARGET)
 
 # --- the segment harness ------------------------------------------------
 #
@@ -402,4 +409,4 @@ check-evidence-tools check-signatures: stock-native-indexes
 build-directories:
 	mkdir -p "$(AGENT_BUILD_DIR)" "$(CHECK_LOCAL_BUILD_DIR)" "$(BLOCK_BUILD_DIR)" "$(DET_BUILD_DIR)"
 
-proof-verbose check-fast check-signatures check-iris check-local block-prepare: | build-directories
+proof-verbose _check-fast check-signatures _check-iris check-local block-prepare: | build-directories
