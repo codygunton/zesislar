@@ -6,10 +6,15 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from correctness_gate import active_claims, digest, read, release, reserve, save, select_peak
+from correctness_gate import active_claims, digest, gate_environment, read, release, reserve, save, select_peak
 
 
 class GateClaimsTests(unittest.TestCase):
+    def test_gates_force_cache_off(self):
+        source = {'ZESU_PROOF_CACHE': 'on', 'other': 'preserved'}
+        self.assertEqual(gate_environment(source), {'ZESU_PROOF_CACHE': 'off', 'other': 'preserved'})
+        self.assertEqual(source['ZESU_PROOF_CACHE'], 'on')
+
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)

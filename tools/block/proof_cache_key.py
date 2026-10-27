@@ -12,7 +12,7 @@ from pathlib import Path, PurePosixPath
 import re
 
 
-INPUT_SCHEMA = 'zesu-proof-key-input-v1'
+INPUT_SCHEMA = 'zesu-proof-key-input-v2'
 RECIPE_SCHEMA = 'zesu-proof-recipe-v1'
 ATTEMPT_SCHEMA = 'zesu-proof-attempt-v1'
 ARTIFACT_SCHEMA = 'zesu-proof-artifact-v1'
@@ -135,6 +135,23 @@ def typed_value(value, roots, *, path_lists=True):
         raise ValueError('An execution value is not typed.')
     if value.get('kind') == 'path':
         return path_value(value, roots)
+    if value.get('kind') == 'transport':
+        fields(value, {'kind', 'role', 'encoding', 'binding', 'semantic_projection', 'semantic_dependencies'})
+        string(value['role'])
+        string(value['semantic_projection'])
+        strings(value['semantic_dependencies'])
+        if not value['semantic_dependencies']:
+            raise ValueError('A transport reference has no semantic dependency projection.')
+        if value['encoding'] not in {'json-path', 'sha256'}:
+            raise ValueError('A transport reference has an unsupported encoding.')
+        binding = value['binding']
+        fields(binding, {'path', 'sha256', 'root_role'})
+        path_value({'kind': 'path', 'value': binding['path'], 'root_role': binding['root_role']}, roots)
+        path = Path(binding['path'])
+        if path.is_symlink() or file_digest(path) != sha256(binding['sha256']):
+            raise ValueError('The separately bound transport envelope changed.')
+        return {name: value[name] for name in ('kind', 'role', 'encoding',
+                                              'semantic_projection', 'semantic_dependencies')}
     if value.get('kind') == 'literal':
         fields(value, {'kind', 'value'})
         if not isinstance(value['value'], str) or '\0' in value['value']:
@@ -179,7 +196,7 @@ def references(values, files):
 
 
 def configuration(value, roots):
-    names = {'argv', 'load_paths', 'cwd', 'environment', 'init_file_policy',
+    names = {'argv', 'execution_vectors', 'load_paths', 'cwd', 'environment', 'init_file_policy',
              'warnings_as_errors', 'native_compilation', 'proof_skipping',
              'locale', 'python_version', 'python_hash_seed', 'solver_seeds'}
     fields(value, names)
@@ -231,6 +248,20 @@ def configuration(value, roots):
         raise ValueError('The solver seed policy has an invalid type.')
     result = {name: value[name] for name in names - {'argv', 'load_paths', 'cwd', 'environment'}}
     result.update(argv=argv, load_paths=load_paths, cwd=path_value(value['cwd'], roots), environment=environment)
+    if not isinstance(value['execution_vectors'], list) or not value['execution_vectors']:
+        raise ValueError('The recipe has no ordered execution vectors.')
+    vectors = []
+    roles = set()
+    for row in value['execution_vectors']:
+        fields(row, {'role', 'argv', 'cwd'})
+        role = string(row['role'])
+        if role in roles or not isinstance(row['argv'], list) or not row['argv']:
+            raise ValueError('An execution vector is empty or repeats a role.')
+        roles.add(role)
+        vectors.append({'role': role,
+                        'argv': [typed_value(item, roots, path_lists=False) for item in row['argv']],
+                        'cwd': path_value(row['cwd'], roots)})
+    result['execution_vectors'] = vectors
     return result
 
 
@@ -291,6 +322,16 @@ def recipe(value, files, roots):
         if not any(files[name]['kind'] == 'binary' for name in toolchain[role]):
             raise ValueError('A toolchain role has no installed binary digest.')
     config = configuration(value['configuration'], roots)
+    def check_transports(item):
+        if isinstance(item, dict):
+            if item.get('kind') == 'transport':
+                references([item['semantic_projection'], *item['semantic_dependencies']], files)
+            for child in item.values():
+                check_transports(child)
+        elif isinstance(item, list):
+            for child in item:
+                check_transports(child)
+    check_transports(config)
     if config['proof_skipping'] or any(row.get('value') in {'-vos', '-vok', '-vio', '-quick'} for row in config['argv']):
         raise ValueError('Skipped proof bodies cannot enter this proof cache.')
     return {'schema': RECIPE_SCHEMA, 'module': value['module'], 'proof': value['proof'],
