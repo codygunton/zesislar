@@ -296,6 +296,28 @@ class ProofCacheKeyTests(unittest.TestCase):
                 value['selector'] = selector
                 self.build()
 
+    def test_derived_bytecode_does_not_change_keys(self):
+        before = self.build()
+        for relative in ['__pycache__/provider.cpython-312.pyc', 'provider.pyc',
+                         '__pycache__/unrelated.data']:
+            path = self.work / relative
+            path.parent.mkdir(exist_ok=True)
+            path.write_bytes(b'derived bytecode')
+            name = 'derived:' + relative
+            self.spec['files'].append({'id': name, 'kind': 'binary', 'path': str(path),
+                                       'sha256': keys.file_digest(path), 'root_role': 'workspace'})
+            self.spec['recipe']['dependencies'].append({'id': name, 'requires': ['provider.py']})
+            self.spec['recipe']['dependencies'][0]['requires'].append(name)
+            self.spec['recipe']['toolchain']['python_dependencies'].append(name)
+            self.spec['recipe']['backend']['files'].append(name)
+            self.assertEqual(before, self.build())
+            path.write_bytes(b'changed derived bytecode')
+            self.assertEqual(before, self.build())
+            path.unlink()
+            self.assertEqual(before, self.build())
+        self.assertTrue(any(row['id'] == 'provider.py' for row in self.spec['files']))
+        self.assertEqual(len(self.spec['files']), 3 + len(keys.without_python_bytecode(self.spec)['files']))
+
     def test_unchanged_closed_observation_hits_without_search(self):
         key = cache.build_key(self.spec, key_function=keys.normalize)
         state = self.work / 'state.json'
