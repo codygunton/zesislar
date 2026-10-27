@@ -136,13 +136,14 @@ def typed_value(value, roots, *, path_lists=True):
     if value.get('kind') == 'path':
         return path_value(value, roots)
     if value.get('kind') == 'transport':
-        fields(value, {'kind', 'role', 'encoding', 'binding', 'semantic_projection', 'semantic_dependencies'})
+        fields(value, {'kind', 'role', 'encoding', 'binding', 'semantic_projection', 'semantic_dependencies'},
+               {'selector'} if value.get('encoding') == 'json-field' else ())
         string(value['role'])
         string(value['semantic_projection'])
         strings(value['semantic_dependencies'])
         if not value['semantic_dependencies']:
             raise ValueError('A transport reference has no semantic dependency projection.')
-        if value['encoding'] not in {'json-path', 'sha256'}:
+        if value['encoding'] not in {'json-path', 'sha256', 'json-field'}:
             raise ValueError('A transport reference has an unsupported encoding.')
         binding = value['binding']
         fields(binding, {'path', 'sha256', 'root_role'})
@@ -150,8 +151,20 @@ def typed_value(value, roots, *, path_lists=True):
         path = Path(binding['path'])
         if path.is_symlink() or file_digest(path) != sha256(binding['sha256']):
             raise ValueError('The separately bound transport envelope changed.')
-        return {name: value[name] for name in ('kind', 'role', 'encoding',
-                                              'semantic_projection', 'semantic_dependencies')}
+        result = {name: value[name] for name in ('kind', 'role', 'encoding',
+                                                 'semantic_projection', 'semantic_dependencies')}
+        if value['encoding'] == 'json-field':
+            selector = strings(value.get('selector'))
+            if not selector:
+                raise ValueError('A transport field selector is empty.')
+            selected = strict_loads(path.read_text())
+            for name in selector:
+                if not isinstance(selected, dict) or name not in selected:
+                    raise ValueError('A transport field selector does not resolve.')
+                selected = selected[name]
+            string(selected)
+            result['selector'] = selector
+        return result
     if value.get('kind') == 'literal':
         fields(value, {'kind', 'value'})
         if not isinstance(value['value'], str) or '\0' in value['value']:
