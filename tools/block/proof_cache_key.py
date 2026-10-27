@@ -5,6 +5,7 @@ Arithmetic caches use their fixed schema order. All other arrays preserve
 order. Source bytes remain exact. Physical locations occur only in the
 checked input envelope.
 """
+from copy import deepcopy
 import hashlib
 import json
 import math
@@ -415,10 +416,50 @@ def attempt(value, recipe_key, block, approved_acceptance, files, proof_source_s
             'arithmetic_caches': [caches[name] for name in names]}
 
 
+def without_python_bytecode(spec):
+    """Keep source and interpreter inputs. Omit their derived bytecode files."""
+    spec = deepcopy(spec)
+    if not isinstance(spec['files'], list):
+        raise ValueError('The dependency closure has an invalid file list.')
+    names = set()
+    for row in spec['files']:
+        fields(row, {'id', 'kind', 'path', 'sha256', 'root_role'}, {'symlink_target'})
+        name = string(row['id'])
+        if name in names:
+            raise ValueError('The dependency closure repeats a file identity.')
+        names.add(name)
+        string(row['path'])
+        string(row['kind'])
+        string(row['root_role'])
+        sha256(row['sha256'])
+    excluded = {row['id'] for row in spec['files']
+                if '__pycache__' in PurePosixPath(row['path']).parts
+                or PurePosixPath(row['path']).suffix == '.pyc'}
+    if not excluded:
+        return spec
+    if spec['recipe']['proof'] in excluded:
+        raise ValueError('The proof source cannot be a Python bytecode file.')
+    spec['files'] = [row for row in spec['files'] if row['id'] not in excluded]
+    recipe = spec['recipe']
+    for row in recipe['dependencies']:
+        fields(row, {'id', 'requires'})
+    recipe['dependencies'] = [dict(row, requires=[name for name in row['requires'] if name not in excluded])
+                              for row in recipe['dependencies'] if row['id'] not in excluded]
+    for row in recipe['producers']:
+        fields(row, {'id', 'implementation', 'inputs', 'outputs'})
+        for field in ['implementation', 'inputs', 'outputs']:
+            row[field] = [name for name in row[field] if name not in excluded]
+    for role, names in recipe['toolchain'].items():
+        recipe['toolchain'][role] = [name for name in names if name not in excluded]
+    recipe['backend']['files'] = [name for name in recipe['backend']['files'] if name not in excluded]
+    return spec
+
+
 def build_keys(spec):
     fields(spec, {'schema', 'block', 'roots', 'files', 'recipe', 'attempt'})
     if spec['schema'] != INPUT_SCHEMA:
         raise ValueError('The proof-key input schema is unsupported.')
+    spec = without_python_bytecode(spec)
     roots = roots_by_role(spec['roots'])
     files = checked_files(spec['files'], roots)
     normalized = recipe(spec['recipe'], files, roots)
