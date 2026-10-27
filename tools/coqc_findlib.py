@@ -49,7 +49,39 @@ def check_record(record, workspace, build):
     # A relative findlib path changes meaning when MCP changes the compiler cwd.
     if any(item and not Path(item).is_absolute() for item in value.split(":")):
         raise ValueError("The compiler findlib record requires absolute findlib paths")
-    return value
+    return canonical_ocamlpath(value, workspace, build)
+
+
+def canonical_ocamlpath(value, workspace, build):
+    """Compare library identities after resolving the owned Dune alias."""
+    root, private = Path(workspace).resolve(), Path(build).resolve()
+    paths = []
+    for item in value.split(":"):
+        if not item:
+            paths.append(item)
+            continue
+        path = Path(item).resolve()
+        owned = root / "_build/agents"
+        if path.is_relative_to(owned) and not path.is_relative_to(private):
+            raise ValueError("The compiler findlib path selects another private build")
+        paths.append(str(path))
+    return ":".join(paths)
+
+
+def preflight(workspace, build):
+    """Refuse an incompatible private record before gate admission."""
+    root, private = Path(workspace).resolve(), Path(build).resolve()
+    if not private.is_relative_to(root / "_build/agents") or private == root / "_build/agents":
+        raise ValueError("A correctness gate requires a private _build/agents directory")
+    record = private / RECORD_NAME
+    if record.is_file():
+        value = check_record(json.loads(record.read_text()), root, private)
+        if any(item and not Path(item).is_dir() for item in value.split(":")):
+            raise ValueError("The recorded compiler findlib directory is absent; use a fresh private build")
+    elif record.is_symlink():
+        raise ValueError("The private compiler findlib record is unavailable")
+    return {"workspace": str(root), "private_build": str(private),
+            "record_present": record.is_file(), "admission_started": False}
 
 
 def record_dune_environment(tools_directory, environment):
@@ -66,7 +98,7 @@ def record_dune_environment(tools_directory, environment):
         raise ValueError("The Dune compiler environment lacks OCAMLPATH")
     record = {"schema_version": 1, "workspace": str(workspace),
               "private_build": str(build), "OCAMLPATH": environment["OCAMLPATH"]}
-    check_record(record, workspace, build)
+    record["OCAMLPATH"] = check_record(record, workspace, build)
     payload = (json.dumps(record, sort_keys=True) + "\n").encode()
     destination = build / RECORD_NAME
     # link publishes one complete record without replacing another compiler's record.
@@ -77,7 +109,8 @@ def record_dune_environment(tools_directory, environment):
         try:
             os.link(temporary, destination)
         except FileExistsError:
-            if destination.read_bytes() != payload:
+            existing = json.loads(destination.read_text())
+            if check_record(existing, workspace, build) != record["OCAMLPATH"]:
                 raise ValueError("The private build compiler findlib record changed")
     finally:
         temporary.unlink()
@@ -108,6 +141,9 @@ def main():
     commands = parser.add_subparsers(dest="operation", required=True)
     record = commands.add_parser("record")
     record.add_argument("--tools-directory", type=Path, required=True)
+    validate = commands.add_parser("preflight")
+    validate.add_argument("--workspace", type=Path, required=True)
+    validate.add_argument("--build-dir", type=Path, required=True)
     guarded = commands.add_parser("guarded")
     guarded.add_argument("--guard", required=True)
     guarded.add_argument("command", nargs=argparse.REMAINDER)
@@ -115,6 +151,8 @@ def main():
     try:
         if args.operation == "record":
             record_dune_environment(args.tools_directory, os.environ)
+        elif args.operation == "preflight":
+            print(json.dumps(preflight(args.workspace, args.build_dir)))
         else:
             command = args.command[1:] if args.command[:1] == ["--"] else args.command
             if not command:

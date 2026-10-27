@@ -2,6 +2,7 @@
 """Run one Dune build and append its resource record as JSON."""
 
 import argparse
+from contextlib import nullcontext
 import json
 import os
 import resource
@@ -12,6 +13,7 @@ from pathlib import Path
 
 from coqc_recipe import remember_recipe
 from dune_trace_guard import scrub_trace
+from dune_build_dir import canonical_command
 
 
 def error_class(returncode: int, output: str) -> str | None:
@@ -36,8 +38,15 @@ def main() -> int:
 
     remember_recipe(Path(args.build_dir))
     started = time.monotonic()
-    result = subprocess.run(command, text=True, stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT, check=False)
+    # A stock batch can already hold the canonical alias lock. Its inserted
+    # execution shim identifies that case and prevents a nested lock wait.
+    already_canonical = any(Path(value).name == "dune_build_dir.py"
+                            and command[index + 1:index + 2] == ["--execute"]
+                            for index, value in enumerate(command))
+    context = nullcontext(command) if already_canonical else canonical_command(command)
+    with context as compiled_command:
+        result = subprocess.run(compiled_command, text=True, stdout=subprocess.PIPE,
+                                stderr=subprocess.STDOUT, check=False)
     elapsed_ms = round((time.monotonic() - started) * 1000)
     scrub_trace(Path(args.build_dir) / "trace.csexp")
     remember_recipe(Path(args.build_dir))

@@ -6,6 +6,11 @@
 # inside its existing 120 GiB scope. The machine cap stays at 48.
 set -euo pipefail
 
+if [ "${1:-}" = --timing ]; then
+  export ZESU_TIMING_RUN=1
+  shift
+fi
+
 root=$(cd "$(dirname "$0")/../.." && pwd)
 cd "$root"
 build_dir="$root/_build/agents/infra"
@@ -13,6 +18,10 @@ guard=${ZESU_RESOURCE_GUARD:-tools/resource_guard.sh}
 reservations="${ZESU_GUARD_STATE:-${XDG_RUNTIME_DIR:-/tmp}/zesu-guard}/coqc-reservations"
 target=${1:-check-iris}
 log=${2:-_build/agents/infra/gate-$target.log}
+
+if [ "${ZESU_TIMING_RUN:-0}" != 1 ]; then
+  exec make "$target" AGENT_BUILD_DIR="${AGENT_BUILD_DIR:-$build_dir}"
+fi
 
 # Prepare the recorded source checkouts before any checker can start Dune.
 python3 tools/gate_workspace.py --workspace .

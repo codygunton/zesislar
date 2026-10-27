@@ -52,6 +52,8 @@ class GuardLockTest(unittest.TestCase):
         self.environment = {**fixture_environment(),
                             "ZESU_GATE_LOCK": str(self.lock),
                             "ZESU_GUARD_STATE": str(base / "state"),
+                            "ZESU_RUN_REGISTRY": str(base / "run-registry"),
+                            "ZESU_RUN_REGISTRY_TOOL": str(TOOLS / "run_registry.py"),
                             "ZESU_RAMP_FILE": str(base / "ramp"),
                             "ZESU_SCOPE_PREFIX": f"zesutest{os.getpid()}",
                             "ZESU_GUARD_POLL": "0.1",
