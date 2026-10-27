@@ -274,6 +274,28 @@ class ProofCacheKeyTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'unresolved'):
             self.build()
 
+    def test_scope_field_transport_preserves_the_key_across_admission(self):
+        envelope = self.work / 'scope.json'
+        envelope.write_text('{"aggregate":{"slice":"planned"}}')
+        value = {'kind': 'transport', 'role': 'aggregate', 'encoding': 'json-field',
+                 'selector': ['aggregate', 'slice'],
+                 'binding': {'path': str(envelope), 'sha256': keys.file_digest(envelope),
+                             'root_role': 'workspace'},
+                 'semantic_projection': 'provider.py', 'semantic_dependencies': ['provider.py']}
+        self.spec['recipe']['configuration']['environment']['ZESU_AGGREGATE_SLICE'] = value
+        before = self.build()
+        envelope.write_text('{"aggregate":{"slice":"actual-owned-slice"}}')
+        value['binding']['sha256'] = keys.file_digest(envelope)
+        self.assertEqual(before, self.build())
+        envelope.write_text('{"aggregate":{"slice":"actual-owned-slice","other":"value"}}')
+        value['binding']['sha256'] = keys.file_digest(envelope)
+        value['selector'] = ['aggregate', 'other']
+        self.assertNotEqual(before, self.build())
+        for selector in [[], ['absent'], ['aggregate']]:
+            with self.subTest(selector=selector), self.assertRaises(ValueError):
+                value['selector'] = selector
+                self.build()
+
     def test_unchanged_closed_observation_hits_without_search(self):
         key = cache.build_key(self.spec, key_function=keys.normalize)
         state = self.work / 'state.json'
