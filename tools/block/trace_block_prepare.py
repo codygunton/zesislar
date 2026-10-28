@@ -17,19 +17,35 @@ import time
 
 from trace_block_filtered import bind_descriptors, guard_manifest, typed_guards
 import trace_block_package as package
+from guard_workspace import GUARD_RUNTIME_FILES, stage_guard_tools
 
 OWNER = Path(__file__).resolve().parents[2]
 BRIDGE = package.BRIDGE
 PLUGIN = package.FILTERED
-RUNTIME_FILES = ("tools/resource_guard.sh", "tools/native_admission.py",
-                 "tools/coqc_findlib.py", "tools/coqc_recipe.py", "tools/dune_build_dir.py", "tools/canonical-bin/coqdep",
-                 "tools/dune_trace_guard.py", "tools/dune_coqc_guarded.sh",
-                 "tools/rocq_coqc_guarded.sh", "tools/rocq_mcp_guarded.sh",
+RUNTIME_FILES = (*GUARD_RUNTIME_FILES, "tools/native_admission.py", "tools/canonical-bin/coqdep",
+                 "tools/dune_coqc_guarded.sh",
                  "tools/guard-bin/dune", "tools/block/trace_block_coqc.sh")
 
 
 def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def stage_runtime_overlays(source_root, workspace, overlays):
+    """Stage the guard closure before the remaining operational overlays."""
+    source_root, workspace = Path(source_root), Path(workspace)
+    stage_guard_tools(source_root, workspace,
+                      expected={name: overlays[name] for name in GUARD_RUNTIME_FILES})
+    for name in overlays:
+        if name in GUARD_RUNTIME_FILES:
+            continue
+        target = workspace / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if target.is_symlink():
+            target.unlink()
+        shutil.copy2(source_root / name, target)
+        if digest(target) != overlays[name]:
+            raise ValueError("An operational overlay changed during copying: " + name)
 
 
 def save(path, value):
@@ -624,14 +640,7 @@ def prepare_request(request, out_dir):
     shutil.copytree(native, workspace / "generated/isla-traces", dirs_exist_ok=True)
     if native_inventory(workspace / "generated/isla-traces") != native_sources:
         raise ValueError("The native source copy differs from its frozen input.")
-    for name in overlays:
-        target = workspace / name
-        target.parent.mkdir(parents=True, exist_ok=True)
-        if target.is_symlink():
-            target.unlink()
-        shutil.copy2(OWNER / name, target)
-        if digest(target) != overlays[name]:
-            raise ValueError("An operational overlay changed during copying: " + name)
+    stage_runtime_overlays(OWNER, workspace, overlays)
     configuration = runtime_package.configure(workspace)
     entries = {}
     changed = {}
