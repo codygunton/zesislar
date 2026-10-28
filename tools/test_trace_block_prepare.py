@@ -7,11 +7,42 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "block"))
 import trace_block_prepare as prepare
+import guard_workspace
 
 STOP = {"kind": "goal-head", "value": "mem_mapsto_kind"}
 
 
 class InstrumentationTests(unittest.TestCase):
+    def test_operational_overlays_include_complete_guard_closure(self):
+        self.assertTrue(set(guard_workspace.GUARD_RUNTIME_FILES).issubset(prepare.RUNTIME_FILES))
+        self.assertEqual(len(prepare.RUNTIME_FILES), len(set(prepare.RUNTIME_FILES)))
+
+    def test_preparation_uses_verified_guard_staging(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source, owned = Path(directory) / "source", Path(directory) / "owned"
+            names = (*guard_workspace.GUARD_RUNTIME_FILES, "tools/native_admission.py")
+            for name in names:
+                path = source / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(name + "\n")
+            overlays = {name: prepare.digest(source / name) for name in names}
+            prepare.stage_runtime_overlays(source, owned, overlays)
+            for name, fingerprint in overlays.items():
+                self.assertEqual(prepare.digest(owned / name), fingerprint)
+
+    def test_missing_guard_helper_prevents_operational_overlay_staging(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source, owned = Path(directory) / "source", Path(directory) / "owned"
+            for name in guard_workspace.GUARD_RUNTIME_FILES:
+                path = source / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(name + "\n")
+            overlays = {name: prepare.digest(source / name) for name in guard_workspace.GUARD_RUNTIME_FILES}
+            (source / "tools/run_registry.py").unlink()
+            with self.assertRaisesRegex(ValueError, "run_registry.py"):
+                prepare.stage_runtime_overlays(source, owned, overlays)
+            self.assertFalse(owned.exists())
+
     def test_legacy_return_preparation_is_retired(self):
         with self.assertRaisesRegex(ValueError, "ReturnRoute preparation is retired"):
             prepare.prepare_request({"rule_set": [{"name": "ReturnRoute"}]}, Path("unused"))
