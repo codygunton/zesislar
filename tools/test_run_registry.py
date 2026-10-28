@@ -157,6 +157,151 @@ class RunRegistryTests(unittest.TestCase):
         self.registry.release_claims('release')
         self.assertEqual(output.read_text(), 'x')
 
+    def check_stop_lock_order(self, target):
+        """Try to hold state.lock immediately before the selected stop signal."""
+        command_read, command_write = os.pipe()
+        response_read, response_write = os.pipe()
+        descriptors = [command_read, command_write, response_read, response_write]
+        holder_code = '''
+import fcntl, os, sys
+from pathlib import Path
+lock_path, ready, command, response = sys.argv[1:]
+command, response = int(command), int(response)
+Path(ready).touch()
+while os.read(command, 1):
+    handle = open(lock_path, 'a')
+    try:
+        fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        handle.close()
+        os.write(response, b'blocked')
+    else:
+        os.write(response, b'held')
+        # Retain the acquired lock until the fixture exits. An unsafe stop
+        # freezes this holder and then deadlocks at its next refresh.
+        while True:
+            os.read(command, 1)
+'''
+        holder = None
+        stopper = None
+        scheduler = None
+        try:
+            ready = self.root / 'holder-ready'
+            holder = subprocess.Popen([sys.executable, '-c', holder_code,
+                str(self.registry.directory / 'state.lock'), str(ready),
+                str(command_read), str(response_write)],
+                pass_fds=(command_read, response_write))
+            self.children.append(holder)
+            self.wait_for(ready.exists)
+            scheduler = holder if target == 'scheduler' else self.sleeper()
+            self.registry.register('locking', 'fixture', 'test', R.identity(scheduler.pid), [])
+            if target == 'child':
+                self.registry.add_job('locking', R.identity(holder.pid))
+            unrelated = self.sleeper()
+            receipt = self.root / 'lock-at-stop'
+            release = self.root / 'released'
+            self.registry.add_claim('locking', 'memory', [sys.executable, '-c',
+                'import fcntl,sys;from pathlib import Path;'
+                'h=open(sys.argv[1],"a");fcntl.flock(h,fcntl.LOCK_EX|fcntl.LOCK_NB);'
+                'p=Path(sys.argv[2]);p.write_text(p.read_text()+"x" if p.exists() else "x")',
+                str(self.registry.directory / 'state.lock'), str(release)])
+            stopper_code = '''
+import os, sys
+from pathlib import Path
+sys.path.insert(0, sys.argv[1])
+import run_registry as R
+store, target, command, response, receipt = sys.argv[2:]
+target, command, response = int(target), int(command), int(response)
+original = R.send_signal
+probed = False
+def probe(actor, value):
+    global probed
+    if not probed and actor['pid'] == target and value == R.signal.SIGSTOP:
+        probed = True
+        os.write(command, b'p')
+        Path(receipt).write_text(os.read(response, 16).decode())
+    return original(actor, value)
+R.send_signal = probe
+R.Registry(store).stop('locking', grace=0.5)
+'''
+            stopper = subprocess.Popen([sys.executable, '-B', '-c', stopper_code,
+                str(Path(R.__file__).parent), str(self.registry.directory), str(holder.pid),
+                str(command_write), str(response_read), str(receipt)],
+                pass_fds=(command_write, response_read))
+            self.wrappers.append(stopper)
+            self.assertEqual(stopper.wait(timeout=5), 0)
+            self.assertEqual(receipt.read_text(), 'blocked')
+            self.assertTrue(R.live(R.identity(unrelated.pid)))
+            row = self.registry.read()['runs']['locking']
+            self.assertTrue(row['all_actors_closed'])
+            self.assertTrue(row['claims']['memory']['released'])
+            self.assertEqual(release.read_text(), 'x')
+            self.registry.release_claims('locking')
+            self.assertEqual(release.read_text(), 'x')
+            self.assertFalse(R.live(row['scheduler']))
+            self.assertTrue(all(not R.live(actor) for actor in row['jobs']))
+        finally:
+            # A regression can freeze the fixture with its lock held. Kill
+            # only these disposable identities before registry-based cleanup.
+            for process in (stopper, holder, scheduler):
+                if process is not None and process.poll() is None:
+                    process.kill()
+                if process is not None:
+                    process.wait(timeout=5)
+            for descriptor in descriptors:
+                os.close(descriptor)
+
+    def test_stop_does_not_freeze_a_scheduler_holding_state_lock(self):
+        self.check_stop_lock_order('scheduler')
+
+    def test_stop_does_not_freeze_a_child_holding_state_lock(self):
+        self.check_stop_lock_order('child')
+
+    def test_freeze_failure_resumes_every_stopped_actor(self):
+        scheduler, child = self.sleeper(), self.sleeper()
+        self.registry.register('failure', 'fixture', 'test', R.identity(scheduler.pid), [])
+        self.registry.add_job('failure', R.identity(child.pid))
+        with patch.object(self.registry, 'write', side_effect=OSError('fixture write failure')):
+            with self.assertRaisesRegex(OSError, 'fixture write failure'):
+                self.registry.stop('failure', grace=0.5)
+        self.wait_for(lambda: all(R.identity(p.pid)['state'] not in ('T', 't')
+                                  for p in (scheduler, child)))
+        self.assertTrue(all(R.live(R.identity(p.pid)) for p in (scheduler, child)))
+
+    def test_unstopped_actor_refuses_within_grace_and_keeps_its_claim(self):
+        scheduler = self.sleeper()
+        actor = R.identity(scheduler.pid)
+        self.registry.register('unstopped', 'fixture', 'test', actor, [])
+        self.registry.add_claim('unstopped', 'memory', [sys.executable, '-c', 'pass'])
+        actual_identity = R.identity
+        actual_signal = R.send_signal
+        sent = []
+
+        def unstopped(pid, *args):
+            current = actual_identity(pid, *args)
+            if current and pid == actor['pid']:
+                return dict(current, state='S')
+            return current
+
+        def record_signal(target, value):
+            sent.append(value)
+            return actual_signal(target, value)
+
+        with patch.object(R, 'identity', side_effect=unstopped), \
+                patch.object(R, 'send_signal', side_effect=record_signal):
+            with self.assertRaisesRegex(ValueError, 'grace interval'):
+                self.registry.stop('unstopped', grace=0.03)
+        self.wait_for(lambda: actual_identity(scheduler.pid)['state'] not in ('T', 't'))
+        self.assertIn(R.signal.SIGCONT, sent)
+        self.assertNotIn(R.signal.SIGTERM, sent)
+        self.assertNotIn(R.signal.SIGKILL, sent)
+        row = self.registry.read()['runs']['unstopped']
+        self.assertEqual(row['status'], 'stop_failed')
+        self.assertFalse(row['all_actors_closed'])
+        self.assertEqual([R.actor_key(a) for a in row['stop_pending']], [R.actor_key(actor)])
+        self.assertFalse(row['claims']['memory']['released'])
+        self.assertTrue(R.live(actor))
+
     def test_replacement_refuses_another_owner(self):
         child = self.sleeper()
         self.registry.register('old', 'fixture', 'other', R.identity(child.pid), [])
