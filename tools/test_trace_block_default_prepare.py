@@ -29,6 +29,8 @@ class DefaultPreparationTests(unittest.TestCase):
             native=original/'generated/isla-traces/index.v';native.parent.mkdir(parents=True);native.write_text('opaque native bytes')
             for name in package.FILES:
                 path=owner/package.FILTERED/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text('package fixture '+name)
+            for name in prepare.RUNTIME_FILES:
+                path=owner/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text('runtime fixture '+name)
             (owner/'META.p0-filtered-trace.template').write_text('directory="."\n# DUNE_GEN\n')
             commands=[]
             def git(workspace,*args):
@@ -58,7 +60,7 @@ class DefaultPreparationTests(unittest.TestCase):
                      'declaration':declaration,'prefix_text':'','rule_set':[{'name':'ConjunctMatch','enabled':True}],
                      'stop':{'kind':'residual','value':None},'writer_id':'fixture-owner','block_pc':'0x1000',
                      'scope':{'root':'a'*40,'source_sha256':prepare.digest(original/'Block.v')}}
-            with patch.object(prepare,'OWNER',owner),patch.object(prepare,'RUNTIME_FILES',()),patch.object(prepare,'_git',side_effect=git),patch.object(prepare.subprocess,'run',side_effect=run),patch.object(prepare.shutil,'which',return_value='/fixture/opam'):
+            with patch.object(prepare,'OWNER',owner),patch.object(prepare,'_git',side_effect=git),patch.object(prepare.subprocess,'run',side_effect=run),patch.object(prepare.shutil,'which',return_value='/fixture/opam'):
                 result=prepare.prepare_request(request,root/'output')
             self.assertEqual(commands[0],['p0-filtered-trace.install',package.WRITER_TARGET])
             self.assertEqual(commands[1],['zesu-signature-gates.install'])
