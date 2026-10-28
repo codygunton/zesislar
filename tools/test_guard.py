@@ -72,6 +72,9 @@ class GuardLockTest(unittest.TestCase):
             ' case "$1" in\n'
             '  /proc/*/cgroup)\n'
             '   pid=${1#/proc/}; pid=${pid%/cgroup}\n'
+            '   if [ -n "${ZESU_SCOPE_UNIT:-}${ZESU_BATCH_UNIT:-}${ZESU_MCP_SCOPE_UNIT:-}" ]; then\n'
+            '    printf "0::/user.slice/user-1000.slice/user@1000.service/zesuworkloads.slice/%s/%s\\n" "${ZESU_AGGREGATE_SLICE:-}" "${ZESU_SCOPE_UNIT:-${ZESU_BATCH_UNIT:-${ZESU_MCP_SCOPE_UNIT:-}}}"; exit 0\n'
+            '   fi\n'
             '   case "$pid" in\n'
             '    ""|*[!0-9]*) ;;\n'
             '    *) exec /usr/bin/cat "$GUARD_TEST_CONTROLLER_CGROUP" ;;\n'
@@ -139,12 +142,20 @@ class GuardLockTest(unittest.TestCase):
                               text=True, env=self.environment, timeout=10)
 
     def batch_environment(self, limit="150G"):
-        slice_name = f"zesuaggregate1000p{os.getpid()}r1.slice"
+        slice_name = f"zesuworkloads-aggregate1000p{os.getpid()}r1.slice"
         subprocess.run(["systemctl", "--user", "set-property", "--runtime", slice_name,
                         f"MemoryMax={limit}", "MemorySwapMax=0"],
                        env=self.environment, check=True)
+        subprocess.run(["systemctl", "--user", "set-property", "--runtime", "zesuworkloads.slice",
+                        "MemoryMax=187904819200", "MemorySwapMax=0"], env=self.environment, check=True)
+        self.cgroup.write_text("0::/user.slice/user-1000.slice/user@1000.service/zesuworkloads.slice/" + slice_name + "/fixture.scope\n")
         return {"ZESU_IN_BATCH": "1", "ZESU_AGGREGATE_SLICE": slice_name,
                 "ZESU_AGGREGATE_LIMIT": limit}
+
+    def enter_parent_fixture(self):
+        result = self.guard("parent-setup")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.cgroup.write_text("0::/user.slice/user-1000.slice/user@1000.service/zesuworkloads.slice/fixture.scope\n")
 
     def prepare_blocked_fixture(self, blocked):
         base = Path(self.directory.name)
@@ -284,6 +295,7 @@ class GuardLockTest(unittest.TestCase):
             self.guard("release-coqc", token)
 
     def test_failed_snapshot_prevents_scope_and_batch_commands(self):
+        self.enter_parent_fixture()
         self.prepare_blocked_fixture(0)
         executed = Path(self.directory.name) / "command-executed"
         for status in (2, 3):
@@ -301,6 +313,7 @@ class GuardLockTest(unittest.TestCase):
                     self.assertFalse(executed.exists())
 
     def test_failed_snapshot_prevents_scope_exec_command(self):
+        self.enter_parent_fixture()
         self.prepare_blocked_fixture(0)
         token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
         executed = Path(self.directory.name) / "command-executed"
@@ -671,6 +684,7 @@ class GuardLockTest(unittest.TestCase):
             self.guard("release-coqc", token)
 
     def test_96_dead_owner_confirmations_do_not_block_a_compiler(self):
+        self.enter_parent_fixture()
         self.writer_fixture()
         self.lock.unlink()
         directory = Path(self.environment["ZESU_GUARD_STATE"]) / "coqc-reservations"
@@ -733,6 +747,7 @@ class GuardLockTest(unittest.TestCase):
             self.guard("release-coqc", token)
 
     def test_old_own_confirmation_remains_valid_before_launch(self):
+        self.enter_parent_fixture()
         self.writer_fixture()
         token = Path(self.reserve_writer("tf2"))
         os.utime(token, (time.time() - 120, time.time() - 120))
@@ -1013,6 +1028,59 @@ class GuardLockTest(unittest.TestCase):
                 else:
                     self.assertNotIn("memory", result.stdout)
 
+    def test_single_proof_batch_accepts_64_gib_fence(self):
+        self.environment["ZESU_BATCH_LIMIT"] = "64G"
+        result = self.guard("batch", "single", "--", "true")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("MemoryMax=64G", result.stdout)
+        context = self.batch_environment("64G")
+        result = subprocess.run([str(GUARD), "scope", "nested", "--", "true"],
+                                env={**self.environment, **context}, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_shared_parent_has_exact_limit_and_no_swap(self):
+        result = self.guard("scope", "parent", "--", "true")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        state = json.loads(Path(self.environment["GUARD_TEST_SLICE_STATE"]).read_text())
+        self.assertEqual(state["zesuworkloads.slice"],
+                         {"MemoryMax": "187904819200", "MemorySwapMax": "0"})
+        self.assertIn("--slice=zesuworkloads.slice", result.stdout)
+
+    def test_parent_setup_failure_prevents_launch(self):
+        self.environment["GUARD_TEST_SLICE_FAIL"] = "1"
+        result = self.guard("batch", "parent", "--", "echo", "MUST_NOT_RUN")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertNotIn("MUST_NOT_RUN", result.stdout)
+        self.assertFalse((Path(self.directory.name) / "systemctl.log").exists())
+
+    def test_workload_ancestor_required_before_payload(self):
+        result = self.guard("parent-setup")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        result = self.guard("batch-exec", "--", "echo", "MUST_NOT_RUN")
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("outside the shared memory parent", result.stderr)
+        self.assertNotIn("MUST_NOT_RUN", result.stdout)
+
+    def test_changed_parent_fence_refuses_inherited_payload(self):
+        context = self.batch_environment()
+        subprocess.run(["systemctl", "--user", "set-property", "--runtime", "zesuworkloads.slice",
+                        "MemoryMax=187904819201", "MemorySwapMax=0"],
+                       env=self.environment, check=True)
+        result = subprocess.run([str(GUARD), "batch-exec", "--", "echo", "MUST_NOT_RUN"],
+                                env={**self.environment, **context}, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("shared workload parent lacks its memory fence", result.stderr)
+        self.assertNotIn("MUST_NOT_RUN", result.stdout)
+
+    def test_legacy_sibling_slice_cannot_launch_new_compiler(self):
+        context = self.batch_environment()
+        context["ZESU_AGGREGATE_SLICE"] = f"zesuaggregate1000p{os.getpid()}r1.slice"
+        result = subprocess.run([str(GUARD), "scope", "bad", "--", "echo", "MUST_NOT_RUN"],
+                                env={**self.environment, **context}, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("invalid aggregate slice", result.stderr)
+        self.assertNotIn("MUST_NOT_RUN", result.stdout)
+
     def test_scope_and_batch_memory_fences(self):
         for arguments, fence in (("scope", "MemoryMax=16G"),
                                  ("batch", "MemoryMax=150G")):
@@ -1054,8 +1122,8 @@ class GuardLockTest(unittest.TestCase):
                 self.assertEqual(len(scopes), 3)
                 slices = [next(arg for arg in row if arg.startswith("--slice=")) for row in scopes]
                 self.assertEqual(slices[0], slices[1])
-                self.assertTrue(slices[0].startswith("--slice=zesuaggregate"))
-                self.assertEqual(slices[2], "--slice=app.slice")
+                self.assertTrue(slices[0].startswith("--slice=zesuworkloads-aggregate"))
+                self.assertEqual(slices[2], "--slice=zesuworkloads.slice")
                 self.assertIn(f"MemoryMax={limit}", scopes[0])
                 for row in scopes[1:]:self.assertIn("MemoryMax=16G", row)
                 for row in scopes:self.assertIn("MemorySwapMax=0", row)
@@ -1104,7 +1172,7 @@ class GuardLockTest(unittest.TestCase):
         self.prepare_blocked_fixture(0)
         self.cgroup.write_text(
             "0::/user.slice/user-1000.slice/user@1000.service/"
-            f"zesuaggregate1000p{os.getpid()}r1.slice/fixture.scope\n")
+            f"zesuworkloads.slice/zesuworkloads-aggregate1000p{os.getpid()}r1.slice/fixture.scope\n")
         result = subprocess.run([str(GUARD), "scope", "writer", "--", "echo", "WRONG"],
                                 env={**self.environment, "ZESU_WRITER_ID": "tf2"},
                                 capture_output=True, text=True)
@@ -1214,6 +1282,7 @@ class GuardLockTest(unittest.TestCase):
         self.assertEqual(registry.read_text(), "young.scope\n")
 
     def test_scope_exec_registers_the_active_scope(self):
+        self.enter_parent_fixture()
         token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
         environment = {**self.environment, "ZESU_SCOPE_UNIT": "young.scope"}
         try:
@@ -1226,6 +1295,7 @@ class GuardLockTest(unittest.TestCase):
             self.guard("release-coqc", token)
 
     def test_scope_exec_accepts_explicit_cpu_limit(self):
+        self.enter_parent_fixture()
         token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
         environment = {**self.environment, "ZESU_SCOPE_CPU": "600"}
         try:
@@ -1253,6 +1323,7 @@ class GuardLockTest(unittest.TestCase):
         self.assertIn('MemorySwapMax=0', result.stdout)
 
     def test_probe_scope_exec_has_unlimited_soft_and_hard_cpu(self):
+        self.enter_parent_fixture()
         self.environment.update(self.probe_environment())
         token = self.guard('reserve-coqc', str(os.getpid())).stdout.strip()
         try:
@@ -1280,6 +1351,7 @@ class GuardLockTest(unittest.TestCase):
 
 
     def test_probe_scope_exec_rejects_finite_cpu_before_child(self):
+        self.enter_parent_fixture()
         self.environment.update(self.probe_environment())
         self.environment['ZESU_SCOPE_CPU'] = '1200'
         result = self.guard('scope-exec', 'unused', '--', 'true')

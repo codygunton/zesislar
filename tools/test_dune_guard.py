@@ -840,10 +840,11 @@ class McpThresholdTest(unittest.TestCase):
             events = root / "events.jsonl"
             stub = ("#!/usr/bin/env python3\nimport json,os,sys\n"
                     "with open(os.environ['WRAPPER_EVENTS'],'a') as f:\n"
-                    " f.write(json.dumps({'hold':os.environ.get('ZESU_HOLD_GIB'),"
+                    " f.write(json.dumps({'executable':os.path.basename(sys.argv[0]),'hold':os.environ.get('ZESU_HOLD_GIB'),"
                     "'memory':os.environ.get('ZESU_MODULE_LIMIT_GIB'),"
                     "'pet_rss_mb':os.environ.get('ROCQ_MAX_PET_RSS_MB'),"
-                    "'arguments':sys.argv[1:]})+'\\n')\n")
+                    "'arguments':sys.argv[1:]})+'\\n')\n"
+                    "if sys.argv[1:]==['parent-slice']:print('zesuworkloads.slice')\n")
             for name in ("systemd-run", "guard", "coqc", "rocq-mcp"):
                 path = binary / name
                 path.write_text(stub)
@@ -875,8 +876,11 @@ class McpThresholdTest(unittest.TestCase):
                 memory = limit or McpThresholdTest.guard_default_memory()
                 self.assertTrue(all(row["memory"] == memory for row in rows))
                 if name == "rocq_mcp_guarded.sh":
-                    self.assertIn(f"MemoryMax={memory}G", rows[0]["arguments"])
-                    self.assertIn("MemorySwapMax=0", rows[0]["arguments"])
+                    scopes = [row for row in rows if row["executable"] == "systemd-run"]
+                    self.assertEqual(len(scopes), 1)
+                    self.assertIn(f"MemoryMax={memory}G", scopes[0]["arguments"])
+                    self.assertIn("MemorySwapMax=0", scopes[0]["arguments"])
+                    self.assertIn("--slice=zesuworkloads.slice", scopes[0]["arguments"])
                     self.assertTrue(all(row["pet_rss_mb"] == str(int(memory) * 1024)
                                         for row in rows))
 

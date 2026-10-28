@@ -32,6 +32,16 @@ def positive_integer(value, label):
     return value
 
 
+def measurement_claim(fence_bytes, peak_bytes=None, *, completed=False, matching=False):
+    """Use a smaller claim only for a completed matching measurement."""
+    positive_integer(fence_bytes, "physical memory fence")
+    if completed is not True or matching is not True:
+        return fence_bytes
+    if type(peak_bytes) is not int or peak_bytes <= 0:
+        return fence_bytes
+    return (peak_bytes * 3 + 1) // 2
+
+
 def module_source(arguments):
     """Refuse ambiguous compiler commands and paths outside the build root."""
     sources = [argument for argument in arguments if argument.endswith(".v")]
@@ -67,9 +77,10 @@ def make_profile(observations, gate_result, compiler, *, floor_bytes=GIB):
             "source_sha256": fingerprint,
             "sampled_peak_rss_kib": peak,
             "claim_bytes": max(floor_bytes, (peak * 1024 * 3 + 1) // 2) if peak else None,
+            "arguments": shlex.split(observation["command"])[1:],
         }
     return {"schema": SCHEMA, "compiler_sha256": digest(compiler),
-            "floor_bytes": floor_bytes, "modules": modules,
+            "floor_bytes": floor_bytes, "modules": modules, "measurement_complete": True,
             "qualification": "Sampled peaks are lower bounds. Dependencies can change memory use. "
                              "The physical compiler limits remain mandatory."}
 
@@ -90,10 +101,15 @@ def module_claim(profile, arguments, cwd, compiler, *, fallback_bytes=16 * GIB):
             reason = "changed_compiler"
         elif row["source_sha256"] != digest(Path(cwd) / source):
             reason = "changed_source"
+        elif profile.get("measurement_complete") is not True:
+            reason = "incomplete_measurement"
+        elif row.get("arguments") != list(arguments):
+            reason = "changed_arguments"
         elif row["claim_bytes"] is None:
             reason = "missing_peak"
         else:
-            return {"claim_bytes": positive_integer(row["claim_bytes"], "module reservation"),
+            return {"claim_bytes": max(profile["floor_bytes"], measurement_claim(
+                        fallback_bytes, row["sampled_peak_rss_kib"] * 1024, completed=True, matching=True)),
                     "reason": "measured_module", "source": source}
     return {"claim_bytes": fallback_bytes, "reason": reason, "source": source}
 
@@ -194,10 +210,8 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
                        refresh=False):
     """Read live reservations under the caller's existing guard mutex.
 
-    Ordinary reservations retain their existing growth policy. Validated
-    probes use measured compiler peaks, separate from their physical fences.
-    Probe measurement high-water values never decrease. Unmeasured or stale
-    probes keep their conservative fence fallback.
+    Live samples are incomplete measurements. They cannot reduce a physical
+    fence claim. Retained claims and growth observations never decrease.
     """
     physical = compiler_pids(proc)
     covered, claims, growth = set(), [], []
@@ -217,7 +231,7 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
                 if name in values:
                     raise ValueError("The reservation repeats a memory field.")
                 values[name] = positive_integer(int(value), "retained memory field")
-        fence = values.get("memory_fence_bytes", values.get("memory_gib", fallback_bytes // GIB) * GIB)
+        fence = values.get("memory_fence_bytes", values.get("memory_gib", max(64 * GIB, fallback_bytes) // GIB) * GIB)
         probe = metadata.get("probe")
         if probe in {"issue10", "issue10-cpu-only"}:
             expected_fence = (64 if probe == "issue10" else 6) * GIB
@@ -229,7 +243,7 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
                 continue
             covered.update(measured["covered"])
             previous = values.get("memory_probe_claim_bytes", 0)
-            increased = max(previous, measured["claim_bytes"])
+            increased = max(fence, previous, measured["claim_bytes"])
             claims.append(increased)
             if increased > previous:
                 growth.append({"reservation": str(marker), "previous_bytes": previous,
@@ -268,7 +282,7 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
                 pending.extend(map(int, (proc / str(pid) / "task" / str(pid) / "children").read_text().split()))
             except FileNotFoundError:
                 pass
-        increased = max(claim, sum(peaks))
+        increased = max(fence, claim, sum(peaks))
         claims.append(increased)
         if increased > claim:
             growth.append({"reservation": str(marker), "previous_bytes": claim, "claim_bytes": increased})
@@ -284,7 +298,7 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
                     temporary.replace(marker)
                 finally:
                     temporary.unlink(missing_ok=True)
-    claims.extend([fallback_bytes] * len(physical - covered))
+    claims.extend([max(64 * GIB, fallback_bytes)] * len(physical - covered))
     return {"claims": claims, "growth": growth, "unrepresented_compilers": sorted(physical - covered)}
 
 
@@ -299,6 +313,7 @@ def main():
     claim.add_argument("arguments", nargs=argparse.REMAINDER)
     check = commands.add_parser("admission")
     check.add_argument("--request-bytes", type=int, required=True)
+    check.add_argument("--fallback-bytes", type=int, default=64 * GIB)
     check.add_argument("--available-bytes", type=int, required=True)
     check.add_argument("--headroom-bytes", type=int, default=20 * GIB)
     check.add_argument("--maximum-compilers", type=int, default=48)
@@ -311,7 +326,7 @@ def main():
                               fallback_bytes=args.fallback_bytes)
         print(result["claim_bytes"])
     else:
-        observed = reservation_claims(args.markers, proc=args.proc, refresh=True)
+        observed = reservation_claims(args.markers, proc=args.proc, fallback_bytes=args.fallback_bytes, refresh=True)
         result = admission(args.request_bytes, observed["claims"], args.available_bytes,
                            headroom_bytes=args.headroom_bytes, maximum_compilers=args.maximum_compilers)
         if not result["admitted"]:

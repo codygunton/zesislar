@@ -34,13 +34,17 @@ class RocqGuardedTests(unittest.TestCase):
         return [json.loads(line) for line in (self.root / "record.jsonl").read_text().splitlines()]
 
     def test_server_fence_and_supported_settings(self):
+        self.executable("resource_guard.sh", "print('zesuworkloads.slice')\n")
         self.executable("systemd-run", "import json,os,sys\n"
                         "print(json.dumps({'args':sys.argv[1:], 'compiler':os.environ['ROCQ_COQC_BINARY'],"
-                        "'pet_limit':os.environ['ROCQ_MAX_PET_RSS_MB'],'hold':os.environ['ZESU_HOLD_GIB']}))\n")
+                        "'pet_limit':os.environ['ROCQ_MAX_PET_RSS_MB'],'hold':os.environ['ZESU_HOLD_GIB'],'guard':os.environ['ZESU_RESOURCE_GUARD']}))\n")
         result = subprocess.run([str(self.root / "rocq_mcp_guarded.sh"), "argument"],
                                 env=dict(self.environment, ZESU_ROCQ_MCP_BINARY="/test/mcp"),
                                 check=True, capture_output=True, text=True)
         record = json.loads(result.stdout)
+        self.assertIn("--slice=zesuworkloads.slice", record["args"])
+        self.assertIn("parent-exec", record["args"])
+        self.assertEqual(record["guard"], str(self.root / "resource_guard.sh"))
         self.assertIn("MemoryMax=16G", record["args"])
         self.assertIn("MemorySwapMax=0", record["args"])
         self.assertTrue(any(value.startswith("--unit=rocq-writer-") for value in record["args"]))
@@ -48,6 +52,26 @@ class RocqGuardedTests(unittest.TestCase):
         self.assertEqual(record["compiler"], str(self.root / "rocq_coqc_guarded.sh"))
         self.assertEqual(record["pet_limit"], "16384")
         self.assertEqual(record["hold"], "180")
+
+    def test_parent_setup_failure_prevents_server(self):
+        self.executable("resource_guard.sh", "raise SystemExit(2)\n")
+        self.executable("systemd-run", "raise RuntimeError('must not launch')\n")
+        result = subprocess.run([str(self.root / "rocq_mcp_guarded.sh")],
+                                env=dict(self.environment, ZESU_ROCQ_MCP_BINARY="/test/mcp"),
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 2)
+        self.assertNotIn("must not launch", result.stderr)
+
+    def test_old_guard_override_refuses_before_server(self):
+        old = self.executable("old-guard", "print('app.slice')\n")
+        self.executable("systemd-run", "raise RuntimeError('must not launch')\n")
+        result = subprocess.run([str(self.root / "rocq_mcp_guarded.sh")],
+                                env=dict(self.environment, ZESU_RESOURCE_GUARD=old,
+                                         ZESU_ROCQ_MCP_BINARY="/test/mcp"),
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("lacks the shared memory parent", result.stderr)
+        self.assertNotIn("must not launch", result.stderr)
 
     def test_compiler_waits_before_registered_scope(self):
         self.executable("resource_guard.sh", "import json,os,sys\n"
