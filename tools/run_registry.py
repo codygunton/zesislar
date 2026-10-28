@@ -189,15 +189,17 @@ class Registry:
                 row['jobs'].append(actor)
         self.update(run_id, append)
 
+    @staticmethod
+    def refresh_row(row):
+        actors = descendants([row['scheduler']] + row['jobs'])
+        retained = {actor_key(a): a for a in row['jobs']}
+        for actor in actors:
+            if actor_key(actor) != actor_key(row['scheduler']):
+                retained[actor_key(actor)] = actor
+        row['jobs'] = list(retained.values())
+
     def refresh(self, run_id):
-        def refresh_row(row):
-            actors = descendants([row['scheduler']] + row['jobs'])
-            retained = {actor_key(a): a for a in row['jobs']}
-            for actor in actors:
-                if actor_key(actor) != actor_key(row['scheduler']):
-                    retained[actor_key(actor)] = actor
-            row['jobs'] = list(retained.values())
-        return self.update(run_id, refresh_row)
+        return self.update(run_id, self.refresh_row)
 
     def add_claim(self, run_id, claim_id, command):
         if not claim_id or not command:
@@ -226,24 +228,46 @@ class Registry:
 
     def stop(self, run_id, *, grace=5.0):
         """Stop the scheduler, close its jobs, then release registered claims."""
-        row = self.refresh(run_id)
-        scheduler = row['scheduler']
-        if actor_key(scheduler) == actor_key(identity(os.getpid())):
-            raise ValueError('The registry cannot stop its own caller.')
-        self.update(run_id, lambda r: r.update(status='stopping'))
-        send_signal(scheduler, signal.SIGSTOP)
+        frozen = {}
         try:
-            frozen = set()
-            # Repeat discovery until every retained child is frozen. A child
-            # can fork between the first snapshot and its own stop signal.
-            while True:
-                row = self.refresh(run_id)
-                fresh = [a for a in row['jobs'] if actor_key(a) not in frozen]
-                if not fresh:
-                    break
-                for actor in fresh:
-                    send_signal(actor, signal.SIGSTOP)
-                    frozen.add(actor_key(actor))
+            # Acquire state before freezing any actor. Otherwise an actor can
+            # keep this lock while stopped and prevent discovery or cleanup.
+            with self.lock():
+                data = self.read()
+                row = data['runs'][run_id]
+                scheduler = row['scheduler']
+                if actor_key(scheduler) == actor_key(identity(os.getpid())):
+                    raise ValueError('The registry cannot stop its own caller.')
+                row['status'] = 'stopping'
+                freeze_deadline = time.monotonic() + grace
+                while True:
+                    self.refresh_row(row)
+                    actors = [scheduler] + row['jobs']
+                    fresh = [a for a in actors if actor_key(a) not in frozen and live(a)]
+                    for actor in fresh:
+                        if send_signal(actor, signal.SIGSTOP):
+                            frozen[actor_key(actor)] = actor
+                    # A stop signal can return before the actor stops. Wait
+                    # for stopped identities before the final descendant scan.
+                    pending = []
+                    for actor in actors:
+                        current = identity(actor['pid'])
+                        if (current and current['startticks'] == actor['startticks']
+                                and current['state'] not in ('T', 't', 'Z', 'X')):
+                            pending.append(actor)
+                    if not fresh and not pending:
+                        break
+                    if time.monotonic() >= freeze_deadline:
+                        row.update(status='stop_failed', all_actors_closed=False,
+                                   stop_error='Actors did not stop within the grace interval.',
+                                   stop_pending=pending)
+                        self.write(data)
+                        raise ValueError(row['stop_error'])
+                    if pending:
+                        time.sleep(0.01)
+                self.write(data)
+            # Closing wrappers and release callbacks need state.lock. Do not
+            # retain it while resuming actors or waiting for their exits.
             actors = row['jobs'] + [scheduler]
             for actor in actors:
                 send_signal(actor, signal.SIGTERM)
@@ -262,7 +286,8 @@ class Registry:
                 status='stopped', closed_ns=time.time_ns(), all_actors_closed=True))
             self.release_claims(run_id)
         except BaseException:
-            send_signal(scheduler, signal.SIGCONT)
+            for actor in frozen.values():
+                send_signal(actor, signal.SIGCONT)
             raise
 
     def active(self):
