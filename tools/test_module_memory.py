@@ -67,12 +67,43 @@ class ModuleMemoryTests(unittest.TestCase):
     def test_unknown_module_and_missing_peak_use_the_full_fallback(self):
         p = self.profile([self.observation(peak=0)])
         for source, reason in [("Small.v", "missing_peak"), ("Large.v", "unknown_module")]:
-            value = memory.module_claim(p, [source], self.root, self.compiler)
+            value = memory.module_claim(p, ["-q", source], self.root, self.compiler)
             self.assertEqual((value["claim_bytes"], value["reason"]), (16 * memory.GIB, reason))
 
     def test_unrecognized_command_uses_the_full_fallback(self):
         value = memory.module_claim(self.profile(), ["Small.v", "Large.v"], self.root, self.compiler)
         self.assertEqual((value["claim_bytes"], value["reason"]), (16 * memory.GIB, "ambiguous_source"))
+
+    def test_only_completed_matching_measurements_allow_small_claims(self):
+        fence = 64 * memory.GIB
+        for completed, matching in [(False, True), (True, False), (None, True), (1, True)]:
+            with self.subTest(completed=completed, matching=matching):
+                self.assertEqual(memory.measurement_claim(fence, 3, completed=completed, matching=matching), fence)
+        self.assertEqual(memory.measurement_claim(fence, 3, completed=True, matching=True), 5)
+        for peak in [None, 0, -1, True, 1.5]:
+            with self.subTest(peak=peak):
+                self.assertEqual(memory.measurement_claim(fence, peak, completed=True, matching=True), fence)
+
+    def test_legacy_profile_without_complete_measurement_keeps_actual_fence(self):
+        profile = self.profile()
+        profile.pop("measurement_complete")
+        result = memory.module_claim(profile, ["-q", "Small.v"], self.root, self.compiler,
+                                     fallback_bytes=64 * memory.GIB)
+        self.assertEqual((result["claim_bytes"], result["reason"]),
+                         (64 * memory.GIB, "incomplete_measurement"))
+
+    def test_changed_compiler_arguments_keep_actual_fence(self):
+        result = memory.module_claim(self.profile(), ["-q", "-native-compiler", "no", "Small.v"],
+                                     self.root, self.compiler, fallback_bytes=64 * memory.GIB)
+        self.assertEqual((result["claim_bytes"], result["reason"]),
+                         (64 * memory.GIB, "changed_arguments"))
+
+    def test_admission_cli_passes_the_actual_fence_to_unknown_compilers(self):
+        with patch("sys.argv", ["module_memory.py", "admission", "--request-bytes", "1",
+                               "--available-bytes", "1000000000000", "--fallback-bytes", str(64*memory.GIB)]), \
+                patch.object(memory, "reservation_claims", return_value={"claims": [], "growth": [], "unrepresented_compilers": []}) as observed:
+            self.assertEqual(memory.main(), 0)
+        self.assertEqual(observed.call_args.kwargs['fallback_bytes'], 64*memory.GIB)
 
     def test_admission_uses_exact_seventy_percent_boundary(self):
         self.assertTrue(memory.admission(40, [30], 100, headroom_bytes=0)["admitted"])
@@ -115,20 +146,25 @@ class ModuleMemoryTests(unittest.TestCase):
                              f"memory_fence_bytes={16 * memory.GIB}\n")
         stamp = marker.stat().st_mtime_ns
         result = memory.reservation_claims([marker], proc=proc, refresh=True)
-        self.assertEqual(result["claims"], [3 * memory.GIB])
+        self.assertEqual(result["claims"], [16 * memory.GIB])
         self.assertEqual(len(result["growth"]), 1)
         self.assertIn("writer=fixture\naggregate=test\n", marker.read_text())
         self.assertEqual(marker.stat().st_mtime_ns, stamp)
         (proc / "123/status").write_text("VmHWM:\t1 kB\n")
         result = memory.reservation_claims([marker], proc=proc, refresh=True)
-        self.assertEqual(result["claims"], [3 * memory.GIB])
+        self.assertEqual(result["claims"], [16 * memory.GIB])
         self.assertEqual(result["growth"], [])
 
     def test_unrepresented_compilers_keep_full_fallback_reservations(self):
         proc = self.physical(123)
         result = memory.reservation_claims([], proc=proc)
-        self.assertEqual(result["claims"], [32 * memory.GIB])
+        self.assertEqual(result["claims"], [64 * memory.GIB])
         self.assertEqual(result["unrepresented_compilers"], [123])
+
+    def test_unknown_compiler_cannot_inherit_a_smaller_request_fence(self):
+        proc = self.physical(123)
+        self.assertEqual(memory.reservation_claims([], proc=proc, fallback_bytes=16*memory.GIB)["claims"],
+                         [64*memory.GIB])
 
     def test_missing_physical_sample_uses_its_fence(self):
         proc = self.physical(123)
@@ -140,7 +176,7 @@ class ModuleMemoryTests(unittest.TestCase):
     def test_old_and_probe_reservations_keep_conservative_fences(self):
         proc = self.root / "proc"
         proc.mkdir()
-        for extra, expected in [("", 32), ("memory_gib=64\n", 64)]:
+        for extra, expected in [("", 64), ("memory_gib=64\n", 64)]:
             with self.subTest(extra=extra):
                 marker = self.marker("confirmed\nwriter=\naggregate=\n" + extra)
                 self.assertEqual(memory.reservation_claims([marker], proc=proc)["claims"], [expected * memory.GIB])
@@ -157,7 +193,7 @@ class ModuleMemoryTests(unittest.TestCase):
         self.physical(124)
         marker = self.marker(f"123\nwriter=\naggregate=\nmemory_claim_bytes={memory.GIB}\n")
         result = memory.reservation_claims([marker], proc=proc)
-        self.assertEqual(result["claims"], [6 * memory.GIB])
+        self.assertEqual(result["claims"], [64 * memory.GIB])
         self.assertEqual(result["unrepresented_compilers"], [])
 
     def identity(self, proc, pid, parent, ticks, state="S"):
@@ -178,23 +214,23 @@ class ModuleMemoryTests(unittest.TestCase):
         marker.write_text("122\nwriter=probe\nprobe=issue10\nmemory_gib=64\ncpu=unlimited\nowner_start=100\n")
         return proc, marker
 
-    def test_probe_claim_uses_measured_peak_not_physical_fence(self):
+    def test_live_probe_keeps_full_physical_fence_despite_small_partial_peak(self):
         proc, marker = self.live_probe(peak=3)
         result = memory.reservation_claims([marker], proc=proc, refresh=True)
-        self.assertEqual(result["claims"], [3 * 1536])
+        self.assertEqual(result["claims"], [64 * memory.GIB])
         self.assertEqual(result["unrepresented_compilers"], [])
         self.assertIn("memory_gib=64\n", marker.read_text())
         self.assertIn("memory_probe_child_start=200\n", marker.read_text())
         self.assertNotIn("memory_fence_bytes=", marker.read_text())
 
-    def test_probe_growth_keeps_measured_high_water(self):
+    def test_live_probe_never_reduces_the_full_fence_claim(self):
         proc, marker = self.live_probe()
         stamp = marker.stat().st_mtime_ns
-        self.assertEqual(memory.reservation_claims([marker], proc=proc, refresh=True)["claims"], [3 * memory.GIB])
+        self.assertEqual(memory.reservation_claims([marker], proc=proc, refresh=True)["claims"], [64 * memory.GIB])
         (proc / "123/status").write_text(f"VmHWM: {4 * 1024 ** 2} kB\n")
-        self.assertEqual(memory.reservation_claims([marker], proc=proc, refresh=True)["claims"], [6 * memory.GIB])
+        self.assertEqual(memory.reservation_claims([marker], proc=proc, refresh=True)["claims"], [64 * memory.GIB])
         (proc / "123/status").write_text("VmHWM: 1 kB\n")
-        self.assertEqual(memory.reservation_claims([marker], proc=proc, refresh=True)["claims"], [6 * memory.GIB])
+        self.assertEqual(memory.reservation_claims([marker], proc=proc, refresh=True)["claims"], [64 * memory.GIB])
         self.assertEqual(marker.stat().st_mtime_ns, stamp)
         self.assertIn("memory_gib=64\n", marker.read_text())
 
@@ -267,7 +303,7 @@ class ModuleMemoryTests(unittest.TestCase):
         self.physical(124)
         self.identity(proc, 124, 122, 301)
         (proc / "122/task/122/children").write_text("123 124")
-        self.assertEqual(memory.reservation_claims([marker], proc=proc)["claims"], [6 * memory.GIB])
+        self.assertEqual(memory.reservation_claims([marker], proc=proc)["claims"], [64 * memory.GIB])
 
     def test_probe_conflicting_physical_fence_refuses(self):
         proc, marker = self.live_probe()
@@ -276,16 +312,16 @@ class ModuleMemoryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "physical policy"):
             memory.reservation_claims([marker], proc=proc)
 
-    def test_probe_legacy_claim_does_not_turn_fence_into_reservation(self):
+    def test_live_probe_legacy_small_claim_cannot_reduce_the_fence(self):
         proc, marker = self.live_probe()
         with marker.open("a") as stream:
             stream.write(f"memory_claim_bytes={64 * memory.GIB}\n")
-        self.assertEqual(memory.reservation_claims([marker], proc=proc)["claims"], [3 * memory.GIB])
+        self.assertEqual(memory.reservation_claims([marker], proc=proc)["claims"], [64 * memory.GIB])
 
     def test_probe_refresh_false_preserves_marker(self):
         proc, marker = self.live_probe()
         before = marker.read_bytes()
-        self.assertEqual(memory.reservation_claims([marker], proc=proc)["claims"], [3 * memory.GIB])
+        self.assertEqual(memory.reservation_claims([marker], proc=proc)["claims"], [64 * memory.GIB])
         self.assertEqual(marker.read_bytes(), before)
 
 

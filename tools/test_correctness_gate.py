@@ -5,6 +5,9 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
+
+import correctness_gate
 
 from correctness_gate import active_claims, digest, gate_environment, read, release, reserve, save, select_peak
 
@@ -26,24 +29,82 @@ class GateClaimsTests(unittest.TestCase):
                        "claim_key": "gate-one", "claim_bytes": 30}
         self.owner = {"pid": 99999999, "startticks": 1, "run_id": "one"}
 
-    def test_latest_green_matching_target_wins(self):
-        rows = [{"target": "check-fast", "success": True, "completed_ns": 1, "aggregate_peak_bytes": 90},
-                {"target": "check-fast", "success": True, "completed_ns": 2, "aggregate_peak_bytes": 11},
-                {"target": "check-iris", "success": True, "completed_ns": 3, "aggregate_peak_bytes": 200}]
-        result = select_peak({"runs": rows}, "check-fast")
-        self.assertEqual(result["claim_bytes"], 17)
-        self.assertEqual(result["reason"], "previous_green_matching_gate")
+    def select_peak(self, history, target, **kwargs):
+        return select_peak(history, target, expected_identity={"fixture": "current"}, **kwargs)
 
-    def test_unknown_target_uses_largest_recorded_peak(self):
-        result = select_peak({"runs": [{"target": "check-fast", "success": False,
-                              "completed_ns": 1, "aggregate_peak_bytes": 21}]}, "check-iris")
+    def completed(self, peak, **extra):
+        return {"target": "check-fast", "success": True, "exit_code": 0, "completed_ns": 1,
+                "aggregate_peak_bytes": peak, "workload_identity": {"fixture": "current"},
+                "cache_provenance": {"mode": "uncached", "authority": "complete cold build"}, **extra}
+
+    def test_completed_matching_uncached_peak_allows_measured_claim(self):
+        result = self.select_peak({"runs": [self.completed(21)]}, "check-fast", physical_fence_bytes=500)
         self.assertEqual(result["claim_bytes"], 32)
-        self.assertEqual(result["reason"], "largest_recorded_gate_peak")
 
-    def test_absent_or_invalid_peak_refuses(self):
-        for peak in [None, 0, -1, True]:
-            with self.subTest(peak=peak), self.assertRaises(ValueError):
-                select_peak({"runs": [{"target": "check-fast", "aggregate_peak_bytes": peak}]}, "check-fast")
+    def test_largest_completed_matching_peak_wins(self):
+        rows = [self.completed(90), self.completed(11, completed_ns=2),
+                self.completed(1000, success=False, exit_code=1),
+                self.completed(2000, target="check-iris")]
+        result = self.select_peak({"runs": rows}, "check-fast", physical_fence_bytes=500)
+        self.assertEqual(result["claim_bytes"], 135)
+        self.assertEqual(result["measurement"], rows[0])
+
+    def test_failed_incomplete_and_unknown_measurements_keep_full_fence(self):
+        for extra in [{"success": False, "exit_code": 1}, {"success": None},
+                      {"exit_code": None}, {"exit_code": False}, {"completed_ns": None},
+                      {"cache_provenance": {"mode": "unknown", "authority": "legacy"}},
+                      {"cache_provenance": {"mode": "cache_enabled", "authority": "cached"}}]:
+            with self.subTest(extra=extra):
+                result = self.select_peak({"runs": [self.completed(1, **extra)]}, "check-fast",
+                                     claim_ceiling_bytes=2, physical_fence_bytes=500)
+                self.assertEqual((result["claim_bytes"], result["reason"]), (500, "full_physical_fence"))
+
+    def test_unknown_gate_ceiling_cannot_understate_actual_aggregate_fence(self):
+        self.assertEqual(self.select_peak({"runs": []}, "check-fast", claim_ceiling_bytes=5,
+                                     physical_fence_bytes=500)["claim_bytes"], 500)
+        self.assertEqual(self.select_peak({"runs": []}, "check-fast", claim_ceiling_bytes=700,
+                                     physical_fence_bytes=500)["claim_bytes"], 700)
+
+    def test_cache_provenance_declaration_remains_exact_and_preserves_history(self):
+        row = self.completed(21, result_sha256="a" * 64)
+        row.pop("cache_provenance")
+        declaration = {"target": "check-fast", "result_sha256": "a" * 64,
+                       "mode": "uncached", "authority": "reviewed complete cold build"}
+        history = {"runs": [row], "measurement_provenance": [declaration]}
+        original = json.dumps(history, sort_keys=True)
+        self.assertEqual(self.select_peak(history, "check-fast")["claim_bytes"], 32)
+        self.assertEqual(json.dumps(history, sort_keys=True), original)
+        with self.assertRaisesRegex(ValueError, "duplicated"):
+            self.select_peak({**history, "measurement_provenance": [declaration, declaration]}, "check-fast")
+        with self.assertRaisesRegex(ValueError, "unmatched"):
+            self.select_peak({"runs": [], "measurement_provenance": [declaration]}, "check-fast")
+
+    def test_conflicting_cache_provenance_refuses(self):
+        row = self.completed(21, result_sha256="a" * 64,
+                             cache_provenance={"mode": "cache_enabled", "authority": "warm build"})
+        declaration = {"target": "check-fast", "result_sha256": "a" * 64,
+                       "mode": "uncached", "authority": "cold build"}
+        with self.assertRaisesRegex(ValueError, "conflict"):
+            self.select_peak({"runs": [row], "measurement_provenance": [declaration]}, "check-fast")
+
+    def test_changed_or_absent_workload_identity_uses_full_gate_fence(self):
+        row = self.completed(1)
+        for expected in [None, {}, {"fixture": "changed"}]:
+            with self.subTest(expected=expected):
+                self.assertEqual(correctness_gate.select_peak({"runs": [row]}, "check-fast",
+                    expected_identity=expected, physical_fence_bytes=500)["claim_bytes"], 500)
+        row.pop("workload_identity")
+        self.assertEqual(self.select_peak({"runs": [row]}, "check-fast", physical_fence_bytes=500)["claim_bytes"], 500)
+
+    def test_actual_batch_fence_matches_guard_configuration(self):
+        self.assertEqual(correctness_gate.batch_fence_bytes({}), 120 * 1024**3)
+        self.assertEqual(correctness_gate.batch_fence_bytes({"ZESU_GATE_LIMIT": "64G"}), 64 * 1024**3)
+        self.assertEqual(correctness_gate.batch_fence_bytes({"ZESU_GATE_LIMIT": "123"}), 123)
+        self.assertEqual(correctness_gate.batch_fence_bytes(
+            {"ZESU_BATCH_LIMIT": "64G", "ZESU_GATE_LIMIT": "120G"}), 120 * 1024**3)
+        for value in ["max", "0", "-1", "1.5G"]:
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                correctness_gate.batch_fence_bytes({"ZESU_GATE_LIMIT": value})
 
     def test_unreleased_legacy_claim_counts(self):
         self.assertEqual(active_claims({"fixed_claims": {"a": 5}, "region_claims": {"old": 7}}),
@@ -113,6 +174,29 @@ class GateClaimsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "owner changed"):
             release(request)
         self.assertEqual(read(self.ledger)["fixed_claims"]["gate-one"], 30)
+
+
+class GateSizingCliTests(unittest.TestCase):
+    def parse_ceiling(self, extra, environment):
+        argv = ["correctness_gate.py", "run", "--target", "check-iris", "--build-dir", "private", *extra,
+                "--", "make", "_check-iris"]
+        with patch.dict("os.environ", environment, clear=True), patch("sys.argv", argv), \
+                patch.object(correctness_gate, "run", return_value=0) as execute:
+            self.assertEqual(correctness_gate.main(), 0)
+        return execute.call_args.args[0].claim_ceiling_bytes
+
+    def test_explicit_cli_ceiling(self):
+        self.assertEqual(self.parse_ceiling(["--claim-ceiling-bytes", "300"], {}), 300)
+
+    def test_ceiling_environment(self):
+        self.assertEqual(self.parse_ceiling([], {"ZESU_GATE_CLAIM_CEILING_BYTES": "400"}), 400)
+
+    def test_legacy_bootstrap_argument_remains_explicit_ceiling(self):
+        self.assertEqual(self.parse_ceiling(["--bootstrap-claim-bytes", "500"], {}), 500)
+
+    def test_new_environment_overrides_legacy_ceiling(self):
+        self.assertEqual(self.parse_ceiling([], {"ZESU_GATE_CLAIM_CEILING_BYTES": "600",
+                                                "ZESU_GATE_BOOTSTRAP_CLAIM_BYTES": "700"}), 600)
 
 
 if __name__ == "__main__":

@@ -77,6 +77,9 @@ MODULE_LIMIT_GIB=${ZESU_MODULE_LIMIT_GIB:-$GATE_MODULE_LIMIT_GIB}
 JOB_GIB=${ZESU_JOB_GIB:-3}
 BATCH_LIMIT=${ZESU_BATCH_LIMIT:-150G}
 GATE_LIMIT=${ZESU_GATE_LIMIT:-120G}
+# All proof workloads share this kernel backstop across independent runs.
+WORKLOAD_PARENT_SLICE=zesuworkloads.slice
+WORKLOAD_PARENT_BYTES=187904819200
 MAX_JOBS=${ZESU_MAX_JOBS:-48}
 MEMORY_POLICY=${ZESU_MEMORY_POLICY:-available}
 case "$MEMORY_POLICY" in available|used) ;; *) echo "resource guard: invalid memory policy" >&2; exit 2 ;; esac
@@ -682,6 +685,7 @@ module_memory_admission_reason() {
   done < <(live_reservations)
   read -r total used available < <(memory)
   python3 "$MEMORY_TOOL" admission --request-bytes "$MEMORY_CLAIM_BYTES" \
+    --fallback-bytes "$(( MODULE_LIMIT_GIB * GIB ))" \
     --available-bytes "$available" --headroom-bytes "$(( MEMORY_HEADROOM_GIB * GIB ))" \
     --maximum-compilers "$MAX_COQC" --proc "$PROC_ROOT" "${markers[@]}"
 }
@@ -1263,6 +1267,34 @@ wait_for_memory_budget() {
   done
 }
 
+# Systemd derives the parent from the child slice's dash-separated name.
+ensure_workload_parent() {
+  systemctl --user set-property --runtime "$WORKLOAD_PARENT_SLICE" \
+    "MemoryMax=$WORKLOAD_PARENT_BYTES" MemorySwapMax=0 || return 2
+  verify_workload_parent_properties
+}
+
+verify_workload_parent_properties() {
+  local properties max swap
+  properties=$(systemctl --user show "$WORKLOAD_PARENT_SLICE" -p MemoryMax -p MemorySwapMax) || return $?
+  max=$(printf '%s\n' "$properties" | awk -F= '$1 == "MemoryMax" {print $2}')
+  swap=$(printf '%s\n' "$properties" | awk -F= '$1 == "MemorySwapMax" {print $2}')
+  if [ "$max" != "$WORKLOAD_PARENT_BYTES" ] || [ "$swap" != 0 ]; then
+    echo "resource guard: shared workload parent lacks its memory fence" >&2
+    return 2
+  fi
+}
+
+verify_workload_ancestor() {
+  local group
+  group=$(cat /proc/$$/cgroup) || return $?
+  if [[ "$group" != *"/$WORKLOAD_PARENT_SLICE/"* ]]; then
+    echo "resource guard: workload is outside the shared memory parent" >&2
+    return 2
+  fi
+  verify_workload_parent_properties
+}
+
 aggregate_slice() {
   local slice="${ZESU_AGGREGATE_SLICE:-}" limit="${ZESU_AGGREGATE_LIMIT:-}" properties
   if [ -z "$slice" ]; then
@@ -1270,17 +1302,16 @@ aggregate_slice() {
       echo "resource guard: batch compiler lacks its aggregate slice" >&2
       return 2
     fi
-    echo app.slice
+    echo "$WORKLOAD_PARENT_SLICE"
     return 0
   fi
-  if [[ ! "$slice" =~ ^zesuaggregate[0-9]+p[0-9]+r[0-9]+\.slice$ ]] ||
-     [[ ! "$limit" =~ ^(120G|150G)$ ]]; then
+  if [[ ! "$slice" =~ ^zesuworkloads-aggregate[0-9]+p[0-9]+r[0-9]+\.slice$ ]] ||
+     [[ ! "$limit" =~ ^(64G|120G|150G)$ ]]; then
     echo "resource guard: invalid aggregate slice or limit" >&2
     return 2
   fi
   properties=$(systemctl --user show "$slice" -p MemoryMax -p MemorySwapMax) || return $?
-  local bytes=$((120 * GIB))
-  [ "$limit" != 150G ] || bytes=$((150 * GIB))
+  local bytes=$(( ${limit%G} * GIB ))
   local max swap
   max=$(printf '%s\n' "$properties" | awk -F= '$1 == "MemoryMax" {print $2}')
   swap=$(printf '%s\n' "$properties" | awk -F= '$1 == "MemorySwapMax" {print $2}')
@@ -1337,15 +1368,17 @@ run_scope() {
     wait_for_gate
     guard_wait || return $?
   fi
+  ensure_workload_parent || return $?
   local status reservation="${ZESU_COQC_RESERVATION:-}" owned=0 child="" slice
   # Writers never enter a gate or batch aggregate.
   if [ -n "$WRITER_ID" ]; then
     if [ -n "${ZESU_IN_BATCH:-}" ] ||
-       [[ "$(cat /proc/$$/cgroup)" == *"/zesuaggregate"*".slice/"* ]]; then
+       { [[ "$(cat /proc/$$/cgroup)" == *"/zesuaggregate"*".slice/"* ]] ||
+         [[ "$(cat /proc/$$/cgroup)" == *"/zesuworkloads-aggregate"*".slice/"* ]]; }; then
       echo "resource guard: writer controller must start outside the batch aggregate" >&2
       return 2
     fi
-    slice=app.slice
+    slice=$WORKLOAD_PARENT_SLICE
   else slice=$(aggregate_slice) || return $?; fi
   if [ -z "$reservation" ]; then
     reservation=$(reserve_coqc $$) || return $?
@@ -1357,6 +1390,7 @@ run_scope() {
   fi
   # Only scope-exec sets this token after systemd creates the job fence.
   if [ "${ZESU_COQC_SCOPE:-}" = "$reservation" ]; then
+    verify_workload_ancestor || return $?
     mark_coqc "$reservation" "$BASHPID" || return $?
     register_run_actor || return $?
     exec "$@"
@@ -1403,18 +1437,20 @@ run_batch() {
   [ "${1:-}" = "--" ] && shift
   # Nested make wrappers reuse the aggregate created by their parent.
   if [ -n "${ZESU_IN_BATCH:-}" ]; then
+    verify_workload_ancestor || return $?
     guard_wait || return $?
     aggregate_slice >/dev/null || return $?
     exec "$@"
   fi
   wait_for_gate
   guard_wait || return $?
+  ensure_workload_parent || return $?
   local marker="" status child=""
   if [ -z "${ZESU_IN_GATE:-}" ]; then
     until marker=$(admit_launch); do wait_for_gate; done
   fi
   local unit="${SCOPE_PREFIX}-batch-${name}-$$"
-  local slice="zesuaggregate${UID}p$$r${RANDOM}.slice"
+  local slice="zesuworkloads-aggregate${UID}p$$r${RANDOM}.slice"
   local limit=$BATCH_LIMIT
   if [ -n "${ZESU_IN_GATE:-}" ] || [ "${ZESU_IO:-batch}" = gate ]; then limit=$GATE_LIMIT; fi
   # Cap the aggregate before either its parent or a compiler starts.
@@ -1447,7 +1483,7 @@ run_batch() {
   trap 'exit 130' INT
   echo "$unit.scope" >> "$REGISTRY"
   # Remove private Dune headers before a completed batch returns to its caller.
-  env ZESU_IN_BATCH=1 ZESU_AGGREGATE_SLICE="$slice" ZESU_AGGREGATE_LIMIT="$limit" \
+  env ZESU_IN_BATCH=1 ZESU_AGGREGATE_SLICE="$slice" ZESU_AGGREGATE_LIMIT="$limit" ZESU_BATCH_UNIT="$unit.scope" \
     systemd-run --user --scope --quiet --unit="$unit" --slice="$slice" \
     -p "MemoryMax=$limit" -p MemorySwapMax=0 -- $(io_class) \
     "$(realpath "$0")" batch-exec -- \
@@ -1507,6 +1543,13 @@ case "${1:-report}" in
 esac
 
 case "${1:-report}" in
+  parent-check) verify_workload_ancestor ;;
+  parent-slice) ensure_workload_parent && aggregate_slice ;;
+  parent-exec)
+    verify_workload_ancestor || exit $?
+    shift; [ "${1:-}" = -- ] && shift
+    exec "$@" ;;
+  parent-setup) ensure_workload_parent ;;
   gate-module-limit)
     if [[ ! "$GATE_MODULE_LIMIT_GIB" =~ ^([6-9]|[12][0-9]|3[0-2])$ ]]; then
       echo "compiler gate memory limit must be an integer from 6 through 32 GiB" >&2
@@ -1527,6 +1570,7 @@ case "${1:-report}" in
   watch)  guard_watch ;;
   scope)  shift; run_scope "$@" ;;
   scope-exec)
+    verify_workload_ancestor || exit $?
     validate_probe_scope || exit $?
     if diagnostic_probe && [ "${ZESU_SCOPE_CPU:-unlimited}" != unlimited ]; then
       echo "resource guard: probe CPU must be unlimited" >&2; exit 2
@@ -1540,6 +1584,7 @@ case "${1:-report}" in
     register_run_actor || exit $?
     exec "$@" ;;
   batch-exec)
+    verify_workload_ancestor || exit $?
     shift; [ "${1:-}" = -- ] && shift
     register_run_actor || exit $?
     exec "$@" ;;

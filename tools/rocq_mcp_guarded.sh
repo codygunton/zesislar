@@ -16,6 +16,16 @@ fi
 export ZESU_HOLD_GIB=${ZESU_HOLD_GIB:-180}
 export ROCQ_MAX_PET_RSS_MB=$((ZESU_MODULE_LIMIT_GIB * 1024))
 export ROCQ_COQC_BINARY=${ZESU_ROCQ_COQC_WRAPPER:-$tools_dir/rocq_coqc_guarded.sh}
-exec systemd-run --user --scope --quiet --collect \
+resource_guard=$(realpath "${ZESU_RESOURCE_GUARD:-$tools_dir/resource_guard.sh}")
+export ZESU_RESOURCE_GUARD="$resource_guard"
+slice=$("$resource_guard" parent-slice)
+if [ "$slice" != zesuworkloads.slice ] &&
+   [[ ! "$slice" =~ ^zesuworkloads-aggregate[0-9]+p[0-9]+r[0-9]+\.slice$ ]]; then
+  echo "MCP guard: the selected guard lacks the shared memory parent" >&2
+  exit 2
+fi
+export ZESU_MCP_SCOPE_UNIT="rocq-writer-${UID}-$$.scope"
+exec systemd-run --user --scope --quiet --collect --slice="$slice" \
   --unit="rocq-writer-${UID}-$$" \
-  -p "MemoryMax=${ZESU_MODULE_LIMIT_GIB}G" -p MemorySwapMax=0 -- "$mcp_binary" "$@"
+  -p "MemoryMax=${ZESU_MODULE_LIMIT_GIB}G" -p MemorySwapMax=0 -- \
+  "$resource_guard" parent-exec -- "$mcp_binary" "$@"

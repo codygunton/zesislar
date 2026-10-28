@@ -7,6 +7,7 @@ import fcntl
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -15,6 +16,7 @@ import time
 import uuid
 
 from coqc_findlib import preflight
+from module_memory import measurement_claim
 
 
 TARGETS = {"check-fast", "check-iris"}
@@ -65,25 +67,76 @@ def alive(actor):
                 and current["state"] not in {"Z", "X"})
 
 
-def select_peak(history, target):
-    """Prefer the last green matching gate; otherwise use the largest peak."""
+CACHE_MODES = {"uncached", "cache_enabled", "unknown"}
+
+
+def measurement_provenance(history):
+    """Bind declarations to existing results without changing legacy rows."""
+    declarations = {}
+    rows = [(row.get("target"), row.get("result_sha256")) for row in history.get("runs", [])]
+    provenance = history.get("measurement_provenance", [])
+    if not isinstance(provenance, list):
+        raise ValueError("Measurement provenance declarations must be a list.")
+    for declaration in provenance:
+        if not isinstance(declaration, dict) or set(declaration) != {"target", "result_sha256", "mode", "authority"}:
+            raise ValueError("A measurement provenance declaration has invalid fields.")
+        sha256 = declaration["result_sha256"]
+        if (not isinstance(declaration["target"], str) or declaration["target"] not in TARGETS
+                or not isinstance(sha256, str)
+                or len(sha256) != 64 or any(char not in "0123456789abcdef" for char in sha256)
+                or not isinstance(declaration["mode"], str) or declaration["mode"] not in CACHE_MODES
+                or not isinstance(declaration["authority"], str) or not declaration["authority"].strip()):
+            raise ValueError("A measurement provenance declaration is invalid.")
+        key = (declaration["target"], sha256)
+        if key not in rows or key in declarations:
+            raise ValueError("A measurement provenance declaration is unmatched or duplicated.")
+        declarations[key] = declaration
+    return declarations
+
+
+def cache_provenance(row, declarations):
+    """Unknown and cache-enabled measurements cannot size an uncached gate."""
+    declared = declarations.get((row.get("target"), row.get("result_sha256")))
+    recorded = row.get("cache_provenance")
+    if recorded is not None:
+        if (not isinstance(recorded, dict) or set(recorded) != {"mode", "authority"}
+                or not isinstance(recorded["mode"], str) or recorded["mode"] not in CACHE_MODES
+                or not isinstance(recorded["authority"], str) or not recorded["authority"].strip()):
+            raise ValueError("A recorded cache provenance is invalid.")
+        if declared and recorded["mode"] not in {"unknown", declared["mode"]}:
+            raise ValueError("Recorded and declared cache provenance conflict.")
+    return declared or recorded or {"mode": "unknown", "authority": "Legacy result has no cache provenance."}
+
+
+def select_peak(history, target, *, claim_ceiling_bytes=0, physical_fence_bytes=120 * 1024**3, expected_identity=None):
+    """Use only completed matching uncached gates for measured admission."""
+    if target not in TARGETS:
+        raise ValueError("The gate target is invalid.")
+    if type(claim_ceiling_bytes) is not int or claim_ceiling_bytes < 0:
+        raise ValueError("The declared gate claim ceiling must be a nonnegative integer.")
+    declarations = measurement_provenance(history)
     rows = []
     for row in history.get("runs", []):
-        peak = row.get("aggregate_peak_bytes")
-        if row.get("target") not in TARGETS or type(peak) is not int or peak <= 0:
+        if row.get("target") != target:
             continue
-        rows.append(row)
-    matching = [row for row in rows if row["target"] == target and row.get("success") is True]
-    if matching:
-        selected = max(matching, key=lambda row: row["completed_ns"])
-        reason = "previous_green_matching_gate"
-    elif rows:
-        selected = max(rows, key=lambda row: row["aggregate_peak_bytes"])
-        reason = "largest_recorded_gate_peak"
-    else:
-        raise ValueError("No recorded aggregate gate peak exists. Supply a measured gate history.")
-    return {"reason": reason, "measurement": selected,
-            "claim_bytes": (selected["aggregate_peak_bytes"] * 3 + 1) // 2}
+        provenance = cache_provenance(row, declarations)
+        peak = row.get("aggregate_peak_bytes")
+        if (isinstance(expected_identity, dict) and expected_identity
+                and row.get("workload_identity") == expected_identity
+                and provenance["mode"] == "uncached" and row.get("success") is True
+                and type(row.get("exit_code")) is int and row["exit_code"] == 0
+                and type(row.get("completed_ns")) is int and row["completed_ns"] > 0
+                and type(peak) is int and peak > 0):
+            rows.append((row, provenance))
+    if rows:
+        selected, provenance = max(rows, key=lambda item: item[0]["aggregate_peak_bytes"])
+        return {"reason": "largest_uncached_matching_gate_peak", "measurement": selected,
+                "measurement_provenance": provenance,
+                "claim_bytes": measurement_claim(physical_fence_bytes, selected["aggregate_peak_bytes"],
+                                                  completed=True, matching=True)}
+    return {"reason": "full_physical_fence", "measurement": None,
+            "claim_bytes": max(claim_ceiling_bytes, measurement_claim(physical_fence_bytes)),
+            "qualification": "No completed uncached measurement binds the exact current workload identity. Reserve the full aggregate fence."}
 
 
 def active_claims(ledger):
@@ -139,6 +192,8 @@ def aggregate_closed(batch):
     pid = batch.get("batch_pid")
     if pid:
         paths.update(str(path) for path in parent.glob(f"zesuaggregate{os.getuid()}p{pid}r*.slice"))
+        paths.update(str(path) for path in (parent / "zesuworkloads.slice").glob(
+            f"zesuworkloads-aggregate{os.getuid()}p{pid}r*.slice"))
     for name in paths:
         path = Path(name)
         if path.exists() and "populated 1" in (path / "cgroup.events").read_text():
@@ -201,7 +256,7 @@ def inside(out):
                  if line.startswith("0::"))
     relative = Path(group.lstrip("/"))
     parts = relative.parts
-    index = next(i for i, item in enumerate(parts) if item.startswith("zesuaggregate") and item.endswith(".slice"))
+    index = next(i for i, item in enumerate(parts) if item.startswith(("zesuaggregate", "zesuworkloads-aggregate")) and item.endswith(".slice"))
     aggregate = Path("/sys/fs/cgroup").joinpath(*parts[:index + 1])
     save(out / "BATCH.json", {"actors": [identity(os.getpid())], "aggregate_paths": [str(aggregate)]})
     started = time.monotonic()
@@ -217,6 +272,15 @@ def inside(out):
 
 def gate_environment(environment):
     return dict(environment, ZESU_PROOF_CACHE='off')
+
+
+def batch_fence_bytes(environment):
+    """Read the guard gate route, which overrides the ordinary batch limit."""
+    value = environment.get("ZESU_GATE_LIMIT", "120G")
+    match = re.fullmatch(r"([1-9][0-9]*)([KMGT]?)", value)
+    if not match:
+        raise ValueError("The batch memory fence must use bytes or an integer K/M/G/T suffix.")
+    return int(match[1]) * 1024 ** ("KMGT".index(match[2]) + 1 if match[2] else 0)
 
 
 def run(args):
@@ -239,14 +303,8 @@ def run(args):
     base = common.parent
     history = Path(os.environ.get("ZESU_GATE_PEAK_HISTORY", base / "_build/correctness-gates/HISTORY.json"))
     history_data = read(history) if history.is_file() else {"schema": "zesu.gate-measurements.v1", "runs": []}
-    try:
-        basis = select_peak(history_data, args.target)
-    except ValueError:
-        if (args.target != "check-fast" or history_data.get("runs")
-                or args.bootstrap_claim_bytes != 48 * 1024**3):
-            raise
-        basis = {"reason": "explicit_first_measurement_bootstrap", "claim_bytes": args.bootstrap_claim_bytes,
-                 "measurement": None, "qualification": "Explicit provisional reservation. This is not a measured peak."}
+    basis = select_peak(history_data, args.target, claim_ceiling_bytes=args.claim_ceiling_bytes,
+                        physical_fence_bytes=batch_fence_bytes(os.environ))
     command = args.command[1:] if args.command[:1] == ["--"] else args.command
     if not command:
         raise ValueError("The correctness gate command is absent.")
@@ -274,7 +332,10 @@ def run(args):
     metrics = read(out / "METRICS.json") if (out / "METRICS.json").exists() else {}
     result = {"target": args.target, "success": status == 0, "exit_code": status,
               "wall_seconds": (time.monotonic_ns() - run_started) / 1e9,
-              "admission_wall_seconds": admission_wall, "completed_ns": time.time_ns(), **metrics}
+              "admission_wall_seconds": admission_wall, "completed_ns": time.time_ns(),
+              "cache_provenance": {"mode": "unknown",
+                  "authority": "The stock runner disables the proof cache but does not establish an uncached Dune build."},
+              **metrics}
     save(out / "RESULT.json", result)
     if metrics.get("aggregate_peak_bytes"):
         history.parent.mkdir(parents=True, exist_ok=True)
@@ -295,8 +356,10 @@ def main():
     execute = commands.add_parser("run")
     execute.add_argument("--target", choices=sorted(TARGETS), required=True)
     execute.add_argument("--build-dir", type=Path, required=True)
-    execute.add_argument("--bootstrap-claim-bytes", type=int,
-                         default=int(os.environ.get("ZESU_GATE_BOOTSTRAP_CLAIM_BYTES", "0")))
+    execute.add_argument("--claim-ceiling-bytes", "--bootstrap-claim-bytes", dest="claim_ceiling_bytes", type=int,
+                         default=int(os.environ.get("ZESU_GATE_CLAIM_CEILING_BYTES",
+                                     os.environ.get("ZESU_GATE_BOOTSTRAP_CLAIM_BYTES", "0"))),
+                         help="Explicit claim ceiling when no matching uncached measurement exists.")
     execute.add_argument("command", nargs=argparse.REMAINDER)
     close = commands.add_parser("release")
     close.add_argument("--receipt", type=Path, required=True)
