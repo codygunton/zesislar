@@ -36,7 +36,7 @@
 # plus 20 GiB. Hold below 20 GiB available; kill at or below 10 GiB available.
 # Ordinary proofs use 6 GiB; issue-10 probes use 64 GiB and require 84 GiB
 # available. CPU-only issue-10 probes use 6 GiB and require 26 GiB available.
-# Both probe types share the same two admitted slots.
+# All probe classes share six admitted aggregate slots.
 # The temporary used-memory policy is explicit: launch below 200 GiB,
 # hold at 215 GiB, and kill at 230 GiB. It does not change scope fences.
 # Memory limits remain 150G for batches and 120G for gates, with no swap.
@@ -50,7 +50,7 @@
 # either state. Jobs inside a running batch go on, so a running arm
 # completes; the gate waits for it and then marks the lock `held`.
 # Validated issue-10 probes continue beside gates. They retain compiler
-# and memory accounting, with at most two admitted probes machine-wide.
+# and memory accounting, with at most six admitted probe aggregates machine-wide.
 # While an arm populates its build directory, or while a disk is more than
 # 80 % busy, launches also keep a ramp of two per second across guards;
 # otherwise they fill the width as slots free up.
@@ -573,7 +573,7 @@ process_start() {
 probe_record() {
   local marker=$1 owner start
   if grep -Fxq 'probe=issue10' "$marker"; then
-    grep -Fxq 'memory_gib=64' "$marker" || return 1
+    case "$(sed -n 's/^memory_gib=//p' "$marker")" in 24|64) ;; *) return 1 ;; esac
   elif grep -Fxq 'probe=issue10-cpu-only' "$marker"; then
     grep -Fxq 'memory_gib=6' "$marker" || return 1
   else return 1; fi
@@ -583,12 +583,73 @@ probe_record() {
   [ -n "$start" ] && [ "$start" = "$(process_start "$owner")" ]
 }
 
-probe_count() {
-  local marker count=0
+# A shared aggregate consumes one probe slot, including its nested scopes.
+# Validate membership from the owner's cgroup, not an inherited name alone.
+probe_owner_aggregate() {
+  local owner=$1 expected=$2 hierarchy controllers path
+  [[ "$expected" =~ ^zesuworkloads-aggregate[0-9]+p[0-9]+r[0-9]+\.slice$ ]] || return 1
+  [ -r "$PROC_ROOT/$owner/cgroup" ] || return 1
+  while IFS=: read -r hierarchy controllers path; do
+    if [ "$hierarchy" = 0 ] && [ -z "$controllers" ] &&
+       [[ "$path/" == *"/$WORKLOAD_PARENT_SLICE/$expected/"* ]]; then
+      printf '%s\n' "$expected"; return 0
+    fi
+  done < "$PROC_ROOT/$owner/cgroup"
+  return 1
+}
+
+probe_key() {
+  local marker=$1 owner aggregate
+  probe_record "$marker" || return 1
+  owner=${marker##*/}; owner=${owner%%.*}
+  aggregate=$(sed -n 's/^aggregate=//p' "$marker")
+  if [ -n "$aggregate" ] && aggregate=$(probe_owner_aggregate "$owner" "$aggregate"); then
+    printf 'aggregate:%s\n' "$aggregate"
+  else
+    # Standalone or unverifiable legacy markers retain a conservative slot.
+    printf 'owner:%s:%s\n' "$owner" "$(process_start "$owner")"
+  fi
+}
+
+probe_keys() {
+  local marker key state
+  local -A seen=()
   while IFS= read -r marker; do
-    probe_record "$marker" && count=$(( count + 1 ))
+    read -r state < "$marker" || continue
+    [ "$state" != pending ] || continue
+    key=$(probe_key "$marker") || continue
+    if [ -z "${seen[$key]:-}" ]; then
+      seen[$key]=1
+      printf '%s\n' "$key"
+    fi
   done < <(live_reservations)
+}
+
+probe_count() {
+  local key count=0
+  while IFS= read -r key; do count=$(( count + 1 )); done < <(probe_keys)
   echo "$count"
+}
+
+# confirm_coqc calls this under the same admission mutex as publication.
+probe_admission_reason() {
+  local owner=$1 aggregate key admitted count=0
+  if [ -n "${ZESU_AGGREGATE_SLICE:-}" ]; then
+    if ! aggregate=$(probe_owner_aggregate "$owner" "$ZESU_AGGREGATE_SLICE"); then
+      echo "resource guard: probe owner is outside its declared aggregate" >&2
+      return 2
+    fi
+    key="aggregate:$aggregate"
+  else
+    key="owner:$owner:$(process_start "$owner")"
+  fi
+  while IFS= read -r admitted; do
+    [ "$admitted" != "$key" ] || return 0
+    count=$(( count + 1 ))
+  done < <(probe_keys)
+  if (( count >= 6 )); then
+    echo "issue10 probes at their six-aggregate limit"
+  fi
 }
 
 # Only gate draining ignores validated probes. Resource holds do not.
@@ -789,8 +850,13 @@ confirm_coqc() {
         flock -u 7; exec 7>&-; return "$status"
       }
     fi
-    if diagnostic_probe && (( $(probe_count) >= 6 )); then
-      admission="issue10 probes at their six-probe limit"
+    if diagnostic_probe; then
+      local probe_admission
+      probe_admission=$(probe_admission_reason "$owner") || {
+        status=$?; echo "resource guard: probe admission check failed ($status)" >&2
+        flock -u 7; exec 7>&-; return "$status"
+      }
+      [ -z "$probe_admission" ] || admission="$probe_admission"
     fi
     if [ -z "$reason$holder$admission" ]; then
       replacement=$(mktemp "$STATE_DIR/coqc-confirm.XXXXXXXX") || {

@@ -328,6 +328,15 @@ PY_LIMITS
                 result = self.run_guard(r"""
 confirm_coqc() { :; }
 mark_coqc() { :; }
+cat() {
+  if [[ "$1" == /proc/*/cgroup ]]; then
+    printf '0::/user.slice/zesuworkloads.slice/fixture.scope\n'
+  else command cat "$@"; fi
+}
+systemctl() {
+  [ "$*" = '--user show zesuworkloads.slice -p MemoryMax -p MemorySwapMax' ] || return 2
+  printf 'MemoryMax=187904819200\nMemorySwapMax=0\n'
+}
 ulimit -S -s 8192
 set -- scope-exec fixture -- python3 -c 'import json, resource; print(json.dumps({"stack":resource.getrlimit(resource.RLIMIT_STACK), "cpu":resource.getrlimit(resource.RLIMIT_CPU)}))'
 """ + DISPATCH, **variables)
