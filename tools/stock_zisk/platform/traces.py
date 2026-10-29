@@ -14,6 +14,8 @@ import time
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[3]
+TRACE_FRONTEND = Path("/home/cody/islaris/_opam/bin/islaris")
+TRACE_FOOTPRINT = Path("/home/cody/isla/target/release/isla-footprint")
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from indexes import approved_regions, validate_indexes
 from exports import native_prefix, append_exports, selected_commitments
@@ -50,6 +52,69 @@ def selected_rows(args, image):
             rows.append(row)
     if not rows: raise ValueError("The input dump contains no instructions")
     return rows
+
+def trace_only_inputs(args, elf):
+    paths = {
+        "manifest": args.manifest, "elf": elf, "dump": args.dump,
+        "driver": Path(__file__).resolve(), "frontend": TRACE_FRONTEND,
+        "footprint": TRACE_FOOTPRINT,
+        "footprint_wrapper": ROOT / "tools/stock_zisk/platform/bin/isla-footprint",
+        "platform_snapshot": ROOT / "build/stock-zisk/platform/riscv64-zisk.ir",
+        "config": ROOT / "ZesuSsz/riscv64_zesu.toml",
+        "decoder": ROOT / "tools/stock_zisk/riscv.py",
+    }
+    return {name: {"path": str(path.resolve()), "sha256": sha(path)}
+            for name, path in paths.items()}
+
+
+def generate_trace_only(args, rows, inputs):
+    """Generate an isolated dataset without region commitments or exports."""
+    pcs = [row["pc"] for row in rows]
+    if len(pcs) != len(set(pcs)):
+        raise ValueError("The trace-only dump repeats an instruction address")
+    if any(row["kind"] == "runtime" for row in rows):
+        raise ValueError("Trace-only generation cannot omit runtime instructions")
+    dump = args.out.parent / (args.out.name + ".selected.dump")
+    log = args.out.parent / (args.out.name + ".generation.log")
+    if any(path.exists() for path in [args.out, dump, log]):
+        raise ValueError("Trace-only generation requires a new output directory and sidecar files")
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    dump.write_text("\n".join(f"{row['pc']:x}: {row['word']:08x} {row['mnemonic']}"
+                              for row in rows) + "\n")
+    selected_dump_hash = sha(dump)
+    env = dict(os.environ, OPAM_SWITCH_PREFIX="/home/cody/islaris/_opam")
+    env["PATH"] = str(ROOT / "tools/stock_zisk/platform/bin") + ":" + str(ROOT / "bin") + ":" + str(TRACE_FRONTEND.parent) + ":" + env["PATH"]
+    command = [str(TRACE_FRONTEND), str(dump), "--arch=riscv64",
+               "--coqdir=" + args.coqdir, f"-j{args.jobs}", "-o", str(args.out)]
+    started = time.monotonic()
+    with log.open("w") as output:
+        result = subprocess.run(command, env=env, stdout=output,
+                                stderr=subprocess.STDOUT, cwd=ROOT)
+    if result.returncode:
+        raise RuntimeError("Trace-only generation failed; inspect " + str(log))
+    for record in inputs.values():
+        if sha(Path(record["path"])) != record["sha256"]:
+            raise ValueError("A trace-only input changed: " + record["path"])
+    if sha(dump) != selected_dump_hash:
+        raise ValueError("The selected trace-only dump changed")
+    generated = validate_instruction_modules(args.out, pcs)
+    expected = {f"a{pc:x}.isla" for pc in pcs}
+    actual = {path.name for path in args.out.iterdir()
+              if path.is_file() and re.fullmatch(r"a[0-9a-fA-F]+\.isla", path.name)}
+    if expected != actual:
+        raise ValueError(f"Instruction traces differ: missing={sorted(expected-actual)}, extra={sorted(actual-expected)}")
+    report = {
+        "schema": "stock-zisk.trace-only.v1", "arch": "riscv64",
+        "coqdir": args.coqdir, "inputs": inputs,
+        "selected_dump": {"path": str(dump), "sha256": selected_dump_hash},
+        "instruction_count": len(rows), "generated_count": generated,
+        "files": {path.name: sha(path) for path in sorted(args.out.iterdir()) if path.is_file()},
+        "command": command, "workers": args.jobs,
+        "seconds": round(time.monotonic() - started, 3),
+        "peak_rss_kib": resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss,
+    }
+    (args.out / "trace-manifest.json").write_text(json.dumps(report, indent=2) + "\n")
+    print(f"Generated {generated}/{len(rows)} trace-only instructions")
 
 def ensure_callee_theory(out):
     dune = out / "dune"
@@ -292,11 +357,15 @@ def main():
     ap.add_argument("--jobs",type=int,default=6)
     ap.add_argument("--closure",action="store_true")
     ap.add_argument("--indexes",action="store_true")
+    ap.add_argument("--trace-only", action="store_true",
+                    help="Generate a new isolated trace dataset without region commitments or exports")
     ap.add_argument("--ensure-native-indexes", action="store_true")
     ap.add_argument("--cache-dir", type=Path, default=ROOT / "_build/stock-zisk/native-trace-cache")
     ap.add_argument("--decode-out", type=Path, default=ROOT / "generated/isla-traces/stock-zisk/decodeItem")
     ap.add_argument("--closure-out", type=Path, default=ROOT / "generated/isla-traces/stock-zisk/closure")
     args=ap.parse_args()
+    if args.trace_only and (args.closure or args.indexes or args.ensure_native_indexes):
+        ap.error("--trace-only cannot combine with closure or native-index modes")
     if not 1 <= args.jobs <= 6: raise ValueError("Use one to six workers for this child")
     args.manifest = args.manifest.resolve()
     if args.ensure_native_indexes:
@@ -310,6 +379,7 @@ def main():
     args.manifest = args.manifest.resolve()
     recipe=json.loads(args.manifest.read_text()); elf=args.manifest.parent / "zesu-zisk.elf"
     if sha(elf) != recipe["elf_sha256"]: raise ValueError("The selected ELF hash changed")
+    trace_inputs = trace_only_inputs(args, elf) if args.trace_only else None
     with elf.open("rb") as stream:
         image=Image(ELFFile(stream)); rows=selected_rows(args,image)
         for row in rows:
@@ -317,6 +387,9 @@ def main():
             if actual["word"] != row["word"]: raise ValueError("The inventory instruction bytes changed")
             if actual["kind"] == "unsupported":
                 raise ValueError(f"Unsupported {actual['extension']} at {actual['pc']:#x}: {actual['word']:#010x}")
+    if args.trace_only:
+        generate_trace_only(args, rows, trace_inputs)
+        return
     if args.indexes and not args.closure:
         raise ValueError("Bounded indexes require closure selection")
     args.indexes = args.closure
