@@ -22,6 +22,13 @@ Require Import InstrSpecs.Lookup.
 Require Import ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.ConjunctMatch.
 
+(* The pure closer must not unfold an Iris entailment into arithmetic. *)
+Ltac zesu_final_pure_head_gate :=
+  lazymatch goal with
+  | |- envs_entails _ _ => fail 0 "final_pure: Iris entailment is outside the pure closer"
+  | |- ?target => lazymatch type of target with Prop => idtac end
+  end.
+
 (* Keep the selected table named during search and simplification.
    Explicit computation still resolves one selected instruction. *)
 Global Typeclasses Opaque selectedCodeLookup.

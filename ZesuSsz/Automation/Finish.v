@@ -504,9 +504,7 @@ Ltac zesu_finish_list_cons_final :=
 
 (* The search keeps the baseline closers. New work runs only in the tail. *)
 Ltac zesu_finish_final_pure :=
-  lazymatch goal with |- ?target =>
-    lazymatch type of target with Prop => idtac end
-  end;
+  zesu_final_pure_head_gate;
   zesu_saturate_derived_facts;
   try solve [
     first [
