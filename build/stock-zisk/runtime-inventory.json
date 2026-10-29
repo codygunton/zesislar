@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "artifact_identity": "bd8f29b23700dca4ae8238585241b02143b3406a4c75a77aad78945f99947c37",
+  "artifact_identity": "150bc22af71526affbfb9bfc69cb9184782a997edb7546927c8ce2232ba6f099",
   "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
   "source": {
     "path": "_build/p0c-zesu-source/src/zkvm/alt_fl_alloc.zig",

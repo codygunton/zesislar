@@ -51,7 +51,7 @@
     },
     "tools/stock_zisk/platform/traces.py": {
       "path": "tools/stock_zisk/platform/traces.py",
-      "sha256": "68f14924ff59a83ded8b9f1033adc3ff3136d970415ab294121d25c560a2afd3"
+      "sha256": "4fb6469e635366ed2a23f6303942a6bc0a733814d505dc8425cd67c6653294ec"
     },
     "sail": {
       "path": "/home/cody/islaris/_opam/bin/sail",

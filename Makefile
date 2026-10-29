@@ -130,6 +130,7 @@ check-evidence-tools:
 	$(PYTHON) -m tools.block.check_data_only_lemmas
 	$(PYTHON) -m unittest discover -s tools/stock_zisk -p 'test_manifest.py'
 	PYTHONPATH=tools/stock_zisk/platform $(PYTHON) -m unittest discover -s tools/stock_zisk/platform -p 'test_function_binding.py'
+	PYTHONPATH=tools/stock_zisk/platform $(PYTHON) -m unittest discover -s tools/stock_zisk/platform -p 'test_trace_only.py'
 	$(PYTHON) -m unittest discover -s tools/stock_zisk/machine_map -p 'test_*.py'
 	$(PYTHON) tools/stock_zisk/machine_map/generate.py --build $(STOCK_DIR) --check
 	$(PYTHON) -m unittest discover -s tools/stock_zisk/static_sites -p 'test_*.py'
