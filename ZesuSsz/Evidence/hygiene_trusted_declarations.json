@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "declarations": [
+    {
+      "path": "ZesuSsz/Automation/EntryIntro.v",
+      "statement": "Declare ML Module \"zesu-signature-gates.plugin\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation/EntryIntro.v",
+      "statement": "Ltac2 @ external zesu_unique_entry_registration : unit -> unit := \"zesu-signature-gates.plugin\" \"unique_entry_registration\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation/Hooks.v",
+      "statement": "Declare ML Module \"zesu-signature-gates.plugin\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation/Hooks.v",
+      "statement": "Ltac2 @ external zesu_target_registration : constr -> unit := \"zesu-signature-gates.plugin\" \"target_registration\" ."
+    },
+    {
+      "path": "ZesuSsz/Evidence/SignatureGates.v",
+      "statement": "Declare ML Module \"zesu-signature-gates.plugin\" ."
+    },
+    {
+      "path": "ZesuSsz/Evidence/SignatureGates.v",
+      "statement": "Ltac2 @ external exact_axioms : constr -> constr list -> unit := \"zesu-signature-gates.plugin\" \"exact_axioms\" ."
+    },
+    {
+      "path": "ZesuSsz/Evidence/TraceObserver.v",
+      "statement": "Declare ML Module \"zesu-signature-gates.trace-observer\" ."
+    },
+    {
+      "path": "ZesuSsz/Evidence/TraceObserver.v",
+      "statement": "Ltac2 @ external trace_block_around : string -> ( string * ( unit -> unit ) ) list -> ( unit -> unit ) -> unit := \"zesu-signature-gates.trace-observer\" \"around\" ."
+    },
+    {
+      "path": "ZesuSsz/Evidence/TraceObserver.v",
+      "statement": "Ltac2 @ external trace_block_snapshot : string -> unit := \"zesu-signature-gates.trace-observer\" \"snapshot\" ."
+    },
+    {
+      "path": "tools/block/TracePlugin/Bounded/TraceObserver.v",
+      "statement": "Declare ML Module \"p0-bounded-trace.trace-observer\" ."
+    },
+    {
+      "path": "tools/block/TracePlugin/Bounded/TraceObserver.v",
+      "statement": "Ltac2 @ external trace_bounded_filtered : string -> ( unit -> bool ) -> ( string * ( unit -> unit ) ) list -> ( unit -> unit ) -> unit := \"p0-bounded-trace.trace-observer\" \"filtered\" ."
+    },
+    {
+      "path": "tools/block/TracePlugin/Bounded/TraceObserver.v",
+      "statement": "Ltac2 @ external trace_bounded_snapshot : string -> unit := \"p0-bounded-trace.trace-observer\" \"snapshot\" ."
+    },
+    {
+      "path": "tools/block/TracePlugin/Bounded/TraceObserver.v",
+      "statement": "Ltac2 @ external trace_bounded_checkpoint : string -> constr -> unit := \"p0-bounded-trace.trace-observer\" \"checkpoint\" ."
+    },
+    {
+      "path": "tools/block/TracePlugin/Bounded/TraceObserver.v",
+      "statement": "Ltac2 @ external trace_bounded_status : unit -> string := \"p0-bounded-trace.trace-observer\" \"status\" ."
+    },
+    {
+      "path": "tools/block/TracePlugin/Bounded/TraceObserver.v",
+      "statement": "Ltac2 @ external trace_bounded_complete : unit -> bool := \"p0-bounded-trace.trace-observer\" \"complete\" ."
+    },
+    {
+      "path": "tools/block/TracePlugin/Filtered/TraceObserver.v",
+      "statement": "Declare ML Module \"p0-filtered-trace.trace-observer\" ."
+    },
+    {
+      "path": "tools/block/TracePlugin/Filtered/TraceObserver.v",
+      "statement": "Ltac2 @ external trace_block_filtered : string -> ( unit -> bool ) -> ( string * ( unit -> unit ) ) list -> ( unit -> unit ) -> unit := \"p0-filtered-trace.trace-observer\" \"filtered\" ."
+    },
+    {
+      "path": "tools/block/TracePlugin/Filtered/TraceObserver.v",
+      "statement": "Ltac2 @ external trace_block_snapshot : string -> unit := \"p0-filtered-trace.trace-observer\" \"snapshot\" ."
+    },
+    {
+      "path": "tools/block/TracePlugin/Filtered/TraceObserver.v",
+      "statement": "Ltac2 @ external trace_block_checkpoint : string -> constr -> unit := \"p0-filtered-trace.trace-observer\" \"checkpoint\" ."
+    }
+  ]
+}

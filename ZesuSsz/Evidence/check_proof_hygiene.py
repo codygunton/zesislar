@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT / "tools" / "residual"))
 from modules import PROOF_OPENER, parse_module
 BASELINE_PATH = Path(__file__).with_name("hygiene_baseline.json")
 SIZE_BASELINE_PATH = Path(__file__).with_name("proof_size_baseline.json")
+TRUSTED_DECLARATIONS_PATH = Path(__file__).with_name("hygiene_trusted_declarations.json")
 AUTOMATION_PREFIX = "ZesuSsz/Automation/"
 HOOKS_PATH = "ZesuSsz/Automation/Hooks.v"
 LEGACY_PATH = "ZesuSsz/Automation/AllLegacy.v"
@@ -30,6 +31,18 @@ PLACEHOLDER = re.compile(
 HOOK_REDEFINITION = re.compile(
     r"\b(?:Ltac\s+\w+\s*::=|(?:liAStep|liAAsm|liStep)\s*::=)"
 )
+FORBIDDEN_EXECUTABLE_FORMS = (
+    ("timeout identifier", re.compile(r"(?<![\w'])timeoutf?(?![\w'])")),
+    ("Timeout command", re.compile(r"\b(?P<default>Set\s+Default\s+)?Timeout\s+\d+\b")),
+    ("default timeout", re.compile(r"\bSet\s+Default\s+Timeout\b")),
+    ("disabled checking", re.compile(r"\bUnset\b[^.]*\bChecking\b")),
+    ("bypass_check identifier", re.compile(r"(?<![\w'])bypass_check(?![\w'])")),
+)
+TRUSTED_DECLARATION_FORMS = (
+    ("ML declaration", re.compile(r"\bDeclare\s+ML\s+Module\b")),
+    ("external declaration", re.compile(r"\bLtac2\s+@\s*external\b")),
+)
+DECLARATION_TOKEN = re.compile(r'"(?:[^"]|"")*"|[\w\x27]+|:=|->|=>|[^\s]')
 LEGACY_HOOK_LINES = {
     "Ltac liAStep ::= zesu_liAStep.",
 }
@@ -82,6 +95,106 @@ RETIRED_PROOF_MODULES = (
     "ZesuSsz.Proofs.DecodeItem.Join6ae0.From6a38",
     "ZesuSsz.Proofs.DecodeItem.Join6ae0.From6ad8",
 )
+
+
+def executable_text(text: str, *, mask_strings: bool = True) -> str:
+    """Mask nested comments and optional strings without changing offsets."""
+    result = list(text)
+    depth = 0
+    quoted = False
+    index = 0
+    while index < len(text):
+        pair = text[index:index + 2]
+        if depth:
+            if pair == "(*":
+                result[index:index + 2] = "  "
+                depth += 1
+                index += 2
+            elif pair == "*)":
+                result[index:index + 2] = "  "
+                depth -= 1
+                index += 2
+            else:
+                if text[index] != "\n":
+                    result[index] = " "
+                index += 1
+        elif quoted:
+            if pair == '""':
+                if mask_strings:
+                    result[index:index + 2] = "  "
+                index += 2
+            else:
+                if text[index] == '"':
+                    quoted = False
+                if mask_strings and text[index] != "\n":
+                    result[index] = " "
+                index += 1
+        elif pair == "(*":
+            result[index:index + 2] = "  "
+            depth = 1
+            index += 2
+        elif text[index] == '"':
+            if mask_strings:
+                result[index] = " "
+            quoted = True
+            index += 1
+        else:
+            index += 1
+    return "".join(result)
+
+
+def normalized_declaration(text: str) -> str:
+    """Preserve string contents and lexical tokens, ignoring comments and spacing."""
+    return " ".join(DECLARATION_TOKEN.findall(executable_text(text, mask_strings=False)))
+
+
+def trusted_declarations() -> set[tuple[str, str]]:
+    rows = json.loads(TRUSTED_DECLARATIONS_PATH.read_text())["declarations"]
+    result = set()
+    for row in rows:
+        name, statement = row["path"], row["statement"]
+        if statement != normalized_declaration(statement):
+            raise ValueError(f"A trusted declaration is not normalized: {name}")
+        key = (name, statement)
+        if key in result:
+            raise ValueError(f"A trusted declaration repeats: {name}")
+        result.add(key)
+    return result
+
+
+def trusted_declaration_failures(
+    name: str, text: str, trusted: set[tuple[str, str]]
+) -> list[str]:
+    code = executable_text(text)
+    failures = []
+    seen = set()
+    endings = list(re.finditer(r"\.(?=\s|$)", code))
+    for label, pattern in TRUSTED_DECLARATION_FORMS:
+        for match in pattern.finditer(code):
+            start = max((ending.end() for ending in endings
+                         if ending.end() <= match.start()), default=0)
+            end = next((ending.end() for ending in endings
+                        if ending.start() >= match.end()), len(text))
+            statement = normalized_declaration(text[start:end])
+            key = (name, statement)
+            if key not in trusted or key in seen:
+                number = code.count("\n", 0, match.start()) + 1
+                failures.append(f"unapproved {label}: {name}:{number}")
+            seen.add(key)
+    return failures
+
+
+def executable_form_failures(name: str, text: str) -> list[str]:
+    code = executable_text(text)
+    failures = []
+    for label, pattern in FORBIDDEN_EXECUTABLE_FORMS:
+        for match in pattern.finditer(code):
+            if match.groupdict().get("default"):
+                # Set Default Timeout has its own diagnostic.
+                continue
+            number = code.count("\n", 0, match.start()) + 1
+            failures.append(f"forbidden {label}: {name}:{number}")
+    return failures
 
 
 def retired_module_failures(name: str, text: str) -> list[str]:
@@ -228,6 +341,7 @@ def main() -> None:
     legacy_entries = set(baseline_data["legacy_entry_files"])
     size_baseline_data = json.loads(SIZE_BASELINE_PATH.read_text())
     size_baseline = size_baseline_data["files"]
+    trusted = trusted_declarations()
     failures: list[str] = []
     warnings: list[str] = []
     remaining = 0
@@ -244,6 +358,8 @@ def main() -> None:
             continue
         text = path.read_text()
         lines = text.splitlines()
+        failures.extend(executable_form_failures(name, text))
+        failures.extend(trusted_declaration_failures(name, text, trusted))
         failures.extend(generated_hand_line_failures(name, text))
         failures.extend(retired_module_failures(name, text))
 
