@@ -52,9 +52,11 @@ def validate_trace_only(out, trace_name):
     inputs = report["inputs"]
     required = {"manifest", "elf", "dump", "driver", "frontend", "footprint",
                 "footprint_wrapper", "platform_snapshot", "config", "decoder",
-                "per_load_regions", "region_renderer", "load_exemptions"}
+                "per_load_regions", "region_renderer"}
     if not required <= inputs.keys():
         raise ValueError("The eql trace manifest omits a required input")
+    if "load_exemptions" in inputs:
+        raise ValueError("The eql production group must constrain every memory access")
     for record in [*inputs.values(), report["selected_dump"]]:
         if sha(input_path(record)) != record["sha256"]:
             raise ValueError("An eql trace input changed: " + record["path"])
@@ -76,18 +78,15 @@ def validate_trace_only(out, trace_name):
         rows = selected_rows(SimpleNamespace(closure=False, dump=input_path(inputs["dump"])), Image(ELFFile(stream)))
     rows, accesses, sources = annotate_regions(rows, input_path(inputs["per_load_regions"]),
                                                inputs["per_load_regions"].get("payload_sha256", inputs["per_load_regions"]["sha256"]),
-                                               input_path(inputs["load_exemptions"]),
-                                               inputs["load_exemptions"].get("payload_sha256", inputs["load_exemptions"]["sha256"]),
+                                               None, None,
                                                read_source_map(input_path(inputs["region_source_map"]), inputs["region_source_map"]["sha256"])
                                                if "region_source_map" in inputs else None)
     source_set = {(str(input_path(row).resolve()), row["sha256"]) for row in inputs.values()}
     if any((row["path"], row["sha256"]) not in source_set for row in sources):
         raise ValueError("The eql manifest omits a region source binding")
     if (len(rows) != 74 or len({row["pc"] for row in rows}) != 74 or len(accesses) != 46
-            or sum(row["constraint_emitted"] for row in accesses) != 42
-            or {row["pc"] for row in accesses if not row["constraint_emitted"]}
-               != {"0x8009c43c", "0x8009c440", "0x8009c450", "0x8009c454"}):
-        raise ValueError("The eql instruction or exemption coverage differs")
+            or not all(row["constraint_emitted"] for row in accesses)):
+        raise ValueError("The eql instruction or constrained-access coverage differs")
     if input_path(report["selected_dump"]).read_text() != selected_dump(rows):
         raise ValueError("The eql selected dump differs from its checked region policy")
     pcs = [row["pc"] for row in rows]
@@ -117,7 +116,7 @@ def bind_trace_only(out, trace_name, check_manifest):
         recipe = json.loads(check_manifest.read_text())
         group = recipe.get("traces", {}).get(trace_name, {})
         if (group.get("kind") != "trace_only" or group.get("native_proof_coverage") is not False
-                or group.get("region_assume_obligations") != 42
+                or group.get("region_assume_obligations") != 46
                 or group.get("input_hashes") != {name: row["sha256"] for name, row in report["inputs"].items()}):
             raise ValueError("The eql manifest group differs from its production pins")
         validate_expected_files(out, check_manifest, trace_name)
@@ -131,11 +130,11 @@ def bind_trace_only(out, trace_name, check_manifest):
             "traces": {"kind": "trace_only", "elf_sha256": report["inputs"]["elf"]["sha256"],
                        "instruction_count": 74, "generated_count": 74,
                        "instruction_modules_validated": True, "native_proof_coverage": False,
-                       "region_assume_obligations": 42,
+                       "region_assume_obligations": 46,
                        "input_hashes": {name: row["sha256"] for name, row in report["inputs"].items()},
                        "manifest_binding_pending": True}}
     (out / "manifest-fragment.json").write_text(json.dumps(data, indent=2) + "\n")
-    print("Eql trace fragment: 74 instruction pairs; all 42 region obligations remain open")
+    print("Eql trace fragment: 74 instruction pairs; all 46 region obligations remain open")
 
 
 def main():

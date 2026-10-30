@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "artifact_identity": "faabda3c05b58468374cf42d751f1bccd61e094675de61a613b6b2ad0ddc9b5b",
+  "artifact_identity": "1eb29a6ae16da29fed5b6e848938c12daac8f26ede2df90a54f09aadb0b17c8a",
   "static_closure": "passed under the inventory conditions",
   "unsupported_instructions": [],
   "unresolved_transfers": [],
@@ -25,7 +25,7 @@
       "unsupported_runtime_boundaries": [],
       "instruction_modules_validated": true,
       "manifest_binding_pending": false,
-      "bound_artifact_identity": "faabda3c05b58468374cf42d751f1bccd61e094675de61a613b6b2ad0ddc9b5b"
+      "bound_artifact_identity": "1eb29a6ae16da29fed5b6e848938c12daac8f26ede2df90a54f09aadb0b17c8a"
     },
     "closure": {
       "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
@@ -42,7 +42,7 @@
       ],
       "instruction_modules_validated": true,
       "manifest_binding_pending": false,
-      "bound_artifact_identity": "faabda3c05b58468374cf42d751f1bccd61e094675de61a613b6b2ad0ddc9b5b"
+      "bound_artifact_identity": "1eb29a6ae16da29fed5b6e848938c12daac8f26ede2df90a54f09aadb0b17c8a"
     }
   }
 }

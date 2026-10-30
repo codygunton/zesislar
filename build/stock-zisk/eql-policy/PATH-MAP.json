@@ -4,10 +4,6 @@
     "regions.json.gz": {
       "sha256": "c301733516aa58ddfd07a08c3aa2e9c0c6733b57b8f5edd89892d6eefbe85330",
       "payload_sha256": "3e79c1525180f95d48d65823a69394c89ba7d7e70bc778dae19b89004885cfeb"
-    },
-    "exemptions.json.gz": {
-      "sha256": "591633035fb95858bb83939c247caa7aee58f58676cf65b55b7c7ac010ecdad3",
-      "payload_sha256": "4f4a5a9e2efb2bf153e013711df334c2bd19f3d83a58ae9cc47825f54f04ffee"
     }
   },
   "paths": {
