@@ -3,7 +3,7 @@
   "artifact_identity": "d27ff7dd697798f29833224f704d462071bd1d2efff520dbf2ab06edffae309d",
   "label": "Structural wiring coverage; no machine contract proof",
   "source_hashes": {
-    "build/stock-zisk/build-recipe.json": "1572ae8835d68d9ff3034b3d2b71567df7dd8b6c32f2a50b85bb24dcb8c0e3d1",
+    "build/stock-zisk/build-recipe.json": "77c8e1b751f7a7278ae3f8405d44d1248613982634c01ff738e2c1017db84d41",
     "build/stock-zisk/cfg.json": "371bab68e70e89d0b320ae5b2a37c4d5da4196e76c11cff9931214a55f5e5379",
     "ZesuSsz/Evidence/decode_item_block_design.json": "45805dfae8687f1579355e3574ce13df88831dcf7e9eff4d2591d0675e0f3146",
     "build/stock-zisk/inventory.json": "263ad336e523fea653057ad53a3a5ac47a31b9f5533350cd95b8a0e7859d3a66",
