@@ -1,0 +1,223 @@
+{
+  "schema": "source.region-path-map.v1",
+  "archives": {
+    "regions.json.gz": {
+      "sha256": "6732a4fa1d339de41a7ff8deea560ed58063f688e287573efa9fef64b305f575",
+      "payload_sha256": "e9f2697fa7d5611887695b66130958957a672ee74707650e5f20fa91e3eb0eaa"
+    }
+  },
+  "paths": {
+    "/home/cody/zesislar/ZesuSsz/Contracts/RlpDecodeItemContract.v": {
+      "path": "sources/595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a.v",
+      "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6964.isla": {
+      "path": "sources/e84096563ef4659b90b61ad60a64756343ffbd75757ac401b685058888a7298e.isla",
+      "sha256": "e84096563ef4659b90b61ad60a64756343ffbd75757ac401b685058888a7298e"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6968.isla": {
+      "path": "sources/c99dfad029566ab899e5c7289ab31e9db8e9e8f444d741520c9189186df0abef.isla",
+      "sha256": "c99dfad029566ab899e5c7289ab31e9db8e9e8f444d741520c9189186df0abef"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6974.isla": {
+      "path": "sources/963da8a4fcb0c1de6a0dfcfe6ff44018401f958ce2409f758b28461fec49d982.isla",
+      "sha256": "963da8a4fcb0c1de6a0dfcfe6ff44018401f958ce2409f758b28461fec49d982"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d697c.isla": {
+      "path": "sources/ee774c1fbe0714c3ee3517cbd907602225b0ab47aefd3fc5948093498fb7e072.isla",
+      "sha256": "ee774c1fbe0714c3ee3517cbd907602225b0ab47aefd3fc5948093498fb7e072"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6984.isla": {
+      "path": "sources/264a1bd67485d745a968f8c1f6e32b9047da4b3287e50dc43aa2b7e4c3dfd8f0.isla",
+      "sha256": "264a1bd67485d745a968f8c1f6e32b9047da4b3287e50dc43aa2b7e4c3dfd8f0"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6988.isla": {
+      "path": "sources/4aec2d9347555de99b648239d7cc27894b8adda34b93497994616a1e9b76fe23.isla",
+      "sha256": "4aec2d9347555de99b648239d7cc27894b8adda34b93497994616a1e9b76fe23"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d698c.isla": {
+      "path": "sources/47c2d8db955b7b0997719d87bd5bd81391965ee7762a7658b8532242afebabda.isla",
+      "sha256": "47c2d8db955b7b0997719d87bd5bd81391965ee7762a7658b8532242afebabda"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6990.isla": {
+      "path": "sources/81827a8d1ad606c0bf84ecd5e1a33882825cad0be7665c317700124a6f35d862.isla",
+      "sha256": "81827a8d1ad606c0bf84ecd5e1a33882825cad0be7665c317700124a6f35d862"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6994.isla": {
+      "path": "sources/7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296.isla",
+      "sha256": "7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6998.isla": {
+      "path": "sources/956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40.isla",
+      "sha256": "956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d69b0.isla": {
+      "path": "sources/ee774c1fbe0714c3ee3517cbd907602225b0ab47aefd3fc5948093498fb7e072.isla",
+      "sha256": "ee774c1fbe0714c3ee3517cbd907602225b0ab47aefd3fc5948093498fb7e072"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d69b8.isla": {
+      "path": "sources/264a1bd67485d745a968f8c1f6e32b9047da4b3287e50dc43aa2b7e4c3dfd8f0.isla",
+      "sha256": "264a1bd67485d745a968f8c1f6e32b9047da4b3287e50dc43aa2b7e4c3dfd8f0"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d69bc.isla": {
+      "path": "sources/4395ba5ef5bde0a22622a20c83dfaf5bf9c0265f3529368e2cc075e1bc00522e.isla",
+      "sha256": "4395ba5ef5bde0a22622a20c83dfaf5bf9c0265f3529368e2cc075e1bc00522e"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d69c0.isla": {
+      "path": "sources/47c2d8db955b7b0997719d87bd5bd81391965ee7762a7658b8532242afebabda.isla",
+      "sha256": "47c2d8db955b7b0997719d87bd5bd81391965ee7762a7658b8532242afebabda"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d69c4.isla": {
+      "path": "sources/ac5c9f69a0b168df64d3a0ccc38d6e336cf9d14c6cb78f33d62695fcf32b5fe7.isla",
+      "sha256": "ac5c9f69a0b168df64d3a0ccc38d6e336cf9d14c6cb78f33d62695fcf32b5fe7"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d69c8.isla": {
+      "path": "sources/7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296.isla",
+      "sha256": "7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d69cc.isla": {
+      "path": "sources/956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40.isla",
+      "sha256": "956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d69ec.isla": {
+      "path": "sources/ee774c1fbe0714c3ee3517cbd907602225b0ab47aefd3fc5948093498fb7e072.isla",
+      "sha256": "ee774c1fbe0714c3ee3517cbd907602225b0ab47aefd3fc5948093498fb7e072"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d69f4.isla": {
+      "path": "sources/264a1bd67485d745a968f8c1f6e32b9047da4b3287e50dc43aa2b7e4c3dfd8f0.isla",
+      "sha256": "264a1bd67485d745a968f8c1f6e32b9047da4b3287e50dc43aa2b7e4c3dfd8f0"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d69f8.isla": {
+      "path": "sources/6a528c41f8052612ca5808172981223daf995c6b1dfaeb90e865a6280ff73b50.isla",
+      "sha256": "6a528c41f8052612ca5808172981223daf995c6b1dfaeb90e865a6280ff73b50"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6a24.isla": {
+      "path": "sources/35a856876f66d2e00c0303d1312b5312c290c8b8e380e1ea7b22c3bd3c80d9a6.isla",
+      "sha256": "35a856876f66d2e00c0303d1312b5312c290c8b8e380e1ea7b22c3bd3c80d9a6"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6a40.isla": {
+      "path": "sources/ee774c1fbe0714c3ee3517cbd907602225b0ab47aefd3fc5948093498fb7e072.isla",
+      "sha256": "ee774c1fbe0714c3ee3517cbd907602225b0ab47aefd3fc5948093498fb7e072"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6a44.isla": {
+      "path": "sources/264a1bd67485d745a968f8c1f6e32b9047da4b3287e50dc43aa2b7e4c3dfd8f0.isla",
+      "sha256": "264a1bd67485d745a968f8c1f6e32b9047da4b3287e50dc43aa2b7e4c3dfd8f0"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6a48.isla": {
+      "path": "sources/6a528c41f8052612ca5808172981223daf995c6b1dfaeb90e865a6280ff73b50.isla",
+      "sha256": "6a528c41f8052612ca5808172981223daf995c6b1dfaeb90e865a6280ff73b50"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6a4c.isla": {
+      "path": "sources/47c2d8db955b7b0997719d87bd5bd81391965ee7762a7658b8532242afebabda.isla",
+      "sha256": "47c2d8db955b7b0997719d87bd5bd81391965ee7762a7658b8532242afebabda"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6a50.isla": {
+      "path": "sources/c6023c95c2953e5a74cf6c3f79f7e9e3fa4e4254f30c7d47fe16063674ccf6dc.isla",
+      "sha256": "c6023c95c2953e5a74cf6c3f79f7e9e3fa4e4254f30c7d47fe16063674ccf6dc"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6a54.isla": {
+      "path": "sources/7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296.isla",
+      "sha256": "7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6a58.isla": {
+      "path": "sources/956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40.isla",
+      "sha256": "956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6a7c.isla": {
+      "path": "sources/ee774c1fbe0714c3ee3517cbd907602225b0ab47aefd3fc5948093498fb7e072.isla",
+      "sha256": "ee774c1fbe0714c3ee3517cbd907602225b0ab47aefd3fc5948093498fb7e072"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6a88.isla": {
+      "path": "sources/264a1bd67485d745a968f8c1f6e32b9047da4b3287e50dc43aa2b7e4c3dfd8f0.isla",
+      "sha256": "264a1bd67485d745a968f8c1f6e32b9047da4b3287e50dc43aa2b7e4c3dfd8f0"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6a8c.isla": {
+      "path": "sources/6a528c41f8052612ca5808172981223daf995c6b1dfaeb90e865a6280ff73b50.isla",
+      "sha256": "6a528c41f8052612ca5808172981223daf995c6b1dfaeb90e865a6280ff73b50"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6a90.isla": {
+      "path": "sources/05873c5d4b1895985c6b62535dcdf4739d4a7bb9a5689762e2a471d77a5d0ede.isla",
+      "sha256": "05873c5d4b1895985c6b62535dcdf4739d4a7bb9a5689762e2a471d77a5d0ede"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6a94.isla": {
+      "path": "sources/81827a8d1ad606c0bf84ecd5e1a33882825cad0be7665c317700124a6f35d862.isla",
+      "sha256": "81827a8d1ad606c0bf84ecd5e1a33882825cad0be7665c317700124a6f35d862"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6a98.isla": {
+      "path": "sources/7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296.isla",
+      "sha256": "7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6a9c.isla": {
+      "path": "sources/956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40.isla",
+      "sha256": "956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6ac4.isla": {
+      "path": "sources/35a856876f66d2e00c0303d1312b5312c290c8b8e380e1ea7b22c3bd3c80d9a6.isla",
+      "sha256": "35a856876f66d2e00c0303d1312b5312c290c8b8e380e1ea7b22c3bd3c80d9a6"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6ae4.isla": {
+      "path": "sources/c049322dd4157e2214264204387f97addc162f64f7710525173d5375f9d17696.isla",
+      "sha256": "c049322dd4157e2214264204387f97addc162f64f7710525173d5375f9d17696"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6ae8.isla": {
+      "path": "sources/93cc7aafa095ec42b5a3fa3b4cd6714d5c95743a4baa3c88bae3965eb4044405.isla",
+      "sha256": "93cc7aafa095ec42b5a3fa3b4cd6714d5c95743a4baa3c88bae3965eb4044405"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6aec.isla": {
+      "path": "sources/4395ba5ef5bde0a22622a20c83dfaf5bf9c0265f3529368e2cc075e1bc00522e.isla",
+      "sha256": "4395ba5ef5bde0a22622a20c83dfaf5bf9c0265f3529368e2cc075e1bc00522e"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6af0.isla": {
+      "path": "sources/8ff659cdfd28941c9a93a94d9740d6fd6263861505474e2489bd235919785e74.isla",
+      "sha256": "8ff659cdfd28941c9a93a94d9740d6fd6263861505474e2489bd235919785e74"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6af4.isla": {
+      "path": "sources/a6315f6b6ef9a0bafce17b28f4b5ebc51e37d30cbc904f28d6075158382087e5.isla",
+      "sha256": "a6315f6b6ef9a0bafce17b28f4b5ebc51e37d30cbc904f28d6075158382087e5"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6af8.isla": {
+      "path": "sources/7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296.isla",
+      "sha256": "7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6afc.isla": {
+      "path": "sources/956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40.isla",
+      "sha256": "956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6b08.isla": {
+      "path": "sources/ee774c1fbe0714c3ee3517cbd907602225b0ab47aefd3fc5948093498fb7e072.isla",
+      "sha256": "ee774c1fbe0714c3ee3517cbd907602225b0ab47aefd3fc5948093498fb7e072"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6b10.isla": {
+      "path": "sources/264a1bd67485d745a968f8c1f6e32b9047da4b3287e50dc43aa2b7e4c3dfd8f0.isla",
+      "sha256": "264a1bd67485d745a968f8c1f6e32b9047da4b3287e50dc43aa2b7e4c3dfd8f0"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6b14.isla": {
+      "path": "sources/6a528c41f8052612ca5808172981223daf995c6b1dfaeb90e865a6280ff73b50.isla",
+      "sha256": "6a528c41f8052612ca5808172981223daf995c6b1dfaeb90e865a6280ff73b50"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6b18.isla": {
+      "path": "sources/1d734acacc93a3ba9972a9ab0792030f1d33b5536c5b61475ce7804d50d57ca0.isla",
+      "sha256": "1d734acacc93a3ba9972a9ab0792030f1d33b5536c5b61475ce7804d50d57ca0"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6b1c.isla": {
+      "path": "sources/c6023c95c2953e5a74cf6c3f79f7e9e3fa4e4254f30c7d47fe16063674ccf6dc.isla",
+      "sha256": "c6023c95c2953e5a74cf6c3f79f7e9e3fa4e4254f30c7d47fe16063674ccf6dc"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6b20.isla": {
+      "path": "sources/7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296.isla",
+      "sha256": "7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296"
+    },
+    "/home/cody/zesislar/generated/isla-traces/stock-zisk/closure/a800d6b24.isla": {
+      "path": "sources/956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40.isla",
+      "sha256": "956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40"
+    }
+  },
+  "host_path_fallback": false,
+  "new_premises": [],
+  "input_files": {
+    "elf": {
+      "path": "build/stock-zisk/zesu-zisk.elf",
+      "sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95"
+    }
+  }
+}

@@ -23,7 +23,7 @@ class FunctionPreparationTests(unittest.TestCase):
             guard = root / "record-guard"
             guard.write_text(
                 "#!/usr/bin/python3\nimport os,sys\n"
-                "if sys.argv[1:4] != ['batch', 'eql-traces', '--']: sys.exit(2)\n"
+                "if sys.argv[1:4] not in [['batch', 'eql-traces', '--'], ['batch', 'decodeItem-regions-traces', '--']]: sys.exit(2)\n"
                 "os.execv(sys.argv[4], sys.argv[4:])\n")
             guard.chmod(0o755)
             command = ["make", "--no-print-directory", "-f", str(ROOT / "Makefile"),
@@ -37,7 +37,7 @@ class FunctionPreparationTests(unittest.TestCase):
             result = subprocess.run(command, cwd=root, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             calls = [json.loads(line) for line in log.read_text().splitlines()]
-            self.assertEqual(len(calls), 5)
+            self.assertEqual(len(calls), 7)
             self.assertEqual(calls[0], ["tools/gate_workspace.py", "--workspace", ".",
                                       "--source-workspace", "custom/source"])
             self.assertEqual(calls[1], ["tools/stock_zisk/platform/traces.py",
@@ -63,6 +63,18 @@ class FunctionPreparationTests(unittest.TestCase):
                 "--region-source-map-sha256", "a5afd3146de5a937cbebe3c0b18fbebc7927e73ca27302ae490afd749721afde"])
             self.assertEqual(calls[4], ["tools/stock_zisk/platform/bind_traces.py",
                 "--out", "generated/isla-traces/stock-zisk/eql", "--trace-name", "eql",
+                "--check-manifest", "custom/recipe.json"])
+            self.assertEqual(calls[5], ["tools/stock_zisk/platform/traces.py",
+                "--trace-only", "--manifest", "build/stock-zisk/decodeItem-regions-trace-input.json",
+                "--dump", "build/stock-zisk/decodeItem-regions-policy/decodeItem.raw.dump",
+                "--out", "generated/isla-traces/stock-zisk/decodeItemRegions",
+                "--coqdir", "ZesuSsz.Stock.DecodeItemRegions", "--jobs", "3",
+                "--per-load-regions", "build/stock-zisk/decodeItem-regions-policy/regions.json.gz",
+                "--per-load-regions-sha256", "e9f2697fa7d5611887695b66130958957a672ee74707650e5f20fa91e3eb0eaa",
+                "--region-source-map", "build/stock-zisk/decodeItem-regions-policy/PATH-MAP.json",
+                "--region-source-map-sha256", "dac940753fc60ebdcc5f6138cff636d5cb79dccf5be76553f308b9c49b05d12f"])
+            self.assertEqual(calls[6], ["tools/stock_zisk/platform/bind_traces.py",
+                "--out", "generated/isla-traces/stock-zisk/decodeItemRegions", "--trace-name", "decodeItemRegions",
                 "--check-manifest", "custom/recipe.json"])
 
 

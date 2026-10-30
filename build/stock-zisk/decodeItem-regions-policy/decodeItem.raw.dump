@@ -1,0 +1,118 @@
+// Raw selected-ELF bytes. Trace generation requires a reviewed platform.
+// Artifact identity: 1eb29a6ae16da29fed5b6e848938c12daac8f26ede2df90a54f09aadb0b17c8a
+    800d6960:	ff010113          	addi	sp,sp,-16
+    800d6964:	00113423          	sd	ra,8(sp)
+    800d6968:	00813023          	sd	s0,0(sp)
+    800d696c:	01010413          	addi	s0,sp,16
+    800d6970:	16060863          	beqz	a2,800d6ae0 <rlp.decodeItem+0x180>
+    800d6974:	00058683          	lb	a3,0(a1)
+    800d6978:	0206c663          	bltz	a3,800d69a4 <rlp.decodeItem+0x44>
+    800d697c:	02051023          	sh	zero,32(a0)
+    800d6980:	00100613          	li	a2,1
+    800d6984:	00b53023          	sd	a1,0(a0)
+    800d6988:	00c53423          	sd	a2,8(a0)
+    800d698c:	00050823          	sb	zero,16(a0)
+    800d6990:	00c53c23          	sd	a2,24(a0)
+    800d6994:	00813083          	ld	ra,8(sp)
+    800d6998:	00013403          	ld	s0,0(sp)
+    800d699c:	01010113          	addi	sp,sp,16
+    800d69a0:	00008067          	ret
+    800d69a4:	0ff6f693          	zext.b	a3,a3
+    800d69a8:	08000713          	li	a4,128
+    800d69ac:	02e69663          	bne	a3,a4,800d69d8 <rlp.decodeItem+0x78>
+    800d69b0:	02051023          	sh	zero,32(a0)
+    800d69b4:	00100593          	li	a1,1
+    800d69b8:	00b53023          	sd	a1,0(a0)
+    800d69bc:	00053423          	sd	zero,8(a0)
+    800d69c0:	00050823          	sb	zero,16(a0)
+    800d69c4:	00b53c23          	sd	a1,24(a0)
+    800d69c8:	00813083          	ld	ra,8(sp)
+    800d69cc:	00013403          	ld	s0,0(sp)
+    800d69d0:	01010113          	addi	sp,sp,16
+    800d69d4:	00008067          	ret
+    800d69d8:	0b700713          	li	a4,183
+    800d69dc:	02d76263          	bltu	a4,a3,800d6a00 <rlp.decodeItem+0xa0>
+    800d69e0:	07f6f693          	andi	a3,a3,127
+    800d69e4:	0ec6fe63          	bgeu	a3,a2,800d6ae0 <rlp.decodeItem+0x180>
+    800d69e8:	00168613          	addi	a2,a3,1
+    800d69ec:	02051023          	sh	zero,32(a0)
+    800d69f0:	00158593          	addi	a1,a1,1
+    800d69f4:	00b53023          	sd	a1,0(a0)
+    800d69f8:	00d53423          	sd	a3,8(a0)
+    800d69fc:	f91ff06f          	j	800d698c <rlp.decodeItem+0x2c>
+    800d6a00:	0c000713          	li	a4,192
+    800d6a04:	06e6f063          	bgeu	a3,a4,800d6a64 <rlp.decodeItem+0x104>
+    800d6a08:	04968693          	addi	a3,a3,73
+    800d6a0c:	0ff6f713          	zext.b	a4,a3
+    800d6a10:	0cc77863          	bgeu	a4,a2,800d6ae0 <rlp.decodeItem+0x180>
+    800d6a14:	00000693          	li	a3,0
+    800d6a18:	00170713          	addi	a4,a4,1
+    800d6a1c:	00158793          	addi	a5,a1,1
+    800d6a20:	00e585b3          	add	a1,a1,a4
+    800d6a24:	0007c803          	lbu	a6,0(a5)
+    800d6a28:	00869693          	slli	a3,a3,0x8
+    800d6a2c:	00178793          	addi	a5,a5,1
+    800d6a30:	0106e6b3          	or	a3,a3,a6
+    800d6a34:	feb798e3          	bne	a5,a1,800d6a24 <rlp.decodeItem+0xc4>
+    800d6a38:	00e68733          	add	a4,a3,a4
+    800d6a3c:	0ae66263          	bltu	a2,a4,800d6ae0 <rlp.decodeItem+0x180>
+    800d6a40:	02051023          	sh	zero,32(a0)
+    800d6a44:	00b53023          	sd	a1,0(a0)
+    800d6a48:	00d53423          	sd	a3,8(a0)
+    800d6a4c:	00050823          	sb	zero,16(a0)
+    800d6a50:	00e53c23          	sd	a4,24(a0)
+    800d6a54:	00813083          	ld	ra,8(sp)
+    800d6a58:	00013403          	ld	s0,0(sp)
+    800d6a5c:	01010113          	addi	sp,sp,16
+    800d6a60:	00008067          	ret
+    800d6a64:	0f800713          	li	a4,248
+    800d6a68:	04e6f063          	bgeu	a3,a4,800d6aa8 <rlp.decodeItem+0x148>
+    800d6a6c:	04068693          	addi	a3,a3,64
+    800d6a70:	0ff6f693          	zext.b	a3,a3
+    800d6a74:	06c6f663          	bgeu	a3,a2,800d6ae0 <rlp.decodeItem+0x180>
+    800d6a78:	00168613          	addi	a2,a3,1
+    800d6a7c:	02051023          	sh	zero,32(a0)
+    800d6a80:	00100713          	li	a4,1
+    800d6a84:	00158593          	addi	a1,a1,1
+    800d6a88:	00b53023          	sd	a1,0(a0)
+    800d6a8c:	00d53423          	sd	a3,8(a0)
+    800d6a90:	00e50823          	sb	a4,16(a0)
+    800d6a94:	00c53c23          	sd	a2,24(a0)
+    800d6a98:	00813083          	ld	ra,8(sp)
+    800d6a9c:	00013403          	ld	s0,0(sp)
+    800d6aa0:	01010113          	addi	sp,sp,16
+    800d6aa4:	00008067          	ret
+    800d6aa8:	00968693          	addi	a3,a3,9
+    800d6aac:	0ff6f713          	zext.b	a4,a3
+    800d6ab0:	02c77863          	bgeu	a4,a2,800d6ae0 <rlp.decodeItem+0x180>
+    800d6ab4:	00000693          	li	a3,0
+    800d6ab8:	00170713          	addi	a4,a4,1
+    800d6abc:	00158793          	addi	a5,a1,1
+    800d6ac0:	00e585b3          	add	a1,a1,a4
+    800d6ac4:	0007c803          	lbu	a6,0(a5)
+    800d6ac8:	00869693          	slli	a3,a3,0x8
+    800d6acc:	00178793          	addi	a5,a5,1
+    800d6ad0:	0106e6b3          	or	a3,a3,a6
+    800d6ad4:	feb798e3          	bne	a5,a1,800d6ac4 <rlp.decodeItem+0x164>
+    800d6ad8:	00e68733          	add	a4,a3,a4
+    800d6adc:	02e67663          	bgeu	a2,a4,800d6b08 <rlp.decodeItem+0x1a8>
+    800d6ae0:	00400593          	li	a1,4
+    800d6ae4:	02b53023          	sd	a1,32(a0)
+    800d6ae8:	00053023          	sd	zero,0(a0)
+    800d6aec:	00053423          	sd	zero,8(a0)
+    800d6af0:	00053823          	sd	zero,16(a0)
+    800d6af4:	00053c23          	sd	zero,24(a0)
+    800d6af8:	00813083          	ld	ra,8(sp)
+    800d6afc:	00013403          	ld	s0,0(sp)
+    800d6b00:	01010113          	addi	sp,sp,16
+    800d6b04:	00008067          	ret
+    800d6b08:	02051023          	sh	zero,32(a0)
+    800d6b0c:	00100613          	li	a2,1
+    800d6b10:	00b53023          	sd	a1,0(a0)
+    800d6b14:	00d53423          	sd	a3,8(a0)
+    800d6b18:	00c50823          	sb	a2,16(a0)
+    800d6b1c:	00e53c23          	sd	a4,24(a0)
+    800d6b20:	00813083          	ld	ra,8(sp)
+    800d6b24:	00013403          	ld	s0,0(sp)
+    800d6b28:	01010113          	addi	sp,sp,16
+    800d6b2c:	00008067          	ret
