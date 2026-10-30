@@ -19,7 +19,7 @@ class EqlBindingTests(unittest.TestCase):
         out.mkdir()
         rows = [{"pc": 4 * index, "word": 19, "mnemonic": "addi"} for index in range(74)]
         accesses = [{"pc": hex(index), "constraint_emitted": True} for index in range(42)]
-        accesses += [{"pc": pc, "constraint_emitted": False} for pc in
+        accesses += [{"pc": pc, "constraint_emitted": True} for pc in
                      ["0x8009c43c", "0x8009c440", "0x8009c450", "0x8009c454"]]
         for row in rows:
             for suffix in ["v", "isla"]:
@@ -30,7 +30,7 @@ class EqlBindingTests(unittest.TestCase):
         inputs = {name: binding(source) for name in
                   ["manifest", "elf", "dump", "driver", "frontend", "footprint",
                    "footprint_wrapper", "platform_snapshot", "config", "decoder",
-                   "per_load_regions", "region_renderer", "load_exemptions"]}
+                   "per_load_regions", "region_renderer"]}
         config = root / "config.toml"
         config.write_text('[registers.reset]\n"medeleg.bits" = "0x0000000000000000"\n"mideleg.bits" = "0x0000000000000000"\n')
         inputs["config"] = binding(config)
@@ -76,17 +76,25 @@ class EqlBindingTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "output hash"):
                 self.validate(out, rows, accesses)
 
-    def test_invalid_exemption_refusal_propagates(self):
+    def test_invalid_region_refusal_propagates(self):
         with tempfile.TemporaryDirectory() as directory:
             out, rows, accesses, report = self.fixture(Path(directory))
-            with self.assertRaisesRegex(ValueError, "invalid exemption"):
-                self.validate(out, rows, accesses, side_effect=ValueError("invalid exemption"))
+            with self.assertRaisesRegex(ValueError, "invalid region"):
+                self.validate(out, rows, accesses, side_effect=ValueError("invalid region"))
 
-    def test_wrong_exemption_set_refuses(self):
+    def test_unconstrained_stack_load_refuses(self):
         with tempfile.TemporaryDirectory() as directory:
             out, rows, accesses, report = self.fixture(Path(directory))
-            accesses[-1]["pc"] = "0x8"
-            with self.assertRaisesRegex(ValueError, "exemption coverage"):
+            accesses[-1]["constraint_emitted"] = False
+            with self.assertRaisesRegex(ValueError, "constrained-access coverage"):
+                self.validate(out, rows, accesses)
+
+    def test_exemption_policy_refuses(self):
+        with tempfile.TemporaryDirectory() as directory:
+            out, rows, accesses, report = self.fixture(Path(directory))
+            report["inputs"]["load_exemptions"] = report["inputs"]["dump"]
+            (out / "trace-manifest.json").write_text(json.dumps(report))
+            with self.assertRaisesRegex(ValueError, "constrain every memory access"):
                 self.validate(out, rows, accesses)
 
     def test_changed_selected_dump_refuses(self):

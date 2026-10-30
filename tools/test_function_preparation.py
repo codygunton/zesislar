@@ -59,10 +59,8 @@ class FunctionPreparationTests(unittest.TestCase):
                 "--coqdir", "ZesuSsz.Stock.Eql", "--jobs", "3",
                 "--per-load-regions", "build/stock-zisk/eql-policy/regions.json.gz",
                 "--per-load-regions-sha256", "3e79c1525180f95d48d65823a69394c89ba7d7e70bc778dae19b89004885cfeb",
-                "--load-exemptions", "build/stock-zisk/eql-policy/exemptions.json.gz",
-                "--load-exemptions-sha256", "4f4a5a9e2efb2bf153e013711df334c2bd19f3d83a58ae9cc47825f54f04ffee",
                 "--region-source-map", "build/stock-zisk/eql-policy/PATH-MAP.json",
-                "--region-source-map-sha256", "b299b573323aed512499234a72f0fa2198d1b0b88a987ca8bf3e77b61a096d53"])
+                "--region-source-map-sha256", "a5afd3146de5a937cbebe3c0b18fbebc7927e73ca27302ae490afd749721afde"])
             self.assertEqual(calls[4], ["tools/stock_zisk/platform/bind_traces.py",
                 "--out", "generated/isla-traces/stock-zisk/eql", "--trace-name", "eql",
                 "--check-manifest", "custom/recipe.json"])

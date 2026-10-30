@@ -56,8 +56,8 @@ Each instruction proof must discharge the condition through Islaris `wp_assume`
 (`theories/lifting.v`) and its automation rule `li_wp_assume`
 (`theories/automation.v`).
 The annotations create proof obligations, not additional contract premises or established memory bounds.
-The unsigned eql group retains four source-bound stack-load exemptions.
-Those loads retain their original trace assumptions.
+The unsigned eql group constrains all 46 memory accesses, including four stack loads.
+The group has no region-constraint exemptions.
 
 ## Reference semantics
 
