@@ -15,6 +15,7 @@ Require Import ZesuSsz.Automation.InstrPre.
 Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.BitvectorFacts.
 Require Import ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Automation.VmClosed.
 Require Export ZesuSsz.Automation.ExitMeaning.
 Require Export ZesuSsz.Automation.IntegerReturn.
 Require Import ZesuSsz.Contracts.SelectedCodeLookup.
@@ -255,6 +256,42 @@ Ltac zesu_low_mask_if_enabled :=
       end
   end.
 
+(* Inspect only the operands that the low-mask helper can evaluate. *)
+Ltac zesu_low_mask_vm_operands_closed :=
+  zesu_switch_enabled constr:(ZesuStepLowMask);
+  repeat first [
+    lazymatch goal with |- bv_unsigned ?masked = _ =>
+      match goal with Hlocal := _ |- _ =>
+        constr_eq masked Hlocal; unfold Hlocal
+      end
+    end
+    | lazymatch goal with |- bv_unsigned (bv_and ?sum _) = _ =>
+        match goal with Hlocal := _ |- _ =>
+          constr_eq sum Hlocal; unfold Hlocal
+        end
+      end];
+  lazymatch goal with
+  | |- bv_unsigned (bv_and (bv_add ?value ?offset) ?mask) =
+       bv_unsigned (Z_to_bv ?low ?result) =>
+      lazymatch type of value with bv ?width =>
+        zesu_vm_closed width; zesu_vm_closed low;
+        zesu_vm_closed mask; zesu_vm_closed offset;
+        lazymatch result with
+        | (bv_unsigned ?root + ?integer)%Z =>
+            tryif constr_eq root value then
+              lazymatch integer with
+              | bv_unsigned _ => idtac
+              | _ => zesu_vm_closed integer
+              end
+            else idtac
+        | _ => idtac
+        end
+      end
+  end.
+
+Ltac zesu_low_mask_if_closed :=
+  zesu_low_mask_vm_operands_closed; zesu_low_mask_if_enabled.
+
 (* A widened strict comparison retains the source unsigned order. *)
 Ltac zesu_strict_signed_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepStrictSigned);
@@ -272,7 +309,7 @@ Ltac zesu_strict_signed_if_enabled :=
 (* Library solvers also call these primitives without the project finisher. *)
 Ltac bv_solve ::= zesu_context_filter ltac:(first [solve [zesu_strict_signed_if_enabled] |
   solve [zesu_low_mask_sub_modulus_if_enabled] |
-  solve [zesu_low_mask_if_enabled] |
+  solve [zesu_low_mask_if_closed] |
   (
   bv_simplify_arith;
   bv_saturate_unsigned;
@@ -282,7 +319,7 @@ Ltac bv_solve ::= zesu_context_filter ltac:(first [solve [zesu_strict_signed_if_
 
 Ltac zesu_solve_machine_bounds :=
   first [solve [zesu_low_mask_sub_modulus_if_enabled] |
-    solve [zesu_low_mask_if_enabled] |
+    solve [zesu_low_mask_if_closed] |
     (solve [zesu_normalize_binary_nat_hypotheses;
       zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; bv_solve])].
 Ltac zesu_solve_machine_linear :=

@@ -18,6 +18,7 @@
    first returning call instead of stopping there. *)
 
 Require Import ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Automation.VmClosed.
 Require Import isla.isla.
 From iris.proofmode Require Import environments.
 From Coq Require Import ZArith.ZArith.
@@ -50,4 +51,9 @@ Ltac zesu_step_lookup_reduce_on :=
   let _ := constr:(_ : ZesuStepLookupReduce) in idtac.
 
 Ltac zesu_reduce_instr_lookup_if_enabled :=
-  zesu_step_lookup_reduce_on; zesu_reduce_instr_lookup.
+  zesu_step_lookup_reduce_on;
+  lazymatch goal with
+  | |- envs_entails _ (subsume (instr ?address ?code) _ _) =>
+      zesu_vm_closed address; zesu_vm_closed code
+  end;
+  zesu_reduce_instr_lookup.

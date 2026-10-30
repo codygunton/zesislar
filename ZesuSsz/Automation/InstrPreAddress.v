@@ -1,5 +1,6 @@
 (* Prefer an available contract after reducing a concrete target address. *)
 Require Import isla.isla.
+Require Import ZesuSsz.Automation.VmClosed.
 From Coq Require Import ZArith.ZArith.
 
 Class ZesuStepInstrPreAddress : Prop := zesu_step_instr_pre_address : True.
@@ -28,4 +29,5 @@ Ltac zesu_reduce_instr_pre_address :=
 
 Global Hint Extern 7
   (FindInContext (FindInstrKind ?address ?later) FICSyntactic) =>
+  zesu_vm_closed address;
   zesu_reduce_instr_pre_address : typeclass_instances.
