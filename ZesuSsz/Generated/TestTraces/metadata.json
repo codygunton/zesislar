@@ -2,31 +2,31 @@
   "schema": 1,
   "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
   "snapshot_sha256": "2b1b3c9eeae6fc53ea430376c9759a9abd0d1f8e123362078800642d4b5eec8e",
-  "config_sha256": "2df014b103d053bb53f8818a39ba1186bf9c662e740ddde1355cca5aba9998e6",
+  "config_sha256": "7803200fd993a3d43b72ebc05a86473d22f4c4e1b7636a4994fe15e31b2cb47c",
   "fixtures": [
     {
       "module": "EntryAddi",
       "definition": "trace_entry_addi",
       "address": 2148362592,
       "opcode": "ff010113",
-      "isla_sha256": "fccf1c17289ce68b6187997a19589e4d75d10b4d6fe285357af7821663891e8c",
-      "rocq_sha256": "d9e514be60dd28c2af4331d7bde4b8da7963add8a5ba58aead4aec5cf8ee5a28"
+      "isla_sha256": "39eacebda694f45d356bde21ecc0dd6a0a18338e16dd8e465848e7efd2017e10",
+      "rocq_sha256": "1e96609d7b9a58b9486de48a687b17b398b9192ea960e9810be8d4cb62d84543"
     },
     {
       "module": "SdX1X2Off8",
       "definition": "trace_sd_x1_x2_8",
       "address": 2148362596,
       "opcode": "00113423",
-      "isla_sha256": "e84096563ef4659b90b61ad60a64756343ffbd75757ac401b685058888a7298e",
-      "rocq_sha256": "82b25e8da493c0688cff97aeedc38fb988ad52028ac4536722930c0265846d2d"
+      "isla_sha256": "510f2ad890bce0cf874a0cca0ca2074b74bed75a34950f4389810f62d8043066",
+      "rocq_sha256": "c15e303cda71e62107aaf02107e9da15a33625f1fc86ca30402851fb9416f2af"
     },
     {
       "module": "LdX16X10Off80",
       "definition": "trace_ld_x16_x10_80",
       "address": 2148472380,
       "opcode": "05053803",
-      "isla_sha256": "abecaf9f7891c0fa205c9b3ba1da6fd0ee8426e299460d032afbf9e76528a670",
-      "rocq_sha256": "4516cd4ec2b626cfd4ccc9dfbc656ac383f2432e9c3278e73dcc639e9fbad444"
+      "isla_sha256": "090cc9913923a7ae83aac4d7b4c586ddd592748821066cb893cae112dfcf3281",
+      "rocq_sha256": "aab8bf095399d9647306b2850b4f91942bfa51a227a2b9226fd041ce955515c7"
     }
   ]
 }

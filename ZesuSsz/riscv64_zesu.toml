@@ -89,6 +89,11 @@ Barrier_RISCV_i = "Fence.i"
 [registers.reset]
 "misa.bits" = "0x8000000000001100"
 "mtvec.bits" = "0x0000000000000000"
+# priv/machine.adoc: traps do not move from Machine to a lower privilege.
+# The pinned riscv64-zisk.ir exception_delegatee reads medeleg before its
+# final privilege clamp. These explicit entry values remove redundant forks.
+"medeleg.bits" = "0x0000000000000000"
+"mideleg.bits" = "0x0000000000000000"
 cur_privilege = "Machine"
 
 [constraints]

@@ -32,6 +32,19 @@ class MachineConfigTests(unittest.TestCase):
         self.assertEqual(settings["registers"]["defaults"]["rv_insns_per_tick"],
                          machine["mapInsnsPerTick"])
 
+    def test_delegation_matches_fixed_entry_resources(self):
+        reset = tomllib.loads(generate_config(self.template, self.machine))["registers"]["reset"]
+        for register in ["medeleg.bits", "mideleg.bits"]:
+            self.assertEqual(int(reset[register], 0), 0)
+
+    def test_rejects_missing_or_changed_delegation(self):
+        for register in ["medeleg.bits", "mideleg.bits"]:
+            row = f'"{register}" = "0x0000000000000000"'
+            for replacement in ["", f'"{register}" = "0x0000000000000001"']:
+                with self.subTest(register=register, replacement=replacement):
+                    with self.assertRaisesRegex(ValueError, "entry must fix"):
+                        generate_config(self.template.replace(row, replacement), self.machine)
+
     def test_rejects_device_window_inside_ram(self):
         machine = copy.deepcopy(self.machine)
         machine["mapClintBase"] = machine["mapHeapBase"]

@@ -22,6 +22,33 @@ layer. Z3 removes infeasible paths. Islaris translates the traces into Rocq. The
 claim depends on the correctness of these tools and of the selected platform model.
 An empty axiom list does not verify the Isla-to-Sail connection.
 
+## Initial platform registers
+
+The selected platform uses the following proof-entry assumptions.
+The reset configuration emits `AssumeReg` events.
+It does not create register ownership or prove loader initialization.
+`machine_ram_sys_regs_init` consumes the corresponding owned values and the MPRV condition.
+
+| Register | Entry value and reason | Exact proof-entry locations |
+| --- | --- | --- |
+| `cur_privilege` | `Machine` selects the platform's only privilege mode. | `ZesuSsz/Contracts/Machine.v:defaultMap.mapPrivilege`; `InstrSpecs/Machine.v:machine_static_sys_regs`; `ZesuSsz/Export/Adequacy.v:machine_static_sys_regs_map` |
+| `misa.bits` | `0x8000000000001100` selects RV64IM and excludes compressed instructions and lower privilege modes. | `ZesuSsz/Contracts/Machine.v:defaultMap.mapMisa`; `InstrSpecs/Machine.v:machine_static_sys_regs`; `ZesuSsz/Export/Adequacy.v:machine_static_sys_regs_map` |
+| `mtvec.bits` | `0` retains the existing platform trap-vector assumption. | `ZesuSsz/Contracts/Machine.v:defaultMap.mapMtvec`; `InstrSpecs/Machine.v:machine_static_sys_regs`; `ZesuSsz/Export/Adequacy.v:machine_static_sys_regs_map` |
+| `mstatus.bits` | `(bits & 0x20000) = 0` clears MPRV and retains physical data addressing. Other bits remain symbolic. | `ZesuSsz/Contracts/Machine.v:defaultMap.mapMstatusMask/mapMstatusValue`; `InstrSpecs/Machine.v:machine_static_sys_regs`; `ZesuSsz/Export/Adequacy.v:machine_ram_sys_regs_init.Hstatus` |
+| `medeleg.bits` | `0` explicitly excludes exception delegation and removes redundant forks before the pinned privilege clamp. | `InstrSpecs/Machine.v:machine_static_sys_regs`; `ZesuSsz/Export/Adequacy.v:machine_static_sys_regs_map` |
+| `mideleg.bits` | `0` explicitly excludes interrupt delegation to an unused lower privilege mode. | `InstrSpecs/Machine.v:machine_static_sys_regs`; `ZesuSsz/Export/Adequacy.v:machine_static_sys_regs_map` |
+
+`ZesuSsz/riscv64_zesu.toml` supplies these reset values and the MPRV constraint.
+`tools/machine_config.py` checks them against the machine map and the fixed delegation resources.
+The delegation values are explicit platform assumptions, not inferred loader guarantees.
+
+The RISC-V manual's `src/priv/machine.adoc` states that traps never move from a more privileged mode to a less privileged mode.
+See [Machine Trap Delegation Registers](https://github.com/riscv/riscv-isa-manual/blob/main/src/priv/machine.adoc#machine-trap-delegation-medeleg-and-mideleg-registers).
+The pinned `exception_delegatee` reads `medeleg` before it clamps the result to the originating privilege.
+The platform snapshot has SHA256 `2b1b3c9eeae6fc53ea430376c9759a9abd0d1f8e123362078800642d4b5eec8e`.
+Its `zexception_delegatee` body matches the pinned base snapshot exactly.
+The configuration does not fix the complete `mstatus` value.
+
 ## Reference semantics
 
 The pinned EVM-Sail revision is `d0e4aabdde52f9158d191dbc8add444abffd9a6a`. The pinned

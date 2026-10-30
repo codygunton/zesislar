@@ -25,6 +25,8 @@
   (define-const v28 (bvor (bvand (bvor ((_ extract 63 0) (bvand (bvor (bvand (bvor ((_ extract 63 0) (bvand (bvor ((_ extract 63 0) (bvand v0 #xfffffffffffdffff)) #x0000000000000000) #xfffffff3ffffffff)) ((_ extract 63 0) (bvshl ((_ zero_extend 62) ((_ extract 63 62) v19)) #x0000000000000022))) #xfffffffcffffffff) (bvshl ((_ zero_extend 62) ((_ extract 63 62) v19)) #x0000000000000020)) #x7fffffffffffffff)) #x0000000000000000) #xffffffcfffffffff) #x0000000000000000))
   (define-enum |PmpAddrMatchType| 4 (|OFF| |TOR| |NA4| |NAPOT|))
   (assume-reg |cur_privilege| nil |Machine|)
+  (assume-reg |medeleg| ((_ field |bits|)) #x0000000000000000)
+  (assume-reg |mideleg| ((_ field |bits|)) #x0000000000000000)
   (assume-reg |misa| ((_ field |bits|)) #x8000000000001100)
   (assume-reg |mtvec| ((_ field |bits|)) #x0000000000000000)
   (assume (= (bvand (|mstatus| ((_ field |bits|) )) #x0000000000020000) #x0000000000000000))
