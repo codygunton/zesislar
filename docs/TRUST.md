@@ -58,6 +58,9 @@ Each instruction proof must discharge the condition through Islaris `wp_assume`
 The annotations create proof obligations, not additional contract premises or established memory bounds.
 The unsigned eql group constrains all 46 memory accesses, including four stack loads.
 The group has no region-constraint exemptions.
+The unsigned `decodeItemRegions` group constrains all 50 memory accesses: 15 loads and 35 stores.
+All 50 constraints remain open Islaris `wp_assume` obligations.
+The group has no region-constraint exemptions.
 
 ## Reference semantics
 
