@@ -30,6 +30,10 @@ Definition stock_entry_result_ok : bool :=
         (Some (RVal_Bits (BV 64 0xa03ffff0))) &&
       executor_option_valu_eqb (registers !! "PC")
         (Some (RVal_Bits (BV 64 0x800d6964))) &&
+      executor_option_valu_eqb (registers !! "medeleg")
+        (Some (RegVal_Struct [("bits", RVal_Bits (BV 64 0))])) &&
+      executor_option_valu_eqb (registers !! "mideleg")
+        (Some (RegVal_Struct [("bits", RVal_Bits (BV 64 0))])) &&
       Nat.eqb (length labels) 0 &&
       bool_decide (seq_mem memory = seq_mem stockEntryMemory)
   | None => false

@@ -19,6 +19,10 @@ Definition machine_static_sys_regs (machine : MachineMap) : list (reg_kind * val
     ("bits", RVal_Bits (Z_to_bv 64 (mapMisa machine)))]));
   (KindReg "mtvec", ExactShape (RegVal_Struct [
     ("bits", RVal_Bits (Z_to_bv 64 (mapMtvec machine)))]));
+  (KindReg "medeleg", ExactShape (RegVal_Struct [
+    ("bits", RVal_Bits (Z_to_bv 64 0))]));
+  (KindReg "mideleg", ExactShape (RegVal_Struct [
+    ("bits", RVal_Bits (Z_to_bv 64 0))]));
   (KindReg "mstatus", StructShape [("bits", MaskShape 64 (mapMstatusMask machine) (mapMstatusValue machine))]);
   (KindReg "satp", BitsShape 64)
 ].

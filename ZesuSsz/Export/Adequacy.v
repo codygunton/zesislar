@@ -19,6 +19,8 @@ Definition machine_static_sys_regs_map (machine : MachineMap) (mstatusBits satp 
   <[ "misa" := RegVal_Struct [
       ("bits", RVal_Bits (Z_to_bv 64 (mapMisa machine)))] ]> $
   <[ "mtvec" := RegVal_Struct [("bits", RVal_Bits (Z_to_bv 64 (mapMtvec machine)))] ]> $
+  <[ "medeleg" := RegVal_Struct [("bits", RVal_Bits (Z_to_bv 64 0))] ]> $
+  <[ "mideleg" := RegVal_Struct [("bits", RVal_Bits (Z_to_bv 64 0))] ]> $
   <[ "mstatus" := RegVal_Struct [("bits", RVal_Bits mstatusBits)] ]> $
   <[ "satp" := RVal_Bits satp ]> $ ∅.
 

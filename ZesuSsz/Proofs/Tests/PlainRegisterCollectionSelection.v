@@ -73,3 +73,19 @@ Proof.
   zesu_register_collection_selection_if_enabled.
   iApply "HT". iExact "Harray".
 Qed.
+
+Lemma plain_register_selection_medeleg `{!islaG Sigma} `{!threadG} :
+  reg_col zesu_sys_regs -∗
+  find_in_context (FindRegMapsTo "medeleg") (fun _ => True).
+Proof.
+  iStartProof. iIntros "Hregs".
+  zesu_register_collection_selection_if_enabled. done.
+Qed.
+
+Lemma plain_register_selection_mideleg `{!islaG Sigma} `{!threadG} :
+  reg_col zesu_sys_regs -∗
+  find_in_context (FindRegMapsTo "mideleg") (fun _ => True).
+Proof.
+  iStartProof. iIntros "Hregs".
+  zesu_register_collection_selection_if_enabled. done.
+Qed.

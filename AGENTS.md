@@ -105,7 +105,9 @@ State that a proof is single-thread bound when one process uses one core and the
 The 300-second and 6 GiB figures are production goals for a finished proof module, not limits
 on search. During development, first bound the problem: run a search or a proof to completion
 with whatever memory and time it needs (the machine has 256 GiB; a 64 GiB cap and no CPU cap are
-normal for a probe), record its peak memory, CPU, and residual goals, and optimize afterwards
+normal for a probe).
+Our account may use at most 200 GiB in total, because another account shares this host; `systemctl cat user-1000.slice` shows the limit and its reason. Ask the user before a job that needs more.
+Record its peak memory, CPU, and residual goals, and optimize afterwards
 from that measurement. A run that stops at a cap mid-search has measured nothing. Record each
 raised cap on issue #10 as a probe. The guard defaults are 2400 CPU seconds and 16 GiB per gate module,
 raised 2026-10-20 for native decodeItem proofs, issue #10.

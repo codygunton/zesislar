@@ -167,6 +167,10 @@ def generate_config(template: str, machine: dict) -> str:
         if count != 1:
             raise ValueError(f"The template must define {setting} exactly once.")
     result = result.replace(sections["registers.reset"], reset, 1)
+    # These fixed entry resources match machine_static_sys_regs in Machine.v.
+    for register in ["medeleg.bits", "mideleg.bits"]:
+        if settings["registers"]["reset"].get(register) != "0x0000000000000000":
+            raise ValueError(f"The platform entry must fix {register} to zero.")
     mask, value = machine["mapMstatusMask"], machine["mapMstatusValue"]
     result, count = re.subn(
         r"= \(bvand mstatus\.bits 0x[0-9a-fA-F]+\) 0x[0-9a-fA-F]+",
