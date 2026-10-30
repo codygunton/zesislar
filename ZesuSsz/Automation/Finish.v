@@ -16,6 +16,7 @@ Require Import ZesuSsz.Automation.RawWordArrayWitness.
 Require Export ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.NatBounds.
 Require Import ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Automation.VmClosed.
 Require Import ZesuSsz.Automation.BoundedArithmetic.
 (* Names `zesu_rule_set_v2_steps` for `zesu_run_pass_v2` below. The
    module declares one tactic and installs no instance and no hint,
@@ -48,6 +49,15 @@ Ltac zesu_finish_little_endian :=
          rewrite !Z.land_ones; [|lia..];
          rewrite !Z.shiftr_div_pow2; [|lia..];
          repeat eexists; repeat split; reflexivity]
+  end.
+
+(* The helper's VM branch evaluates the complete goal, not only its value. *)
+Ltac zesu_finish_little_endian_if_closed :=
+  lazymatch goal with
+  | |- context[Z_to_little_endian _ _ _] =>
+      let proposition := match goal with |- ?goal => constr:(goal) end in
+      zesu_vm_closed proposition;
+      zesu_finish_little_endian
   end.
 
 Ltac zesu_finish_tag_bound :=
@@ -167,6 +177,20 @@ Ltac zesu_finish_array_byte_lookup :=
     |- context[default _ (?bytes !! ?index)] => rewrite Hlookup
   end;
   reflexivity.
+
+(* Reject every symbolic offset before either lookup normalizer reaches the VM. *)
+Ltac zesu_finish_array_byte_lookup_if_closed :=
+  assert_fails ltac:(idtac; multimatch goal with
+  | Hlookup : ?bytes !! Z.to_nat (bv_unsigned ?offset `div` 1) = Some ?byte |- _ =>
+      assert_fails ltac:(zesu_vm_closed offset)
+  | Hlookup : ?bytes !! Z.to_nat
+      ((bv_unsigned (bv_add ?row ?offset) - ?base) `div` 1) = Some ?byte |- _ =>
+      assert_fails ltac:(zesu_vm_closed offset)
+  | Hlookup : ?bytes !! Z.to_nat
+      (bv_unsigned (bv_add ?row ?offset) - ?base) = Some ?byte |- _ =>
+      assert_fails ltac:(zesu_vm_closed offset)
+  end);
+  zesu_finish_array_byte_lookup.
 
 Ltac zesu_normalize_equal_array_regions :=
   repeat match goal with
@@ -295,7 +319,7 @@ Ltac zesu_finish_v1 :=
   zesu_normalize_nat_powers;
   try (zesu_finish_tag_bound);
   try (zesu_finish_mask);
-  try (zesu_finish_array_byte_lookup);
+  try (zesu_finish_array_byte_lookup_if_closed);
   try zesu_finish_constant;
   try (apply Z.le_ge; assumption);
   try (zesu_finish_ram_known);
@@ -304,7 +328,7 @@ Ltac zesu_finish_v1 :=
   try (zesu_saturate_alignment);
   try zesu_finish_lia;
   try (bv_solve);
-  try (zesu_finish_little_endian).
+  try (zesu_finish_little_endian_if_closed).
 
 Ltac zesu_finish_normalize :=
   try autorewrite with zesu_indices;
@@ -389,7 +413,7 @@ Ltac zesu_finish_pure_goal_base :=
   zesu_normalize_nat_powers;
   try (zesu_finish_tag_bound);
   try (zesu_finish_mask);
-  try (zesu_finish_array_byte_lookup);
+  try (zesu_finish_array_byte_lookup_if_closed);
   try zesu_finish_constant;
   try (apply Z.le_ge; assumption);
   try (zesu_finish_ram_known);
@@ -403,7 +427,7 @@ Ltac zesu_finish_pure_goal_base :=
      them and ask once more. `solve` keeps the step honest: it either
      closes the goal or leaves it exactly as it was. *)
   try zesu_finish_witness_arithmetic;
-  try (zesu_finish_little_endian).
+  try (zesu_finish_little_endian_if_closed).
 
 (* Normalize only facts already retained by the contract. *)
 Ltac zesu_finish_pure_shape :=
