@@ -14,13 +14,18 @@ def binding(path):
 
 
 class EqlBindingTests(unittest.TestCase):
-    def fixture(self, root):
-        out = root / "eql"
+    def fixture(self, root, trace_name="eql"):
+        out = root / trace_name
         out.mkdir()
-        rows = [{"pc": 4 * index, "word": 19, "mnemonic": "addi"} for index in range(74)]
+        count = 116 if trace_name == "decodeItemRegions" else 74
+        coqdir = "ZesuSsz.Stock.DecodeItemRegions" if trace_name == "decodeItemRegions" else "ZesuSsz.Stock.Eql"
+        rows = [{"pc": 4 * index, "word": 19, "mnemonic": "addi"} for index in range(count)]
         accesses = [{"pc": hex(index), "constraint_emitted": True} for index in range(42)]
         accesses += [{"pc": pc, "constraint_emitted": True} for pc in
                      ["0x8009c43c", "0x8009c440", "0x8009c450", "0x8009c454"]]
+        if trace_name == "decodeItemRegions":
+            accesses = [{"pc": hex(index), "constraint_emitted": True,
+                         "operation": "load" if index < 15 else "store"} for index in range(50)]
         for row in rows:
             for suffix in ["v", "isla"]:
                 (out / (f"a{row['pc']:x}." + suffix)).write_text("bound instruction")
@@ -36,19 +41,46 @@ class EqlBindingTests(unittest.TestCase):
         inputs["config"] = binding(config)
         dump = root / "selected.dump"
         dump.write_text(selected_dump(rows))
-        report = {"schema": "stock-zisk.trace-only.v1", "arch": "riscv64", "coqdir": "ZesuSsz.Stock.Eql",
-                  "instruction_count": 74, "generated_count": 74, "inputs": inputs,
+        report = {"schema": "stock-zisk.trace-only.v1", "arch": "riscv64", "coqdir": coqdir,
+                  "instruction_count": count, "generated_count": count, "inputs": inputs,
                   "selected_dump": binding(dump),
                   "files": {p.name: binding(p)["sha256"] for p in out.iterdir()}}
         (out / "trace-manifest.json").write_text(json.dumps(report))
         return out, rows, accesses, report
 
-    def validate(self, out, rows, accesses, **kwargs):
+    def validate(self, out, rows, accesses, trace_name="eql", **kwargs):
         with patch.object(binder, "ELFFile"), patch.object(binder, "Image"), \
              patch.object(binder, "selected_rows", return_value=rows), \
              patch.object(binder, "annotate_regions", **kwargs) as annotate:
             if not kwargs: annotate.return_value = (rows, accesses, [])
-            return binder.validate_trace_only(out, "eql")
+            return binder.validate_trace_only(out, trace_name)
+
+    def test_decode_item_regions_accepts_exact_group(self):
+        with tempfile.TemporaryDirectory() as directory:
+            out, rows, accesses, report = self.fixture(Path(directory), "decodeItemRegions")
+            self.assertEqual(self.validate(out, rows, accesses, "decodeItemRegions"), report)
+
+    def test_decode_item_regions_rejects_wrong_logical_owner(self):
+        with tempfile.TemporaryDirectory() as directory:
+            out, rows, accesses, report = self.fixture(Path(directory), "decodeItemRegions")
+            report["coqdir"] = "ZesuSsz.Stock.DecodeItem"
+            (out / "trace-manifest.json").write_text(json.dumps(report))
+            with self.assertRaisesRegex(ValueError, "identity or coverage"):
+                self.validate(out, rows, accesses, "decodeItemRegions")
+
+    def test_decode_item_regions_rejects_changed_permissions(self):
+        with tempfile.TemporaryDirectory() as directory:
+            out, rows, accesses, _ = self.fixture(Path(directory), "decodeItemRegions")
+            accesses[0]["operation"] = "store"
+            with self.assertRaisesRegex(ValueError, "load/store coverage"):
+                self.validate(out, rows, accesses, "decodeItemRegions")
+
+    def test_decode_item_regions_rejects_unconstrained_access(self):
+        with tempfile.TemporaryDirectory() as directory:
+            out, rows, accesses, _ = self.fixture(Path(directory), "decodeItemRegions")
+            accesses[-1]["constraint_emitted"] = False
+            with self.assertRaisesRegex(ValueError, "constrained-access coverage"):
+                self.validate(out, rows, accesses, "decodeItemRegions")
 
     def test_complete_group_accepts(self):
         with tempfile.TemporaryDirectory() as directory:

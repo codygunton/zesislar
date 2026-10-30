@@ -403,6 +403,7 @@ stock-native-indexes: gate-workspace
 	$(PYTHON) tools/stock_zisk/selected/bind_traces.py --out $(STOCK_CLOSURE_TRACE_DIR) \
 	  --function alt_fl_alloc.free --trace-name free
 	$(MAKE) --no-print-directory -f $(lastword $(MAKEFILE_LIST)) stock-eql-traces
+	$(MAKE) --no-print-directory -f $(lastword $(MAKEFILE_LIST)) stock-decodeitem-region-traces
 
 check-evidence-tools check-signatures: stock-native-indexes
 
@@ -422,6 +423,23 @@ stock-eql-traces:
 	fi
 	$(PYTHON) tools/stock_zisk/platform/bind_traces.py --out $(STOCK_EQL_TRACE_DIR) \
 	  --trace-name eql --check-manifest $(STOCK_TRACE_MANIFEST)
+
+# This separate group constrains the pilot's accesses without changing native traces.
+STOCK_DECODE_REGION_TRACE_DIR ?= generated/isla-traces/stock-zisk/decodeItemRegions
+.PHONY: stock-decodeitem-region-traces
+stock-decodeitem-region-traces:
+	@if ! test -f "$(STOCK_DECODE_REGION_TRACE_DIR)/trace-manifest.json"; then \
+	  ZESU_BATCH_LIMIT=8G $(GUARD_BATCH) decodeItem-regions-traces -- $(PYTHON) $(STOCK_TRACE_DRIVER) \
+	    --trace-only --manifest build/stock-zisk/decodeItem-regions-trace-input.json \
+	    --dump build/stock-zisk/decodeItem-regions-policy/decodeItem.raw.dump --out $(STOCK_DECODE_REGION_TRACE_DIR) \
+	    --coqdir ZesuSsz.Stock.DecodeItemRegions --jobs $(TRACE_JOBS) \
+	    --per-load-regions build/stock-zisk/decodeItem-regions-policy/regions.json.gz \
+	    --per-load-regions-sha256 e9f2697fa7d5611887695b66130958957a672ee74707650e5f20fa91e3eb0eaa \
+	    --region-source-map build/stock-zisk/decodeItem-regions-policy/PATH-MAP.json \
+	    --region-source-map-sha256 dac940753fc60ebdcc5f6138cff636d5cb79dccf5be76553f308b9c49b05d12f; \
+	fi
+	$(PYTHON) tools/stock_zisk/platform/bind_traces.py --out $(STOCK_DECODE_REGION_TRACE_DIR) \
+	  --trace-name decodeItemRegions --check-manifest $(STOCK_TRACE_MANIFEST)
 
 # Dune requires the parent of an absolute build directory to exist.
 .PHONY: build-directories
