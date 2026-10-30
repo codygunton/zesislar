@@ -49,6 +49,16 @@ The platform snapshot has SHA256 `2b1b3c9eeae6fc53ea430376c9759a9abd0d1f8e123362
 Its `zexception_delegatee` body matches the pinned base snapshot exactly.
 The configuration does not fix the complete `mstatus` value.
 
+## Per-access trace constraints
+
+Source-bound region annotations become `Assume` events in the generated traces.
+Each instruction proof must discharge the condition through Islaris `wp_assume`
+(`theories/lifting.v`) and its automation rule `li_wp_assume`
+(`theories/automation.v`).
+The annotations create proof obligations, not additional contract premises or established memory bounds.
+The unsigned eql group retains four source-bound stack-load exemptions.
+Those loads retain their original trace assumptions.
+
 ## Reference semantics
 
 The pinned EVM-Sail revision is `d0e4aabdde52f9158d191dbc8add444abffd9a6a`. The pinned

@@ -1,0 +1,1041 @@
+{
+  "schema": "production-stack-load-placement181.v2",
+  "status": "source_supported_production_assume_with_open_native_obligations",
+  "loads": [
+    {
+      "pc": "0x8009c43c",
+      "instruction": {
+        "pc": 2148123708,
+        "size": 4,
+        "word": 8466563,
+        "rd": 1,
+        "rs1": 2,
+        "rs2": 8,
+        "funct3": 3,
+        "kind": "load",
+        "mnemonic": "ld",
+        "imm": 8,
+        "width": 8
+      },
+      "public_instruction_pointer": "/functions/0/rows/65",
+      "block": "0x8009c42c",
+      "case_ids": [
+        "RAM__RAM",
+        "RAM__INPUT_BUFFER",
+        "RAM__RODATA",
+        "INPUT_BUFFER__RAM",
+        "INPUT_BUFFER__INPUT_BUFFER",
+        "INPUT_BUFFER__RODATA",
+        "RODATA__RAM",
+        "RODATA__INPUT_BUFFER",
+        "RODATA__RODATA"
+      ],
+      "side": "stack",
+      "address_coq": "(currentStackWord + (BV 64%N 8%Z))%bv",
+      "address_width": 64,
+      "access_bytes": 8,
+      "access_bits": 64,
+      "comparison_width": 128,
+      "entry_sp_expression": "(stackWord + (BV 64%N 18446744073709551600%Z))%bv",
+      "candidate_normalized_address": "bv_unsigned stackWord - 16 + 8",
+      "candidate_region": "RAM",
+      "region_facts": [
+        "mapRamBase defaultMap <= bv_unsigned addressWord",
+        "bv_unsigned addressWord + 8 <= machineRamEnd defaultMap"
+      ],
+      "original_entry_facts": [
+        "(16 <= stackCapacity)%Z",
+        "(mapRamBase defaultMap <= bv_unsigned stackWord - stackCapacity)%Z",
+        "(bv_unsigned stackWord < machineRamEnd defaultMap)%Z"
+      ],
+      "source_frame_owner": "(bv_unsigned stackWord - 8) \u21a6\u2098{DfracOwn 1} returnWord",
+      "source_saved_value": "returnWord",
+      "source_stores": [
+        {
+          "pc": "0x8009c33c",
+          "instruction_pointer": "/functions/0/rows/1",
+          "purpose": "Save original x1 at entry SP minus8."
+        },
+        {
+          "pc": "0x8009c340",
+          "instruction_pointer": "/functions/0/rows/2",
+          "purpose": "Save original x8 at entry SP minus16."
+        }
+      ],
+      "source_frame_evidence": {
+        "file": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-1/frame-analysis138/SELECTED-RESULT.json",
+          "sha256": "9bec8e4c0edbff4af6aa8f0325ea334690b254c6cd3e9262be34ebede0618577"
+        },
+        "pointer": "/functions/0/stack_accesses/2"
+      },
+      "raw_address_evidence": [
+        {
+          "line": 17,
+          "text": "  (read-reg |x2| nil v5)"
+        },
+        {
+          "line": 18,
+          "text": "  (define-const v6 (bvadd v5 #x0000000000000008))"
+        },
+        {
+          "line": 29,
+          "text": "  (define-const v21 (bvsge ((_ zero_extend 64) v6) #x000000000000000000000000a0000000))"
+        },
+        {
+          "line": 33,
+          "text": "      (define-const v24 (bvsle (bvadd ((_ zero_extend 64) v6) #x00000000000000000000000000000008) #x000000000000000000000000c0000000))"
+        }
+      ],
+      "raw_trace": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c43c.isla",
+        "sha256": "7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296"
+      },
+      "rocq_trace": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c43c.v",
+        "sha256": "b531ccb48f2600b3a15c2e6f506e917f5fd5a7dbcc061f778d92a737c42e85eb"
+      },
+      "inference_obligations": [
+        {
+          "status": "OPEN",
+          "statement": "Attach the original x2 owner and entry-relative SP identity at this load."
+        },
+        {
+          "status": "OPEN",
+          "statement": "Apply the accepted address transport and original arithmetic bounds to discharge the RAM Assume."
+        },
+        {
+          "status": "OPEN",
+          "statement": "Transport unsigned containment to both exact signed128 trace guards."
+        },
+        {
+          "status": "OPEN",
+          "statement": "Preserve every original owner, fraction, and K through the load."
+        }
+      ],
+      "production_region": {
+        "set": [
+          "RAM"
+        ],
+        "region_predicate_coq": "(0 <= 8 /\\ (mapRamBase defaultMap <= bv_unsigned ((currentStackWord + (BV 64%N 8%Z))%bv) /\\ bv_unsigned ((currentStackWord + (BV 64%N 8%Z))%bv) + 8 <= machineRamEnd defaultMap))%Z",
+        "platform_load_region_coq": "platformLoadRegion defaultMap actualInputEnd ((currentStackWord + (BV 64%N 8%Z))%bv) 8%Z",
+        "disjunct": "First/RAM; inputEnd is unchanged and does not enter the RAM inequalities.",
+        "assume_coq": "((mapRamBase defaultMap <= bv_unsigned ((currentStackWord + (BV 64%N 8%Z))%bv)) /\\ (bv_unsigned ((currentStackWord + (BV 64%N 8%Z))%bv) + 8 <= machineRamEnd defaultMap))%Z",
+        "assume_smt": "(and (bvsge ((_ zero_extend 64) v6) #x000000000000000000000000a0000000) (bvsle (bvadd ((_ zero_extend 64) v6) #x00000000000000000000000000000008) #x000000000000000000000000c0000000))",
+        "assume_scope": "After the exact read x2 and address definition v6, before platform cases. Reuse only this trace-local v6.",
+        "new_entry_premise": false,
+        "native_proof_obligation": "OPEN: discharge the Assume from original source facts at this load."
+      },
+      "source_containment": {
+        "notation": {
+          "S": "bv_unsigned stackWord",
+          "C": "stackCapacity",
+          "o": 8,
+          "B": "mapRamBase defaultMap",
+          "E": "machineRamEnd defaultMap"
+        },
+        "original_premises": [
+          "16 <= C",
+          "B <= S-C",
+          "S < E",
+          "S mod 16 = 0"
+        ],
+        "closed_map_values": {
+          "B": 2684354560,
+          "E": 3221225472,
+          "word_modulus": 18446744073709551616
+        },
+        "derivation": [
+          "C>=16 and B<=S-C imply B+16<=S.",
+          "Thus0<=S-16 and S<2^64.",
+          "For o in{0,8},0<=S-16+o<2^64.",
+          "B<=S-C<=S-16<=S-16+o.",
+          "S-16+o+8<=S<E."
+        ],
+        "entry_relative_address": "(stackWord + (BV 64%N 18446744073709551600%Z) + (BV 64%N 8%Z))%bv",
+        "normal_form": "S-16+8",
+        "width_bits": 64,
+        "access_bytes": 8,
+        "result": "The original bounds imply containment of this entire8-byte access.",
+        "status": "Source arithmetic derivation; exact native application remains OPEN."
+      },
+      "sp_origin": {
+        "original_owner": "\"x2\" \u21a6\u1d63 RVal_Bits stackWord",
+        "update_pc": "0x8009c338",
+        "update": "addi x2,x2,-16",
+        "public_update_pointer": "/functions/0/rows/0",
+        "required_identity": "currentStackWord = (stackWord + (BV 64%N 18446744073709551600%Z))%bv",
+        "no_intervening_sp_write": "The public CFG reaches either epilogue load pair before its own addi x2,x2,16. The two epilogues are alternative paths.",
+        "normal_restore_pcs": [
+          "0x8009c43c",
+          "0x8009c440",
+          "0x8009c444"
+        ],
+        "false_restore_pcs": [
+          "0x8009c450",
+          "0x8009c454",
+          "0x8009c458"
+        ],
+        "attachment_status": "OPEN native path/register preservation obligation; no execution evidence is a premise."
+      },
+      "accepted_transport_evidence": {
+        "offset8": {
+          "applicable": true,
+          "packet": {
+            "path": "/home/cody/zesislar/_build/agents/spec-b/stack-address298/RESULT-PACKET.json",
+            "sha256": "87cea9be3eaac4638b1cdb3daf92a9864f109dd47f35a9dc8940ccce5e7acfd0"
+          },
+          "module": "ZesuSsz.Evidence.StackAddress298",
+          "theorem": "first_store_address298",
+          "exact_conclusion": "bv_unsigned ((stackWord + BV64(-16) + BV64(8))%bv) = S-8",
+          "qualification": "Exact address theorem applies to either offset8 load once the current-SP identity is established. It does not prove load execution."
+        },
+        "both_offsets": {
+          "packet": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/unsigned-applications136/finished/RESULT.json",
+            "sha256": "360877646b14c7af07ea5f3c61392df28d8d83d516277a05f165b598b4792ea9"
+          },
+          "source": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/unsigned-applications136/Control.v",
+            "sha256": "cb403fb5db0aead8cac82cc1f1e02d348e8ff624ad994d49fe0749befae03984",
+            "bytes": 1530
+          },
+          "theorem": "shifted_word_bounds136",
+          "instantiation": {
+            "base": "S",
+            "cut": "16",
+            "increment": "8",
+            "lower": "B",
+            "first": "BV64(-16)",
+            "second": "BV64(8)"
+          },
+          "premise_discharge": [
+            "0<=16<=S from B+16<=S and B>=0.",
+            "S<2^64 from S<E and closed E<2^64.",
+            "0<=o<=16 by o=0 or8.",
+            "bv_signed BV64(-16)=-16 and bv_signed BV64(o)=o by closed numeral evaluation.",
+            "B+16<=S from original capacity/RAM facts."
+          ],
+          "remaining_transport": "Rewrite Z_to_bv64(bv_unsigned stackWord)=stackWord by existing bitvector roundtrip. Preserve this as a native obligation."
+        },
+        "typed_guard": {
+          "packet": {
+            "path": "/home/cody/zesislar/_build/agents/spec-b/cursor-guard315/RESULT-PACKET.json",
+            "sha256": "619d09aa4504d158bc192b450641c46719bc163106da3bcd401beea48eb23e53"
+          },
+          "theorem": "cursor_guard315",
+          "lower_normalization": "zesu_signed_zero_extend_64_128",
+          "upper_normalization": "zesu_signed_zero_extend_add_64_128",
+          "remaining_side_conditions": [
+            "Both64-bit addition intervals from source_containment.",
+            "unsigned(BV128(8))<2^64 by closed computation.",
+            "Closed RAM literals agree with defaultMap."
+          ],
+          "status": "Existing generic evidence; exact per-load native transport remains OPEN."
+        }
+      }
+    },
+    {
+      "pc": "0x8009c440",
+      "instruction": {
+        "pc": 2148123712,
+        "size": 4,
+        "word": 78851,
+        "rd": 8,
+        "rs1": 2,
+        "rs2": 0,
+        "funct3": 3,
+        "kind": "load",
+        "mnemonic": "ld",
+        "imm": 0,
+        "width": 8
+      },
+      "public_instruction_pointer": "/functions/0/rows/66",
+      "block": "0x8009c42c",
+      "case_ids": [
+        "RAM__RAM",
+        "RAM__INPUT_BUFFER",
+        "RAM__RODATA",
+        "INPUT_BUFFER__RAM",
+        "INPUT_BUFFER__INPUT_BUFFER",
+        "INPUT_BUFFER__RODATA",
+        "RODATA__RAM",
+        "RODATA__INPUT_BUFFER",
+        "RODATA__RODATA"
+      ],
+      "side": "stack",
+      "address_coq": "(currentStackWord + (BV 64%N 0%Z))%bv",
+      "address_width": 64,
+      "access_bytes": 8,
+      "access_bits": 64,
+      "comparison_width": 128,
+      "entry_sp_expression": "(stackWord + (BV 64%N 18446744073709551600%Z))%bv",
+      "candidate_normalized_address": "bv_unsigned stackWord - 16 + 0",
+      "candidate_region": "RAM",
+      "region_facts": [
+        "mapRamBase defaultMap <= bv_unsigned addressWord",
+        "bv_unsigned addressWord + 8 <= machineRamEnd defaultMap"
+      ],
+      "original_entry_facts": [
+        "(16 <= stackCapacity)%Z",
+        "(mapRamBase defaultMap <= bv_unsigned stackWord - stackCapacity)%Z",
+        "(bv_unsigned stackWord < machineRamEnd defaultMap)%Z"
+      ],
+      "source_frame_owner": "(bv_unsigned stackWord - 16) \u21a6\u2098{DfracOwn 1} saved_x8",
+      "source_saved_value": "saved_x8",
+      "source_stores": [
+        {
+          "pc": "0x8009c33c",
+          "instruction_pointer": "/functions/0/rows/1",
+          "purpose": "Save original x1 at entry SP minus8."
+        },
+        {
+          "pc": "0x8009c340",
+          "instruction_pointer": "/functions/0/rows/2",
+          "purpose": "Save original x8 at entry SP minus16."
+        }
+      ],
+      "source_frame_evidence": {
+        "file": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-1/frame-analysis138/SELECTED-RESULT.json",
+          "sha256": "9bec8e4c0edbff4af6aa8f0325ea334690b254c6cd3e9262be34ebede0618577"
+        },
+        "pointer": "/functions/0/stack_accesses/3"
+      },
+      "raw_address_evidence": [
+        {
+          "line": 17,
+          "text": "  (read-reg |x2| nil v5)"
+        },
+        {
+          "line": 18,
+          "text": "  (define-const v6 (bvadd v5 #x0000000000000000))"
+        },
+        {
+          "line": 29,
+          "text": "  (define-const v21 (bvsge ((_ zero_extend 64) v6) #x000000000000000000000000a0000000))"
+        },
+        {
+          "line": 33,
+          "text": "      (define-const v24 (bvsle (bvadd ((_ zero_extend 64) v6) #x00000000000000000000000000000008) #x000000000000000000000000c0000000))"
+        }
+      ],
+      "raw_trace": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c440.isla",
+        "sha256": "956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40"
+      },
+      "rocq_trace": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c440.v",
+        "sha256": "224a4a6280e83c026b9930e11a7d1d846b21f612892d435f6f2d1e1ebd138a51"
+      },
+      "inference_obligations": [
+        {
+          "status": "OPEN",
+          "statement": "Attach the original x2 owner and entry-relative SP identity at this load."
+        },
+        {
+          "status": "OPEN",
+          "statement": "Apply the accepted address transport and original arithmetic bounds to discharge the RAM Assume."
+        },
+        {
+          "status": "OPEN",
+          "statement": "Transport unsigned containment to both exact signed128 trace guards."
+        },
+        {
+          "status": "OPEN",
+          "statement": "Preserve every original owner, fraction, and K through the load."
+        }
+      ],
+      "production_region": {
+        "set": [
+          "RAM"
+        ],
+        "region_predicate_coq": "(0 <= 8 /\\ (mapRamBase defaultMap <= bv_unsigned ((currentStackWord + (BV 64%N 0%Z))%bv) /\\ bv_unsigned ((currentStackWord + (BV 64%N 0%Z))%bv) + 8 <= machineRamEnd defaultMap))%Z",
+        "platform_load_region_coq": "platformLoadRegion defaultMap actualInputEnd ((currentStackWord + (BV 64%N 0%Z))%bv) 8%Z",
+        "disjunct": "First/RAM; inputEnd is unchanged and does not enter the RAM inequalities.",
+        "assume_coq": "((mapRamBase defaultMap <= bv_unsigned ((currentStackWord + (BV 64%N 0%Z))%bv)) /\\ (bv_unsigned ((currentStackWord + (BV 64%N 0%Z))%bv) + 8 <= machineRamEnd defaultMap))%Z",
+        "assume_smt": "(and (bvsge ((_ zero_extend 64) v6) #x000000000000000000000000a0000000) (bvsle (bvadd ((_ zero_extend 64) v6) #x00000000000000000000000000000008) #x000000000000000000000000c0000000))",
+        "assume_scope": "After the exact read x2 and address definition v6, before platform cases. Reuse only this trace-local v6.",
+        "new_entry_premise": false,
+        "native_proof_obligation": "OPEN: discharge the Assume from original source facts at this load."
+      },
+      "source_containment": {
+        "notation": {
+          "S": "bv_unsigned stackWord",
+          "C": "stackCapacity",
+          "o": 0,
+          "B": "mapRamBase defaultMap",
+          "E": "machineRamEnd defaultMap"
+        },
+        "original_premises": [
+          "16 <= C",
+          "B <= S-C",
+          "S < E",
+          "S mod 16 = 0"
+        ],
+        "closed_map_values": {
+          "B": 2684354560,
+          "E": 3221225472,
+          "word_modulus": 18446744073709551616
+        },
+        "derivation": [
+          "C>=16 and B<=S-C imply B+16<=S.",
+          "Thus0<=S-16 and S<2^64.",
+          "For o in{0,8},0<=S-16+o<2^64.",
+          "B<=S-C<=S-16<=S-16+o.",
+          "S-16+o+8<=S<E."
+        ],
+        "entry_relative_address": "(stackWord + (BV 64%N 18446744073709551600%Z) + (BV 64%N 0%Z))%bv",
+        "normal_form": "S-16+0",
+        "width_bits": 64,
+        "access_bytes": 8,
+        "result": "The original bounds imply containment of this entire8-byte access.",
+        "status": "Source arithmetic derivation; exact native application remains OPEN."
+      },
+      "sp_origin": {
+        "original_owner": "\"x2\" \u21a6\u1d63 RVal_Bits stackWord",
+        "update_pc": "0x8009c338",
+        "update": "addi x2,x2,-16",
+        "public_update_pointer": "/functions/0/rows/0",
+        "required_identity": "currentStackWord = (stackWord + (BV 64%N 18446744073709551600%Z))%bv",
+        "no_intervening_sp_write": "The public CFG reaches either epilogue load pair before its own addi x2,x2,16. The two epilogues are alternative paths.",
+        "normal_restore_pcs": [
+          "0x8009c43c",
+          "0x8009c440",
+          "0x8009c444"
+        ],
+        "false_restore_pcs": [
+          "0x8009c450",
+          "0x8009c454",
+          "0x8009c458"
+        ],
+        "attachment_status": "OPEN native path/register preservation obligation; no execution evidence is a premise."
+      },
+      "accepted_transport_evidence": {
+        "offset8": {
+          "applicable": false,
+          "packet": {
+            "path": "/home/cody/zesislar/_build/agents/spec-b/stack-address298/RESULT-PACKET.json",
+            "sha256": "87cea9be3eaac4638b1cdb3daf92a9864f109dd47f35a9dc8940ccce5e7acfd0"
+          },
+          "module": "ZesuSsz.Evidence.StackAddress298",
+          "theorem": "first_store_address298",
+          "exact_conclusion": "bv_unsigned ((stackWord + BV64(-16) + BV64(8))%bv) = S-8",
+          "qualification": "Exact address theorem applies to either offset8 load once the current-SP identity is established. It does not prove load execution."
+        },
+        "both_offsets": {
+          "packet": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/unsigned-applications136/finished/RESULT.json",
+            "sha256": "360877646b14c7af07ea5f3c61392df28d8d83d516277a05f165b598b4792ea9"
+          },
+          "source": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/unsigned-applications136/Control.v",
+            "sha256": "cb403fb5db0aead8cac82cc1f1e02d348e8ff624ad994d49fe0749befae03984",
+            "bytes": 1530
+          },
+          "theorem": "shifted_word_bounds136",
+          "instantiation": {
+            "base": "S",
+            "cut": "16",
+            "increment": "0",
+            "lower": "B",
+            "first": "BV64(-16)",
+            "second": "BV64(0)"
+          },
+          "premise_discharge": [
+            "0<=16<=S from B+16<=S and B>=0.",
+            "S<2^64 from S<E and closed E<2^64.",
+            "0<=o<=16 by o=0 or8.",
+            "bv_signed BV64(-16)=-16 and bv_signed BV64(o)=o by closed numeral evaluation.",
+            "B+16<=S from original capacity/RAM facts."
+          ],
+          "remaining_transport": "Rewrite Z_to_bv64(bv_unsigned stackWord)=stackWord by existing bitvector roundtrip. Preserve this as a native obligation."
+        },
+        "typed_guard": {
+          "packet": {
+            "path": "/home/cody/zesislar/_build/agents/spec-b/cursor-guard315/RESULT-PACKET.json",
+            "sha256": "619d09aa4504d158bc192b450641c46719bc163106da3bcd401beea48eb23e53"
+          },
+          "theorem": "cursor_guard315",
+          "lower_normalization": "zesu_signed_zero_extend_64_128",
+          "upper_normalization": "zesu_signed_zero_extend_add_64_128",
+          "remaining_side_conditions": [
+            "Both64-bit addition intervals from source_containment.",
+            "unsigned(BV128(8))<2^64 by closed computation.",
+            "Closed RAM literals agree with defaultMap."
+          ],
+          "status": "Existing generic evidence; exact per-load native transport remains OPEN."
+        }
+      }
+    },
+    {
+      "pc": "0x8009c450",
+      "instruction": {
+        "pc": 2148123728,
+        "size": 4,
+        "word": 8466563,
+        "rd": 1,
+        "rs1": 2,
+        "rs2": 8,
+        "funct3": 3,
+        "kind": "load",
+        "mnemonic": "ld",
+        "imm": 8,
+        "width": 8
+      },
+      "public_instruction_pointer": "/functions/0/rows/70",
+      "block": "0x8009c44c",
+      "case_ids": [
+        "RAM__RAM",
+        "RAM__INPUT_BUFFER",
+        "RAM__RODATA",
+        "INPUT_BUFFER__RAM",
+        "INPUT_BUFFER__INPUT_BUFFER",
+        "INPUT_BUFFER__RODATA",
+        "RODATA__RAM",
+        "RODATA__INPUT_BUFFER",
+        "RODATA__RODATA"
+      ],
+      "side": "stack",
+      "address_coq": "(currentStackWord + (BV 64%N 8%Z))%bv",
+      "address_width": 64,
+      "access_bytes": 8,
+      "access_bits": 64,
+      "comparison_width": 128,
+      "entry_sp_expression": "(stackWord + (BV 64%N 18446744073709551600%Z))%bv",
+      "candidate_normalized_address": "bv_unsigned stackWord - 16 + 8",
+      "candidate_region": "RAM",
+      "region_facts": [
+        "mapRamBase defaultMap <= bv_unsigned addressWord",
+        "bv_unsigned addressWord + 8 <= machineRamEnd defaultMap"
+      ],
+      "original_entry_facts": [
+        "(16 <= stackCapacity)%Z",
+        "(mapRamBase defaultMap <= bv_unsigned stackWord - stackCapacity)%Z",
+        "(bv_unsigned stackWord < machineRamEnd defaultMap)%Z"
+      ],
+      "source_frame_owner": "(bv_unsigned stackWord - 8) \u21a6\u2098{DfracOwn 1} returnWord",
+      "source_saved_value": "returnWord",
+      "source_stores": [
+        {
+          "pc": "0x8009c33c",
+          "instruction_pointer": "/functions/0/rows/1",
+          "purpose": "Save original x1 at entry SP minus8."
+        },
+        {
+          "pc": "0x8009c340",
+          "instruction_pointer": "/functions/0/rows/2",
+          "purpose": "Save original x8 at entry SP minus16."
+        }
+      ],
+      "source_frame_evidence": {
+        "file": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-1/frame-analysis138/SELECTED-RESULT.json",
+          "sha256": "9bec8e4c0edbff4af6aa8f0325ea334690b254c6cd3e9262be34ebede0618577"
+        },
+        "pointer": "/functions/0/stack_accesses/4"
+      },
+      "raw_address_evidence": [
+        {
+          "line": 17,
+          "text": "  (read-reg |x2| nil v5)"
+        },
+        {
+          "line": 18,
+          "text": "  (define-const v6 (bvadd v5 #x0000000000000008))"
+        },
+        {
+          "line": 29,
+          "text": "  (define-const v21 (bvsge ((_ zero_extend 64) v6) #x000000000000000000000000a0000000))"
+        },
+        {
+          "line": 33,
+          "text": "      (define-const v24 (bvsle (bvadd ((_ zero_extend 64) v6) #x00000000000000000000000000000008) #x000000000000000000000000c0000000))"
+        }
+      ],
+      "raw_trace": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c450.isla",
+        "sha256": "7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296"
+      },
+      "rocq_trace": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c450.v",
+        "sha256": "ba948e5fa5e43060fb4a7657b75b66c571ce6f6706d86d597389789d60341b82"
+      },
+      "inference_obligations": [
+        {
+          "status": "OPEN",
+          "statement": "Attach the original x2 owner and entry-relative SP identity at this load."
+        },
+        {
+          "status": "OPEN",
+          "statement": "Apply the accepted address transport and original arithmetic bounds to discharge the RAM Assume."
+        },
+        {
+          "status": "OPEN",
+          "statement": "Transport unsigned containment to both exact signed128 trace guards."
+        },
+        {
+          "status": "OPEN",
+          "statement": "Preserve every original owner, fraction, and K through the load."
+        }
+      ],
+      "production_region": {
+        "set": [
+          "RAM"
+        ],
+        "region_predicate_coq": "(0 <= 8 /\\ (mapRamBase defaultMap <= bv_unsigned ((currentStackWord + (BV 64%N 8%Z))%bv) /\\ bv_unsigned ((currentStackWord + (BV 64%N 8%Z))%bv) + 8 <= machineRamEnd defaultMap))%Z",
+        "platform_load_region_coq": "platformLoadRegion defaultMap actualInputEnd ((currentStackWord + (BV 64%N 8%Z))%bv) 8%Z",
+        "disjunct": "First/RAM; inputEnd is unchanged and does not enter the RAM inequalities.",
+        "assume_coq": "((mapRamBase defaultMap <= bv_unsigned ((currentStackWord + (BV 64%N 8%Z))%bv)) /\\ (bv_unsigned ((currentStackWord + (BV 64%N 8%Z))%bv) + 8 <= machineRamEnd defaultMap))%Z",
+        "assume_smt": "(and (bvsge ((_ zero_extend 64) v6) #x000000000000000000000000a0000000) (bvsle (bvadd ((_ zero_extend 64) v6) #x00000000000000000000000000000008) #x000000000000000000000000c0000000))",
+        "assume_scope": "After the exact read x2 and address definition v6, before platform cases. Reuse only this trace-local v6.",
+        "new_entry_premise": false,
+        "native_proof_obligation": "OPEN: discharge the Assume from original source facts at this load."
+      },
+      "source_containment": {
+        "notation": {
+          "S": "bv_unsigned stackWord",
+          "C": "stackCapacity",
+          "o": 8,
+          "B": "mapRamBase defaultMap",
+          "E": "machineRamEnd defaultMap"
+        },
+        "original_premises": [
+          "16 <= C",
+          "B <= S-C",
+          "S < E",
+          "S mod 16 = 0"
+        ],
+        "closed_map_values": {
+          "B": 2684354560,
+          "E": 3221225472,
+          "word_modulus": 18446744073709551616
+        },
+        "derivation": [
+          "C>=16 and B<=S-C imply B+16<=S.",
+          "Thus0<=S-16 and S<2^64.",
+          "For o in{0,8},0<=S-16+o<2^64.",
+          "B<=S-C<=S-16<=S-16+o.",
+          "S-16+o+8<=S<E."
+        ],
+        "entry_relative_address": "(stackWord + (BV 64%N 18446744073709551600%Z) + (BV 64%N 8%Z))%bv",
+        "normal_form": "S-16+8",
+        "width_bits": 64,
+        "access_bytes": 8,
+        "result": "The original bounds imply containment of this entire8-byte access.",
+        "status": "Source arithmetic derivation; exact native application remains OPEN."
+      },
+      "sp_origin": {
+        "original_owner": "\"x2\" \u21a6\u1d63 RVal_Bits stackWord",
+        "update_pc": "0x8009c338",
+        "update": "addi x2,x2,-16",
+        "public_update_pointer": "/functions/0/rows/0",
+        "required_identity": "currentStackWord = (stackWord + (BV 64%N 18446744073709551600%Z))%bv",
+        "no_intervening_sp_write": "The public CFG reaches either epilogue load pair before its own addi x2,x2,16. The two epilogues are alternative paths.",
+        "normal_restore_pcs": [
+          "0x8009c43c",
+          "0x8009c440",
+          "0x8009c444"
+        ],
+        "false_restore_pcs": [
+          "0x8009c450",
+          "0x8009c454",
+          "0x8009c458"
+        ],
+        "attachment_status": "OPEN native path/register preservation obligation; no execution evidence is a premise."
+      },
+      "accepted_transport_evidence": {
+        "offset8": {
+          "applicable": true,
+          "packet": {
+            "path": "/home/cody/zesislar/_build/agents/spec-b/stack-address298/RESULT-PACKET.json",
+            "sha256": "87cea9be3eaac4638b1cdb3daf92a9864f109dd47f35a9dc8940ccce5e7acfd0"
+          },
+          "module": "ZesuSsz.Evidence.StackAddress298",
+          "theorem": "first_store_address298",
+          "exact_conclusion": "bv_unsigned ((stackWord + BV64(-16) + BV64(8))%bv) = S-8",
+          "qualification": "Exact address theorem applies to either offset8 load once the current-SP identity is established. It does not prove load execution."
+        },
+        "both_offsets": {
+          "packet": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/unsigned-applications136/finished/RESULT.json",
+            "sha256": "360877646b14c7af07ea5f3c61392df28d8d83d516277a05f165b598b4792ea9"
+          },
+          "source": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/unsigned-applications136/Control.v",
+            "sha256": "cb403fb5db0aead8cac82cc1f1e02d348e8ff624ad994d49fe0749befae03984",
+            "bytes": 1530
+          },
+          "theorem": "shifted_word_bounds136",
+          "instantiation": {
+            "base": "S",
+            "cut": "16",
+            "increment": "8",
+            "lower": "B",
+            "first": "BV64(-16)",
+            "second": "BV64(8)"
+          },
+          "premise_discharge": [
+            "0<=16<=S from B+16<=S and B>=0.",
+            "S<2^64 from S<E and closed E<2^64.",
+            "0<=o<=16 by o=0 or8.",
+            "bv_signed BV64(-16)=-16 and bv_signed BV64(o)=o by closed numeral evaluation.",
+            "B+16<=S from original capacity/RAM facts."
+          ],
+          "remaining_transport": "Rewrite Z_to_bv64(bv_unsigned stackWord)=stackWord by existing bitvector roundtrip. Preserve this as a native obligation."
+        },
+        "typed_guard": {
+          "packet": {
+            "path": "/home/cody/zesislar/_build/agents/spec-b/cursor-guard315/RESULT-PACKET.json",
+            "sha256": "619d09aa4504d158bc192b450641c46719bc163106da3bcd401beea48eb23e53"
+          },
+          "theorem": "cursor_guard315",
+          "lower_normalization": "zesu_signed_zero_extend_64_128",
+          "upper_normalization": "zesu_signed_zero_extend_add_64_128",
+          "remaining_side_conditions": [
+            "Both64-bit addition intervals from source_containment.",
+            "unsigned(BV128(8))<2^64 by closed computation.",
+            "Closed RAM literals agree with defaultMap."
+          ],
+          "status": "Existing generic evidence; exact per-load native transport remains OPEN."
+        }
+      }
+    },
+    {
+      "pc": "0x8009c454",
+      "instruction": {
+        "pc": 2148123732,
+        "size": 4,
+        "word": 78851,
+        "rd": 8,
+        "rs1": 2,
+        "rs2": 0,
+        "funct3": 3,
+        "kind": "load",
+        "mnemonic": "ld",
+        "imm": 0,
+        "width": 8
+      },
+      "public_instruction_pointer": "/functions/0/rows/71",
+      "block": "0x8009c44c",
+      "case_ids": [
+        "RAM__RAM",
+        "RAM__INPUT_BUFFER",
+        "RAM__RODATA",
+        "INPUT_BUFFER__RAM",
+        "INPUT_BUFFER__INPUT_BUFFER",
+        "INPUT_BUFFER__RODATA",
+        "RODATA__RAM",
+        "RODATA__INPUT_BUFFER",
+        "RODATA__RODATA"
+      ],
+      "side": "stack",
+      "address_coq": "(currentStackWord + (BV 64%N 0%Z))%bv",
+      "address_width": 64,
+      "access_bytes": 8,
+      "access_bits": 64,
+      "comparison_width": 128,
+      "entry_sp_expression": "(stackWord + (BV 64%N 18446744073709551600%Z))%bv",
+      "candidate_normalized_address": "bv_unsigned stackWord - 16 + 0",
+      "candidate_region": "RAM",
+      "region_facts": [
+        "mapRamBase defaultMap <= bv_unsigned addressWord",
+        "bv_unsigned addressWord + 8 <= machineRamEnd defaultMap"
+      ],
+      "original_entry_facts": [
+        "(16 <= stackCapacity)%Z",
+        "(mapRamBase defaultMap <= bv_unsigned stackWord - stackCapacity)%Z",
+        "(bv_unsigned stackWord < machineRamEnd defaultMap)%Z"
+      ],
+      "source_frame_owner": "(bv_unsigned stackWord - 16) \u21a6\u2098{DfracOwn 1} saved_x8",
+      "source_saved_value": "saved_x8",
+      "source_stores": [
+        {
+          "pc": "0x8009c33c",
+          "instruction_pointer": "/functions/0/rows/1",
+          "purpose": "Save original x1 at entry SP minus8."
+        },
+        {
+          "pc": "0x8009c340",
+          "instruction_pointer": "/functions/0/rows/2",
+          "purpose": "Save original x8 at entry SP minus16."
+        }
+      ],
+      "source_frame_evidence": {
+        "file": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-1/frame-analysis138/SELECTED-RESULT.json",
+          "sha256": "9bec8e4c0edbff4af6aa8f0325ea334690b254c6cd3e9262be34ebede0618577"
+        },
+        "pointer": "/functions/0/stack_accesses/5"
+      },
+      "raw_address_evidence": [
+        {
+          "line": 17,
+          "text": "  (read-reg |x2| nil v5)"
+        },
+        {
+          "line": 18,
+          "text": "  (define-const v6 (bvadd v5 #x0000000000000000))"
+        },
+        {
+          "line": 29,
+          "text": "  (define-const v21 (bvsge ((_ zero_extend 64) v6) #x000000000000000000000000a0000000))"
+        },
+        {
+          "line": 33,
+          "text": "      (define-const v24 (bvsle (bvadd ((_ zero_extend 64) v6) #x00000000000000000000000000000008) #x000000000000000000000000c0000000))"
+        }
+      ],
+      "raw_trace": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c454.isla",
+        "sha256": "956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40"
+      },
+      "rocq_trace": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c454.v",
+        "sha256": "32211f7aa8d6ab88220cb43240214c60ab53636b5c037f2d538c70b9f7ed68d7"
+      },
+      "inference_obligations": [
+        {
+          "status": "OPEN",
+          "statement": "Attach the original x2 owner and entry-relative SP identity at this load."
+        },
+        {
+          "status": "OPEN",
+          "statement": "Apply the accepted address transport and original arithmetic bounds to discharge the RAM Assume."
+        },
+        {
+          "status": "OPEN",
+          "statement": "Transport unsigned containment to both exact signed128 trace guards."
+        },
+        {
+          "status": "OPEN",
+          "statement": "Preserve every original owner, fraction, and K through the load."
+        }
+      ],
+      "production_region": {
+        "set": [
+          "RAM"
+        ],
+        "region_predicate_coq": "(0 <= 8 /\\ (mapRamBase defaultMap <= bv_unsigned ((currentStackWord + (BV 64%N 0%Z))%bv) /\\ bv_unsigned ((currentStackWord + (BV 64%N 0%Z))%bv) + 8 <= machineRamEnd defaultMap))%Z",
+        "platform_load_region_coq": "platformLoadRegion defaultMap actualInputEnd ((currentStackWord + (BV 64%N 0%Z))%bv) 8%Z",
+        "disjunct": "First/RAM; inputEnd is unchanged and does not enter the RAM inequalities.",
+        "assume_coq": "((mapRamBase defaultMap <= bv_unsigned ((currentStackWord + (BV 64%N 0%Z))%bv)) /\\ (bv_unsigned ((currentStackWord + (BV 64%N 0%Z))%bv) + 8 <= machineRamEnd defaultMap))%Z",
+        "assume_smt": "(and (bvsge ((_ zero_extend 64) v6) #x000000000000000000000000a0000000) (bvsle (bvadd ((_ zero_extend 64) v6) #x00000000000000000000000000000008) #x000000000000000000000000c0000000))",
+        "assume_scope": "After the exact read x2 and address definition v6, before platform cases. Reuse only this trace-local v6.",
+        "new_entry_premise": false,
+        "native_proof_obligation": "OPEN: discharge the Assume from original source facts at this load."
+      },
+      "source_containment": {
+        "notation": {
+          "S": "bv_unsigned stackWord",
+          "C": "stackCapacity",
+          "o": 0,
+          "B": "mapRamBase defaultMap",
+          "E": "machineRamEnd defaultMap"
+        },
+        "original_premises": [
+          "16 <= C",
+          "B <= S-C",
+          "S < E",
+          "S mod 16 = 0"
+        ],
+        "closed_map_values": {
+          "B": 2684354560,
+          "E": 3221225472,
+          "word_modulus": 18446744073709551616
+        },
+        "derivation": [
+          "C>=16 and B<=S-C imply B+16<=S.",
+          "Thus0<=S-16 and S<2^64.",
+          "For o in{0,8},0<=S-16+o<2^64.",
+          "B<=S-C<=S-16<=S-16+o.",
+          "S-16+o+8<=S<E."
+        ],
+        "entry_relative_address": "(stackWord + (BV 64%N 18446744073709551600%Z) + (BV 64%N 0%Z))%bv",
+        "normal_form": "S-16+0",
+        "width_bits": 64,
+        "access_bytes": 8,
+        "result": "The original bounds imply containment of this entire8-byte access.",
+        "status": "Source arithmetic derivation; exact native application remains OPEN."
+      },
+      "sp_origin": {
+        "original_owner": "\"x2\" \u21a6\u1d63 RVal_Bits stackWord",
+        "update_pc": "0x8009c338",
+        "update": "addi x2,x2,-16",
+        "public_update_pointer": "/functions/0/rows/0",
+        "required_identity": "currentStackWord = (stackWord + (BV 64%N 18446744073709551600%Z))%bv",
+        "no_intervening_sp_write": "The public CFG reaches either epilogue load pair before its own addi x2,x2,16. The two epilogues are alternative paths.",
+        "normal_restore_pcs": [
+          "0x8009c43c",
+          "0x8009c440",
+          "0x8009c444"
+        ],
+        "false_restore_pcs": [
+          "0x8009c450",
+          "0x8009c454",
+          "0x8009c458"
+        ],
+        "attachment_status": "OPEN native path/register preservation obligation; no execution evidence is a premise."
+      },
+      "accepted_transport_evidence": {
+        "offset8": {
+          "applicable": false,
+          "packet": {
+            "path": "/home/cody/zesislar/_build/agents/spec-b/stack-address298/RESULT-PACKET.json",
+            "sha256": "87cea9be3eaac4638b1cdb3daf92a9864f109dd47f35a9dc8940ccce5e7acfd0"
+          },
+          "module": "ZesuSsz.Evidence.StackAddress298",
+          "theorem": "first_store_address298",
+          "exact_conclusion": "bv_unsigned ((stackWord + BV64(-16) + BV64(8))%bv) = S-8",
+          "qualification": "Exact address theorem applies to either offset8 load once the current-SP identity is established. It does not prove load execution."
+        },
+        "both_offsets": {
+          "packet": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/unsigned-applications136/finished/RESULT.json",
+            "sha256": "360877646b14c7af07ea5f3c61392df28d8d83d516277a05f165b598b4792ea9"
+          },
+          "source": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/unsigned-applications136/Control.v",
+            "sha256": "cb403fb5db0aead8cac82cc1f1e02d348e8ff624ad994d49fe0749befae03984",
+            "bytes": 1530
+          },
+          "theorem": "shifted_word_bounds136",
+          "instantiation": {
+            "base": "S",
+            "cut": "16",
+            "increment": "0",
+            "lower": "B",
+            "first": "BV64(-16)",
+            "second": "BV64(0)"
+          },
+          "premise_discharge": [
+            "0<=16<=S from B+16<=S and B>=0.",
+            "S<2^64 from S<E and closed E<2^64.",
+            "0<=o<=16 by o=0 or8.",
+            "bv_signed BV64(-16)=-16 and bv_signed BV64(o)=o by closed numeral evaluation.",
+            "B+16<=S from original capacity/RAM facts."
+          ],
+          "remaining_transport": "Rewrite Z_to_bv64(bv_unsigned stackWord)=stackWord by existing bitvector roundtrip. Preserve this as a native obligation."
+        },
+        "typed_guard": {
+          "packet": {
+            "path": "/home/cody/zesislar/_build/agents/spec-b/cursor-guard315/RESULT-PACKET.json",
+            "sha256": "619d09aa4504d158bc192b450641c46719bc163106da3bcd401beea48eb23e53"
+          },
+          "theorem": "cursor_guard315",
+          "lower_normalization": "zesu_signed_zero_extend_64_128",
+          "upper_normalization": "zesu_signed_zero_extend_add_64_128",
+          "remaining_side_conditions": [
+            "Both64-bit addition intervals from source_containment.",
+            "unsigned(BV128(8))<2^64 by closed computation.",
+            "Closed RAM literals agree with defaultMap."
+          ],
+          "status": "Existing generic evidence; exact per-load native transport remains OPEN."
+        }
+      }
+    }
+  ],
+  "load_count": 4,
+  "byte_table_load_count": 40,
+  "combined_expected_load_count": 44,
+  "case_count": 9,
+  "stack_case_load_pairs": 36,
+  "entry": {
+    "path": "/home/cody/zesislar/_build/agents/spec-a/heldout-eql-signature154/ENTRY-v3.v",
+    "sha256": "8a49bbb759ff940191e3a676a550931a7670e33230a5019a2d17c4cda7e21630"
+  },
+  "public_inventory": {
+    "path": "/home/cody/zesislar/_build/agents/spec-a/heldout-eql-signature154/PUBLIC-INVENTORY.json",
+    "sha256": "5101f7b400ec953cf4f4dadc47e204c8538926827c0a0e3fe76d1e5bd14018e8"
+  },
+  "public_dump": {
+    "path": "/home/cody/zesislar/_build/agents/spec-a/heldout-eql-signature154/selected.raw.dump",
+    "sha256": "ad45e6631fbf978d1ce5bb8788d1e414711e06c44d2c0cd862cc5e50f153dae3"
+  },
+  "byte_load_table": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/load-regions319/PER-LOAD-REGIONS.json",
+    "sha256": "f2a163df2e6ee61b2172bd576aa5b2102e1feb3b3e00fa45f7612b4d7278f4c9"
+  },
+  "frame_analysis": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-1/frame-analysis138/SELECTED-RESULT.json",
+    "sha256": "9bec8e4c0edbff4af6aa8f0325ea334690b254c6cd3e9262be34ebede0618577"
+  },
+  "original_frame_source": {
+    "path": "/home/cody/zesislar/_build/agents/spec-a/heldout-join195/JoinEntries.v",
+    "sha256": "127af7ce30e7a6c66e721cb7a4db27d5039ad1c01d357ad549e4ef3afb2bf392"
+  },
+  "entry_fact_occurrences": [
+    {
+      "line": 71,
+      "text": "  (bv_unsigned stackWord - stackCapacity) \u21a6\u2098? stackCapacity \u2217"
+    },
+    {
+      "line": 78,
+      "text": "  \u231c(16 <= stackCapacity)%Z\u231d \u2217"
+    },
+    {
+      "line": 79,
+      "text": "  \u231c(mapRamBase defaultMap <= bv_unsigned stackWord - stackCapacity)%Z\u231d \u2217"
+    },
+    {
+      "line": 80,
+      "text": "  \u231c(bv_unsigned stackWord < machineRamEnd defaultMap)%Z\u231d \u2217"
+    }
+  ],
+  "frame_owner_occurrences": [
+    {
+      "line": 70,
+      "text": "  (bv_unsigned joinStackWord) \u21a6\u2098{DfracOwn 1} saved_x8 \u2217"
+    },
+    {
+      "line": 71,
+      "text": "  ((bv_unsigned joinStackWord + 8)%Z) \u21a6\u2098{DfracOwn 1} returnWord \u2217"
+    },
+    {
+      "line": 83,
+      "text": "  \u231c((bv_unsigned joinStackWord + 16 = bv_unsigned stackWord)%Z)\u231d \u2217"
+    },
+    {
+      "line": 148,
+      "text": "  ((bv_unsigned stackWord - 16)%Z) \u21a6\u2098{DfracOwn 1} saved_x8 \u2217"
+    },
+    {
+      "line": 149,
+      "text": "  ((bv_unsigned stackWord - 8)%Z) \u21a6\u2098{DfracOwn 1} returnWord \u2217"
+    }
+  ],
+  "elf": {
+    "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/build/stock-zisk/zesu-zisk.elf",
+    "sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95"
+  },
+  "proof_acceptance": false,
+  "new_premises": [],
+  "constraint_generation": false,
+  "source_execution": false,
+  "trace_generation": false,
+  "native_residuals_read": false,
+  "warning": "The source bounds justify RAM containment. Accepted generic transports are reused. Per-load SP attachment and native Assume discharge remain OPEN. No trace was generated.",
+  "previous_measurement": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-1/stack-load-regions181/STACK-LOAD-REGIONS.json",
+    "sha256": "62cc9d9c9f790892f750a2cb1846dfbf45d981992d211cdac7e9a298dabfa417"
+  },
+  "approved_constraint_scope": "Exact source-supported per-load RAM Assume; no new entry premise or fault-leaf proof.",
+  "bindings": [
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/stack-address298/RESULT-PACKET.json",
+      "sha256": "87cea9be3eaac4638b1cdb3daf92a9864f109dd47f35a9dc8940ccce5e7acfd0"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-1/unsigned-applications136/finished/RESULT.json",
+      "sha256": "360877646b14c7af07ea5f3c61392df28d8d83d516277a05f165b598b4792ea9"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/cursor-guard315/RESULT-PACKET.json",
+      "sha256": "619d09aa4504d158bc192b450641c46719bc163106da3bcd401beea48eb23e53"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/load-fault301/final001/prepared/artifacts/default/ZesuSsz/Contracts/PlatformLoadRegion.v",
+      "sha256": "0a36f0ebcfa02792e5f48bf830c94db516a6c94912864aaa933fb618c2dd079a"
+    }
+  ]
+}

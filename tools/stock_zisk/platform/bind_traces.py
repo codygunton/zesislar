@@ -5,6 +5,10 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import tomllib
+from types import SimpleNamespace
+from traces import selected_rows, selected_dump, resolve_trace_elf, normalize_dune_package
+from access_regions import annotate_regions, read_source_map
 from traces import validate_instruction_modules, Image, ELFFile
 from exports import selected_commitments, validate_exports
 from indexes import approved_regions, validate_partition, validate_indexes
@@ -12,12 +16,15 @@ ROOT=Path(__file__).resolve().parents[3]
 def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 def rec(path): return {"path":str(path),"sha256":sha(path)}
 def validate_expected_files(out, manifest, trace_name):
+    excluded = {"manifest-fragment.json", "generation-measurement.json"}
+    if trace_name == "eql":
+        excluded.add("trace-manifest.json")
     expected = json.loads(manifest.read_text())
     prefix = "generated/isla-traces/stock-zisk/" + trace_name + "/"
     records = {name[len(prefix):]: record for name,record in expected.get("project_derived",{}).items()
-               if name.startswith(prefix) and name[len(prefix):] not in {"manifest-fragment.json", "generation-measurement.json"}}
+               if name.startswith(prefix) and name[len(prefix):] not in excluded}
     actual = {path.name: path for path in out.iterdir() if path.is_file()
-              and path.name not in {"manifest-fragment.json", "generation-measurement.json"}}
+              and path.name not in excluded}
     if records.keys() != actual.keys():
         raise ValueError("Regenerated files differ from the manifest file list")
     for name,path in actual.items():
@@ -29,11 +36,116 @@ def validate_expected_commitments(commitments, manifest, trace_name):
     if commitments != expected.get("traces", {}).get(trace_name, {}).get("commitments"):
         raise ValueError("The regenerated commitments differ from the tracked manifest")
 
+def input_path(record):
+    path = Path(record["path"])
+    return path if path.is_absolute() else ROOT / path
+
+
+def validate_trace_only(out, trace_name):
+    if trace_name != "eql":
+        raise ValueError("Trace-only production binding requires the approved eql group")
+    report = json.loads((out / "trace-manifest.json").read_text())
+    if (report.get("schema") != "stock-zisk.trace-only.v1" or report.get("arch") != "riscv64"
+            or report.get("coqdir") != "ZesuSsz.Stock.Eql"
+            or report.get("instruction_count") != 74 or report.get("generated_count") != 74):
+        raise ValueError("The eql trace manifest has an invalid identity or coverage")
+    inputs = report["inputs"]
+    required = {"manifest", "elf", "dump", "driver", "frontend", "footprint",
+                "footprint_wrapper", "platform_snapshot", "config", "decoder",
+                "per_load_regions", "region_renderer", "load_exemptions"}
+    if not required <= inputs.keys():
+        raise ValueError("The eql trace manifest omits a required input")
+    for record in [*inputs.values(), report["selected_dump"]]:
+        if sha(input_path(record)) != record["sha256"]:
+            raise ValueError("An eql trace input changed: " + record["path"])
+    if "region_source_map" in inputs:
+        descriptor = input_path(inputs["manifest"])
+        recipe = json.loads(descriptor.read_text())
+        if recipe.get("schema") != "stock-zisk.eql-trace-input.v1":
+            raise ValueError("The production eql descriptor is invalid")
+        selected_elf = resolve_trace_elf(SimpleNamespace(manifest=descriptor, trace_only=True,
+            region_source_map=input_path(inputs["region_source_map"]),
+            region_source_map_sha256=inputs["region_source_map"]["sha256"]), recipe)
+        if selected_elf != input_path(inputs["elf"]).resolve():
+            raise ValueError("The eql manifest differs from its mapped ELF")
+    config = tomllib.loads(input_path(inputs["config"]).read_text())
+    reset = config["registers"]["reset"]
+    if reset.get("medeleg.bits") != "0x0000000000000000" or reset.get("mideleg.bits") != "0x0000000000000000":
+        raise ValueError("The eql delegation reset configuration differs")
+    with input_path(inputs["elf"]).open("rb") as stream:
+        rows = selected_rows(SimpleNamespace(closure=False, dump=input_path(inputs["dump"])), Image(ELFFile(stream)))
+    rows, accesses, sources = annotate_regions(rows, input_path(inputs["per_load_regions"]),
+                                               inputs["per_load_regions"].get("payload_sha256", inputs["per_load_regions"]["sha256"]),
+                                               input_path(inputs["load_exemptions"]),
+                                               inputs["load_exemptions"].get("payload_sha256", inputs["load_exemptions"]["sha256"]),
+                                               read_source_map(input_path(inputs["region_source_map"]), inputs["region_source_map"]["sha256"])
+                                               if "region_source_map" in inputs else None)
+    source_set = {(str(input_path(row).resolve()), row["sha256"]) for row in inputs.values()}
+    if any((row["path"], row["sha256"]) not in source_set for row in sources):
+        raise ValueError("The eql manifest omits a region source binding")
+    if (len(rows) != 74 or len({row["pc"] for row in rows}) != 74 or len(accesses) != 46
+            or sum(row["constraint_emitted"] for row in accesses) != 42
+            or {row["pc"] for row in accesses if not row["constraint_emitted"]}
+               != {"0x8009c43c", "0x8009c440", "0x8009c450", "0x8009c454"}):
+        raise ValueError("The eql instruction or exemption coverage differs")
+    if input_path(report["selected_dump"]).read_text() != selected_dump(rows):
+        raise ValueError("The eql selected dump differs from its checked region policy")
+    pcs = [row["pc"] for row in rows]
+    validate_instruction_modules(out, pcs)
+    expected = {f"a{pc:x}.{suffix}" for pc in pcs for suffix in ["v", "isla"]} | {"instrs.v", "dune"}
+    actual = {path.name for path in out.iterdir() if path.is_file()
+              and path.name not in {"trace-manifest.json", "manifest-fragment.json", "generation-measurement.json"}}
+    if set(report["files"]) != expected or actual != expected:
+        raise ValueError("The eql emitted file set differs")
+    for name, digest in report["files"].items():
+        if sha(out / name) != digest:
+            raise ValueError("An eql output hash differs: " + name)
+    if "region_source_map" in inputs:
+        frontend_dune = report.get("frontend_dune")
+        if frontend_dune is None or sha(input_path(frontend_dune)) != frontend_dune["sha256"]:
+            raise ValueError("The eql frontend dune provenance differs")
+        if normalize_dune_package(input_path(frontend_dune).read_text()) != (out / "dune").read_text():
+            raise ValueError("The eql dune differs from package normalization")
+    return report
+
+
+def bind_trace_only(out, trace_name, check_manifest):
+    report = validate_trace_only(out, trace_name)
+    if "region_source_map" not in report["inputs"]:
+        raise ValueError("Production eql binding requires a durable region source map")
+    if check_manifest:
+        recipe = json.loads(check_manifest.read_text())
+        group = recipe.get("traces", {}).get(trace_name, {})
+        if (group.get("kind") != "trace_only" or group.get("native_proof_coverage") is not False
+                or group.get("region_assume_obligations") != 42
+                or group.get("input_hashes") != {name: row["sha256"] for name, row in report["inputs"].items()}):
+            raise ValueError("The eql manifest group differs from its production pins")
+        validate_expected_files(out, check_manifest, trace_name)
+        print("The eql trace files match their production pins; proof obligations remain open")
+        return
+    inputs = dict(report["inputs"], binder=rec(Path(__file__).resolve()))
+    derived = {str(path.relative_to(ROOT)): dict(rec(path), schema_version=1)
+               for path in sorted(out.iterdir()) if path.is_file()
+               and path.name not in {"trace-manifest.json", "manifest-fragment.json", "generation-measurement.json"}}
+    data = {"schema_version": 1, "inputs": inputs, "derived": derived,
+            "traces": {"kind": "trace_only", "elf_sha256": report["inputs"]["elf"]["sha256"],
+                       "instruction_count": 74, "generated_count": 74,
+                       "instruction_modules_validated": True, "native_proof_coverage": False,
+                       "region_assume_obligations": 42,
+                       "input_hashes": {name: row["sha256"] for name, row in report["inputs"].items()},
+                       "manifest_binding_pending": True}}
+    (out / "manifest-fragment.json").write_text(json.dumps(data, indent=2) + "\n")
+    print("Eql trace fragment: 74 instruction pairs; all 42 region obligations remain open")
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument("--out",type=Path,required=True)
     parser.add_argument("--check-manifest",type=Path)
     parser.add_argument("--trace-name",default="closure")
     args=parser.parse_args();out=args.out.resolve()
+    if (out / "trace-manifest.json").exists():
+        bind_trace_only(out, args.trace_name, args.check_manifest)
+        return
     report=json.loads((out / "coverage.json").read_text())
     dump=out.parent / (out.name + ".selected.dump")
     if sha(dump) != report["dump_sha256"]:

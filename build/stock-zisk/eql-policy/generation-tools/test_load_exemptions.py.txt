@@ -1,0 +1,83 @@
+"""Check exact, source-bound exclusions from region annotations."""
+from copy import deepcopy
+import hashlib
+import json
+from pathlib import Path
+import tempfile
+import unittest
+import test_access_regions as baseline
+from access_regions import annotate_regions
+
+
+def bind(path):
+    return {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+
+
+class LoadExemptionTests(unittest.TestCase):
+    def fixture(self, directory):
+        root = Path(directory)
+        packet, access, instruction = baseline.AccessRegionTests().fixture(root)
+        path = root / "regions.json"
+        path.write_text(json.dumps(packet))
+        exemption = {"pc": "0x4", "kind": "single_leaf_load_exemption",
+                     "source_access": {"instruction": instruction}, "new_premises": []}
+        for key in ["source_packet", "precise_handoff", "raw_trace", "rocq_trace"]:
+            exemption[key] = access["raw_trace"]
+        excluded = {"schema": "source.single-leaf-load-exemptions.v1",
+                    "exemption_count": 1, "exemptions": [exemption]}
+        ep = root / "exemptions.json"
+        ep.write_text(json.dumps(excluded))
+        return path, ep, excluded, instruction
+
+    def run_fixture(self, path, ep, instruction):
+        return annotate_regions([instruction], path, bind(path)["sha256"],
+                                ep, bind(ep)["sha256"])
+
+    def test_exact_exemption_preserves_instruction_without_annotation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path, ep, excluded, instruction = self.fixture(directory)
+            rows, records, sources = self.run_fixture(path, ep, instruction)
+            self.assertEqual(rows, [instruction])
+            self.assertFalse(records[0]["constraint_emitted"])
+            self.assertIn(bind(ep), sources)
+
+    def test_default_still_emits_constraint(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path, ep, excluded, instruction = self.fixture(directory)
+            rows, records, _ = annotate_regions([instruction], path, bind(path)["sha256"])
+            self.assertEqual(len(rows[0]["annotations"]), 1)
+            self.assertTrue(records[0]["constraint_emitted"])
+
+    def test_changed_binding_refuses(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path, ep, excluded, instruction = self.fixture(directory)
+            digest = bind(ep)["sha256"]
+            ep.write_text(ep.read_text() + " ")
+            with self.assertRaisesRegex(ValueError, "source changed"):
+                annotate_regions([instruction], path, bind(path)["sha256"], ep, digest)
+
+    def test_invalid_exemptions_refuse(self):
+        for change in ["pc", "word", "duplicate", "premise", "count", "schema", "source"]:
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as directory:
+                path, ep, excluded, instruction = self.fixture(directory)
+                item = excluded["exemptions"][0]
+                if change == "pc": item["pc"] = "0x8"
+                elif change == "word": item["source_access"]["instruction"]["word"] += 1
+                elif change == "duplicate": excluded["exemptions"].append(deepcopy(item))
+                elif change == "premise": item["new_premises"] = ["stronger"]
+                elif change == "count": excluded["exemption_count"] = 2
+                elif change == "schema": excluded["schema"] = "unknown"
+                elif change == "source": item["raw_trace"]["sha256"] = "0" * 64
+                ep.write_text(json.dumps(excluded))
+                with self.assertRaises(ValueError): self.run_fixture(path, ep, instruction)
+
+    def test_existing_constraint_refuses(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path, ep, excluded, instruction = self.fixture(directory)
+            instruction["annotations"] = ["//@constraint: true"]
+            with self.assertRaisesRegex(ValueError, "already has a constraint"):
+                self.run_fixture(path, ep, instruction)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -23,6 +23,7 @@ sys.path.insert(0,str(ROOT / "tools/stock_zisk"))
 from closure import Image
 from elftools.elf.elffile import ELFFile
 from riscv import decode, decode_range
+from access_regions import annotate_regions, read_source_map
 
 def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 def validate_instruction_modules(out, pcs):
@@ -43,15 +44,54 @@ def selected_rows(args, image):
                 rows[row["pc"]]=row
         return [rows[pc] for pc in sorted(rows)]
     rows=[]
+    annotations=[]
     for line in args.dump.read_text().splitlines():
+        if line.lstrip().startswith("//@"):
+            annotations.append(line)
+            continue
         m=re.match(r"\s*([0-9a-fA-F]+):\s*([0-9a-fA-F]{8})\s+",line)
         if m:
             pc,word=int(m[1],16),int(m[2],16)
             row=decode(pc,image.read(pc,4))
             if row["word"] != word: raise ValueError(f"Dump byte mismatch at {pc:#x}")
+            if annotations:
+                row["annotations"]=annotations
+                annotations=[]
             rows.append(row)
+        elif annotations and not line.lstrip().startswith("//"):
+            raise ValueError("Orphan annotations do not precede an instruction")
+    if annotations: raise ValueError("Orphan annotations have no next instruction")
     if not rows: raise ValueError("The input dump contains no instructions")
     return rows
+
+
+def selected_dump(rows):
+    lines=[]
+    for row in rows:
+        lines.extend(row.get("annotations", []))
+        lines.append(f"{row['pc']:x}: {row['word']:08x} {row['mnemonic']}")
+    return "\n".join(lines) + "\n"
+
+
+def resolve_trace_elf(args, recipe):
+    if recipe.get("schema") != "stock-zisk.eql-trace-input.v1":
+        return args.manifest.parent / "zesu-zisk.elf"
+    if not args.trace_only or not args.region_source_map:
+        raise ValueError("The eql descriptor requires trace-only mode and its explicit input map")
+    source_map = read_source_map(args.region_source_map, args.region_source_map_sha256)
+    binding = source_map.get("input_files", {}).get(recipe.get("elf_input"))
+    if binding is None:
+        raise ValueError("The eql ELF has no explicit input mapping")
+    relative = Path(binding["path"])
+    if relative.is_absolute() or ".." in relative.parts:
+        raise ValueError("The eql ELF mapping escapes the project root")
+    elf = (ROOT / relative).resolve()
+    if not elf.is_relative_to(ROOT.resolve()):
+        raise ValueError("The eql ELF mapping escapes the project root")
+    if binding.get("sha256") != recipe.get("elf_sha256") or sha(elf) != binding["sha256"]:
+        raise ValueError("The eql ELF binding differs")
+    return elf
+
 
 def trace_only_inputs(args, elf):
     paths = {
@@ -63,8 +103,53 @@ def trace_only_inputs(args, elf):
         "config": ROOT / "ZesuSsz/riscv64_zesu.toml",
         "decoder": ROOT / "tools/stock_zisk/riscv.py",
     }
-    return {name: {"path": str(path.resolve()), "sha256": sha(path)}
-            for name, path in paths.items()}
+    if args.per_load_regions:
+        paths.update(per_load_regions=args.per_load_regions,
+                     region_renderer=Path(__file__).with_name("access_regions.py"))
+    if args.load_exemptions:
+        paths["load_exemptions"] = args.load_exemptions
+    if getattr(args, "region_source_map", None):
+        paths["region_source_map"] = args.region_source_map
+    if args.render_only:
+        paths = {name: path for name, path in paths.items()
+                 if name in {"manifest", "elf", "dump", "driver", "config", "decoder",
+                             "per_load_regions", "region_renderer", "load_exemptions", "region_source_map"}}
+    result = {name: {"path": str(path.resolve()), "sha256": sha(path)}
+              for name, path in paths.items()}
+    if args.per_load_regions:
+        result["per_load_regions"]["payload_sha256"] = args.per_load_regions_sha256
+    if args.load_exemptions:
+        result["load_exemptions"]["payload_sha256"] = args.load_exemptions_sha256
+    return result
+
+
+def render_regions(args, rows, inputs, records):
+    if args.out.exists():
+        raise ValueError("Region rendering requires a new output directory")
+    for record in inputs.values():
+        if sha(Path(record["path"])) != record["sha256"]:
+            raise ValueError("A region-rendering input changed: " + record["path"])
+    args.out.mkdir(parents=True)
+    dump = args.out / "selected.dump"
+    dump.write_text(selected_dump(rows))
+    report = {"schema": "stock-zisk.region-render.v1", "status": "rendered_assume_obligations_open",
+              "inputs": inputs, "selected_dump": {"path": str(dump), "sha256": sha(dump)},
+              "instruction_count": len(rows), "access_count": len(records), "accesses": records,
+              "trace_generation": False, "proof_acceptance": False, "new_entry_premises": 0}
+    (args.out / "RENDER.json").write_text(json.dumps(report, indent=2) + "\n")
+
+
+def normalize_dune_package(text, with_stock=False):
+    text = re.sub(r"^ \(package islaris\)\n", "", text, flags=re.M)
+    theories = "isla isla.riscv64 lithium iris stdpp RecordUpdate Ltac2"
+    if with_stock:
+        theories += " ZesuStock"
+    return text.replace("(theories isla isla.riscv64)", "(theories " + theories + ")")
+
+
+def remove_upstream_package(out, with_stock=False):
+    dune = out / "dune"
+    dune.write_text(normalize_dune_package(dune.read_text(), with_stock))
 
 
 def generate_trace_only(args, rows, inputs):
@@ -76,11 +161,13 @@ def generate_trace_only(args, rows, inputs):
         raise ValueError("Trace-only generation cannot omit runtime instructions")
     dump = args.out.parent / (args.out.name + ".selected.dump")
     log = args.out.parent / (args.out.name + ".generation.log")
-    if any(path.exists() for path in [args.out, dump, log]):
+    destinations = [args.out, dump, log]
+    if getattr(args, "repository_descriptor", False):
+        destinations.append(args.out.parent / (args.out.name + ".frontend.dune"))
+    if any(path.exists() for path in destinations):
         raise ValueError("Trace-only generation requires a new output directory and sidecar files")
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    dump.write_text("\n".join(f"{row['pc']:x}: {row['word']:08x} {row['mnemonic']}"
-                              for row in rows) + "\n")
+    dump.write_text(selected_dump(rows))
     selected_dump_hash = sha(dump)
     env = dict(os.environ, OPAM_SWITCH_PREFIX="/home/cody/islaris/_opam")
     env["PATH"] = str(ROOT / "tools/stock_zisk/platform/bin") + ":" + str(ROOT / "bin") + ":" + str(TRACE_FRONTEND.parent) + ":" + env["PATH"]
@@ -92,6 +179,12 @@ def generate_trace_only(args, rows, inputs):
                                 stderr=subprocess.STDOUT, cwd=ROOT)
     if result.returncode:
         raise RuntimeError("Trace-only generation failed; inspect " + str(log))
+    frontend_dune = None
+    if getattr(args, "repository_descriptor", False):
+        original = args.out.parent / (args.out.name + ".frontend.dune")
+        original.write_bytes((args.out / "dune").read_bytes())
+        frontend_dune = {"path": str(original), "sha256": sha(original)}
+        remove_upstream_package(args.out)
     for record in inputs.values():
         if sha(Path(record["path"])) != record["sha256"]:
             raise ValueError("A trace-only input changed: " + record["path"])
@@ -113,6 +206,8 @@ def generate_trace_only(args, rows, inputs):
         "seconds": round(time.monotonic() - started, 3),
         "peak_rss_kib": resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss,
     }
+    if frontend_dune is not None:
+        report["frontend_dune"] = frontend_dune
     (args.out / "trace-manifest.json").write_text(json.dumps(report, indent=2) + "\n")
     print(f"Generated {generated}/{len(rows)} trace-only instructions")
 
@@ -139,9 +234,11 @@ def generate_indexes(args, rows, recipe, elf):
     if previous["elf_sha256"] != sha(elf):
         raise ValueError("The frozen selected ELF changed")
     dump_path = args.out.parent / (args.out.name + ".selected.dump")
-    expected_dump = "\n".join(f"{row['pc']:x}: {row['word']:08x} {row['mnemonic']}" for row in supported) + "\n"
+    expected_dump = selected_dump(supported)
     if sha(dump_path) != previous["dump_sha256"] or dump_path.read_text() != expected_dump:
         raise ValueError("The frozen instruction dump differs from the selected ELF")
+    if any(row.get("annotations") for row in supported):
+        raise ValueError("The opcode-only trace cache cannot replay annotated instructions")
     for path, value in previous["files"].items():
         if not re.fullmatch(r"a[0-9a-f]+\.(v|isla)", Path(path).name):
             continue
@@ -172,7 +269,7 @@ def generate_indexes(args, rows, recipe, elf):
             output = stage / name
             output.mkdir()
             dump = stage / (name + ".dump")
-            dump.write_text("\n".join(f"{pc:x}: {by_pc[pc]['word']:08x} {by_pc[pc]['mnemonic']}" for pc in sorted(pcs)) + "\n")
+            dump.write_text(selected_dump([by_pc[pc] for pc in sorted(pcs)]))
             command = [str(Path(env["OPAM_SWITCH_PREFIX"]) / "bin/islaris"), str(dump),
                        "--arch=riscv64", "--coqdir=" + args.coqdir, f"-j{args.jobs}", "-o", str(output)]
             result = subprocess.run(command, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -213,9 +310,11 @@ def canonical_decodeitem(args, rows, elf):
     supported = [row for row in rows if row["kind"] != "runtime"]
     validate_instruction_modules(args.out, [row["pc"] for row in supported])
     dump = args.out.parent / (args.out.name + ".selected.dump")
-    expected_dump = "\n".join(f"{row['pc']:x}: {row['word']:08x} {row['mnemonic']}" for row in supported) + "\n"
+    expected_dump = selected_dump(supported)
     if dump.read_text() != expected_dump or sha(dump) != previous["dump_sha256"]:
         raise ValueError("The cached DecodeItem dump differs from the selected ELF")
+    if any(row.get("annotations") for row in supported):
+        raise ValueError("The opcode-only trace cache cannot replay annotated instructions")
     for key, path in [("elf_sha256", elf),
                       ("platform_snapshot_sha256", ROOT / "build/stock-zisk/platform/riscv64-zisk.ir"),
                       ("config_sha256", ROOT / "ZesuSsz/riscv64_zesu.toml")]:
@@ -359,6 +458,13 @@ def main():
     ap.add_argument("--indexes",action="store_true")
     ap.add_argument("--trace-only", action="store_true",
                     help="Generate a new isolated trace dataset without region commitments or exports")
+    ap.add_argument("--per-load-regions", type=Path)
+    ap.add_argument("--per-load-regions-sha256")
+    ap.add_argument("--region-source-map", type=Path)
+    ap.add_argument("--region-source-map-sha256")
+    ap.add_argument("--load-exemptions", type=Path)
+    ap.add_argument("--load-exemptions-sha256")
+    ap.add_argument("--render-only", action="store_true")
     ap.add_argument("--ensure-native-indexes", action="store_true")
     ap.add_argument("--cache-dir", type=Path, default=ROOT / "_build/stock-zisk/native-trace-cache")
     ap.add_argument("--decode-out", type=Path, default=ROOT / "generated/isla-traces/stock-zisk/decodeItem")
@@ -366,6 +472,20 @@ def main():
     args=ap.parse_args()
     if args.trace_only and (args.closure or args.indexes or args.ensure_native_indexes):
         ap.error("--trace-only cannot combine with closure or native-index modes")
+    if bool(args.per_load_regions) != bool(args.per_load_regions_sha256):
+        ap.error("A region packet requires its exact SHA256")
+    if bool(args.region_source_map) != bool(args.region_source_map_sha256):
+        ap.error("A region source map requires its exact SHA256")
+    if args.region_source_map and not args.per_load_regions:
+        ap.error("A region source map requires an access-region packet")
+    if bool(args.load_exemptions) != bool(args.load_exemptions_sha256):
+        ap.error("Load exemptions require their exact SHA256")
+    if args.load_exemptions and not args.per_load_regions:
+        ap.error("Load exemptions require an access-region packet")
+    if args.per_load_regions and not args.trace_only:
+        ap.error("Region packets require isolated --trace-only mode")
+    if args.render_only and not args.per_load_regions:
+        ap.error("--render-only requires an access-region packet")
     if not 1 <= args.jobs <= 6: raise ValueError("Use one to six workers for this child")
     args.manifest = args.manifest.resolve()
     if args.ensure_native_indexes:
@@ -377,7 +497,8 @@ def main():
     args.out = args.out.resolve()
     args.dump = args.dump.resolve()
     args.manifest = args.manifest.resolve()
-    recipe=json.loads(args.manifest.read_text()); elf=args.manifest.parent / "zesu-zisk.elf"
+    recipe=json.loads(args.manifest.read_text()); elf=resolve_trace_elf(args, recipe)
+    args.repository_descriptor = recipe.get("schema") == "stock-zisk.eql-trace-input.v1"
     if sha(elf) != recipe["elf_sha256"]: raise ValueError("The selected ELF hash changed")
     trace_inputs = trace_only_inputs(args, elf) if args.trace_only else None
     with elf.open("rb") as stream:
@@ -387,6 +508,16 @@ def main():
             if actual["word"] != row["word"]: raise ValueError("The inventory instruction bytes changed")
             if actual["kind"] == "unsupported":
                 raise ValueError(f"Unsupported {actual['extension']} at {actual['pc']:#x}: {actual['word']:#010x}")
+    if args.per_load_regions:
+        rows, region_records, region_sources = annotate_regions(rows, args.per_load_regions, args.per_load_regions_sha256,
+                                                                      args.load_exemptions, args.load_exemptions_sha256,
+                                                                      read_source_map(args.region_source_map, args.region_source_map_sha256)
+                                                                      if args.region_source_map else None)
+        trace_inputs.update({f"region_source_{index}": binding
+                             for index, binding in enumerate(region_sources)})
+        if args.render_only:
+            render_regions(args, rows, trace_inputs, region_records)
+            return
     if args.trace_only:
         generate_trace_only(args, rows, trace_inputs)
         return
@@ -404,10 +535,9 @@ def main():
        for r in rows if r["kind"] == "runtime"]
     supported=[r for r in rows if r["kind"] != "runtime"]
     args.out.parent.mkdir(parents=True,exist_ok=True)
-    # This dump supplies only selected instruction bytes. The configuration
-    # supplies platform facts. No instruction memory footprint is assumed.
+    # Preserve each supplied annotation on its selected instruction.
     dump=args.out.parent / (args.out.name + ".selected.dump")
-    dump.write_text("\n".join(f"{r['pc']:x}: {r['word']:08x} {r['mnemonic']}" for r in supported)+"\n")
+    dump.write_text(selected_dump(supported))
     env=dict(os.environ, OPAM_SWITCH_PREFIX="/home/cody/islaris/_opam")
     env["PATH"]=str(ROOT / "tools/stock_zisk/platform/bin")+":"+str(ROOT / "bin")+":"+str(Path(env["OPAM_SWITCH_PREFIX"]) / "bin")+":"+env["PATH"]
     command=[str(Path(env["OPAM_SWITCH_PREFIX"]) / "bin/islaris"),str(dump),
@@ -422,10 +552,7 @@ def main():
     generated_count=validate_instruction_modules(args.out,[r["pc"] for r in supported])
     # The standalone project has its own theory graph. Remove the frontend's
     # upstream package declaration and use the established theory dependencies.
-    dune=args.out / "dune"
-    text=dune.read_text();text=re.sub(r"^ \(package islaris\)\n","",text,flags=re.M)
-    text=text.replace("(theories isla isla.riscv64)","(theories isla isla.riscv64 lithium iris stdpp RecordUpdate Ltac2 ZesuStock)")
-    dune.write_text(text)
+    remove_upstream_package(args.out, with_stock=True)
     prefix = "generated/isla-traces/stock-zisk/" + ("closure" if args.closure else "decodeItem") + "/"
     files={prefix + p.name:sha(p)
            for p in sorted(args.out.iterdir()) if p.is_file()}
