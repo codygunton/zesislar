@@ -1,0 +1,259 @@
+{
+  "schema": "source.region-path-map.v1",
+  "archives": {
+    "regions.json.gz": {
+      "sha256": "c301733516aa58ddfd07a08c3aa2e9c0c6733b57b8f5edd89892d6eefbe85330",
+      "payload_sha256": "3e79c1525180f95d48d65823a69394c89ba7d7e70bc778dae19b89004885cfeb"
+    },
+    "exemptions.json.gz": {
+      "sha256": "591633035fb95858bb83939c247caa7aee58f58676cf65b55b7c7ac010ecdad3",
+      "payload_sha256": "4f4a5a9e2efb2bf153e013711df334c2bd19f3d83a58ae9cc47825f54f04ffee"
+    }
+  },
+  "paths": {
+    "/home/cody/zesislar/_build/agents/spec-a/heldout-eql-signature154/ENTRY-v3.v": {
+      "path": "sources/8a49bbb759ff940191e3a676a550931a7670e33230a5019a2d17c4cda7e21630.v",
+      "sha256": "8a49bbb759ff940191e3a676a550931a7670e33230a5019a2d17c4cda7e21630"
+    },
+    "/home/cody/zesislar/_build/agents/spec-b/load-fault301/final001/prepared/artifacts/default/ZesuSsz/Contracts/PlatformLoadRegion.v": {
+      "path": "sources/0a36f0ebcfa02792e5f48bf830c94db516a6c94912864aaa933fb618c2dd079a.v",
+      "sha256": "0a36f0ebcfa02792e5f48bf830c94db516a6c94912864aaa933fb618c2dd079a"
+    },
+    "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/cleanup/portable001/SOURCES/ZesuMachineMap/Machine.v": {
+      "path": "sources/72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4.v",
+      "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c33c.isla": {
+      "path": "sources/e84096563ef4659b90b61ad60a64756343ffbd75757ac401b685058888a7298e.isla",
+      "sha256": "e84096563ef4659b90b61ad60a64756343ffbd75757ac401b685058888a7298e"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c340.isla": {
+      "path": "sources/c99dfad029566ab899e5c7289ab31e9db8e9e8f444d741520c9189186df0abef.isla",
+      "sha256": "c99dfad029566ab899e5c7289ab31e9db8e9e8f444d741520c9189186df0abef"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c348.isla": {
+      "path": "sources/5d7f3b5999116f765f6a7f9ca590bfddfef5a1485f96d61c8ffdeae9c16b4fae.isla",
+      "sha256": "5d7f3b5999116f765f6a7f9ca590bfddfef5a1485f96d61c8ffdeae9c16b4fae"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c34c.isla": {
+      "path": "sources/d728244c020603e66e482680efd2a43c2c3729646548a7b45c701b6dee1292c8.isla",
+      "sha256": "d728244c020603e66e482680efd2a43c2c3729646548a7b45c701b6dee1292c8"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c354.isla": {
+      "path": "sources/762d423acbc927382c0234e7880b8a2108b8b90c901f79589eefe195752432eb.isla",
+      "sha256": "762d423acbc927382c0234e7880b8a2108b8b90c901f79589eefe195752432eb"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c358.isla": {
+      "path": "sources/082f161b54ad772d17ecc705f35c8edaa187bbb40def3952f71032fbec9ac985.isla",
+      "sha256": "082f161b54ad772d17ecc705f35c8edaa187bbb40def3952f71032fbec9ac985"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c360.isla": {
+      "path": "sources/bf3b42c27a504fab9bc24b9180c496d4e43c0450a0780040affe106a3a70d552.isla",
+      "sha256": "bf3b42c27a504fab9bc24b9180c496d4e43c0450a0780040affe106a3a70d552"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c364.isla": {
+      "path": "sources/e02be6ad430c26efe1b0e081c45c4bdbb128fc840431be608aefb23c788831d1.isla",
+      "sha256": "e02be6ad430c26efe1b0e081c45c4bdbb128fc840431be608aefb23c788831d1"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c36c.isla": {
+      "path": "sources/10411e9a2c1a4cf1e28d7c87cebeaba44a29c9dba7132f4966593cd9ac5b622e.isla",
+      "sha256": "10411e9a2c1a4cf1e28d7c87cebeaba44a29c9dba7132f4966593cd9ac5b622e"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c370.isla": {
+      "path": "sources/d7c265841162fec5f90d444c4653b2926edb39c0a7dee818ecc1d44970711446.isla",
+      "sha256": "d7c265841162fec5f90d444c4653b2926edb39c0a7dee818ecc1d44970711446"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c378.isla": {
+      "path": "sources/b1963201cfb9e2635341ce4a92be2d955815ba1c43815b68dc4c015466592dc5.isla",
+      "sha256": "b1963201cfb9e2635341ce4a92be2d955815ba1c43815b68dc4c015466592dc5"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c37c.isla": {
+      "path": "sources/04ff33c314c39e0170ca8f2f56db341dc3797643deaf8b8e6614b725a7e471d5.isla",
+      "sha256": "04ff33c314c39e0170ca8f2f56db341dc3797643deaf8b8e6614b725a7e471d5"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c384.isla": {
+      "path": "sources/9dd3949d39a1188184a5685141e4709f965da96891d7e0e1eb9230c192474ff7.isla",
+      "sha256": "9dd3949d39a1188184a5685141e4709f965da96891d7e0e1eb9230c192474ff7"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c388.isla": {
+      "path": "sources/d0ee09bcb4d6d4a348fc01d7f9672e4d309aacd8aafe2bc122005c12d7bf71e5.isla",
+      "sha256": "d0ee09bcb4d6d4a348fc01d7f9672e4d309aacd8aafe2bc122005c12d7bf71e5"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c390.isla": {
+      "path": "sources/35528f727e149181ee3ced38edf9575a066cc175abde31e75a3ae8f7ee30ad89.isla",
+      "sha256": "35528f727e149181ee3ced38edf9575a066cc175abde31e75a3ae8f7ee30ad89"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c394.isla": {
+      "path": "sources/4ab97aa94cb2144f912dc3e03e81e83f821871429b223cb474c1931367d8e59a.isla",
+      "sha256": "4ab97aa94cb2144f912dc3e03e81e83f821871429b223cb474c1931367d8e59a"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c39c.isla": {
+      "path": "sources/eee56433fa50feb01a5c210a7f0d4cd0a817a4825ef467d93ede326d687f90c9.isla",
+      "sha256": "eee56433fa50feb01a5c210a7f0d4cd0a817a4825ef467d93ede326d687f90c9"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3a0.isla": {
+      "path": "sources/a8c3ad4a05de5bc37835ae956d6159b73a635f9ad5495363838ada24c2982145.isla",
+      "sha256": "a8c3ad4a05de5bc37835ae956d6159b73a635f9ad5495363838ada24c2982145"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3a8.isla": {
+      "path": "sources/edb06338e54a4beb9a5d50d57e14fa81d73b4db4c50b7e6c0e072bca541b5399.isla",
+      "sha256": "edb06338e54a4beb9a5d50d57e14fa81d73b4db4c50b7e6c0e072bca541b5399"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3ac.isla": {
+      "path": "sources/752e5f8e8d90152f73a76bf13b634100672fe75957567998f5a218c5a8404fc2.isla",
+      "sha256": "752e5f8e8d90152f73a76bf13b634100672fe75957567998f5a218c5a8404fc2"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3b4.isla": {
+      "path": "sources/b2e609a3fec2c2615ce85325b6cff23b770e69e52558fb3197961f32d16c064c.isla",
+      "sha256": "b2e609a3fec2c2615ce85325b6cff23b770e69e52558fb3197961f32d16c064c"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3b8.isla": {
+      "path": "sources/29d1038769cdafe047edd84b7a886c8a35af2bad2f77a7361b9cfa5165ef3bf9.isla",
+      "sha256": "29d1038769cdafe047edd84b7a886c8a35af2bad2f77a7361b9cfa5165ef3bf9"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3c0.isla": {
+      "path": "sources/1a46947fa8255334b87846f35985ce9a25361e24dbf353a828faa2d08bf38c41.isla",
+      "sha256": "1a46947fa8255334b87846f35985ce9a25361e24dbf353a828faa2d08bf38c41"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3c4.isla": {
+      "path": "sources/13199def4a5a54e36e187fc9184a44ed923dca22159cb022b4d602220ca8a5b8.isla",
+      "sha256": "13199def4a5a54e36e187fc9184a44ed923dca22159cb022b4d602220ca8a5b8"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3cc.isla": {
+      "path": "sources/cd1b3861ce724f9b4d81bb4850d8c2e51c9b51169fe4a1723b363dc2680d299c.isla",
+      "sha256": "cd1b3861ce724f9b4d81bb4850d8c2e51c9b51169fe4a1723b363dc2680d299c"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3d0.isla": {
+      "path": "sources/ae02e7fa529bd92e30ac169dac45f84589aa037a93130a84e6186e4ac90ee1b7.isla",
+      "sha256": "ae02e7fa529bd92e30ac169dac45f84589aa037a93130a84e6186e4ac90ee1b7"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3d8.isla": {
+      "path": "sources/ea1ad9beb95fb6584bccce981076f185fa2ea508923268edc8b7a8857e955140.isla",
+      "sha256": "ea1ad9beb95fb6584bccce981076f185fa2ea508923268edc8b7a8857e955140"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3dc.isla": {
+      "path": "sources/5b90373e9407dd606b8ad9ae8d02b636b2daa0abab72800d3bbde5c44939f985.isla",
+      "sha256": "5b90373e9407dd606b8ad9ae8d02b636b2daa0abab72800d3bbde5c44939f985"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3e4.isla": {
+      "path": "sources/afd6fd73ee8ae00b162e90d5b680777a0c0b1136f7c48a3bd5e94ff39038c219.isla",
+      "sha256": "afd6fd73ee8ae00b162e90d5b680777a0c0b1136f7c48a3bd5e94ff39038c219"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3e8.isla": {
+      "path": "sources/0f5d2e6dd3f972628cfd888fe4c9fd79bdd53453ac58c96c8e6f824e6f7f2612.isla",
+      "sha256": "0f5d2e6dd3f972628cfd888fe4c9fd79bdd53453ac58c96c8e6f824e6f7f2612"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3f0.isla": {
+      "path": "sources/12ffc940eb8d88f21491182d48d500e2beafda6079e6854029c05ffcfd7dd051.isla",
+      "sha256": "12ffc940eb8d88f21491182d48d500e2beafda6079e6854029c05ffcfd7dd051"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3f4.isla": {
+      "path": "sources/d66cbda66262fc2c773875f77aad09f2c573529fe428be0b1eb99580dcf8b3b0.isla",
+      "sha256": "d66cbda66262fc2c773875f77aad09f2c573529fe428be0b1eb99580dcf8b3b0"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3fc.isla": {
+      "path": "sources/8f08d961bd15431cb8d9485d6cc8d9267133592b70558f0514af28ea079b6ea4.isla",
+      "sha256": "8f08d961bd15431cb8d9485d6cc8d9267133592b70558f0514af28ea079b6ea4"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c400.isla": {
+      "path": "sources/6549ed6934748d8f188c0e725f831a81d662f1a09b677baa1fcd320da360fdfc.isla",
+      "sha256": "6549ed6934748d8f188c0e725f831a81d662f1a09b677baa1fcd320da360fdfc"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c408.isla": {
+      "path": "sources/6b49fb70c16ee5d159973404e899a9045784a2805df3537963160fa1a4bcfa37.isla",
+      "sha256": "6b49fb70c16ee5d159973404e899a9045784a2805df3537963160fa1a4bcfa37"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c40c.isla": {
+      "path": "sources/9b051ed150c3c4c4316f4dccc8078f7aab08022d9a09ad0c7302714b865460e7.isla",
+      "sha256": "9b051ed150c3c4c4316f4dccc8078f7aab08022d9a09ad0c7302714b865460e7"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c414.isla": {
+      "path": "sources/df9b51ae28fa3dab569ac176302ed108f23ef2c0d550708565f79cdfd6050da4.isla",
+      "sha256": "df9b51ae28fa3dab569ac176302ed108f23ef2c0d550708565f79cdfd6050da4"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c418.isla": {
+      "path": "sources/15f94324c2299d841a9632baaceedc3720f583d3afc1c572392fb39023b3eaff.isla",
+      "sha256": "15f94324c2299d841a9632baaceedc3720f583d3afc1c572392fb39023b3eaff"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c420.isla": {
+      "path": "sources/7ca0d7f0416763030915a476bfa3e1fc46f790678c3787375db0efc0a8cd4f83.isla",
+      "sha256": "7ca0d7f0416763030915a476bfa3e1fc46f790678c3787375db0efc0a8cd4f83"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c424.isla": {
+      "path": "sources/2240d78e41ebc1fa7042987256d51a72cd668ae8d45102fae2b40370c5163d9b.isla",
+      "sha256": "2240d78e41ebc1fa7042987256d51a72cd668ae8d45102fae2b40370c5163d9b"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c42c.isla": {
+      "path": "sources/009d4a60ff2ac3b859ee60eed9c52333ecf192832cf3e90a4b3b2d26e615cbbf.isla",
+      "sha256": "009d4a60ff2ac3b859ee60eed9c52333ecf192832cf3e90a4b3b2d26e615cbbf"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c430.isla": {
+      "path": "sources/49c65898f2703dc1f09cfd54ee44374a135c61b8c2380caa29f44c9aed1af00f.isla",
+      "sha256": "49c65898f2703dc1f09cfd54ee44374a135c61b8c2380caa29f44c9aed1af00f"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c43c.isla": {
+      "path": "sources/7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296.isla",
+      "sha256": "7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c440.isla": {
+      "path": "sources/956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40.isla",
+      "sha256": "956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c450.isla": {
+      "path": "sources/7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296.isla",
+      "sha256": "7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c454.isla": {
+      "path": "sources/956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40.isla",
+      "sha256": "956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-1/stack-load-regions181/STACK-LOAD-REGIONS-PRODUCTION002.json": {
+      "path": "sources/b6100b6e3c4d9dd8d5c709d87bae7b7839817623845573ff8324fffded658a6a.json",
+      "sha256": "b6100b6e3c4d9dd8d5c709d87bae7b7839817623845573ff8324fffded658a6a"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/HANDOFF.json": {
+      "path": "sources/36b6a70ed06047b8561ecfaf10bb573af62873cb83aaddcffb206a8e03cbf974.json",
+      "sha256": "36b6a70ed06047b8561ecfaf10bb573af62873cb83aaddcffb206a8e03cbf974"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c43c.isla": {
+      "path": "sources/236fffa49ccf73f8ada46c927f83fe596336aebc2c45e984204af40e1942614c.isla",
+      "sha256": "236fffa49ccf73f8ada46c927f83fe596336aebc2c45e984204af40e1942614c"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c43c.v": {
+      "path": "sources/c44917c885daa182b05c654d618becba70fe10ea5111bc764ac48868b3ca6c70.v",
+      "sha256": "c44917c885daa182b05c654d618becba70fe10ea5111bc764ac48868b3ca6c70"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c440.isla": {
+      "path": "sources/a9ebff9fcc12d1e76eaf3b4c84e82cff4aac80a4be477b87fc813d1f0e5e0a39.isla",
+      "sha256": "a9ebff9fcc12d1e76eaf3b4c84e82cff4aac80a4be477b87fc813d1f0e5e0a39"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c440.v": {
+      "path": "sources/b303569605ac48512653dcae21c8808c95e6b04cffdbe2299b0fc540d361dd4e.v",
+      "sha256": "b303569605ac48512653dcae21c8808c95e6b04cffdbe2299b0fc540d361dd4e"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c450.isla": {
+      "path": "sources/236fffa49ccf73f8ada46c927f83fe596336aebc2c45e984204af40e1942614c.isla",
+      "sha256": "236fffa49ccf73f8ada46c927f83fe596336aebc2c45e984204af40e1942614c"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c450.v": {
+      "path": "sources/fe466bb56e2abcbab4cd6e2066ea52df91115e6e3f1d16e34661caf2f66585d6.v",
+      "sha256": "fe466bb56e2abcbab4cd6e2066ea52df91115e6e3f1d16e34661caf2f66585d6"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c454.isla": {
+      "path": "sources/a9ebff9fcc12d1e76eaf3b4c84e82cff4aac80a4be477b87fc813d1f0e5e0a39.isla",
+      "sha256": "a9ebff9fcc12d1e76eaf3b4c84e82cff4aac80a4be477b87fc813d1f0e5e0a39"
+    },
+    "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c454.v": {
+      "path": "sources/035b32e77b27757fd0057f7fff82fc699ca9c643444b6857bbfd9d129b5473e2.v",
+      "sha256": "035b32e77b27757fd0057f7fff82fc699ca9c643444b6857bbfd9d129b5473e2"
+    }
+  },
+  "host_path_fallback": false,
+  "new_premises": [],
+  "input_files": {
+    "elf": {
+      "path": "build/stock-zisk/zesu-zisk.elf",
+      "sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95"
+    }
+  }
+}

@@ -402,8 +402,28 @@ stock-native-indexes: gate-workspace
 	  --dump $(DUMP) --jobs $(TRACE_JOBS)
 	$(PYTHON) tools/stock_zisk/selected/bind_traces.py --out $(STOCK_CLOSURE_TRACE_DIR) \
 	  --function alt_fl_alloc.free --trace-name free
+	$(MAKE) --no-print-directory -f $(lastword $(MAKEFILE_LIST)) stock-eql-traces
 
 check-evidence-tools check-signatures: stock-native-indexes
+
+# The eql region policy has independent pins and no native proof coverage.
+STOCK_EQL_TRACE_DIR ?= generated/isla-traces/stock-zisk/eql
+.PHONY: stock-eql-traces
+stock-eql-traces:
+	@if ! test -f "$(STOCK_EQL_TRACE_DIR)/trace-manifest.json"; then \
+	  ZESU_BATCH_LIMIT=8G $(GUARD_BATCH) eql-traces -- $(PYTHON) $(STOCK_TRACE_DRIVER) \
+	    --trace-only --manifest build/stock-zisk/eql-trace-input.json \
+	    --dump build/stock-zisk/eql-policy/eql.raw.dump --out $(STOCK_EQL_TRACE_DIR) \
+	    --coqdir ZesuSsz.Stock.Eql --jobs $(TRACE_JOBS) \
+	    --per-load-regions build/stock-zisk/eql-policy/regions.json.gz \
+	    --per-load-regions-sha256 3e79c1525180f95d48d65823a69394c89ba7d7e70bc778dae19b89004885cfeb \
+	    --load-exemptions build/stock-zisk/eql-policy/exemptions.json.gz \
+	    --load-exemptions-sha256 4f4a5a9e2efb2bf153e013711df334c2bd19f3d83a58ae9cc47825f54f04ffee \
+	    --region-source-map build/stock-zisk/eql-policy/PATH-MAP.json \
+	    --region-source-map-sha256 b299b573323aed512499234a72f0fa2198d1b0b88a987ca8bf3e77b61a096d53; \
+	fi
+	$(PYTHON) tools/stock_zisk/platform/bind_traces.py --out $(STOCK_EQL_TRACE_DIR) \
+	  --trace-name eql --check-manifest $(STOCK_TRACE_MANIFEST)
 
 # Dune requires the parent of an absolute build directory to exist.
 .PHONY: build-directories

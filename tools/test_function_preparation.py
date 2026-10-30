@@ -20,8 +20,14 @@ class FunctionPreparationTests(unittest.TestCase):
                 f"with open({str(log)!r}, 'a') as stream:\n"
                 " stream.write(json.dumps(sys.argv[1:]) + '\\n')\n")
             python.chmod(0o755)
+            guard = root / "record-guard"
+            guard.write_text(
+                "#!/usr/bin/python3\nimport os,sys\n"
+                "if sys.argv[1:4] != ['batch', 'eql-traces', '--']: sys.exit(2)\n"
+                "os.execv(sys.argv[4], sys.argv[4:])\n")
+            guard.chmod(0o755)
             command = ["make", "--no-print-directory", "-f", str(ROOT / "Makefile"),
-                       "stock-native-indexes", f"PYTHON={python}",
+                       "stock-native-indexes", f"PYTHON={python}", f"GUARD={guard}",
                        "STOCK_DECODE_TRACE_DIR=custom/decode",
                        "STOCK_CLOSURE_TRACE_DIR=custom/closure",
                        "STOCK_TRACE_MANIFEST=custom/recipe.json",
@@ -31,7 +37,7 @@ class FunctionPreparationTests(unittest.TestCase):
             result = subprocess.run(command, cwd=root, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             calls = [json.loads(line) for line in log.read_text().splitlines()]
-            self.assertEqual(len(calls), 3)
+            self.assertEqual(len(calls), 5)
             self.assertEqual(calls[0], ["tools/gate_workspace.py", "--workspace", ".",
                                       "--source-workspace", "custom/source"])
             self.assertEqual(calls[1], ["tools/stock_zisk/platform/traces.py",
@@ -44,6 +50,22 @@ class FunctionPreparationTests(unittest.TestCase):
             self.assertEqual(calls[2], ["tools/stock_zisk/selected/bind_traces.py",
                                       "--out", "custom/closure", "--function",
                                       "alt_fl_alloc.free", "--trace-name", "free"])
+
+
+            self.assertEqual(calls[3], ["tools/stock_zisk/platform/traces.py",
+                "--trace-only", "--manifest", "build/stock-zisk/eql-trace-input.json",
+                "--dump", "build/stock-zisk/eql-policy/eql.raw.dump",
+                "--out", "generated/isla-traces/stock-zisk/eql",
+                "--coqdir", "ZesuSsz.Stock.Eql", "--jobs", "3",
+                "--per-load-regions", "build/stock-zisk/eql-policy/regions.json.gz",
+                "--per-load-regions-sha256", "3e79c1525180f95d48d65823a69394c89ba7d7e70bc778dae19b89004885cfeb",
+                "--load-exemptions", "build/stock-zisk/eql-policy/exemptions.json.gz",
+                "--load-exemptions-sha256", "4f4a5a9e2efb2bf153e013711df334c2bd19f3d83a58ae9cc47825f54f04ffee",
+                "--region-source-map", "build/stock-zisk/eql-policy/PATH-MAP.json",
+                "--region-source-map-sha256", "b299b573323aed512499234a72f0fa2198d1b0b88a987ca8bf3e77b61a096d53"])
+            self.assertEqual(calls[4], ["tools/stock_zisk/platform/bind_traces.py",
+                "--out", "generated/isla-traces/stock-zisk/eql", "--trace-name", "eql",
+                "--check-manifest", "custom/recipe.json"])
 
 
 if __name__ == "__main__":

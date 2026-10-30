@@ -1,0 +1,3814 @@
+{
+  "schema": "isolated.eql-production-region-traces.v1",
+  "status": "completed",
+  "root": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1",
+  "output_directory": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces",
+  "output_relative_path": "generation001/traces",
+  "input_manifest": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/INPUTS.json",
+    "sha256": "7f6ab4bdcb0e4d34019dbe1d727d83c3941b6a98a08f095879b7fdb3526b6ac9",
+    "relative_path": "INPUTS.json"
+  },
+  "trace_manifest": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/trace-manifest.json",
+    "sha256": "9a852f7efc6d9cdc94d9deacf1b4436d226a51357874d13c6d533202b5e3beac",
+    "relative_path": "generation001/traces/trace-manifest.json"
+  },
+  "reviewed_tools": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/per-load-annotations-v3/REVIEW.json",
+    "sha256": "a2365163c5d57f6680954f13b91e05c1bbb81d46e13673e1526154c2b402d3de"
+  },
+  "region_packet": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/inputs/PER-LOAD-REGIONS.json",
+    "sha256": "3e79c1525180f95d48d65823a69394c89ba7d7e70bc778dae19b89004885cfeb",
+    "relative_path": "workspace/inputs/PER-LOAD-REGIONS.json"
+  },
+  "ELF": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/build/stock-zisk/zesu-zisk.elf",
+    "sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95"
+  },
+  "configuration": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/ZesuSsz/riscv64_zesu.toml",
+    "sha256": "7803200fd993a3d43b72ebc05a86473d22f4c4e1b7636a4994fe15e31b2cb47c"
+  },
+  "driver": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/platform/traces.py",
+    "sha256": "8d913f9d091fe39cff25c4a2155bd4ebbb4a252495d8e79ceaf792ef7b582a11"
+  },
+  "renderer": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/platform/access_regions.py",
+    "sha256": "2c77a59cc89adb0d9e0b07f2cf3ea7831edee13b5243352361d123ffd02c7e48"
+  },
+  "frontend": {
+    "path": "/home/cody/islaris/_opam/bin/islaris",
+    "sha256": "45a51764fb4c6b2b34136db940654bb83e4259b706d7dd5981241d949497b44f"
+  },
+  "footprint": {
+    "path": "/home/cody/isla/target/release/isla-footprint",
+    "sha256": "c4d86501b85fb471ffac1ba4fc09b0051233b3416c2889ab67c2f3db1d9e8cc2"
+  },
+  "selected_dump": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces.selected.dump",
+    "sha256": "2753e7f1582dae155eb569cb1023eae0caafc2f77d7d49bef7d412b8b887fa21",
+    "relative_path": "generation001/traces.selected.dump"
+  },
+  "constraints": 46,
+  "loads": 44,
+  "stores": 2,
+  "single_RAM_accesses": 6,
+  "three_region_union_loads": 40,
+  "before": {
+    "nonblank_lines": 19483,
+    "bytes": 2293038,
+    "leaves": 839,
+    "forks": 765,
+    "mcause_write_events": 1140,
+    "instruction_modules": 74,
+    "index_nonblank_lines": 151,
+    "all_rocq_nonblank_lines": 19634
+  },
+  "after": {
+    "nonblank_lines": 3776,
+    "bytes": 411040,
+    "leaves": 234,
+    "forks": 160,
+    "mcause_write_events": 42,
+    "instruction_modules": 74,
+    "index_nonblank_lines": 151,
+    "all_rocq_nonblank_lines": 3927
+  },
+  "instruction_pairs": [
+    {
+      "pc": "8009c338",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c338.v",
+        "sha256": "a79ff789b9754dd18b83eecdfac884275ce0b981305a7e31cc451a31763d5c9d",
+        "relative_path": "generation001/traces/a8009c338.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c338.isla",
+        "sha256": "39eacebda694f45d356bde21ecc0dd6a0a18338e16dd8e465848e7efd2017e10",
+        "relative_path": "generation001/traces/a8009c338.isla"
+      },
+      "nonblank_lines": 14,
+      "bytes": 1064,
+      "leaves": 1,
+      "forks": 0,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c33c",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c33c.v",
+        "sha256": "ce2d2eb0ee2b29c8dd6e445af53627849a4249619bfa5acf9dc5a6bfa59ba18d",
+        "relative_path": "generation001/traces/a8009c33c.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c33c.isla",
+        "sha256": "725af2983d438d0e390376c752ba6c78f2e2772c30324c869bfee86b9a9c3e46",
+        "relative_path": "generation001/traces/a8009c33c.isla"
+      },
+      "nonblank_lines": 24,
+      "bytes": 2427,
+      "leaves": 1,
+      "forks": 0,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c340",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c340.v",
+        "sha256": "aac31b9110090c86293d0f518c58f9999ea3d0c7c90bfe0334fc543b0d7d8dfa",
+        "relative_path": "generation001/traces/a8009c340.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c340.isla",
+        "sha256": "4a9a706af875cb8e95d83535d3f42163bb13d32c219aa0eb0c6482e8b0bcc018",
+        "relative_path": "generation001/traces/a8009c340.isla"
+      },
+      "nonblank_lines": 24,
+      "bytes": 2427,
+      "leaves": 1,
+      "forks": 0,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c344",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c344.v",
+        "sha256": "cd8f684ba29b386300b30f33c95b6f293071853a2d0f2dee4db378df0f136c4b",
+        "relative_path": "generation001/traces/a8009c344.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c344.isla",
+        "sha256": "c4daa92388c3ad7d130cadcfca6f25ed9f8cf553df17b1731e00ebb209a084ee",
+        "relative_path": "generation001/traces/a8009c344.isla"
+      },
+      "nonblank_lines": 14,
+      "bytes": 1050,
+      "leaves": 1,
+      "forks": 0,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c348",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c348.v",
+        "sha256": "786b3a3e914d0d20866dc82e6700f2e53b7c6044f189089404ad4f61b87ddcd5",
+        "relative_path": "generation001/traces/a8009c348.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c348.isla",
+        "sha256": "873b5031ee6d5e9dfa3fc277e2e117dc442ffa5905bd58995a8dbcddd08d5673",
+        "relative_path": "generation001/traces/a8009c348.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c34c",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c34c.v",
+        "sha256": "23afb7ab41a00c11401a93dd5f36621d1a1559b3270645bdb0b450ef15a5a497",
+        "relative_path": "generation001/traces/a8009c34c.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c34c.isla",
+        "sha256": "138912725ecd07503dfcb19d141804be96b348fb9138b60d7d2b8370d11c411c",
+        "relative_path": "generation001/traces/a8009c34c.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c350",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c350.v",
+        "sha256": "2ef70f069bb5d4c4b7f1840428cfdcec98c1941f5cde4fb56aaaed9e797cf329",
+        "relative_path": "generation001/traces/a8009c350.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c350.isla",
+        "sha256": "1b1f6a529387a832c168999b0b7b9b6ba704e571a5bcdfff69f531b5acb6f246",
+        "relative_path": "generation001/traces/a8009c350.isla"
+      },
+      "nonblank_lines": 55,
+      "bytes": 5316,
+      "leaves": 3,
+      "forks": 2,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c354",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c354.v",
+        "sha256": "c63fdc76737d58188f38fbd3e67020191ee0ad892a8d82235a807119527268a2",
+        "relative_path": "generation001/traces/a8009c354.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c354.isla",
+        "sha256": "e549b489efd9bec12b8a58cc6ff22686616b3b33de88107b30321e27c448ab0e",
+        "relative_path": "generation001/traces/a8009c354.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c358",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c358.v",
+        "sha256": "44b68039d0dc58fad8b6a84ee3f9ed50bed92e475765cdd9eb9fbe5e71e7ec1f",
+        "relative_path": "generation001/traces/a8009c358.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c358.isla",
+        "sha256": "8552d6ccf57a8eeb3bdba6cf29130b5b79446b14070a468c3bd0e4ab21ea3c90",
+        "relative_path": "generation001/traces/a8009c358.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c35c",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c35c.v",
+        "sha256": "268aac3a9cc686a705d87a6a280aef6f01e52f76d3fe17980407517d85eaeed6",
+        "relative_path": "generation001/traces/a8009c35c.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c35c.isla",
+        "sha256": "706c849574858b4de2f84b8f3c157c566e8e71c524ae70791fbd86242dcb8abd",
+        "relative_path": "generation001/traces/a8009c35c.isla"
+      },
+      "nonblank_lines": 55,
+      "bytes": 5316,
+      "leaves": 3,
+      "forks": 2,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c360",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c360.v",
+        "sha256": "05303d6d57d384b2b692afb2204d5cbba9d7125ba5ea60b38e8a8dcb0c91aa38",
+        "relative_path": "generation001/traces/a8009c360.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c360.isla",
+        "sha256": "22ef0a4b92925dca84fe259d9265c008cc72e3121abb7fb53adbda666a02fc58",
+        "relative_path": "generation001/traces/a8009c360.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c364",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c364.v",
+        "sha256": "e311c7d31bbe99eb51afeab9a167de4801622497bf7abb5f0ab39912fcc130d2",
+        "relative_path": "generation001/traces/a8009c364.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c364.isla",
+        "sha256": "4a3a4936bc80ee7e83dde05cd86588d01fd8f406540ad730006eb5a656370bff",
+        "relative_path": "generation001/traces/a8009c364.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c368",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c368.v",
+        "sha256": "182e4e2598c91940eaa99d1e38edc8f0bc1a9c372dc8c68a6812fc4473cf1f77",
+        "relative_path": "generation001/traces/a8009c368.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c368.isla",
+        "sha256": "6e74ce2582659fd10978d88afe08594364a267e431689e85af523ec8b97ec804",
+        "relative_path": "generation001/traces/a8009c368.isla"
+      },
+      "nonblank_lines": 55,
+      "bytes": 5316,
+      "leaves": 3,
+      "forks": 2,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c36c",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c36c.v",
+        "sha256": "5f7d458f3d1d0b1f6e8b9abfbb97fd12dc31ad2139174b767aadc5e839ed687b",
+        "relative_path": "generation001/traces/a8009c36c.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c36c.isla",
+        "sha256": "e8207e5ebe431446c84cb1917838faaef2bcb13bc2ba52e2cb5587ada7bf623f",
+        "relative_path": "generation001/traces/a8009c36c.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c370",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c370.v",
+        "sha256": "672b7607290cf6495d66c94aa23246649e99058397e1b885df64c2af6713f548",
+        "relative_path": "generation001/traces/a8009c370.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c370.isla",
+        "sha256": "7c29e0898d4bf007cd787a6f5ebb6c3a7a383ded7fa0ad981d7a889be5dfb641",
+        "relative_path": "generation001/traces/a8009c370.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c374",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c374.v",
+        "sha256": "9ac9389e08b7a99951e2c347c61eb0e7d28367046d5337607122defac41d4b8f",
+        "relative_path": "generation001/traces/a8009c374.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c374.isla",
+        "sha256": "928ad6a0c3a2099a0880000181d0c895f695bc1bb66fe8f3e97f4ac184f2d40a",
+        "relative_path": "generation001/traces/a8009c374.isla"
+      },
+      "nonblank_lines": 55,
+      "bytes": 5316,
+      "leaves": 3,
+      "forks": 2,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c378",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c378.v",
+        "sha256": "850c8955ed75078e92ba91794a4c3491b401822870ed8ff0cb8abf243d163a16",
+        "relative_path": "generation001/traces/a8009c378.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c378.isla",
+        "sha256": "811b06034985aa44c1a990a3cb3eff85f47dddc53fbfc463c078afb706d27a2d",
+        "relative_path": "generation001/traces/a8009c378.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c37c",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c37c.v",
+        "sha256": "513dec53b55a45dd7bfb13c27e5cb5edcb10343ba9472e48a8d5290d1b1a070d",
+        "relative_path": "generation001/traces/a8009c37c.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c37c.isla",
+        "sha256": "e99af8bf631fde00f9086ead9a94a1a62ee105080b081178cd5119bfc7819810",
+        "relative_path": "generation001/traces/a8009c37c.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c380",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c380.v",
+        "sha256": "10dec3f7a8f97c3d8da165d15e0da0c9cdcaad4b0967ece9c41ca022214379c2",
+        "relative_path": "generation001/traces/a8009c380.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c380.isla",
+        "sha256": "46e1584b41f5227bbd7a12d25e98252768c7b2c2c6e4cb82ccc262cbf0d139e6",
+        "relative_path": "generation001/traces/a8009c380.isla"
+      },
+      "nonblank_lines": 55,
+      "bytes": 5316,
+      "leaves": 3,
+      "forks": 2,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c384",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c384.v",
+        "sha256": "8ec8f81b479f353f9f008d3025e1cdbc50e0e876af8528086fe4307e4444f7b1",
+        "relative_path": "generation001/traces/a8009c384.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c384.isla",
+        "sha256": "a133c5931a0ce0fc42288c35865ec2b1cb1152d5fd837265af78292ad7ee1d70",
+        "relative_path": "generation001/traces/a8009c384.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c388",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c388.v",
+        "sha256": "b3181ca90a79f2899382a87d9ec90bf3a13a85c03547166709d51d67c2a1e821",
+        "relative_path": "generation001/traces/a8009c388.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c388.isla",
+        "sha256": "a8b606085bb24b51509534d420fe026caf487d933e3ad33c27efa9d7efee4600",
+        "relative_path": "generation001/traces/a8009c388.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c38c",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c38c.v",
+        "sha256": "4f008bd4505492ecfd7bc0d3795e7a1c7ad41d61c593f1cc498c2b095ec515cb",
+        "relative_path": "generation001/traces/a8009c38c.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c38c.isla",
+        "sha256": "e9f922c626328a45757a734a74bca6b9395ff7e6f59d4563fe7b5db8b9cae954",
+        "relative_path": "generation001/traces/a8009c38c.isla"
+      },
+      "nonblank_lines": 55,
+      "bytes": 5316,
+      "leaves": 3,
+      "forks": 2,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c390",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c390.v",
+        "sha256": "2562aa9a4339b26326976bd7f1444238cf5d74dd2676087e3ea62821ff9528b3",
+        "relative_path": "generation001/traces/a8009c390.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c390.isla",
+        "sha256": "ccba2007ed561b35f32815693dbaf70b5423d641e04d138a2e747b096c8fba4c",
+        "relative_path": "generation001/traces/a8009c390.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c394",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c394.v",
+        "sha256": "1e079094196a039ed2c75435532129dbc76fd4cde9a35a721f65bb439052ef82",
+        "relative_path": "generation001/traces/a8009c394.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c394.isla",
+        "sha256": "8f2a057e0a5561763e5d03f4c6a75294bf7ff2404f713ca35bf7b17cbdc79ee7",
+        "relative_path": "generation001/traces/a8009c394.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c398",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c398.v",
+        "sha256": "256f14ca2b33001e091e76a010789e5207348bba4dba06cefe4d2896e2930714",
+        "relative_path": "generation001/traces/a8009c398.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c398.isla",
+        "sha256": "ee48c38b1dacb27fbf825fef06eae663dbaa965a61b8741e9add2b03e34abaa9",
+        "relative_path": "generation001/traces/a8009c398.isla"
+      },
+      "nonblank_lines": 55,
+      "bytes": 5316,
+      "leaves": 3,
+      "forks": 2,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c39c",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c39c.v",
+        "sha256": "42f03994febfef18ede860b79ed2b2e1dd72a4c5e9c8454bf8378c700536a570",
+        "relative_path": "generation001/traces/a8009c39c.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c39c.isla",
+        "sha256": "3d99df79b34a0101465758960a6fb17f46bd41528999723ac630baae4f8e7e67",
+        "relative_path": "generation001/traces/a8009c39c.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c3a0",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3a0.v",
+        "sha256": "ca010d6b66eb7d4c2e8ceec5084f3bbb009a900e4dee9b33772d78492948a37a",
+        "relative_path": "generation001/traces/a8009c3a0.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3a0.isla",
+        "sha256": "19eec0b0d0880f05609d49acc7b4fed8fe0c9b6253f88e8ccc84f430a54f2a2a",
+        "relative_path": "generation001/traces/a8009c3a0.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c3a4",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3a4.v",
+        "sha256": "5ca692e688a7cfd928f0e7a54896d38468a44615ddb67d1e49cfe7fdd3fecc6f",
+        "relative_path": "generation001/traces/a8009c3a4.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3a4.isla",
+        "sha256": "2e104cdcf3ebaf1f907b114bfc05defff2c5d0bc82a9a2e20382677c98d303cc",
+        "relative_path": "generation001/traces/a8009c3a4.isla"
+      },
+      "nonblank_lines": 55,
+      "bytes": 5316,
+      "leaves": 3,
+      "forks": 2,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c3a8",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3a8.v",
+        "sha256": "c05d9f0c3d6910619ce01a52bd57ffd9d89361fe9c1349cacebe3857448157e3",
+        "relative_path": "generation001/traces/a8009c3a8.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3a8.isla",
+        "sha256": "22d7e8f16176e269f65293074f5dbee30f67d0806bc42328d4879497effb7885",
+        "relative_path": "generation001/traces/a8009c3a8.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c3ac",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3ac.v",
+        "sha256": "d7232297f90ae62eaeefa7c5fdb953d11b6827f06a3f46db9034ff6e780367e9",
+        "relative_path": "generation001/traces/a8009c3ac.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3ac.isla",
+        "sha256": "8d5f8ada82daa55c94d35791b307caf8650a60414252f4a77ad6a50f9cf61730",
+        "relative_path": "generation001/traces/a8009c3ac.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c3b0",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3b0.v",
+        "sha256": "ef3d56c08b3d24aab47cf99812deef1cd86f3a78cd3bc1913517febc10d5d57a",
+        "relative_path": "generation001/traces/a8009c3b0.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3b0.isla",
+        "sha256": "6a65c68ab96a39f028b5443b4d0a8a7520c1804e207b789b3b30a2620e18e473",
+        "relative_path": "generation001/traces/a8009c3b0.isla"
+      },
+      "nonblank_lines": 55,
+      "bytes": 5316,
+      "leaves": 3,
+      "forks": 2,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c3b4",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3b4.v",
+        "sha256": "97a1652410cc5e9597fd8941919af4d4ddf4173b8c80733d1efc779939ce0ae2",
+        "relative_path": "generation001/traces/a8009c3b4.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3b4.isla",
+        "sha256": "6a8ddd123ebda5955ad550330ae6abeb787700e3e03b6191e2076d3cea5c1b02",
+        "relative_path": "generation001/traces/a8009c3b4.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c3b8",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3b8.v",
+        "sha256": "451b713fba01825e24daa945b357ea3ed3590d1b8bcbfdd58e5354e51b275a1f",
+        "relative_path": "generation001/traces/a8009c3b8.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3b8.isla",
+        "sha256": "1e8c7974689774a6fd0b2a31b61a872ca26202c4b814edf48cd73e10352683bd",
+        "relative_path": "generation001/traces/a8009c3b8.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c3bc",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3bc.v",
+        "sha256": "2809861baabe66070bfb3bfc00f7de2653c963d2df70de2eb14e55d5c9c3948b",
+        "relative_path": "generation001/traces/a8009c3bc.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3bc.isla",
+        "sha256": "ea7d88e633d6d02ab5dbafc99c2e3d706f9338eb1d554f97eced6712d2366576",
+        "relative_path": "generation001/traces/a8009c3bc.isla"
+      },
+      "nonblank_lines": 55,
+      "bytes": 5316,
+      "leaves": 3,
+      "forks": 2,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c3c0",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3c0.v",
+        "sha256": "253549865935909ae31402f2addf445d618975e0d302d8f93bc1a7fed8cf42b5",
+        "relative_path": "generation001/traces/a8009c3c0.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3c0.isla",
+        "sha256": "cdb21b5fcadbe9de14ad4a4eb76b895b8a8bb5b20b646badd01c023e0a01612b",
+        "relative_path": "generation001/traces/a8009c3c0.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c3c4",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3c4.v",
+        "sha256": "dea848c79c3dd012806e32c4e226f2fa836b233a2ac57a5703dee840d681e805",
+        "relative_path": "generation001/traces/a8009c3c4.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3c4.isla",
+        "sha256": "ab694778c0e915e6e6ddbcb4e31ea6d84c703ed1e7e776c456c7bbaa4cb12616",
+        "relative_path": "generation001/traces/a8009c3c4.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c3c8",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3c8.v",
+        "sha256": "cd3698ddd8f9f1d4924b9014336aa9a837742c7afbe40aa40ed1c82fec0d9ea5",
+        "relative_path": "generation001/traces/a8009c3c8.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3c8.isla",
+        "sha256": "60f6bf6fd71035a974384888f46a0c580dd7ecc88a28b6809320816598ea0300",
+        "relative_path": "generation001/traces/a8009c3c8.isla"
+      },
+      "nonblank_lines": 55,
+      "bytes": 5316,
+      "leaves": 3,
+      "forks": 2,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c3cc",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3cc.v",
+        "sha256": "05817a373d05e239b2fff4c0ba65de3e0b1e8dc6d88754fcfee34ce43b405307",
+        "relative_path": "generation001/traces/a8009c3cc.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3cc.isla",
+        "sha256": "dd649b8e35061dd6406896ebc8782b2b0f89961baa2d37e790d3013c6eaae3a6",
+        "relative_path": "generation001/traces/a8009c3cc.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c3d0",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3d0.v",
+        "sha256": "b9c79e24358987d30982edb4da602f67e4d73d308893bdfed257e5e1acd5762d",
+        "relative_path": "generation001/traces/a8009c3d0.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3d0.isla",
+        "sha256": "5091b2968994a7410a302101c1926a42e09ecb12a73264976616bd58e565a5ef",
+        "relative_path": "generation001/traces/a8009c3d0.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c3d4",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3d4.v",
+        "sha256": "aca6c5e38b3eaab8d5e92ce38aca0031f3df573763c24304d4150ec187dde69b",
+        "relative_path": "generation001/traces/a8009c3d4.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3d4.isla",
+        "sha256": "c02ef09da87a8d1e0aaf453704508def43672d6c5bf190e58654a4739fbbafa4",
+        "relative_path": "generation001/traces/a8009c3d4.isla"
+      },
+      "nonblank_lines": 55,
+      "bytes": 5316,
+      "leaves": 3,
+      "forks": 2,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c3d8",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3d8.v",
+        "sha256": "4fefcff58ef9668ba906118da016a18e1fe22cbaf680d1f7ec262689d21abfbc",
+        "relative_path": "generation001/traces/a8009c3d8.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3d8.isla",
+        "sha256": "b63ed48046869cc2145894312068c0cec2d60b64b6dd775ff4bae0b98f44d27f",
+        "relative_path": "generation001/traces/a8009c3d8.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c3dc",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3dc.v",
+        "sha256": "4f6656cf3a7cf2ff121675f4d952ac1280a44766bca4fd569bb3e55d40e05fba",
+        "relative_path": "generation001/traces/a8009c3dc.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3dc.isla",
+        "sha256": "54a6380ee29e87edb528c8fe33515baf056ef702961c7c9c0730fab02ca430f7",
+        "relative_path": "generation001/traces/a8009c3dc.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c3e0",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3e0.v",
+        "sha256": "af6107d059255c4c6934a8a0226195323d010cb12e3ba226c3cf7aa39548999d",
+        "relative_path": "generation001/traces/a8009c3e0.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3e0.isla",
+        "sha256": "062cb8e6248661b0a3648ec0c6ded2e4fd9e3c0537c0ec276b33d04263369e55",
+        "relative_path": "generation001/traces/a8009c3e0.isla"
+      },
+      "nonblank_lines": 55,
+      "bytes": 5316,
+      "leaves": 3,
+      "forks": 2,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c3e4",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3e4.v",
+        "sha256": "27b40f939e3e46bf98020fabe7bcdae58f9b95263e666bb6cfbbf48fe29055fb",
+        "relative_path": "generation001/traces/a8009c3e4.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3e4.isla",
+        "sha256": "2adcf60b2dc22e0be09bcd0a194b4ef747ff06475fad7cdbd0b780e806d023a4",
+        "relative_path": "generation001/traces/a8009c3e4.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c3e8",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3e8.v",
+        "sha256": "65aabdb88cd3038c5653c8b153ae41c100c08872ba84bdede2316acad23c0c9c",
+        "relative_path": "generation001/traces/a8009c3e8.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3e8.isla",
+        "sha256": "94d45625eaf8498f888359fe3602b5ff031df87f97a20e1081607dd339299abd",
+        "relative_path": "generation001/traces/a8009c3e8.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c3ec",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3ec.v",
+        "sha256": "b7947888edd8ea1f07f9525ad1d704a4a67c47173dc3940d1e1a0ec79ab8a11a",
+        "relative_path": "generation001/traces/a8009c3ec.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3ec.isla",
+        "sha256": "de52607828d16716b0b57b2f1e03b2414b35331636d8c692b766d5fed2dc3fe3",
+        "relative_path": "generation001/traces/a8009c3ec.isla"
+      },
+      "nonblank_lines": 55,
+      "bytes": 5316,
+      "leaves": 3,
+      "forks": 2,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c3f0",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3f0.v",
+        "sha256": "98f23435dbc680423ad2ff08e461f1d0d79c2f71f843348e746d90b004a7ce55",
+        "relative_path": "generation001/traces/a8009c3f0.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3f0.isla",
+        "sha256": "f778b0f1e19cdc0179df20a76d53a422085e2c73e5780c55064d67767b4b495b",
+        "relative_path": "generation001/traces/a8009c3f0.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c3f4",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3f4.v",
+        "sha256": "352027a25a88b87ef1d74f9ea034377cd1037e2cff4dcf795914e3d12068ac07",
+        "relative_path": "generation001/traces/a8009c3f4.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3f4.isla",
+        "sha256": "21c1c5ca2fa60f0db2c12844be43fb443f5ee7907d6e54e1f8f070e836bfcfe1",
+        "relative_path": "generation001/traces/a8009c3f4.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c3f8",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3f8.v",
+        "sha256": "34f90786568176c24e63f5bb8c580e8b7f71641beaeee6101bda7ce876255874",
+        "relative_path": "generation001/traces/a8009c3f8.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3f8.isla",
+        "sha256": "810949980c808ad83357561f9a518a43b8135a834be13b9056ce635751b24976",
+        "relative_path": "generation001/traces/a8009c3f8.isla"
+      },
+      "nonblank_lines": 55,
+      "bytes": 5316,
+      "leaves": 3,
+      "forks": 2,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c3fc",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3fc.v",
+        "sha256": "e2504de6ba9ce5cc7a7ad11e5beaab049e97232b6a2c67cb8be78ebe4970f6a6",
+        "relative_path": "generation001/traces/a8009c3fc.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3fc.isla",
+        "sha256": "52f29c1e0b2c4cbd1ce45c50be2aeb81c215124f815fe5e83517f925abbe024e",
+        "relative_path": "generation001/traces/a8009c3fc.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c400",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c400.v",
+        "sha256": "5e1814673d152b24eb64867021e3407d677b6f4d0dd3388985f3d5f158a98899",
+        "relative_path": "generation001/traces/a8009c400.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c400.isla",
+        "sha256": "7b029c7f1abc634d4e7db06954ec8438483e0ae650be1d4d1e1d7344dd27aef6",
+        "relative_path": "generation001/traces/a8009c400.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6956,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c404",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c404.v",
+        "sha256": "de0fd738444ed1a92c6593774b41614bacc5ba3ff722b2025e55017c4f1eaf42",
+        "relative_path": "generation001/traces/a8009c404.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c404.isla",
+        "sha256": "cca79c8d9839bf2a8012a0a82b3ffd7504a83bc6e5ce104a30247df3863f1713",
+        "relative_path": "generation001/traces/a8009c404.isla"
+      },
+      "nonblank_lines": 55,
+      "bytes": 5316,
+      "leaves": 3,
+      "forks": 2,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c408",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c408.v",
+        "sha256": "75b8fbac480719e39f38d6afa00a92c3bbcb2cb7648a33b2911afab5540e2093",
+        "relative_path": "generation001/traces/a8009c408.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c408.isla",
+        "sha256": "185962310d5673644b2bc71f875cddc9932f71deda3b3688faf9a9e429874790",
+        "relative_path": "generation001/traces/a8009c408.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6964,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c40c",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c40c.v",
+        "sha256": "428ad58cfccd354374466910333a997b0aaf6ef05475cf35aa2f1f95cdb883cb",
+        "relative_path": "generation001/traces/a8009c40c.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c40c.isla",
+        "sha256": "24a305f7484b1c17bfadad94f9162094a446703f2cb68b2bd7cf2152a84eb6fd",
+        "relative_path": "generation001/traces/a8009c40c.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6964,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c410",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c410.v",
+        "sha256": "18826e1b9fb9b7b8cc2048e05a37bcdff35645e23bc99a75cb46f4fa8dff3a09",
+        "relative_path": "generation001/traces/a8009c410.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c410.isla",
+        "sha256": "c0c03b20c74e05a224784c864404bef691314e2c67f286ddd169478a43c48ee8",
+        "relative_path": "generation001/traces/a8009c410.isla"
+      },
+      "nonblank_lines": 55,
+      "bytes": 5316,
+      "leaves": 3,
+      "forks": 2,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c414",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c414.v",
+        "sha256": "d5a241b0518db0137162bb8a29263ab7491339b3e85e677bc2cc1bf56a88e47e",
+        "relative_path": "generation001/traces/a8009c414.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c414.isla",
+        "sha256": "34e78f4b722429f7269bc3c4646006f4a38096ef5edcc719e6d9050e55b3185d",
+        "relative_path": "generation001/traces/a8009c414.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6964,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c418",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c418.v",
+        "sha256": "4c2dd2e2789059ff58f5eff4a88be7e6d48f0f9cce8f811b5c298c75690d24bc",
+        "relative_path": "generation001/traces/a8009c418.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c418.isla",
+        "sha256": "40999f0d444d4be045cc656faa40b4e82366834e87b603ed6052ff4c93897329",
+        "relative_path": "generation001/traces/a8009c418.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6964,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c41c",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c41c.v",
+        "sha256": "a9e7340c5131703dc5e50df6afe0ecfe1f250e59487f5a38e9104a5f05004b41",
+        "relative_path": "generation001/traces/a8009c41c.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c41c.isla",
+        "sha256": "3c7b7a5e5722efbbb7c25125d298f399f871012e5b89a34350648a5322497324",
+        "relative_path": "generation001/traces/a8009c41c.isla"
+      },
+      "nonblank_lines": 55,
+      "bytes": 5316,
+      "leaves": 3,
+      "forks": 2,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c420",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c420.v",
+        "sha256": "4e9accf2844c0a6f8b0a2354f72be2164214d8d33ee9e8055b32167e12230039",
+        "relative_path": "generation001/traces/a8009c420.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c420.isla",
+        "sha256": "4b8996da90cd639205f73c6b946705f089cbe147e43b0af9588f99971df4bc1d",
+        "relative_path": "generation001/traces/a8009c420.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6964,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c424",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c424.v",
+        "sha256": "6106d109a3568c82af4b7a06864884eb779cdd8d85e7cd87dcdc1667dbee84f9",
+        "relative_path": "generation001/traces/a8009c424.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c424.isla",
+        "sha256": "168b9985e0abaa1ddebd96bfe702973a699b68da43b98a86e3a9a49dad689fdd",
+        "relative_path": "generation001/traces/a8009c424.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6964,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c428",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c428.v",
+        "sha256": "ba0ff2c6af472e4b071ce98e752835c1e686ffb5198c2376d7af8618211c7317",
+        "relative_path": "generation001/traces/a8009c428.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c428.isla",
+        "sha256": "179865be7b056477f4fd04c9282b64c80eef82c57329d9961af2c7be79f4950d",
+        "relative_path": "generation001/traces/a8009c428.isla"
+      },
+      "nonblank_lines": 55,
+      "bytes": 5316,
+      "leaves": 3,
+      "forks": 2,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c42c",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c42c.v",
+        "sha256": "8266610727ec28ff4da48a717b59488028dbca667fcb58adf3c4d450f9d98dac",
+        "relative_path": "generation001/traces/a8009c42c.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c42c.isla",
+        "sha256": "c45e08adfe85bc5a433542bed8749c90b90865f1e94f5be3806aec5330e3274e",
+        "relative_path": "generation001/traces/a8009c42c.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6964,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c430",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c430.v",
+        "sha256": "16c649c12d7386e9359852d860748f319f7aa341a8c28295a49efb2e499d49f4",
+        "relative_path": "generation001/traces/a8009c430.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c430.isla",
+        "sha256": "4277927ecc75e27b58277035af65f6db9d2e24e36a3a44234eda56be262f4ab1",
+        "relative_path": "generation001/traces/a8009c430.isla"
+      },
+      "nonblank_lines": 60,
+      "bytes": 6964,
+      "leaves": 4,
+      "forks": 3,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c434",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c434.v",
+        "sha256": "5106f70500361b5cd66c23081a17c2baf976864c476003841ceb06c1e1614638",
+        "relative_path": "generation001/traces/a8009c434.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c434.isla",
+        "sha256": "79ff565325a17986aa7e57a485e32a34c7261ddf7aa174e5960c320b3c8acc8f",
+        "relative_path": "generation001/traces/a8009c434.isla"
+      },
+      "nonblank_lines": 16,
+      "bytes": 1163,
+      "leaves": 1,
+      "forks": 0,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c438",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c438.v",
+        "sha256": "09015012ee3e2ada18186b2795645eb17e2531e1b5115de4c685fe0690e3e337",
+        "relative_path": "generation001/traces/a8009c438.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c438.isla",
+        "sha256": "3abca150e1ac4a643e8c65849d8d8e5d4ff6d50ddb6de6de4ebeee19662d9e57",
+        "relative_path": "generation001/traces/a8009c438.isla"
+      },
+      "nonblank_lines": 14,
+      "bytes": 1216,
+      "leaves": 1,
+      "forks": 0,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c43c",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c43c.v",
+        "sha256": "c44917c885daa182b05c654d618becba70fe10ea5111bc764ac48868b3ca6c70",
+        "relative_path": "generation001/traces/a8009c43c.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c43c.isla",
+        "sha256": "236fffa49ccf73f8ada46c927f83fe596336aebc2c45e984204af40e1942614c",
+        "relative_path": "generation001/traces/a8009c43c.isla"
+      },
+      "nonblank_lines": 24,
+      "bytes": 2452,
+      "leaves": 1,
+      "forks": 0,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c440",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c440.v",
+        "sha256": "b303569605ac48512653dcae21c8808c95e6b04cffdbe2299b0fc540d361dd4e",
+        "relative_path": "generation001/traces/a8009c440.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c440.isla",
+        "sha256": "a9ebff9fcc12d1e76eaf3b4c84e82cff4aac80a4be477b87fc813d1f0e5e0a39",
+        "relative_path": "generation001/traces/a8009c440.isla"
+      },
+      "nonblank_lines": 24,
+      "bytes": 2452,
+      "leaves": 1,
+      "forks": 0,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c444",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c444.v",
+        "sha256": "59e0c62e2628f9c15c7efddfd394508ae2c0601e986dcaa37322bba2e83acf4c",
+        "relative_path": "generation001/traces/a8009c444.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c444.isla",
+        "sha256": "456de87345e8dde3c5d2e17ac61838a2db633ebcac55c4cd42e474045a9bb63d",
+        "relative_path": "generation001/traces/a8009c444.isla"
+      },
+      "nonblank_lines": 14,
+      "bytes": 1050,
+      "leaves": 1,
+      "forks": 0,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c448",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c448.v",
+        "sha256": "413bb14a3055e9e83d07f2447fee5baef5c6dc789fdfec470279d9a88066c0fe",
+        "relative_path": "generation001/traces/a8009c448.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c448.isla",
+        "sha256": "306570147d711d5d6262665cdc93f918060e6ca987bee3576288f042688289af",
+        "relative_path": "generation001/traces/a8009c448.isla"
+      },
+      "nonblank_lines": 45,
+      "bytes": 4844,
+      "leaves": 2,
+      "forks": 1,
+      "mcause_write_events": 2
+    },
+    {
+      "pc": "8009c44c",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c44c.v",
+        "sha256": "738d3732833a5addec78194d17da0b5f23e80a0ca2a3b247ed7b14c280df3164",
+        "relative_path": "generation001/traces/a8009c44c.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c44c.isla",
+        "sha256": "5ad6db9455b0e0720afaa9e7c033c8d8c79307f4d8db3d22c156bbab295633c8",
+        "relative_path": "generation001/traces/a8009c44c.isla"
+      },
+      "nonblank_lines": 11,
+      "bytes": 789,
+      "leaves": 1,
+      "forks": 0,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c450",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c450.v",
+        "sha256": "fe466bb56e2abcbab4cd6e2066ea52df91115e6e3f1d16e34661caf2f66585d6",
+        "relative_path": "generation001/traces/a8009c450.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c450.isla",
+        "sha256": "236fffa49ccf73f8ada46c927f83fe596336aebc2c45e984204af40e1942614c",
+        "relative_path": "generation001/traces/a8009c450.isla"
+      },
+      "nonblank_lines": 24,
+      "bytes": 2452,
+      "leaves": 1,
+      "forks": 0,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c454",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c454.v",
+        "sha256": "035b32e77b27757fd0057f7fff82fc699ca9c643444b6857bbfd9d129b5473e2",
+        "relative_path": "generation001/traces/a8009c454.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c454.isla",
+        "sha256": "a9ebff9fcc12d1e76eaf3b4c84e82cff4aac80a4be477b87fc813d1f0e5e0a39",
+        "relative_path": "generation001/traces/a8009c454.isla"
+      },
+      "nonblank_lines": 24,
+      "bytes": 2452,
+      "leaves": 1,
+      "forks": 0,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c458",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c458.v",
+        "sha256": "032447e7ae1e7be6942f32cccc94e85588adfc8fc3dcc03797f1727c242346ee",
+        "relative_path": "generation001/traces/a8009c458.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c458.isla",
+        "sha256": "456de87345e8dde3c5d2e17ac61838a2db633ebcac55c4cd42e474045a9bb63d",
+        "relative_path": "generation001/traces/a8009c458.isla"
+      },
+      "nonblank_lines": 14,
+      "bytes": 1050,
+      "leaves": 1,
+      "forks": 0,
+      "mcause_write_events": 0
+    },
+    {
+      "pc": "8009c45c",
+      "v": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c45c.v",
+        "sha256": "69e706b4128c008193006fd875800959192e6df2dac4cc7e14ecf2ddcadda547",
+        "relative_path": "generation001/traces/a8009c45c.v"
+      },
+      "isla": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c45c.isla",
+        "sha256": "306570147d711d5d6262665cdc93f918060e6ca987bee3576288f042688289af",
+        "relative_path": "generation001/traces/a8009c45c.isla"
+      },
+      "nonblank_lines": 45,
+      "bytes": 4844,
+      "leaves": 2,
+      "forks": 1,
+      "mcause_write_events": 2
+    }
+  ],
+  "all_files": [
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c338.isla",
+      "sha256": "39eacebda694f45d356bde21ecc0dd6a0a18338e16dd8e465848e7efd2017e10",
+      "relative_path": "generation001/traces/a8009c338.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c338.v",
+      "sha256": "a79ff789b9754dd18b83eecdfac884275ce0b981305a7e31cc451a31763d5c9d",
+      "relative_path": "generation001/traces/a8009c338.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c33c.isla",
+      "sha256": "725af2983d438d0e390376c752ba6c78f2e2772c30324c869bfee86b9a9c3e46",
+      "relative_path": "generation001/traces/a8009c33c.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c33c.v",
+      "sha256": "ce2d2eb0ee2b29c8dd6e445af53627849a4249619bfa5acf9dc5a6bfa59ba18d",
+      "relative_path": "generation001/traces/a8009c33c.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c340.isla",
+      "sha256": "4a9a706af875cb8e95d83535d3f42163bb13d32c219aa0eb0c6482e8b0bcc018",
+      "relative_path": "generation001/traces/a8009c340.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c340.v",
+      "sha256": "aac31b9110090c86293d0f518c58f9999ea3d0c7c90bfe0334fc543b0d7d8dfa",
+      "relative_path": "generation001/traces/a8009c340.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c344.isla",
+      "sha256": "c4daa92388c3ad7d130cadcfca6f25ed9f8cf553df17b1731e00ebb209a084ee",
+      "relative_path": "generation001/traces/a8009c344.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c344.v",
+      "sha256": "cd8f684ba29b386300b30f33c95b6f293071853a2d0f2dee4db378df0f136c4b",
+      "relative_path": "generation001/traces/a8009c344.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c348.isla",
+      "sha256": "873b5031ee6d5e9dfa3fc277e2e117dc442ffa5905bd58995a8dbcddd08d5673",
+      "relative_path": "generation001/traces/a8009c348.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c348.v",
+      "sha256": "786b3a3e914d0d20866dc82e6700f2e53b7c6044f189089404ad4f61b87ddcd5",
+      "relative_path": "generation001/traces/a8009c348.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c34c.isla",
+      "sha256": "138912725ecd07503dfcb19d141804be96b348fb9138b60d7d2b8370d11c411c",
+      "relative_path": "generation001/traces/a8009c34c.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c34c.v",
+      "sha256": "23afb7ab41a00c11401a93dd5f36621d1a1559b3270645bdb0b450ef15a5a497",
+      "relative_path": "generation001/traces/a8009c34c.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c350.isla",
+      "sha256": "1b1f6a529387a832c168999b0b7b9b6ba704e571a5bcdfff69f531b5acb6f246",
+      "relative_path": "generation001/traces/a8009c350.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c350.v",
+      "sha256": "2ef70f069bb5d4c4b7f1840428cfdcec98c1941f5cde4fb56aaaed9e797cf329",
+      "relative_path": "generation001/traces/a8009c350.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c354.isla",
+      "sha256": "e549b489efd9bec12b8a58cc6ff22686616b3b33de88107b30321e27c448ab0e",
+      "relative_path": "generation001/traces/a8009c354.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c354.v",
+      "sha256": "c63fdc76737d58188f38fbd3e67020191ee0ad892a8d82235a807119527268a2",
+      "relative_path": "generation001/traces/a8009c354.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c358.isla",
+      "sha256": "8552d6ccf57a8eeb3bdba6cf29130b5b79446b14070a468c3bd0e4ab21ea3c90",
+      "relative_path": "generation001/traces/a8009c358.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c358.v",
+      "sha256": "44b68039d0dc58fad8b6a84ee3f9ed50bed92e475765cdd9eb9fbe5e71e7ec1f",
+      "relative_path": "generation001/traces/a8009c358.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c35c.isla",
+      "sha256": "706c849574858b4de2f84b8f3c157c566e8e71c524ae70791fbd86242dcb8abd",
+      "relative_path": "generation001/traces/a8009c35c.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c35c.v",
+      "sha256": "268aac3a9cc686a705d87a6a280aef6f01e52f76d3fe17980407517d85eaeed6",
+      "relative_path": "generation001/traces/a8009c35c.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c360.isla",
+      "sha256": "22ef0a4b92925dca84fe259d9265c008cc72e3121abb7fb53adbda666a02fc58",
+      "relative_path": "generation001/traces/a8009c360.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c360.v",
+      "sha256": "05303d6d57d384b2b692afb2204d5cbba9d7125ba5ea60b38e8a8dcb0c91aa38",
+      "relative_path": "generation001/traces/a8009c360.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c364.isla",
+      "sha256": "4a3a4936bc80ee7e83dde05cd86588d01fd8f406540ad730006eb5a656370bff",
+      "relative_path": "generation001/traces/a8009c364.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c364.v",
+      "sha256": "e311c7d31bbe99eb51afeab9a167de4801622497bf7abb5f0ab39912fcc130d2",
+      "relative_path": "generation001/traces/a8009c364.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c368.isla",
+      "sha256": "6e74ce2582659fd10978d88afe08594364a267e431689e85af523ec8b97ec804",
+      "relative_path": "generation001/traces/a8009c368.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c368.v",
+      "sha256": "182e4e2598c91940eaa99d1e38edc8f0bc1a9c372dc8c68a6812fc4473cf1f77",
+      "relative_path": "generation001/traces/a8009c368.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c36c.isla",
+      "sha256": "e8207e5ebe431446c84cb1917838faaef2bcb13bc2ba52e2cb5587ada7bf623f",
+      "relative_path": "generation001/traces/a8009c36c.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c36c.v",
+      "sha256": "5f7d458f3d1d0b1f6e8b9abfbb97fd12dc31ad2139174b767aadc5e839ed687b",
+      "relative_path": "generation001/traces/a8009c36c.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c370.isla",
+      "sha256": "7c29e0898d4bf007cd787a6f5ebb6c3a7a383ded7fa0ad981d7a889be5dfb641",
+      "relative_path": "generation001/traces/a8009c370.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c370.v",
+      "sha256": "672b7607290cf6495d66c94aa23246649e99058397e1b885df64c2af6713f548",
+      "relative_path": "generation001/traces/a8009c370.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c374.isla",
+      "sha256": "928ad6a0c3a2099a0880000181d0c895f695bc1bb66fe8f3e97f4ac184f2d40a",
+      "relative_path": "generation001/traces/a8009c374.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c374.v",
+      "sha256": "9ac9389e08b7a99951e2c347c61eb0e7d28367046d5337607122defac41d4b8f",
+      "relative_path": "generation001/traces/a8009c374.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c378.isla",
+      "sha256": "811b06034985aa44c1a990a3cb3eff85f47dddc53fbfc463c078afb706d27a2d",
+      "relative_path": "generation001/traces/a8009c378.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c378.v",
+      "sha256": "850c8955ed75078e92ba91794a4c3491b401822870ed8ff0cb8abf243d163a16",
+      "relative_path": "generation001/traces/a8009c378.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c37c.isla",
+      "sha256": "e99af8bf631fde00f9086ead9a94a1a62ee105080b081178cd5119bfc7819810",
+      "relative_path": "generation001/traces/a8009c37c.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c37c.v",
+      "sha256": "513dec53b55a45dd7bfb13c27e5cb5edcb10343ba9472e48a8d5290d1b1a070d",
+      "relative_path": "generation001/traces/a8009c37c.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c380.isla",
+      "sha256": "46e1584b41f5227bbd7a12d25e98252768c7b2c2c6e4cb82ccc262cbf0d139e6",
+      "relative_path": "generation001/traces/a8009c380.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c380.v",
+      "sha256": "10dec3f7a8f97c3d8da165d15e0da0c9cdcaad4b0967ece9c41ca022214379c2",
+      "relative_path": "generation001/traces/a8009c380.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c384.isla",
+      "sha256": "a133c5931a0ce0fc42288c35865ec2b1cb1152d5fd837265af78292ad7ee1d70",
+      "relative_path": "generation001/traces/a8009c384.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c384.v",
+      "sha256": "8ec8f81b479f353f9f008d3025e1cdbc50e0e876af8528086fe4307e4444f7b1",
+      "relative_path": "generation001/traces/a8009c384.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c388.isla",
+      "sha256": "a8b606085bb24b51509534d420fe026caf487d933e3ad33c27efa9d7efee4600",
+      "relative_path": "generation001/traces/a8009c388.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c388.v",
+      "sha256": "b3181ca90a79f2899382a87d9ec90bf3a13a85c03547166709d51d67c2a1e821",
+      "relative_path": "generation001/traces/a8009c388.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c38c.isla",
+      "sha256": "e9f922c626328a45757a734a74bca6b9395ff7e6f59d4563fe7b5db8b9cae954",
+      "relative_path": "generation001/traces/a8009c38c.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c38c.v",
+      "sha256": "4f008bd4505492ecfd7bc0d3795e7a1c7ad41d61c593f1cc498c2b095ec515cb",
+      "relative_path": "generation001/traces/a8009c38c.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c390.isla",
+      "sha256": "ccba2007ed561b35f32815693dbaf70b5423d641e04d138a2e747b096c8fba4c",
+      "relative_path": "generation001/traces/a8009c390.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c390.v",
+      "sha256": "2562aa9a4339b26326976bd7f1444238cf5d74dd2676087e3ea62821ff9528b3",
+      "relative_path": "generation001/traces/a8009c390.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c394.isla",
+      "sha256": "8f2a057e0a5561763e5d03f4c6a75294bf7ff2404f713ca35bf7b17cbdc79ee7",
+      "relative_path": "generation001/traces/a8009c394.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c394.v",
+      "sha256": "1e079094196a039ed2c75435532129dbc76fd4cde9a35a721f65bb439052ef82",
+      "relative_path": "generation001/traces/a8009c394.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c398.isla",
+      "sha256": "ee48c38b1dacb27fbf825fef06eae663dbaa965a61b8741e9add2b03e34abaa9",
+      "relative_path": "generation001/traces/a8009c398.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c398.v",
+      "sha256": "256f14ca2b33001e091e76a010789e5207348bba4dba06cefe4d2896e2930714",
+      "relative_path": "generation001/traces/a8009c398.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c39c.isla",
+      "sha256": "3d99df79b34a0101465758960a6fb17f46bd41528999723ac630baae4f8e7e67",
+      "relative_path": "generation001/traces/a8009c39c.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c39c.v",
+      "sha256": "42f03994febfef18ede860b79ed2b2e1dd72a4c5e9c8454bf8378c700536a570",
+      "relative_path": "generation001/traces/a8009c39c.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3a0.isla",
+      "sha256": "19eec0b0d0880f05609d49acc7b4fed8fe0c9b6253f88e8ccc84f430a54f2a2a",
+      "relative_path": "generation001/traces/a8009c3a0.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3a0.v",
+      "sha256": "ca010d6b66eb7d4c2e8ceec5084f3bbb009a900e4dee9b33772d78492948a37a",
+      "relative_path": "generation001/traces/a8009c3a0.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3a4.isla",
+      "sha256": "2e104cdcf3ebaf1f907b114bfc05defff2c5d0bc82a9a2e20382677c98d303cc",
+      "relative_path": "generation001/traces/a8009c3a4.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3a4.v",
+      "sha256": "5ca692e688a7cfd928f0e7a54896d38468a44615ddb67d1e49cfe7fdd3fecc6f",
+      "relative_path": "generation001/traces/a8009c3a4.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3a8.isla",
+      "sha256": "22d7e8f16176e269f65293074f5dbee30f67d0806bc42328d4879497effb7885",
+      "relative_path": "generation001/traces/a8009c3a8.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3a8.v",
+      "sha256": "c05d9f0c3d6910619ce01a52bd57ffd9d89361fe9c1349cacebe3857448157e3",
+      "relative_path": "generation001/traces/a8009c3a8.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3ac.isla",
+      "sha256": "8d5f8ada82daa55c94d35791b307caf8650a60414252f4a77ad6a50f9cf61730",
+      "relative_path": "generation001/traces/a8009c3ac.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3ac.v",
+      "sha256": "d7232297f90ae62eaeefa7c5fdb953d11b6827f06a3f46db9034ff6e780367e9",
+      "relative_path": "generation001/traces/a8009c3ac.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3b0.isla",
+      "sha256": "6a65c68ab96a39f028b5443b4d0a8a7520c1804e207b789b3b30a2620e18e473",
+      "relative_path": "generation001/traces/a8009c3b0.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3b0.v",
+      "sha256": "ef3d56c08b3d24aab47cf99812deef1cd86f3a78cd3bc1913517febc10d5d57a",
+      "relative_path": "generation001/traces/a8009c3b0.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3b4.isla",
+      "sha256": "6a8ddd123ebda5955ad550330ae6abeb787700e3e03b6191e2076d3cea5c1b02",
+      "relative_path": "generation001/traces/a8009c3b4.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3b4.v",
+      "sha256": "97a1652410cc5e9597fd8941919af4d4ddf4173b8c80733d1efc779939ce0ae2",
+      "relative_path": "generation001/traces/a8009c3b4.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3b8.isla",
+      "sha256": "1e8c7974689774a6fd0b2a31b61a872ca26202c4b814edf48cd73e10352683bd",
+      "relative_path": "generation001/traces/a8009c3b8.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3b8.v",
+      "sha256": "451b713fba01825e24daa945b357ea3ed3590d1b8bcbfdd58e5354e51b275a1f",
+      "relative_path": "generation001/traces/a8009c3b8.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3bc.isla",
+      "sha256": "ea7d88e633d6d02ab5dbafc99c2e3d706f9338eb1d554f97eced6712d2366576",
+      "relative_path": "generation001/traces/a8009c3bc.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3bc.v",
+      "sha256": "2809861baabe66070bfb3bfc00f7de2653c963d2df70de2eb14e55d5c9c3948b",
+      "relative_path": "generation001/traces/a8009c3bc.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3c0.isla",
+      "sha256": "cdb21b5fcadbe9de14ad4a4eb76b895b8a8bb5b20b646badd01c023e0a01612b",
+      "relative_path": "generation001/traces/a8009c3c0.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3c0.v",
+      "sha256": "253549865935909ae31402f2addf445d618975e0d302d8f93bc1a7fed8cf42b5",
+      "relative_path": "generation001/traces/a8009c3c0.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3c4.isla",
+      "sha256": "ab694778c0e915e6e6ddbcb4e31ea6d84c703ed1e7e776c456c7bbaa4cb12616",
+      "relative_path": "generation001/traces/a8009c3c4.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3c4.v",
+      "sha256": "dea848c79c3dd012806e32c4e226f2fa836b233a2ac57a5703dee840d681e805",
+      "relative_path": "generation001/traces/a8009c3c4.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3c8.isla",
+      "sha256": "60f6bf6fd71035a974384888f46a0c580dd7ecc88a28b6809320816598ea0300",
+      "relative_path": "generation001/traces/a8009c3c8.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3c8.v",
+      "sha256": "cd3698ddd8f9f1d4924b9014336aa9a837742c7afbe40aa40ed1c82fec0d9ea5",
+      "relative_path": "generation001/traces/a8009c3c8.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3cc.isla",
+      "sha256": "dd649b8e35061dd6406896ebc8782b2b0f89961baa2d37e790d3013c6eaae3a6",
+      "relative_path": "generation001/traces/a8009c3cc.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3cc.v",
+      "sha256": "05817a373d05e239b2fff4c0ba65de3e0b1e8dc6d88754fcfee34ce43b405307",
+      "relative_path": "generation001/traces/a8009c3cc.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3d0.isla",
+      "sha256": "5091b2968994a7410a302101c1926a42e09ecb12a73264976616bd58e565a5ef",
+      "relative_path": "generation001/traces/a8009c3d0.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3d0.v",
+      "sha256": "b9c79e24358987d30982edb4da602f67e4d73d308893bdfed257e5e1acd5762d",
+      "relative_path": "generation001/traces/a8009c3d0.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3d4.isla",
+      "sha256": "c02ef09da87a8d1e0aaf453704508def43672d6c5bf190e58654a4739fbbafa4",
+      "relative_path": "generation001/traces/a8009c3d4.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3d4.v",
+      "sha256": "aca6c5e38b3eaab8d5e92ce38aca0031f3df573763c24304d4150ec187dde69b",
+      "relative_path": "generation001/traces/a8009c3d4.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3d8.isla",
+      "sha256": "b63ed48046869cc2145894312068c0cec2d60b64b6dd775ff4bae0b98f44d27f",
+      "relative_path": "generation001/traces/a8009c3d8.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3d8.v",
+      "sha256": "4fefcff58ef9668ba906118da016a18e1fe22cbaf680d1f7ec262689d21abfbc",
+      "relative_path": "generation001/traces/a8009c3d8.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3dc.isla",
+      "sha256": "54a6380ee29e87edb528c8fe33515baf056ef702961c7c9c0730fab02ca430f7",
+      "relative_path": "generation001/traces/a8009c3dc.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3dc.v",
+      "sha256": "4f6656cf3a7cf2ff121675f4d952ac1280a44766bca4fd569bb3e55d40e05fba",
+      "relative_path": "generation001/traces/a8009c3dc.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3e0.isla",
+      "sha256": "062cb8e6248661b0a3648ec0c6ded2e4fd9e3c0537c0ec276b33d04263369e55",
+      "relative_path": "generation001/traces/a8009c3e0.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3e0.v",
+      "sha256": "af6107d059255c4c6934a8a0226195323d010cb12e3ba226c3cf7aa39548999d",
+      "relative_path": "generation001/traces/a8009c3e0.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3e4.isla",
+      "sha256": "2adcf60b2dc22e0be09bcd0a194b4ef747ff06475fad7cdbd0b780e806d023a4",
+      "relative_path": "generation001/traces/a8009c3e4.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3e4.v",
+      "sha256": "27b40f939e3e46bf98020fabe7bcdae58f9b95263e666bb6cfbbf48fe29055fb",
+      "relative_path": "generation001/traces/a8009c3e4.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3e8.isla",
+      "sha256": "94d45625eaf8498f888359fe3602b5ff031df87f97a20e1081607dd339299abd",
+      "relative_path": "generation001/traces/a8009c3e8.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3e8.v",
+      "sha256": "65aabdb88cd3038c5653c8b153ae41c100c08872ba84bdede2316acad23c0c9c",
+      "relative_path": "generation001/traces/a8009c3e8.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3ec.isla",
+      "sha256": "de52607828d16716b0b57b2f1e03b2414b35331636d8c692b766d5fed2dc3fe3",
+      "relative_path": "generation001/traces/a8009c3ec.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3ec.v",
+      "sha256": "b7947888edd8ea1f07f9525ad1d704a4a67c47173dc3940d1e1a0ec79ab8a11a",
+      "relative_path": "generation001/traces/a8009c3ec.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3f0.isla",
+      "sha256": "f778b0f1e19cdc0179df20a76d53a422085e2c73e5780c55064d67767b4b495b",
+      "relative_path": "generation001/traces/a8009c3f0.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3f0.v",
+      "sha256": "98f23435dbc680423ad2ff08e461f1d0d79c2f71f843348e746d90b004a7ce55",
+      "relative_path": "generation001/traces/a8009c3f0.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3f4.isla",
+      "sha256": "21c1c5ca2fa60f0db2c12844be43fb443f5ee7907d6e54e1f8f070e836bfcfe1",
+      "relative_path": "generation001/traces/a8009c3f4.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3f4.v",
+      "sha256": "352027a25a88b87ef1d74f9ea034377cd1037e2cff4dcf795914e3d12068ac07",
+      "relative_path": "generation001/traces/a8009c3f4.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3f8.isla",
+      "sha256": "810949980c808ad83357561f9a518a43b8135a834be13b9056ce635751b24976",
+      "relative_path": "generation001/traces/a8009c3f8.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3f8.v",
+      "sha256": "34f90786568176c24e63f5bb8c580e8b7f71641beaeee6101bda7ce876255874",
+      "relative_path": "generation001/traces/a8009c3f8.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3fc.isla",
+      "sha256": "52f29c1e0b2c4cbd1ce45c50be2aeb81c215124f815fe5e83517f925abbe024e",
+      "relative_path": "generation001/traces/a8009c3fc.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c3fc.v",
+      "sha256": "e2504de6ba9ce5cc7a7ad11e5beaab049e97232b6a2c67cb8be78ebe4970f6a6",
+      "relative_path": "generation001/traces/a8009c3fc.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c400.isla",
+      "sha256": "7b029c7f1abc634d4e7db06954ec8438483e0ae650be1d4d1e1d7344dd27aef6",
+      "relative_path": "generation001/traces/a8009c400.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c400.v",
+      "sha256": "5e1814673d152b24eb64867021e3407d677b6f4d0dd3388985f3d5f158a98899",
+      "relative_path": "generation001/traces/a8009c400.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c404.isla",
+      "sha256": "cca79c8d9839bf2a8012a0a82b3ffd7504a83bc6e5ce104a30247df3863f1713",
+      "relative_path": "generation001/traces/a8009c404.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c404.v",
+      "sha256": "de0fd738444ed1a92c6593774b41614bacc5ba3ff722b2025e55017c4f1eaf42",
+      "relative_path": "generation001/traces/a8009c404.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c408.isla",
+      "sha256": "185962310d5673644b2bc71f875cddc9932f71deda3b3688faf9a9e429874790",
+      "relative_path": "generation001/traces/a8009c408.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c408.v",
+      "sha256": "75b8fbac480719e39f38d6afa00a92c3bbcb2cb7648a33b2911afab5540e2093",
+      "relative_path": "generation001/traces/a8009c408.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c40c.isla",
+      "sha256": "24a305f7484b1c17bfadad94f9162094a446703f2cb68b2bd7cf2152a84eb6fd",
+      "relative_path": "generation001/traces/a8009c40c.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c40c.v",
+      "sha256": "428ad58cfccd354374466910333a997b0aaf6ef05475cf35aa2f1f95cdb883cb",
+      "relative_path": "generation001/traces/a8009c40c.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c410.isla",
+      "sha256": "c0c03b20c74e05a224784c864404bef691314e2c67f286ddd169478a43c48ee8",
+      "relative_path": "generation001/traces/a8009c410.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c410.v",
+      "sha256": "18826e1b9fb9b7b8cc2048e05a37bcdff35645e23bc99a75cb46f4fa8dff3a09",
+      "relative_path": "generation001/traces/a8009c410.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c414.isla",
+      "sha256": "34e78f4b722429f7269bc3c4646006f4a38096ef5edcc719e6d9050e55b3185d",
+      "relative_path": "generation001/traces/a8009c414.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c414.v",
+      "sha256": "d5a241b0518db0137162bb8a29263ab7491339b3e85e677bc2cc1bf56a88e47e",
+      "relative_path": "generation001/traces/a8009c414.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c418.isla",
+      "sha256": "40999f0d444d4be045cc656faa40b4e82366834e87b603ed6052ff4c93897329",
+      "relative_path": "generation001/traces/a8009c418.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c418.v",
+      "sha256": "4c2dd2e2789059ff58f5eff4a88be7e6d48f0f9cce8f811b5c298c75690d24bc",
+      "relative_path": "generation001/traces/a8009c418.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c41c.isla",
+      "sha256": "3c7b7a5e5722efbbb7c25125d298f399f871012e5b89a34350648a5322497324",
+      "relative_path": "generation001/traces/a8009c41c.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c41c.v",
+      "sha256": "a9e7340c5131703dc5e50df6afe0ecfe1f250e59487f5a38e9104a5f05004b41",
+      "relative_path": "generation001/traces/a8009c41c.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c420.isla",
+      "sha256": "4b8996da90cd639205f73c6b946705f089cbe147e43b0af9588f99971df4bc1d",
+      "relative_path": "generation001/traces/a8009c420.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c420.v",
+      "sha256": "4e9accf2844c0a6f8b0a2354f72be2164214d8d33ee9e8055b32167e12230039",
+      "relative_path": "generation001/traces/a8009c420.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c424.isla",
+      "sha256": "168b9985e0abaa1ddebd96bfe702973a699b68da43b98a86e3a9a49dad689fdd",
+      "relative_path": "generation001/traces/a8009c424.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c424.v",
+      "sha256": "6106d109a3568c82af4b7a06864884eb779cdd8d85e7cd87dcdc1667dbee84f9",
+      "relative_path": "generation001/traces/a8009c424.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c428.isla",
+      "sha256": "179865be7b056477f4fd04c9282b64c80eef82c57329d9961af2c7be79f4950d",
+      "relative_path": "generation001/traces/a8009c428.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c428.v",
+      "sha256": "ba0ff2c6af472e4b071ce98e752835c1e686ffb5198c2376d7af8618211c7317",
+      "relative_path": "generation001/traces/a8009c428.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c42c.isla",
+      "sha256": "c45e08adfe85bc5a433542bed8749c90b90865f1e94f5be3806aec5330e3274e",
+      "relative_path": "generation001/traces/a8009c42c.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c42c.v",
+      "sha256": "8266610727ec28ff4da48a717b59488028dbca667fcb58adf3c4d450f9d98dac",
+      "relative_path": "generation001/traces/a8009c42c.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c430.isla",
+      "sha256": "4277927ecc75e27b58277035af65f6db9d2e24e36a3a44234eda56be262f4ab1",
+      "relative_path": "generation001/traces/a8009c430.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c430.v",
+      "sha256": "16c649c12d7386e9359852d860748f319f7aa341a8c28295a49efb2e499d49f4",
+      "relative_path": "generation001/traces/a8009c430.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c434.isla",
+      "sha256": "79ff565325a17986aa7e57a485e32a34c7261ddf7aa174e5960c320b3c8acc8f",
+      "relative_path": "generation001/traces/a8009c434.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c434.v",
+      "sha256": "5106f70500361b5cd66c23081a17c2baf976864c476003841ceb06c1e1614638",
+      "relative_path": "generation001/traces/a8009c434.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c438.isla",
+      "sha256": "3abca150e1ac4a643e8c65849d8d8e5d4ff6d50ddb6de6de4ebeee19662d9e57",
+      "relative_path": "generation001/traces/a8009c438.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c438.v",
+      "sha256": "09015012ee3e2ada18186b2795645eb17e2531e1b5115de4c685fe0690e3e337",
+      "relative_path": "generation001/traces/a8009c438.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c43c.isla",
+      "sha256": "236fffa49ccf73f8ada46c927f83fe596336aebc2c45e984204af40e1942614c",
+      "relative_path": "generation001/traces/a8009c43c.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c43c.v",
+      "sha256": "c44917c885daa182b05c654d618becba70fe10ea5111bc764ac48868b3ca6c70",
+      "relative_path": "generation001/traces/a8009c43c.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c440.isla",
+      "sha256": "a9ebff9fcc12d1e76eaf3b4c84e82cff4aac80a4be477b87fc813d1f0e5e0a39",
+      "relative_path": "generation001/traces/a8009c440.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c440.v",
+      "sha256": "b303569605ac48512653dcae21c8808c95e6b04cffdbe2299b0fc540d361dd4e",
+      "relative_path": "generation001/traces/a8009c440.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c444.isla",
+      "sha256": "456de87345e8dde3c5d2e17ac61838a2db633ebcac55c4cd42e474045a9bb63d",
+      "relative_path": "generation001/traces/a8009c444.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c444.v",
+      "sha256": "59e0c62e2628f9c15c7efddfd394508ae2c0601e986dcaa37322bba2e83acf4c",
+      "relative_path": "generation001/traces/a8009c444.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c448.isla",
+      "sha256": "306570147d711d5d6262665cdc93f918060e6ca987bee3576288f042688289af",
+      "relative_path": "generation001/traces/a8009c448.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c448.v",
+      "sha256": "413bb14a3055e9e83d07f2447fee5baef5c6dc789fdfec470279d9a88066c0fe",
+      "relative_path": "generation001/traces/a8009c448.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c44c.isla",
+      "sha256": "5ad6db9455b0e0720afaa9e7c033c8d8c79307f4d8db3d22c156bbab295633c8",
+      "relative_path": "generation001/traces/a8009c44c.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c44c.v",
+      "sha256": "738d3732833a5addec78194d17da0b5f23e80a0ca2a3b247ed7b14c280df3164",
+      "relative_path": "generation001/traces/a8009c44c.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c450.isla",
+      "sha256": "236fffa49ccf73f8ada46c927f83fe596336aebc2c45e984204af40e1942614c",
+      "relative_path": "generation001/traces/a8009c450.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c450.v",
+      "sha256": "fe466bb56e2abcbab4cd6e2066ea52df91115e6e3f1d16e34661caf2f66585d6",
+      "relative_path": "generation001/traces/a8009c450.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c454.isla",
+      "sha256": "a9ebff9fcc12d1e76eaf3b4c84e82cff4aac80a4be477b87fc813d1f0e5e0a39",
+      "relative_path": "generation001/traces/a8009c454.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c454.v",
+      "sha256": "035b32e77b27757fd0057f7fff82fc699ca9c643444b6857bbfd9d129b5473e2",
+      "relative_path": "generation001/traces/a8009c454.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c458.isla",
+      "sha256": "456de87345e8dde3c5d2e17ac61838a2db633ebcac55c4cd42e474045a9bb63d",
+      "relative_path": "generation001/traces/a8009c458.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c458.v",
+      "sha256": "032447e7ae1e7be6942f32cccc94e85588adfc8fc3dcc03797f1727c242346ee",
+      "relative_path": "generation001/traces/a8009c458.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c45c.isla",
+      "sha256": "306570147d711d5d6262665cdc93f918060e6ca987bee3576288f042688289af",
+      "relative_path": "generation001/traces/a8009c45c.isla"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/a8009c45c.v",
+      "sha256": "69e706b4128c008193006fd875800959192e6df2dac4cc7e14ecf2ddcadda547",
+      "relative_path": "generation001/traces/a8009c45c.v"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/dune",
+      "sha256": "3cd20455c80f6cd2708a76a3b37b8eee23755009337875c60a3afcfc29739cdd",
+      "relative_path": "generation001/traces/dune"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces/instrs.v",
+      "sha256": "97a7d0ae09064530402bbfdbcc12c0ca90978c24614b0d7818c7e05d55e889bd",
+      "relative_path": "generation001/traces/instrs.v"
+    }
+  ],
+  "input_copies": [
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/build.py",
+        "sha256": "2a5c2d417cc1e1ecb4d8b032970ade50ca8f56b8f8969340ee7f9e4a831b5b0e"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/build.py",
+        "sha256": "2a5c2d417cc1e1ecb4d8b032970ade50ca8f56b8f8969340ee7f9e4a831b5b0e"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/closure.py",
+        "sha256": "c55da1702313ba5fdb7da5b0bc1b8337f95ce21aae1bec2cf632723d7e52d54f"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/closure.py",
+        "sha256": "c55da1702313ba5fdb7da5b0bc1b8337f95ce21aae1bec2cf632723d7e52d54f"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/dwarf.py",
+        "sha256": "209df16ac736802a423d4fc73049b99ab19f105e83107a7ded7b6064c46063e3"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/dwarf.py",
+        "sha256": "209df16ac736802a423d4fc73049b99ab19f105e83107a7ded7b6064c46063e3"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/fetch_inputs.py",
+        "sha256": "fd8e269f242a991381e06641962326bbc4c0aed71baa0a24d1f2891f167cafba"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/fetch_inputs.py",
+        "sha256": "fd8e269f242a991381e06641962326bbc4c0aed71baa0a24d1f2891f167cafba"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/inventory.py",
+        "sha256": "adc3bae421815d40b7908e9fc14e4bcf5d82182b605571edc57a27faa2e77a22"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/inventory.py",
+        "sha256": "adc3bae421815d40b7908e9fc14e4bcf5d82182b605571edc57a27faa2e77a22"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/manifest.py",
+        "sha256": "2d8ea8410acdb1ec5ff97017674fe486dc5c8523f5adc60416362d5687a522e6"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/manifest.py",
+        "sha256": "2d8ea8410acdb1ec5ff97017674fe486dc5c8523f5adc60416362d5687a522e6"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/riscv.py",
+        "sha256": "b964027f473a4dc65dee2a27566fabeddbeb770dc85f9a6d602192302c7d8405"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/riscv.py",
+        "sha256": "b964027f473a4dc65dee2a27566fabeddbeb770dc85f9a6d602192302c7d8405"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/runtime_inventory.py",
+        "sha256": "8d0f0522ebfc6da0b9638a64afec016000e7072512080e65ae5b359bb1c773d9"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/runtime_inventory.py",
+        "sha256": "8d0f0522ebfc6da0b9638a64afec016000e7072512080e65ae5b359bb1c773d9"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/test_manifest.py",
+        "sha256": "abbcbb1a994cbacb81ccd03f8f0a39d50d2417465358f7ce4c99e74d2e7247c7"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/test_manifest.py",
+        "sha256": "abbcbb1a994cbacb81ccd03f8f0a39d50d2417465358f7ce4c99e74d2e7247c7"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/platform/bind_traces.py",
+        "sha256": "158a90111fc74e589cdf5eeaf7fb615bceeea0d5b7f1fa5324012cbf96d69bdf"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/platform/bind_traces.py",
+        "sha256": "158a90111fc74e589cdf5eeaf7fb615bceeea0d5b7f1fa5324012cbf96d69bdf"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/platform/build.py",
+        "sha256": "6fde01540390fbb74c5545be9108bcaf6debc72d27c0cb703dd2146d7dace037"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/platform/build.py",
+        "sha256": "6fde01540390fbb74c5545be9108bcaf6debc72d27c0cb703dd2146d7dace037"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/platform/cache_footprint.py",
+        "sha256": "435e341ce28bd83fc96a745fb93eec8dd8aaac9d4bac745d5a61d262ca0da8ea"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/platform/cache_footprint.py",
+        "sha256": "435e341ce28bd83fc96a745fb93eec8dd8aaac9d4bac745d5a61d262ca0da8ea"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/platform/exports.py",
+        "sha256": "de452dd154d1494e24ca2447d41e28c02466c561a7f922ff8efa27fdff01641e"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/platform/exports.py",
+        "sha256": "de452dd154d1494e24ca2447d41e28c02466c561a7f922ff8efa27fdff01641e"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/platform/fragment.py",
+        "sha256": "36d92d6966b00538a08b3d438d2c04c37099ca5dca2bdbd7bc97eb6dbc1ed841"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/platform/fragment.py",
+        "sha256": "36d92d6966b00538a08b3d438d2c04c37099ca5dca2bdbd7bc97eb6dbc1ed841"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/platform/function_binding.py",
+        "sha256": "0691954da33a5224c704b7fa546980c0e058d69180dabe496430184a67a70d50"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/platform/function_binding.py",
+        "sha256": "0691954da33a5224c704b7fa546980c0e058d69180dabe496430184a67a70d50"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/platform/indexes.py",
+        "sha256": "3dbf16ccc12d453aa5004209b48786cef9ea7ebce81a98220e6d604372c30ace"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/platform/indexes.py",
+        "sha256": "3dbf16ccc12d453aa5004209b48786cef9ea7ebce81a98220e6d604372c30ace"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/platform/smoke.py",
+        "sha256": "64395604fe2a1efa1cc5817787f688caeb09c729a875bfd90fd98a4496e65994"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/platform/smoke.py",
+        "sha256": "64395604fe2a1efa1cc5817787f688caeb09c729a875bfd90fd98a4496e65994"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/platform/test_build.py",
+        "sha256": "7df6b9c509bb9eaf428d14b33b2726c9bcf3cf77b845e42efffea3a4cd9a223c"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/platform/test_build.py",
+        "sha256": "7df6b9c509bb9eaf428d14b33b2726c9bcf3cf77b845e42efffea3a4cd9a223c"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/platform/test_function_binding.py",
+        "sha256": "d03673e59950f5c98c8b76021a4d1cf54b2ef464a4ce7a30582334306b1a0428"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/platform/test_function_binding.py",
+        "sha256": "d03673e59950f5c98c8b76021a4d1cf54b2ef464a4ce7a30582334306b1a0428"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/per-load-annotations-v3/SOURCES/tools/stock_zisk/platform/test_trace_only.py",
+        "sha256": "8af523160764c7c412b55980007fadc52aab78bff0177254e64c0ab29ef65c6c"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/platform/test_trace_only.py",
+        "sha256": "8af523160764c7c412b55980007fadc52aab78bff0177254e64c0ab29ef65c6c"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/per-load-annotations-v3/SOURCES/tools/stock_zisk/platform/traces.py",
+        "sha256": "8d913f9d091fe39cff25c4a2155bd4ebbb4a252495d8e79ceaf792ef7b582a11"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/platform/traces.py",
+        "sha256": "8d913f9d091fe39cff25c4a2155bd4ebbb4a252495d8e79ceaf792ef7b582a11"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/per-load-annotations-v3/SOURCES/tools/stock_zisk/platform/access_regions.py",
+        "sha256": "2c77a59cc89adb0d9e0b07f2cf3ea7831edee13b5243352361d123ffd02c7e48"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/platform/access_regions.py",
+        "sha256": "2c77a59cc89adb0d9e0b07f2cf3ea7831edee13b5243352361d123ffd02c7e48"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/per-load-annotations-v3/SOURCES/tools/stock_zisk/platform/test_access_regions.py",
+        "sha256": "2437c282819bf2036a7ce6507d72eccf557c58c9c2955cf61b7dc886d79f9a2e"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/platform/test_access_regions.py",
+        "sha256": "2437c282819bf2036a7ce6507d72eccf557c58c9c2955cf61b7dc886d79f9a2e"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/tools/stock_zisk/platform/bin/isla-footprint",
+        "sha256": "316357d80657f8792cc168cba5a52b85adcfb3f5291584a2e09dae74d687b2f4"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/platform/bin/isla-footprint",
+        "sha256": "316357d80657f8792cc168cba5a52b85adcfb3f5291584a2e09dae74d687b2f4"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/bin/riscv64-linux-gnu-as",
+        "sha256": "f685923c9eef8c7f8a4e1157afc818c027436dcd5e798fbac021146bd8f153d6"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/bin/riscv64-linux-gnu-as",
+        "sha256": "f685923c9eef8c7f8a4e1157afc818c027436dcd5e798fbac021146bd8f153d6"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/bin/riscv64-linux-gnu-ld",
+        "sha256": "e7df162a0c0e5ddf6604a9765250aec166f77b05c2db4cdaa7fac3cd9a9cfbe5"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/bin/riscv64-linux-gnu-ld",
+        "sha256": "e7df162a0c0e5ddf6604a9765250aec166f77b05c2db4cdaa7fac3cd9a9cfbe5"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/bin/riscv64-linux-gnu-nm",
+        "sha256": "466f4fc027a3d8086ac7f5364f7fc3851ad68c226a0893b1b67b838341293e67"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/bin/riscv64-linux-gnu-nm",
+        "sha256": "466f4fc027a3d8086ac7f5364f7fc3851ad68c226a0893b1b67b838341293e67"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/bin/riscv64-linux-gnu-objdump",
+        "sha256": "a9102a2a5246132fe069d124265848c32e6469dcb586dbacd1e740ac72b3f260"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/bin/riscv64-linux-gnu-objdump",
+        "sha256": "a9102a2a5246132fe069d124265848c32e6469dcb586dbacd1e740ac72b3f260"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-b-per-load-annotations/bin/z3",
+        "sha256": "796dbda9afa35f2369d00e90c329d31a7d49afac75a683ddd14647f2c77f607a"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/bin/z3",
+        "sha256": "796dbda9afa35f2369d00e90c329d31a7d49afac75a683ddd14647f2c77f607a"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/build/stock-zisk/build-recipe.json",
+        "sha256": "ed8196f2d359dc1a60827a9ccb0267247e8b27f97f2d09763315af159c662e99"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/build/stock-zisk/build-recipe.json",
+        "sha256": "ed8196f2d359dc1a60827a9ccb0267247e8b27f97f2d09763315af159c662e99"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/build/stock-zisk/zesu-zisk.elf",
+        "sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/build/stock-zisk/zesu-zisk.elf",
+        "sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/eql.dump",
+        "sha256": "ad45e6631fbf978d1ce5bb8788d1e414711e06c44d2c0cd862cc5e50f153dae3"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/inputs/eql.raw.dump",
+        "sha256": "ad45e6631fbf978d1ce5bb8788d1e414711e06c44d2c0cd862cc5e50f153dae3"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/production-regions328/PER-LOAD-REGIONS.json",
+        "sha256": "3e79c1525180f95d48d65823a69394c89ba7d7e70bc778dae19b89004885cfeb"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/inputs/PER-LOAD-REGIONS.json",
+        "sha256": "3e79c1525180f95d48d65823a69394c89ba7d7e70bc778dae19b89004885cfeb"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-c-delegation-reset-672c/ZesuSsz/riscv64_zesu.toml",
+        "sha256": "7803200fd993a3d43b72ebc05a86473d22f4c4e1b7636a4994fe15e31b2cb47c"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/ZesuSsz/riscv64_zesu.toml",
+        "sha256": "7803200fd993a3d43b72ebc05a86473d22f4c4e1b7636a4994fe15e31b2cb47c"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-c-delegation-reset-672c/build/stock-zisk/platform/riscv64-zisk.ir",
+        "sha256": "2b1b3c9eeae6fc53ea430376c9759a9abd0d1f8e123362078800642d4b5eec8e"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/build/stock-zisk/platform/riscv64-zisk.ir",
+        "sha256": "2b1b3c9eeae6fc53ea430376c9759a9abd0d1f8e123362078800642d4b5eec8e"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-a/heldout-eql-signature154/ENTRY-v3.v",
+        "sha256": "8a49bbb759ff940191e3a676a550931a7670e33230a5019a2d17c4cda7e21630"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_0-ENTRY-v3.v",
+        "sha256": "8a49bbb759ff940191e3a676a550931a7670e33230a5019a2d17c4cda7e21630"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/load-fault301/final001/prepared/artifacts/default/ZesuSsz/Contracts/PlatformLoadRegion.v",
+        "sha256": "0a36f0ebcfa02792e5f48bf830c94db516a6c94912864aaa933fb618c2dd079a"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_1-PlatformLoadRegion.v",
+        "sha256": "0a36f0ebcfa02792e5f48bf830c94db516a6c94912864aaa933fb618c2dd079a"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/cleanup/portable001/SOURCES/ZesuMachineMap/Machine.v",
+        "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_2-Machine.v",
+        "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c33c.isla",
+        "sha256": "e84096563ef4659b90b61ad60a64756343ffbd75757ac401b685058888a7298e"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_3-a8009c33c.isla",
+        "sha256": "e84096563ef4659b90b61ad60a64756343ffbd75757ac401b685058888a7298e"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c340.isla",
+        "sha256": "c99dfad029566ab899e5c7289ab31e9db8e9e8f444d741520c9189186df0abef"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_4-a8009c340.isla",
+        "sha256": "c99dfad029566ab899e5c7289ab31e9db8e9e8f444d741520c9189186df0abef"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c348.isla",
+        "sha256": "5d7f3b5999116f765f6a7f9ca590bfddfef5a1485f96d61c8ffdeae9c16b4fae"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_5-a8009c348.isla",
+        "sha256": "5d7f3b5999116f765f6a7f9ca590bfddfef5a1485f96d61c8ffdeae9c16b4fae"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c34c.isla",
+        "sha256": "d728244c020603e66e482680efd2a43c2c3729646548a7b45c701b6dee1292c8"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_6-a8009c34c.isla",
+        "sha256": "d728244c020603e66e482680efd2a43c2c3729646548a7b45c701b6dee1292c8"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c354.isla",
+        "sha256": "762d423acbc927382c0234e7880b8a2108b8b90c901f79589eefe195752432eb"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_7-a8009c354.isla",
+        "sha256": "762d423acbc927382c0234e7880b8a2108b8b90c901f79589eefe195752432eb"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c358.isla",
+        "sha256": "082f161b54ad772d17ecc705f35c8edaa187bbb40def3952f71032fbec9ac985"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_8-a8009c358.isla",
+        "sha256": "082f161b54ad772d17ecc705f35c8edaa187bbb40def3952f71032fbec9ac985"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c360.isla",
+        "sha256": "bf3b42c27a504fab9bc24b9180c496d4e43c0450a0780040affe106a3a70d552"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_9-a8009c360.isla",
+        "sha256": "bf3b42c27a504fab9bc24b9180c496d4e43c0450a0780040affe106a3a70d552"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c364.isla",
+        "sha256": "e02be6ad430c26efe1b0e081c45c4bdbb128fc840431be608aefb23c788831d1"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_10-a8009c364.isla",
+        "sha256": "e02be6ad430c26efe1b0e081c45c4bdbb128fc840431be608aefb23c788831d1"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c36c.isla",
+        "sha256": "10411e9a2c1a4cf1e28d7c87cebeaba44a29c9dba7132f4966593cd9ac5b622e"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_11-a8009c36c.isla",
+        "sha256": "10411e9a2c1a4cf1e28d7c87cebeaba44a29c9dba7132f4966593cd9ac5b622e"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c370.isla",
+        "sha256": "d7c265841162fec5f90d444c4653b2926edb39c0a7dee818ecc1d44970711446"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_12-a8009c370.isla",
+        "sha256": "d7c265841162fec5f90d444c4653b2926edb39c0a7dee818ecc1d44970711446"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c378.isla",
+        "sha256": "b1963201cfb9e2635341ce4a92be2d955815ba1c43815b68dc4c015466592dc5"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_13-a8009c378.isla",
+        "sha256": "b1963201cfb9e2635341ce4a92be2d955815ba1c43815b68dc4c015466592dc5"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c37c.isla",
+        "sha256": "04ff33c314c39e0170ca8f2f56db341dc3797643deaf8b8e6614b725a7e471d5"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_14-a8009c37c.isla",
+        "sha256": "04ff33c314c39e0170ca8f2f56db341dc3797643deaf8b8e6614b725a7e471d5"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c384.isla",
+        "sha256": "9dd3949d39a1188184a5685141e4709f965da96891d7e0e1eb9230c192474ff7"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_15-a8009c384.isla",
+        "sha256": "9dd3949d39a1188184a5685141e4709f965da96891d7e0e1eb9230c192474ff7"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c388.isla",
+        "sha256": "d0ee09bcb4d6d4a348fc01d7f9672e4d309aacd8aafe2bc122005c12d7bf71e5"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_16-a8009c388.isla",
+        "sha256": "d0ee09bcb4d6d4a348fc01d7f9672e4d309aacd8aafe2bc122005c12d7bf71e5"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c390.isla",
+        "sha256": "35528f727e149181ee3ced38edf9575a066cc175abde31e75a3ae8f7ee30ad89"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_17-a8009c390.isla",
+        "sha256": "35528f727e149181ee3ced38edf9575a066cc175abde31e75a3ae8f7ee30ad89"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c394.isla",
+        "sha256": "4ab97aa94cb2144f912dc3e03e81e83f821871429b223cb474c1931367d8e59a"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_18-a8009c394.isla",
+        "sha256": "4ab97aa94cb2144f912dc3e03e81e83f821871429b223cb474c1931367d8e59a"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c39c.isla",
+        "sha256": "eee56433fa50feb01a5c210a7f0d4cd0a817a4825ef467d93ede326d687f90c9"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_19-a8009c39c.isla",
+        "sha256": "eee56433fa50feb01a5c210a7f0d4cd0a817a4825ef467d93ede326d687f90c9"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3a0.isla",
+        "sha256": "a8c3ad4a05de5bc37835ae956d6159b73a635f9ad5495363838ada24c2982145"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_20-a8009c3a0.isla",
+        "sha256": "a8c3ad4a05de5bc37835ae956d6159b73a635f9ad5495363838ada24c2982145"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3a8.isla",
+        "sha256": "edb06338e54a4beb9a5d50d57e14fa81d73b4db4c50b7e6c0e072bca541b5399"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_21-a8009c3a8.isla",
+        "sha256": "edb06338e54a4beb9a5d50d57e14fa81d73b4db4c50b7e6c0e072bca541b5399"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3ac.isla",
+        "sha256": "752e5f8e8d90152f73a76bf13b634100672fe75957567998f5a218c5a8404fc2"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_22-a8009c3ac.isla",
+        "sha256": "752e5f8e8d90152f73a76bf13b634100672fe75957567998f5a218c5a8404fc2"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3b4.isla",
+        "sha256": "b2e609a3fec2c2615ce85325b6cff23b770e69e52558fb3197961f32d16c064c"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_23-a8009c3b4.isla",
+        "sha256": "b2e609a3fec2c2615ce85325b6cff23b770e69e52558fb3197961f32d16c064c"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3b8.isla",
+        "sha256": "29d1038769cdafe047edd84b7a886c8a35af2bad2f77a7361b9cfa5165ef3bf9"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_24-a8009c3b8.isla",
+        "sha256": "29d1038769cdafe047edd84b7a886c8a35af2bad2f77a7361b9cfa5165ef3bf9"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3c0.isla",
+        "sha256": "1a46947fa8255334b87846f35985ce9a25361e24dbf353a828faa2d08bf38c41"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_25-a8009c3c0.isla",
+        "sha256": "1a46947fa8255334b87846f35985ce9a25361e24dbf353a828faa2d08bf38c41"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3c4.isla",
+        "sha256": "13199def4a5a54e36e187fc9184a44ed923dca22159cb022b4d602220ca8a5b8"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_26-a8009c3c4.isla",
+        "sha256": "13199def4a5a54e36e187fc9184a44ed923dca22159cb022b4d602220ca8a5b8"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3cc.isla",
+        "sha256": "cd1b3861ce724f9b4d81bb4850d8c2e51c9b51169fe4a1723b363dc2680d299c"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_27-a8009c3cc.isla",
+        "sha256": "cd1b3861ce724f9b4d81bb4850d8c2e51c9b51169fe4a1723b363dc2680d299c"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3d0.isla",
+        "sha256": "ae02e7fa529bd92e30ac169dac45f84589aa037a93130a84e6186e4ac90ee1b7"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_28-a8009c3d0.isla",
+        "sha256": "ae02e7fa529bd92e30ac169dac45f84589aa037a93130a84e6186e4ac90ee1b7"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3d8.isla",
+        "sha256": "ea1ad9beb95fb6584bccce981076f185fa2ea508923268edc8b7a8857e955140"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_29-a8009c3d8.isla",
+        "sha256": "ea1ad9beb95fb6584bccce981076f185fa2ea508923268edc8b7a8857e955140"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3dc.isla",
+        "sha256": "5b90373e9407dd606b8ad9ae8d02b636b2daa0abab72800d3bbde5c44939f985"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_30-a8009c3dc.isla",
+        "sha256": "5b90373e9407dd606b8ad9ae8d02b636b2daa0abab72800d3bbde5c44939f985"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3e4.isla",
+        "sha256": "afd6fd73ee8ae00b162e90d5b680777a0c0b1136f7c48a3bd5e94ff39038c219"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_31-a8009c3e4.isla",
+        "sha256": "afd6fd73ee8ae00b162e90d5b680777a0c0b1136f7c48a3bd5e94ff39038c219"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3e8.isla",
+        "sha256": "0f5d2e6dd3f972628cfd888fe4c9fd79bdd53453ac58c96c8e6f824e6f7f2612"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_32-a8009c3e8.isla",
+        "sha256": "0f5d2e6dd3f972628cfd888fe4c9fd79bdd53453ac58c96c8e6f824e6f7f2612"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3f0.isla",
+        "sha256": "12ffc940eb8d88f21491182d48d500e2beafda6079e6854029c05ffcfd7dd051"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_33-a8009c3f0.isla",
+        "sha256": "12ffc940eb8d88f21491182d48d500e2beafda6079e6854029c05ffcfd7dd051"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3f4.isla",
+        "sha256": "d66cbda66262fc2c773875f77aad09f2c573529fe428be0b1eb99580dcf8b3b0"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_34-a8009c3f4.isla",
+        "sha256": "d66cbda66262fc2c773875f77aad09f2c573529fe428be0b1eb99580dcf8b3b0"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c3fc.isla",
+        "sha256": "8f08d961bd15431cb8d9485d6cc8d9267133592b70558f0514af28ea079b6ea4"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_35-a8009c3fc.isla",
+        "sha256": "8f08d961bd15431cb8d9485d6cc8d9267133592b70558f0514af28ea079b6ea4"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c400.isla",
+        "sha256": "6549ed6934748d8f188c0e725f831a81d662f1a09b677baa1fcd320da360fdfc"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_36-a8009c400.isla",
+        "sha256": "6549ed6934748d8f188c0e725f831a81d662f1a09b677baa1fcd320da360fdfc"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c408.isla",
+        "sha256": "6b49fb70c16ee5d159973404e899a9045784a2805df3537963160fa1a4bcfa37"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_37-a8009c408.isla",
+        "sha256": "6b49fb70c16ee5d159973404e899a9045784a2805df3537963160fa1a4bcfa37"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c40c.isla",
+        "sha256": "9b051ed150c3c4c4316f4dccc8078f7aab08022d9a09ad0c7302714b865460e7"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_38-a8009c40c.isla",
+        "sha256": "9b051ed150c3c4c4316f4dccc8078f7aab08022d9a09ad0c7302714b865460e7"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c414.isla",
+        "sha256": "df9b51ae28fa3dab569ac176302ed108f23ef2c0d550708565f79cdfd6050da4"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_39-a8009c414.isla",
+        "sha256": "df9b51ae28fa3dab569ac176302ed108f23ef2c0d550708565f79cdfd6050da4"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c418.isla",
+        "sha256": "15f94324c2299d841a9632baaceedc3720f583d3afc1c572392fb39023b3eaff"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_40-a8009c418.isla",
+        "sha256": "15f94324c2299d841a9632baaceedc3720f583d3afc1c572392fb39023b3eaff"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c420.isla",
+        "sha256": "7ca0d7f0416763030915a476bfa3e1fc46f790678c3787375db0efc0a8cd4f83"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_41-a8009c420.isla",
+        "sha256": "7ca0d7f0416763030915a476bfa3e1fc46f790678c3787375db0efc0a8cd4f83"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c424.isla",
+        "sha256": "2240d78e41ebc1fa7042987256d51a72cd668ae8d45102fae2b40370c5163d9b"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_42-a8009c424.isla",
+        "sha256": "2240d78e41ebc1fa7042987256d51a72cd668ae8d45102fae2b40370c5163d9b"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c42c.isla",
+        "sha256": "009d4a60ff2ac3b859ee60eed9c52333ecf192832cf3e90a4b3b2d26e615cbbf"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_43-a8009c42c.isla",
+        "sha256": "009d4a60ff2ac3b859ee60eed9c52333ecf192832cf3e90a4b3b2d26e615cbbf"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c430.isla",
+        "sha256": "49c65898f2703dc1f09cfd54ee44374a135c61b8c2380caa29f44c9aed1af00f"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_44-a8009c430.isla",
+        "sha256": "49c65898f2703dc1f09cfd54ee44374a135c61b8c2380caa29f44c9aed1af00f"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c43c.isla",
+        "sha256": "7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_45-a8009c43c.isla",
+        "sha256": "7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c440.isla",
+        "sha256": "956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_46-a8009c440.isla",
+        "sha256": "956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c450.isla",
+        "sha256": "7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_47-a8009c450.isla",
+        "sha256": "7de8d09480a395c75d3f9aac9bc49fd7bcb8e26a99f0b546e3866506a769c296"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/heldout-eql-traces-v1/generation001/traces/a8009c454.isla",
+        "sha256": "956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40"
+      },
+      "copy": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/retained-region-sources/region_source_48-a8009c454.isla",
+        "sha256": "956e8a4e2525ece7654ffe2f4e47d402448703ad0854e68950624cd24529bb40"
+      },
+      "method": "FICLONE",
+      "distinct_inodes": true
+    }
+  ],
+  "registry_run": {
+    "id": "stock-batch-1793338884184459521-2884511",
+    "kind": "stock-batch",
+    "owner": "worker-build-2",
+    "scheduler": {
+      "pid": 2884511,
+      "startticks": 5404673,
+      "ppid": 2884509,
+      "state": "R"
+    },
+    "jobs": [
+      {
+        "pid": 2884535,
+        "startticks": 5404745,
+        "ppid": 2884511,
+        "state": "Z"
+      },
+      {
+        "pid": 2884621,
+        "startticks": 5404858,
+        "ppid": 2884535,
+        "state": "S"
+      },
+      {
+        "pid": 2884655,
+        "startticks": 5404869,
+        "ppid": 2884621,
+        "state": "S"
+      },
+      {
+        "pid": 2884661,
+        "startticks": 5405014,
+        "ppid": 2884621,
+        "state": "S"
+      },
+      {
+        "pid": 2884671,
+        "startticks": 5405166,
+        "ppid": 2884661,
+        "state": "S"
+      },
+      {
+        "pid": 2884679,
+        "startticks": 5405167,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884680,
+        "startticks": 5405167,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884681,
+        "startticks": 5405167,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884682,
+        "startticks": 5405167,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884683,
+        "startticks": 5405167,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884684,
+        "startticks": 5405167,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884685,
+        "startticks": 5405167,
+        "ppid": 2884681,
+        "state": "R"
+      },
+      {
+        "pid": 2884686,
+        "startticks": 5405167,
+        "ppid": 2884682,
+        "state": "R"
+      },
+      {
+        "pid": 2884687,
+        "startticks": 5405167,
+        "ppid": 2884680,
+        "state": "R"
+      },
+      {
+        "pid": 2884688,
+        "startticks": 5405167,
+        "ppid": 2884679,
+        "state": "R"
+      },
+      {
+        "pid": 2884689,
+        "startticks": 5405167,
+        "ppid": 2884683,
+        "state": "R"
+      },
+      {
+        "pid": 2884690,
+        "startticks": 5405167,
+        "ppid": 2884684,
+        "state": "R"
+      },
+      {
+        "pid": 2884734,
+        "startticks": 5405228,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884737,
+        "startticks": 5405244,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884743,
+        "startticks": 5405249,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884745,
+        "startticks": 5405250,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884747,
+        "startticks": 5405251,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884749,
+        "startticks": 5405254,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884735,
+        "startticks": 5405228,
+        "ppid": 2884734,
+        "state": "R"
+      },
+      {
+        "pid": 2884738,
+        "startticks": 5405244,
+        "ppid": 2884737,
+        "state": "R"
+      },
+      {
+        "pid": 2884744,
+        "startticks": 5405249,
+        "ppid": 2884743,
+        "state": "R"
+      },
+      {
+        "pid": 2884746,
+        "startticks": 5405250,
+        "ppid": 2884745,
+        "state": "R"
+      },
+      {
+        "pid": 2884748,
+        "startticks": 5405251,
+        "ppid": 2884747,
+        "state": "R"
+      },
+      {
+        "pid": 2884750,
+        "startticks": 5405254,
+        "ppid": 2884749,
+        "state": "R"
+      },
+      {
+        "pid": 2884775,
+        "startticks": 5405322,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884783,
+        "startticks": 5405363,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884786,
+        "startticks": 5405369,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884791,
+        "startticks": 5405388,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884793,
+        "startticks": 5405389,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884795,
+        "startticks": 5405390,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884776,
+        "startticks": 5405322,
+        "ppid": 2884775,
+        "state": "S"
+      },
+      {
+        "pid": 2884784,
+        "startticks": 5405364,
+        "ppid": 2884783,
+        "state": "R"
+      },
+      {
+        "pid": 2884787,
+        "startticks": 5405369,
+        "ppid": 2884786,
+        "state": "R"
+      },
+      {
+        "pid": 2884792,
+        "startticks": 5405388,
+        "ppid": 2884791,
+        "state": "R"
+      },
+      {
+        "pid": 2884794,
+        "startticks": 5405389,
+        "ppid": 2884793,
+        "state": "R"
+      },
+      {
+        "pid": 2884796,
+        "startticks": 5405391,
+        "ppid": 2884795,
+        "state": "R"
+      },
+      {
+        "pid": 2884818,
+        "startticks": 5405447,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884820,
+        "startticks": 5405451,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884822,
+        "startticks": 5405453,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884825,
+        "startticks": 5405457,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884829,
+        "startticks": 5405492,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884833,
+        "startticks": 5405506,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884819,
+        "startticks": 5405447,
+        "ppid": 2884818,
+        "state": "R"
+      },
+      {
+        "pid": 2884821,
+        "startticks": 5405451,
+        "ppid": 2884820,
+        "state": "R"
+      },
+      {
+        "pid": 2884823,
+        "startticks": 5405453,
+        "ppid": 2884822,
+        "state": "S"
+      },
+      {
+        "pid": 2884826,
+        "startticks": 5405457,
+        "ppid": 2884825,
+        "state": "S"
+      },
+      {
+        "pid": 2884830,
+        "startticks": 5405492,
+        "ppid": 2884829,
+        "state": "R"
+      },
+      {
+        "pid": 2884854,
+        "startticks": 5405560,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884859,
+        "startticks": 5405584,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884862,
+        "startticks": 5405587,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884864,
+        "startticks": 5405591,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884867,
+        "startticks": 5405596,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884870,
+        "startticks": 5405602,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884855,
+        "startticks": 5405560,
+        "ppid": 2884854,
+        "state": "R"
+      },
+      {
+        "pid": 2884860,
+        "startticks": 5405584,
+        "ppid": 2884859,
+        "state": "R"
+      },
+      {
+        "pid": 2884863,
+        "startticks": 5405587,
+        "ppid": 2884862,
+        "state": "R"
+      },
+      {
+        "pid": 2884865,
+        "startticks": 5405592,
+        "ppid": 2884864,
+        "state": "R"
+      },
+      {
+        "pid": 2884868,
+        "startticks": 5405596,
+        "ppid": 2884867,
+        "state": "R"
+      },
+      {
+        "pid": 2884871,
+        "startticks": 5405602,
+        "ppid": 2884870,
+        "state": "R"
+      },
+      {
+        "pid": 2884885,
+        "startticks": 5405663,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884887,
+        "startticks": 5405668,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884890,
+        "startticks": 5405673,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884894,
+        "startticks": 5405692,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884886,
+        "startticks": 5405663,
+        "ppid": 2884885,
+        "state": "R"
+      },
+      {
+        "pid": 2884888,
+        "startticks": 5405668,
+        "ppid": 2884887,
+        "state": "R"
+      },
+      {
+        "pid": 2884891,
+        "startticks": 5405673,
+        "ppid": 2884890,
+        "state": "R"
+      },
+      {
+        "pid": 2884895,
+        "startticks": 5405692,
+        "ppid": 2884894,
+        "state": "R"
+      },
+      {
+        "pid": 2884920,
+        "startticks": 5405789,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884924,
+        "startticks": 5405799,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884928,
+        "startticks": 5405804,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884930,
+        "startticks": 5405807,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884933,
+        "startticks": 5405810,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884939,
+        "startticks": 5405822,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884921,
+        "startticks": 5405789,
+        "ppid": 2884920,
+        "state": "R"
+      },
+      {
+        "pid": 2884925,
+        "startticks": 5405799,
+        "ppid": 2884924,
+        "state": "R"
+      },
+      {
+        "pid": 2884929,
+        "startticks": 5405804,
+        "ppid": 2884928,
+        "state": "R"
+      },
+      {
+        "pid": 2884931,
+        "startticks": 5405807,
+        "ppid": 2884930,
+        "state": "R"
+      },
+      {
+        "pid": 2884934,
+        "startticks": 5405810,
+        "ppid": 2884933,
+        "state": "R"
+      },
+      {
+        "pid": 2884940,
+        "startticks": 5405822,
+        "ppid": 2884939,
+        "state": "R"
+      },
+      {
+        "pid": 2884966,
+        "startticks": 5405892,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884970,
+        "startticks": 5405908,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884976,
+        "startticks": 5405910,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884990,
+        "startticks": 5405922,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884993,
+        "startticks": 5405927,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2885009,
+        "startticks": 5405943,
+        "ppid": 2884671,
+        "state": "S"
+      },
+      {
+        "pid": 2884967,
+        "startticks": 5405893,
+        "ppid": 2884966,
+        "state": "R"
+      },
+      {
+        "pid": 2884972,
+        "startticks": 5405908,
+        "ppid": 2884970,
+        "state": "R"
+      },
+      {
+        "pid": 2884977,
+        "startticks": 5405910,
+        "ppid": 2884976,
+        "state": "R"
+      },
+      {
+        "pid": 2884991,
+        "startticks": 5405923,
+        "ppid": 2884990,
+        "state": "R"
+      },
+      {
+        "pid": 2884994,
+        "startticks": 5405927,
+        "ppid": 2884993,
+        "state": "R"
+      },
+      {
+        "pid": 2885010,
+        "startticks": 5405943,
+        "ppid": 2885009,
+        "state": "R"
+      }
+    ],
+    "claims": {},
+    "command": [
+      "/home/cody/zesislar/.worktrees/infra-c-delegation-reset-672c/tools/resource_guard.sh",
+      "batch",
+      "eql-production-regions-pinned",
+      "--",
+      "/usr/bin/python3",
+      "-B",
+      "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/tools/stock_zisk/platform/traces.py",
+      "--trace-only",
+      "--manifest",
+      "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/build/stock-zisk/build-recipe.json",
+      "--dump",
+      "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/inputs/eql.raw.dump",
+      "--out",
+      "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/generation001/traces",
+      "--coqdir",
+      "ZesuSsz.Stock.HeldoutEqlProductionRegions",
+      "--jobs",
+      "6",
+      "--per-load-regions",
+      "/home/cody/zesislar/_build/agents/worker-build-2/eql-production-regions-pinned-v1/workspace/inputs/PER-LOAD-REGIONS.json",
+      "--per-load-regions-sha256",
+      "3e79c1525180f95d48d65823a69394c89ba7d7e70bc778dae19b89004885cfeb"
+    ],
+    "registered_ns": 1793338884409390155,
+    "status": "completed",
+    "exit_code": 0,
+    "closed_ns": 1793338900039156851,
+    "all_actors_closed": true
+  },
+  "all_actors_closed": true,
+  "normal_guard_batch_completed": true,
+  "separate_EntryChain_claim": null,
+  "physical_fence_bytes": 8589934592,
+  "workers": 6,
+  "frontend_seconds": 8.336,
+  "largest_child_RSS_KiB": 126136,
+  "aggregate_CPU_and_peak": "The existing trace-only route does not retain these measurements.",
+  "exact_rendered_dump_matches_review": true,
+  "duplicate_constraints_added": false,
+  "platform_gate_source_unchanged": true,
+  "proof_calls": 0,
+  "proof_acceptance": false,
+  "region_obligations": "All 46 Assume obligations remain OPEN.",
+  "boundary_change": "The comparison changes both delegation reset values and per-access constraints. It does not isolate either cause.",
+  "recipe_scope": "The copied render recipe selects the exact ELF. Explicit driver/config bindings define this isolated trace variant.",
+  "portable_scope": "Owned inputs and outputs have relative paths. The pinned tool installation remains external. Source retention copies map the exact packet source paths.",
+  "production_regeneration_or_rollout": false,
+  "heldout_proof_residual_read": false
+}
