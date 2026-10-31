@@ -23,7 +23,13 @@ python -B tools/block/harness/scratch.py BLOCK ENTRIES.v \
   --output OWNED_OUTPUT --prepare-only
 ```
 
-Use the same checkout to execute the prepared runtime.
+The command creates a managed detached checkout for its launch commit.
+Preparation and execution use that checkout.
+Later changes to the base HEAD do not change an active launch.
+Do not edit a managed launch checkout.
+`--run` uses the commit bound in its runtime.
+Use `--harness-commit NEW_COMMIT` with `--refresh-memory` to select a newer harness.
+The refresh preserves the prepared proof inputs and records the prior harness.
 Use an all-exit watcher for execution.
 Keep source and input identities exact when an object is reused.
 

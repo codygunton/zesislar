@@ -1,6 +1,11 @@
 import sys,os
+from pathlib import Path
 sys.dont_write_bytecode=True
 os.environ['PYTHONDONTWRITEBYTECODE']='1'
+directory=Path(__file__).resolve().parent
+if directory.name=='block':
+    if directory.parent.name!='tools':raise ValueError('The compiler lacks its owned tools directory.')
+    sys.path.insert(1,str(directory.parent))
 import clone_copy
 """Validate MCP arguments and preserve the bound physical compiler vector."""
 import os
