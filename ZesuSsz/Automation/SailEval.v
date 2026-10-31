@@ -5,7 +5,7 @@ From stdpp Require Import bitvector.definitions.
 Require Import EvmSailRlp.evm_rlp_types EvmSailRlp.evm_rlp.
 Require Import ZesuSsz.Compliance.SailRun.
 Import ListNotations.
-Open Scope Z_scope.
+Local Open Scope Z_scope.
 
 Create HintDb zesu_sail.
 

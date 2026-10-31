@@ -1,0 +1,16 @@
+{
+  "target": "check-fast",
+  "success": true,
+  "exit_code": 0,
+  "wall_seconds": 227.409604861,
+  "admission_wall_seconds": 0.20539112700498663,
+  "completed_ns": 1793362317142747153,
+  "cache_provenance": {
+    "mode": "unknown",
+    "authority": "The stock runner disables the proof cache but does not establish an uncached Dune build."
+  },
+  "aggregate_peak_bytes": 2090127360,
+  "CPU_seconds": 157.49754,
+  "aggregate_wall_seconds": 218.313219742995,
+  "measurement_scope": "Complete owned stock aggregate before guard cleanup."
+}

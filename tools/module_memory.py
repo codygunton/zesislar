@@ -210,8 +210,8 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
                        refresh=False):
     """Read live reservations under the caller's existing guard mutex.
 
-    Live samples are incomplete measurements. They cannot reduce a physical
-    fence claim. Retained claims and growth observations never decrease.
+    Unmeasured probes retain the full physical-fence claim. Measured families
+    retain their validated claims below that fence. Growth never reduces a claim.
     """
     physical = compiler_pids(proc)
     covered, claims, growth = set(), [], []
@@ -262,7 +262,7 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
                 finally:
                     temporary.unlink(missing_ok=True)
             continue
-        claim = values.get("memory_claim_bytes", fence)
+        claim = values.get("memory_claim_bytes", fence) if "memory_fence_bytes" in values else fence
         pending = [int(lines[0])] if lines[0].isdecimal() else []
         visited, peaks = set(), []
         while pending:
@@ -282,7 +282,7 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
                 pending.extend(map(int, (proc / str(pid) / "task" / str(pid) / "children").read_text().split()))
             except FileNotFoundError:
                 pass
-        increased = max(fence, claim, sum(peaks))
+        increased = max(claim, sum(peaks))
         claims.append(increased)
         if increased > claim:
             growth.append({"reservation": str(marker), "previous_bytes": claim, "claim_bytes": increased})

@@ -146,13 +146,13 @@ class ModuleMemoryTests(unittest.TestCase):
                              f"memory_fence_bytes={16 * memory.GIB}\n")
         stamp = marker.stat().st_mtime_ns
         result = memory.reservation_claims([marker], proc=proc, refresh=True)
-        self.assertEqual(result["claims"], [16 * memory.GIB])
+        self.assertEqual(result["claims"], [3 * memory.GIB])
         self.assertEqual(len(result["growth"]), 1)
         self.assertIn("writer=fixture\naggregate=test\n", marker.read_text())
         self.assertEqual(marker.stat().st_mtime_ns, stamp)
         (proc / "123/status").write_text("VmHWM:\t1 kB\n")
         result = memory.reservation_claims([marker], proc=proc, refresh=True)
-        self.assertEqual(result["claims"], [16 * memory.GIB])
+        self.assertEqual(result["claims"], [3 * memory.GIB])
         self.assertEqual(result["growth"], [])
 
     def test_unrepresented_compilers_keep_full_fallback_reservations(self):

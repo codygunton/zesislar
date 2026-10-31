@@ -1,0 +1,276 @@
+{
+  "schema": "port.authority-extension.v1",
+  "authorized_UTC": "2026-10-31T00:50:18.371217+00:00",
+  "authority": "Root permits reversible preparation of the exact All-first selected354 caller. Orch approval remains required before selected354 execution.",
+  "original_authority": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/private-admission-route-v1/source013/PORT-FAMILY-AUTHORITY.json",
+    "sha256": "a86e9b124131a16276860722cb5c214bd59074738df9d0a2d9d0b5efc42506b3"
+  },
+  "exit_queue": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/exit-supplier354/QUEUE002.json",
+    "sha256": "ef3e4f7d777d64e584e376de5cbc93f224094a507bd175efb8c7e0b1e473eaf4"
+  },
+  "original_cases": [
+    {
+      "block": "800d6960",
+      "module": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6960",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6960.v",
+        "sha256": "847758c977381e241ca47e1ba4756a57e606f4cb4bf78a0427f1c83da8e6adbe"
+      },
+      "statement_sha256": "23dbaa8811451ee1a5ce2476d4f1d533cc66b10f230f19b372f1b58a44ef9336",
+      "pc": 2148362592
+    },
+    {
+      "block": "800d697c",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d697c_V10_209",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d697c_V10_209.v",
+        "sha256": "363b0ddb739c586a15f441893f87dc9cc7cd728db2ed7229ca6defdefc4b128d"
+      },
+      "statement_sha256": "9f534f4d12ee5eeebf3676314e9c32357f34896d53ee3e4c4acba1250321137c",
+      "pc": 2148362620
+    },
+    {
+      "block": "800d69a4",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d69a4_198",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d69a4_198.v",
+        "sha256": "db3492c3e4623db3a801b07cc469e4f8f3b48366842c5fd4b44a7cdb8cf684bd"
+      },
+      "statement_sha256": "21af9d3196f14cb607bedbd0dfa28ddfbf9bd8f8f7420cc5b001580de02db6dc",
+      "pc": 2148362660
+    },
+    {
+      "block": "800d69b0",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d69b0_V10_210",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d69b0_V10_210.v",
+        "sha256": "19489286c77b4a9ae6bd8550ff6f0a1e8d8e2dbb26a6b7f938cf83906d61a15d"
+      },
+      "statement_sha256": "35d3e6fe407f59e75825989a0c41830da3efff6d4f03c069a1421de1127dcb36",
+      "pc": 2148362672
+    },
+    {
+      "block": "800d69d8",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d69d8_199",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d69d8_199.v",
+        "sha256": "c9c7b01fed4d71ac4ec59e014455cecebca6f200459028eec6476294324cf9b8"
+      },
+      "statement_sha256": "6659f5fcc8aa1bfb43f9a61788af8b442c068b0299ca2b24f6927bfbb7abfa8d",
+      "pc": 2148362712
+    },
+    {
+      "block": "800d69e0",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d69e0_V10_211",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d69e0_V10_211.v",
+        "sha256": "7e1249c35e4e75122829abb06b8fcaa4dfdb7c48bf546f80de6869399b083239"
+      },
+      "statement_sha256": "2d791835dfe8e482f392860352019a301ed10921eca7053b012992241cafc6aa",
+      "pc": 2148362720
+    },
+    {
+      "block": "800d69e8",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d69e8_V10_212",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d69e8_V10_212.v",
+        "sha256": "3f193d1437e23c89d7b05f67e2c3a79e54ba940b98d2a9bf882093756cc2442a"
+      },
+      "statement_sha256": "3c92d2ee4677a00791f37e2bad03e06fa7b7bffaca68e46e0a71a33bdf4b08f2",
+      "pc": 2148362728
+    },
+    {
+      "block": "800d6a00",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6a00_V10_213",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6a00_V10_213.v",
+        "sha256": "42060a898619702ae132e8dc6da4eed64e421d8ec203b2dd3f4fff74561b8b9b"
+      },
+      "statement_sha256": "0b3d70f345c256444d3395f75a1cfae0c6e4b66f00349d9f944fe4701a20c4fc",
+      "pc": 2148362752
+    },
+    {
+      "block": "800d6a08",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6a08_V10_Delta220",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6a08_V10_Delta220.v",
+        "sha256": "b0a39c2f0395f7dc357067ea665cdca44a026c26f57df238870dcb0a5b3c87c8"
+      },
+      "statement_sha256": "74ddd68632992a536140ba0e94c3065cc749e3b300aaf49ed2b0b18b86603385",
+      "pc": 2148362760
+    },
+    {
+      "block": "800d6a14",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6a14_V10_215",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6a14_V10_215.v",
+        "sha256": "67a339b66c02e609e6acf6816d833b252ca80a819c2a5972ab8c91be9a55ef32"
+      },
+      "statement_sha256": "1c4eda1608a411c6b92f4dfc0ef7aef8605ce41cbde84d653e806d62201b8c7f",
+      "pc": 2148362772
+    },
+    {
+      "block": "800d6a64",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6a64_322",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6a64_322.v",
+        "sha256": "3af11cab45dc09e2ffe6e6ece18e354540cc8072abc73447b818856307b54ac6"
+      },
+      "statement_sha256": "c8a603d9b9ef3667754b36353efaaa9408978c4418595363cf7c52b9003e4fac",
+      "pc": 2148362852
+    },
+    {
+      "block": "800d6a6c",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6a6c_V10_Delta221",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6a6c_V10_Delta221.v",
+        "sha256": "837fd553389f7797a723bb8a923abb46ebc60b029dd66c943588c930a6611a8c"
+      },
+      "statement_sha256": "1d96e82aca1a14dbc1609dbf5f474f771241c897e77fe767677ecf1dc4e8c7d0",
+      "pc": 2148362860
+    },
+    {
+      "block": "800d6a78",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6a78_V10_217",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6a78_V10_217.v",
+        "sha256": "913ee95117ecc592a51c8c726d6ea4cb406fa5d2ce0b05bdddfd334189370522"
+      },
+      "statement_sha256": "5d2d1764c855aa164fdae683403e9fee44eef16b1882813b002b13e2fb2608e6",
+      "pc": 2148362872
+    },
+    {
+      "block": "800d6aa8",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6aa8_V10_218",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6aa8_V10_218.v",
+        "sha256": "8912411b2ce4558c386a9e5fce7385832ac2d0f4f64295b486b59ae73e22bc91"
+      },
+      "statement_sha256": "537cafe4941976d9646f011d44c3e32a3e04bfa358c6010238207a482d284d0f",
+      "pc": 2148362920
+    },
+    {
+      "block": "800d6ab4",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6ab4_V10_222",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6ab4_V10_222.v",
+        "sha256": "f8f69155ff246b6421aceb7bdc434827b74b5c9bb3f8db17761fbfc5dd4b479c"
+      },
+      "statement_sha256": "7fcce53d4757b7cf9ee997776f053a08b75459d70123455a86ba6f3b34e825bd",
+      "pc": 2148362932
+    }
+  ],
+  "additional_cases": [
+    {
+      "block": "region-return-800d698c-a9ff9d4a8e09ee2f",
+      "module": "ZesuSsz.Proofs.DecodeItem.PortRegionExit259.Block800d698c",
+      "pc": 2148362636,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-a/exit-region-rebind259/callers/Block800d698c.v",
+        "sha256": "69c98c7d8f9b8da40a4170203f849f112f5c74947035ab011d64df2f9b38a5a4"
+      },
+      "statement_sha256": "a9ff9d4a8e09ee2fe222a310a5fee4df7f59d5f9e002979da2e59a1c31ec6821"
+    },
+    {
+      "block": "region-return-800d69b0-1474a34cc2a242d9",
+      "module": "ZesuSsz.Proofs.DecodeItem.PortRegionExit259.Block800d69b0",
+      "pc": 2148362672,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-a/exit-region-rebind259/callers/Block800d69b0.v",
+        "sha256": "7670d665c784ada57a1c0b266ae9e7d2701a7564b06171d2e8640f2d3571562b"
+      },
+      "statement_sha256": "1474a34cc2a242d9c5316b53ee1eeb98b69caaecfbc0edc37fb92df182c959e3"
+    },
+    {
+      "block": "region-return-800d6a40-745a77dfba93353a",
+      "module": "ZesuSsz.Proofs.DecodeItem.PortRegionExit259.Block800d6a40",
+      "pc": 2148362816,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-a/exit-region-rebind259/callers/Block800d6a40.v",
+        "sha256": "c2ca445fab88d961238884e5c699b2b366965c8af302178e98519780a7752ca3"
+      },
+      "statement_sha256": "745a77dfba93353a4c097d262037495024fa2c8f43a2e22c2a82702c89e1c1f2"
+    },
+    {
+      "block": "region-return-800d6a78-fefe09357ee3a1e9",
+      "module": "ZesuSsz.Proofs.DecodeItem.PortRegionExit259.Block800d6a78",
+      "pc": 2148362872,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-a/exit-region-rebind259/callers/Block800d6a78.v",
+        "sha256": "738d69fa88d1cc20bc33481b5ac4038f32dc51a09d55b4e36515f47789f5be7b"
+      },
+      "statement_sha256": "fefe09357ee3a1e9adc5a0d4726a2c56ed98bb42e78c0018344d5cc847ec1947"
+    },
+    {
+      "block": "region-return-800d6ae0-2315161efa512a1c",
+      "module": "ZesuSsz.Proofs.DecodeItem.PortRegionExit259.Block800d6ae0",
+      "pc": 2148362976,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-a/exit-region-rebind259/callers/Block800d6ae0.v",
+        "sha256": "4325e3a4a7e2d5c2461c577eee327a974b2ea59ca2085f643afa2479ff7eba28"
+      },
+      "statement_sha256": "2315161efa512a1cb5dbcf4bac7bac3b1262c6d1991ee302cf3ba8a962ca182c"
+    },
+    {
+      "block": "region-return-800d6b08-d5bd0a900b4fd769",
+      "module": "ZesuSsz.Proofs.DecodeItem.PortRegionExit259.Block800d6b08",
+      "pc": 2148363016,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-a/exit-region-rebind259/callers/Block800d6b08.v",
+        "sha256": "37e26476e537b5a91312c55c210e2031ddbd239555ae473b95d2acda4f202793"
+      },
+      "statement_sha256": "d5bd0a900b4fd769d964b6479f560b8f5ee3934edb1da98395291b433212c8c4"
+    },
+    {
+      "block": "8009c354",
+      "module": "ZesuSsz.Generated.HeldoutEqlRun197.Native8009c354",
+      "pc": 2148123476,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/native-port-policy-v1/source014-authority22-extension/caller-successor-v1/Native8009c354.v",
+        "sha256": "c7d17248dccefe98bce2397fea6a032873bccfb59521a95d467488e701dc767d"
+      },
+      "statement_sha256": "93b80e95569a3ff9b67f56fe706fb494c098b5ebc49939ada2cf56a895c60ab2"
+    }
+  ],
+  "case_count": 22,
+  "claim_bytes": 8589934592,
+  "physical_fence_bytes": 34359738368,
+  "search_CPU_stop_seconds": null,
+  "setup_CPU_stop_seconds": null,
+  "checkpoint_search_CPU_seconds": 600,
+  "long_search_report_CPU_seconds": 21600,
+  "kill_on_long_search": false,
+  "proof_calls": 0,
+  "compiler_calls": 0,
+  "previous_extension": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/native-port-policy-v1/source014-authority-extension/EXTENSION.json",
+    "sha256": "6c0a828e352085ef9b8761a9dd3d2c886b2b0a0ec7b46a623bdbc99397c3e058"
+  },
+  "selected_development_case": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-1/eql-run2-profile-plan198/selected354/CASE.json",
+    "sha256": "1e28e5f7c9a8e8d389bc77c2d0f72d93a7cddca7536450c96415185f51dd34b2"
+  },
+  "previous21_cases_unchanged": true,
+  "sealed_results_read": false,
+  "previous22_extension": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/native-port-policy-v1/source014-authority22-extension/EXTENSION.json",
+    "sha256": "5c91f504025e8d32c94266031e78951e7cce958e4155ef7fda218a3c01c1c8f5"
+  },
+  "original_selected354_source": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-1/eql-heldout-run197/first354/sources/Native8009c354.v",
+    "sha256": "d93129e30664dd96aace9f95bdd7ebe8d90c4e931c5c0d0884c515da0736d603"
+  },
+  "caller_source_delta": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/native-port-policy-v1/source014-authority22-extension/caller-successor-v1/SOURCE.json",
+    "sha256": "b1a679d91ae708f4faf851492aefb4241dd615a1b56a00f481b774a513dd34c1"
+  },
+  "caller_patch": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/native-port-policy-v1/source014-authority22-extension/caller-successor-v1/CHANGE.patch",
+    "sha256": "c5be416c2f08ae901c19c59b99b43f846b2ce0132e1bf583eb41669c16c845da"
+  },
+  "statement_and_body_unchanged": true,
+  "status": "candidate_pending_Orch_caller_successor_approval",
+  "execution_authorized": false
+}

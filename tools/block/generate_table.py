@@ -473,7 +473,7 @@ def render_table(design, report, *, name_prefix="decodeItem"):
         from render_support import imports as support_imports
         lines.extend(support_imports(design["support"]["entries_imports"]))
     lines.extend(f"Require Import {module}." for module in sorted(imports))
-    lines += ["Import ListNotations.", "Open Scope Z_scope.", "",
+    lines += ["Import ListNotations.", "Local Open Scope Z_scope.", "",
               "(* Generated resource wiring. No block-body proof is supplied. *)"]
     for path, sha in sorted(report.get("source_hashes", {}).items()):
         # The recipe binds generated output. Do not create a recipe/output hash cycle.

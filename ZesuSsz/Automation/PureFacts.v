@@ -109,6 +109,11 @@ Ltac zesu_witness_arith :=
    measure one rule. `Automation/Switch.v` provides them all;
    `Automation/Switches/<step>.v` provides one, beside the
    `ZesuRuleSetV2` instance that the pass needs in either case. *)
+Class ZesuRuleSetV1 : Prop := zesu_rule_set_v1 : True.
+
+Ltac zesu_rule_set_v1_on :=
+  let _ := constr:(_ : ZesuRuleSetV1) in idtac.
+
 Class ZesuRuleSetV2 : Prop := zesu_rule_set_v2 : True.
 
 Ltac zesu_rule_set_v2_on :=

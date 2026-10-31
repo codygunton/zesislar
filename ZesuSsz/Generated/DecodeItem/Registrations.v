@@ -34,7 +34,7 @@ Require Import ZesuSsz.Contracts.DecodeItemBranchEntries.
 Require Import ZesuSsz.Automation.EntryIntro.
 Require Import ZesuSsz.Compliance.DecodeItemEntryIntroductions.
 Require Export ZesuSsz.Generated.DecodeItem.Entries.
-Open Scope Z_scope.
+Local Open Scope Z_scope.
 
 Global Instance : LithiumUnfold (@decodeItemEntryAt800d6960) := I.
 Global Typeclasses Opaque decodeItemEntryAt800d6960.

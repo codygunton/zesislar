@@ -86,7 +86,7 @@
     }
   },
   "hashes": {
-    "inventory_sha256": "081c2cc4866667783279596e6aefe160ab4691c2bfed9e5105602e8db18aa03c",
+    "inventory_sha256": "b7a3cde815744ca0babedf52bf5626403f5f133bc1350f40634e5c54ff9dbe86",
     "selected_elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
     "raw_dump_sha256": "309bfd72ccac295008856beb22ba83fc6834ac97c56f7591a8a1316ec7e52a2b",
     "level1_contract_sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
@@ -237,7 +237,7 @@
       ],
       "resource_predicate": "ZesuSsz.Contracts.DecodeItemBranchEntries.decodeItemEntryAt800d6974",
       "source_hashes": {
-        "build/stock-zisk/inventory.json": "081c2cc4866667783279596e6aefe160ab4691c2bfed9e5105602e8db18aa03c",
+        "build/stock-zisk/inventory.json": "b7a3cde815744ca0babedf52bf5626403f5f133bc1350f40634e5c54ff9dbe86",
         "build/stock-zisk/decodeItem.raw.dump": "309bfd72ccac295008856beb22ba83fc6834ac97c56f7591a8a1316ec7e52a2b",
         "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "85a6a567952243f919c2f170cc3bebca6eeb60d14399fb73de8af5a53e9956e0",
         "ZesuSsz/Contracts/DecodeItemReturnFacts.v": "9da33c0898953f7ff5f270dc6e1f66681f4de045c7bb774b7701676399da1cf5"

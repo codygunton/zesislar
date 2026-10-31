@@ -204,7 +204,7 @@ class BlockTableTests(unittest.TestCase):
         design, report = self.executable_fixture()
         source = generate_table.render_table(design, report).encode()
         self.assertEqual(hashlib.sha256(source).hexdigest(),
-                         "cf4fcf414856f25a4cb05305a950bfdff7ae562fc7a16f183a33eddeb0324df7")
+                         "f863cbd1fb35a1b64dc15a05ca6192b69f2cf0c6e40223dd90eedc543f4678d6")
 
     def test_rendering_preserves_exact_binders_and_arguments(self):
         design, report = self.executable_fixture()

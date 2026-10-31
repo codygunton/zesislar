@@ -20,7 +20,7 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.
 Require Import ZesuSsz.Contracts.DecodeItemSelected.
 Require Import ZesuSsz.Generated.DecodeItem.Entries.
 Import ListNotations.
-Open Scope Z_scope.
+Local Open Scope Z_scope.
 
 (* Generated resource wiring. No block-body proof is supplied. *)
 (* Source: ZesuSsz/Automation/EntryIntro.v; SHA-256: 2e212eb5cc73c578b946a3e06c00827e268ddb3e938682ee4e6f5cc5ebd519b9. *)
@@ -62,18 +62,18 @@ Open Scope Z_scope.
 (* Source: ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v; SHA-256: a504dfa090e1ec91f709ad3c3b5c7df1823dc64159b0b53960a0606a5ffe92a9. *)
 (* Source: ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v; SHA-256: 8f8a64ac921387fef087cafeb68204e045dc5e40f7c2ec9d55c4475b9981bee3. *)
 (* Source: ZesuSsz/Contracts/RlpDecodeItemContract.v; SHA-256: 595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a. *)
-(* Source: ZesuSsz/Evidence/decode_item_block_design.json; SHA-256: a624a98d10b063059bf5df20ec013021db62fe03b11165d2731e8a8ffc9fe774. *)
+(* Source: ZesuSsz/Evidence/decode_item_block_design.json; SHA-256: 476e07b7852c2c0a91124df93c6b0674334d12a265552739251925857f54e151. *)
 (* Source: ZesuSsz/Evidence/generate_block_design.py; SHA-256: a1de40fde4c6b56e8342b642b4fd89d37887c81b84aad86ba1d62943b4acabed. *)
-(* Source: ZesuSsz/Generated/DecodeItem/Entries.v; SHA-256: a33f75c0a200167d71c9840f1577d761fe51ef45e52c4b3002d61f0b5a0ce333. *)
-(* Source: build/stock-zisk/cfg.json; SHA-256: 6d9bb1a7ffb949d0b50023525d7d98b202a3fb4190ed2287e2bed98fb748cfe6. *)
+(* Source: ZesuSsz/Generated/DecodeItem/Entries.v; SHA-256: 362c58e1b20c6e0ed75d93fca8b215be6956c6a2202914975edb0bc1d05e3e32. *)
+(* Source: build/stock-zisk/cfg.json; SHA-256: 22b462dafc29cc0efbb38eb0f6c6300998122dc53e29c400ebe9f6cce55308e2. *)
 (* Source: build/stock-zisk/decodeItem.raw.dump; SHA-256: 309bfd72ccac295008856beb22ba83fc6834ac97c56f7591a8a1316ec7e52a2b. *)
-(* Source: build/stock-zisk/inventory.json; SHA-256: 081c2cc4866667783279596e6aefe160ab4691c2bfed9e5105602e8db18aa03c. *)
+(* Source: build/stock-zisk/inventory.json; SHA-256: b7a3cde815744ca0babedf52bf5626403f5f133bc1350f40634e5c54ff9dbe86. *)
 (* Source: tools/block/check_data_only_lemmas.py; SHA-256: dd6f978329f3e9b7d48995335d207532e7ff94260d027da1867565e3a60ab87c. *)
 (* Source: tools/block/entry_bindings.py; SHA-256: f68373d49d74fd715204d48189480a8eaa0f816a2438b5763c459165753bc39a. *)
 (* Source: tools/block/entry_schema.py; SHA-256: 3f91d05aced7cb0eaec0b0363d073f0f6dc59bdf638a469d72abda954059a167. *)
 (* Source: tools/block/function_names.py; SHA-256: 619eb4b97f110e5158e950fa84f91753210605512dd921a603c55bded6bdd5e9. *)
-(* Source: tools/block/generate_table.py; SHA-256: e2a481374162f2e633750925abd4592aee116c72749da4d2315a649859450714. *)
-(* Source: tools/block/render_support.py; SHA-256: fdd6d0f3dc019b84fc55a867f1d01eae1ea77bfad729c7aa32d283a28dbf33ff. *)
+(* Source: tools/block/generate_table.py; SHA-256: 460d42f603b58f5cb6db8ca74ee73affebdc86bcc56306d6bd3ac517d8716ee0. *)
+(* Source: tools/block/render_support.py; SHA-256: 6691f7f303acb9b3f0ee697c88283ada02ef9738a8ba2f27be4d217f47f0ad78. *)
 (* Source: tools/block/trace_registers.py; SHA-256: 0fe25ade825c1fd600f433d83a56dcc1a5ee187c7081860205f7ea383bfb405d. *)
 
 Section decode_item_block_table.

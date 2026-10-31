@@ -1,0 +1,1192 @@
+{
+  "schema": "completed-stock-memory.v2",
+  "legacy_inputs": {
+    "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-INPUTS.json",
+    "sha256": "328415a0bf7a4748b41a0c54af7626358d88ca95c2124ebb9b2eff366e1cf61c"
+  },
+  "rows": [
+    {
+      "key": "800d6960",
+      "module": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6960",
+      "statement_sha256": "0afb00aa198472ee8a35b0367f724cb9260c6dc8af3b3a294ec7acb2d3c169cf",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6960.v",
+        "sha256": "1a7abc0cc54b9a1b4685e2e8d34242295101ada31c81874f40a861841cdaefca"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6960/RESULT.json",
+        "sha256": "dd80702a7203eb30cf0ca092472894ce9016af87e0819c83d425f658ff38d838"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6960/ROOT-ACCEPTANCE.json",
+        "sha256": "992f2efdd7462f8fdc17027aca7a38c169b9077dfe27b63aa705c4aaeb9f00f3"
+      },
+      "claim_key": "R1_A_output_alias_Block800d6960",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6960/ROOT-ACCEPTANCE.json",
+        "review_sha256": "992f2efdd7462f8fdc17027aca7a38c169b9077dfe27b63aa705c4aaeb9f00f3",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792982819197435823
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 1772826624,
+      "proposed_claim_bytes": 8589934592,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d6960/run-v1/compiler-invocations/67304b840e63483bbec8d454ff12581b/compiler.json",
+        "sha256": "7d660950f4ca4d4c5372165035e90d13c86223742ba2233ff1a0eb41eba26599"
+      }
+    },
+    {
+      "key": "800d6974",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974",
+      "statement_sha256": "90524fe3e047bfb04a25a251228a8a0a213bd16cf4568bdb20207b33d72d70a8",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v",
+        "sha256": "0cfd9b8211e3bd877dea436fd1a090fdc715c0d53dfa5a9dbaa3e8a27bf6fa01"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6974/RESULT.json",
+        "sha256": "bddcbe196e9de3df7b0df3f5be3a5be3e009a5cabf63697d3779a91073504fc4"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6974/ROOT-ACCEPTANCE.json",
+        "sha256": "049d6c8810b37cde792c872601606da148dc172dde30e6feb5f76bed9062b525"
+      },
+      "claim_key": "R1_A_output_alias_Block800d6974",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6974/ROOT-ACCEPTANCE.json",
+        "review_sha256": "049d6c8810b37cde792c872601606da148dc172dde30e6feb5f76bed9062b525",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792982697034849051
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 2783870976,
+      "proposed_claim_bytes": 8589934592,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d6974/run-v1/compiler-invocations/8ffaf6417b974295b3505888304abbc3/compiler.json",
+        "sha256": "d2b662135b1c4c11039e3f5eabc4b76d8aaffe1c734c1740afa80eb0d806a4b1"
+      }
+    },
+    {
+      "key": "800d697c",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d697c",
+      "statement_sha256": "8372f0ab4a415f8d031d957ad7030b8af1a7bd2cff8ed175fd68bb22a576d9d5",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d697c.v",
+        "sha256": "1a7e9a9c3cc29c19e4511ee46b9118e4fb05258eefa8c182b16dbf5b87161796"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d697c/RESULT.json",
+        "sha256": "9b7a99a95373fa310f59fd0fb6e1c5be7834da11507398b2b39c6e9633c83c81"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d697c/ROOT-ACCEPTANCE.json",
+        "sha256": "f6db0a39263a459fce15ff594fb56f3abae5c83eb0b08169b88f6553b35622d8"
+      },
+      "claim_key": "R1_A_output_alias_Block800d697c",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d697c/ROOT-ACCEPTANCE.json",
+        "review_sha256": "f6db0a39263a459fce15ff594fb56f3abae5c83eb0b08169b88f6553b35622d8",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792982660903454586
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 2453549056,
+      "proposed_claim_bytes": 8589934592,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d697c/run-v1/compiler-invocations/53ff5a3025c340ba9c16bb5eda972c50/compiler.json",
+        "sha256": "175ecc9fd71b611166a70f9719b75d39c4744858cfa50baf9bb7dfdf1e55a53b"
+      }
+    },
+    {
+      "key": "800d698cLiteral",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d698cLiteral",
+      "statement_sha256": "495cefaa985503bbe50d4b12f32199092417ddc87da655a53410172250fa52c7",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d698cLiteral.v",
+        "sha256": "20d4d19c110eb13028ad57aa182035fbe7977da942a3f35f18bb17f7e881c520"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d698cLiteral/RESULT.json",
+        "sha256": "83a0866437f384e8bce841ad503ed86111eac1abf09a775883ee851822f7ab55"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d698cLiteral/ROOT-ACCEPTANCE.json",
+        "sha256": "da19b45c9969c3d179fd0a57f48dbc247a0bb5f2ea24b67e862a325468cac63b"
+      },
+      "claim_key": "R1_A_output_alias_Block800d698cLiteral",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d698cLiteral/ROOT-ACCEPTANCE.json",
+        "review_sha256": "da19b45c9969c3d179fd0a57f48dbc247a0bb5f2ea24b67e862a325468cac63b",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792982090684865114
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 2773770240,
+      "proposed_claim_bytes": 8589934592,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d698cLiteral/run-v1/compiler-invocations/8afe8a6a1e174bfb99b2e81a22a82c44/compiler.json",
+        "sha256": "0c96330e0b28daad0c6e1bb4ab606d305e350a4c09ac4df4b4c86f3782112bed"
+      }
+    },
+    {
+      "key": "800d698cShortString",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d698cShortString",
+      "statement_sha256": "94d085a909a6599f2ddbe4ad020329476bfec4893099938d65e4f9a093a2f430",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d698cShortString.v",
+        "sha256": "ca4b3fd0b89256466207584163149d31fc02ff9be5997775a7768235022e1f6e"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d698cShortString/RESULT.json",
+        "sha256": "4f680b718e97173ed7e601a62cedd0ac351c64104c817b9eb15ff0f75b55034f"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d698cShortString/ROOT-ACCEPTANCE.json",
+        "sha256": "bdac0258cac0ac4f296ba891ea8859e390a0e4f1a40095da656aec7fb70ee080"
+      },
+      "claim_key": "R1_A_output_alias_Block800d698cShortString",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d698cShortString/ROOT-ACCEPTANCE.json",
+        "review_sha256": "bdac0258cac0ac4f296ba891ea8859e390a0e4f1a40095da656aec7fb70ee080",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792982312990132066
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 2799747072,
+      "proposed_claim_bytes": 8589934592,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d698cShortString/run-v1/compiler-invocations/2ae5f944367b4cb3b98134e7137cf0a4/compiler.json",
+        "sha256": "2bd7656f32293dd50782aa04942140f1a52ce019f7b302e8bef272a28fdd19c5"
+      }
+    },
+    {
+      "key": "800d69a4",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69a4",
+      "statement_sha256": "ea5061db892d88d56a4aaa0fde1f6ca53e8bb087ab16eb0ab4058b79a57b0d28",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d69a4.v",
+        "sha256": "95246a7484cc9e6d4f478aae47b7ccb1dc5d56bcce895cc939da06cf63781049"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d69a4/RESULT.json",
+        "sha256": "abe8ff851f8fd506a3aac2aec8338b7a0318cdc35d333a85b680dab06930136d"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d69a4/ROOT-ACCEPTANCE.json",
+        "sha256": "343cbef78747946ca54041da105e5ce774d75e0461a30f3d5593636a056cf285"
+      },
+      "claim_key": "R1_A_output_alias_Block800d69a4",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d69a4/ROOT-ACCEPTANCE.json",
+        "review_sha256": "343cbef78747946ca54041da105e5ce774d75e0461a30f3d5593636a056cf285",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792983151400109178
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 1247698944,
+      "proposed_claim_bytes": 8589934592,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d69a4/run-v1/compiler-invocations/8a9f3fd983c94d2ca8d5990e366fbe86/compiler.json",
+        "sha256": "5045e0ab835937244a652387ca3be51dd199129a11a48db21b712d19d90e97b6"
+      }
+    },
+    {
+      "key": "800d69b0",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69b0",
+      "statement_sha256": "4fdf2194a0261a0437886dbe7b1c1fd96192dd055ecf2b08b434273a1269e486",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d69b0.v",
+        "sha256": "aad0e930fcd57d40b7d49e22d16568c8053eae9a5a292a9adfd53322a65ca1ec"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d69b0/RESULT.json",
+        "sha256": "7e963df9aa4d18f9a2f5244c3de1a5884b92bfc81a5e274e212c99d50ad46b80"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d69b0/ROOT-ACCEPTANCE.json",
+        "sha256": "18797a9d0d45222a6d8b72849bbf47a510bd95909b9eec539d61061bf2325243"
+      },
+      "claim_key": "R1_A_output_alias_Block800d69b0",
+      "claim_release": {
+        "bytes": 19966509056,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d69b0/ROOT-ACCEPTANCE.json",
+        "review_sha256": "18797a9d0d45222a6d8b72849bbf47a510bd95909b9eec539d61061bf2325243",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792981894286892736
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 5648408576,
+      "proposed_claim_bytes": 17179869184,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence. The legacy interval includes an intervening Require command. The source-bound projection preserves both hashes.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d69b0/run-v1/compiler-invocations/216ef0a8be15481fa07c842232fb05c0/compiler.json",
+        "sha256": "2fbe1df48d216f39a0ccc58a0b8208f085170494252eb1d16110327d03da64d6"
+      },
+      "declaration_projection": {
+        "path": "/home/cody/zesislar/.worktrees/infra-h1-resources-eea6/_build/agents/infra-b/shared-memory-policy003/DECLARATION-PROJECTION.json",
+        "sha256": "d5a0362b70f4018d2edd34583e4490764a2bfaea81fa1ce1f4431bd254aada12"
+      }
+    },
+    {
+      "key": "800d69d8",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69d8",
+      "statement_sha256": "876367529bd9d91ce848da74592a6997e37b0efe0e215b38d205945e75c0dcc1",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d69d8.v",
+        "sha256": "692b5af8c92088691dab7038fcab4d1434a3468fc7122092d3e9aa38365b9f65"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d69d8/RESULT.json",
+        "sha256": "4ebd0429153a47f93a993c7856bdc1e0011c8dffeb688ebc45ee7de3e6aa1c53"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d69d8/ROOT-ACCEPTANCE.json",
+        "sha256": "c29a7c72ce0cfc4f232434d152a9ee84b34320bb43d8ed68c1825ba64b3f4d38"
+      },
+      "claim_key": "R1_A_output_alias_Block800d69d8",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d69d8/ROOT-ACCEPTANCE.json",
+        "review_sha256": "c29a7c72ce0cfc4f232434d152a9ee84b34320bb43d8ed68c1825ba64b3f4d38",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792983161785686008
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 1184600064,
+      "proposed_claim_bytes": 8589934592,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d69d8/run-v1/compiler-invocations/2d5be909303b46c29df3b5179929d6e8/compiler.json",
+        "sha256": "f87edf94fa1a11bc7493887ee0fdbfef8445c9a85cfdc787914484d29f4872cf"
+      }
+    },
+    {
+      "key": "800d69e0",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69e0",
+      "statement_sha256": "fde59e47edb807c963a34361dc764e7593cc51119dd84281c95178f3001d9037",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d69e0.v",
+        "sha256": "73d843d0665ee7b52827756f33706ae8fbfab9b8851c50f37a417d5342228209"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d69e0/RESULT.json",
+        "sha256": "d26eb3e972bc04d453d799580ae5b1f037603e71bc7a1827891e5b1e4e84a122"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d69e0/ROOT-ACCEPTANCE.json",
+        "sha256": "10eda7ee5ec0576cbdbb5909da20a7eac777d1154ae2f09b06b6837a01f77d88"
+      },
+      "claim_key": "R1_A_output_alias_Block800d69e0",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d69e0/ROOT-ACCEPTANCE.json",
+        "review_sha256": "10eda7ee5ec0576cbdbb5909da20a7eac777d1154ae2f09b06b6837a01f77d88",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792983067580803361
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 1287168000,
+      "proposed_claim_bytes": 8589934592,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d69e0/run-v1/compiler-invocations/a960fa55310d4c019e623088585b89b6/compiler.json",
+        "sha256": "d65932cbac53a9a82e3d94a6049cce654befb476c18d5e2aa3acf85f5c25c397"
+      }
+    },
+    {
+      "key": "800d69e8",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69e8",
+      "statement_sha256": "0f95df4faed8cc1d56b85fbe5d8012b05356197187a100bcc61f275b7041d2a8",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d69e8.v",
+        "sha256": "e4bcef97db08481ceede8bc1c830efc6eebafb0ebeb99b0df7e951324c0be851"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d69e8/RESULT.json",
+        "sha256": "8ded8b2119c2f2820d3580b2bfa965ad542b77fe0140fe16c726cc7f4bbaf01b"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d69e8/ROOT-ACCEPTANCE.json",
+        "sha256": "e2932e631d0d4ea1c44c06862e3f08ac738377e475d9fb527e6c8c2dd75554dc"
+      },
+      "claim_key": "R1_A_output_alias_Block800d69e8",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d69e8/ROOT-ACCEPTANCE.json",
+        "review_sha256": "e2932e631d0d4ea1c44c06862e3f08ac738377e475d9fb527e6c8c2dd75554dc",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792981694986860331
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 3628187648,
+      "proposed_claim_bytes": 17179869184,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d69e8/run-v1/compiler-invocations/e758a32f593c48158467cc1044074b55/compiler.json",
+        "sha256": "493f44a1ceb9155e233220de8cb3d483a9409e3041e148144388be600764abf7"
+      }
+    },
+    {
+      "key": "800d6a00",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a00",
+      "statement_sha256": "738f5cb9f893a7e8ac54e294d893f5e104a71e0d4090882a9f72f9db45bafe42",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a00.v",
+        "sha256": "f3654641e554cb70f989bdd94e5317350520b1b7494c379eca2d2a6552aab627"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a00/RESULT.json",
+        "sha256": "5759961fbfe2b087274749570c114f268f7ba105ef118258461efda1990b8d8d"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a00/ROOT-ACCEPTANCE.json",
+        "sha256": "78e9bfbd13e589d11e3c93c3bbc3466526b1587aad0183616bb860710f98ef76"
+      },
+      "claim_key": "R1_A_output_alias_Block800d6a00",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a00/ROOT-ACCEPTANCE.json",
+        "review_sha256": "78e9bfbd13e589d11e3c93c3bbc3466526b1587aad0183616bb860710f98ef76",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792983077240181691
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 1280794624,
+      "proposed_claim_bytes": 8589934592,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d6a00/run-v1/compiler-invocations/f3e8ef08cc044c7b8eae645d9c324e35/compiler.json",
+        "sha256": "47b4d2f3c6b05a0cdd7f7d87c9fa8128f41f59eed3851e2b479543e5980b9f88"
+      }
+    },
+    {
+      "key": "800d6a08",
+      "module": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a08",
+      "statement_sha256": "0362d3af0f35d7a9d40028348f09d466e436e2bdef65e9fb77db4bd13afbf9f1",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a08.v",
+        "sha256": "347dc3bd203850ac86f177e63f9e1c15787f6b8ce71cdf5973f6abedc6518da4"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a08/RESULT.json",
+        "sha256": "56cffc730a315a4eac0430b51654b8a411ea7ece31a91e0ba340515e6b774a58"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a08/ROOT-ACCEPTANCE.json",
+        "sha256": "9394462664f1321baac722a3bd35e43c2a70627fa2c31d87b48e4251d3e10311"
+      },
+      "claim_key": "R1_A_output_alias_Block800d6a08",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a08/ROOT-ACCEPTANCE.json",
+        "review_sha256": "9394462664f1321baac722a3bd35e43c2a70627fa2c31d87b48e4251d3e10311",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792982829954102723
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 1801269248,
+      "proposed_claim_bytes": 8589934592,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d6a08/run-v1/compiler-invocations/914858bae0764fdca15aa30345b14e24/compiler.json",
+        "sha256": "6b57ef013f358425b915c334d49df09b55208cc33bb7ed8ea771d1ec4419296d"
+      }
+    },
+    {
+      "key": "800d6a14",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a14",
+      "statement_sha256": "380a89f74792c9cda86a8047cfc5a72997e08a657f69f6e5662896e1efb35591",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a14.v",
+        "sha256": "386da3b1281f818c655e759680588ce029d88c9366d76aa6db14534e3c215ef4"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a14/RESULT.json",
+        "sha256": "b149d43a496c71d88ffadac03e6cf7ea1469e9f839ee8aeedacc882d1400daab"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a14/ROOT-ACCEPTANCE.json",
+        "sha256": "73b4b36e8163008217ab828b7fa5e103655a44f4c5900a51a60c213d1bdcfd2f"
+      },
+      "claim_key": "R1_A_output_alias_Block800d6a14",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a14/ROOT-ACCEPTANCE.json",
+        "review_sha256": "73b4b36e8163008217ab828b7fa5e103655a44f4c5900a51a60c213d1bdcfd2f",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792983249144245334
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 1157246976,
+      "proposed_claim_bytes": 8589934592,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d6a14/run-v1/compiler-invocations/f0594d2d57474976b0b9c6ecdff42054/compiler.json",
+        "sha256": "2e0d196ba568e26d7753ce9f65c7ecffd36308d6929ef104b039a96983e3849f"
+      }
+    },
+    {
+      "key": "800d6a24",
+      "module": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24",
+      "statement_sha256": "a892d4710dcf3909ce665417ebb174ec362583263f949904b6f1389296554487",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a24.v",
+        "sha256": "6c285de6526d95b2987a8078a6f1eb7f4d4e2ca93ea8b4cc6e59cf2105990ae8"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a24/RESULT.json",
+        "sha256": "59df9bb9d2176259c954199c366805e7a259a3e4a9e90c3f52b004d9aa1b02d0"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a24/ROOT-ACCEPTANCE.json",
+        "sha256": "556b8ec52edb19637352276430d70473fc0e52988b3cb1778bc36c30441a62f2"
+      },
+      "claim_key": "R1_A_output_alias_Block800d6a24",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a24/ROOT-ACCEPTANCE.json",
+        "review_sha256": "556b8ec52edb19637352276430d70473fc0e52988b3cb1778bc36c30441a62f2",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792982468199864321
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 3309088768,
+      "proposed_claim_bytes": 17179869184,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d6a24/run-v1/compiler-invocations/b7b01e8fa210418e970118855717a5fa/compiler.json",
+        "sha256": "06ceb67994f6db42109f14d96cfda59c61ab9aa2e93ed697346d6e71ee1c85b7"
+      }
+    },
+    {
+      "key": "800d6a38",
+      "module": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a38",
+      "statement_sha256": "4513cff6e29a25a2178d72b89d16015d7c96381c3a5b41b435297cb923ddfc5a",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a38.v",
+        "sha256": "de2abc39b5bdf87b27d97255a0bf9aecafd6665688e4c6419cfb7faf496037ca"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a38/RESULT.json",
+        "sha256": "5f3277d8bf68f5d6981a5a47a743d1e8900cd23c20aec160177b0e0844053a93"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a38/ROOT-ACCEPTANCE.json",
+        "sha256": "86a8e62d40c3426b28462a1ffcff45d621b1695d709b88e51466e656f6c5cfae"
+      },
+      "claim_key": "R1_A_output_alias_Block800d6a38",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a38/ROOT-ACCEPTANCE.json",
+        "review_sha256": "86a8e62d40c3426b28462a1ffcff45d621b1695d709b88e51466e656f6c5cfae",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792982958847573196
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 1424068608,
+      "proposed_claim_bytes": 8589934592,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d6a38/run-v1/compiler-invocations/f7c8b038611b42099e5d7a59630cd775/compiler.json",
+        "sha256": "ffefff6efbe6aafc17513a202d544cdaccca4f91681da9c0b0e7cfbd81922b92"
+      }
+    },
+    {
+      "key": "800d6a40",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a40",
+      "statement_sha256": "624ac8a4c331478dbc8a2d38023485bf6a21d7fc39eeeda2c48497f896ed422e",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a40.v",
+        "sha256": "ee616d08d8b8ecdb617efbc87e56a0a772bbfb004b0c76c9ac48c89d5b523344"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a40/RESULT.json",
+        "sha256": "26ba8e4010ac0210e1e08b902b30cca6e220771d0c750e76a3de5c378d8da544"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a40/ROOT-ACCEPTANCE.json",
+        "sha256": "5f7627968d52a991b99b625fd8b838ff77753415b830c132670ddaad4d93aad0"
+      },
+      "claim_key": "R1_A_output_alias_Block800d6a40",
+      "claim_release": {
+        "bytes": 20995647488,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a40/ROOT-ACCEPTANCE.json",
+        "review_sha256": "5f7627968d52a991b99b625fd8b838ff77753415b830c132670ddaad4d93aad0",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792981197397192943
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 6417465344,
+      "proposed_claim_bytes": 17179869184,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d6a40/run-v1/compiler-invocations/387ea17fb1604e46b3d37493086a0898/compiler.json",
+        "sha256": "181f7d4d4c9a8efa466bc503362030da8352261bc3ff4eacb5103f0047af5394"
+      }
+    },
+    {
+      "key": "800d6a64",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a64",
+      "statement_sha256": "a4c39225bd9148714a3cb2fde6c09636153e7d6be0a6815cbc377bce0f22a84f",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a64.v",
+        "sha256": "d508a0f63ab078d839713b445ce4a5b83857864efecf84bda658d1c93f964af8"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a64/RESULT.json",
+        "sha256": "7aa6f0550b610b5008aa01bbe3c4543c73606318030b9fb40314ca15a99c96ef"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a64/ROOT-ACCEPTANCE.json",
+        "sha256": "78aa9d98fb21452d9c531270483f2c19f976b1df0cdf30615c24eac3eefb8c21"
+      },
+      "claim_key": "R1_A_output_alias_Block800d6a64",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a64/ROOT-ACCEPTANCE.json",
+        "review_sha256": "78aa9d98fb21452d9c531270483f2c19f976b1df0cdf30615c24eac3eefb8c21",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792983077433882496
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 1284792320,
+      "proposed_claim_bytes": 8589934592,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d6a64/run-v1/compiler-invocations/877037ab2291470aadc566f3dfbfcd27/compiler.json",
+        "sha256": "450ad40705edf7748cfb767c8baf0d2ede8e0daa50e66c5433241e4142af48f7"
+      }
+    },
+    {
+      "key": "800d6a6c",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a6c",
+      "statement_sha256": "ebdccd871404c76c50b97e8733eba3e2973f1de52beda55b139ed831dff3079c",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a6c.v",
+        "sha256": "ce07283f5acc703d36a73d4e1590ac46178b73c297c8e8390bf8436f0331648d"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a6c/RESULT.json",
+        "sha256": "056913e2d2a9f3126fda24d173d3df9c1b7dfa2bf5729a6d1e4646b3f92faaf8"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a6c/ROOT-ACCEPTANCE.json",
+        "sha256": "846ba36b67fe626598bb7b60198078b21a0166dad1203a4eea7cae4a0e286771"
+      },
+      "claim_key": "R1_A_output_alias_Block800d6a6c",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6a6c/ROOT-ACCEPTANCE.json",
+        "review_sha256": "846ba36b67fe626598bb7b60198078b21a0166dad1203a4eea7cae4a0e286771",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792982948402466700
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 1350045696,
+      "proposed_claim_bytes": 8589934592,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d6a6c/run-v1/compiler-invocations/540a2693ef884ad5817c52e5fff3d8da/compiler.json",
+        "sha256": "bbbc499f105abbf190d682dfe473549f17a088f86060b4207cf03bb413f6cd41"
+      }
+    },
+    {
+      "key": "800d6aa8",
+      "module": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6aa8",
+      "statement_sha256": "cf37f70b20b80752c3ba096dd36c31fb1a528c81bc11f0a66ac69436e31d0b9a",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6aa8.v",
+        "sha256": "51eff3d426956657abab3d50fe59d69c74cedeca186bc92aa7a18ef888f85f9e"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6aa8/RESULT.json",
+        "sha256": "c57eca5bda296c377e15f4cd3d7449fcd2e537ae96850e9bd303229b7d00892a"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6aa8/ROOT-ACCEPTANCE.json",
+        "sha256": "4eb79263ac121bd8114335e04eb2eecf6ed5b188d156dde652c41d9791c709b6"
+      },
+      "claim_key": "R1_A_output_alias_Block800d6aa8",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6aa8/ROOT-ACCEPTANCE.json",
+        "review_sha256": "4eb79263ac121bd8114335e04eb2eecf6ed5b188d156dde652c41d9791c709b6",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792982958649307785
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 1801326592,
+      "proposed_claim_bytes": 8589934592,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d6aa8/run-v1/compiler-invocations/e6e8bdc732cb4eb9bafcc0da5e3f825a/compiler.json",
+        "sha256": "f9c9ecd9efb188dd0ad3ab4844dc8138235578cfe0517b5573b86f5d3a328623"
+      }
+    },
+    {
+      "key": "800d6ab4",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6ab4",
+      "statement_sha256": "816c2aae2ed6005149fbf51b54685b6890821ba18e1b49c7807b407169cd9943",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6ab4.v",
+        "sha256": "ff6b321245287997cbcd58cc722b1b15ec9967113ffc90ddd217360046abb308"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6ab4/RESULT.json",
+        "sha256": "2554214ea7f83f5064acab38c5e5fd34af34d06d784ff0dadbea40d9b9861d2b"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6ab4/ROOT-ACCEPTANCE.json",
+        "sha256": "97be45df9013035716c50d5a9ed60b086444054c3d88c5df9a44e78a8dc17939"
+      },
+      "claim_key": "R1_A_output_alias_Block800d6ab4",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6ab4/ROOT-ACCEPTANCE.json",
+        "review_sha256": "97be45df9013035716c50d5a9ed60b086444054c3d88c5df9a44e78a8dc17939",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792983161582217738
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 1159499776,
+      "proposed_claim_bytes": 8589934592,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d6ab4/run-v1/compiler-invocations/f12e64df44794f1eab30dc9baf7c053f/compiler.json",
+        "sha256": "ebeb473876118fbbd4bc18b1fb755e9a2a1e4851b177fc5fec89c896fc7ce482"
+      }
+    },
+    {
+      "key": "800d6ac4",
+      "module": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ac4",
+      "statement_sha256": "4748ffa1461ce3b1eb5b3f96a767cdb530f763445eb31c0380efe6b476c07774",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ac4.v",
+        "sha256": "c32e7081abe29505f73ef75dede44be5a51fb9b1a5412fa824514b9e2a07c8db"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6ac4/RESULT.json",
+        "sha256": "a2809fe644c3f9ac35af5368616627a5aaa6ad8e1d44a81b6788d4db3b7fec25"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6ac4/ROOT-ACCEPTANCE.json",
+        "sha256": "e77648be6ed8ba357d43504f3b6fd946f7ae198db5676e7ed0ed37b2140a7c0e"
+      },
+      "claim_key": "R1_A_output_alias_Block800d6ac4",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6ac4/ROOT-ACCEPTANCE.json",
+        "review_sha256": "e77648be6ed8ba357d43504f3b6fd946f7ae198db5676e7ed0ed37b2140a7c0e",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792982837961837843
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 3218980864,
+      "proposed_claim_bytes": 17179869184,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d6ac4/run-v1/compiler-invocations/4bffb0d19eb749acb7c50c06baa70b91/compiler.json",
+        "sha256": "b1c93fd3945bf36a8ec70331ee3041a23d849e7e1778a6c06bbd469565fd00c7"
+      }
+    },
+    {
+      "key": "800d6ad8",
+      "module": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ad8",
+      "statement_sha256": "5d27dfe6cf4286637fb0abc8085ffb12bbdac427eb32e85b5efea01eda8b1efd",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6ad8.v",
+        "sha256": "76d9851d6b8542c398a0b447fa061876cf98d0b85fb6ae1375d47332534d9cd4"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6ad8/RESULT.json",
+        "sha256": "49afaf566d60abb0dadb279c11b37ed1735e3742598aa63a5384bfa6ea1cb29a"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6ad8/ROOT-ACCEPTANCE.json",
+        "sha256": "57360730e28f627e3faa1ff19206f8e2027a0d3372eda551bdb076b365b10652"
+      },
+      "claim_key": "R1_A_output_alias_Block800d6ad8",
+      "claim_release": {
+        "bytes": 18444910592,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6ad8/ROOT-ACCEPTANCE.json",
+        "review_sha256": "57360730e28f627e3faa1ff19206f8e2027a0d3372eda551bdb076b365b10652",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792981308337600606
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 1581076480,
+      "proposed_claim_bytes": 8589934592,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d6ad8/run-v1/compiler-invocations/6856e5fd05f8475fa4d66fdbf586d312/compiler.json",
+        "sha256": "37877b3e48e716194c5cbcf605350c9b21a113a6e6739dee60efb9ea523f0e46"
+      }
+    },
+    {
+      "key": "800d6ae0",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6ae0",
+      "statement_sha256": "864dff12248056f5136a6c2e67d5973d136fb08c3ea3a37d7e8bdfaeb2b6f539",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6ae0.v",
+        "sha256": "194f538c76486d78ed3f778d8803891820a0e0b96fb12374f5175884ecbff46e"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6ae0/RESULT.json",
+        "sha256": "848f3c07ee75ffeaa54333c2decc2451525915d6ecf65a844ed593fe37d5ce28"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6ae0/ROOT-ACCEPTANCE.json",
+        "sha256": "0d3af8bde46acbe1102e8f6e18442545d35e7cc454dbcd6584ca083d23c8bd72"
+      },
+      "claim_key": "R1_A_output_alias_Block800d6ae0",
+      "claim_release": {
+        "bytes": 26491535360,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6ae0/ROOT-ACCEPTANCE.json",
+        "review_sha256": "0d3af8bde46acbe1102e8f6e18442545d35e7cc454dbcd6584ca083d23c8bd72",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792981244638853611
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 8709963776,
+      "proposed_claim_bytes": 25769803776,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d6ae0/run-v1/compiler-invocations/9c9e75409cc74cc68b88f4e825c5a3e0/compiler.json",
+        "sha256": "e685d6d1e5b0172d58aee2f0ddddb9f276f39893d5f004ad443e0e03c899e53e"
+      }
+    },
+    {
+      "key": "800d6b08",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6b08",
+      "statement_sha256": "fd497456cf685e8f4810147e6d30f40b63c6b3cf766c857ddd52686bcc9d73b7",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6b08.v",
+        "sha256": "7ba64579890989ffaef048eade4341571efdf331c857052cbf9e8042f1cf6b7a"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6b08/RESULT.json",
+        "sha256": "47d3d5b661e592fc6a675bb854f291c5947f20a5651f1a4019aa10eec0ded615"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6b08/ROOT-ACCEPTANCE.json",
+        "sha256": "2f98ee072be4dff651623c631e124e2d840f9a0aa588f1db4f80eaec452c2251"
+      },
+      "claim_key": "R1_A_output_alias_Block800d6b08",
+      "claim_release": {
+        "bytes": 20287809536,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-row-reviews-v1/A-Block800d6b08/ROOT-ACCEPTANCE.json",
+        "review_sha256": "2f98ee072be4dff651623c631e124e2d840f9a0aa588f1db4f80eaec452c2251",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792982090885392034
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 6488616960,
+      "proposed_claim_bytes": 17179869184,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-broad-runtime-v1/A-jobs/Block800d6b08/run-v1/compiler-invocations/15473288a272467eb9d98ee84c6842ee/compiler.json",
+        "sha256": "693265afbbd0a4e17e75a372306fe191890469af87a2e9f65b4070f91ba30c84"
+      }
+    },
+    {
+      "key": "800d6a78",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a78",
+      "statement_sha256": "4bb8faa217ebf0b1219dca178f67140e17266c05cdcdbde48a83608f3a0e0b95",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/worker2-normalizer-A-output-alias-e845/_build/r1-output-alias-validation-v1/mcp/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a78.v",
+        "sha256": "daab7842e9f19cb9003b6cea7177e02718dd4d7b3877b4a3a09d0b49bcbe810a"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-pilot-root-review-v1/RESULT.json",
+        "sha256": "68a45d5bbf7bb45f4fa9c5099dd02d7c8a786f3150a2f0a153d724ee3cf95b3a"
+      },
+      "acceptance": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-pilot-root-review-v1/ROOT-ACCEPTANCE.json",
+        "sha256": "cc84f35c46e9cb2f621daed639a0046286e2b83d38a781f38c07c629894795ba"
+      },
+      "claim_key": "R1_A_output_alias_prerequisites_6a78_pilot",
+      "claim_release": {
+        "bytes": 18444892160,
+        "review": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-pilot-root-review-v1/ROOT-ACCEPTANCE.json",
+        "review_sha256": "cc84f35c46e9cb2f621daed639a0046286e2b83d38a781f38c07c629894795ba",
+        "all_recorded_actors_ended": true,
+        "time_ns": 1792980215396630332
+      },
+      "current_claim_bytes": 0,
+      "release_ledger": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/LEGACY-R1-LEDGER-SNAPSHOT.json",
+        "sha256": "68c9d98f07889e777a1236ed7b0e599b81d39e9013e72158b29f9738027e0aac"
+      },
+      "peak_RSS_bytes": 6569984000,
+      "proposed_claim_bytes": 17179869184,
+      "qualification": "Completed legacy R1 physical workload RSS. It is not aggregate memory.peak. Historical hints differ. Orch permits1.5 times RSS plus4GiB, rounded up to8GiB, with64GiB physical fence.",
+      "route": "stock_zesu_block",
+      "format": "legacy_r1_workload_rss_v1",
+      "compiler": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/r1-A-output-alias-validation-runtime-v1/pilot-run-v1/compiler-invocations/6b3aa69fd9d14047b7e6b73957aef98d/compiler.json",
+        "sha256": "a624c1e3bfb3e96d7fd1afadfe84b39dab80ca93370c8b26d04b170ae005e50a"
+      }
+    },
+    {
+      "route": "stock_zesu_block",
+      "module": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6960",
+      "statement_sha256": "16e806c1aeaefebaa194a1cc2879e8ff00ad20f3e8bc5515686520bc9c0745a9",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-passfix045-ten-source-v1/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6960.v",
+        "sha256": "101f2f9a417368f34f20dcb1bd77f490d0fe9e2b2fb65518c2e1d05413e1c5a4"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-stage1-passfix-ten-runtime-v2/jobs/800d6960/RESULT.json",
+        "sha256": "11f53b3d383065315f3ad284c7a6238a1d7127fcde042abb2a40152eb1319f6c"
+      },
+      "closure": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-stage1-passfix-ten-runtime-v2/jobs/800d6960/CLOSURE.json",
+        "sha256": "8aea5ed40e8f00b78db4bbaa5aa6aa76f88ce42878e75a2413bf6857a22a8e9c"
+      },
+      "release": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-stage1-passfix-ten-runtime-v2/jobs/800d6960/RELEASE.json",
+        "sha256": "735a90b06d58fd970dcdb28ab5348cfd7960bb95160abd71e21f27dd96ec70e8"
+      },
+      "qualification": "Completed original pass045 stock return. The later 43-pair registration relocation differs; Orch explicitly accepts this completed stock sizing basis."
+    },
+    {
+      "route": "stock_zesu_block",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69e0",
+      "statement_sha256": "8a30ccd1f8eb8a07fc8e2460ecacf5076490ab9f9829c655438bf8a4597704ec",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-passfix045-ten-source-v1/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d69e0.v",
+        "sha256": "d442b633f799e4daa505b7bbd672c9e5bd85831b5aca908a1886b322675feee1"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-stage1-passfix-ten-runtime-v2/jobs/800d69e0/RESULT.json",
+        "sha256": "0bb27eb08a904ca7d1b16c372ed1babe1c3497290278f13ed34288efd9256b78"
+      },
+      "closure": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-stage1-passfix-ten-runtime-v2/jobs/800d69e0/CLOSURE.json",
+        "sha256": "c1e9896021f32afb9b56b13ea0528f42c04de8347264ff54497b1263a4a8ffb6"
+      },
+      "release": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-stage1-passfix-ten-runtime-v2/jobs/800d69e0/RELEASE.json",
+        "sha256": "e1e4fbd5617d50382b7d72d5172f0e6f8d129751f8f067ce281e892ad884da65"
+      },
+      "qualification": "Completed original pass045 stock return. The later 43-pair registration relocation differs; Orch explicitly accepts this completed stock sizing basis."
+    },
+    {
+      "route": "stock_zesu_block",
+      "module": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a08",
+      "statement_sha256": "77f99a6b6b9d2697d898499ed195ee60d529800532a7d895d69dcef783857830",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-passfix045-ten-source-v1/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6a08.v",
+        "sha256": "9fc49d5fae2798c53875bfa8f4d9fbd5a7c5e6929a7e47cac7d8d3bbb57f5db8"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-stage1-passfix-ten-runtime-v2/jobs/800d6a08/RESULT.json",
+        "sha256": "56a1662ed81c29eeb20e61b41bb8c5597aae70a2d51126f3e618f61a28c54d3e"
+      },
+      "closure": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-stage1-passfix-ten-runtime-v2/jobs/800d6a08/CLOSURE.json",
+        "sha256": "c48844ef691012ec3e773e1cb68f6fcdd269a6e9850045f22ab08ad678200d83"
+      },
+      "release": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-stage1-passfix-ten-runtime-v2/jobs/800d6a08/RELEASE.json",
+        "sha256": "4081a35aeafde6dc38f539b52fa92f996cb97e4e7998659b16127db565f1c071"
+      },
+      "qualification": "Completed original pass045 stock return. The later 43-pair registration relocation differs; Orch explicitly accepts this completed stock sizing basis."
+    },
+    {
+      "route": "stock_zesu_block",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a6c",
+      "statement_sha256": "af20437a3ba2aa75ad93ae47b25523e3d7d5f0bb97039bd76008568ecc03f047",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-passfix045-ten-source-v1/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a6c.v",
+        "sha256": "784607f27e1cb19a49750d5a6ed016e8422736677ae9be78638d7d7e5e23db74"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-stage1-passfix-ten-runtime-v2/jobs/800d6a6c/RESULT.json",
+        "sha256": "65c282374ef3c2d2e59688ec8d16a4b364b9b62c712b6f37ef4d3eef1bb5c6db"
+      },
+      "closure": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-stage1-passfix-ten-runtime-v2/jobs/800d6a6c/CLOSURE.json",
+        "sha256": "eef7263f08d22ff124edcd81bb7e6dc248eb9d68feb6176fca74deddae31a426"
+      },
+      "release": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-stage1-passfix-ten-runtime-v2/jobs/800d6a6c/RELEASE.json",
+        "sha256": "3972ef84edb407a244c09897ad61552c5ab17ece9554233d2acaf6112369e668"
+      },
+      "qualification": "Completed original pass045 stock return. The later 43-pair registration relocation differs; Orch explicitly accepts this completed stock sizing basis."
+    },
+    {
+      "route": "stock_zesu_block",
+      "module": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6aa8",
+      "statement_sha256": "b63e13c3d02cded00a447caae1c6b76f204c7eb5d7b9e625fef67983efb56a14",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-passfix045-ten-source-v1/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6aa8.v",
+        "sha256": "2bac8e2423a6623821683130c27306bef5b5747233767a379ae60fafeccb1bef"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-stage1-passfix-ten-runtime-v2/jobs/800d6aa8/RESULT.json",
+        "sha256": "fa2534b049ed55a22ba98fdc2ecfa6e39d2cc2a3e437774cee4b306e3136fd11"
+      },
+      "closure": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-stage1-passfix-ten-runtime-v2/jobs/800d6aa8/CLOSURE.json",
+        "sha256": "9433df5d97a1cf3d3232d73e0f5e8cd819be7742bfcc6627e70565720be66c87"
+      },
+      "release": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-stage1-passfix-ten-runtime-v2/jobs/800d6aa8/RELEASE.json",
+        "sha256": "653d1b07d0c6bf352e4bc371fbdfe04aeb4ecbed7cd58143c7fd6c29e503c385"
+      },
+      "qualification": "Completed original pass045 stock return. The later 43-pair registration relocation differs; Orch explicitly accepts this completed stock sizing basis."
+    },
+    {
+      "route": "stock_zesu_block",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6ab4",
+      "statement_sha256": "0806601f4a9c206b04d0d7a37360a1610d33bc93607df03e59800b5d60dad5fe",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-passfix045-ten-source-v1/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6ab4.v",
+        "sha256": "3a7302a44fe5141d71fad230a9d4b7f29aa4e6bd7797f121c569bcedbbcf2253"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-stage1-passfix-ten-runtime-v2/jobs/800d6ab4/RESULT.json",
+        "sha256": "32cb8e9a13c564795197755bac95a7cbcddc1eedb9bc67521d2fbfed88969f78"
+      },
+      "closure": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-stage1-passfix-ten-runtime-v2/jobs/800d6ab4/CLOSURE.json",
+        "sha256": "616607911a65349334f59e2957d511e3c49fdd9ba9bd7f8ab9246c6ffc92480c"
+      },
+      "release": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-stage1-passfix-ten-runtime-v2/jobs/800d6ab4/RELEASE.json",
+        "sha256": "595c6d799e9760bbe2c33607c71eba228cd1d1269c6c20185a8c32449c93208e"
+      },
+      "qualification": "Completed original pass045 stock return. The later 43-pair registration relocation differs; Orch explicitly accepts this completed stock sizing basis."
+    },
+    {
+      "route": "stock_zesu_block",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a64",
+      "statement_sha256": "a4c39225bd9148714a3cb2fde6c09636153e7d6be0a6815cbc377bce0f22a84f",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-h1-resources-eea6/_build/agents/infra-b/shared-harness-production6a64-control001/attempt001/jobs/800d6a64/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a64.v",
+        "sha256": "d508a0f63ab078d839713b445ce4a5b83857864efecf84bda658d1c93f964af8"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/infra-h1-resources-eea6/_build/agents/infra-b/shared-harness-production6a64-control001/attempt001/jobs/800d6a64/RESULT.json",
+        "sha256": "1965c8ae281db8ab22db307ab7ec7c89a9f4d2d59ceea74003cc3e2a15ecb075"
+      },
+      "closure": {
+        "path": "/home/cody/zesislar/.worktrees/infra-h1-resources-eea6/_build/agents/infra-b/shared-harness-production6a64-control001/attempt001/jobs/800d6a64/CLOSURE.json",
+        "sha256": "db7a0a506e5cbbde16bc81af72823c9df69c2ceb60b8b4ff940dba357acfe016"
+      },
+      "release": {
+        "path": "/home/cody/zesislar/.worktrees/infra-h1-resources-eea6/_build/agents/infra-b/shared-harness-production6a64-control001/attempt001/jobs/800d6a64/RELEASE.json",
+        "sha256": "f26716365d8e2dd597b22d7d78320f22593c8f31b7999d4e85b386e656e85212"
+      },
+      "qualification": "Completed production stock control. Main 200b to ff22 changed infrastructure only; the Rocq sources remain exact."
+    },
+    {
+      "route": "stock_zesu_block",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a64",
+      "statement_sha256": "a4c39225bd9148714a3cb2fde6c09636153e7d6be0a6815cbc377bce0f22a84f",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/main-run/800d6a64-v3/jobs/800d6a64/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a64.v",
+        "sha256": "d508a0f63ab078d839713b445ce4a5b83857864efecf84bda658d1c93f964af8"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/main-run/800d6a64-v3/jobs/800d6a64/RESULT.json",
+        "sha256": "fcc99b041619a773cf6e9101d5a73d07bf879533d19c6b3b707d1f2b122f4c7d"
+      },
+      "closure": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/main-run/800d6a64-v3/jobs/800d6a64/CLOSURE.json",
+        "sha256": "216c4474c7831a38841832840854a1626a5198e74d5844a254614c2fb1d22698"
+      },
+      "release": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/main-run/800d6a64-v3/jobs/800d6a64/RELEASE.json",
+        "sha256": "7606f6b5bb60f040f8f279762013b04df6319dc0a00f74bc4a8f4cf2ac99fafd"
+      },
+      "qualification": "Fresh main ff22 stock result with completed aggregate memory.peak. This is a main measurement, not patch."
+    },
+    {
+      "key": "800d6a78",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a78",
+      "statement_sha256": "4bb8faa217ebf0b1219dca178f67140e17266c05cdcdbde48a83608f3a0e0b95",
+      "native_source": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/main-final-results/800d6a78/jobs/800d6a78/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6a78.v",
+        "sha256": "daab7842e9f19cb9003b6cea7177e02718dd4d7b3877b4a3a09d0b49bcbe810a"
+      },
+      "result": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/main-final-results/800d6a78/jobs/800d6a78/RESULT.json",
+        "sha256": "f1758ab717a6c877e96738b1b0d6ea1e2bf6f52d0ff23188108e936631c9e8ac"
+      },
+      "verification_supplement": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/MAIN-6a78-VERIFICATION-SUPPLEMENT.json",
+        "sha256": "9333cecf8266d7ee72a073e5ece033b4d6bb7163052048a65e601171829f1058"
+      },
+      "route": "stock_zesu_block",
+      "format": "completed_stock_verification_repair_v1",
+      "qualification": "The original stock search, Qed, and native compile completed. Exact module_m verification used the identical object after the disk-floor failure. Repair CPU remains separate.",
+      "closure": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/main-final-results/800d6a78/jobs/800d6a78/CLOSURE.json",
+        "sha256": "7a71503cea1d38e5df75414de68b52a1623c496b8422ea2957982d1b7f1281fb"
+      },
+      "release": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-final-pure-validation-ff22/_build/final-pure-preparation/main-final-results/800d6a78/jobs/800d6a78/RELEASE.json",
+        "sha256": "50f9e6c4c439c810a78b781fac00fa83f05bdd39dbde5f52ee566000fffaebd0"
+      }
+    }
+  ]
+}

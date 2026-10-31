@@ -15,7 +15,7 @@ Require Import lithium.lvar.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.
 Import ListNotations.
-Open Scope Z_scope.
+Local Open Scope Z_scope.
 
 Definition decodeItemEntryAt800d6960 `{!islaG Sigma} `{!threadG}
     (returnAddress : Z) (args : DecodeItemArgs) : iProp Sigma :=

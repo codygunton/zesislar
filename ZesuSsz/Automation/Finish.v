@@ -770,21 +770,17 @@ Ltac zesu_run_pass_v2 :=
     try zesu_finish_framed_wand;
     zesu_finish).
 
-(* Which set a module runs is decided by what it imports, and it is
-   decided once per pass rather than once per step. `Automation/Sets/v2.v`
-   exports the one `ZesuRuleSetV2` instance; `All.v` and
-   `Automation/Sets/v1.v` do not, so a module that imports either runs
-   `zesu_run_pass_v1`, which is the tactic it ran before, and pays one
-   failed class lookup per pass for the question.
+(* All and Sets/v1 explicitly select v1. Opt-in switches select v2.
+   The v2 selector has priority. Missing selection is an error. *)
+(* Select the rule set before running either continuation. A selected tactic's
+   failure must not select the other rule set. *)
+Ltac zesu_with_rule_set v1 v2 :=
+  tryif zesu_rule_set_v2_on then v2
+  else tryif zesu_rule_set_v1_on then v1
+  else fail 1000 "No automation rule set is selected. Import All or an explicit Sets module.".
 
-   The selection is a `tryif` and not a redefinition of `zesu_run_pass`
-   in `Sets/v2.v`: the hygiene checker refuses a tactic redefinition
-   outside `Automation/Hooks.v`, and `Hooks.v` is imported by every
-   module, so an override written there would not be opt-in. Ltac1
-   cannot name `zesu_run_pass_v2` before it is defined, so the dispatch
-   and the v2 body both live here. *)
 Ltac zesu_run_pass :=
-  tryif zesu_rule_set_v2_on then zesu_run_pass_v2 else zesu_run_pass_v1.
+  zesu_with_rule_set ltac:(zesu_run_pass_v1) ltac:(zesu_run_pass_v2).
 
 (* Resolve the approved switch set in the current search context. *)
 Ltac zesu_search_switches := constr:([
@@ -876,7 +872,7 @@ Ltac zesu_block_v2 :=
 
 Ltac zesu_block_base :=
   try zesu_entry_intro_goal_if_enabled;
-  tryif zesu_rule_set_v2_on then zesu_block_v2 else zesu_block_v1.
+  zesu_with_rule_set ltac:(zesu_block_v1) ltac:(zesu_block_v2).
 
 Ltac zesu_block :=
   tryif zesu_switch_enabled constr:(ZesuStepContextCollection)
