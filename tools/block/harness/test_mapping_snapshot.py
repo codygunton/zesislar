@@ -54,6 +54,24 @@ class SnapshotControls(unittest.TestCase):
    self.assertEqual(obj.resolve('T.Core'),self.other/'Core.v')
   self.assertEqual(query.call_count,1)
   self.assertEqual(obj.seed_snapshot['misses'],1)
+ def source_snapshot(self):
+  origin=self.work/'Rules.v'
+  expected=next(row for row in self.initial.entries if row['canonical']=='T.Core')
+  with patch.object(self.initial,'_query',return_value=(expected,self.initial._find_request('T.Core',origin)[0])):
+   self.initial.resolve('T.Core',origin=origin)
+  self.snapshot=mapping_snapshot.export(self.initial,scratch.binding(self.seed),self.work,self.snapshot['parsers']);self.save()
+ def test_source_bound_snapshot_reuses_the_exact_origin(self):
+  self.source_snapshot();obj=self.load();origin=self.other/'Rules.v'
+  with patch.object(obj,'_query',side_effect=AssertionError('unexpected query')):
+   self.assertEqual(obj.resolve('T.Core',origin=origin),self.other/'Core.v')
+  self.assertEqual(obj.seed_snapshot['hits'],1)
+  self.assertEqual(next(iter(obj.context_resolutions))[1],str(origin))
+ def test_source_bound_snapshot_refuses_changed_origin_before_hit(self):
+  self.source_snapshot();obj=self.load();origin=self.other/'Rules.v'
+  origin.write_text(origin.read_text()+'\n')
+  with patch.object(obj,'_query',side_effect=AssertionError('unexpected query')):
+   with self.assertRaisesRegex(ValueError,'request source changed'):obj.resolve('T.Core',origin=origin)
+  self.assertEqual(obj.seed_snapshot['hits'],0)
  def test_snapshot_change_refuses(self):
   self.path.write_text(self.path.read_text()+' ')
   with self.assertRaisesRegex(ValueError,'binding changed'):self.load()
