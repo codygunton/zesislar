@@ -46,7 +46,7 @@ def require_imports(words, origin=None):
 
 
 class InstalledMappings:
-    def __init__(self, flags, *, coqdep=None, receipt_dir=None):
+    def __init__(self, flags, *, coqdep=None, receipt_dir=None, supplier=None):
         self.roots, self.entries, self.requests, self.resolutions = [], [], {}, {}
         self.context_resolutions = {}
         self.receipt_dir = Path(receipt_dir) if receipt_dir is not None else None
@@ -58,6 +58,10 @@ class InstalledMappings:
         self.scanned_sources = False
         self.source_records = {}
         self.seed_snapshot = None
+        self.shared_cache = None
+        if supplier is not None:
+            from supplier_resolution_cache import SupplierResolutionCache
+            self.shared_cache = SupplierResolutionCache(supplier)
         index = 0
         while index < len(flags):
             flag = flags[index]
@@ -168,6 +172,11 @@ class InstalledMappings:
         return flags
 
     def _query(self, module, request):
+        if self.shared_cache is not None:
+            return self.shared_cache.query(self, module, request, self._query_tool)
+        return self._query_tool(module, request)
+
+    def _query_tool(self, module, request):
         if digest(self.coqdep) != self.tool_sha256:
             raise ValueError('The pinned coqdep executable changed.')
         flags = self.dependency_flags(request['origin'])
@@ -181,7 +190,19 @@ class InstalledMappings:
         environment = dict(os.environ, COQPATH='', LANG='C', LC_ALL='C', LC_CTYPE='C')
         for name in ['COQLIB', 'COQBIN', 'ROCQPATH', 'ROCQCORELIB', 'ROCQSTDLIB']:
             environment.pop(name, None)
-        reply = subprocess.run(argv, cwd=directory, env=environment, capture_output=True, text=True)
+        try:
+            if self.shared_cache is None:
+                reply = subprocess.run(argv, cwd=directory, env=environment, capture_output=True, text=True)
+            else:
+                with subprocess.Popen(argv, cwd=directory, env=environment,
+                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as child:
+                    self.shared_cache.record('coqdep_invocations', module=module, argv=argv, child_pid=child.pid)
+                    stdout, stderr = child.communicate()
+                    reply = subprocess.CompletedProcess(argv, child.returncode, stdout, stderr)
+        except BaseException:
+            if temporary is not None:
+                temporary.cleanup()
+            raise
         receipt = {'schema': 'compiled-library.coqdep-resolution.v1', 'module': module,
                    'request': request, 'tool': {'path': str(self.coqdep), 'sha256': self.tool_sha256},
                    'argv': argv, 'COQPATH': '', 'source_sha256': digest(source),
@@ -215,10 +236,13 @@ class InstalledMappings:
                 temporary.cleanup()
 
     def resolution(self, module, *, origin=None):
+        if self.shared_cache is not None:
+            self.shared_cache.record('logical_lookups', module=module,
+                                     origin=str(origin) if origin is not None else None)
         identity = self.request_origin(origin) if origin is not None else None
         cache = self.context_resolutions if identity else self.resolutions
         key = (module, identity['path'], identity['sha256']) if identity else module
-        if key in cache:
+        if key in cache and self.shared_cache is None:
             return cache[key]
         from mapping_snapshot import answer
         cached=answer(self,module,origin=origin)

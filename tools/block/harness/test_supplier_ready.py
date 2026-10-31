@@ -23,6 +23,9 @@ class SupplierReady(unittest.TestCase):
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         self.root = Path(temporary.name)
+        self.cache_root = patch('supplier_resolution_cache.CACHE_ROOT', self.root / 'resolution-cache')
+        self.cache_root.start()
+        self.addCleanup(self.cache_root.stop)
         self.output = self.root / 'jobs/prerequisites'
         self.workspace = self.root / 'prepared'
         self.names = sorted(supplier.ROOTS)
@@ -204,6 +207,20 @@ class SupplierReady(unittest.TestCase):
         value = self.validate()
         self.assertEqual(len(supplier.staged(value, self.config())), 4)
         self.assertEqual(value['names'], set(self.mapping))
+
+    def test_actual_validation_and_staging_share_only_checked_resolution(self):
+        self.external_installation()
+        selected = self.freeze()
+        first = supplier.validate(selected)
+        supplier.validate(selected)
+        supplier.staged(first, self.config())
+        root = self.root / 'resolution-cache' / selected['sha256']
+        events = [json.loads(line) for path in root.glob('events-*.jsonl')
+                  for line in path.read_text().splitlines()]
+        counts = {kind: sum(row['event'] == kind for row in events)
+                  for kind in ['logical_lookups', 'coqdep_invocations', 'cache_hits', 'cache_misses']}
+        self.assertEqual(counts, dict(logical_lookups=3, coqdep_invocations=1,
+                                     cache_hits=2, cache_misses=1))
 
     def test_exact_external_installation_passes_without_relocation(self):
         row = self.external_installation()
