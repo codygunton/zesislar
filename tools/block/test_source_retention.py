@@ -5,7 +5,7 @@ import tempfile
 import unittest
 
 from render_support import retain_definition_facts, definition_introduction_source
-from source_retention import certified_execution_facts, decoder_owner
+from source_retention import certified_execution_facts, decoder_owner, typed_nat_literals
 
 
 class BoundLowerer:
@@ -165,6 +165,45 @@ class SourceRetention(unittest.TestCase):
         self.assertIn("⌜" + self.catalog.decoder + "⌝", introduction)
         self.assertIn("bi.entails_refl", introduction)
         self.assertNotIn("Proof.", introduction)
+
+    def test_nat_length_literal_has_its_source_type(self):
+        rendered, changes = typed_nat_literals("length (bytes) = 16")
+        self.assertEqual(rendered, "length (bytes) = (16%nat)")
+        self.assertEqual(changes[0]["position"], "list length equality")
+
+    def test_nested_slice_literals_keep_nat_scope(self):
+        rendered, changes = typed_nat_literals(
+            "littleEndian (firstn 8 (skipn (0) bytes)) = value")
+        self.assertEqual(rendered,
+            "littleEndian (firstn (8%nat) (skipn ((0%nat)) bytes)) = value")
+        self.assertEqual(len(changes), 2)
+        self.assertEqual(typed_nat_literals(rendered), (rendered, []))
+
+    def test_explicit_scopes_and_symbolic_indices_remain_exact(self):
+        for term in ("firstn 8%nat bytes", "firstn (8%nat) bytes",
+                     "firstn (8%Z) bytes", "length bytes = size",
+                     "value = 16%Z", "firstn count (skipn offset bytes)",
+                     "(length bytes = 16)%Z",
+                     "firstn (Z.to_nat (value + 1)) bytes"):
+            self.assertEqual(typed_nat_literals(term), (term, []))
+
+    def test_unrelated_source_bytes_and_reversed_equality_remain_exact(self):
+        rendered, changes = typed_nat_literals(
+            "littleEndian(firstn 8 bytes) = (value + 16)%Z")
+        self.assertEqual(rendered,
+            "littleEndian(firstn (8%nat) bytes) = (value + 16)%Z")
+        self.assertEqual(len(changes), 1)
+        self.assertEqual(typed_nat_literals("16 = List.length bytes")[0],
+                         "(16%nat) = List.length bytes")
+
+    def test_typed_rendering_keeps_original_certificate(self):
+        facts = self.facts()
+        facts[0]["term"] = "length (bytes) = 16"
+        new, additions = retain_definition_facts(self.declaration(), "sample", self.row, facts)
+        self.assertIn("⌜length (bytes) = (16%nat)⌝", new)
+        self.assertEqual(additions[0]["source_term"], facts[0]["term"])
+        self.assertEqual(additions[0]["source_references"], facts[0]["source_references"])
+        self.assertNotIn("source_term", facts[0])
 
 
 if __name__ == "__main__":
