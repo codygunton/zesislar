@@ -1,0 +1,15 @@
+Require Import ZesuSsz.Evidence.EntryWitnessInputs.
+Require Import ZesuSsz.Generated.DecodeItem.EntryWitnessData184.
+Require Import ZesuSsz.Generated.DecodeItem.MachinePilot180Fallthrough6ac4Projection.
+Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Import isla.riscv64.riscv64.
+From Coq Require Import Lists.List Strings.String ZArith.ZArith NArith.NArith.
+Open Scope Z_scope.
+Local Open Scope string_scope.
+Set Default Proof Mode "Classic".
+
+#[export] Instance entry6ac4_witness_mapping `{!islaG Sigma} `{!threadG}
+  (args : DecodeItemArgs) (returnAddress : Z) (K : iProp Sigma) (entry_fact_0 : (decodeItemReturnAddress ( args ) = ( returnAddress ))%Z) (entry_fact_1 : (( decodeItemInputLength ( args ) ) = Z.of_nat ( List.length ( decodeItemInputBytes ( args ) ) ))%Z) (entry_fact_2 : (List.length ( decodeItemBeforeStorage ( args ) ) = 40)%nat) (entry_fact_3 : (0 <= ( decodeItemInputPointer ( args ) ))%Z) (entry_fact_4 : (0 <= ( decodeItemInputLength ( args ) ))%Z) (entry_fact_5 : (0 <= ( decodeItemOutputPointer ( args ) ))%Z) (entry_fact_6 : (( decodeItemInputPointer ( args ) ) + ( decodeItemInputLength ( args ) ) < ( 18446744073709551616 ))%Z) (entry_fact_7 : (( decodeItemOutputPointer ( args ) ) + 40 < ( 18446744073709551616 ))%Z) (entry_fact_8 : (( 16 ) <= ( decodeItemStackPointer ( args ) ))%Z) (entry_fact_9 : (( decodeItemStackPointer ( args ) ) < ( 18446744073709551616 ))%Z) (entry_fact_10 : (( 2684354560 ) + ( 16 ) <= ( decodeItemStackPointer ( args ) ))%Z) (entry_fact_11 : (( decodeItemStackPointer ( args ) ) <= ( 3221225472 ))%Z) (entry_fact_12 : (0 <= ( decodeItemReturnAddress ( args ) ))%Z) (entry_fact_13 : (( decodeItemReturnAddress ( args ) ) < ( 18446744073709551616 ))%Z) (entry_fact_14 : (( decodeItemReturnAddress ( args ) ) mod 4 = 0)%Z) (entry_fact_15 : (( 2684354560 ) <= ( decodeItemOutputPointer ( args ) ))%Z) (entry_fact_16 : (( decodeItemOutputPointer ( args ) ) + 40 <= ( 3221225472 ))%Z) (entry_fact_17 : (0 <= ( decodeItemInputEnd ( args ) ))%Z) (entry_fact_18 : (( decodeItemInputEnd ( args ) ) < ( 18446744073709551616 ))%Z) (entry_fact_19 : (( decodeItemInputPointer ( args ) ) + ( decodeItemInputLength ( args ) ) <= ( decodeItemInputEnd ( args ) ))%Z) :
+  ZesuEntryWitnessMapping (machineAt6ac4_180 (args) (returnAddress) (K) (entry_fact_0) (entry_fact_1) (entry_fact_2) (entry_fact_3) (entry_fact_4) (entry_fact_5) (entry_fact_6) (entry_fact_7) (entry_fact_8) (entry_fact_9) (entry_fact_10) (entry_fact_11) (entry_fact_12) (entry_fact_13) (entry_fact_14) (entry_fact_15) (entry_fact_16) (entry_fact_17) (entry_fact_18) (entry_fact_19)) (bv 64%N) Entry6ac4WitnessType184 :=
+  {| zesu_witness_input := ZesuWitnessRegister 64%N "x16";
+     zesu_witness_mapping := entry6ac4_witness_data184 args |}.

@@ -1,0 +1,426 @@
+{
+  "witness_mappings": [
+    {
+      "module": "ZesuSsz.Generated.DecodeItem.Entry6ac4WitnessRegistration",
+      "imports": [
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Evidence.EntryWitnessInputs"
+        },
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Generated.DecodeItem.EntryWitnessData184"
+        },
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Generated.DecodeItem.MachinePilot180Fallthrough6ac4Projection"
+        },
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Contracts.RlpDecodeItemContract"
+        },
+        {
+          "mode": "import",
+          "module": "isla.riscv64.riscv64"
+        },
+        {
+          "mode": "import",
+          "module": "Coq.Lists.List"
+        },
+        {
+          "mode": "import",
+          "module": "Coq.Strings.String"
+        },
+        {
+          "mode": "import",
+          "module": "Coq.ZArith.ZArith"
+        },
+        {
+          "mode": "import",
+          "module": "Coq.NArith.NArith"
+        }
+      ],
+      "scopes": [
+        "Z_scope",
+        "string_scope"
+      ],
+      "source_hashes": {
+        "ZesuSsz/Evidence/EntryWitnessInputs.v": "c45350ceb25122e6598094e651ebd4be0cb9c7d32b5df06b8d31d8e98df1cf76",
+        "ZesuSsz/Generated/DecodeItem/EntryWitnessData184.v": "afc98a64fd5f5f06fdc5dc842096c1ed667934a54a4742e3b7c95fb9186b33f2",
+        "ZesuSsz/Generated/DecodeItem/MachinePilot180Fallthrough6ac4Projection.v": "e5e3a4cb48c4f31c7aa51fe234e659a433ad1eb88df7c54b7756264d7c8d5574",
+        "ZesuSsz/Contracts/RlpDecodeItemContract.v": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a"
+      },
+      "mappings": [
+        {
+          "name": "entry6ac4_witness_mapping",
+          "iris_contexts": [
+            "!islaG Sigma",
+            "!threadG"
+          ],
+          "parameters": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs",
+              "implicit": false
+            },
+            {
+              "name": "returnAddress",
+              "type": "Z",
+              "implicit": false
+            },
+            {
+              "name": "K",
+              "type": "iProp Sigma",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_0",
+              "type": "(decodeItemReturnAddress ( args ) = ( returnAddress ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_1",
+              "type": "(( decodeItemInputLength ( args ) ) = Z.of_nat ( List.length ( decodeItemInputBytes ( args ) ) ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_2",
+              "type": "(List.length ( decodeItemBeforeStorage ( args ) ) = 40)%nat",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_3",
+              "type": "(0 <= ( decodeItemInputPointer ( args ) ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_4",
+              "type": "(0 <= ( decodeItemInputLength ( args ) ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_5",
+              "type": "(0 <= ( decodeItemOutputPointer ( args ) ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_6",
+              "type": "(( decodeItemInputPointer ( args ) ) + ( decodeItemInputLength ( args ) ) < ( 18446744073709551616 ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_7",
+              "type": "(( decodeItemOutputPointer ( args ) ) + 40 < ( 18446744073709551616 ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_8",
+              "type": "(( 16 ) <= ( decodeItemStackPointer ( args ) ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_9",
+              "type": "(( decodeItemStackPointer ( args ) ) < ( 18446744073709551616 ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_10",
+              "type": "(( 2684354560 ) + ( 16 ) <= ( decodeItemStackPointer ( args ) ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_11",
+              "type": "(( decodeItemStackPointer ( args ) ) <= ( 3221225472 ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_12",
+              "type": "(0 <= ( decodeItemReturnAddress ( args ) ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_13",
+              "type": "(( decodeItemReturnAddress ( args ) ) < ( 18446744073709551616 ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_14",
+              "type": "(( decodeItemReturnAddress ( args ) ) mod 4 = 0)%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_15",
+              "type": "(( 2684354560 ) <= ( decodeItemOutputPointer ( args ) ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_16",
+              "type": "(( decodeItemOutputPointer ( args ) ) + 40 <= ( 3221225472 ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_17",
+              "type": "(0 <= ( decodeItemInputEnd ( args ) ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_18",
+              "type": "(( decodeItemInputEnd ( args ) ) < ( 18446744073709551616 ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_19",
+              "type": "(( decodeItemInputPointer ( args ) ) + ( decodeItemInputLength ( args ) ) <= ( decodeItemInputEnd ( args ) ))%Z",
+              "implicit": false
+            }
+          ],
+          "class": "ZesuEntryWitnessMapping",
+          "source": {
+            "predicate": "machineAt6ac4_180",
+            "arguments": [
+              "args",
+              "returnAddress",
+              "K",
+              "entry_fact_0",
+              "entry_fact_1",
+              "entry_fact_2",
+              "entry_fact_3",
+              "entry_fact_4",
+              "entry_fact_5",
+              "entry_fact_6",
+              "entry_fact_7",
+              "entry_fact_8",
+              "entry_fact_9",
+              "entry_fact_10",
+              "entry_fact_11",
+              "entry_fact_12",
+              "entry_fact_13",
+              "entry_fact_14",
+              "entry_fact_15",
+              "entry_fact_16",
+              "entry_fact_17",
+              "entry_fact_18",
+              "entry_fact_19"
+            ]
+          },
+          "input_type": "bv 64%N",
+          "witness_type": "Entry6ac4WitnessType184",
+          "input": "ZesuWitnessRegister 64%N \"x16\"",
+          "mapping": "entry6ac4_witness_data184 args",
+          "locality": "export"
+        }
+      ]
+    },
+    {
+      "module": "ZesuSsz.Generated.DecodeItem.Entry6a24WitnessRegistration",
+      "imports": [
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Evidence.EntryWitnessInputs"
+        },
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Generated.DecodeItem.EntryWitnessData329"
+        },
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Generated.DecodeItem.MachineExit6a24Entries322"
+        },
+        {
+          "mode": "import",
+          "module": "ZesuSsz.Contracts.RlpDecodeItemContract"
+        },
+        {
+          "mode": "import",
+          "module": "isla.riscv64.riscv64"
+        },
+        {
+          "mode": "import",
+          "module": "Coq.Lists.List"
+        },
+        {
+          "mode": "import",
+          "module": "Coq.Strings.String"
+        },
+        {
+          "mode": "import",
+          "module": "Coq.ZArith.ZArith"
+        },
+        {
+          "mode": "import",
+          "module": "Coq.NArith.NArith"
+        }
+      ],
+      "scopes": [
+        "Z_scope",
+        "string_scope"
+      ],
+      "source_hashes": {
+        "ZesuSsz/Evidence/EntryWitnessInputs.v": "c45350ceb25122e6598094e651ebd4be0cb9c7d32b5df06b8d31d8e98df1cf76",
+        "ZesuSsz/Generated/DecodeItem/EntryWitnessData329.v": "283baae1450435ddffcf1e16b4782085f03b30025c6a289c12a9e83812ea8bad",
+        "ZesuSsz/Generated/DecodeItem/MachineExit6a24Entries322.v": "12096fb79c2dafdc49e61efede9995b55b0d1e5a64ba0d7fdd4bf80f7fbdb88e",
+        "ZesuSsz/Contracts/RlpDecodeItemContract.v": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a"
+      },
+      "mappings": [
+        {
+          "name": "entry6a24_witness_mapping",
+          "iris_contexts": [
+            "!islaG Sigma",
+            "!threadG"
+          ],
+          "parameters": [
+            {
+              "name": "args",
+              "type": "DecodeItemArgs",
+              "implicit": false
+            },
+            {
+              "name": "returnAddress",
+              "type": "Z",
+              "implicit": false
+            },
+            {
+              "name": "K",
+              "type": "iProp Sigma",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_0",
+              "type": "(decodeItemReturnAddress ( args ) = ( returnAddress ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_1",
+              "type": "(( decodeItemInputLength ( args ) ) = Z.of_nat ( List.length ( decodeItemInputBytes ( args ) ) ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_2",
+              "type": "(List.length ( decodeItemBeforeStorage ( args ) ) = 40)%nat",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_3",
+              "type": "(0 <= ( decodeItemInputPointer ( args ) ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_4",
+              "type": "(0 <= ( decodeItemInputLength ( args ) ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_5",
+              "type": "(0 <= ( decodeItemOutputPointer ( args ) ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_6",
+              "type": "(( decodeItemInputPointer ( args ) ) + ( decodeItemInputLength ( args ) ) < ( 18446744073709551616 ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_7",
+              "type": "(( decodeItemOutputPointer ( args ) ) + 40 < ( 18446744073709551616 ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_8",
+              "type": "(( 16 ) <= ( decodeItemStackPointer ( args ) ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_9",
+              "type": "(( decodeItemStackPointer ( args ) ) < ( 18446744073709551616 ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_10",
+              "type": "(( 2684354560 ) + ( 16 ) <= ( decodeItemStackPointer ( args ) ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_11",
+              "type": "(( decodeItemStackPointer ( args ) ) <= ( 3221225472 ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_12",
+              "type": "(0 <= ( decodeItemReturnAddress ( args ) ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_13",
+              "type": "(( decodeItemReturnAddress ( args ) ) < ( 18446744073709551616 ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_14",
+              "type": "(( decodeItemReturnAddress ( args ) ) mod 4 = 0)%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_15",
+              "type": "(( 2684354560 ) <= ( decodeItemOutputPointer ( args ) ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_16",
+              "type": "(( decodeItemOutputPointer ( args ) ) + 40 <= ( 3221225472 ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_17",
+              "type": "(0 <= ( decodeItemInputEnd ( args ) ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_18",
+              "type": "(( decodeItemInputEnd ( args ) ) < ( 18446744073709551616 ))%Z",
+              "implicit": false
+            },
+            {
+              "name": "entry_fact_19",
+              "type": "(( decodeItemInputPointer ( args ) ) + ( decodeItemInputLength ( args ) ) <= ( decodeItemInputEnd ( args ) ))%Z",
+              "implicit": false
+            }
+          ],
+          "class": "ZesuEntryWitnessMapping",
+          "source": {
+            "predicate": "machineAt6a24_322",
+            "arguments": [
+              "args",
+              "returnAddress",
+              "K",
+              "entry_fact_0",
+              "entry_fact_1",
+              "entry_fact_2",
+              "entry_fact_3",
+              "entry_fact_4",
+              "entry_fact_5",
+              "entry_fact_6",
+              "entry_fact_7",
+              "entry_fact_8",
+              "entry_fact_9",
+              "entry_fact_10",
+              "entry_fact_11",
+              "entry_fact_12",
+              "entry_fact_13",
+              "entry_fact_14",
+              "entry_fact_15",
+              "entry_fact_16",
+              "entry_fact_17",
+              "entry_fact_18",
+              "entry_fact_19"
+            ]
+          },
+          "input_type": "bv 64%N",
+          "witness_type": "Entry6a24RemainingWitnessType329",
+          "input": "ZesuWitnessRegister 64%N \"x16\"",
+          "mapping": "entry6a24_remaining_witness_data329 args",
+          "locality": "export"
+        }
+      ]
+    }
+  ]
+}
