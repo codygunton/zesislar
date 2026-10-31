@@ -83,8 +83,7 @@ def canonical_edges(module,text,old_text,edges,module_files,installed=None,sourc
         for name in names:
             if name not in module_files:
                 if installed is None:raise ValueError('An import has no exact canonical mapping: '+name)
-                installed.resolve(name)
-                name=installed.resolutions[name]['canonical']
+                name=installed.resolution(name,origin=source_path)['canonical']
             row={'from':module,'to':name}
             if row not in result:result.append(row)
     return result

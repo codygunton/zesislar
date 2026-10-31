@@ -48,6 +48,7 @@ def require_imports(words, origin=None):
 class InstalledMappings:
     def __init__(self, flags, *, coqdep=None, receipt_dir=None):
         self.roots, self.entries, self.requests, self.resolutions = [], [], {}, {}
+        self.context_resolutions = {}
         self.receipt_dir = Path(receipt_dir) if receipt_dir is not None else None
         self.coqdep = Path(coqdep) if coqdep is not None else Path(os.environ['OPAM_SWITCH_PREFIX']) / 'bin/coqdep'
         if not self.coqdep.is_file():
@@ -85,10 +86,15 @@ class InstalledMappings:
                 index += 1
 
     def register_source(self, source, origin=None):
+        if origin is not None:
+            origin = Path(origin).resolve()
         identity = {'path': str(origin), 'sha256': digest(origin)} if origin is not None else {
             'text_sha256': hashlib.sha256(source.encode()).hexdigest()}
         if origin is not None and self.source_records.get(str(origin),{}).get('source')==identity:
             return
+        if origin is not None:
+            self.context_resolutions = {key: row for key, row in self.context_resolutions.items()
+                                        if key[1] != str(origin)}
         source_requests=[]
         for command in rocq_commands(source):
             words = [word for word, _ in command]
@@ -115,7 +121,24 @@ class InstalledMappings:
             for path in sorted({entry['source'] for entry in self.entries if entry['source'].is_file()}):
                 self.register_source(path.read_text(), path)
 
-    def _find_request(self, module):
+    def request_origin(self, origin):
+        path = Path(origin).resolve()
+        record = self.source_records.get(str(path))
+        if record is None:
+            raise ValueError('The dependency request source is not registered.')
+        if digest(path) != record['source']['sha256']:
+            raise ValueError('The dependency request source changed.')
+        return record['source']
+
+    def _find_request(self, module, origin=None):
+        if origin is not None:
+            identity = self.request_origin(origin)
+            rows = self.source_records[identity['path']]['requests']
+            requests = [{'statement': row['statement'], 'origin': identity}
+                        for row in rows if row['module'] == module]
+            if not requests:
+                raise ValueError('The bound source has no matching Require request: ' + module)
+            return requests
         if module in self.requests:
             return self.requests[module]
         if any(row['canonical'] == module for row in self.entries):
@@ -191,22 +214,28 @@ class InstalledMappings:
             if temporary is not None:
                 temporary.cleanup()
 
-    def resolve(self, module):
-        if module in self.resolutions:
-            return self.resolutions[module]['source']
+    def resolution(self, module, *, origin=None):
+        identity = self.request_origin(origin) if origin is not None else None
+        cache = self.context_resolutions if identity else self.resolutions
+        key = (module, identity['path'], identity['sha256']) if identity else module
+        if key in cache:
+            return cache[key]
         from mapping_snapshot import answer
-        cached=answer(self,module)
+        cached=answer(self,module,origin=origin)
         if cached is not None:
-            self.resolutions[module]=cached
-            return cached['source']
-        answers = [self._query(module, request) for request in self._find_request(module)]
+            cache[key]=cached
+            return cached
+        answers = [self._query(module, request) for request in self._find_request(module,origin)]
         objects = {entry['object'].resolve() for entry, _ in answers}
         if len(objects) != 1:
             raise ValueError('Source contexts resolve the same graph name ambiguously: ' + module)
         entry = answers[0][0]
-        self.resolutions[module] = {'source': entry['source'], 'object': entry['object'],
+        cache[key] = {'source': entry['source'], 'object': entry['object'],
             'canonical': entry['canonical'], 'requests': [request['statement'] for _, request in answers]}
-        return entry['source']
+        return cache[key]
+
+    def resolve(self, module, *, origin=None):
+        return self.resolution(module, origin=origin)['source']
 
     def inventory(self):
         return {'schema': 'compiled-library.tool-resolved-mappings.v1', 'roots': self.roots,
@@ -217,4 +246,8 @@ class InstalledMappings:
                 'resolutions': [{'requested_module': name, 'canonical_module': row['canonical'],
                                  'source': str(row['source']), 'object': str(row['object']),
                                  'requests': row['requests']}
-                                for name, row in sorted(self.resolutions.items())]}
+                                for name, row in sorted(self.resolutions.items())] +
+                               [{'requested_module': name, 'canonical_module': row['canonical'],
+                                 'source': str(row['source']), 'object': str(row['object']),
+                                 'requests': row['requests'], 'origin': {'path': path, 'sha256': sha}}
+                                for (name, path, sha), row in sorted(self.context_resolutions.items())]}

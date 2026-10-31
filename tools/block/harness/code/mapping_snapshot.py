@@ -64,11 +64,19 @@ def load(instance,binding,workspace,changes):
     instance.seed_snapshot={'binding':binding,'value':snapshot,'old':old,'new':new,'parsed_changed_sources':parsed,'hits':0,'misses':0}
 
 
-def answer(instance,module):
+def answer(instance,module,*,origin=None):
     state=instance.seed_snapshot
     if state is None:return None
-    row=state['value']['resolutions'].get(module)
-    requests=instance._find_request(module)
+    if origin is None:
+        row=state['value']['resolutions'].get(module)
+    else:
+        identity=instance.request_origin(origin)
+        matches=[value['resolution'] for value in state['value'].get('context_resolutions',[])
+                 if value['module']==module and value['origin']['sha256']==identity['sha256']
+                 and str(rebase(value['origin']['path'],state['old'],state['new']))==identity['path']]
+        if len(matches)>1:raise ValueError('A mapping snapshot repeats a source-bound resolution.')
+        row=matches[0] if matches else None
+    requests=instance._find_request(module,origin)
     if row is None or [request['statement'] for request in requests]!=row['requests']:
         state['misses']+=1;return None
     contexts=[[str(rebase(word,state['old'],state['new'])) if word.startswith('/') else word for word in flags]
@@ -89,4 +97,14 @@ def export(instance,seed,workspace,parsers):
     for row in instance.entries:
         source=row['source'];obj=row['object'];exists=source.is_file()
         entries.append({'canonical':row['canonical'],'object':{'path':str(obj),'sha256':digest(obj)},'source':{'path':str(source),'sha256':digest(source) if exists else None},'source_present':exists})
-    return {'schema':'compiled-library.seed-snapshot.v1','seed':seed,'workspace':str(workspace),'flags':instance.flags,'roots':instance.roots,'resolver':{'path':str(instance.coqdep),'sha256':instance.tool_sha256},'parsers':parsers,'entries':entries,'sources':list(instance.source_records.values()),'resolutions':{name:{'source':{'path':str(row['source']),'sha256':digest(row['source'])},'object':{'path':str(row['object']),'sha256':digest(row['object'])},'canonical':row['canonical'],'requests':row['requests'],'contexts':[instance.dependency_flags(request['origin']) for request in instance._find_request(name)]} for name,row in instance.resolutions.items()}}
+    def resolution(name,row,origin=None):
+        return {'source':{'path':str(row['source']),'sha256':digest(row['source'])},
+                'object':{'path':str(row['object']),'sha256':digest(row['object'])},
+                'canonical':row['canonical'],'requests':row['requests'],
+                'contexts':[instance.dependency_flags(request['origin'])
+                            for request in instance._find_request(name,origin)]}
+    return {'schema':'compiled-library.seed-snapshot.v1','seed':seed,'workspace':str(workspace),'flags':instance.flags,'roots':instance.roots,'resolver':{'path':str(instance.coqdep),'sha256':instance.tool_sha256},'parsers':parsers,'entries':entries,'sources':list(instance.source_records.values()),
+            'resolutions':{name:resolution(name,row) for name,row in instance.resolutions.items()},
+            'context_resolutions':[{'module':name,'origin':{'path':path,'sha256':sha},
+                                    'resolution':resolution(name,row,path)}
+                                   for (name,path,sha),row in instance.context_resolutions.items()]}

@@ -91,10 +91,14 @@ def installed_mapping_inventory(installed, declared):
         return dict(row, root=canonical(row['root']))
 
     inventory = installed.inventory()
+    def resolution(row):
+        result = dict(row, source=canonical(row['source']), object=canonical(row['object']))
+        if 'origin' in row:
+            result['origin'] = dict(row['origin'], path=canonical(row['origin']['path']))
+        return result
     return {'schema': 'compiled-library.typed-mappings.v2',
             'resolver': dict(inventory['resolver'], path=canonical(inventory['resolver']['path'])),
-            'resolutions': [dict(row, source=canonical(row['source']), object=canonical(row['object']))
-                            for row in inventory['resolutions']],
+            'resolutions': [resolution(row) for row in inventory['resolutions']],
             'roots': [mapping(row) for row in inventory['roots']],
             'modules': [dict(row, mapping=mapping(row['mapping']),
                              source=canonical(row['source']), object=canonical(row['object']))

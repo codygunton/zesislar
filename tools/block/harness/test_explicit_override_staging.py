@@ -41,12 +41,14 @@ class ExplicitOverrideTests(unittest.TestCase):
         loop = next(node for node in prepare.body
                     if isinstance(node, ast.For) and isinstance(node.target, ast.Name)
                     and node.target.id == 'override')
+        def resolution(name, *, origin):
+            self.assertEqual((name, origin), ('isla.isla', incoming))
+            return {'canonical': 'isla.isla'}
         scope = dict(vars(scratch), overrides=[row], seen=set(),
                      modules={module: 'Test/Module.v'}, workspace=root / 'workspace',
                      edges=[{'from': module, 'to': 'isla.isla'}], changed=[],
                      installed=SimpleNamespace(register_source=lambda *args: None,
-                         resolve=lambda name: None,
-                         resolutions={'isla.isla': {'canonical': 'isla.isla'}}))
+                         resolution=resolution))
         code = compile(ast.fix_missing_locations(ast.Module(body=[loop], type_ignores=[])),
                        '<actual-override-loop>', 'exec')
         if bad_hash:

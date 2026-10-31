@@ -56,7 +56,7 @@ class PlannerScopeTests(unittest.TestCase):
             def register_source(self, *args):
                 pass
 
-            def resolve(self, name):
+            def resolution(self, name, *, origin=None):
                 raise ValueError('The unit fixture has no installed owner: ' + name)
 
         namespace = dict(vars(scratch),
