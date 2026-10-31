@@ -15,7 +15,7 @@ CHANGED = {'800d6a14', '800d6ab4'}
 
 class Matrix006Authority(unittest.TestCase):
     def setUp(self):
-        self.profile = json.loads((RELEASE / 'PROFILE.json').read_text())
+        self.profile = json.loads((RELEASE / 'PROFILE-v31.json').read_text())
         self.authority = P.production_port_authority(self.profile)
         self.previous = json.loads((RELEASE / 'BASE-AUTHORITY-26fad.json').read_text())
 
@@ -34,8 +34,8 @@ class Matrix006Authority(unittest.TestCase):
         config = {'proof_runtime': {'module_files': modules},
                   'prepared_workspace': '/', 'declarations_only': False,
                   'prerequisite_modules': []}
-        binding = {'path': str(RELEASE / 'PROFILE.json'),
-                   'sha256': hashlib.sha256((RELEASE / 'PROFILE.json').read_bytes()).hexdigest()}
+        binding = {'path': str(RELEASE / 'PROFILE-v31.json'),
+                   'sha256': hashlib.sha256((RELEASE / 'PROFILE-v31.json').read_bytes()).hexdigest()}
         return P.workload_for_job(binding, self.job(case), config)
 
     def test_inventory_and_statements_preserve_all_twenty_two_cases(self):
@@ -50,6 +50,22 @@ class Matrix006Authority(unittest.TestCase):
                 changes.append(old['block'])
             self.assertEqual(new, expected)
         self.assertEqual(set(changes), CHANGED)
+
+    def test_v31_changes_only_three_owners_and_their_source_provenance(self):
+        previous = json.loads((RELEASE / 'PORT-FAMILY-AUTHORITY-22.json').read_text())
+        expected = deepcopy(previous)
+        expected['production_sources'] = self.authority['production_sources']
+        expected['matrix006_lineage']['generic_source_freeze'] = self.authority['matrix006_lineage']['generic_source_freeze']
+        self.assertEqual(self.authority, expected)
+        self.assertEqual(self.authority['cases'], previous['cases'])
+        self.assertEqual(self.authority['authority_extension'], previous['authority_extension'])
+        self.assertEqual({row['module'] for row in self.authority['production_sources']},
+                         {'ZesuSsz.Automation.All', 'ZesuSsz.Automation.Hooks', 'ZesuSsz.Automation.Finish'})
+
+    def test_previous_v3_authority_refuses_under_the_new_exact_pin(self):
+        previous_profile = json.loads((RELEASE / 'PROFILE.json').read_text())
+        with self.assertRaisesRegex(ValueError, 'not authorized'):
+            P.production_port_authority(previous_profile)
 
     def test_all_twenty_two_actual_sources_pass_the_existing_workload_validator(self):
         for case in self.authority['cases']:
