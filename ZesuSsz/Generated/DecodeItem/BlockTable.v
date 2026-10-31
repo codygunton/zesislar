@@ -73,7 +73,7 @@ Local Open Scope Z_scope.
 (* Source: tools/block/entry_schema.py; SHA-256: 3f91d05aced7cb0eaec0b0363d073f0f6dc59bdf638a469d72abda954059a167. *)
 (* Source: tools/block/function_names.py; SHA-256: 619eb4b97f110e5158e950fa84f91753210605512dd921a603c55bded6bdd5e9. *)
 (* Source: tools/block/generate_table.py; SHA-256: 460d42f603b58f5cb6db8ca74ee73affebdc86bcc56306d6bd3ac517d8716ee0. *)
-(* Source: tools/block/render_support.py; SHA-256: f017f8a557c47259e7a4577ba4f77f5a472fa3fb2567f3e09c4677ba78e721b9. *)
+(* Source: tools/block/render_support.py; SHA-256: fcb0ce6cc1ec3e93d752594d27bf99842092ad6f906df030aef772bc2a49e67c. *)
 (* Source: tools/block/trace_registers.py; SHA-256: 0fe25ade825c1fd600f433d83a56dcc1a5ee187c7081860205f7ea383bfb405d. *)
 
 Section decode_item_block_table.

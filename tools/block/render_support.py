@@ -543,6 +543,75 @@ def definition_introduction_source(source, name):
             f"  {body} := bi.entails_refl _.\n")
 
 
+def retain_definition_facts(source, name, row, facts):
+    """Insert certified leaves inside an unchanged existential resource scope.
+
+    ``source_retention.certified_execution_facts`` supplies the leaves. This
+    renderer interprets no implication and never substitutes an owner or binder.
+    Unsupported presentations fail instead of acquiring a new source premise.
+    """
+    from source_retention import groups, tokens
+
+    definition_introduction_source(source, name)
+    scope = {item["name"]: item["type"] for item in declared_binders(source, name)}
+    values = tokens(source)
+    for index, value in enumerate(values):
+        if value != "∃":
+            continue
+        for part in groups(values[index + 1:]):
+            if part == (",",):
+                break
+            if not part or part[0] != "(" or ":" not in part:
+                raise ValueError("A retained fact has an unsupported existential scope.")
+            colon = part.index(":")
+            if colon != 2 or part[1] in scope:
+                raise ValueError("A retained fact has a captured existential binder.")
+            scope[part[1]] = " ".join(part[colon + 1:-1])
+
+    def type_identity(kind):
+        parts = list(tokens(kind))
+        return tuple(value for index, value in enumerate(parts)
+                     if not (value == "%" and parts[index + 1:index + 2] == ["N"] or
+                             value == "N" and index and parts[index - 1] == "%"))
+
+    source_scope = row["parameters"] + row["existentials"]
+    existing = {tokens(value) for value in re.findall("⌜(.*?)⌝", source, re.S)}
+    additions = []
+    for fact in facts:
+        if fact.get("kind") not in {"execution", "decoder"} or not fact.get("source_references"):
+            raise ValueError("A retained fact lacks its source certificate.")
+        for reference in fact["source_references"]:
+            origin = reference["source"]
+            if (origin["pc"], origin["definition"]) != (row["pc"], row["definition"]):
+                raise ValueError("A retained fact belongs to another entry scope.")
+        term = expression(fact["term"], "retained source fact")
+        used = set(tokens(term))
+        for binder in source_scope:
+            if binder["name"] in used and (
+                    binder["name"] not in scope or
+                    type_identity(scope[binder["name"]]) != type_identity(binder["type"])):
+                raise ValueError("A retained fact lacks its exact typed source binder.")
+        for owner in fact["owners"]:
+            fraction = "{" + owner["fraction"] + "}" if owner.get("fraction") else ""
+            resource = ("(" + owner["address"] + ") ↦ₘ" + fraction +
+                        "∗ (" + owner["value"] + ")")
+            pattern = tokens(resource)
+            if not any(values[index:index + len(pattern)] == pattern
+                       for index in range(len(values))):
+                raise ValueError("A retained fact lacks its exact source owner or fraction.")
+        if tokens(term) not in existing:
+            additions.append(fact)
+            existing.add(tokens(term))
+    marker = re.search(r'True(?=\)\)? ∗ K\)%I\.\s*\Z)', source)
+    if marker is None:
+        raise ValueError("The retained fact has no supported inner resource scope.")
+    insertion = "".join("⌜" + fact["term"] + "⌝ ∗ " for fact in additions)
+    result = source[:marker.start()] + insertion + source[marker.start():]
+    if result[:marker.start()] + result[marker.start() + len(insertion):] != source:
+        raise ValueError("Retaining a fact changed the original entry bytes.")
+    return result, additions
+
+
 def mapping_symbol(name, fields, root, loaded):
     """Resolve a supplied name only through its bound, explicitly imported owner."""
     identifier(name, "mapping symbol", qualified="." in name)
