@@ -163,7 +163,7 @@ class SourceRetention(unittest.TestCase):
         new, _ = retain_definition_facts(self.declaration(), "sample", self.row, self.facts())
         introduction = definition_introduction_source(new, "sample")
         self.assertIn("⌜" + self.catalog.decoder + "⌝", introduction)
-        self.assertIn("bi.entails_refl", introduction)
+        self.assertIn("@PreOrder_Reflexive _ _ bi.entails_po _", introduction)
         self.assertNotIn("Proof.", introduction)
 
     def test_nat_length_literal_has_its_source_type(self):

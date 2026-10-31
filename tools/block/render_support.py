@@ -540,7 +540,7 @@ def definition_introduction_source(source, name):
     arguments = " ".join("(" + item["name"] + ")" for item in parameters)
     return (f"#[export] Instance {name}_intro{telescope} :\n"
             f"  @ZesuSsz.Automation.Hooks.ZesuPureFactIntro Sigma ({name} {arguments})\n"
-            f"  {body} := bi.entails_refl _.\n")
+            f"  {body} := @PreOrder_Reflexive _ _ bi.entails_po _.\n")
 
 
 def retain_definition_facts(source, name, row, facts):
