@@ -1,6 +1,7 @@
 """Check the data-only modules listed in each function text manifest."""
 
 import json
+import hashlib
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -165,7 +166,8 @@ def command_imports(values: list[str]) -> tuple[list[str], bool]:
 class PredicateResolver:
     """Resolve source heads through repository declarations and module imports."""
 
-    def __init__(self, root: Path, modules: set[Path], aliases: dict[str, str]):
+    def __init__(self, root: Path, modules: set[Path], aliases: dict[str, str],
+                 *, source_bindings: dict[str, dict] | None = None):
         self.root = root
         self.modules = modules
         self.aliases = aliases
@@ -174,10 +176,20 @@ class PredicateResolver:
         self.alias_symbols = set()
         self.exports = {}
         self.loaded = set()
+        self.source_bindings = source_bindings or {}
+        if any(not IDENTIFIER.fullmatch(name) for name in self.source_bindings):
+            raise ValueError("A bound source has an invalid logical module.")
 
     def load(self, module: str) -> None:
         parts = module.split(".")
         for length in range(len(parts), 0, -1):
+            owner = ".".join(parts[:length])
+            if owner in self.source_bindings:
+                binding = self.source_bindings[owner]
+                path = Path(binding["path"])
+                if hashlib.sha256(path.read_bytes()).hexdigest() != binding["sha256"]:
+                    raise ValueError("A bound predicate source changed: " + owner)
+                break
             path = self.root.joinpath(*parts[:length]).with_suffix(".v")
             if path in self.modules:
                 owner = ".".join(parts[:length])
