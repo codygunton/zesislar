@@ -6,16 +6,29 @@ must keep the existing compiler fences and serialize reservation changes.
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path, PurePosixPath
 import shlex
 import tempfile
 
-try:
-    from .det.coqc_slots import compiler_pids
-except ImportError:
-    from det.coqc_slots import compiler_pids
+_directory = Path(__file__).resolve().parent
+_staged_tools = _directory.parent if _directory.name == 'block' else None
+if _staged_tools is not None:
+    _slots = _staged_tools / 'det/coqc_slots.py'
+    if (_staged_tools.name != 'tools' or not _slots.is_file()
+            or not _slots.resolve().is_relative_to(_staged_tools.resolve())):
+        raise ImportError('The staged module memory helper lacks its owned det dependency.')
+    _spec = importlib.util.spec_from_file_location('_zesu_owned_coqc_slots', _slots)
+    _module = importlib.util.module_from_spec(_spec)
+    _spec.loader.exec_module(_module)
+    compiler_pids = _module.compiler_pids
+else:
+    try:
+        from .det.coqc_slots import compiler_pids
+    except ImportError:
+        from det.coqc_slots import compiler_pids
 
 
 GIB = 1024 ** 3

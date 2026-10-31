@@ -1,4 +1,7 @@
 {
+  "block/complete_goals_mcp.py": "../complete_goals_mcp.py",
+  "block/entry_admission/__init__.py": "code/entry_admission/__init__.py",
+  "block/entry_admission/io_helpers.py": "code/entry_admission/io_helpers.py",
   "block/dependency_compile_measure.py": "runtime-tools/block/dependency_compile_measure.py",
   "coqc_findlib.py": "runtime-tools/coqc_findlib.py",
   "coqc_recipe.py": "runtime-tools/coqc_recipe.py",

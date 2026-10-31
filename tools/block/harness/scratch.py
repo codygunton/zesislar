@@ -8,6 +8,9 @@ sys.dont_write_bytecode=True
 if __name__=='__main__':
     from command_scope import enter
     enter(__file__,sys.argv[1:])
+    sys.path.insert(0,str(HERE/'code'))
+    from harness_commit import bootstrap
+    bootstrap(__file__,sys.argv[1:])
 W=HERE.parents[2]
 os.environ['PATH']='/home/cody/islaris/_opam/bin:/home/cody/.local/bin:/usr/local/bin:/usr/bin:/bin'
 os.environ['OPAM_SWITCH_PREFIX']='/home/cody/islaris/_opam'
@@ -533,11 +536,16 @@ def refresh_memory(argv):
     parser.add_argument('--seed-reference',type=Path)
     parser.add_argument('--completed-stock-measurements',type=Path,required=True)
     parser.add_argument('--admission-profile',type=Path)
+    parser.add_argument('--harness-commit')
     parser.add_argument('--unadmitted-retirement',type=Path)
     parser.add_argument('--output',type=Path,required=True)
     args=parser.parse_args(argv)
     prior={'path':str(args.prior_runtime.resolve()),'sha256':args.prior_sha256}
     c=read_bound(prior);out=args.output.resolve()
+    from harness_commit import pin
+    previous_harness=c['harness']
+    c['harness']=pin(args.harness_commit or previous_harness['commit'])
+    if c['harness']!=previous_harness:c['prior_harness']=previous_harness
     if args.seed_reference:
         from seed_bindings import compact
         compact(c,binding(args.seed_reference.resolve()),c['prepared_workspace'])
@@ -574,7 +582,9 @@ def refresh_memory(argv):
     c['admission']=dict(c['admission'],reviewed_helpers=str(HERE/'code/entry_admission'))
     from harness_commit import check
     check(c['harness'])
-    implementations=[binding(args.prior_runtime.parent/'HARNESS.json')]
+    out.mkdir(parents=True)
+    save(out/'HARNESS.json',c['harness'])
+    implementations=[binding(out/'HARNESS.json')]
     producers=dict(c['cache_producer_files'])
     producers['implementation']=[dict(row,id='scratch-implementation:'+str(i),kind='source') for i,row in enumerate(implementations)]
     producers['inputs']=[row for row in producers['inputs'] if row.get('id') not in {'completed-stock-memory','admission-profile'} and not row.get('id','').startswith('memory-evidence:')]+[dict(measurements,id='completed-stock-memory',kind='configuration')]+([dict(context,id='admission-profile',kind='configuration')] if context else [])
@@ -607,7 +617,6 @@ def refresh_memory(argv):
     layout=json.loads((HERE/'TOOL-LAYOUT.json').read_text())
     c['prepared_tool_transition']=[dict(relative=relative,prepared=binding(Path(c['prepared_workspace'])/'tools'/relative),successor=binding(HERE/source)) for relative,source in layout.items()]
     __import__('restart_bindings').verify_restart_runtime(c,HERE)
-    out.mkdir(parents=True)
     original_inputs=args.prior_runtime.parent/'INPUTS.json'
     inputs=read_bound(binding(original_inputs)) if original_inputs.exists() else {}
     inputs.update(CPU_external_stop_seconds=search_budget,end_of_run_cleanup=c['end_of_run_cleanup'],memory_refresh={'prior_runtime':prior,'prepared_workspace_unchanged':True,'source_staging_repeated':False,'proof_calls':0,'claims_created':0},completed_stock_measurements=measurements,memory_jobs=c['jobs'])
