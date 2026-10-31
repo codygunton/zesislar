@@ -333,10 +333,13 @@ def prepare(a):
     from memory_policy import apply_job
     completed_rows=read_bound(binding(a.completed_stock_measurements))['rows'] if a.completed_stock_measurements else []
     native_job=apply_job(native_job,completed_rows);pre=apply_job(pre)
+    physical_flags=[word.replace(str(source),str(workspace)) for word in c['physical_flags']]
+    expected_mcp_flags=_parse_project_flags(workspace)
+    import_graph=binding(out/'INVALIDATION.json')
     if a.admission_profile:
         from memory_policy import workload_for_job
         context=binding(a.admission_profile)
-        actual_config=dict(c,prepared_workspace=str(workspace),proof_runtime=dict(c['proof_runtime'],module_files=modules),declarations_only=a.declarations_only,prerequisite_modules=pre['ordered_modules'])
+        actual_config=dict(c,prepared_workspace=str(workspace),proof_runtime=dict(c['proof_runtime'],module_files=modules),declarations_only=a.declarations_only,prerequisite_modules=pre['ordered_modules'],physical_flags=physical_flags,expected_mcp_flags=expected_mcp_flags,cache_import_graph=import_graph)
         native_job=apply_job(native_job,completed_rows,workload_for_job(context,native_job,actual_config))
         pre=apply_job(pre,workload=workload_for_job(context,pre,actual_config))
         c['admission_profile']=context
@@ -356,7 +359,7 @@ def prepare(a):
     c['control_session']=read_bound(binding(a.control_session)) if a.control_session else None
     c['declarations_only']=a.declarations_only
     c['source_overrides']=overrides
-    c.update(jobs=[pre,native_job],selected_blocks=[a.block],prepared_workspace=str(workspace),runtime_path=str(out/'RUNTIME.json'),shared_latch=str(out/'INFRASTRUCTURE-HOLD.json'),readiness={'path':str(out/'READINESS.json'),'sha256':None},execution_released=True,priority_claim=None,job_controller=binding(HERE/'code/entry_chain_run.py'),scratch_provider=binding(HERE/'code/entry_chain_provider.py'),result_adapter=binding(HERE/'code/entry_chain_result.py'),cache_import_graph=binding(out/'INVALIDATION.json'),reuse_prerequisites=False,variant='one-block-rule-scratch')
+    c.update(jobs=[pre,native_job],selected_blocks=[a.block],prepared_workspace=str(workspace),runtime_path=str(out/'RUNTIME.json'),shared_latch=str(out/'INFRASTRUCTURE-HOLD.json'),readiness={'path':str(out/'READINESS.json'),'sha256':None},execution_released=True,priority_claim=None,job_controller=binding(HERE/'code/entry_chain_run.py'),scratch_provider=binding(HERE/'code/entry_chain_provider.py'),result_adapter=binding(HERE/'code/entry_chain_result.py'),cache_import_graph=import_graph,reuse_prerequisites=False,variant='one-block-rule-scratch')
     from native_route import validate_prerequisite_order
     validate_prerequisite_order(c)
     c['cache_attempt']['limits'].update(cpu_seconds=7200,memory_bytes=68719476736)
@@ -364,7 +367,7 @@ def prepare(a):
     search_budget,setup_budget=configure_cpu(c,native_job)
     c['memory_claim_report_multiplier']=2
     c['cache_attempt']=full_fence_attempt(c['cache_attempt'])
-    configure_cache(c,a.cache);c['physical_flags']=[x.replace(str(source),str(workspace)) for x in c['physical_flags']];c['expected_mcp_flags']=_parse_project_flags(workspace)
+    configure_cache(c,a.cache);c['physical_flags']=physical_flags;c['expected_mcp_flags']=expected_mcp_flags
     c['identity']=dict(c['identity'],rule_scratch={'block':a.block,'entry':binding(a.entry_file),'rules':binding(a.rules) if a.rules else None,'statement_sha256':target['statement_sha256']})
     if getattr(a,'dependency_batch',None):
         from dependency_batch import attach
