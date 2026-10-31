@@ -137,7 +137,7 @@ MINIMAL_NATIVE_CLAIM=8*GIB
 FOCUSED_CLAIM=8*GIB
 PORT_KIND='production_stock_port'
 PORT_FENCE=32*GIB
-PORT_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-22.json'), 'sha256': '2737e2a4d442c627f08f8d46aa9246fd0f905ed18531ade2f6a603608ddefed8'}
+PORT_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-22.json'), 'sha256': 'ea88c0e9eab9e6e720e7fc2500407c065d82fd7a0feb12658783d4a761c79917'}
 PORT_EXTENSION={'path': str(Path(__file__).resolve().parents[1]/'policies'/'EXTENSION.json'), 'sha256': 'ad05524ccec944621e775ebaccf5cd39b766bd6d4c554bbfa7f8332d84d77913'}
 
 def relocated_authority(actual,expected,legacy_paths=()):
