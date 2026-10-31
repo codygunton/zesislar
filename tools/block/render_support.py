@@ -550,7 +550,7 @@ def retain_definition_facts(source, name, row, facts):
     renderer interprets no implication and never substitutes an owner or binder.
     Unsupported presentations fail instead of acquiring a new source premise.
     """
-    from source_retention import groups, tokens, typed_nat_literals
+    from source_retention import groups, tokens, typed_nat_literals, source_z_scope
 
     definition_introduction_source(source, name)
     scope = {item["name"]: item["type"] for item in declared_binders(source, name)}
@@ -586,6 +586,8 @@ def retain_definition_facts(source, name, row, facts):
                 raise ValueError("A retained fact belongs to another entry scope.")
         term = expression(fact["term"], "retained source fact")
         rendered, presentations = typed_nat_literals(term)
+        rendered, integer_presentations = source_z_scope(rendered, fact["source_references"])
+        presentations += integer_presentations
         used = set(tokens(term))
         for binder in source_scope:
             if binder["name"] in used and (
