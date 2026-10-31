@@ -84,6 +84,20 @@ class ToolTransition(unittest.TestCase):
   import restart_bindings
   c,workspace=self.fixture();(workspace/'tools/entry_chain_coqc.sh').write_text('changed after transition binding')
   with self.assertRaisesRegex(ValueError,'stale or changed'):restart_bindings.verify_restart_runtime(c,HERE)
+ def test_missing_new_dependency_refuses_old_bank(self):
+  import restart_bindings
+  c,workspace=self.fixture();missing=workspace/'tools/block/binding_cache.py';missing.unlink()
+  with self.assertRaises(FileNotFoundError):restart_bindings.verify_restart_runtime(c,HERE)
+  self.assertFalse(missing.exists())
+ def test_fresh_owned_clone_installs_missing_dependency(self):
+  import clone_copy,restart_bindings,scratch
+  c,workspace=self.fixture();missing=workspace/'tools/block/binding_cache.py';missing.unlink()
+  copy=workspace.parent/(workspace.name+'-fresh');self.addCleanup(lambda:__import__('shutil').rmtree(copy,ignore_errors=True));clone_copy.copytree(workspace,copy)
+  report=restart_bindings.install_restart_tools(copy,deepcopy(c),HERE)
+  row=next(row for row in report['copies'] if row['owned']['path']==str(copy/'tools/block/binding_cache.py'))
+  self.assertIsNone(row['previous']);self.assertTrue(row['distinct_inode'])
+  self.assertEqual(scratch.binding(copy/'tools/block/binding_cache.py')['sha256'],scratch.binding(HERE/'code/binding_cache.py')['sha256'])
+  self.assertFalse(missing.exists())
  def test_unlisted_old_tool_refuses(self):
   import restart_bindings
   c,workspace=self.fixture();c['prepared_tool_transition']=c['prepared_tool_transition'][:-1]

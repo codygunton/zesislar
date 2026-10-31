@@ -33,6 +33,7 @@
   "block/scratch_limits.py": "code/scratch_limits.py",
   "block/scratch_statement.py": "code/scratch_statement.py",
   "block/proof_bindings.py": "code/proof_bindings.py",
+  "block/binding_cache.py": "code/binding_cache.py",
   "block/installed_mappings.py": "code/installed_mappings.py",
   "block/check_entry_outside.py": "code/check_entry_outside.py",
   "block/module_memory.py": "code/module_memory.py",

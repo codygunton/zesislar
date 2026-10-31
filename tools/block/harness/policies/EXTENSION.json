@@ -105,8 +105,8 @@
       "block": "800d6a14",
       "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6a14_V10_215",
       "source": {
-        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6a14_V10_215.v",
-        "sha256": "67a339b66c02e609e6acf6816d833b252ca80a819c2a5972ab8c91be9a55ef32"
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-source-inputs-v3/sources/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6a14_V10_215.v",
+        "sha256": "0efaca2b5e849c34e9e4f9fb9141a82739df868f0461ba21f292efaa26095554"
       },
       "statement_sha256": "1c4eda1608a411c6b92f4dfc0ef7aef8605ce41cbde84d653e806d62201b8c7f",
       "pc": 2148362772
@@ -155,8 +155,8 @@
       "block": "800d6ab4",
       "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6ab4_V10_222",
       "source": {
-        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6ab4_V10_222.v",
-        "sha256": "f8f69155ff246b6421aceb7bdc434827b74b5c9bb3f8db17761fbfc5dd4b479c"
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-source-inputs-v3/sources/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6ab4_V10_222.v",
+        "sha256": "946a9d4fc517d2443f4021d56f9b22b9e9c1f3dc49b15ef7b4ca49656890fa02"
       },
       "statement_sha256": "7fcce53d4757b7cf9ee997776f053a08b75459d70123455a86ba6f3b34e825bd",
       "pc": 2148362932
@@ -271,6 +271,18 @@
     "sha256": "c5be416c2f08ae901c19c59b99b43f846b2ce0132e1bf583eb41669c16c845da"
   },
   "statement_and_body_unchanged": true,
-  "status": "candidate_pending_Orch_caller_successor_approval",
-  "execution_authorized": false
+  "status": "matrix006_source_authority_draft_unlaunched",
+  "execution_authorized": false,
+  "matrix006_source_candidate": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-source-inputs-v3/SOURCE-CANDIDATE.json",
+    "sha256": "74dad1750127c5d574cf1a70aab0974cef6971c92abe8be3d59aa5ac905ce1d7"
+  },
+  "matrix006_case_changes": [
+    "800d6a14",
+    "800d6ab4"
+  ],
+  "matrix006_previous_extension": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/BASE-EXTENSION-26fad.json",
+    "sha256": "c9285397eeca81e473de6dfb06c42611c1cb0447bd7826a0049bf8fb3e8a3ef7"
+  }
 }
