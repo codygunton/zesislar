@@ -550,7 +550,7 @@ def retain_definition_facts(source, name, row, facts):
     renderer interprets no implication and never substitutes an owner or binder.
     Unsupported presentations fail instead of acquiring a new source premise.
     """
-    from source_retention import groups, tokens
+    from source_retention import groups, tokens, typed_nat_literals
 
     definition_introduction_source(source, name)
     scope = {item["name"]: item["type"] for item in declared_binders(source, name)}
@@ -585,6 +585,7 @@ def retain_definition_facts(source, name, row, facts):
             if (origin["pc"], origin["definition"]) != (row["pc"], row["definition"]):
                 raise ValueError("A retained fact belongs to another entry scope.")
         term = expression(fact["term"], "retained source fact")
+        rendered, presentations = typed_nat_literals(term)
         used = set(tokens(term))
         for binder in source_scope:
             if binder["name"] in used and (
@@ -599,9 +600,13 @@ def retain_definition_facts(source, name, row, facts):
             if not any(values[index:index + len(pattern)] == pattern
                        for index in range(len(values))):
                 raise ValueError("A retained fact lacks its exact source owner or fraction.")
-        if tokens(term) not in existing:
-            additions.append(fact)
-            existing.add(tokens(term))
+        if tokens(rendered) not in existing:
+            addition = dict(fact, term=rendered)
+            if presentations:
+                addition.update(source_term=fact["term"],
+                                typed_presentations=presentations)
+            additions.append(addition)
+            existing.add(tokens(rendered))
     marker = re.search(r'True(?=\)\)? ∗ K\)%I\.\s*\Z)', source)
     if marker is None:
         raise ValueError("The retained fact has no supported inner resource scope.")

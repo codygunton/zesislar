@@ -47,6 +47,84 @@ def unwrap(values):
     return values
 
 
+def typed_nat_literals(term):
+    """Scope list-position literals without changing any other source bytes."""
+    lexed = []
+    for value, start in rocq_tokens(term):
+        end = start + len(value)
+        if (lexed and value.isdigit() and lexed[-1][0].isdigit()
+                and lexed[-1][2] == start):
+            previous, begin, _ = lexed.pop()
+            lexed.append((previous + value, begin, end))
+        else:
+            lexed.append((value, start, end))
+    edits = {}
+
+    def word(index):
+        return lexed[index][0]
+
+    def parts(indices):
+        result, offset = [], 0
+        while offset < len(indices):
+            begin = offset
+            if word(indices[offset]) == "(":
+                depth = 1
+                offset += 1
+                while offset < len(indices) and depth:
+                    depth += (word(indices[offset]) == "(") - (word(indices[offset]) == ")")
+                    offset += 1
+                if depth:
+                    raise ValueError("A typed source term has an unfinished group.")
+            else:
+                offset += 1
+            result.append(indices[begin:offset])
+        return result
+
+    def unwrap_indices(indices):
+        while indices and word(indices[0]) == "(" and parts(indices)[0] == indices:
+            indices = indices[1:-1]
+        return indices
+
+    def literal(indices, position):
+        indices = unwrap_indices(indices)
+        if len(indices) != 1 or not word(indices[0]).isdigit():
+            return
+        value, start, end = lexed[indices[0]]
+        edits[start] = dict(position=position, source=value,
+                            rendered="(" + value + "%nat)", type="nat", end=end)
+
+    def visit(indices):
+        nodes = parts(indices)
+        for index, node in enumerate(nodes):
+            if (word(node[0]) == "(" and not
+                    (index + 1 < len(nodes) and word(nodes[index + 1][0]) == "%")):
+                visit(node[1:-1])
+        for index, node in enumerate(nodes[:-1]):
+            if len(node) == 1 and word(node[0]) in {
+                    "firstn", "List.firstn", "skipn", "List.skipn"}:
+                if not (index + 2 < len(nodes) and word(nodes[index + 2][0]) == "%"):
+                    literal(nodes[index + 1], word(node[0]) + " index")
+        equal = [index for index, node in enumerate(nodes)
+                 if len(node) == 1 and word(node[0]) == "="]
+        if len(equal) != 1:
+            return
+        index = equal[0]
+        for side, other in (([item for node in nodes[:index] for item in node], nodes[index + 1:]),
+                            ([item for node in nodes[index + 1:] for item in node], nodes[:index])):
+            side = parts(unwrap_indices(side))
+            if (len(side) == 2 and len(side[0]) == 1
+                    and word(side[0][0]) in {"length", "List.length", "Datatypes.length"}
+                    and len(other) == 1):
+                literal(other[0], "list length equality")
+
+    visit(list(range(len(lexed))))
+    rendered = term
+    for start, edit in sorted(edits.items(), reverse=True):
+        rendered = rendered[:start] + edit["rendered"] + rendered[edit["end"]:]
+    return rendered, [{key: value for key, value in edit.items() if key != "end"}
+                      for _, edit in sorted(edits.items())]
+
+
 def _leaf_identity(text):
     """Ignore only an explicit Z scope on integer literal tokens.
 
