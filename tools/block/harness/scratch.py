@@ -300,7 +300,7 @@ def prepare(a):
     for edge in edges:forward.setdefault(edge['from'],set()).add(edge['to'])
     missing=missing_prerequisite_objects(closure_targets,forward,modules,workspace)
     changed=list(set(changed)|set(missing))
-    plan=invalidation(edges,changed,closure_targets)
+    plan=invalidation(edges,changed,plan_targets)
     native_targets={row['module'] for row in targets}
     plan['prerequisites']=[name for name in plan['ordered_required'] if name not in native_targets]
     plan['native_targets']=[name for name in plan['ordered_required'] if name in native_targets]

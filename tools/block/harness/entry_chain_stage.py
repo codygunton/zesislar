@@ -6,6 +6,7 @@ from check_entry import affected_order
 from check_data_only_lemmas import command_imports, rocq_commands
 from entry_chain import binding, check_bindings, digest, relative, save
 from entry_pilot import copy_bound
+from installed_mappings import require_imports
 
 
 def graph_closure(seeds, graph):
@@ -23,7 +24,11 @@ def import_commands(source):
     result = []
     for command in rocq_commands(source):
         words = [word for word, _ in command]
-        names, _ = command_imports(words)
+        requests = require_imports(words)
+        if requests is None:
+            names, _ = command_imports(words)
+        else:
+            names = [request['module'] for request in requests]
         if names:
             result.append((words, names))
     return result

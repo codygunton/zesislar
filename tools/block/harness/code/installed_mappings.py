@@ -15,6 +15,36 @@ def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def require_imports(words, origin=None):
+    """Preserve Require syntax and exclude its import-category modifier."""
+    if words[:1] == ['Require']:
+        index, prefix = 0, ''
+    elif words[:1] == ['From'] and len(words) > 2 and words[2] == 'Require':
+        index, prefix = 2, words[1]
+    else:
+        return None
+    start = index + 1
+    if start < len(words) and words[start] in {'Import', 'Export'}:
+        start += 1
+    # The pinned compiler validates the modifier itself.
+    if start < len(words) and words[start] == '(':
+        try:
+            end = words.index(')', start + 1)
+        except ValueError:
+            raise ValueError('An import category modifier is incomplete.')
+        if end == start + 1 or '(' in words[start + 1:end]:
+            raise ValueError('An import category modifier is unsupported.')
+        start = end + 1
+    result = []
+    for raw in words[start:]:
+        if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)*", raw):
+            raise ValueError('An import uses unsupported library-name syntax at ' +
+                             str(origin or '<source text>') + ': ' + repr(raw))
+        module = prefix + '.' + raw if prefix else raw
+        result.append({'module': module, 'statement': ' '.join(words[:start] + [raw]) + '.\n'})
+    return result
+
+
 class InstalledMappings:
     def __init__(self, flags, *, coqdep=None, receipt_dir=None):
         self.roots, self.entries, self.requests, self.resolutions = [], [], {}, {}
@@ -62,32 +92,12 @@ class InstalledMappings:
         source_requests=[]
         for command in rocq_commands(source):
             words = [word for word, _ in command]
-            if words[:1] == ['Require']:
-                index, prefix = 0, ''
-            elif words[:1] == ['From'] and len(words) > 2 and words[2] == 'Require':
-                index, prefix = 2, words[1]
-            else:
+            requests = require_imports(words, origin)
+            if requests is None:
                 continue
-            start = index + 1
-            if start < len(words) and words[start] in {'Import', 'Export'}:
-                start += 1
-            # Preserve Coq's import-category modifier in the tool request.
-            # The pinned parser validates the modifier itself.
-            if start < len(words) and words[start] == '(':
-                try:
-                    end = words.index(')', start + 1)
-                except ValueError:
-                    raise ValueError('An import category modifier is incomplete.')
-                if end == start + 1 or '(' in words[start + 1:end]:
-                    raise ValueError('An import category modifier is unsupported.')
-                start = end + 1
-            for raw in words[start:]:
-                if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)*", raw):
-                    raise ValueError('An import uses unsupported library-name syntax at ' +
-                                     str(origin or '<source text>') + ': ' + repr(raw))
-                module = prefix + '.' + raw if prefix else raw
-                statement = ' '.join(words[:start] + [raw]) + '.\n'
-                source_requests.append({'module':module,'statement':statement})
+            for request in requests:
+                module, statement = request['module'], request['statement']
+                source_requests.append(request)
                 rows = self.requests.setdefault(module, [])
                 if not any(row['statement'] == statement for row in rows):
                     rows.append({'statement': statement, 'origin': identity})

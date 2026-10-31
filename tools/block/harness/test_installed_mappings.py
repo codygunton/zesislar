@@ -47,6 +47,22 @@ class InstalledMappingTests(unittest.TestCase):
         self.assertEqual(installed.inventory()['resolutions'][0]['requests'],
                          ['From Coq.ssr Require Import ( notations ) ssrfun.\n'])
 
+    def test_stage_uses_exact_modifier_aware_library(self):
+        expected = self.library(self.theories, 'ssr/ssrfun.v')
+        text = 'From Coq.ssr Require Import (notations) ssrfun.'
+        installed = self.mapping(text)
+        edges = scratch.canonical_edges('Consumer', text, text, [], {}, installed)
+        self.assertEqual(edges, [{'from': 'Consumer', 'to': 'Coq.ssr.ssrfun'}])
+        self.assertEqual(installed.resolutions['Coq.ssr.ssrfun']['source'], expected)
+        self.assertNotIn('Coq.ssr.notations', installed.resolutions)
+
+    def test_stage_still_refuses_unresolved_library_with_modifier(self):
+        text = 'From Coq.ssr Require Import (notations) missing.'
+        installed = self.mapping(text)
+        with self.assertRaises(ValueError):
+            scratch.canonical_edges('Consumer', text, text, [], {}, installed)
+        self.assertNotIn('Coq.ssr.missing', installed.resolutions)
+
     def test_incomplete_import_category_modifier_refuses(self):
         with self.assertRaisesRegex(ValueError, 'unbalanced argument'):
             self.mapping('From Coq.ssr Require Import (notations ssrfun.')
