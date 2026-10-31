@@ -516,6 +516,33 @@ def introduction_source(value, fields, root, generated):
     return name, f"#[{value['locality']}] Instance {name}{typed} : {target}{priority} :=\n  {constructor}.\n"
 
 
+def definition_introduction_source(source, name):
+    """Render a reflexive introduction from one exact entry definition.
+
+    The definition supplies both the telescope and the complete body.  A caller
+    must not supply a separately cached body, which can omit retained clauses.
+    """
+    identifier(name, "entry name")
+    pattern = (r"\A\s*Definition\s+" + re.escape(name) +
+               r"(?P<telescope>.*?)\s*:\s*iProp\s+Sigma\s*:=\s*"
+               r"(?P<body>.*?)\.\s*\Z")
+    match = re.fullmatch(pattern, source, re.S)
+    if match is None:
+        raise ValueError("The introduction requires one complete iProp definition.")
+    parameters = declared_binders(source, name)
+    telescope = match["telescope"].rstrip()
+    # Validate the telescope through the existing declaration parser and the
+    # body through the existing command-free expression parser.
+    body = expression(match["body"], "entry body")
+    commands = rocq_commands(source)
+    if len(commands) != 1:
+        raise ValueError("The introduction source contains extra commands.")
+    arguments = " ".join("(" + item["name"] + ")" for item in parameters)
+    return (f"#[export] Instance {name}_intro{telescope} :\n"
+            f"  @ZesuSsz.Automation.Hooks.ZesuPureFactIntro Sigma ({name} {arguments})\n"
+            f"  {body} := bi.entails_refl _.\n")
+
+
 def mapping_symbol(name, fields, root, loaded):
     """Resolve a supplied name only through its bound, explicitly imported owner."""
     identifier(name, "mapping symbol", qualified="." in name)
