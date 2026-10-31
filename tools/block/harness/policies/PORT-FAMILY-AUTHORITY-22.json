@@ -13,18 +13,18 @@
   "production_sources": [
     {
       "module": "ZesuSsz.Automation.All",
-      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-fractional-read-v1/sources/All.v",
-      "sha256": "d159522208b95e466e3a5412a1016935f0f30ca4720a9f0429b486ed17fa1710"
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v3-explicit-v1-source-v2/Automation/All.v",
+      "sha256": "4c6f7b0abeb22f91066df76ddb573559be1449cf74c6b5fc588dddf7ea06840a"
     },
     {
       "module": "ZesuSsz.Automation.Hooks",
-      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-fractional-read-v1/sources/Hooks.v",
-      "sha256": "ee65f71e47e58f66517b9340ca782356a3ee89802f865d26e0a8c880ca99128a"
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v3-reduced-source-v1/Automation/Hooks.v",
+      "sha256": "02330bf9a96148dc9c4b2c8a184354c587a30b83743407da69475ae7f1f4f4be"
     },
     {
       "module": "ZesuSsz.Automation.Finish",
-      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-common-finisher-v2/Finish.v",
-      "sha256": "2e50e68844f94b7c7e504bc2c9a7676b249681264ae13bb2a9ff693299028a74"
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v3-reduced-source-v2/Automation/Finish.v",
+      "sha256": "eec8a54eca070f95efdb1958db2b37096bc0d686346f5412a5de76c0acac07d9"
     }
   ],
   "cases": [
@@ -122,8 +122,8 @@
       "block": "800d6a14",
       "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6a14_V10_215",
       "source": {
-        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6a14_V10_215.v",
-        "sha256": "67a339b66c02e609e6acf6816d833b252ca80a819c2a5972ab8c91be9a55ef32"
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-source-inputs-v3/sources/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6a14_V10_215.v",
+        "sha256": "0efaca2b5e849c34e9e4f9fb9141a82739df868f0461ba21f292efaa26095554"
       },
       "statement_sha256": "1c4eda1608a411c6b92f4dfc0ef7aef8605ce41cbde84d653e806d62201b8c7f",
       "pc": 2148362772
@@ -172,8 +172,8 @@
       "block": "800d6ab4",
       "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6ab4_V10_222",
       "source": {
-        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6ab4_V10_222.v",
-        "sha256": "f8f69155ff246b6421aceb7bdc434827b74b5c9bb3f8db17761fbfc5dd4b479c"
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-source-inputs-v3/sources/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6ab4_V10_222.v",
+        "sha256": "946a9d4fc517d2443f4021d56f9b22b9e9c1f3dc49b15ef7b4ca49656890fa02"
       },
       "statement_sha256": "7fcce53d4757b7cf9ee997776f053a08b75459d70123455a86ba6f3b34e825bd",
       "pc": 2148362932
@@ -254,8 +254,8 @@
     "sha256": "784cdd656caa318db76c5d1a5d8f8349e369390ccf8dc9c2dbb963a151bf5c0c"
   },
   "source_packet": {
-    "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-fractional-read-v1/SOURCE.json",
-    "sha256": "002ab88e1366cca5956f93b0b7f0d8ea12860ca12d80a19fd5b7074f9cfd0124"
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-source-inputs-v3/SOURCE-CANDIDATE.json",
+    "sha256": "74dad1750127c5d574cf1a70aab0974cef6971c92abe8be3d59aa5ac905ce1d7"
   },
   "cpu_policy": {
     "search_stop_seconds": null,
@@ -265,7 +265,7 @@
     "stop_at_long_search": false,
     "scope": "These exact 22 authorized PORT natives only."
   },
-  "status": "prepared_matrix005_fractional_union_pending_execution_release",
+  "status": "matrix006_source_authority_draft_unlaunched",
   "released_compiled_supplier": {
     "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-fractional-read-v1/B2-RELEASE.json",
     "sha256": "526408838383626c0a37a5918ad8ced04df86680eaf6d6a4d4231973d85cec04"
@@ -279,10 +279,10 @@
     "sha256": "c507108e8f249de97f93cde8a76785b60997bdfb2a17dec3d53ae4dcca5f627a"
   },
   "pending_selector_control_count": 4,
-  "completed_common_ready_qualification": "Compatibility field binds the released compiled BASE-RUNTIME. It does not claim a passed READY or eight-check run.",
+  "completed_common_ready_qualification": "Historical matrix005 family evidence only. This field supplies no matrix006 object. Runtime construction requires separate generic v3 READY and accepted B1 objects.",
   "authority_extension": {
-    "path": "/home/cody/zesislar/_build/agents/worker-build-2/native-port-policy-v1/source014-authority22-caller002-extension/EXTENSION.json",
-    "sha256": "c9285397eeca81e473de6dfb06c42611c1cb0447bd7826a0049bf8fb3e8a3ef7"
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/EXTENSION.json",
+    "sha256": "ad05524ccec944621e775ebaccf5cd39b766bd6d4c554bbfa7f8332d84d77913"
   },
   "original_fifteen_authority": {
     "path": "/home/cody/zesislar/_build/agents/worker-build-2/private-admission-route-v1/source013/PORT-FAMILY-AUTHORITY.json",
@@ -357,5 +357,29 @@
       "sha256": "e642872ecdab3874d0f86b24dc09a7f91d44ee712a4e7a95cae9d663a9eee1ed"
     },
     "execution_authorized_by_this_builder": false
+  },
+  "matrix006_lineage": {
+    "base_authority": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/BASE-AUTHORITY-26fad.json",
+      "sha256": "6edb3c734adee73632e220ff6de1d171b6eb2d04eca4247445d5aa142d19ddfc"
+    },
+    "source_candidate": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-source-inputs-v3/SOURCE-CANDIDATE.json",
+      "sha256": "74dad1750127c5d574cf1a70aab0974cef6971c92abe8be3d59aa5ac905ce1d7"
+    },
+    "generic_source_freeze": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v3-reduced-source-v2/SOURCE.json",
+      "sha256": "45fac93e57284cd456cea9720f422e51ddf8bf12e8afed2f90def5713abda883"
+    },
+    "changed_callers": [
+      "800d6a14",
+      "800d6ab4"
+    ],
+    "policy_unchanged": true,
+    "generic_v3_READY_pending": true,
+    "B1_objects_pending": true,
+    "object_adoption_authorized": false,
+    "native_launch_authorized": false,
+    "historical_compiled_supplier_fields_only": true
   }
 }

@@ -137,8 +137,8 @@ MINIMAL_NATIVE_CLAIM=8*GIB
 FOCUSED_CLAIM=8*GIB
 PORT_KIND='production_stock_port'
 PORT_FENCE=32*GIB
-PORT_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-22.json'), 'sha256': '6edb3c734adee73632e220ff6de1d171b6eb2d04eca4247445d5aa142d19ddfc'}
-PORT_EXTENSION={'path': str(Path(__file__).resolve().parents[1]/'policies'/'EXTENSION.json'), 'sha256': 'c9285397eeca81e473de6dfb06c42611c1cb0447bd7826a0049bf8fb3e8a3ef7'}
+PORT_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-22.json'), 'sha256': '2737e2a4d442c627f08f8d46aa9246fd0f905ed18531ade2f6a603608ddefed8'}
+PORT_EXTENSION={'path': str(Path(__file__).resolve().parents[1]/'policies'/'EXTENSION.json'), 'sha256': 'ad05524ccec944621e775ebaccf5cd39b766bd6d4c554bbfa7f8332d84d77913'}
 
 def relocated_authority(actual,expected,legacy_paths=()):
  """Permit only approved byte-identical authority relocation."""
@@ -155,7 +155,7 @@ def relocated_authority(actual,expected,legacy_paths=()):
 def production_port_authority(profile):
  if set(profile)!={'schema','kind','authority','memory_route'} or profile.get('schema')!='scratch.admission-profile.v1' or profile.get('kind')!=PORT_KIND or profile.get('memory_route')!='measured_native':
   raise ValueError('The production PORT profile is invalid.')
- if not relocated_authority(profile['authority'],PORT_AUTHORITY,('/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/matrix005-authority-v1/PORT-FAMILY-AUTHORITY-22.json',)):raise ValueError('The production PORT authority is not authorized.')
+ if not relocated_authority(profile['authority'],PORT_AUTHORITY,('/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/matrix005-authority-v1/PORT-FAMILY-AUTHORITY-22.json', '/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/PORT-FAMILY-AUTHORITY-22.json')):raise ValueError('The production PORT authority is not authorized.')
  authority=read(profile['authority'])
  if (authority.get('schema')!='port.production-stock-family-authority.v1' or
      authority.get('claim_bytes')!=8*GIB or authority.get('physical_fence_bytes')!=PORT_FENCE or
@@ -165,7 +165,7 @@ def production_port_authority(profile):
  cases=authority['cases']
  extension=read(PORT_EXTENSION)
  read(extension['exit_queue'])
- if (extension.get('case_count')!=22 or not relocated_authority(authority.get('authority_extension'),PORT_EXTENSION,('/home/cody/zesislar/_build/agents/worker-build-2/native-port-policy-v1/source014-authority22-caller002-extension/EXTENSION.json',))
+ if (extension.get('case_count')!=22 or not relocated_authority(authority.get('authority_extension'),PORT_EXTENSION,('/home/cody/zesislar/_build/agents/worker-build-2/native-port-policy-v1/source014-authority22-caller002-extension/EXTENSION.json', '/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/EXTENSION.json'))
      or cases!=extension['original_cases']+extension['additional_cases']
      or len(cases)!=22 or len({r['block'] for r in cases})!=22 or len({r['module'] for r in cases})!=22):
   raise ValueError('The production PORT case set differs from the exact released22 inventory.')

@@ -154,7 +154,7 @@ def stage_job(config,job,out):
     if digest(workspace/'tools/entry_chain_coqc.sh') != digest(expected_wrapper):
         raise ValueError('The final staged compiler wrapper differs from the bounded physical policy.')
     clone_copy.copy2(Path(__file__).with_name('entry_chain_resources.py'), workspace/'tools/block/entry_chain_resources.py')
-    for name in ['entry_chain_compiler.py','compile_measure.py','clone_copy.py']:
+    for name in ['entry_chain_compiler.py','compile_measure.py','clone_copy.py','binding_cache.py']:
         clone_copy.copy2(Path(__file__).with_name(name),workspace/'tools/block'/name)
         src=Path(__file__).with_name(name);dst=workspace/'tools/block'/name
         record={'source':binding(src),'owned':binding(dst),'distinct_inode':True}
@@ -169,13 +169,13 @@ def stage_job(config,job,out):
     clone_copy.copy2(helper,owned_helper)
     copies.append({'source':binding(helper),'owned':binding(owned_helper),'distinct_inode':helper.stat().st_ino!=owned_helper.stat().st_ino,'new_harness_dependency':True})
     # Import from the physical compiler workspace before starting MCP or a compiler.
-    probe="import json,entry_chain_resources,proof_bindings; print(json.dumps({'resources':entry_chain_resources.__file__,'proof_bindings':proof_bindings.__file__}))"
+    probe="import json,entry_chain_resources,proof_bindings,binding_cache,seed_bindings; proof_bindings.check_proof_bindings({'bindings':[]}); print(json.dumps({'resources':entry_chain_resources.__file__,'proof_bindings':proof_bindings.__file__,'binding_cache':binding_cache.__file__,'seed_bindings':seed_bindings.__file__}))"
     import_env=dict(os.environ,PYTHONPATH=str(workspace/'tools/block')+os.pathsep+str(workspace/'tools'),PYTHONDONTWRITEBYTECODE='1')
     checked=subprocess.run([sys.executable,'-B','-c',probe],cwd=workspace,env=import_env,capture_output=True,text=True)
     save(out/'COMPILER-IMPORT-CONTROL.json',{'argv':[sys.executable,'-B','-c',probe],'returncode':checked.returncode,'stdout':checked.stdout,'stderr':checked.stderr,'compiler_started':False,'proof_calls':0})
     if checked.returncode:raise RuntimeError('The staged compiler dependency import failed.')
     origins=strict_loads(checked.stdout)
-    for key,name in [('resources','entry_chain_resources.py'),('proof_bindings','proof_bindings.py')]:
+    for key,name in [('resources','entry_chain_resources.py'),('proof_bindings','proof_bindings.py'),('binding_cache','binding_cache.py'),('seed_bindings','seed_bindings.py')]:
         if Path(origins[key]).resolve()!=(workspace/'tools/block'/name).resolve():raise ValueError('A compiler dependency has another origin.')
 
     # The compiler wrapper sits in tools beside the stock findlib and resource guard.
@@ -219,7 +219,7 @@ def stage_job(config,job,out):
     runtime['bindings'].extend(binding(workspace/rel) for rel in [
         'tools/entry_chain_coqc.sh','tools/block/stock_scope_stdin_relay.py',
         'tools/block/entry_chain_compiler.py','tools/block/entry_chain.py',
-        'tools/block/entry_chain_resources.py','tools/block/proof_bindings.py','tools/block/seed_bindings.py','tools/block/runtime_ignores.py','tools/block/entry_chain_process.py','tools/block/entry_chain_plan.py'])
+        'tools/block/entry_chain_resources.py','tools/block/proof_bindings.py','tools/block/binding_cache.py','tools/block/seed_bindings.py','tools/block/runtime_ignores.py','tools/block/entry_chain_process.py','tools/block/entry_chain_plan.py'])
     if sealed or config.get('prepared_tool_transition'):
         runtime['bindings'].extend(row['owned'] for row in transition['copies'])
     # One canonical path can occur in source and physical views. Refuse differing hashes.
