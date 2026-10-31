@@ -59,14 +59,18 @@ class SharedHarnessTests(unittest.TestCase):
                 scratch.reconcile_import_closure(['Second'], edges, modules, root, Resolver())
 
     def test_unchanged_header_uses_pinned_canonical_resolution(self):
-        class Resolver:
-            resolutions = {}
-            def register_source(self, *args): pass
-            def resolve(self, name):
-                self.resolutions[name] = {'canonical': 'Coq.Lists.List'}
         text = 'From Coq Require Import List.'
-        self.assertEqual(scratch.canonical_edges('A', text, text, [], {}, Resolver()),
-                         [{'from': 'A', 'to': 'Coq.Lists.List'}])
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / 'Consumer.v'
+            source.write_text(text)
+            class Resolver:
+                def register_source(inner, actual, origin):
+                    self.assertEqual((actual, origin), (text, source))
+                def resolution(inner, name, *, origin):
+                    self.assertEqual((name, origin), ('Coq.List', source))
+                    return {'canonical': 'Coq.Lists.List'}
+            self.assertEqual(scratch.canonical_edges('A', text, text, [], {}, Resolver(), source),
+                             [{'from': 'A', 'to': 'Coq.Lists.List'}])
 
     def test_setup_and_compile_have_no_cpu_stop(self):
         for phase in ['prerequisites', 'native']:
