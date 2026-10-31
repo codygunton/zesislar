@@ -43,14 +43,15 @@ class GateFamilyTests(unittest.TestCase):
 
     def test_actual_approved_fast_peak(self):
         result = gate_family.select('check-fast', ['make', '--no-print-directory', '_check-fast'], 120*1024**3)
-        self.assertEqual(result['aggregate_peak_bytes'], 2090127360)
-        self.assertEqual(result['claim_bytes'], 3135191040)
+        self.assertEqual(result['aggregate_peak_bytes'], 33831407616)
+        self.assertEqual(result['claim_bytes'], 50747111424)
         self.assertEqual(result['physical_fence_bytes'], 120*1024**3)
+        self.assertEqual(result['measurement_provenance']['mode'], 'unknown')
 
     def test_actual_approved_iris_peak(self):
         result = gate_family.select('check-iris', ['make', '--no-print-directory', '_check-iris'], 120*1024**3)
-        self.assertEqual(result['aggregate_peak_bytes'], 389505024)
-        self.assertEqual(result['claim_bytes'], 584257536)
+        self.assertEqual(result['aggregate_peak_bytes'], 4666003456)
+        self.assertEqual(result['claim_bytes'], 6999005184)
         self.assertEqual(result['measurement_provenance']['mode'], 'unknown')
 
     def test_actual_selector_keeps_unmatched_full_fence_and_ceiling(self):
@@ -58,8 +59,8 @@ class GateFamilyTests(unittest.TestCase):
         basis = select_admission_basis({'runs': []}, 'check-fast', ['make', 'other-target'], fence)
         self.assertEqual((basis['reason'], basis['claim_bytes']), ('full_physical_fence', fence))
         matched = select_admission_basis({'runs': []}, 'check-fast',
-            ['make', '--no-print-directory', '_check-fast'], fence, 4*1024**3)
-        self.assertEqual(matched['claim_bytes'], 4*1024**3)
+            ['make', '--no-print-directory', '_check-fast'], fence, 64*1024**3)
+        self.assertEqual(matched['claim_bytes'], 64*1024**3)
         for invalid in [-1, True]:
             with self.assertRaises(ValueError):
                 select_admission_basis({'runs': []}, 'check-fast', [], fence, invalid)
