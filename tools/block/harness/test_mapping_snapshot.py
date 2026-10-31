@@ -46,6 +46,14 @@ class SnapshotControls(unittest.TestCase):
  def test_flags_change_refuses(self):
   obj=InstalledMappings(['-R',str(self.other),'T'],coqdep=self.tool)
   with self.assertRaisesRegex(ValueError,'load paths differ'):mapping_snapshot.load(obj,self.binding,self.other,{})
+ def test_dependency_context_change_requires_fresh_query(self):
+  self.snapshot['resolutions']['T.Core']['contexts'][0][0]='changed-context';self.save()
+  obj=self.load()
+  expected=next(row for row in obj.entries if row['canonical']=='T.Core')
+  with patch.object(obj,'_query',return_value=(expected,obj._find_request('T.Core')[0])) as query:
+   self.assertEqual(obj.resolve('T.Core'),self.other/'Core.v')
+  self.assertEqual(query.call_count,1)
+  self.assertEqual(obj.seed_snapshot['misses'],1)
  def test_snapshot_change_refuses(self):
   self.path.write_text(self.path.read_text()+' ')
   with self.assertRaisesRegex(ValueError,'binding changed'):self.load()
