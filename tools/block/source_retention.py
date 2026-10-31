@@ -125,6 +125,39 @@ def typed_nat_literals(term):
                       for _, edit in sorted(edits.items())]
 
 
+
+def source_z_scope(term, references):
+    """Preserve a source-certified integer operand under an Iris scope.
+
+    An equality operand must match an explicitly Z-scoped source expression.
+    This adds only a notation scope, after the existing nat presentations.
+    """
+    nodes = groups(unwrap(tokens(term)))
+    equal = [index for index, node in enumerate(nodes) if node == ("=",)]
+    if len(equal) != 1:
+        return term, []
+    index = equal[0]
+    operands = [unwrap(tuple(value for node in side for value in node))
+                for side in (nodes[:index], nodes[index + 1:])]
+    for reference in references:
+        values = tokens(reference["source"]["original_term"])
+        stack = []
+        for offset, value in enumerate(values):
+            if value == "(":
+                stack.append(offset)
+            elif value == ")" and stack:
+                start = stack.pop()
+                if values[offset + 1:offset + 3] != ("%", "Z"):
+                    continue
+                scalar = unwrap(values[start + 1:offset])
+                if (scalar in operands and
+                        any(operator in scalar for operator in ("+", "-", "*", "/", "mod"))):
+                    rendered = "(" + term + ")%Z"
+                    return rendered, [dict(position="source-scoped equality", source=term,
+                                            rendered=rendered, type="Z")]
+    return term, []
+
+
 def _leaf_identity(text):
     """Ignore only an explicit Z scope on integer literal tokens.
 

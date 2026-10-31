@@ -5,7 +5,7 @@ import tempfile
 import unittest
 
 from render_support import retain_definition_facts, definition_introduction_source
-from source_retention import certified_execution_facts, decoder_owner, typed_nat_literals
+from source_retention import certified_execution_facts, decoder_owner, typed_nat_literals, source_z_scope
 
 
 class BoundLowerer:
@@ -61,6 +61,28 @@ class SourceRetention(unittest.TestCase):
                 " (base size value : Z) (count offset : nat) (K : iProp Sigma) : iProp Sigma :=\n"
                 " ((∃ (bytes : list (bv " + width + ")), "
                 "(base) ↦ₘ" + fraction + "∗ (bytes) ∗ True) ∗ K)%I.\n")
+
+
+    def test_source_integer_scope_survives_iris_equality(self):
+        term = "(pointer args + 1) = (pointer (args)) + 1"
+        references = [{"source": {"original_term": "source_fact ((pointer args + 1)%Z)"}}]
+        rendered, changes = source_z_scope(term, references)
+        self.assertEqual(rendered, "(" + term + ")%Z")
+        self.assertEqual(changes[0]["type"], "Z")
+
+    def test_unmatched_source_scope_changes_nothing(self):
+        term = "(pointer args + 1) = (pointer (args)) + 1"
+        for source in ("source_fact ((other args + 1)%Z)",
+                       "source_fact ((pointer args + 1)%nat)",
+                       "source_fact (pointer args + 1)"):
+            self.assertEqual(source_z_scope(term, [{"source": {"original_term": source}}]),
+                             (term, []))
+
+    def test_nat_presentation_remains_explicit(self):
+        term, _ = typed_nat_literals("length (bytes) = 16")
+        self.assertIn("16%nat", term)
+        references = [{"source": {"original_term": "source_fact ((pointer args + 1)%Z)"}}]
+        self.assertEqual(source_z_scope(term, references), (term, []))
 
     def test_execution_and_decoder_replay_preserve_provenance(self):
         facts = self.facts()
