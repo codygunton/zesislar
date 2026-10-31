@@ -98,12 +98,16 @@ class InstalledMappings:
             for request in requests:
                 module, statement = request['module'], request['statement']
                 source_requests.append(request)
-                rows = self.requests.setdefault(module, [])
-                if not any(row['statement'] == statement for row in rows):
-                    rows.append({'statement': statement, 'origin': identity})
-                    self.resolutions.pop(module, None)
+                self.register_request(module, statement, identity)
 
         if origin is not None:self.source_records[str(origin)]={'source':identity,'requests':source_requests}
+
+    def register_request(self, module, statement, origin):
+        rows = self.requests.setdefault(module, [])
+        flags = self.dependency_flags(origin)
+        if not any(row['statement'] == statement and self.dependency_flags(row['origin']) == flags for row in rows):
+            rows.append({'statement': statement, 'origin': origin})
+            self.resolutions.pop(module, None)
 
     def scan_sources(self):
         if not self.scanned_sources:
@@ -122,16 +126,35 @@ class InstalledMappings:
             raise ValueError('An import has no bound source syntax or canonical installed name: ' + module)
         return self.requests[module]
 
+    def dependency_flags(self, origin):
+        """Resolve Sail sibling imports in their bound source context only."""
+        flags = list(self.flags)
+        if not origin.get('path'):
+            return flags
+        source = Path(origin['path']).resolve()
+        for row in self.roots:
+            if row['prefix'] != 'SailStdpp' or row['flag'] != '-Q':
+                continue
+            if not source.is_relative_to(row['root']):
+                continue
+            if digest(source) != origin['sha256']:
+                raise ValueError('The dependency request source changed.')
+            for index in range(len(flags) - 2):
+                if flags[index:index + 3] == ['-Q', row['root'], 'SailStdpp']:
+                    flags[index] = '-R'
+        return flags
+
     def _query(self, module, request):
         if digest(self.coqdep) != self.tool_sha256:
             raise ValueError('The pinned coqdep executable changed.')
+        flags = self.dependency_flags(request['origin'])
         temporary = tempfile.TemporaryDirectory() if self.receipt_dir is None else None
         directory = Path(temporary.name) if temporary else self.receipt_dir
         directory.mkdir(parents=True, exist_ok=True)
-        key = hashlib.sha256((module + request['statement']).encode()).hexdigest()
+        key = hashlib.sha256(json.dumps([module, request, flags], sort_keys=True).encode()).hexdigest()
         source = directory / ('resolve-' + key + '.v')
         source.write_text(request['statement'])
-        argv = [str(self.coqdep), *self.flags, str(source)]
+        argv = [str(self.coqdep), *flags, str(source)]
         environment = dict(os.environ, COQPATH='', LANG='C', LC_ALL='C', LC_CTYPE='C')
         for name in ['COQLIB', 'COQBIN', 'ROCQPATH', 'ROCQCORELIB', 'ROCQSTDLIB']:
             environment.pop(name, None)
