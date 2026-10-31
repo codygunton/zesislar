@@ -9,11 +9,11 @@
       ],
       "physical_fence_bytes": 128849018880,
       "measurement": {
-        "path": "gate-measurements/pr54-check-fast.json",
-        "sha256": "83963e880de0de13dd45bc39fadb3dd3e3467699ba22930e9546a8f4c3c99058"
+        "path": "gate-measurements/process-check-fast-v5.json",
+        "sha256": "fa303e10fc93b5be3a562ae2004248d6e90bdedb959a054f40fe9bdfb4084621"
       },
-      "peak_bytes": 2090127360,
-      "authority": "Orch approved the PR54 check-fast peak as a measured gate-family basis."
+      "peak_bytes": 33831407616,
+      "authority": "Root approved the completed process check-fast aggregate as the successor family basis. Preserve cache provenance as unknown."
     },
     "check-iris": {
       "command": [
@@ -23,11 +23,11 @@
       ],
       "physical_fence_bytes": 128849018880,
       "measurement": {
-        "path": "gate-measurements/pr54-check-iris.json",
-        "sha256": "b9420724353d36f911cdd5b05586cd38ff03a608098e43d0b76094e2274876ab"
+        "path": "gate-measurements/process-check-iris-v1.json",
+        "sha256": "7ef17108c293afedeccec9e469015f0bfe22d90faac93151efa75dd34e27a601"
       },
-      "peak_bytes": 389505024,
-      "authority": "Root approved the paired green PR54 Iris receipt as a measured gate-family basis."
+      "peak_bytes": 4666003456,
+      "authority": "Root approved the completed process check-iris aggregate as the successor family basis. Preserve cache provenance as unknown."
     }
   }
 }

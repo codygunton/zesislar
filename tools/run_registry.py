@@ -10,6 +10,7 @@ starts outside the scheduler's process tree.
 from __future__ import annotations
 
 import argparse
+import copy
 from contextlib import contextmanager
 import ctypes
 import fcntl
@@ -22,6 +23,8 @@ import subprocess
 import sys
 import time
 import uuid
+
+REFRESH_SECONDS = 3.0
 
 
 def identity(pid, proc=Path('/proc')):
@@ -136,31 +139,133 @@ class Registry:
             yield
 
     def read(self):
+        with self.lock():
+            data = self.header()
+            if data['schema'] == 'zesu.run-registry.v2':
+                rows = []
+                for path in sorted((self.directory / 'runs.d').glob('*.json')):
+                    row = self.read_file(path)
+                    if self.row_path(row['id']) != path:
+                        raise ValueError('A run record has an invalid ID.')
+                    rows.append(row)
+                return {'schema': data['schema'], 'runs': {r['id']: r for r in rows}}
+            return data
+
+    @staticmethod
+    def read_file(path):
+        return json.loads(path.read_text())
+
+    def header(self):
         if not self.path.exists():
             return {'schema': 'zesu.run-registry.v1', 'runs': {}}
-        result = json.loads(self.path.read_text())
-        if result.get('schema') != 'zesu.run-registry.v1':
+        result = self.read_file(self.path)
+        if result.get('schema') not in ('zesu.run-registry.v1', 'zesu.run-registry.v2'):
             raise ValueError('The run registry schema is unsupported.')
+        if (result['schema'] == 'zesu.run-registry.v2'
+                and not (self.directory / 'runs.d').is_dir()):
+            raise ValueError('The per-run store directory is missing.')
         return result
 
-    def write(self, value):
-        temporary = self.directory / ('.runs-' + uuid.uuid4().hex)
+    @staticmethod
+    def sync_directory(path):
+        descriptor = os.open(path, os.O_RDONLY | os.O_DIRECTORY)
+        try:
+            os.fsync(descriptor)
+        finally:
+            os.close(descriptor)
+
+    @staticmethod
+    def atomic_write(path, value):
+        temporary = path.parent / ('.runs-' + uuid.uuid4().hex)
         try:
             with temporary.open('x') as handle:
                 json.dump(value, handle, indent=2)
                 handle.write('\n')
                 handle.flush()
                 os.fsync(handle.fileno())
-            os.replace(temporary, self.path)
+            os.replace(temporary, path)
+            Registry.sync_directory(path.parent)
         finally:
             temporary.unlink(missing_ok=True)
 
+    def write(self, value):
+        if self.header()['schema'] != 'zesu.run-registry.v1':
+            raise ValueError('The per-run store refuses a bulk write.')
+        self.atomic_write(self.path, value)
+
+    def row_path(self, run_id):
+        return self.directory / 'runs.d' / (hashlib.sha256(run_id.encode()).hexdigest() + '.json')
+
+    def load_row(self, data, run_id):
+        if data['schema'] == 'zesu.run-registry.v1':
+            return data['runs'][run_id]
+        try:
+            row = self.read_file(self.row_path(run_id))
+        except FileNotFoundError:
+            raise KeyError(run_id) from None
+        if row['id'] != run_id:
+            raise ValueError('The run record ID does not match its file.')
+        return row
+
+    def read_run(self, run_id):
+        with self.lock():
+            return self.read_run_unlocked(run_id)
+
+    def read_run_unlocked(self, run_id):
+        # Signal handlers can interrupt a writer that holds state.lock.
+        # Each file replacement is atomic; migration refuses live actors.
+        return self.load_row(self.header(), run_id)
+
+    def contains(self, run_id):
+        try:
+            self.read_run(run_id)
+        except KeyError:
+            return False
+        return True
+
+    def save_row(self, data, row):
+        if data['schema'] == 'zesu.run-registry.v1':
+            data['runs'][row['id']] = row
+            self.write(data)
+        else:
+            self.atomic_write(self.row_path(row['id']), row)
+
+    def migrate(self):
+        """Opt in only after every actor and claim closes; old writers then refuse."""
+        with self.lock('transition'), self.lock():
+            data = self.header()
+            if data['schema'] != 'zesu.run-registry.v1':
+                raise ValueError('The store already uses per-run files.')
+            for run_id, row in data['runs'].items():
+                if row['id'] != run_id:
+                    raise ValueError('The run record ID does not match its key.')
+                if (any(live(a) for a in [row['scheduler']] + row['jobs'])
+                        or any(not c['released'] for c in row['claims'].values())):
+                    raise ValueError('Migration requires closed actors and released claims.')
+            target = self.directory / 'runs.d'
+            if target.exists():
+                raise ValueError('An existing per-run directory blocks migration.')
+            staging = self.directory / ('.migration-' + uuid.uuid4().hex)
+            staging.mkdir()
+            # A failed migration leaves v1 authoritative. Retain partial files
+            # for inspection; never adopt them during a later attempt.
+            for row in data['runs'].values():
+                self.atomic_write(staging / self.row_path(row['id']).name, row)
+            backup = self.directory / ('runs.v1-' + uuid.uuid4().hex + '.json')
+            self.atomic_write(backup, data)
+            os.rename(staging, target)
+            self.sync_directory(self.directory)
+            self.atomic_write(self.path, {'schema': 'zesu.run-registry.v2',
+                                         'legacy_snapshot': backup.name})
+
     def update(self, run_id, operation):
         with self.lock():
-            data = self.read()
-            row = data['runs'][run_id]
+            data = self.header()
+            row = self.load_row(data, run_id)
+            previous = copy.deepcopy(row)
             operation(row)
-            self.write(data)
+            if row != previous:
+                self.save_row(data, row)
             return row
 
     def register(self, run_id, kind, owner, scheduler, command):
@@ -169,15 +274,19 @@ class Registry:
         if not live(scheduler):
             raise ValueError('The scheduler identity is not live.')
         with self.lock():
-            data = self.read()
-            if run_id in data['runs']:
+            data = self.header()
+            try:
+                self.load_row(data, run_id)
+            except KeyError:
+                pass
+            else:
                 raise ValueError('The run ID already exists. Use a fresh run ID.')
-            data['runs'][run_id] = {
+            row = {
                 'id': run_id, 'kind': kind, 'owner': owner,
                 'scheduler': scheduler, 'jobs': [], 'claims': {},
                 'command': command, 'registered_ns': time.time_ns(),
                 'status': 'running'}
-            self.write(data)
+            self.save_row(data, row)
 
     def add_job(self, run_id, actor):
         if not live(actor):
@@ -195,7 +304,10 @@ class Registry:
         retained = {actor_key(a): a for a in row['jobs']}
         for actor in actors:
             if actor_key(actor) != actor_key(row['scheduler']):
-                retained[actor_key(actor)] = actor
+                # Process state changes do not change an actor identity.
+                previous = retained.get(actor_key(actor))
+                if previous is None or previous['ppid'] != actor['ppid']:
+                    retained[actor_key(actor)] = actor
         row['jobs'] = list(retained.values())
 
     def refresh(self, run_id):
@@ -218,7 +330,7 @@ class Registry:
     def release_claims(self, run_id):
         suffix = hashlib.sha256(run_id.encode()).hexdigest()
         with self.lock('release-' + suffix):
-            row = self.read()['runs'][run_id]
+            row = self.read_run(run_id)
             if any(live(a) for a in row['jobs']):
                 raise ValueError('The run still has live jobs. Its claims remain reserved.')
             for name, claim in row['claims'].items():
@@ -233,8 +345,8 @@ class Registry:
             # Acquire state before freezing any actor. Otherwise an actor can
             # keep this lock while stopped and prevent discovery or cleanup.
             with self.lock():
-                data = self.read()
-                row = data['runs'][run_id]
+                data = self.header()
+                row = self.load_row(data, run_id)
                 scheduler = row['scheduler']
                 if actor_key(scheduler) == actor_key(identity(os.getpid())):
                     raise ValueError('The registry cannot stop its own caller.')
@@ -261,11 +373,11 @@ class Registry:
                         row.update(status='stop_failed', all_actors_closed=False,
                                    stop_error='Actors did not stop within the grace interval.',
                                    stop_pending=pending)
-                        self.write(data)
+                        self.save_row(data, row)
                         raise ValueError(row['stop_error'])
                     if pending:
                         time.sleep(0.01)
-                self.write(data)
+                self.save_row(data, row)
             # Closing wrappers and release callbacks need state.lock. Do not
             # retain it while resuming actors or waiting for their exits.
             actors = row['jobs'] + [scheduler]
@@ -312,10 +424,10 @@ def run_command(registry, args):
     # This lock serializes replacements. The state lock stays available to
     # closing wrappers and claim-release callbacks during the stop operation.
     with registry.lock('transition'):
-        if run_id in registry.read()['runs']:
+        if registry.contains(run_id):
             raise ValueError('The run ID already exists. Use a fresh run ID.')
         for old_id in args.supersedes:
-            old = registry.read()['runs'][old_id]
+            old = registry.read_run(old_id)
             if old['owner'] != owner or old['kind'] != args.kind:
                 raise ValueError('A replacement must keep the old owner and kind.')
             registry.stop(old_id)
@@ -333,12 +445,16 @@ def run_command(registry, args):
     interrupted = []
     def interrupt(signum, _frame):
         interrupted.append(signum)
-        for actor in descendants(registry.read()['runs'][run_id]['jobs']):
+        for actor in descendants(registry.read_run_unlocked(run_id)['jobs']):
             send_signal(actor, signum)
     previous = {s: signal.signal(s, interrupt) for s in (signal.SIGTERM, signal.SIGINT)}
     try:
+        next_refresh = 0.0
         while process.poll() is None:
-            registry.refresh(run_id)
+            now = time.monotonic()
+            if now >= next_refresh:
+                registry.refresh(run_id)
+                next_refresh = time.monotonic() + REFRESH_SECONDS
             time.sleep(0.1)
         status = process.wait()
         row = registry.refresh(run_id)
@@ -369,6 +485,7 @@ def main():
     listing = commands.add_parser('list')
     listing.add_argument('--active', action='store_true')
     listing.add_argument('--json', action='store_true')
+    commands.add_parser('migrate-per-run', help='Opt in after all actors and claims close.')
     begin = commands.add_parser('begin')
     begin.add_argument('--id', required=True)
     begin.add_argument('--kind', required=True)
@@ -390,6 +507,11 @@ def main():
             sub.add_argument('--status', required=True)
     args = parser.parse_args()
     registry = Registry(args.store or default_store())
+    if args.action == 'migrate-per-run':
+        if args.store is None:
+            raise ValueError('Migration requires an explicit --store path.')
+        registry.migrate()
+        return 0
     if args.action == 'run':
         return run_command(registry, args)
     if args.action == 'begin':
@@ -397,10 +519,10 @@ def main():
         if actor is None or actor['startticks'] != args.startticks:
             raise ValueError('The scheduler PID and start ticks do not match.')
         with registry.lock('transition'):
-            if args.id in registry.read()['runs']:
+            if registry.contains(args.id):
                 raise ValueError('The run ID already exists. Use a fresh run ID.')
             for old_id in args.supersedes:
-                old = registry.read()['runs'][old_id]
+                old = registry.read_run(old_id)
                 if old['owner'] != args.owner or old['kind'] != args.kind:
                     raise ValueError('A replacement must keep the old owner and kind.')
                 registry.stop(old_id)

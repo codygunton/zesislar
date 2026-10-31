@@ -1,6 +1,7 @@
 """Exercise run replacement with real disposable process trees."""
 
 import json
+from types import SimpleNamespace
 import os
 from pathlib import Path
 import subprocess
@@ -8,7 +9,7 @@ import sys
 import tempfile
 import time
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import run_registry as R
@@ -65,6 +66,39 @@ class RunRegistryTests(unittest.TestCase):
         row = self.registry.read()['runs']['complete']
         self.assertEqual(row['status'], 'failed')
         self.assertEqual(row['exit_code'], 7)
+        self.assertTrue(row['all_actors_closed'])
+        self.assertEqual(self.registry.active(), [])
+
+    def test_signal_during_locked_update_does_not_deadlock(self):
+        code = '''
+import os, signal, sys
+from types import SimpleNamespace
+from unittest.mock import patch
+sys.path.insert(0, sys.argv[1])
+import run_registry as R
+registry = R.Registry(sys.argv[2])
+original = registry.refresh
+signalled = False
+def refresh(run_id):
+    global signalled
+    if signalled:
+        return original(run_id)
+    signalled = True
+    def operation(row):
+        row['fixture_signal_during_update'] = True
+        os.kill(os.getpid(), signal.SIGTERM)
+    return registry.update(run_id, operation)
+args = SimpleNamespace(id='interrupted', kind='fixture', owner='test', supersedes=[],
+                       command=[sys.executable, '-c', 'import time;time.sleep(60)'])
+with patch.object(registry, 'refresh', side_effect=refresh):
+    raise SystemExit(R.run_command(registry, args))
+'''
+        result = subprocess.run([sys.executable, '-B', '-c', code,
+            str(Path(R.__file__).parent), str(self.registry.directory)],
+            capture_output=True, text=True, timeout=5)
+        self.assertEqual(result.returncode, 143, result.stderr)
+        row = self.registry.read_run('interrupted')
+        self.assertTrue(row['fixture_signal_during_update'])
         self.assertTrue(row['all_actors_closed'])
         self.assertEqual(self.registry.active(), [])
 
@@ -261,7 +295,7 @@ R.Registry(store).stop('locking', grace=0.5)
         scheduler, child = self.sleeper(), self.sleeper()
         self.registry.register('failure', 'fixture', 'test', R.identity(scheduler.pid), [])
         self.registry.add_job('failure', R.identity(child.pid))
-        with patch.object(self.registry, 'write', side_effect=OSError('fixture write failure')):
+        with patch.object(self.registry, 'save_row', side_effect=OSError('fixture write failure')):
             with self.assertRaisesRegex(OSError, 'fixture write failure'):
                 self.registry.stop('failure', grace=0.5)
         self.wait_for(lambda: all(R.identity(p.pid)['state'] not in ('T', 't')
@@ -331,6 +365,178 @@ R.Registry(store).stop('locking', grace=0.5)
         self.assertEqual(process.wait(timeout=5), 0)
         output = subprocess.check_output(self.command('list', '--active', '--json'), text=True)
         self.assertEqual(json.loads(output), [])
+
+
+class PerRunRegistryTests(RunRegistryTests):
+    """Run the same actor, stop, release, and supersession controls in v2."""
+
+    def setUp(self):
+        super().setUp()
+        self.registry.migrate()
+
+
+class RegistryScalingTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.registry = R.Registry(Path(self.temp.name) / 'registry')
+
+    def seed(self, *names):
+        rows = {name: {'id': name, 'kind': 'fixture', 'owner': 'test',
+                      'scheduler': {'pid': 0, 'startticks': 0, 'ppid': 0, 'state': 'X'},
+                      'jobs': [], 'claims': {}, 'status': 'completed'} for name in names}
+        self.registry.write({'schema': 'zesu.run-registry.v1', 'runs': rows})
+        return rows
+
+    def test_default_store_remains_v1(self):
+        self.seed('old')
+        self.assertEqual(self.registry.header()['schema'], 'zesu.run-registry.v1')
+        self.assertFalse((self.registry.directory / 'runs.d').exists())
+
+    def test_migration_preserves_rows_and_original_snapshot(self):
+        rows = self.seed('old', '../separated/id')
+        rows['old']['claims']['memory'] = {'released': True, 'release_command': ['true']}
+        self.registry.write({'schema': 'zesu.run-registry.v1', 'runs': rows})
+        self.registry.migrate()
+        header = self.registry.header()
+        self.assertEqual(self.registry.read()['runs'], rows)
+        self.assertEqual(self.registry.read_file(
+            self.registry.directory / header['legacy_snapshot'])['runs'], rows)
+        self.assertEqual(self.registry.row_path('../separated/id').parent,
+                         self.registry.directory / 'runs.d')
+        # The former v1 reader rejects the protocol marker before writing.
+        self.assertNotEqual(json.loads(self.registry.path.read_text())['schema'],
+                            'zesu.run-registry.v1')
+        with self.assertRaisesRegex(ValueError, 'bulk write'):
+            self.registry.write({'schema': 'zesu.run-registry.v1', 'runs': {}})
+
+    def test_migration_refuses_live_scheduler_or_detached_job(self):
+        for location in ('scheduler', 'jobs'):
+            with self.subTest(location=location):
+                rows = self.seed('old')
+                actor = R.identity(os.getpid())
+                rows['old'][location] = actor if location == 'scheduler' else [actor]
+                self.registry.write({'schema': 'zesu.run-registry.v1', 'runs': rows})
+                with self.assertRaisesRegex(ValueError, 'closed actors'):
+                    self.registry.migrate()
+                self.assertEqual(self.registry.header()['schema'], 'zesu.run-registry.v1')
+
+    def test_migration_refuses_unreleased_claim(self):
+        rows = self.seed('old')
+        rows['old']['claims']['memory'] = {'released': False, 'release_command': ['true']}
+        self.registry.write({'schema': 'zesu.run-registry.v1', 'runs': rows})
+        with self.assertRaisesRegex(ValueError, 'released claims'):
+            self.registry.migrate()
+
+    def test_interrupted_migration_retains_v1_authority(self):
+        rows = self.seed('old')
+        original = self.registry.path.read_bytes()
+        with patch.object(self.registry, 'atomic_write', side_effect=OSError('fixture failure')):
+            with self.assertRaisesRegex(OSError, 'fixture failure'):
+                self.registry.migrate()
+        self.assertEqual(self.registry.path.read_bytes(), original)
+        self.assertEqual(self.registry.read()['runs'], rows)
+
+    def test_unpublished_per_run_directory_is_never_adopted(self):
+        self.seed('old')
+        (self.registry.directory / 'runs.d').mkdir()
+        with self.assertRaisesRegex(ValueError, 'blocks migration'):
+            self.registry.migrate()
+        self.assertEqual(self.registry.header()['schema'], 'zesu.run-registry.v1')
+
+    def test_run_directory_is_durable_before_marker_publication(self):
+        self.seed('old')
+        events = []
+        rename, sync, write = R.os.rename, R.Registry.sync_directory, self.registry.atomic_write
+        def record_rename(source, target):
+            rename(source, target)
+            events.append('rename')
+        def record_sync(path):
+            sync(path)
+            if path == self.registry.directory:
+                events.append('parent_sync')
+        def record_write(path, value):
+            if path == self.registry.path:
+                self.assertEqual(events[-2:], ['rename', 'parent_sync'])
+                events.append('marker')
+            write(path, value)
+        with patch.object(R.os, 'rename', side_effect=record_rename), \
+                patch.object(R.Registry, 'sync_directory', side_effect=record_sync), \
+                patch.object(self.registry, 'atomic_write', side_effect=record_write):
+            self.registry.migrate()
+        self.assertIn('marker', events)
+
+    def test_v2_missing_run_directory_refuses_history_and_updates(self):
+        self.seed('old')
+        self.registry.migrate()
+        directory = self.registry.directory / 'runs.d'
+        directory.rename(self.registry.directory / 'retained-runs.d')
+        for operation in (self.registry.read,
+                          lambda: self.registry.read_run('old'),
+                          lambda: self.registry.update('old', lambda row: None)):
+            with self.assertRaisesRegex(ValueError, 'directory is missing'):
+                operation()
+
+    def test_per_run_update_does_not_read_or_replace_historical_rows(self):
+        self.seed('old', 'active')
+        self.registry.migrate()
+        old = self.registry.row_path('old')
+        before = (old.stat().st_ino, old.read_bytes())
+        reader = self.registry.read_file
+        def read_without_history(path):
+            self.assertNotEqual(path, old)
+            return reader(path)
+        with patch.object(self.registry, 'read_file', side_effect=read_without_history):
+            self.registry.update('active', lambda row: row.update(status='failed'))
+        self.assertEqual((old.stat().st_ino, old.read_bytes()), before)
+        self.assertEqual(self.registry.read_run('active')['status'], 'failed')
+
+    def test_noop_update_and_state_only_refresh_do_not_write(self):
+        self.seed('old')
+        actor = {'pid': 123, 'startticks': 45, 'ppid': 67, 'state': 'R'}
+        self.registry.update('old', lambda row: row['jobs'].append(actor))
+        with patch.object(self.registry, 'save_row') as saving, \
+                patch.object(R, 'descendants', return_value=[dict(actor, state='S')]):
+            self.registry.refresh('old')
+            self.registry.update('old', lambda row: None)
+            saving.assert_not_called()
+        with patch.object(R, 'descendants', return_value=[dict(actor, startticks=46)]):
+            row = self.registry.refresh('old')
+        self.assertEqual([a['startticks'] for a in row['jobs']], [45, 46])
+
+    def test_per_run_record_id_mismatch_refuses(self):
+        self.seed('old')
+        self.registry.migrate()
+        path = self.registry.row_path('old')
+        row = self.registry.read_run('old')
+        row['id'] = 'other'
+        self.registry.atomic_write(path, row)
+        with self.assertRaisesRegex(ValueError, 'does not match'):
+            self.registry.read_run('old')
+        with self.assertRaisesRegex(ValueError, 'invalid ID'):
+            self.registry.read()
+
+    def test_routine_refresh_is_throttled_and_final_refresh_is_immediate(self):
+        registry = MagicMock()
+        registry.contains.return_value = False
+        registry.refresh.return_value = {'status': 'running', 'jobs': []}
+        process = MagicMock(pid=999999999)
+        process.poll.side_effect = [None] * 71 + [0]
+        process.wait.return_value = 0
+        clock, samples = [0.0], []
+        registry.refresh.side_effect = lambda run_id: (
+            samples.append(clock[0]) or {'status': 'running', 'jobs': []})
+        args = SimpleNamespace(command=['true'], owner='test', id='fixture',
+                               kind='fixture', supersedes=[])
+        with patch.object(R.subprocess, 'Popen', return_value=process), \
+                patch.object(R.time, 'monotonic', side_effect=lambda: clock[0]), \
+                patch.object(R.time, 'sleep', side_effect=lambda t: clock.__setitem__(0, clock[0] + t)):
+            self.assertEqual(R.run_command(registry, args), 0)
+        self.assertEqual(len(samples), 4)
+        self.assertGreaterEqual(samples[1] - samples[0], 3)
+        self.assertGreaterEqual(samples[2] - samples[1], 3)
+        self.assertAlmostEqual(samples[-1], 7.1)
+        self.assertLess(samples[-1] - samples[-2], 3)
 
 
 if __name__ == '__main__':
