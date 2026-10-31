@@ -543,6 +543,33 @@ def definition_introduction_source(source, name):
             f"  {body} := @PreOrder_Reflexive _ _ bi.entails_po _.\n")
 
 
+def introduction_predicate_owner(source, namespace, imports, resolver):
+    """Resolve an introduction's actual source application, not its basename."""
+    from check_data_only_lemmas import atom, predicate_head
+
+    commands = rocq_commands(source)
+    if len(commands) != 1:
+        raise ValueError("An introduction owner requires one declaration.")
+    values = [value for value, _ in commands[0]]
+    if "Instance" not in values:
+        raise ValueError("An introduction owner requires an instance.")
+    instance = values[values.index("Instance") + 1]
+    classes = [index for index, value in enumerate(values)
+               if value.rsplit(".", 1)[-1] == "ZesuPureFactIntro"]
+    if not classes:
+        raise ValueError("The declaration has no supported introduction class.")
+    # The generated class supplies Sigma explicitly, then its source predicate.
+    _, position = atom(values, classes[0] + 1)
+    target, _ = atom(values, position)
+    head = predicate_head(target)
+    qualified = resolver.resolve(head, namespace, imports)
+    owner, name = qualified.rsplit(".", 1)
+    if instance != name + "_intro":
+        raise ValueError("The introduction name does not match its source predicate.")
+    return dict(instance=instance, qualified_predicate=qualified,
+                owner_module=owner, predicate=name, target_application=target)
+
+
 def retain_definition_facts(source, name, row, facts):
     """Insert certified leaves inside an unchanged existential resource scope.
 
