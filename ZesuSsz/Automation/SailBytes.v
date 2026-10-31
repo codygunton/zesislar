@@ -4,7 +4,7 @@ From Coq Require Import Bool List ZArith Lia.
 Require Import SailStdpp.MachineWord SailStdpp.Values SailStdpp.Operators_mwords.
 From stdpp Require Import bitvector.definitions.
 Import ListNotations.
-Open Scope Z_scope.
+Local Open Scope Z_scope.
 
 Lemma sail_byte_lor_shift (item : SailStdpp.Values.mword 8) value :
   Z.lor (bv_unsigned item) (Z.shiftl value 8) =

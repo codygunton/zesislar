@@ -2,7 +2,7 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 From iris.proofmode Require Import environments.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
-Open Scope Z_scope.
+Local Open Scope Z_scope.
 
 Lemma zesu_packed_u64_lookup count index (bytes : list (bv 8)) :
   length bytes = (count * 8)%nat -> (index < count)%nat ->

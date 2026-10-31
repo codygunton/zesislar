@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import re
 
-from check_data_only_lemmas import rocq_tokens
+from check_data_only_lemmas import rocq_tokens, rocq_commands, command_imports
 from entry_bindings import check_binders, declared_binders, normalize_type
 from entry_schema import IDENTIFIER, ROCQ_NAME, contract_fields, source_module, verify_sources
 from function_names import FunctionNames, prefix_argument
@@ -587,6 +587,24 @@ def bootstrap_source(value, root, generated, ordinary_sources):
     return HEADER + "\n".join(lines).rstrip() + "\n"
 
 
+def owner_imports(text, source_groups):
+    """Load each hash-bound owner that the rendered declarations reference."""
+    tokens = {token for token, _ in rocq_tokens(text)}
+    owners = set()
+    loaded = set()
+    for command in rocq_commands(text):
+        words = [word for word, _ in command]
+        if 'Require' in words:
+            loaded.update(command_imports(words)[0])
+    for sources in source_groups:
+        for path in sources:
+            if path.endswith(".v"):
+                owner = source_module(path)
+                if any(token.startswith(owner + ".") for token in tokens):
+                    owners.add(owner)
+    return ["Require Import " + owner + "." for owner in sorted(owners - loaded)]
+
+
 def render_support(design, root, *, name_prefix="decodeItem"):
     """Validate both outputs before a caller writes either output."""
     root = Path(root)
@@ -656,17 +674,25 @@ def render_support(design, root, *, name_prefix="decodeItem"):
         identifier(name, "unfold entry")
     if len(set(registered)) != len(registered) or set(registered) != set(declarations):
         raise ValueError("The unfold list must name each rendered entry once.")
-    entries_text = HEADER + "\n".join(entry_imports + scoped["entries"] + [f"Open Scope {scope}." for scope in scopes]) + "\n\n"
+    entries_text = HEADER + "\n".join(entry_imports + scoped["entries"] + [f"Local Open Scope {scope}." for scope in scopes]) + "\n\n"
     entries_text += "\n".join(source for _, source in entries)
+    source_groups = [contract_fields(block)["source_hashes"] for block in rows]
+    source_groups.append(metadata.get("source_hashes", {}))
+    entries_owners = owner_imports(entries_text, source_groups)
+    if entries_owners:
+        entries_text = HEADER + "\n".join(entries_owners) + "\n" + entries_text[len(HEADER):]
     registration_lines = registration_imports + [f"Require Export ZesuSsz.Generated.{names.module}.Entries."]
     registration_lines += scoped["registrations"]
-    registration_lines += [f"Open Scope {scope}." for scope in registration_scopes] + [""]
+    registration_lines += [f"Local Open Scope {scope}." for scope in registration_scopes] + [""]
     # Keep generated pairs first, then the supplied handwritten-source order.
     registration_lines.extend(unfold_pairs(registered + unfold_sources))
     registration_lines.extend(source.rstrip() + "\n" for _, source in facts)
     registration_lines.extend(source.rstrip() + "\n" for _, source in introductions)
     registration_lines.extend(umbrella)
     registrations_text = HEADER + "\n".join(registration_lines).rstrip() + "\n"
+    registration_owners = owner_imports(registrations_text, source_groups)
+    if registration_owners:
+        registrations_text = HEADER + "\n".join(registration_owners) + "\n" + registrations_text[len(HEADER):]
     outputs = {directory / "Entries.v": entries_text,
                directory / "Registrations.v": registrations_text}
     if "bootstrap" in metadata:

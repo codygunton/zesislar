@@ -361,11 +361,11 @@ class SupportRendererTests(unittest.TestCase):
                 {"target": "registrations", "module": "Example.Notations"}]
             result = renderer.render_support(design, root, name_prefix="fixture")
             entries = result[Path("ZesuSsz/Generated/Fixture/Entries.v")]
-            self.assertIn("Import ListNotations.\nImport Example.Notations.\nOpen Scope", entries)
+            self.assertIn("Import ListNotations.\nImport Example.Notations.\nLocal Open Scope", entries)
             design["support"]["registrations_scopes"] = ["Z_scope", "list_scope"]
             registrations = renderer.render_support(design, root, name_prefix="fixture")[
                 Path("ZesuSsz/Generated/Fixture/Registrations.v")]
-            self.assertIn("Open Scope Z_scope.\nOpen Scope list_scope.", registrations)
+            self.assertIn("Local Open Scope Z_scope.\nLocal Open Scope list_scope.", registrations)
             for scopes in (["Z_scope", "Z_scope"], "Z_scope", [True], ["Z_scope. Admitted."]):
                 design["support"]["registrations_scopes"] = scopes
                 with self.subTest(scopes=scopes), self.assertRaises(ValueError):

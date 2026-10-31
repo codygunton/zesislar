@@ -10,3 +10,5 @@ Require Export ZesuSsz.Automation.UninitRegions.
 Require Export ZesuSsz.Automation.NatBitvectors.
 Require Export ZesuSsz.Automation.ArrayPacking.
 Require Export ZesuSsz.Automation.LoopIndex.
+
+#[export] Instance zesu_explicit_v1 : ZesuSsz.Automation.PureFacts.ZesuRuleSetV1 := I.

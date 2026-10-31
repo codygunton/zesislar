@@ -12,6 +12,7 @@ RV_LD      ?= riscv64-elf-ld
 RV_OBJDUMP ?= riscv64-elf-objdump
 RV_OBJCOPY ?= riscv64-elf-objcopy
 PYTHON     ?= python3
+MCP_PYTHON ?= $(HOME)/.local/share/uv/tools/rocq-mcp/bin/python
 
 export PATH := $(CURDIR)/bin:$(ISLARIS_REPO)/bin:$(PATH)
 export ISLA_REPO
@@ -124,9 +125,12 @@ check-evidence-tools:
 	@echo "uncached checks: machine config, tests, hygiene, spec shapes"
 	$(PYTHON) tools/machine_config.py --check
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
+	@command -v "$(MCP_PYTHON)" >/dev/null 2>&1 || { echo "MCP_PYTHON must name the installed MCP test interpreter" >&2; exit 2; }
+	$(MCP_PYTHON) -B -m unittest discover -s tools/block/harness -p 'test_*.py'
 	$(PYTHON) -m unittest tools.block.test_approved_switches tools.block.test_automation_lints
 	$(PYTHON) -m tools.block.check_approved_switches
 	$(PYTHON) -m tools.block.check_generic_automation
+	$(PYTHON) -m tools.block.check_export_scopes
 	$(PYTHON) -m tools.block.check_data_only_lemmas
 	$(PYTHON) -m unittest discover -s tools/stock_zisk -p 'test_manifest.py'
 	PYTHONPATH=tools/stock_zisk/platform $(PYTHON) -m unittest discover -s tools/stock_zisk/platform -p 'test_function_binding.py'

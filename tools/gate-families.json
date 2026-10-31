@@ -1,0 +1,33 @@
+{
+  "schema": "zesu.reviewed-gate-families.v1",
+  "families": {
+    "check-fast": {
+      "command": [
+        "make",
+        "--no-print-directory",
+        "_check-fast"
+      ],
+      "physical_fence_bytes": 128849018880,
+      "measurement": {
+        "path": "gate-measurements/pr54-check-fast.json",
+        "sha256": "83963e880de0de13dd45bc39fadb3dd3e3467699ba22930e9546a8f4c3c99058"
+      },
+      "peak_bytes": 2090127360,
+      "authority": "Orch approved the PR54 check-fast peak as a measured gate-family basis."
+    },
+    "check-iris": {
+      "command": [
+        "make",
+        "--no-print-directory",
+        "_check-iris"
+      ],
+      "physical_fence_bytes": 128849018880,
+      "measurement": {
+        "path": "gate-measurements/pr54-check-iris.json",
+        "sha256": "b9420724353d36f911cdd5b05586cd38ff03a608098e43d0b76094e2274876ab"
+      },
+      "peak_bytes": 389505024,
+      "authority": "Root approved the paired green PR54 Iris receipt as a measured gate-family basis."
+    }
+  }
+}

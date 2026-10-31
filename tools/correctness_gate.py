@@ -139,6 +139,18 @@ def select_peak(history, target, *, claim_ceiling_bytes=0, physical_fence_bytes=
             "qualification": "No completed uncached measurement binds the exact current workload identity. Reserve the full aggregate fence."}
 
 
+def select_admission_basis(history, target, command, physical_fence_bytes, claim_ceiling_bytes=0):
+    if type(claim_ceiling_bytes) is not int or claim_ceiling_bytes < 0:
+        raise ValueError('The declared gate claim ceiling must be a nonnegative integer.')
+    from gate_family import select as measured_family
+    basis = measured_family(target, command, physical_fence_bytes)
+    if basis is None:
+        basis = select_peak(history, target, claim_ceiling_bytes=claim_ceiling_bytes,
+                            physical_fence_bytes=physical_fence_bytes)
+    basis['claim_bytes'] = max(claim_ceiling_bytes, basis['claim_bytes'])
+    return basis
+
+
 def active_claims(ledger):
     """Count every fixed claim and every unverified legacy reservation."""
     result = dict(ledger["fixed_claims"])
@@ -303,11 +315,11 @@ def run(args):
     base = common.parent
     history = Path(os.environ.get("ZESU_GATE_PEAK_HISTORY", base / "_build/correctness-gates/HISTORY.json"))
     history_data = read(history) if history.is_file() else {"schema": "zesu.gate-measurements.v1", "runs": []}
-    basis = select_peak(history_data, args.target, claim_ceiling_bytes=args.claim_ceiling_bytes,
-                        physical_fence_bytes=batch_fence_bytes(os.environ))
     command = args.command[1:] if args.command[:1] == ["--"] else args.command
     if not command:
         raise ValueError("The correctness gate command is absent.")
+    basis = select_admission_basis(history_data, args.target, command,
+                                   batch_fence_bytes(os.environ), args.claim_ceiling_bytes)
     ledger = Path(os.environ.get("ZESU_CANONICAL_LEDGER", base / "_build/agents/worker-build-2/native-region-release-v1/LEDGER.json"))
     policy = {"ledger": str(ledger), "lock": str(ledger.with_name("LEDGER.lock")),
               "claim_key": "CorrectnessGate_" + uuid.uuid4().hex, "claim_bytes": basis["claim_bytes"]}
