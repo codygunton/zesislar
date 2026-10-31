@@ -516,6 +516,108 @@ def introduction_source(value, fields, root, generated):
     return name, f"#[{value['locality']}] Instance {name}{typed} : {target}{priority} :=\n  {constructor}.\n"
 
 
+def mapping_symbol(name, fields, root, loaded):
+    """Resolve a supplied name only through its bound, explicitly imported owner."""
+    identifier(name, "mapping symbol", qualified="." in name)
+    if "." in name:
+        owner, _, _ = bound_symbol(name, fields, root)
+        if source_module(owner) not in loaded:
+            raise ValueError("The mapping symbol needs its bound imported owner: " + name)
+        return name
+    matches = []
+    for module in loaded:
+        if module not in {source_module(path) for path in fields["source_hashes"]}:
+            continue
+        try:
+            bound_symbol(module + "." + name, fields, root)
+        except ValueError:
+            continue
+        matches.append(module + "." + name)
+    if len(matches) != 1:
+        raise ValueError("The mapping symbol needs one bound imported owner: " + name)
+    return matches[0]
+
+
+def witness_mapping_source(value, fields, root, loaded):
+    """Render an explicit mapping record without computing a witness or a premise."""
+    record(value, {"name", "iris_contexts", "parameters", "class", "source",
+                   "input_type", "witness_type", "input", "mapping", "locality"},
+           "witness mapping")
+    name = identifier(value["name"], "mapping name")
+    if value["locality"] not in {"local", "global", "export"}:
+        raise ValueError("The mapping locality is unsupported.")
+    mapping_symbol(value["class"], fields, root, loaded)
+    contexts = []
+    for context in sequence(value["iris_contexts"], "Iris contexts"):
+        if context not in {"!islaG Sigma", "!threadG"} or context in contexts:
+            raise ValueError("The Iris context is repeated or unsupported.")
+        contexts.append(context)
+    typed = "".join(" `{" + context + "}" for context in contexts)
+    names = {"Sigma", name}
+    for binder in sequence(value["parameters"], "mapping parameters"):
+        record(binder, {"name", "type", "implicit"}, "mapping parameter")
+        bound = identifier(binder["name"], "mapping parameter name")
+        if bound in names:
+            raise ValueError("The mapping parameter is repeated or reserved.")
+        names.add(bound)
+        kind = expression(binder["type"], "mapping parameter type")
+        expression_references(kind, fields, root)
+        if type(binder["implicit"]) is not bool:
+            raise ValueError("The mapping parameter implicit flag must be Boolean.")
+        opening, closing = ("{", "}") if binder["implicit"] else ("(", ")")
+        typed += f" {opening}{bound} : {kind}{closing}"
+    source = record(value["source"], {"predicate", "arguments"}, "mapping source")
+    qualified = mapping_symbol(source["predicate"], fields, root, loaded)
+    bound_application(dict(source, predicate=qualified), fields, root)
+    entry = source["predicate"] + "".join(
+        " (" + expression(argument, "mapping source argument") + ")"
+        for argument in source["arguments"])
+    terms = {}
+    for key in ("input_type", "witness_type", "input", "mapping"):
+        terms[key] = expression(value[key], "mapping " + key)
+        expression_references(terms[key], fields, root)
+    target = f"{value['class']} ({entry}) ({terms['input_type']}) {terms['witness_type']}"
+    return (f"#[{value['locality']}] Instance {name}{typed} :\n  {target} :=\n"
+            f"  {{| zesu_witness_input := {terms['input']};\n"
+            f"     zesu_witness_mapping := {terms['mapping']} |}}.\n")
+
+
+def witness_mapping_sources(values, root, directory, generated_paths=()):
+    """Emit caller-owned modules through the existing declaration renderer."""
+    outputs = {}
+    for value in sequence(values, "witness mapping modules"):
+        record(value, {"module", "imports", "scopes", "source_hashes", "mappings"},
+               "witness mapping module")
+        module = identifier(value["module"], "mapping module", qualified=True)
+        parent, name = module.rsplit(".", 1)
+        if parent != str(directory).replace("/", "."):
+            raise ValueError("The mapping module must belong to the function's Generated directory.")
+        path = directory / (name + ".v")
+        if path in outputs or str(path) in generated_paths or name in {
+                "Entries", "Registrations", "BootstrapRegistrations"}:
+            raise ValueError("The mapping module repeats or replaces a generated output.")
+        fields = contract_fields({"entry_definition": "Support.Source.input",
+                                  "resource_predicate": "Support.Source.input", "binders": [],
+                                  "arguments": [], "source_hashes": value["source_hashes"]})
+        if str(path) in fields["source_hashes"] or set(generated_paths).intersection(fields["source_hashes"]):
+            raise ValueError("The mapping module binds a generated output as an input.")
+        verify_sources(fields, root)
+        lines = imports(value["imports"])
+        loaded = {row["module"] for row in value["imports"]}
+        lines += [f"Local Open Scope {scope}." for scope in scope_names(value["scopes"], "scope")]
+        mappings = sequence(value["mappings"], "witness mappings")
+        if not mappings:
+            raise ValueError("The mapping module has no mappings.")
+        names = [identifier(row.get("name"), "mapping name")
+                 for row in mappings if isinstance(row, dict)]
+        if len(names) != len(mappings) or len(set(names)) != len(names):
+            raise ValueError("The mapping name is repeated or invalid.")
+        text = HEADER + "\n".join(lines) + "\n\n"
+        text += "\n".join(witness_mapping_source(row, fields, root, loaded) for row in mappings)
+        outputs[path] = text
+    return outputs
+
+
 def scoped_imports(values):
     result = {"entries": [], "registrations": []}
     seen = set()
@@ -618,7 +720,7 @@ def render_support(design, root, *, name_prefix="decodeItem"):
         "version", "entries_imports", "entries_scopes", "registrations_imports",
         "unfold_entries", "introductions", "hint_umbrella", "scoped_imports", "facts"}
     if (not isinstance(metadata, dict) or not keys.issubset(metadata) or
-            set(metadata) - keys - {"source_hashes", "registrations_scopes", "unfold_sources", "bootstrap"}):
+            set(metadata) - keys - {"source_hashes", "registrations_scopes", "unfold_sources", "bootstrap", "witness_mappings"}):
         raise ValueError("The function support has missing or unsupported fields.")
     if type(metadata["version"]) is not int or metadata["version"] != 1:
         raise ValueError("The function support version is unsupported.")
@@ -698,6 +800,8 @@ def render_support(design, root, *, name_prefix="decodeItem"):
     if "bootstrap" in metadata:
         outputs[directory / "BootstrapRegistrations.v"] = bootstrap_source(
             metadata["bootstrap"], root, generated, unfold_sources)
+    outputs.update(witness_mapping_sources(metadata.get("witness_mappings", []), root,
+                                          directory, generated_paths))
     return outputs
 
 

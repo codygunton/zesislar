@@ -99,6 +99,107 @@ class SupportRendererTests(unittest.TestCase):
             self.assertLess(source.index("Facts.Second"), source.index("Facts.First"))
             self.assertNotIn("Proof.", source)
 
+    def mapping_fixture(self, root, design):
+        source = root / "Contracts/Mapping.v"
+        source.write_text("Class Mapping (key : Type) (Input Witness : Type) := {}.\n"
+                          "Definition FixtureWitness : Type := unit.\n")
+        module = {"module": "ZesuSsz.Generated.Fixture.WitnessMappings",
+                  "imports": [{"mode": "import", "module": "Contracts.Fixture"},
+                              {"mode": "import", "module": "Contracts.Mapping"}],
+                  "scopes": ["Z_scope"],
+                  "source_hashes": {**design["blocks"][0]["source_hashes"],
+                                    "Contracts/Mapping.v": hashlib.sha256(source.read_bytes()).hexdigest()},
+                  "mappings": [{"name": "explicit_mapping", "iris_contexts": ["!islaG Sigma", "!threadG"],
+                      "parameters": [{"name": row["name"], "type": row["type"], "implicit": False}
+                                     for row in design["blocks"][0]["binders"]],
+                      "class": "Mapping", "source": {"predicate": "entry", "arguments":
+                          ["args", "frame", "prefix", "rest"]}, "input_type": "bv 64%N",
+                      "witness_type": "FixtureWitness", "input": 'ZesuWitnessRegister 64%N "x16"',
+                      "mapping": "explicit_data args", "locality": "export"}]}
+        design["support"]["witness_mappings"] = [module]
+        return module
+
+    def test_optional_mapping_emits_only_the_supplied_signature_and_record(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            design = self.fixture(root)
+            baseline = renderer.render_support(design, root, name_prefix="fixture")
+            self.mapping_fixture(root, design)
+            outputs = renderer.render_support(design, root, name_prefix="fixture")
+            for path, text in baseline.items():
+                self.assertEqual(outputs[path], text)
+            text = outputs[Path("ZesuSsz/Generated/Fixture/WitnessMappings.v")]
+            self.assertIn("Mapping (entry (args) (frame) (prefix) (rest)) (bv 64%N) FixtureWitness", text)
+            self.assertIn('zesu_witness_input := ZesuWitnessRegister 64%N "x16"', text)
+            self.assertIn("zesu_witness_mapping := explicit_data args", text)
+            self.assertNotIn("Proof.", text)
+            self.assertNotIn("Hint", text)
+
+    def test_mapping_records_preserve_both_accepted_golden_declarations(self):
+        fixtures = Path(__file__).parent / "fixtures/witness_mappings"
+        values = json.loads((fixtures / "mappings.json").read_text())["witness_mappings"]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            # These source stubs test name/arity binding only. The golden text
+            # supplies the independent, complete accepted declaration.
+            for value in values:
+                mapping = value["mappings"][0]
+                parameters = "".join(f" ({p['name']} : {p['type']})" for p in mapping["parameters"])
+                for relative in value["source_hashes"]:
+                    path = root / relative
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_text("Class ZesuEntryWitnessMapping (key Input Witness : Type) := {}.\n"
+                                    if relative.endswith("EntryWitnessInputs.v") else
+                                    "Definition " + mapping["source"]["predicate"] + parameters + " : Type := unit.\n"
+                                    if "Projection" in relative or "Entries322" in relative else "")
+                value["source_hashes"] = {relative: hashlib.sha256((root / relative).read_bytes()).hexdigest()
+                                          for relative in value["source_hashes"]}
+            outputs = renderer.witness_mapping_sources(values, root, Path("ZesuSsz/Generated/DecodeItem"))
+            for value in values:
+                name = value["module"].rsplit(".", 1)[-1]
+                pc = name[len("Entry"):len("Entry") + 4]
+                expected = (fixtures / ("Entry" + pc + "WitnessRegistration.v.txt")).read_text()
+                actual = outputs[Path(value["module"].replace(".", "/") + ".v")]
+                tokens = lambda text: [word for word, _ in renderer.rocq_tokens(text[text.index("#[export] Instance"):])]
+                self.assertEqual(tokens(actual), tokens(expected))
+
+    def test_mapping_refuses_scripts_ownership_errors_and_changed_sources(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            design = self.fixture(root)
+            module = self.mapping_fixture(root, design)
+            original = deepcopy(module)
+            cases = [({"module": "ZesuSsz.Automation.Mapping"}, "Generated directory"),
+                     ({"module": "ZesuSsz.Generated.Fixture.Entries"}, "replaces"),
+                     ({"imports": []}, "bound imported owner")]
+            for update, message in cases:
+                design["support"]["witness_mappings"] = [dict(original, **update)]
+                with self.subTest(update=update), self.assertRaisesRegex(ValueError, message):
+                    renderer.render_support(design, root, name_prefix="fixture")
+            for key in ["input_type", "witness_type", "input", "mapping"]:
+                altered = deepcopy(original)
+                altered["mappings"][0][key] = "ltac:(exact I)"
+                design["support"]["witness_mappings"] = [altered]
+                with self.subTest(key=key), self.assertRaisesRegex(ValueError, "command or tactic"):
+                    renderer.render_support(design, root, name_prefix="fixture")
+            design["support"]["witness_mappings"] = [original]
+            (root / "Contracts/Mapping.v").write_text("changed\n")
+            with self.assertRaisesRegex(ValueError, "source hash changed"):
+                renderer.render_support(design, root, name_prefix="fixture")
+
+    def test_qualified_mapping_symbol_requires_its_imported_owner(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            design = self.fixture(root)
+            module = self.mapping_fixture(root, design)
+            module["mappings"][0]["class"] = "Contracts.Mapping.Mapping"
+            module["imports"] = [{"mode": "import", "module": "Contracts.Fixture"}]
+            with self.assertRaisesRegex(ValueError, "needs its bound imported owner"):
+                renderer.render_support(design, root, name_prefix="fixture")
+            module["imports"].append({"mode": "import", "module": "Contracts.Mapping"})
+            outputs = renderer.render_support(design, root, name_prefix="fixture")
+            self.assertIn("Contracts.Mapping.Mapping", outputs[Path("ZesuSsz/Generated/Fixture/WitnessMappings.v")])
+
     def test_auxiliary_traversal_preserves_dependency_order_and_validates_parameters(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
