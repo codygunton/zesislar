@@ -54,6 +54,11 @@ A declaration import alone does not establish activation.
 Keep its exact statement and its accepted `module_m` result with empty assumptions.
 Retain the previous supplier's refusal when that evidence exists.
 
+Interactive evidence that uses `abstract` requires physical confirmation.
+Compile the unchanged file.
+Require successful `module_m` checks with empty assumptions after importing its object.
+Inline compiler prints do not replace these checks.
+
 The migrated `test_*.py` files preserve the existing regression controls.
 Some historical controls require their original bound development artifacts.
 The portable tests in `tools/test_shared_harness.py` require no proof artifacts.
