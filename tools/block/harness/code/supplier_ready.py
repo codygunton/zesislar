@@ -51,14 +51,14 @@ def owned(workspace, relative):
     return path
 
 
-def installation(index, compiler, physical_flags):
+def installation(index, compiler, physical_flags, supplier=None):
     """Use the existing resolver inventory and its bound executable identity."""
     from installed_mappings import InstalledMappings
     tool = Path(compiler['compiler']['path']).parent / 'coqdep'
     row = index.get(str(tool.resolve()))
     require(row is not None, 'installation resolver lacks its binding')
     bound(row)
-    selected = InstalledMappings(physical_flags, coqdep=tool)
+    selected = InstalledMappings(physical_flags, coqdep=tool, supplier=supplier)
     require(selected.tool_sha256 == row['sha256'], 'installation resolver changed')
     return selected, row
 
@@ -229,7 +229,7 @@ def validate(binding):
         if external:
             require(name not in ROOTS and name not in ordered, 'production root or compile leaves its owned workspace')
             if installed is None:
-                installed, resolver = installation(index, compiler, packet['physical_flags'])
+                installed, resolver = installation(index, compiler, packet['physical_flags'], binding)
                 evidence.append(resolver)
             physical_mapping = installed_module(name, original, installed)
             source = original
@@ -356,7 +356,8 @@ def staged(supplier, config):
                 from installed_mappings import InstalledMappings
                 resolver = supplier['installation_resolver']
                 bound(resolver)
-                installed = InstalledMappings(config['physical_flags'], coqdep=resolver['path'])
+                installed = InstalledMappings(config['physical_flags'], coqdep=resolver['path'],
+                                              supplier=supplier['bindings'][0])
                 require(installed.tool_sha256 == resolver['sha256'], 'staged installation resolver differs')
             actual_mapping = installed_module(row['module'], mapping[row['module']], installed)
             require(actual_mapping == row['installed_mapping'], 'staged installation identity differs')
