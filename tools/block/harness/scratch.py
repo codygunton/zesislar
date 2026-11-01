@@ -213,10 +213,10 @@ def sealed_rules_prefix(profile_binding,declarations_only,control_session):
     return selected,common(selected)
 
 
-def rebind_prepared_tools(c):
-    layout=json.loads((HERE/'TOOL-LAYOUT.json').read_text())
-    c['prepared_tool_transition']=[dict(relative=relative,prepared=binding(Path(c['prepared_workspace'])/'tools'/relative),successor=binding(HERE/source)) for relative,source in layout.items()]
-    __import__('restart_bindings').verify_restart_runtime(c,HERE)
+def rebind_prepared_tools(c,prior_runtime=None):
+    from restart_bindings import prepared_transitions,verify_restart_runtime
+    c['prepared_tool_transition']=prepared_transitions(c,HERE,prior_runtime)
+    verify_restart_runtime(c,HERE)
 
 def prepare(a):
     from command_scope import require
@@ -624,7 +624,7 @@ def refresh_memory(argv):
         compact(c,c['seed_binding_reference']['descriptor'],c['prepared_workspace'])
         check_proof_bindings(c)
     # New tools have identical owned shell bytes. Never write the old workspace.
-    rebind_prepared_tools(c)
+    rebind_prepared_tools(c,prior)
     original_inputs=args.prior_runtime.parent/'INPUTS.json'
     inputs=read_bound(binding(original_inputs)) if original_inputs.exists() else {}
     inputs.update(CPU_external_stop_seconds=search_budget,end_of_run_cleanup=c['end_of_run_cleanup'],memory_refresh={'prior_runtime':prior,'prepared_workspace_unchanged':True,'source_staging_repeated':False,'proof_calls':0,'claims_created':0},completed_stock_measurements=measurements,memory_jobs=c['jobs'])

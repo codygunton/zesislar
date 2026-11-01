@@ -101,12 +101,17 @@ def outer_argv(workspace,key,out):
 
 
 def stage_job(config,job,out):
+    if config.get('prepared_tool_transition'):
+        from restart_bindings import verify_restart_runtime
+        verify_restart_runtime(config,Path(__file__).resolve().parent.parent)
     source=Path(config['prepared_workspace'])
     sealed=False
     if config.get('seed_binding_reference'):
         from seed_bindings import descriptor,validate
         sealed=bool(descriptor(config['seed_binding_reference']['descriptor']).get('sealed_boundary'))
         if sealed:validate(config['seed_binding_reference'],source)
+    if sealed and any(row.get('prepared') is None for row in config.get('prepared_tool_transition',[])):
+        raise ValueError('An absent recovery tool requires a fresh unsealed job workspace.')
     workspace=source if sealed else out/'workspace'
     if job['phase']=='native':
         readiness=read_bound(config['readiness'])
