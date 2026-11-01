@@ -89,7 +89,69 @@ def completed_verified_repair(row,target):
  peak=checked['native_peak_bytes']
  return {'measurement':row,'peak_bytes':peak,'scope':checked['scope'],'claim_bytes':rounded_claim(peak),'formula':'ceil_to_8GiB(1.5 * completed_aggregate_peak_bytes)','memory_metric':'aggregate_memory.peak','client_server_allowance_bytes':0,'qualification':row.get('qualification'),'verification_repair':checked},None
 
+def completed_header_transition(row,target):
+ if set(row)!={'format','route','module','native_source','statement_sha256','result','closure','release','baseline','authority'}:
+  return None,'The header-transition measurement has invalid fields.'
+ if row['baseline'].get('sha256')!=PORT_HEADER_BASELINE_SHA256:
+  return None,'The header-transition baseline is not approved.'
+ baseline=read(row['baseline'])
+ if (baseline.get('schema')!='port.v32.old-eight-closure-baseline.v1' or
+     baseline.get('accepted_closed_count')!=8 or baseline.get('all_sixteen_outcomes_complete') is not False):
+  return None,'The header-transition baseline inventory differs.'
+ expected=next((value for value in [PORT_EFFECTIVE_AUTHORITY,PORT_EFFECTIVE_AUTHORITY_23]
+                if row['authority'].get('sha256')==value['sha256']),None)
+ if expected is None or not relocated_authority(row['authority'],expected,
+      ('/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-authority-v1/PORT-FAMILY-AUTHORITY-22.json',
+       '/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-authority-v1/PORT-FAMILY-AUTHORITY-23.json')):
+  return None,'The header-transition authority is not approved.'
+ matches=[value for value in baseline['rows'] if value.get('status')=='closed'
+          and value.get('accepted_closed') is True and value.get('module')==target.get('module')]
+ if len(matches)!=1 or matches[0]['block'] not in baseline['must_remain_closed']:
+  return None,'The header-transition case lacks an accepted closure.'
+ prior=matches[0]
+ cases=[value for value in read(row['authority'])['cases'] if value['block']==prior['block']]
+ if len(cases)!=1:return None,'The header-transition case is not authorized.'
+ case=cases[0]
+ if (case['module']!=target.get('module') or case['pc']!=target.get('pc') or
+     case['source']['sha256']!=target.get('source_sha256') or
+     case['statement_sha256']!=target.get('statement_sha256') or
+     row['module']!=target.get('module') or row['statement_sha256']!=target.get('statement_sha256')):
+  return None,'The header-transition target differs.'
+ old=prior['source_checks']['caller'];new=bound(row['native_source'])
+ if (row['native_source']['sha256']!=target['source_sha256'] or
+     prior['source_checks']['statement_sha256']!=target['statement_sha256']):
+  return None,'The header-transition source or statement differs.'
+ text=new.read_bytes();line=b'Require Import ZesuSsz.Automation.EffectiveOverrides.\n'
+ if (not text.startswith(b'Require Import ZesuSsz.Automation.All.\n') or
+     text.count(line)!=1 or text.replace(line,b'',1)!=bound(old).read_bytes()):
+  return None,'The header transition changes more than the approved import.'
+ if (row['route']!='stock_zesu_block' or row['result']!=prior['job_result'] or
+     row['closure']!=prior['lifecycle']['closure'] or row['release']!=prior['lifecycle']['release']):
+  return None,'The header-transition result or lifecycle differs.'
+ predecessor=dict(route=row['route'],module=row['module'],native_source=old,
+     statement_sha256=row['statement_sha256'],result=row['result'],closure=row['closure'],release=row['release'])
+ checked,reason=completed(predecessor,dict(target,source_sha256=old['sha256']))
+ if checked is None:return None,reason
+ result=read(row['result']);accounting=read(prior['costs']['CPU_receipt'])
+ peak=checked['peak_bytes']
+ if (result.get('status')!='passed' or result['CPU']!=accounting or
+     accounting.get('aggregate_peak_bytes')!=peak or prior['costs']['peak_bytes']!=peak):
+  return None,'The header-transition peak or final accounting differs.'
+ claim=(3*peak+1)//2
+ if claim>PORT_FENCE:return None,'The header-transition claim exceeds its physical fence.'
+ return dict(checked,measurement=row,claim_bytes=claim,formula='ceil(3 * completed_aggregate_peak_bytes / 2)',
+     qualification='Completed v3.2 OLD peak across the approved header-only transition. Candidate performance is unmeasured.'),None
+
+def header_transition_bindings(row):
+ if row.get('format')!='completed_stock_header_transition_v1':return []
+ baseline=read(row['baseline'])
+ prior=next(value for value in baseline['rows'] if value.get('status')=='closed' and value['module']==row['module'])
+ return [row['baseline'],row['authority'],baseline['inventory'],baseline['source_transition'],baseline['header_successors'],
+     prior['source_checks']['caller'],prior['costs']['CPU_receipt'],prior['costs']['search_origin'],
+     prior['costs']['search_end'],prior['calls'],read(row['result'])['complete_state']]
+
 def completed(row,target):
+ if row.get('format')=='completed_stock_header_transition_v1':return completed_header_transition(row,target)
  if row.get('format')=='completed_stock_verification_repair_v1':return completed_verified_repair(row,target)
  if row.get('format')=='legacy_r1_workload_rss_v1':return completed_legacy(row,target)
  if row.get('route')!='stock_zesu_block':return None,'The measurement does not use the stock route.'
@@ -138,6 +200,8 @@ FOCUSED_CLAIM=8*GIB
 PORT_KIND='production_stock_port'
 PORT_FENCE=32*GIB
 PORT_FULL_FENCE_BOOKING='full_physical_fence'
+PORT_HEADER_PEAK_BOOKING='completed_header_transition_peak'
+PORT_HEADER_BASELINE_SHA256='b37cc0a5b86690de7f65245ebdfa9992be562af8a204ab9238e3ac85630dbd0c'
 PORT_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-22.json'), 'sha256': 'ea88c0e9eab9e6e720e7fc2500407c065d82fd7a0feb12658783d4a761c79917'}
 PORT_AUTHORITY_23={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-23.json'), 'sha256': 'dbeedb2c4fcdc916939a9c5fc9ced3d07bc619244c1d8b41bfc91aacfb5052bd'}
 PORT_EFFECTIVE_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-EFFECTIVE-OVERRIDES-AUTHORITY-22.json'), 'sha256': '35c7e4a44203e761cb286bff7d95e83d81e08567bdb5dd0323dcd9667ffd8052'}
@@ -165,10 +229,12 @@ def production_port_authority(profile):
  required={'schema','kind','authority','memory_route'}
  if not required<=set(profile)<=required|{'supplier_ready','memory_booking'} or profile.get('schema')!='scratch.admission-profile.v1' or profile.get('kind')!=PORT_KIND or profile.get('memory_route')!='measured_native':
   raise ValueError('The production PORT profile is invalid.')
- if 'memory_booking' in profile and profile['memory_booking']!=PORT_FULL_FENCE_BOOKING:
+ if 'memory_booking' in profile and profile['memory_booking'] not in (PORT_FULL_FENCE_BOOKING,PORT_HEADER_PEAK_BOOKING):
   raise ValueError('The PORT memory booking option is invalid.')
  extended=isinstance(profile['authority'],dict) and profile['authority'].get('sha256') in {PORT_AUTHORITY_23['sha256'],PORT_EFFECTIVE_AUTHORITY_23['sha256']}
  effective=isinstance(profile['authority'],dict) and profile['authority'].get('sha256') in {PORT_EFFECTIVE_AUTHORITY['sha256'],PORT_EFFECTIVE_AUTHORITY_23['sha256']}
+ if profile.get('memory_booking')==PORT_HEADER_PEAK_BOOKING and not effective:
+  raise ValueError('Header-transition sizing requires its exact approved authority.')
  corrected=isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_MEMORY_AUTHORITY['sha256']
  heldout78=isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_AUTHORITY_78['sha256']
  heldout=corrected or heldout78 or isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_AUTHORITY['sha256']
@@ -329,6 +395,10 @@ def workload_claim(workload,job,basis):
   return FOCUSED_CLAIM
  if kind==PORT_KIND:
   if profile.get('memory_booking')==PORT_FULL_FENCE_BOOKING:return PORT_FENCE
+  if profile.get('memory_booking')==PORT_HEADER_PEAK_BOOKING:
+   if basis is None or basis['measurement'].get('format')!='completed_stock_header_transition_v1':
+    raise ValueError('Header-transition sizing requires an accepted completed measurement.')
+   return basis['claim_bytes']
   if profile['authority']['sha256']!=PORT_HELDOUT_MEMORY_AUTHORITY['sha256']:return 8*GIB
   if basis is None:return PORT_FENCE
   if basis.get('memory_metric')!='aggregate_memory.peak':return PORT_FENCE
