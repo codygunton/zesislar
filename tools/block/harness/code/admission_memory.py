@@ -574,7 +574,9 @@ def prepare_legacy_rollout(data, writers, *, reader=None):
         argv = reader.argv(owner)
         if argv != writer['argv']:
             raise ValueError('The legacy writer command changed.')
-        positions = [i for i, word in enumerate(argv) if Path(word).name == 'resource_guard.sh']
+        command_end = argv.index('--') if '--' in argv else len(argv)
+        positions = [i for i, word in enumerate(argv[:command_end])
+                     if Path(word).name == 'resource_guard.sh']
         if len(positions) != 1 or Path(argv[positions[0]]).resolve() != Path(source['path']).resolve():
             raise ValueError('An old writer can create an unrepresented aggregate.')
         mode = argv[positions[0] + 1] if positions[0] + 1 < len(argv) else None

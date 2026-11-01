@@ -225,6 +225,20 @@ class LegacyRolloutTests(unittest.TestCase):
             self.rollout()
         self.assertNotIn('legacy_aggregate_holds', self.data)
 
+    def test_top_level_batch_guard_accepts_nested_guard_scope_argv(self):
+        # This control tests parsing only. The reader supplies synthetic ownership.
+        # Real batch creators and token owners remain distinct inventory records.
+        self.argv = ['bash', str(self.source), 'batch', 'entry-chain-fixture', '--',
+                     str(self.source), 'scope', 'entry-chain-client', '--',
+                     'python3', '-B', 'entry_chain_run.py', '--inside',
+                     str(self.root / 'job')]
+        self.writer['argv'] = list(self.argv)
+        protected = self.rollout()
+        hold = next(iter(protected['legacy_aggregate_holds'].values()))
+        self.assertEqual(hold['writer'], self.owner)
+        self.assertEqual(hold['source'], self.writer['source'])
+        self.assertEqual(hold['fallback_bytes'], 64 * M.GIB)
+
 
 if __name__ == '__main__':
     unittest.main()
