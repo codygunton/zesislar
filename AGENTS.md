@@ -108,7 +108,10 @@ with whatever memory and time it needs (the machine has 256 GiB; a 64 GiB cap an
 normal for a probe).
 Our account may use at most 200 GiB in total, because another account shares this host; `systemctl cat user-1000.slice` shows the limit and its reason. Ask the user before a job that needs more.
 Record its peak memory, CPU, and residual goals, and optimize afterwards
-from that measurement. A run that stops at a cap mid-search has measured nothing. Record each
+from that measurement. A run that stops at a cap mid-search has measured nothing.
+After an out-of-memory stop, profile the run one time with `perf` under a small cap (24 GiB)
+before any rerun; the profile names the tactic and the solver call that grow. Never retry an
+out-of-memory stop without a change. Record each
 raised cap on issue #10 as a probe. The guard defaults are 2400 CPU seconds and 16 GiB per gate module,
 raised 2026-10-20 for native decodeItem proofs, issue #10.
 These gate defaults do not apply to diagnostics. Never split a basic block, cut a proof, or weaken a
