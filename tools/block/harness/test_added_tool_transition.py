@@ -6,6 +6,7 @@ import json,os,shutil,subprocess,sys,tempfile,unittest
 HERE=Path(__file__).resolve().parent
 sys.path[:0]=[str(HERE/'code'),str(HERE),str(HERE.parents[1]),str(HERE.parents[2])]
 import clone_copy,harness_commit,restart_bindings as restart,scratch,entry_chain_run
+from compiler_snapshot import binding_rows
 
 OLD_LAYOUT=HERE/'test-fixtures/tool-transition/b4ca-TOOL-LAYOUT.json'
 
@@ -44,12 +45,14 @@ class AddedToolTransition(unittest.TestCase):
   for name in ['_CoqProject','_RocqProject']:(self.workspace/name).write_text('')
   source=self.workspace/'Control.v';source.write_text('Lemma control : True. Proof. exact I. Qed.\n')
   obj=source.with_suffix('.vo');obj.write_bytes(b'nonproof historical object fixture')
+  compiler=self.root/'nonproof-compiler';compiler.write_bytes(b'Nonproof compiler fixture version 1. Never executed.\n')
   jobs=[dict(key='prerequisites',phase='prerequisites',ordered_modules=[],output=str(self.root/'old-jobs/prerequisites')),
         dict(key='control',phase='native',ordered_modules=[],target={'module':'Control'},output=str(self.root/'old-jobs/control'))]
   from memory_policy import apply_job
   jobs=[apply_job(row) for row in jobs]
   self.config=dict(harness=self.old,prepared_workspace=str(self.workspace),prepared_tool_transition=transitions,
-   bindings=[restart.binding(source),restart.binding(obj)]+[row['prepared'] for row in transitions],
+   bindings=[restart.binding(source),restart.binding(obj),restart.binding(compiler)]+[row['prepared'] for row in transitions],
+   effective_compiler_version={'text':'Nonproof compiler fixture version 1. Never executed.','compiler':restart.binding(compiler)},
    jobs=jobs,proof_runtime={'module_files':{'Control':'Control.v'},'mcp_argv':[sys.executable]},
    cache_producer_files={'implementation':[],'inputs':[],'outputs':[]},cache_attempt={'limits':{'memory_bytes':64*1024**3}},
    admission={'reviewed_helpers':str(old_here/'code/entry_admission')},aggregate_memory_ceiling_bytes=64*1024**3,
@@ -80,11 +83,12 @@ class AddedToolTransition(unittest.TestCase):
   job=deepcopy(c['jobs'][0]);job['policy']={'minimum_claim_bytes':job['claim_bytes'],'physical_fence_bytes':job['physical_fence_bytes'],'memory_job':deepcopy(job)}
   out=self.root/'stage';out.mkdir()
   runtime,workspace=entry_chain_run.stage_job(c,job,out)
+  self.assertEqual(runtime['physical_compiler'],c['effective_compiler_version']['compiler'])
   target=workspace/'tools'/self.new
   self.assertEqual(restart.binding(target)['sha256'],restart.binding(HERE/'code/port_heldout_authority.py')['sha256'])
   self.assertNotEqual(target.stat().st_ino,(HERE/'code/port_heldout_authority.py').stat().st_ino)
   self.assertFalse((self.workspace/'tools'/self.new).exists())
-  self.assertTrue(all(row in runtime['bindings'] for row in self.original))
+  self.assertTrue(all(row in binding_rows(runtime) for row in self.original))
   self.assertEqual(json.loads((out/'COMPILER-IMPORT-CONTROL.json').read_text())['returncode'],0)
   self.assertFalse((out/'STARTED.json').exists());self.assertFalse((out/'native/CALLS.json').exists())
 

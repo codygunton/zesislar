@@ -10,6 +10,7 @@ import inspect
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 HERE=Path(__file__).resolve().parent
 sys.path[:0]=[str(HERE/'code'),str(HERE),str(HERE.parent),str(HERE.parents[1])]
@@ -215,10 +216,12 @@ class DeclarationFullFenceTests(unittest.TestCase):
         self.assertEqual(env['ZESU_MODULE_LIMIT_GIB'],'64')
 
     def test_actual_reserve_records_sixtyfour_in_a_temporary_ledger(self):
+        import admission_memory as M
         tree=ast.parse((HERE/'code/check_entry_outside.py').read_text())
         function=next(x for x in tree.body if isinstance(x,ast.FunctionDef) and x.name=='reserve')
         ledger=self.root/'ledger.json'
-        ledger.write_text(json.dumps({'fixed_claims':{}}))
+        markers=self.root/'markers';markers.mkdir()
+        ledger.write_text(json.dumps({'fixed_claims':{},'shell_marker_directory':str(markers)}))
         def save(path,value):
             Path(path).write_text(json.dumps(value))
         namespace=dict(Path=Path,fcntl=fcntl,time=__import__('time'),strict_loads=json.loads,
@@ -230,8 +233,21 @@ class DeclarationFullFenceTests(unittest.TestCase):
         policy=dict(memory_job=job,minimum_claim_bytes=64*P.GIB,physical_fence_bytes=64*P.GIB,
                     ledger=str(ledger),lock=str(self.root/'lock'),legacy_release_bindings={},
                     capture_headroom_bytes=0)
-        result=namespace['reserve'](policy,'isolated-declaration',{'pid':os.getpid()},
-                                    self.root/'ADMISSION.json')
+        reader=M.ScopeReader(proc=self.root/'proc',cgroup_root=self.root/'cgroup')
+        reader.parent.mkdir(parents=True)
+        (reader.parent/'memory.max').write_text(str(M.SLICE_MAX_BYTES))
+        (reader.parent/'memory.swap.max').write_text('0')
+        gate=self.root/'gate.lock'
+        for owned in (ledger,Path(policy['lock']),markers,Path(str(gate)+'.mutex'),reader.proc,reader.root):
+            self.assertTrue(owned.is_relative_to(self.root))
+        actual_projection=M.projection
+        def isolated_projection(data,claims,new,available):
+            return actual_projection(data,claims,new,available,reader=reader)
+        def unexpected_retry(_):
+            self.fail('The isolated declaration reservation unexpectedly waits.')
+        with patch.dict(os.environ,{'ZESU_GATE_LOCK':str(gate)}),patch.object(M,'projection',isolated_projection):
+            result=namespace['reserve'](policy,'isolated-declaration',{'pid':os.getpid()},
+                                        self.root/'ADMISSION.json',pause=unexpected_retry)
         self.assertEqual(result['claim_bytes'],64*P.GIB)
         self.assertEqual(json.loads(ledger.read_text())['fixed_claims']['isolated-declaration'],64*P.GIB)
 
