@@ -395,6 +395,8 @@ def prepare(a):
             basis=memory_job.get('completed_stock_measurement')
             if basis:
                 evidence=basis['measurement']
+                from memory_policy import header_transition_bindings
+                additions.extend(header_transition_bindings(evidence))
                 names=['native_source','result','acceptance','release_ledger','compiler'] if evidence.get('format')=='legacy_r1_workload_rss_v1' else ['native_source','result','closure','release']
                 additions.extend(evidence[name] for name in names)
                 if evidence.get('declaration_projection'):
@@ -610,6 +612,8 @@ def refresh_memory(argv):
         basis=job.get('completed_stock_measurement')
         if not basis:continue
         evidence=basis['measurement'];legacy=evidence.get('format')=='legacy_r1_workload_rss_v1'
+        from memory_policy import header_transition_bindings
+        additions.extend(header_transition_bindings(evidence))
         additions.extend(evidence[name] for name in (['native_source','result','acceptance','release_ledger','compiler'] if legacy else ['native_source','result','closure','release']))
         if evidence.get('declaration_projection'):
             projection=read_bound(evidence['declaration_projection']);additions.extend([evidence['declaration_projection']]+[projection[name] for name in ['current_source','legacy_interval','declaration']])
