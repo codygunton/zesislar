@@ -215,3 +215,18 @@ print(c.digest(Path(sys.argv[2])))
         self.assertEqual(set(row['context']), {'path', 'lstat', 'stat'})
         self.assertEqual(len(row['context']['lstat']), 6)
         self.assertEqual(len(row['context']['stat']), 6)
+
+    def test_forced_hashing_never_opens_persistent_storage(self):
+        cache.digest(self.file)
+        with patch.object(cache, '_persistent', side_effect=AssertionError('persistent lock')) as locked, \
+                patch.object(cache, '_read_persistent', side_effect=AssertionError('persistent lookup')) as lookup, \
+                patch.object(cache, '_publish', side_effect=AssertionError('persistent publication')) as publish, \
+                patch.object(cache.hashlib, 'file_digest', wraps=cache.hashlib.file_digest) as hashed:
+            with cache.force_hashing(True):
+                value = cache.digest(self.file)
+            self.assertEqual(hashed.call_count, 1)
+            self.assertEqual(cache.digest(self.file), value)
+            self.assertEqual(hashed.call_count, 1)
+        locked.assert_not_called()
+        lookup.assert_not_called()
+        publish.assert_not_called()

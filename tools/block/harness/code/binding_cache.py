@@ -138,7 +138,9 @@ def digest(path):
     before = identity(path)
     key = (str(path.absolute()), before)
     hit = None
-    if not _FORCE.get() and key in _DIGESTS:
+    if _FORCE.get():
+        value = _hash(path, before)
+    elif key in _DIGESTS:
         value = _DIGESTS[key]
         hit = 'process_hits'
     else:
@@ -147,7 +149,7 @@ def digest(path):
             # The lock wait can overlap a mutation or replacement.
             if identity(path) != before:
                 raise ValueError('A bound file changed during validation: ' + str(path))
-            value = _read_persistent(record, context) if record and not _FORCE.get() else None
+            value = _read_persistent(record, context) if record else None
             if value is not None:
                 hit = 'persistent_hits'
             else:

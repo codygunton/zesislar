@@ -79,7 +79,7 @@ def validate(binding):
         _MEMO_PID = os.getpid()
     require(isinstance(binding, dict) and set(binding) == {"path", "sha256"},
             "binding is invalid")
-    key = (binding["path"], binding["sha256"])
+    key = (binding["path"], binding["sha256"], os.getcwd())
     with _MEMO_LOCK:
         cached = _MEMO.pop(key, None)
         if cached is not None and not _FORCE.get():

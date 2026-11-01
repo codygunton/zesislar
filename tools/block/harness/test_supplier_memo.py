@@ -147,3 +147,32 @@ class SupplierMemo(unittest.TestCase):
         with self.assertRaises(ValueError):
             supplier.validate(self.binding)
         self.assertEqual(self.full.call_count, before + 1)
+
+    def test_relative_mapping_after_directory_change_refuses(self):
+        fixture = self.fixture
+        row = fixture.external_installation()
+        alias = fixture.root / 'installed-alias'
+        alias.symlink_to(Path(row['source']['path']).parents[1], target_is_directory=True)
+        outside = fixture.root / 'other-cwd'
+        outside.mkdir()
+        fixture.flags[-2] = 'installed-alias'
+        fixture.manifest['ready'] = fixture.save('READY-RUNTIME.json', fixture.ready)
+        fixture.manifest['runtime'] = fixture.save('jobs/prerequisites/RUNTIME.json', fixture.inner)
+        self.binding = fixture.freeze()
+        previous = Path.cwd()
+        try:
+            os.chdir(fixture.root)
+            for _ in range(3):
+                supplier.validate(self.binding)
+                if supplier._MEMO:
+                    break
+            self.assertTrue(supplier._MEMO)
+            before = self.full.call_count
+            supplier.validate(self.binding)
+            self.assertEqual(self.full.call_count, before)
+            os.chdir(outside)
+            with self.assertRaises(ValueError):
+                supplier.validate(self.binding)
+            self.assertEqual(self.full.call_count, before + 1)
+        finally:
+            os.chdir(previous)
