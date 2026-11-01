@@ -299,12 +299,21 @@ class OutputReceipts:
             raise ValueError('A failed compilation cannot publish an accepted object.')
         if producer() != self.snapshot['producer']:
             raise ValueError('Another producer cannot publish an accepted object.')
+        lexical=Path(obj).absolute()
+        object_identity=_identity(lexical)
+        object_namespace=_namespace(lexical)
+        canonical=str(lexical.resolve())
         with force_hashing(True):
             receipt = {'runtime': self.snapshot['runtime'], 'producer': self.snapshot['producer'],
                        'snapshot': self.reference,
                        'source': binding(source), 'object': binding(obj),
+                       'object_lexical_path':str(lexical),'object_canonical_path':canonical,
+                       'object_identity':object_identity,'object_namespace':object_namespace,
                        'compiler': binding(compiler), 'normalized_flags': list(flags),
                        'successful_compilation': True, 'tool_result': result}
+        if (_identity(lexical)!=object_identity or _namespace(lexical)!=object_namespace
+                or str(lexical.resolve())!=canonical):
+            raise ValueError('An accepted object changed during receipt publication.')
         reference = _publish(self.root / ('OBJECT-%06d.json' % len(self.rows)), receipt)
         self.rows.append(reference)
         self._write_index()
@@ -332,7 +341,7 @@ def accepted_objects(snapshot, reference, key, compiler, flags):
     version = {'path': str(root / ('INDEX-%06d.json' % len(index['receipts']))),
                'sha256': index_binding['sha256']}
     _read_private(version)
-    rows = []
+    rows = [];latest={}
     for number, receipt_reference in enumerate(index['receipts']):
         if receipt_reference['path'] != str(root / ('OBJECT-%06d.json' % number)):
             raise ValueError('An accepted-object receipt leaves its exact directory.')
@@ -341,12 +350,40 @@ def accepted_objects(snapshot, reference, key, compiler, flags):
                 receipt.get('successful_compilation') is not True or receipt.get('tool_result', {}).get('success') is not True or
                 receipt.get('normalized_flags') != flags or receipt.get('compiler') != compiler):
             raise ValueError('An accepted-object receipt differs from its producer or compiler.')
+        lexical=Path(receipt.get('object_lexical_path',''))
+        canonical=receipt.get('object_canonical_path')
+        object_identity=receipt.get('object_identity')
+        namespace=receipt.get('object_namespace')
+        if (not lexical.is_absolute() or '..' in lexical.parts or
+                not isinstance(canonical,str) or canonical!=receipt['object']['path'] or
+                str(lexical.resolve())!=canonical or
+                not isinstance(object_identity,list) or len(object_identity)!=2 or
+                any(not isinstance(part,list) or len(part)!=6 or
+                    any(type(value) is not int for value in part) for part in object_identity) or
+                not isinstance(namespace,list) or _namespace(lexical)[:-1]!=namespace[:-1]):
+            raise ValueError('An accepted object lacks its exact identity or namespace.')
+        previous=latest.get(canonical)
+        if previous is not None and (previous['source']!=receipt['source'] or
+                previous['object']['sha256']!=receipt['object']['sha256']):
+            raise ValueError('Accepted object receipts conflict for one canonical object.')
+        # Identical-source recompilation keeps the full receipt history. Only a
+        # later successful authenticated receipt can supersede its old identity.
+        latest[canonical]=receipt
         with force_hashing(True):
             for row in [receipt['source'], receipt['object'], receipt['compiler']]:
                 if digest(Path(row['path'])) != row['sha256']:
                     raise ValueError('An accepted compilation input changed: ' + row['path'])
         rows.append(receipt['object'])
-    return rows, version, index['receipts']
+    authenticated=[]
+    for receipt in latest.values():
+        lexical=Path(receipt['object_lexical_path'])
+        if (_identity(lexical)!=receipt['object_identity'] or
+                _namespace(lexical)!=receipt['object_namespace']):
+            raise ValueError('An accepted object identity changed after successful compilation.')
+        authenticated.append(dict(receipt['object'],identity=receipt['object_identity'],
+            lexical_path=str(lexical),canonical_path=receipt['object_canonical_path'],
+            namespace=receipt['object_namespace'],source=receipt['source']))
+    return rows, version, index['receipts'], authenticated
 
 
 DEPENDENCIES = frozenset({'.vo', '.vos', '.cmxs', '.cma', '.so'})
@@ -413,10 +450,11 @@ def validate_compiler(runtime, runtime_reference, snapshot_reference, source_bin
     produced = []
     accepted_index = None
     accepted_receipts = []
+    authenticated_objects=[]
     if output_key is not None:
         with force_hashing(True):
             compiler_binding = binding(compiler)
-        produced, accepted_index, accepted_receipts = accepted_objects(snapshot, snapshot_reference, output_key, compiler_binding, runtime['physical_flags'])
+        produced, accepted_index, accepted_receipts, authenticated_objects = accepted_objects(snapshot, snapshot_reference, output_key, compiler_binding, runtime['physical_flags'])
     receipts_done=time.monotonic()
     inputs = hash_inputs(source, compiler, runtime['physical_flags'])
     hashing_done=time.monotonic()
@@ -428,14 +466,21 @@ def validate_compiler(runtime, runtime_reference, snapshot_reference, source_bin
     compiler_identity=tuple(_identity(compiler)[1])
     if compiler_identity not in expected or runtime['physical_compiler']['sha256']!=snapshot['compiler']['sha256']:
         raise ValueError('The physical compiler lacks its original binding.')
-    produced_by_path={str(Path(row['path']).absolute()):row['sha256'] for row in produced}
+    produced_by_identity={}
+    for row in authenticated_objects:
+        key=tuple(row['identity'][1])
+        previous=produced_by_identity.get(key)
+        if previous is not None and (previous['sha256']!=row['sha256'] or previous['source']!=row['source']):
+            raise ValueError('Accepted object receipts conflict for one physical identity.')
+        produced_by_identity[key]=row
     initial_names=set(snapshot['load_path_files'])
     for row in inputs:
         selected=expected.get(tuple(row['identity'][1]))
         if Path(row['path']).suffix in DEPENDENCIES:
-            if row['path'] not in initial_names and row['path'] not in produced_by_path:
+            key=tuple(row['identity'][1])
+            if row['path'] not in initial_names and key not in produced_by_identity:
                 raise ValueError('A new compiler dependency lacks a validated receipt: '+row['path'])
-            selected=produced_by_path.get(row['path'],selected)
+            if key in produced_by_identity:selected=produced_by_identity[key]['sha256']
             if selected is None:
                 raise ValueError('A compiler dependency lacks an original binding: '+row['path'])
         if selected is not None and selected!=row['sha256']:
@@ -444,6 +489,11 @@ def validate_compiler(runtime, runtime_reference, snapshot_reference, source_bin
     for row in retained:
         if _identity(row['path']) != row['identity']:
             raise ValueError('A compiler input changed during input hashing: ' + row['path'])
+    for row in authenticated_objects:
+        if (_identity(row['lexical_path'])!=row['identity'] or
+                _namespace(row['lexical_path'])!=row['namespace'] or
+                str(Path(row['lexical_path']).resolve())!=row['canonical_path']):
+            raise ValueError('An accepted object changed during input hashing.')
     ended=time.monotonic()
     final_usage=resource.getrusage(resource.RUSAGE_SELF)
     timing={'snapshot_and_identity_wall_seconds':identities_done-started,
@@ -454,6 +504,7 @@ def validate_compiler(runtime, runtime_reference, snapshot_reference, source_bin
             'self_CPU_seconds':final_usage.ru_utime+final_usage.ru_stime-usage.ru_utime-usage.ru_stime}
     return {'timing':timing,'snapshot': snapshot_reference, 'retained_identities_checked': len(snapshot['rows']),
             'accepted_dependency_objects': produced,
+            'accepted_dependency_identities': authenticated_objects,
             'initial_plugins_checked':len(snapshot['initial_plugins']),
             'initial_objects_checked':len(snapshot.get('initial_objects',[])),
             'accepted_output_index': accepted_index, 'accepted_output_receipts': accepted_receipts,

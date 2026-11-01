@@ -222,6 +222,98 @@ class CompilerSnapshotTests(unittest.TestCase):
         self.assertNotIn(ledger.key, Path(receipt['path']).read_text())
         self.assertNotIn(ledger.key, (ledger.root / 'INDEX.json').read_text())
 
+    def aliased_outputs(self):
+        workspace=self.root/'workspace'
+        self.library=workspace/'artifacts/default'
+        self.library.mkdir(parents=True)
+        self.alias=workspace/'default'
+        self.alias.symlink_to('artifacts/default',target_is_directory=True)
+        self.runtime['physical_flags']=['-Q',str(self.alias),'Example',
+                                      '-Q',str(self.library),'Example']
+        return self.outputs()
+
+    def test_actual_default_layout_accepts_authenticated_object_identity(self):
+        reference,snapshot,ledger,obj,receipt=self.aliased_outputs()
+        report=self.validate_outputs(reference,ledger)
+        inputs={row['path']:row for row in report['directly_hashed_inputs']}
+        lexical=self.alias/obj.name
+        self.assertIn(str(lexical),inputs)
+        self.assertIn(str(obj),inputs)
+        self.assertEqual(inputs[str(lexical)]['identity'][1],inputs[str(obj)]['identity'][1])
+        accepted=json.loads(Path(receipt['path']).read_text())
+        self.assertEqual(accepted['object_lexical_path'],str(obj))
+        self.assertEqual(accepted['object_canonical_path'],str(obj.resolve()))
+        self.assertEqual(accepted['object_identity'],S._identity(obj))
+        self.assertEqual(report['accepted_dependency_objects'],[binding(obj)])
+
+    def test_same_source_recompile_updates_only_authenticated_identity(self):
+        reference,snapshot,ledger,obj,receipt=self.aliased_outputs()
+        original=json.loads(Path(receipt['path']).read_text())['object_identity']
+        obj.write_bytes(obj.read_bytes())
+        second=ledger.accept(self.source,obj,self.compiler,self.runtime['physical_flags'],{'success':True})
+        self.assertNotEqual(original,json.loads(Path(second['path']).read_text())['object_identity'])
+        self.assertEqual(len(self.validate_outputs(reference,ledger)['accepted_dependency_objects']),2)
+
+    def test_produced_alias_retarget_refuses_even_for_same_target(self):
+        reference,snapshot,ledger,obj,receipt=self.aliased_outputs()
+        self.alias.unlink()
+        self.alias.symlink_to('artifacts/./default',target_is_directory=True)
+        with self.assertRaisesRegex(ValueError,'mapping namespace changed'):
+            self.validate_outputs(reference,ledger)
+
+    def test_produced_alias_retarget_to_other_object_refuses(self):
+        reference,snapshot,ledger,obj,receipt=self.aliased_outputs()
+        other=self.root/'other'
+        other.mkdir();(other/obj.name).write_bytes(obj.read_bytes())
+        self.alias.unlink();self.alias.symlink_to(other,target_is_directory=True)
+        with self.assertRaisesRegex(ValueError,'mapping namespace changed'):
+            self.validate_outputs(reference,ledger)
+
+    def test_identical_byte_produced_object_replacement_refuses(self):
+        reference,snapshot,ledger,obj,receipt=self.aliased_outputs()
+        replacement=obj.with_suffix('.replacement')
+        replacement.write_bytes(obj.read_bytes());replacement.replace(obj)
+        with self.assertRaisesRegex(ValueError,'object identity changed'):
+            self.validate_outputs(reference,ledger)
+
+    def test_same_byte_write_with_restored_mtime_needs_new_receipt(self):
+        reference,snapshot,ledger,obj,receipt=self.aliased_outputs()
+        before=obj.stat();obj.write_bytes(obj.read_bytes())
+        os.utime(obj,ns=(before.st_atime_ns,before.st_mtime_ns))
+        with self.assertRaisesRegex(ValueError,'object identity changed'):
+            self.validate_outputs(reference,ledger)
+
+    def test_conflicting_source_receipts_for_same_object_refuse(self):
+        reference,snapshot,ledger,obj,receipt=self.aliased_outputs()
+        different=self.root/'Different.v'
+        different.write_bytes(self.source.read_bytes())
+        ledger.accept(different,obj,self.compiler,self.runtime['physical_flags'],{'success':True})
+        with self.assertRaisesRegex(ValueError,'receipts conflict'):
+            self.validate_outputs(reference,ledger)
+
+    def test_legacy_object_receipt_cannot_invent_identity(self):
+        publish=S._publish
+        def legacy(path,value,**kwargs):
+            if 'successful_compilation' in value:
+                value={key:item for key,item in value.items() if not key.startswith('object_')}
+            return publish(path,value,**kwargs)
+        with patch.object(S,'_publish',side_effect=legacy):
+            reference,snapshot,ledger,obj,receipt=self.aliased_outputs()
+        with self.assertRaisesRegex(ValueError,'exact identity or namespace'):
+            self.validate_outputs(reference,ledger)
+
+    def test_produced_object_race_after_direct_hashing_refuses(self):
+        reference,snapshot,ledger,obj,receipt=self.aliased_outputs()
+        hash_inputs=S.hash_inputs
+        def replaced(*args):
+            result=hash_inputs(*args)
+            replacement=obj.with_suffix('.replacement')
+            replacement.write_bytes(obj.read_bytes());replacement.replace(obj)
+            return result
+        with patch.object(S,'hash_inputs',side_effect=replaced):
+            with self.assertRaisesRegex(ValueError,'accepted object changed during input hashing'):
+                self.validate_outputs(reference,ledger)
+
     def test_changed_produced_object_refuses(self):
         reference, snapshot, ledger, obj, receipt = self.outputs()
         obj.write_text('tampered object')
