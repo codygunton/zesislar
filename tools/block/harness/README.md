@@ -180,6 +180,13 @@ It charges the largest approved booking once per aggregate.
 It charges verified current usage when that usage exceeds the booking.
 Unknown or conflicting identities retain separate full costs.
 Compiler slot counts remain separate.
+`ZESU_OWNED_GUARD_TOKEN` identifies the current inner scope only.
+The relay preserves this identity and removes both compiler-reuse keys.
+A later compiler must reserve its own slot.
+Before exec, the guard binds its public source, command, token generation, actor identities, and kernel leaf.
+Later accounting checks that attestation and the exact inner identity.
+`compiler()` retains its separate strict token checks.
+Legacy actors without this attestation receive no new identity permission.
 Growth updates use the same transaction and preserve the token file identity.
 The 175 GiB slice fence, 20 GiB headroom, and account limits remain unchanged.
 

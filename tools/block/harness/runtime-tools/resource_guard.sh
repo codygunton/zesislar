@@ -883,6 +883,12 @@ confirm_coqc() {
       printf 'reservation_generation=%s\n' "${marker##*.}" >> "$replacement" || {
         rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
       }
+      local guard_source guard_sha
+      guard_source=$(realpath "$0") || { rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2; }
+      guard_sha=$(sha256sum "$guard_source") || { rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2; }
+      printf 'guard_source_path=%s\nguard_source_sha256=%s\n' "$guard_source" "${guard_sha%% *}" >> "$replacement" || {
+        rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
+      }
       if diagnostic_probe; then
         local probe_tag=issue10
         [ "${ZESU_DIAGNOSTIC_PROBE:-0}" != cpu-only ] || probe_tag=issue10-cpu-only
@@ -1524,7 +1530,7 @@ run_scope() {
   trap cleanup_scope EXIT
   trap 'exit 143' TERM
   trap 'exit 130' INT
-  ZESU_SCOPE_CPU="$cpu" ZESU_SCOPE_UNIT="$unit.scope" systemd-run --user --scope --quiet --unit="$unit" --slice="$slice" \
+  ZESU_OWNED_GUARD_TOKEN="" ZESU_SCOPE_CPU="$cpu" ZESU_SCOPE_UNIT="$unit.scope" systemd-run --user --scope --quiet --unit="$unit" --slice="$slice" \
     -p "MemoryMax=${MODULE_LIMIT_GIB}G" -p MemorySwapMax=0 -- \
     $(io_class) "$(realpath "$0")" scope-exec "$reservation" -- "$@" &
   child=$!
@@ -1706,7 +1712,7 @@ case "${1:-report}" in
     [ -z "${ZESU_SCOPE_UNIT:-}" ] || register_scope "$ZESU_SCOPE_UNIT"
     confirm_coqc "$token" || exit $?
     mark_coqc "$token" $$ || exit $?
-    export ZESU_COQC_RESERVATION="$token" ZESU_COQC_SCOPE="$token"
+    export ZESU_COQC_RESERVATION="$token" ZESU_COQC_SCOPE="$token" ZESU_OWNED_GUARD_TOKEN="$token"
     apply_scope_limits || exit $?
     register_run_actor || exit $?
     exec "$@" ;;

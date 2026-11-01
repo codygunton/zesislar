@@ -119,7 +119,7 @@ confirm_coqc "$marker" || exit 12
 release_coqc "$marker" || exit 14
 [ ! -e "$marker" ] || exit 15
 '''
-            result=subprocess.run(['bash'],input=library+script,env=environment,text=True,
+            result=subprocess.run(['bash','-c',library+script,str(root/'tools/resource_guard.sh')],env=environment,text=True,
                                   capture_output=True,timeout=15)
             self.assertEqual(result.returncode,0,result.stderr)
             data=json.loads(ledger.read_text())

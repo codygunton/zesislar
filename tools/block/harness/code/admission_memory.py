@@ -271,7 +271,8 @@ class ScopeReader:
                 fields = dict(line.split('=', 1) for line in marker.read_text().splitlines()[1:] if '=' in line)
                 if fields.get('reservation_generation') != record['generation']:
                     raise ValueError('The admitted shell generation changed.')
-                sample = self.shell(marker, owner=record['owner'])
+                sample = self.shell(marker, owner=record['owner'],
+                                    guard_attestation=record.get('guard_attestation'))
                 if self.file_identity(marker.lstat()) != before:
                     raise ValueError('The admitted shell token changed during sampling.')
                 return sample
@@ -348,7 +349,7 @@ class ScopeReader:
         except (OSError, ValueError, KeyError, TypeError) as error:
             return {'verified': False, 'live_bytes': 0, 'reason': str(error)}
 
-    def shell(self, marker, *, owner=None):
+    def shell(self, marker, *, owner=None, guard_attestation=None):
         """Authenticate an admitted or pending shell owner's actual aggregate."""
         try:
             path = Path(marker)
@@ -366,6 +367,8 @@ class ScopeReader:
             self.process(expected)
             if lines[0].isdecimal():
                 leaf = self.compiler(path)
+                if leaf.get('verified') is not True and guard_attestation is not None:
+                    leaf = self.owned_scope(path, guard_attestation)
                 if leaf.get('verified') is not True:
                     raise ValueError('The marked shell child is not authenticated.')
                 leaf_path = Path(leaf['scope'])
@@ -399,6 +402,115 @@ class ScopeReader:
                     or any(self.process(actor) != parent for actor, parent in chain)):
                 raise ValueError('The shell ownership changed during sampling.')
             return row
+        except (OSError, ValueError, KeyError, IndexError, StopIteration, TypeError) as error:
+            return {'verified': False, 'live_bytes': 0, 'reason': str(error)}
+
+    def guard_source(self, path, expected_hash):
+        """Bind one executed public guard to the helper's installed guard bytes."""
+        path = Path(path)
+        if not path.is_absolute() or path.resolve(strict=True) != path or path.name != 'resource_guard.sh':
+            raise ValueError('The public guard source path changed.')
+        before = self.file_identity(path.lstat())
+        if not stat.S_ISREG(before[5]) or before[6] != self.uid or before[5] & 0o022:
+            raise ValueError('The public guard source is not owned.')
+        tools = next(parent for parent in Path(__file__).resolve().parents if parent.name == 'tools')
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        if (digest != expected_hash or digest != hashlib.sha256((tools / 'resource_guard.sh').read_bytes()).hexdigest()
+                or self.file_identity(path.lstat()) != before):
+            raise ValueError('The public guard source bytes changed.')
+        return {'path': str(path), 'sha256': digest, 'identity': list(before)}
+
+    def guard_leaf(self, marker):
+        """Check token ownership and kernel membership without compiler reuse keys."""
+        marker = Path(marker)
+        before = self.file_identity(marker.lstat())
+        if not stat.S_ISREG(before[5]) or before[6] != self.uid or before[5] & 0o022:
+            raise ValueError('The owned scope token is not private.')
+        lines = marker.read_text().splitlines()
+        pairs = [line.split('=', 1) for line in lines[1:] if '=' in line]
+        fields = dict(pairs)
+        generation = fields['reservation_generation']
+        if (len(pairs) != len(fields) or not re.fullmatch(
+                r'[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}', generation)
+                or marker.name.partition('.')[2] != generation):
+            raise ValueError('The owned scope generation changed.')
+        owner = {'pid': int(marker.name.split('.')[0]), 'startticks': int(fields['owner_start'])}
+        actor = {'pid': int(lines[0]), 'startticks': int(fields['child_start'])}
+        chain = self.ancestry(actor['pid'], owner)
+        relative = next(line[3:] for line in (self.proc / str(actor['pid']) / 'cgroup').read_text().splitlines()
+                        if line.startswith('0::'))
+        path = self.root / relative.lstrip('/')
+        if not re.fullmatch(rf'zesudet-.+-{owner["pid"]}-[0-9]+\.scope', path.name):
+            raise ValueError('The owned scope lacks its exact guarded leaf.')
+        if path.parent == self.parent:
+            environment = dict(item.split('=', 1) for item in
+                (self.proc / str(actor['pid']) / 'environ').read_bytes().decode().split('\0') if '=' in item)
+            writer = fields.get('writer', '')
+            if (not re.fullmatch(r'[a-zA-Z0-9._-]+', writer) or environment.get('ZESU_WRITER_ID') != writer
+                    or not path.name.startswith('zesudet-writer-' + writer + '-')):
+                raise ValueError('The owned standalone scope lacks its writer identity.')
+            identity = self.directory(path)
+            live = integer(int((path / 'memory.current').read_text()), 'owned scope memory')
+            row = dict(verified=True, aggregate_verified=False, scope=str(path), device=identity[0],
+                       inode=identity[1], live_bytes=live)
+            if self.directory(path) != identity:
+                raise ValueError('The owned standalone scope changed.')
+        else:
+            aggregate = next(p for p in path.parents if p.parent == self.parent)
+            if aggregate.name != fields['aggregate']:
+                raise ValueError('The owned scope aggregate changed.')
+            creator = int(re.fullmatch(rf'zesuworkloads-aggregate{self.uid}p([0-9]+)r[0-9]+\.slice', aggregate.name)[1])
+            raw = (self.proc / str(creator) / 'stat').read_text().rsplit(')', 1)[1].split()
+            batch = {'pid': creator, 'startticks': int(raw[19])}
+            self.ancestry(owner['pid'], batch)
+            row = self.scope(path, actor, batch, leaf=True)
+        if (any(self.process(item) != parent for item, parent in chain)
+                or self.file_identity(marker.lstat()) != before
+                or (self.proc / str(actor['pid']) / 'cgroup').read_text().splitlines() != ['0::' + relative]):
+            raise ValueError('The owned scope identity changed during sampling.')
+        return row, owner, actor, generation, before
+
+    def scope_exec(self, marker, source):
+        """Validate the public scope-exec command before it replaces its process."""
+        bound = self.guard_source(source['path'], source['sha256'])
+        if bound != source:
+            raise ValueError('The admitted public guard identity changed.')
+        row, owner, actor, generation, before = self.guard_leaf(marker)
+        argv = self.argv(actor)
+        position = 1 if argv and Path(argv[0]).name == 'bash' else 0
+        if (len(argv) < position + 5 or argv[position:position + 4] !=
+                [source['path'], 'scope-exec', str(marker), '--']):
+            raise ValueError('The pre-exec actor is not this public scope-exec command.')
+        if (self.file_identity(Path(marker).lstat()) != before or self.argv(actor) != argv
+                or self.file_identity(Path(source['path']).lstat()) != tuple(source['identity'])):
+            raise ValueError('The pre-exec scope changed during validation.')
+        attestation = {'schema': 'owned.guard.scope.v1', 'marker': str(marker), 'generation': generation,
+                       'owner': owner, 'actor': actor, 'source': source, 'scope_exec_argv': argv,
+                       'leaf': {name: row[name] for name in ('scope', 'device', 'inode')}}
+        return row, attestation
+
+    def owned_scope(self, marker, attestation):
+        """Check a post-exec scope using its sealed pre-exec attestation only."""
+        try:
+            source = attestation['source']
+            if self.guard_source(source['path'], source['sha256']) != source:
+                raise ValueError('The attested public guard identity changed.')
+            row, owner, actor, generation, before = self.guard_leaf(marker)
+            if (attestation['schema'] != 'owned.guard.scope.v1' or attestation['marker'] != str(marker)
+                    or attestation['generation'] != generation or attestation['owner'] != owner
+                    or attestation['actor'] != actor or attestation['leaf'] !=
+                    {name: row[name] for name in ('scope', 'device', 'inode')}):
+                raise ValueError('The owned scope differs from its pre-exec attestation.')
+            environment = dict(item.split('=', 1) for item in
+                (self.proc / str(actor['pid']) / 'environ').read_bytes().decode().split('\0') if '=' in item)
+            if environment.get('ZESU_OWNED_GUARD_TOKEN') != str(marker):
+                raise ValueError('The actor lacks its exact inner guard identity.')
+            self.process(actor)
+            again = self.guard_leaf(marker)
+            if (self.file_identity(Path(marker).lstat()) != before or again[1:4] != (owner, actor, generation)
+                    or any(again[0][name] != row[name] for name in ('scope', 'device', 'inode'))):
+                raise ValueError('The owned scope token changed after environment sampling.')
+            return dict(row, reason='authenticated owned scope; no compiler-slot reuse')
         except (OSError, ValueError, KeyError, IndexError, StopIteration, TypeError) as error:
             return {'verified': False, 'live_bytes': 0, 'reason': str(error)}
 
@@ -872,6 +984,9 @@ def confirm_shell(marker, replacement, request_bytes, available_bytes, *, ledger
         raise ValueError('The reservation generation is invalid.')
     owner = {'pid': int(marker.name.split('.')[0]), 'startticks': int(fields['owner_start'])}
     reader.process(owner)
+    guard_source = None
+    if 'guard_source_path' in fields or 'guard_source_sha256' in fields:
+        guard_source = reader.guard_source(fields['guard_source_path'], fields['guard_source_sha256'])
     key = shell_key(marker)
     with ledger_transaction(ledger) as data:
         if marker.exists() or marker.is_symlink() or key in data.get('shell_claim_owners', {}):
@@ -896,6 +1011,8 @@ def confirm_shell(marker, replacement, request_bytes, available_bytes, *, ledger
         data.setdefault('shell_claim_owners', {})[key] = {'owner': owner, 'marker': str(marker),
             'aggregate': observation if observation.get('aggregate_verified') is True else None,
             'generation': generation}
+        if guard_source is not None:
+            data['shell_claim_owners'][key]['guard_source'] = guard_source
         data.setdefault('shell_admissions', {})[key] = result
         write_ledger(ledger, data)
         os.replace(replacement, marker)
@@ -958,7 +1075,15 @@ def mark_shell(marker, *, ledger=None, reader=None):
         if (fields.get('reservation_generation') != record['generation']
                 or int(fields['owner_start']) != record['owner']['startticks']):
             raise ValueError('The marked reservation generation changed.')
-        sample = reader.compiler(marker)
+        source = record.get('guard_source')
+        actor = {'pid': int(lines[0]), 'startticks': int(fields['child_start'])}
+        argv = reader.argv(actor) if source is not None else []
+        position = 1 if argv and Path(argv[0]).name == 'bash' else 0
+        if source is not None and argv[position:position + 2] == [source['path'], 'scope-exec']:
+            sample, attestation = reader.scope_exec(marker, source)
+            record['guard_attestation'] = attestation
+        else:
+            sample = reader.compiler(marker)
         if sample.get('verified') is not True:
             raise ValueError('The marked compiler lacks an authenticated leaf.')
         record['leaf'] = {name: sample[name] for name in ('scope', 'device', 'inode')}
