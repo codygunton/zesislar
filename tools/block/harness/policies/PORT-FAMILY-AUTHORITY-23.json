@@ -252,8 +252,8 @@
       "block": "800d6974",
       "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974",
       "source": {
-        "path": "/home/cody/zesislar/_build/agents/worker-build-1/new6974-bindings291/emitted001/sources/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v",
-        "sha256": "32323353f564e2e57cd6e10406168aa39ac8f9de5a55d98dc3d01fe7da201acf"
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v32-NEW-6974-v1/source001/sources/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v",
+        "sha256": "fc7669a62c6b1539f4d17f2ea3adcd72344b3466c86a911bb8c67b6b3c67feff"
       },
       "statement_sha256": "3abd9cb6c6ab180a18a02a93027df450a2cdd90ba6424387750dd6944c902953",
       "pc": 2148362612
@@ -810,6 +810,29 @@
     "generated_prefix": {
       "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v32-NEW-generated-prefix-v1/prepare001/READY-RUNTIME.json",
       "sha256": "8365b93527133124793f6f4baad16fa648271be4a38e48edeef0eaf417b465b5"
+    },
+    "caller_import_profile_update": {
+      "previous_caller": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/new6974-bindings291/emitted001/sources/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v",
+        "sha256": "32323353f564e2e57cd6e10406168aa39ac8f9de5a55d98dc3d01fe7da201acf"
+      },
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v32-NEW-6974-v1/source001/sources/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v",
+        "sha256": "fc7669a62c6b1539f4d17f2ea3adcd72344b3466c86a911bb8c67b6b3c67feff"
+      },
+      "statement_sha256": "3abd9cb6c6ab180a18a02a93027df450a2cdd90ba6424387750dd6944c902953",
+      "removed_imports": [
+        "ZesuSsz.Automation.Sets.call",
+        "ZesuSsz.Compliance.DecodeItemHints"
+      ],
+      "added_imports": [
+        "ZesuSsz.Automation.Sets.v1"
+      ],
+      "non_import_bytes_unchanged": true,
+      "renderer_result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v32-NEW-6974-v1/source001/RESULT.json",
+        "sha256": "a4032ee71c7101547621f21169da0662d0bfdd749c725b79298a685f173044f8"
+      }
     }
   }
 }
