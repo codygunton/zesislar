@@ -9,6 +9,7 @@ from copy import deepcopy
 import hashlib
 import json
 from pathlib import Path
+import re
 
 from check_data_only_lemmas import rocq_tokens
 
@@ -243,8 +244,74 @@ def _source_clause(source, row, documents):
     return clause["term"]["value"]
 
 
+# This is the existing owned-lookup path grammar from path_conditions002.
+# It retains original clauses. It does not interpret opaque expansion leaves.
+PATH_PRIMITIVES = frozenset({
+    "BV", "N", "Z", "nat", "true", "false", "negb", "andb", "orb",
+    "bool_decide", "bv_add", "bv_sub", "bv_and", "bv_or", "bv_xor",
+    "bv_sign_extend", "bv_zero_extend", "bv_signed", "bv_unsigned",
+    "Z_to_bv", "Z.of_nat", "Datatypes.length", "List.length",
+    "List.nth", "nth",
+})
+
+
+def _owned_lookup(term, resource):
+    owned = unwrap(tokens(resource["value"]))
+
+    def visit(values):
+        values = unwrap(values)
+        parts = groups(values)
+        if values and values[0] in ("List.nth", "nth"):
+            if any(unwrap(part) == owned for part in parts[1:]):
+                return True
+        return any(part and part[0] == "(" and visit(part[1:-1])
+                   for part in parts)
+
+    return visit(tokens(term))
+
+
+def certified_predecessor_facts(report, row):
+    """Replay exact predecessor clauses against the same scoped array owner.
+
+    The grammar and selection match the accepted path selector. Certificates
+    additionally replay the bound original source through _source_clause.
+    No threshold, address, branch outcome or function name is special-cased.
+    """
+    selected, documents = {}, {}
+    arrays = [resource for resource in row["resources"]
+              if resource.get("kind") == "byte_array"]
+    allowed = set(PATH_PRIMITIVES)
+    for resource in row["resources"]:
+        allowed.update(value for value in tokens(resource.get("value", ""))
+                       if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_'.]*", value))
+    for index, fact in enumerate(report.get("unsupported", [])):
+        source = fact.get("source", {})
+        if (source.get("pc"), source.get("definition")) != (row["pc"], row["definition"]):
+            continue
+        provenance = source.get("provenance", {})
+        if fact.get("expansion") or not all(
+                provenance.get(name) for name in ("from_block", "from_instruction")):
+            continue
+        term = source.get("original_term")
+        if not isinstance(term, str) or not term:
+            raise ValueError("A predecessor condition lacks its original clause.")
+        symbols = {value for value in tokens(term)
+                   if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_'.]*", value)}
+        owners = [resource for resource in arrays if _owned_lookup(term, resource)]
+        if not owners or not symbols <= allowed:
+            continue
+        if _source_clause(source, row, documents) != term:
+            raise ValueError("A predecessor condition changed its source clause.")
+        identity = tokens(term)
+        item = selected.setdefault(identity, dict(
+            term=term, kind="predecessor", owners=deepcopy(owners), source_references=[]))
+        item["source_references"].append(dict(
+            pointer="/unsupported/" + str(index), source=deepcopy(source), expansion=[]))
+    return list(selected.values())
+
+
 def certified_execution_facts(report, row, catalog, *, refusals=None):
-    """Replay the existing lowerer; retain its facts and owned decoder leaves."""
+    """Retain lowerer facts, owned decoder leaves and certified path clauses."""
     candidates = [("/execution_facts/" + str(index), fact, "execution")
                   for index, fact in enumerate(row.get("execution_facts", []))]
     for index, fact in enumerate(report.get("unsupported", [])):
@@ -304,4 +371,12 @@ def certified_execution_facts(report, row, catalog, *, refusals=None):
                                                    expansion=deepcopy(expansion)))
     finally:
         catalog.owned_lists = previous
+    for fact in certified_predecessor_facts(report, row):
+        item = selected.setdefault(tokens(fact["term"]), fact)
+        if item is fact:
+            continue
+        for owner in fact["owners"]:
+            if owner not in item["owners"]:
+                item["owners"].append(owner)
+        item["source_references"].extend(fact["source_references"])
     return list(selected.values())

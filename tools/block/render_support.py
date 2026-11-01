@@ -605,12 +605,19 @@ def retain_definition_facts(source, name, row, facts):
     existing = {tokens(value) for value in re.findall("⌜(.*?)⌝", source, re.S)}
     additions = []
     for fact in facts:
-        if fact.get("kind") not in {"execution", "decoder"} or not fact.get("source_references"):
+        if fact.get("kind") not in {"execution", "decoder", "predecessor"} or not fact.get("source_references"):
             raise ValueError("A retained fact lacks its source certificate.")
+        if fact["kind"] == "predecessor" and not fact.get("owners"):
+            raise ValueError("A predecessor fact lacks its owned array lookup.")
         for reference in fact["source_references"]:
             origin = reference["source"]
             if (origin["pc"], origin["definition"]) != (row["pc"], row["definition"]):
                 raise ValueError("A retained fact belongs to another entry scope.")
+            if fact["kind"] == "predecessor" and (
+                    reference.get("expansion") or not all(
+                        origin.get("provenance", {}).get(name)
+                        for name in ("from_block", "from_instruction"))):
+                raise ValueError("A predecessor fact lacks its exact path provenance.")
         term = expression(fact["term"], "retained source fact")
         rendered, presentations = typed_nat_literals(term)
         rendered, integer_presentations = source_z_scope(rendered, fact["source_references"])
