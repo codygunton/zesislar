@@ -72,7 +72,8 @@ def evaluate(claims, new_bytes, available_bytes, *, observations=None, new_obser
                 ambiguous.update((key, other))
     groups = {}
     for key, row in rows.items():
-        if row.get('aggregate_verified') is True and key not in ambiguous:
+        if (row.get('verified') is True and row.get('aggregate_verified') is True
+                and key not in ambiguous):
             identity = (row['scope'], row['device'], row['inode'])
             groups.setdefault(identity, []).append(key)
     grouped = {}
