@@ -16,6 +16,7 @@ import stat
 GIB = 1024 ** 3
 HEADROOM_BYTES = 20 * GIB
 SLICE_MAX_BYTES = 175 * GIB
+STATIC_KERNEL_ACCOUNT_SCHEMA = 'legacy_kernel_accounts.v1'
 CGROUP_ROOT = Path('/sys/fs/cgroup')
 PROC = Path('/proc')
 
@@ -322,8 +323,9 @@ class ScopeReader:
             path = Path(bound['scope'])
             if path.resolve() != path:
                 raise ValueError('The retained aggregate contains an alias.')
-            if path.parent != self.parent or not re.fullmatch(
-                    rf'zesuworkloads-aggregate{self.uid}p[0-9]+r[0-9]+\.slice', path.name):
+            static = bound.get('static_until_absent') is True
+            if path.parent != self.parent or (not static and not re.fullmatch(
+                    rf'zesuworkloads-aggregate{self.uid}p[0-9]+r[0-9]+\.slice', path.name)):
                 raise ValueError('The retained aggregate namespace changed.')
             if not path.exists():
                 if path.is_symlink():
@@ -337,9 +339,9 @@ class ScopeReader:
             if self.directory(path) != before:
                 raise ValueError('The retained aggregate changed during sampling.')
             integer(live, 'retained aggregate memory')
-            if 'populated 0' in events.splitlines():
+            if 'populated 0' in events.splitlines() and not static:
                 return {'verified': True, 'closed': True, 'live_bytes': 0}
-            if 'populated 1' not in events.splitlines():
+            if 'populated 1' not in events.splitlines() and not (static and 'populated 0' in events.splitlines()):
                 raise ValueError('The retained aggregate population is unknown.')
             return dict(bound, verified=True, aggregate_verified=True, live_bytes=live,
                         reason='authenticated aggregate remains populated')
@@ -509,6 +511,7 @@ def shell_rows(data, reader):
                     amount = legacy_aggregate_booking(reader, observation, [marker])['booking_bytes']
                 except (OSError, ValueError):
                     observation = {'verified': False, 'live_bytes': 0, 'reason': 'legacy aggregate fence is unknown'}
+            observation = dict(observation, legacy_aggregate_name=fields.get('aggregate', ''))
             rows[shell_key(marker)] = (amount, observation)
         except FileNotFoundError:
             raise ValueError('A shell token disappeared during the shared projection.')
@@ -519,10 +522,37 @@ def projection(data, claims, new_bytes, available_bytes, *, reader=None, new_obs
     reader = ScopeReader() if reader is None else reader
     claims = dict(claims)
     observations = {key: reader.claim(data, key) for key, amount in claims.items() if amount}
+    # A reviewed static view changes accounting only. It grants no token or slot.
+    static_names = set()
+    for key, hold in data.get('legacy_kernel_accounts', {}).items():
+        bound = hold['aggregate']
+        sample = reader.residual(dict(bound, static_until_absent=True))
+        if sample.get('closed') is True:
+            static_names.add(Path(bound['scope']).name)
+            continue
+        amount = hold['booking_bytes']
+        integer(amount, 'reviewed static booking')
+        for prior, expected_owner in hold.get('canonical_owners', {}).items():
+            actual = data.get('entry_pilot_outside_owners', {}).get(prior) or data.get('correctness_gate_owners', {}).get(prior)
+            if (not isinstance(expected_owner, dict) or not {'pid', 'startticks'} <= expected_owner.keys()
+                    or not actual or any(actual.get(name) != value for name, value in expected_owner.items())):
+                raise ValueError('The static canonical association changed.')
+            if sample.get('verified') is True:
+                amount = max(amount, claims.pop(prior, 0))
+                observations.pop(prior, None)
+            for name in ('entry_pilot_outside_releases', 'correctness_gate_releases'):
+                released = data.get(name, {}).get(prior, {})
+                amount = max(amount, released.get('bytes', 0))
+        claims[key] = amount
+        observations[key] = sample
+        if sample.get('verified') is True:
+            static_names.add(Path(bound['scope']).name)
     # Legacy writers stay visible until rollout closes or updates them.
     # Non-kernel unit readers supply their own inventory explicitly.
     if isinstance(reader, ScopeReader) and (reader.proc == PROC or 'shell_marker_directory' in data):
         for key, (amount, observation) in shell_rows(data, reader).items():
+            if key not in data.get('shell_claim_owners', {}) and observation.get('legacy_aggregate_name') in static_names:
+                continue
             claims[key] = max(claims.get(key, 0), amount)
             if key not in data.get('shell_claim_owners', {}):
                 observations[key] = observation
