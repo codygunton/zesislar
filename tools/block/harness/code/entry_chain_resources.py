@@ -27,9 +27,9 @@ class SessionValidation:
 
     def check(self,path,expected,validate,force=False):
         from binding_cache import digest as checked_digest,force_hashing
+        if os.getpid()!=self.pid:
+            raise ValueError('The validation session belongs to another process.')
         with self.lock:
-            if os.getpid()!=self.pid:
-                raise ValueError('The validation session belongs to another process.')
             if Path(path).absolute()!=self.path or expected!=self.expected:
                 raise ValueError('The session names another runtime envelope.')
             self.validator=validate

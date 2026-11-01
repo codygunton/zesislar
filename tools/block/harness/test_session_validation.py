@@ -113,6 +113,15 @@ print(json.dumps(state.report()))
             self.assertEqual(os.waitstatus_to_exitcode(status),0)
             self.assertIn('another process',message)
 
+    def test_foreign_process_refuses_before_acquiring_an_inherited_lock(self):
+        state=R.SessionValidation(self.path,self.expected);state.pid=-1
+        class InheritedLock:
+            def __enter__(inner):raise AssertionError('An inherited lock must not be acquired.')
+            def __exit__(inner,*args):pass
+        state.lock=InheritedLock()
+        with self.assertRaisesRegex(ValueError,'another process'):
+            state.check(self.path,self.expected,lambda:self.fail('Foreign validation ran.'))
+
     def test_failed_initial_validation_never_creates_a_cache_hit(self):
         self.source.write_text('Changed required input.\n')
         with patch.object(R,'check_proof_bindings',wraps=self.real) as validate:
