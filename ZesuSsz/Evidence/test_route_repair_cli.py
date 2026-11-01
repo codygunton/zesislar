@@ -10,6 +10,7 @@ import unittest
 from check_decode_item_route_repair import (
     ARRAY_STORE_IDENTITY, ROOT, actual_groups, closed_groups, dry_run,
 )
+from _evidence_fixtures import repository
 from test_route_repair_linked_evidence import SyntheticEvidence
 
 
@@ -88,11 +89,15 @@ class AcceptanceCommandTests(unittest.TestCase):
         stub = self.root / "ArrayStoreSelection.v"
         stub.write_text("(* Uncompiled interface stub. *)\n" + ARRAY_STORE_IDENTITY["class"] + " " +
                         ARRAY_STORE_IDENTITY["instance"] + "\n")
-        result = self.command("--workspace", str(ROOT), "--array-store", "--dry-run",
+        result = self.command("--workspace", str(repository()),
+                              "--index", str(repository() / "ZesuSsz/Evidence/array_store/INDEX.json"),
+                              "--array-store", "--dry-run",
                               "--switch-source", str(stub))
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("retired reservation", result.stderr)
-        result = self.command("--workspace", str(ROOT), "--array-store", "--dry-run")
+        result = self.command("--workspace", str(repository()),
+                              "--index", str(repository() / "ZesuSsz/Evidence/array_store/INDEX.json"),
+                              "--array-store", "--dry-run")
         self.assertEqual(result.returncode, 0, result.stderr)
         report = json.loads(result.stdout)
         self.assertFalse(report["accepted"])

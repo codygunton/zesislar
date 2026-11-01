@@ -2,7 +2,7 @@
   "schema": "harness.authentic-fixtures.v1",
   "purpose": "Authentic source bytes for derived unit fixtures. Never admission evidence.",
   "roots": {
-    "/home/cody/zesislar/.worktrees": "worktrees",
+    "/home/cody/zesislar/.worktrees": ".worktrees",
     "/home/cody/zesislar/_build/agents": "agents"
   },
   "files": {
@@ -2361,6 +2361,258 @@
       "provenance": {
         "retained": "/home/cody/zesislar/_build/agents/worker-build-2/v12-F6-hooks-projection-v1/projection/Hooks.v"
       }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/_build/i75-runtime-archive-preparation-001/SCAN.json": {
+      "sha256": "d590ea8b935fbfa1ff6440e518a39f0a2691d9762544091f274f7d73a07d8cb2",
+      "size": 79,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i75-evidence-checkpoint/_build/i75-runtime-archive-preparation-001/SCAN.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/21/218ea869c1df45f3767ba426fb3b419216eb45cfdf12f62cee8fbdd2e5abef2e": {
+      "sha256": "218ea869c1df45f3767ba426fb3b419216eb45cfdf12f62cee8fbdd2e5abef2e",
+      "size": 33750,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i75-precommit-captures/_build/i75-s132-nine-site-source-inventory-114/REPORT.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/3a/3a6ffaea2ad61010400edd4353ba6d01aba7b3b714dfdac84c84a8eeb18eaf0d": {
+      "sha256": "3a6ffaea2ad61010400edd4353ba6d01aba7b3b714dfdac84c84a8eeb18eaf0d",
+      "size": 803131,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i75-precommit-captures/_build/i75-consolidated-evidence-checkpoint-113/REPORT.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/75/755923fd7742aa98bfc5b36258acb5d73dac431e1760553663245db106001161": {
+      "sha256": "755923fd7742aa98bfc5b36258acb5d73dac431e1760553663245db106001161",
+      "size": 12157,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i75-precommit-captures/_build/i75-discarded-root-context-inspection-112/REPORT.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-entry-normalization-arm-preparation-001/REPORT.json": {
+      "sha256": "c1894bd9dba2cb628861985953d1195bb651d6a7f1f0e2fd906af862a77fb6bb",
+      "size": 8105,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-entry-normalization-arm-preparation-001/REPORT.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-audit-001/REPORT.json": {
+      "sha256": "7b9562694174c7e79a401efd320cb1e9f2f4ff89449ba31be07e550aaa0bd0bd",
+      "size": 75491,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-audit-001/REPORT.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/REPORT.json": {
+      "sha256": "ab55dd2c0e7438250207163915b8946e3c85449aba8c9c2206111e9e37efb2fc",
+      "size": 199497,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/REPORT.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-goals000.kernel.json": {
+      "sha256": "558f0d817cef9993b4c2ea2da10cf3cc0aef0190a6427b5f907c43d5e3ef2157",
+      "size": 32718,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-goals000.kernel.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-goals001.kernel.json": {
+      "sha256": "4d21537fa44574fcf38d3c10aa4df6d5e3b7c3fe85850766ca52061e79132377",
+      "size": 393510,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-goals001.kernel.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-goals002.kernel.json": {
+      "sha256": "5cdefabbcb0ffa3db7718ed8eb6807f13c839b84e94e14ce11b520bac86b27d6",
+      "size": 597265,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-goals002.kernel.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-shelf000.kernel.json": {
+      "sha256": "9fc6dc25d809662363146cc570b704d1c8ec2ed840cdaee8405adcabde34d1b9",
+      "size": 571607,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-shelf000.kernel.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-shelf001.kernel.json": {
+      "sha256": "1a428549279b9960c42e030f72ca95651b1fcb31eaaca9d140ff82cbe404ee71",
+      "size": 532822,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-shelf001.kernel.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-shelf002.kernel.json": {
+      "sha256": "a2a34e7f2d1d329153371c76a1cdfe2cc05caa82b430e78e7abc0c53824dfc04",
+      "size": 499417,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-shelf002.kernel.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-goals000.kernel.json": {
+      "sha256": "2db2a4ae84db18c11a934199f692f46234a8507a9287a69d241b8d3e3a2571ca",
+      "size": 36702,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-goals000.kernel.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-goals001.kernel.json": {
+      "sha256": "c99a551aa5c03592c1dd8152a133885e73307b5ea9719ff4cae4e1315239e634",
+      "size": 395203,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-goals001.kernel.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-goals002.kernel.json": {
+      "sha256": "28719d68b835125bc51c6fbc9826592adc6946f3d0617965916f395ae40c08b3",
+      "size": 598958,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-goals002.kernel.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-shelf000.kernel.json": {
+      "sha256": "0c995a8c8c82d8a3e301b9ac63b1c9134ef1e6bf16d6bd2bb8e10ae572ee176d",
+      "size": 573375,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-shelf000.kernel.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-shelf001.kernel.json": {
+      "sha256": "860621cc4be430da93ce9095fc3490fafa3772a2750dc05de91f98e53827c132",
+      "size": 534590,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-shelf001.kernel.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-shelf002.kernel.json": {
+      "sha256": "e564f49de8d3eeb3bfb16895dc1b35f1bb86f313affee0309dc60522ea5cbe4b",
+      "size": 501186,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-shelf002.kernel.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-goals000.kernel.json": {
+      "sha256": "e6c28a39f3158ba2f4b679b437bee3027b67cefbdb309eaaa74582bd916d7b41",
+      "size": 34501,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-goals000.kernel.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-goals001.kernel.json": {
+      "sha256": "2e2bad7da34367594d487dad8ab8571a9e964ca4692b6d60f38d964db8b8fcfb",
+      "size": 395088,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-goals001.kernel.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-goals002.kernel.json": {
+      "sha256": "2f6301277045b8adb6d585a2fa7ad16c362f29eb57b10fce4dd5bffc385662f1",
+      "size": 598843,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-goals002.kernel.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-shelf000.kernel.json": {
+      "sha256": "7cdcf4f260c2c552d230cc4bd146fb2a2e9660e181d70d9c7d68dc0805a4f768",
+      "size": 16945,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-shelf000.kernel.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-shelf001.kernel.json": {
+      "sha256": "fd6a5ee4da7c5eaa337f57a57c9ee3330b1652435abbc2fb240f7b56da29e1e9",
+      "size": 573330,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-shelf001.kernel.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-shelf002.kernel.json": {
+      "sha256": "18296b7326dc9cb65e140bfb490dd60a1f2a9ece78450f34fd49be305ef30c22",
+      "size": 534545,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-shelf002.kernel.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-shelf003.kernel.json": {
+      "sha256": "a30add1d7aac9ef798a88916ae041836bbc3edeee6100f4f71ec225247340625",
+      "size": 501127,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-shelf003.kernel.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-native-store-capture-audit-006/REPORT.json": {
+      "sha256": "74a2639c43b480082e8ad1a999fe772c91ee1ec9331d70f1a0a27211c4b88a69",
+      "size": 42117,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "archive": "/home/cody/zesislar-archive/worktree-evidence/worker2-child-platform-i80-memory-kind-dc832/_build/i80-native-store-capture-audit-006/REPORT.json"
+      }
+    },
+    "/home/cody/zesislar/.worktrees/worker2-child-map-i63-resource-first-pure-b214/_build/i63-array-store-identity-reservation-001/REPORT.json": {
+      "sha256": "60a2c9ef17afacf3c7a533ed728daa4a14935e85ffdd46f33acbb5b9d96d50a3",
+      "size": 875,
+      "mode": 420,
+      "format": "json",
+      "provenance": {
+        "retained": "/home/cody/zesislar/.worktrees/worker2-child-map-i63-resource-first-pure-b214/_build/i63-array-store-identity-reservation-001/REPORT.json"
+      }
     }
   },
   "hashes": {
@@ -3061,6 +3313,90 @@
     ],
     "bc30f2f6aa42e50975c20f3577b46b6d9c464234e0d46354ecd8b8bfac581d70": [
       "/home/cody/zesislar/_build/agents/worker-build-2/v12-F6-hooks-projection-v1/projection/Hooks.v"
+    ],
+    "d590ea8b935fbfa1ff6440e518a39f0a2691d9762544091f274f7d73a07d8cb2": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/_build/i75-runtime-archive-preparation-001/SCAN.json"
+    ],
+    "218ea869c1df45f3767ba426fb3b419216eb45cfdf12f62cee8fbdd2e5abef2e": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/21/218ea869c1df45f3767ba426fb3b419216eb45cfdf12f62cee8fbdd2e5abef2e"
+    ],
+    "3a6ffaea2ad61010400edd4353ba6d01aba7b3b714dfdac84c84a8eeb18eaf0d": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/3a/3a6ffaea2ad61010400edd4353ba6d01aba7b3b714dfdac84c84a8eeb18eaf0d"
+    ],
+    "755923fd7742aa98bfc5b36258acb5d73dac431e1760553663245db106001161": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i75-evidence-checkpoint/build/stock-zisk/i75-evidence-runtime-archive-001/cas/75/755923fd7742aa98bfc5b36258acb5d73dac431e1760553663245db106001161"
+    ],
+    "c1894bd9dba2cb628861985953d1195bb651d6a7f1f0e2fd906af862a77fb6bb": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-entry-normalization-arm-preparation-001/REPORT.json"
+    ],
+    "7b9562694174c7e79a401efd320cb1e9f2f4ff89449ba31be07e550aaa0bd0bd": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-other-priority-captures-audit-001/REPORT.json"
+    ],
+    "ab55dd2c0e7438250207163915b8946e3c85449aba8c9c2206111e9e37efb2fc": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/REPORT.json"
+    ],
+    "558f0d817cef9993b4c2ea2da10cf3cc0aef0190a6427b5f907c43d5e3ef2157": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-goals000.kernel.json"
+    ],
+    "4d21537fa44574fcf38d3c10aa4df6d5e3b7c3fe85850766ca52061e79132377": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-goals001.kernel.json"
+    ],
+    "5cdefabbcb0ffa3db7718ed8eb6807f13c839b84e94e14ce11b520bac86b27d6": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-goals002.kernel.json"
+    ],
+    "9fc6dc25d809662363146cc570b704d1c8ec2ed840cdaee8405adcabde34d1b9": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-shelf000.kernel.json"
+    ],
+    "1a428549279b9960c42e030f72ca95651b1fcb31eaaca9d140ff82cbe404ee71": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-shelf001.kernel.json"
+    ],
+    "a2a34e7f2d1d329153371c76a1cdfe2cc05caa82b430e78e7abc0c53824dfc04": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/69b0-PRE-SEARCH-shelf002.kernel.json"
+    ],
+    "2db2a4ae84db18c11a934199f692f46234a8507a9287a69d241b8d3e3a2571ca": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-goals000.kernel.json"
+    ],
+    "c99a551aa5c03592c1dd8152a133885e73307b5ea9719ff4cae4e1315239e634": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-goals001.kernel.json"
+    ],
+    "28719d68b835125bc51c6fbc9826592adc6946f3d0617965916f395ae40c08b3": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-goals002.kernel.json"
+    ],
+    "0c995a8c8c82d8a3e301b9ac63b1c9134ef1e6bf16d6bd2bb8e10ae572ee176d": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-shelf000.kernel.json"
+    ],
+    "860621cc4be430da93ce9095fc3490fafa3772a2750dc05de91f98e53827c132": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-shelf001.kernel.json"
+    ],
+    "e564f49de8d3eeb3bfb16895dc1b35f1bb86f313affee0309dc60522ea5cbe4b": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a40-PRE-SEARCH-shelf002.kernel.json"
+    ],
+    "e6c28a39f3158ba2f4b679b437bee3027b67cefbdb309eaaa74582bd916d7b41": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-goals000.kernel.json"
+    ],
+    "2e2bad7da34367594d487dad8ab8571a9e964ca4692b6d60f38d964db8b8fcfb": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-goals001.kernel.json"
+    ],
+    "2f6301277045b8adb6d585a2fa7ad16c362f29eb57b10fce4dd5bffc385662f1": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-goals002.kernel.json"
+    ],
+    "7cdcf4f260c2c552d230cc4bd146fb2a2e9660e181d70d9c7d68dc0805a4f768": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-shelf000.kernel.json"
+    ],
+    "fd6a5ee4da7c5eaa337f57a57c9ee3330b1652435abbc2fb240f7b56da29e1e9": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-shelf001.kernel.json"
+    ],
+    "18296b7326dc9cb65e140bfb490dd60a1f2a9ece78450f34fd49be305ef30c22": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-shelf002.kernel.json"
+    ],
+    "a30add1d7aac9ef798a88916ae041836bbc3edeee6100f4f71ec225247340625": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-remaining-sites-capture-audit-002/6a78-PRE-SEARCH-shelf003.kernel.json"
+    ],
+    "74a2639c43b480082e8ad1a999fe772c91ee1ec9331d70f1a0a27211c4b88a69": [
+      "/home/cody/zesislar/.worktrees/worker2-child-platform-i80-memory-kind-dc832/_build/i80-native-store-capture-audit-006/REPORT.json"
+    ],
+    "60a2c9ef17afacf3c7a533ed728daa4a14935e85ffdd46f33acbb5b9d96d50a3": [
+      "/home/cody/zesislar/.worktrees/worker2-child-map-i63-resource-first-pure-b214/_build/i63-array-store-identity-reservation-001/REPORT.json"
     ]
   },
   "unavailable": []
