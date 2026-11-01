@@ -1,0 +1,24 @@
+{
+  "approved_commit": "55f6a6082e7a0355832b5f4c51b6c8cd140e591c",
+  "guard": {
+    "source_path": "tools/block/harness/runtime-tools/resource_guard.sh",
+    "approved_sha256": "27e5e6994aac7de81525698c5a070927b084eaa5fd04d7af029e3660317805ac",
+    "golden_sha256": "865e648b754a2a9bbb136686e4dd715c6b8f4baa279a48fdd57006606898b2df",
+    "main_adjustments": [
+      [
+        "guards share it for two seconds",
+        "guards share it for ten seconds"
+      ],
+      [
+        "$(date +%s) - stamp >= 2",
+        "$(date +%s) - stamp >= 10"
+      ]
+    ]
+  },
+  "memory_policy": {
+    "source_path": "tools/block/harness/code/memory_policy.py",
+    "approved_sha256": "5672de157eb4e350ec41c3da96d79186885991c4ab592e34189282f7398de701",
+    "golden_sha256": "5672de157eb4e350ec41c3da96d79186885991c4ab592e34189282f7398de701",
+    "main_adjustments": []
+  }
+}
