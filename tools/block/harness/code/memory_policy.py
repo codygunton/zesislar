@@ -229,7 +229,10 @@ def workload_for_job(profile_binding,job,config):
  if profile.get('schema')!='scratch.admission-profile.v1':raise ValueError('The admission profile is unsupported.')
  kind=profile.get('kind')
  if kind not in {FAMILY_KIND,FOCUSED_KIND,'minimal_native_tactic',PORT_KIND}:raise ValueError('The workload kind is unsupported.')
- if 'memory_booking' in profile and kind!=PORT_KIND:raise ValueError('Full-fence booking requires a production PORT profile.')
+ if 'memory_booking' in profile and kind not in {PORT_KIND,FOCUSED_KIND}:raise ValueError('Full-fence booking requires a production PORT profile or a focused declaration profile.')
+ if 'memory_booking' in profile and kind==FOCUSED_KIND:
+  if profile['memory_booking']!=PORT_FULL_FENCE_BOOKING:raise ValueError('The declaration memory booking option is invalid.')
+  if config.get('declarations_only') is not True or job['phase'] not in COMPILE_PHASES:raise ValueError('Full-fence declaration booking requires declaration-only execution.')
  if kind in {FAMILY_KIND,'minimal_native_tactic',PORT_KIND} and job['phase']!='native' or kind==FOCUSED_KIND and job['phase']=='native':return None
  modules=config['proof_runtime']['module_files'];workspace=Path(config['prepared_workspace']);owned=[]
  def actual(row):
@@ -320,6 +323,7 @@ def workload_claim(workload,job,basis):
   return minimal_growth_claim(read(workload['profile']),job['target'])
  if kind==FOCUSED_KIND:
   if job['phase'] not in COMPILE_PHASES:raise ValueError('A focused check cannot execute native search.')
+  if profile.get('memory_booking')==PORT_FULL_FENCE_BOOKING:return job_fence(job)
   return FOCUSED_CLAIM
  if kind==PORT_KIND:
   if profile.get('memory_booking')==PORT_FULL_FENCE_BOOKING:return PORT_FENCE
@@ -445,9 +449,10 @@ def environment(phase,claim_bytes=None,job=None):
   if job['phase']!=phase:raise ValueError('The environment phase differs from its memory job.')
   validate_job(job)
   workload=job.get('workload') or {}
-  if workload.get('kind')==PORT_KIND and read(workload['profile']).get('memory_booking')==PORT_FULL_FENCE_BOOKING:
-   if claim_bytes is not None and claim_bytes!=PORT_FENCE:raise ValueError('The environment claim differs from full-fence booking.')
-   claim_bytes=PORT_FENCE
+  if workload.get('kind') in {PORT_KIND,FOCUSED_KIND} and read(workload['profile']).get('memory_booking')==PORT_FULL_FENCE_BOOKING:
+   physical=job_fence(job)
+   if claim_bytes is not None and claim_bytes!=physical:raise ValueError('The environment claim differs from full-fence booking.')
+   claim_bytes=physical
  physical=job_fence(job) if job is not None else fence(phase)
  measured=job is not None and measured_fence(job) is not None
  gib=physical//GIB
