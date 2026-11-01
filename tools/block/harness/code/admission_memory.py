@@ -1,4 +1,4 @@
-"""Account unrealized reservations against available memory and the fixed slice.
+"""Account reservations and verified live usage against both memory limits.
 
 Only an exact owner token, batch identity, and live kernel membership can earn
 memory.current credit. Missing evidence retains the complete reservation.
@@ -41,7 +41,8 @@ def evaluate(claims, new_bytes, available_bytes, *, observations=None,
         row = observations.get(key, {})
         live = row.get('live_bytes', 0) if row.get('verified') is True else 0
         integer(live, 'verified live memory')
-        rows[key] = dict(row, claim_bytes=amount, credited_bytes=min(amount, live),
+        rows[key] = dict(row, claim_bytes=amount, accounted_bytes=max(amount, live),
+                         credited_bytes=min(amount, live),
                          reason=row.get('reason', 'unverified scope'))
     # Parent/child aggregates and duplicate scope identities cannot earn two credits.
     keys = [key for key in rows if rows[key].get('verified') is True]
@@ -57,17 +58,19 @@ def evaluate(claims, new_bytes, available_bytes, *, observations=None,
     for key in conflicts:
         rows[key].update(credited_bytes=0, reason='duplicate or overlapping scope')
     total = sum(claims.values())
+    accounted = sum(row['accounted_bytes'] for row in rows.values())
     credit = sum(row['credited_bytes'] for row in rows.values())
     unrealized = total - credit
     available_budget = available_bytes * 7 // 10
     cap = max(0, slice_max_bytes - headroom_bytes)
-    room = max(0, min(available_budget - unrealized, cap - total))
-    fits = unrealized + new_bytes <= available_budget and total + new_bytes <= cap
+    room = max(0, min(available_budget - unrealized, cap - accounted))
+    fits = unrealized + new_bytes <= available_budget and accounted + new_bytes <= cap
     return {'admitted': fits, 'fits': fits, 'MemAvailable_bytes': available_bytes,
             'budget_bytes': available_budget, 'slice_max_bytes': slice_max_bytes,
             'fixed_headroom_bytes': headroom_bytes, 'slice_claim_cap_bytes': cap,
-            'active_claim_bytes': total, 'credited_live_bytes': credit,
-            'unrealized_claim_bytes': unrealized, 'requested_total_bytes': total + new_bytes,
+            'active_claim_bytes': total, 'accounted_active_bytes': accounted,
+            'live_over_booking_bytes': accounted-total, 'credited_live_bytes': credit,
+            'unrealized_claim_bytes': unrealized, 'requested_total_bytes': accounted + new_bytes,
             'requested_unrealized_bytes': unrealized + new_bytes, 'new_claim_bytes': new_bytes,
             'available_new_claim_bytes': room, 'claim_observations': rows}
 
