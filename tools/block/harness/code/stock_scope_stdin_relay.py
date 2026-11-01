@@ -28,6 +28,7 @@ def enter(owner, ticks, fd, device, inode, command):
         os.dup2(opened,0)
     finally:os.close(opened)
     environment = dict(os.environ)
+    # The inner guard supplies its identity. It grants no compiler-slot reuse.
     environment.pop('ZESU_COQC_RESERVATION', None)
     environment.pop('ZESU_COQC_SCOPE', None)
     os.execve(command[0], command, environment)
