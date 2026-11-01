@@ -254,6 +254,15 @@ class UnifiedAdmission(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'filename names another owner'):
             M.prepare_legacy_rollout(self.read(),[writer],reader=self.reader)
 
+    def test_registry_wrapper_guard_argument_is_not_an_executable_guard(self):
+        writer=self.rollout_writer('scope')
+        argv=['python3',str(self.root/'run_registry.py'),'run','--guard',
+              writer['source']['path'],'scope','client','--','true']
+        writer['argv']=argv
+        self.process(self.pending,12,argv,str(self.group.relative_to(self.reader.root)))
+        with self.assertRaisesRegex(ValueError,'not the executable script'):
+            M.prepare_legacy_rollout(self.read(),[writer],reader=self.reader)
+
     def test_scope_rollout_cannot_borrow_another_token_owner(self):
         writer=self.rollout_writer('scope');writer['token_owner']=dict(self.batch)
         with self.assertRaisesRegex(ValueError,'another token owner'):
