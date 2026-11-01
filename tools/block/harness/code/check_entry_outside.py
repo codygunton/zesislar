@@ -77,6 +77,7 @@ def canonical_functions(policy):
 
 def reserve(policy,key,owner,receipt,*,available=None,claims_fn=None,pause=time.sleep,recheck=lambda:None):
     from memory_policy import admission_claim
+    from admission_memory import projection
     policy['minimum_claim_bytes'] = admission_claim(policy)
     actual_claims,actual_available=canonical_functions(policy)
     claims_fn=actual_claims if claims_fn is None else claims_fn
@@ -89,14 +90,17 @@ def reserve(policy,key,owner,receipt,*,available=None,claims_fn=None,pause=time.
             data=strict_loads(Path(policy['ledger']).read_text())
             if data['fixed_claims'].get(key,0):raise ValueError('The unique attempt claim already exists.')
             claims=claims_fn(data,policy['legacy_release_bindings']);free=available()
-            total=sum(claims.values())+policy['minimum_claim_bytes']+policy['capture_headroom_bytes']
+            sizing=projection(data,claims,policy['minimum_claim_bytes']+policy['capture_headroom_bytes'],free)
+            total=sizing['requested_total_bytes']
             record={'time_ns':time.time_ns(),'claim_key':key,'owner':owner,
                 'claim_bytes':policy['minimum_claim_bytes'],'active_claim_bytes':sum(claims.values()),
                 'capture_headroom_bytes':policy['capture_headroom_bytes'],'MemAvailable_bytes':free,
-                'budget_bytes':free*7//10,'requested_total_bytes':total,'admitted':total<=free*7//10}
+                'budget_bytes':free*7//10,'requested_total_bytes':total,**sizing}
             if record['admitted']:
                 data['fixed_claims'][key]=policy['minimum_claim_bytes']
                 data.setdefault('entry_pilot_outside_owners',{})[key]=owner
+                if policy.get('output_path'):
+                    data.setdefault('claim_locations',{})[key]={'owner':owner,'kind':'entry','output_path':policy['output_path']}
                 atomic_json(policy['ledger'],data)
             record['ledger_sha256']=digest(policy['ledger'])
             records.append(record);atomic_json(receipt,records)

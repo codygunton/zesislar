@@ -110,7 +110,7 @@ class ModuleMemoryTests(unittest.TestCase):
         self.assertEqual(memory.admission(41, [30], 100, headroom_bytes=0)["reason"], "memory_budget")
 
     def test_admission_preserves_headroom_and_the_compiler_limit(self):
-        self.assertFalse(memory.admission(61, [], 100, headroom_bytes=40)["admitted"])
+        self.assertFalse(memory.admission(61, [], 100, headroom_bytes=40, slice_max_bytes=100)["admitted"])
         self.assertEqual(memory.admission(1, [1] * 48, 1000, headroom_bytes=0)["reason"], "compiler_limit")
         self.assertTrue(memory.admission(1, [1] * 47, 1000, headroom_bytes=0)["admitted"])
 

@@ -12,7 +12,7 @@ def install_restart_tools(workspace,config,here):
  layout=json.loads((here/'TOOL-LAYOUT.json').read_text())
  rows={'files':[binding(here/source) for source in layout.values()],
        'relative_paths':{str((here/source).resolve()):target for target,source in layout.items()},
-       'claim_helpers':[binding(here/'code/entry_admission'/name) for name in ['claims.py','io_helpers.py']]}
+       'claim_helpers':[binding(here/'code/entry_admission'/name) for name in ['claims.py','io_helpers.py']] + [binding(here/'code/admission_memory.py')]}
  records=[]
  for row in rows['files']:
   source=Path(row['path']);relative=rows.get('relative_paths',{}).get(row['path'],source.name)

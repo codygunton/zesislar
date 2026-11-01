@@ -35,7 +35,8 @@ class ResourceGuard(unittest.TestCase):
             result = self.run_guard(r'''
 hold_reason() { :; }
 compiler_pids() { :; }
-memory() { echo $((100*GIB)) 0 $((40*GIB)); }
+# Two 12 GiB claims exceed 70 percent of 30 GiB.
+memory() { echo $((100*GIB)) 0 $((30*GIB)); }
 POLL_SECONDS=0.01
 worker() {
   local owner=$BASHPID marker

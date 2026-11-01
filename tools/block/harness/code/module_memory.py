@@ -31,6 +31,17 @@ else:
         from det.coqc_slots import compiler_pids
 
 
+if _staged_tools is not None:
+    _admission = _directory / 'admission_memory.py'
+    if not _admission.is_file() or not _admission.resolve().is_relative_to(_staged_tools.resolve()):
+        raise ImportError('The staged module memory helper lacks its owned admission dependency.')
+    _spec = importlib.util.spec_from_file_location('_zesu_owned_admission_memory', _admission)
+    _module = importlib.util.module_from_spec(_spec)
+    _spec.loader.exec_module(_module)
+    evaluate, ScopeReader = _module.evaluate, _module.ScopeReader
+else:
+    from admission_memory import evaluate, ScopeReader
+
 GIB = 1024 ** 3
 SCHEMA = "zesu.module-memory.v1"
 
@@ -128,7 +139,7 @@ def module_claim(profile, arguments, cwd, compiler, *, fallback_bytes=16 * GIB):
 
 
 def admission(request_bytes, live_claims, available_bytes, *, headroom_bytes=20 * GIB,
-              maximum_compilers=48):
+              maximum_compilers=48, observations=None, slice_max_bytes=None):
     """Evaluate one fresh snapshot without mutating any reservation."""
     positive_integer(request_bytes, "requested reservation")
     positive_integer(available_bytes, "available memory")
@@ -137,13 +148,13 @@ def admission(request_bytes, live_claims, available_bytes, *, headroom_bytes=20 
         raise ValueError("The memory headroom must be a nonnegative integer.")
     for claim in live_claims:
         positive_integer(claim, "live reservation")
-    budget = max(0, min(available_bytes * 7 // 10, available_bytes - headroom_bytes))
-    requested_total = sum(live_claims) + request_bytes
+    sizing = evaluate({str(index): value for index, value in enumerate(live_claims)},
+                      request_bytes, available_bytes, observations=observations,
+                      slice_max_bytes=slice_max_bytes, headroom_bytes=headroom_bytes)
     reason = ("compiler_limit" if len(live_claims) >= maximum_compilers else
-              "memory_budget" if requested_total > budget else None)
-    return {"admitted": reason is None, "reason": reason,
-            "budget_bytes": budget, "requested_total_bytes": requested_total,
-            "compiler_count_after": len(live_claims) + 1}
+              "memory_budget" if not sizing["fits"] else None)
+    return dict(sizing, admission_pool="compiler", admitted=reason is None, reason=reason,
+                compiler_count_after=len(live_claims) + 1)
 
 
 def process_identity(proc, pid):
@@ -227,7 +238,8 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
     fence claim. Retained claims and growth observations never decrease.
     """
     physical = compiler_pids(proc)
-    covered, claims, growth = set(), [], []
+    covered, claims, growth, scopes = set(), [], [], {}
+    reader = ScopeReader()
     for marker in markers:
         marker = Path(marker)
         lines = marker.read_text().splitlines()
@@ -257,6 +269,8 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
             covered.update(measured["covered"])
             previous = values.get("memory_probe_claim_bytes", 0)
             increased = max(fence, previous, measured["claim_bytes"])
+            if proc == Path('/proc'):
+                scopes[str(len(claims))] = reader.compiler(marker)
             claims.append(increased)
             if increased > previous:
                 growth.append({"reservation": str(marker), "previous_bytes": previous,
@@ -296,6 +310,8 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
             except FileNotFoundError:
                 pass
         increased = max(fence, claim, sum(peaks))
+        if proc == Path('/proc'):
+            scopes[str(len(claims))] = reader.compiler(marker)
         claims.append(increased)
         if increased > claim:
             growth.append({"reservation": str(marker), "previous_bytes": claim, "claim_bytes": increased})
@@ -312,7 +328,8 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
                 finally:
                     temporary.unlink(missing_ok=True)
     claims.extend([max(64 * GIB, fallback_bytes)] * len(physical - covered))
-    return {"claims": claims, "growth": growth, "unrepresented_compilers": sorted(physical - covered)}
+    return {"claims": claims, "growth": growth, "unrepresented_compilers": sorted(physical - covered),
+            "scope_observations": scopes}
 
 
 def main():
@@ -341,10 +358,12 @@ def main():
     else:
         observed = reservation_claims(args.markers, proc=args.proc, fallback_bytes=args.fallback_bytes, refresh=True)
         result = admission(args.request_bytes, observed["claims"], args.available_bytes,
-                           headroom_bytes=args.headroom_bytes, maximum_compilers=args.maximum_compilers)
+                           headroom_bytes=args.headroom_bytes, maximum_compilers=args.maximum_compilers,
+                           observations=observed.get("scope_observations"))
         if not result["admitted"]:
-            print(f"module memory: {result['reason']}; requested {result['requested_total_bytes']} bytes, "
-                  f"budget {result['budget_bytes']} bytes")
+            print(f"module memory: {result['reason']}; unrealized {result['requested_unrealized_bytes']} bytes, "
+                  f"available budget {result['budget_bytes']} bytes; total {result['requested_total_bytes']} bytes, "
+                  f"slice cap {result['slice_claim_cap_bytes']} bytes")
     return 0
 
 

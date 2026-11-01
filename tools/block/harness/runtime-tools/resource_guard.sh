@@ -872,11 +872,14 @@ confirm_coqc() {
         "$MEMORY_CLAIM_BYTES" "$(( MODULE_LIMIT_GIB * GIB ))" >> "$replacement" || {
           rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
         }
+      printf 'owner_start=%s\n' "$(process_start "$owner")" >> "$replacement" || {
+        rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
+      }
       if diagnostic_probe; then
         local probe_tag=issue10
         [ "${ZESU_DIAGNOSTIC_PROBE:-0}" != cpu-only ] || probe_tag=issue10-cpu-only
-        if ! printf 'probe=%s\nmemory_gib=%s\ncpu=unlimited\nowner_start=%s\n' \
-            "$probe_tag" "$MODULE_LIMIT_GIB" "$(process_start "$owner")" >> "$replacement"; then
+        if ! printf 'probe=%s\nmemory_gib=%s\ncpu=unlimited\n' \
+            "$probe_tag" "$MODULE_LIMIT_GIB" >> "$replacement"; then
           rm -f -- "$replacement"
           flock -u 7; exec 7>&-; return 2
         fi
@@ -914,7 +917,8 @@ mark_coqc() {
   replacement=$(mktemp "$STATE_DIR/coqc-mark.XXXXXXXX")
   printf '%s\nwriter=%s\naggregate=%s\n' "$child" "$writer" "$aggregate" > "$replacement"
   # Preserve the validated probe tag and scope association.
-  sed -n '4,$p' "$marker" >> "$replacement"
+  sed -n '4,$p' "$marker" | sed '/^child_start=/d' >> "$replacement"
+  printf 'child_start=%s\n' "$(process_start "$child")" >> "$replacement"
   # Marking the child must not restart the confirmation's launch window.
   touch -r "$marker" "$replacement"
   mv -f -- "$replacement" "$marker"

@@ -422,6 +422,7 @@ def require_truth_gate(gate, case_ids, selected_case=None):
 
 def admission_status(runtime, *, available=None):
     """Check a preassigned Root claim. Never change or release the ledger."""
+    from admission_memory import projection
     policy = runtime['canonical_admission']
     sys.path.insert(0, policy['reviewed_helpers'])
     from claims import active_claims
@@ -439,7 +440,7 @@ def admission_status(runtime, *, available=None):
                 'assigned_bytes': assigned, 'active_claim_bytes': total,
                 'capture_headroom_bytes': policy['capture_headroom_bytes'],
                 'MemAvailable_bytes': free, 'budget_bytes': free * 7 // 10,
-                'admitted': total + policy['capture_headroom_bytes'] <= free * 7 // 10,
+                **projection(data, claims, policy['capture_headroom_bytes'], free),
                 'ledger_sha256': digest(policy['ledger']), 'ledger_changed': False}
 
 
