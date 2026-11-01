@@ -139,6 +139,7 @@ PORT_KIND='production_stock_port'
 PORT_FENCE=32*GIB
 PORT_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-22.json'), 'sha256': 'ea88c0e9eab9e6e720e7fc2500407c065d82fd7a0feb12658783d4a761c79917'}
 PORT_AUTHORITY_23={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-23.json'), 'sha256': 'dbeedb2c4fcdc916939a9c5fc9ced3d07bc619244c1d8b41bfc91aacfb5052bd'}
+PORT_HELDOUT_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-HELDOUT-RUN2-AUTHORITY.json'), 'sha256': '6133fc1d79d1ebc794e77e4ea366ce61bd73444b919d7924c7ea04e67d053c29'}
 PORT_EXTENSION={'path': str(Path(__file__).resolve().parents[1]/'policies'/'EXTENSION.json'), 'sha256': 'ad05524ccec944621e775ebaccf5cd39b766bd6d4c554bbfa7f8332d84d77913'}
 
 def relocated_authority(actual,expected,legacy_paths=()):
@@ -157,7 +158,8 @@ def production_port_authority(profile):
  if set(profile) not in ({'schema','kind','authority','memory_route'},{'schema','kind','authority','memory_route','supplier_ready'}) or profile.get('schema')!='scratch.admission-profile.v1' or profile.get('kind')!=PORT_KIND or profile.get('memory_route')!='measured_native':
   raise ValueError('The production PORT profile is invalid.')
  extended=isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_AUTHORITY_23['sha256']
- expected=PORT_AUTHORITY_23 if extended else PORT_AUTHORITY
+ heldout=isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_AUTHORITY['sha256']
+ expected=PORT_HELDOUT_AUTHORITY if heldout else PORT_AUTHORITY_23 if extended else PORT_AUTHORITY
  legacy_paths=('/home/cody/zesislar/_build/agents/worker-build-1/new6974-bindings291/extension002/PORT-FAMILY-AUTHORITY-23.json',) if extended else ('/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/matrix005-authority-v1/PORT-FAMILY-AUTHORITY-22.json', '/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/PORT-FAMILY-AUTHORITY-22.json')
  if not relocated_authority(profile['authority'],expected,legacy_paths):raise ValueError('The production PORT authority is not authorized.')
  authority=read(profile['authority'])
@@ -166,15 +168,19 @@ def production_port_authority(profile):
      authority.get('native_body')!='zesu_block.' or authority.get('setup_order')!=[] or
      authority.get('minimal_or_private_route') is not False or authority.get('fence_hit_retry') is not False):
   raise ValueError('The production PORT ruling differs.')
- cases=authority['cases']
- released_cases=cases[:-1] if extended else cases
- case_count=23 if extended else 22
- extension=read(PORT_EXTENSION)
- read(extension['exit_queue'])
- if (extension.get('case_count')!=22 or not relocated_authority(authority.get('authority_extension'),PORT_EXTENSION,('/home/cody/zesislar/_build/agents/worker-build-2/native-port-policy-v1/source014-authority22-caller002-extension/EXTENSION.json', '/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/EXTENSION.json'))
-     or released_cases!=extension['original_cases']+extension['additional_cases']
-     or len(cases)!=case_count or len({r['block'] for r in cases})!=case_count or len({r['module'] for r in cases})!=case_count):
-  raise ValueError('The production PORT case set differs from the exact released inventory.')
+ if heldout:
+  from port_heldout_authority import validate
+  validate(authority)
+ else:
+  cases=authority['cases']
+  released_cases=cases[:-1] if extended else cases
+  case_count=23 if extended else 22
+  extension=read(PORT_EXTENSION)
+  read(extension['exit_queue'])
+  if (extension.get('case_count')!=22 or not relocated_authority(authority.get('authority_extension'),PORT_EXTENSION,('/home/cody/zesislar/_build/agents/worker-build-2/native-port-policy-v1/source014-authority22-caller002-extension/EXTENSION.json', '/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/EXTENSION.json'))
+      or released_cases!=extension['original_cases']+extension['additional_cases']
+      or len(cases)!=case_count or len({r['block'] for r in cases})!=case_count or len({r['module'] for r in cases})!=case_count):
+   raise ValueError('The production PORT case set differs from the exact released inventory.')
  if 'supplier_ready' in profile:
   from supplier_ready import validate,ROOTS
   supplier=validate(profile['supplier_ready'])
@@ -360,6 +366,8 @@ def profile_bindings(context):
  if profile.get('kind')==PORT_KIND:
   authority=production_port_authority(profile)
   values += [profile['authority'],authority['completed_common_ready'],authority['source_packet']]
+  if authority.get('blind_reporting') is True:
+   values += [authority[key] for key in ['case_rebind','eql18_targets','frozen_manifest','declaration_evidence']]
   if 'supplier_ready' in profile:
    from supplier_ready import validate
    values += validate(profile['supplier_ready'])['bindings']
