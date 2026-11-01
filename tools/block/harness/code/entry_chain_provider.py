@@ -13,6 +13,7 @@ from entry_chain import binding,save as atomic_json,check_bindings as bound_rows
 from entry_pilot import retain_residual
 from entry_pilot_checker import bound_json,complete_groups
 from entry_chain_resources import check_operation,normalize_cpu,session_validation
+from supplier_ready import ENTRYINTRO_MCP_REFUSAL,entry_intro_plugin_refusal
 
 
 class ToolFailure(RuntimeError):
@@ -30,6 +31,45 @@ def hooks_plugin_build(module,source):
     if declarations != ['Declare ML Module "zesu-signature-gates.plugin".']:
         raise ValueError('The trusted dependency plugin declaration changed.')
     return True
+
+
+def entry_intro_plugin_build(module,source):
+    if module!='ZesuSsz.Automation.EntryIntro':return False
+    declarations=[line.strip() for line in source.read_text().splitlines() if line.strip().startswith('Declare ML Module')]
+    if not declarations:return False
+    if declarations != ['Declare ML Module "zesu-signature-gates.plugin".']:
+        raise ValueError('The trusted dependency plugin declaration changed.')
+    return True
+
+
+async def compile_dependency(module,source,workspace,wrapper,flags,output,environment,call,recheck,timeout):
+    arguments={'workspace':str(workspace),'file':str(source),
+               'timeout':timeout,
+               'keep_vo':True,'include_warnings':True}
+    refusal_result=None
+    if hooks_plugin_build(module,source):
+        stem='HOOKS-COMPILE';refusal='Forbidden command Declare ML Module'
+    elif entry_intro_plugin_build(module,source):
+        try:return await call('rocq_compile_file',arguments)
+        except ToolFailure as error:
+            if not entry_intro_plugin_refusal(error.result):raise
+            refusal_result=error.result
+        stem='ENTRYINTRO-COMPILE';refusal=ENTRYINTRO_MCP_REFUSAL
+    else:return await call('rocq_compile_file',arguments)
+    recheck()
+    argv=[str(wrapper)]+flags+[str(source)]
+    stdout_path=output/(stem+'.stdout');stderr_path=output/(stem+'.stderr')
+    with stdout_path.open('wb') as stdout,stderr_path.open('wb') as stderr:
+        child=await asyncio.create_subprocess_exec(*argv,cwd=workspace,env=environment,stdout=stdout,stderr=stderr)
+        code=await child.wait()
+    recheck()
+    result={'success':code==0,'returncode':code,'method':'stock-guarded-dependency-build',
+            'MCP_refusal':refusal,'argv':argv,'stdout':binding(stdout_path),
+            'stderr':binding(stderr_path),'source':binding(source)}
+    if refusal_result is not None:result['MCP_refusal_result']=refusal_result
+    atomic_json(output/(stem+'.json'),result)
+    if code:raise ToolFailure('The stock dependency build failed.',result)
+    return result
 
 
 def control_step_required(step):
@@ -245,21 +285,9 @@ async def execute(request):
                         continue
                     source = workspace/relative(runtime['module_files'][module])
                     atomic_json(output/'PROGRESS.json', {'phase': 'dependency_compile', 'module': module})
-                    if hooks_plugin_build(module,source):
-                        # MCP refuses this existing plugin declaration. This is a dependency build.
-                        argv=[str(workspace/relative(runtime['coqc_wrapper']))]+runtime['expected_mcp_flags']+[str(source)]
-                        stdout_path=output/'HOOKS-COMPILE.stdout';stderr_path=output/'HOOKS-COMPILE.stderr'
-                        with stdout_path.open('wb') as stdout,stderr_path.open('wb') as stderr:
-                            child=await asyncio.create_subprocess_exec(*argv,cwd=workspace,env=environment,stdout=stdout,stderr=stderr)
-                            code=await child.wait()
-                        result={'success':code==0,'returncode':code,'method':'stock-guarded-dependency-build',
-                                'MCP_refusal':'Forbidden command Declare ML Module','argv':argv,
-                                'stdout':binding(stdout_path),'stderr':binding(stderr_path),'source':binding(source)}
-                        atomic_json(output/'HOOKS-COMPILE.json',result)
-                        if code:raise ToolFailure('The stock dependency build failed.',result)
-                    else:
-                        result = await call(session, 'rocq_compile_file', {'workspace': str(workspace),
-                            'file': str(source), 'timeout': timeout, 'keep_vo': True, 'include_warnings': True})
+                    result=await compile_dependency(module,source,workspace,
+                        workspace/relative(runtime['coqc_wrapper']),runtime['expected_mcp_flags'],output,environment,
+                        lambda name,args:call(session,name,args),lambda:check_operation(runtime),timeout)
                     obj = source.with_suffix('.vo')
                     if not obj.is_file():
                         raise ToolFailure('A dependency object is absent after compilation.')

@@ -106,6 +106,32 @@ ROOTS = frozenset({'ZesuSsz.Automation.All', 'ZesuSsz.Automation.Hooks',
 FIELDS = frozenset({'ready', 'source_packet', 'modules', 'import_graph',
                     'expected_mcp_flags', 'physical_flags', 'effective_compiler_version',
                     'verification', 'calls', 'result', 'runtime', 'closure', 'release'})
+ENTRYINTRO_MCP_REFUSAL = "Forbidden command 'Declare ML Module' (loads arbitrary OCaml plugins)"
+PLUGIN_COMPILE_RECEIPTS = {
+    'hooks_compile': ('ZesuSsz.Automation.Hooks', 'HOOKS-COMPILE'),
+    'entry_intro_compile': ('ZesuSsz.Automation.EntryIntro', 'ENTRYINTRO-COMPILE'),
+}
+
+
+def entry_intro_plugin_refusal(result):
+    return (isinstance(result, dict) and result.get('success') is False and
+            result.get('reason') == 'validation' and
+            result.get('error') == ENTRYINTRO_MCP_REFUSAL and
+            result.get('state_capture_status') == 'no_position' and
+            not result.get('pet_restarted') and not result.get('restarted'))
+
+
+def plugin_compile_bindings(output):
+    """Extract only the two supported owner receipts from the exact job."""
+    rows = {}
+    for key, (_, stem) in PLUGIN_COMPILE_RECEIPTS.items():
+        path = Path(output) / 'native' / (stem + '.json')
+        if path.is_file():
+            before = identity(path)
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            require(identity(path) == before, 'plugin receipt changed during extraction')
+            rows[key] = {'path': str(path), 'sha256': digest}
+    return rows
 
 
 def require(condition, message):
@@ -207,7 +233,7 @@ def response(call):
 def _validate(binding):
     packet = read(binding)
     require(isinstance(packet, dict) and FIELDS <= set(packet) and
-            set(packet) - FIELDS <= {'hooks_compile', 'installation_qualification'},
+            set(packet) - FIELDS <= {*PLUGIN_COMPILE_RECEIPTS, 'installation_qualification'},
             'manifest fields differ')
     if 'installation_qualification' in packet:
         require(packet['installation_qualification'] == 'publication_time_identity_only',
@@ -338,7 +364,7 @@ def _validate(binding):
     modules = []
     installed = None
     resolver = None
-    fallback_used = False
+    fallback_used = set()
     publication_only_installed = []
     for name in sorted(names | set(selected) | set(ordered)):
         require(name in mapping, 'dependency lacks a module mapping: ' + name)
@@ -384,14 +410,33 @@ def _validate(binding):
                         call.get('arguments', {}).get('file') == receipt.get('source')]
             require(Path(receipt['object']) == Path(receipt['source']).with_suffix('.vo'),
                     'compile object path differs: ' + name)
-            if len(matching) == 1:
+            fallback_key = next((key for key, (owner, _) in PLUGIN_COMPILE_RECEIPTS.items()
+                                 if owner == name and key in packet), None)
+            if fallback_key is None:
+                require(len(matching) == 1, 'compile call differs: ' + name)
                 require(response(matching[0]) == receipt['result'], 'compile call differs: ' + name)
             else:
-                require(not matching and name == 'ZesuSsz.Automation.Hooks' and
-                        'hooks_compile' in packet, 'compile call differs: ' + name)
-                require(Path(packet['hooks_compile']['path']) == output / 'native/HOOKS-COMPILE.json',
-                        'Hooks fallback leaves its exact job')
-                fallback = load(packet['hooks_compile'])
+                _, stem = PLUGIN_COMPILE_RECEIPTS[fallback_key]
+                if fallback_key == 'hooks_compile':
+                    require(not matching, 'compile call differs: ' + name)
+                    refusal = 'Forbidden command Declare ML Module'
+                else:
+                    require(len(matching) == 1 and
+                            entry_intro_plugin_refusal(response(matching[0])),
+                            'EntryIntro lacks its exact MCP refusal')
+                    arguments = matching[0].get('arguments', {})
+                    require(arguments.get('workspace') == str(inner_workspace) and
+                            arguments.get('keep_vo') is True and
+                            arguments.get('include_warnings') is True and
+                            type(arguments.get('timeout')) is int and arguments['timeout'] > 0,
+                            'EntryIntro refusal transport differs')
+                    refusal = ENTRYINTRO_MCP_REFUSAL
+                require(Path(packet[fallback_key]['path']) == output / 'native' / (stem + '.json'),
+                        'plugin fallback leaves its exact job')
+                fallback = load(packet[fallback_key])
+                if fallback_key == 'entry_intro_compile':
+                    require(fallback.get('MCP_refusal_result') == response(matching[0]),
+                            'EntryIntro refusal receipt differs')
                 wrapper = owned(inner_workspace, runtime['coqc_wrapper'])
                 inner_bindings = {str(_resolved(row['path'])): row for row in runtime['bindings']}
                 wrapper_row = inner_bindings.get(str(wrapper))
@@ -407,16 +452,16 @@ def _validate(binding):
                         fallback == receipt['result'] and fallback.get('success') is True and
                         fallback.get('returncode') == 0 and
                         fallback.get('method') == 'stock-guarded-dependency-build' and
-                        fallback.get('MCP_refusal') == 'Forbidden command Declare ML Module' and
+                        fallback.get('MCP_refusal') == refusal and
                         fallback.get('source') == {'path': receipt['source'], 'sha256': pair['source']['sha256']} and
                         fallback.get('argv') == [str(wrapper), *runtime['expected_mcp_flags'], receipt['source']],
                         'Hooks fallback differs from its existing guarded build')
                 for stream in ['stdout', 'stderr']:
-                    require(Path(fallback[stream]['path']) == output / 'native' / ('HOOKS-COMPILE.' + stream),
+                    require(Path(fallback[stream]['path']) == output / 'native' / (stem + '.' + stream),
                             'Hooks output leaves its exact job')
                     bound(fallback[stream])
                     evidence.append(fallback[stream])
-                fallback_used = True
+                fallback_used.add(fallback_key)
         modules.append(dict(module=name, installed_mapping=physical_mapping if external else None,
                             **pair))
     source_packet = load(packet['source_packet'])
@@ -430,7 +475,8 @@ def _validate(binding):
                 row['sha256'] == by_module[row['module']]['source']['sha256'],
                 'source packet differs from the compiled source')
         evidence.append({'path': row['path'], 'sha256': row['sha256']})
-    require(fallback_used == ('hooks_compile' in packet), 'Hooks fallback was not consumed')
+    require(fallback_used == set(packet) & set(PLUGIN_COMPILE_RECEIPTS),
+            'plugin fallback was not consumed')
     return dict(packet=packet, ready=ready, modules=modules, names=names, edges=edges,
                 libraries=libraries, installation_resolver=resolver,
                 publication_only_installed=publication_only_installed, bindings=evidence)

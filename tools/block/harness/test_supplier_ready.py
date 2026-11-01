@@ -185,6 +185,59 @@ class SupplierReady(unittest.TestCase):
         self.manifest['source_packet'] = self.save('SOURCE.json', dict(all_sources=[
             dict(value['source'], module=value['module']) for value in self.modules[:3]]))
 
+    def entry_intro_fallback(self, declaration='Declare ML Module "zesu-signature-gates.plugin".'):
+        name = 'ZesuSsz.Automation.EntryIntro'
+        source = self.workspace / (name.replace('.', '/') + '.v')
+        source.write_text(declaration + '\n')
+        source.with_suffix('.vo').write_bytes(b'EntryIntro object')
+        row = dict(module=name, source=binding(source), object=binding(source.with_suffix('.vo')))
+        self.mapping[name] = str(source.relative_to(self.workspace))
+        self.modules.append(row)
+        self.names.append(name)
+        self.manifest['modules'].append(row)
+        self.ready['bindings'].extend([row['source'], row['object']])
+        readiness = json.loads(Path(self.readiness['path']).read_text())
+        readiness['objects'].append(row['object'])
+        self.readiness = self.save('READINESS.json', readiness)
+        self.ready['readiness'] = self.readiness
+        graph = json.loads(Path(self.graph['path']).read_text())
+        graph['import_edges'].append({'from': self.names[0], 'to': name})
+        self.graph = self.save('GRAPH.json', graph)
+        self.ready['cache_import_graph'] = self.manifest['import_graph'] = self.graph
+        wrapper = self.workspace / 'tools/entry_chain_coqc.sh'
+        wrapper.parent.mkdir(exist_ok=True)
+        wrapper.write_text('#!/bin/sh\nexit 0\n')
+        if binding(wrapper) not in self.ready['bindings']:
+            self.ready['bindings'].append(binding(wrapper))
+        refusal = dict(success=False, reason='validation',
+                       error=supplier.ENTRYINTRO_MCP_REFUSAL, state_capture_status='no_position')
+        self.calls.insert(-2, self.call('rocq_compile_file', dict(
+            workspace=str(self.workspace), file=str(source), timeout=100,
+            keep_vo=True, include_warnings=True), refusal))
+        fallback = dict(success=True, returncode=0, method='stock-guarded-dependency-build',
+            MCP_refusal=supplier.ENTRYINTRO_MCP_REFUSAL, MCP_refusal_result=refusal,
+            source=row['source'], argv=[str(wrapper), *self.flags, str(source)],
+            stdout=self.file('jobs/prerequisites/native/ENTRYINTRO-COMPILE.stdout', b''),
+            stderr=self.file('jobs/prerequisites/native/ENTRYINTRO-COMPILE.stderr', b'warning'))
+        self.manifest['entry_intro_compile'] = self.save(
+            'jobs/prerequisites/native/ENTRYINTRO-COMPILE.json', fallback)
+        self.save('jobs/prerequisites/native/dependency-' + name + '.json', dict(
+            source=str(source), source_sha256=row['source']['sha256'],
+            object=row['object']['path'], object_sha256=row['object']['sha256'], result=fallback))
+        self.inner.update(coqc_wrapper='tools/entry_chain_coqc.sh', bindings=self.ready['bindings'])
+        self.manifest['calls'] = self.save('jobs/prerequisites/native/CALLS.json', self.calls)
+        self.manifest['runtime'] = self.save('jobs/prerequisites/RUNTIME.json', self.inner)
+        self.manifest['ready'] = self.save('READY-RUNTIME.json', self.ready)
+
+    def change_entry_fallback(self, **changes):
+        fallback = json.loads(Path(self.manifest['entry_intro_compile']['path']).read_text())
+        fallback.update(changes)
+        self.change('entry_intro_compile', **fallback)
+        path = 'jobs/prerequisites/native/dependency-ZesuSsz.Automation.EntryIntro.json'
+        receipt = json.loads((self.root / path).read_text())
+        receipt['result'] = fallback
+        self.save(path, receipt)
+
     def overlapping_isla_installation(self):
         source = Path('/home/cody/islaris/_opam/lib/coq/user-contrib/isla/riscv64/arch.v')
         name = 'isla.riscv64.arch'
@@ -238,6 +291,74 @@ class SupplierReady(unittest.TestCase):
         value = self.validate()
         self.assertIn(self.manifest['hooks_compile'], value['bindings'])
         self.assertEqual(sum(call['tool'] == 'rocq_compile_file' for call in self.calls), 2)
+
+    def test_entryintro_exact_refusal_and_guarded_receipt_pass(self):
+        self.entry_intro_fallback()
+        value = self.validate()
+        self.assertIn(self.manifest['entry_intro_compile'], value['bindings'])
+        self.assertEqual(sum(call['tool'] == 'rocq_compile_file' for call in self.calls), 4)
+
+    def test_both_distinct_owner_receipts_pass_and_extract(self):
+        self.hooks_fallback()
+        hooks = deepcopy(self.manifest['hooks_compile'])
+        self.entry_intro_fallback()
+        self.validate()
+        self.assertEqual(supplier.plugin_compile_bindings(self.output), dict(
+            hooks_compile=hooks, entry_intro_compile=self.manifest['entry_intro_compile']))
+
+    def test_entryintro_without_receipt_cannot_relabel_mcp_refusal(self):
+        self.entry_intro_fallback()
+        del self.manifest['entry_intro_compile']
+        with self.assertRaisesRegex(ValueError, 'compile call differs'):
+            self.validate()
+
+    def test_entryintro_requires_the_actual_mcp_refusal(self):
+        self.entry_intro_fallback()
+        call = next(c for c in self.calls if c.get('result', {}).get('reason') == 'validation')
+        call['result']['error'] = 'another error'
+        call['raw_response']['structuredContent']['error'] = 'another error'
+        self.manifest['calls'] = self.save('jobs/prerequisites/native/CALLS.json', self.calls)
+        with self.assertRaisesRegex(ValueError, 'exact MCP refusal'):
+            self.validate()
+
+    def test_entryintro_requires_the_refusal_transport(self):
+        self.entry_intro_fallback()
+        call = next(c for c in self.calls if c.get('result', {}).get('reason') == 'validation')
+        call['arguments']['workspace'] = str(self.root / 'elsewhere')
+        self.manifest['calls'] = self.save('jobs/prerequisites/native/CALLS.json', self.calls)
+        with self.assertRaisesRegex(ValueError, 'refusal transport differs'):
+            self.validate()
+
+    def test_entryintro_receipt_must_bind_that_refusal_result(self):
+        self.entry_intro_fallback()
+        self.change_entry_fallback(MCP_refusal_result=dict(success=False, error='another error'))
+        with self.assertRaisesRegex(ValueError, 'refusal receipt differs'):
+            self.validate()
+
+    def test_entryintro_requires_the_exact_plugin(self):
+        self.entry_intro_fallback('Declare ML Module "another.plugin".')
+        with self.assertRaisesRegex(ValueError, 'existing guarded build'):
+            self.validate()
+
+    def test_entryintro_rejects_another_compiler_vector(self):
+        self.entry_intro_fallback()
+        fallback = json.loads(Path(self.manifest['entry_intro_compile']['path']).read_text())
+        self.change_entry_fallback(argv=fallback['argv'] + ['-unexpected'])
+        with self.assertRaisesRegex(ValueError, 'existing guarded build'):
+            self.validate()
+
+    def test_entryintro_rejects_hooks_receipt_path(self):
+        self.entry_intro_fallback()
+        self.manifest['entry_intro_compile'] = self.save('jobs/prerequisites/native/HOOKS-COMPILE.json',
+            json.loads(Path(self.manifest['entry_intro_compile']['path']).read_text()))
+        with self.assertRaisesRegex(ValueError, 'leaves its exact job'):
+            self.validate()
+
+    def test_entryintro_field_cannot_apply_to_other_modules(self):
+        self.manifest['entry_intro_compile'] = self.save(
+            'jobs/prerequisites/native/ENTRYINTRO-COMPILE.json', {})
+        with self.assertRaisesRegex(ValueError, 'not consumed'):
+            self.validate()
 
     def test_real_overlapping_isla_roots_use_pinned_coqdep_selection(self):
         row = self.overlapping_isla_installation()
