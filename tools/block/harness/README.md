@@ -136,3 +136,20 @@ The physical gate fences remain unchanged.
 
 A supplier release requires explicit verification success.
 `module_m` and an empty assumption list cannot replace that success flag.
+
+
+Controller exit cleanup follows the existing stock guard route.
+Scratch supervisors track their child controllers through pidfds and exact PID start ticks.
+Entry controllers track their stock batches with the same checks.
+TERM, INT, HUP, Python failures, and normal exits close registered children.
+The guard cleanup trap stops only its owned aggregate.
+A failed child registration remains unknown and blocks claim release.
+Cancellation before aggregate identity publication also retains an unproved claim.
+Existing aggregate identity and actor closure checks remain authoritative.
+Local cleanup handlers cannot cover SIGKILL or host failure.
+
+The real cleanup control uses synthetic processes and real private cgroups.
+It preserves a simultaneous foreign aggregate.
+Run it explicitly with `python -m unittest tools.block.harness.controller_cleanup_real_control`.
+It creates no Rocq process, PET process, compiler, or production claim.
+Normal unit discovery excludes this control because it needs the host user service.
