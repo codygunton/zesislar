@@ -232,7 +232,9 @@ def workload_for_job(profile_binding,job,config):
  if 'memory_booking' in profile and kind not in {PORT_KIND,FOCUSED_KIND}:raise ValueError('Full-fence booking requires a production PORT profile or a focused declaration profile.')
  if 'memory_booking' in profile and kind==FOCUSED_KIND:
   if profile['memory_booking']!=PORT_FULL_FENCE_BOOKING:raise ValueError('The declaration memory booking option is invalid.')
-  if config.get('declarations_only') is not True or job['phase'] not in COMPILE_PHASES:raise ValueError('Full-fence declaration booking requires declaration-only execution.')
+  if config.get('declarations_only') is not True:raise ValueError('Full-fence declaration booking requires declaration-only execution.')
+  if job['phase']=='native' and job.get('ordered_modules',[])==[] and job.get('native_route') is None:return None
+  if job['phase'] not in COMPILE_PHASES:raise ValueError('Full-fence declaration booking requires declaration-only execution.')
  if kind in {FAMILY_KIND,'minimal_native_tactic',PORT_KIND} and job['phase']!='native' or kind==FOCUSED_KIND and job['phase']=='native':return None
  modules=config['proof_runtime']['module_files'];workspace=Path(config['prepared_workspace']);owned=[]
  def actual(row):
