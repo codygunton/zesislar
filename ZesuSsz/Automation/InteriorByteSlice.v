@@ -6,6 +6,8 @@ From iris.proofmode Require Import environments.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import isla.riscv64.riscv64.
 
+Set Default Proof Using "Type".
+
 Section interior_byte_slice.
 Context `{!islaG Sigma}.
 

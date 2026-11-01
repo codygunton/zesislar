@@ -66,4 +66,3 @@ Proof.
   apply decodeItemRegisterComplianceWeakens.
   apply decodeItemSelectedComplianceRegisters.
 Qed.
-Print Assumptions decodeItemSelectedCompliance.

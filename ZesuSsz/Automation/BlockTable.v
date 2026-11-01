@@ -8,6 +8,8 @@ Record blockTable (Sigma : gFunctors) := {
 Arguments block_table_code {_} _.
 Arguments block_table_entries {_} _.
 
+Set Default Proof Using "Type".
+
 Section block_table.
 Context `{!islaG Sigma} `{!threadG}.
 

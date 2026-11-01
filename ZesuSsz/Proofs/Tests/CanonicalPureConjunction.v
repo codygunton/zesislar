@@ -1,5 +1,7 @@
 Require Import ZesuSsz.Automation.All.
 
+Set Default Proof Using "Type".
+
 Module TargetRouteOff.
 Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.

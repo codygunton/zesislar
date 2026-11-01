@@ -57,6 +57,15 @@ class PromotionTests(unittest.TestCase):
         self.assertIn('Require Import Proofs.', source)
         self.assertNotIn('Lemma', source)
 
+    def test_assumption_queries_are_leaf_only(self):
+        source = promote_table.render_slots(dict(proof_slots=[dict(
+            pc='0x1000', status='proved', proof_module='Proofs',
+            proof_lemma='Proofs.ExactBody')]))
+        self.assertNotIn('Print Assumptions', source)
+        self.assertEqual(promote_table.render_assumptions(source, 'Bodies'),
+                         'Require Import Bodies.\n\n'
+                         'Print Assumptions Bodies.decodeItemPromotedBody1000.\n')
+
     def evidence(self):
         proof = dict(compiled=True, verified=True, assumptions=[], inherited_debts=[],
                      goal_groups=dict(goals=[], stack=[], shelf=[], given_up=[]))

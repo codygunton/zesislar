@@ -1,6 +1,8 @@
 From Coq Require Import List Lia.
 From stdpp Require Import list.
 
+Set Default Proof Using "Type".
+
 Section list_images.
 Context {A : Type}.
 

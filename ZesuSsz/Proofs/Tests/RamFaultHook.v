@@ -9,6 +9,8 @@ Definition ram_fault_test_layout (base stop sp size offset width : Z) : Prop :=
 Lemma ram_fault_disabled : True.
 Proof. Fail zesu_ram_fault_if_enabled. exact I. Qed.
 
+Set Default Proof Using "Type".
+
 Section enabled.
   Local Instance ram_fault_enabled : ZesuStepRamFault := I.
 

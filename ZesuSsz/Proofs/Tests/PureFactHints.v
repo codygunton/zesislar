@@ -1,6 +1,8 @@
 Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 
+Set Default Proof Using "Type".
+
 Section registered.
 Context `{!islaG Sigma} `{!threadG}.
 Context (P : Prop) (target source : iProp Sigma).

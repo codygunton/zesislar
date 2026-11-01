@@ -130,28 +130,3 @@ Definition decodeItemPromotedBody800d6b08 :
   ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d6b08.decodeItemSlotBody800d6b08.
 
 End promoted_block_bodies.
-
-Print Assumptions decodeItemPromotedBody800d6960.
-Print Assumptions decodeItemPromotedBody800d6974.
-Print Assumptions decodeItemPromotedBody800d697c.
-Print Assumptions decodeItemPromotedBody800d698c.
-Print Assumptions decodeItemPromotedBody800d69a4.
-Print Assumptions decodeItemPromotedBody800d69b0.
-Print Assumptions decodeItemPromotedBody800d69d8.
-Print Assumptions decodeItemPromotedBody800d69e0.
-Print Assumptions decodeItemPromotedBody800d69e8.
-Print Assumptions decodeItemPromotedBody800d6a00.
-Print Assumptions decodeItemPromotedBody800d6a08.
-Print Assumptions decodeItemPromotedBody800d6a14.
-Print Assumptions decodeItemPromotedBody800d6a24.
-Print Assumptions decodeItemPromotedBody800d6a38.
-Print Assumptions decodeItemPromotedBody800d6a40.
-Print Assumptions decodeItemPromotedBody800d6a64.
-Print Assumptions decodeItemPromotedBody800d6a6c.
-Print Assumptions decodeItemPromotedBody800d6a78.
-Print Assumptions decodeItemPromotedBody800d6aa8.
-Print Assumptions decodeItemPromotedBody800d6ab4.
-Print Assumptions decodeItemPromotedBody800d6ac4.
-Print Assumptions decodeItemPromotedBody800d6ad8.
-Print Assumptions decodeItemPromotedBody800d6ae0.
-Print Assumptions decodeItemPromotedBody800d6b08.

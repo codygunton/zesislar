@@ -6,6 +6,8 @@ Definition stack_test_extent : Z := 16.
 Definition stack_test_bounds (sp : Z) : Prop :=
   stack_test_extent <= sp /\ sp < 2 ^ 64.
 
+Set Default Proof Using "Type".
+
 Section tests.
   Context `{!islaG Sigma}.
 

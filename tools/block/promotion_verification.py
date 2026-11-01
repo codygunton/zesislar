@@ -303,9 +303,31 @@ def statements(source, pc, module=None, *, name_prefix="decodeItem"):
         declaration = f'Lemma promotion_{pc:x} `{{!islaG Sigma}} `{{!threadG}} :\n  {match[1]}.\n'
         proof = source + '\n' + declaration + f'Proof. exact {name}. Qed.\n'
         result.append((f'promotion_{pc:x}', imports + declaration, proof))
-    if not result:
+    if not result and not assumption_audit_only(source):
         raise ValueError('The generated module has no supported statement check.')
     return result
+
+
+def assumption_audit_only(source):
+    """Audit leaves compile queries, but declare no proposition to verify."""
+    from check_data_only_lemmas import rocq_commands
+    identifier = r"[A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)+"
+    imports, queries = set(), set()
+    for command in rocq_commands(source):
+        values = [token for token, _ in command]
+        if (values[:2] == ['Require', 'Import'] and len(values) > 2 and
+                all(re.fullmatch(identifier, name) for name in values[2:])):
+            imports.update(values[2:])
+            continue
+        if (values[:2] == ['Print', 'Assumptions'] and len(values) == 3 and
+                re.fullmatch(identifier, values[2])):
+            target = values[2]
+            if target in queries or target.rsplit('.', 1)[0] not in imports:
+                return False
+            queries.add(target)
+            continue
+        return False
+    return bool(queries)
 
 
 def source_artifacts(source):

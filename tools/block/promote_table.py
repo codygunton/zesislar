@@ -152,9 +152,14 @@ def render_slots(report, *, name_prefix="decodeItem"):
         lines += [f'Definition {names.prefix}PromotedBody{pc:x} :',
                   f'  {table_statement(pc, name_prefix=name_prefix)} :=', f"  {slot['proof_lemma']}.", '']
     lines += ['End promoted_block_bodies.', '']
-    lines.extend(f"Print Assumptions {names.prefix}PromotedBody{generate_table.address(slot['pc']):x}."
-                 for slot in slots)
-    return '\n'.join(lines) + '\n'
+    return '\n'.join(lines).rstrip() + '\n'
+
+
+def render_assumptions(source, module):
+    """Keep assumption queries in a leaf that imports the declarations."""
+    targets = re.findall(r'^Definition (\w+PromotedBody[0-9a-f]+)\s*:', source, re.M)
+    return (f'Require Import {module}.\n\n' +
+            ''.join(f'Print Assumptions {module}.{target}.\n' for target in targets))
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -165,6 +170,8 @@ def main():
     parser.add_argument('--native-report', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--rocq-output', type=Path)
+    parser.add_argument('--assumptions-output', type=Path,
+                        help='Leaf audit output; defaults beside the Rocq output.')
     parser.add_argument('--promotions', type=Path, help='Hash-bound kernel certificates; diagnostic captures are not certificates.')
     parser.add_argument('--complete-native', type=lambda value: int(value, 0),
                         help='Generate all consumers of this named production closure.')
@@ -207,7 +214,11 @@ def main():
     if args.rocq_output:
         args.rocq_output.parent.mkdir(parents=True, exist_ok=True)
         args.rocq_output.write_text(render_slots(report, name_prefix=args.function))
-        report['generated_hashes'] = {str(args.rocq_output): digest(args.rocq_output)}
+        audit = args.assumptions_output or args.rocq_output.with_name('PromotedBodiesAssumptions.v')
+        audit.parent.mkdir(parents=True, exist_ok=True)
+        audit.write_text(render_assumptions(args.rocq_output.read_text(),
+                         f'ZesuSsz.Generated.{FunctionNames(args.function).module}.PromotedBodies'))
+        report['generated_hashes'] = {str(path): digest(path) for path in (args.rocq_output, audit)}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2) + '\n')
 

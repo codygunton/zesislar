@@ -2,6 +2,8 @@ Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.Sets.call.
 
+Set Default Proof Using "Type".
+
 Section tests.
 Context `{!islaG Sigma} `{!threadG}.
 

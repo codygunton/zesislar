@@ -204,6 +204,8 @@ Qed.
 #[export] Hint Rewrite zesu_assemble_8_bytes zesu_assemble_8_bytes_at using lia
   : zesu_byte_assembly.
 
+Set Default Proof Using "Type".
+
 Section byte_array_read.
   Context `{!islaG Sigma} `{!threadG}.
 

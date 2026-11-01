@@ -9,6 +9,8 @@ Proof.
   bv_wrap_simplify_solve.
 Qed.
 
+Set Default Proof Using "Type".
+
 Section automation.
   Context `{!islaG Sigma} `{!threadG}.
 

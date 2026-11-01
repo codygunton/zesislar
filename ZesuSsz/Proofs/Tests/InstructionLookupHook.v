@@ -11,6 +11,8 @@ Global Instance : LithiumUnfold (@lookup_hook_code) := I.
 Global Instance : LithiumUnfold (@lookup_hook_other_code) := I.
 Global Typeclasses Opaque lookup_hook_code lookup_hook_other_code.
 
+Set Default Proof Using "Type".
+
 Section disabled.
   Context `{!islaG Sigma} `{!threadG}.
 

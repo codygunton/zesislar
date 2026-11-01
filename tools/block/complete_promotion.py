@@ -223,6 +223,53 @@ def update_promoted(text, pc, *, name_prefix="decodeItem"):
     return render_slots({"proof_slots": [slots[address] for address in sorted(slots)]}, name_prefix=name_prefix)
 
 
+def compliance_audit(source, audit_source=None, *, name_prefix="decodeItem"):
+    """Move the existing selected-compliance query into its qualified leaf."""
+    names = FunctionNames(name_prefix)
+    module = f"ZesuSsz.Compliance.{names.module}Compliance"
+    query = r"^Print Assumptions ([A-Za-z_][A-Za-z0-9_.']*)\.\n"
+    targets = re.findall(query, source, re.M)
+    if not targets and audit_source is not None:
+        from promotion_verification import assumption_audit_only
+        if not assumption_audit_only(audit_source):
+            raise ValueError('The retained compliance audit contains another command.')
+        targets = re.findall(query, audit_source, re.M)
+    if not targets:
+        raise ValueError("The selected compliance audit target is unavailable.")
+    qualified = []
+    for target in targets:
+        short = target.removeprefix(module + '.')
+        if '.' in short or not re.search(r"^(?:Lemma|Theorem|Definition)\s+" +
+                                        re.escape(short) + r"\b", source, re.M):
+            raise ValueError("The selected compliance audit target is unavailable.")
+        qualified.append(module + '.' + short)
+    source = re.sub(query, "", source, flags=re.M)
+    audit = f"Require Import {module}.\n\n" + ''.join(
+        f'Print Assumptions {target}.\n' for target in qualified)
+    return source, audit
+
+
+def audit_shape_inventory(workspace, audit_path, source):
+    """Generate the existing scoped inventory row from the emitted audit."""
+    path = Path(workspace) / 'ZesuSsz/Evidence/spec_shape_inventory.json'
+    if not path.is_file():
+        return None
+    import sys
+    sys.path.insert(0, str(generate_table.ROOT / 'ZesuSsz/Evidence'))
+    import check_spec_shapes
+    from promotion_verification import assumption_audit_only
+    if not assumption_audit_only(source):
+        raise ValueError('The generated assumption audit contains another command.')
+    counts = check_spec_shapes.shape_counts(source, set(),
+        module='.'.join(Path(audit_path).with_suffix('').parts))
+    counts['unfold_without_typeclasses_opaque'] = check_spec_shapes.unfold_opacity_count(source, set())
+    if any(counts.values()):
+        raise ValueError('An audit leaf introduced a specification shape.')
+    inventory = json.loads(path.read_text())
+    inventory['modules'][audit_path] = counts
+    return json.dumps(inventory, indent=2) + '\n'
+
+
 def refresh_counts(text, table, *, name_prefix="decodeItem"):
     names = FunctionNames(name_prefix)
     sites = re.findall(r"^  native([0-9a-f]+) :", text, re.M)
@@ -283,6 +330,9 @@ def plan(workspace, pc, module, lemma, table=None, *, name_prefix="decodeItem"):
     signature = f"ZesuSsz/Evidence/{names.module}Promoted{short}Fixtures.v"
     promoted = f"ZesuSsz/Generated/{names.module}/PromotedBodies.v"
     outputs[promoted] = update_promoted((workspace / promoted).read_text(), pc, name_prefix=name_prefix)
+    from promote_table import render_assumptions
+    outputs[f"ZesuSsz/Generated/{names.module}/PromotedBodiesAssumptions.v"] = render_assumptions(
+        outputs[promoted], f"ZesuSsz.Generated.{names.module}.PromotedBodies")
     # The signature fixture imports the generated promoted bodies.
     outputs[signature] = render_signature(pc, name_prefix=name_prefix)
     compliance = f"ZesuSsz/Compliance/{names.module}Compliance.v"
@@ -303,7 +353,15 @@ def plan(workspace, pc, module, lemma, table=None, *, name_prefix="decodeItem"):
         remaining.remove(native)
     text = add_import(remove_binders(original, native), module)
     text = text.replace(f"({native} Sigma HG HT)", f"(@{theorem} Sigma HG HT)")
+    audit_path = f"ZesuSsz/Compliance/{names.module}ComplianceAssumptions.v"
+    retained_audit = workspace / audit_path
+    text, audit = compliance_audit(text, retained_audit.read_text() if retained_audit.is_file() else None,
+                                  name_prefix=name_prefix)
     outputs[compliance] = text
+    outputs[audit_path] = audit
+    inventory = audit_shape_inventory(workspace, audit_path, audit)
+    if inventory is not None:
+        outputs['ZesuSsz/Evidence/spec_shape_inventory.json'] = inventory
     status = f"ZesuSsz/Evidence/{names.module}OpenNativeHypotheses.v"
     text = (workspace / status).read_text()
     text = re.sub(r"^  " + native + r" : \w+;?\n", "", text, flags=re.M)

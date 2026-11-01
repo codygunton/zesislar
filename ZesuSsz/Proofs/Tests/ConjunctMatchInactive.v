@@ -2,6 +2,8 @@ Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Automation.ConjunctMatch.
 Require Import isla.riscv64.riscv64.
 
+Set Default Proof Using "Type".
+
 Section conjunct_match_v1_test.
 Context `{!islaG Sigma} `{!threadG}.
 Local Instance conjunct_match_step_only : ZesuStepConjunctMatch := I.
