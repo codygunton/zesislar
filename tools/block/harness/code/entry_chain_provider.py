@@ -84,6 +84,9 @@ def require_control_result(required,result):
 def prerequisite_environment(runtime,workspace,output,inherited=None):
     environment=dict(os.environ if inherited is None else inherited)
     for key in list(environment):
+        if key.startswith('ENTRY_CHAIN_COMPILER_SNAPSHOT_'):
+            environment.pop(key)
+    for key in list(environment):
         if key.startswith(('ROCQ_','COQC_')) or key in {'COQPATH','COQBIN','COQC','OCAMLPATH','ZESU_WRITER_ID','ZESU_WRITER_MAX_COQC','ZESU_COQC_RESERVATION','ZESU_COQC_SCOPE'}:
             environment.pop(key)
     environment.update(PATH='/home/cody/islaris/_opam/bin:/usr/local/bin:/usr/bin:/bin',
@@ -168,7 +171,17 @@ async def execute(request):
     if runtime.get('dependency_batch') and runtime.get('phase')!='prerequisites':
         raise ValueError('Dependency waves cannot execute in native phase.')
     runtime.update(runtime_path=request['runtime'],runtime_sha256=request['runtime_sha256'])
-    check_operation(runtime,force_full=True)
+    workspace, output = Path(request['workspace']), Path(request['output'])
+    environment = proof_environment(runtime, workspace, output)
+    from coqc_findlib import compiler_environment
+    compiler_context=compiler_environment(workspace,environment)
+    from compiler_snapshot import publish
+    snapshot=publish(runtime,lambda:check_operation(runtime,force_full=True),
+                     Path(request['output'])/'COMPILER-SNAPSHOT.json',environment=compiler_context)
+    accepted_objects=None
+    if snapshot is not None:
+        from compiler_snapshot import OutputReceipts,read as read_snapshot
+        accepted_objects=OutputReceipts(read_snapshot(snapshot,{'path':request['runtime'],'sha256':request['runtime_sha256']}),snapshot)
     row = runtime['target']
     workspace, output = Path(request['workspace']), Path(request['output'])
     atomic_json(output/'PROGRESS.json', {'phase': 'prepared_inputs', 'identity': request['identity']})
@@ -176,7 +189,10 @@ async def execute(request):
     from native_route import validate_runtime
     native_body=validate_runtime(runtime,workspace) if runtime['phase']=='native' else 'zesu_block.'
     calls, receipts = [], {}
-    environment = proof_environment(runtime, workspace, output)
+    if snapshot is not None:
+        environment.update(ENTRY_CHAIN_COMPILER_SNAPSHOT_JSON=snapshot['path'],
+                           ENTRY_CHAIN_COMPILER_SNAPSHOT_SHA256=snapshot['sha256'],
+                           ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY=accepted_objects.key)
     launcher = [word.replace('{workspace}', str(workspace)) for word in runtime['mcp_argv']]
     from native_instruction_profile import checked_launcher,complete_profile
     instruction_profile=None
@@ -240,6 +256,9 @@ async def execute(request):
                          'object': binding(compiled_object), 'before_later_checks': True})
             entry['post_operation_validation']=check_operation(runtime)
             entry['validation_finished_ns']=time.time_ns()
+            if name=='rocq_compile_file' and compiled_object.is_file() and accepted_objects is not None:
+                entry['accepted_object_receipt']=accepted_objects.accept(compiled_source,compiled_object,
+                    '/home/cody/islaris/_opam/bin/coqc',runtime['physical_flags'],value)
             atomic_json(output/'CALLS.json',calls)
             return value
         except BaseException:
@@ -291,6 +310,9 @@ async def execute(request):
                     obj = source.with_suffix('.vo')
                     if not obj.is_file():
                         raise ToolFailure('A dependency object is absent after compilation.')
+                    if accepted_objects is not None and hooks_plugin_build(module,source):
+                        check_operation(runtime)
+                        accepted_objects.accept(source,obj,'/home/cody/islaris/_opam/bin/coqc',runtime['physical_flags'],result)
                     atomic_json(output/('dependency-'+module+'.json'), {'source': str(source),
                         'source_sha256': digest(source), 'object': str(obj), 'object_sha256': digest(obj),
                         'result': result})

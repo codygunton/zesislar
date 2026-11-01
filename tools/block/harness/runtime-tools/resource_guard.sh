@@ -976,7 +976,7 @@ register_run_actor() {
 
 # The busiest whole disk, in percent, over one second. A fifth of a
 # second read 102 % on an idle disk, so the sample is one second, and
-# guards share it for two seconds instead of each paying the second.
+# guards share it for ten seconds instead of each paying the second.
 DISK_CACHE="$STATE_DIR/disk-busy"
 
 disk_sample() {
@@ -989,7 +989,7 @@ disk_busy() {
   exec 8>>"$DISK_CACHE.lock"
   flock 8
   read -r stamp value 2>/dev/null < "$DISK_CACHE"
-  if [ -z "${stamp:-}" ] || (( $(date +%s) - stamp >= 2 )); then
+  if [ -z "${stamp:-}" ] || (( $(date +%s) - stamp >= 10 )); then
     first=$(disk_sample); sleep 1; second=$(disk_sample)
     value=$(join <(echo "$first") <(echo "$second") \
       | awk 'BEGIN {m = 0} {u = ($3 - $2) / 10; if (u > m) m = u} END {printf "%d", m}')

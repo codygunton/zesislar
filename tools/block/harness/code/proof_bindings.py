@@ -18,7 +18,9 @@ def proof_rows(runtime):
     from binding_cache import resolve_input
     parents={}
     canonical=lambda path:str(resolve_input(path,parents))
-    resolved=[canonical(row['path']) for row in runtime['bindings']]
+    from compiler_snapshot import binding_rows
+    rows=binding_rows(runtime)
+    resolved=[canonical(row['path']) for row in rows]
     roles=coordination_rows(runtime)
     excluded={canonical(row['path']) for row in roles}
     protected={canonical(row['path']) for row in runtime.get('cache_producer_files',{}).get('implementation',[])}
@@ -26,13 +28,14 @@ def proof_rows(runtime):
         row=runtime.get(field)
         if isinstance(row,dict) and 'path' in row:protected.add(canonical(row['path']))
     identity={name:runtime.get(name) for name in ['bindings','coordination_bindings','watcher','cache_producer_files','job_controller','scratch_provider','result_adapter','guard_override','coqc_wrapper']}
+    identity['bindings']=rows
     identity['resolved_paths']=resolved
     identity['excluded_paths']=sorted(excluded)
     identity['protected_paths']=sorted(protected)
     key=hashlib.sha256(json.dumps(identity,sort_keys=True,separators=(',',':')).encode()).digest()
     if key in _CLASSIFICATION:return [dict(row) for row in _CLASSIFICATION[key]]
     result=[];seen=set()
-    for row,path in zip(runtime['bindings'],resolved):
+    for row,path in zip(rows,resolved):
         if excluded_runtime_file(row['path']):continue
         if path in seen:raise ValueError('The runtime repeats a binding: '+path)
         seen.add(path)
