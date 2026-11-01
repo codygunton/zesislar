@@ -141,6 +141,8 @@ PORT_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT
 PORT_AUTHORITY_23={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-23.json'), 'sha256': 'dbeedb2c4fcdc916939a9c5fc9ced3d07bc619244c1d8b41bfc91aacfb5052bd'}
 PORT_HELDOUT_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-HELDOUT-RUN2-AUTHORITY.json'), 'sha256': '6133fc1d79d1ebc794e77e4ea366ce61bd73444b919d7924c7ea04e67d053c29'}
 PORT_HELDOUT_AUTHORITY_78={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-HELDOUT-RUN2-AUTHORITY-78.json'), 'sha256': '91772fc69bc3c82ab81d3bdfdc0fad4d8c766390f6c63204788a1def28b5ded2'}
+PORT_HELDOUT_MEMORY_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-HELDOUT-RUN2-AUTHORITY-78-MEMORY.json'), 'sha256': '126f646885ba8b8a9fcd733037757f68bd4260d847a30031c331a134125fa8d3'}
+HELDOUT_MEMORY_BOOKING={'unmeasured':'full_physical_fence','measured':'max(1GiB,ceil(1.5*completed_aggregate_peak_bytes))','maximum_live_cases_per_kind':2,'kind_field':'score_group','admission_resume_below_bytes':150*GIB}
 PORT_EXTENSION={'path': str(Path(__file__).resolve().parents[1]/'policies'/'EXTENSION.json'), 'sha256': 'ad05524ccec944621e775ebaccf5cd39b766bd6d4c554bbfa7f8332d84d77913'}
 
 def relocated_authority(actual,expected,legacy_paths=()):
@@ -159,17 +161,20 @@ def production_port_authority(profile):
  if set(profile) not in ({'schema','kind','authority','memory_route'},{'schema','kind','authority','memory_route','supplier_ready'}) or profile.get('schema')!='scratch.admission-profile.v1' or profile.get('kind')!=PORT_KIND or profile.get('memory_route')!='measured_native':
   raise ValueError('The production PORT profile is invalid.')
  extended=isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_AUTHORITY_23['sha256']
+ corrected=isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_MEMORY_AUTHORITY['sha256']
  heldout78=isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_AUTHORITY_78['sha256']
- heldout=heldout78 or isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_AUTHORITY['sha256']
- expected=PORT_HELDOUT_AUTHORITY_78 if heldout78 else PORT_HELDOUT_AUTHORITY if heldout else PORT_AUTHORITY_23 if extended else PORT_AUTHORITY
+ heldout=corrected or heldout78 or isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_AUTHORITY['sha256']
+ expected=PORT_HELDOUT_MEMORY_AUTHORITY if corrected else PORT_HELDOUT_AUTHORITY_78 if heldout78 else PORT_HELDOUT_AUTHORITY if heldout else PORT_AUTHORITY_23 if extended else PORT_AUTHORITY
  legacy_paths=('/home/cody/zesislar/_build/agents/worker-build-1/new6974-bindings291/extension002/PORT-FAMILY-AUTHORITY-23.json',) if extended else ('/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/matrix005-authority-v1/PORT-FAMILY-AUTHORITY-22.json', '/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/PORT-FAMILY-AUTHORITY-22.json')
  if not relocated_authority(profile['authority'],expected,legacy_paths):raise ValueError('The production PORT authority is not authorized.')
  authority=read(profile['authority'])
  if (authority.get('schema')!='port.production-stock-family-authority.v1' or
-     authority.get('claim_bytes')!=8*GIB or authority.get('physical_fence_bytes')!=PORT_FENCE or
+     authority.get('claim_bytes')!=(PORT_FENCE if corrected else 8*GIB) or authority.get('physical_fence_bytes')!=PORT_FENCE or
      authority.get('native_body')!='zesu_block.' or authority.get('setup_order')!=[] or
      authority.get('minimal_or_private_route') is not False or authority.get('fence_hit_retry') is not False):
   raise ValueError('The production PORT ruling differs.')
+ if corrected and authority.get('memory_booking')!=HELDOUT_MEMORY_BOOKING:
+  raise ValueError('The held-out memory ruling differs.')
  if heldout:
   from port_heldout_authority import validate
   validate(authority)
@@ -292,7 +297,7 @@ def workload_claim(workload,job,basis):
   context.update(workload['supplier_context'])
  actual=workload_for_job(workload['profile'],job,context)
  if actual is None or actual['kind']!=workload['kind']:raise ValueError('The workload evidence is invalid.')
- kind=read(workload['profile']).get('kind')
+ profile=read(workload['profile']);kind=profile.get('kind')
  if kind!=workload['kind']:raise ValueError('The workload profile kind changed.')
  if kind=='minimal_native_tactic':
   if job['phase']!='native' or job.get('native_route')!=actual['native_route']:
@@ -301,7 +306,15 @@ def workload_claim(workload,job,basis):
  if kind==FOCUSED_KIND:
   if job['phase'] not in COMPILE_PHASES:raise ValueError('A focused check cannot execute native search.')
   return FOCUSED_CLAIM
- if kind==PORT_KIND:return 8*GIB
+ if kind==PORT_KIND:
+  if profile['authority']['sha256']!=PORT_HELDOUT_MEMORY_AUTHORITY['sha256']:return 8*GIB
+  if basis is None:return PORT_FENCE
+  if basis.get('memory_metric')!='aggregate_memory.peak':return PORT_FENCE
+  peak=basis.get('peak_bytes')
+  if type(peak) is not int or peak<=0:raise ValueError('A completed peak must be a positive integer.')
+  claim=max(GIB,(3*peak+1)//2)
+  if claim>PORT_FENCE:raise ValueError('The completed held-out peak requires a larger reviewed fence.')
+  return claim
  if kind==FAMILY_KIND:
   if job['phase']!='native':raise ValueError('The stock family requires a native phase.')
   return basis['claim_bytes'] if basis else FAMILY_DEFAULT_CLAIM
