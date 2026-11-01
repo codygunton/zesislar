@@ -400,7 +400,7 @@ class LauncherTests(Fixture):
 
     def test_reviewed_perf_helper_remains_byte_identical(self):
         self.assertEqual((HERE / 'code/perf_measure.py').read_bytes(),
-                         Path('/home/cody/zesislar/_build/agents/worker-build-2/native-port-policy-v1/telemetry/upstream/perf_measure.py').read_bytes().replace(b'        shutil.copyfile(path, retained)',b'        from clone_copy import copyfile\n        copyfile(path, retained)'))
+                         (HERE / 'test-fixtures/perf_measure_upstream.py').read_bytes().replace(b'        shutil.copyfile(path, retained)',b'        from clone_copy import copyfile\n        copyfile(path, retained)'))
 
 
 if __name__ == '__main__':

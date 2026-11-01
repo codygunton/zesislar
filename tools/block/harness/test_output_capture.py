@@ -1,5 +1,6 @@
 from pathlib import Path
 import hashlib,json,os,subprocess,sys,tempfile,unittest
+import _historical_fixtures as historical
 HERE=Path(__file__).resolve().parent
 class OutputCapture(unittest.TestCase):
  def sample(self,code):
@@ -21,14 +22,14 @@ class OutputCapture(unittest.TestCase):
  def test_original_executable_modes_are_preserved(self):
   import json
   layout=json.loads((HERE/'TOOL-LAYOUT.json').read_text())
-  original=Path('/home/cody/zesislar/_build/agents/worker-build-2/private-admission-route-v1/source014/RESTART-TOOLS.json')
+  original=historical.materialize('/home/cody/zesislar/_build/agents/worker-build-2/private-admission-route-v1/source014/RESTART-TOOLS.json')
   manifest=json.loads(original.read_text())
   for row in manifest['files']:
    relative=manifest['relative_paths'][row['path']]
    current=HERE/layout[relative]
    self.assertEqual(current.stat().st_mode&0o111,Path(row['path']).stat().st_mode&0o111,str(current))
  def test_policy_and_guard_are_unchanged(self):
-  original=Path('/home/cody/zesislar/_build/agents/worker-build-2/private-admission-route-v1/source014/restart-tools/resource_guard.sh')
+  original=historical.materialize('/home/cody/zesislar/_build/agents/worker-build-2/private-admission-route-v1/source014/restart-tools/resource_guard.sh')
   # The Phase 2 change adds PID identities only. Every other guard byte stays exact.
   expected=original.read_text()
   needle='      if diagnostic_probe; then\n        local probe_tag=issue10'

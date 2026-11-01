@@ -4,6 +4,7 @@ from pathlib import Path
 import re
 import unittest
 
+from _evidence_fixtures import repository
 from check_decode_item_route_repair import historical_file
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -13,7 +14,7 @@ SITES = ['6960', '697c', '698c', '69b0', '69e8', '6a08', '6a24', '6a38',
 
 class PrecommitmentLedgerTests(unittest.TestCase):
     def setUp(self):
-        self.ledger = json.loads((ROOT / 'ZesuSsz/Evidence/precommitment/LEDGER.json').read_text())
+        self.ledger = json.loads((repository() / 'ZesuSsz/Evidence/precommitment/LEDGER.json').read_text())
         self.rows = {row['block']: row for row in self.ledger['rows']}
 
     def test_exact_open_inventory_matches_checked_module(self):

@@ -7,13 +7,15 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from _evidence_fixtures import repository
+
 from check_i75_evidence import CLEANUP_STATUS, INDEX, ROOT, archived, check
 
 
 class I75EvidenceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.index = json.loads(INDEX.read_text())
+        cls.index = json.loads((repository() / "ZesuSsz/Evidence/i75/INDEX.json").read_text())
 
     def test_retained_index(self):
         result = check(self.index)

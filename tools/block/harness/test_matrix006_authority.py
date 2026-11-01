@@ -6,15 +6,17 @@ from pathlib import Path
 import tempfile
 import unittest
 
+import _historical_fixtures as historical
 import memory_policy as P
 import port_native_policy
 
-RELEASE = Path('/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1')
+RELEASE = historical.directory('/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1')
 CHANGED = {'800d6a14', '800d6ab4'}
 
 
 class Matrix006Authority(unittest.TestCase):
     def setUp(self):
+        historical.use_policy(self)
         self.profile = json.loads((RELEASE / 'PROFILE-v31.json').read_text())
         self.authority = P.production_port_authority(self.profile)
         self.previous = json.loads((RELEASE / 'BASE-AUTHORITY-26fad.json').read_text())

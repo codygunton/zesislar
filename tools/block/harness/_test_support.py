@@ -2,7 +2,8 @@
 from pathlib import Path
 import hashlib,json,tempfile,atexit
 import scratch
-LEGACY=Path('/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40')
+import _historical_fixtures as historical
+LEGACY=historical.directory('/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40')
 BASE=LEGACY/'_build/check-entry-stage1-passfix-ten-runtime-v2'
 SOURCE=LEGACY/'_build/check-entry-passfix045-ten-source-v1'
 TMP=Path('/home/cody/.cache/zesislar/shared-harness-tests')

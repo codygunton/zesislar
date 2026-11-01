@@ -7,9 +7,10 @@ import unittest
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE / 'code'))
 import entry_chain_provider as provider
+import _historical_fixtures as historical
 
 HOOKS = 'ZesuSsz.Automation.Hooks'
-PROJECTION = Path('/home/cody/zesislar/_build/agents/worker-build-2/v12-F6-hooks-projection-v1/projection/Hooks.v')
+PROJECTION = historical.materialize('/home/cody/zesislar/_build/agents/worker-build-2/v12-F6-hooks-projection-v1/projection/Hooks.v')
 
 
 class HooksCompilerRouteTests(unittest.TestCase):

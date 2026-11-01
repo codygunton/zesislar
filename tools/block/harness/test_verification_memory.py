@@ -1,10 +1,12 @@
+import _historical_fixtures as historical
+historical.prepare()
 from pathlib import Path
 import copy,json,sys,unittest
 from unittest.mock import patch
 HERE=Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE/'code'))
 import memory_policy as P
-ROWS=json.loads(((HERE/'test-fixtures/COMPLETED-STOCK-MEASUREMENTS.json')).read_text())['rows']
+ROWS=historical.read_json(HERE/'test-fixtures/COMPLETED-STOCK-MEASUREMENTS.json')['rows']
 ROW=next(r for r in ROWS if r.get('format')=='completed_stock_verification_repair_v1')
 TARGET=P.read(ROW['verification_supplement'])['target']
 class VerificationMemoryTests(unittest.TestCase):
