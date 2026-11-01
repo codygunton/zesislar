@@ -1,5 +1,6 @@
 """Temporary-ledger controls. These controls start no proof or compiler."""
 import json
+import hashlib
 from pathlib import Path
 import sys
 import threading
@@ -202,6 +203,61 @@ class UnifiedAdmission(unittest.TestCase):
         self.assertTrue(M.release_shell(self.marker,ledger=self.ledger,reader=self.reader))
         self.assertFalse(self.marker.exists())
         self.assertIn(M.shell_key(self.marker),self.read()['legacy_shell_releases'])
+
+    def rollout_writer(self,mode='batch'):
+        source=self.root/'resource_guard.sh';source.write_text('# Nonproof fixture.\n')
+        owner=self.batch if mode=='batch' else self.pending
+        argv=['bash',str(source),mode,'fixture','--',str(source),'scope','client','--','true']
+        self.process(owner,11 if mode=='batch' else 12,argv,
+                     '/outside' if mode=='batch' else str(self.group.relative_to(self.reader.root)))
+        (self.proc/'14/environ').write_bytes(f'ZESU_AGGREGATE_SLICE={self.group.name}\0'.encode())
+        self.token().rename(self.marker)
+        return {'owner':dict(owner),'token_owner':dict(self.pending),'argv':argv,
+                'source':{'path':str(source),'sha256':hashlib.sha256(source.read_bytes()).hexdigest()},
+                'marker':str(self.marker)}
+
+    def test_batch_rollout_binds_distinct_creator_and_token_owner(self):
+        writer=self.rollout_writer()
+        result=M.prepare_legacy_rollout(self.read(),[writer],reader=self.reader)
+        hold=next(iter(result['legacy_aggregate_holds'].values()))
+        self.assertEqual(hold['writer'],self.batch)
+        self.assertEqual(hold['token_owner'],self.pending)
+        self.assertEqual(hold['fallback_bytes'],64*M.GIB)
+
+    def test_scope_rollout_keeps_its_exact_token_owner(self):
+        writer=self.rollout_writer('scope')
+        result=M.prepare_legacy_rollout(self.read(),[writer],reader=self.reader)
+        hold=next(iter(result['legacy_aggregate_holds'].values()))
+        self.assertEqual(hold['writer'],hold['token_owner'])
+
+    def test_batch_rollout_refuses_foreign_aggregate_token(self):
+        writer=self.rollout_writer()
+        creator={'pid':21,'startticks':201}
+        other=self.reader.parent/f'zesuworkloads-aggregate{self.reader.uid}p21r1.slice';other.mkdir()
+        for name,value in [('memory.current','10'),('memory.max',str(64*M.GIB)),('memory.swap.max','0')]:
+            (other/name).write_text(value)
+        self.process(creator,11,['guard','batch'],'/outside')
+        self.process(self.pending,21,['guard','scope'],str(other.relative_to(self.reader.root)))
+        self.marker.write_text(self.marker.read_text().replace(self.group.name,other.name))
+        with self.assertRaisesRegex(ValueError,'exact aggregate'):
+            M.prepare_legacy_rollout(self.read(),[writer],reader=self.reader)
+
+    def test_batch_rollout_refuses_reused_creator_pid(self):
+        writer=self.rollout_writer();writer['owner']['startticks']=999
+        with self.assertRaisesRegex(ValueError,'process identity changed'):
+            M.prepare_legacy_rollout(self.read(),[writer],reader=self.reader)
+
+    def test_rollout_token_filename_binds_owner_pid_despite_equal_startticks(self):
+        writer=self.rollout_writer();other={'pid':15,'startticks':104}
+        self.process(other,12,['guard','scope'],str(self.group.relative_to(self.reader.root)))
+        writer['token_owner']=other
+        with self.assertRaisesRegex(ValueError,'filename names another owner'):
+            M.prepare_legacy_rollout(self.read(),[writer],reader=self.reader)
+
+    def test_scope_rollout_cannot_borrow_another_token_owner(self):
+        writer=self.rollout_writer('scope');writer['token_owner']=dict(self.batch)
+        with self.assertRaisesRegex(ValueError,'another token owner'):
+            M.prepare_legacy_rollout(self.read(),[writer],reader=self.reader)
 
 
 if __name__=='__main__':unittest.main()
