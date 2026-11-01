@@ -43,10 +43,14 @@ Qed.
 Ltac zesu_additive_decoder_views :=
   progress (repeat match goal with
   | Hdecoder : ?decoder ?bytes = ?value |- _ =>
+      lazymatch decoder with
+      | little_endian_to_bv _ => fail 0
+      | _ => idtac
+      end;
       let bytes_type := type of bytes in
       lazymatch bytes_type with
       | list (bv ?width) =>
-          change (zesu_additive_decoder width bytes = value) in Hdecoder;
-          rewrite zesu_additive_decoder_view in Hdecoder
+          progress (change (zesu_additive_decoder width bytes = value) in Hdecoder;
+            rewrite zesu_additive_decoder_view in Hdecoder)
       end
   end).
