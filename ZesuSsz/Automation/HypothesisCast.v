@@ -12,6 +12,7 @@ Ltac zesu_hypothesis_cast_range width value :=
     | bv_unsigned ?word =>
         let kind := type of word in
         lazymatch kind with bv ?source =>
+          is_closed_term source;
           let Hwidth := fresh "HcastWidth" in
           assert (Hwidth : (source <= width)%N) by (vm_compute; congruence);
           pose proof (bv_unsigned_in_range source word);
