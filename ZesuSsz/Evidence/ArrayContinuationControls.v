@@ -1,4 +1,6 @@
 (* Focused controls for the switched composition and its refusal boundaries. *)
+Require Import isla.riscv64.riscv64.
+From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import ZesuSsz.Automation.ArrayContinuation.
 Import ListNotations.
 Local Open Scope Z_scope.
