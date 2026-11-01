@@ -230,3 +230,58 @@ print(c.digest(Path(sys.argv[2])))
         locked.assert_not_called()
         lookup.assert_not_called()
         publish.assert_not_called()
+
+    def test_cache_publication_never_requests_durability(self):
+        with patch.object(cache.os, 'fsync', side_effect=AssertionError('durability call')) as sync:
+            self.assertEqual(cache.digest(self.file), hashlib.sha256(b'first').hexdigest())
+        sync.assert_not_called()
+        self.assertEqual(json.loads(self.record().read_text())['sha256'],
+                         hashlib.sha256(b'first').hexdigest())
+
+    def test_atomic_publication_exposes_only_complete_records(self):
+        cache.digest(self.file)
+        record = self.record()
+        previous = record.read_bytes()
+        context = json.loads(previous)['context']
+        value = hashlib.sha256(b'first').hexdigest()
+        replace = cache.os.replace
+        observed = []
+        def checked_replace(source, target):
+            self.assertEqual(Path(target), record)
+            self.assertEqual(record.read_bytes(), previous)
+            temporary = Path(source)
+            complete = json.loads(temporary.read_bytes())
+            self.assertEqual(complete, dict(schema=cache._SCHEMA, context=context, sha256=value))
+            self.assertEqual(temporary.stat().st_mode & 0o777, 0o600)
+            observed.append(temporary)
+            replace(source, target)
+            self.assertEqual(json.loads(record.read_bytes()), complete)
+        with patch.object(cache.os, 'replace', side_effect=checked_replace) as published:
+            cache._publish(record, context, value)
+        published.assert_called_once()
+        self.assertEqual(len(observed), 1)
+        self.assertFalse(observed[0].exists())
+        self.assertFalse(list(self.cache.glob('.digest-*')))
+
+    def test_failed_publication_cleans_temporary_and_preserves_record(self):
+        cache.digest(self.file)
+        record = self.record()
+        previous = record.read_bytes()
+        row = json.loads(previous)
+        with patch.object(cache.os, 'replace', side_effect=OSError('publication refused')):
+            with self.assertRaisesRegex(OSError, 'publication refused'):
+                cache._publish(record, row['context'], row['sha256'])
+        self.assertEqual(record.read_bytes(), previous)
+        self.assertFalse(list(self.cache.glob('.digest-*')))
+
+    def test_failed_publication_keeps_hash_and_input_checks(self):
+        with patch.object(cache, '_publish', side_effect=OSError('publication refused')):
+            self.assertEqual(cache.digest(self.file), hashlib.sha256(b'first').hexdigest())
+        self.assertEqual(cache.COUNTERS['persistent_unavailable'], 1)
+        cache._DIGESTS.clear()
+        def changed_input(*args):
+            self.file.write_bytes(b'other')
+            raise OSError('publication refused')
+        with patch.object(cache, '_publish', side_effect=changed_input):
+            with self.assertRaisesRegex(ValueError, 'changed during validation'):
+                cache.digest(self.file)

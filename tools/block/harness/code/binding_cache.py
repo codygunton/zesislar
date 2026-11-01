@@ -100,13 +100,9 @@ def _publish(path, context, value):
         with os.fdopen(descriptor, 'wb') as stream:
             stream.write(_encoded(dict(schema=_SCHEMA, context=context, sha256=value)))
             stream.flush()
-            os.fsync(stream.fileno())
+        # This cache is disposable. Atomic replacement protects readers.
+        # Missing or malformed records require a validated rehash.
         os.replace(name, path)
-        directory = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
-        try:
-            os.fsync(directory)
-        finally:
-            os.close(directory)
     finally:
         if os.path.exists(name):
             os.unlink(name)
