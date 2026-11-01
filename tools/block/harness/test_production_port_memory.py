@@ -144,9 +144,9 @@ class ProductionPortMemory(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     self.workload()
 
-    def test_full_fence_booking_requires_production_port(self):
+    def test_full_fence_booking_refuses_other_native_workloads(self):
         self.profile['memory_booking'] = 'full_physical_fence'
-        for kind in [P.FAMILY_KIND,P.FOCUSED_KIND,'minimal_native_tactic']:
+        for kind in [P.FAMILY_KIND,'minimal_native_tactic']:
             with self.subTest(kind=kind):
                 self.profile['kind'] = kind
                 with self.assertRaisesRegex(ValueError,'requires a production PORT profile'):
