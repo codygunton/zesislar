@@ -18,6 +18,11 @@ from scratch_statement import source_statement
 
 
 class HeldoutPortTests(unittest.TestCase):
+ def test_profile_booking_option_cannot_change_blind_policy(self):
+  self.profile['memory_booking']='full_physical_fence'
+  with self.assertRaisesRegex(ValueError,'cannot change a blind PORT policy'):
+   P.production_port_authority(self.profile)
+
  def setUp(self):
   temporary=tempfile.TemporaryDirectory();self.addCleanup(temporary.cleanup)
   self.root=Path(temporary.name)
