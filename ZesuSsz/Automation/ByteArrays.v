@@ -83,7 +83,7 @@ Lemma zesu_array_region_start_8_same base :
 Proof. rewrite /array_region_start Z.sub_diag. reflexivity. Qed.
 
 #[export] Hint Rewrite zesu_bv_sign_extend_same
-  : zesu_indices isla_coq_rewrite lithium_rewrite.
+  : zesu_indices.
 #[export] Hint Rewrite zesu_bv_sub_twice_64
   : zesu_indices isla_coq_rewrite lithium_rewrite.
 #[export] Hint Rewrite Z.sub_diag zesu_u64_little_endian_roundtrip
@@ -91,9 +91,9 @@ Proof. rewrite /array_region_start Z.sub_diag. reflexivity. Qed.
 #[export] Hint Rewrite (@Z_to_bv_bv_unsigned 64)
   : zesu_indices isla_coq_rewrite lithium_rewrite.
 #[export] Hint Rewrite zesu_bv_unsigned_add_Z_64 using bv_solve
-  : zesu_indices isla_coq_rewrite lithium_rewrite.
+  : zesu_indices.
 #[export] Hint Rewrite zesu_bv_unsigned_add_no_wrap_64 using bv_solve
-  : zesu_indices isla_coq_rewrite lithium_rewrite.
+  : zesu_indices.
 
 Lemma zesu_take_8_drop (bytes : list (bv 8)) (offset : nat) :
   (offset + 8 <= length bytes)%nat ->
