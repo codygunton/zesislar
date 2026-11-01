@@ -1,19 +1,45 @@
 """Enforce only external scratch stops. Never change a tactic or CPU rlimit."""
 from pathlib import Path
 import json,re,subprocess,time
+from contextvars import ContextVar
+from copy import deepcopy
+import os
 from entry_chain import read_bound,binding,save
 CPU_STOP_SECONDS=7200
 SETUP_CPU_STOP_SECONDS=None
 MEMORY_FENCE_BYTES=68719476736
 CLAIM_REPORT_MULTIPLIER=2
 
+_MONITOR_POLICY = ContextVar('validated_scratch_monitor_policy', default=None)
+
+
+class _MonitorPolicy:
+    """Freeze validated resource policy for one owned monitoring loop."""
+    def __init__(self, memory_job, phase):
+        from memory_policy import fence, job_fence, validate_job
+        from port_native_policy import cpu_budgets
+        self.job = deepcopy(memory_job)
+        self.phase, self.pid = phase, os.getpid()
+        if memory_job is not None:
+            validate_job(memory_job)
+        self.physical = job_fence(memory_job) if memory_job is not None else fence(phase)
+        self.budgets = cpu_budgets(memory_job, CPU_STOP_SECONDS, SETUP_CPU_STOP_SECONDS)
+
+
+def _policy(memory_job, phase=None):
+    selected = _MONITOR_POLICY.get()
+    if selected is not None:
+        if (selected.pid != os.getpid() or selected.job != memory_job or
+                phase is not None and selected.phase != phase):
+            raise ValueError('The validated monitor job changed.')
+        return selected
+    return _MonitorPolicy(memory_job, phase or 'native')
+
+
 def stop_reason(cpu_seconds,memory_bytes,claim_bytes,prior_cpu_seconds=0,*,phase='native',origin_cpu=None,end_cpu=None,memory_job=None):
-    from memory_policy import fence,job_fence,validate_job
-    if memory_job is not None:validate_job(memory_job)
-    physical=job_fence(memory_job) if memory_job is not None else fence(phase)
-    if memory_bytes>=physical:return 'external_memory_stop'
-    from port_native_policy import cpu_budgets
-    search_budget,setup_budget=cpu_budgets(memory_job,CPU_STOP_SECONDS,SETUP_CPU_STOP_SECONDS)
+    policy=_policy(memory_job,phase)
+    if memory_bytes>=policy.physical:return 'external_memory_stop'
+    search_budget,setup_budget=policy.budgets
     if phase=='native' and origin_cpu is not None:
         if cpu_seconds<origin_cpu:raise ValueError('The aggregate CPU counter precedes the search origin.')
         if end_cpu is None and search_budget is not None and cpu_seconds-origin_cpu>=search_budget:return 'external_CPU_stop'
@@ -27,10 +53,9 @@ def claim_report_required(memory_bytes,claim_bytes,*,family=False,peak_bytes=Non
     return memory_bytes>CLAIM_REPORT_MULTIPLIER*claim_bytes
 
 def exact_aggregate(identity,memory_fence_bytes=MEMORY_FENCE_BYTES,*,memory_job=None):
-    from memory_policy import NATIVE_FENCE,job_fence,validate_job
+    from memory_policy import NATIVE_FENCE
     if memory_job is not None:
-        validate_job(memory_job)
-        if memory_fence_bytes!=job_fence(memory_job):raise ValueError('The aggregate differs from its bound memory job.')
+        if memory_fence_bytes!=_policy(memory_job).physical:raise ValueError('The aggregate differs from its bound memory job.')
     elif memory_fence_bytes!=NATIVE_FENCE:raise ValueError('A measured aggregate requires its bound memory job.')
     path=Path(identity['aggregate_path'])
     if not re.fullmatch(r'zesuworkloads-aggregate[0-9]+p[0-9]+r[0-9]+\.slice',path.name):
@@ -191,9 +216,17 @@ def finish_growth(out,count,started,last,returncode,*,family=False,claim_bytes=N
     return returncode
 
 def wait_with_limits(child,out,claim_bytes,prior_cpu_seconds=0,*,phase='native',memory_job=None,family=False,family_threshold_bytes=16*1024**3):
-    from memory_policy import fence,job_fence,validate_job
-    if memory_job is not None:validate_job(memory_job)
-    physical=job_fence(memory_job) if memory_job is not None else fence(phase)
+    policy=_MonitorPolicy(memory_job,phase)
+    token=_MONITOR_POLICY.set(policy)
+    try:
+        return _wait_with_limits(child,out,claim_bytes,prior_cpu_seconds,phase=phase,
+            memory_job=memory_job,family=family,family_threshold_bytes=family_threshold_bytes)
+    finally:
+        _MONITOR_POLICY.reset(token)
+
+
+def _wait_with_limits(child,out,claim_bytes,prior_cpu_seconds=0,*,phase='native',memory_job=None,family=False,family_threshold_bytes=16*1024**3):
+    physical=_policy(memory_job,phase).physical
     out=Path(out);started=time.monotonic();count=0;last=None
     from port_native_policy import port_case
     instruction_checkpoints=None
