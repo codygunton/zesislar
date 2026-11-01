@@ -72,8 +72,33 @@ class HeldoutPortTests(unittest.TestCase):
  def save_authority(self):
   binding=self.save('AUTHORITY.json',self.authority)
   if hasattr(self,'profile'):self.profile['authority']=binding
-  self.enterContext(patch.object(P,'PORT_HELDOUT_AUTHORITY',binding))
+  self.enterContext(patch.object(P,getattr(self,'authority_constant','PORT_HELDOUT_AUTHORITY'),binding))
   return binding
+
+ def add_raw_transports(self):
+  targets=[]
+  for i,row in enumerate(self.rows[18:]):
+   source=row['frozen_case'];source['CFG_successors']=[dict(pc=hex(4096+j)) for j in range(2 if i<43 else 1)]
+   path=self.root/('Raw'+str(i)+'.v')
+   path.write_text('Require Import ZesuSsz.Automation.All.\nLemma DesignedBoundary_fixture : True.\nProof.\n  zesu_block.\nQed.\n')
+   caller=self.binding(path);pc=int(source['pc'],0)
+   target=dict(casekey=source['case_id'],native_job_key=format(pc,'x'),pc=hex(pc),
+               module='Fixture.Raw'+str(i),path=caller['path'],hash=caller['sha256'],
+               statementhash=source['statement_sha256'],frozen_case=deepcopy(source),
+               ordered_source_edges=deepcopy(source['CFG_successors']),
+               protected_interval=dict(sha256=source['statement_sha256']))
+   targets.append(target)
+   self.authority['cases'].append(dict(block=target['native_job_key'],pc=pc,
+       module=target['module'],source=caller,statement_sha256=target['statementhash']))
+   self.authority['inventory'][18+i]['transport']='ready'
+  self.raw=dict(frozen_CASES=self.authority['frozen_manifest'],cases=targets,case_count=60,
+                ordered_edges=103,caller_emission=self.save('EMISSION.json',{}),
+                corrected_refusal_checks=self.save('REFUSALS.json',{}))
+  self.authority.update(raw60_targets=self.save('RAW60.json',self.raw),
+      raw60_emission=self.raw['caller_emission'],raw60_refusal_checks=self.raw['corrected_refusal_checks'],
+      executable_case_count=78,transport_pending_count=0,
+      case_rebind=self.save('REBIND.json',dict(frozen_manifest=self.authority['frozen_manifest'],cases=self.rows)))
+  self.authority_constant='PORT_HELDOUT_AUTHORITY_78';self.save_authority()
 
  def job(self,case):
   return dict(key=case['block'],phase='native',ordered_modules=[],target=dict(
@@ -151,6 +176,33 @@ class HeldoutPortTests(unittest.TestCase):
   result=subprocess.run([sys.executable,'-I','-B','-c',script,str(tools/'block'),
                          str(self.authority_path)],capture_output=True,text=True)
   self.assertEqual(result.returncode,0,result.stderr)
+
+ def test_all_transported_cases_use_the_same_native_policy(self):
+  self.add_raw_transports()
+  self.test_eighteen_callers_use_stock_8_32_and_no_cpu_stop()
+  self.test_successor_layout_installs_the_authority_helper()
+  self.assertEqual(len(P.production_port_authority(self.profile)['cases']),78)
+
+ def test_raw_transport_cannot_change_frozen_edges(self):
+  self.add_raw_transports();self.raw['cases'][0]['ordered_source_edges'][0]['pc']='0xdead'
+  self.authority['raw60_targets']=self.save('RAW60.json',self.raw);self.save_authority()
+  with self.assertRaisesRegex(ValueError,'frozen bytes or ordered edges'):
+   P.production_port_authority(self.profile)
+
+ def test_raw_transport_cannot_change_frozen_statement(self):
+  self.add_raw_transports();self.raw['cases'][0]['protected_interval']['sha256']='0'*64
+  self.authority['raw60_targets']=self.save('RAW60.json',self.raw);self.save_authority()
+  with self.assertRaisesRegex(ValueError,'frozen bytes or ordered edges'):
+   P.production_port_authority(self.profile)
+
+ def test_raw_native_case_retains_each_exact_identity(self):
+  self.add_raw_transports()
+  for field in ['module','pc','source_sha256','statement_sha256']:
+   raw=self.job(self.authority['cases'][18]);raw['target'][field]='changed'
+   with self.assertRaises(ValueError):P.production_port_case(self.profile,raw)
+  bindings=P.profile_bindings(self.save('PROFILE.json',self.profile))
+  for key in ['raw60_targets','raw60_emission','raw60_refusal_checks']:
+   self.assertIn(self.authority[key],bindings)
 
 
 if __name__=='__main__':unittest.main()
