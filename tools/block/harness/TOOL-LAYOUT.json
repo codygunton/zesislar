@@ -45,6 +45,7 @@
   "block/compile_measure.py": "code/compile_measure.py",
   "block/entry_chain_compiler.py": "code/entry_chain_compiler.py",
   "block/memory_policy.py": "code/memory_policy.py",
+  "block/port_heldout_authority.py": "code/port_heldout_authority.py",
   "block/supplier_ready.py": "code/supplier_ready.py",
   "block/verification_supplement.py": "code/verification_supplement.py",
   "block/native_route.py": "code/native_route.py",
