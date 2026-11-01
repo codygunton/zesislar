@@ -101,7 +101,9 @@ class ModuleMemoryTests(unittest.TestCase):
     def test_admission_cli_passes_the_actual_fence_to_unknown_compilers(self):
         with patch("sys.argv", ["module_memory.py", "admission", "--request-bytes", "1",
                                "--available-bytes", "1000000000000", "--fallback-bytes", str(64*memory.GIB)]), \
-                patch.object(memory, "reservation_claims", return_value={"claims": [], "growth": [], "unrepresented_compilers": []}) as observed:
+                patch.object(memory, "reservation_claims", return_value={"claims": [], "growth": [], "unrepresented_compilers": []}) as observed, \
+                patch.object(memory, "current_projection", return_value={"fits": True}), \
+                patch.object(memory, "read_shell_bookings", return_value={}):
             self.assertEqual(memory.main(), 0)
         self.assertEqual(observed.call_args.kwargs['fallback_bytes'], 64*memory.GIB)
 
@@ -212,8 +214,9 @@ class ModuleMemoryTests(unittest.TestCase):
         self.assertEqual(len(result["growth"]), 1)
         self.assertIn("writer=fixture\naggregate=test\n", marker.read_text())
         self.assertEqual(marker.stat().st_mtime_ns, stamp)
+        retained={str(marker):result["claims"][0]}
         (proc / "123/status").write_text("VmHWM:\t1 kB\n")
-        result = memory.reservation_claims([marker], proc=proc, refresh=True)
+        result = memory.reservation_claims([marker], proc=proc, refresh=True, retained_claims=retained)
         self.assertEqual(result["claims"], [3 * memory.GIB])
         self.assertEqual(result["growth"], [])
 
@@ -282,7 +285,7 @@ class ModuleMemoryTests(unittest.TestCase):
         self.assertEqual(result["claims"], [64 * memory.GIB])
         self.assertEqual(result["unrepresented_compilers"], [])
         self.assertIn("memory_gib=64\n", marker.read_text())
-        self.assertIn("memory_probe_child_start=200\n", marker.read_text())
+        self.assertNotIn("memory_probe_child_start=", marker.read_text())
         self.assertNotIn("memory_fence_bytes=", marker.read_text())
 
     def test_live_probe_never_reduces_the_full_fence_claim(self):

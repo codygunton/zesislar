@@ -1,6 +1,7 @@
 from pathlib import Path
 from contextlib import contextmanager
 import fcntl,hashlib,json,os,tempfile
+from admission_memory import guard_lock
 
 def read(path):return json.loads(Path(path).read_text())
 
@@ -23,7 +24,7 @@ def validate_lock(ledger,lock):
 @contextmanager
 def locked(ledger,lock):
  validate_lock(ledger,lock)
- with open(lock,'a+') as stream:
+ with guard_lock(), open(lock,'a+') as stream:
   fcntl.flock(stream,fcntl.LOCK_EX)
   try:yield
   finally:fcntl.flock(stream,fcntl.LOCK_UN)

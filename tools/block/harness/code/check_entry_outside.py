@@ -19,6 +19,7 @@ import traceback
 import uuid
 
 from module_memory import measurement_claim
+from admission_memory import guard_lock
 
 from check_entry import (ROOT,answer_error_feedback,atomic_json,attempt_identity,bound_rows,digest,require_truth_gate)
 from entry_pilot_checker import bound_json,complete_groups,native_result,strict_loads,validate_inline
@@ -77,7 +78,7 @@ def canonical_functions(policy):
 
 def reserve(policy,key,owner,receipt,*,available=None,claims_fn=None,pause=time.sleep,recheck=lambda:None):
     from memory_policy import admission_claim
-    from admission_memory import projection
+    from admission_memory import projection, guard_lock
     policy['minimum_claim_bytes'] = admission_claim(policy)
     actual_claims,actual_available=canonical_functions(policy)
     claims_fn=actual_claims if claims_fn is None else claims_fn
@@ -85,7 +86,7 @@ def reserve(policy,key,owner,receipt,*,available=None,claims_fn=None,pause=time.
     records=[]
     while True:
         recheck()
-        with Path(policy['lock']).open('a') as handle:
+        with guard_lock(), Path(policy['lock']).open('a') as handle:
             fcntl.flock(handle,fcntl.LOCK_EX)
             data=strict_loads(Path(policy['ledger']).read_text())
             if data['fixed_claims'].get(key,0):raise ValueError('The unique attempt claim already exists.')
@@ -125,7 +126,7 @@ def release(policy,key,owner,closure_binding,*,ledger=None):
     closure=bound_json(closure_binding['path'],closure_binding['sha256'])
     if closure.get('all_owned_actors_closed') is not True or closure.get('owner')!=owner:
         raise ValueError('The claim lacks its exact closure receipt.')
-    with Path(policy['lock']).open('a') as handle:
+    with guard_lock(), Path(policy['lock']).open('a') as handle:
         fcntl.flock(handle,fcntl.LOCK_EX)
         data=strict_loads(path.read_text())
         if data.get('entry_pilot_outside_owners',{}).get(key)!=owner:

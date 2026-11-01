@@ -29,6 +29,11 @@ _spec = importlib.util.spec_from_file_location('_zesu_owned_admission_memory', _
 _module = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_module)
 evaluate, ScopeReader = _module.evaluate, _module.ScopeReader
+confirm_shell, release_shell = _module.confirm_shell, _module.release_shell
+current_projection = _module.current_projection
+mark_shell = _module.mark_shell
+refresh_shell_growth = _module.refresh_shell_growth
+read_shell_bookings = _module.read_shell_bookings
 
 
 GIB = 1024 ** 3
@@ -220,12 +225,13 @@ def probe_measurement(marker, metadata, physical, proc):
 
 
 def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
-                       refresh=False):
+                       refresh=False, retained_claims=None):
     """Read live reservations under the caller's existing guard mutex.
 
     Unmeasured probes retain the full physical-fence claim. Measured families
     retain their validated claims below that fence. Growth never reduces a claim.
     """
+    retained_claims = retained_claims or {}
     physical = compiler_pids(proc)
     covered, claims, growth, scopes = set(), [], [], {}
     reader = ScopeReader()
@@ -256,7 +262,7 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
                 claims.append(fence)
                 continue
             covered.update(measured["covered"])
-            previous = values.get("memory_probe_claim_bytes", 0)
+            previous = max(values.get("memory_probe_claim_bytes", 0), retained_claims.get(str(marker), 0))
             increased = max(fence, previous, measured["claim_bytes"])
             if proc == Path('/proc'):
                 scopes[str(len(claims))] = reader.compiler(marker)
@@ -264,21 +270,8 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
             if increased > previous:
                 growth.append({"reservation": str(marker), "previous_bytes": previous,
                                "claim_bytes": increased, "probe": True})
-            if refresh and (increased > previous or "memory_probe_child_start" not in metadata):
-                updated = [line for line in lines if not line.startswith(("memory_probe_claim_bytes=", "memory_probe_child_start="))]
-                updated.extend([f"memory_probe_claim_bytes={increased}",
-                                f"memory_probe_child_start={measured['child_start']}"])
-                stat = marker.stat()
-                with tempfile.NamedTemporaryFile(mode="w", dir=marker.parent, delete=False) as stream:
-                    stream.write("\n".join(updated) + "\n")
-                    temporary = Path(stream.name)
-                try:
-                    os.utime(temporary, ns=(stat.st_atime_ns, stat.st_mtime_ns))
-                    temporary.replace(marker)
-                finally:
-                    temporary.unlink(missing_ok=True)
             continue
-        claim = values.get("memory_claim_bytes", fence) if "memory_fence_bytes" in values else fence
+        claim = max(values.get("memory_claim_bytes", fence), retained_claims.get(str(marker), 0)) if "memory_fence_bytes" in values else fence
         pending = [int(lines[0])] if lines[0].isdecimal() else []
         visited, peaks = set(), []
         while pending:
@@ -304,18 +297,6 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
         claims.append(increased)
         if increased > claim:
             growth.append({"reservation": str(marker), "previous_bytes": claim, "claim_bytes": increased})
-            if refresh:
-                updated = [line for line in lines if not line.startswith("memory_claim_bytes=")]
-                updated.append(f"memory_claim_bytes={increased}")
-                stat = marker.stat()
-                with tempfile.NamedTemporaryFile(mode="w", dir=marker.parent, delete=False) as stream:
-                    stream.write("\n".join(updated) + "\n")
-                    temporary = Path(stream.name)
-                try:
-                    os.utime(temporary, ns=(stat.st_atime_ns, stat.st_mtime_ns))
-                    temporary.replace(marker)
-                finally:
-                    temporary.unlink(missing_ok=True)
     claims.extend([max(64 * GIB, fallback_bytes)] * len(physical - covered))
     return {"claims": claims, "growth": growth, "unrepresented_compilers": sorted(physical - covered),
             "scope_observations": scopes}
@@ -338,17 +319,38 @@ def main():
     check.add_argument("--maximum-compilers", type=int, default=48)
     check.add_argument("--proc", type=Path, default=Path("/proc"))
     check.add_argument("markers", nargs="*")
+    confirm = commands.add_parser('ledger-confirm')
+    confirm.add_argument('--marker', type=Path, required=True)
+    confirm.add_argument('--replacement', type=Path, required=True)
+    confirm.add_argument('--request-bytes', type=int, required=True)
+    confirm.add_argument('--available-bytes', type=int, required=True)
+    release = commands.add_parser('ledger-release')
+    release.add_argument('--marker', type=Path, required=True)
+    mark = commands.add_parser('ledger-mark')
+    mark.add_argument('--marker', type=Path, required=True)
     args = parser.parse_args()
+    if args.command == 'ledger-confirm':
+        result = confirm_shell(args.marker, args.replacement, args.request_bytes, args.available_bytes)
+        if not result['fits']:
+            print('unified memory ledger refuses the reservation')
+            return 3
+        return 0
+    if args.command == 'ledger-mark':
+        return 0 if mark_shell(args.marker) else 4
+    if args.command == 'ledger-release':
+        return 0 if release_shell(args.marker) else 4
     if args.command == "claim":
         arguments = args.arguments[1:] if args.arguments[:1] == ["--"] else args.arguments
         result = module_claim(json.loads(args.profile.read_text()), arguments, args.cwd, args.compiler,
                               fallback_bytes=args.fallback_bytes)
         print(result["claim_bytes"])
     else:
-        observed = reservation_claims(args.markers, proc=args.proc, fallback_bytes=args.fallback_bytes, refresh=True)
-        result = admission(args.request_bytes, observed["claims"], args.available_bytes,
-                           headroom_bytes=args.headroom_bytes, maximum_compilers=args.maximum_compilers,
-                           observations=observed.get("scope_observations"))
+        observed = reservation_claims(args.markers, proc=args.proc, fallback_bytes=args.fallback_bytes,
+                                      refresh=False, retained_claims=read_shell_bookings())
+        refresh_shell_growth(observed['growth'])
+        result = current_projection(args.request_bytes, args.available_bytes)
+        result['admitted'] = result['fits'] and len(observed['claims']) < args.maximum_compilers
+        result['reason'] = 'compiler_limit' if len(observed['claims']) >= args.maximum_compilers else 'memory_budget'
         if not result["admitted"]:
             print(f"module memory: {result['reason']}; unrealized {result['requested_unrealized_bytes']} bytes, "
                   f"available budget {result['budget_bytes']} bytes; total {result['requested_total_bytes']} bytes, "
