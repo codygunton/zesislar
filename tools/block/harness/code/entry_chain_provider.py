@@ -203,7 +203,7 @@ def declaration_search_fixture(source, specification, output, side):
         'prefix_sha256': hashlib.sha256(specification['prefix'].encode()).hexdigest(),
         'statement_sha256': hashlib.sha256(specification['statement'].encode()).hexdigest(),
         'fixture': str(fixture), 'fixture_sha256': digest(fixture),
-        'line': proof_line, 'character': 0, 'suffix': 'Proof.\nAbort.\n'})
+        'line': proof_line, 'character': len('Proof.')-1, 'suffix': 'Proof.\nAbort.\n'})
     return fixture, proof_line
 
 
@@ -437,10 +437,10 @@ async def execute(request):
                     search_fixture, proof_line = declaration_search_fixture(
                         source, specification, output, side)
                     atomic_json(output/'PROGRESS.json', {'phase': 'native_start', 'side': side,
-                        'start_mode': 'exact_theorem'})
+                        'start_mode': 'proof_sentence'})
                     state = await call(session, 'rocq_start', {'workspace': str(workspace),
-                        'file': str(search_fixture), 'theorem': specification['name'],
-                        'timeout': timeout})
+                        'file': str(search_fixture), 'theorem': '', 'line': proof_line,
+                        'character': len('Proof.')-1, 'timeout': timeout})
                     pre_call_export = await export(session, state)
                     atomic_json(output/'PRE-CALL-STATE.json', {
                         'side': side, 'export': pre_call_export,

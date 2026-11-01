@@ -145,8 +145,10 @@ class NativeRoute(unittest.TestCase):
    async def call_tool(self,name,args):
     data={'success':True}
     if name=='rocq_start':
+     proof_lines=(root/'Native_EntryPilotSearch.v').read_text().splitlines()
      self_test.assertEqual(args,{'workspace':str(root),'file':str(root/'Native_EntryPilotSearch.v'),
-                                'theorem':'DesignedBoundary_Test','timeout':604800})
+                                'theorem':'','line':proof_lines.index('Proof.'),
+                                'character':len('Proof.')-1,'timeout':604800})
      if failure=='start':return Raw({'success':False,'reason':'not_found'})
     if name=='rocq_complete_goals' and failure=='scope':
      return Raw({'success':False,'reason':'no-proof-scope'})
@@ -189,13 +191,13 @@ class NativeRoute(unittest.TestCase):
                    spec['pre_proof_commands']+'Proof.\nAbort.\n')
   self.assertEqual(fixture.read_text().splitlines()[line],'Proof.')
   self.assertEqual(spec['name'],'DesignedBoundary_Test')
- def test_exact_theorem_start_failure_stops_before_export_or_search(self):
+ def test_proof_sentence_start_failure_stops_before_export_or_search(self):
   out,compiled=self._run_native_provider('start')
   calls=json.loads((out/'CALLS.json').read_text())
   self.assertEqual([row['tool'] for row in calls],['rocq_health','rocq_start'])
   self.assertEqual(compiled,[])
   self.assertEqual(json.loads((out/'PROGRESS.json').read_text()),
-                   {'phase':'native_start','side':'block','start_mode':'exact_theorem'})
+                   {'phase':'native_start','side':'block','start_mode':'proof_sentence'})
  def test_no_scope_export_stops_before_search_without_fallback(self):
   out,compiled=self._run_native_provider('scope')
   calls=json.loads((out/'CALLS.json').read_text())
