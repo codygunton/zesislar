@@ -49,6 +49,8 @@ A `focused_check` profile can also request `"memory_booking": "full_physical_fen
 It requires declaration-only execution and exact source coverage for every compiled module.
 The booking equals the unchanged 64 GiB fence.
 Focused profiles without this option keep their existing booking.
+The unused empty native carrier does not receive a declaration workload.
+The declaration-only executor does not run that carrier.
 
 Before an external stop, the harness retains the complete available export.
 An in-flight tactic has no returned internal state.
