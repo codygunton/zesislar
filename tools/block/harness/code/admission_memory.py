@@ -499,8 +499,6 @@ def shell_rows(data, reader):
             fence = int(fields.get('memory_fence_bytes', int(fields.get('memory_gib', 64)) * GIB))
             amount = max(int(fields.get('memory_claim_bytes', fence)),
                          int(fields.get('memory_probe_claim_bytes', 0)))
-            if shell_key(marker) not in data.get('shell_claim_owners', {}):
-                amount = max(amount, fence)
             integer(amount, 'shell booking')
             if reader.file_identity(marker.lstat()) != before:
                 raise ValueError('A shell reservation changed while reading.')
@@ -508,7 +506,7 @@ def shell_rows(data, reader):
             if (shell_key(marker) not in data.get('shell_claim_owners', {})
                     and observation.get('aggregate_verified') is True):
                 try:
-                    amount = max(amount, aggregate_fence(reader, observation))
+                    amount = legacy_aggregate_booking(reader, observation, [marker])['booking_bytes']
                 except (OSError, ValueError):
                     observation = {'verified': False, 'live_bytes': 0, 'reason': 'legacy aggregate fence is unknown'}
             rows[shell_key(marker)] = (amount, observation)
@@ -554,6 +552,121 @@ def aggregate_fence(reader, observation):
     if reader.directory(path) != before or int((path / 'memory.max').read_text()) != fence:
         raise ValueError('The legacy aggregate fence changed during sampling.')
     return fence
+
+
+def legacy_aggregate_booking(reader, observation, markers):
+    """Use approved token bookings once, or the bounded inner-scope fallback."""
+    if observation.get('verified') is not True or observation.get('aggregate_verified') is not True:
+        raise ValueError('The legacy booking lacks an authenticated aggregate.')
+    path = Path(observation['scope'])
+    fence = aggregate_fence(reader, observation)
+    recorded = []
+    for marker in dict.fromkeys(map(Path, markers)):
+        before = reader.file_identity(marker.lstat())
+        if marker.lstat().st_uid != reader.uid or marker.lstat().st_mode & 0o022:
+            raise ValueError('The legacy booking token is not owned.')
+        sample = reader.shell(marker)
+        if (sample.get('verified') is not True or sample.get('aggregate_verified') is not True
+                or any(sample.get(name) != observation.get(name) for name in ('scope', 'device', 'inode'))):
+            raise ValueError('The legacy booking token belongs to another aggregate.')
+        fields = dict(line.split('=', 1) for line in marker.read_text().splitlines()[1:] if '=' in line)
+        values = [int(fields[name]) for name in ('memory_claim_bytes', 'memory_probe_claim_bytes') if name in fields]
+        for value in values:
+            integer(value, 'recorded legacy booking')
+            if value == 0:
+                raise ValueError('A recorded legacy booking is zero.')
+        if values:
+            recorded.append(max(values))
+        if reader.file_identity(marker.lstat()) != before:
+            raise ValueError('The legacy booking token changed during sampling.')
+    if recorded:
+        amount = max(recorded)
+        return {'booking_bytes': amount, 'recorded_booking_bytes': amount,
+                'origin': 'recorded approved shell tokens'}
+    children = sorted(child for child in path.iterdir() if child.name.endswith('.scope'))
+    if not children:
+        raise ValueError('The legacy aggregate has no bounded inner scope.')
+    total = 0
+    identities = []
+    for child in children:
+        before = reader.directory(child)
+        maximum = (child / 'memory.max').read_text().strip()
+        amount = fence if maximum == 'max' else int(maximum)
+        integer(amount, 'inner scope fence')
+        if (child / 'memory.swap.max').read_text().strip() != '0':
+            raise ValueError('An inner legacy scope has an unknown swap fence.')
+        total += amount
+        identities.append((child, before, maximum))
+    if (sorted(child for child in path.iterdir() if child.name.endswith('.scope')) != children
+            or any(reader.directory(child) != before or (child / 'memory.max').read_text().strip() != maximum
+                   for child, before, maximum in identities)):
+        raise ValueError('The inner legacy scope inventory changed.')
+    aggregate_fence(reader, observation)
+    return {'booking_bytes': min(fence, total), 'recorded_booking_bytes': None,
+            'origin': 'minimum aggregate fence and summed inner fences'}
+
+
+def canonical_guard_fence(data, guard_pid, *, reader=None):
+    """Authorize a new aggregate through the exact live canonical owner."""
+    reader = ScopeReader() if reader is None else reader
+    raw = (reader.proc / str(guard_pid) / 'stat').read_text().rsplit(')', 1)[1].split()
+    actor = {'pid': guard_pid, 'startticks': int(raw[19])}
+    reader.process(actor)
+    argv = reader.argv(actor)
+    position = 0 if Path(argv[0]).name == 'resource_guard.sh' else 1
+    if (position >= len(argv) or Path(argv[position]).name != 'resource_guard.sh'
+            or position == 1 and Path(argv[0]).name not in ('bash', 'sh', 'dash')
+            or argv[position + 1:position + 2] != ['batch']):
+        raise ValueError('The aggregate requester is not the exact stock batch guard.')
+    matches = []
+    for key, bound in data.get('claim_fences', {}).items():
+        if not data.get('fixed_claims', {}).get(key, 0):
+            continue
+        owner = bound['owner']
+        kind = ('gate' if data.get('correctness_gate_owners', {}).get(key) == owner else
+                'entry' if data.get('entry_pilot_outside_owners', {}).get(key) == owner else None)
+        if kind is None:
+            raise ValueError('The canonical fence owner differs from its claim.')
+        try:
+            chain = reader.ancestry(guard_pid, owner)
+        except (OSError, ValueError):
+            continue
+        if any(reader.process(item) != parent for item, parent in chain):
+            raise ValueError('The aggregate requester ancestry changed.')
+        matches.append((kind, bound['physical_fence_bytes']))
+    if len(matches) > 1:
+        raise ValueError('The aggregate requester has ambiguous canonical owners.')
+    return matches[0] if matches else (None, None)
+
+
+def select_guard_aggregate_limit(guard_pid, inner_fence_bytes, booking_bytes, *,
+                                 explicit_limit_bytes=None, gate_limit_bytes=None,
+                                 ledger=None, reader=None):
+    ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
+    with ledger_transaction(ledger) as data:
+        kind, bound = canonical_guard_fence(data, guard_pid, reader=reader)
+        if kind is None:
+            if explicit_limit_bytes is not None or gate_limit_bytes is not None:
+                raise ValueError('A plain shell request cannot use an unreviewed aggregate override.')
+            return new_aggregate_limit(inner_fence_bytes, booking_bytes)
+        if (explicit_limit_bytes is not None and explicit_limit_bytes != bound
+                or gate_limit_bytes is not None and (kind != 'gate' or gate_limit_bytes != bound)):
+            raise ValueError('The aggregate override differs from its canonical fence.')
+        return new_aggregate_limit(inner_fence_bytes, booking_bytes,
+                                   gate_limit_bytes=bound if kind == 'gate' else None,
+                                   explicit_limit_bytes=bound if kind == 'entry' else None)
+
+
+def new_aggregate_limit(inner_fence_bytes, booking_bytes, *, explicit_limit_bytes=None, gate_limit_bytes=None):
+    """Select a new fence. Explicit limits require canonical authorization upstream."""
+    for value in (inner_fence_bytes, booking_bytes, explicit_limit_bytes, gate_limit_bytes):
+        if value is not None:
+            integer(value, 'new aggregate limit')
+            if value == 0 or value > SLICE_MAX_BYTES:
+                raise ValueError('The new aggregate limit is outside the workload parent.')
+    if explicit_limit_bytes is not None and gate_limit_bytes is not None and explicit_limit_bytes != gate_limit_bytes:
+        raise ValueError('The explicit canonical and gate fences disagree.')
+    return explicit_limit_bytes or gate_limit_bytes or max(inner_fence_bytes, booking_bytes)
 
 
 def prepare_legacy_rollout(data, writers, *, reader=None):
@@ -606,11 +719,15 @@ def prepare_legacy_rollout(data, writers, *, reader=None):
                 (reader.proc / str(owner['pid']) / 'environ').read_bytes().decode().split('\0') if '=' in item)
             if environment.get('ZESU_AGGREGATE_SLICE') != path.name:
                 raise ValueError('The old scope can create an unrepresented aggregate.')
-        fence = aggregate_fence(reader, observation)
+        booking = legacy_aggregate_booking(reader, observation, [writer['marker']])
         identity = f"{path}:{observation['device']}:{observation['inode']}"
         key = 'legacy-aggregate:' + hashlib.sha256(identity.encode()).hexdigest()
+        previous = holds.get(key, data.get('legacy_aggregate_holds', {}).get(key, {}))
+        recorded = [value for value in (previous.get('recorded_booking_bytes'), booking['recorded_booking_bytes']) if value is not None]
+        amount = max(recorded) if recorded else max(previous.get('fallback_bytes', 0), booking['booking_bytes'])
         holds[key] = {'aggregate': {name: observation[name] for name in ('scope', 'device', 'inode')},
-                      'fallback_bytes': fence, 'writer': owner, 'token_owner': token_owner, 'source': source}
+                      'fallback_bytes': amount, 'recorded_booking_bytes': max(recorded) if recorded else None,
+                      'booking_origin': booking['origin'], 'writer': owner, 'token_owner': token_owner, 'source': source}
         reader.process(owner)
         reader.process(token_owner)
         if any(reader.process(actor) != parent for actor, parent in chain):

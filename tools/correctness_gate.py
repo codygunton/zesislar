@@ -190,6 +190,9 @@ def reserve(policy, owner, receipt, *, available=memory_available, pause=time.sl
             if record["admitted"]:
                 ledger["fixed_claims"][key] = policy["claim_bytes"]
                 ledger.setdefault("correctness_gate_owners", {})[key] = owner
+                if policy.get('physical_fence_bytes') is not None:
+                    ledger.setdefault('claim_fences', {})[key] = {
+                        'owner': owner, 'physical_fence_bytes': policy['physical_fence_bytes']}
                 ledger.setdefault("claim_locations", {})[key] = {"kind": "gate", "owner": owner,
                     "output_path": str(Path(receipt).parent)}
                 ledger.setdefault("correctness_gate_admissions", {})[key] = record
@@ -325,7 +328,8 @@ def run(args):
                                    batch_fence_bytes(os.environ), args.claim_ceiling_bytes)
     ledger = Path(os.environ.get("ZESU_CANONICAL_LEDGER", base / "_build/agents/worker-build-2/native-region-release-v1/LEDGER.json"))
     policy = {"ledger": str(ledger), "lock": str(ledger.with_name("LEDGER.lock")),
-              "claim_key": "CorrectnessGate_" + uuid.uuid4().hex, "claim_bytes": basis["claim_bytes"]}
+              "claim_key": "CorrectnessGate_" + uuid.uuid4().hex, "claim_bytes": basis["claim_bytes"],
+              "physical_fence_bytes": batch_fence_bytes(os.environ)}
     owner = {"pid": os.getpid(), "startticks": identity(os.getpid())["startticks"], "run_id": run_id}
     save(out / "REQUEST.json", {"policy": policy, "owner": owner, "workspace": str(workspace), "build": str(build),
           "target": args.target, "command": command, "basis": basis, "preflight": checked})

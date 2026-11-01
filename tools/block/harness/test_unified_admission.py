@@ -268,5 +268,33 @@ class UnifiedAdmission(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'another token owner'):
             M.prepare_legacy_rollout(self.read(),[writer],reader=self.reader)
 
+    def test_plain_batch_cannot_keep_an_unreviewed_150_gib_override(self):
+        self.rollout_writer()
+        with self.assertRaisesRegex(ValueError,'unreviewed aggregate override'):
+            M.select_guard_aggregate_limit(12,64*M.GIB,6*M.GIB,
+                explicit_limit_bytes=150*M.GIB,ledger=self.ledger,reader=self.reader)
+        self.assertEqual(M.select_guard_aggregate_limit(12,64*M.GIB,6*M.GIB,
+            ledger=self.ledger,reader=self.reader),64*M.GIB)
+
+    def test_canonical_family_fence_requires_the_exact_live_claim_owner(self):
+        self.rollout_writer();data=self.read()
+        data['fixed_claims'][self.key]=8*M.GIB
+        data['claim_fences']={self.key:{'owner':self.owner,'physical_fence_bytes':32*M.GIB}}
+        self.save(data)
+        self.assertEqual(M.select_guard_aggregate_limit(12,32*M.GIB,8*M.GIB,
+            explicit_limit_bytes=32*M.GIB,ledger=self.ledger,reader=self.reader),32*M.GIB)
+        with self.assertRaisesRegex(ValueError,'differs from its canonical fence'):
+            M.select_guard_aggregate_limit(12,32*M.GIB,8*M.GIB,
+                explicit_limit_bytes=150*M.GIB,ledger=self.ledger,reader=self.reader)
+
+    def test_canonical_gate_keeps_its_authorized_120_gib_fence(self):
+        self.rollout_writer();data=self.read()
+        data['fixed_claims']={'gate':24*M.GIB}
+        data['correctness_gate_owners']={'gate':self.owner}
+        data['claim_fences']={'gate':{'owner':self.owner,'physical_fence_bytes':120*M.GIB}}
+        self.save(data)
+        self.assertEqual(M.select_guard_aggregate_limit(12,16*M.GIB,24*M.GIB,
+            gate_limit_bytes=120*M.GIB,ledger=self.ledger,reader=self.reader),120*M.GIB)
+
 
 if __name__=='__main__':unittest.main()

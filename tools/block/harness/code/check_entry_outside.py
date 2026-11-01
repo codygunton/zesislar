@@ -100,6 +100,7 @@ def reserve(policy,key,owner,receipt,*,available=None,claims_fn=None,pause=time.
             if record['admitted']:
                 data['fixed_claims'][key]=policy['minimum_claim_bytes']
                 data.setdefault('entry_pilot_outside_owners',{})[key]=owner
+                data.setdefault('claim_fences',{})[key]={'owner':owner,'physical_fence_bytes':policy['physical_fence_bytes']}
                 if policy.get('output_path'):
                     data.setdefault('claim_locations',{})[key]={'owner':owner,'kind':'entry','output_path':policy['output_path']}
                 atomic_json(policy['ledger'],data)

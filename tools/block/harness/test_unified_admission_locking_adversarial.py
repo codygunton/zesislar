@@ -190,14 +190,14 @@ class LegacyRolloutTests(unittest.TestCase):
     def rollout(self):
         return M.prepare_legacy_rollout(self.data, [self.writer], reader=self.reader)
 
-    def test_old_publication_before_new_admission_keeps_aggregate_fence(self):
+    def test_old_publication_before_new_admission_keeps_recorded_booking(self):
         protected = self.rollout()
         hold = next(iter(protected['legacy_aggregate_holds'].values()))
-        self.assertEqual(hold['fallback_bytes'], 64 * M.GIB)
-        result = M.projection(protected, {}, 20 * M.GIB, 100 * M.GIB,
+        self.assertEqual(hold['fallback_bytes'], 16 * M.GIB)
+        result = M.projection(protected, {}, 65 * M.GIB, 100 * M.GIB,
                               reader=self.reader)
-        self.assertEqual(result['active_claim_bytes'], 64 * M.GIB)
-        self.assertEqual(result['unrealized_claim_bytes'], 54 * M.GIB)
+        self.assertEqual(result['active_claim_bytes'], 16 * M.GIB)
+        self.assertEqual(result['unrealized_claim_bytes'], 6 * M.GIB)
         self.assertFalse(result['fits'])
         self.assertNotIn('legacy_aggregate_holds', self.data)
 
@@ -211,9 +211,9 @@ class LegacyRolloutTests(unittest.TestCase):
         after = M.projection(protected, {'new': 16 * M.GIB}, 0, 100 * M.GIB,
                              reader=self.reader)
         self.assertTrue(after['fits'])
-        self.assertEqual(after['active_claim_bytes'], 80 * M.GIB)
-        self.assertEqual(after['unrealized_claim_bytes'], 70 * M.GIB)
-        self.assertEqual(after['accounted_active_bytes'], 80 * M.GIB)
+        self.assertEqual(after['active_claim_bytes'], 32 * M.GIB)
+        self.assertEqual(after['unrealized_claim_bytes'], 22 * M.GIB)
+        self.assertEqual(after['accounted_active_bytes'], 32 * M.GIB)
 
     def test_old_writer_with_future_aggregate_refuses_rollout(self):
         self.argv = ['bash', str(self.source), 'batch', 'fixture', '--', 'true']
@@ -237,7 +237,7 @@ class LegacyRolloutTests(unittest.TestCase):
         hold = next(iter(protected['legacy_aggregate_holds'].values()))
         self.assertEqual(hold['writer'], self.owner)
         self.assertEqual(hold['source'], self.writer['source'])
-        self.assertEqual(hold['fallback_bytes'], 64 * M.GIB)
+        self.assertEqual(hold['fallback_bytes'], 16 * M.GIB)
 
 
 if __name__ == '__main__':
