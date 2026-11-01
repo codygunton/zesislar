@@ -138,7 +138,6 @@ FOCUSED_CLAIM=8*GIB
 PORT_KIND='production_stock_port'
 PORT_FENCE=32*GIB
 PORT_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-22.json'), 'sha256': 'ea88c0e9eab9e6e720e7fc2500407c065d82fd7a0feb12658783d4a761c79917'}
-PORT_AUTHORITY_23={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-23.json'), 'sha256': '203d2409c8fcd41827b5d646ac4dcd192d0cb44e0a39da605970ab7cf0a59fb6'}
 PORT_EXTENSION={'path': str(Path(__file__).resolve().parents[1]/'policies'/'EXTENSION.json'), 'sha256': 'ad05524ccec944621e775ebaccf5cd39b766bd6d4c554bbfa7f8332d84d77913'}
 
 def relocated_authority(actual,expected,legacy_paths=()):
@@ -156,10 +155,7 @@ def relocated_authority(actual,expected,legacy_paths=()):
 def production_port_authority(profile):
  if set(profile) not in ({'schema','kind','authority','memory_route'},{'schema','kind','authority','memory_route','supplier_ready'}) or profile.get('schema')!='scratch.admission-profile.v1' or profile.get('kind')!=PORT_KIND or profile.get('memory_route')!='measured_native':
   raise ValueError('The production PORT profile is invalid.')
- extended=isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_AUTHORITY_23['sha256']
- expected=PORT_AUTHORITY_23 if extended else PORT_AUTHORITY
- legacy_paths=('/home/cody/zesislar/_build/agents/worker-build-1/new6974-bindings291/extension002/PORT-FAMILY-AUTHORITY-23.json',) if extended else ('/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/matrix005-authority-v1/PORT-FAMILY-AUTHORITY-22.json', '/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/PORT-FAMILY-AUTHORITY-22.json')
- if not relocated_authority(profile['authority'],expected,legacy_paths):raise ValueError('The production PORT authority is not authorized.')
+ if not relocated_authority(profile['authority'],PORT_AUTHORITY,('/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/matrix005-authority-v1/PORT-FAMILY-AUTHORITY-22.json', '/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/PORT-FAMILY-AUTHORITY-22.json')):raise ValueError('The production PORT authority is not authorized.')
  authority=read(profile['authority'])
  if (authority.get('schema')!='port.production-stock-family-authority.v1' or
      authority.get('claim_bytes')!=8*GIB or authority.get('physical_fence_bytes')!=PORT_FENCE or
@@ -167,14 +163,12 @@ def production_port_authority(profile):
      authority.get('minimal_or_private_route') is not False or authority.get('fence_hit_retry') is not False):
   raise ValueError('The production PORT ruling differs.')
  cases=authority['cases']
- released_cases=cases[:-1] if extended else cases
- case_count=23 if extended else 22
  extension=read(PORT_EXTENSION)
  read(extension['exit_queue'])
  if (extension.get('case_count')!=22 or not relocated_authority(authority.get('authority_extension'),PORT_EXTENSION,('/home/cody/zesislar/_build/agents/worker-build-2/native-port-policy-v1/source014-authority22-caller002-extension/EXTENSION.json', '/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/EXTENSION.json'))
-     or released_cases!=extension['original_cases']+extension['additional_cases']
-     or len(cases)!=case_count or len({r['block'] for r in cases})!=case_count or len({r['module'] for r in cases})!=case_count):
-  raise ValueError('The production PORT case set differs from the exact released inventory.')
+     or cases!=extension['original_cases']+extension['additional_cases']
+     or len(cases)!=22 or len({r['block'] for r in cases})!=22 or len({r['module'] for r in cases})!=22):
+  raise ValueError('The production PORT case set differs from the exact released22 inventory.')
  if 'supplier_ready' in profile:
   from supplier_ready import validate,ROOTS
   supplier=validate(profile['supplier_ready'])
