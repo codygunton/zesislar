@@ -455,7 +455,10 @@ def check_declaration_target(config):
 def execute(path,expected):
     from command_scope import require
     require()
-    try:return execute_retained(path,expected)
+    from controller_cleanup import Supervisor
+    try:
+        with Supervisor(Path(path).parent):
+            return execute_retained(path,expected)
     finally:
         from end_run_cleanup import finish
         cleanup_config=read_bound({'path':str(path),'sha256':expected})
@@ -474,7 +477,7 @@ def execute_retained(path,expected):
     env=dict(os.environ,PATH='/home/cody/islaris/_opam/bin:/home/cody/.local/bin:/usr/local/bin:/usr/bin:/bin',OPAM_SWITCH_PREFIX='/home/cody/islaris/_opam',PYTHONDONTWRITEBYTECODE='1',PYTHONHASHSEED='0',ZESU_PROOF_CACHE=cache_setting)
     argv=lambda row:[str(PYTHON),'-B',c['job_controller']['path'],str(path),digest(path),row['key'],row['output']]
     if pre['ordered_modules'] or c.get('declaration_checks') or c.get('control_session'):
-        reply=subprocess.run(argv(pre),cwd=W,env=env)
+        reply=__import__('controller_cleanup').run(argv(pre),cwd=W,env=env)
         r=read_bound(binding(Path(pre['output'])/'RESULT.json'))
         if not r.get('success'):
             save(out/'RESULT.json',summarize(r,pre['output'],cache_setting));return 2
@@ -501,7 +504,7 @@ def execute_retained(path,expected):
     else:
         c['readiness']=binding(out/'READINESS.json');save(out/'READY-RUNTIME.json',c)
         run_path=out/'READY-RUNTIME.json'
-    reply=subprocess.run([str(PYTHON),'-B',c['job_controller']['path'],str(run_path),digest(run_path),job['key'],job['output']],cwd=W,env=env)
+    reply=__import__('controller_cleanup').run([str(PYTHON),'-B',c['job_controller']['path'],str(run_path),digest(run_path),job['key'],job['output']],cwd=W,env=env)
     result=read_bound(binding(Path(job['output'])/'RESULT.json'));public=summarize(result,job['output'],cache_setting)
     public.update(inputs=binding(out/'INPUTS.json'),runtime=binding(run_path),prerequisite_CPU=r.get('CPU') if pre['ordered_modules'] else None)
     for field,name in [('closure','CLOSURE.json'),('release','RELEASE.json')]:

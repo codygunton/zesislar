@@ -335,6 +335,8 @@ def run_stock_job(config,job,out,prepared=None):
     job=dict(job,policy=policy)
     save(out/'STARTED.json',{'pid':os.getpid(),'startticks':ticks(os.getpid()),'owner':owner})
     reserved=False;child=None;child_start=None;result={};code=1
+    from controller_cleanup import mark,children_closed
+    launch_marker=mark()
     try:
         if prepared:
             import collector
@@ -347,7 +349,7 @@ def run_stock_job(config,job,out,prepared=None):
         argv=outer_argv(workspace,job['key'],out)
         save(out/'LAUNCH.json',{'argv':argv,'owner':owner,'cpu_policy':'unlimited','custom_observer':False})
         with (out/'stock.stdout').open('wb') as stdout,(out/'stock.stderr').open('wb') as stderr:
-            child=subprocess.Popen(argv,cwd=workspace,env=env,stdout=stdout,stderr=stderr,start_new_session=True)
+            child=__import__('controller_cleanup').launch(argv,cwd=workspace,env=env,stdout=stdout,stderr=stderr,start_new_session=True)
             child_start=ticks(child.pid);save(out/'BATCH-PROCESS.json',{'pid':child.pid,'startticks':child_start});from scratch_limits import wait_with_limits
             code=wait_with_limits(child,out,job['claim_bytes'],0,phase=job['phase'],memory_job=job,family=(job.get('workload') or {}).get('kind') in {'stock_pass_spec_bundle','minimal_native_tactic'},family_threshold_bytes=(8 if (job.get('workload') or {}).get('kind')=='minimal_native_tactic' else 16)*1024**3)
         check_proof_bindings(runtime)
@@ -358,15 +360,20 @@ def run_stock_job(config,job,out,prepared=None):
     except BaseException as error:
         result={'schema':'entry-chain.block-result.v1','block':job['key'],'success':False,'error':str(error),'traceback':traceback.format_exc(),'proof_accepted_by_Root':False}
         save(out/'CONTROLLER-FAILURE.json',result)
+        from controller_cleanup import cleanup,last_child
+        if child is None:
+            child,registered=last_child(launch_marker)
+            if registered is not None:child_start=registered['startticks']
+        cleanup()
         if child is not None and child.poll() is None:child.wait()
     finally:
         if reserved:
             batch=read_optional(out/'BATCH-IDENTITY.json');client=read_optional(out/'CLIENT-LIMITS.json');checks=[]
-            if child is not None:checks.append({'pid':child.pid,'startticks':child_start,'ended':not identity_alive(child.pid,child_start)})
+            if child is not None:checks.append({'pid':child.pid,'startticks':child_start,'ended':child_start is not None and not identity_alive(child.pid,child_start)})
             if batch:
                 checks.append({'pid':batch['inside_pid'],'startticks':batch['inside_startticks'],'ended':not identity_alive(batch['inside_pid'],batch['inside_startticks'])})
-                ended=all(row['ended'] for row in checks) and closed_aggregate(batch,child.pid,child_start)
-            else:ended=all(row['ended'] for row in checks)
+                ended=children_closed(launch_marker) and child is not None and child_start is not None and all(row['ended'] for row in checks) and closed_aggregate(batch,child.pid,child_start)
+            else:ended=child is None and children_closed(launch_marker)
             closure={'owner':owner,'all_owned_actors_closed':ended,'actors':checks,'batch_identity':batch,'claim_key':key,'closure_basis':'Batch process ended and exact owned aggregate is empty or absent.','aggregate_actor_telemetry':'unavailable under scratch policy'}
             save(out/'CLOSURE.json',closure)
             if ended:save(out/'RELEASE.json',release(policy,key,owner,binding(out/'CLOSURE.json')))
@@ -415,7 +422,9 @@ def main():
     config=read_bound({'path':config_path,'sha256':expected})
     if not config.get('execution_released'):raise ValueError('The chain runtime is not released.')
     job=next(x for x in config['jobs'] if x['key']==key)
-    return run_job(config,job,out)
+    from controller_cleanup import Supervisor
+    with Supervisor(out):
+        return run_job(config,job,out)
 
 
 if __name__=='__main__':raise SystemExit(main())

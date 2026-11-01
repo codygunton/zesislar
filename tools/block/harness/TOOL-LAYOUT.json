@@ -71,5 +71,6 @@
   "block/entry_chain_process.py": "code/entry_chain_process.py",
   "block/stock_scope_stdin_relay.py": "code/stock_scope_stdin_relay.py",
   "block/harness_commit.py": "code/harness_commit.py",
-  "block/admission_memory.py": "code/admission_memory.py"
+  "block/admission_memory.py": "code/admission_memory.py",
+  "block/controller_cleanup.py": "code/controller_cleanup.py"
 }
