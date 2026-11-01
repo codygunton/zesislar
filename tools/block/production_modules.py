@@ -41,7 +41,7 @@ def statement(source, lemma):
 
 def module_name(rendered, kind, *, name_prefix="decodeItem"):
     names = FunctionNames(name_prefix)
-    if kind == "native":
+    if kind in {"native", "raw_statement"}:
         pc = rendered["entry_pc"]
         if not re.fullmatch(r"0x[0-9a-f]+", pc):
             raise ValueError("The production entry address is invalid.")
@@ -63,8 +63,55 @@ def object_path(module):
     return Path(module.replace(".", "/")).with_suffix(".vo")
 
 
+RAW_STATEMENT_SEPARATOR = "(* Transport separator outside the protected statement. *)\n"
+
+
+def raw_statement_source(rendered):
+    """Transport one hash-bound declaration without changing its bytes.
+
+    A comment starts immediately after the protected interval.  In particular,
+    a declaration without a final newline gets no synthetic newline inside
+    that interval.  The unchanged native statement reader stops before the
+    comment.  An existing final newline remains part of the protected bytes.
+    """
+    from check_data_only_lemmas import rocq_commands
+
+    prefix, declaration = rendered["source"], rendered["statement"]
+    if hashlib.sha256(prefix.encode()).hexdigest() != rendered["source_sha256"]:
+        raise ValueError("The raw statement source prefix changed.")
+    if hashlib.sha256(declaration.encode()).hexdigest() != rendered["statement_sha256"]:
+        raise ValueError("The raw statement bytes changed.")
+    lemma = rendered["lemma"]
+    if not re.fullmatch(IDENTIFIER, lemma):
+        raise ValueError("The raw statement lemma name is invalid.")
+    commands = rocq_commands(declaration)
+    if (len(commands) != 1 or [word for word, _ in commands[0]][:2] != ["Lemma", lemma]
+            or not declaration.startswith("Lemma " + lemma)
+            or not (declaration.endswith(".") or declaration.endswith(".\n"))
+            or "\r" in declaration):
+        raise ValueError("The raw statement requires one exact terminated lemma.")
+    if not prefix.startswith("Require Import ZesuSsz.Automation.All.\n"):
+        raise ValueError("The raw statement prefix lacks the production import.")
+    forbidden = {"Proof", "Qed", "Defined", "Admitted", "Abort", "Axiom",
+                 "Parameter", "Lemma", "Theorem", "Goal", "Ltac", "Ltac2", "ltac", "ltac2", "admit"}
+    if any(word in forbidden for command in rocq_commands(prefix) for word, _ in command):
+        raise ValueError("The raw statement prefix contains a proof command.")
+    if re.search(r"\b(?:RuleScratchRules|AllLegacy|Ltac2?)\b", prefix):
+        raise ValueError("The raw statement prefix is not plain production stock.")
+    # Keep the source prefix, imports, declaration, and source scopes literal.
+    before = prefix + "\n"
+    source = (before + declaration + RAW_STATEMENT_SEPARATOR +
+              "Proof.\n  zesu_block.\nQed.\n\nPrint Assumptions " + lemma + ".\n")
+    interval = source.encode()[len(before.encode()):len(before.encode()) + len(declaration.encode())]
+    if hashlib.sha256(interval).hexdigest() != rendered["statement_sha256"]:
+        raise ValueError("The transported raw statement changed.")
+    return source
+
+
 def render(rendered, kind, *, name_prefix="decodeItem"):
     """Preserve the declaration and use only the production block tactic."""
+    if kind == "raw_statement":
+        return raw_statement_source(rendered)
     names = FunctionNames(name_prefix)
     required_imports = (*REQUIRED_IMPORTS[:2], names.hints)
     source, lemma = rendered["source"], rendered["lemma"]
@@ -129,8 +176,11 @@ def emit(rendered, kind, workspace, *, name_prefix="decodeItem"):
         raise ValueError("An existing production module has different source.")
     path.parent.mkdir(parents=True, exist_ok=True)
     if not path.exists():
-        path.write_text(source)
-    return {
+        if kind == "raw_statement":
+            path.write_bytes(source.encode())
+        else:
+            path.write_text(source)
+    result = {
         "module": module,
         "lemma": module + "." + rendered["lemma"],
         "source": str(relative),
@@ -140,6 +190,16 @@ def emit(rendered, kind, workspace, *, name_prefix="decodeItem"):
         "kind": kind,
         "dune_target": str(object_path(module)),
     }
+    if kind == "raw_statement":
+        start = len((rendered["source"] + "\n").encode())
+        result["protected_statement"] = {
+            "start_byte": start,
+            "end_byte": start + len(rendered["statement"].encode()),
+            "sha256": rendered["statement_sha256"],
+            "trailing_newline": rendered["statement"].endswith("\n"),
+            "separator_outside_interval": RAW_STATEMENT_SEPARATOR,
+        }
+    return result
 
 
 def emit_pass(report, jobs, workspace, *, name_prefix="decodeItem"):

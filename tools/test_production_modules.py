@@ -10,6 +10,78 @@ sys.path.insert(0, str(Path(__file__).parent / "block"))
 import production_modules
 
 
+class RawStatementModuleTests(unittest.TestCase):
+    def fixture(self, newline=False):
+        source = ("Require Import ZesuSsz.Automation.All.\n"
+                  "Require Export Contracts.CommonEntry.\n"
+                  "Open Scope Z_scope.\n(* Unicode prefix: α. *)\n")
+        declaration = ("Lemma DesignedBoundary_1000_Run2 `{!islaG Sigma} `{!threadG} :\n"
+                       "  instr_pre 0x1004 Next -∗ instr_body 0x1000 (Entry ∗ True).")
+        if newline:
+            declaration += "\n"
+        return dict(source=source, source_sha256=hashlib.sha256(source.encode()).hexdigest(),
+                    statement=declaration, lemma="DesignedBoundary_1000_Run2",
+                    entry_pc="0x1000",
+                    statement_sha256=hashlib.sha256(declaration.encode()).hexdigest())
+
+    def source_statement(self, path):
+        root = Path(__file__).parent
+        sys.path[:0] = [str(root / "block/harness/code"), str(root)]
+        from scratch_statement import source_statement
+        return source_statement(path, "zesu_block.")
+
+    def test_both_newline_forms_pass_unchanged_public_reader(self):
+        for newline in (False, True):
+            with self.subTest(newline=newline), tempfile.TemporaryDirectory() as directory:
+                fixture = self.fixture(newline)
+                row = production_modules.emit(fixture, "raw_statement", directory,
+                                              name_prefix="recordEql")
+                path = Path(directory) / row["source"]
+                source = path.read_bytes()
+                interval = row["protected_statement"]
+                protected = source[interval["start_byte"]:interval["end_byte"]]
+                self.assertEqual(protected, fixture["statement"].encode())
+                self.assertEqual(hashlib.sha256(protected).hexdigest(),
+                                 fixture["statement_sha256"])
+                self.assertEqual(self.source_statement(path)["statement"],
+                                 fixture["statement"])
+                self.assertTrue(source.startswith(fixture["source"].encode()))
+                self.assertNotIn(b"DecodeItemHints", source)
+                self.assertNotIn(b"DesignedEntry_", source)
+                self.assertEqual(interval["trailing_newline"], newline)
+
+    def test_source_prefix_and_statement_hashes_are_required(self):
+        for key in ("source_sha256", "statement_sha256"):
+            with self.subTest(key=key):
+                fixture = self.fixture()
+                fixture[key] = "0" * 64
+                with self.assertRaises(ValueError):
+                    production_modules.render(fixture, "raw_statement")
+
+    def test_extra_commands_and_wrong_names_are_refused(self):
+        for suffix in ("\nAxiom escape : False.", "\n\n", "\r\n"):
+            fixture = self.fixture()
+            fixture["statement"] += suffix
+            fixture["statement_sha256"] = hashlib.sha256(fixture["statement"].encode()).hexdigest()
+            with self.assertRaisesRegex(ValueError, "one exact terminated lemma"):
+                production_modules.render(fixture, "raw_statement")
+        fixture = self.fixture()
+        fixture["lemma"] = "AnotherLemma"
+        with self.assertRaises(ValueError):
+            production_modules.render(fixture, "raw_statement")
+
+    def test_proof_commands_and_legacy_imports_in_prefix_are_refused(self):
+        for suffix in ("Axiom escape : False.\n", "Global Axiom escape : False.\n",
+                       "Definition escape : True := ltac:(exact I).\n", "Lemma escape : False.\n",
+                       "Ltac escape := idtac.\n",
+                       "Require Import ZesuSsz.Automation.AllLegacy.\n"):
+            fixture = self.fixture()
+            fixture["source"] += suffix
+            fixture["source_sha256"] = hashlib.sha256(fixture["source"].encode()).hexdigest()
+            with self.assertRaises(ValueError):
+                production_modules.render(fixture, "raw_statement")
+
+
 class ProductionModuleTests(unittest.TestCase):
     def fixture(self, kind="native"):
         if kind == "native":

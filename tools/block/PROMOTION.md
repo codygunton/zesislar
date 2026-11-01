@@ -93,3 +93,31 @@ Promotion of `0x800d6ad8` skips historical measurements.
 historical I67 table removed in the 2026-10-15 worktree cleanup; sha256 e56b6babca8856a093fcbaec03346d044b8eda8ab601f6f5229efd3e7fc96082 retained
 MCP compilation and exact statement verification remain required.
 Both project gates and the paired M1 check remain required.
+
+## Raw statement transport
+
+The `production_modules.render` and `emit` APIs accept the `raw_statement` kind.
+This mode prepares an unproved caller.
+It does not select a measured closure or change admission policy.
+
+The input supplies these fields:
+
+- `source`: the exact source prefix, including its imports and existing declarations.
+- `source_sha256`: the SHA256 digest of that UTF-8 prefix.
+- `statement`: the exact frozen lemma declaration.
+- `statement_sha256`: the SHA256 digest of that UTF-8 declaration.
+- `lemma` and `entry_pc`: the declared theorem name and block address.
+
+The renderer preserves the prefix and declaration.
+It adds only the existing stock proof body and an assumption query.
+It does not insert default imports or an entry wrapper.
+The prefix must start with `Automation.All` and cannot contain proof commands, tactics, or legacy imports.
+The existing directory and overwrite checks also apply.
+
+A transport comment immediately follows the protected declaration.
+The comment separates a declaration without a final newline from `Proof`.
+The comment stays outside the protected byte interval.
+An existing final newline stays inside that interval.
+The emitter records UTF-8 byte offsets, the digest, and the newline form.
+The unchanged public `source_statement` reader must return the original declaration bytes.
+The ordinary native and adapter modes keep their existing behavior.
