@@ -579,6 +579,9 @@ def prepare_legacy_rollout(data, writers, *, reader=None):
                      if Path(word).name == 'resource_guard.sh']
         if len(positions) != 1 or Path(argv[positions[0]]).resolve() != Path(source['path']).resolve():
             raise ValueError('An old writer can create an unrepresented aggregate.')
+        position = positions[0]
+        if position != 0 and not (position == 1 and Path(argv[0]).name in ('bash', 'sh', 'dash')):
+            raise ValueError('The public guard is not the executable script.')
         mode = argv[positions[0] + 1] if positions[0] + 1 < len(argv) else None
         if mode not in ('scope', 'scope-exec', 'batch'):
             raise ValueError('An old writer can create an unrepresented aggregate.')
