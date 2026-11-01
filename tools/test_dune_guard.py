@@ -342,6 +342,8 @@ class DuneCompilerGuardTest(unittest.TestCase):
         tools = self.root / "tools"
         (tools / "guard-bin").mkdir(parents=True)
         (tools / "det").mkdir()
+        (tools / "block/harness/code").mkdir(parents=True)
+        shutil.copy2(TOOLS / "block/harness/code/admission_memory.py", tools / "block/harness/code/admission_memory.py")
         for name in ("resource_guard.sh", "dune_coqc_guarded.sh", "coqc_scratch.sh",
                      "coqc_recipe.py", "coqc_findlib.py", "module_memory.py", "run_registry.py",
                      "det/coqc_slots.py", "guard-bin/dune"):

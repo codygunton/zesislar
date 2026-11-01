@@ -17,6 +17,7 @@ import uuid
 
 from coqc_findlib import preflight
 from module_memory import measurement_claim
+from block.harness.code.admission_memory import projection
 
 
 TARGETS = {"check-fast", "check-iris"}
@@ -184,11 +185,13 @@ def reserve(policy, owner, receipt, *, available=memory_available, pause=time.sl
             record = {"owner": owner, "claim_key": key, "claim_bytes": policy["claim_bytes"],
                       "MemAvailable_bytes": free, "budget_bytes": free * 7 // 10,
                       "active_claim_bytes": sum(claims.values()), "time_ns": time.time_ns()}
-            record["admitted"] = record["active_claim_bytes"] + record["claim_bytes"] <= record["budget_bytes"]
+            record.update(projection(ledger, claims, policy["claim_bytes"], free))
             save(receipt, record)
             if record["admitted"]:
                 ledger["fixed_claims"][key] = policy["claim_bytes"]
                 ledger.setdefault("correctness_gate_owners", {})[key] = owner
+                ledger.setdefault("claim_locations", {})[key] = {"kind": "gate", "owner": owner,
+                    "output_path": str(Path(receipt).parent)}
                 ledger.setdefault("correctness_gate_admissions", {})[key] = record
                 save(policy["ledger"], ledger)
                 return record

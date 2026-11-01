@@ -32,6 +32,15 @@ class StagedMemoryTests(unittest.TestCase):
         return subprocess.run([sys.executable, '-B', '-c', code, str(self.tools / 'block')],
                               cwd=self.root, env=environment, capture_output=True, text=True)
 
+    def test_missing_admission_dependency_cannot_borrow_ambient_module(self):
+        ambient=self.root/'ambient';ambient.mkdir()
+        (ambient/'admission_memory.py').write_text('raise RuntimeError("AMBIENT MODULE USED")')
+        (self.tools/'block/admission_memory.py').unlink()
+        result=self.run_import(ambient=ambient)
+        self.assertNotEqual(result.returncode,0)
+        self.assertIn('owned admission dependency',result.stderr)
+        self.assertNotIn('AMBIENT MODULE USED',result.stderr)
+
     def compiler_fixture(self, *, seed=False):
         """Test data only. This runtime grants no admission or proof authority."""
         workspace = self.tools.parent

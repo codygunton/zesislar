@@ -1,6 +1,9 @@
 """Root reservations. Never reduce or release a claim."""
 from pathlib import Path
 import time
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from admission_memory import projection
 from io_helpers import read, sha, atomic_json, locked, memory_available
 
 LEDGER = Path('/home/cody/zesislar/_build/agents/worker-build-2/native-region-release-v1/LEDGER.json')
@@ -55,7 +58,7 @@ def reserve(key, legacy, receipt, latch_path, *, ledger=LEDGER, lock=LOCK, avail
             'active_claims':claims,'total_before_bytes':sum(claims.values()),
             'requested_total_bytes':sum(claims.values())+INITIAL,
             'MemAvailable_bytes':free,'budget_bytes':free*7//10,
-            'admitted':sum(claims.values())+INITIAL <= free*7//10,'automatic_release':False}
+            'automatic_release':False, **projection(data,claims,INITIAL,free)}
         if record['admitted']:
             data['fixed_claims'][key] = INITIAL
             data.setdefault('s1_row5_admissions',{})[key] = record
@@ -75,12 +78,14 @@ def grow(key, aggregate_kib, owner, legacy, receipt, latch_path, *,
         claims = active_claims(data,legacy)
         desired = max(current,requested_claim(aggregate_kib))
         free = available()
-        total = sum(claims.values())-current+desired
+        adjusted=dict(claims);adjusted[key]=desired
+        sizing=projection(data,adjusted,0,free)
+        total = sum(adjusted.values())
         record = {'time_ns':time.time_ns(),'owner':owner,'claim':key,
             'previous_bytes':current,'requested_bytes':desired,'aggregate_live_VmHWM_KiB':aggregate_kib,
             'client_allowance_bytes':ALLOWANCE,'MemAvailable_bytes':free,'budget_bytes':free*7//10,
             'requested_total_bytes':total,'changed':desired>current,
-            'budget_exceeded':total>free*7//10,'committed':False,
+            **sizing,'budget_exceeded':not sizing['fits'],'committed':False,
             'automatic_stop':False,'automatic_release':False}
         try:
             if desired > current:
@@ -111,4 +116,4 @@ def assigned_budget(key, legacy, *, ledger=LEDGER, lock=LOCK, available=memory_a
         return {'time_ns':time.time_ns(),'claim':key,'assigned_bytes':data['fixed_claims'][key],
                 'active_claims':claims,'budget_bytes':free*7//10,
                 'MemAvailable_bytes':free,'total_bytes':sum(claims.values()),
-                'fits':sum(claims.values()) <= free*7//10}
+                **projection(data,claims,0,free)}

@@ -17,6 +17,7 @@ from entry_chain import binding,check_bindings,digest,read_bound,save,strict_loa
 from entry_chain_run import ready_claim_priority
 from entry_chain_resources import normalize_cpu,publish_latch
 from check_entry_outside import canonical_functions,identity_alive
+from admission_memory import projection
 
 ROOT=Path(__file__).resolve().parents[4]
 
@@ -30,11 +31,12 @@ def safe_width(policy,jobs,*,available=None,claims_fn=None):
         data=strict_loads(Path(policy['ledger']).read_text())
         active=claims_fn(data,policy['legacy_release_bindings']);free=available()
         largest=max(job['claim_bytes'] for job in jobs)
-        room=free*7//10-sum(active.values())
+        sizing=projection(data,active,0,free)
+        room=sizing['available_new_claim_bytes']
         width=max(0,min(48,len(jobs),room//largest))
         return {'safe_new_workers':width,'largest_reviewed_initial_claim_bytes':largest,
                 'active_claims':active,'active_claim_bytes':sum(active.values()),
-                'MemAvailable_bytes':free,'budget_bytes':free*7//10,'time_ns':time.time_ns()}
+                'MemAvailable_bytes':free,'budget_bytes':free*7//10,'time_ns':time.time_ns(),**sizing}
 
 
 def submit(config_path,config,key,output):
@@ -163,7 +165,7 @@ def main():
             sizing=safe_width(current['admission'],pending)
             save(scheduler/('SIZING-%06d.json'%sample),sizing);sample+=1
             # Reserve enough capacity for the largest reviewed task. Actual reservations stay per job.
-            eligible=[job for job in pending if job['claim_bytes']<=sizing['budget_bytes']-sizing['active_claim_bytes']]
+            eligible=[job for job in pending if job['claim_bytes']<=sizing['available_new_claim_bytes']]
             if eligible and len(active)<48:
                 job=eligible[0];pending.remove(job);submit(current_path,current,job['key'],job['output']);active.append(job)
                 # Wait for admission and its first monitor observation before another launch.

@@ -1,5 +1,5 @@
 (rule
  (target coqc)
  (deps ../dune_coqc_guarded.sh ../resource_guard.sh ../coqc_findlib.py
-       ../module_memory.py ../run_registry.py ../det/coqc_slots.py)
+       ../module_memory.py ../block/harness/code/admission_memory.py ../run_registry.py ../det/coqc_slots.py)
  (action (copy %{dep:../dune_coqc_guarded.sh} %{target})))

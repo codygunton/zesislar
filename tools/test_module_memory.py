@@ -110,7 +110,7 @@ class ModuleMemoryTests(unittest.TestCase):
         self.assertEqual(memory.admission(41, [30], 100, headroom_bytes=0)["reason"], "memory_budget")
 
     def test_admission_preserves_headroom_and_the_compiler_limit(self):
-        self.assertFalse(memory.admission(61, [], 100, headroom_bytes=40)["admitted"])
+        self.assertFalse(memory.admission(61, [], 100, headroom_bytes=40, slice_max_bytes=100)["admitted"])
         self.assertEqual(memory.admission(1, [1] * 48, 1000, headroom_bytes=0)["reason"], "compiler_limit")
         self.assertTrue(memory.admission(1, [1] * 47, 1000, headroom_bytes=0)["admitted"])
 
@@ -124,6 +124,68 @@ class ModuleMemoryTests(unittest.TestCase):
         p["schema"] = "unknown"
         with self.assertRaises(ValueError):
             memory.module_claim(p, ["Small.v"], self.root, self.compiler)
+
+    def test_weighted_wrapper_uses_declared_helper_in_real_dune_sandbox(self):
+        """Run the real wrapper with test data and a fake compiler only."""
+        import json
+        import os
+        import shutil
+        import subprocess
+        tools = Path(__file__).resolve().parent
+        prefix = Path(os.environ.get('OPAM_SWITCH_PREFIX', str(Path.home()/'islaris/_opam')))
+        dune = prefix/'bin/dune'
+        manifest = (tools/'guard-bin/dune').read_text()
+        dependency = '../block/harness/code/admission_memory.py'
+        self.assertEqual(manifest.count(dependency), 1)
+        names = ['dune_coqc_guarded.sh','resource_guard.sh','coqc_findlib.py',
+                 'module_memory.py','run_registry.py','det/coqc_slots.py',
+                 'block/harness/code/admission_memory.py']
+        for declared in (True, False):
+            with self.subTest(declared=declared):
+                workspace = self.root/('declared' if declared else 'missing')
+                workspace.mkdir()
+                (workspace/'dune-project').write_text('(lang dune 3.7)\n')
+                for name in names:
+                    target=workspace/'tools'/name
+                    target.parent.mkdir(parents=True,exist_ok=True)
+                    shutil.copy2(tools/name,target)
+                directory=workspace/'tools/guard-bin';directory.mkdir()
+                source=directory/'Probe.v';source.write_text('Check nat.\n')
+                rule=manifest if declared else manifest.replace(' '+dependency,'')
+                rule=rule.replace('../det/coqc_slots.py)', '../det/coqc_slots.py Probe.v)')
+                original='(action (copy %{dep:../dune_coqc_guarded.sh} %{target})))'
+                action='(action (progn (copy %{dep:../dune_coqc_guarded.sh} %{target}) (run ./coqc Probe.v))))'
+                self.assertIn(original,rule)
+                (directory/'dune').write_text(rule.replace(original,action))
+                fake=workspace/'fake-switch/bin/coqc';fake.parent.mkdir(parents=True)
+                fake.write_text('#!/usr/bin/env python3\nimport json,os\n'
+                    'with open(os.environ["FAKE_EVENTS"],"a") as f: f.write(json.dumps({"compiler":True})+"\\n")\n')
+                fake.chmod(0o755)
+                guard=workspace/'tools/resource_guard.sh'
+                guard.write_text('#!/usr/bin/env python3\nimport json,os,sys\n'
+                    'with open(os.environ["FAKE_EVENTS"],"a") as f: f.write(json.dumps({"claim":int(os.environ["ZESU_MODULE_CLAIM_BYTES"]),"fence":os.environ["ZESU_MODULE_LIMIT_GIB"]})+"\\n")\n'
+                    'args=sys.argv[sys.argv.index("--")+1:];os.execv(args[0],args)\n')
+                guard.chmod(0o755)
+                profile=workspace/'profile.json'
+                observation={'exe':str(fake),'cwd':str(directory),'command':str(fake)+' Probe.v',
+                             'observed_peak_rss_kib':600000}
+                profile.write_text(json.dumps(memory.make_profile([observation],{'exit_code':0},fake)))
+                events=workspace/'events.jsonl'
+                env={k:v for k,v in os.environ.items() if not k.startswith('ZESU_')}
+                env.update(PATH=str(prefix/'bin')+os.pathsep+env.get('PATH',''),
+                    OPAM_SWITCH_PREFIX=str(fake.parent.parent),OCAMLPATH='',PYTHONPATH='',
+                    FAKE_EVENTS=str(events),ZESU_RESOURCE_GUARD=str(guard),
+                    ZESU_MODULE_MEMORY_PROFILE=str(profile),ZESU_GATE_MODULE_LIMIT_GIB='16')
+                result=subprocess.run([str(dune),'build','--sandbox=copy','--cache=disabled','tools/guard-bin/coqc'],
+                    cwd=workspace,env=env,capture_output=True,text=True)
+                if declared:
+                    self.assertEqual(result.returncode,0,result.stderr)
+                    rows=[json.loads(line) for line in events.read_text().splitlines()]
+                    self.assertEqual(rows,[{'claim':memory.GIB,'fence':'16'},{'compiler':True}])
+                else:
+                    self.assertNotEqual(result.returncode,0)
+                    self.assertIn('owned admission dependency',result.stderr)
+                    self.assertFalse(events.exists())
 
     def physical(self, pid, peak=2 * 1024 ** 2, children=""):
         proc = self.root / "proc"

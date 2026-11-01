@@ -46,7 +46,9 @@ def worker_limit(available_bytes, region_reserve_bytes, peak_bytes):
     if available_bytes < 0 or region_reserve_bytes < 0:
         raise ValueError("Memory amounts must not be negative.")
     peak = positive(peak_bytes, "peak_bytes")
-    return min(48, int(max(0, available_bytes * 7 // 10 - region_reserve_bytes) // peak))
+    from admission_memory import evaluate
+    sizing=evaluate({'legacy:region':region_reserve_bytes},0,available_bytes)
+    return min(48, int(sizing['available_new_claim_bytes'] // peak))
 
 
 def splice(author, entry, supplied):
