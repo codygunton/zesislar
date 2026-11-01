@@ -234,6 +234,8 @@ class CompilerFindlibTests(unittest.TestCase):
     def test_dune_wrapper_selects_weights_and_preserves_physical_fences(self):
         (self.tools / "guard-bin").mkdir()
         (self.tools / "det").mkdir()
+        (self.tools / "block").mkdir()
+        shutil.copy2(TOOLS / "block/harness/code/admission_memory.py", self.tools / "block/admission_memory.py")
         for name in ("coqc_findlib.py", "module_memory.py"):
             shutil.copy2(TOOLS / name, self.tools / name)
         shutil.copy2(TOOLS / "det/coqc_slots.py", self.tools / "det/coqc_slots.py")
