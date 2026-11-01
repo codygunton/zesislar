@@ -25,6 +25,7 @@ from entry_chain_stage import invalidation,import_commands
 from scratch_statement import source_statement
 from proof_bindings import proof_rows,coordination_rows,check_proof_bindings
 from installed_mappings import InstalledMappings
+from supplier_resolution_cache import profile_supplier
 def _parse_project_flags(workspace):
     from rocq_mcp.server import _parse_project_flags as parse
     return parse(workspace)
@@ -264,7 +265,7 @@ def prepare(a):
     if a.target_adapter:
         adapter=read_bound(binding(a.target_adapter));graph=read_bound(adapter['graph']);modules.update(graph['module_files'])
     edges=graph['import_edges'];changed=[];changes=[]
-    installed=InstalledMappings([word.replace(str(source),str(workspace)) for word in c['physical_flags']],receipt_dir=out/'IMPORT-RESOLUTION')
+    installed=InstalledMappings([word.replace(str(source),str(workspace)) for word in c['physical_flags']],receipt_dir=out/'IMPORT-RESOLUTION',supplier=profile_supplier(binding(a.admission_profile) if a.admission_profile else c.get('admission_profile')))
     entry=workspace/modules[ENTRY];before=entry.read_text();entry_text=a.entry_file.read_text()
     if entry_text!=before:
         edges=[r for r in edges if r['from']!=ENTRY]+canonical_edges(ENTRY,entry_text,before,edges,modules,installed,a.entry_file)

@@ -84,6 +84,16 @@ It checks the file identity before and after hashing.
 Each operation resolves every bound path with a fresh parent map.
 Startup, physical compilation, verification, and final acceptance force full hashing.
 The provider records validation time separately from each MCP call.
+A provider session reuses validation while its runtime identity stays exact.
+The session always runs full validation at completion, including after a tool failure.
+Unchanged-runtime input mutations remain detectable at that final validation.
+
+The persistent digest cache uses private storage and serializes each full identity key.
+Forced hashing bypasses both digest caches.
+Supplier validation reuses successful results only within one process.
+Each hit checks all consulted file and namespace identities.
+The monitor validates its fixed job policy before polling.
+Each poll still checks aggregate identity, physical fences, and resource counters.
 
 The observed outer gaps are consistent with two measured validations.
 They are not measurements of prover time.

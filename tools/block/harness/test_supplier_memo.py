@@ -122,3 +122,28 @@ class SupplierMemo(unittest.TestCase):
         with patch.object(supplier.os, 'getpid', return_value=os.getpid() + 1):
             supplier.validate(self.binding)
         self.assertEqual(self.full.call_count, 2)
+
+    def test_raw_mapping_alias_retarget_revalidates_and_refuses(self):
+        fixture = self.fixture
+        row = fixture.external_installation()
+        alias = fixture.root / 'installed-alias'
+        alias.symlink_to(Path(row['source']['path']).parents[1], target_is_directory=True)
+        fixture.flags[-2] = str(alias)
+        fixture.manifest['ready'] = fixture.save('READY-RUNTIME.json', fixture.ready)
+        fixture.manifest['runtime'] = fixture.save('jobs/prerequisites/RUNTIME.json', fixture.inner)
+        self.binding = fixture.freeze()
+        for _ in range(3):
+            supplier.validate(self.binding)
+            if supplier._MEMO:
+                break
+        self.assertTrue(supplier._MEMO)
+        before = self.full.call_count
+        supplier.validate(self.binding)
+        self.assertEqual(self.full.call_count, before)
+        other = fixture.root / 'empty-installation'
+        other.mkdir()
+        alias.unlink()
+        alias.symlink_to(other, target_is_directory=True)
+        with self.assertRaises(ValueError):
+            supplier.validate(self.binding)
+        self.assertEqual(self.full.call_count, before + 1)

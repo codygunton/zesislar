@@ -24,6 +24,8 @@ def _file_identity(path, namespace=False):
         # Ancestor directories need identity checks, not content-list checks.
         if namespace and stat.S_ISDIR(value[0][-1]):
             value = tuple((row[0], row[1], row[-1]) for row in value)
+        if stat.S_ISLNK(path.lstat().st_mode):
+            return value, str(path.resolve())
         return value
     except FileNotFoundError:
         return None
@@ -37,10 +39,8 @@ class _ConsultedFiles:
     def note(self, path, namespace=False):
         path = Path(path).absolute()
         key = (str(path), namespace)
-        value = _file_identity(path, namespace)
-        if key in self.rows and self.rows[key] != value:
-            self.stable = False
-        self.rows[key] = value
+        if key not in self.rows:
+            self.rows[key] = _file_identity(path, namespace)
 
     def path(self, path, *, contents=True):
         path = Path(path).absolute()
@@ -165,6 +165,9 @@ def installation(index, compiler, physical_flags, supplier=None):
     row = index.get(str(_resolved(tool)))
     require(row is not None, 'installation resolver lacks its binding')
     bound(row)
+    for index, word in enumerate(physical_flags[:-1]):
+        if word in {'-Q', '-R', '-I', '-coqlib'}:
+            _observe(Path(physical_flags[index + 1]))
     selected = InstalledMappings(physical_flags, coqdep=tool, supplier=supplier)
     for root in selected.roots:
         path = Path(root['root'])

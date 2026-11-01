@@ -14,6 +14,7 @@ import launch_adapter
 import proof_cache_key as keys
 import prospective_inputs
 from installed_mappings import InstalledMappings
+from supplier_resolution_cache import profile_supplier
 import result_cache
 import transport_mapping
 from entry_chain import binding, check_bindings, digest, read_bound, save, strict_loads
@@ -192,7 +193,8 @@ def build_collection(config, job, out, runtime, workspace, scope_binding):
     next(row for row in configuration['execution_vectors'] if row['role'] == 'mcp')['argv'] = selected_vector
     graph = read_bound(config['cache_import_graph'])
     installed = InstalledMappings(runtime['physical_flags'], coqdep=OPAM / 'bin/coqdep',
-                                  receipt_dir=out / 'prospective/import-resolution')
+                                  receipt_dir=out / 'prospective/import-resolution',
+                                  supplier=profile_supplier(config.get('admission_profile')))
     if config.get('dependency_resolution_cache'):
         if not runtime.get('native_route'):raise ValueError('Seed mapping reuse requires an exact minimal authority.')
         from native_route import authority
