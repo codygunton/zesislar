@@ -102,6 +102,46 @@ with patch.object(registry, 'refresh', side_effect=refresh):
         self.assertTrue(row['all_actors_closed'])
         self.assertEqual(self.registry.active(), [])
 
+    def registration_signal(self, checkpoint, source=None, directory=None):
+        code = r"""
+import os,signal,sys
+from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
+sys.path.insert(0,sys.argv[1])
+import run_registry as R
+registry=R.Registry(sys.argv[2]);checkpoint=sys.argv[3]
+method='register' if checkpoint=='before' else 'add_job'
+original=getattr(registry,method)
+def interrupted(*args,**kwargs):
+    if checkpoint=='during':os.kill(os.getpid(),signal.SIGTERM)
+    result=original(*args,**kwargs)
+    if checkpoint=='before':os.kill(os.getpid(),signal.SIGTERM)
+    return result
+args=SimpleNamespace(id='registration',kind='fixture',owner='test',supersedes=[],
+    command=[sys.executable,'-c','import time;time.sleep(60)'])
+with patch.object(registry,method,side_effect=interrupted):
+    raise SystemExit(R.run_command(registry,args))
+"""
+        result=subprocess.run([sys.executable,'-B','-c',code,
+            str(source or Path(R.__file__).parent),str(directory or self.registry.directory),checkpoint],
+            capture_output=True,text=True,timeout=5)
+        self.assertEqual(result.returncode,143,result.stderr)
+        row=R.Registry(directory or self.registry.directory).read()['runs']['registration']
+        self.assertTrue(row['all_actors_closed'])
+        self.assertTrue(all(not R.live(actor) for actor in row['jobs']))
+        if checkpoint=='before':self.assertEqual(row['jobs'],[])
+
+    def test_cancellation_before_child_launch_starts_no_child(self):
+        self.registration_signal('before')
+
+    def test_cancellation_during_child_registration_closes_exact_child(self):
+        self.registration_signal('during')
+
+    def test_harness_registry_cancellation_during_registration(self):
+        # The harness retains the v1 protocol. Its cancellation must also work.
+        self.registration_signal('during',Path(R.__file__).parent/'block/harness/runtime-tools',self.root/'harness-registry')
+
     def test_duplicate_run_id_refuses_without_replacing_existing_identity(self):
         scheduler = self.sleeper()
         actor = R.identity(scheduler.pid)
