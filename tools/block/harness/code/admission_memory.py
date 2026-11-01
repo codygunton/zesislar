@@ -44,7 +44,7 @@ def evaluate(claims, new_bytes, available_bytes, *, observations=None,
         rows[key] = dict(row, claim_bytes=amount, credited_bytes=min(amount, live),
                          reason=row.get('reason', 'unverified scope'))
     # Parent/child aggregates and duplicate scope identities cannot earn two credits.
-    keys = [key for key in rows if rows[key]['credited_bytes']]
+    keys = [key for key in rows if rows[key].get('verified') is True]
     conflicts = set()
     for index, key in enumerate(keys):
         left = rows[key]

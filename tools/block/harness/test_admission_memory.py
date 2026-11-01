@@ -48,6 +48,12 @@ class ArithmeticTests(unittest.TestCase):
             r=self.evaluate({'a':40,'b':40},1,100,observations={'a':self.sample(), 'b':right})
             self.assertEqual(r['credited_live_bytes'],0);self.assertFalse(r['fits'])
 
+    def test_duplicate_zero_sample_also_invalidates_the_other_credit(self):
+        r=self.evaluate({'a':40,'b':40},1,100,observations={
+            'a':self.sample(live=0),'b':self.sample(live=40)})
+        self.assertEqual(r['credited_live_bytes'],0)
+        self.assertFalse(r['fits'])
+
     def test_disjoint_scopes_keep_credit(self):
         r=self.evaluate({'a':40,'b':40},1,100,observations={'a':self.sample(), 'b':self.sample('/scope/b',inode=3)})
         self.assertEqual(r['credited_live_bytes'],80);self.assertTrue(r['fits'])
