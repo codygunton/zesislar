@@ -8,7 +8,8 @@ class TransportFailureControls(unittest.TestCase):
  def test_actual_provider_and_resource_audits(self):
   for name in ['entry_chain_provider.py','entry_chain_resources.py']:
    report=audit(scratch.HERE/'code'/name)
-   self.assertIn('check_proof_bindings',[r['sink'] for r in report['reviewed_sinks']])
+   expected='check_operation' if name=='entry_chain_provider.py' else 'check_proof_bindings'
+   self.assertIn(expected,[r['sink'] for r in report['reviewed_sinks']])
  def test_unknown_sink_still_refuses(self):
   with tempfile.TemporaryDirectory() as d:
    p=Path(d)/'bad.py';p.write_text('unreviewed(runtime)\n')

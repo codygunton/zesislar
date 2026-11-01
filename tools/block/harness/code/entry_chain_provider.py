@@ -1,10 +1,9 @@
 import sys,os
 sys.dont_write_bytecode=True
 os.environ['PYTHONDONTWRITEBYTECODE']='1'
-from proof_bindings import check_proof_bindings
 #!/usr/bin/env python3
 """Run one chain block or its shared prerequisites through pinned MCP."""
-import asyncio,hashlib,json,os,resource,sys,time,traceback
+import asyncio,functools,hashlib,json,os,resource,sys,time,traceback
 from pathlib import Path
 sys.path[1:1] = [str(Path(__file__).resolve().parents[2]), str(Path(__file__).resolve().parents[3])]
 from mcp import ClientSession, StdioServerParameters
@@ -13,7 +12,7 @@ from scratch_statement import source_statement
 from entry_chain import binding,save as atomic_json,check_bindings as bound_rows,digest,relative,strict_loads
 from entry_pilot import retain_residual
 from entry_pilot_checker import bound_json,complete_groups
-from entry_chain_resources import check_operation,normalize_cpu
+from entry_chain_resources import check_operation,normalize_cpu,session_validation
 
 
 class ToolFailure(RuntimeError):
@@ -104,12 +103,32 @@ def declaration_search_fixture(source, specification, output, side):
     return fixture, proof_line
 
 
+def validated_session(function):
+    @functools.wraps(function)
+    async def wrapped(request):
+        state=None
+        try:
+            with session_validation(request['runtime'],request['runtime_sha256']) as state:
+                result=await function(request)
+            if state.final is None or state.final.get('success') is not True:
+                raise ValueError('The provider session lacks successful final validation.')
+            output=Path(request['output'])
+            atomic_json(output/'PROGRESS.json',{'phase':'complete'})
+            atomic_json(output/'TRANSPORT-CLOSED.json',{'normal_context_exit':True})
+            return result
+        finally:
+            if state is not None:
+                atomic_json(Path(request['output'])/'SESSION-VALIDATION.json',state.report())
+    return wrapped
+
+
+@validated_session
 async def execute(request):
     runtime = bound_json(request['runtime'], request['runtime_sha256'])
     if runtime.get('dependency_batch') and runtime.get('phase')!='prerequisites':
         raise ValueError('Dependency waves cannot execute in native phase.')
     runtime.update(runtime_path=request['runtime'],runtime_sha256=request['runtime_sha256'])
-    check_proof_bindings(runtime,force_full=True)
+    check_operation(runtime,force_full=True)
     row = runtime['target']
     workspace, output = Path(request['workspace']), Path(request['output'])
     atomic_json(output/'PROGRESS.json', {'phase': 'prepared_inputs', 'identity': request['identity']})
@@ -144,7 +163,7 @@ async def execute(request):
     wave_modules={} if dependency_plan is None else {name:index for index,wave in enumerate(dependency_plan['waves']) for name in wave['modules']}
 
     async def call(session, name, arguments):
-        precheck=check_operation(runtime,force_full=name in {'rocq_compile_file','rocq_verify'})
+        precheck=check_operation(runtime)
         entry = {'tool': name, 'arguments': arguments, 'started_ns': time.time_ns(),
                  'pre_operation_validation':precheck}
         calls.append(entry)
@@ -179,7 +198,7 @@ async def execute(request):
                     atomic_json(output/('COMPILE-OBJECT-%04d.json'%len(calls)),
                         {'tool_result': value, 'source': binding(compiled_source),
                          'object': binding(compiled_object), 'before_later_checks': True})
-            entry['post_operation_validation']=check_operation(runtime,force_full=name in {'rocq_compile_file','rocq_verify'})
+            entry['post_operation_validation']=check_operation(runtime)
             entry['validation_finished_ns']=time.time_ns()
             atomic_json(output/'CALLS.json',calls)
             return value
@@ -361,9 +380,6 @@ async def execute(request):
                     if runtime.get('native_route'):receipts[side]['native_route']=runtime['native_route']
                     atomic_json(output/'NATIVE-RESULTS.json', receipts)
                 await call(session, 'rocq_health', {})
-        check_operation(runtime,force_full=True)
-        atomic_json(output/'PROGRESS.json', {'phase': 'complete'})
-        atomic_json(output/'TRANSPORT-CLOSED.json', {'normal_context_exit': True})
     finally:
         complete_profile(instruction_profile,output)
         atomic_json(output/'NATIVE-RESULTS.json', receipts)

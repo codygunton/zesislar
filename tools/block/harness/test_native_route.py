@@ -131,7 +131,7 @@ class NativeRoute(unittest.TestCase):
  def test_native_provider_compiles_no_dependencies_after_prefix(self):
   import entry_chain_provider as P
   v,r,c,j=self.fixture();exports=self.js('groups.json',{'kernel_groups':{'goals':[],'stack':[],'shelf':[],'given_up':[]}})
-  runtime={'phase':'native','native_route':r,'ordered_modules':[],'target':{'block':j['target']},'module_files':c['proof_runtime']['module_files'],'mcp_argv':['unused'],'prospective_directory':str(self.root/'prospective')}
+  runtime={'phase':'native','native_route':r,'ordered_modules':[],'target':{'block':j['target']},'module_files':c['proof_runtime']['module_files'],'mcp_argv':['unused'],'prospective_directory':str(self.root/'prospective'),'bindings':[]}
   rt=self.js('runtime.json',runtime);out=self.root/'native';out.mkdir();compile_files=[]
   class Raw:
    def __init__(self,data):self.structuredContent=data;self.isError=False
@@ -152,7 +152,7 @@ class NativeRoute(unittest.TestCase):
   async def streams(*args,**kwargs):yield (None,None)
   request={'runtime':rt['path'],'runtime_sha256':rt['sha256'],'workspace':str(self.root),'output':str(out),'identity':{}}
   groups={'goals':[],'stack':[],'shelf':[],'given_up':[]}
-  with patch.object(P,'check_proof_bindings'),patch.object(P,'check_operation',return_value={}),patch.object(P,'proof_environment',return_value={}),patch('native_instruction_profile.checked_launcher',return_value=(['unused'],None)),patch.object(P,'stdio_client',streams),patch.object(P,'ClientSession',lambda *a,**k:Session()),patch.object(P,'complete_groups',return_value=groups),patch('scratch_limits.record_search_origin'),patch('scratch_limits.record_search_end'):
+  with patch.object(P,'proof_environment',return_value={}),patch('native_instruction_profile.checked_launcher',return_value=(['unused'],None)),patch.object(P,'stdio_client',streams),patch.object(P,'ClientSession',lambda *a,**k:Session()),patch.object(P,'complete_groups',return_value=groups),patch('scratch_limits.record_search_origin'),patch('scratch_limits.record_search_end'):
    asyncio.run(P.execute(request))
   self.assertEqual(compile_files,[str(self.root/'Native.v')])
   calls=json.loads((out/'CALLS.json').read_text());self.assertEqual(sum(c['tool']=='rocq_compile_file' and c['arguments']['file'].endswith('Tactic.v') for c in calls),0)

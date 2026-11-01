@@ -1,6 +1,9 @@
 from proof_bindings import check_proof_bindings
 """Use reviewed process checks and account each owned aggregate once."""
 import os,resource,time
+from contextlib import contextmanager
+from contextvars import ContextVar
+from threading import RLock
 from pathlib import Path
 from entry_chain import save as atomic_json,digest,strict_loads
 from check_entry_outside import ticks
@@ -8,6 +11,78 @@ from entry_chain_process import identity,sample,ProcessGone,MetadataFailure,conf
 from entry_admission.io_helpers import memory_available
 P=Path(__file__).resolve().parent
 MEMORY=64*1024**3
+_SESSION_VALIDATION=ContextVar('provider_session_validation',default=None)
+
+
+class SessionValidation:
+    """Reuse full validation only within one unchanged runtime-file context."""
+    def __init__(self,path,expected):
+        self.path=Path(path).absolute();self.expected=expected;self.pid=os.getpid()
+        self.lock=RLock();self.validator=None;self.previous_identity=None;self.work=None
+        self.full_attempts=0;self.full_completed=0;self.reused=0;self.final=None
+
+    def identity(self):
+        from binding_cache import identity
+        return str(self.path.resolve(strict=True)),identity(self.path)
+
+    def check(self,path,expected,validate,force=False):
+        from binding_cache import digest as checked_digest,force_hashing
+        with self.lock:
+            if os.getpid()!=self.pid:
+                raise ValueError('The validation session belongs to another process.')
+            if Path(path).absolute()!=self.path or expected!=self.expected:
+                raise ValueError('The session names another runtime envelope.')
+            self.validator=validate
+            before=self.identity()
+            if not force and self.work is not None and before==self.previous_identity:
+                if self.identity()!=before:
+                    self.work=None;self.previous_identity=None
+                    raise ValueError('The session runtime changed during its identity check.')
+                self.reused+=1
+                return self.work,True
+            self.full_attempts+=1
+            self.work=None;self.previous_identity=None
+            with force_hashing(True):
+                if checked_digest(self.path)!=self.expected:
+                    raise ValueError('The bound session runtime bytes changed.')
+                work=validate()
+            if self.identity()!=before:
+                raise ValueError('The session runtime changed during full validation.')
+            self.previous_identity=before;self.work=work;self.full_completed+=1
+            return work,False
+
+    def finish(self):
+        started=time.monotonic()
+        if self.validator is None:
+            self.final={'success':False,'available':False,
+                        'reason':'Execution refused before runtime validation reached a loaded envelope.'}
+            return
+        try:
+            work,_=self.check(self.path,self.expected,self.validator,force=True)
+            self.final={'success':True,'available':True,'source_bindings_checked':True,
+                        **work,'elapsed_seconds':time.monotonic()-started}
+        except BaseException as error:
+            self.final={'success':False,'available':True,'error':repr(error),
+                        'elapsed_seconds':time.monotonic()-started}
+            raise
+
+    def report(self):
+        return {'runtime_path':str(self.path),'runtime_sha256':self.expected,'pid':self.pid,
+                'full_validation_attempts':self.full_attempts,
+                'full_validations_completed':self.full_completed,
+                'reused_operation_checks':self.reused,'final_validation':self.final}
+
+
+@contextmanager
+def session_validation(path,expected):
+    state=SessionValidation(path,expected);token=_SESSION_VALIDATION.set(state)
+    try:
+        yield state
+    finally:
+        try:
+            state.finish()
+        finally:
+            _SESSION_VALIDATION.reset(token)
 
 
 def publish_latch(path,reason,detail):
@@ -65,11 +140,23 @@ def check_operation(runtime, wait=True, *, force_full=False):
     # Scratch policy: retain exact input checks without telemetry or observers.
     from entry_chain import check_bindings
     started=time.monotonic()
-    if runtime.get('harness') is not None:
-        from harness_commit import check
-        check(runtime['harness'])
-    work=check_proof_bindings(runtime,force_full=force_full)
-    report={'source_bindings_checked':True,'custom_observer':False,**work,'elapsed_seconds':time.monotonic()-started}
+    session=_SESSION_VALIDATION.get()
+    def validate():
+        if runtime.get('harness') is not None:
+            from harness_commit import check
+            check(runtime['harness'])
+        return check_proof_bindings(runtime,force_full=force_full or session is not None)
+    if session is None:
+        work=validate();reused=False
+    else:
+        work,reused=session.check(runtime['runtime_path'],runtime['runtime_sha256'],validate,force_full)
+    if reused:
+        work=dict(work,cached_proof_bindings=work.get('proof_bindings_checked',0),proof_bindings_checked=0)
+        for name in ['shared_seed_files_checked','cell_delta_files_checked']:
+            if name in work:
+                work['cached_'+name]=work[name];work[name]=0
+    report={'source_bindings_checked':not reused,'validation_reused':reused,
+            'custom_observer':False,**work,'elapsed_seconds':time.monotonic()-started}
     if runtime.get('seed_binding_reference') and runtime.get('job_output'):
         import json
         with (Path(runtime['job_output'])/'VALIDATION-WORK.jsonl').open('a') as stream:stream.write(json.dumps(report,sort_keys=True)+'\n')
