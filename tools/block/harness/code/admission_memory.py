@@ -582,13 +582,22 @@ def prepare_legacy_rollout(data, writers, *, reader=None):
         mode = argv[positions[0] + 1] if positions[0] + 1 < len(argv) else None
         if mode not in ('scope', 'scope-exec', 'batch'):
             raise ValueError('An old writer can create an unrepresented aggregate.')
-        observation = reader.shell(writer['marker'], owner=owner)
+        token_owner = writer.get('token_owner', owner)
+        if mode != 'batch' and token_owner != owner:
+            raise ValueError('A scope writer cannot use another token owner.')
+        if int(Path(writer['marker']).name.split('.')[0]) != token_owner['pid']:
+            raise ValueError('The legacy token filename names another owner.')
+        reader.process(token_owner)
+        observation = reader.shell(writer['marker'], owner=token_owner)
         if observation.get('aggregate_verified') is not True:
             raise ValueError('The old writer has no authenticated aggregate.')
         path = Path(observation['scope'])
+        chain = []
         if mode == 'batch':
             if re.fullmatch(rf'zesuworkloads-aggregate{reader.uid}p{owner["pid"]}r[0-9]+\.slice', path.name) is None:
                 raise ValueError('The old batch has not created its exact aggregate.')
+            if token_owner != owner:
+                chain = reader.ancestry(token_owner['pid'], owner)
         else:
             environment = dict(item.split('=', 1) for item in
                 (reader.proc / str(owner['pid']) / 'environ').read_bytes().decode().split('\0') if '=' in item)
@@ -598,8 +607,11 @@ def prepare_legacy_rollout(data, writers, *, reader=None):
         identity = f"{path}:{observation['device']}:{observation['inode']}"
         key = 'legacy-aggregate:' + hashlib.sha256(identity.encode()).hexdigest()
         holds[key] = {'aggregate': {name: observation[name] for name in ('scope', 'device', 'inode')},
-                      'fallback_bytes': fence, 'writer': owner, 'source': source}
+                      'fallback_bytes': fence, 'writer': owner, 'token_owner': token_owner, 'source': source}
         reader.process(owner)
+        reader.process(token_owner)
+        if any(reader.process(actor) != parent for actor, parent in chain):
+            raise ValueError('The batch/token owner ancestry changed during sampling.')
     result = dict(data)
     result['legacy_aggregate_holds'] = dict(data.get('legacy_aggregate_holds', {}), **holds)
     return result
