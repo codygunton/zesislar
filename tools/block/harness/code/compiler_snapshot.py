@@ -193,12 +193,13 @@ def publish(runtime, validate, path, *, compiler='/home/cody/islaris/_opam/bin/c
     bound_identities={tuple(value[1]) for value in before}
     initial=load_files(compiler,runtime['physical_flags'],environment)
     plugins=[]
+    objects=[]
     with force_hashing(True):
         for selected in initial:
-            if selected.suffix not in PLUGINS:continue
             stamp=_identity(selected)
             if tuple(stamp[1]) not in bound_identities:
-                plugins.append({'path':str(selected),'sha256':digest(selected),'identity':stamp})
+                target=plugins if selected.suffix in PLUGINS else objects
+                target.append({'path':str(selected),'sha256':digest(selected),'identity':stamp})
     validate()
     require_absent_outputs(runtime.get('declared_outputs',[]))
     if physical_context(compiler,runtime['physical_flags'],environment) != context or load_files(compiler,runtime['physical_flags'],environment)!=initial:
@@ -211,10 +212,13 @@ def publish(runtime, validate, path, *, compiler='/home/cody/islaris/_opam/bin/c
     for row in plugins:
         if _identity(row['path'])!=row['identity']:
             raise ValueError('An initial plugin changed during full validation.')
+    for row in objects:
+        if _identity(row['path'])!=row['identity']:
+            raise ValueError('An initial object changed during full validation.')
     return _publish(path, {'schema': SCHEMA,
         'runtime': {'path': runtime['runtime_path'], 'sha256': runtime['runtime_sha256']},
         'compiler':{'path':str(compiler),'sha256':compiler_sha,'identity':compiler_stamp},
-        'mapping_context': context,'initial_plugins':plugins,'load_path_files':[str(p) for p in initial],
+        'mapping_context': context,'initial_plugins':plugins,'initial_objects':objects,'load_path_files':[str(p) for p in initial],
         'producer': producer(), 'objects': str(Path(path).parent / 'validated-objects'),
         'rows': [dict(row, identity=selected) for row, selected in zip(rows, before)]})
 
@@ -241,17 +245,18 @@ def _read_private(reference, *, with_binding=False):
 def read(reference, runtime_reference):
     """Authenticate the immutable snapshot before consulting any cached identity."""
     value = _read_private(reference)
-    if not isinstance(value, dict) or set(value) != {'schema', 'runtime', 'producer', 'objects', 'mapping_context', 'compiler', 'initial_plugins', 'load_path_files', 'rows'} or value['schema'] != SCHEMA or value['runtime'] != runtime_reference:
+    required={'schema', 'runtime', 'producer', 'objects', 'mapping_context', 'compiler', 'initial_plugins', 'load_path_files', 'rows'}
+    if not isinstance(value, dict) or not required <= set(value) or set(value)-required-{'initial_objects'} or value['schema'] != SCHEMA or value['runtime'] != runtime_reference:
         raise ValueError('The compiler snapshot names another runtime.')
     if _identity(value['compiler']['path'])!=value['compiler']['identity']:
         raise ValueError('The selected compiler identity changed.')
     for row in value['mapping_context']['paths']:
         if _namespace(row['path']) != row['namespace']:
             raise ValueError('A compiler mapping namespace changed.')
-    if not isinstance(value['rows'], list):
+    if not all(isinstance(value.get(name,[]),list) for name in ['rows','initial_plugins','initial_objects']):
         raise ValueError('The compiler snapshot rows are invalid.')
     seen = set()
-    for row in value['rows']+value['initial_plugins']:
+    for row in value['rows']+value['initial_plugins']+value.get('initial_objects',[]):
         if not isinstance(row, dict) or set(row) != {'path', 'sha256', 'identity'} or row['path'] in seen:
             raise ValueError('The compiler snapshot repeats or changes a classified row.')
         seen.add(row['path'])
@@ -418,7 +423,7 @@ def validate_compiler(runtime, runtime_reference, snapshot_reference, source_bin
     source_hash=next(row['sha256'] for row in inputs if row['path']==str(source.absolute()))
     if source_hash!=source_binding['sha256']:
         raise ValueError('The recorded physical source changed during admission.')
-    retained=snapshot['rows']+snapshot['initial_plugins']
+    retained=snapshot['rows']+snapshot['initial_plugins']+snapshot.get('initial_objects',[])
     expected={tuple(row['identity'][1]):row['sha256'] for row in retained}
     compiler_identity=tuple(_identity(compiler)[1])
     if compiler_identity not in expected or runtime['physical_compiler']['sha256']!=snapshot['compiler']['sha256']:
@@ -450,5 +455,6 @@ def validate_compiler(runtime, runtime_reference, snapshot_reference, source_bin
     return {'timing':timing,'snapshot': snapshot_reference, 'retained_identities_checked': len(snapshot['rows']),
             'accepted_dependency_objects': produced,
             'initial_plugins_checked':len(snapshot['initial_plugins']),
+            'initial_objects_checked':len(snapshot.get('initial_objects',[])),
             'accepted_output_index': accepted_index, 'accepted_output_receipts': accepted_receipts,
             'directly_hashed_inputs': inputs, 'dependency_scope': 'Complete physical load-path superset.'}

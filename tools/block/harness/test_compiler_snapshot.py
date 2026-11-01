@@ -363,6 +363,79 @@ class CompilerSnapshotTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'recorded physical source changed during admission'):
             S.validate_compiler(self.runtime,self.reference,reference,expected,self.compiler)
 
+    def initial_objects(self):
+        root=self.compiler.parent.parent/'lib/coq/theories/Arith'
+        root.mkdir(parents=True)
+        paths=[root/('Arith'+suffix) for suffix in ['.vo','.vos']]
+        for path in paths:path.write_text('initial nonproof object fixture '+path.suffix)
+        return paths
+
+    def test_initial_unbound_library_objects_are_sealed_and_accepted(self):
+        paths=self.initial_objects()
+        reference=self.seal()
+        snapshot=self.read(reference)
+        self.assertEqual({row['path'] for row in snapshot['initial_objects']},{str(path) for path in paths})
+        for row in snapshot['initial_objects']:
+            self.assertEqual(row['identity'],S._identity(row['path']))
+            self.assertEqual(row['sha256'],binding(row['path'])['sha256'])
+        self.assertEqual(len(snapshot['rows']),4)
+        report=S.validate_compiler(self.runtime,self.reference,reference,self.source_binding,self.compiler)
+        self.assertEqual(report['initial_objects_checked'],2)
+        self.assertEqual(len(report['directly_hashed_inputs']),5)
+
+    def test_initial_library_object_mutation_refuses(self):
+        paths=self.initial_objects();reference=self.seal()
+        paths[0].write_text('changed initial object')
+        with self.assertRaisesRegex(ValueError,'compiler input identity changed'):
+            S.validate_compiler(self.runtime,self.reference,reference,self.source_binding,self.compiler)
+
+    def test_initial_library_object_restored_mtime_still_refuses(self):
+        paths=self.initial_objects();reference=self.seal();old=paths[0].stat()
+        paths[0].write_bytes(b'x'*old.st_size)
+        os.utime(paths[0],ns=(old.st_atime_ns,old.st_mtime_ns))
+        with self.assertRaisesRegex(ValueError,'compiler input identity changed'):
+            S.validate_compiler(self.runtime,self.reference,reference,self.source_binding,self.compiler)
+
+    def test_initial_library_object_replacement_refuses(self):
+        paths=self.initial_objects();reference=self.seal()
+        replacement=paths[0].with_suffix('.replacement');replacement.write_bytes(paths[0].read_bytes())
+        os.replace(replacement,paths[0])
+        with self.assertRaisesRegex(ValueError,'compiler input identity changed'):
+            S.validate_compiler(self.runtime,self.reference,reference,self.source_binding,self.compiler)
+
+    def test_later_installed_object_addition_still_requires_receipt(self):
+        paths=self.initial_objects();reference=self.seal()
+        (paths[0].parent/'Later.vo').write_text('later nonproof object')
+        with self.assertRaisesRegex(ValueError,'lacks a validated receipt'):
+            S.validate_compiler(self.runtime,self.reference,reference,self.source_binding,self.compiler)
+
+    def test_initial_object_mutation_during_full_validation_refuses(self):
+        paths=self.initial_objects()
+        with self.assertRaisesRegex(ValueError,'initial object changed during full validation'):
+            self.seal(lambda:paths[0].write_text('changed during initial validation'))
+        self.assertFalse(self.snapshot_path.exists())
+
+    def test_object_addition_during_full_validation_refuses(self):
+        paths=self.initial_objects()
+        with self.assertRaisesRegex(ValueError,'mapping changed during full validation'):
+            self.seal(lambda:(paths[0].parent/'Later.vo').write_text('new while validation ran'))
+        self.assertFalse(self.snapshot_path.exists())
+
+    def test_canonical_binding_covers_initial_object_alias(self):
+        paths=self.initial_objects();self.runtime['bindings'].extend(binding(path) for path in paths)
+        alias=self.root/'stdlib-alias';alias.symlink_to(paths[0].parent,target_is_directory=True)
+        self.runtime['physical_flags']+=['-Q',str(alias),'Alias']
+        reference=self.seal()
+        self.assertEqual(self.read(reference)['initial_objects'],[])
+        S.validate_compiler(self.runtime,self.reference,reference,self.source_binding,self.compiler)
+
+    def test_legacy_snapshot_cannot_invent_initial_object_authentication(self):
+        self.initial_objects();reference=self.seal();value=self.read(reference)
+        value.pop('initial_objects');S._publish(self.snapshot_path,value,replace=True)
+        reference=binding(self.snapshot_path)
+        with self.assertRaisesRegex(ValueError,'lacks an original binding'):
+            S.validate_compiler(self.runtime,self.reference,reference,self.source_binding,self.compiler)
+
     def initial_plugins(self):
         root=self.compiler.parent.parent/'lib/coq-core/boot'
         root.mkdir(parents=True)
