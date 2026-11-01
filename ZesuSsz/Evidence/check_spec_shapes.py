@@ -31,7 +31,7 @@ UNFOLD_INSTANCE = re.compile(
     r"(?::=|\.(?=\s|$))", re.S
 )
 TYPECLASSES_OPAQUE = re.compile(
-    r"(?P<scope>Global\s+|Local\s+|#\[\s*(?:global|local)\s*\]\s*)?"
+    r"(?P<scope>Global\s+|Local\s+|#\[\s*(?:global|local|export)\s*\]\s*)?"
     r"\bTypeclasses\s+Opaque\s+(?P<names>"
     + CONSTANT + r"(?:\s+" + CONSTANT + r")*)\s*\.", re.S
 )
@@ -88,7 +88,7 @@ def typeclasses_opaque(source: str, global_only: bool = False) -> set[str]:
     return {name
             for match in TYPECLASSES_OPAQUE.finditer(remove_comments(source))
             if not global_only or re.match(
-                r"(?:Global\b|#\[\s*global\b)", match.group("scope") or ""
+                r"(?:Global\b|#\[\s*(?:global|export)\b)", match.group("scope") or ""
             )
             for name in match.group("names").split()}
 
