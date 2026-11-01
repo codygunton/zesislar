@@ -137,6 +137,7 @@ MINIMAL_NATIVE_CLAIM=8*GIB
 FOCUSED_CLAIM=8*GIB
 PORT_KIND='production_stock_port'
 PORT_FENCE=32*GIB
+PORT_FULL_FENCE_BOOKING='full_physical_fence'
 PORT_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-22.json'), 'sha256': 'ea88c0e9eab9e6e720e7fc2500407c065d82fd7a0feb12658783d4a761c79917'}
 PORT_AUTHORITY_23={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-23.json'), 'sha256': 'dbeedb2c4fcdc916939a9c5fc9ced3d07bc619244c1d8b41bfc91aacfb5052bd'}
 PORT_EFFECTIVE_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-EFFECTIVE-OVERRIDES-AUTHORITY-22.json'), 'sha256': '35c7e4a44203e761cb286bff7d95e83d81e08567bdb5dd0323dcd9667ffd8052'}
@@ -161,13 +162,18 @@ def relocated_authority(actual,expected,legacy_paths=()):
  return True
 
 def production_port_authority(profile):
- if set(profile) not in ({'schema','kind','authority','memory_route'},{'schema','kind','authority','memory_route','supplier_ready'}) or profile.get('schema')!='scratch.admission-profile.v1' or profile.get('kind')!=PORT_KIND or profile.get('memory_route')!='measured_native':
+ required={'schema','kind','authority','memory_route'}
+ if not required<=set(profile)<=required|{'supplier_ready','memory_booking'} or profile.get('schema')!='scratch.admission-profile.v1' or profile.get('kind')!=PORT_KIND or profile.get('memory_route')!='measured_native':
   raise ValueError('The production PORT profile is invalid.')
+ if 'memory_booking' in profile and profile['memory_booking']!=PORT_FULL_FENCE_BOOKING:
+  raise ValueError('The PORT memory booking option is invalid.')
  extended=isinstance(profile['authority'],dict) and profile['authority'].get('sha256') in {PORT_AUTHORITY_23['sha256'],PORT_EFFECTIVE_AUTHORITY_23['sha256']}
  effective=isinstance(profile['authority'],dict) and profile['authority'].get('sha256') in {PORT_EFFECTIVE_AUTHORITY['sha256'],PORT_EFFECTIVE_AUTHORITY_23['sha256']}
  corrected=isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_MEMORY_AUTHORITY['sha256']
  heldout78=isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_AUTHORITY_78['sha256']
  heldout=corrected or heldout78 or isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_AUTHORITY['sha256']
+ if heldout and 'memory_booking' in profile:
+  raise ValueError('The full-fence option cannot change a blind PORT policy.')
  expected=PORT_HELDOUT_MEMORY_AUTHORITY if corrected else PORT_HELDOUT_AUTHORITY_78 if heldout78 else PORT_HELDOUT_AUTHORITY if heldout else PORT_AUTHORITY_23 if extended else PORT_AUTHORITY
  if effective:expected=PORT_EFFECTIVE_AUTHORITY_23 if extended else PORT_EFFECTIVE_AUTHORITY
  legacy_paths=('/home/cody/zesislar/_build/agents/worker-build-1/new6974-bindings291/extension002/PORT-FAMILY-AUTHORITY-23.json',) if extended else ('/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/matrix005-authority-v1/PORT-FAMILY-AUTHORITY-22.json', '/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/PORT-FAMILY-AUTHORITY-22.json')
@@ -223,6 +229,7 @@ def workload_for_job(profile_binding,job,config):
  if profile.get('schema')!='scratch.admission-profile.v1':raise ValueError('The admission profile is unsupported.')
  kind=profile.get('kind')
  if kind not in {FAMILY_KIND,FOCUSED_KIND,'minimal_native_tactic',PORT_KIND}:raise ValueError('The workload kind is unsupported.')
+ if 'memory_booking' in profile and kind!=PORT_KIND:raise ValueError('Full-fence booking requires a production PORT profile.')
  if kind in {FAMILY_KIND,'minimal_native_tactic',PORT_KIND} and job['phase']!='native' or kind==FOCUSED_KIND and job['phase']=='native':return None
  modules=config['proof_runtime']['module_files'];workspace=Path(config['prepared_workspace']);owned=[]
  def actual(row):
@@ -315,6 +322,7 @@ def workload_claim(workload,job,basis):
   if job['phase'] not in COMPILE_PHASES:raise ValueError('A focused check cannot execute native search.')
   return FOCUSED_CLAIM
  if kind==PORT_KIND:
+  if profile.get('memory_booking')==PORT_FULL_FENCE_BOOKING:return PORT_FENCE
   if profile['authority']['sha256']!=PORT_HELDOUT_MEMORY_AUTHORITY['sha256']:return 8*GIB
   if basis is None:return PORT_FENCE
   if basis.get('memory_metric')!='aggregate_memory.peak':return PORT_FENCE
@@ -436,6 +444,10 @@ def environment(phase,claim_bytes=None,job=None):
  if job is not None:
   if job['phase']!=phase:raise ValueError('The environment phase differs from its memory job.')
   validate_job(job)
+  workload=job.get('workload') or {}
+  if workload.get('kind')==PORT_KIND and read(workload['profile']).get('memory_booking')==PORT_FULL_FENCE_BOOKING:
+   if claim_bytes is not None and claim_bytes!=PORT_FENCE:raise ValueError('The environment claim differs from full-fence booking.')
+   claim_bytes=PORT_FENCE
  physical=job_fence(job) if job is not None else fence(phase)
  measured=job is not None and measured_fence(job) is not None
  gib=physical//GIB

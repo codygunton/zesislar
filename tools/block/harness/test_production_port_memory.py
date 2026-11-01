@@ -2,6 +2,7 @@
 from copy import deepcopy
 from pathlib import Path
 import ast
+import fcntl
 import hashlib
 import inspect
 import json
@@ -80,6 +81,96 @@ class ProductionPortMemory(unittest.TestCase):
         self.assertEqual(job['physical_fence_bytes'],32*P.GIB)
         self.assertIsNone(native_route.for_profile(self.profile_binding()))
         self.assertEqual(native_route.source_body(self.profile_binding()),'zesu_block.')
+
+    def test_full_fence_booking_survives_job_environment_and_admission(self):
+        self.profile['memory_booking'] = 'full_physical_fence'
+        authority_before = binding(self.authority_path)
+        source_before = binding(self.source)
+        job = self.job()
+        self.assertEqual(P.validate_job(job),32*P.GIB)
+        self.assertEqual(job['physical_fence_bytes'],32*P.GIB)
+        for claim in [None,32*P.GIB]:
+            env = P.environment('native',claim,job=job)
+            self.assertEqual(env['ZESU_MODULE_CLAIM_BYTES'],str(32*P.GIB))
+            self.assertEqual(env['ZESU_AGGREGATE_LIMIT'],'32G')
+            self.assertEqual(env['ZESU_SCOPE_CPU'],'unlimited')
+            self.assertEqual(env['ZESU_PROOF_CPU_LIMIT'],'unlimited')
+        policy = dict(memory_job=job,minimum_claim_bytes=32*P.GIB,
+                      physical_fence_bytes=32*P.GIB)
+        self.assertEqual(P.admission_claim(policy),32*P.GIB)
+        self.assertEqual(binding(self.authority_path),authority_before)
+        self.assertEqual(binding(self.source),source_before)
+        self.assertIsNone(native_route.for_profile(self.profile_binding()))
+        self.assertEqual(native_route.source_body(self.profile_binding()),'zesu_block.')
+
+    def test_full_fence_booking_refuses_invalid_values(self):
+        for value in [None,False,True,0,8*P.GIB,32*P.GIB,'','full_fence',{},[]]:
+            with self.subTest(value=value):
+                self.profile['memory_booking'] = value
+                with self.assertRaisesRegex(ValueError,'booking option is invalid'):
+                    self.workload()
+
+    def test_actual_reserve_records_full_fence_booking(self):
+        self.profile['memory_booking'] = 'full_physical_fence'
+        job = self.job()
+        path = Path(__file__).with_name('code')/'check_entry_outside.py'
+        function = next(node for node in ast.parse(path.read_text()).body
+                        if isinstance(node,ast.FunctionDef) and node.name=='reserve')
+        ledger = self.root/'ledger.json'
+        ledger.write_text(json.dumps({'fixed_claims':{}}))
+        receipt = self.root/'admission.json'
+        def save(path,value):
+            Path(path).write_text(json.dumps(value))
+        namespace = dict(Path=Path,fcntl=fcntl,time=__import__('time'),
+                         strict_loads=json.loads,atomic_json=save,
+                         digest=lambda path:binding(Path(path))['sha256'],
+                         canonical_functions=lambda policy:(lambda data,legacy:{},lambda:200*P.GIB))
+        exec(compile(ast.fix_missing_locations(ast.Module(body=[function],type_ignores=[])),
+                     '<actual-full-fence-reserve>','exec'),namespace)
+        policy = dict(memory_job=job,minimum_claim_bytes=32*P.GIB,
+                      physical_fence_bytes=32*P.GIB,lock=str(self.root/'lock'),
+                      ledger=str(ledger),legacy_release_bindings={},capture_headroom_bytes=0)
+        result = namespace['reserve'](policy,'isolated-full-fence',{'pid':os.getpid()},receipt)
+        self.assertEqual(result['claim_bytes'],32*P.GIB)
+        self.assertEqual(json.loads(ledger.read_text())['fixed_claims']['isolated-full-fence'],32*P.GIB)
+
+    def test_full_fence_booking_cannot_change_case_identity(self):
+        self.profile['memory_booking'] = 'full_physical_fence'
+        original = deepcopy(self.raw)
+        for field in ['module','pc','source_sha256','statement_sha256']:
+            with self.subTest(field=field):
+                self.raw = deepcopy(original)
+                self.raw['target'][field] = 'wrong'
+                with self.assertRaises(ValueError):
+                    self.workload()
+
+    def test_full_fence_booking_requires_production_port(self):
+        self.profile['memory_booking'] = 'full_physical_fence'
+        for kind in [P.FAMILY_KIND,P.FOCUSED_KIND,'minimal_native_tactic']:
+            with self.subTest(kind=kind):
+                self.profile['kind'] = kind
+                with self.assertRaisesRegex(ValueError,'requires a production PORT profile'):
+                    self.workload()
+
+    def test_full_fence_booking_refuses_underbooking_and_another_fence(self):
+        self.profile['memory_booking'] = 'full_physical_fence'
+        job = self.job()
+        wrong = deepcopy(job)
+        wrong['claim_bytes'] = 8*P.GIB
+        with self.assertRaisesRegex(ValueError,'claim or physical fence'):
+            P.validate_job(wrong)
+        with self.assertRaisesRegex(ValueError,'differs from full-fence booking'):
+            P.environment('native',8*P.GIB,job=job)
+        with self.assertRaisesRegex(ValueError,'Admission differs'):
+            P.admission_claim(dict(memory_job=job,minimum_claim_bytes=8*P.GIB,
+                                   physical_fence_bytes=32*P.GIB))
+        wrong = deepcopy(job)
+        wrong['physical_fence_bytes'] = 64*P.GIB
+        with self.assertRaisesRegex(ValueError,'claim or physical fence'):
+            P.validate_job(wrong)
+        self.profile['claim_bytes'] = 64*P.GIB
+        with self.assertRaisesRegex(ValueError,'profile is invalid'):
+            self.workload()
 
     def test_measured_environment_omits_issue10_and_keeps_cpu_policy(self):
         job = self.job()

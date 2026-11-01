@@ -39,6 +39,12 @@ The memory fence and the shared parent remain unchanged.
 Unmeasured probes book their full fence.
 Measured families book their validated claim and observed growth.
 
+An authorized PORT profile can request `"memory_booking": "full_physical_fence"`.
+This option raises its booking to the unchanged 32 GiB fence.
+It does not change the caller, authority, proof body, or CPU policy.
+Profiles without this option keep their existing booking.
+Blind PORT profiles reject this option and retain their separate policy.
+
 Before an external stop, the harness retains the complete available export.
 An in-flight tactic has no returned internal state.
 The report labels a pre-call export explicitly.

@@ -58,3 +58,17 @@ class Authority23Tests(unittest.TestCase):
         profile['authority']['sha256'] = '0' * 64
         with self.assertRaisesRegex(ValueError, 'not authorized'):
             P.production_port_authority(profile)
+
+    def test_full_fence_booking_keeps_the_exact_additional_caller(self):
+        self.profile['memory_booking'] = 'full_physical_fence'
+        authority = P.production_port_authority(self.profile)
+        case = authority['cases'][-1]
+        self.assertEqual(case['source']['sha256'],
+                         'fc7669a62c6b1539f4d17f2ea3adcd72344b3466c86a911bb8c67b6b3c67feff')
+        job = dict(key=case['block'],phase='native',ordered_modules=[],target=dict(
+            module=case['module'],pc=case['pc'],source_sha256=case['source']['sha256'],
+            statement_sha256=case['statement_sha256']))
+        self.assertEqual(P.production_port_case(self.profile,job)[1],case)
+        job['target']['source_sha256'] = '0'*64
+        with self.assertRaisesRegex(ValueError,'source or statement differs'):
+            P.production_port_case(self.profile,job)

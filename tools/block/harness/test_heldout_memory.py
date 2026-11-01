@@ -69,6 +69,11 @@ class CorrectedMemoryTests(unittest.TestCase):
   raw,workload=self.configured();job=P.apply_job(raw,workload=workload);job['claim_bytes']=8*P.GIB
   with self.assertRaisesRegex(ValueError,'claim or physical fence'):P.validate_job(job)
 
+ def test_profile_booking_option_cannot_change_blind_policy(self):
+  self.profile['memory_booking']='full_physical_fence'
+  with self.assertRaisesRegex(ValueError,'cannot change a blind PORT policy'):
+   P.production_port_authority(self.profile)
+
  def test_peak_above_fence_requires_review(self):
   raw,workload=self.configured();row=self.measurement(raw,24*P.GIB)
   with self.assertRaisesRegex(ValueError,'larger reviewed fence'):P.apply_job(raw,[row],workload=workload)
