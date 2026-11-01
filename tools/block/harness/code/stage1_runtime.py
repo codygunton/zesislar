@@ -319,7 +319,8 @@ def kernel_launch(config, job, outer_out, runtime, workspace, argv, controller):
     save(out / 'RUNTIME.json', runtime)
     child = None; child_ticks = None; reserved = False; closed = False; code = 1
     try:
-        reserve(policy, claim, owner, out / 'ADMISSION.json', recheck=lambda: check_bindings(runtime['bindings'])); reserved = True
+        from proof_bindings import check_proof_bindings
+        reserve(policy, claim, owner, out / 'ADMISSION.json', recheck=lambda: check_proof_bindings(runtime)); reserved = True
         env = clean_environment(); env.update(environment('kernel',job['claim_bytes'],job=job))
         command = controller.outer_argv(workspace, job['key'] + '-kernel', out)
         save(out / 'LAUNCH.json', {'argv': command, 'kernel_argv': argv, 'search_calls': 0})

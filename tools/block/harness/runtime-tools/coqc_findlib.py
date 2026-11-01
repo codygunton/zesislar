@@ -158,9 +158,6 @@ def main():
             if not command:
                 raise ValueError("The guarded compiler command is absent")
             environment = compiler_environment(Path.cwd(), os.environ)
-            status = subprocess.run([args.guard, "wait"], env=environment).returncode
-            if status:
-                raise SystemExit(status)
             os.execvpe(args.guard, [args.guard, "scope", "rocq-mcp-coqc", "--", *command], environment)
     except (ValueError, OSError) as error:
         parser.exit(2, f"compiler findlib setup: {error}\n")

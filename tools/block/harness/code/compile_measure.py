@@ -16,6 +16,18 @@ for name in ['.lia.cache','.nia.cache','.nra.cache','.csdp.cache','.bv_solve.cac
     removed.append({'path':str(cache),'removed':existed,'absent_after':not cache.exists()})
 record.update(cwd=str(cwd),removed_cache_paths=removed)
 path.write_text(json.dumps(record,indent=2)+'\n')
+# Validate after guarded admission, immediately before the physical compiler.
+if record.get('validation') is not None:
+    from entry_chain import read_bound,save
+    from compiler_snapshot import validate_compiler
+    envelope=record['validation']['runtime']
+    checked_runtime=read_bound(envelope)
+    report=validate_compiler(checked_runtime,envelope,record['validation']['snapshot'],
+        record['source'],record['physical_argv'][0],
+        output_key=os.environ.get('ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY'))
+    save(directory/'PHYSICAL-VALIDATION.json',report)
+# The physical compiler never receives the provider authentication key.
+os.environ.pop('ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY',None)
 started=time.monotonic();child=subprocess.Popen(record['physical_argv'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 capture_errors=[]
 def retain(stream,name,descriptor):

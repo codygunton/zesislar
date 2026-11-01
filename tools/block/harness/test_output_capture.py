@@ -30,7 +30,7 @@ class OutputCapture(unittest.TestCase):
    self.assertEqual(current.stat().st_mode&0o111,Path(row['path']).stat().st_mode&0o111,str(current))
  def test_policy_and_guard_are_unchanged(self):
   original=historical.materialize('/home/cody/zesislar/_build/agents/worker-build-2/private-admission-route-v1/source014/restart-tools/resource_guard.sh')
-  # The Phase 2 change adds PID identities only. Every other guard byte stays exact.
+  # Preserve the reviewed PID identities and the ten-second throttle cache.
   expected=original.read_text()
   needle='      if diagnostic_probe; then\n        local probe_tag=issue10'
   expected=expected.replace(needle,'''      printf 'owner_start=%s\\n' "$(process_start "$owner")" >> "$replacement" || {
@@ -42,5 +42,7 @@ class OutputCapture(unittest.TestCase):
   needle="  # Marking the child must not restart the confirmation's launch window."
   expected=expected.replace(needle,'''  printf 'child_start=%s\\n' "$(process_start "$child")" >> "$replacement"
 '''+needle)
+  expected=expected.replace('guards share it for two seconds','guards share it for ten seconds')
+  expected=expected.replace('$(date +%s) - stamp >= 2','$(date +%s) - stamp >= 10')
   self.assertEqual((HERE/'runtime-tools/resource_guard.sh').read_text(),expected)
 if __name__=='__main__':unittest.main()

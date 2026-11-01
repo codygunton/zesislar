@@ -131,7 +131,7 @@ class NativeRoute(unittest.TestCase):
  def test_native_provider_compiles_no_dependencies_after_prefix(self):
   import entry_chain_provider as P
   v,r,c,j=self.fixture();exports=self.js('groups.json',{'kernel_groups':{'goals':[],'stack':[],'shelf':[],'given_up':[]}})
-  runtime={'phase':'native','native_route':r,'ordered_modules':[],'target':{'block':j['target']},'module_files':c['proof_runtime']['module_files'],'mcp_argv':['unused'],'prospective_directory':str(self.root/'prospective'),'bindings':[]}
+  runtime={'phase':'native','physical_flags':[],'native_route':r,'ordered_modules':[],'target':{'block':j['target']},'module_files':c['proof_runtime']['module_files'],'mcp_argv':['unused'],'prospective_directory':str(self.root/'prospective'),'bindings':[]}
   rt=self.js('runtime.json',runtime);out=self.root/'native';out.mkdir();compile_files=[]
   class Raw:
    def __init__(self,data):self.structuredContent=data;self.isError=False

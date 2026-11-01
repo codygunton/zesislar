@@ -36,16 +36,28 @@ def validated_arguments(args,expected,workspace):
 
 def main():
     normalize_cpu()
-    runtime=read_bound({'path':os.environ['ENTRY_CHAIN_RUNTIME_JSON'],
-                        'sha256':os.environ['ENTRY_CHAIN_RUNTIME_SHA256']})
-    check_operation(runtime)
+    runtime_reference={'path':os.environ['ENTRY_CHAIN_RUNTIME_JSON'],
+                       'sha256':os.environ['ENTRY_CHAIN_RUNTIME_SHA256']}
+    runtime=read_bound(runtime_reference)
     workspace=Path(os.environ['ROCQ_WORKSPACE']).resolve()
     source,extra=validated_arguments(sys.argv[1:],runtime['expected_mcp_flags'],workspace)
+    physical='/home/cody/islaris/_opam/bin/coqc'
+    snapshot_path=os.environ.get('ENTRY_CHAIN_COMPILER_SNAPSHOT_JSON')
+    snapshot_sha=os.environ.get('ENTRY_CHAIN_COMPILER_SNAPSHOT_SHA256')
+    if bool(snapshot_path)!=bool(snapshot_sha):
+        raise ValueError('The compiler snapshot binding is incomplete.')
+    validation=None
+    if snapshot_path:
+        if not os.environ.get('ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY'):
+            raise ValueError('The compiler lacks its authenticated output context.')
+        validation={'snapshot':{'path':snapshot_path,'sha256':snapshot_sha},
+                    'runtime':runtime_reference}
+    else:
+        check_operation(runtime)
     flags=runtime['physical_flags']
     directory=Path(runtime['job_output'])/'compiler-invocations'/uuid.uuid4().hex
     directory.mkdir(parents=True)
     clone_copy.copy2(source,directory/'SOURCE.v')
-    physical='/home/cody/islaris/_opam/bin/coqc'
     command=[physical,*flags,*extra,str(source)]
     selected=runtime.get('target',{}).get('block') or {}
     module=next((name for name,rel in runtime['module_files'].items() if (workspace/rel).resolve()==source),'unmapped-verification')
@@ -56,7 +68,7 @@ def main():
     phase='native_compile' if native else ('verification' if runtime['phase']=='native' else 'setup')
     save(directory/'INPUT.json',{'incoming_argv':sys.argv[1:],'physical_argv':command,
          'source':binding(source),'retained_source':binding(directory/'SOURCE.v'),
-         'compiler':binding(physical),'CPU_policy':'unlimited','owned_workspace':str(workspace),
+         'compiler':binding(physical),'validation':validation,'CPU_policy':'unlimited','owned_workspace':str(workspace),
          'target':{'module':module,'theorem':theorem,'source_sha256':digest(source)},'command_phase':phase})
 
     wrapper=workspace/'tools/coqc_findlib.py';guard=workspace/'tools/resource_guard.sh'

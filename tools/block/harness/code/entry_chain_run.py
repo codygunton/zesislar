@@ -154,7 +154,7 @@ def stage_job(config,job,out):
     if digest(workspace/'tools/entry_chain_coqc.sh') != digest(expected_wrapper):
         raise ValueError('The final staged compiler wrapper differs from the bounded physical policy.')
     clone_copy.copy2(Path(__file__).with_name('entry_chain_resources.py'), workspace/'tools/block/entry_chain_resources.py')
-    for name in ['entry_chain_compiler.py','compile_measure.py','clone_copy.py','binding_cache.py']:
+    for name in ['entry_chain_compiler.py','compile_measure.py','clone_copy.py','binding_cache.py','compiler_snapshot.py']:
         clone_copy.copy2(Path(__file__).with_name(name),workspace/'tools/block'/name)
         src=Path(__file__).with_name(name);dst=workspace/'tools/block'/name
         record={'source':binding(src),'owned':binding(dst),'distinct_inode':True}
@@ -188,6 +188,7 @@ def stage_job(config,job,out):
             raise ValueError('The sealed launcher lacks its exact relay output argument.')
         launcher[receipts[0]+1]=str(out/'STDIN-RELAY.json')
         runtime['mcp_argv']=launcher
+    runtime['physical_compiler']=deepcopy(config['effective_compiler_version']['compiler'])
     runtime.update(harness=deepcopy(config.get('harness')),native_route=deepcopy(job.get('native_route')),control_session=deepcopy(config.get('control_session')),declaration_checks=deepcopy(config.get('declaration_checks',[])),
         phase=job['phase'],target={'block':job.get('target')},
         ordered_modules=job.get('ordered_modules',[]),job_output=str(out),
@@ -208,7 +209,15 @@ def stage_job(config,job,out):
     runtime['expected_mcp_flags']=actual
     runtime['physical_flags']=[word.replace(str(source),str(workspace)) for word in config['physical_flags']]
     save(out/'PROJECT-PARSER.json',{'expected_flags':expected,'actual_flags':actual,'equal':True})
-    runtime['bindings']=list(config['bindings'])+[x['owned'] for x in copies if Path(x['owned']['path']).suffix in {'.v','.vo'}]
+    from compiler_snapshot import declared_outputs
+    declarations=declared_outputs(runtime['module_files'],runtime['ordered_modules'],workspace,config['bindings'],donor=source)
+    runtime['declared_outputs']=declarations
+    output_paths={name for row in declarations for name in row['outputs']}
+    save(out/'DECLARED-OUTPUT-ABSENCE.json',{'modules':runtime['ordered_modules'],'declarations':declarations,
+        'donor_bindings_preserved':True,'observed_before_snapshot':True})
+    runtime['bindings']=list(config['bindings'])+[x['owned'] for x in copies
+        if Path(x['owned']['path']).suffix in {'.v','.vo','.vos','.cmxs','.cma','.cmxa','.so'}
+        and x['owned']['path'] not in output_paths]
     if runtime.get('native_delta'):
         evidence=runtime['native_delta']
         runtime['bindings'] += [evidence[k] for k in ['result','closure','release']]+[r['receipt'] for r in evidence['receipts']]
@@ -219,7 +228,7 @@ def stage_job(config,job,out):
     runtime['bindings'].extend(binding(workspace/rel) for rel in [
         'tools/entry_chain_coqc.sh','tools/block/stock_scope_stdin_relay.py',
         'tools/block/entry_chain_compiler.py','tools/block/entry_chain.py',
-        'tools/block/entry_chain_resources.py','tools/block/proof_bindings.py','tools/block/binding_cache.py','tools/block/seed_bindings.py','tools/block/runtime_ignores.py','tools/block/entry_chain_process.py','tools/block/entry_chain_plan.py'])
+        'tools/block/entry_chain_resources.py','tools/block/proof_bindings.py','tools/block/binding_cache.py','tools/block/compiler_snapshot.py','tools/block/seed_bindings.py','tools/block/runtime_ignores.py','tools/block/entry_chain_process.py','tools/block/entry_chain_plan.py'])
     if sealed or config.get('prepared_tool_transition'):
         runtime['bindings'].extend(row['owned'] for row in transition['copies'])
     # One canonical path can occur in source and physical views. Refuse differing hashes.
@@ -244,6 +253,8 @@ def stage_job(config,job,out):
             retained['deltas']=[{'relative':name,'sha256':sha} for name,sha in sorted(deltas.items())]
             runtime['seed_binding_reference']=retained
         compact(runtime,config['seed_binding_reference']['descriptor'],workspace)
+    from compiler_snapshot import externalize
+    externalize(runtime,out/'BINDING-INVENTORY.json')
     save(out/'COPIES.json',copies);save(out/'RUNTIME.json',runtime)
     native=out/'native';native.mkdir()
     request={'runtime':str(out/'RUNTIME.json'),'runtime_sha256':digest(out/'RUNTIME.json'),
