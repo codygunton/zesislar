@@ -1,8 +1,9 @@
 import json
 """Run both collector phases without MCP, PET, or a proof."""
 from copy import deepcopy
-import concurrent.futures,importlib.util,os,subprocess,sys,tempfile,unittest
+import ast,concurrent.futures,importlib.util,inspect,os,subprocess,sys,tempfile,unittest
 from pathlib import Path
+from types import SimpleNamespace
 HERE=Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE/'code'))
 import proof_cache_key as key
@@ -73,6 +74,30 @@ class ToolTransition(unittest.TestCase):
    transitions.append({'relative':rel,'prepared':scratch.binding(dest),'successor':row})
   c['prepared_tool_transition']=transitions
   return c,workspace
+ def test_normal_prepare_rebinds_supplier_transition_without_refresh(self):
+  import clone_copy,restart_bindings,scratch
+  c,supplier=self.fixture();original=deepcopy(c);workspace=supplier.parent/(supplier.name+'-prepared')
+  self.addCleanup(lambda:__import__('shutil').rmtree(workspace,ignore_errors=True))
+  clone_copy.copytree(supplier,workspace)
+  restart_bindings.install_restart_tools(workspace,c,HERE)
+  c['prepared_workspace']=str(workspace)
+  # Execute prepare's actual final configuration block. No coqdep, compiler,
+  # admission, or refresh runs in this unit fixture.
+  body=ast.parse(inspect.getsource(scratch.prepare)).body[0].body
+  start=next(i for i,node in enumerate(body) if isinstance(node,ast.ImportFrom) and node.module=='end_run_cleanup')
+  end=next(i for i,node in enumerate(body) if isinstance(node,ast.Expr) and isinstance(node.value,ast.Call) and isinstance(node.value.func,ast.Name) and node.value.func.id=='check_declaration_target')
+  code=compile(ast.Module(body=body[start:end],type_ignores=[]),str(Path(scratch.__file__)),'exec')
+  exec(code,dict(vars(scratch),c=c,a=SimpleNamespace(end_cleanup='off')))
+  self.assertTrue(restart_bindings.verify_restart_runtime(c,HERE))
+  layout=json.loads((HERE/'TOOL-LAYOUT.json').read_text())
+  self.assertEqual(len(c['prepared_tool_transition']),len(layout))
+  for row in c['prepared_tool_transition']:
+   self.assertEqual(row['prepared'],scratch.binding(workspace/'tools'/row['relative']))
+   self.assertEqual(row['successor'],scratch.binding(HERE/layout[row['relative']]))
+   self.assertNotEqual(row['prepared']['path'],str(supplier/'tools'/row['relative']))
+  self.assertEqual(original['prepared_tool_transition'][0]['prepared']['path'],str(supplier/'tools'/original['prepared_tool_transition'][0]['relative']))
+  self.assertEqual((supplier/'tools/entry_chain_coqc.sh').read_text(),'exact old prepared tool')
+  self.assertNotEqual((workspace/'tools/entry_chain_coqc.sh').read_text(),'exact old prepared tool')
  def test_exact_old_tools_then_successor_install(self):
   import clone_copy,restart_bindings,scratch
   c,workspace=self.fixture();self.assertTrue(restart_bindings.verify_restart_runtime(c,HERE));copy=workspace.parent/(workspace.name+'-owned');self.addCleanup(lambda:__import__('shutil').rmtree(copy,ignore_errors=True));clone_copy.copytree(workspace,copy)

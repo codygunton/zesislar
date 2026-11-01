@@ -212,6 +212,11 @@ def sealed_rules_prefix(profile_binding,declarations_only,control_session):
     return selected,common(selected)
 
 
+def rebind_prepared_tools(c):
+    layout=json.loads((HERE/'TOOL-LAYOUT.json').read_text())
+    c['prepared_tool_transition']=[dict(relative=relative,prepared=binding(Path(c['prepared_workspace'])/'tools'/relative),successor=binding(HERE/source)) for relative,source in layout.items()]
+    __import__('restart_bindings').verify_restart_runtime(c,HERE)
+
 def prepare(a):
     from command_scope import require
     require()
@@ -427,6 +432,7 @@ def prepare(a):
     if a.rules and digest(workspace/modules[RULES])!=digest(a.rules):raise ValueError('The rules input changed during preparation.')
     from end_run_cleanup import policy as cleanup_policy
     c['end_of_run_cleanup']=cleanup_policy(a.end_cleanup=='on')
+    rebind_prepared_tools(c)
     check_declaration_target(c)
     save(out/'INPUTS.json',{'end_of_run_cleanup':c['end_of_run_cleanup'],'block':a.block,'entry':binding(a.entry_file),'rules':binding(a.rules) if a.rules else None,'fixed_statement':expected_statement,'native_source':binding(native),'baseline':baseline,'sizing':sizing,'memory_jobs':[pre,native_job],'completed_stock_measurements':binding(a.completed_stock_measurements) if a.completed_stock_measurements else None,'cache':a.cache,'cache_purpose':c['result_cache']['purpose'],'runtime_cache_enabled':c['cache_policy']['enabled'],'CPU_external_stop_seconds':search_budget,'memory_claim_report_multiplier':2,'memory_external_stop_bytes':native_job['physical_fence_bytes'],'physical_CPU_limit':'unlimited','no_tactic_timeout':True})
     prestage_sealed(c,out)
@@ -617,9 +623,7 @@ def refresh_memory(argv):
         compact(c,c['seed_binding_reference']['descriptor'],c['prepared_workspace'])
         check_proof_bindings(c)
     # New tools have identical owned shell bytes. Never write the old workspace.
-    layout=json.loads((HERE/'TOOL-LAYOUT.json').read_text())
-    c['prepared_tool_transition']=[dict(relative=relative,prepared=binding(Path(c['prepared_workspace'])/'tools'/relative),successor=binding(HERE/source)) for relative,source in layout.items()]
-    __import__('restart_bindings').verify_restart_runtime(c,HERE)
+    rebind_prepared_tools(c)
     original_inputs=args.prior_runtime.parent/'INPUTS.json'
     inputs=read_bound(binding(original_inputs)) if original_inputs.exists() else {}
     inputs.update(CPU_external_stop_seconds=search_budget,end_of_run_cleanup=c['end_of_run_cleanup'],memory_refresh={'prior_runtime':prior,'prepared_workspace_unchanged':True,'source_staging_repeated':False,'proof_calls':0,'claims_created':0},completed_stock_measurements=measurements,memory_jobs=c['jobs'])
