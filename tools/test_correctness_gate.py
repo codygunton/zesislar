@@ -2,6 +2,7 @@
 
 import fcntl
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -22,8 +23,15 @@ class GateClaimsTests(unittest.TestCase):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
         self.root = Path(self.directory.name)
+        self.fixture_environment = patch.dict(os.environ, {'ZESU_GUARD_STATE': str(self.root / 'guard-state'),
+                                                         'ZESU_GATE_LOCK': str(self.root / 'gate.lock')})
+        self.fixture_environment.start()
+        self.addCleanup(self.fixture_environment.stop)
         self.ledger = self.root / "LEDGER.json"
         self.lock = self.root / "LEDGER.lock"
+        for path in (self.ledger, self.lock, self.root / 'guard-state/coqc-reservations',
+                     Path(os.environ['ZESU_GATE_LOCK'] + '.mutex')):
+            self.assertTrue(path.is_relative_to(self.root))
         save(self.ledger, {"fixed_claims": {"healthy": 40}})
         self.policy = {"ledger": str(self.ledger), "lock": str(self.lock),
                        "claim_key": "gate-one", "claim_bytes": 30}

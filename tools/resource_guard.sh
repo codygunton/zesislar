@@ -495,11 +495,12 @@ live_reservations() {
     [ -e "$marker" ] || continue
     owner=${marker##*/}; owner=${owner%%.*}
     if ! kill -0 "$owner" 2>/dev/null; then
-      rm -f "$marker"; continue
+      # Keep unknown memory evidence. The shared ledger requires exact closure.
+      continue
     fi
     read -r child < "$marker" || continue
     if [[ "$child" =~ ^[0-9]+$ ]] && [ ! -d "$PROC_ROOT/$child" ]; then
-      rm -f "$marker"; continue
+      continue
     fi
     echo "$marker"
   done
@@ -745,7 +746,7 @@ module_memory_admission_reason() {
     [ -n "$marker" ] && markers+=("$marker")
   done < <(live_reservations)
   read -r total used available < <(memory)
-  python3 "$MEMORY_TOOL" admission --request-bytes "$MEMORY_CLAIM_BYTES" \
+  ZESU_GUARD_MUTEX_FD=7 python3 "$MEMORY_TOOL" admission --request-bytes "$MEMORY_CLAIM_BYTES" \
     --fallback-bytes "$(( MODULE_LIMIT_GIB * GIB ))" \
     --available-bytes "$available" --headroom-bytes "$(( MEMORY_HEADROOM_GIB * GIB ))" \
     --maximum-compilers "$MAX_COQC" --proc "$PROC_ROOT" "${markers[@]}"
@@ -761,12 +762,16 @@ reservation_class() {
 
 # A request has no file and holds no slot while it waits.
 reserve_coqc() {
-  local owner=$1 marker
+  local owner=$1 marker generation
   if ! [[ "$owner" =~ ^[0-9]+$ ]] || ! kill -0 "$owner" 2>/dev/null; then
     echo "resource guard: invalid reservation owner: $owner" >&2
     return 2
   fi
-  marker="$COQC_RESERVATIONS/$owner.$RANDOM.$RANDOM"
+  generation=$(cat /proc/sys/kernel/random/uuid) || return 2
+  if ! [[ "$generation" =~ ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$ ]]; then
+    echo "resource guard: cannot obtain a reservation generation" >&2; return 2
+  fi
+  marker="$COQC_RESERVATIONS/$owner.$generation"
   echo "$marker"
 }
 
@@ -876,6 +881,9 @@ confirm_coqc() {
       printf 'owner_start=%s\n' "$(process_start "$owner")" >> "$replacement" || {
         rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
       }
+      printf 'reservation_generation=%s\n' "${marker##*.}" >> "$replacement" || {
+        rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
+      }
       if diagnostic_probe; then
         local probe_tag=issue10
         [ "${ZESU_DIAGNOSTIC_PROBE:-0}" != cpu-only ] || probe_tag=issue10-cpu-only
@@ -885,10 +893,19 @@ confirm_coqc() {
           flock -u 7; exec 7>&-; return 2
         fi
       fi
-      if ! mv -f -- "$replacement" "$marker"; then
-        echo "resource guard: cannot publish reservation: $marker" >&2
+      local unified_status total used available
+      read -r total used available < <(memory)
+      ZESU_GUARD_MUTEX_FD=7 python3 "$MEMORY_TOOL" ledger-confirm --marker "$marker" --replacement "$replacement" \
+        --request-bytes "$MEMORY_CLAIM_BYTES" --available-bytes "$available"
+      unified_status=$?
+      if [ "$unified_status" -ne 0 ]; then
         rm -f -- "$replacement"
-        flock -u 7; exec 7>&-; return 2
+        if [ "$unified_status" -ne 3 ]; then
+          flock -u 7; exec 7>&-; return "$unified_status"
+        fi
+        flock -u 7; exec 7>&-
+        sleep "$POLL_SECONDS"
+        continue
       fi
       [ -z "$held" ] || note "RESUME reservation launch: $held"
       flock -u 7; exec 7>&-; return 0
@@ -923,6 +940,12 @@ mark_coqc() {
   # Marking the child must not restart the confirmation's launch window.
   touch -r "$marker" "$replacement"
   mv -f -- "$replacement" "$marker"
+  local unified_status
+  ZESU_GUARD_MUTEX_FD=7 python3 "$MEMORY_TOOL" ledger-mark --marker "$marker"
+  unified_status=$?
+  if [ "$unified_status" -ne 0 ] && [ "$unified_status" -ne 4 ]; then
+    flock -u 7; exec 7>&-; return "$unified_status"
+  fi
   flock -u 7
   exec 7>&-
 }
@@ -931,7 +954,14 @@ release_coqc() {
   local marker=$1
   exec 7>>"$GATE_MUTEX"
   flock 7
-  if reservation_path "$marker"; then rm -f "$marker"; fi
+  if reservation_path "$marker"; then
+    local unified_status
+    ZESU_GUARD_MUTEX_FD=7 python3 "$MEMORY_TOOL" ledger-release --marker "$marker"
+    unified_status=$?
+    if [ "$unified_status" -ne 0 ]; then
+      flock -u 7; exec 7>&-; return "$unified_status"
+    fi
+  fi
   flock -u 7
   exec 7>&-
 }
@@ -943,7 +973,12 @@ release_aggregate_reservations() {
   for marker in "$COQC_RESERVATIONS"/*; do
     [ -f "$marker" ] || continue
     if [ "$(sed -n '3s/^aggregate=//p' "$marker")" = "$slice" ]; then
-      rm -f "$marker"
+      local unified_status
+      ZESU_GUARD_MUTEX_FD=7 python3 "$MEMORY_TOOL" ledger-release --marker "$marker"
+      unified_status=$?
+      if [ "$unified_status" -ne 0 ]; then
+        flock -u 7; exec 7>&-; return "$unified_status"
+      fi
     fi
   done
   flock -u 7

@@ -17,7 +17,7 @@ import uuid
 
 from coqc_findlib import preflight
 from module_memory import measurement_claim
-from block.harness.code.admission_memory import projection
+from block.harness.code.admission_memory import projection, guard_lock
 
 
 TARGETS = {"check-fast", "check-iris"}
@@ -44,7 +44,7 @@ def save(path, value):
 
 @contextmanager
 def locked(path):
-    with Path(path).open("a") as stream:
+    with guard_lock(), Path(path).open("a") as stream:
         fcntl.flock(stream, fcntl.LOCK_EX)
         yield
 

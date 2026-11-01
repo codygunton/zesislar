@@ -166,3 +166,32 @@ It preserves a simultaneous foreign aggregate.
 Run it explicitly with `python -m unittest tools.block.harness.controller_cleanup_real_control`.
 It creates no Rocq process, PET process, compiler, or production claim.
 Normal unit discovery excludes this control because it needs the host user service.
+
+## Shared memory ledger
+
+Canonical jobs and shell compiler reservations use the canonical `LEDGER.json`.
+Both routes take `GATE_MUTEX` before `LEDGER.lock`.
+Shell helpers reuse the authenticated inherited mutex descriptor.
+They do not unlock the shell's descriptor.
+
+The ledger retains each token and its owner.
+The memory calculation groups only authenticated aggregate identities.
+It charges the largest approved booking once per aggregate.
+It charges verified current usage when that usage exceeds the booking.
+Unknown or conflicting identities retain separate full costs.
+Compiler slot counts remain separate.
+Growth updates use the same transaction and preserve the token file identity.
+The 175 GiB slice fence, 20 GiB headroom, and account limits remain unchanged.
+
+A token release requires its exact generation, file identity, and closed compiler leaf.
+Released token paths cannot serve another reservation.
+The ledger retains the largest aggregate booking until authenticated aggregate closure.
+A missing or replaced scope cannot silently release that booking.
+
+A rollout needs a reviewed inventory of every old writer.
+`prepare_legacy_rollout` builds a source-only seed without changing a live ledger.
+Old aggregates retain their full authenticated fences until closure.
+An old writer that can create an unrepresented aggregate blocks the rollout.
+Older gate worktrees also need the unified writer before their next launch.
+A managed tools checkout alone does not update an older Makefile or controller.
+Do not migrate live records or change running jobs without rollout approval.
