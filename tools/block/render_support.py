@@ -10,7 +10,7 @@ from check_data_only_lemmas import rocq_tokens, rocq_commands, command_imports
 from entry_bindings import check_binders, declared_binders, normalize_type
 from entry_schema import IDENTIFIER, ROCQ_NAME, contract_fields, source_module, verify_sources
 from function_names import FunctionNames, prefix_argument
-from witness_data import resolved_witness_data
+from witness_data import has_witness_slots, resolved_witness_data
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -705,8 +705,10 @@ def witness_mapping_source(value, fields, root, loaded):
         " (" + expression(argument, "mapping source argument") + ")"
         for argument in source["arguments"])
     prefix = ""
+    _, target_name, target_source = bound_symbol(qualified, fields, root)
+    if not generated_data and has_witness_slots(target_source, target_name):
+        raise ValueError("An existential mapping target requires complete source-resolved witness data.")
     if generated_data:
-        _, target_name, target_source = bound_symbol(qualified, fields, root)
         data = resolved_witness_data(target_source, target_name, value["data"])
         parameters = {row["name"]: row["type"] for row in value["parameters"]}
         for row in value["data"]["parameters"]:

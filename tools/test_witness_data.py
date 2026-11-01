@@ -37,7 +37,8 @@ Definition bytes : list (bv 8%N) := [].
             return dict(name=name, type="bv 64%N", value=None,
                         source=dict(kind="register", register=reg, width=64,
                                     provenance=provenance("source")))
-        return dict(name="data", parameters=[], slots=[
+        return dict(name="data", parameters=[], source_assertion=provenance("source"),
+                    value_sources=[provenance("choice"), provenance("bytes")], slots=[
             expression("count", "Z", "0%Z", "choice"),
             expression("frame", "list (bv 8%N)", "[]", "bytes"),
             register("loaded", "r1"), register("first", "r1"), register("second", "r2")])
@@ -118,6 +119,10 @@ Definition bytes : list (bv 8%N) := [].
             mapping["data"]["slots"].pop(1)
             with self.assertRaisesRegex(ValueError, "slot count"):
                 witness_mapping_source(mapping, fields, root, {"Support.Inputs", "Contracts.Target"})
+            del mapping["data"]
+            mapping.update(input_type="unit", witness_type="unit", input="ZesuWitnessUnit", mapping="I")
+            with self.assertRaisesRegex(ValueError, "complete source-resolved"):
+                witness_mapping_source(mapping, fields, root, {"Support.Inputs", "Contracts.Target"})
 
     def test_refuses_dependent_or_shadowed_telescope(self):
         with self.assertRaisesRegex(ValueError, "dependent product"):
@@ -133,10 +138,14 @@ Definition bytes : list (bv 8%N) := [].
                 source = root / "Array.v"
                 base = "11" if defect == "address" else "10"
                 owners = "(10%Z) ↦ₘ∗ [] ∗ " if defect == "duplicate" else ""
-                source.write_text('Definition array : iProp Sigma := ' + owners + '(' + base + '%Z) ↦ₘ∗ [].')
+                source.write_text('Definition array : iProp Sigma := "r1" ↦ᵣ RVal_Bits before ∗ "r2" ↦ᵣ RVal_Bits after ∗ ' + owners + '(' + base + '%Z) ↦ₘ∗ [].')
                 frame = data["slots"][1]
                 frame["source"] = dict(kind="array", provenance=dict(
                     path=str(source), sha256=hashlib.sha256(source.read_bytes()).hexdigest(), declaration="array"))
+                data["source_assertion"] = frame["source"]["provenance"]
+                for slot in data["slots"]:
+                    if slot["source"]["kind"] == "register":
+                        slot["source"]["provenance"] = data["source_assertion"]
                 frame["value"] = "[]" if defect == "value" else None
                 target = self.target.replace("10 ↦ₘ∗", "(10) ↦ₘ∗")
                 if defect:
@@ -145,6 +154,25 @@ Definition bytes : list (bv 8%N) := [].
                 else:
                     result = resolved_witness_data(target, "target", data)
                     self.assertIn("(([]),", result["source"])
+
+    def test_refuses_target_or_pure_conclusion_as_provenance(self):
+        for role in ("owner", "value", "pure"):
+            with self.subTest(role=role), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                data = self.fixture(root)
+                path = root / "Target.v"
+                path.write_text(self.target)
+                reference = dict(path=str(path), sha256=hashlib.sha256(path.read_bytes()).hexdigest(), declaration="target")
+                if role == "owner":
+                    data["source_assertion"] = reference
+                else:
+                    if role == "pure":
+                        path.write_text("Definition pure_fact : Prop := 0%Z = 0%Z.")
+                        reference.update(sha256=hashlib.sha256(path.read_bytes()).hexdigest(), declaration="pure_fact")
+                    data["value_sources"].append(reference)
+                    data["slots"][0]["source"]["provenance"] = reference
+                with self.assertRaisesRegex(ValueError, "target declaration|pure conclusion"):
+                    resolved_witness_data(self.target, "target", data)
 
 
 if __name__ == "__main__":

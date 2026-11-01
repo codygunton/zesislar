@@ -8,7 +8,7 @@ equalities.  Rocq must still check the emitted terms and their application.
 import hashlib
 from pathlib import Path
 
-from check_data_only_lemmas import atom, rocq_commands, rocq_tokens
+from check_data_only_lemmas import atom, rocq_commands, rocq_tokens, top_level_positions
 from entry_bindings import declared_binders, normalize_type
 
 
@@ -52,6 +52,18 @@ def _register_owners(body):
             continue
         result.append((token[1:-1], word))
     return result
+
+
+def has_witness_slots(source, name):
+    commands = [command for command in rocq_commands(source)
+                if [token for token, _ in command[:2]] == ["Definition", name]]
+    if len(commands) != 1:
+        raise ValueError("The witness target needs one source Definition.")
+    values = _words(commands[0])
+    position = values.index(":=") + 1
+    while position < len(values) and values[position] == "(":
+        position += 1
+    return values[position:position + 1] == ["∃"]
 
 
 def declared_witness_slots(source, name):
@@ -130,7 +142,7 @@ def value_spine(values):
     return result
 
 
-def _source_definition(binding):
+def _source_declaration(binding):
     from render_support import identifier, record
 
     record(binding, {"path", "sha256", "declaration"}, "witness source binding")
@@ -148,7 +160,39 @@ def _source_definition(binding):
     values = _words(commands[0])
     if ":=" not in values:
         raise ValueError("The witness source has no body.")
+    return values
+
+
+def _source_definition(binding):
+    values = _source_declaration(binding)
     return values[values.index(":=") + 1:]
+
+
+def _result_type(declaration):
+    signature = declaration[:declaration.index(":=")]
+    colons = top_level_positions(signature, {":"})
+    if len(colons) != 1:
+        raise ValueError("The witness source needs an explicit result type.")
+    return _unwrap(signature[colons[0] + 1:])
+
+
+def _check_sources(target_source, target, assertion, values):
+    commands = [command for command in rocq_commands(target_source)
+                if [token for token, _ in command[:2]] == ["Definition", target]]
+    target_declaration = _words(commands[0])
+    sources = [assertion] + values
+    declarations = [_source_declaration(binding) for binding in sources]
+    if len({(row["path"], row["declaration"]) for row in sources}) != len(sources):
+        raise ValueError("The witness source roles repeat a declaration.")
+    for index, declaration in enumerate(declarations):
+        if declaration == target_declaration:
+            raise ValueError("The target declaration cannot supply its own witness provenance.")
+        kind = _result_type(declaration)
+        if index == 0:
+            if not kind or kind[0].rsplit(".", 1)[-1] != "iProp":
+                raise ValueError("The forward source owner must be an assertion definition.")
+        elif any(token.rsplit(".", 1)[-1] in {"iProp", "Prop", "SProp", "Type", "Set"} for token in kind):
+            raise ValueError("A witness value source cannot be an assertion or a pure conclusion.")
 
 
 def _array_owners(source, name):
@@ -222,12 +266,14 @@ def resolved_witness_data(source, target, value):
     # Import lazily: render_support exposes this function to its callers.
     from render_support import binders, expression, identifier, record, sequence
 
-    record(value, {"name", "parameters", "slots"}, "witness data")
+    record(value, {"name", "parameters", "source_assertion", "value_sources", "slots"}, "witness data")
     name = identifier(value["name"], "witness data name")
     parameters = binders(value["parameters"], reserved=(name, "source_words"))
     layout = declared_witness_slots(source, target)
     if not layout["remaining"]:
         raise ValueError("The witness target has no remaining slots.")
+    value_sources = sequence(value["value_sources"], "witness value sources")
+    _check_sources(source, target, value["source_assertion"], value_sources)
     slots = sequence(value["slots"], "resolved witness slots")
     for slot in slots:
         record(slot, {"name", "type", "source", "value"}, "resolved witness slot")
@@ -240,6 +286,11 @@ def resolved_witness_data(source, target, value):
         if not isinstance(origin, dict) or not origin.get("provenance"):
             raise ValueError("The witness slot lacks its resolved source provenance.")
         source_body = _source_definition(origin["provenance"])
+        if origin.get("kind") in {"register", "array"}:
+            if origin["provenance"] != value["source_assertion"]:
+                raise ValueError("The witness owner differs from the bound forward source assertion.")
+        elif origin.get("kind") == "expression" and origin["provenance"] not in value_sources:
+            raise ValueError("The witness expression lacks an approved source value definition.")
         expected_register = layout["register_slots"].get(slot["name"])
         if expected_register is not None and (origin.get("kind") != "register" or
                                              origin.get("register") != expected_register):
