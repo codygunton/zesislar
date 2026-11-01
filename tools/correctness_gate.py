@@ -17,7 +17,7 @@ import uuid
 
 from coqc_findlib import preflight
 from module_memory import measurement_claim
-from block.harness.code.admission_memory import projection, guard_lock
+from block.harness.code.admission_memory import projection, guard_lock, check_test_ledger
 
 
 TARGETS = {"check-fast", "check-iris"}
@@ -44,6 +44,7 @@ def save(path, value):
 
 @contextmanager
 def locked(path):
+    check_test_ledger(Path(path).with_name('LEDGER.json'))
     with guard_lock(), Path(path).open("a") as stream:
         fcntl.flock(stream, fcntl.LOCK_EX)
         yield
@@ -298,7 +299,9 @@ def inside(out):
 
 
 def gate_environment(environment):
-    return dict(environment, ZESU_PROOF_CACHE='off')
+    result = dict(environment, ZESU_PROOF_CACHE='off')
+    result.pop('ZESU_TEST_ALLOW_LIVE_LEDGER', None)
+    return result
 
 
 def batch_fence_bytes(environment):

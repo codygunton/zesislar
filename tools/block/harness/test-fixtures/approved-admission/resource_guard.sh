@@ -66,6 +66,12 @@ if [ "${1:-}" = native-limit ]; then
   exit 0
 fi
 
+# Refuse test access before a reservation, mutex, or registry can be created.
+case "${1:-report}" in
+  reserve-coqc|confirm-coqc|mark-coqc|release-coqc|scope|scope-exec|batch|locked)
+    python3 "${ZESU_MODULE_MEMORY_TOOL:-$(dirname "$0")/module_memory.py}" test-ledger-policy || exit $? ;;
+esac
+
 # The hard per-job cap: what one `coqc` scope may use before the kernel
 # kills it. Ordinary wrappers use the configured gate module limit.
 GATE_MODULE_LIMIT_GIB=${ZESU_GATE_MODULE_LIMIT_GIB-16}

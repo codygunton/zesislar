@@ -23,7 +23,12 @@ from pathlib import Path
 import module_memory
 
 parser = argparse.ArgumentParser()
-parser.add_argument("operation", choices=("admission", "ledger-confirm", "ledger-mark", "ledger-release"))
+parser.add_argument("operation", choices=("admission", "ledger-confirm", "ledger-mark", "ledger-release", "test-ledger-policy", "aggregate-limit"))
+parser.add_argument("--guard-pid", type=int)
+parser.add_argument("--inner-fence-bytes", type=int)
+parser.add_argument("--booking-bytes", type=int)
+parser.add_argument("--explicit-limit-bytes", type=int)
+parser.add_argument("--gate-limit-bytes", type=int)
 parser.add_argument("--marker", type=Path)
 parser.add_argument("--replacement", type=Path)
 parser.add_argument("--request-bytes", type=int)
@@ -51,7 +56,13 @@ def admitted(markers):
         headroom_bytes=args.headroom_bytes, maximum_compilers=args.maximum_compilers,
         slice_max_bytes=175 * 1024**3)["admitted"]
 
-if args.operation == "admission":
+if args.operation == "test-ledger-policy":
+    module_memory.check_test_ledger()
+elif args.operation == "aggregate-limit":
+    print(module_memory._module.new_aggregate_limit(
+        args.inner_fence_bytes, args.booking_bytes,
+        explicit_limit_bytes=args.explicit_limit_bytes, gate_limit_bytes=args.gate_limit_bytes))
+elif args.operation == "admission":
     if not admitted(args.markers):
         print("fixture memory admission refused")
 elif args.operation == "ledger-confirm":

@@ -3,7 +3,7 @@
   "guard": {
     "source_path": "tools/block/harness/runtime-tools/resource_guard.sh",
     "approved_sha256": "27e5e6994aac7de81525698c5a070927b084eaa5fd04d7af029e3660317805ac",
-    "golden_sha256": "865e648b754a2a9bbb136686e4dd715c6b8f4baa279a48fdd57006606898b2df",
+    "golden_sha256": "d673063afbbcb3d2fffa4c8d111a723aefcf6e35a242f9f79b37c9e5853538bf",
     "main_adjustments": [
       [
         "guards share it for two seconds",
@@ -13,7 +13,8 @@
         "$(date +%s) - stamp >= 2",
         "$(date +%s) - stamp >= 10"
       ]
-    ]
+    ],
+    "isolation_delta": "Add the test-ledger-policy refusal before reservation, mutex, and registry creation."
   },
   "memory_policy": {
     "source_path": "tools/block/harness/code/memory_policy.py",

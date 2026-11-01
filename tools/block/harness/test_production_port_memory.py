@@ -127,6 +127,7 @@ class ProductionPortMemory(unittest.TestCase):
                          strict_loads=json.loads,atomic_json=save,
                          digest=lambda path:binding(Path(path))['sha256'],
                          canonical_functions=lambda policy:(lambda data,legacy:{},lambda:200*P.GIB))
+        namespace['check_test_ledger']=__import__('admission_memory').check_test_ledger
         exec(compile(ast.fix_missing_locations(ast.Module(body=[function],type_ignores=[])),
                      '<actual-full-fence-reserve>','exec'),namespace)
         policy = dict(memory_job=job,minimum_claim_bytes=32*P.GIB,

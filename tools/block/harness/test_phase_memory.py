@@ -48,6 +48,7 @@ class PolicyControls(unittest.TestCase):
   ledger=self.root/'ledger';ledger.write_text(json.dumps({'fixed_claims':{},'shell_marker_directory':str(markers)}));receipt=self.root/'admission';lock=self.root/'lock'
   def save(path,value):Path(path).write_text(json.dumps(value))
   namespace={'Path':Path,'fcntl':fcntl,'time':__import__('time'),'strict_loads':json.loads,'atomic_json':save,'digest':lambda path:binding(Path(path))['sha256'],'canonical_functions':lambda policy:(lambda data,legacy:{},lambda:200*P.GIB)}
+  namespace['check_test_ledger']=__import__('admission_memory').check_test_ledger
   exec(compile(ast.fix_missing_locations(ast.Module(body=[function],type_ignores=[])),'<actual-reserve>','exec'),namespace)
   job=P.apply_job(native(),ROWS);policy={'physical_fence_bytes':64*P.GIB,'minimum_claim_bytes':job['claim_bytes'],'memory_job':job,'lock':str(lock),'ledger':str(ledger),'legacy_release_bindings':{},'capture_headroom_bytes':0}
   reader=M.ScopeReader(proc=self.root/'proc',cgroup_root=self.root/'cgroup');reader.parent.mkdir(parents=True)

@@ -15,6 +15,10 @@ GUARD = TOOLS / "resource_guard.sh"
 sys.path.insert(0, str(TOOLS / "det"))
 
 import prom  # noqa: E402
+if __package__:
+    from .test_resource_guard import MEMORY_HELPER
+else:
+    from test_resource_guard import MEMORY_HELPER
 
 
 def fixture_environment(**changes):
@@ -133,6 +137,18 @@ class GuardLockTest(unittest.TestCase):
                      "ZESU_RESOURCE_GUARD", "ZESU_COQC_RESERVATION", "ZESU_COQC_SCOPE",
                      "ZESU_AGGREGATE_SLICE", "ZESU_AGGREGATE_LIMIT"):
             self.environment.pop(name, None)
+
+        accounting = base / "accounting"
+        accounting.mkdir()
+        ledger = accounting / "LEDGER.json"
+        ledger.write_text(json.dumps({"fixed_claims": {}, "region_claims": {}}))
+        cgroups = accounting / "cgroup"
+        cgroups.mkdir()
+        helper = accounting / "fixture_memory.py"
+        helper.write_text("import sys\nsys.path.insert(0, " + repr(str(TOOLS)) + ")\n" + MEMORY_HELPER)
+        self.environment.update(ZESU_CANONICAL_LEDGER=str(ledger),
+                                ZESU_CGROUP_ROOT=str(cgroups),
+                                ZESU_MODULE_MEMORY_TOOL=str(helper))
 
     def tearDown(self):
         self.directory.cleanup()
@@ -683,7 +699,7 @@ class GuardLockTest(unittest.TestCase):
         finally:
             self.guard("release-coqc", token)
 
-    def test_96_dead_owner_confirmations_do_not_block_a_compiler(self):
+    def test_96_dead_tokens_remain_immutable_and_do_not_block_a_compiler(self):
         self.enter_parent_fixture()
         self.writer_fixture()
         self.lock.unlink()
@@ -702,7 +718,9 @@ class GuardLockTest(unittest.TestCase):
                                 text=True, timeout=10)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(token.read_text().splitlines()[0], "confirmed")
-        self.assertTrue(all(not marker.exists() for marker in expired))
+        self.assertTrue(all(marker.read_bytes() == b"confirmed\nwriter=\naggregate=\n" for marker in expired))
+        self.environment["ZESU_MAX_COQC"] = "2"
+        self.assertEqual(self.guard("hold").stdout.strip(), "none")
         executed = Path(self.directory.name) / "executed"
         result = subprocess.run([str(GUARD), "scope-exec", str(token),
                                  "--", "touch", str(executed)],
@@ -791,7 +809,7 @@ class GuardLockTest(unittest.TestCase):
         self.assertEqual(self.guard("mark-coqc", str(token), str(os.getpid())).returncode, 0)
         self.assertAlmostEqual(token.stat().st_mtime, confirmed, places=4)
 
-    def test_dead_reservation_owner_and_child_are_removed(self):
+    def test_dead_owner_and_child_tokens_remain_immutable_and_do_not_consume_slots(self):
         self.writer_fixture()
         self.environment.update(ZESU_WRITER_ID="tf2", ZESU_MAX_COQC="1")
         directory = Path(self.environment["ZESU_GUARD_STATE"]) / "coqc-reservations"
@@ -802,8 +820,10 @@ class GuardLockTest(unittest.TestCase):
         dead_child.write_text("9000001\nwriter=tf2\naggregate=\n")
         token = self.reserve_writer("tf2")
         try:
-            self.assertFalse(dead_owner.exists())
-            self.assertFalse(dead_child.exists())
+            self.assertEqual(dead_owner.read_bytes(), b"confirmed\nwriter=tf2\naggregate=\n")
+            self.assertEqual(dead_child.read_bytes(), b"9000001\nwriter=tf2\naggregate=\n")
+            self.environment["ZESU_MAX_COQC"] = "2"
+            self.assertEqual(self.guard("hold").stdout.strip(), "none")
         finally:
             self.guard("release-coqc", token)
 
@@ -1030,6 +1050,7 @@ class GuardLockTest(unittest.TestCase):
 
     def test_single_proof_batch_accepts_64_gib_fence(self):
         self.environment["ZESU_BATCH_LIMIT"] = "64G"
+        self.environment["ZESU_AGGREGATE_LIMIT"] = "64G"
         result = self.guard("batch", "single", "--", "true")
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("MemoryMax=64G", result.stdout)
@@ -1082,6 +1103,7 @@ class GuardLockTest(unittest.TestCase):
         self.assertNotIn("MUST_NOT_RUN", result.stdout)
 
     def test_scope_and_batch_memory_fences(self):
+        self.environment["ZESU_AGGREGATE_LIMIT"] = "150G"
         for arguments, fence in (("scope", "MemoryMax=16G"),
                                  ("batch", "MemoryMax=150G")):
             with self.subTest(arguments=arguments):
@@ -1109,7 +1131,8 @@ class GuardLockTest(unittest.TestCase):
             with self.subTest(gate=gate):
                 events.unlink(missing_ok=True)
                 if gate:self.lock.write_text(f"state=held holder=fixture pid={os.getpid()} start=x\n")
-                env = {**self.environment, **({"ZESU_IN_GATE": "1"} if gate else {})}
+                env = {**self.environment, "ZESU_AGGREGATE_LIMIT": limit,
+                       **({"ZESU_IN_GATE": "1"} if gate else {})}
                 result = subprocess.run([str(GUARD), "batch", "parent", "--",
                                          sys.executable, str(command), str(GUARD)],
                                         env=env, capture_output=True, text=True, timeout=5)
@@ -1221,6 +1244,7 @@ class GuardLockTest(unittest.TestCase):
         self.assertEqual(list((Path(self.environment["ZESU_GUARD_STATE"]) / "launches").iterdir()), [])
 
     def test_direct_batch_waits_at_launch_limit(self):
+        self.environment["ZESU_AGGREGATE_LIMIT"] = "150G"
         self.environment["GUARD_TEST_USED_GIB"] = "226"
         result = subprocess.run(
             ["timeout", "0.2", str(GUARD), "batch", "test", "--", "true"],

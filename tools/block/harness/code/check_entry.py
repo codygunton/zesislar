@@ -422,11 +422,12 @@ def require_truth_gate(gate, case_ids, selected_case=None):
 
 def admission_status(runtime, *, available=None):
     """Check a preassigned Root claim. Never change or release the ledger."""
-    from admission_memory import projection, guard_lock
+    from admission_memory import projection, guard_lock, check_test_ledger
     policy = runtime['canonical_admission']
     sys.path.insert(0, policy['reviewed_helpers'])
     from claims import active_claims
     from io_helpers import memory_available
+    check_test_ledger(policy['ledger'])
     with guard_lock(), Path(policy['lock']).open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         data = strict_loads(Path(policy['ledger']).read_text())

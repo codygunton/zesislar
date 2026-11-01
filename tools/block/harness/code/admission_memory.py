@@ -12,6 +12,7 @@ import os
 from pathlib import Path
 import re
 import stat
+import sys
 
 GIB = 1024 ** 3
 HEADROOM_BYTES = 20 * GIB
@@ -919,8 +920,42 @@ def guard_lock():
         os.close(descriptor)
 
 
+def test_process():
+    """Recognize test runners even when a child removes inherited flags."""
+    if 'unittest' in sys.modules or 'pytest' in sys.modules or os.environ.get('PYTEST_CURRENT_TEST'):
+        return True
+    pid = os.getpid()
+    for _ in range(128):
+        try:
+            process = Path('/proc') / str(pid)
+            arguments = (process / 'cmdline').read_bytes().decode().split('\0')
+            fields = (process / 'stat').read_text().rsplit(')', 1)[1].split()
+        except (OSError, UnicodeError):
+            return False
+        names = [Path(value).name.lower() for value in arguments if value]
+        if (any(name in {'unittest', 'pytest', 'py.test'} for name in names)
+                or any(name.startswith('test_') and name.endswith('.py') for name in names)):
+            return True
+        parent = int(fields[1])
+        if parent <= 1 or parent == pid:
+            return False
+        pid = parent
+    raise ValueError('The test ancestry exceeds the supported process depth.')
+
+
+def check_test_ledger(ledger=None):
+    """Tests may use private ledgers; live accounting needs explicit consent."""
+    ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
+    live = ledger.resolve() == DEFAULT_LEDGER.resolve()
+    if not live and ledger.exists() and DEFAULT_LEDGER.exists():
+        live = ledger.samefile(DEFAULT_LEDGER)
+    if live and test_process() and os.environ.get('ZESU_TEST_ALLOW_LIVE_LEDGER') != '1':
+        raise ValueError('Tests refuse the live ledger without explicit live mode.')
+
+
 @contextmanager
 def ledger_transaction(ledger):
+    check_test_ledger(ledger)
     ledger = Path(ledger)
     if ledger.is_symlink() or ledger.name != 'LEDGER.json':
         raise ValueError('The unified ledger path is invalid.')
@@ -936,6 +971,7 @@ def ledger_transaction(ledger):
 
 
 def write_ledger(path, data):
+    check_test_ledger(path)
     path = Path(path)
     fd, name = tempfile.mkstemp(prefix='.LEDGER.', dir=path.parent)
     try:

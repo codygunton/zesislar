@@ -43,10 +43,11 @@ if _staged_tools is not None:
     current_projection = _module.current_projection
     mark_shell = _module.mark_shell
     refresh_shell_growth = _module.refresh_shell_growth
+    check_test_ledger = _module.check_test_ledger
     read_shell_bookings = _module.read_shell_bookings
     select_guard_aggregate_limit = _module.select_guard_aggregate_limit
 else:
-    from admission_memory import evaluate, ScopeReader, confirm_shell, release_shell, current_projection, mark_shell, refresh_shell_growth, read_shell_bookings, select_guard_aggregate_limit
+    from admission_memory import evaluate, ScopeReader, confirm_shell, release_shell, current_projection, mark_shell, refresh_shell_growth, check_test_ledger, read_shell_bookings, select_guard_aggregate_limit
 
 GIB = 1024 ** 3
 SCHEMA = "zesu.module-memory.v1"
@@ -318,6 +319,7 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
+    commands.add_parser("test-ledger-policy")
     claim = commands.add_parser("claim")
     claim.add_argument("--profile", type=Path, required=True)
     claim.add_argument("--cwd", type=Path, required=True)
@@ -348,6 +350,12 @@ def main():
     aggregate.add_argument('--explicit-limit-bytes', type=int)
     aggregate.add_argument('--gate-limit-bytes', type=int)
     args = parser.parse_args()
+    if args.command == 'test-ledger-policy':
+        try:
+            check_test_ledger()
+        except ValueError as error:
+            parser.exit(2, str(error) + '\n')
+        return 0
     if args.command == 'aggregate-limit':
         print(select_guard_aggregate_limit(args.guard_pid, args.inner_fence_bytes, args.booking_bytes,
               explicit_limit_bytes=args.explicit_limit_bytes, gate_limit_bytes=args.gate_limit_bytes))

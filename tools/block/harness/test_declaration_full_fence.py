@@ -227,6 +227,7 @@ class DeclarationFullFenceTests(unittest.TestCase):
         namespace=dict(Path=Path,fcntl=fcntl,time=__import__('time'),strict_loads=json.loads,
                        atomic_json=save,digest=lambda path:binding(Path(path))['sha256'],
                        canonical_functions=lambda policy:(lambda data,legacy:{},lambda:200*P.GIB))
+        namespace['check_test_ledger']=M.check_test_ledger
         exec(compile(ast.fix_missing_locations(ast.Module(body=[function],type_ignores=[])),
                      '<declaration-reserve>','exec'),namespace)
         job=self.job()
