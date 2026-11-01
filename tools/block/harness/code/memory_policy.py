@@ -139,6 +139,9 @@ PORT_KIND='production_stock_port'
 PORT_FENCE=32*GIB
 PORT_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-22.json'), 'sha256': 'ea88c0e9eab9e6e720e7fc2500407c065d82fd7a0feb12658783d4a761c79917'}
 PORT_AUTHORITY_23={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-23.json'), 'sha256': 'dbeedb2c4fcdc916939a9c5fc9ced3d07bc619244c1d8b41bfc91aacfb5052bd'}
+PORT_EFFECTIVE_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-EFFECTIVE-OVERRIDES-AUTHORITY-22.json'), 'sha256': '35c7e4a44203e761cb286bff7d95e83d81e08567bdb5dd0323dcd9667ffd8052'}
+PORT_EFFECTIVE_AUTHORITY_23={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-EFFECTIVE-OVERRIDES-AUTHORITY-23.json'), 'sha256': '9952675250ea9828e18a1f65741aeede06c9df7689f647da8375470862768bb1'}
+PORT_EFFECTIVE_EXTENSION={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-EFFECTIVE-OVERRIDES-EXTENSION.json'), 'sha256': '2f7f180cbad4da9c40c674c3a94a9d21e6f4fc9f1605300457ebf0c2ff5a8932'}
 PORT_HELDOUT_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-HELDOUT-RUN2-AUTHORITY.json'), 'sha256': '6133fc1d79d1ebc794e77e4ea366ce61bd73444b919d7924c7ea04e67d053c29'}
 PORT_HELDOUT_AUTHORITY_78={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-HELDOUT-RUN2-AUTHORITY-78.json'), 'sha256': '91772fc69bc3c82ab81d3bdfdc0fad4d8c766390f6c63204788a1def28b5ded2'}
 PORT_HELDOUT_MEMORY_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-HELDOUT-RUN2-AUTHORITY-78-MEMORY.json'), 'sha256': '126f646885ba8b8a9fcd733037757f68bd4260d847a30031c331a134125fa8d3'}
@@ -160,12 +163,15 @@ def relocated_authority(actual,expected,legacy_paths=()):
 def production_port_authority(profile):
  if set(profile) not in ({'schema','kind','authority','memory_route'},{'schema','kind','authority','memory_route','supplier_ready'}) or profile.get('schema')!='scratch.admission-profile.v1' or profile.get('kind')!=PORT_KIND or profile.get('memory_route')!='measured_native':
   raise ValueError('The production PORT profile is invalid.')
- extended=isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_AUTHORITY_23['sha256']
+ extended=isinstance(profile['authority'],dict) and profile['authority'].get('sha256') in {PORT_AUTHORITY_23['sha256'],PORT_EFFECTIVE_AUTHORITY_23['sha256']}
+ effective=isinstance(profile['authority'],dict) and profile['authority'].get('sha256') in {PORT_EFFECTIVE_AUTHORITY['sha256'],PORT_EFFECTIVE_AUTHORITY_23['sha256']}
  corrected=isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_MEMORY_AUTHORITY['sha256']
  heldout78=isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_AUTHORITY_78['sha256']
  heldout=corrected or heldout78 or isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_AUTHORITY['sha256']
  expected=PORT_HELDOUT_MEMORY_AUTHORITY if corrected else PORT_HELDOUT_AUTHORITY_78 if heldout78 else PORT_HELDOUT_AUTHORITY if heldout else PORT_AUTHORITY_23 if extended else PORT_AUTHORITY
+ if effective:expected=PORT_EFFECTIVE_AUTHORITY_23 if extended else PORT_EFFECTIVE_AUTHORITY
  legacy_paths=('/home/cody/zesislar/_build/agents/worker-build-1/new6974-bindings291/extension002/PORT-FAMILY-AUTHORITY-23.json',) if extended else ('/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/matrix005-authority-v1/PORT-FAMILY-AUTHORITY-22.json', '/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/PORT-FAMILY-AUTHORITY-22.json')
+ if effective:legacy_paths=('/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-authority-v1/PORT-FAMILY-AUTHORITY-23.json' if extended else '/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-authority-v1/PORT-FAMILY-AUTHORITY-22.json',)
  if not relocated_authority(profile['authority'],expected,legacy_paths):raise ValueError('The production PORT authority is not authorized.')
  authority=read(profile['authority'])
  if (authority.get('schema')!='port.production-stock-family-authority.v1' or
@@ -182,9 +188,11 @@ def production_port_authority(profile):
   cases=authority['cases']
   released_cases=cases[:-1] if extended else cases
   case_count=23 if extended else 22
-  extension=read(PORT_EXTENSION)
+  extension_binding=PORT_EFFECTIVE_EXTENSION if effective else PORT_EXTENSION
+  extension_paths=('/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-authority-v1/EXTENSION.json',) if effective else ('/home/cody/zesislar/_build/agents/worker-build-2/native-port-policy-v1/source014-authority22-caller002-extension/EXTENSION.json', '/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/EXTENSION.json')
+  extension=read(extension_binding)
   read(extension['exit_queue'])
-  if (extension.get('case_count')!=22 or not relocated_authority(authority.get('authority_extension'),PORT_EXTENSION,('/home/cody/zesislar/_build/agents/worker-build-2/native-port-policy-v1/source014-authority22-caller002-extension/EXTENSION.json', '/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/EXTENSION.json'))
+  if (extension.get('case_count')!=22 or not relocated_authority(authority.get('authority_extension'),extension_binding,extension_paths)
       or released_cases!=extension['original_cases']+extension['additional_cases']
       or len(cases)!=case_count or len({r['block'] for r in cases})!=case_count or len({r['module'] for r in cases})!=case_count):
    raise ValueError('The production PORT case set differs from the exact released inventory.')
