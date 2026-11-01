@@ -382,11 +382,10 @@ def _active_paths(runtime, rows):
                 require(prior is None or prior['sha256'] == row['sha256'],
                         'A current metadata binding conflicts with a retained row.')
                 by_path[row['path']] = row
-            # The flat list is historical lineage. Every other runtime field
-            # remains current, including producer-input declarations.
-            for key, item in value.items():
-                if key not in {'bindings', 'binding_inventory'}:
-                    visit(item)
+            # Only the top runtime's historical lists are excluded below.
+            # Every nested field remains a potentially consumed current input.
+            for item in value.values():
+                visit(item)
         elif isinstance(value, list):
             for item in value:
                 visit(item)
@@ -402,11 +401,6 @@ def _active_paths(runtime, rows):
                 # configuration dependency behind the producer receipt.
                 payload = read(row)
                 visit(payload)
-                # A nested runtime can still be consumed by a legacy route.
-                # Keep its entire row list conservatively until that route has
-                # its own checked receipt integration.
-                if isinstance(payload, dict) and 'bindings' in payload:
-                    visit(payload['bindings'])
 
     visit({key: value for key, value in runtime.items()
            if key not in {'bindings', 'binding_inventory'}})

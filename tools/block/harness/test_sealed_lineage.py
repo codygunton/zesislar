@@ -134,6 +134,24 @@ class SealedLineage(unittest.TestCase):
         self.assertIn(target, proposal['retained_rows'])
         self.assertIn(config, proposal['retained_rows'])
 
+    def test_nested_inline_binding_remains_current(self):
+        self.fixture.ready['consumer'] = {'bindings': [self.history]}
+        reference = self.publish()
+        proposal = seal.project(self.fixture.ready, reference)
+        self.assertIn(self.history, proposal['retained_rows'])
+        self.assertNotIn(self.history, proposal['encapsulated_rows'])
+
+    def test_nested_binding_inventory_retains_its_transitive_rows(self):
+        inventory = self.fixture.save('consumer-inputs.json', {
+            'schema': 'entry-chain.bindings.v1', 'bindings': [self.history]})
+        self.fixture.ready['bindings'].append(inventory)
+        self.fixture.ready['consumer'] = {'binding_inventory': inventory}
+        reference = self.publish()
+        proposal = seal.project(self.fixture.ready, reference)
+        for row in [inventory, self.history]:
+            self.assertIn(row, proposal['retained_rows'])
+            self.assertNotIn(row, proposal['encapsulated_rows'])
+
     def test_unknown_current_json_keeps_legacy_validation(self):
         config = self.fixture.save('unknown.json', {'fixture': True})
         self.fixture.ready['unknown_current_file'] = config['path']
