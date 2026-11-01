@@ -4,6 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 import sys
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -134,6 +135,22 @@ class HeldoutPortTests(unittest.TestCase):
     self.assertNotIn('PRIVATE',json.dumps(visible))
     self.assertEqual(visible['group_counts'],{'active':1})
   self.assertFalse(H.selected('800d6974'))
+
+ def test_successor_layout_installs_the_authority_helper(self):
+  layout=json.loads((HERE/'TOOL-LAYOUT.json').read_bytes())
+  self.assertEqual(layout['block/port_heldout_authority.py'],'code/port_heldout_authority.py')
+  tools=self.root/'tools'
+  for name in ['block/port_heldout_authority.py','block/memory_policy.py']:
+   target=tools/name;target.parent.mkdir(parents=True,exist_ok=True)
+   target.write_bytes((HERE/layout[name]).read_bytes())
+  self.save_authority()
+  script=('import sys,json; from pathlib import Path; '
+          'sys.path.insert(0,sys.argv[1]); import port_heldout_authority as H; '
+          'assert Path(H.__file__).parent==Path(sys.argv[1]); '
+          'H.validate(json.loads(Path(sys.argv[2]).read_bytes()))')
+  result=subprocess.run([sys.executable,'-I','-B','-c',script,str(tools/'block'),
+                         str(self.authority_path)],capture_output=True,text=True)
+  self.assertEqual(result.returncode,0,result.stderr)
 
 
 if __name__=='__main__':unittest.main()
