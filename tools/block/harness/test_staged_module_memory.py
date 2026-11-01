@@ -180,7 +180,7 @@ compiler.main()
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('lacks its owned det dependency', result.stderr)
 
-    def measured_snapshot_fixture(self, *, multiple=False):
+    def measured_snapshot_fixture(self, *, multiple=False, emit_sidecar=True):
         """Use a fake executable at the physical boundary. Run no Rocq process."""
         import compiler_snapshot as snapshots
         from entry_chain import binding, save
@@ -190,14 +190,21 @@ compiler.main()
         compiler.parent.mkdir(parents=True)
         compiler.write_text('#!/usr/bin/python3\nimport json,os,pathlib,sys\n'
             'print(json.dumps({"key_present":"ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY" in os.environ}))\n'
-            'pathlib.Path(sys.argv[-1]).with_suffix(".vo").write_text("nonproof fake output")\n')
+            'pathlib.Path(sys.argv[-1]).with_suffix(".vo").write_text("nonproof fake output")\n'
+            + ('sidecar=pathlib.Path(sys.argv[-1]).with_suffix(".vos")\n'
+               'if not sidecar.exists():sidecar.write_bytes(b"")\n' if emit_sidecar else ''))
         compiler.chmod(0o755)
         runtime = json.loads(path.read_text())
         runtime['physical_compiler']=binding(compiler)
         runtime['bindings'] = [binding(row['path']) for row in runtime['bindings']] + [binding(compiler)]
         if multiple:
-            second=self.tools.parent/'Second.v';second.write_text('Second nonproof source fixture.\n')
-            runtime['module_files']['Second']='Second.v'
+            artifacts=self.tools.parent/'artifacts/default';artifacts.mkdir(parents=True)
+            moved=artifacts/source.name;shutil.copyfile(source,moved);source=moved
+            runtime['module_files']['Control']=str(source.relative_to(self.tools.parent))
+            runtime['bindings'].append(binding(source))
+            (self.tools.parent/'default').symlink_to('artifacts/default',target_is_directory=True)
+            second=artifacts/'Second.v';second.write_text('Second nonproof source fixture.\n')
+            runtime['module_files']['Second']=str(second.relative_to(self.tools.parent))
             runtime['bindings'].append(binding(second))
             donor=self.root/'donor';donor.mkdir()
             self.donor_rows=[]
@@ -208,7 +215,7 @@ compiler.main()
                 original.with_suffix('.vo').write_bytes(obj.read_bytes())
             runtime['bindings'].extend(self.donor_rows)
             runtime['ordered_modules']=['Control','Second']
-            runtime['physical_flags']=['-Q',str(self.tools.parent),'Fixture']
+            runtime['physical_flags']=['-Q',str(self.tools.parent/'default'),'Fixture']
             runtime['declared_outputs']=snapshots.declared_outputs(runtime['module_files'],
                 runtime['ordered_modules'],self.tools.parent,runtime['bindings'],donor=donor)
         snapshots.externalize(runtime, self.root / 'BINDINGS.json')
@@ -220,8 +227,8 @@ compiler.main()
             output / 'SNAPSHOT.json',compiler=compiler,environment={})
         ledger = snapshots.OutputReceipts(snapshots.read(reference, runtime_reference), reference)
         self.output_receipts=ledger
-        invocation = output / 'invocation'
-        invocation.mkdir()
+        invocation = output / 'compiler-invocations/invocation'
+        invocation.mkdir(parents=True)
         save(invocation / 'INPUT.json', {'owned_workspace': str(self.tools.parent),
             'source': binding(source), 'compiler': binding(compiler),
             'physical_argv': [str(compiler), *runtime['physical_flags'], str(source)],
@@ -282,7 +289,7 @@ compiler.main()
         self.assertTrue(objects.isdisjoint({row['path'] for row in snapshot['rows']}))
         self.assertTrue(all(not Path(path).exists() for path in objects))
         for number,name in enumerate(['Control.v','Second.v','Control.v']):
-            selected=self.tools.parent/name
+            selected=self.tools.parent/runtime['module_files'][Path(name).stem]
             current=invocation if number==0 else invocation.with_name('invocation'+str(number))
             current.mkdir(exist_ok=True)
             record=dict(template,source=binding(selected),
@@ -293,13 +300,70 @@ compiler.main()
             self.assertEqual(json.loads(result.stdout),{'key_present':False})
             check_proof_bindings(runtime,force_full=True)
             self.output_receipts.accept(selected,selected.with_suffix('.vo'),
-                record['compiler']['path'],runtime['physical_flags'],{'success':True,'returncode':0})
+                record['compiler']['path'],runtime['physical_flags'],{'success':True,'returncode':0},
+                physical_result=binding(current/'PHYSICAL-RESULT.json'))
             self.assertEqual([binding(row['path']) for row in self.donor_rows],self.donor_rows)
+            physical=json.loads((current/'PHYSICAL-RESULT.json').read_text())
+            inputs=json.loads((current/'INPUT.json').read_text())
+            expected='retained_authenticated_output' if number==2 else 'absent'
+            self.assertEqual(inputs['sidecar_prestate']['state'],expected)
+            if number==2:
+                self.assertEqual(inputs['sidecar_prestate']['prior_receipt'],self.output_receipts.rows[0])
+                self.assertEqual(physical['compiler_outputs']['sidecar_status'],'retained_authenticated_output')
         self.assertEqual(len(self.output_receipts.rows),3)
         final=snapshots.validate_compiler(runtime,template['validation']['runtime'],
             template['validation']['snapshot'],binding(source),template['physical_argv'][0],
             output_key=self.output_receipts.key)
         self.assertEqual(len(final['accepted_dependency_objects']),3)
+
+    def test_missing_compiler_sidecar_keeps_actual_physical_result(self):
+        invocation,environment,source,runtime=self.measured_snapshot_fixture(emit_sidecar=False)
+        result=self.measure_dispatch(invocation,environment)
+        self.assertNotEqual(result.returncode,0)
+        physical=json.loads((invocation/'PHYSICAL-RESULT.json').read_text())
+        self.assertEqual(physical['returncode'],0)
+        self.assertFalse(physical['output_validation']['success'])
+        self.assertTrue(source.with_suffix('.vo').is_file())
+        self.assertFalse(source.with_suffix('.vos').exists())
+        self.assertEqual(self.output_receipts.rows,[])
+
+    def test_independently_introduced_empty_sidecar_refuses_before_coqc(self):
+        invocation,environment,source,runtime=self.measured_snapshot_fixture(multiple=True)
+        source.with_suffix('.vos').write_bytes(b'')
+        result=self.measure_dispatch(invocation,environment)
+        self.assertNotEqual(result.returncode,0)
+        self.assertIn('lacks a validated receipt',result.stderr)
+        self.assertFalse((invocation/'PHYSICAL-RESULT.json').exists())
+        self.assertFalse(source.with_suffix('.vo').exists())
+
+    def retained_sidecar_fixture(self):
+        from entry_chain import binding,save
+        invocation,environment,source,runtime=self.measured_snapshot_fixture(multiple=True)
+        result=self.measure_dispatch(invocation,environment)
+        self.assertEqual(result.returncode,0,result.stderr)
+        original=json.loads((invocation/'INPUT.json').read_text())
+        self.output_receipts.accept(source,source.with_suffix('.vo'),original['compiler']['path'],
+            runtime['physical_flags'],{'success':True},physical_result=binding(invocation/'PHYSICAL-RESULT.json'))
+        next_invocation=invocation.with_name('second');next_invocation.mkdir()
+        save(next_invocation/'INPUT.json',original)
+        return next_invocation,environment,source,runtime
+
+    def test_retained_sidecar_mutation_refuses_before_recompile(self):
+        invocation,environment,source,runtime=self.retained_sidecar_fixture()
+        source.with_suffix('.vos').write_bytes(b'changed sidecar')
+        result=self.measure_dispatch(invocation,environment)
+        self.assertNotEqual(result.returncode,0)
+        self.assertIn('accepted compilation input changed',result.stderr)
+        self.assertFalse((invocation/'PHYSICAL-RESULT.json').exists())
+
+    def test_retained_sidecar_same_byte_replacement_refuses_before_recompile(self):
+        invocation,environment,source,runtime=self.retained_sidecar_fixture()
+        sidecar=source.with_suffix('.vos');replacement=sidecar.with_suffix('.replacement')
+        replacement.write_bytes(sidecar.read_bytes());replacement.replace(sidecar)
+        result=self.measure_dispatch(invocation,environment)
+        self.assertNotEqual(result.returncode,0)
+        self.assertIn('object identity changed',result.stderr)
+        self.assertFalse((invocation/'PHYSICAL-RESULT.json').exists())
 
 
 if __name__ == '__main__':

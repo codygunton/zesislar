@@ -200,13 +200,47 @@ class CompilerSnapshotTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'during input hashing'):
                 S.validate_compiler(self.runtime, self.reference, reference, self.source_binding, self.compiler)
 
+    def accept_output(self,ledger,obj,source=None,before_accept=None):
+        """Create labelled nonproof physical data. Invoke no compiler or admission."""
+        source=source or self.source
+        source_row=binding(source);compiler=binding(self.compiler)
+        report={'snapshot':ledger.reference,'producer':ledger.snapshot['producer'],
+                'accepted_dependency_identities':[]}
+        for reference in ledger.rows:
+            receipt=json.loads(Path(reference['path']).read_text())
+            artifact=receipt['sidecar']
+            report['accepted_dependency_identities']=[row for row in report['accepted_dependency_identities']
+                if row['canonical_path']!=artifact['canonical_path']]
+            report['accepted_dependency_identities'].append(dict(artifact['binding'],
+                identity=artifact['identity'],namespace=artifact['namespace'],
+                canonical_path=artifact['canonical_path'],source=receipt['source'],kind='vos',
+                primary_object=receipt['object']['path'],receipt=reference))
+        before=S.sidecar_prestate(source_row,obj,compiler,self.runtime['physical_flags'],report)
+        sidecar=obj.with_suffix('.vos')
+        if not sidecar.exists():sidecar.write_bytes(b'')
+        directory=self.root/'compiler-invocations'/('%032x'%len(ledger.rows))
+        directory.mkdir(parents=True)
+        argv=[compiler['path'],*self.runtime['physical_flags'],source_row['path']]
+        inputs=S._publish(directory/'INPUT.json',{'source':source_row,'compiler':compiler,
+            'physical_argv':argv,'sidecar_prestate':before,
+            'validation':{'runtime':ledger.snapshot['runtime'],'snapshot':ledger.reference}})
+        physical=S._publish(directory/'PHYSICAL-RESULT.json',{'input':inputs,'physical_argv':argv,
+            'returncode':0,'output_capture':{'complete':True},'output_validation':{'success':True},
+            'compiler_outputs':S.compiler_outputs(obj,before),'fixture':'Nonproof test data.'})
+        if before_accept is not None:before_accept(sidecar)
+        return ledger.accept(source,obj,self.compiler,self.runtime['physical_flags'],{'success':True},physical_result=physical)
+
     def outputs(self):
+        source=self.library/'Later.v'
+        source.write_text('nonproof generated source fixture')
+        self.source=source;self.source_binding=binding(source)
+        self.runtime['bindings'].append(self.source_binding)
         reference = self.seal()
         snapshot = self.read(reference)
         ledger = S.OutputReceipts(snapshot, reference)
         obj = self.library / 'Later.vo'
         obj.write_text('object from a successful nonproof fixture')
-        receipt = ledger.accept(self.source, obj, self.compiler, self.runtime['physical_flags'], {'success': True})
+        receipt = self.accept_output(ledger,obj)
         return reference, snapshot, ledger, obj, receipt
 
     def validate_outputs(self, reference, ledger):
@@ -250,7 +284,7 @@ class CompilerSnapshotTests(unittest.TestCase):
         reference,snapshot,ledger,obj,receipt=self.aliased_outputs()
         original=json.loads(Path(receipt['path']).read_text())['object_identity']
         obj.write_bytes(obj.read_bytes())
-        second=ledger.accept(self.source,obj,self.compiler,self.runtime['physical_flags'],{'success':True})
+        second=self.accept_output(ledger,obj)
         self.assertNotEqual(original,json.loads(Path(second['path']).read_text())['object_identity'])
         self.assertEqual(len(self.validate_outputs(reference,ledger)['accepted_dependency_objects']),2)
 
@@ -287,9 +321,8 @@ class CompilerSnapshotTests(unittest.TestCase):
         reference,snapshot,ledger,obj,receipt=self.aliased_outputs()
         different=self.root/'Different.v'
         different.write_bytes(self.source.read_bytes())
-        ledger.accept(different,obj,self.compiler,self.runtime['physical_flags'],{'success':True})
-        with self.assertRaisesRegex(ValueError,'receipts conflict'):
-            self.validate_outputs(reference,ledger)
+        with self.assertRaisesRegex(ValueError,'preexisting compiler sidecar'):
+            self.accept_output(ledger,obj,source=different)
 
     def test_legacy_object_receipt_cannot_invent_identity(self):
         publish=S._publish
@@ -313,6 +346,72 @@ class CompilerSnapshotTests(unittest.TestCase):
         with patch.object(S,'hash_inputs',side_effect=replaced):
             with self.assertRaisesRegex(ValueError,'accepted object changed during input hashing'):
                 self.validate_outputs(reference,ledger)
+
+    def test_sidecar_is_bound_to_the_successful_physical_record(self):
+        reference,snapshot,ledger,obj,receipt=self.aliased_outputs()
+        value=json.loads(Path(receipt['path']).read_text())
+        self.assertEqual(value['sidecar']['binding'],binding(obj.with_suffix('.vos')))
+        self.assertEqual(value['sidecar_prestate']['state'],'absent')
+        self.assertEqual(value['sidecar_status'],'compiled_output')
+        self.assertEqual(Path(value['physical_result']['path']).stat().st_mode&0o777,0o600)
+        report=self.validate_outputs(reference,ledger)
+        marker=next(row for row in report['accepted_dependency_identities'] if row['kind']=='vos')
+        self.assertEqual(marker['receipt'],receipt)
+        self.assertEqual(marker['primary_object'],str(obj))
+        self.assertEqual(marker['source'],binding(self.source))
+
+    def test_absent_sidecar_cannot_appear_before_physical_dispatch(self):
+        reference=self.seal()
+        report=S.validate_compiler(self.runtime,self.reference,reference,self.source_binding,self.compiler)
+        before=S.sidecar_prestate(self.source_binding,self.source.with_suffix('.vo'),
+            binding(self.compiler),self.runtime['physical_flags'],report)
+        self.source.with_suffix('.vos').write_bytes(b'')
+        with self.assertRaisesRegex(ValueError,'sidecar appeared'):
+            S.check_sidecar_prestate(before)
+
+    def test_initial_bound_sidecar_is_not_this_runs_output(self):
+        sidecar=self.source.with_suffix('.vos');sidecar.write_bytes(b'')
+        self.runtime['bindings'].append(binding(sidecar))
+        reference=self.seal()
+        report=S.validate_compiler(self.runtime,self.reference,reference,self.source_binding,self.compiler)
+        with self.assertRaisesRegex(ValueError,'preexisting compiler sidecar'):
+            S.sidecar_prestate(self.source_binding,self.source.with_suffix('.vo'),
+                binding(self.compiler),self.runtime['physical_flags'],report)
+
+    def test_retained_sidecar_is_rechecked_immediately_before_dispatch(self):
+        reference,snapshot,ledger,obj,receipt=self.aliased_outputs()
+        report=self.validate_outputs(reference,ledger)
+        before=S.sidecar_prestate(self.source_binding,obj,binding(self.compiler),self.runtime['physical_flags'],report)
+        self.assertEqual(before['prior_receipt'],receipt)
+        sidecar=obj.with_suffix('.vos');replacement=sidecar.with_suffix('.replacement')
+        replacement.write_bytes(sidecar.read_bytes());replacement.replace(sidecar)
+        with self.assertRaisesRegex(ValueError,'sidecar changed before compilation'):
+            S.check_sidecar_prestate(before)
+
+    def test_post_compile_sidecar_replacement_cannot_publish_receipt(self):
+        reference,snapshot,ledger,obj,receipt=self.aliased_outputs()
+        def replace(sidecar):
+            other=sidecar.with_suffix('.replacement');other.write_bytes(sidecar.read_bytes());other.replace(sidecar)
+        with self.assertRaisesRegex(ValueError,'output changed after its physical record'):
+            self.accept_output(ledger,obj,before_accept=replace)
+        self.assertEqual(len(ledger.rows),1)
+
+    def test_changed_physical_record_refuses(self):
+        reference,snapshot,ledger,obj,receipt=self.aliased_outputs()
+        record=json.loads(Path(receipt['path']).read_text())
+        Path(record['physical_result']['path']).write_text('{}')
+        with self.assertRaisesRegex(ValueError,'snapshot hash differs'):
+            self.validate_outputs(reference,ledger)
+
+    def test_conflicting_object_hash_receipts_still_refuse(self):
+        reference,snapshot,ledger,obj,receipt=self.aliased_outputs()
+        obj.write_text('different physical output for the same source')
+        self.accept_output(ledger,obj)
+        self.assertNotEqual(json.loads(Path(ledger.rows[0]['path']).read_text())['object']['sha256'],
+                            json.loads(Path(ledger.rows[1]['path']).read_text())['object']['sha256'])
+        # Either the current-input guard or the conflicting-receipt guard must refuse.
+        with self.assertRaises(ValueError):
+            self.validate_outputs(reference,ledger)
 
     def test_changed_produced_object_refuses(self):
         reference, snapshot, ledger, obj, receipt = self.outputs()
@@ -366,9 +465,9 @@ class CompilerSnapshotTests(unittest.TestCase):
         snapshot = self.read(reference)
         ledger = S.OutputReceipts(snapshot, reference)
         old = (ledger.root / 'INDEX.json').read_bytes()
-        obj = self.library / 'Later.vo'
+        obj = self.source.with_suffix('.vo')
         obj.write_text('nonproof output')
-        ledger.accept(self.source, obj, self.compiler, self.runtime['physical_flags'], {'success': True})
+        self.accept_output(ledger,obj)
         (ledger.root / 'INDEX.json').write_bytes(old)
         with self.assertRaisesRegex(ValueError, 'stale or a receipt is absent'):
             self.validate_outputs(reference, ledger)
