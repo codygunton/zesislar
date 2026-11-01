@@ -34,6 +34,38 @@ class ArithmeticTests(unittest.TestCase):
         r=self.evaluate({'active':60},10,100,observations={'active':self.sample(live=200)})
         self.assertEqual(r['unrealized_claim_bytes'],0)
 
+    def test_live_usage_above_booking_refuses_at_slice_cap(self):
+        r=self.evaluate({'active':60},11,10000,observations={'active':self.sample(live=970)})
+        self.assertFalse(r['fits'])
+        self.assertEqual(r['active_claim_bytes'],60)
+        self.assertEqual(r['accounted_active_bytes'],970)
+        self.assertEqual(r['live_over_booking_bytes'],910)
+        self.assertEqual(r['requested_total_bytes'],981)
+        self.assertEqual(r['unrealized_claim_bytes'],0)
+        self.assertTrue(self.evaluate({'active':60},10,10000,
+            observations={'active':self.sample(live=970)})['fits'])
+
+    def test_booking_remains_floor_for_verified_live_usage(self):
+        r=self.evaluate({'active':60},20,100,observations={'active':self.sample(live=40)})
+        self.assertEqual(r['accounted_active_bytes'],60)
+        self.assertEqual(r['live_over_booking_bytes'],0)
+        self.assertEqual(r['claim_observations']['active']['accounted_bytes'],60)
+        self.assertTrue(r['fits'])
+
+    def test_unverified_over_booking_value_cannot_change_accounting(self):
+        r=self.evaluate({'active':60},20,100,
+            observations={'active':dict(verified=False,live_bytes=10000)})
+        self.assertEqual(r['accounted_active_bytes'],60)
+        self.assertEqual(r['credited_live_bytes'],0)
+        self.assertFalse(r['fits'])
+
+    def test_conflicting_scopes_keep_overage_without_credit(self):
+        r=self.evaluate({'a':40,'b':40},1,100,
+            observations={'a':self.sample(live=200), 'b':self.sample(live=200)})
+        self.assertEqual(r['accounted_active_bytes'],400)
+        self.assertEqual(r['credited_live_bytes'],0)
+        self.assertFalse(r['fits'])
+
     def test_seventy_percent_boundary_is_exact(self):
         self.assertTrue(self.evaluate({'unknown':50},20,100)['fits'])
         self.assertFalse(self.evaluate({'unknown':50},21,100)['fits'])
