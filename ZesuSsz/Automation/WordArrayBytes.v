@@ -44,6 +44,8 @@ Class ZesuConcreteWords (words : list (bv 64)) : Prop :=
 Global Instance zesu_concrete_words_cons word words :
   ZesuConcreteWords (word :: words) := I.
 
+Set Default Proof Using "Type".
+
 Section word_array_bytes.
   Context `{!islaG Sigma} `{!threadG}.
 

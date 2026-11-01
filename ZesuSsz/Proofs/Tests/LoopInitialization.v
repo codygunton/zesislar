@@ -5,6 +5,8 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
 From lithium Require Import lvar simpl_classes.
 Open Scope Z_scope.
 
+Set Default Proof Using "Type".
+
 Section tests.
 Context {Sigma : gFunctors}.
 

@@ -66,6 +66,8 @@ Definition fixture_evaluator_parameter
 Fail Check (@fixture_evaluator_parameter : ReviewedRlpItemType).
 
 (* Closing a Section must not hide a generalized premise. *)
+Set Default Proof Using "Type".
+
 Section GeneralizedPremise.
   Context (extraPremise : Prop).
   Theorem fixture_section_generalized : extraPremise -> ReviewedControlType.

@@ -3,6 +3,8 @@ Require Import ZesuSsz.Automation.ArrayLoadPreselect.
 Require Import ZesuSsz.Automation.ArrayLoadPriority.
 Require Import isla.riscv64.riscv64.
 
+Set Default Proof Using "Type".
+
 Section Regression.
   Context `{!islaG Sigma} `{!threadG}.
   Local Instance guard_candidate_enabled : ZesuStepArrayLoadPriority := I.

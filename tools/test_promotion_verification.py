@@ -18,6 +18,26 @@ import promotion_verification as verification
 
 
 class PromotionVerificationTests(unittest.TestCase):
+    def test_audit_leaf_has_no_proof_statement(self):
+        source = ('Require Import Project.Bodies.\n'
+                  'Print Assumptions Project.Bodies.body.\n')
+        self.assertTrue(verification.assumption_audit_only(source))
+        self.assertEqual(verification.statements(source, 0), [])
+
+    def test_audit_leaf_cannot_hide_other_commands(self):
+        source = ('Require Import Project.Bodies.\n'
+                  'Print Assumptions Project.Bodies.body.\n')
+        for extra in ['Axiom hidden : False.', 'Definition hidden := True.',
+                      'Unset Guard Checking.', 'Require Export Project.Other.']:
+            with self.subTest(command=extra):
+                self.assertFalse(verification.assumption_audit_only(source + extra))
+                with self.assertRaisesRegex(ValueError, 'no supported statement'):
+                    verification.statements(source + extra, 0)
+        self.assertFalse(verification.assumption_audit_only('Require Import Project.Bodies.'))
+        self.assertFalse(verification.assumption_audit_only(
+            source + 'Print Assumptions Project.Other.body.'))
+        self.assertFalse(verification.assumption_audit_only(source + source))
+
     def test_retained_compile_requires_exact_source_and_private_object(self):
         with tempfile.TemporaryDirectory() as temp:
             source, artifact = Path(temp) / 'Source.v', Path(temp) / 'Source.vo'

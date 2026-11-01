@@ -366,6 +366,13 @@
       "uninferable_existentials": 0,
       "predicates_without_unfold": 0,
       "disjunctive_specs": 0
+    },
+    "ZesuSsz/Compliance/DecodeItemComplianceAssumptions.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
     }
   }
 }

@@ -79,6 +79,8 @@ Proof.
   apply join_reshape. rewrite sum_list_replicate. symmetry. exact Hlength.
 Qed.
 
+Set Default Proof Using "Type".
+
 Section array_regions.
   Context `{!islaG Sigma}.
 

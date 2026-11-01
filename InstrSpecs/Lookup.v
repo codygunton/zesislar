@@ -37,6 +37,8 @@ Global Instance instr_lookup_resources_intro_persistent
       (instr_lookup_resources lookup).
 Proof. constructor. iIntros "#$". Qed.
 
+Set Default Proof Using "Type".
+
 Section automation.
   Context `{!islaG Sigma} `{!threadG}.
 

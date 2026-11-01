@@ -75,6 +75,8 @@ Lemma region_output_upper_8 (args : DecodeItemArgs)
     bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemOutputPointer args) + BV 64 8) + BV 128 8) <= bv_signed (BV 128 (machineRamEnd defaultMap)).
 Proof. zesu_region_fault_bound_if_enabled. Qed.
 
+Set Default Proof Using "Type".
+
 Section assertion_tests.
   Context `{!islaG Sigma} `{!threadG}.
 

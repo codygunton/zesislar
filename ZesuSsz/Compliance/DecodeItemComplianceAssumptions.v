@@ -1,0 +1,3 @@
+Require Import ZesuSsz.Compliance.DecodeItemCompliance.
+
+Print Assumptions ZesuSsz.Compliance.DecodeItemCompliance.decodeItemSelectedCompliance.

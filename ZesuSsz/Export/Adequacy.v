@@ -37,6 +37,8 @@ Definition machine_ram_sys_regs_map (machine : MachineMap)
 
 Definition zesu_ram_sys_regs_map := machine_ram_sys_regs_map defaultMap.
 
+Set Default Proof Using "Type".
+
 Section sys_regs.
   Context `{!islaG Sigma} `{!threadG}.
 

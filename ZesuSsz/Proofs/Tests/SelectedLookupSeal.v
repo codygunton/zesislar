@@ -6,6 +6,8 @@ Require Import ZesuSsz.Contracts.SelectedCodeLookup.
 Require Import ZesuSsz.Stock.Closure.index_decodeItem.
 Require Import ZesuSsz.Generated.DecodeItem.Registrations.
 
+Set Default Proof Using "Type".
+
 Section tests.
   Context `{!islaG Sigma} `{!threadG}.
 

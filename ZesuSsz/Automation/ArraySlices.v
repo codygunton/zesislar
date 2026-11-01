@@ -20,6 +20,8 @@ Proof. intros ->. unfold array_region_start. rewrite Z.sub_diag. reflexivity. Qe
 
 Print Assumptions array_region_start_equal.
 
+Set Default Proof Using "Type".
+
 Section exact_array.
   Context `{!islaG Sigma}.
   Lemma subsume_mem_array_exact A address n (bytes : list (bv n)) G :

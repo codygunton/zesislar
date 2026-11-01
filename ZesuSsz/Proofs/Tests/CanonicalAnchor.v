@@ -8,6 +8,8 @@ Definition canonical_anchor_target {Sigma} (R : iProp Sigma) : iProp Sigma :=
   LithiumUnfold (@canonical_anchor_target) := I.
 Global Typeclasses Opaque canonical_anchor_target.
 
+Set Default Proof Using "Type".
+
 Section Probe.
 Context `{!islaG Sigma} `{!threadG}.
 #[local] Instance canonical_anchor_registration (R : iProp Sigma) :

@@ -75,6 +75,8 @@ Proof.
  exact I.
 Qed.
 
+Set Default Proof Using "Type".
+
 Section assertion_tests.
   Context `{!islaG Sigma} `{!threadG}.
   Lemma region_normalization_lower es ann (address : bv 64) (minimum : Z)

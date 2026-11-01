@@ -48,9 +48,20 @@ class CompletePromotionTests(unittest.TestCase):
         for name in ['ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d6974.v',
                      'ZesuSsz/Generated/DecodeItem/PromotedBodies.v',
                      'ZesuSsz/Evidence/DecodeItemPromoted6974Fixtures.v']:
-            self.assertEqual(outputs[name], historical('cp-p1-s50', name), name)
+            expected = historical('cp-p1-s50', name)
+            if name.endswith('/PromotedBodies.v'):
+                expected = re.sub(r'^Print Assumptions [^\n]+\n', '', expected, flags=re.M).rstrip() + '\n'
+            self.assertEqual(outputs[name], expected, name)
+        audit = outputs['ZesuSsz/Generated/DecodeItem/PromotedBodiesAssumptions.v']
+        self.assertIn('Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.'
+                      'decodeItemPromotedBody800d6974.', audit)
         self.assertEqual(outputs['ZesuSsz/Compliance/DecodeItemCompliance.v'],
-                         historical('cp-p1-s53', HISTORICAL_COMPLIANCE))
+                         re.sub(r'^Print Assumptions [^\n]+\n', '',
+                                historical('cp-p1-s53', HISTORICAL_COMPLIANCE), flags=re.M))
+        self.assertEqual(outputs['ZesuSsz/Compliance/DecodeItemComplianceAssumptions.v'],
+                         'Require Import ZesuSsz.Compliance.DecodeItemCompliance.\n\n'
+                         'Print Assumptions ZesuSsz.Compliance.DecodeItemCompliance.'
+                         'decodeItemNativeBlocksSelectedCompliance.\n')
         self.assertEqual(len(provenance['remaining_native_hypotheses']), 15)
         self.assertNotIn('native800d6974', provenance['remaining_native_hypotheses'])
         self.assertEqual(outputs['ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v'].count(
@@ -63,6 +74,30 @@ class CompletePromotionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'named production theorem'):
             complete_promotion.plan(self.workspace, 0x800d6974, MODULE, MODULE + '.Missing')
         self.assertEqual(before, {name: (self.workspace / name).read_bytes() for name in INPUTS})
+
+    def test_promotion_records_the_emitted_audit_in_existing_shape_inventory(self):
+        path = self.workspace / 'ZesuSsz/Evidence/spec_shape_inventory.json'
+        inventory = {'base_commit': 'preserved', 'modules': {'Existing.v': {'kept': 1}}}
+        path.write_text(json.dumps(inventory))
+        outputs, _ = complete_promotion.plan(self.workspace, 0x800d6974, MODULE, LEMMA)
+        generated = json.loads(outputs['ZesuSsz/Evidence/spec_shape_inventory.json'])
+        self.assertEqual(generated['base_commit'], 'preserved')
+        self.assertEqual(generated['modules']['Existing.v'], {'kept': 1})
+        self.assertEqual(generated['modules']['ZesuSsz/Compliance/DecodeItemComplianceAssumptions.v'],
+                         dict.fromkeys(('uninferable_existentials', 'predicates_without_unfold',
+                             'disjunctive_specs', 'frame_parameters_in_closed_specs',
+                             'unfold_without_typeclasses_opaque'), 0))
+
+    def test_compliance_audit_requires_its_exact_declared_target(self):
+        with self.assertRaisesRegex(ValueError, 'audit target is unavailable'):
+            complete_promotion.compliance_audit('Lemma another : True. Proof. exact I. Qed.')
+
+    def test_compliance_audit_refuses_foreign_or_undeclared_targets(self):
+        source = 'Lemma selected : True. Proof. exact I. Qed.\n'
+        for target in ['Project.Other.selected', 'missing']:
+            with self.subTest(target=target):
+                with self.assertRaisesRegex(ValueError, 'audit target is unavailable'):
+                    complete_promotion.compliance_audit(source + f'Print Assumptions {target}.\n')
 
     def test_existing_slot_reverifies_only_its_recorded_proof(self):
         outputs, _ = complete_promotion.plan(self.workspace, 0x800d6974, MODULE, LEMMA)
@@ -193,13 +228,14 @@ class CompletePromotionTests(unittest.TestCase):
                                                   self.workspace / 'report.json', table)
         self.assertEqual(report['native_status']['open_closures'], 15)
         self.assertEqual(report['native_status']['closed_6974']['theorem'], LEMMA)
-        self.assertEqual(len(report['generated_sources']), 5)
+        self.assertEqual(len(report['generated_sources']), 7)
         self.assertTrue(report['success'])
         self.assertEqual(report['status'], 'verified')
         verifier.assert_called_once()
-        self.assertEqual(len(verifier.call_args.args[1]), 5)
+        self.assertEqual(len(verifier.call_args.args[1]), 7)
         self.assertEqual((self.workspace / INPUTS[2]).read_text(),
-                         historical('cp-p1-s50', INPUTS[2]))
+                         re.sub(r'^Print Assumptions [^\n]+\n', '',
+                                historical('cp-p1-s50', INPUTS[2]), flags=re.M).rstrip() + '\n')
 
     def test_dry_run_emits_without_verification_or_success(self):
         table = self.status_table()
@@ -212,7 +248,7 @@ class CompletePromotionTests(unittest.TestCase):
         self.assertFalse(report['success'])
         self.assertEqual(report['status'], 'dry_run')
         self.assertNotIn('kernel_verification_required', report)
-        self.assertEqual(len(report['generated_sources']), 5)
+        self.assertEqual(len(report['generated_sources']), 7)
 
     def test_failed_verification_restores_sources_and_reports_failure(self):
         table = self.status_table()
@@ -280,7 +316,7 @@ class CompletePromotionTests(unittest.TestCase):
         self.assertNotIn('(0x800d6974, Some', status.read_text())
         self.assertIn('(0x800d697c, None)', status.read_text())
         verifier.assert_called_once()
-        self.assertEqual(len(verifier.call_args.args[1]), 5)
+        self.assertEqual(len(verifier.call_args.args[1]), 7)
         self.assertTrue(all(path.suffix == '.v' for path in verifier.call_args.args[1]))
 
     def test_history_skip_requires_explicit_reason(self):

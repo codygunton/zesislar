@@ -157,6 +157,7 @@ check-proof-hygiene:
 # InstrSpecs, ZesuMachineMap, EvmSail and SailStdpp build as dependencies.
 # Native index datasets must exist before retained Dune targets start.
 RETAINED_TARGETS := \
+  ZesuSsz/Generated/DecodeItem/PromotedBodiesAssumptions.vo \
   @ZesuSsz/Contracts/all \
   @ZesuSsz/Automation/all \
   @ZesuSsz/Export/all \

@@ -1,0 +1,26 @@
+Require Import ZesuSsz.Generated.DecodeItem.PromotedBodies.
+
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d6960.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d6974.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d697c.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d698c.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d69a4.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d69b0.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d69d8.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d69e0.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d69e8.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d6a00.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d6a08.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d6a14.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d6a24.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d6a38.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d6a40.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d6a64.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d6a6c.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d6a78.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d6aa8.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d6ab4.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d6ac4.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d6ad8.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d6ae0.
+Print Assumptions ZesuSsz.Generated.DecodeItem.PromotedBodies.decodeItemPromotedBody800d6b08.

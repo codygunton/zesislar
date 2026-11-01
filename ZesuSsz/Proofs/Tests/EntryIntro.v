@@ -3,6 +3,8 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.EntryIntro.
 Require Import ZesuSsz.Automation.Switches.EntryIntro.
 
+Set Default Proof Using "Type".
+
 Module RegisteredSource.
 Section Controls.
 Context {Sigma : gFunctors}.
