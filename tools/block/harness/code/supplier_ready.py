@@ -2,6 +2,104 @@
 from pathlib import Path
 import hashlib
 import json
+from collections import OrderedDict
+from contextvars import ContextVar
+from copy import deepcopy
+import os
+import stat
+import threading
+
+from binding_cache import identity, _FORCE
+
+_TRACKER = ContextVar("supplier_validation_files", default=None)
+_MEMO = OrderedDict()
+_MEMO_PID = os.getpid()
+_MEMO_LOCK = threading.RLock()
+_MEMO_LIMIT = 4
+
+
+def _file_identity(path, namespace=False):
+    try:
+        value = identity(path)
+        # Ancestor directories need identity checks, not content-list checks.
+        if namespace and stat.S_ISDIR(value[0][-1]):
+            value = tuple((row[0], row[1], row[-1]) for row in value)
+        if stat.S_ISLNK(path.lstat().st_mode):
+            return value, str(path.resolve())
+        return value
+    except FileNotFoundError:
+        return None
+
+
+class _ConsultedFiles:
+    def __init__(self):
+        self.rows = {}
+        self.stable = True
+
+    def note(self, path, namespace=False):
+        path = Path(path).absolute()
+        key = (str(path), namespace)
+        if key not in self.rows:
+            self.rows[key] = _file_identity(path, namespace)
+
+    def path(self, path, *, contents=True):
+        path = Path(path).absolute()
+        for parent in path.parents:
+            self.note(parent, namespace=True)
+        if contents or path.is_symlink():
+            self.note(path)
+        if not contents:
+            # Adding a previously absent binding can change index resolution.
+            self.note(path.parent)
+
+    def unchanged(self):
+        return self.stable and all(_file_identity(Path(path), namespace) == value
+                                   for (path, namespace), value in self.rows.items())
+
+
+def _observe(path, *, contents=True):
+    tracker = _TRACKER.get()
+    if tracker is not None:
+        tracker.path(path, contents=contents)
+
+
+def _resolved(path):
+    path = Path(path)
+    _observe(path, contents=False)
+    return path.resolve()
+
+
+def validate(binding):
+    """Reuse successful validation only while every consulted identity is exact."""
+    global _MEMO_PID, _MEMO_LOCK
+    if _MEMO_PID != os.getpid():
+        # A child must not acquire an inherited lock or reuse a parent entry.
+        _MEMO.clear()
+        _MEMO_LOCK = threading.RLock()
+        _MEMO_PID = os.getpid()
+    require(isinstance(binding, dict) and set(binding) == {"path", "sha256"},
+            "binding is invalid")
+    key = (binding["path"], binding["sha256"], os.getcwd())
+    with _MEMO_LOCK:
+        cached = _MEMO.pop(key, None)
+        if cached is not None and not _FORCE.get():
+            tracker, value = cached
+            if tracker.unchanged():
+                result = deepcopy(value)
+                if tracker.unchanged():
+                    _MEMO[key] = cached
+                    return result
+        tracker = _ConsultedFiles()
+        token = _TRACKER.set(tracker)
+        try:
+            result = _validate(binding)
+        finally:
+            _TRACKER.reset(token)
+        if tracker.unchanged():
+            _MEMO[key] = (tracker, deepcopy(result))
+            while len(_MEMO) > _MEMO_LIMIT:
+                _MEMO.popitem(last=False)
+        return result
 
 ROOTS = frozenset({'ZesuSsz.Automation.All', 'ZesuSsz.Automation.Hooks',
                    'ZesuSsz.Automation.Finish'})
@@ -18,14 +116,23 @@ def require(condition, message):
 def bound(row):
     require(isinstance(row, dict) and set(row) == {'path', 'sha256'}, 'binding is invalid')
     path = Path(row['path'])
+    _observe(path)
+    before = identity(path) if path.is_file() else None
     require(path.is_absolute() and path.is_file(), 'input is absent')
     require(hashlib.sha256(path.read_bytes()).hexdigest() == row['sha256'],
             'input changed: ' + str(path))
+    require(identity(path) == before, 'input changed during validation: ' + str(path))
+    _observe(path)
     return path
 
 
 def read(row):
-    return json.loads(bound(row).read_text())
+    path = bound(row)
+    before = identity(path)
+    value = json.loads(path.read_text())
+    require(identity(path) == before, 'input changed during reading: ' + str(path))
+    _observe(path)
+    return value
 
 
 def closure(graph):
@@ -46,8 +153,8 @@ def closure(graph):
 
 
 def owned(workspace, relative):
-    path = (workspace / relative).resolve()
-    require(path.is_relative_to(workspace.resolve()), 'module leaves its owned workspace')
+    path = _resolved(workspace / relative)
+    require(path.is_relative_to(_resolved(workspace)), 'module leaves its owned workspace')
     return path
 
 
@@ -55,10 +162,22 @@ def installation(index, compiler, physical_flags, supplier=None):
     """Use the existing resolver inventory and its bound executable identity."""
     from installed_mappings import InstalledMappings
     tool = Path(compiler['compiler']['path']).parent / 'coqdep'
-    row = index.get(str(tool.resolve()))
+    row = index.get(str(_resolved(tool)))
     require(row is not None, 'installation resolver lacks its binding')
     bound(row)
+    for index, word in enumerate(physical_flags[:-1]):
+        if word in {'-Q', '-R', '-I', '-coqlib'}:
+            _observe(Path(physical_flags[index + 1]))
     selected = InstalledMappings(physical_flags, coqdep=tool, supplier=supplier)
+    for root in selected.roots:
+        path = Path(root['root'])
+        _observe(path)
+        for directory in path.rglob('*'):
+            if directory.is_dir():
+                _observe(directory)
+    for entry in selected.entries:
+        _observe(entry['source'])
+        _observe(entry['object'])
     require(selected.tool_sha256 == row['sha256'], 'installation resolver changed')
     return selected, row
 
@@ -85,7 +204,7 @@ def response(call):
     return checked_response(call)
 
 
-def validate(binding):
+def _validate(binding):
     packet = read(binding)
     require(isinstance(packet, dict) and FIELDS <= set(packet) and
             set(packet) - FIELDS <= {'hooks_compile', 'installation_qualification'},
@@ -199,13 +318,13 @@ def validate(binding):
 
     index = {}
     for row in ready['bindings']:
-        key = str(Path(row['path']).resolve())
+        key = str(_resolved(row['path']))
         require(key not in index or index[key]['sha256'] == row['sha256'],
                 'runtime repeats conflicting bindings')
         index[key] = {'path': row['path'], 'sha256': row['sha256']}
     for row in readiness['objects']:
         bound(row)
-        index[str(Path(row['path']).resolve())] = row
+        index[str(_resolved(row['path']))] = row
     libraries = [row for row in index.values()
                  if Path(row['path']).suffix in {'.cmxs', '.cma', '.cmxa', '.so'}]
     for row in libraries:
@@ -224,8 +343,8 @@ def validate(binding):
     for name in sorted(names | set(selected) | set(ordered)):
         require(name in mapping, 'dependency lacks a module mapping: ' + name)
         original = Path(mapping[name])
-        source = (workspace / original).resolve()
-        external = not source.is_relative_to(workspace.resolve())
+        source = _resolved(workspace / original)
+        external = not source.is_relative_to(_resolved(workspace))
         if external:
             require(name not in ROOTS and name not in ordered, 'production root or compile leaves its owned workspace')
             if installed is None:
@@ -274,7 +393,7 @@ def validate(binding):
                         'Hooks fallback leaves its exact job')
                 fallback = load(packet['hooks_compile'])
                 wrapper = owned(inner_workspace, runtime['coqc_wrapper'])
-                inner_bindings = {str(Path(row['path']).resolve()): row for row in runtime['bindings']}
+                inner_bindings = {str(_resolved(row['path'])): row for row in runtime['bindings']}
                 wrapper_row = inner_bindings.get(str(wrapper))
                 prepared_wrapper = index.get(str(owned(workspace, runtime['coqc_wrapper'])))
                 require(wrapper_row is not None and prepared_wrapper is not None and
@@ -341,7 +460,7 @@ def staged(supplier, config):
     installed = None
     supplier_root = Path(supplier['ready']['prepared_workspace']).resolve()
     for row in supplier['libraries']:
-        original = Path(row['path']).resolve()
+        original = _resolved(row['path'])
         path = Path(flag_root) / original.relative_to(supplier_root) if original.is_relative_to(supplier_root) else original
         bound({'path': str(path), 'sha256': row['sha256']})
     sources = []

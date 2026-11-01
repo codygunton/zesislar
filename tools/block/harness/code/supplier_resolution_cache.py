@@ -178,3 +178,11 @@ class SupplierResolutionCache:
                 if os.path.exists(temporary):
                     os.unlink(temporary)
             return entry, actual_request
+
+
+def profile_supplier(profile_binding):
+    """Read the governing profile without repeating supplier validation."""
+    if profile_binding is None:
+        return None
+    from entry_chain import read_bound
+    return read_bound(profile_binding).get('supplier_ready')

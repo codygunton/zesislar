@@ -186,13 +186,14 @@ class DependencyBatchTests(unittest.TestCase):
         import entry_chain_provider as provider
         with patch.object(provider,'bound_json',return_value={'phase':'native','dependency_batch':self.spec}),patch.object(provider,'proof_environment') as environment:
             with self.assertRaisesRegex(ValueError,'native phase'):
-                asyncio.run(provider.execute({'runtime':'unused','runtime_sha256':'unused'}))
+                asyncio.run(provider.execute({'runtime':'unused','runtime_sha256':'unused','output':str(self.output)}))
         environment.assert_not_called()
 
     def test_actual_provider_skips_wave_modules_after_completion(self):
         import entry_chain_provider as provider
         members=self.plan['waves'][0]['modules']
-        runtime=dict(self.runtime,target={},ordered_modules=members,mcp_argv=['nonproof-fixture'])
+        runtime=dict(self.runtime,target={},ordered_modules=members,mcp_argv=['nonproof-fixture'],bindings=[])
+        runtime_path=self.root/'provider-runtime.json';D.save(runtime_path,runtime)
         tool_calls=[];waves=[]
         class Session:
             async def __aenter__(self):return self
@@ -206,8 +207,8 @@ class DependencyBatchTests(unittest.TestCase):
         async def streams(*args,**kwargs):yield (None,None)
         def wave(index,runtime,workspace,output,ordered,completed,environment,**kwargs):
             waves.append(index);completed.update(members);return {}
-        with patch.object(provider,'bound_json',return_value=runtime),patch.object(provider,'check_proof_bindings'),patch.object(provider,'check_operation',return_value={}),patch.object(provider,'proof_environment',return_value={}),patch.object(provider,'stdio_client',streams),patch.object(provider,'ClientSession',return_value=Session()),patch.object(D,'run_wave',side_effect=wave):
-            asyncio.run(provider.execute({'runtime':'nonproof','runtime_sha256':'unused',
+        with patch.object(provider,'proof_environment',return_value={}),patch.object(provider,'stdio_client',streams),patch.object(provider,'ClientSession',return_value=Session()),patch.object(D,'run_wave',side_effect=wave):
+            asyncio.run(provider.execute({'runtime':str(runtime_path),'runtime_sha256':D.binding(runtime_path)['sha256'],
                 'workspace':str(self.workspace),'output':str(self.output),'identity':{}}))
         self.assertEqual(waves,[0])
         self.assertEqual(tool_calls,['rocq_health','rocq_health'])
