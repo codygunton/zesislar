@@ -48,6 +48,17 @@ class UnifiedAdmission(unittest.TestCase):
         return M.confirm_shell(marker or self.marker,replacement or self.token(amount=amount),
                                amount,200*M.GIB,ledger=self.ledger,reader=self.reader)
 
+    def test_unverified_aggregate_flag_cannot_collapse_two_bookings(self):
+        observation={'verified':False,'aggregate_verified':True,'scope':'/untrusted',
+                     'device':1,'inode':2,'live_bytes':64*M.GIB}
+        result=M.evaluate({'first':64*M.GIB,'second':64*M.GIB},0,100*M.GIB,
+                          observations={'first':observation,'second':observation},
+                          slice_max_bytes=M.SLICE_MAX_BYTES)
+        self.assertEqual(result['active_claim_bytes'],128*M.GIB)
+        self.assertEqual(result['accounted_active_bytes'],128*M.GIB)
+        self.assertEqual(result['credited_live_bytes'],0)
+        self.assertFalse(result['fits'])
+
     def test_pending_nested_tokens_charge_one_approved_booking(self):
         self.assertTrue(self.confirm()['fits'])
         other=self.tokens/'14.second-generation-1234'
