@@ -71,5 +71,6 @@
   "block/stock_scope_stdin_relay.py": "code/stock_scope_stdin_relay.py",
   "block/harness_commit.py": "code/harness_commit.py",
   "block/admission_memory.py": "code/admission_memory.py",
-  "block/controller_cleanup.py": "code/controller_cleanup.py"
+  "block/controller_cleanup.py": "code/controller_cleanup.py",
+  "block/waiting_envelope.py": "code/waiting_envelope.py"
 }

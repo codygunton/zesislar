@@ -225,7 +225,7 @@ compiler.main()
         reference = snapshots.publish(runtime,
             lambda: __import__('proof_bindings').check_proof_bindings(runtime, force_full=True),
             output / 'SNAPSHOT.json',compiler=compiler,environment={})
-        ledger = snapshots.OutputReceipts(snapshots.read(reference, runtime_reference), reference)
+        ledger = snapshots.OutputReceipts(reference, runtime_reference)
         self.output_receipts=ledger
         invocation = output / 'compiler-invocations/invocation'
         invocation.mkdir(parents=True)

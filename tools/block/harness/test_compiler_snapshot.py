@@ -42,6 +42,19 @@ class CompilerSnapshotTests(unittest.TestCase):
     def read(self, reference):
         return S.read(reference, self.reference)
 
+    def test_output_manager_keeps_only_authenticated_header(self):
+        reference=self.seal()
+        ledger=S.OutputReceipts(reference,self.reference)
+        self.assertEqual(set(ledger.snapshot),{'runtime','producer','objects'})
+        self.assertNotIn('rows',ledger.snapshot)
+        self.assertEqual(ledger.snapshot['runtime'],self.reference)
+        self.assertEqual(ledger.reference,reference)
+
+    def test_output_manager_authenticates_snapshot_before_header(self):
+        reference=self.seal()
+        self.snapshot_path.write_text('{}')
+        with self.assertRaises(ValueError):S.OutputReceipts(reference,self.reference)
+
     def test_round_trip_preserves_all_classified_rows(self):
         reference = self.seal()
         self.assertEqual(self.snapshot_path.stat().st_mode & 0o777, 0o600)
@@ -237,7 +250,7 @@ class CompilerSnapshotTests(unittest.TestCase):
         self.runtime['bindings'].append(self.source_binding)
         reference = self.seal()
         snapshot = self.read(reference)
-        ledger = S.OutputReceipts(snapshot, reference)
+        ledger = S.OutputReceipts(reference, self.reference)
         obj = self.library / 'Later.vo'
         obj.write_text('object from a successful nonproof fixture')
         receipt = self.accept_output(ledger,obj)
@@ -463,7 +476,7 @@ class CompilerSnapshotTests(unittest.TestCase):
     def test_stale_index_refuses(self):
         reference = self.seal()
         snapshot = self.read(reference)
-        ledger = S.OutputReceipts(snapshot, reference)
+        ledger = S.OutputReceipts(reference, self.reference)
         old = (ledger.root / 'INDEX.json').read_bytes()
         obj = self.source.with_suffix('.vo')
         obj.write_text('nonproof output')
@@ -481,14 +494,14 @@ class CompilerSnapshotTests(unittest.TestCase):
     def test_failure_cannot_publish_receipt(self):
         reference = self.seal()
         snapshot = self.read(reference)
-        ledger = S.OutputReceipts(snapshot, reference)
+        ledger = S.OutputReceipts(reference, self.reference)
         with self.assertRaisesRegex(ValueError, 'failed compilation'):
             ledger.accept(self.source, self.obj, self.compiler, [], {'success': False})
         self.assertEqual(list(ledger.root.glob('OBJECT-*.json')), [])
 
     def test_other_producer_cannot_publish_receipt(self):
         reference = self.seal()
-        ledger = S.OutputReceipts(self.read(reference), reference)
+        ledger = S.OutputReceipts(reference, self.reference)
         with patch.object(S, 'producer', return_value={'pid': 0}):
             with self.assertRaisesRegex(ValueError, 'Another producer'):
                 ledger.accept(self.source, self.obj, self.compiler, [], {'success': True})

@@ -153,3 +153,12 @@ It preserves a simultaneous foreign aggregate.
 Run it explicitly with `python -m unittest tools.block.harness.controller_cleanup_real_control`.
 It creates no Rocq process, PET process, compiler, or production claim.
 Normal unit discovery excludes this control because it needs the host user service.
+
+Waiting controllers store exact data in private authenticated checkpoints.
+They retain small references while their children run.
+The controller restores each dictionary before continuation and final checks.
+Changed checkpoint bytes, identities, permissions, aliases, or waiting markers refuse restoration.
+Optional cache release does not grant validation authority.
+Forced final validation and direct compiler input hashing remain unchanged.
+The output manager authenticates its snapshot before retaining only its receipt header.
+These changes do not establish an RSS reduction without measurement.
