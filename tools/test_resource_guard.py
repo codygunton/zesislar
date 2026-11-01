@@ -883,7 +883,7 @@ live_scopes
                                **variables)
             # Legacy fixtures never inspect or trim the shared host cache.
             prefix = "\nhome_free_bytes() { echo 60000000000; }\n"
-            return subprocess.run(["bash"], input=LIBRARY + prefix + script,
+            return subprocess.run(["bash", "-c", LIBRARY + prefix + script, str(GUARD.resolve())],
                                   text=True, capture_output=True, env=environment, timeout=20)
 
     def test_gate_does_not_wait_for_unadmitted_probe_request(self):
