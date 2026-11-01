@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.VmClosed.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
@@ -38,10 +39,10 @@ Ltac zesu_normalize_array_cursor_base :=
   end.
 
 Ltac zesu_require_machine_ram_bounds minimum maximum :=
-  let low := eval vm_compute in minimum in
-  let high := eval vm_compute in maximum in
-  let expectedLow := eval vm_compute in (mapRamBase defaultMap) in
-  let expectedHigh := eval vm_compute in (machineRamEnd defaultMap) in
+  let low := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed minimum in
+  let high := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed maximum in
+  let expectedLow := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (mapRamBase defaultMap) in
+  let expectedHigh := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (machineRamEnd defaultMap) in
   constr_eq low expectedLow; constr_eq high expectedHigh.
 
 Ltac zesu_normalize_array_cursor_offset :=
@@ -51,14 +52,14 @@ Ltac zesu_normalize_array_cursor_offset :=
     Hupper : (?base + Z.of_nat (length ?bytes) < ?maximum)%Z
       |- context[Z.to_nat (bv_unsigned (bv_add ?row ?offset) - ?base)] =>
       zesu_require_machine_ram_bounds minimum maximum;
-      let integer := eval vm_compute in (bv_unsigned offset) in
+      let integer := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
-      let count := eval vm_compute in (Z.to_nat integer) in
+      let count := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (Z.to_nat integer) in
       let Hindex := fresh "HarrayIndex" in
       assert (Hindex : Z.to_nat (bv_unsigned (bv_add row offset) - base) =
         (index + count)%nat) by
         (eapply array_cursor_index;
-          [exact Hcursor | vm_compute; reflexivity | exact Hlower |
+          [exact Hcursor | first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | reflexivity] | exact Hlower |
            exact Hupper | lia]);
       rewrite Hindex; clear Hindex
   end.

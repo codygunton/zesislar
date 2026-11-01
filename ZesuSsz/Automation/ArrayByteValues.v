@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.VmClosed.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation.ArrayCursors.
@@ -129,14 +130,14 @@ Ltac zesu_normalize_array_byte_lookups :=
     Hlower : (?minimum <= ?base)%Z,
     Hupper : (?base + Z.of_nat (length ?bytes) < ?maximum)%Z |- _ =>
       zesu_require_machine_ram_bounds minimum maximum;
-      let integer := eval vm_compute in (bv_unsigned offset) in
+      let integer := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
-      let count := eval vm_compute in (Z.to_nat integer) in
+      let count := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (Z.to_nat integer) in
       let Hindex := fresh "HarrayByteIndex" in
       assert (Hindex : Z.to_nat (bv_unsigned (bv_add row offset) - base) =
         (index + count)%nat) by
         (eapply array_cursor_index;
-          [exact Hcursor | vm_compute; reflexivity | exact Hlower |
+          [exact Hcursor | first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | reflexivity] | exact Hlower |
            exact Hupper |
            first [match goal with
              | Hbound : (index + ?limit <= length bytes)%nat |- _ =>
@@ -151,14 +152,14 @@ Ltac zesu_normalize_array_byte_lookups :=
     Hlower : (?minimum <= ?base)%Z,
     Hupper : (?base + Z.of_nat (length ?bytes) < ?maximum)%Z |- _ =>
       zesu_require_machine_ram_bounds minimum maximum;
-      let integer := eval vm_compute in (bv_unsigned offset) in
+      let integer := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
-      let count := eval vm_compute in (Z.to_nat integer) in
+      let count := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (Z.to_nat integer) in
       let Hindex := fresh "HarrayByteIndex" in
       assert (Hindex : Z.to_nat (bv_unsigned (bv_add row offset) - base) =
         (index + count)%nat) by
         (eapply array_cursor_index;
-          [exact Hcursor | vm_compute; reflexivity | exact Hlower |
+          [exact Hcursor | first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | reflexivity] | exact Hlower |
            exact Hupper |
            first [match goal with
              | Hbound : (index + ?limit <= length bytes)%nat |- _ =>

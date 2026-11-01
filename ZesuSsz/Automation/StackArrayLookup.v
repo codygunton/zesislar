@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.VmClosed.
 (* C2: the word a block loads lives inside an array the block holds.
 
    Islaris already reads through an array. `li_wp_read_mem` has an
@@ -31,7 +32,7 @@ Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith.
 
 Ltac zesu_literal_Z value :=
-  let reduced := eval vm_compute in value in
+  let reduced := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed value in
   lazymatch reduced with
   | Z0 => idtac
   | Zpos _ => idtac

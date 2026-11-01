@@ -16,7 +16,7 @@ Ltac zesu_reduce_instr_pre_address :=
   lazymatch goal with
   | |- FindInContext (FindInstrKind ?address ?later) FICSyntactic =>
       let _ := constr:(_ : ZesuStepInstrPreAddress) in
-      let reduced := eval vm_compute in address in
+      let reduced := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed address in
       lazymatch reduced with
       | Z0 => idtac
       | Zpos ?value => zesu_instr_pre_literal_positive value

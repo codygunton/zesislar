@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.VmClosed.
 (** Project-wide Lithium hook redefinitions belong in this module. *)
 
 From iris.proofmode Require Import environments.
@@ -63,7 +64,7 @@ Ltac zesu_normalize_symbolic_mem_address :=
       | bv_add ?root ?displacement => is_var root
       | bv_sub ?root ?displacement => is_var root
       end;
-      let integer := eval vm_compute in (bv_unsigned offset) in
+      let integer := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
       let Heq := fresh "HmemoryAddress" in
       assert (Heq : bv_unsigned pointer = (bv_unsigned base + integer)%Z) by
@@ -92,7 +93,7 @@ Ltac zesu_normalize_known_word_address :=
       let expanded := eval cbv beta zeta in pointer in
       lazymatch expanded with bv_add ?base ?offset =>
       is_var base;
-      let integer := eval vm_compute in (bv_unsigned offset) in
+      let integer := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
       let expected := constr:((bv_unsigned base + integer)%Z) in
       let spatial := eval cbn [env_spatial] in (env_spatial context) in
       zesu_has_known_word_address expected spatial;
@@ -130,9 +131,9 @@ Ltac zesu_normalize_output_address :=
   | |- envs_entails _
       (WPasm (WriteMem _ _ (RVal_Bits (bv_to_bvn ?address)) _ _ _ _ :t: _)) =>
       first [replace address with (BV 64 (machineOutputAddress defaultMap))
-               by (vm_compute; bv_solve)
+               by (bv_solve)
             |replace address with (BV 64 (machineOutputSizeAddress defaultMap))
-               by (vm_compute; bv_solve)
+               by (bv_solve)
             |idtac]
   | _ => idtac
   end.

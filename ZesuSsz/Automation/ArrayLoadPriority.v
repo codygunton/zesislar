@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.VmClosed.
 (* Select the raw load trace when its source is an owned initialized array.
    A failed guard backtracks before instruction selection. *)
 Require Import ZesuSsz.Automation.PureFacts.
@@ -68,7 +69,7 @@ Ltac zesu_array_load_register register spatial :=
 Ltac zesu_array_load_contains address width spatial :=
   lazymatch spatial with
   | Esnoc ?rest _ (@mem_mapsto_array _ _ ?bits ?start ?fraction ?values) =>
-      let stride := eval vm_compute in (Z.of_N (bits / 8)) in
+      let stride := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (Z.of_N (bits / 8)) in
       first [let Hrange := fresh "HarrayLoadRange" in
              assert (Hrange : (start <= address /\
                address + width <= start + Z.of_nat (length values) * stride)%Z)
@@ -103,7 +104,7 @@ Ltac zesu_array_load_select :=
       let lookup := zesu_array_load_code persistent in
       iApply (find_in_context_instr_lookup_resources address later);
       iExists lookup; iSplit; [iAssumption |];
-      iSplit; [iPureIntro; solve [vm_compute; eauto] |];
+      iSplit; [iPureIntro; solve [first [ZesuSsz.Automation.VmClosed.zesu_vm_compute_closed | idtac]; eauto] |];
       let resolved := eval hnf in (lookup address) in
       change (lookup address) with resolved; cbn beta iota zeta;
       lazymatch goal with
@@ -138,13 +139,13 @@ Ltac zesu_normalize_word_array_lookup :=
   | Hlookup : ?values !! Z.to_nat
       ((bv_unsigned (bv_add ?sp ?offset) - (bv_unsigned ?sp + ?start))
         `div` ?stride) = Some ?loaded |- _ =>
-      let integer := eval vm_compute in (bv_unsigned offset) in
-      let origin := eval vm_compute in start in
-      let width := eval vm_compute in stride in
+      let integer := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
+      let origin := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed start in
+      let width := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed stride in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
       lazymatch origin with Z0 => idtac | Zpos _ => idtac end;
       lazymatch width with Zpos _ => idtac end;
-      let index := eval vm_compute in (Z.to_nat ((integer - origin) `div` width)) in
+      let index := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (Z.to_nat ((integer - origin) `div` width)) in
       let Hsum := fresh "HwordArrayAddress" in
       assert (Hsum : bv_unsigned (bv_add sp offset) =
         (bv_unsigned sp + integer)%Z) by

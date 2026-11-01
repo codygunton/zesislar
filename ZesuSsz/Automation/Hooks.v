@@ -105,7 +105,7 @@ Ltac zesu_low_mask_integer_offset width offset continuation :=
       assert_fails (has_evar integer); continuation integer
   | _ =>
       is_closed_term offset;
-      let integer := eval vm_compute in (bv_unsigned offset) in
+      let integer := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
       continuation integer
   end.
 
@@ -117,19 +117,18 @@ Ltac zesu_low_mask_sub_modulus_goal :=
       is_closed_term mask;
       lazymatch type of value with bv ?width =>
         is_closed_term width;
-        let low := eval vm_compute in
-          (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
-        let modulus := eval vm_compute in (bv_modulus low) in
+        let low := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
+        let modulus := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_modulus low) in
         let Hwidth := fresh "HmaskWidth" in
-        assert (Hwidth : (low <= width)%N) by (vm_compute; congruence);
+        assert (Hwidth : (low <= width)%N) by (first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | congruence]);
         let Hmask := fresh "HmaskBits" in
         assert (Hmask : bv_unsigned mask = Z.ones (Z.of_N low)) by
-          (vm_compute; reflexivity);
+          (first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | reflexivity]);
         zesu_low_mask_integer_offset width offset ltac:(fun integer =>
           let Hoffset := fresh "HmaskOffset" in
           assert (Hoffset : offset = Z_to_bv width integer) by
             first [reflexivity | is_closed_term offset;
-              apply bv_eq; vm_compute; reflexivity];
+              apply bv_eq; first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | reflexivity]];
           let Hrange := fresh "HmaskRange" in
           assert (Hrange : modulus <= bv_unsigned value + integer < 2 * modulus)
             by lia;
@@ -161,9 +160,8 @@ Ltac zesu_low_mask_branch_hypotheses :=
       is_closed_term mask;
       lazymatch type of value with bv ?width =>
         is_closed_term width;
-        let low := eval vm_compute in
-          (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
-        let modulus := eval vm_compute in (bv_modulus low) in
+        let low := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
+        let modulus := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_modulus low) in
         zesu_low_mask_integer_offset width offset ltac:(fun integer =>
           let Hnormalized := fresh "HmaskNormalized" in
           assert (Hnormalized :
@@ -183,19 +181,18 @@ Ltac zesu_low_mask_bv_goal :=
       assert_fails (has_evar requested);
       is_closed_term mask;
       is_closed_term width;
-      let low := eval vm_compute in
-        (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
-      let modulus := eval vm_compute in (bv_modulus low) in
+      let low := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
+      let modulus := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_modulus low) in
       let Hwidth := fresh "HmaskWidth" in
-      assert (Hwidth : (low <= width)%N) by (vm_compute; congruence);
+      assert (Hwidth : (low <= width)%N) by (first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | congruence]);
       let Hmask := fresh "HmaskBits" in
       assert (Hmask : bv_unsigned mask = Z.ones (Z.of_N low)) by
-        (vm_compute; reflexivity);
+        (first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | reflexivity]);
       zesu_low_mask_integer_offset width offset ltac:(fun integer =>
         let Hoffset := fresh "HmaskOffset" in
         assert (Hoffset : offset = Z_to_bv width integer) by
           first [reflexivity | is_closed_term offset;
-            apply bv_eq; vm_compute; reflexivity];
+            apply bv_eq; first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | reflexivity]];
         let Hrange := fresh "HmaskRange" in
         assert (Hrange : modulus <= bv_unsigned value + integer < 2 * modulus)
           by lia;
@@ -235,16 +232,16 @@ Ltac zesu_low_mask_if_enabled :=
       lazymatch type of value with bv ?width =>
         let Hwidth := fresh "HmaskWidth" in
         assert (Hwidth : (low <= width)%N) by
-          first [assumption | vm_compute; congruence];
+          first [assumption | first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | congruence]];
         let Hmask := fresh "HlowMask" in
         assert (Hmask : bv_unsigned mask = Z.ones (Z.of_N low)) by
-          first [assumption | vm_compute; reflexivity];
+          first [assumption | first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | reflexivity]];
         first [lazymatch result with (bv_unsigned ?root + ?integer)%Z =>
             constr_eq root value;
             lazymatch integer with bv_unsigned _ => fail | _ => idtac end;
             let Hoffset := fresh "HmaskOffset" in
             assert (Hoffset : offset = Z_to_bv width integer) by
-              first [reflexivity | apply bv_eq; vm_compute; reflexivity];
+              first [reflexivity | apply bv_eq; first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | reflexivity]];
             first [exact (zesu_unsigned_low_mask_add_integer width low value mask integer Hwidth Hmask)
               | rewrite Hoffset;
                 exact (zesu_unsigned_low_mask_add_integer width low value mask integer Hwidth Hmask)]
@@ -357,7 +354,7 @@ Ltac zesu_normalize_symbolic_mem_address :=
                   let spatial := eval cbn [env_spatial] in (env_spatial context) in
                   zesu_has_initialized_array_root base spatial
               end];
-      let integer := eval vm_compute in (bv_unsigned offset) in
+      let integer := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
       let Heq := fresh "HmemoryAddress" in
       assert (Heq : bv_unsigned pointer = (bv_unsigned base + integer)%Z) by
@@ -386,7 +383,7 @@ Ltac zesu_normalize_known_word_address :=
       let expanded := eval cbv beta zeta in pointer in
       lazymatch expanded with bv_add ?base ?offset =>
       is_var base;
-      let integer := eval vm_compute in (bv_unsigned offset) in
+      let integer := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
       let expected := constr:((bv_unsigned base + integer)%Z) in
       let spatial := eval cbn [env_spatial] in (env_spatial context) in
       zesu_has_known_word_address expected spatial;
@@ -440,7 +437,7 @@ Ltac zesu_stack_closed_term term :=
 
 Ltac zesu_stack_reduce_closed term :=
   zesu_stack_closed_term term;
-  let reduced := eval vm_compute in term in
+  let reduced := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed term in
   change_no_check term with reduced in *.
 
 (* Skip canonical integers with one syntactic constructor walk. *)
@@ -480,7 +477,7 @@ Ltac zesu_stack_normalize_hypothesis hypothesis := once (
         lazymatch type of term with Z => progress (
           tryif zesu_stack_integer_literal term then fail 0 else idtac;
           zesu_stack_closed_term term;
-          let reduced := eval vm_compute in term in
+          let reduced := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed term in
           change_no_check term with reduced in * ) end
     end)).
 
@@ -510,7 +507,7 @@ Ltac zesu_stack_arithmetic :=
   | |- context[?term] =>
       lazymatch type of term with Z => progress (
         zesu_stack_closed_term term;
-        let reduced := eval vm_compute in term in
+        let reduced := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed term in
         change_no_check term with reduced) end
   end);
   bv_solve.
@@ -518,14 +515,14 @@ Ltac zesu_stack_arithmetic :=
 Ltac zesu_stack_integer_address pointer :=
   lazymatch pointer with
   | bv_add (bv_add (Z_to_bv 64 ?base) ?first) ?second =>
-      let left := eval vm_compute in (bv_signed first) in
-      let right := eval vm_compute in (bv_signed second) in
+      let left := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_signed first) in
+      let right := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_signed second) in
       constr:((base + left + right)%Z)
   | bv_add (Z_to_bv 64 ?base) ?offset =>
-      let displacement := eval vm_compute in (bv_signed offset) in
+      let displacement := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_signed offset) in
       constr:((base + displacement)%Z)
   | bv_sub (Z_to_bv 64 ?base) ?offset =>
-      let displacement := eval vm_compute in (bv_unsigned offset) in
+      let displacement := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
       constr:((base - displacement)%Z)
   | Z_to_bv 64 ?base => constr:(base)
   end.
@@ -1315,15 +1312,15 @@ Ltac zesu_normalize_output_address :=
   lazymatch goal with
   | |- envs_entails _
       (WPasm (WriteMem _ _ (RVal_Bits (bv_to_bvn ?address)) _ _ _ _ :t: _)) =>
-      first [let output := eval vm_compute in (machineOutputAddress defaultMap) in
+      first [let output := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (machineOutputAddress defaultMap) in
              lazymatch output with
              | Some ?output => replace address with (Z_to_bv 64 output)
-                 by (vm_compute; bv_solve)
+                 by (bv_solve)
              end
-            |let size := eval vm_compute in (machineOutputSizeAddress defaultMap) in
+            |let size := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (machineOutputSizeAddress defaultMap) in
              lazymatch size with
              | Some ?size => replace address with (Z_to_bv 64 size)
-                 by (vm_compute; bv_solve)
+                 by (bv_solve)
              end
             |idtac]
   | _ => idtac
@@ -1544,7 +1541,7 @@ Ltac zesu_region_reduce_closed term :=
   then (
     tryif zesu_region_integer_literal term then fail 0 else (
       zesu_stack_closed_term term;
-      let reduced := eval vm_compute in term in
+      let reduced := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed term in
       tryif constr_eq term reduced then fail 0
       else change_no_check term with reduced in * ))
   else reduce_closed term.
@@ -1672,7 +1669,7 @@ Ltac zesu_region_fault_word_casts :=
       constr_eq width castWidth;
       zesu_stack_closed_term width;
       assert_fails (zesu_condition_has_unresolved_evar value);
-      let modulus := eval vm_compute in (bv_modulus width) in
+      let modulus := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_modulus width) in
       let Hbound := fresh "HregionCastRange" in
       assert (Hbound : (0 <= value < bv_modulus width)%Z) by
         (change (0 <= value < modulus)%Z; lia);
@@ -1682,7 +1679,7 @@ Ltac zesu_region_fault_word_casts :=
       constr_eq width castWidth;
       zesu_stack_closed_term width;
       assert_fails (zesu_condition_has_unresolved_evar value);
-      let modulus := eval vm_compute in (bv_modulus width) in
+      let modulus := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_modulus width) in
       let Hbound := fresh "HregionCastRange" in
       assert (Hbound : (0 <= value < bv_modulus width)%Z) by
         (change (0 <= value < modulus)%Z; lia);
@@ -1786,7 +1783,7 @@ Ltac zesu_handoff_closed_term term :=
 (* Evaluate closed integer terms without unfolding symbolic record projections. *)
 Ltac zesu_handoff_closed_Z term continuation :=
   tryif zesu_handoff_closed_term term then
-    let reduced := eval vm_compute in term in continuation reduced
+    let reduced := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed term in continuation reduced
   else lazymatch term with
   | Z.add ?left ?right =>
       zesu_handoff_closed_Z left ltac:(fun left =>
@@ -2181,13 +2178,13 @@ Ltac zesu_branch_guard_head proposition :=
 Ltac zesu_branch_guard_mask width mask continuation :=
   zesu_stack_closed_term width;
   zesu_stack_closed_term mask;
-  let low := eval vm_compute in (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
-  let modulus := eval vm_compute in (bv_modulus low) in
+  let low := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
+  let modulus := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_modulus low) in
   let Hwidth := fresh "HguardWidth" in
   let Hmask := fresh "HguardMask" in
-  assert (Hwidth : (low <= width)%N) by (vm_compute; congruence);
+  assert (Hwidth : (low <= width)%N) by (first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | congruence]);
   assert (Hmask : bv_unsigned mask = Z.ones (Z.of_N low)) by
-    (vm_compute; reflexivity);
+    (first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | reflexivity]);
   continuation low modulus Hwidth Hmask;
   clear Hwidth Hmask.
 
@@ -2196,7 +2193,7 @@ Ltac zesu_branch_guard_closed_width word continuation :=
   let kind := eval hnf in kind in
   lazymatch kind with bv ?width =>
     ZesuSsz.Automation.Hooks.zesu_stack_closed_term width;
-    let normalized := eval vm_compute in width in
+    let normalized := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed width in
     continuation normalized
   end.
 
@@ -2207,12 +2204,12 @@ Ltac zesu_branch_guard_rewrite :=
         tryif has_evar word then fail 0 else
         zesu_stack_closed_term low;
         zesu_stack_closed_term offset;
-        let modulus := eval vm_compute in (bv_modulus low) in
+        let modulus := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_modulus low) in
         let Hrange := fresh "HguardTruncateRange" in
         assert (Hrange : modulus <= bv_unsigned word + offset < 2 * modulus) by lia;
         rewrite (guard_truncate_one_wrap low (bv_unsigned word + offset) Hrange);
         change_no_check (bv_modulus low) with modulus;
-        let base := eval vm_compute in (modulus - offset) in
+        let base := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (modulus - offset) in
         replace (bv_unsigned word + offset - modulus) with
           (bv_unsigned word - base) by ring;
         clear Hrange
@@ -2232,19 +2229,19 @@ Ltac zesu_branch_guard_rewrite :=
         lazymatch type of word with bv ?source =>
           zesu_stack_closed_term width;
           zesu_stack_closed_term source;
-          rewrite (bv_sign_extend_signed width word ltac:(vm_compute; congruence))
+          rewrite (bv_sign_extend_signed width word ltac:(first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | congruence]))
         end
     end
   | match goal with
     | |- context [bv_signed ?word] =>
         zesu_stack_closed_term word;
-        let reduced := eval vm_compute in (bv_signed word) in
+        let reduced := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_signed word) in
         progress (change_no_check (bv_signed word) with reduced)
     end
   | match goal with
     | |- context [bv_unsigned ?word] =>
         zesu_stack_closed_term word;
-        let reduced := eval vm_compute in (bv_unsigned word) in
+        let reduced := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned word) in
         progress (change_no_check (bv_unsigned word) with reduced)
     end
   | match goal with
@@ -2267,17 +2264,17 @@ Ltac zesu_branch_guard_rewrite :=
         zesu_stack_closed_term offset;
         lazymatch type of word with bv ?width =>
         zesu_branch_guard_mask width mask ltac:(fun low modulus Hwidth Hmask =>
-          let integer := eval vm_compute in (bv_unsigned offset) in
+          let integer := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
           let Hoffset := fresh "HguardOffset" in
           let Hrange := fresh "HguardRange" in
           assert (Hoffset : offset = Z_to_bv width integer) by
-            (apply bv_eq; vm_compute; reflexivity);
+            (apply bv_eq; first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | reflexivity]);
           assert (Hrange : modulus <= bv_unsigned word + integer < 2 * modulus) by lia;
           rewrite Hoffset;
           rewrite (zesu_unsigned_low_mask_add_sub_modulus width low word mask integer
             Hwidth Hmask Hrange);
           change_no_check (bv_modulus low) with modulus;
-          let base := eval vm_compute in (modulus - integer) in
+          let base := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (modulus - integer) in
           replace (bv_unsigned word + integer - modulus) with
             (bv_unsigned word - base) by ring;
           clear Hoffset Hrange)
@@ -2300,8 +2297,8 @@ Ltac zesu_branch_guard_rewrite :=
         tryif has_evar word then fail 0 else
         lazymatch type of word with bv ?width =>
           zesu_stack_closed_term width;
-          rewrite (zesu_guard_signed_negative width word ltac:(vm_compute; congruence));
-          let half := eval vm_compute in (bv_half_modulus width) in
+          rewrite (zesu_guard_signed_negative width word ltac:(first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | congruence]));
+          let half := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_half_modulus width) in
           change_no_check (bv_half_modulus width) with half
         end
     end ].
@@ -2402,3 +2399,27 @@ Ltac liAAsm ::=
 
 
 Ltac lia ::= zesu_context_filter ltac:(Zify.zify; xlia Lia.zchecker).
+
+
+Class ZesuStepRegcolVMCompute : Prop := {}.
+
+Ltac zesu_regcol_compute_vm_if_enabled :=
+  ZesuSsz.Automation.SwitchDispatch.zesu_switch_enabled
+    constr:(ZesuStepRegcolVMCompute);
+  clear;
+  autounfold with regcol_compute_unfold;
+  repeat match goal with | local := _ |- _ => clearbody local end;
+  remember_regcol;
+  lazymatch goal with
+  | |- LiTactic (regcol_compute_hint ?function ?argument) =>
+      let computed := zesu_vm_eval_closed constr:(function argument) in
+      lazymatch computed with
+      | Some ?value =>
+          idtac "A3L_REGCOL_VM_CLOSED";
+          apply (regcol_compute_hint_hint value);
+          vm_cast_no_check (eq_refl (Some value))
+      end
+  end.
+
+#[export] Hint Extern 9 (LiTactic (regcol_compute_hint _ _)) =>
+  zesu_regcol_compute_vm_if_enabled : typeclass_instances.

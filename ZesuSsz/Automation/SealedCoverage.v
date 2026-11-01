@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.VmClosed.
 (* C3: open a sealed predicate, lazily, and only the one that holds the
    address.
 
@@ -66,7 +67,7 @@ Ltac zesu_open_declared_cover address :=
     let instance := constr:(_ : ZesuSealed sealed _ _ _) in
     lazymatch type of instance with
     | ZesuSealed _ _ ?ranges _ =>
-        lazymatch eval vm_compute in (zesu_ranges_hold ranges address) with
+        lazymatch ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (zesu_ranges_hold ranges address) with
         | true =>
             iEval (rewrite (zesu_sealed_unfold (ZesuSealed := instance))) in H
         end
@@ -80,8 +81,7 @@ Ltac zesu_open_declared_cover_register register :=
     let instance := constr:(_ : ZesuSealed sealed _ _ _) in
     lazymatch type of instance with
     | ZesuSealed _ _ _ ?registers =>
-        lazymatch eval vm_compute in
-          (existsb (String.eqb register) registers) with
+        lazymatch ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (existsb (String.eqb register) registers) with
         | true =>
             iEval (rewrite (zesu_sealed_unfold (ZesuSealed := instance))) in H
         end

@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.VmClosed.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
 
@@ -18,7 +19,7 @@ Qed.
 Ltac zesu_normalize_stack_array_indices :=
  repeat match goal with
  | |- context[Z.to_nat (bv_unsigned (bv_add ?sp ?offset) - (bv_unsigned ?sp + ?start))] =>
-   let integer := eval vm_compute in (bv_unsigned offset) in
+   let integer := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
    let Hindex := fresh "HstackArrayIndex" in
    assert (Hindex : (bv_unsigned (bv_add sp offset) - (bv_unsigned sp + start))%Z = (integer - start)%Z) by
      (cbv [mapRamBase mapRamSize defaultMap machineRamEnd] in *; bv_solve);
