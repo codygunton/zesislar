@@ -301,9 +301,10 @@ def inside(out):
             command=strict_loads((out/'KERNEL-ARGV.json').read_text())
             kernel_environment=strict_loads((out/'KERNEL-ENVIRONMENT.json').read_text())
             kernel_environment['ZESU_AGGREGATE_SLICE']=os.environ['ZESU_AGGREGATE_SLICE']
+            kernel_cwd=Path(runtime['job_output'])/'workspace'
             from waiting_envelope import compact_wait
             with compact_wait(out,runtime=runtime):
-                result=subprocess.run(command,cwd=Path(out)/'workspace',env=kernel_environment)
+                result=subprocess.run(command,cwd=kernel_cwd,env=kernel_environment)
         else:
             environment=None
             if runtime['phase']=='native':

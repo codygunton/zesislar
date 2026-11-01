@@ -1,6 +1,6 @@
 """Test reference release and exact restoration without a proof or compiler."""
 from pathlib import Path
-import copy,gc,json,os,sys,tempfile,unittest,weakref
+import ast,copy,gc,json,os,sys,tempfile,unittest,weakref
 from unittest.mock import patch
 HERE=Path(__file__).resolve().parent
 sys.path[:0]=[str(HERE/'code'),str(HERE),str(HERE.parents[2])]
@@ -98,6 +98,29 @@ class WaitingEnvelope(unittest.TestCase):
     check_operation(runtime,force_full=True)
     with W.compact_wait(self.root,runtime=runtime):raise RuntimeError('tool failure')
   self.assertTrue(state.final['success']);self.assertEqual(state.full_attempts,2)
+ def test_kernel_branch_retains_original_outer_workspace_cwd(self):
+  import entry_chain_run as E
+  from types import SimpleNamespace
+  outer=self.root/'outer';(outer/'workspace').mkdir(parents=True)
+  kernel=outer/'kernel-check';kernel.mkdir()
+  save(kernel/'KERNEL-ARGV.json',['nonproof-command'])
+  save(kernel/'KERNEL-ENVIRONMENT.json',{})
+  runtime={'job_output':str(outer),'bindings':[]};before=copy.deepcopy(runtime)
+  tree=ast.parse(Path(E.__file__).read_text())
+  function=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='inside')
+  branch=next(n for n in ast.walk(function) if isinstance(n,ast.If) and
+     any(isinstance(value,ast.Constant) and value.value=='KERNEL-ARGV.json' for value in ast.walk(n.test)))
+  observed=[]
+  def run(command,**kwargs):
+   self.assertEqual(command,['nonproof-command'])
+   self.assertEqual(kwargs['cwd'],outer/'workspace')
+   self.assertNotEqual(kwargs['cwd'],kernel/'workspace')
+   self.assertIn('waiting_envelope',runtime)
+   observed.append(kwargs['cwd']);return SimpleNamespace(returncode=0)
+  namespace=dict(vars(E),out=kernel,runtime=runtime)
+  with patch.dict(os.environ,{'ZESU_AGGREGATE_SLICE':'nonproof-fixture'}),patch.object(E.subprocess,'run',side_effect=run):
+   exec(compile(ast.Module(body=branch.body,type_ignores=[]),str(E.__file__),'exec'),namespace)
+  self.assertEqual(observed,[outer/'workspace']);self.assertEqual(runtime,before)
  def test_digest_release_keeps_force_hashing_and_counters(self):
   source=self.root/'source';source.write_text('fixture')
   with B.force_hashing(True),patch.object(B,'_persistent') as persistent:
