@@ -436,9 +436,11 @@ async def execute(request):
                         raise ValueError('The original public statement changed.')
                     search_fixture, proof_line = declaration_search_fixture(
                         source, specification, output, side)
+                    atomic_json(output/'PROGRESS.json', {'phase': 'native_start', 'side': side,
+                        'start_mode': 'exact_theorem'})
                     state = await call(session, 'rocq_start', {'workspace': str(workspace),
-                        'file': str(search_fixture), 'theorem': '', 'line': proof_line,
-                        'character': 0, 'timeout': timeout})
+                        'file': str(search_fixture), 'theorem': specification['name'],
+                        'timeout': timeout})
                     pre_call_export = await export(session, state)
                     atomic_json(output/'PRE-CALL-STATE.json', {
                         'side': side, 'export': pre_call_export,

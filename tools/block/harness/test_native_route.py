@@ -128,11 +128,13 @@ class NativeRoute(unittest.TestCase):
   v,r,c,j=self.fixture();(self.root/'Tactic.vo').write_text('changed')
   with self.assertRaisesRegex(ValueError,'input changed|compiled prefix'):
    N.validate(r,workspace=self.root,modules=c['proof_runtime']['module_files'],target=j['target'],ordered=[])
- def test_native_provider_compiles_no_dependencies_after_prefix(self):
+ def _run_native_provider(self,failure=None):
   import entry_chain_provider as P
   v,r,c,j=self.fixture();exports=self.js('groups.json',{'kernel_groups':{'goals':[],'stack':[],'shelf':[],'given_up':[]}})
   runtime={'phase':'native','physical_flags':[],'native_route':r,'ordered_modules':[],'target':{'block':j['target']},'module_files':c['proof_runtime']['module_files'],'mcp_argv':['unused'],'prospective_directory':str(self.root/'prospective'),'bindings':[]}
   rt=self.js('runtime.json',runtime);out=self.root/'native';out.mkdir();compile_files=[]
+  self_test=self;root=self.root
+  original=Path(v['native_source']['path']).read_bytes()
   class Raw:
    def __init__(self,data):self.structuredContent=data;self.isError=False
    def model_dump(self,**kwargs):return {'structuredContent':self.structuredContent}
@@ -142,6 +144,12 @@ class NativeRoute(unittest.TestCase):
    async def initialize(self):pass
    async def call_tool(self,name,args):
     data={'success':True}
+    if name=='rocq_start':
+     self_test.assertEqual(args,{'workspace':str(root),'file':str(root/'Native_EntryPilotSearch.v'),
+                                'theorem':'DesignedBoundary_Test','timeout':604800})
+     if failure=='start':return Raw({'success':False,'reason':'not_found'})
+    if name=='rocq_complete_goals' and failure=='scope':
+     return Raw({'success':False,'reason':'no-proof-scope'})
     if name in {'rocq_start','rocq_check'}:data.update(state_id=1,proof_finished=True)
     if name=='rocq_complete_goals':data.update(path=exports['path'],sha256=exports['sha256'])
     if name=='rocq_compile_file':
@@ -153,9 +161,52 @@ class NativeRoute(unittest.TestCase):
   request={'runtime':rt['path'],'runtime_sha256':rt['sha256'],'workspace':str(self.root),'output':str(out),'identity':{}}
   groups={'goals':[],'stack':[],'shelf':[],'given_up':[]}
   with patch.object(P,'proof_environment',return_value={}),patch('native_instruction_profile.checked_launcher',return_value=(['unused'],None)),patch.object(P,'stdio_client',streams),patch.object(P,'ClientSession',lambda *a,**k:Session()),patch.object(P,'complete_groups',return_value=groups),patch('scratch_limits.record_search_origin'),patch('scratch_limits.record_search_end'):
-   asyncio.run(P.execute(request))
+   if failure:
+    with self.assertRaises(P.ToolFailure):asyncio.run(P.execute(request))
+   else:asyncio.run(P.execute(request))
+  self.assertEqual(Path(v['native_source']['path']).read_bytes(),original)
+  expected=S.source_statement(v['native_source']['path'])
+  self.assertEqual((self.root/'Native_EntryPilotSearch.v').read_text(),
+                   expected['prefix']+expected['statement']+expected['pre_proof_commands']+'Proof.\nAbort.\n')
+  return out,compile_files
+ def test_native_provider_compiles_no_dependencies_after_prefix(self):
+  out,compile_files=self._run_native_provider()
   self.assertEqual(compile_files,[str(self.root/'Native.v')])
   calls=json.loads((out/'CALLS.json').read_text());self.assertEqual(sum(c['tool']=='rocq_compile_file' and c['arguments']['file'].endswith('Tactic.v') for c in calls),0)
   self.assertEqual(sum(c['tool']=='rocq_check' and c['arguments']['body']=='zesu_block.' for c in calls),1)
+
+ def test_native_search_fixture_preserves_declaration_and_imports(self):
+  import entry_chain_provider as P
+  source=self.root/'Caller.v'
+  text=('Require Import Fixture.Base.\n\n'
+        'Lemma DesignedBoundary_Test : True.\n'
+        'Require Import Fixture.Extra.\n\nProof.\nzesu_block.\nQed.\n')
+  source.write_text(text);original=source.read_bytes()
+  spec=S.source_statement(source)
+  fixture,line=P.declaration_search_fixture(source,spec,self.root,'block')
+  self.assertEqual(source.read_bytes(),original)
+  self.assertEqual(fixture.read_text(),spec['prefix']+spec['statement']+
+                   spec['pre_proof_commands']+'Proof.\nAbort.\n')
+  self.assertEqual(fixture.read_text().splitlines()[line],'Proof.')
+  self.assertEqual(spec['name'],'DesignedBoundary_Test')
+ def test_exact_theorem_start_failure_stops_before_export_or_search(self):
+  out,compiled=self._run_native_provider('start')
+  calls=json.loads((out/'CALLS.json').read_text())
+  self.assertEqual([row['tool'] for row in calls],['rocq_health','rocq_start'])
+  self.assertEqual(compiled,[])
+  self.assertEqual(json.loads((out/'PROGRESS.json').read_text()),
+                   {'phase':'native_start','side':'block','start_mode':'exact_theorem'})
+ def test_no_scope_export_stops_before_search_without_fallback(self):
+  out,compiled=self._run_native_provider('scope')
+  calls=json.loads((out/'CALLS.json').read_text())
+  self.assertEqual([row['tool'] for row in calls],['rocq_health','rocq_start','rocq_complete_goals'])
+  self.assertEqual(compiled,[])
+  self.assertFalse((out/'PRE-CALL-STATE.json').exists())
+  self.assertFalse((out/'NATIVE-ERROR.json').exists())
+  from entry_chain_result import summarize
+  result=summarize(self.root,{'phase':'native'},{'success':False})
+  self.assertEqual(result['status'],'infrastructure_failed')
+  self.assertEqual(result['last_phase'],'native_start')
+  self.assertIsNone(result['group_counts'])
 
 if __name__=='__main__':unittest.main()
