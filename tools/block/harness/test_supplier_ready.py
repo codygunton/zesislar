@@ -11,6 +11,7 @@ from unittest.mock import patch
 
 import memory_policy as policy
 import scratch
+import _historical_fixtures as historical
 import supplier_ready as supplier
 
 
@@ -20,6 +21,7 @@ def binding(path):
 
 class SupplierReady(unittest.TestCase):
     def setUp(self):
+        historical.use_policy(self)
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         self.root = Path(temporary.name)

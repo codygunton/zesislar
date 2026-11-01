@@ -60,7 +60,8 @@ Require successful `module_m` checks with empty assumptions after importing its 
 Inline compiler prints do not replace these checks.
 
 The migrated `test_*.py` files preserve the existing regression controls.
-Some historical controls require their original bound development artifacts.
+Historical input bytes live in `test-fixtures/historical-inputs`.
+Tests materialize derived data in private temporary directories.
 The portable tests in `tools/test_shared_harness.py` require no proof artifacts.
 
 The repository test suite runs portable controls in a separate process.
@@ -75,9 +76,11 @@ tools/resource_guard.sh batch block-harness-controls -- \
   -s tools/block/harness -p 'test_*.py'
 ```
 
-Historical positive controls require their original retained development inputs.
+Authentic fixture bytes and origin hashes remain separate from derived data.
+Derivation changes typed paths and dependent container hashes.
+It preserves measurements, outcomes, and source bodies.
 A missing historical object stays missing. Its compatibility check must refuse.
-Synthetic unit data never supplies admission evidence.
+Fixture data never supplies admission evidence.
 
 The digest cache checks device, inode, size, modification time, change time, and mode.
 It checks the file identity before and after hashing.

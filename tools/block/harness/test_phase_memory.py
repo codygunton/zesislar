@@ -1,9 +1,11 @@
+import _historical_fixtures as historical
+historical.prepare()
 from pathlib import Path
 import ast,copy,fcntl,hashlib,json,os,subprocess,sys,tempfile,unittest
 HERE=Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE/'code'))
 import memory_policy as P
-ROWS=[row for row in json.loads(((HERE/'test-fixtures/COMPLETED-STOCK-MEASUREMENTS.json')).read_text())['rows'] if row.get('format')!='legacy_r1_workload_rss_v1']
+ROWS=[row for row in historical.read_json(HERE/'test-fixtures/COMPLETED-STOCK-MEASUREMENTS.json')['rows'] if row.get('format')!='legacy_r1_workload_rss_v1']
 def binding(path):return {'path':str(path),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
 def native(row=ROWS[0]):return {'phase':'native','target':{'module':row['module'],'statement_sha256':row['statement_sha256'],'source_sha256':row['native_source']['sha256']}}
 class PolicyControls(unittest.TestCase):
