@@ -142,14 +142,14 @@ def value_spine(values):
     return result
 
 
-def _source_declaration(binding):
+def _source_declaration(binding, source_texts=None):
     from render_support import identifier, record
 
     record(binding, {"path", "sha256", "declaration"}, "witness source binding")
     path = Path(binding["path"])
     if not path.is_absolute():
         raise ValueError("The witness source path must be absolute.")
-    data = path.read_bytes()
+    data = source_texts[str(path)].encode() if source_texts and str(path) in source_texts else path.read_bytes()
     if hashlib.sha256(data).hexdigest() != binding["sha256"]:
         raise ValueError("The resolved witness source changed.")
     name = identifier(binding["declaration"], "witness source declaration")
@@ -163,8 +163,8 @@ def _source_declaration(binding):
     return values
 
 
-def _source_definition(binding):
-    values = _source_declaration(binding)
+def _source_definition(binding, source_texts=None):
+    values = _source_declaration(binding, source_texts)
     return values[values.index(":=") + 1:]
 
 
@@ -176,12 +176,12 @@ def _result_type(declaration):
     return _unwrap(signature[colons[0] + 1:])
 
 
-def _check_sources(target_source, target, assertion, values):
+def _check_sources(target_source, target, assertion, values, source_texts=None):
     commands = [command for command in rocq_commands(target_source)
                 if [token for token, _ in command[:2]] == ["Definition", target]]
     target_declaration = _words(commands[0])
     sources = [assertion] + values
-    declarations = [_source_declaration(binding) for binding in sources]
+    declarations = [_source_declaration(binding, source_texts) for binding in sources]
     if len({(row["path"], row["declaration"]) for row in sources}) != len(sources):
         raise ValueError("The witness source roles repeat a declaration.")
     for index, declaration in enumerate(declarations):
@@ -217,7 +217,8 @@ def _array_owners(source, name):
             depth += (values[start] == ")") - (values[start] == "(")
         if depth:
             raise ValueError("The array owner has an unfinished address.")
-        address = values[start:position]
+        address_text = source[command[start][1]:command[position - 1][1] + len(command[position - 1][0])]
+        address = _words(rocq_tokens(address_text))
         while True:
             previous = address
             address = _unwrap(address)
@@ -230,7 +231,7 @@ def _array_owners(source, name):
             raise ValueError("The array witness needs an explicit supported fraction view.")
         payload, end = atom(values, begin)
         text = source[command[begin][1]:command[end - 1][1] + len(command[end - 1][0])]
-        result.append(dict(address=address, payload=_unwrap(payload), value=text))
+        result.append(dict(address=address, payload=_unwrap(_words(rocq_tokens(text))), value=text))
     return result
 
 
@@ -256,7 +257,7 @@ def _contains(values, fragment):
                for index in range(len(values) - len(fragment) + 1))
 
 
-def resolved_witness_data(source, target, value):
+def resolved_witness_data(source, target, value, *, source_texts=None):
     """Emit data and a register-input descriptor from checked pass bindings.
 
     Each binding has a source reference. Register bindings capture the current
@@ -273,7 +274,7 @@ def resolved_witness_data(source, target, value):
     if not layout["remaining"]:
         raise ValueError("The witness target has no remaining slots.")
     value_sources = sequence(value["value_sources"], "witness value sources")
-    _check_sources(source, target, value["source_assertion"], value_sources)
+    _check_sources(source, target, value["source_assertion"], value_sources, source_texts)
     slots = sequence(value["slots"], "resolved witness slots")
     for slot in slots:
         record(slot, {"name", "type", "source", "value"}, "resolved witness slot")
@@ -285,7 +286,7 @@ def resolved_witness_data(source, target, value):
         origin = slot["source"]
         if not isinstance(origin, dict) or not origin.get("provenance"):
             raise ValueError("The witness slot lacks its resolved source provenance.")
-        source_body = _source_definition(origin["provenance"])
+        source_body = _source_definition(origin["provenance"], source_texts)
         if origin.get("kind") in {"register", "array"}:
             if origin["provenance"] != value["source_assertion"]:
                 raise ValueError("The witness owner differs from the bound forward source assertion.")
