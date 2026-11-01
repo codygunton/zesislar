@@ -1,4 +1,4 @@
-(* Source-only controls. No control in this file has run yet. *)
+(* Focused controls for the switched composition and its refusal boundaries. *)
 Require Import ZesuSsz.Automation.ArrayContinuation.
 Import ListNotations.
 Local Open Scope Z_scope.
@@ -23,7 +23,7 @@ Lemma array_continuation_payload (address : Z)
        drop (Z.to_nat (address - address)) storage) = count⌝ ∗ K.
 Proof.
   assert (enabled : ZesuStepArrayContinuation) by constructor.
-  iIntros "H".
+  iIntros "[Hbytes HK]".
   zesu_array_continuation ltac:(assumption).
 Qed.
 
