@@ -4,7 +4,7 @@ from unittest.mock import patch
 import json,tempfile,unittest
 import scratch
 import _test_support
-ENTRY=Path(json.loads((Path('/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40')/'_build/check-entry-stage1-passfix-ten-runtime-v2/release-v1/RUNTIME.json').read_text())['prepared_workspace'])/'artifacts/default/ZesuSsz/Generated/DecodeItem/Entries.v'
+ENTRY=Path(json.loads((_test_support.LEGACY/'_build/check-entry-stage1-passfix-ten-runtime-v2/release-v1/RUNTIME.json').read_text())['prepared_workspace'])/'artifacts/default/ZesuSsz/Generated/DecodeItem/Entries.v'
 class CacheOptionControls(unittest.TestCase):
  def test_default_remains_confirmation(self):
   with tempfile.TemporaryDirectory() as directory:

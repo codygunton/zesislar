@@ -34,6 +34,7 @@
   "block/scratch_statement.py": "code/scratch_statement.py",
   "block/proof_bindings.py": "code/proof_bindings.py",
   "block/binding_cache.py": "code/binding_cache.py",
+  "block/compiler_snapshot.py": "code/compiler_snapshot.py",
   "block/installed_mappings.py": "code/installed_mappings.py",
   "block/supplier_resolution_cache.py": "code/supplier_resolution_cache.py",
   "block/check_entry_outside.py": "code/check_entry_outside.py",

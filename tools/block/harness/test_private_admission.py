@@ -3,6 +3,8 @@ from pathlib import Path
 from unittest.mock import patch
 HERE=Path(__file__).resolve().parent
 sys.path[:0]=[str(HERE/'code'),str(HERE.parents[0]),str(HERE.parents[1])]
+import _historical_fixtures as historical
+historical.prepare()
 import memory_policy as P
 import scratch_limits as L
 
@@ -10,7 +12,7 @@ def binding(p):return {'path':str(p),'sha256':hashlib.sha256(Path(p).read_bytes(
 class Controls(unittest.TestCase):
  def setUp(self):
   self.temp=tempfile.TemporaryDirectory(dir=str(HERE.parent));self.addCleanup(self.temp.cleanup);self.root=Path(self.temp.name)
-  self.profile=json.loads((Path('/home/cody/zesislar/_build/agents/worker-build-2/private-admission-route-v1/PROFILE-measured-6ae0.json')).read_text())
+  self.profile=json.loads((historical.materialize('/home/cody/zesislar/_build/agents/worker-build-2/private-admission-route-v1/PROFILE-measured-6ae0.json')).read_text())
   self.original=P.read
   prior=P.read(self.profile['observed_growth']['runtime'])
   self.raw_job={'phase':'native','target':prior['target']['block'],'native_route':self.profile['authority'],'ordered_modules':[]}
@@ -26,7 +28,7 @@ class Controls(unittest.TestCase):
  def test_current_completed_6ae0_peak_derives16_fence_and8_claim(self):
   j=self.job();self.assertEqual(self.validated(j),8*P.GIB);self.assertEqual(j['physical_fence_bytes'],16*P.GIB)
  def test_completed69b0_peak_derives8_fence(self):
-  self.profile=json.loads((Path('/home/cody/zesislar/_build/agents/worker-build-2/private-admission-route-v1/PROFILE-measured-69b0.json')).read_text());prior=P.read(self.profile['observed_growth']['runtime']);self.raw_job['target']=prior['target']['block'];self.raw_job['native_route']=self.profile['authority']
+  self.profile=json.loads((historical.materialize('/home/cody/zesislar/_build/agents/worker-build-2/private-admission-route-v1/PROFILE-measured-69b0.json')).read_text());prior=P.read(self.profile['observed_growth']['runtime']);self.raw_job['target']=prior['target']['block'];self.raw_job['native_route']=self.profile['authority']
   self.assertEqual(self.job()['physical_fence_bytes'],8*P.GIB)
  def test_measured_environment_removes_inherited_issue10(self):
   env=dict(ZESU_DIAGNOSTIC_PROBE='1',ZESU_PROBE_ISSUE='10');env.update(self.environment(self.job()));self.assertEqual(env['ZESU_DIAGNOSTIC_PROBE'],'0');self.assertEqual(env['ZESU_PROBE_ISSUE'],'');self.assertEqual(env['ZESU_AGGREGATE_LIMIT'],'16G')

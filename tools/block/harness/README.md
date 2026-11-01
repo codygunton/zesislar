@@ -60,7 +60,8 @@ Require successful `module_m` checks with empty assumptions after importing its 
 Inline compiler prints do not replace these checks.
 
 The migrated `test_*.py` files preserve the existing regression controls.
-Some historical controls require their original bound development artifacts.
+Historical input bytes live in `test-fixtures/historical-inputs`.
+Tests materialize derived data in private temporary directories.
 The portable tests in `tools/test_shared_harness.py` require no proof artifacts.
 
 The repository test suite runs portable controls in a separate process.
@@ -75,14 +76,37 @@ tools/resource_guard.sh batch block-harness-controls -- \
   -s tools/block/harness -p 'test_*.py'
 ```
 
-Historical positive controls require their original retained development inputs.
+Authentic fixture bytes and origin hashes remain separate from derived data.
+Derivation changes typed paths and dependent container hashes.
+It preserves measurements, outcomes, and source bodies.
 A missing historical object stays missing. Its compatibility check must refuse.
-Synthetic unit data never supplies admission evidence.
+Fixture data never supplies admission evidence.
 
 The digest cache checks device, inode, size, modification time, change time, and mode.
 It checks the file identity before and after hashing.
 Each operation resolves every bound path with a fresh parent map.
-Startup, physical compilation, verification, and final acceptance force full hashing.
+Startup and final acceptance force hashing of every retained input.
+A provider publishes a private, hash-bound snapshot after its initial forced validation.
+The snapshot retains every classified historical row.
+It separately seals initial installed plugins and the selected compiler identity.
+It binds the effective physical load paths.
+Declaration jobs remove only declared output copies in their private workspace.
+Donor objects and inherited bindings remain unchanged.
+Snapshot publication requires those declared outputs to be absent.
+A physical compile checks every retained file identity after guard admission.
+It directly hashes its source, compiler, and complete load-path dependency superset.
+Seed-reference runtimes retain full validation when snapshot coverage is incomplete.
+The runtime stores its large binding inventory in a separate hash-bound file.
+No historical row is removed.
+
+Later dependency objects need receipts from successful, validated compilations.
+Each private receipt binds its source, object, compiler, flags, job, and provider.
+An authenticated index binds those receipt hashes to the initial snapshot.
+Each index version remains immutable.
+The authentication key never enters runtime files, receipts, logs, or the physical compiler environment.
+Authentication does not replace file identity checks or direct hashing.
+The compiler refuses a new dependency without an original binding or validated receipt.
+Physical validation records its own costs separately from compiler costs.
 The provider records validation time separately from each MCP call.
 A provider session reuses validation while its runtime identity stays exact.
 The session always runs full validation at completion, including after a tool failure.

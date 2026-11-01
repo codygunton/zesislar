@@ -3,7 +3,7 @@ import hashlib,json,tempfile,unittest
 import scratch
 import _test_support
 
-ROOT=Path('/home/cody/zesislar/_build/agents/worker-build-2/entry-normalization-native-matrix-v1')
+ROOT=_test_support.historical.directory('/home/cody/zesislar/_build/agents/worker-build-2/entry-normalization-native-matrix-v1')
 class HookAdapterControls(unittest.TestCase):
  def test_all_production_statement_boundaries(self):
   for row in json.loads((ROOT/'TARGET-SELECTION-v3.json').read_text())['rows']:

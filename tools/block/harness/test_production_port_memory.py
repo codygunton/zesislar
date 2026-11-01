@@ -13,6 +13,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 import scratch
+import _historical_fixtures as historical
 import memory_policy as P
 import native_route
 
@@ -23,6 +24,7 @@ def binding(path):
 
 class ProductionPortMemory(unittest.TestCase):
     def setUp(self):
+        historical.use_policy(self)
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         self.root = Path(temporary.name)

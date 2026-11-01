@@ -1,10 +1,12 @@
+import _historical_fixtures as historical
+historical.prepare()
 from pathlib import Path
 from unittest.mock import patch
 import copy,json,sys,unittest
 HERE=Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE/'code'))
 import memory_policy as P
-ROWS=[row for row in json.loads(((HERE/'test-fixtures/COMPLETED-STOCK-MEASUREMENTS.json')).read_text())['rows'] if row.get('format')=='legacy_r1_workload_rss_v1']
+ROWS=[row for row in historical.read_json(HERE/'test-fixtures/COMPLETED-STOCK-MEASUREMENTS.json')['rows'] if row.get('format')=='legacy_r1_workload_rss_v1']
 def target(row):return {'module':row['module'],'statement_sha256':row['statement_sha256'],'source_sha256':row['native_source']['sha256']}
 class LegacyControls(unittest.TestCase):
  def test_all_twentyfive_completed_sources(self):

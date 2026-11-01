@@ -6,7 +6,7 @@ sys.path.insert(0,str(Path(__file__).resolve().parent))
 import scratch
 import _test_support
 from scratch_limits import stop_reason,exact_aggregate
-W=Path('/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40');BASE=W/'_build/check-entry-stage1-passfix-ten-runtime-v2'
+W=_test_support.LEGACY;BASE=_test_support.BASE
 ENTRY=Path(json.loads((BASE/'release-v1/RUNTIME.json').read_text())['prepared_workspace'])/'artifacts/default/ZesuSsz/Generated/DecodeItem/Entries.v'
 class Controls(unittest.TestCase):
  def test_valid_block(self):
@@ -18,7 +18,7 @@ class Controls(unittest.TestCase):
  def test_missing_rules(self):
   with self.assertRaises(SystemExit):_test_support.arguments(['800d6a64',str(ENTRY),'--rules','/missing.v'])
  def test_output_source_refused(self):
-  with self.assertRaises(SystemExit):_test_support.arguments(['800d6a64',str(ENTRY),'--output',str(W/'tools/new-result')])
+  with self.assertRaises(SystemExit):_test_support.arguments(['800d6a64',str(ENTRY),'--output',str(scratch.W/'tools/new-result')])
  def test_base_source_output_refused(self):
   with self.assertRaises(SystemExit):_test_support.arguments(['800d6a64',str(ENTRY),'--output','/home/cody/zesislar/ZesuSsz/new-result'])
  def test_peer_source_output_refused(self):

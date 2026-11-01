@@ -1,10 +1,12 @@
+import _historical_fixtures as historical
+historical.prepare()
 from pathlib import Path
 from unittest.mock import patch
 import copy,json,sys,unittest
 HERE=Path(__file__).resolve().parent
 sys.path[:0]=[str(HERE/'code'),'/home/cody/zesislar/tools/block','/home/cody/zesislar/tools']
 import memory_policy as P
-ROWS=json.loads(((HERE/'test-fixtures/COMPLETED-STOCK-MEASUREMENTS.json')).read_text())['rows']
+ROWS=historical.read_json(HERE/'test-fixtures/COMPLETED-STOCK-MEASUREMENTS.json')['rows']
 ROW=next(r for r in ROWS if r.get('declaration_projection'))
 TARGET={'module':ROW['module'],'source_sha256':ROW['native_source']['sha256'],'statement_sha256':'8171c09103807a8fce25145ffed0f47860d52883a15e4431e87aa6202017b843'}
 

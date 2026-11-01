@@ -7,10 +7,13 @@ import unittest
 from unittest.mock import patch
 HERE=Path(__file__).resolve().parent
 sys.path[:0]=[str(HERE/'code'),str(HERE)]
+import _historical_fixtures as historical
 import memory_policy as P
 from test_production_port_memory import ProductionPortMemory
 
 class ExactExtension(unittest.TestCase):
+    def setUp(self):
+        historical.use_policy(self)
     def test_real_authority_keeps_original_fifteen_and_exact_six(self):
         profile={'schema':'scratch.admission-profile.v1','kind':P.PORT_KIND,'authority':P.PORT_AUTHORITY,'memory_route':'measured_native'}
         authority=P.production_port_authority(profile)

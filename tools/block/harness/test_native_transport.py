@@ -26,7 +26,8 @@ class AuditControls(unittest.TestCase):
         report = M.audit(T.HERE / 'code/entry_chain_provider.py')
         self.assertEqual(sum(row['field'] == 'dependency_batch' for row in report['field_reads']), 2)
         self.assertEqual(M.KNOWN_SINKS, {'check_operation', 'proof_environment',
-            'prerequisite_environment', 'check_proof_bindings', 'validate_runtime'})
+            'prerequisite_environment', 'check_proof_bindings', 'validate_runtime',
+            'publish'})
 
     def test_all_original_runtime_escapes_still_refuse(self):
         with tempfile.TemporaryDirectory() as root:
