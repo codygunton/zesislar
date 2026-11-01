@@ -1411,7 +1411,8 @@ aggregate_slice() {
     return 0
   fi
   if [[ ! "$slice" =~ ^zesuworkloads-aggregate[0-9]+p[0-9]+r[0-9]+\.slice$ ]] ||
-     [[ ! "$limit" =~ ^(64G|120G|150G)$ ]]; then
+     [[ ! "$limit" =~ ^[1-9][0-9]{0,2}G$ ]] ||
+     (( ${limit%G} > 175 )); then
     echo "resource guard: invalid aggregate slice or limit" >&2
     return 2
   fi
@@ -1533,6 +1534,25 @@ run_scope() {
   return "$status"
 }
 
+new_batch_limit() {
+  local explicit="${ZESU_AGGREGATE_LIMIT:-}" gate="" bytes
+  local -a limits=()
+  if [ -n "$explicit" ]; then
+    [[ "$explicit" =~ ^[1-9][0-9]{0,2}G$ ]] || return 2
+    limits+=(--explicit-limit-bytes "$(( ${explicit%G} * GIB ))")
+  fi
+  if [ -n "${ZESU_IN_GATE:-}" ] || [ "${ZESU_IO:-batch}" = gate ]; then
+    gate=$GATE_LIMIT
+    [[ "$gate" =~ ^[1-9][0-9]{0,2}G$ ]] || return 2
+    limits+=(--gate-limit-bytes "$(( ${gate%G} * GIB ))")
+  fi
+  bytes=$(python3 "$MEMORY_TOOL" aggregate-limit --guard-pid "$$" \
+    --inner-fence-bytes "$(( MODULE_LIMIT_GIB * GIB ))" \
+    --booking-bytes "$MEMORY_CLAIM_BYTES" "${limits[@]}") || return $?
+  [[ "$bytes" =~ ^[1-9][0-9]*$ ]] && (( bytes % GIB == 0 && bytes <= WORKLOAD_PARENT_BYTES )) || return 2
+  printf '%sG\n' "$(( bytes / GIB ))"
+}
+
 run_batch() {
   if [ -n "$WRITER_ID" ]; then
     echo "resource guard: writers must use compiler admission or a guarded scope" >&2
@@ -1549,6 +1569,8 @@ run_batch() {
   fi
   wait_for_gate
   guard_wait || return $?
+  local limit
+  limit=$(new_batch_limit) || return $?
   ensure_workload_parent || return $?
   local marker="" status child=""
   if [ -z "${ZESU_IN_GATE:-}" ]; then
@@ -1556,8 +1578,6 @@ run_batch() {
   fi
   local unit="${SCOPE_PREFIX}-batch-${name}-$$"
   local slice="zesuworkloads-aggregate${UID}p$$r${RANDOM}.slice"
-  local limit=$BATCH_LIMIT
-  if [ -n "${ZESU_IN_GATE:-}" ] || [ "${ZESU_IO:-batch}" = gate ]; then limit=$GATE_LIMIT; fi
   # Cap the aggregate before either its parent or a compiler starts.
   if ! systemctl --user set-property --runtime "$slice" "MemoryMax=$limit" MemorySwapMax=0; then
     stop_scope "$slice" aggregate-setup-failure 2>/dev/null || true

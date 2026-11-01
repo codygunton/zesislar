@@ -190,7 +190,10 @@ A missing or replaced scope cannot silently release that booking.
 
 A rollout needs a reviewed inventory of every old writer.
 `prepare_legacy_rollout` builds a source-only seed without changing a live ledger.
-Old aggregates retain their full authenticated fences until closure.
+Old aggregates retain their largest recorded booking until closure.
+Without a booking, accounting uses the smaller of the aggregate fence and summed inner fences.
+New plain-shell aggregates use the larger of the approved booking and inner fence.
+Canonical gate and family fences remain exact.
 An old writer that can create an unrepresented aggregate blocks the rollout.
 Older gate worktrees also need the unified writer before their next launch.
 A managed tools checkout alone does not update an older Makefile or controller.

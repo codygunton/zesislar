@@ -34,6 +34,7 @@ current_projection = _module.current_projection
 mark_shell = _module.mark_shell
 refresh_shell_growth = _module.refresh_shell_growth
 read_shell_bookings = _module.read_shell_bookings
+select_guard_aggregate_limit = _module.select_guard_aggregate_limit
 
 
 GIB = 1024 ** 3
@@ -328,7 +329,17 @@ def main():
     release.add_argument('--marker', type=Path, required=True)
     mark = commands.add_parser('ledger-mark')
     mark.add_argument('--marker', type=Path, required=True)
+    aggregate = commands.add_parser('aggregate-limit')
+    aggregate.add_argument('--guard-pid', type=int, required=True)
+    aggregate.add_argument('--inner-fence-bytes', type=int, required=True)
+    aggregate.add_argument('--booking-bytes', type=int, required=True)
+    aggregate.add_argument('--explicit-limit-bytes', type=int)
+    aggregate.add_argument('--gate-limit-bytes', type=int)
     args = parser.parse_args()
+    if args.command == 'aggregate-limit':
+        print(select_guard_aggregate_limit(args.guard_pid, args.inner_fence_bytes, args.booking_bytes,
+              explicit_limit_bytes=args.explicit_limit_bytes, gate_limit_bytes=args.gate_limit_bytes))
+        return 0
     if args.command == 'ledger-confirm':
         result = confirm_shell(args.marker, args.replacement, args.request_bytes, args.available_bytes)
         if not result['fits']:
