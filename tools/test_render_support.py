@@ -14,6 +14,84 @@ import render_support as renderer
 
 
 class SupportRendererTests(unittest.TestCase):
+    def test_named_unfold_preserves_full_path_and_exports_opacity(self):
+        self.assertEqual(renderer.unfold_declaration(
+            "Owner.entry", instance_name="entry_unfold", locality="export"),
+            "#[export] Instance entry_unfold : LithiumUnfold (@Owner.entry) := I.\n"
+            "#[export] Typeclasses Opaque Owner.entry.\n")
+
+    def test_structural_reemission_only_inserts_opacity(self):
+        source = ("Require Import Owner.\n(* Keep this comment. *)\n"
+                  "#[export] Instance entry_unfold : LithiumUnfold (@entry) := I.\n"
+                  "Definition untouched := 4.\n"
+                  "Global Instance other_unfold : LithiumUnfold (@Owner.other) := I.\n")
+        result = renderer.retain_unfold_opacity(source)
+        self.assertEqual(result.replace("\n#[export] Typeclasses Opaque entry.", "")
+                         .replace("\n#[export] Typeclasses Opaque Owner.other.", ""), source)
+        self.assertEqual(renderer.retain_unfold_opacity(result), result)
+
+    def test_structural_terminator_whitespace_preserves_source_bytes(self):
+        source = "#[export] Instance entry_unfold : LithiumUnfold (@entry) := I \n .\n"
+        result = renderer.retain_unfold_opacity(source)
+        insertion = "\n#[export] Typeclasses Opaque entry."
+        self.assertEqual(result.replace(insertion, ""), source)
+        self.assertEqual(renderer.retain_unfold_opacity(result), result)
+
+    def test_structural_alias_spellings_require_owner_resolution(self):
+        for first, second in [("entry", "Owner.entry"),
+                              ("Owner.entry", "Outer.Owner.entry"),
+                              ("First.entry", "Second.entry")]:
+            source = (f"#[export] Instance first_unfold : LithiumUnfold (@{first}) := I.\n"
+                      f"#[export] Instance second_unfold : LithiumUnfold (@{second}) := I.\n")
+            with self.subTest(first=first, second=second), self.assertRaisesRegex(
+                    ValueError, "canonical owner"):
+                renderer.retain_unfold_opacity(source)
+
+    def test_existing_opacity_alias_requires_owner_resolution(self):
+        source = ("#[export] Instance entry_unfold : LithiumUnfold (@entry) := I.\n"
+                  "Global Typeclasses Opaque Owner.entry.\n")
+        with self.assertRaisesRegex(ValueError, "canonical owner"):
+            renderer.retain_unfold_opacity(source)
+
+    def test_global_opacity_prevents_duplicate_export_opacity(self):
+        source = ("Global Instance : LithiumUnfold (@entry) := I.\n"
+                  "Global Typeclasses Opaque entry.\n")
+        self.assertEqual(renderer.retain_unfold_opacity(source), source)
+
+    def test_local_opacity_does_not_replace_export_opacity(self):
+        source = ("#[export] Instance entry_unfold : LithiumUnfold (@entry) := I.\n"
+                  "#[local] Typeclasses Opaque entry.\n")
+        self.assertIn("#[export] Typeclasses Opaque entry.",
+                      renderer.retain_unfold_opacity(source))
+
+    def test_structural_reemission_refuses_ambiguous_or_nontrivial_instances(self):
+        declaration = "#[export] Instance entry_unfold : LithiumUnfold (@entry) := I.\n"
+        cases = [declaration * 2,
+                 declaration + declaration.replace("entry_unfold", "other_unfold"),
+                 declaration + declaration.replace("(@entry)", "(@other)"),
+                 declaration.replace("(@entry)", "(fun x => x)"),
+                 declaration.replace(":= I", ":= ltac:(exact I)"),
+                 "Module Nested.\n" + declaration + "End Nested.\n",
+                 declaration + "Typeclasses Transparent entry.\n"]
+        for source in cases:
+            with self.subTest(source=source), self.assertRaises(ValueError):
+                renderer.retain_unfold_opacity(source)
+
+    def test_structural_cli_refuses_existing_output(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, output = root / "Structural.v", root / "Output.v"
+            text = "#[export] Instance entry_unfold : LithiumUnfold (@entry) := I.\n"
+            source.write_text(text)
+            argv = ["render_support.py", "--structural-source", str(source),
+                    "--output", str(output)]
+            with patch.object(sys, "argv", argv):
+                renderer.main()
+                self.assertEqual(output.read_text(), renderer.retain_unfold_opacity(text))
+                with self.assertRaises(SystemExit), patch("sys.stderr"):
+                    renderer.main()
+            self.assertEqual(source.read_text(), text)
+
     def fixture(self, root):
         source = root / "Contracts/Fixture.v"
         source.parent.mkdir(parents=True)

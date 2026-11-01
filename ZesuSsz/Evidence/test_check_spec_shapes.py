@@ -291,13 +291,14 @@ class SpecShapeTests(unittest.TestCase):
     def test_typeclass_opacity_supports_lists_and_locality(self):
         source = ('Global\nTypeclasses Opaque callSpec Calls.returnSpec.\n'
                   '#[global] Typeclasses Opaque frameSpec.\n'
+                  '#[export] Typeclasses Opaque Exported.entry.\n'
                   'Local Typeclasses Opaque localSpec.\n'
                   '#[local] Typeclasses Opaque anotherLocal.\n'
                   'Typeclasses Opaque defaultSpec.')
         self.assertEqual(typeclasses_opaque(source, global_only=True),
-                         {'callSpec', 'Calls.returnSpec', 'frameSpec'})
+                         {'callSpec', 'Calls.returnSpec', 'frameSpec', 'Exported.entry'})
         self.assertEqual(typeclasses_opaque(source),
-                         {'callSpec', 'Calls.returnSpec', 'frameSpec',
+                         {'callSpec', 'Calls.returnSpec', 'frameSpec', 'Exported.entry',
                           'localSpec', 'anotherLocal', 'defaultSpec'})
 
     def test_comments_do_not_supply_opacity_or_instances(self):
@@ -346,7 +347,7 @@ class SpecShapeTests(unittest.TestCase):
                     (root / automation).write_text(
                         'Definition callSpec := 1.\n'
                         f'Global Instance : LithiumUnfold (@{target}) := I.')
-                    for scope in ('Global', '#[global]', 'Local', '#[local]'):
+                    for scope in ('Global', '#[global]', '#[export]', 'Local', '#[local]'):
                         with self.subTest(target=target, scope=scope):
                             (root / opacity).write_text(
                                 'Definition callSpec := 2.\n'

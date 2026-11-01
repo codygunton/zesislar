@@ -772,12 +772,80 @@ def scope_names(values, label):
     return names
 
 
+def unfold_declaration(head, *, instance_name=None, locality="global"):
+    """Render one unfold instance and its typeclass opacity boundary."""
+    identifier(head, "unfold head", qualified=isinstance(head, str) and "." in head)
+    if locality not in {"global", "export"}:
+        raise ValueError("The unfold locality is unsupported.")
+    if instance_name is not None:
+        identifier(instance_name, "unfold instance")
+    prefix = "Global" if locality == "global" else "#[export]"
+    name = " " + instance_name if instance_name is not None else ""
+    return (f"{prefix} Instance{name} : LithiumUnfold (@{head}) := I.\n"
+            f"{prefix} Typeclasses Opaque {head}.\n")
+
+
 def unfold_pairs(names):
-    lines = []
-    for name in names:
-        lines.extend([f"Global Instance : LithiumUnfold (@{name}) := I.",
-                      f"Global Typeclasses Opaque {name}.", ""])
-    return lines
+    # Preserve the existing unnamed global interface and its exact output.
+    return [line for name in names
+            for line in [*unfold_declaration(name).splitlines(), ""]]
+
+
+def retain_unfold_opacity(source):
+    """Re-emit canonical Structural source with insertion-only opacity.
+
+    Keep named instances, imports, introductions, and their source bytes exact.
+    Refuse unsupported instance forms instead of rewriting a proof or a head.
+    """
+    commands = rocq_commands(source)
+    opaque, registrations, instances, short_heads = set(), {}, set(), set()
+    for command in commands:
+        words = [word for word, _ in command]
+        if "Module" in words or "Section" in words or "End" in words:
+            raise ValueError("Structural opacity requires a module-level source.")
+        if "Typeclasses" in words and "Transparent" in words:
+            raise ValueError("Structural source changes typeclass transparency.")
+        if "Typeclasses" in words and "Opaque" in words:
+            exported = words[:1] == ["Global"] or words[:4] in (
+                ["#", "[", "global", "]"], ["#", "[", "export", "]"])
+            if exported:
+                opaque.update(words[words.index("Opaque") + 1:])
+        if "Instance" not in words or not any(
+                word.rsplit(".", 1)[-1] == "LithiumUnfold" for word in words):
+            continue
+        start = command[0][1]
+        last, offset = command[-1]
+        end = offset + len(last)
+        while end < len(source) and source[end].isspace():
+            end += 1
+        if source[end:end + 1] != ".":
+            raise ValueError("The unfold declaration lacks its terminator.")
+        declaration = source[start:end + 1]
+        pattern = (r"(?:Global|#\[\s*(?:global|export)\s*\])\s+Instance"
+                   r"(?:\s+(?P<name>" + IDENTIFIER + r"))?\s*:\s*"
+                   r"LithiumUnfold\s+\(\s*@(?P<head>" + IDENTIFIER + r"(?:\." + IDENTIFIER + r")*" +
+                   r")\s*\)\s*:=\s*I\s*\.")
+        match = re.fullmatch(pattern, declaration)
+        if match is None:
+            raise ValueError("The Structural unfold instance form is unsupported.")
+        head, name = match["head"], match["name"]
+        if head in registrations or name is not None and name in instances:
+            raise ValueError("The Structural unfold head or instance is repeated.")
+        short = head.rsplit(".", 1)[-1]
+        if short in short_heads:
+            raise ValueError("The Structural unfold heads need canonical owner identities.")
+        short_heads.add(short)
+        if name is not None:
+            instances.add(name)
+        registrations[head] = end + 1
+    for head, end in sorted(registrations.items(), key=lambda item: item[1], reverse=True):
+        if head not in opaque:
+            if any(name.rsplit(".", 1)[-1] == head.rsplit(".", 1)[-1] for name in opaque):
+                raise ValueError("The Structural opacity head needs a canonical owner identity.")
+            # Use the same declaration renderer without replacing the old instance.
+            opacity = unfold_declaration(head, locality="export").splitlines()[1]
+            source = source[:end] + "\n" + opacity + source[end:]
+    return source
 
 
 def bootstrap_source(value, root, generated, ordinary_sources):
@@ -957,8 +1025,20 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--function", type=prefix_argument, default="decodeItem")
     parser.add_argument("--design", type=Path)
+    parser.add_argument("--structural-source", type=Path)
+    parser.add_argument("--output", type=Path)
     parser.add_argument("--check", action="store_true", help="Check output bytes without writing files.")
     args = parser.parse_args()
+    if args.structural_source is not None:
+        if args.design is not None or args.output is None or args.check:
+            parser.error("Structural re-emission requires only --structural-source and --output.")
+        if args.output.exists():
+            parser.error("The Structural output already exists.")
+        rendered = retain_unfold_opacity(args.structural_source.read_text())
+        args.output.write_text(rendered)
+        return
+    if args.output is not None:
+        parser.error("--output requires --structural-source.")
     names = FunctionNames(args.function)
     path = args.design or ROOT / f"ZesuSsz/Evidence/{names.filename}_block_design.json"
     design = json.loads(path.read_text(), object_pairs_hook=unique_object)
