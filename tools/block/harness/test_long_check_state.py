@@ -94,7 +94,7 @@ class LongCheckState(unittest.IsolatedAsyncioTestCase):
   def synced(fd):calls.append(stat.S_ISDIR(os.fstat(fd).st_mode));return original(fd)
   with patch.object(P.os,'fsync',side_effect=synced):receipt=await self.capture()
   self.assertTrue(receipt['success']);self.assertEqual(sum(calls),3)
- async def test_actual_call_exports_before_return_without_changing_result(self):
+ def provider_fixture(self):
   tree=ast.parse(Path(P.__file__).read_text());execute=next(n for n in tree.body if isinstance(n,ast.AsyncFunctionDef) and n.name=='execute')
   function=next(n for n in execute.body if isinstance(n,ast.AsyncFunctionDef) and n.name=='call')
   namespace=dict(vars(P),runtime={'phase':'prerequisites'},calls=[],output=self.output,
@@ -106,10 +106,70 @@ class LongCheckState(unittest.IsolatedAsyncioTestCase):
     observed.append(name);value=owner.result if name=='rocq_check' else owner.export
     return SimpleNamespace(structuredContent=value,content=[],isError=False,
        model_dump=lambda **kwargs:{'structuredContent':value})
-  value=await namespace['call'](Session(),'rocq_check',self.arguments)
+  return namespace,Session(),observed
+ async def test_actual_call_exports_before_return_without_changing_result(self):
+  namespace,session,observed=self.provider_fixture()
+  value=await namespace['call'](session,'rocq_check',self.arguments)
   self.assertIs(value,self.result);self.assertEqual(observed,['rocq_check','rocq_complete_goals'])
   self.assertTrue(namespace['calls'][0]['long_check_state']['success'])
   self.assertIn('post_operation_validation',namespace['calls'][0])
   self.assertEqual(self.record(namespace['calls'][0]['long_check_state'])['returned_result'],self.result)
+ async def test_directory_creation_failure_stops_provider_and_keeps_result(self):
+  (self.output/'long-checks').write_bytes(b'blocked destination')
+  namespace,session,observed=self.provider_fixture()
+  with self.assertRaises(OSError):await namespace['call'](session,'rocq_check',self.arguments)
+  calls=json.loads((self.output/'CALLS.json').read_text())
+  self.assertEqual(calls[0]['result'],self.result)
+  self.assertFalse(calls[0]['long_check_state']['durable_record_available'])
+  self.assertIn('publication_error',calls[0]['long_check_state'])
+  self.assertEqual(observed,['rocq_check'])
+ async def test_final_publication_failure_stops_provider_and_keeps_result(self):
+  original=P.atomic_json
+  def failed(path,value):
+   if path.name=='RESULT.json' and path.parent.name=='call-0001':raise OSError('fixture publication failure')
+   return original(path,value)
+  with patch.object(P,'atomic_json',side_effect=failed):
+   namespace,session,observed=self.provider_fixture()
+   with self.assertRaisesRegex(OSError,'fixture publication failure'):
+    await namespace['call'](session,'rocq_check',self.arguments)
+  calls=json.loads((self.output/'CALLS.json').read_text())
+  self.assertEqual(calls[0]['result'],self.result)
+  self.assertFalse(calls[0]['long_check_state']['durable_record_available'])
+  self.assertEqual(calls[0]['long_check_state']['publication_error'],'fixture publication failure')
+  self.assertEqual(observed,['rocq_check','rocq_complete_goals'])
+ async def test_directory_sync_failure_stops_provider_without_claiming_durability(self):
+  original=os.fsync
+  def failed(fd):
+   if stat.S_ISDIR(os.fstat(fd).st_mode):raise OSError('fixture directory sync failure')
+   return original(fd)
+  with patch.object(P.os,'fsync',side_effect=failed):
+   namespace,session,observed=self.provider_fixture()
+   with self.assertRaisesRegex(OSError,'fixture directory sync failure'):
+    await namespace['call'](session,'rocq_check',self.arguments)
+  calls=json.loads((self.output/'CALLS.json').read_text())
+  self.assertEqual(calls[0]['result'],self.result)
+  self.assertFalse(calls[0]['long_check_state']['durable_record_available'])
+
+
+class FailedCommandIdentity(unittest.TestCase):
+ def test_native_error_keeps_check_response_after_export_rpc(self):
+  tree=ast.parse(Path(P.__file__).read_text())
+  selected=[]
+  for node in ast.walk(tree):
+   if isinstance(node,ast.ExceptHandler) and isinstance(node.type,ast.Name) and node.type.id=='ToolFailure':
+    for index,statement in enumerate(node.body):
+     if isinstance(statement,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='failed_call' for t in statement.targets):
+      selected=node.body[index:index+2]
+  self.assertEqual(len(selected),2)
+  failure={'success':False,'state_id':8,'error':'original tactic failed'}
+  original={'result':failure,'raw_response':{'original':'check response'}}
+  export={'result':{'success':True,'state_id':8},'raw_response':{'export':'other response'}}
+  records=[]
+  scope=dict(vars(P),calls=[original,export],error_result=failure,output=Path('/unused'),side='control',
+     state_source='returned_error_state',returned_id=8,has_returned_state=True,before={'state_id':7},
+     atomic_json=lambda path,value:records.append(value))
+  exec(compile(ast.Module(body=selected,type_ignores=[]),str(P.__file__),'exec'),scope)
+  self.assertEqual(records[0]['raw_response'],original['raw_response'])
+  self.assertIs(records[0]['complete_error_result'],failure)
 
 if __name__=='__main__':unittest.main()

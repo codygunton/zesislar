@@ -304,9 +304,15 @@ async def execute(request):
             entry['result'] = value
             entry['ended_ns'] = time.time_ns()
             atomic_json(output/'CALLS.json', calls)
-            retained=await retain_long_check(call,session,name,arguments,value,output,len(calls),
-                operation_seconds,{'native_route':runtime.get('native_route'),'phase':runtime['phase'],
-                                   'native_search':native_search})
+            try:
+                retained=await retain_long_check(call,session,name,arguments,value,output,len(calls),
+                    operation_seconds,{'native_route':runtime.get('native_route'),'phase':runtime['phase'],
+                                       'native_search':native_search})
+            except Exception as error:
+                entry['long_check_state']={'success':False,'complete_state_available':False,
+                    'durable_record_available':False,'publication_error':str(error),'visibility':'private'}
+                atomic_json(output/'CALLS.json',calls)
+                raise
             if retained is not None:
                 entry['long_check_state']=retained
                 atomic_json(output/'CALLS.json',calls)
@@ -450,8 +456,9 @@ async def execute(request):
                         returned_id = error_result.get('state_id', error_result.get('last_valid_state_id'))
                         has_returned_state = returned_id is not None
                         state_source = ('returned_error_state' if error_result.get('state_id') is not None else 'reported_last_valid_state') if has_returned_state else 'retained_pre_call_state'
+                        failed_call=next((entry for entry in reversed(calls) if entry.get('result') is error_result),{})
                         atomic_json(output/'NATIVE-ERROR.json', {'side': side, 'complete_error_result': error_result,
-                            'raw_response': calls[-1].get('raw_response'), 'state_source': state_source,
+                            'raw_response': failed_call.get('raw_response'), 'state_source': state_source,
                             'selected_state_id': returned_id if has_returned_state else before['state_id']})
                         if not any(item.get('result', {}).get('pet_restarted') or item.get('result', {}).get('restarted') for item in calls):
                             value = await export(session, {'state_id': returned_id} if has_returned_state else before)
