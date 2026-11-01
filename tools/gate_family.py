@@ -9,8 +9,15 @@ ROOT = Path(__file__).resolve().parent
 PROFILE = ROOT / 'gate-families.json'
 
 
-def select(target, command, physical_fence_bytes, *, profile=PROFILE):
-    value = json.loads(Path(profile).read_text())
+def select(target, command, physical_fence_bytes, *, profile=PROFILE, profile_sha256=None):
+    profile = Path(profile)
+    payload = profile.read_bytes()
+    if profile_sha256 is not None:
+        if (not isinstance(profile_sha256, str) or len(profile_sha256) != 64
+                or any(char not in '0123456789abcdef' for char in profile_sha256)
+                or hashlib.sha256(payload).hexdigest() != profile_sha256):
+            raise ValueError('The selected gate-family profile changed or lacks a valid hash.')
+    value = json.loads(payload)
     if (set(value) != {'schema', 'families'}
             or value['schema'] != 'zesu.reviewed-gate-families.v1'
             or not isinstance(value['families'], dict)):
@@ -43,7 +50,7 @@ def select(target, command, physical_fence_bytes, *, profile=PROFILE):
             or measurement.get('aggregate_peak_bytes') != row['peak_bytes']
             or measurement.get('measurement_scope') != 'Complete owned stock aggregate before guard cleanup.'):
         raise ValueError('The reviewed gate measurement is incomplete or names another family.')
-    return {'reason': 'reviewed_completed_gate_family_peak', 'family': target,
+    result = {'reason': 'reviewed_completed_gate_family_peak', 'family': target,
             'measurement': {'path': str(path), 'sha256': binding['sha256']},
             'measurement_provenance': measurement.get('cache_provenance'),
             'aggregate_peak_bytes': row['peak_bytes'], 'authority': row['authority'],
@@ -53,3 +60,6 @@ def select(target, command, physical_fence_bytes, *, profile=PROFILE):
             'qualification': 'Admission prediction from a reviewed completed family measurement. '
                              'This is not an uncached-build claim. Source changes can increase memory use. '
                              'The physical fence and shared backstop remain mandatory.'}
+    if profile_sha256 is not None:
+        result['family_profile'] = {'path': str(profile.resolve()), 'sha256': profile_sha256}
+    return result
