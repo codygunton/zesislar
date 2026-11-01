@@ -111,13 +111,15 @@ class ProductionPortMemory(unittest.TestCase):
                     self.workload()
 
     def test_actual_reserve_records_full_fence_booking(self):
+        import admission_memory as M
         self.profile['memory_booking'] = 'full_physical_fence'
         job = self.job()
         path = Path(__file__).with_name('code')/'check_entry_outside.py'
         function = next(node for node in ast.parse(path.read_text()).body
                         if isinstance(node,ast.FunctionDef) and node.name=='reserve')
         ledger = self.root/'ledger.json'
-        ledger.write_text(json.dumps({'fixed_claims':{}}))
+        markers = self.root/'markers';markers.mkdir()
+        ledger.write_text(json.dumps({'fixed_claims':{},'shell_marker_directory':str(markers)}))
         receipt = self.root/'admission.json'
         def save(path,value):
             Path(path).write_text(json.dumps(value))
@@ -130,7 +132,21 @@ class ProductionPortMemory(unittest.TestCase):
         policy = dict(memory_job=job,minimum_claim_bytes=32*P.GIB,
                       physical_fence_bytes=32*P.GIB,lock=str(self.root/'lock'),
                       ledger=str(ledger),legacy_release_bindings={},capture_headroom_bytes=0)
-        result = namespace['reserve'](policy,'isolated-full-fence',{'pid':os.getpid()},receipt)
+        reader = M.ScopeReader(proc=self.root/'proc',cgroup_root=self.root/'cgroup')
+        reader.parent.mkdir(parents=True)
+        (reader.parent/'memory.max').write_text(str(M.SLICE_MAX_BYTES))
+        (reader.parent/'memory.swap.max').write_text('0')
+        gate = self.root/'gate.lock'
+        for owned in (ledger,Path(policy['lock']),markers,Path(str(gate)+'.mutex'),reader.proc,reader.root):
+            self.assertTrue(owned.is_relative_to(self.root))
+        actual_projection = M.projection
+        def isolated_projection(data,claims,new,available):
+            return actual_projection(data,claims,new,available,reader=reader)
+        def unexpected_retry(_):
+            self.fail('The isolated full-fence reservation unexpectedly waits.')
+        with patch.dict(os.environ,{'ZESU_GATE_LOCK':str(gate)}),patch.object(M,'projection',isolated_projection):
+            result = namespace['reserve'](policy,'isolated-full-fence',{'pid':os.getpid()},receipt,
+                                          pause=unexpected_retry)
         self.assertEqual(result['claim_bytes'],32*P.GIB)
         self.assertEqual(json.loads(ledger.read_text())['fixed_claims']['isolated-full-fence'],32*P.GIB)
 
