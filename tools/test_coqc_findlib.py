@@ -186,9 +186,9 @@ class CompilerFindlibTests(unittest.TestCase):
         self.assertIsNone(record_dune_environment(tools, {}))
         self.assertFalse(self.record.exists())
 
-    def test_guard_wait_failure_preserves_status_without_starting_scope(self):
+    def test_scope_admission_failure_preserves_status_without_duplicate_wait(self):
         guard = self.root / "guard"
-        guard.write_text("#!/bin/sh\n[ \"$1\" = wait ] && exit 75\nexit 99\n")
+        guard.write_text("#!/bin/sh\n[ \"$1\" = scope ] && exit 75\nexit 99\n")
         guard.chmod(0o755)
         result = subprocess.run(["python3", str(TOOLS / "coqc_findlib.py"), "guarded",
                                  "--guard", str(guard), "--", "/absent/coqc", "Probe.v"],
@@ -226,8 +226,8 @@ class CompilerFindlibTests(unittest.TestCase):
                        cwd=self.root, env=fallback_environment, check=True)
         records = [json.loads(line) for line in log.read_text().splitlines()]
         self.assertEqual(records[0]["args"], ["scope", "dune-coqc", "--", str(compiler), *arguments])
-        self.assertEqual(records[1]["args"], ["wait"])
-        self.assertEqual(records[2]["args"], ["scope", "rocq-mcp-coqc", "--", str(compiler), *arguments])
+        self.assertEqual(len(records), 2)
+        self.assertEqual(records[1]["args"], ["scope", "rocq-mcp-coqc", "--", str(compiler), *arguments])
         self.assertTrue(all(record["OCAMLPATH"] == str(self.library) for record in records))
         # The fake guard records each route and never executes a Rocq compiler.
 

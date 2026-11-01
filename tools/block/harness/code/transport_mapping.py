@@ -17,6 +17,9 @@ FIELD_MAPPING = {
     'runtime_path': ['transport.runtime_envelope'],
     'runtime_sha256': ['transport.runtime_envelope'],
     'bindings': ['recipe.files', 'transport.checked_bindings'],
+    'physical_compiler': ['recipe.toolchain.compiler','recipe.files'],
+    'declared_outputs': ['recipe.files','recipe.dependencies'],
+    'binding_inventory': ['recipe.files', 'transport.checked_bindings'],
     'target': ['recipe.module', 'recipe.proof', 'recipe.files'],
     'ordered_modules': ['recipe.dependencies', 'recipe.producers', 'configuration.execution_vectors'],
     'mcp_argv': ['configuration.execution_vectors'],
@@ -29,7 +32,7 @@ FIELD_MAPPING = {
     'prospective_directory': ['transport.checked_actual_environment', 'transport.checked_mcp_launch', 'configuration.execution_vectors'],
 }
 
-KNOWN_SINKS = {'check_operation', 'proof_environment', 'prerequisite_environment', 'check_proof_bindings', 'validate_runtime'}
+KNOWN_SINKS = {'check_operation', 'proof_environment', 'prerequisite_environment', 'check_proof_bindings', 'validate_runtime', 'publish'}
 
 
 def audit(path):

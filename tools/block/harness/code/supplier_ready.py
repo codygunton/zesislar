@@ -326,6 +326,8 @@ def _validate(binding):
     for field in ['expected_mcp_flags', 'physical_flags', 'effective_compiler_version']:
         require(packet[field] == ready.get(field), field + ' differs')
     runtime = load(packet['runtime'])
+    if runtime.get('binding_inventory'):
+        bound(runtime['binding_inventory'])
     require(runtime.get('phase') == 'prerequisites' and runtime.get('job_output') == str(output)
             and runtime.get('ordered_modules') == ordered and
             runtime.get('declaration_checks') == checks,
@@ -438,7 +440,8 @@ def _validate(binding):
                     require(fallback.get('MCP_refusal_result') == response(matching[0]),
                             'EntryIntro refusal receipt differs')
                 wrapper = owned(inner_workspace, runtime['coqc_wrapper'])
-                inner_bindings = {str(_resolved(row['path'])): row for row in runtime['bindings']}
+                from compiler_snapshot import binding_rows
+                inner_bindings = {str(_resolved(row['path'])): row for row in binding_rows(runtime)}
                 wrapper_row = inner_bindings.get(str(wrapper))
                 prepared_wrapper = index.get(str(owned(workspace, runtime['coqc_wrapper'])))
                 require(wrapper_row is not None and prepared_wrapper is not None and

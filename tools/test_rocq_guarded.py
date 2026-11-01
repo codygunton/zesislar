@@ -73,13 +73,13 @@ class RocqGuardedTests(unittest.TestCase):
         self.assertIn("lacks the shared memory parent", result.stderr)
         self.assertNotIn("must not launch", result.stderr)
 
-    def test_compiler_waits_before_registered_scope(self):
+    def test_compiler_enters_registered_scope_without_duplicate_wait(self):
         self.executable("resource_guard.sh", "import json,os,sys\n"
                         "with open(os.environ['TEST_RECORD'],'a') as f: f.write(json.dumps(sys.argv[1:])+'\\n')\n")
         subprocess.run([str(self.root / "rocq_coqc_guarded.sh"), "-Q", "a", "b", "proof.v"],
                        env=dict(self.environment, ZESU_ROCQ_COQC_BINARY="/test/coqc"), check=True,
                        cwd=self.root)
-        self.assertEqual(self.records(), [["wait"], ["scope", "rocq-mcp-coqc", "--",
+        self.assertEqual(self.records(), [["scope", "rocq-mcp-coqc", "--",
                           "/test/coqc", "-Q", "a", "b", "proof.v"]])
 
     def test_health_does_not_reserve_a_slot(self):
