@@ -421,53 +421,68 @@ def run_command(registry, args):
         raise ValueError('The run command is empty.')
     owner = args.owner or os.environ.get('COORD_AGENT') or str(os.getuid())
     run_id = args.id or f'{args.kind}-{time.time_ns()}-{os.getpid()}'
-    # This lock serializes replacements. The state lock stays available to
-    # closing wrappers and claim-release callbacks during the stop operation.
-    with registry.lock('transition'):
-        if registry.contains(run_id):
-            raise ValueError('The run ID already exists. Use a fresh run ID.')
-        for old_id in args.supersedes:
-            old = registry.read_run(old_id)
-            if old['owner'] != owner or old['kind'] != args.kind:
-                raise ValueError('A replacement must keep the old owner and kind.')
-            registry.stop(old_id)
-        registry.register(run_id, args.kind, owner, identity(os.getpid()), command)
-        environment = dict(os.environ, ZESU_RUN_ID=run_id,
-                           ZESU_RUN_REGISTRY=str(registry.directory))
-        try:
-            process = subprocess.Popen(command, env=environment, start_new_session=True)
-            actor = identity(process.pid)
-            if actor and live(actor):
-                registry.add_job(run_id, actor)
-        except BaseException:
-            registry.update(run_id, lambda r: r.update(status='launch_failed'))
-            raise
     interrupted = []
+    actor = None
+    process = None
+    command_ended = False
+    registered = False
     def interrupt(signum, _frame):
         interrupted.append(signum)
-        for actor in descendants(registry.read_run_unlocked(run_id)['jobs']):
-            send_signal(actor, signum)
-    previous = {s: signal.signal(s, interrupt) for s in (signal.SIGTERM, signal.SIGINT)}
+        if registered and actor is not None:
+            for current in descendants([actor]):
+                send_signal(current, signum)
+    previous = {number: signal.signal(number, interrupt)
+                for number in (signal.SIGTERM, signal.SIGINT, signal.SIGHUP)}
     try:
+        # Install cancellation before a child can exist. The handler records a
+        # launch-time interruption until the exact child identity is available.
+        with registry.lock('transition'):
+            if registry.contains(run_id):
+                raise ValueError('The run ID already exists. Use a fresh run ID.')
+            for old_id in args.supersedes:
+                old = registry.read_run(old_id)
+                if old['owner'] != owner or old['kind'] != args.kind:
+                    raise ValueError('A replacement must keep the old owner and kind.')
+                registry.stop(old_id)
+            registry.register(run_id, args.kind, owner, identity(os.getpid()), command)
+            environment = dict(os.environ, ZESU_RUN_ID=run_id,
+                               ZESU_RUN_REGISTRY=str(registry.directory))
+            try:
+                if not interrupted:
+                    process = subprocess.Popen(command, env=environment, start_new_session=True)
+                    actor = identity(process.pid)
+                    if actor and live(actor):
+                        registry.add_job(run_id, actor)
+                    registered = True
+            except BaseException:
+                registry.update(run_id, lambda row: row.update(status='launch_failed'))
+                raise
+        if interrupted and actor is not None:
+            for current in descendants([actor]):
+                send_signal(current, interrupted[0])
         next_refresh = 0.0
-        while process.poll() is None:
+        while process is not None and process.poll() is None:
             now = time.monotonic()
             if now >= next_refresh:
                 registry.refresh(run_id)
                 next_refresh = time.monotonic() + REFRESH_SECONDS
             time.sleep(0.1)
-        status = process.wait()
+        status = process.wait() if process is not None else 128 + interrupted[0]
+        command_ended = True
         row = registry.refresh(run_id)
         if row['status'] != 'stopping':
-            if any(live(a) for a in row['jobs']):
-                registry.update(run_id, lambda r: r.update(status='children_live'))
+            if any(live(current) for current in row['jobs']):
+                registry.update(run_id, lambda row: row.update(status='children_live'))
                 raise ValueError('The command ended with live jobs. Its claims remain reserved.')
             registry.release_claims(run_id)
-            registry.update(run_id, lambda r: r.update(
+            registry.update(run_id, lambda row: row.update(
                 status='completed' if status == 0 else 'failed',
                 exit_code=status, closed_ns=time.time_ns(), all_actors_closed=True))
         return 128 + interrupted[0] if interrupted else (128 - status if status < 0 else status)
     finally:
+        if process is not None and not command_ended and actor is not None and process.poll() is None:
+            for current in descendants([actor]):send_signal(current, signal.SIGTERM)
+            process.wait(timeout=60)
         for signum, handler in previous.items():
             signal.signal(signum, handler)
 
