@@ -85,6 +85,8 @@ def raw_statement_source(rendered):
     if not re.fullmatch(IDENTIFIER, lemma):
         raise ValueError("The raw statement lemma name is invalid.")
     commands = rocq_commands(declaration)
+    if any(word in {"ltac", "ltac2"} for command in commands for word, _ in command):
+        raise ValueError("The raw statement contains an embedded proof term.")
     if (len(commands) != 1 or [word for word, _ in commands[0]][:2] != ["Lemma", lemma]
             or not declaration.startswith("Lemma " + lemma)
             or not (declaration.endswith(".") or declaration.endswith(".\n"))
@@ -94,8 +96,14 @@ def raw_statement_source(rendered):
         raise ValueError("The raw statement prefix lacks the production import.")
     forbidden = {"Proof", "Qed", "Defined", "Admitted", "Abort", "Axiom",
                  "Parameter", "Lemma", "Theorem", "Goal", "Ltac", "Ltac2", "ltac", "ltac2", "admit"}
-    if any(word in forbidden for command in rocq_commands(prefix) for word, _ in command):
+    prefix_commands = rocq_commands(prefix)
+    if any(word in forbidden for command in prefix_commands for word, _ in command):
         raise ValueError("The raw statement prefix contains a proof command.")
+    for command in prefix_commands:
+        words = [word for word, _ in command]
+        if (words and words[0] in {"Require", "From", "Import", "Open"}
+                and re.search(r"\bBoundary\b", " ".join(words))):
+            raise ValueError("A production proof cannot import a frozen Boundary.")
     if re.search(r"\b(?:RuleScratchRules|AllLegacy|Ltac2?)\b", prefix):
         raise ValueError("The raw statement prefix is not plain production stock.")
     # Keep the source prefix, imports, declaration, and source scopes literal.

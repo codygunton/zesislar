@@ -70,6 +70,26 @@ class RawStatementModuleTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             production_modules.render(fixture, "raw_statement")
 
+    def test_boundary_import_and_scope_forms_are_refused(self):
+        for command in ("Require Import X.Boundary.",
+                        "From X Require Import Boundary.",
+                        "Import X.Boundary.", "Open Scope Boundary."):
+            with self.subTest(command=command):
+                fixture = self.fixture()
+                fixture["source"] += command + "\n"
+                fixture["source_sha256"] = hashlib.sha256(fixture["source"].encode()).hexdigest()
+                with self.assertRaisesRegex(ValueError, "frozen Boundary"):
+                    production_modules.render(fixture, "raw_statement")
+
+    def test_embedded_statement_tactics_are_refused(self):
+        for term in ("ltac:(exact I)", "ltac2:(Control.zero (Tactic_failure None))"):
+            with self.subTest(term=term):
+                fixture = self.fixture()
+                fixture["statement"] = "Lemma " + fixture["lemma"] + " : " + term + "."
+                fixture["statement_sha256"] = hashlib.sha256(fixture["statement"].encode()).hexdigest()
+                with self.assertRaisesRegex(ValueError, "embedded proof term"):
+                    production_modules.render(fixture, "raw_statement")
+
     def test_proof_commands_and_legacy_imports_in_prefix_are_refused(self):
         for suffix in ("Axiom escape : False.\n", "Global Axiom escape : False.\n",
                        "Definition escape : True := ltac:(exact I).\n", "Lemma escape : False.\n",
