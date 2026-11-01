@@ -22,6 +22,67 @@ class ToolFailure(RuntimeError):
 
 
 
+async def retain_long_check(call, session, name, arguments, result, output, index,
+                            observed_seconds, markers):
+    """Keep returned state privately. Never change a tool result or search."""
+    if name != 'rocq_check':return None
+    measured=result.get('check_time_ms')
+    timing={'check_time_ms':measured,
+        'check_time_scope':'MCP command execution wall time before its goal formatting; not PET-only CPU.',
+        'observed_rpc_seconds':observed_seconds,
+        'observed_rpc_scope':'Provider await session.call_tool, excluding provider validation.'}
+    if type(measured) in (int,float) and measured >= 0:
+        long=measured > 60000
+        timing['threshold_basis']='MCP command execution wall time'
+    else:
+        timing['check_time_ms']=None
+        long=observed_seconds > 60
+        timing['threshold_basis']='Observed RPC wall time; command execution duration unavailable'
+    if not long:return None
+    directory=Path(output)/'long-checks'
+    directory.mkdir(mode=0o700,exist_ok=True)
+    info=directory.lstat()
+    if directory.is_symlink() or info.st_uid!=os.getuid() or info.st_mode & 0o077:
+        raise ValueError('The private state directory has another owner, alias, or mode.')
+    state_id=result.get('state_id')
+    leaf=directory/('call-%04d'%index);leaf.mkdir(mode=0o700)
+    record={'schema':'entry-chain.long-check-state.v1','command':arguments,
+        'command_sha256':hashlib.sha256(json.dumps(arguments,sort_keys=True,separators=(',',':')).encode()).hexdigest(),
+        'returned_result':result,'state_id':state_id,'state_source':'returned_state_only',
+        'timing':timing,'route_markers':markers,'captured_ns':time.time_ns(),
+        'visibility':'private','success':False,'complete_state_available':False}
+    try:
+        if type(state_id) is not int or state_id < 0:
+            raise ValueError('The command returned no valid state ID. No input state was queried.')
+        if result.get('pet_restarted') or result.get('restarted'):
+            raise ValueError('PET restarted. The returned state cannot be queried.')
+        exported=await call(session,'rocq_complete_goals',{'from_state':state_id})
+        record['original_export']=exported
+        if exported.get('state_id')!=state_id:
+            raise ValueError('The complete export names another returned state.')
+        complete_groups(exported)
+        value=bound_json(exported['path'],exported['sha256'])
+        state_path=leaf/'STATE.json';atomic_json(state_path,value)
+        record.update(success=True,complete_state_available=True,complete_state=binding(state_path),
+            original_export=exported,selector_markers={'source':'complete ordinary and kernel contexts',
+                'state':binding(state_path),'all_local_hypotheses_preserved':True})
+    except Exception as error:
+        record['export_error']=str(error)
+        if isinstance(error,ToolFailure):record['export_result']=error.result
+    except BaseException as error:
+        record['export_error']=type(error).__name__+': '+str(error)
+        raise
+    finally:
+        atomic_json(leaf/'RESULT.json',record)
+        # The evidence is durable before the provider returns the tool result.
+        for path in [leaf,directory,Path(output)]:
+            descriptor=os.open(path,os.O_RDONLY|os.O_DIRECTORY)
+            try:os.fsync(descriptor)
+            finally:os.close(descriptor)
+    return {'success':record['success'],'complete_state_available':record['complete_state_available'],
+            'record':binding(leaf/'RESULT.json'),'visibility':'private'}
+
+
 HOOKS_MCP_PROJECTION_SHA256='bc30f2f6aa42e50975c20f3577b46b6d9c464234e0d46354ecd8b8bfac581d70'
 
 def hooks_plugin_build(module,source):
@@ -229,7 +290,9 @@ async def execute(request):
             from scratch_limits import record_search_origin
             record_search_origin(output.parent, entry['started_ns'], arguments,native_route=runtime.get('native_route'))
         try:
+            operation_started=time.monotonic()
             raw = await session.call_tool(name, arguments)
+            operation_seconds=time.monotonic()-operation_started
             if native_search:
                 from scratch_limits import record_search_end
                 record_search_end(output.parent)
@@ -241,6 +304,12 @@ async def execute(request):
             entry['result'] = value
             entry['ended_ns'] = time.time_ns()
             atomic_json(output/'CALLS.json', calls)
+            retained=await retain_long_check(call,session,name,arguments,value,output,len(calls),
+                operation_seconds,{'native_route':runtime.get('native_route'),'phase':runtime['phase'],
+                                   'native_search':native_search})
+            if retained is not None:
+                entry['long_check_state']=retained
+                atomic_json(output/'CALLS.json',calls)
             if value.get('pet_restarted') or value.get('restarted') or value.get('reason') in {'unavailable','memory_exhausted','timeout'}:
                 atomic_json(output/'INFRASTRUCTURE-FAILURE.json',{'tool':name,'result':value})
             if value.get('pet_restarted') or value.get('restarted'):
