@@ -262,12 +262,14 @@ class SymbolicState:
     retained_registers: dict = field(default_factory=dict)
     memory_disjoint: list = field(default_factory=list)
     register_writes: list | None = None
+    source_intervals: list = field(default_factory=list)
 
     def copy(self):
         return SymbolicState(dict(self.registers), list(self.memory), list(self.conditions),
                              list(self.reports), list(self.writes), self.endianness, self.trace_count,
                              dict(self.retained_registers), list(self.memory_disjoint),
-                             list(self.register_writes) if self.register_writes is not None else None)
+                             list(self.register_writes) if self.register_writes is not None else None,
+                             list(self.source_intervals))
 
     def to_dict(self):
         result = {'schema': 1, 'registers': {k: v.to_dict() for k, v in sorted(self.registers.items())},
@@ -280,6 +282,8 @@ class SymbolicState:
             result['memory_disjoint'] = [list(pair) for pair in self.memory_disjoint]
         if self.register_writes is not None:
             result['register_writes'] = [dict(write) for write in self.register_writes]
+        if self.source_intervals:
+            result['source_intervals'] = list(self.source_intervals)
         return result
 
 
@@ -667,6 +671,106 @@ def _size(raw):
     return int(raw)
 
 
+def _source_interval(expression, rows):
+    """Compute a closed interval only when every modular wrap is determined."""
+    if expression.width is None or not 0 < expression.width <= 128:
+        return None
+    modulus = 1 << expression.width
+    if expression.op == 'bits':
+        return expression.value, expression.value, frozenset()
+    matches = [(i, row) for i, row in enumerate(rows)
+               if row.get('expression') == expression.to_dict()]
+    if matches:
+        if len(matches) != 1:
+            return None
+        i, row = matches[0]
+        low, high = row.get('minimum'), row.get('maximum')
+        if (type(low) is not int or type(high) is not int or
+                not 0 <= low <= high < modulus or not row.get('origin')):
+            return None
+        return low, high, frozenset({i})
+    if expression.op == 'zero_extend' and len(expression.args) == 1:
+        return _source_interval(expression.args[0], rows)
+    if expression.op not in ('bvadd', 'bvsub') or len(expression.args) != 2:
+        return None
+    left = _source_interval(expression.args[0], rows)
+    right = _source_interval(expression.args[1], rows)
+    if left is None or right is None:
+        return None
+    if expression.op == 'bvadd':
+        low, high = left[0] + right[0], left[1] + right[1]
+    else:
+        low, high = left[0] - right[1], left[1] - right[0]
+    if low // modulus != high // modulus:
+        return None
+    wrap = (low // modulus) * modulus
+    return low - wrap, high - wrap, left[2] | right[2]
+
+
+def _refuted_ram_guard(condition, rows):
+    """Refuse guards outside a source-bound RAM endpoint comparison."""
+    negated = condition.op == 'not' and len(condition.args) == 1
+    comparison = condition.args[0] if negated else condition
+    if comparison.op not in ('bvsge', 'bvsle', 'bvuge', 'bvule') or len(comparison.args) != 2:
+        return None
+    left, right = comparison.args
+    if right.op != 'bits' or left.width != right.width:
+        return None
+    interval = _source_interval(left, rows)
+    if interval is None or not interval[2]:
+        return None
+    used = [rows[i] for i in sorted(interval[2])]
+    if any(type(row.get('ram_base')) is not int or type(row.get('ram_end')) is not int
+           or not 0 <= row['ram_base'] < row['ram_end'] < (1 << 64) for row in used):
+        return None
+    endpoint = 'ram_base' if comparison.op.endswith('ge') else 'ram_end'
+    if any(right.value != row[endpoint] for row in used):
+        return None
+    low, high, _ = interval
+    limit = right.value
+    if comparison.op.startswith('bvs'):
+        half = 1 << (left.width - 1)
+        if low < half <= high:
+            return None
+        if low >= half:
+            low, high = low - 2 * half, high - 2 * half
+        limit = _signed(limit, right.width)
+    true = low >= limit if comparison.op.endswith('ge') else high <= limit
+    false = high < limit if comparison.op.endswith('ge') else low > limit
+    if not (true if negated else false):
+        return None
+    return {'condition': condition.to_dict(), 'interval': [low, high],
+            'endpoint': endpoint, 'endpoint_value': limit, 'source_intervals': used}
+
+
+def _refute_ram_fault(source, initial, evaluator):
+    """Exclude only a structurally identified exception leaf with contradictory bounds.
+
+    This is untrusted source generation. The original guard projection remains
+    an explicit obligation for the later Rocq checker.
+    """
+    if evaluator.status != 'complete' or not initial.source_intervals:
+        return
+    from fault_refutations import classify_exception_exit
+    candidate = classify_exception_exit(source, evaluator.path, evaluator.state)
+    if candidate is None:
+        return
+    for condition in evaluator.state.conditions:
+        if condition in initial.conditions:
+            continue
+        refutation = _refuted_ram_guard(condition, initial.source_intervals)
+        if refutation is None:
+            continue
+        evaluator.status = 'infeasible'
+        evaluator.report('source_ram_fault_refutation', **refutation,
+                         terminal_pc_event=candidate['terminal_pc_event'],
+                         raw_guards=[row for row in candidate['events']
+                                     if row['event'][0] in ('assert', 'assume')],
+                         proof_status='open', required_rocq_guard_projection=True,
+                         proof_premises_added=[])
+        return
+
+
 def evaluate_trace(source, state, *, live_registers=None, instruction_index=0, max_paths=None):
     """Return every trace path. Unsupported events stop only their own path."""
     if state.endianness not in ('little', 'big'):
@@ -680,6 +784,7 @@ def evaluate_trace(source, state, *, live_registers=None, instruction_index=0, m
     evaluators = _Evaluator(initial, instruction_index=instruction_index, trace_sha256=trace_sha256).run(parse_trace(source)[1:], budget)
     results = []
     for evaluator in evaluators:
+        _refute_ram_fault(source, state, evaluator)
         if live_registers is not None:
             live = set(live_registers)
             evaluator.state.registers = {k: v for k, v in evaluator.state.registers.items() if k in live}
