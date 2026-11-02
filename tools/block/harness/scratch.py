@@ -244,9 +244,24 @@ def rebind_prepared_tools(c,prior_runtime=None):
     c['prepared_tool_transition']=prepared_transitions(c,HERE,prior_runtime)
     verify_restart_runtime(c,HERE)
 
+def checked_normalization_policy(a):
+    selected=getattr(a,'normalization_policy',None)
+    rules=getattr(a,'rules',None)
+    if selected:
+        policy=read_bound(binding(selected))
+        if set(policy)!={'hook_enabled','database','registrations'} or not isinstance(policy['hook_enabled'],bool) or policy['database']!='zesu_entry_normalize':raise ValueError('The normalization policy is invalid.')
+        check_bindings(policy['registrations'])
+        if rules is None and policy['registrations']:raise ValueError('A registered policy has no rules module.')
+        if rules is not None and binding(rules) not in policy['registrations']:raise ValueError('The policy omits its rules module.')
+    else:policy=None
+    if getattr(a,'target_adapter',None) and policy is None:raise ValueError('A production matrix requires its explicit database policy.')
+    return policy
+
+
 def prepare(a):
     from command_scope import require
     require()
+    policy=checked_normalization_policy(a)
     from harness_commit import pin
     harness=pin(a.harness_commit)
     out=a.output;out.mkdir(parents=True,exist_ok=False)
@@ -386,14 +401,6 @@ def prepare(a):
         native_job=apply_job(native_job,completed_rows,workload_for_job(context,native_job,actual_config))
         pre=apply_job(pre,workload=workload_for_job(context,pre,actual_config))
         c['admission_profile']=context
-    if a.normalization_policy:
-        policy=read_bound(binding(a.normalization_policy))
-        if set(policy)!={'hook_enabled','database','registrations'} or not isinstance(policy['hook_enabled'],bool) or policy['database']!='zesu_entry_normalize':raise ValueError('The normalization policy is invalid.')
-        check_bindings(policy['registrations'])
-        if a.rules is None and policy['registrations']:raise ValueError('A registered policy has no rules module.')
-        if a.rules is not None and binding(a.rules) not in policy['registrations']:raise ValueError('The policy omits its rules module.')
-    else:policy=None
-    if adapter and policy is None:raise ValueError('A production matrix requires its explicit database policy.')
     c['declaration_checks']=read_bound(binding(a.declaration_checks)) if a.declaration_checks else []
     for check in c['declaration_checks']:
         if set(check)!={'problem_name','problem_statement','proof'} or not all(isinstance(v,str) and v for v in check.values()):raise ValueError('A declaration check has invalid fields.')

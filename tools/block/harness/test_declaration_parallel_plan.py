@@ -3,6 +3,7 @@ import argparse
 from copy import deepcopy
 from pathlib import Path
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -101,6 +102,28 @@ class PublicDagPlanTests(unittest.TestCase):
         for values in [['--declaration-workers','1'],['--parallel-declarations','--declaration-workers','49']]:
             with self.subTest(values=values),self.assertRaises(SystemExit):
                 check_arguments(parser.parse_args(values),parser)
+
+    def test_missing_policy_refuses_before_harness_or_graph_construction(self):
+        import scratch
+        args=SimpleNamespace(normalization_policy=None,target_adapter=self.root/'ADAPTER.json',rules=None)
+        with patch('command_scope.require'),patch('harness_commit.pin',side_effect=AssertionError('Unexpected harness work.')):
+            with self.assertRaisesRegex(ValueError,'explicit database policy'):
+                scratch.prepare(args)
+
+    def test_reviewed_empty_policy_passes_cheap_preflight(self):
+        import scratch
+        policy=self.root/'POLICY.json'
+        value={'hook_enabled':False,'database':'zesu_entry_normalize','registrations':[]}
+        save(policy,value)
+        self.assertEqual(scratch.checked_normalization_policy(SimpleNamespace(
+            normalization_policy=policy,target_adapter=self.root/'ADAPTER.json',rules=None)),value)
+
+    def test_malformed_policy_refuses_before_graph_construction(self):
+        import scratch
+        policy=self.root/'POLICY.json';save(policy,{'database':'zesu_entry_normalize'})
+        with self.assertRaisesRegex(ValueError,'normalization policy is invalid'):
+            scratch.checked_normalization_policy(SimpleNamespace(
+                normalization_policy=policy,target_adapter=self.root/'ADAPTER.json',rules=None))
 
 
 if __name__=='__main__':unittest.main()
