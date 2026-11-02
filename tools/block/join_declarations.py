@@ -23,6 +23,9 @@ def join_declarations(join, *, entry_name, entry_module, parameters, imports):
         raise ValueError('The join declaration must start with the standard automation import')
     for module in imports:
         identifier(module, 'join import', qualified=True)
+    # All imports automation, but its dependencies do not re-export the
+    # machine and Iris notation used in a generated resource expression.
+    imports = [imports[0], 'isla.riscv64.riscv64', *imports[1:]]
     header = ''.join('Require Import ' + module + '.\n' for module in dict.fromkeys(imports))
     header += 'Open Scope Z_scope.\n'
     typed = ''.join(f' ({name} : {kind})' for name, kind in binders(parameters, ['Sigma']))

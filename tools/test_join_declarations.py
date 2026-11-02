@@ -24,6 +24,10 @@ class JoinDeclarationTests(unittest.TestCase):
 
     def test_entry_and_structural_use_the_exact_same_body(self):
         result = self.render(self.fixture())
+        for kind in ['entry', 'structural']:
+            self.assertTrue(result[kind].startswith(
+                'Require Import ZesuSsz.Automation.All.\n'
+                'Require Import isla.riscv64.riscv64.\n'))
         self.assertIn('let K : iProp Sigma := (True)%I in', result['entry'])
         self.assertIn('Typeclasses Opaque machineJoin.', result['entry'])
         self.assertIn('Instance machineJoin_intro', result['structural'])
