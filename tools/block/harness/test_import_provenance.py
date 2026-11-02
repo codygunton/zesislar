@@ -113,9 +113,17 @@ class ImportProvenanceTests(unittest.TestCase):
         self.fixture.runtime['module_files']['Alias.Control']='Control.v'
         with self.assertRaisesRegex(ValueError,'one canonical owner'):self.selection()
 
-    def test_foreign_owned_import_refuses(self):
+    def test_pinned_external_mapping_retains_existing_input_validation(self):
         self.fixture.runtime['module_files']['Example.Leaf']='/foreign/Leaf.v'
-        with self.assertRaisesRegex(ValueError,'leaves its workspace'):self.selection()
+        self.assertEqual([row['module'] for row in self.selection()['imported_objects']],['Example.Dependency'])
+        self.assertIn(str(self.leaf),[row['path'] for row in self.report['directly_hashed_inputs']])
+
+    def test_owned_mapping_escape_refuses(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as directory:
+            (self.root/'escape').symlink_to(directory,target_is_directory=True)
+            self.fixture.runtime['module_files']['Example.Leaf']='escape/Leaf.v'
+            with self.assertRaisesRegex(ValueError,'leaves its workspace'):self.selection()
 
     def test_canonical_import_paths_match_alias_report(self):
         alias=self.root/'alias';alias.symlink_to(self.fixture.library,target_is_directory=True)
@@ -137,6 +145,35 @@ class ImportProvenanceTests(unittest.TestCase):
     def test_other_invocation_validation_refuses_acceptance(self):
         obj,physical,_=self.physical(validation_path=self.root/'OTHER-VALIDATION.json')
         with self.assertRaisesRegex(ValueError,'leaves its compiler invocation'):self.accept(obj,physical)
+
+    def test_actual_producer_receipt_passes_the_reuse_consumer(self):
+        from object_imports import compatibility
+        obj,physical,_=self.physical()
+        receipt=self.accept(obj,physical)
+        runtime=self.fixture.runtime
+        result=compatibility(['Example.Control'],json.loads(self.graph.read_text())['import_edges'],
+            runtime['module_files'],self.root,{'Example.Control':receipt},
+            binding(self.fixture.compiler),runtime['physical_flags'])
+        self.assertIn('Example.Control',result['compatible_owned_modules'])
+
+    def test_actual_receipt_relocates_and_detects_changed_import(self):
+        from clone_copy import copy2
+        from object_imports import compatibility
+        obj,physical,_=self.physical()
+        receipt=self.accept(obj,physical)
+        copied=self.root/'relocated';(copied/'library').mkdir(parents=True)
+        for source in [self.fixture.source,obj,self.dependency,self.leaf,
+                       self.fixture.library/'Dependency.v',self.fixture.library/'Leaf.v']:
+            copy2(source,copied/source.relative_to(self.root))
+        runtime=self.fixture.runtime
+        arguments=(['Example.Control'],json.loads(self.graph.read_text())['import_edges'],
+                   runtime['module_files'],copied,{'Example.Control':receipt},
+                   binding(self.fixture.compiler),['-Q',str(copied/'library'),'Example'])
+        result=compatibility(*arguments)
+        self.assertIn('Example.Control',result['compatible_owned_modules'])
+        (copied/'library/Leaf.vo').write_bytes(b'changed imported object')
+        result=compatibility(*arguments)
+        self.assertIn('Example.Control',result['rebuild_modules'])
 
 
 if __name__=='__main__':unittest.main()

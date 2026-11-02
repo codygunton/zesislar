@@ -361,7 +361,11 @@ def import_selection(runtime, source, workspace, report):
         inputs[key]=row
     selected=[]
     for name in sorted(imports & modules.keys()):
-        path=(workspace/modules[name]).with_suffix('.vo').resolve()
+        relative=Path(modules[name]);source_path=workspace/relative
+        if not source_path.resolve().is_relative_to(workspace):
+            if relative.is_absolute():continue
+            raise ValueError('An owned compiler import leaves its workspace.')
+        path=source_path.with_suffix('.vo').resolve()
         if not path.is_relative_to(workspace):
             raise ValueError('An owned compiler import leaves its workspace.')
         row=inputs.get(str(path))
