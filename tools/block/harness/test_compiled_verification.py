@@ -16,7 +16,7 @@ RECORD=('Record Control := { value : nat }.\n'
         'Lemma DesignedBoundary_Control (x : Control) : holds x.\n'
         'Proof.\nzesu_block.\nQed.\n')
 IMPORTED=('Require Import Fixture.Base.\n'
-          'Lemma DesignedBoundary_Control : True.\n'
+          'Lemma DesignedBoundary_Control : base_pred base_value.\n'
           'Proof.\nzesu_block.\nQed.\n')
 
 
@@ -32,11 +32,16 @@ class CompiledVerification(unittest.TestCase):
   self.path=self.root/'RUNTIME.json';self.source=self.library/'Control.v'
 
  def prepare(self,text=RECORD):
+  dependencies=[]
+  if 'Require Import Fixture.Base.' in text:
+   base=self.library/'Base.v';base.write_text('Definition base_value := 0.\nDefinition base_pred (n : nat) : Prop := n=0.\n')
+   obj=base.with_suffix('.vo');obj.write_text('Nonproof imported base object fixture.\n')
+   dependencies=[binding(base),binding(obj)]
   self.source.write_text(text);self.specification=S.source_statement(self.source)
   self.target={'module':'Fixture.Control','source_sha256':binding(self.source)['sha256'],
                'statement_sha256':hashlib.sha256(self.specification['statement'].encode()).hexdigest()}
   self.runtime={'physical_compiler':binding(self.compiler),'physical_flags':['-Q',str(self.library),'Fixture'],
-                'bindings':[binding(self.source),binding(self.compiler)],'job_output':str(self.root),
+                'bindings':[binding(self.source),binding(self.compiler)]+dependencies,'job_output':str(self.root),
                 'module_files':{'Fixture.Control':'library/Control.v'}}
   save(self.path,self.runtime);self.reference=binding(self.path)
   self.runtime.update(runtime_path=str(self.path),runtime_sha256=self.reference['sha256'])
@@ -64,10 +69,31 @@ class CompiledVerification(unittest.TestCase):
  def test_imported_production_style_declaration_keeps_exact_statement(self):
   self.prepare(IMPORTED);p=self.payload()
   expected=self.specification['statement'].replace('DesignedBoundary_Control','check_exact_control',1)
-  self.assertEqual(p['problem_statement'],'Require Import Fixture.Control.\n'+expected)
+  context='Require Import Fixture.Base.\nRequire Import Fixture.Control.\n'
+  self.assertEqual(p['problem_statement'],context+expected)
+  self.assertTrue(p['proof'].startswith(context+expected))
+  self.assertIn('base_pred base_value',expected)
+  self.assertNotIn('Export Fixture.Base',self.source.read_text())
   self.assertEqual(p['context']['source'],binding(self.source))
   self.assertEqual(p['context']['object'],binding(self.obj))
   self.assertEqual(p['context']['compiler'],binding(self.compiler))
+
+ def test_non_generative_imports_keep_exact_order_and_bytes_in_both_contexts(self):
+  prefix=('From Fixture Require Import Base.\n'
+          'Import Fixture.Base.\n'
+          'Export Fixture.Base.\n')
+  self.prepare(prefix+RECORD);p=self.payload()
+  expected=prefix+'Require Import Fixture.Control.\n'
+  self.assertTrue(p['problem_statement'].startswith(expected))
+  self.assertTrue(p['proof'].startswith(expected))
+  self.assertNotIn('Record ',p['problem_statement']+p['proof'])
+
+ def test_commands_between_declaration_and_proof_keep_their_imports(self):
+  text=RECORD.replace('Proof.\n','Require Import Fixture.Base.\nProof.\n')
+  self.prepare(text);p=self.payload()
+  prefix='Require Import Fixture.Base.\nRequire Import Fixture.Control.\n'
+  self.assertTrue(p['problem_statement'].startswith(prefix))
+  self.assertTrue(p['proof'].startswith(prefix))
 
  def test_changed_declaration_refuses(self):
   self.prepare();spec=deepcopy(self.specification);spec['statement']=spec['statement'].replace('holds x','False')
