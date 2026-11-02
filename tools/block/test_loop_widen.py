@@ -1,0 +1,119 @@
+"""Loop widening controls from frozen forward states and source traces."""
+from pathlib import Path
+import json
+import unittest
+
+try:
+    from .forward_resource_design import _state_from_result
+    from .loop_widen import FoldRule, affine_step, fold_recurrence, widen_loop_head, write_set
+    from .symbolic_state import bits, input_expr, operation
+except ImportError:
+    from forward_resource_design import _state_from_result
+    from loop_widen import FoldRule, affine_step, fold_recurrence, widen_loop_head, write_set
+    from symbolic_state import bits, input_expr, operation
+
+
+HERE = Path(__file__).parent
+
+
+class LoopWidenTests(unittest.TestCase):
+    def fixture(self, suffix):
+        data = json.loads((HERE / 'testdata' / ('loop_widen_' + suffix + '.json')).read_text())
+        traces = [row['source'] for row in data['body_traces']]
+        return data, traces
+
+    def test_conditional_write_is_in_union(self):
+        for suffix in ('6a24', '6ac4'):
+            data, traces = self.fixture(suffix)
+            state = _state_from_result(data['preheaders'][0]['state'])
+            self.assertEqual(write_set(traces, state.registers), ('x13', 'x15', 'x16'))
+
+    def test_affine_modular_identity_and_changed_step(self):
+        word = input_expr('cursor', 16)
+        self.assertEqual(affine_step(word, operation('bvadd', word, bits(1, 16))), 1)
+        self.assertEqual(affine_step(word, operation('bvadd', word, bits(2, 16))), 2)
+        self.assertIsNone(affine_step(word, operation('bvxor', word, bits(1, 16))))
+        self.assertIsNone(affine_step(word, input_expr('other', 16)))
+
+    def test_fold_recognizer_does_not_claim_source_read(self):
+        accumulator, byte = input_expr('acc', 64), input_expr('next_byte', 8)
+        shifted = operation('bvshl', accumulator, bits(8, 64))
+        extended = operation('zero_extend', byte, width=64)
+        result = fold_recurrence(accumulator, operation('bvor', shifted, extended))
+        self.assertEqual(result['digit_width'], 8)
+        self.assertEqual(result['digit'], byte.to_dict())
+        wrong = operation('bvshl', accumulator, bits(7, 64))
+        self.assertIsNone(fold_recurrence(accumulator, operation('bvor', wrong, extended)))
+
+    def test_missing_fold_proof_binding_refuses(self):
+        with self.assertRaisesRegex(ValueError, 'verified source binding'):
+            FoldRule('byte_fold', 8, 64, {}, {}, {})
+
+    def test_actual_body_preserves_source_state_and_records_refusals(self):
+        for suffix in ('6a24', '6ac4'):
+            data, traces = self.fixture(suffix)
+            for preheader in data['preheaders']:
+                source = _state_from_result(preheader['state'])
+                original = source.to_dict()
+                result = widen_loop_head(source, traces, loop_pc=int(data['pc'], 0),
+                    provenance={'source': data['forward_source'], 'alternative': preheader['source_index']})
+                self.assertEqual(source.to_dict(), original)
+                self.assertEqual(result.seed.memory, source.memory)
+                self.assertEqual(result.seed.writes, source.writes)
+                self.assertEqual(result.seed.conditions, source.conditions)
+                self.assertEqual(result.seed.memory_disjoint, source.memory_disjoint)
+                self.assertEqual(result.write_set, ('x13', 'x15', 'x16'))
+                self.assertEqual({row['register']: row['type'] for row in result.binders},
+                                 {'x13': 'bv 64', 'x15': 'bv 64', 'x16': 'bv 64'})
+                self.assertEqual(next(row for row in result.binders if row['register'] == 'x16')['role'],
+                                 'overwritten')
+                self.assertFalse(result.relations)
+                self.assertFalse(result.witness_plan['derived'])
+                self.assertFalse(result.folds)
+                fold = next(row for row in result.refusals if row['register'] == 'x13')
+                self.assertEqual(fold['relation'], 'recurrence')
+                recurrences = [fold_recurrence(result.seed.registers['x13'],
+                               type(source.registers['x13']).from_dict(value))
+                               for value in fold['backedge_values']]
+                self.assertTrue(any(row and row['digit']['op'] == 'unknown_read'
+                                    for row in recurrences))
+                self.assertTrue(any(row is None for row in recurrences))
+                self.assertTrue(any(row['register'] == 'x15' and row['relation'] == 'affine_cursor'
+                                    for row in result.refusals))
+                witness = result.witness_plan['pending'][0]
+                self.assertEqual(witness['type'], 'lvar "zesuLoopIndex" Z')
+                self.assertIn('bv_unsigned machine_x15 -', witness['expression'])
+                self.assertNotEqual(witness['expression'], '0')
+                self.assertEqual(result.to_dict()['kernel_entailments'], 'OPEN')
+
+    def test_one_failed_edge_drops_relation_and_retains_record(self):
+        data, traces = self.fixture('6a24')
+        source = _state_from_result(data['preheaders'][0]['state'])
+        origin = source.registers['x15']
+        def validator(candidate, edge, state):
+            return {'status': 'failed' if edge == 'backedge:0' else 'checked',
+                    'provenance': {'source': 'unit_test_control_only'}}
+        result = widen_loop_head(source, traces, loop_pc=int(data['pc'], 0),
+            provenance={'source': 'unit_test_control_only'}, validate=validator,
+            origin_views={origin: {'term': 'inPtr + 1',
+                                  'provenance': {'source': 'unit_test_control_only'}}})
+        self.assertFalse(result.relations)
+        self.assertTrue(any(row['check']['status'] == 'failed' for row in result.edge_records))
+        self.assertTrue(any(row['edge'] == 'preheader' and row['index_substitution'] == '0'
+                            for row in result.edge_records))
+        self.assertTrue(any(row['edge'].startswith('backedge:') and row['index_substitution'] == 'i + 1'
+                            for row in result.edge_records))
+        self.assertEqual(result.witness_plan['pending'][0]['expression'],
+                         '(bv_unsigned machine_x15 - (inPtr + 1))%Z')
+        self.assertFalse(any('bool' == row['type'] for row in result.binders))
+
+    def test_origin_requires_source_binding(self):
+        data, traces = self.fixture('6a24')
+        source = _state_from_result(data['preheaders'][0]['state'])
+        with self.assertRaisesRegex(ValueError, 'source provenance'):
+            widen_loop_head(source, traces, loop_pc=int(data['pc'], 0), provenance={'source': 'fixture'},
+                            origin_views={source.registers['x15']: {'term': 'inPtr + 1'}})
+
+
+if __name__ == '__main__':
+    unittest.main()
