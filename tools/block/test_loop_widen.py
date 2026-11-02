@@ -6,11 +6,11 @@ import unittest
 
 try:
     from .forward_resource_design import _state_from_result
-    from .loop_widen import FoldRule, UnsignedCursorInduction, recheck_renderable_cursor, source_sum_bounds, loop_read_window, bind_zero_read_refutation, bind_owned_read_target, affine_step, fold_recurrence, widen_loop_head, write_set
+    from .loop_widen import FoldRule, UnsignedCursorInduction, recheck_renderable_cursor, source_sum_bounds, loop_read_window, bind_zero_read_refutation, bind_owned_read_target, check_owned_fold_candidate, affine_step, fold_recurrence, widen_loop_head, write_set
     from .symbolic_state import bits, input_expr, operation, SymbolicState, evaluate_block
 except ImportError:
     from forward_resource_design import _state_from_result
-    from loop_widen import FoldRule, UnsignedCursorInduction, recheck_renderable_cursor, source_sum_bounds, loop_read_window, bind_zero_read_refutation, bind_owned_read_target, affine_step, fold_recurrence, widen_loop_head, write_set
+    from loop_widen import FoldRule, UnsignedCursorInduction, recheck_renderable_cursor, source_sum_bounds, loop_read_window, bind_zero_read_refutation, bind_owned_read_target, check_owned_fold_candidate, affine_step, fold_recurrence, widen_loop_head, write_set
     from symbolic_state import bits, input_expr, operation, SymbolicState, evaluate_block
 
 
@@ -421,6 +421,36 @@ class LoopWidenTests(unittest.TestCase):
                 self.assertEqual(before, [row.to_dict() for row in result.body_results])
                 with self.assertRaisesRegex(ValueError, 'No exact owned read'):
                     bind_owned_read_target(result, dict(read_binding, array=input_expr('other').to_dict()))
+                distance = recheck_renderable_cursor(result.relations[0], source,
+                    [row.state for row in result.body_results if row.status == 'complete'
+                     and row.state.registers['PC'] == bits(int(data['pc'], 0), 64)],
+                    bounds, render=lambda condition: condition.coq(), required_distance_maximum=8)
+                interface = json.loads((HERE / 'testdata/loop_widen_cursor_fold_interface.json').read_text())
+                fold = next(row for row in result.fold_candidates if row['register'] == 'x13')
+                folded = check_owned_fold_candidate(result, source, fold, distance, interface)
+                self.assertTrue(folded['checked'], folded)
+                self.assertEqual(folded['kernel_loop_entailment'], 'OPEN')
+                self.assertFalse(result.folds)
+                changed_seed = source.copy()
+                changed_seed.registers['x13'] = bits(1, 64)
+                self.assertFalse(check_owned_fold_candidate(result, changed_seed, fold,
+                    distance, interface)['checked'])
+                with self.assertRaisesRegex(ValueError, 'verified cursor-step'):
+                    check_owned_fold_candidate(result, source, fold, distance,
+                        dict(interface, verification_receipt={}))
+                absent_zero = result.zero_refutations
+                result.zero_refutations = []
+                self.assertFalse(check_owned_fold_candidate(result, source, fold,
+                    distance, interface)['checked'])
+                result.zero_refutations = absent_zero
+                absent = result.owned_read_verifications
+                result.owned_read_verifications = []
+                refused = check_owned_fold_candidate(result, source, fold, distance, interface)
+                self.assertFalse(refused['checked'])
+                result.owned_read_verifications = absent
+                refused = check_owned_fold_candidate(result, source, fold,
+                    dict(distance, checked=False), interface)
+                self.assertFalse(refused['checked'])
                 bad = dict(binding, endpoint=bits(0, 64).to_dict())
                 with self.assertRaisesRegex(ValueError, 'different source endpoint'):
                     bind_zero_read_refutation(result, bad)

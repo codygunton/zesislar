@@ -386,13 +386,17 @@ class UnsignedCursorInduction:
             return {'status': 'failed', 'checks': checks, 'missing_relation': missing.relation}
 
 
-def recheck_renderable_cursor(candidate, seed, backedges, source_bounds, *, render):
+def recheck_renderable_cursor(candidate, seed, backedges, source_bounds, *, render,
+                              required_distance_maximum=None):
     """Recheck exact edges, then remove every individually unnecessary clause.
 
     The result is inclusion-minimal for this checker, not minimum cardinality.
     Original states are never changed. Source bounds stay separately bound.
     Rendering must check the complete declared scope, not syntax alone.
     """
+    if required_distance_maximum is not None and (type(required_distance_maximum) is not int
+            or required_distance_maximum <= 0):
+        raise ValueError('A fold distance maximum must be a positive integer')
     states = [('preheader', seed), *[
         ('backedge:' + str(index), state) for index, state in enumerate(backedges)]]
     selected, refused, rendered = {}, [], {}
@@ -417,11 +421,31 @@ def recheck_renderable_cursor(candidate, seed, backedges, source_bounds, *, rend
             value.conditions = [state.conditions[index] for index in indices[edge]]
             reduced[edge] = value
         checker = UnsignedCursorInduction(reduced['preheader'], source_bounds)
-        return [{'edge': edge, 'check': checker(candidate, edge, reduced[edge])}
-                for edge, _ in states]
+        results = [{'edge': edge, 'check': checker(candidate, edge, reduced[edge])}
+                   for edge, _ in states]
+        if required_distance_maximum is not None:
+            for row in results:
+                check = row['check']
+                if check.get('status') != 'checked':
+                    continue
+                distances = [test['interval'] for test in check['checks']
+                             if test['kind'] == 'positive_loop_distance']
+                if not distances or any(not 0 < lo <= hi <= required_distance_maximum
+                                        for lo, hi in distances):
+                    check.update(status='failed', missing_relation={
+                        'kind': 'fold_distance_width', 'available_intervals': distances,
+                        'required_maximum': required_distance_maximum})
+        return results
 
     def passed(checks):
-        return all(row['check'].get('status') == 'checked' for row in checks)
+        if not all(row['check'].get('status') == 'checked' for row in checks):
+            return False
+        if required_distance_maximum is not None:
+            distances = [test['interval'] for row in checks for test in row['check'].get('checks', [])
+                         if test['kind'] == 'positive_loop_distance']
+            return bool(distances) and all(0 < lo <= hi <= required_distance_maximum
+                                          for lo, hi in distances)
+        return True
 
     checks = run(selected)
     if not passed(checks):
@@ -454,7 +478,8 @@ def recheck_renderable_cursor(candidate, seed, backedges, source_bounds, *, rend
             for index in selected[edge]],
         'minimality': 'inclusion-minimal under exact source checker; not minimum cardinality',
         'essential_condition_checks': essential,
-        'source_evidence': {'source_bounds': source_bounds},
+        'source_evidence': {'source_bounds': source_bounds,
+            'required_distance_maximum': required_distance_maximum},
         'kernel_entailments': 'OPEN'}
 
 
@@ -654,6 +679,55 @@ def bind_owned_read_target(proposal, binding):
         raise ValueError('No exact owned read matches the verified source target')
     proposal.owned_read_verifications.extend(matches)
     return matches
+
+
+def check_owned_fold_candidate(proposal, source_seed, candidate, distance_check, interface):
+    """Check source coverage; retain kernel entailments as separate obligations."""
+    receipt = interface.get('verification_receipt', {})
+    if (receipt.get('method') != 'module_m' or receipt.get('assumptions') != []
+            or not receipt.get('path') or not receipt.get('sha256')):
+        raise ValueError('A fold check needs the verified cursor-step interface')
+    if (not distance_check.get('checked')
+            or distance_check.get('source_evidence', {}).get('required_distance_maximum') != 8):
+        return {'checked': False, 'reason': 'The source distance does not fit the verified word interface'}
+    key = candidate['register']
+    if source_seed.registers[key] != bits(0, 64) or not candidate.get('assertion'):
+        return {'checked': False, 'reason': 'The source fold lacks its zero seed or exact window'}
+    covered, failures = [], []
+    for edge in candidate['edges']:
+        path = edge['source_path']
+        if edge['status'] == 'ZERO_READ_TARGET_VERIFIED':
+            matches = [row for row in proposal.zero_refutations if row['source_path'] == path]
+            kind = 'verified_source_refutation'
+        elif edge['status'] == 'OPEN_RANGE_AND_LOOKUP':
+            matches = [row for row in proposal.owned_read_verifications if row['source_path'] == path]
+            kind = 'verified_owned_read_and_cursor_step'
+        else:
+            matches, kind = [], 'unsupported_source_edge'
+        if len(matches) != 1:
+            failures.append({'edge': edge, 'reason': 'The exact source edge lacks unique verified coverage'})
+        else:
+            target = matches[0]
+            if kind == 'verified_owned_read_and_cursor_step':
+                body = proposal.body_results[target['body_result_index']]
+                read = body.state.read_obligations[target['read_obligation_index']]
+                recurrence = fold_recurrence(input_expr('machine_' + key, 64), body.state.registers[key])
+                cursor = next(row for row in proposal.relations if row['kind'] == 'affine_cursor')
+                offset = _offset(source_seed.registers[cursor['register']], Expr.from_dict(read['base']))
+                expected = ('bv_unsigned machine_' + key + ' = ' + interface['function'] +
+                    ' (' + Expr.from_dict(read['array']).coq() + ') ' + str(offset) +
+                    '%nat (Z.to_nat ' + cursor['index'] + ')')
+                if (offset is None or not recurrence or recurrence['digit'] != read['value']
+                        or candidate['assertion'] != expected):
+                    failures.append({'edge': edge, 'reason': 'The exact recurrence or window differs'})
+                    continue
+            covered.append({'edge': edge['edge'], 'source_path': path,
+                'kind': kind, 'source_target': target})
+    return {'checked': not failures, 'relation': candidate['assertion'],
+        'register': key, 'preheader': 'verified zero interface on the exact zero seed',
+        'edges': covered, 'failures': failures, 'distance_check': distance_check,
+        'interface': interface, 'kernel_loop_entailment': 'OPEN',
+        'source_ownership_changed': False}
 
 
 def widen_loop_head(seed, traces, *, loop_pc, provenance, fold_table=(),

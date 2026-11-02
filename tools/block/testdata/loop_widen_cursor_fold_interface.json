@@ -1,0 +1,15 @@
+{
+  "function": "zesu_byte_window_fold",
+  "zero": "zesu_byte_window_index_zero",
+  "step": "zesu_byte_window_cursor_step",
+  "word_width": 64,
+  "digit_width": 8,
+  "verification_receipt": {
+    "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/loop-fold408-cursor020/RESULT.json",
+    "sha256": "0017357206dbe661252e005598803bd6045efafb6d1c0192a155ef4f34482b8d",
+    "method": "module_m",
+    "assumptions": []
+  },
+  "source_sha256": "5f1627537395cd62eb71cd97d65ac5aa555877b99dc35072075b2c5e563008f4",
+  "object_sha256": "8caac340942985dda74d3171795af15d33cceae617d09364bf7965f3ff6caa93"
+}
