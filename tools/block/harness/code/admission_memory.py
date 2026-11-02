@@ -623,6 +623,7 @@ class ScopeReader:
                        'leaf': {name: row[name] for name in ('scope', 'device', 'inode')}}
         if rejected is not None:
             attestation['schema'] = 'rejected.guard.setup.v1'
+            attestation['token_identity'] = list(before)
             rejected.cleanup = attestation
             raise rejected
         return row, attestation
@@ -1278,11 +1279,13 @@ def mark_shell(marker, *, ledger=None, reader=None):
                 cleanup = error.cleanup
                 if cleanup['owner'] != record['owner'] or cleanup['generation'] != record['generation']:
                     raise ValueError('The rejected setup differs from its admitted owner.')
+                if reader.file_identity(marker.lstat()) != tuple(cleanup['token_identity']):
+                    raise ValueError('The rejected setup token changed before publication.')
                 # Retain the full claim until this exact failed setup leaf closes.
                 # This receipt grants no compiler or owned-scope permission.
                 record['setup_failure'] = cleanup
                 record['leaf'] = cleanup['leaf']
-                record['token_identity'] = reader.file_identity(marker.lstat())
+                record['token_identity'] = cleanup['token_identity']
                 write_ledger(ledger, data)
                 raise
             record['guard_attestation'] = attestation

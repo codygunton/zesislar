@@ -155,6 +155,27 @@ class GuardSetupRelease(unittest.TestCase):
         self.assertEqual(self.read()['fixed_claims'][self.key], 16 * M.GIB)
         self.assertTrue(self.marker.exists())
 
+    def test_marker_replacement_at_rejected_setup_handoff_retains_booking(self):
+        validate = self.reader.scope_exec
+
+        def replace_after_validation(*args):
+            try:
+                return validate(*args)
+            except M.RejectedScopeSetup:
+                replacement = self.marker.with_name('handoff-replacement')
+                replacement.write_bytes(self.marker.read_bytes())
+                replacement.chmod(0o600)
+                replacement.replace(self.marker)
+                raise
+
+        before = self.ledger.read_bytes()
+        with patch.object(self.reader, 'scope_exec', side_effect=replace_after_validation):
+            with self.assertRaisesRegex(ValueError, 'token changed before publication'):
+                self.mark()
+        self.assertEqual(self.ledger.read_bytes(), before)
+        self.assertEqual(self.read()['fixed_claims'][self.key], 16 * M.GIB)
+        self.assertTrue(self.marker.exists())
+
 
 if __name__ == '__main__':
     unittest.main()
