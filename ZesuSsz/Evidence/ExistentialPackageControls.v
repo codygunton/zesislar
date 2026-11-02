@@ -6,12 +6,18 @@ Section existential_package_controls.
 Context `{!islaG Sigma} `{!threadG}.
 
 Definition nested_control_package (P : iProp Sigma) : iProp Sigma :=
-  (∃ a : nat, ∃ b : bool, ∃ c : list nat, ∃ d : Z, P)%I.
+  (∃ a : bv 64, ∃ b : bv 64, ∃ c : bv 64, ∃ d : bv 64,
+    "x10" ↦ᵣ RVal_Bits a ∗ "x11" ↦ᵣ RVal_Bits b ∗
+    "x12" ↦ᵣ RVal_Bits c ∗ "x13" ↦ᵣ RVal_Bits d ∗ P)%I.
 #[local] Instance nested_control_package_unfold :
   LithiumUnfold (@nested_control_package) := I.
+Local Typeclasses Opaque nested_control_package.
 
 Lemma nested_depth_four_preserves (P K : iProp Sigma) :
-  (nested_control_package P ∗ K) -∗ P ∗ K.
+  (nested_control_package P ∗ K) -∗
+  (∃ a : bv 64, ∃ b : bv 64, ∃ c : bv 64, ∃ d : bv 64,
+    "x10" ↦ᵣ RVal_Bits a ∗ "x11" ↦ᵣ RVal_Bits b ∗
+    "x12" ↦ᵣ RVal_Bits c ∗ "x13" ↦ᵣ RVal_Bits d ∗ P) ∗ K.
 Proof.
   iIntros "H".
   zesu_open_nested_existential_packages.
