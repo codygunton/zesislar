@@ -9,6 +9,76 @@ from symbolic_state import Expr, input_expr, operation
 from render_support import binders, expression, identifier
 
 
+def guard_incoming_boundary(boundary, *, source_words, provenance):
+    """Bind checked source views before rendering their exact path guards.
+
+    The caller authenticates each view application. This renderer retains that
+    application and every original resource; it does not prove an extraction.
+    """
+    from entry_formatter import SymbolicConditions
+    from forward_resources import _render_tree
+
+    if boundary.get('block_status') != 'completed':
+        raise ValueError('Incoming guards require a complete resource boundary')
+    result = deepcopy(boundary)
+    tree = result['tree']
+    scope = tree['left'] if tree.get('kind') == 'sep' else tree
+    if scope.get('kind') != 'exists' or scope['body'].get('kind') != 'sep_list':
+        raise ValueError('Incoming guards need one existing existential scope')
+    telescope = scope['binders']
+    names = {row['name'] for row in telescope} | {'args', 'returnAddress', 'domain', 'Sigma', 'K'}
+    components = {row['id']: row for row in result['components']}
+    aliases = {}
+    for row in source_words:
+        if set(row) != {'name', 'type', 'expression', 'source_view'}:
+            raise ValueError('A source word lacks its checked view application')
+        name, kind = binders([{'name': row['name'], 'type': row['type']}], names)[0]
+        value = Expr.from_dict(row['expression'])
+        view = row['source_view']
+        owner = components.get(view['owner_id'])
+        if (owner is None or owner['source'] != view['owner_source']
+                or view['source_expression'] != row['expression']
+                or value.op != 'input' or value.value != name
+                or value.width is None or kind != 'bv ' + str(value.width)):
+            raise ValueError('The source word differs from its owned view')
+        if value in aliases:
+            raise ValueError('A source word has two view applications')
+        aliases[value] = name
+        telescope.append({'name': name, 'type': kind})
+        names.add(name)
+    conditions = SymbolicConditions(lambda context: deepcopy(provenance),
+                                    aliases=aliases, normal_form=False)
+    guards, refusals = [], []
+    for index, raw in enumerate(boundary['path_conditions']):
+        try:
+            lowered = conditions(raw, {'binders': deepcopy(telescope),
+                'condition_index': index, 'path_conditions': boundary['path_conditions']})
+            for binder in lowered['existentials']:
+                if binder['name'] in names:
+                    raise ValueError('A trace witness captures an incoming binder')
+                telescope.append(binder)
+                names.add(binder['name'])
+            terms = [term['term']['value'] for component in lowered['components']
+                     for term in component['terms']]
+            for offset, term in enumerate(terms):
+                key = 'incoming_guard_' + str(index) + '_' + str(offset)
+                if key in components:
+                    raise ValueError('An incoming guard repeats an ownership identifier')
+                component = {'id': key, 'source': '⌜' + term + '⌝',
+                             'provenance': {'condition': deepcopy(raw), 'source': deepcopy(provenance)}}
+                result['components'].append(component)
+                components[key] = component
+                scope['body']['children'].append({'kind': 'component', 'id': key})
+            guards.append({'condition_index': index, 'expression': deepcopy(raw), 'terms': terms})
+        except ValueError as error:
+            refusals.append({'condition_index': index, 'expression': deepcopy(raw), 'reason': str(error)})
+    result['body'] = _render_tree(tree, {key: row['source'] for key, row in components.items()})
+    return {'boundary': result, 'guards': guards, 'refusals': refusals,
+            'status': 'rendered' if not refusals else 'refused',
+            'source_words': deepcopy(source_words), 'trace_witnesses': deepcopy(conditions.witnesses),
+            'proof_established': False}
+
+
 def _trace_fact_dependencies(value):
     if isinstance(value, dict):
         names = {'condition_dependencies', 'source_conditions', 'trace_conditions',
