@@ -78,6 +78,15 @@ class MigrationTests(unittest.TestCase):
         self.assertEqual(workspace, self.workspace)
         self.assertNotIn('successful_compilation', receipt)
 
+    def test_batch_does_not_retain_parsed_migration_receipt(self):
+        receipt = self.create()
+        reference = self.save('MIGRATION.json', receipt)
+        with migration.batch() as active:
+            migration.validate(reference, self.module, self.source, self.obj,
+                               self.compiler, self.flags, self.workspace)
+            self.assertFalse(any(key[0] == reference['path'] for key in active['records']))
+            self.assertTrue(active['records'])  # Shared origin inputs remain cached.
+
     def test_changed_PureFacts_refuses_ReturnBundle(self):
         receipt = self.create()
         self.dependency.write_bytes(b'changed dependency')
