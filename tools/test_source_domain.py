@@ -69,11 +69,48 @@ class DomainTests(unittest.TestCase):
         self.assertEqual(result['premises_added'], [])
         self.assertFalse(result['entry_assertion_changed'])
         self.assertEqual([r['kind'] for r in result['facts']].count('disjoint_ranges'), 3)
-        interval = result['facts'][-1]['terms']['unsigned_interval']
+        interval = next(fact['terms']['unsigned_interval'] for fact in result['facts']
+                        if fact['fact_id'] == 'layout:stack-interval')
         self.assertEqual((interval['minimum'], interval['maximum']), (4112, 8192))
-        self.assertEqual(len(result['facts']), 5)
-        self.assertFalse(any(fact['kind'] == 'alignment' for fact in result['facts']))
+        for value in self.arguments.values():
+            expression = input_expr('(Z_to_bv 64%N (' + value + '))').to_dict()
+            self.assertTrue(any(fact['terms'].get('unsigned_interval', {}).get('expression') == expression
+                                for fact in result['facts']))
+        self.assertEqual(result['source_alignments'][0]['modulus'], 4)
+        self.assertEqual(result['parameter_projection_refusals'], [])
         self.assertEqual(original, (self.contract.read_bytes(), self.layout.read_bytes()))
+
+    def test_alignment_projection_uses_the_declared_parameter_name(self):
+        self.layout.write_text(self.layout.read_text().replace('returnAddress', 'cursorToken'))
+        self.arguments['cursorToken'] = self.arguments.pop('returnAddress')
+        result = project_layout_domain(**self.parameters())
+        fact = next(fact for fact in result['facts'] if fact['kind'] == 'alignment')
+        self.assertEqual(fact['origin']['parameter'], 'cursorToken')
+        self.assertEqual(fact['terms']['alignment']['modulus'], 4)
+        self.assertIn('cursorToken mod 4 = 0', fact['origin']['source_clauses'])
+
+    def test_alignment_without_source_nonwrap_range_refuses(self):
+        self.layout.write_text(self.layout.read_text().replace(
+            '0 <= returnAddress < word64Modulus', 'returnAddress < word64Modulus'))
+        result = project_layout_domain(**self.parameters())
+        self.assertEqual(result['source_alignments'], [])
+        self.assertTrue(any(row['parameter'] == 'returnAddress'
+                            and row['kind'] == 'parameter_nonwrap_refusal'
+                            for row in result['parameter_projection_refusals']))
+
+    def test_unsupported_congruence_is_recorded_without_a_fact(self):
+        self.layout.write_text(self.layout.read_text().replace('returnAddress mod 4 = 0',
+                                                             'returnAddress mod 3 = 0'))
+        result = project_layout_domain(**self.parameters())
+        self.assertEqual(result['source_alignments'], [])
+        self.assertTrue(any(row['kind'] == 'parameter_alignment_refusal'
+                            for row in result['parameter_projection_refusals']))
+
+    def test_sum_bound_does_not_assume_a_missing_nonnegative_parameter(self):
+        self.layout.write_text(self.layout.read_text().replace('0 <= inputLength /\\', ''))
+        result = project_layout_domain(**self.parameters())
+        self.assertTrue(any(row['parameter'] == 'inputLength'
+                            for row in result['parameter_projection_refusals']))
 
     def test_existing_output_bounds_project_the_complete_array_interval(self):
         result = project_layout_domain(**self.projection_parameters())
