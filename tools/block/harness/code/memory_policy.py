@@ -612,7 +612,8 @@ def workload_for_job(profile_binding,job,config):
   if len(rows)!=len({r['module'] for r in rows}):raise ValueError('A focused module repeats.')
   for row in rows:
    if row.get('role') not in {'generated_declarations','consumer_check'}:raise ValueError('A rule compilation retains its full claim.')
-   if re.search(r'\bzesu_block\b',actual(row).read_text()):raise ValueError('A focused check contains a native proof.')
+   from declaration_source import contains_native_proof
+   if contains_native_proof(actual(row).read_text()):raise ValueError('A focused check contains a native proof.')
  else:
   native=profile['native_source'];source=actual(native);text=source.read_text()
   if native['module']!=job['target']['module'] or native['sha256']!=job['target']['source_sha256']:raise ValueError('The family native source differs.')

@@ -1,6 +1,7 @@
 {
   "block/complete_goals_mcp.py": "../complete_goals_mcp.py",
   "block/declaration_preflight.py": "code/declaration_preflight.py",
+  "block/declaration_source.py": "code/declaration_source.py",
   "block/start_feedback_mcp.py": "../start_feedback_mcp.py",
   "block/entry_admission/__init__.py": "code/entry_admission/__init__.py",
   "block/entry_admission/io_helpers.py": "code/entry_admission/io_helpers.py",
