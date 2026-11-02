@@ -7,16 +7,7 @@ from check_data_only_lemmas import command_imports, rocq_commands
 from entry_chain import binding, check_bindings, digest, relative, save
 from entry_pilot import copy_bound
 from installed_mappings import require_imports
-
-
-def graph_closure(seeds, graph):
-    found, pending = set(seeds), list(seeds)
-    while pending:
-        for name in graph.get(pending.pop(), ()):
-            if name not in found:
-                found.add(name)
-                pending.append(name)
-    return found
+from import_graph import graph_closure
 
 
 def import_commands(source):
