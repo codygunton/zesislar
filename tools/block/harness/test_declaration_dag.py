@@ -98,6 +98,25 @@ class DeclarationDagTests(unittest.TestCase):
         self.assertEqual(starts, ['A'])
         self.assertEqual(caught.exception.result['pending'], ['B'])
 
+    def test_protected_compiler_has_an_active_lease_and_peak(self):
+        observations = []
+        def barrier(name):
+            self.assertEqual(observations[-1]['active'], ['Barrier'])
+            self.assertEqual(observations[-1]['running_weight_bytes'], 2 * GIB)
+            return name
+        result = self.run_plan(['Barrier'], weights={'Barrier': 2 * GIB},
+                               protected={'Barrier'}, compile_protected=barrier,
+                               checkpoint=observations.append)
+        self.assertEqual(result['peak_workers'], 1)
+        self.assertEqual(result['peak_weight_bytes'], 2 * GIB)
+
+    def test_protected_compiler_obeys_available_memory(self):
+        with self.assertRaises(RuntimeError) as caught:
+            self.run_plan(['Barrier'], weights={'Barrier': 8 * GIB}, protected={'Barrier'},
+                          available_bytes=lambda: 10 * GIB,
+                          compile_protected=lambda name: self.fail('Unexpected compiler.'))
+        self.assertEqual(caught.exception.result['peak_workers'], 0)
+
     def test_failed_publication_keeps_dependent_unstarted(self):
         starts = []
         def compile_private(name):
