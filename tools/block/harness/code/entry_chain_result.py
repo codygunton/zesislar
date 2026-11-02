@@ -93,5 +93,13 @@ def summarize(output,job,result):
             'resource_reason':resource,'shared_infrastructure_failure':bool(infrastructure or resource),
             'classification_qualification':'A pre-call fallback does not identify the internal stopping state.'}
 
+    parse=optional(output/'native/PARSE-PREFLIGHT.json')
+    if parse and parse.get('success') is False:
+        from heldout_reporting import selected
+        compiler=parse.get('compiler_result') or {}
+        if isinstance(job.get('key'),str) and not selected(job['key']):
+            summary['error']=next((compiler[key] for key in ['error','stderr','message']
+                                   if isinstance(compiler.get(key),str) and compiler[key]),
+                                  'The declaration preflight failed before native search.')
     if route:summary['native_route']=route
     return summary

@@ -207,6 +207,8 @@ PORT_HEADER_PEAK_BOOKING='completed_header_transition_peak'
 PORT_V34_PEAK_BOOKING='completed_pilot_peak'
 PORT_V34_TARGETS={'path':str(Path(__file__).resolve().parents[1]/'policies'/'PORT-V34-TARGETS16.json'),
  'sha256':'3df54454cb2ca9337d0441e51f4ad3ef1fcc4bab54285d37301cf0d12a90fd12'}
+PORT_6974_RENDER_REPAIR={'path':str(Path(__file__).resolve().parents[1]/'policies'/'PORT-6974-RENDERING-REPAIR.json'),
+ 'sha256':'d10fcd60e78fa85bbd19aba7933b8a4d18d0d9f1500c154100c030d05c1e6014'}
 PORT_V34_RULES_SHA256='4620ed01bfaca15aae958fb7523e964dcbcfa58d8d4920fc0929285090f70488'
 PORT_V34_POLICY_SHA256='df435e39840983dfa6ff3d96ba83a33b90389d2aafb0f8ef0b21094d93d82def'
 PORT_V34_COMPLETED={'path':str(Path(__file__).resolve().parents[1]/'policies'/'PORT-V34-COMPLETED-PEAKS.json'),
@@ -239,10 +241,44 @@ def relocated_authority(actual,expected,legacy_paths=()):
  if before!=after:raise ValueError('An authority relocation changes the approved bytes.')
  return True
 
-def v34_target(binding,target,block):
+def rendering_repair(binding):
+ if not relocated_authority(binding,PORT_6974_RENDER_REPAIR):
+  raise ValueError('The native rendering repair is not approved.')
+ value=read(binding)
+ if (value.get('schema')!='port.native-rendering-repair.v1' or value.get('block')!='800d6974'
+     or value.get('claim_bytes')!=PORT_FENCE or value.get('physical_fence_bytes')!=PORT_FENCE
+     or value.get('native_body')!='zesu_block.' or value.get('contract_changed') is not False):
+  raise ValueError('The native rendering repair policy differs.')
+ for row in value['originating_definitions']:bound(row)
+ receipt=read(value['rendering_receipt'])
+ if receipt.get('tokens_preserved') is not True or receipt.get('source_types_preserved_exactly') is not True:
+  raise ValueError('The native rendering repair lacks its originating declaration check.')
+ return value
+
+def rendering_case(profile,case):
+ if 'rendering_repair' not in profile:return case
+ repair=rendering_repair(profile['rendering_repair'])
+ if (case['block']!=repair['block'] or case['module']!=repair['module'] or case['pc']!=repair['pc']
+     or case['statement_sha256']!=repair['original_statement_sha256']):
+  raise ValueError('The rendering repair names another native target.')
+ if profile.get('memory_booking') not in {PORT_FULL_FENCE_BOOKING,PORT_V34_PEAK_BOOKING}:
+  raise ValueError('The repaired native requires full-fence booking.')
+ variant=repair['variants']['v3.4' if v34_profile(profile) else 'v3.2']
+ if bound(case['source']).read_bytes()!=bound(variant['previous_source']).read_bytes():
+  raise ValueError('The rendering repair names another original caller.')
+ bound(variant['corrected_source'])
+ return dict(case,source=variant['corrected_source'],statement_sha256=repair['corrected_statement_sha256'])
+
+def v34_target(binding,target,block,repair_binding=None):
  if not relocated_authority(binding,PORT_V34_TARGETS):
   raise ValueError('The v3.4 pilot inventory is not authorized.')
  rows=[row for row in read(binding)['rows'] if row['key']==block]
+ if len(rows)==1 and repair_binding is not None:
+  repair=rendering_repair(repair_binding)
+  if block!=repair['block'] or rows[0]['statement_sha256']!=repair['original_statement_sha256']:
+   raise ValueError('The rendering repair changes another pilot target.')
+  rows=[dict(rows[0],statement_sha256=repair['corrected_statement_sha256'],
+             source_sha256=repair['variants']['v3.2']['corrected_source']['sha256'])]
  if len(rows)!=1 or any(rows[0][key]!=target.get(key) for key in ['module','pc','statement_sha256']):
   raise ValueError('The v3.4 pilot target differs from the public inventory.')
  return rows[0]
@@ -297,7 +333,7 @@ def v34_bank_sources(profile,job):
    raise ValueError('The NEW6a00 target or declaration bank differs.')
   names=bank['case_modules']['NEW:800d6a00'];sources=bank['NEW6a00_sources']
  else:
-  v34_target(profile['pilot_targets'],job['target'],job['key'])
+  v34_target(profile['pilot_targets'],job['target'],job['key'],profile.get('rendering_repair'))
   names=bank['case_modules'][job['key']];sources=dict(bank['OLD_sources'])
   if job['key'] in bank['retention_cases']:sources.update(bank['retention_sources'])
  selected={name:sources[name] for name in names}
@@ -372,7 +408,7 @@ def completed_v34_pilot(row,target):
 
 def production_port_authority(profile):
  required={'schema','kind','authority','memory_route'}
- if not required<=set(profile)<=required|{'supplier_ready','memory_booking','pilot_targets','native_rules','normalization_policy','completed_peak_authority','bank_authority','comparison_authority'} or profile.get('schema')!='scratch.admission-profile.v1' or profile.get('kind')!=PORT_KIND or profile.get('memory_route')!='measured_native':
+ if not required<=set(profile)<=required|{'supplier_ready','memory_booking','pilot_targets','native_rules','normalization_policy','completed_peak_authority','bank_authority','comparison_authority','rendering_repair'} or profile.get('schema')!='scratch.admission-profile.v1' or profile.get('kind')!=PORT_KIND or profile.get('memory_route')!='measured_native':
   raise ValueError('The production PORT profile is invalid.')
  if 'memory_booking' in profile and profile['memory_booking'] not in (PORT_FULL_FENCE_BOOKING,PORT_HEADER_PEAK_BOOKING,PORT_V34_PEAK_BOOKING):
   raise ValueError('The PORT memory booking option is invalid.')
@@ -440,7 +476,7 @@ def production_port_case(profile,job):
   raise ValueError('The production PORT job requires stock native search with empty setup.')
  target=job['target'];rows=[r for r in authority['cases'] if r['block']==job['key'] and r['module']==target['module']]
  if len(rows)!=1:raise ValueError('The production PORT case is not authorized.')
- case=rows[0]
+ case=rendering_case(profile,rows[0])
  if target.get('pc')!=case['pc']:raise ValueError('The production PORT address differs.')
  expected=case['source']['sha256']
  if v34_profile(profile):
@@ -449,7 +485,7 @@ def production_port_case(profile,job):
  if target.get('source_sha256')!=expected or target.get('statement_sha256')!=case['statement_sha256']:
   raise ValueError('The production PORT source or statement differs.')
  if profile.get('memory_booking')==PORT_V34_PEAK_BOOKING:
-  v34_target(profile['pilot_targets'],target,job['key'])
+  v34_target(profile['pilot_targets'],target,job['key'],profile.get('rendering_repair'))
  return authority,case
 
 def workload_for_job(profile_binding,job,config):
@@ -500,6 +536,8 @@ def workload_for_job(profile_binding,job,config):
   specification=source_statement(source,'zesu_block.')
   if hashlib.sha256(specification['statement'].encode()).hexdigest()!=case['statement_sha256']:
    raise ValueError('The production PORT declaration differs.')
+  if 'rendering_repair' in profile:
+   for row in rendering_repair(profile['rendering_repair'])['originating_definitions']:actual(row)
   for row in authority['production_sources']:actual(row)
   result={'kind':kind,'profile':profile_binding,'owned_sources':owned,'declarations_only':False,'prerequisite_modules':[]}
   if 'supplier_ready' in profile:
@@ -570,7 +608,7 @@ def workload_claim(workload,job,basis):
  if kind==PORT_KIND:
   if profile.get('memory_booking')==PORT_FULL_FENCE_BOOKING:return PORT_FENCE
   if profile.get('memory_booking')==PORT_V34_PEAK_BOOKING:
-   v34_target(profile['pilot_targets'],job['target'],job['key'])
+   v34_target(profile['pilot_targets'],job['target'],job['key'],profile.get('rendering_repair'))
    if job['key']=='800d6974':return PORT_FENCE
    if (basis is None or basis['measurement'].get('format')!='completed_stock_v34_pilot_v1' or
        basis['measurement']['block']!=job['key'] or

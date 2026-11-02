@@ -409,7 +409,9 @@ def run_native(config, job, out, controller):
     if config.get('require_cache_hit') and not defects:
         raise ValueError('The unchanged replay missed its required cache entry. Search is held.')
     save(out / 'CACHE-MISS.json', {'cache_status': 'fresh', 'historical_seeding': False})
-    code = controller.run_stock_job(config, job, out, prepared={'runtime': runtime, 'workspace': workspace, 'owner': owner})
+    from waiting_envelope import compact_wait
+    with compact_wait(out,collection=report):
+        code = controller.run_stock_job(config, job, out, prepared={'runtime': runtime, 'workspace': workspace, 'owner': owner})
     result = read_bound(binding(out / 'RESULT.json'))
     if result.get('status') in {'passed', 'native_open'}:
         result = launch_adapter.annotate_native_return(result, binding(out / 'native/CALLS.json'),runtime.get('native_route'))

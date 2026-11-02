@@ -382,13 +382,14 @@ def _physical_record(reference, snapshot, snapshot_reference, source, compiler, 
 
 class OutputReceipts:
     """Authenticate only objects accepted after successful provider checks."""
-    def __init__(self, snapshot, reference, key=None):
-        self.snapshot = snapshot
-        self.reference = reference
+    def __init__(self, reference, runtime_reference, key=None):
+        snapshot=read(reference,runtime_reference)
+        self.snapshot={name:json.loads(json.dumps(snapshot[name])) for name in ('runtime','producer','objects','compiler')}
+        self.reference = dict(reference)
         self.key = key or secrets.token_hex(32)
         self.rows = []
         self.physical=[]
-        self.root = Path(snapshot['objects'])
+        self.root = Path(self.snapshot['objects'])
         self.root.mkdir(mode=0o700)
         self._write_index()
 

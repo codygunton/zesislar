@@ -165,6 +165,13 @@ def digest(path):
     return value
 
 
+def release_process_cache():
+    """Drop optional process hits. Every later lookup keeps its exact checks."""
+    count=len(_DIGESTS)
+    _DIGESTS.clear()
+    return count
+
+
 @contextmanager
 def force_hashing(enabled=True):
     token = _FORCE.set(_FORCE.get() or enabled)

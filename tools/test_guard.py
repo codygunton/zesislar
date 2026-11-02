@@ -157,6 +157,75 @@ class GuardLockTest(unittest.TestCase):
         return subprocess.run([str(GUARD), *arguments], capture_output=True,
                               text=True, env=self.environment, timeout=10)
 
+    def test_python_driver_preflight_refuses_stdlib_names_without_importing(self):
+        base = Path(self.directory.name) / 'drivers'
+        base.mkdir()
+        driver = base / 'session.py'
+        driver.write_text('raise AssertionError("driver must not execute")\n')
+        for filename in ('inspect.py', 'queue.py', 'subprocess.pyc', 'select.so'):
+            with self.subTest(filename=filename):
+                conflict = base / filename
+                conflict.write_text('raise AssertionError("must not import")\n')
+                result = self.guard('driver-check', '--', sys.executable,
+                                    '-P', '-u', '-W', 'ignore', '-X', 'dev', str(driver))
+                self.assertEqual(result.returncode, 2, result.stderr)
+                self.assertIn('shadows stdlib modules: ' + filename, result.stderr)
+                self.assertNotIn('must not import', result.stderr)
+                conflict.unlink()
+        package = base / 'asyncio'
+        package.mkdir()
+        (package / '__init__.py').write_text('raise AssertionError("must not import")\n')
+        result = self.guard('driver-check', '--', sys.executable, str(driver))
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertIn('asyncio', result.stderr)
+
+    def test_python_driver_preflight_accepts_safe_driver_and_checks_symlink_target(self):
+        base = Path(self.directory.name)
+        driver = base / 'request_driver.py'
+        driver.write_text('raise AssertionError("preflight must not execute")\n')
+        result = self.guard('driver-check', '--', sys.executable, str(driver))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        alias = self.bin / 'driver.py'
+        alias.symlink_to(driver)
+        (base / 'inspect.py').write_text('raise AssertionError("must not import")\n')
+        result = self.guard('driver-check', '--', sys.executable, str(alias))
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertIn('inspect.py', result.stderr)
+
+    def test_python_driver_preflight_leaves_non_python_commands_unchanged(self):
+        result = self.guard('driver-check', '--', 'make', 'check-fast')
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_python_driver_preflight_checks_module_and_inline_launch_directory(self):
+        base = Path(self.directory.name)
+        (base / 'queue.py').write_text('raise AssertionError("must not import")\n')
+        for arguments in (('-m', 'safe_driver'), ('-c', 'pass'), ('-',)):
+            with self.subTest(arguments=arguments):
+                result = subprocess.run([str(GUARD), 'driver-check', '--', sys.executable,
+                                         *arguments], cwd=base, env=self.environment,
+                                        capture_output=True, text=True, timeout=10)
+                self.assertEqual(result.returncode, 2, result.stderr)
+                self.assertIn('queue.py', result.stderr)
+
+    def test_python_driver_preflight_matches_runtime_template(self):
+        runtime = TOOLS / 'block/harness/runtime-tools/resource_guard.sh'
+        def function(path):
+            return path.read_text().split('check_python_driver() {', 1)[1].split('run_scope() {', 1)[0]
+        self.assertEqual(function(GUARD), function(runtime))
+
+    def test_launch_routes_refuse_driver_before_admission(self):
+        base = Path(self.directory.name)
+        driver = base / 'session.py'
+        driver.write_text('raise AssertionError("must not execute")\n')
+        (base / 'queue.py').write_text('raise AssertionError("must not import")\n')
+        self.environment['ZESU_RUN_ID'] = 'preflight-fixture'
+        for route in ('scope', 'batch', 'locked'):
+            with self.subTest(route=route):
+                result = self.guard(route, 'driver-preflight', '--', sys.executable, str(driver))
+                self.assertEqual(result.returncode, 2, result.stderr)
+                self.assertIn('shadows stdlib modules: queue.py', result.stderr)
+                self.assertNotIn('must not execute', result.stderr)
+
     def batch_environment(self, limit="150G"):
         slice_name = f"zesuworkloads-aggregate1000p{os.getpid()}r1.slice"
         subprocess.run(["systemctl", "--user", "set-property", "--runtime", slice_name,

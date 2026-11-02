@@ -1,0 +1,56 @@
+{
+  "schema": "port.native-rendering-repair.v1",
+  "block": "800d6974",
+  "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974",
+  "pc": 2148362612,
+  "original_statement_sha256": "3abd9cb6c6ab180a18a02a93027df450a2cdd90ba6424387750dd6944c902953",
+  "corrected_statement_sha256": "f0ef1da937d7449029ff1e4e0231a97eeafb746fdb15d817fc809ac5149f1b4b",
+  "native_body": "zesu_block.",
+  "claim_bytes": 34359738368,
+  "physical_fence_bytes": 34359738368,
+  "originating_definitions": [
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v32-NEW-generated-prefix-v1/prepare001/prepared/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineSlice6960Entries.v",
+      "sha256": "e47b7c7ffbb577719c9aa68c0b8c1bfe59690be82d6ede14a2f35c8b2e10c6f0",
+      "module": "ZesuSsz.Generated.DecodeItem.MachineSlice6960Entries"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v32-NEW-generated-prefix-v1/prepare001/prepared/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineBranch198Entries.v",
+      "sha256": "ebc335ded6bfb93d8e6a3cd44f4937609f9ec576ef63b2bb739c82fa5b734403",
+      "module": "ZesuSsz.Generated.DecodeItem.MachineBranch198Entries"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v32-NEW-generated-prefix-v1/prepare001/prepared/artifacts/default/ZesuSsz/Generated/DecodeItem/PilotA201Entries.v",
+      "sha256": "5892997f6d27b0c2a7c110df22d7d924d3175bfc4c6253ff3b21914e51dddecc",
+      "module": "ZesuSsz.Generated.DecodeItem.PilotA201Entries"
+    }
+  ],
+  "variants": {
+    "v3.2": {
+      "previous_source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v32-NEW-6974-v1/source001/sources/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v",
+        "sha256": "fc7669a62c6b1539f4d17f2ea3adcd72344b3466c86a911bb8c67b6b3c67feff"
+      },
+      "corrected_source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/start-render-rss-f5-v1/rerender001/sources/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v",
+        "sha256": "8a99dfd5e33499f5293d47a9b535efcc65cd838674fa9c964854f863a75aa83c"
+      }
+    },
+    "v3.4": {
+      "previous_source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-integration-v1/callers/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v",
+        "sha256": "320a5540cfe219f3ccab76b5c343151eae73d4bf89b0e3b180d0907159221916"
+      },
+      "corrected_source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/start-render-rss-f5-v1/rerender001/effective-caller/Block800d6974.v",
+        "sha256": "cb7514f8c2d8037be0595394a1e9b6a9c2eeb03335a0990190de90a6346b68ca"
+      }
+    }
+  },
+  "rendering_receipt": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/start-render-rss-f5-v1/rerender001/RESULT.json",
+    "sha256": "404ef1ee79671091eb6c6a775513636ac99e27c73eed46b8b5b3e1d8161e9948"
+  },
+  "tokens_preserved": true,
+  "contract_changed": false
+}

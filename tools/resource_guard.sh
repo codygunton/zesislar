@@ -16,6 +16,7 @@
 #   gate-module-limit    print the configured per-module gate limit in GiB
 #   coqc-count [nonwriter] count actual compilers, excluding shell wrappers
 #   native-limit         read the native admission limit without changing state
+#   driver-check -- CMD  refuse Python drivers whose directory shadows stdlib modules
 #   wait                 block until one more job may start
 #   reserve-coqc PID     request a compiler launch without holding a slot
 #   confirm-coqc TOKEN   admit a compiler launch atomically
@@ -1000,6 +1001,7 @@ release_aggregate_reservations() {
 run_locked() {
   local name=$1; shift
   [ "${1:-}" = "--" ] && shift
+  check_python_driver "$@" || return $?
   case "$name" in
     check-fast|check-iris)
       if [ "${ZESU_TIMING_RUN:-0}" != 1 ]; then exec "$@"; fi ;;
@@ -1469,6 +1471,61 @@ validate_probe_scope() {
   esac
 }
 
+check_python_driver() {
+  local driver_command=${1:-} driver_python=python3
+  case "${driver_command##*/}" in python*|pypy*|*.py) ;; *) return 0 ;; esac
+  if [[ "${driver_command##*/}" =~ ^(python|pypy)([0-9]+(\.[0-9]+)*)?$ ]]; then
+    driver_python=$driver_command
+  fi
+  # Isolate this check from the very import path that it validates.
+  "$driver_python" -I - "$@" <<'PY'
+import pathlib
+import re
+import sys
+
+command = sys.argv[1:]
+if not command:
+    raise SystemExit(0)
+executable = pathlib.Path(command[0])
+script = executable if executable.suffix == '.py' else None
+directory = None
+if re.fullmatch(r'(?:python|pypy)(?:\d+(?:\.\d+)*)?', executable.name):
+    arguments = iter(command[1:])
+    for argument in arguments:
+        if argument in ('-c', '-m'):
+            directory = pathlib.Path.cwd()
+            break
+        if argument in ('-W', '-X', '--check-hash-based-pycs'):
+            next(arguments, None)
+        elif argument == '-':
+            directory = pathlib.Path.cwd()
+            break
+        elif argument == '--':
+            value = next(arguments, None)
+            script = pathlib.Path(value) if value else None
+            break
+        elif not argument.startswith('-'):
+            script = pathlib.Path(argument)
+            break
+if script is not None:
+    directory = script.resolve().parent
+if directory is None:
+    raise SystemExit(0)
+conflicts = []
+for path in directory.iterdir():
+    if path.is_dir():
+        module = path.name if (path / '__init__.py').is_file() else None
+    else:
+        module = path.name.split('.')[0] if path.suffix in ('.py', '.pyc', '.so') else None
+    if module in sys.stdlib_module_names:
+        conflicts.append(path.name)
+if conflicts:
+    print('resource guard: Python driver directory shadows stdlib modules: '
+          + ', '.join(sorted(conflicts)), file=sys.stderr)
+    raise SystemExit(2)
+PY
+}
+
 run_scope() {
   local name=$1 cpu=${ZESU_PROOF_CPU_LIMIT:-2400}; shift
   validate_probe_scope || return $?
@@ -1481,6 +1538,7 @@ run_scope() {
     fi
   fi
   [ "${1:-}" = "--" ] && shift
+  check_python_driver "$@" || return $?
   # An admitted launch must drain before a later gate can acquire its lock.
   if ! reservation_path "${ZESU_COQC_RESERVATION:-}"; then
     wait_for_gate
@@ -1572,6 +1630,7 @@ run_batch() {
   fi
   local name=$1; shift
   [ "${1:-}" = "--" ] && shift
+  check_python_driver "$@" || return $?
   # Nested make wrappers reuse the aggregate created by their parent.
   if [ -n "${ZESU_IN_BATCH:-}" ]; then
     verify_workload_ancestor || return $?
@@ -1680,11 +1739,13 @@ case "${1:-report}" in
 esac
 
 case "${1:-report}" in
+  driver-check) shift; [ "${1:-}" = -- ] && shift; check_python_driver "$@" ;;
   parent-check) verify_workload_ancestor ;;
   parent-slice) ensure_workload_parent && aggregate_slice ;;
   parent-exec)
     verify_workload_ancestor || exit $?
     shift; [ "${1:-}" = -- ] && shift
+    check_python_driver "$@" || exit $?
     exec "$@" ;;
   parent-setup) ensure_workload_parent ;;
   gate-module-limit)
@@ -1713,6 +1774,7 @@ case "${1:-report}" in
       echo "resource guard: probe CPU must be unlimited" >&2; exit 2
     fi
     token=$2; shift 2; [ "${1:-}" = -- ] && shift
+    check_python_driver "$@" || exit $?
     [ -z "${ZESU_SCOPE_UNIT:-}" ] || register_scope "$ZESU_SCOPE_UNIT"
     confirm_coqc "$token" || exit $?
     mark_coqc "$token" $$ || exit $?
@@ -1723,6 +1785,7 @@ case "${1:-report}" in
   batch-exec)
     verify_workload_ancestor || exit $?
     shift; [ "${1:-}" = -- ] && shift
+    check_python_driver "$@" || exit $?
     register_run_actor || exit $?
     exec "$@" ;;
   batch)  shift; run_batch "$@" ;;

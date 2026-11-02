@@ -95,6 +95,8 @@ def main():
     from fastmcp import Context
     from rocq_mcp import server
     from rocq_mcp import interactive
+    from start_feedback_mcp import install_start_feedback
+    install_start_feedback(server, interactive)
     directory = Path(os.environ['ZESU_COMPLETE_GOAL_DIR']).resolve()
     if os.environ.get('ZESU_FEEDBACK_DIR'):
         from feedback_mcp import install_exporter
