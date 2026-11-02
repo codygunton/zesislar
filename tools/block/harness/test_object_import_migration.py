@@ -233,6 +233,12 @@ class MigrationTests(unittest.TestCase):
         receipt=migration.create(ready,self.module,self.source,self.obj,
             self.compiler,self.flags,self.workspace)
         self.validate(receipt)
+        authority['module_allowlist']=[marker_module]
+        migration.POLICY.write_text(json.dumps(self.policy))
+        with self.assertRaisesRegex(ValueError,'does not authorize this module origin'):
+            migration.create(ready,self.module,self.source,self.obj,
+                self.compiler,self.flags,self.workspace)
+        authority['module_allowlist']=[self.module]
         data['bindings'].remove(binding(self.obj))
         changed=self.save('UNBOUND-READY.json',data)
         selection=self.save('UNBOUND-SELECTION.json',{'rows':[changed],'recorded_expected_objects':guards})
