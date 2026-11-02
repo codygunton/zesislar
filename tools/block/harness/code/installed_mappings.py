@@ -166,21 +166,13 @@ class InstalledMappings:
 
     def dependency_flags(self, origin):
         """Resolve Sail sibling imports in their bound source context only."""
-        flags = list(self.flags)
         if not origin.get('path'):
-            return flags
-        source = Path(origin['path']).resolve()
-        for row in self.roots:
-            if row['prefix'] != 'SailStdpp' or row['flag'] != '-Q':
-                continue
-            if not source.is_relative_to(row['root']):
-                continue
-            if digest(source) != origin['sha256']:
-                raise ValueError('The dependency request source changed.')
-            for index in range(len(flags) - 2):
-                if flags[index:index + 3] == ['-Q', row['root'], 'SailStdpp']:
-                    flags[index] = '-R'
-        return flags
+            return list(self.flags)
+        from source_context import effective_flags
+        try:
+            return effective_flags(self.flags, {'path': origin['path'], 'sha256': origin['sha256']})
+        except ValueError as error:
+            raise ValueError('The dependency request source changed or has an invalid context.') from error
 
     def _query(self, module, request):
         if self.shared_cache is not None:
