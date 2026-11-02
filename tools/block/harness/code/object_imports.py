@@ -2,7 +2,8 @@
 from pathlib import Path
 
 from binding_cache import digest
-from entry_chain import read_bound
+from entry_chain import read_bound, binding
+from source_context import compilation
 from import_graph import graph_closure
 
 
@@ -16,12 +17,13 @@ def _record(reference, module, source, obj, compiler, flags, workspace):
     if not isinstance(provenance, dict) or provenance.get('schema') != 'entry-chain.object-imports.v1':
         raise ValueError('The owned object lacks authenticated import hashes.')
     old_workspace = provenance['owned_workspace']
+    context=compilation(flags,binding(source))
     if (provenance.get('module') != module or receipt.get('successful_compilation') is not True or
             receipt.get('tool_result', {}).get('success') is not True or
             receipt.get('source', {}).get('sha256') != digest(source) or
             receipt.get('object', {}).get('sha256') != digest(obj) or
             provenance.get('compiler') != compiler or receipt.get('compiler') != compiler or
-            provenance.get('normalized_flags') != normalized_flags(flags, workspace) or
+            provenance.get('normalized_flags') != normalized_flags(context['physical_flags'], workspace) or
             provenance['normalized_flags'] != normalized_flags(receipt['normalized_flags'], old_workspace)):
         raise ValueError('The owned object differs from its compilation provenance.')
     old_source = Path(receipt['source']['path'])
@@ -31,6 +33,20 @@ def _record(reference, module, source, obj, compiler, flags, workspace):
         raise ValueError('The owned object has another recorded source mapping.')
     physical = read_bound(receipt['physical_result'])
     inputs = read_bound(physical['input'])
+    old_context=receipt.get('compiler_context')
+    if context['changes'] or old_context is not None:
+        recorded_context=inputs.get('compiler_context')
+        # Legacy physical records omit the descriptor when their flags stay exact.
+        unchanged_legacy=(recorded_context is None and not context['changes'] and
+                          isinstance(old_context,dict) and old_context.get('changes')==[] and
+                          old_context.get('base_flags')==old_context.get('physical_flags'))
+        if (not isinstance(old_context,dict) or
+                old_context.get('schema')!='entry-chain.source-context.v1' or
+                recorded_context!=old_context and not unchanged_legacy or
+                old_context.get('source')!=receipt['source'] or
+                normalized_flags(old_context.get('base_flags',[]),old_workspace)!=normalized_flags(flags,workspace) or
+                old_context.get('physical_flags')!=receipt['normalized_flags']):
+            raise ValueError('The owned object has another compiler source context.')
     if (physical.get('returncode') != 0 or physical.get('output_validation', {}).get('success') is not True or
             physical.get('output_capture', {}).get('complete') is not True or
             physical.get('compiler_outputs', {}).get('object', {}).get('binding') != receipt['object'] or

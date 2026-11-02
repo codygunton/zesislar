@@ -150,6 +150,10 @@ class ImportProvenanceTests(unittest.TestCase):
         from object_imports import compatibility
         obj,physical,_=self.physical()
         receipt=self.accept(obj,physical)
+        physical_record=json.loads(Path(physical['path']).read_text())
+        inputs=json.loads(Path(physical_record['input']['path']).read_text())
+        self.assertNotIn('compiler_context',inputs)
+        self.assertEqual(json.loads(Path(receipt['path']).read_text())['compiler_context']['changes'],[])
         runtime=self.fixture.runtime
         result=compatibility(['Example.Control'],json.loads(self.graph.read_text())['import_edges'],
             runtime['module_files'],self.root,{'Example.Control':receipt},

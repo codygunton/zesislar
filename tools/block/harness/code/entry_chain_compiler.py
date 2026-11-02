@@ -54,7 +54,9 @@ def main():
                     'runtime':runtime_reference}
     else:
         check_operation(runtime)
-    flags=runtime['physical_flags']
+    from source_context import compilation
+    context=compilation(runtime['physical_flags'],binding(source))
+    flags=context['physical_flags']
     directory=Path(runtime['job_output'])/'compiler-invocations'/uuid.uuid4().hex
     directory.mkdir(parents=True)
     clone_copy.copy2(source,directory/'SOURCE.v')
@@ -68,7 +70,8 @@ def main():
     phase='native_compile' if native else ('verification' if runtime['phase']=='native' else 'setup')
     save(directory/'INPUT.json',{'incoming_argv':sys.argv[1:],'physical_argv':command,
          'source':binding(source),'retained_source':binding(directory/'SOURCE.v'),
-         'compiler':binding(physical),'validation':validation,'CPU_policy':'unlimited','owned_workspace':str(workspace),
+         'compiler':binding(physical),'validation':validation,'compiler_context':context,
+         'CPU_policy':'unlimited','owned_workspace':str(workspace),
          'target':{'module':module,'theorem':theorem,'source_sha256':digest(source)},'command_phase':phase})
 
     wrapper=workspace/'tools/coqc_findlib.py';guard=workspace/'tools/resource_guard.sh'
