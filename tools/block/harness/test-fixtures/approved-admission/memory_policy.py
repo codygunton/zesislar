@@ -153,6 +153,7 @@ def header_transition_bindings(row):
      prior['costs']['search_end'],prior['calls'],read(row['result'])['complete_state']]
 
 def completed(row,target):
+ if row.get('format')=='completed_stock_v33_open_v1':return completed_v33_open(row,target)
  if row.get('format')=='completed_stock_v34_pilot_v1':return completed_v34_pilot(row,target)
  if row.get('format')=='completed_stock_header_transition_v1':return completed_header_transition(row,target)
  if row.get('format')=='completed_stock_verification_repair_v1':return completed_verified_repair(row,target)
@@ -406,7 +407,55 @@ def completed_v34_pilot(row,target):
   formula='max(1GiB,ceil(1.5*completed_aggregate_peak_bytes))',provenance_version=version,
   qualification='Approved '+version+' OLD aggregate peak. Candidate performance is unmeasured. Memory evidence does not establish proof acceptance.'),None
 
+PORT_V33_OPEN_BOOKING='completed_open_pilot_peak'
+PORT_V33_OPEN_AUTHORITY={'path':str(Path(__file__).resolve().parents[1]/'policies'/'PORT-V33-OPEN-AUTHORITY.json'),
+ 'sha256':'7d59bc18d574bb9eed93e3ef3274e00015e40bf92db767e4f75cbc54c0357df3'}
+
+def v33_open_profile(profile):
+ return profile.get('memory_booking')==PORT_V33_OPEN_BOOKING
+
+def v33_open_authority(profile):
+ if (set(profile)!={'schema','kind','authority','memory_route','memory_booking','supplier_ready'} or
+     profile.get('schema')!='scratch.admission-profile.v1' or profile.get('kind')!=PORT_KIND or
+     profile.get('memory_route')!='measured_native' or not v33_open_profile(profile) or
+     not relocated_authority(profile.get('authority'),PORT_V33_OPEN_AUTHORITY)):
+  raise ValueError('The v3.3 open-pilot profile is invalid.')
+ value=read(profile['authority'])
+ if (value.get('schema')!='port.v33.open-pilot-authority.v1' or value.get('rule_version')!='v3.3' or
+     profile['supplier_ready']!=value['supplier_ready'] or value['physical_fence_bytes']!=PORT_FENCE or
+     value['native_body']!='zesu_block.' or value['setup_order']!=[] or value['CPU_stops'] is not None):
+  raise ValueError('The v3.3 open-pilot ruling differs.')
+ bound(value['supplier_ready'])
+ for row in value['production_sources']:bound(row)
+ return value
+
+def completed_v33_open(row,target):
+ required={'format','route','block','module','native_source','statement_sha256','result','accounting','closure','release','authority'}
+ if set(row)!=required or row['route']!='stock_zesu_block':return None,'The v3.3 open measurement has invalid fields.'
+ if not relocated_authority(row['authority'],PORT_V33_OPEN_AUTHORITY):return None,'The v3.3 open measurement authority differs.'
+ authority=read(row['authority']);matches=[r for r in authority['cases'] if r['block']==row['block']]
+ if len(matches)!=1:return None,'The v3.3 open measurement case differs.'
+ case=matches[0]
+ if (any(case.get(k)!=target.get(k) for k in ['module','pc','statement_sha256']) or
+     case['source']!=row['native_source'] or case['source']['sha256']!=target.get('source_sha256') or
+     row['module']!=case['module'] or row['statement_sha256']!=case['statement_sha256'] or
+     any(row[k]!=case['measurement'][k] for k in ['result','accounting','closure','release'])):
+  return None,'The v3.3 open measurement names another boundary or receipt.'
+ result,accounting,closure,release=(read(row[k]) for k in ['result','accounting','closure','release'])
+ peak=case['peak_bytes'];claim=(3*peak+1)//2
+ if (type(peak) is not int or peak<=0 or claim!=case['claim_bytes'] or claim>PORT_FENCE or
+     result.get('aggregate_peak_bytes')!=peak or accounting.get('aggregate_peak_bytes')!=peak or
+     result.get('CPU')!=accounting or closure.get('all_owned_actors_closed') is not True or
+     release.get('released') is not True or release.get('claim_key')!=closure.get('claim_key')):
+  return None,'The v3.3 open measurement lacks its completed accounting or closure.'
+ if any(accounting.get('memory_events',{}).get('counters',{}).get(k,0)>0 for k in ['oom','oom_kill','oom_group_kill']):
+  return None,'The v3.3 open measurement records an OOM.'
+ return {'measurement':row,'peak_bytes':peak,'claim_bytes':claim,'scope':accounting.get('scope'),
+  'formula':'ceil(3 * completed_peak_bytes / 2)','memory_metric':'aggregate_memory.peak',
+  'qualification':'Approved cross-version completed peak. Memory evidence is not proof acceptance.'},None
+
 def production_port_authority(profile):
+ if v33_open_profile(profile):return v33_open_authority(profile)
  required={'schema','kind','authority','memory_route'}
  if not required<=set(profile)<=required|{'supplier_ready','memory_booking','pilot_targets','native_rules','normalization_policy','completed_peak_authority','bank_authority','comparison_authority','rendering_repair'} or profile.get('schema')!='scratch.admission-profile.v1' or profile.get('kind')!=PORT_KIND or profile.get('memory_route')!='measured_native':
   raise ValueError('The production PORT profile is invalid.')
@@ -530,7 +579,9 @@ def workload_for_job(profile_binding,job,config):
   else:source=actual(dict(case['source'],module=case['module']))
   text=source.read_text()
   forbidden=r'\b(?:Ltac2?|AllLegacy)\b' if v34 else r'\b(?:Ltac2?|RuleScratchRules|AllLegacy)\b'
-  if not text.startswith('Require Import ZesuSsz.Automation.All.\n') or re.search(forbidden,text):
+  hand_seeded=v33_open_profile(profile) and case['bank']=='hand_seeded'
+  if hand_seeded:forbidden=r'\b(?:Ltac2?|AllLegacy)\b'
+  if (not hand_seeded and not text.startswith('Require Import ZesuSsz.Automation.All.\n')) or re.search(forbidden,text):
    raise ValueError('The production PORT caller is not plain production stock.')
   from scratch_statement import source_statement
   specification=source_statement(source,'zesu_block.')
@@ -538,6 +589,10 @@ def workload_for_job(profile_binding,job,config):
    raise ValueError('The production PORT declaration differs.')
   if 'rendering_repair' in profile:
    for row in rendering_repair(profile['rendering_repair'])['originating_definitions']:actual(row)
+  if v33_open_profile(profile):
+   for row in case['bank_sources']:
+    if row['module'] not in modules:raise ValueError('The v3.3 open semantic bank source is absent.')
+    actual(dict(row,path=str(workspace/modules[row['module']])))
   for row in authority['production_sources']:actual(row)
   result={'kind':kind,'profile':profile_binding,'owned_sources':owned,'declarations_only':False,'prerequisite_modules':[]}
   if 'supplier_ready' in profile:
@@ -603,9 +658,17 @@ def workload_claim(workload,job,basis):
   return minimal_growth_claim(read(workload['profile']),job['target'])
  if kind==FOCUSED_KIND:
   if job['phase'] not in COMPILE_PHASES:raise ValueError('A focused check cannot execute native search.')
-  if profile.get('memory_booking')==PORT_FULL_FENCE_BOOKING:return job_fence(job)
+  if profile.get('memory_booking')==PORT_FULL_FENCE_BOOKING:
+   if 'declaration_dag_booking' in job:
+    from declaration_parallel_plan import booking_claim
+    return booking_claim(job)
+   return job_fence(job)
   return FOCUSED_CLAIM
  if kind==PORT_KIND:
+  if v33_open_profile(profile):
+   if basis is None or basis['measurement'].get('format')!='completed_stock_v33_open_v1':
+    raise ValueError('The v3.3 open pilot requires its exact completed peak.')
+   return basis['claim_bytes']
   if profile.get('memory_booking')==PORT_FULL_FENCE_BOOKING:return PORT_FENCE
   if profile.get('memory_booking')==PORT_V34_PEAK_BOOKING:
    v34_target(profile['pilot_targets'],job['target'],job['key'],profile.get('rendering_repair'))
@@ -693,6 +756,11 @@ def profile_bindings(context):
  if profile.get('kind')==PORT_KIND:
   authority=production_port_authority(profile)
   values += [profile['authority'],authority['completed_common_ready'],authority['source_packet']]
+  if v33_open_profile(profile):
+   values.extend([authority['retention_evidence'],authority['retention_proposal'],authority['measurement_authority']])
+   for case in authority['cases']:
+    values.append(case['source']);values.extend(case['measurement'][k] for k in ['result','accounting','closure','release'])
+    if 'source_readiness' in case:values.append(case['source_readiness'])
   if v34_profile(profile):
    values.extend(profile[name] for name in ['pilot_targets','native_rules','normalization_policy','bank_authority'])
    values.append(profile['comparison_authority'] if 'comparison_authority' in profile else profile['completed_peak_authority'])
@@ -748,8 +816,10 @@ def environment(phase,claim_bytes=None,job=None):
   workload=job.get('workload') or {}
   if workload.get('kind') in {PORT_KIND,FOCUSED_KIND} and read(workload['profile']).get('memory_booking')==PORT_FULL_FENCE_BOOKING:
    physical=job_fence(job)
-   if claim_bytes is not None and claim_bytes!=physical:raise ValueError('The environment claim differs from full-fence booking.')
-   claim_bytes=physical
+   expected=job['claim_bytes'] if 'declaration_dag_booking' in job else physical
+   if claim_bytes is not None and claim_bytes!=expected:
+    raise ValueError('The environment claim differs from its bound declaration booking.' if 'declaration_dag_booking' in job else 'The environment claim differs from full-fence booking.')
+   claim_bytes=expected
  physical=job_fence(job) if job is not None else fence(phase)
  measured=job is not None and measured_fence(job) is not None
  gib=physical//GIB

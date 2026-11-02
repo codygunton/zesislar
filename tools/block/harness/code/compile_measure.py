@@ -25,18 +25,28 @@ if record.get('validation') is not None:
     checked_runtime=read_bound(envelope)
     report=validate_compiler(checked_runtime,envelope,record['validation']['snapshot'],
         record['source'],record['physical_argv'][0],
-        output_key=os.environ.get('ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY'))
+        output_key=os.environ.get('ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY'),
+        private_output=(record.get('output_context') or {}).get('output'),private_workspace=workspace)
+    context=report['compiler_context'];selected=report['physical_flags']
+    if (record['physical_argv'][1:len(selected)+1]!=selected or
+            context['changes'] and record.get('compiler_context')!=context or
+            record.get('compiler_context') is not None and record['compiler_context']!=context or
+            record.get('output_context')!=report.get('output_context')):
+        raise ValueError('The physical compiler arguments differ from their source context.')
     imports=import_selection(checked_runtime,record['source'],workspace,report)
     report['import_selection']=imports
     input_validation=_publish(directory/'PHYSICAL-VALIDATION.json',report)
     target=(Path(record['physical_argv'][-2]) if record['physical_argv'][-3:-2]==['-o']
             else Path(record['source']['path']).with_suffix('.vo'))
     if target.suffix=='.vo':
-        before=sidecar_prestate(record['source'],target,record['compiler'],checked_runtime['physical_flags'],report)
+        before=sidecar_prestate(record['source'],target,record['compiler'],selected,report)
         record['sidecar_prestate']=before
         save(path,record)
 # The physical compiler never receives the provider authentication key.
 os.environ.pop('ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY',None)
+if record.get('output_context') is not None:
+    record['physical_environment']=dict(os.environ)
+    path.write_text(json.dumps(record,indent=2)+'\n')
 if before is not None:check_sidecar_prestate(before)
 if report is not None:check_import_selection(imports,report)
 started=time.monotonic();child=subprocess.Popen(record['physical_argv'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)

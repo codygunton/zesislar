@@ -15,6 +15,7 @@ from entry_pilot import retain_residual
 from entry_pilot_checker import bound_json,complete_groups
 from entry_chain_resources import check_operation,normalize_cpu,session_validation
 from supplier_ready import ENTRYINTRO_MCP_REFUSAL,entry_intro_plugin_refusal
+from declaration_parallel import run as run_declaration_dag
 
 
 class ToolFailure(RuntimeError):
@@ -219,6 +220,8 @@ async def execute(request):
     runtime = bound_json(request['runtime'], request['runtime_sha256'])
     if runtime.get('dependency_batch') and runtime.get('phase')!='prerequisites':
         raise ValueError('Dependency waves cannot execute in native phase.')
+    if runtime.get('declaration_dag') and runtime.get('phase')!='prerequisites':
+        raise ValueError('The declaration DAG cannot execute in native phase.')
     runtime.update(runtime_path=request['runtime'],runtime_sha256=request['runtime_sha256'])
     workspace, output = Path(request['workspace']), Path(request['output'])
     environment = proof_environment(runtime, workspace, output)
@@ -355,6 +358,26 @@ async def execute(request):
             async with ClientSession(*streams) as session:
                 await session.initialize()
                 await call(session, 'rocq_health', {})
+                if runtime.get('declaration_dag'):
+                    async def protected_compile(module):
+                        source=workspace/relative(runtime['module_files'][module])
+                        atomic_json(output/'PROGRESS.json',{'phase':'protected_declaration','module':module})
+                        result=await compile_dependency(module,source,workspace,
+                            workspace/relative(runtime['coqc_wrapper']),runtime['expected_mcp_flags'],output,environment,
+                            lambda name,args:call(session,name,args),lambda:check_operation(runtime),timeout)
+                        obj=source.with_suffix('.vo')
+                        if not obj.is_file():raise ToolFailure('A protected dependency object is absent.')
+                        reference=accept_guarded_dependency(accepted_objects,module,source,obj,
+                            runtime['physical_flags'],result,lambda:check_operation(runtime))
+                        if not reference and calls:reference=calls[-1].get('accepted_object_receipt')
+                        if not reference:raise ToolFailure('A protected dependency lacks its accepted receipt.')
+                        atomic_json(output/('dependency-'+module+'.json'),{'source':str(source),
+                            'source_sha256':digest(source),'object':str(obj),'object_sha256':digest(obj),
+                            'result':result,'accepted_object_receipt':reference})
+                        return {'accepted_object_receipt':reference}
+                    dag_result=await run_declaration_dag(runtime,workspace,output,accepted_objects,
+                        environment,lambda:check_operation(runtime),protected_compile)
+                    completed_dependencies.update(dag_result['receipts'])
                 targets = {row['block']['module']} if runtime['phase'] == 'native' else set()
                 for module in ordered:
                     if module in completed_dependencies:continue

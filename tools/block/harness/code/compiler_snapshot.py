@@ -12,6 +12,7 @@ import time
 
 from binding_cache import identity, digest, force_hashing
 from entry_chain import binding, read_bound
+from source_context import compilation, effective_flags
 
 SCHEMA = 'entry-chain.compiler-validation.v1'
 
@@ -396,6 +397,12 @@ def _physical_import_provenance(record, inputs, snapshot, source, compiler, flag
     if report.get('snapshot')!=inputs['validation']['snapshot'] or report.get('producer')!=snapshot['producer']:
         raise ValueError('The physical input validation names another snapshot or producer.')
     runtime=read_bound(snapshot['runtime'])
+    context=compilation(runtime['physical_flags'],source)
+    if (context['changes'] and report.get('compiler_context')!=context or
+            report.get('compiler_context') is not None and report['compiler_context']!=context):
+        raise ValueError('The physical import validation has another source context.')
+    if report.get('output_context')!=inputs.get('output_context'):
+        raise ValueError('The physical import validation has another private output context.')
     selection=import_selection(runtime,source,inputs['owned_workspace'],report)
     if report.get('import_selection')!=selection:
         raise ValueError('The physical import selection differs from its bound runtime.')
@@ -406,12 +413,42 @@ def _physical_import_provenance(record, inputs, snapshot, source, compiler, flag
             'validation':reference,'imported_objects':selection['imported_objects']}
 
 
-def _physical_record(reference, snapshot, snapshot_reference, source, compiler, flags, obj, prior):
+def _physical_record(reference, snapshot, snapshot_reference, source, compiler, flags, obj, prior,
+                     *, publication=None, private_output=False):
     """Authenticate the completed wrapper record before sealing its outputs."""
     record=_read_private(reference)
     input_reference=record['input'];inputs=_read_private(input_reference)
     directory=Path(reference['path']).parent
     runtime=read_bound(snapshot['runtime'])
+    published=None
+    physical_obj=obj
+    if publication is not None:
+        from declaration_outputs import publication as read_publication
+        published=read_publication(publication,source=source,compiler=compiler,flags=flags,
+            snapshot=snapshot_reference,producer=snapshot['producer'],physical_result=reference,
+            canonical_object=obj)
+        physical_obj=published['private_outputs']['object']['binding']
+    selected_flags=list(flags)
+    private_context=None
+    if private_output or published is not None:
+        from declaration_outputs import output_context
+        private_context=output_context(runtime,source,physical_obj['path'],inputs['owned_workspace'])
+        selected_flags=private_context['physical_flags']
+        if (inputs.get('output_context')!=private_context or
+                published is not None and published['output_context']!=private_context):
+            raise ValueError('The physical compiler has another private output mapping.')
+        workspace=Path(inputs['owned_workspace']).resolve()
+        owners=[name for name,relative in runtime['module_files'].items()
+                if (workspace/relative).resolve()==Path(source['path']).resolve()]
+        if (len(owners)!=1 or inputs.get('target',{}).get('module')!=owners[0] or
+                published is not None and published['module']!=owners[0]):
+            raise ValueError('The private physical output names another module.')
+    extra=['-o',physical_obj['path']] if private_output or published is not None else []
+    context=compilation(runtime['physical_flags'],source)
+    if (list(flags)!=context['physical_flags'] or
+            context['changes'] and inputs.get('compiler_context')!=context or
+            inputs.get('compiler_context') is not None and inputs['compiler_context']!=context):
+        raise ValueError('The physical compiler has another source context.')
     job=Path(runtime.get('job_output',Path(snapshot['runtime']['path']).parent))
     if (Path(reference['path']).name!='PHYSICAL-RESULT.json' or
             Path(input_reference['path'])!=directory/'INPUT.json' or
@@ -420,19 +457,19 @@ def _physical_record(reference, snapshot, snapshot_reference, source, compiler, 
             record.get('output_validation',{}).get('success') is not True or
             inputs.get('source')!=source or inputs.get('compiler')!=compiler or
             inputs.get('validation')!={'runtime':snapshot['runtime'],'snapshot':snapshot_reference} or
-            inputs.get('physical_argv')!=[compiler['path'],*flags,source['path']] or
+            inputs.get('physical_argv')!=[compiler['path'],*selected_flags,*extra,source['path']] or
             record.get('physical_argv')!=inputs['physical_argv']):
         raise ValueError('A successful physical compiler record differs from this run.')
     before=inputs.get('sidecar_prestate');outputs=record.get('compiler_outputs')
     if (not isinstance(before,dict) or not isinstance(outputs,dict) or
             before.get('source')!=source or before.get('compiler')!=compiler or
-            before.get('physical_flags')!=flags or before.get('snapshot')!=snapshot_reference or
+            before.get('physical_flags')!=selected_flags or before.get('snapshot')!=snapshot_reference or
             before.get('producer')!=snapshot['producer'] or
-            obj['path']!=str(Path(source['path']).with_suffix('.vo')) or
-            before.get('primary_object')!=obj['path'] or
-            before.get('path')!=str(Path(obj['path']).with_suffix('.vos')) or
-            outputs['object']['binding']!=obj or
-            outputs['sidecar']['binding']['path']!=str(Path(obj['path']).with_suffix('.vos')) or
+            not private_output and obj['path']!=str(Path(source['path']).with_suffix('.vo')) or
+            before.get('primary_object')!=physical_obj['path'] or
+            before.get('path')!=str(Path(physical_obj['path']).with_suffix('.vos')) or
+            outputs['object']['binding']!=physical_obj or
+            outputs['sidecar']['binding']['path']!=str(Path(physical_obj['path']).with_suffix('.vos')) or
             outputs['sidecar'].get('lexical_path')!=before.get('path')):
         raise ValueError('The physical compiler sidecar context differs.')
     if before.get('state')=='absent':
@@ -454,7 +491,11 @@ def _physical_record(reference, snapshot, snapshot_reference, source, compiler, 
     expected='retained_authenticated_output' if retained else 'compiled_output'
     if outputs.get('sidecar_status')!=expected:
         raise ValueError('The physical compiler sidecar status differs.')
-    return outputs,before,_physical_import_provenance(record,inputs,snapshot,source,compiler,flags)
+    if published is not None:
+        if outputs!=published['private_outputs']:
+            raise ValueError('The declaration publication differs from its physical outputs.')
+        outputs=published['published_outputs']
+    return outputs,before,_physical_import_provenance(record,inputs,snapshot,source,compiler,flags),context
 
 
 class OutputReceipts:
@@ -479,7 +520,7 @@ class OutputReceipts:
         _publish(self.root / ('INDEX-%06d.json' % len(self.rows)), value)
         _publish(self.root / 'INDEX.json', value, replace=True)
 
-    def accept(self, source, obj, compiler, flags, result, *, physical_result=None):
+    def accept(self, source, obj, compiler, flags, result, *, physical_result=None, publication=None):
         if result.get('success') is not True:
             raise ValueError('A failed compilation cannot publish an accepted object.')
         if producer() != self.snapshot['producer']:
@@ -488,6 +529,7 @@ class OutputReceipts:
         object_identity=_identity(lexical)
         object_namespace=_namespace(lexical)
         canonical=str(lexical.resolve())
+        flags=effective_flags(flags,binding(source))
         with force_hashing(True):
             receipt = {'runtime': self.snapshot['runtime'], 'producer': self.snapshot['producer'],
                        'snapshot': self.reference,
@@ -509,13 +551,15 @@ class OutputReceipts:
             if len(candidates)!=1:raise ValueError('The accepted output lacks one fresh physical compiler record.')
             physical_result=candidates[0]
         if physical_result in self.physical:raise ValueError('A physical compiler record was already accepted.')
-        outputs,before,imports=_physical_record(physical_result,self.snapshot,self.reference,
-            receipt['source'],receipt['compiler'],list(flags),receipt['object'],self.rows)
+        outputs,before,imports,context=_physical_record(physical_result,self.snapshot,self.reference,
+            receipt['source'],receipt['compiler'],list(flags),receipt['object'],self.rows,publication=publication)
         if output_artifact(obj)!=outputs['object'] or output_artifact(Path(obj).with_suffix('.vos'))!=outputs['sidecar']:
             raise ValueError('A compiler output changed after its physical record.')
         receipt.update(physical_result=physical_result,sidecar=outputs['sidecar'],sidecar_prestate=before,
                        sidecar_status=outputs['sidecar_status'])
         if imports is not None:receipt['import_provenance']=imports
+        receipt['compiler_context']=context
+        if publication is not None:receipt['publication']=publication
         if (_identity(lexical)!=object_identity or _namespace(lexical)!=object_namespace
                 or str(lexical.resolve())!=canonical):
             raise ValueError('An accepted object changed during receipt publication.')
@@ -552,9 +596,10 @@ def accepted_objects(snapshot, reference, key, compiler, flags):
         if receipt_reference['path'] != str(root / ('OBJECT-%06d.json' % number)):
             raise ValueError('An accepted-object receipt leaves its exact directory.')
         receipt = _read_private(receipt_reference)
+        selected_flags=effective_flags(flags,receipt['source'])
         if (receipt.get('snapshot') != reference or receipt.get('runtime') != snapshot['runtime'] or receipt.get('producer') != snapshot['producer'] or
                 receipt.get('successful_compilation') is not True or receipt.get('tool_result', {}).get('success') is not True or
-                receipt.get('normalized_flags') != flags or receipt.get('compiler') != compiler):
+                receipt.get('normalized_flags') != selected_flags or receipt.get('compiler') != compiler):
             raise ValueError('An accepted-object receipt differs from its producer or compiler.')
         if not all(name in receipt for name in ['object_lexical_path','object_canonical_path','object_identity','object_namespace']):
             raise ValueError('An accepted object lacks its exact identity or namespace.')
@@ -562,8 +607,9 @@ def accepted_objects(snapshot, reference, key, compiler, flags):
             raise ValueError('An accepted object lacks its successful physical sidecar record.')
         if receipt['physical_result'] in physical_seen:
             raise ValueError('A physical compiler record authenticates multiple receipts.')
-        outputs,before,imports=_physical_record(receipt['physical_result'],snapshot,reference,
-            receipt['source'],compiler,flags,receipt['object'],prior)
+        outputs,before,imports,context=_physical_record(receipt['physical_result'],snapshot,reference,
+            receipt['source'],compiler,selected_flags,receipt['object'],prior,
+            publication=receipt.get('publication'))
         primary={'binding':receipt['object'],'lexical_path':receipt['object_lexical_path'],
                  'canonical_path':receipt['object_canonical_path'],'identity':receipt['object_identity'],
                  'namespace':receipt['object_namespace']}
@@ -572,6 +618,9 @@ def accepted_objects(snapshot, reference, key, compiler, flags):
             raise ValueError('An accepted sidecar differs from its successful physical record.')
         if receipt.get('import_provenance')!=imports:
             raise ValueError('An accepted import provenance differs from its physical validation.')
+        if (context['changes'] and receipt.get('compiler_context')!=context or
+                receipt.get('compiler_context') is not None and receipt['compiler_context']!=context):
+            raise ValueError('An accepted object has another source context.')
         for kind,artifact in [('vo',primary),('vos',receipt['sidecar'])]:
             lexical=Path(artifact['lexical_path']);canonical=artifact['canonical_path']
             object_identity=artifact['identity'];namespace=artifact['namespace']
@@ -651,11 +700,33 @@ def hash_inputs(source, compiler, flags):
     return rows
 
 
-def validate_compiler(runtime, runtime_reference, snapshot_reference, source_binding, compiler, *, output_key=None):
+def validate_compiler(runtime, runtime_reference, snapshot_reference, source_binding, compiler, *, output_key=None,
+                      private_output=None, private_workspace=None):
+    if runtime.get('declaration_dag') is not None:
+        from declaration_outputs import publication_lock
+        with publication_lock(snapshot_reference):
+            return _validate_compiler(runtime,runtime_reference,snapshot_reference,source_binding,
+                                      compiler,output_key=output_key,private_output=private_output,
+                                      private_workspace=private_workspace)
+    return _validate_compiler(runtime,runtime_reference,snapshot_reference,source_binding,
+                              compiler,output_key=output_key,private_output=private_output,
+                              private_workspace=private_workspace)
+
+
+def _validate_compiler(runtime, runtime_reference, snapshot_reference, source_binding, compiler, *, output_key=None,
+                       private_output=None, private_workspace=None):
     from harness_commit import check
     if not isinstance(source_binding,dict) or set(source_binding)!={'path','sha256'}:
         raise ValueError('The physical compiler source binding is incomplete.')
     source=Path(source_binding['path'])
+    context=compilation(runtime['physical_flags'],source_binding)
+    private_context=None
+    selected_flags=context['physical_flags']
+    if private_output is not None:
+        if private_workspace is None:raise ValueError('The private compiler lacks its owned workspace.')
+        from declaration_outputs import output_context
+        private_context=output_context(runtime,source_binding,private_output,private_workspace)
+        selected_flags=private_context['physical_flags']
     started=time.monotonic()
     usage=resource.getrusage(resource.RUSAGE_SELF)
     if runtime.get('harness') is not None:
@@ -675,7 +746,7 @@ def validate_compiler(runtime, runtime_reference, snapshot_reference, source_bin
             compiler_binding = binding(compiler)
         produced, accepted_index, accepted_receipts, authenticated_objects = accepted_objects(snapshot, snapshot_reference, output_key, compiler_binding, runtime['physical_flags'])
     receipts_done=time.monotonic()
-    inputs = hash_inputs(source, compiler, runtime['physical_flags'])
+    inputs = hash_inputs(source, compiler, selected_flags)
     hashing_done=time.monotonic()
     source_hash=next(row['sha256'] for row in inputs if row['path']==str(source.absolute()))
     if source_hash!=source_binding['sha256']:
@@ -721,7 +792,9 @@ def validate_compiler(runtime, runtime_reference, snapshot_reference, source_bin
             'final_identity_wall_seconds':ended-hashing_done,
             'total_wall_seconds':ended-started,
             'self_CPU_seconds':final_usage.ru_utime+final_usage.ru_stime-usage.ru_utime-usage.ru_stime}
-    return {'timing':timing,'snapshot': snapshot_reference,'producer':snapshot['producer'], 'retained_identities_checked': len(snapshot['rows']),
+    return {'timing':timing,'snapshot': snapshot_reference,'producer':snapshot['producer'],
+            'compiler_context':context,'physical_flags':selected_flags,'output_context':private_context,
+            'retained_identities_checked': len(snapshot['rows']),
             'accepted_dependency_objects': produced,
             'accepted_dependency_identities': authenticated_objects,
             'initial_plugins_checked':len(snapshot['initial_plugins']),

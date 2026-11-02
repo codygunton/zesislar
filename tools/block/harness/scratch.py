@@ -29,14 +29,40 @@ from supplier_resolution_cache import profile_supplier
 def _parse_project_flags(workspace):
     from rocq_mcp.server import _parse_project_flags as parse
     return parse(workspace)
+
+def install_object_import_migrations(config, manifest):
+    """Bind explicit migration receipts before the normal compatibility planner."""
+    reference=binding(manifest)
+    data=read_bound(reference)
+    if (set(data)!={'schema','receipts'} or data['schema']!='entry-chain.object-import-migrations.v1'
+            or not isinstance(data['receipts'],dict)):
+        raise ValueError('The object migration manifest has another schema.')
+    references=[reference]
+    selected={}
+    for module,receipt_reference in data['receipts'].items():
+        if module not in config['proof_runtime']['module_files']:
+            raise ValueError('An object migration names an unknown module.')
+        receipt=read_bound(receipt_reference)
+        if (receipt.get('schema')!='entry-chain.object-import-migration.v1' or
+                receipt.get('module')!=module):
+            raise ValueError('An object migration names another module or schema.')
+        selected[module]=receipt_reference
+        references.append(receipt_reference)
+    config['object_imports']={**config.get('object_imports',{}),**selected}
+    # The normal planner and staged require_reuse validate every required receipt.
+    config['bindings']=combined_bindings(config['bindings']+references)
+    return references
 ENTRY='ZesuSsz.Generated.DecodeItem.Entries'
 RULES='ZesuSsz.Evidence.RuleScratchRules'
 PYTHON=Path('/home/cody/.local/share/uv/tools/rocq-mcp/bin/python')
 
 def arguments(argv):
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--harness-commit',required=True);p.add_argument('--supplier-controls',type=Path);p.add_argument('--dependency-batch',type=Path);p.add_argument('--seed-reference',type=Path);p.add_argument('--dependency-cache',type=Path);p.add_argument('--end-cleanup',choices=['on','off'],default='on',help='Use off for reusable prefixes, seeds, and queued inputs.');p.add_argument('--admission-profile',type=Path);p.add_argument('--completed-stock-measurements',type=Path);p.add_argument('--cache',choices=['off','on'],default='off');p.add_argument('block');p.add_argument('entry_file',type=Path);p.add_argument('--rules',type=Path);p.add_argument('--output',type=Path);p.add_argument('--prepare-only',action='store_true');p.add_argument('--source-overrides',type=Path);p.add_argument('--declarations-only',action='store_true');p.add_argument('--target-adapter',type=Path);p.add_argument('--sizing',type=Path);p.add_argument('--base-runtime',type=Path);p.add_argument('--base-runtime-sha256');p.add_argument('--normalization-policy',type=Path);p.add_argument('--prerequisite-target-union',action='store_true');p.add_argument('--declaration-checks',type=Path);p.add_argument('--control-session',type=Path)
+    p.add_argument('--harness-commit',required=True);p.add_argument('--supplier-controls',type=Path);p.add_argument('--object-import-migrations',type=Path);p.add_argument('--dependency-batch',type=Path);p.add_argument('--seed-reference',type=Path);p.add_argument('--dependency-cache',type=Path);p.add_argument('--end-cleanup',choices=['on','off'],default='on',help='Use off for reusable prefixes, seeds, and queued inputs.');p.add_argument('--admission-profile',type=Path);p.add_argument('--completed-stock-measurements',type=Path);p.add_argument('--cache',choices=['off','on'],default='off');p.add_argument('block');p.add_argument('entry_file',type=Path);p.add_argument('--rules',type=Path);p.add_argument('--output',type=Path);p.add_argument('--prepare-only',action='store_true');p.add_argument('--source-overrides',type=Path);p.add_argument('--declarations-only',action='store_true');p.add_argument('--target-adapter',type=Path);p.add_argument('--sizing',type=Path);p.add_argument('--base-runtime',type=Path);p.add_argument('--base-runtime-sha256');p.add_argument('--normalization-policy',type=Path);p.add_argument('--prerequisite-target-union',action='store_true');p.add_argument('--declaration-checks',type=Path);p.add_argument('--control-session',type=Path)
+    from declaration_parallel_plan import arguments as dag_arguments,check_arguments as check_dag_arguments
+    dag_arguments(p)
     a=p.parse_args(argv);a.block=a.block.lower().removeprefix('0x')
+    check_dag_arguments(a,p)
     if not a.target_adapter:p.error('The shared harness requires a target adapter.')
     if not a.base_runtime:p.error('The shared harness requires an exact base runtime.')
     rows=[]
@@ -218,20 +244,44 @@ def rebind_prepared_tools(c,prior_runtime=None):
     c['prepared_tool_transition']=prepared_transitions(c,HERE,prior_runtime)
     verify_restart_runtime(c,HERE)
 
+def checked_normalization_policy(a):
+    selected=getattr(a,'normalization_policy',None)
+    rules=getattr(a,'rules',None)
+    if selected:
+        policy=read_bound(binding(selected))
+        if set(policy)!={'hook_enabled','database','registrations'} or not isinstance(policy['hook_enabled'],bool) or policy['database']!='zesu_entry_normalize':raise ValueError('The normalization policy is invalid.')
+        check_bindings(policy['registrations'])
+        if rules is None and policy['registrations']:raise ValueError('A registered policy has no rules module.')
+        if rules is not None and binding(rules) not in policy['registrations']:raise ValueError('The policy omits its rules module.')
+    else:policy=None
+    if getattr(a,'target_adapter',None) and policy is None:raise ValueError('A production matrix requires its explicit database policy.')
+    return policy
+
+
 def prepare(a):
     from command_scope import require
     require()
+    policy=checked_normalization_policy(a)
     from harness_commit import pin
     harness=pin(a.harness_commit)
     out=a.output;out.mkdir(parents=True,exist_ok=False)
     baseline={'path':str(a.base_runtime),'sha256':a.base_runtime_sha256}
     c=read_bound(baseline)
+    if getattr(a,'parallel_declarations',False):
+        from declaration_parallel_plan import planning_compiler
+        planning_compiler(c)
+    if getattr(a,'object_import_migrations',None):
+        install_object_import_migrations(c,a.object_import_migrations)
     c['harness']=harness
     from supplier_release import releases
     c['supplier_releases']=releases(read_bound(binding(a.supplier_controls))) if a.supplier_controls else []
     save(out/'HARNESS.json',harness)
     from dependency_batch import inherit as inherit_dependency_batch
     wave_transition=inherit_dependency_batch(c)
+    from declaration_parallel_plan import inherit as inherit_declaration_dag
+    dag_transition=inherit_declaration_dag(c)
+    if dag_transition['removed'] or dag_transition['removed_nested']:
+        save(out/'DECLARATION-DAG-TRANSITION.json',dict(dag_transition,source_runtime=baseline))
     if wave_transition['removed'] or wave_transition['removed_nested']:
         save(out/'DECLARATION-WAVE-TRANSITION.json',dict(wave_transition,source_runtime=baseline,lineage_retained=True))
     if a.seed_reference:
@@ -354,14 +404,6 @@ def prepare(a):
         native_job=apply_job(native_job,completed_rows,workload_for_job(context,native_job,actual_config))
         pre=apply_job(pre,workload=workload_for_job(context,pre,actual_config))
         c['admission_profile']=context
-    if a.normalization_policy:
-        policy=read_bound(binding(a.normalization_policy))
-        if set(policy)!={'hook_enabled','database','registrations'} or not isinstance(policy['hook_enabled'],bool) or policy['database']!='zesu_entry_normalize':raise ValueError('The normalization policy is invalid.')
-        check_bindings(policy['registrations'])
-        if a.rules is None and policy['registrations']:raise ValueError('A registered policy has no rules module.')
-        if a.rules is not None and binding(a.rules) not in policy['registrations']:raise ValueError('The policy omits its rules module.')
-    else:policy=None
-    if adapter and policy is None:raise ValueError('A production matrix requires its explicit database policy.')
     c['declaration_checks']=read_bound(binding(a.declaration_checks)) if a.declaration_checks else []
     for check in c['declaration_checks']:
         if set(check)!={'problem_name','problem_statement','proof'} or not all(isinstance(v,str) and v for v in check.values()):raise ValueError('A declaration check has invalid fields.')
@@ -384,6 +426,11 @@ def prepare(a):
         from dependency_batch import attach
         wave_plan=attach(c,binding(a.dependency_batch))
     else:wave_plan=None
+    dag_plan=None
+    if getattr(a,'parallel_declarations',False):
+        from declaration_parallel_plan import attach
+        dag_plan=attach(c,measurements=(binding(a.declaration_module_measurements)
+            if a.declaration_module_measurements else None),maximum_workers=a.declaration_workers)
     implementations=[binding(out/'HARNESS.json')]
     c['cache_producer_files']={'implementation':[dict(r,id='scratch-implementation:'+str(i),kind='source') for i,r in enumerate(implementations)],'inputs':[dict(binding(a.entry_file),id='scratch-entry',kind='source')]+([dict(binding(a.declaration_checks),id='declaration-checks',kind='configuration')] if a.declaration_checks else [])+([dict(binding(a.normalization_policy),id='entry-normalization-policy',kind='configuration')] if a.normalization_policy else [])+([dict(binding(a.rules),id='scratch-rules',kind='source')] if a.rules else []),'outputs':[dict(binding(native),id='scratch-native',kind='source'),dict(binding(entry),id='scratch-entries',kind='source')]}
     if a.supplier_controls:c['cache_producer_files']['inputs'].append(dict(binding(a.supplier_controls),id='supplier-activation-controls',kind='configuration'))
@@ -393,6 +440,12 @@ def prepare(a):
         wave_inputs=[binding(a.dependency_batch),wave_plan['source_boundary']]+[wave_plan[key] for key in ['guard','compile_measure_helper','run_registry','compiler','dune']]+[row['source'] for row in wave_plan['modules']]
         additions+=wave_inputs
         c['cache_producer_files']['inputs']+=[dict(row,id='declaration-wave:'+str(i),kind='configuration') for i,row in enumerate(wave_inputs)]
+    if dag_plan:
+        from declaration_parallel_plan import references
+        dag_inputs=references(dag_plan)
+        additions+=dag_inputs
+        c['cache_producer_files']['inputs']+=[dict(row,id='declaration-dag:'+str(i),kind='configuration') for i,row in enumerate(dag_inputs)]
+    if (out/'DECLARATION-DAG-TRANSITION.json').exists():additions.append(binding(out/'DECLARATION-DAG-TRANSITION.json'))
     if (out/'DECLARATION-WAVE-TRANSITION.json').exists():additions.append(binding(out/'DECLARATION-WAVE-TRANSITION.json'))
     if a.completed_stock_measurements:
         additions.append(binding(a.completed_stock_measurements))
@@ -586,7 +639,10 @@ def refresh_memory(argv):
     parser.add_argument('--harness-commit')
     parser.add_argument('--unadmitted-retirement',type=Path)
     parser.add_argument('--output',type=Path,required=True)
+    from declaration_parallel_plan import arguments as dag_arguments,check_arguments as check_dag_arguments
+    dag_arguments(parser)
     args=parser.parse_args(argv)
+    check_dag_arguments(args,parser)
     prior={'path':str(args.prior_runtime.resolve()),'sha256':args.prior_sha256}
     c=read_bound(prior);out=args.output.resolve()
     from harness_commit import pin
@@ -617,6 +673,14 @@ def refresh_memory(argv):
     actual_config=memory_workload_context(c)
     context=refresh_admission_profile(c,args.admission_profile)
     c['jobs']=[dict(apply_job(job,rows,workload_for_job(context,job,actual_config)),output=str(out/'jobs'/job['key'])) for job in c['jobs']]
+    from declaration_parallel_plan import inherit as inherit_declaration_dag
+    dag_transition=inherit_declaration_dag(c)
+    if args.parallel_declarations:
+        from declaration_parallel_plan import attach
+        dag_plan=attach(c,measurements=(binding(args.declaration_module_measurements)
+            if args.declaration_module_measurements else None),maximum_workers=args.declaration_workers)
+        from declaration_parallel_plan import references
+        c['bindings']=combined_bindings(c['bindings']+references(dag_plan))
     if context:c['admission_profile']=context
     else:c.pop('admission_profile',None)
     from port_native_policy import configure_cpu
@@ -635,7 +699,10 @@ def refresh_memory(argv):
     implementations=[binding(out/'HARNESS.json')]
     producers=dict(c['cache_producer_files'])
     producers['implementation']=[dict(row,id='scratch-implementation:'+str(i),kind='source') for i,row in enumerate(implementations)]
-    producers['inputs']=[row for row in producers['inputs'] if row.get('id') not in {'completed-stock-memory','admission-profile'} and not row.get('id','').startswith('memory-evidence:')]+[dict(measurements,id='completed-stock-memory',kind='configuration')]+([dict(context,id='admission-profile',kind='configuration')] if context else [])
+    producers['inputs']=[row for row in producers['inputs'] if row.get('id') not in {'completed-stock-memory','admission-profile'} and not row.get('id','').startswith(('memory-evidence:','declaration-dag:'))]+[dict(measurements,id='completed-stock-memory',kind='configuration')]+([dict(context,id='admission-profile',kind='configuration')] if context else [])
+    if c.get('declaration_dag'):
+        from declaration_parallel_plan import references
+        producers['inputs'] += [dict(row,id='declaration-dag:'+str(i),kind='configuration') for i,row in enumerate(references(c['declaration_dag']))]
     c['cache_producer_files']=producers
     from memory_policy import profile_bindings
     memory_inputs=profile_bindings(context)

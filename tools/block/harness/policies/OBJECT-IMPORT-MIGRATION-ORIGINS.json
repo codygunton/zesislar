@@ -1,0 +1,660 @@
+{
+  "schema": "object-import-migration.origins.v1",
+  "origins": [
+    {
+      "kind": "accepted-supplier",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/SUPPLIER-READY.json",
+        "sha256": "81aa88001471f4d67d3a467bfe5ce377d315420ca6edd371f71acefd83b5bb6e"
+      },
+      "ready": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-prefix001/READY-RUNTIME.json",
+        "sha256": "a2626d3116a4d5a93e42e486cd027cd399c9e1a14d406e4a1637e67e5828ec2c"
+      },
+      "individual_receipts": {
+        "ZesuSsz.Generated.DecodeItem.MachinePilot180Entries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-prefix001/jobs/prerequisites/native/validated-objects/OBJECT-000000.json",
+            "sha256": "1d9a24125997eefb7a2563ac9eadeda1154efcf550239c9d4de14cadaccace84"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.MachinePilot180LoweredEntries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-prefix001/jobs/prerequisites/native/validated-objects/OBJECT-000001.json",
+            "sha256": "1b1cba94b21b4453c09487bdd371c6381bc75fc0222787cff1b1119c515eb19b"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.MachinePilot180LoweredStructural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-prefix001/jobs/prerequisites/native/validated-objects/OBJECT-000002.json",
+            "sha256": "6e40a2aa7ce8e9131b69749faca509d5155866d4140dde2fe89468b7399030fc"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.MachinePilot180Structural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-prefix001/jobs/prerequisites/native/validated-objects/OBJECT-000003.json",
+            "sha256": "32c8ac12fa81ce05516b3641c9cd506b487b6088db2accb54829b893c9482b53"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.MachinePilot322LoweredEntries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-prefix001/jobs/prerequisites/native/validated-objects/OBJECT-000004.json",
+            "sha256": "9610ab11791d9769b0047b4abbba41a9503ea4c18860ed3f17c80fde14dd8ba2"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.MachinePilot322LoweredStructural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-prefix001/jobs/prerequisites/native/validated-objects/OBJECT-000005.json",
+            "sha256": "cb80d9f32c51b287899c7347ff17464e06cc99fdf4fd3d231552b2ea6b3b5c35"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.MachinePilot323Entries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-prefix001/jobs/prerequisites/native/validated-objects/OBJECT-000006.json",
+            "sha256": "4d6a85aee1479c8d21ff4b82f239b63e2b1b1e422331af7a9ac9386e28f6ea4d"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.MachinePilot323Structural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-prefix001/jobs/prerequisites/native/validated-objects/OBJECT-000007.json",
+            "sha256": "f253afd0b678fe006b4863594e2ce23be4c177ee6c05ab9317e8ff4d543ef2e8"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.MachineSlice6960StructuralRegistrations": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-prefix001/jobs/prerequisites/native/validated-objects/OBJECT-000008.json",
+            "sha256": "b6015d04fe05cb8259502dad3530751b7cb72d642eea9b1dc4b8580b47bf3ca4"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.PilotA205Entries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-prefix001/jobs/prerequisites/native/validated-objects/OBJECT-000009.json",
+            "sha256": "560ec38e196c41a827908414e51fd1806229de29b6b1e89091516c2d226e3b4a"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.PilotA205Structural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-prefix001/jobs/prerequisites/native/validated-objects/OBJECT-000010.json",
+            "sha256": "22c0df980cc509989101a5b41b6c2655db33a868bd82e6eca14543a6317d4b3b"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.PilotRejectJoin200": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-prefix001/jobs/prerequisites/native/validated-objects/OBJECT-000011.json",
+            "sha256": "b956ecfffcf39c96c57c0757e09e755bb684d758a9756880bee93a5f41c001c6"
+          }
+        ]
+      },
+      "dependency_receipts": {
+        "ZesuSsz.Evidence.Block2Core": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/zesu-block2-minimal-pointer-v1/common-seed-preparation-v1/jobs/prerequisites/native/dependency-ZesuSsz.Evidence.Block2Core.json",
+            "sha256": "bd8c368fe6fd935f257db383affdb9bfc9a1939b4317c208555ab17f2dcfc369"
+          }
+        ],
+        "ZesuSsz.Automation.AdjacentWordResources140": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/machine-F0-fault-adjacent286-v1/prefix-prepare-v1/jobs/prerequisites/native/dependency-ZesuSsz.Automation.AdjacentWordResources140.json",
+            "sha256": "8acd23e6f6070c341a9e94bf895761be3633df7842c905148095f387e1018879"
+          }
+        ],
+        "ZesuSsz.Automation.AdjacentWordSubsumption278": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/machine-F0-fault-adjacent286-v1/prefix-prepare-v1/jobs/prerequisites/native/dependency-ZesuSsz.Automation.AdjacentWordSubsumption278.json",
+            "sha256": "55ca6c3e551499d4d3ee576790d0f869ce64828f06eeb765a09c60f8a4f423dc"
+          }
+        ],
+        "ZesuSsz.Automation.ByteExtractCodec281": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/machine-F0-fault-adjacent286-v1/prefix-prepare-v1/jobs/prerequisites/native/dependency-ZesuSsz.Automation.ByteExtractCodec281.json",
+            "sha256": "6c1ee5cafae0e90b6b71207a60129526602008b2d93475a8992bd9d4591c08f4"
+          }
+        ],
+        "ZesuSsz.Automation.AdjacentWordCodecHints282": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/machine-F0-fault-adjacent286-v1/prefix-prepare-v1/jobs/prerequisites/native/dependency-ZesuSsz.Automation.AdjacentWordCodecHints282.json",
+            "sha256": "2e300b7841e66316adcdc1b06ab9be34496986d1a14971ca1c6eec4472e9ff0c"
+          }
+        ],
+        "ZesuSsz.Automation.AdjacentFractionalFinder285": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/machine-F0-fault-adjacent291-v1/prefix-prepare-v1/jobs/prerequisites/native/dependency-ZesuSsz.Automation.AdjacentFractionalFinder285.json",
+            "sha256": "f27488c7e95157c57a6baba79ed9eb584b252e395d646472f3f189a36abb9e77"
+          }
+        ],
+        "ZesuSsz.Automation.AdjacentWordAddress291": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/machine-F0-fault-adjacent291-v1/prefix-prepare-v1/jobs/prerequisites/native/dependency-ZesuSsz.Automation.AdjacentWordAddress291.json",
+            "sha256": "c2c7907e6b949538e5c4ae8487c33568dced712d29ba1ff74d73cd61cdabc877"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "accepted-ready",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-hypothesis-nonfixture-session-v1/prepare001/READY-RUNTIME.json",
+        "sha256": "2d83950c06d03f92cb676e54b87613c6ce3b0471e9263d0cc3aa6879c4bce0b4"
+      },
+      "ready": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-hypothesis-nonfixture-session-v1/prepare001/READY-RUNTIME.json",
+        "sha256": "2d83950c06d03f92cb676e54b87613c6ce3b0471e9263d0cc3aa6879c4bce0b4"
+      },
+      "selection": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
+        "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
+      },
+      "selection_guards": {
+        "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
+        "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
+      }
+    },
+    {
+      "kind": "accepted-ready",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/audit001/READY-RUNTIME.json",
+        "sha256": "00eeaccc768bf4b95a6410492ea839c54c068875f4991437ad0eae989cda202f"
+      },
+      "ready": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/audit001/READY-RUNTIME.json",
+        "sha256": "00eeaccc768bf4b95a6410492ea839c54c068875f4991437ad0eae989cda202f"
+      },
+      "selection": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
+        "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
+      },
+      "selection_guards": {
+        "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
+        "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
+      }
+    },
+    {
+      "kind": "accepted-ready",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/checks002/READY-RUNTIME.json",
+        "sha256": "c413d89170c8c8b8d33f8655c025b7b3eb331ee8fe653a3bc2018158ac5868e0"
+      },
+      "ready": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/checks002/READY-RUNTIME.json",
+        "sha256": "c413d89170c8c8b8d33f8655c025b7b3eb331ee8fe653a3bc2018158ac5868e0"
+      },
+      "selection": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
+        "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
+      },
+      "selection_guards": {
+        "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
+        "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
+      }
+    },
+    {
+      "kind": "accepted-ready",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/prefix002/READY-RUNTIME.json",
+        "sha256": "00376892cdf513874475cb8c978a80b5dfc0900026cda4f886ca9224203c3833"
+      },
+      "ready": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/prefix002/READY-RUNTIME.json",
+        "sha256": "00376892cdf513874475cb8c978a80b5dfc0900026cda4f886ca9224203c3833"
+      },
+      "selection": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
+        "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
+      },
+      "selection_guards": {
+        "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
+        "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
+      }
+    },
+    {
+      "kind": "accepted-ready",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-natives/800d6960/prepare002/READY-RUNTIME.json",
+        "sha256": "4b0df583db70145b185878e9b7a16fdfc952937aebf64ce0b1a82d538efa28a3"
+      },
+      "ready": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-natives/800d6960/prepare002/READY-RUNTIME.json",
+        "sha256": "4b0df583db70145b185878e9b7a16fdfc952937aebf64ce0b1a82d538efa28a3"
+      },
+      "selection": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
+        "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
+      },
+      "selection_guards": {
+        "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
+        "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
+      }
+    },
+    {
+      "kind": "accepted-ready",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-natives/800d69a4/prepare002/READY-RUNTIME.json",
+        "sha256": "6e8f7744cc161f72c64980880d50b63b0339ea18dc88eaa626e9c546dabfec16"
+      },
+      "ready": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-natives/800d69a4/prepare002/READY-RUNTIME.json",
+        "sha256": "6e8f7744cc161f72c64980880d50b63b0339ea18dc88eaa626e9c546dabfec16"
+      },
+      "selection": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
+        "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
+      },
+      "selection_guards": {
+        "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
+        "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
+      }
+    },
+    {
+      "kind": "accepted-ready",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-natives/800d69d8/prepare002/READY-RUNTIME.json",
+        "sha256": "0c2610c10df31963f63be2cf6837cf114bab155e84f3dcd27652827cddb5352b"
+      },
+      "ready": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-natives/800d69d8/prepare002/READY-RUNTIME.json",
+        "sha256": "0c2610c10df31963f63be2cf6837cf114bab155e84f3dcd27652827cddb5352b"
+      },
+      "selection": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
+        "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
+      },
+      "selection_guards": {
+        "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
+        "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
+      }
+    },
+    {
+      "kind": "accepted-ready",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-natives/800d69e0/prepare002/READY-RUNTIME.json",
+        "sha256": "445265923c4bfc152f7c1e7c9caee8d77b8db68c6640788b9f55769e98e78a3f"
+      },
+      "ready": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-natives/800d69e0/prepare002/READY-RUNTIME.json",
+        "sha256": "445265923c4bfc152f7c1e7c9caee8d77b8db68c6640788b9f55769e98e78a3f"
+      },
+      "selection": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
+        "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
+      },
+      "selection_guards": {
+        "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
+        "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
+      }
+    },
+    {
+      "kind": "accepted-ready",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-natives/800d6a00/prepare002/READY-RUNTIME.json",
+        "sha256": "e9c966e44425a826c90e431913d00e5ff81a4cbc2fa19c683ffe35a8e9ece97f"
+      },
+      "ready": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-natives/800d6a00/prepare002/READY-RUNTIME.json",
+        "sha256": "e9c966e44425a826c90e431913d00e5ff81a4cbc2fa19c683ffe35a8e9ece97f"
+      },
+      "selection": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
+        "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
+      },
+      "selection_guards": {
+        "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
+        "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
+      }
+    },
+    {
+      "kind": "accepted-ready",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-natives/800d6a08/prepare002/READY-RUNTIME.json",
+        "sha256": "6e55c7b23b94ddcea507903ba988ecb9dc59ad097eddbdf17f8a2fb70565eebb"
+      },
+      "ready": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-natives/800d6a08/prepare002/READY-RUNTIME.json",
+        "sha256": "6e55c7b23b94ddcea507903ba988ecb9dc59ad097eddbdf17f8a2fb70565eebb"
+      },
+      "selection": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
+        "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
+      },
+      "selection_guards": {
+        "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
+        "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
+      }
+    },
+    {
+      "kind": "accepted-ready",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-natives/800d6a64/prepare002/READY-RUNTIME.json",
+        "sha256": "6efa4faba35f4a0a59f2065e90c975d548a9467173735b629366c9b545967493"
+      },
+      "ready": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-natives/800d6a64/prepare002/READY-RUNTIME.json",
+        "sha256": "6efa4faba35f4a0a59f2065e90c975d548a9467173735b629366c9b545967493"
+      },
+      "selection": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
+        "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
+      },
+      "selection_guards": {
+        "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
+        "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
+      }
+    },
+    {
+      "kind": "accepted-ready",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-natives/800d6a6c/prepare002/READY-RUNTIME.json",
+        "sha256": "0bba5bb15a07aea3782158976c2c0c22462363290b68210ba0f52cab93de35f9"
+      },
+      "ready": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-natives/800d6a6c/prepare002/READY-RUNTIME.json",
+        "sha256": "0bba5bb15a07aea3782158976c2c0c22462363290b68210ba0f52cab93de35f9"
+      },
+      "selection": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
+        "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
+      },
+      "selection_guards": {
+        "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
+        "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
+      }
+    },
+    {
+      "kind": "accepted-ready",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-prefix001/READY-RUNTIME.json",
+        "sha256": "a2626d3116a4d5a93e42e486cd027cd399c9e1a14d406e4a1637e67e5828ec2c"
+      },
+      "ready": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/regression-prefix001/READY-RUNTIME.json",
+        "sha256": "a2626d3116a4d5a93e42e486cd027cd399c9e1a14d406e4a1637e67e5828ec2c"
+      },
+      "selection": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
+        "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
+      },
+      "selection_guards": {
+        "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
+        "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
+      }
+    },
+    {
+      "kind": "accepted-ready",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/verification-only-recovery-v1/prepare002/READY-RUNTIME.json",
+        "sha256": "981590b4b47af9c06ad7f658ec1c3f8b159b0c92454536b5af106979960a89d7"
+      },
+      "ready": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-native-carrier-checks-route-v1/verification-only-recovery-v1/prepare002/READY-RUNTIME.json",
+        "sha256": "981590b4b47af9c06ad7f658ec1c3f8b159b0c92454536b5af106979960a89d7"
+      },
+      "selection": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
+        "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
+      },
+      "selection_guards": {
+        "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
+        "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
+      }
+    },
+    {
+      "kind": "accepted-ready",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/READY-RUNTIME.json",
+        "sha256": "d699cf401529a345cedec78be95603034fe358397ecb74dd0d3c3c3617de51f8"
+      },
+      "ready": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/READY-RUNTIME.json",
+        "sha256": "d699cf401529a345cedec78be95603034fe358397ecb74dd0d3c3c3617de51f8"
+      },
+      "selection": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/object-provenance-migration-v1/COMPILED-ORIGIN-SELECTION.json",
+        "sha256": "2014add4bea14f242a2f5742404e519dfdae05ae91f65efa97e3acce9eb29933"
+      },
+      "selection_guards": {
+        "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
+        "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
+      },
+      "module_allowlist": [
+        "ZesuSsz.Evidence.RuleScratchRules",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6960Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6960Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6974Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6974Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot697cEntries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot697cStructural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69a4Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69a4Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69b0Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69b0Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69d8Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69d8Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69e0Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69e0Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69e8Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69e8Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a00Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a00Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a08Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a08Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a14Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a14Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a64Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a64Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a6cEntries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a6cStructural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a78Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a78Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6aa8Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6aa8Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6ab4Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6ab4Structural"
+      ],
+      "individual_receipts": {
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6960Entries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000000.json",
+            "sha256": "5e541dc9520ae3c01656dbbd2a5323a753c758fc60371984d4f931fece4e1b36"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6960Structural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000001.json",
+            "sha256": "46ef1aec0a887563c627605fa1a303b713c19ce9cd1b080ada91e7fde55c2d29"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6974Entries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000002.json",
+            "sha256": "0398b06bd3859caa75526d2f2bb699f861f74cba47c560f796189c74bd54a900"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6974Structural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000003.json",
+            "sha256": "fe01a7c1059f0a0cb971b76b13f3edae5b80e5d45de41bbd0991aeda076aa525"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot697cEntries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000004.json",
+            "sha256": "97fa583c496d47467d0a02dc85f0881549f2f3a412c8c5ef4556e4325d275432"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot697cStructural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000005.json",
+            "sha256": "6f5a3fff85636fb78e64c1b1efcb31141a1ee1137cd5706be12b4d5fa4952a6d"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69a4Entries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000006.json",
+            "sha256": "9c4ed95722ed4af6614cc3c798e61a40e898a99a9149526a15557d8458cc6ea7"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69a4Structural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000007.json",
+            "sha256": "d0d2d66814ca1e40b27686b314c2979fdc2ed6d3f3272eeaa186a1490810e221"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69b0Entries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000008.json",
+            "sha256": "67f1dc302e965696c815e2900b76e73359525287a44125debb55fecd932e2b38"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69b0Structural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000009.json",
+            "sha256": "e33071c6865df37b8da3d4c327a210cb87084d4a614c0325aee028f7e0e59265"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69d8Entries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000010.json",
+            "sha256": "2aa2b326a8c232e6d17006e82d9776db8fcec249aa6f58d23c60b0d1fa08ad95"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69d8Structural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000011.json",
+            "sha256": "d8f79008ab66f33dfbc3a9852fa4db8955a6cb02fa7d73624ac44ec8b602585e"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69e0Entries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000012.json",
+            "sha256": "d771124c62e888d2eff00945002d2930709ec88e9e88cd9aa1935a51d87e53bc"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69e0Structural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000013.json",
+            "sha256": "5c13ab69f12654a7772271d789d18f121b294299b9e46e2aef1ba8ff784179fa"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69e8Entries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000014.json",
+            "sha256": "809e596a0eeeb76b2c2aa7132044ed8278ae9501f8042f740e9af9e5ffb2f869"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69e8Structural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000015.json",
+            "sha256": "063a823252c8c655728373ccdc25e987904bc5902e6acce71ec94d8f1b2f1243"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a00Entries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000016.json",
+            "sha256": "191e9e862f6f068d535f2fcdadfbbdf47129002eb4fe0213e680d567731068cd"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a00Structural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000017.json",
+            "sha256": "f54f066f6b008694b50efd57f2462224c7a79334e2a474522e876acf0541faa2"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a08Entries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000018.json",
+            "sha256": "d1660236c99f26a70e132880d4d2b902cd1db43559d541a88b87206b1405dd84"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a08Structural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000019.json",
+            "sha256": "a9946d7495ca4b5ee05ba042d07378d01af97ced0b2373de77cfee35ae55c166"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a14Entries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000020.json",
+            "sha256": "c2e1dc519e0430d54e01aa6b397625a170c51bb3a6ceb12a5e8ec22e2d947139"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a14Structural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000021.json",
+            "sha256": "0213c216bb27a656071cd2d4c9e2e9bb7862cf46dec5c3944b584b4a8089c494"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a64Entries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000022.json",
+            "sha256": "c7593cb91b679f7bbcf78b5425891431f9a86a7812aa6e9b34f3011f35fe06b4"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a64Structural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000023.json",
+            "sha256": "1051ddb46ad05527b59f0cb4cc10477a68f43731b164a981d61981ffbbb1f017"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a6cEntries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000024.json",
+            "sha256": "6257cc4235b51e99b5eba00928374948fda225c298de44519409988cba59bc1d"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a6cStructural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000025.json",
+            "sha256": "d9995068d6dc017fe965faa22b0fbc1d01c8e97fc320272596a0f02ff8958c26"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a78Entries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000026.json",
+            "sha256": "b8f13d1a44f6313d70dd28fce5f75684554a92148bd1e15420547c547f36ee69"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a78Structural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000027.json",
+            "sha256": "eeac0444c6223a6ac1cc2f6e99c4035066ac312869601684f0cb77c239122e54"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6aa8Entries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000028.json",
+            "sha256": "f7121fb3e6d13b53aac3d8b30cffb7c7118225dbe2c1516b39d93325e12aaad3"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6aa8Structural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000029.json",
+            "sha256": "08184c24aa5e8e8e06427adb98cc8cdd49805837d4a735d53e56ec6a537d4866"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6ab4Entries": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000030.json",
+            "sha256": "1108e29b7af9a578905ceedfa7f3d902641fee7da0a25d4a6747d0617449336b"
+          }
+        ],
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6ab4Structural": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000031.json",
+            "sha256": "c8f143966dd27237f5c215956efaccc0fa3679507fb9fb0f2ad14751d60a5a63"
+          }
+        ],
+        "ZesuSsz.Evidence.RuleScratchRules": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000032.json",
+            "sha256": "41b30e7d6474e7fddcffc21014087cb458be74d7e2d7704c3bda0eeef83bdd92"
+          }
+        ]
+      }
+    }
+  ],
+  "inspector_build": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/object-provenance-migration-v1/inspector-build001/BUILD.json",
+    "sha256": "14d33ffabcdd160252c3304dbb18952b75cebf49e2b385a0e220f1fc6150fd33"
+  },
+  "inspector_binary_sha256": "281ae7378958b1eddfc31b8ec42e021d7ed66982bfed2382f3ebd679cf0875b9",
+  "inspector_source_sha256": "1386f108503c902013b1d2aeb5af144886d497a3eaff4f28310194ab3c9a76d6"
+}

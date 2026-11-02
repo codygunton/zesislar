@@ -19,6 +19,19 @@ class OutputCapture(unittest.TestCase):
    self.assertEqual((directory/'STDOUT').read_bytes(),result.stdout);self.assertEqual((directory/'STDERR').read_bytes(),result.stderr)
  def test_untruncated_success_streams(self):self.sample(0)
  def test_untruncated_failed_streams_and_exit(self):self.sample(7)
+ def test_private_INPUT_binds_the_physical_environment_without_the_key(self):
+  with tempfile.TemporaryDirectory() as name:
+   root=Path(name);directory=root/'invocation';directory.mkdir()
+   command=[sys.executable,'-B','-c','import os; print(os.environ.get("EXACT_WORKER_ENV")); assert "ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY" not in os.environ']
+   (directory/'INPUT.json').write_text(json.dumps({'owned_workspace':str(root),'physical_argv':command,'output_context':{'synthetic_nonproof':True}}))
+   env=dict(os.environ,PYTHONPATH=str(HERE/'runtime-tools'),EXACT_WORKER_ENV='bound-worker-value',ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY='unpublished-test-key')
+   done=subprocess.run([sys.executable,'-B',str(HERE/'code/compile_measure.py'),str(directory)],cwd=root,env=env,capture_output=True)
+   self.assertEqual(done.returncode,0,done.stderr.decode())
+   inputs=json.loads((directory/'INPUT.json').read_text())
+   self.assertEqual(inputs['physical_argv'],command)
+   self.assertEqual(inputs['physical_environment']['EXACT_WORKER_ENV'],'bound-worker-value')
+   self.assertNotIn('ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY',inputs['physical_environment'])
+   self.assertEqual(done.stdout,b'bound-worker-value\n')
  def test_original_executable_modes_are_preserved(self):
   import json
   layout=json.loads((HERE/'TOOL-LAYOUT.json').read_text())

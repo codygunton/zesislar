@@ -2,7 +2,8 @@
 from pathlib import Path
 
 from binding_cache import digest
-from entry_chain import read_bound
+from entry_chain import read_bound, binding
+from source_context import compilation
 from import_graph import graph_closure
 
 
@@ -12,16 +13,20 @@ def normalized_flags(flags, workspace):
 
 def _record(reference, module, source, obj, compiler, flags, workspace):
     receipt = read_bound(reference)
+    if receipt.get('schema') == 'entry-chain.object-import-migration.v1':
+        from object_import_migration import validate
+        return validate(reference, module, source, obj, compiler, flags, workspace)
     provenance = receipt.get('import_provenance')
     if not isinstance(provenance, dict) or provenance.get('schema') != 'entry-chain.object-imports.v1':
         raise ValueError('The owned object lacks authenticated import hashes.')
     old_workspace = provenance['owned_workspace']
+    context=compilation(flags,binding(source))
     if (provenance.get('module') != module or receipt.get('successful_compilation') is not True or
             receipt.get('tool_result', {}).get('success') is not True or
             receipt.get('source', {}).get('sha256') != digest(source) or
             receipt.get('object', {}).get('sha256') != digest(obj) or
             provenance.get('compiler') != compiler or receipt.get('compiler') != compiler or
-            provenance.get('normalized_flags') != normalized_flags(flags, workspace) or
+            provenance.get('normalized_flags') != normalized_flags(context['physical_flags'], workspace) or
             provenance['normalized_flags'] != normalized_flags(receipt['normalized_flags'], old_workspace)):
         raise ValueError('The owned object differs from its compilation provenance.')
     old_source = Path(receipt['source']['path'])
@@ -31,17 +36,48 @@ def _record(reference, module, source, obj, compiler, flags, workspace):
         raise ValueError('The owned object has another recorded source mapping.')
     physical = read_bound(receipt['physical_result'])
     inputs = read_bound(physical['input'])
+    physical_object=receipt['object']
+    output_arguments=[]
+    if receipt.get('publication') is not None:
+        from declaration_outputs import publication, private_target
+        published=publication(receipt['publication'],source=receipt['source'],compiler=compiler,
+            flags=receipt['normalized_flags'],snapshot=receipt['snapshot'],producer=receipt['producer'],
+            physical_result=receipt['physical_result'],canonical_object=receipt['object'])
+        physical_object=published['private_outputs']['object']['binding']
+        private_target(read_bound(receipt['runtime']),receipt['source'],physical_object['path'],old_workspace)
+        if (published['module']!=module or inputs.get('target',{}).get('module')!=module or
+                inputs.get('output_context')!=published['output_context'] or
+                physical.get('compiler_outputs')!=published['private_outputs'] or
+                receipt.get('sidecar')!=published['published_outputs']['sidecar']):
+            raise ValueError('The owned object has another private publication.')
+        output_arguments=published['output_context']['private_mapping']+['-o',physical_object['path']]
+    old_context=receipt.get('compiler_context')
+    if context['changes'] or old_context is not None:
+        recorded_context=inputs.get('compiler_context')
+        # Legacy physical records omit the descriptor when their flags stay exact.
+        unchanged_legacy=(recorded_context is None and not context['changes'] and
+                          isinstance(old_context,dict) and old_context.get('changes')==[] and
+                          old_context.get('base_flags')==old_context.get('physical_flags'))
+        if (not isinstance(old_context,dict) or
+                old_context.get('schema')!='entry-chain.source-context.v1' or
+                recorded_context!=old_context and not unchanged_legacy or
+                old_context.get('source')!=receipt['source'] or
+                normalized_flags(old_context.get('base_flags',[]),old_workspace)!=normalized_flags(flags,workspace) or
+                old_context.get('physical_flags')!=receipt['normalized_flags']):
+            raise ValueError('The owned object has another compiler source context.')
     if (physical.get('returncode') != 0 or physical.get('output_validation', {}).get('success') is not True or
             physical.get('output_capture', {}).get('complete') is not True or
-            physical.get('compiler_outputs', {}).get('object', {}).get('binding') != receipt['object'] or
+            physical.get('compiler_outputs', {}).get('object', {}).get('binding') != physical_object or
             physical.get('input_validation') != provenance['validation'] or
             inputs.get('source') != receipt['source'] or inputs.get('compiler') != compiler or
             inputs.get('owned_workspace') != old_workspace or
-            inputs.get('physical_argv') != [compiler['path'], *receipt['normalized_flags'], receipt['source']['path']] or
+            inputs.get('physical_argv') != [compiler['path'], *receipt['normalized_flags'], *output_arguments, receipt['source']['path']] or
             physical.get('physical_argv') != inputs['physical_argv'] or
             inputs.get('validation', {}).get('snapshot') != receipt.get('snapshot')):
         raise ValueError('The owned object lacks its matching physical compiler record.')
     validation = read_bound(provenance['validation'])
+    if validation.get('output_context')!=inputs.get('output_context'):
+        raise ValueError('The imported hashes have another private output mapping.')
     if validation.get('snapshot') != receipt.get('snapshot'):
         raise ValueError('The imported hashes name another compiler snapshot.')
     selection = validation.get('import_selection')
@@ -63,6 +99,12 @@ def _record(reference, module, source, obj, compiler, flags, workspace):
 
 
 def compatibility(targets, edges, modules, workspace, receipts, compiler, flags, *, planned=()):
+    from object_import_migration import batch
+    with batch():
+        return _compatibility(targets, edges, modules, workspace, receipts, compiler, flags, planned=planned)
+
+
+def _compatibility(targets, edges, modules, workspace, receipts, compiler, flags, *, planned=()):
     """Schedule unknown or changed owned imports through ordinary invalidation."""
     workspace = Path(workspace).resolve()
     forward = {}
