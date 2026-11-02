@@ -225,6 +225,8 @@ def format_entry_boundary(boundary, *, case_id, source_policy, handwritten_owner
             'path_conditions': deepcopy(resource.get('path_conditions', [])),
             'tree': deepcopy(resource.get('tree'))})
     reports, definitions, choices = [], [], []
+    exact_alternatives = []
+    manifest['exact_duplicate_alternatives'] = []
     active = {'alternative_index': None, 'tree_path': []}
     try:
         if boundary.get('status') not in {'generated', 'generated_join', 'generated_loop_head'} or not alternatives:
@@ -236,6 +238,8 @@ def format_entry_boundary(boundary, *, case_id, source_policy, handwritten_owner
         extra_binders = _binders(scoped_binders)
         common_continuation = None
         for alternative_index, alternative in enumerate(alternatives):
+            definition_start = len(definitions)
+            helper_start = len(manifest['helpers'])
             resource = alternative['resource_boundary']
             if resource.get('block_status') != 'completed':
                 raise ValueError('An alternative has incomplete resource accounting')
@@ -335,16 +339,56 @@ def format_entry_boundary(boundary, *, case_id, source_policy, handwritten_owner
             if seen | {continuation_id} != set(components):
                 raise ValueError('The assertion tree omits a source resource')
             if len(left) == 1 and left[0]['kind'] == 'application':
-                choices.append(left[0])
+                choice = left[0]
             else:
                 body = {'components': left, 'source_policy': source_policy, 'existentials': [],
                         'lets': [], 'loop': None, 'continuation': {'mode': 'none'}}
-                choices.append(declaration(body, (0,), []))
+                choice = declaration(body, (0,), [])
+            # Validate and render every input before considering exact equality.
+            # Missing rendered source text retains the existing alternatives.
+            source_body = resource.get('body')
+            exact_key = None
+            if isinstance(source_body, str):
+                guards = json.dumps(resource['path_conditions'], ensure_ascii=False,
+                                    separators=(',', ':'))
+                authored = _digest({
+                    'bodies': [row['body'] for row in definitions[definition_start:]],
+                    'signatures': [{key: row[key] for key in
+                        ['tree_path', 'outer_binders', 'arguments']}
+                        for row in manifest['helpers'][helper_start:]],
+                })
+                exact_key = (source_body, guards, continuation['source'], authored)
+            exact_alternatives.append({
+                'key': exact_key, 'definition_end': len(definitions),
+                'helper_end': len(manifest['helpers']),
+                'alternative_index': alternative_index,
+            })
+            choices.append(choice)
         continuation = component_adapter(deepcopy(common_continuation),
             {'pc': boundary['pc'], 'alternative_index': None, 'tree_path': [1], 'binders': []})
         if len(continuation) != 1 or continuation[0].get('kind') != 'continuation':
             raise ValueError('The caller adapter must return one continuation component')
+        first_exact = exact_alternatives[0]
+        identical = (first_exact['key'] is not None and
+                     all(row['key'] == first_exact['key'] for row in exact_alternatives))
+        manifest['exact_deduplication'] = {
+            'all_rendered_resources_available': all(row['key'] is not None for row in exact_alternatives),
+            'all_alternatives_byte_identical': identical,
+        }
+        if len(choices) > 1 and identical:
+            source_body, guards, caller, _ = first_exact['key']
+            manifest['exact_duplicate_alternatives'] = [{
+                'alternative_index': row['alternative_index'],
+                'canonical_alternative_index': first_exact['alternative_index'],
+                'rendered_resources_sha256': hashlib.sha256(source_body.encode()).hexdigest(),
+                'guards_sha256': hashlib.sha256(guards.encode()).hexdigest(),
+                'continuation_sha256': hashlib.sha256(caller.encode()).hexdigest(),
+            } for row in exact_alternatives[1:]]
+            del definitions[first_exact['definition_end']:]
+            del manifest['helpers'][first_exact['helper_end']:]
+            choices = choices[:1]
         choice = choices[0] if len(choices) == 1 else {'kind': 'disjunction', 'alternatives': choices}
+        manifest['emitted_alternative_count'] = len(choices)
         body = {'at': boundary['pc'], 'components': [choice, continuation[0]], 'existentials': [],
                 'lets': [], 'loop': None,
                 'continuation': {'mode': 'from_resource_component', 'resource_component': 1,
