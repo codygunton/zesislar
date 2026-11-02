@@ -88,5 +88,252 @@
       "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
       "declaration": "decodeItemArgsWellFormed"
     }
+  ],
+  "source_facts": [
+    {
+      "fact_id": "layout:8",
+      "kind": "disjoint_ranges",
+      "status": "supplied",
+      "terms": {
+        "left": "resource_11",
+        "right": "resource_12",
+        "coq_statement": "separateRanges (decodeItemInputPointer args) (decodeItemInputLength args) (decodeItemOutputPointer args) 40"
+      },
+      "origin": {
+        "sources": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItem.v",
+            "sha256": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e",
+            "declaration": "decodeItemEntryLayout"
+          },
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+            "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+            "declaration": "decodeItemArgsWellFormed"
+          }
+        ],
+        "layout_declaration": "decodeItemEntryLayout",
+        "wellformed_declaration": "decodeItemArgsWellFormed",
+        "parameter_substitution": {
+          "inputPointer": "decodeItemInputPointer args",
+          "inputLength": "decodeItemInputLength args",
+          "resultPointer": "decodeItemOutputPointer args",
+          "stackPointer": "decodeItemStackPointer args",
+          "returnAddress": "decodeItemReturnAddress args",
+          "inputEnd": "decodeItemInputEnd args"
+        },
+        "conjunct_index": 8,
+        "source_clause": "separateRanges inputPointer inputLength resultPointer 40"
+      }
+    },
+    {
+      "fact_id": "layout:9",
+      "kind": "disjoint_ranges",
+      "status": "supplied",
+      "terms": {
+        "left": "resource_11",
+        "right": "resource_13",
+        "coq_statement": "separateRanges (decodeItemInputPointer args) (decodeItemInputLength args)\n    ((decodeItemStackPointer args) - decodeItemStackBytes) decodeItemStackBytes"
+      },
+      "origin": {
+        "sources": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItem.v",
+            "sha256": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e",
+            "declaration": "decodeItemEntryLayout"
+          },
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+            "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+            "declaration": "decodeItemArgsWellFormed"
+          }
+        ],
+        "layout_declaration": "decodeItemEntryLayout",
+        "wellformed_declaration": "decodeItemArgsWellFormed",
+        "parameter_substitution": {
+          "inputPointer": "decodeItemInputPointer args",
+          "inputLength": "decodeItemInputLength args",
+          "resultPointer": "decodeItemOutputPointer args",
+          "stackPointer": "decodeItemStackPointer args",
+          "returnAddress": "decodeItemReturnAddress args",
+          "inputEnd": "decodeItemInputEnd args"
+        },
+        "conjunct_index": 9,
+        "source_clause": "separateRanges inputPointer inputLength\n    (stackPointer - decodeItemStackBytes) decodeItemStackBytes"
+      }
+    },
+    {
+      "fact_id": "layout:10",
+      "kind": "disjoint_ranges",
+      "status": "supplied",
+      "terms": {
+        "left": "resource_12",
+        "right": "resource_13",
+        "coq_statement": "separateRanges (decodeItemOutputPointer args) 40\n    ((decodeItemStackPointer args) - decodeItemStackBytes) decodeItemStackBytes"
+      },
+      "origin": {
+        "sources": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItem.v",
+            "sha256": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e",
+            "declaration": "decodeItemEntryLayout"
+          },
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+            "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+            "declaration": "decodeItemArgsWellFormed"
+          }
+        ],
+        "layout_declaration": "decodeItemEntryLayout",
+        "wellformed_declaration": "decodeItemArgsWellFormed",
+        "parameter_substitution": {
+          "inputPointer": "decodeItemInputPointer args",
+          "inputLength": "decodeItemInputLength args",
+          "resultPointer": "decodeItemOutputPointer args",
+          "stackPointer": "decodeItemStackPointer args",
+          "returnAddress": "decodeItemReturnAddress args",
+          "inputEnd": "decodeItemInputEnd args"
+        },
+        "conjunct_index": 10,
+        "source_clause": "separateRanges resultPointer 40\n    (stackPointer - decodeItemStackBytes) decodeItemStackBytes"
+      }
+    },
+    {
+      "fact_id": "wellformed:input-length",
+      "kind": "bounds",
+      "status": "supplied",
+      "terms": {
+        "resource_id": "resource_11",
+        "length_view": {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+        },
+        "coq_statement": "decodeItemInputLength args = Z.of_nat (List.length (decodeItemInputBytes args))"
+      },
+      "origin": {
+        "sources": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItem.v",
+            "sha256": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e",
+            "declaration": "decodeItemEntryLayout"
+          },
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+            "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+            "declaration": "decodeItemArgsWellFormed"
+          }
+        ],
+        "layout_declaration": "decodeItemEntryLayout",
+        "wellformed_declaration": "decodeItemArgsWellFormed",
+        "parameter_substitution": {
+          "inputPointer": "decodeItemInputPointer args",
+          "inputLength": "decodeItemInputLength args",
+          "resultPointer": "decodeItemOutputPointer args",
+          "stackPointer": "decodeItemStackPointer args",
+          "returnAddress": "decodeItemReturnAddress args",
+          "inputEnd": "decodeItemInputEnd args"
+        },
+        "source_clause": "decodeItemInputLength args = Z.of_nat (List.length (decodeItemInputBytes args))",
+        "conjunct_index": 0
+      }
+    },
+    {
+      "fact_id": "layout:stack-interval",
+      "kind": "bounds",
+      "status": "supplied",
+      "terms": {
+        "unsigned_interval": {
+          "expression": {
+            "op": "input",
+            "width": 64,
+            "value": "(Z_to_bv 64%N (decodeItemStackPointer args))"
+          },
+          "minimum": 2684354576,
+          "maximum": 3221225472,
+          "ram_base": 2684354560,
+          "ram_end": 3221225472
+        }
+      },
+      "origin": {
+        "sources": [
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItem.v",
+            "sha256": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e",
+            "declaration": "decodeItemEntryLayout"
+          },
+          {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+            "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+            "declaration": "decodeItemArgsWellFormed"
+          }
+        ],
+        "layout_declaration": "decodeItemEntryLayout",
+        "wellformed_declaration": "decodeItemArgsWellFormed",
+        "parameter_substitution": {
+          "inputPointer": "decodeItemInputPointer args",
+          "inputLength": "decodeItemInputLength args",
+          "resultPointer": "decodeItemOutputPointer args",
+          "stackPointer": "decodeItemStackPointer args",
+          "returnAddress": "decodeItemReturnAddress args",
+          "inputEnd": "decodeItemInputEnd args"
+        },
+        "source_clauses": [
+          "decodeItemStackBytes <= stackPointer < word64Modulus",
+          "mapRamBase defaultMap + decodeItemStackBytes <= stackPointer",
+          "stackPointer <= machineRamEnd defaultMap"
+        ],
+        "constants": {
+          "decodeItemStackBytes": {
+            "value": 16,
+            "type": "Z",
+            "origin": {
+              "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItem.v",
+              "sha256": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e",
+              "declaration": "decodeItemStackBytes"
+            }
+          },
+          "word64Modulus": {
+            "value": 18446744073709551616,
+            "type": "Z",
+            "origin": {
+              "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItem.v",
+              "sha256": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e",
+              "declaration": "word64Modulus"
+            }
+          },
+          "mapRamBase defaultMap": {
+            "value": 2684354560,
+            "type": "Z",
+            "origin": {
+              "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+              "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+              "declaration": "defaultMap",
+              "field": "mapRamBase"
+            }
+          },
+          "machineRamEnd defaultMap": {
+            "value": 3221225472,
+            "type": "Z",
+            "origin": {
+              "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+              "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+              "declaration": "machineRamEnd",
+              "sum_fields": [
+                "mapRamBase",
+                "mapRamSize"
+              ],
+              "parameter": "machine",
+              "record_source": {
+                "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+                "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+                "declaration": "defaultMap"
+              }
+            }
+          }
+        },
+        "derivation": "Conjunction projection, closed addition, and unsigned non-wrap."
+      }
+    }
   ]
 }

@@ -5,11 +5,11 @@ import unittest
 
 try:
     from .forward_resource_design import _state_from_result
-    from .loop_widen import FoldRule, UnsignedCursorInduction, source_sum_bounds, affine_step, fold_recurrence, widen_loop_head, write_set
+    from .loop_widen import FoldRule, UnsignedCursorInduction, source_sum_bounds, loop_read_window, affine_step, fold_recurrence, widen_loop_head, write_set
     from .symbolic_state import bits, input_expr, operation
 except ImportError:
     from forward_resource_design import _state_from_result
-    from loop_widen import FoldRule, UnsignedCursorInduction, source_sum_bounds, affine_step, fold_recurrence, widen_loop_head, write_set
+    from loop_widen import FoldRule, UnsignedCursorInduction, source_sum_bounds, loop_read_window, affine_step, fold_recurrence, widen_loop_head, write_set
     from symbolic_state import bits, input_expr, operation
 
 
@@ -202,6 +202,36 @@ class LoopWidenTests(unittest.TestCase):
         clauses = [term for term in domain['original_layout_clauses'] if term != '0 <= inputLength']
         self.assertEqual(source_sum_bounds(clauses, domain['parameter_substitution'], domain['constants'],
                          width=64, provenance={'source': domain['source_path']}), [])
+
+    def test_loop_source_read_chain_preserves_fault_arms_and_source_owners(self):
+        domain = json.loads((HERE / 'testdata/loop_widen_domain.json').read_text())
+        for suffix in ('6a24', '6ac4'):
+            data, traces = self.fixture(suffix)
+            for preheader in data['preheaders']:
+                source = _state_from_result(preheader['state'])
+                window = loop_read_window(source, 'x15', 'x11', source_facts=domain['source_facts'],
+                    provenance={'source': data['forward_source'], 'alternative': preheader['source_index']})
+                result = widen_loop_head(source, traces, loop_pc=int(data['pc'], 0),
+                    provenance={'source': data['forward_source']}, symbolic_read_ranges=[window])
+                self.assertEqual(result.seed.memory, source.memory)
+                self.assertEqual(result.seed.conditions, source.conditions)
+                self.assertTrue(any(row.state.read_obligations for row in result.body_results))
+                self.assertTrue(any(not row.state.read_obligations for row in result.body_results))
+                self.assertTrue(all(obligation['owner'] == 'resource_11'
+                    and obligation['status'] == 'OPEN' for row in result.body_results
+                    for obligation in row.state.read_obligations))
+                self.assertTrue(any('owned_array_byte' in str(row.state.registers['x13'].to_dict())
+                    for row in result.body_results if 'x13' in row.state.registers))
+                self.assertFalse(result.to_dict()['seed_ready'])
+
+    def test_loop_window_refuses_missing_source_length_and_changed_owner(self):
+        data, _ = self.fixture('6a24')
+        source = _state_from_result(data['preheaders'][0]['state'])
+        with self.assertRaisesRegex(ValueError, 'source length view'):
+            loop_read_window(source, 'x15', 'x11', source_facts=[], provenance={'source': 'fixture'})
+        source.registers['x15'] = input_expr('different_root', 64)
+        with self.assertRaisesRegex(ValueError, 'source array owner'):
+            loop_read_window(source, 'x15', 'x11', source_facts=[], provenance={'source': 'fixture'})
 
 
 if __name__ == '__main__':

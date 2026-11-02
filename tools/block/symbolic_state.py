@@ -524,6 +524,8 @@ class _Evaluator:
         a condition or declares the obligation proved. Closed-offset reads keep
         the original path, including its alias and length checks.
         """
+        if not self.state.symbolic_read_ranges:
+            return None
         if any(_offset(address, region.base) is not None for region in self.state.memory):
             return None
         rows = [row for row in self.state.symbolic_read_ranges

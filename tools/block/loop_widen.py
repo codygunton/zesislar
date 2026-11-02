@@ -11,12 +11,12 @@ try:
     from .guard_normal_form import GuardNormalForm
     from .resource_seed import source_z_expression
     from .forward_design import _footprint
-    from .symbolic_state import Expr, bits, evaluate_block, input_expr, parse_trace
+    from .symbolic_state import Expr, bits, evaluate_block, input_expr, operation, parse_trace, _offset
 except ImportError:
     from guard_normal_form import GuardNormalForm
     from resource_seed import source_z_expression
     from forward_design import _footprint
-    from symbolic_state import Expr, bits, evaluate_block, input_expr, parse_trace
+    from symbolic_state import Expr, bits, evaluate_block, input_expr, operation, parse_trace, _offset
 
 
 _REGISTER = re.compile(r'x(?:[0-9]|[12][0-9]|3[01])\Z')
@@ -371,6 +371,38 @@ class _MissingCursorRelation(Exception):
         self.relation = relation
 
 
+def loop_read_window(seed, cursor, endpoint, *, source_facts, provenance):
+    """Select only an existing owner and its exact source length view.
+
+    The source chain and extent link remain obligations. No range condition is
+    appended to the symbolic path, and no resource or array image is created.
+    """
+    if cursor not in seed.registers or endpoint not in seed.registers or not provenance:
+        raise ValueError('A loop read window needs source registers and provenance')
+    start = seed.registers[cursor]
+    owners = [region for region in seed.memory if region.ownership_id is not None
+              and region.byte_array is not None and not region.uninitialized
+              and _offset(start, region.base) is not None and _offset(start, region.base) >= 0]
+    if len(owners) != 1:
+        raise ValueError('A loop cursor has no unique source array owner')
+    region = owners[0]
+    lengths = [fact for fact in source_facts if fact.get('kind') == 'bounds'
+               and fact.get('status') == 'supplied' and fact.get('origin')
+               and fact.get('terms', {}).get('resource_id') == region.ownership_id
+               and fact.get('terms', {}).get('length_view')]
+    if len(lengths) != 1:
+        raise ValueError('A loop array has no unique source length view')
+    length = Expr.from_dict(lengths[0]['terms']['length_view'])
+    if length.width != region.base.width or start.width != region.base.width:
+        raise ValueError('A loop read window changes address width')
+    return {'ownership_id': region.ownership_id,
+            'address': input_expr('machine_' + cursor, start.width).to_dict(),
+            'lower': start.to_dict(), 'limit': seed.registers[endpoint].to_dict(),
+            'end': operation('bvadd', region.base, length).to_dict(),
+            'provenance': {'loop': provenance, 'source_length': lengths[0]},
+            'kernel_range_entailment': 'OPEN'}
+
+
 @dataclass(frozen=True)
 class FoldRule:
     """A table row binds all three verified public proof interfaces.
@@ -419,7 +451,7 @@ class LoopWidening:
 
 
 def widen_loop_head(seed, traces, *, loop_pc, provenance, fold_table=(),
-                    validate=None, origin_views=None, source_bounds=None, index_name='i'):
+                    validate=None, origin_views=None, source_bounds=None, symbolic_read_ranges=(), index_name='i'):
     """Run one body pass and retain only per-edge validated relations.
 
     validate(candidate, edge, state) returns a source-bound check record with
@@ -441,6 +473,7 @@ def widen_loop_head(seed, traces, *, loop_pc, provenance, fold_table=(),
     if any(key not in seed.registers for key in written):
         raise ValueError('A written register has no source seed value')
     widened = seed.copy()
+    widened.symbolic_read_ranges.extend(dict(row) for row in symbolic_read_ranges)
     binders = []
     for key in written:
         value = seed.registers[key]
