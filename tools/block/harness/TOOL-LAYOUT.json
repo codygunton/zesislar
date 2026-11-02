@@ -82,5 +82,7 @@
   "block/declaration_dag.py": "code/declaration_dag.py",
   "block/declaration_outputs.py": "code/declaration_outputs.py",
   "block/declaration_parallel.py": "code/declaration_parallel.py",
-  "block/declaration_resources.py": "code/declaration_resources.py"
+  "block/declaration_resources.py": "code/declaration_resources.py",
+  "block/object_import_migration.py": "code/object_import_migration.py",
+  "block/OBJECT-IMPORT-MIGRATION-ORIGINS.json": "policies/OBJECT-IMPORT-MIGRATION-ORIGINS.json"
 }

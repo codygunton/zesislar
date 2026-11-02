@@ -13,6 +13,9 @@ def normalized_flags(flags, workspace):
 
 def _record(reference, module, source, obj, compiler, flags, workspace):
     receipt = read_bound(reference)
+    if receipt.get('schema') == 'entry-chain.object-import-migration.v1':
+        from object_import_migration import validate
+        return validate(reference, module, source, obj, compiler, flags, workspace)
     provenance = receipt.get('import_provenance')
     if not isinstance(provenance, dict) or provenance.get('schema') != 'entry-chain.object-imports.v1':
         raise ValueError('The owned object lacks authenticated import hashes.')
@@ -96,6 +99,12 @@ def _record(reference, module, source, obj, compiler, flags, workspace):
 
 
 def compatibility(targets, edges, modules, workspace, receipts, compiler, flags, *, planned=()):
+    from object_import_migration import batch
+    with batch():
+        return _compatibility(targets, edges, modules, workspace, receipts, compiler, flags, planned=planned)
+
+
+def _compatibility(targets, edges, modules, workspace, receipts, compiler, flags, *, planned=()):
     """Schedule unknown or changed owned imports through ordinary invalidation."""
     workspace = Path(workspace).resolve()
     forward = {}
