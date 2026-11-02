@@ -22,6 +22,14 @@ CGROUP_ROOT = Path('/sys/fs/cgroup')
 PROC = Path('/proc')
 
 
+class RejectedScopeSetup(ValueError):
+    """Carry cleanup evidence without authorizing a guarded workload."""
+
+    def __init__(self, identity):
+        super().__init__('The owned standalone scope lacks its writer identity.')
+        self.identity = identity
+
+
 def integer(value, label):
     if type(value) is not int or value < 0:
         raise ValueError('Invalid nonnegative memory amount: ' + label)
@@ -559,13 +567,14 @@ class ScopeReader:
         path = self.root / relative.lstrip('/')
         if not re.fullmatch(rf'zesudet-.+-{owner["pid"]}-[0-9]+\.scope', path.name):
             raise ValueError('The owned scope lacks its exact guarded leaf.')
+        rejected_setup = False
         if path.parent == self.parent:
             environment = dict(item.split('=', 1) for item in
                 (self.proc / str(actor['pid']) / 'environ').read_bytes().decode().split('\0') if '=' in item)
             writer = fields.get('writer', '')
             if (not re.fullmatch(r'[a-zA-Z0-9._-]+', writer) or environment.get('ZESU_WRITER_ID') != writer
                     or not path.name.startswith('zesudet-writer-' + writer + '-')):
-                raise ValueError('The owned standalone scope lacks its writer identity.')
+                rejected_setup = True
             identity = self.directory(path)
             live = integer(int((path / 'memory.current').read_text()), 'owned scope memory')
             row = dict(verified=True, aggregate_verified=False, scope=str(path), device=identity[0],
@@ -585,6 +594,8 @@ class ScopeReader:
                 or self.file_identity(marker.lstat()) != before
                 or (self.proc / str(actor['pid']) / 'cgroup').read_text().splitlines() != ['0::' + relative]):
             raise ValueError('The owned scope identity changed during sampling.')
+        if rejected_setup:
+            raise RejectedScopeSetup((row, owner, actor, generation, before))
         return row, owner, actor, generation, before
 
     def scope_exec(self, marker, source):
@@ -592,7 +603,13 @@ class ScopeReader:
         bound = self.guard_source(source['path'], source['sha256'])
         if bound != source:
             raise ValueError('The admitted public guard identity changed.')
-        row, owner, actor, generation, before = self.guard_leaf(marker)
+        rejected = None
+        try:
+            identity = self.guard_leaf(marker)
+        except RejectedScopeSetup as error:
+            rejected = error
+            identity = error.identity
+        row, owner, actor, generation, before = identity
         argv = self.argv(actor)
         position = 1 if argv and Path(argv[0]).name == 'bash' else 0
         if (len(argv) < position + 5 or argv[position:position + 4] !=
@@ -604,6 +621,10 @@ class ScopeReader:
         attestation = {'schema': 'owned.guard.scope.v1', 'marker': str(marker), 'generation': generation,
                        'owner': owner, 'actor': actor, 'source': source, 'scope_exec_argv': argv,
                        'leaf': {name: row[name] for name in ('scope', 'device', 'inode')}}
+        if rejected is not None:
+            attestation['schema'] = 'rejected.guard.setup.v1'
+            rejected.cleanup = attestation
+            raise rejected
         return row, attestation
 
     def owned_scope(self, marker, attestation):
@@ -1251,7 +1272,19 @@ def mark_shell(marker, *, ledger=None, reader=None):
         argv = reader.argv(actor) if source is not None else []
         position = 1 if argv and Path(argv[0]).name == 'bash' else 0
         if source is not None and argv[position:position + 2] == [source['path'], 'scope-exec']:
-            sample, attestation = reader.scope_exec(marker, source)
+            try:
+                sample, attestation = reader.scope_exec(marker, source)
+            except RejectedScopeSetup as error:
+                cleanup = error.cleanup
+                if cleanup['owner'] != record['owner'] or cleanup['generation'] != record['generation']:
+                    raise ValueError('The rejected setup differs from its admitted owner.')
+                # Retain the full claim until this exact failed setup leaf closes.
+                # This receipt grants no compiler or owned-scope permission.
+                record['setup_failure'] = cleanup
+                record['leaf'] = cleanup['leaf']
+                record['token_identity'] = reader.file_identity(marker.lstat())
+                write_ledger(ledger, data)
+                raise
             record['guard_attestation'] = attestation
         else:
             sample = reader.compiler(marker)
