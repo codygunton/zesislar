@@ -88,13 +88,75 @@ class GuardedAdapterTests(unittest.TestCase):
         self.assertEqual(len(self.case.manager.rows), 1)
         self.assertTrue((self.output / 'dependency-Example.Control.json').is_file())
         command, options = self.launches[0]
-        self.assertEqual(command[:2], [self.f.runtime['declaration_dag']['dune']['path'], 'exec'])
-        self.assertIn('--no-build', command)
+        self.assertEqual(command[0], str(self.f.root / self.f.runtime['coqc_wrapper']))
+        self.assertNotIn(self.f.runtime['declaration_dag']['dune']['path'], command)
+        self.assertNotIn('exec', command)
         self.assertNotIn('ZESU_COQC_SCOPE', options['env'])
         self.assertNotIn('ZESU_COQC_RESERVATION', options['env'])
         self.assertEqual(options['env']['ZESU_MODULE_CLAIM_BYTES'], str(16*GIB))
         self.assertEqual(options['env']['ZESU_MODULE_LIMIT_GIB'], '64')
         self.assertTrue(Path(command[-2]).is_relative_to(self.f.root / '.declaration-private'))
+
+    def test_worker_uses_the_snapshot_compiler_environment(self):
+        import json
+        from unittest.mock import patch
+        selected = {'OCAMLPATH': '/exact/recorded/library',
+                    'ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY': 'private-key'}
+        with patch('declaration_parallel.compiler_environment', return_value=selected) as choose:
+            adapter = self.adapter()
+            self.assertEqual(adapter.environment, selected)
+            adapter.compile_private('Example.Control')
+            self.assertEqual(self.launches[0][1]['env']['OCAMLPATH'], selected['OCAMLPATH'])
+            for check in choose.call_args_list[1:]:
+                self.assertEqual(check.args, (self.f.root, selected))
+        launch = next((self.f.root / '.declaration-private').glob('*/LAUNCH.json'))
+        data = json.loads(launch.read_text())
+        self.assertEqual(data['environment']['OCAMLPATH'], '/exact/recorded/library')
+        self.assertNotIn('ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY', data['environment'])
+        self.assertFalse(data['authentication_key_recorded'])
+
+    def test_changed_ambient_mapping_still_refuses_snapshot_validation(self):
+        import os
+        from unittest.mock import patch
+        private = self.f.root / '.declaration-private' / ('b' * 32) / 'Control.vo'
+        private.parent.mkdir(parents=True)
+        with patch.dict(os.environ, {'OCAMLPATH': str(self.f.root / 'unapproved-library')}):
+            with self.assertRaisesRegex(ValueError, 'mapping context differs'):
+                S.validate_compiler(self.f.runtime, self.f.reference, self.case.snapshot,
+                    binding(self.f.source), self.f.compiler, output_key=self.case.manager.key,
+                    private_output=private, private_workspace=self.f.root)
+
+    def test_changed_recorded_mapping_refuses_before_worker_launch(self):
+        from unittest.mock import patch
+        with patch('declaration_parallel.compiler_environment', side_effect=[
+                {'OCAMLPATH': '/first'}, {'OCAMLPATH': '/changed'}]):
+            adapter = self.adapter()
+            with self.assertRaisesRegex(ValueError, 'environment changed'):
+                adapter.compile_private('Example.Control')
+        self.assertEqual(self.launches, [])
+
+    def test_empty_donor_Dune_lock_is_unused_and_unchanged(self):
+        directory = self.f.root / 'artifacts'
+        directory.mkdir(exist_ok=True)
+        lock = directory / '.lock'; lock.write_bytes(b'')
+        before = (lock.stat().st_ino, lock.read_bytes())
+        self.adapter().compile_private('Example.Control')
+        self.assertEqual((lock.stat().st_ino, lock.read_bytes()), before)
+        self.assertNotIn('dune', [Path(word).name for word in self.launches[0][0]])
+
+    def test_private_mapping_stays_out_of_other_workers_and_global_flags(self):
+        from copy import deepcopy
+        flags = deepcopy(self.f.runtime['physical_flags'])
+        adapter = self.adapter()
+        artifact = adapter.compile_private('Example.Control')
+        from entry_chain import read_bound
+        record = read_bound(artifact['physical_result'])
+        inputs = read_bound(record['input'])
+        mapping = inputs['output_context']['private_mapping']
+        self.assertEqual(mapping[0], '-Q')
+        self.assertEqual(mapping[2], 'Example')
+        self.assertEqual(self.f.runtime['physical_flags'], flags)
+        self.assertNotIn(mapping[1], flags)
 
     def test_failed_guarded_compiler_never_publishes(self):
         def refuse(command, **keywords):

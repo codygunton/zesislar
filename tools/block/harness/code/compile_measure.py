@@ -44,6 +44,9 @@ if record.get('validation') is not None:
         save(path,record)
 # The physical compiler never receives the provider authentication key.
 os.environ.pop('ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY',None)
+if record.get('output_context') is not None:
+    record['physical_environment']=dict(os.environ)
+    path.write_text(json.dumps(record,indent=2)+'\n')
 if before is not None:check_sidecar_prestate(before)
 if report is not None:check_import_selection(imports,report)
 started=time.monotonic();child=subprocess.Popen(record['physical_argv'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)

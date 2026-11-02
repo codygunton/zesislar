@@ -9,6 +9,7 @@ import uuid
 from entry_chain import binding, read_bound, save
 from declaration_dag import execute
 from declaration_outputs import private_target, publish
+from coqc_findlib import compiler_environment
 
 
 class GuardedAdapter:
@@ -18,7 +19,7 @@ class GuardedAdapter:
         self.workspace = Path(workspace).resolve()
         self.output = Path(output).resolve()
         self.manager = manager
-        self.environment = dict(environment)
+        self.environment = compiler_environment(self.workspace, environment)
         self.recheck = recheck
         self.protected_compile = protected_compile
         self.runner = runner
@@ -42,12 +43,10 @@ class GuardedAdapter:
         directory.mkdir(parents=True, mode=0o700)
         target = private_target(self.runtime, source_binding,
                                 directory / source.with_suffix('.vo').name, self.workspace)
-        # Dune can change cwd. The shim enters the worker's private cache directory.
-        shim = 'import os,sys;os.chdir(sys.argv[1]);os.execv(sys.argv[2],sys.argv[2:])'
-        command = [self.dune['path'], 'exec', '--no-build', '--root', str(self.workspace),
-                   '--build-dir', str(self.workspace / self.runtime['build_dir']), '--',
-                   sys.executable, '-B', '-c', shim, str(directory), str(self.wrapper),
-                   *self.runtime['expected_mcp_flags'], '-o', str(target), str(source)]
+        # Use the same recorded Dune environment as snapshot publication.
+        # Running Dune per worker mutates its shared lock and ambient load paths.
+        command = [str(self.wrapper), *self.runtime['expected_mcp_flags'],
+                   '-o', str(target), str(source)]
         environment = dict(self.environment)
         # Each physical compiler must reserve its own slot inside the aggregate.
         for name in ['ZESU_COQC_SCOPE', 'ZESU_COQC_RESERVATION']:
@@ -57,7 +56,10 @@ class GuardedAdapter:
         save(directory / 'LAUNCH.json', {'module': module, 'source': source_binding,
              'argv': command, 'cwd': str(directory), 'wrapper': self.wrapper_binding,
              'dune': self.dune, 'weight_bytes': self.spec['weights'][module],
-             'compiler_slot_reused': False})
+             'compiler_slot_reused': False,
+             'environment': {name: value for name, value in environment.items()
+                             if name != 'ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY'},
+             'authentication_key_recorded': False})
         with (directory / 'stdout').open('xb') as stdout, (directory / 'stderr').open('xb') as stderr:
             result = self.runner(command, cwd=directory, env=environment,
                                  stdout=stdout, stderr=stderr, check=False)
@@ -82,6 +84,8 @@ class GuardedAdapter:
                 'stdout': binding(directory / 'stdout'), 'stderr': binding(directory / 'stderr')}
 
     def check_tools(self):
+        if compiler_environment(self.workspace, self.environment) != self.environment:
+            raise ValueError('The recorded compiler environment changed before private dispatch.')
         if binding(self.wrapper) != self.wrapper_binding or binding(self.dune['path']) != self.dune:
             raise ValueError('A bound private declaration tool changed.')
 
