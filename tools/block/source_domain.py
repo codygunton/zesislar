@@ -4,6 +4,7 @@ The output is untrusted generator input. Each fact retains its exact source
 clause and substitution. A later native proof must establish the full contract.
 """
 import ast
+from copy import deepcopy
 import hashlib
 from pathlib import Path
 import re
@@ -162,6 +163,8 @@ def project_layout_domain(*, layout_source, wellformed_source, arguments,
             raise ValueError('An optional layout pointer is not a source parameter.')
         return value
 
+    projection_constants = {}
+
     def source_integer(term):
         if term not in source_constants:
             return closed_integer(term)
@@ -169,6 +172,7 @@ def project_layout_domain(*, layout_source, wellformed_source, arguments,
         if (not isinstance(bound, dict) or type(bound.get('value')) is not int or not bound.get('origin')
                 or constant_from_source(bound['origin'])['value'] != bound['value']):
             raise ValueError('An optional layout constant differs from its source.')
+        projection_constants[term] = deepcopy(bound)
         return bound['value']
 
     output = descriptor('output', {'pointer', 'extent'}) if 'output' in projections else None
@@ -185,7 +189,8 @@ def project_layout_domain(*, layout_source, wellformed_source, arguments,
                           'minimum': ram_base, 'maximum': ram_end - length,
                           'ram_base': ram_base, 'ram_end': ram_end}},
                       'origin': {**origin, 'source_clauses': selected, 'descriptor': layout_projections,
-                                 'constants': {term: source_constants[term] for term in values},
+                                 'constants': {**{term: source_constants[term] for term in values},
+                                               **deepcopy(projection_constants)},
                                  'derivation': 'Conjunction projection, closed subtraction, and unsigned non-wrap.'}})
     pairs = [('input', 'output'), ('input', 'stack'), ('output', 'stack')]
     separate = [(i, clause) for i, clause in enumerate(clauses)
@@ -232,6 +237,7 @@ def project_layout_domain(*, layout_source, wellformed_source, arguments,
                           'expression': source_z_expression(arguments[pointer], source_constants).to_dict(),
                           'modulus': count, 'residue': remainder}},
                       'origin': {**origin, 'source_clauses': selected, 'descriptor': layout_projections,
+                                 'constants': deepcopy(projection_constants),
                                  'derivation': 'Conjunction projection and unsigned non-wrap.'}})
     expression = source_z_expression(arguments[stack], source_constants)
     facts.append({'fact_id': 'layout:stack-interval', 'kind': 'bounds', 'status': 'supplied',

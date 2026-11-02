@@ -115,6 +115,24 @@ def _project(state, live):
     return result
 
 
+def source_liveness(function, traces, initial_states):
+    """Compute conservative source reads without executing any trace path.
+
+    Following successors beyond a cut can retain extra values. It cannot mark
+    a value dead merely because the first chosen path did not read it.
+    """
+    blocks = {_pc(block['start']): {**block, 'successors': [_pc(pc) for pc in block['successors']]}
+              for block in function['blocks']}
+    rows = [_pc(row['pc']) for row in function['rows']]
+    instructions = {pc: [at for at in rows if pc <= at < _pc(block['end'])] for pc, block in blocks.items()}
+    if (len(blocks) != len(function['blocks']) or len(set(rows)) != len(rows)
+            or any(not selected or selected[0] != pc for pc, selected in instructions.items())
+            or sorted(at for selected in instructions.values() for at in selected) != sorted(rows)):
+        raise ValueError('The liveness source has an incomplete or overlapping CFG')
+    traces = {_pc(pc): source for pc, source in traces.items()}
+    return {pc: sorted(registers) for pc, registers in _liveness(blocks, instructions, traces, initial_states).items()}
+
+
 @dataclass
 class _Work:
     block_pc: int

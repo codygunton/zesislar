@@ -2,13 +2,16 @@
 from pathlib import Path
 from copy import deepcopy
 import json
+import hashlib
 import sys
+import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'block'))
-from forward_design import _footprint
+from forward_design import _footprint, source_liveness
 from join_generalize import (anti_unify, exit_pullback, generalize_registers, hull,
-                             attach_exit_pullback, generalize_owned_join, validate_edges, witness_plan)
+                             attach_exit_pullback, continuation_observables,
+                             generalize_owned_join, validate_edges, witness_plan)
 from forward_resources import (OwnedBytes, ownership_from_assertion_tree,
                                render_resource_boundary, apply_owned_writes)
 from resource_seed import OwnedSeed
@@ -86,6 +89,53 @@ class JoinRegisterTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'captures a source input'):
             anti_unify([{'x': bits(0, 64)}, {'x': bits(1, 64)}], names={'x': 'machine_x'},
                        reserved_names=['machine_x'])
+
+    def test_equal_dead_values_become_free_binders_without_literal_hulls(self):
+        alternatives = [{'state': {'registers': {'x11': bits(0, 64).to_dict()}, 'conditions': []}}] * 2
+        result = generalize_registers(alternatives, register_order=['x11'], dead_registers=['x11'])
+        self.assertEqual(result['binders'][0]['name'], 'machine_x11')
+        self.assertEqual(result['relations'], [])
+        self.assertEqual(result['generalized_values'][0]['edge_values'], [bits(0, 64).to_dict()] * 2)
+        self.assertTrue(validate_edges(result))
+
+
+class ObservableTests(unittest.TestCase):
+    def binding(self, directory, body):
+        path = Path(directory) / 'Fixture.v'
+        path.write_text('Definition exitResources := ' + body + '.\n')
+        return {'path': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+                'declaration': 'exitResources'}
+
+    def test_fixed_exit_value_is_observable_but_independent_ownership_is_not(self):
+        with tempfile.TemporaryDirectory() as directory:
+            binding = self.binding(directory,
+                '(∃ (arbitrary : bv 64), "x11" ↦ᵣ RVal_Bits arbitrary ∗ "x1" ↦ᵣ RVal_Bits return_address)%I')
+            result = continuation_observables('instr_pre ret (exitResources)', [binding])
+            self.assertEqual(result['registers'], ['x1'])
+
+    def test_pure_relation_keeps_an_existential_register_value_observable(self):
+        with tempfile.TemporaryDirectory() as directory:
+            binding = self.binding(directory,
+                '(∃ (arbitrary : bv 64), "x11" ↦ᵣ RVal_Bits arbitrary ∗ ⌜bv_unsigned arbitrary = meaning⌝)%I')
+            self.assertEqual(continuation_observables('exitResources', [binding])['registers'], ['x11'])
+
+    def test_missing_resource_definition_refuses(self):
+        with self.assertRaisesRegex(ValueError, 'acyclic source binding'):
+            continuation_observables('unknown_exit args', [])
+
+    def test_changed_source_refuses(self):
+        with tempfile.TemporaryDirectory() as directory:
+            binding = self.binding(directory, 'True%I')
+            Path(binding['path']).write_text('Definition exitResources := different.\n')
+            with self.assertRaisesRegex(ValueError, 'source changed'):
+                continuation_observables('exitResources', [binding])
+
+    def test_liveness_keeps_a_trace_read_and_excludes_a_write_target(self):
+        function = {'blocks': [{'start': 16, 'end': 20, 'successors': []}], 'rows': [{'pc': 16}]}
+        traces = {16: '(trace (read-reg |x1| nil v) (write-reg |x11| nil #x0000000000000000))'}
+        result = source_liveness(function, traces, {16: SymbolicState(registers={'x1': input_expr('ret'),
+                                                                                 'x11': input_expr('unused')})})
+        self.assertEqual(result[16], ['x1'])
 
     def test_hull_uses_direct_unsigned_binder_bounds(self):
         word = input_expr('word')

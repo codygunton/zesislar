@@ -5,6 +5,8 @@ source arithmetic only. They never certify an Iris entailment or a native proof.
 """
 from copy import deepcopy
 from dataclasses import dataclass, replace
+import hashlib
+from pathlib import Path
 import re
 
 try:
@@ -16,6 +18,75 @@ except ImportError:
 
 
 REGISTER = re.compile(r'x(?:[0-9]|[12][0-9]|3[01])\Z')
+
+
+def continuation_observables(expression, source_bindings):
+    """Read value observables from bound exit-resource declarations.
+
+    An independent existential register value is ownership, not an observable
+    result value. A fixed value or a value mentioned by another clause remains
+    observable. Unknown resource heads refuse rather than hide a dependency.
+    """
+    try:
+        from .entry_seed import definition_body
+        from .forward_resources import parse_source_ownership, _strip_enclosure
+        from .check_data_only_lemmas import atom, rocq_tokens
+    except ImportError:
+        from entry_seed import definition_body
+        from forward_resources import parse_source_ownership, _strip_enclosure
+        from check_data_only_lemmas import atom, rocq_tokens
+    declarations, used, registers = {}, set(), set()
+    for binding in source_bindings:
+        data = Path(binding['path']).read_bytes()
+        if hashlib.sha256(data).hexdigest() != binding['sha256']:
+            raise ValueError('A continuation source changed')
+        name = binding['declaration']
+        if name in declarations:
+            raise ValueError('A continuation resource head is ambiguous')
+        declarations[name] = definition_body(data.decode(), name)
+
+    def inspect(body, active=()):
+        body = _strip_enclosure(body)
+        if body.startswith('instr_pre '):
+            tokens = list(rocq_tokens(body))
+            _, end = atom([token for token, _ in tokens], 1)
+            if end >= len(tokens):
+                raise ValueError('A continuation has no exit resources')
+            return inspect(body[tokens[end][1]:], active)
+        ownership = parse_source_ownership(body, provenance={})
+        locals_ = set()
+        for prefix in ownership['existential_prefixes']:
+            text = prefix[1:-1].strip()
+            groups = re.findall(r"\(([^():]+):[^()]+\)", text)
+            if groups and ''.join(re.findall(r"\([^()]+\)", text)).replace(' ', '') == text.replace(' ', ''):
+                locals_.update(name for group in groups for name in group.split())
+            elif '(' not in text and ':' in text:
+                locals_.update(text.split(':', 1)[0].split())
+            # Unsupported binder shapes conservatively keep every value live.
+        for component in ownership['components']:
+            source = _strip_enclosure(component['source'])
+            if component['kind'] == 'register':
+                value = component['value']
+                word = _strip_enclosure(value[len('RVal_Bits '):]) if value.startswith('RVal_Bits ') else ''
+                variable = word.split(':', 1)[0].strip()
+                elsewhere = ' '.join(other['source'] for other in ownership['components'] if other is not component)
+                mentioned = bool(re.search(r"(?<![\w'])" + re.escape(variable) + r"(?![\w'])", elsewhere)) if variable else True
+                if variable not in locals_ or mentioned:
+                    registers.add(component['name'])
+            elif (component['kind'] in {'byte_array', 'unknown_byte_array'} or source == 'True'
+                  or source.startswith('⌜') or source.startswith('reg_col ')):
+                continue
+            else:
+                head = source.split(None, 1)[0]
+                if head not in declarations or head in active:
+                    raise ValueError('A continuation resource needs an acyclic source binding: ' + head)
+                used.add(head)
+                inspect(declarations[head], (*active, head))
+    inspect(expression)
+    if used != set(declarations):
+        raise ValueError('The continuation includes unused declaration bindings')
+    return {'root_expression': expression, 'registers': sorted(registers),
+            'source_bindings': deepcopy(source_bindings), 'proof_established': False}
 
 
 def normalize(value):
@@ -44,7 +115,7 @@ class AntiUnification:
     substitutions: list
 
 
-def anti_unify(paths, *, names, reserved_names=()):
+def anti_unify(paths, *, names, reserved_names=(), force_keys=()):
     """Keep equal values. Bind every differing value in declaration order.
 
     names maps each value key to its proposed binder name. The caller supplies
@@ -56,6 +127,8 @@ def anti_unify(paths, *, names, reserved_names=()):
         raise ValueError('A join repeats a binder name')
     if any(set(path) != set(names) for path in paths):
         raise ValueError('Join paths have different owned value sets')
+    if set(force_keys) - set(names):
+        raise ValueError('A forced join binder has no owned value')
     result, binders, substitutions = {}, [], [{} for _ in paths]
     for key, name in names.items():
         if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_']*", name):
@@ -64,7 +137,7 @@ def anti_unify(paths, *, names, reserved_names=()):
         widths = {value.width for value in values}
         if len(widths) != 1 or type(values[0].width) is not int or values[0].width <= 0:
             raise ValueError('A join value needs one closed positive width')
-        if all(value == values[0] for value in values[1:]):
+        if key not in force_keys and all(value == values[0] for value in values[1:]):
             result[key] = values[0]
             continue
         def contains_name(value):
@@ -162,7 +235,7 @@ def validate_edges(plan):
     return True
 
 
-def generalize_registers(alternatives, *, register_order, reserved_names=()):
+def generalize_registers(alternatives, *, register_order, reserved_names=(), dead_registers=()):
     """Prepare a register-only join core from complete source alternatives."""
     if len(set(register_order)) != len(register_order) or not register_order:
         raise ValueError('A join needs a unique owned register order')
@@ -177,9 +250,11 @@ def generalize_registers(alternatives, *, register_order, reserved_names=()):
         paths.append({register: Expr.from_dict(registers[register]) for register in register_order})
         conditions.append([Expr.from_dict(value) for value in state['conditions']])
     unified = anti_unify(paths, names={register: 'machine_' + register for register in register_order},
-                        reserved_names=reserved_names)
+                        reserved_names=reserved_names, force_keys=dead_registers)
     relations, refusals = [], []
     for binder in unified.binders:
+        if binder['value_key'] in dead_registers:
+            continue
         try:
             relation = hull([path[binder['value_key']] for path in paths], conditions, name=binder['name'])
             if relation:
@@ -202,6 +277,9 @@ def generalize_registers(alternatives, *, register_order, reserved_names=()):
             'witness_plan': witness_plan(unified.binders, register_bindings={
                 binder['name']: (binder['value_key'], unified.values[binder['value_key']].width)
                 for binder in unified.binders}), 'proof_established': False}
+    plan['generalized_values'] = [{'register': register, 'reason': 'dead_before_cut_or_return',
+        'edge_values': [path[register].to_dict() for path in paths]} for register in register_order
+        if register in dead_registers]
     validate_edges(plan)
     return plan
 
@@ -242,7 +320,7 @@ def _remove_terminal(tree, terminal_id):
 
 
 def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
-                          continuation, outer_names=()):
+                          continuation, outer_names=(), liveness=None, observables=None):
     """Build a seed when every incoming non-register resource is identical.
 
     This first case needs no memory witness. A differing memory image refuses
@@ -272,8 +350,21 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
     if any(binder['name'] == name for binder in original_binders):
         raise ValueError('The continuation captures a source binder')
     register_order = [component['name'] for component in ownership['components'] if component['kind'] == 'register']
+    dead = set()
+    if liveness is not None or observables is not None:
+        if (not isinstance(liveness, dict) or liveness.get('pc') != hex(entry_pc)
+                or not liveness.get('source_bindings') or not isinstance(observables, dict)
+                or not observables.get('source_bindings') or not observables.get('root_expression')):
+            raise ValueError('Dead register generalization needs bound liveness and continuation observables')
+        if observables['root_expression'] != continuation['coq']:
+            raise ValueError('The value observables belong to another continuation')
+        live = set(liveness['registers']) | set(observables['registers'])
+        dead = set(register_order) - live
     plan = generalize_registers(alternatives, register_order=register_order,
-                               reserved_names=[*outer_names, name, *(b['name'] for b in original_binders)])
+                               reserved_names=[*outer_names, name, *(b['name'] for b in original_binders)],
+                               dead_registers=dead)
+    if liveness is not None:
+        plan['deadness_basis'] = {'liveness': deepcopy(liveness), 'observables': deepcopy(observables)}
     records = []
     for alternative in alternatives:
         boundary = alternative['resource_boundary']

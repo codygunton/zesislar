@@ -154,6 +154,24 @@ class DomainTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'exact source binding'):
             project_layout_domain(**values)
 
+    def test_named_projection_constants_retain_their_exact_origins(self):
+        source = self.layout.read_text().replace('resultPointer + 40', 'resultPointer + resultExtent')
+        source = source.replace('resultPointer 40', 'resultPointer resultExtent')
+        source = source.replace('returnAddress mod 4 = 0', 'returnAddress mod returnPeriod = returnResidue')
+        source = source.replace('Definition decodeItemEntryLayout',
+            'Definition resultExtent : Z := 48.\nDefinition returnPeriod : Z := 8.\n'
+            'Definition returnResidue : Z := 2.\nDefinition decodeItemEntryLayout')
+        self.layout.write_text(source)
+        values = self.projection_parameters(extent='resultExtent', period='returnPeriod', residue='returnResidue')
+        constants = {name: constant_from_source(self.binding(self.layout, name))
+                     for name in ('resultExtent', 'returnPeriod', 'returnResidue')}
+        values['source_constants'].update(constants)
+        result = project_layout_domain(**values)
+        facts = {fact['fact_id']: fact for fact in result['facts']}
+        self.assertEqual(facts['layout:output-interval']['origin']['constants']['resultExtent'], constants['resultExtent'])
+        for name in ('returnPeriod', 'returnResidue'):
+            self.assertEqual(facts['layout:return-alignment']['origin']['constants'][name], constants[name])
+
     def test_projection_refuses_a_pointer_absent_from_the_source(self):
         with self.assertRaisesRegex(ValueError, 'not a source parameter'):
             project_layout_domain(**self.projection_parameters(output='missingPointer'))
