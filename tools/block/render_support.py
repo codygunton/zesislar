@@ -10,6 +10,7 @@ from check_data_only_lemmas import rocq_tokens, rocq_commands, command_imports
 from entry_bindings import check_binders, declared_binders, normalize_type
 from entry_schema import IDENTIFIER, ROCQ_NAME, contract_fields, source_module, verify_sources
 from function_names import FunctionNames, prefix_argument
+from witness_data import has_witness_slots, resolved_witness_data
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -670,9 +671,11 @@ def mapping_symbol(name, fields, root, loaded):
 
 def witness_mapping_source(value, fields, root, loaded):
     """Render an explicit mapping record without computing a witness or a premise."""
-    record(value, {"name", "iris_contexts", "parameters", "class", "source",
-                   "input_type", "witness_type", "input", "mapping", "locality"},
-           "witness mapping")
+    keys = {"name", "iris_contexts", "parameters", "class", "source", "locality"}
+    forward_data = isinstance(value, dict) and "forward" in value
+    generated_data = isinstance(value, dict) and ("data" in value or forward_data)
+    record(value, keys | ({"forward"} if forward_data else {"data"} if generated_data else
+                          {"input_type", "witness_type", "input", "mapping"}), "witness mapping")
     name = identifier(value["name"], "mapping name")
     if value["locality"] not in {"local", "global", "export"}:
         raise ValueError("The mapping locality is unsupported.")
@@ -702,12 +705,35 @@ def witness_mapping_source(value, fields, root, loaded):
     entry = source["predicate"] + "".join(
         " (" + expression(argument, "mapping source argument") + ")"
         for argument in source["arguments"])
+    prefix = ""
+    _, target_name, target_source = bound_symbol(qualified, fields, root)
+    if not generated_data and has_witness_slots(target_source, target_name):
+        raise ValueError("An existential mapping target requires complete source-resolved witness data.")
+    if generated_data:
+        source_texts = None
+        if forward_data:
+            from forward_witnesses import forward_witness_data
+            forward = forward_witness_data(value["forward"], target_source, target_name,
+                                           value["parameters"], root / "forward-witness-values.v")
+            value = dict(value, data=forward["data"])
+            prefix, source_texts = forward["prefix"], forward["source_texts"]
+        data = resolved_witness_data(target_source, target_name, value["data"], source_texts=source_texts)
+        parameters = {row["name"]: row["type"] for row in value["parameters"]}
+        for row in value["data"]["parameters"]:
+            if row["name"] not in parameters or normalize_type(parameters[row["name"]]) != normalize_type(row["type"]):
+                raise ValueError("The witness data parameter differs from its mapping scope.")
+        if value["data"]["name"] == name:
+            raise ValueError("The witness data and mapping names must differ.")
+        value = dict(value, input_type=data["input_type"], witness_type=data["witness_type"],
+                     input=data["input"], mapping=value["data"]["name"] + "".join(
+                         " (" + row["name"] + ")" for row in value["data"]["parameters"]))
+        prefix += data["source"] + "\n"
     terms = {}
     for key in ("input_type", "witness_type", "input", "mapping"):
         terms[key] = expression(value[key], "mapping " + key)
         expression_references(terms[key], fields, root)
     target = f"{value['class']} ({entry}) ({terms['input_type']}) {terms['witness_type']}"
-    return (f"#[{value['locality']}] Instance {name}{typed} :\n  {target} :=\n"
+    return (prefix + f"#[{value['locality']}] Instance {name}{typed} :\n  {target} :=\n"
             f"  {{| zesu_witness_input := {terms['input']};\n"
             f"     zesu_witness_mapping := {terms['mapping']} |}}.\n")
 
@@ -742,6 +768,10 @@ def witness_mapping_sources(values, root, directory, generated_paths=()):
                  for row in mappings if isinstance(row, dict)]
         if len(names) != len(mappings) or len(set(names)) != len(names):
             raise ValueError("The mapping name is repeated or invalid.")
+        data_names = [identifier(row[key].get("name"), "witness data name")
+                      for row in mappings for key in ("data", "forward") if isinstance(row.get(key), dict)]
+        if len(set(names + data_names)) != len(names + data_names):
+            raise ValueError("The witness data repeats a generated declaration name.")
         text = HEADER + "\n".join(lines) + "\n\n"
         text += "\n".join(witness_mapping_source(row, fields, root, loaded) for row in mappings)
         outputs[path] = text
