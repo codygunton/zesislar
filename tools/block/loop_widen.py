@@ -29,6 +29,79 @@ def _register_order(name):
     return int(name[1:])
 
 
+def render_byte_window_fold(relation, *, scope):
+    """Render the supported fold predicate from its structural fields.
+
+    scope maps declared binders and exact source-owned atoms to Rocq types.
+    An opaque source array must occur verbatim in that typed source scope.
+    The caller retains responsibility for authenticating the source ownership.
+    This function emits no proof commands and performs no normalization.
+    """
+    try:
+        from .render_support import expression, identifier
+        from .entry_bindings import normalize_type
+    except ImportError:
+        from render_support import expression, identifier
+        from entry_bindings import normalize_type
+
+    if not isinstance(scope, dict) or not isinstance(relation, dict):
+        raise ValueError('A fold renderer needs a relation and a typed source scope')
+    if (relation.get('kind') != 'byte_window_fold'
+            or type(relation.get('word_width')) is not int
+            or type(relation.get('digit_width')) is not int
+            or relation['word_width'] != 64 or relation['digit_width'] != 8):
+        raise ValueError('The fold relation has no supported word interface')
+    register = relation.get('register')
+    if not isinstance(register, str) or not _REGISTER.fullmatch(register):
+        raise ValueError('The fold register is invalid')
+    index = identifier(relation.get('index'), 'fold index')
+    expression(index, 'fold index')
+    if index == '_':
+        raise ValueError('The fold index is unbound')
+    window = relation.get('window')
+    if (not isinstance(window, dict)
+            or set(window) != {'function', 'array', 'start', 'count'}
+            or window['function'] != 'ByteWindowFold.zesu_byte_window_fold'
+            or window['count'] != 'Z.to_nat ' + index):
+        raise ValueError('The fold window has an unsupported shape')
+
+    def typed_atom(text, types, label):
+        expression(text, label)
+        if text not in scope or not isinstance(scope[text], str):
+            raise ValueError('The ' + label + ' is unbound in the source scope')
+        actual = normalize_type(scope[text])
+        if actual not in {normalize_type(value) for value in types}:
+            raise ValueError('The ' + label + ' has a different source type')
+        return text
+
+    word = typed_atom('machine_' + register, ['bv 64', 'bv 64%N'], 'fold word')
+    typed_atom(index, ['Z', 'lvar "zesuLoopIndex" Z'], 'fold index')
+    array = window['array']
+    if (not isinstance(array, dict) or array.get('op') != 'input'
+            or set(array) - {'op', 'value', 'width'} or array.get('width') is not None
+            or not isinstance(array.get('value'), str)):
+        raise ValueError('The byte array has an unsupported source shape')
+    typed_atom(array['value'], ['list (bv 8)', 'list (bv 8%N)'], 'fold byte array')
+    array_term = Expr.from_dict(array).coq()
+    start = window['start']
+    if type(start) is int:
+        if start < 0:
+            raise ValueError('The fold offset is negative')
+        start_term = str(start) + '%nat'
+    elif isinstance(start, str):
+        typed_atom(start, ['nat'], 'fold offset')
+        start_term = input_expr(start, None).coq()
+    else:
+        raise ValueError('The fold offset has an unsupported source shape')
+    term = ('bv_unsigned ' + word + ' = ' + window['function'] +
+            ' (' + array_term + ') ' + start_term + ' (Z.to_nat ' + index + ')')
+    expression(term, 'byte-window fold relation')
+    if 'term' in relation and relation['term'] != term:
+        raise ValueError('The supplied fold term differs from its structural rendering')
+    return {'term': term, 'imports': ['Coq.ZArith.ZArith', 'stdpp.bitvector.definitions',
+                                     'ZesuSsz.Automation.ByteWindowFold']}
+
+
 def write_set(traces, universe):
     """Include conditional writes, even when a fault path skips them.
 
