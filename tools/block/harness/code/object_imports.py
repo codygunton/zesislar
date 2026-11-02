@@ -33,6 +33,20 @@ def _record(reference, module, source, obj, compiler, flags, workspace):
         raise ValueError('The owned object has another recorded source mapping.')
     physical = read_bound(receipt['physical_result'])
     inputs = read_bound(physical['input'])
+    physical_object=receipt['object']
+    output_arguments=[]
+    if receipt.get('publication') is not None:
+        from declaration_outputs import publication, private_target
+        published=publication(receipt['publication'],source=receipt['source'],compiler=compiler,
+            flags=receipt['normalized_flags'],snapshot=receipt['snapshot'],producer=receipt['producer'],
+            physical_result=receipt['physical_result'],canonical_object=receipt['object'])
+        physical_object=published['private_outputs']['object']['binding']
+        private_target(read_bound(receipt['runtime']),receipt['source'],physical_object['path'],old_workspace)
+        if (published['module']!=module or inputs.get('target',{}).get('module')!=module or
+                physical.get('compiler_outputs')!=published['private_outputs'] or
+                receipt.get('sidecar')!=published['published_outputs']['sidecar']):
+            raise ValueError('The owned object has another private publication.')
+        output_arguments=['-o',physical_object['path']]
     old_context=receipt.get('compiler_context')
     if context['changes'] or old_context is not None:
         recorded_context=inputs.get('compiler_context')
@@ -49,11 +63,11 @@ def _record(reference, module, source, obj, compiler, flags, workspace):
             raise ValueError('The owned object has another compiler source context.')
     if (physical.get('returncode') != 0 or physical.get('output_validation', {}).get('success') is not True or
             physical.get('output_capture', {}).get('complete') is not True or
-            physical.get('compiler_outputs', {}).get('object', {}).get('binding') != receipt['object'] or
+            physical.get('compiler_outputs', {}).get('object', {}).get('binding') != physical_object or
             physical.get('input_validation') != provenance['validation'] or
             inputs.get('source') != receipt['source'] or inputs.get('compiler') != compiler or
             inputs.get('owned_workspace') != old_workspace or
-            inputs.get('physical_argv') != [compiler['path'], *receipt['normalized_flags'], receipt['source']['path']] or
+            inputs.get('physical_argv') != [compiler['path'], *receipt['normalized_flags'], *output_arguments, receipt['source']['path']] or
             physical.get('physical_argv') != inputs['physical_argv'] or
             inputs.get('validation', {}).get('snapshot') != receipt.get('snapshot')):
         raise ValueError('The owned object lacks its matching physical compiler record.')

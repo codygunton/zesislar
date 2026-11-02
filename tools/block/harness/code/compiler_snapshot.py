@@ -411,12 +411,31 @@ def _physical_import_provenance(record, inputs, snapshot, source, compiler, flag
             'validation':reference,'imported_objects':selection['imported_objects']}
 
 
-def _physical_record(reference, snapshot, snapshot_reference, source, compiler, flags, obj, prior):
+def _physical_record(reference, snapshot, snapshot_reference, source, compiler, flags, obj, prior,
+                     *, publication=None, private_output=False):
     """Authenticate the completed wrapper record before sealing its outputs."""
     record=_read_private(reference)
     input_reference=record['input'];inputs=_read_private(input_reference)
     directory=Path(reference['path']).parent
     runtime=read_bound(snapshot['runtime'])
+    published=None
+    physical_obj=obj
+    if publication is not None:
+        from declaration_outputs import publication as read_publication
+        published=read_publication(publication,source=source,compiler=compiler,flags=flags,
+            snapshot=snapshot_reference,producer=snapshot['producer'],physical_result=reference,
+            canonical_object=obj)
+        physical_obj=published['private_outputs']['object']['binding']
+    if private_output or published is not None:
+        from declaration_outputs import private_target
+        private_target(runtime,source,physical_obj['path'],inputs['owned_workspace'])
+        workspace=Path(inputs['owned_workspace']).resolve()
+        owners=[name for name,relative in runtime['module_files'].items()
+                if (workspace/relative).resolve()==Path(source['path']).resolve()]
+        if (len(owners)!=1 or inputs.get('target',{}).get('module')!=owners[0] or
+                published is not None and published['module']!=owners[0]):
+            raise ValueError('The private physical output names another module.')
+    extra=['-o',physical_obj['path']] if private_output or published is not None else []
     context=compilation(runtime['physical_flags'],source)
     if (list(flags)!=context['physical_flags'] or
             context['changes'] and inputs.get('compiler_context')!=context or
@@ -430,7 +449,7 @@ def _physical_record(reference, snapshot, snapshot_reference, source, compiler, 
             record.get('output_validation',{}).get('success') is not True or
             inputs.get('source')!=source or inputs.get('compiler')!=compiler or
             inputs.get('validation')!={'runtime':snapshot['runtime'],'snapshot':snapshot_reference} or
-            inputs.get('physical_argv')!=[compiler['path'],*flags,source['path']] or
+            inputs.get('physical_argv')!=[compiler['path'],*flags,*extra,source['path']] or
             record.get('physical_argv')!=inputs['physical_argv']):
         raise ValueError('A successful physical compiler record differs from this run.')
     before=inputs.get('sidecar_prestate');outputs=record.get('compiler_outputs')
@@ -438,11 +457,11 @@ def _physical_record(reference, snapshot, snapshot_reference, source, compiler, 
             before.get('source')!=source or before.get('compiler')!=compiler or
             before.get('physical_flags')!=flags or before.get('snapshot')!=snapshot_reference or
             before.get('producer')!=snapshot['producer'] or
-            obj['path']!=str(Path(source['path']).with_suffix('.vo')) or
-            before.get('primary_object')!=obj['path'] or
-            before.get('path')!=str(Path(obj['path']).with_suffix('.vos')) or
-            outputs['object']['binding']!=obj or
-            outputs['sidecar']['binding']['path']!=str(Path(obj['path']).with_suffix('.vos')) or
+            not private_output and obj['path']!=str(Path(source['path']).with_suffix('.vo')) or
+            before.get('primary_object')!=physical_obj['path'] or
+            before.get('path')!=str(Path(physical_obj['path']).with_suffix('.vos')) or
+            outputs['object']['binding']!=physical_obj or
+            outputs['sidecar']['binding']['path']!=str(Path(physical_obj['path']).with_suffix('.vos')) or
             outputs['sidecar'].get('lexical_path')!=before.get('path')):
         raise ValueError('The physical compiler sidecar context differs.')
     if before.get('state')=='absent':
@@ -464,6 +483,10 @@ def _physical_record(reference, snapshot, snapshot_reference, source, compiler, 
     expected='retained_authenticated_output' if retained else 'compiled_output'
     if outputs.get('sidecar_status')!=expected:
         raise ValueError('The physical compiler sidecar status differs.')
+    if published is not None:
+        if outputs!=published['private_outputs']:
+            raise ValueError('The declaration publication differs from its physical outputs.')
+        outputs=published['published_outputs']
     return outputs,before,_physical_import_provenance(record,inputs,snapshot,source,compiler,flags),context
 
 
@@ -489,7 +512,7 @@ class OutputReceipts:
         _publish(self.root / ('INDEX-%06d.json' % len(self.rows)), value)
         _publish(self.root / 'INDEX.json', value, replace=True)
 
-    def accept(self, source, obj, compiler, flags, result, *, physical_result=None):
+    def accept(self, source, obj, compiler, flags, result, *, physical_result=None, publication=None):
         if result.get('success') is not True:
             raise ValueError('A failed compilation cannot publish an accepted object.')
         if producer() != self.snapshot['producer']:
@@ -521,13 +544,14 @@ class OutputReceipts:
             physical_result=candidates[0]
         if physical_result in self.physical:raise ValueError('A physical compiler record was already accepted.')
         outputs,before,imports,context=_physical_record(physical_result,self.snapshot,self.reference,
-            receipt['source'],receipt['compiler'],list(flags),receipt['object'],self.rows)
+            receipt['source'],receipt['compiler'],list(flags),receipt['object'],self.rows,publication=publication)
         if output_artifact(obj)!=outputs['object'] or output_artifact(Path(obj).with_suffix('.vos'))!=outputs['sidecar']:
             raise ValueError('A compiler output changed after its physical record.')
         receipt.update(physical_result=physical_result,sidecar=outputs['sidecar'],sidecar_prestate=before,
                        sidecar_status=outputs['sidecar_status'])
         if imports is not None:receipt['import_provenance']=imports
         receipt['compiler_context']=context
+        if publication is not None:receipt['publication']=publication
         if (_identity(lexical)!=object_identity or _namespace(lexical)!=object_namespace
                 or str(lexical.resolve())!=canonical):
             raise ValueError('An accepted object changed during receipt publication.')
@@ -576,7 +600,8 @@ def accepted_objects(snapshot, reference, key, compiler, flags):
         if receipt['physical_result'] in physical_seen:
             raise ValueError('A physical compiler record authenticates multiple receipts.')
         outputs,before,imports,context=_physical_record(receipt['physical_result'],snapshot,reference,
-            receipt['source'],compiler,selected_flags,receipt['object'],prior)
+            receipt['source'],compiler,selected_flags,receipt['object'],prior,
+            publication=receipt.get('publication'))
         primary={'binding':receipt['object'],'lexical_path':receipt['object_lexical_path'],
                  'canonical_path':receipt['object_canonical_path'],'identity':receipt['object_identity'],
                  'namespace':receipt['object_namespace']}
@@ -668,6 +693,16 @@ def hash_inputs(source, compiler, flags):
 
 
 def validate_compiler(runtime, runtime_reference, snapshot_reference, source_binding, compiler, *, output_key=None):
+    if runtime.get('declaration_dag') is not None:
+        from declaration_outputs import publication_lock
+        with publication_lock(snapshot_reference):
+            return _validate_compiler(runtime,runtime_reference,snapshot_reference,source_binding,
+                                      compiler,output_key=output_key)
+    return _validate_compiler(runtime,runtime_reference,snapshot_reference,source_binding,
+                              compiler,output_key=output_key)
+
+
+def _validate_compiler(runtime, runtime_reference, snapshot_reference, source_binding, compiler, *, output_key=None):
     from harness_commit import check
     if not isinstance(source_binding,dict) or set(source_binding)!={'path','sha256'}:
         raise ValueError('The physical compiler source binding is incomplete.')
