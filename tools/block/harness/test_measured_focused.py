@@ -15,7 +15,7 @@ class CompletedControlPeakTests(unittest.TestCase):
   source_ref={'path':str(source),'sha256':hashlib.sha256(source.read_bytes()).hexdigest()};module='Example.Control';old={'module':module,'steps':[{'body':'iSteps.'}]};new={'module':module,'steps':[{'body':'repeat liStep.'}]};compiler={'path':'/pinned/coqc','sha256':'c'*64};job={'key':'prerequisites','phase':'prerequisites','ordered_modules':[],'target':{'module':module}}
   self.prior={'prepared_workspace':str(workspace),'proof_runtime':{'module_files':{module:'Control.v'}},'bindings':[source_ref],'physical_flags':['-Q',str(workspace),'Example'],'control_session':old,'effective_compiler_version':{'compiler':compiler},'declarations_only':True,'jobs':[job]}
   cpu={'aggregate_peak_bytes':6954352640,'CPU_budget_enforced':False,'final_memory_accounting_available':True,'memory_events':{'available':True,'counters':{'max':0,'oom':0,'oom_kill':0,'oom_group_kill':0}}};key='claim';directory=root/'job'
-  self.m={'accounting':save('job/CPU-FINAL.json',cpu),'completed_failed_run':save('job/RESULT.json',{'phase':'prerequisites','status':'infrastructure_failed','returncode':1,'CPU':cpu,'aggregate_peak_bytes':6954352640}),'closure':save('job/CLOSURE.json',{'all_owned_actors_closed':True,'actors':[{'ended':True}],'claim_key':key}),'release':save('job/RELEASE.json',{'released':True,'claim_key':key,'bytes':64*1024**3}),'calls':save('CALLS.json',[]),'profile_origin':save('old-profile.json',{'sources':[]}),'session':save('session.json',new),'subject':source_ref,'peak_bytes':6954352640,'claim_bytes':10431528960,'physical_fence_bytes':64*1024**3}
+  self.m={'accounting':save('job/CPU-FINAL.json',cpu),'completed_failed_run':save('job/RESULT.json',{'success':False,'phase':'prerequisites','status':'infrastructure_failed','returncode':1,'CPU':cpu,'aggregate_peak_bytes':6954352640}),'closure':save('job/CLOSURE.json',{'all_owned_actors_closed':True,'actors':[{'ended':True}],'claim_key':key}),'release':save('job/RELEASE.json',{'released':True,'claim_key':key,'bytes':64*1024**3}),'calls':save('CALLS.json',[]),'profile_origin':save('old-profile.json',{'sources':[]}),'session':save('session.json',new),'subject':source_ref,'peak_bytes':6954352640,'claim_bytes':10431528960,'physical_fence_bytes':64*1024**3}
   self.authority={'schema':'scratch.completed-control-peak-authority.v1','measurement':save('measurement.json',self.m),'prior_runtime':save('runtime.json',self.prior),'prior_job_runtime':save('job/RUNTIME.json',{'phase':'prerequisites','physical_compiler':compiler,'control_session':old,'job_output':str(directory),'ordered_modules':[]}), 'prior_control_session':old,'current_control_session':new,'source_module':module,'source_sha256':source_ref['sha256']}
   auth=save('authority.json',self.authority);mock=patch.object(measured,'POLICY_SHA',auth['sha256']);mock.start();self.addCleanup(mock.stop)
   self.profile={'schema':'scratch.admission-profile.v1','kind':'focused_check','sources':[],'memory_booking':measured.BOOKING,'completed_control_peak':auth,'control_source':dict(source_ref,module=module,role='consumer_check')}
@@ -64,6 +64,24 @@ class CompletedControlPeakTests(unittest.TestCase):
    self.assertEqual(memory.validate_job(selected),10431528960)
  def test_expanded_compile_boundary_refuses(self):
   with self.assertRaisesRegex(ValueError,'compile boundary'):measured.claim(self.profile,self.config,['Other.Module'])
+ def completed_session(self):
+  peak=25449766912;cpu=measured.read(self.m['accounting']);cpu['aggregate_peak_bytes']=peak;self.m['accounting']=self.save_local('job/CPU-FINAL.json',cpu)
+  result=measured.read(self.m.pop('completed_failed_run'));result.update(success=True,status='passed',returncode=0,CPU=cpu,aggregate_peak_bytes=peak);self.m['result']=self.save_local('job/RESULT.json',result)
+  self.m['final_validation']=self.save_local('final-validation.json',{'final_validation':{'success':True}})
+  self.m['calls']=self.save_local('CALLS.json',[{'tool':'rocq_health','result':{'success':True}},{'tool':'rocq_health','result':{'success':True}}])
+  self.m['control_session_result']=self.save_local('control-result.json',{'specification':self.authority['prior_control_session'],'source':{'sha256':self.authority['source_sha256']},'native_calls':0,'observations':[{'result':{'success':True}}]})
+  self.m.update(peak_bytes=peak,claim_bytes=38174650368);self.authority.update(measurement=self.save_local('measurement.json',self.m),completed_result={'success':True,'status':'passed','returncode':0});ref=self.save_local('authority.json',self.authority);self.profile['completed_control_peak']=ref
+  mock=patch.object(measured,'POLICY_SHA',ref['sha256']);mock.start();self.addCleanup(mock.stop)
+ def save_local(self,name,value):
+  root=Path(self.profile['completed_control_peak']['path']).parent;path=root/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(value));return {'path':str(path),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
+ def test_completed_open_session_uses_exact_new_peak(self):
+  self.completed_session();self.assertEqual(measured.claim(self.profile,self.config),38174650368)
+ def test_completed_session_requires_final_health(self):
+  self.completed_session()
+  with self.changed('calls',lambda x:x.pop()),self.assertRaisesRegex(ValueError,'health'):measured.claim(self.profile,self.config)
+ def test_completed_session_requires_final_validation(self):
+  self.completed_session()
+  with self.changed('final_validation',lambda x:x.update(final_validation={'success':False})),self.assertRaises(ValueError):measured.claim(self.profile,self.config)
  def test_default_unchanged(self):
   with tempfile.TemporaryDirectory() as tmp:
    self.profile.pop('memory_booking');self.profile.pop('completed_control_peak');self.profile.pop('control_source')

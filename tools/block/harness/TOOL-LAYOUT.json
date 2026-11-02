@@ -93,5 +93,6 @@
   "block/scope_bookings.py": "code/scope_bookings.py",
   "policies/CONTROLLER-PEAK-OBSERVATIONS.json": "policies/CONTROLLER-PEAK-OBSERVATIONS.json",
   "block/measured_focused.py": "code/measured_focused.py",
-  "policies/FOCUSED-CONTROL-PEAK.json": "policies/FOCUSED-CONTROL-PEAK.json"
+  "policies/FOCUSED-CONTROL-PEAK.json": "policies/FOCUSED-CONTROL-PEAK.json",
+  "policies/FOCUSED-CONTROL-STOCK018-PEAK.json": "policies/FOCUSED-CONTROL-STOCK018-PEAK.json"
 }

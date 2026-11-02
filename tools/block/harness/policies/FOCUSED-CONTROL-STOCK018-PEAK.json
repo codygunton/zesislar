@@ -1,0 +1,69 @@
+{
+  "schema": "scratch.completed-control-peak-authority.v1",
+  "measurement": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/measured-focused-stock018-v1/MEASUREMENT.json",
+    "sha256": "21bff053215fa4d6dec936ceddf03c7315e5ff5992bd0ceaf8917a02ec285618"
+  },
+  "prior_runtime": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/control-Lithium-stock018/prepare001/RUNTIME.json",
+    "sha256": "9ab7371636faa19c74997c2cde59c42b496291c89109c549e441ac86df569fe3"
+  },
+  "prior_job_runtime": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/control-Lithium-stock018/prepare001/jobs/prerequisites/RUNTIME.json",
+    "sha256": "1e7aff8d41d3dd0e193620f1e0321c2660e0fc1bd4362d7b36b6929303af35d2"
+  },
+  "prior_control_session": {
+    "module": "ZesuSsz.Evidence.Join6ae0Scratch",
+    "line": 41,
+    "character": 5,
+    "fixture": true,
+    "steps": [
+      {
+        "name": "rewrite",
+        "from": "start",
+        "body": "rewrite /decodeItemEntryAt800d6ae0 /generatedJoin6ae0 /decodeItemReturnEntryCore.",
+        "required": true,
+        "export": true
+      },
+      {
+        "name": "comparison",
+        "from": "rewrite",
+        "body": "iStartProof.\niIntros.\nrepeat liStep.",
+        "required": true,
+        "export": true
+      }
+    ]
+  },
+  "current_control_session": {
+    "module": "ZesuSsz.Evidence.Join6ae0Scratch",
+    "line": 41,
+    "character": 5,
+    "fixture": true,
+    "steps": [
+      {
+        "name": "rewrite",
+        "from": "start",
+        "body": "rewrite /decodeItemEntryAt800d6ae0 /generatedJoin6ae0 /decodeItemReturnEntryCore.",
+        "required": true,
+        "export": true
+      },
+      {
+        "name": "comparison",
+        "from": "rewrite",
+        "body": "iStartProof.\niIntros.\nrepeat liStep.",
+        "required": true,
+        "export": true
+      }
+    ]
+  },
+  "source_module": "ZesuSsz.Evidence.Join6ae0Scratch",
+  "source_sha256": "a3cc64d964ebf6f29de5b605f4c24677a42058d693de1505f9eb0d19df8d6a29",
+  "completed_result": {
+    "success": true,
+    "status": "passed",
+    "returncode": 0
+  },
+  "transition": "The source is exact. This authority retains stock018 session until the next approved session is bound.",
+  "origin_label": "completed-control-session-with-residual",
+  "native_proof_acceptance": false
+}
