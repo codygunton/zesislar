@@ -7,7 +7,8 @@ import tempfile
 import unittest
 
 import scratch
-from entry_chain_stage import import_commands
+from entry_chain_stage import import_commands, graph_closure
+import test_object_imports as object_fixtures
 
 
 class PlannerScopeTests(unittest.TestCase):
@@ -34,6 +35,22 @@ class PlannerScopeTests(unittest.TestCase):
         self.edges = [{'from': 'First', 'to': 'Shared'},
                       {'from': 'First', 'to': self.rules},
                       {'from': self.rules, 'to': 'Shared'}]
+        # Bind nonproof receipt fixtures through the real reuse consumer.
+        self.provenance = object_fixtures.ObjectImportTests()
+        self.provenance.setUp()
+        self.addCleanup(self.provenance.temp.cleanup)
+        self.provenance.old = self.provenance.current = self.workspace
+        self.provenance.modules = self.modules
+        self.provenance.flags = ['-Q', str(self.workspace), 'ZesuSsz']
+        self.provenance.edges = [{'from': name, 'to': dependency}
+            for name, source in self.sources.items()
+            for _, dependencies in import_commands(source) for dependency in dependencies]
+        forward = {}
+        for edge in self.provenance.edges:
+            forward.setdefault(edge['from'], set()).add(edge['to'])
+        for name, relative in self.modules.items():
+            if (self.workspace / relative).with_suffix('.vo').is_file():
+                self.provenance.record(name, sorted(graph_closure(forward.get(name, ()), forward)))
 
     def plan(self, changed=(), *, declarations=True):
         # Execute the planning block from prepare(). This includes its actual
@@ -56,7 +73,7 @@ class PlannerScopeTests(unittest.TestCase):
             def register_source(self, *args):
                 pass
 
-            def resolution(self, name, *, origin=None):
+            def source_resolution(self, name, modules, *, origin=None):
                 raise ValueError('The unit fixture has no installed owner: ' + name)
 
         namespace = dict(vars(scratch),
@@ -66,7 +83,11 @@ class PlannerScopeTests(unittest.TestCase):
                               control_session=declarations),
             targets=[{'module': 'First'}, {'module': 'Second'}], module='First',
             edges=list(self.edges), modules=self.modules, workspace=self.workspace,
-            installed=Resolver(), changed=list(changed))
+            installed=Resolver(), changed=list(changed), source=self.workspace,
+            out=self.workspace/'plan',
+            c={'object_imports': self.provenance.receipts,
+               'effective_compiler_version': {'compiler': self.provenance.compiler},
+               'physical_flags': self.provenance.flags})
         exec(code, namespace)
         return namespace['plan']
 
