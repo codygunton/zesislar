@@ -11,10 +11,10 @@ Ltac zesu_word_identity :=
   ZesuSsz.Automation.SwitchDispatch.zesu_switch_enabled
     constr:(ZesuStepWordIdentity);
   lazymatch goal with
-  | |- @eq (bv ?width) ?left (Z_to_bv ?target_width ?value) =>
+  | |- @eq (bv ?width) ?lhs (Z_to_bv ?target_width ?value) =>
       constr_eq width target_width;
       is_closed_term width;
-      lazymatch left with
+      lazymatch lhs with
       | @BV _ Z0 _ =>
           solve [apply bv_eq; change (0%Z = 0%Z); reflexivity]
       | bv_add (Z_to_bv ?source_width ?base) ?offset =>
@@ -26,7 +26,9 @@ Ltac zesu_word_identity :=
               is_closed_term offset;
               is_closed_term displacement;
               let reduced := eval vm_compute in displacement in
-              solve [change (left = Z_to_bv width (base - reduced)%Z);
+              let reduced_offset := eval vm_compute in offset in
+              solve [change (bv_add (Z_to_bv width base) reduced_offset =
+                             Z_to_bv width (base - reduced)%Z);
                      bv_solve]
           end
       end
