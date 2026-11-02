@@ -7,7 +7,7 @@ sys.path[:0]=[str(HERE/'code'),str(HERE.parent),str(HERE.parents[1])]
 from entry_chain import binding
 import closed_object_staging as S
 import object_import_migration as M
-from closed_compilation_origin import LABEL
+from closed_compilation_origin import LABEL, STOP_LABEL
 
 class ClosedObjectStagingTests(unittest.TestCase):
  def setUp(self):
@@ -27,6 +27,15 @@ class ClosedObjectStagingTests(unittest.TestCase):
  def test_exact_objects_and_sidecars_stage(self):
   result=self.stage();self.assertEqual(result['count'],1);self.assertFalse(result['compatibility_granted'])
   self.assertEqual((self.current/'Owner.vo').read_bytes(),b'physical object');self.assertEqual((self.current/'Owner.vos').read_bytes(),b'physical sidecar')
+ def test_authorized_stopped_individual_outputs_use_the_same_staging_checks(self):
+  self.accepted['kind']=STOP_LABEL
+  self.value['origin']=self.accepted
+  self.reference=self.save('migration.json',self.value)
+  self.config['object_imports'][self.module]=self.reference
+  result=self.stage()
+  self.assertEqual(result['count'],1)
+  self.assertFalse(result['compatibility_granted'])
+  self.assertEqual((self.current/'Owner.vo').read_bytes(),b'physical object')
  def test_different_existing_bytes_refuse(self):
   (self.current/'Owner.vo').write_bytes(b'other')
   with self.assertRaisesRegex(ValueError,'different bytes'):self.stage()

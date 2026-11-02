@@ -7,7 +7,7 @@ from pathlib import Path
 import json
 import clone_copy
 from entry_chain import binding,read_bound
-from closed_compilation_origin import LABEL
+from closed_compilation_origin import LABEL, STOP_LABEL
 
 
 def stage(config, workspace, modules):
@@ -16,7 +16,7 @@ def stage(config, workspace, modules):
  with batch():
   for module,reference in sorted(config.get('object_imports',{}).items()):
    migrated=read_bound(reference)
-   if migrated.get('schema')!='entry-chain.object-import-migration.v1' or migrated.get('origin',{}).get('kind')!=LABEL:continue
+   if migrated.get('schema')!='entry-chain.object-import-migration.v1' or migrated.get('origin',{}).get('kind') not in (LABEL,STOP_LABEL):continue
    if migrated.get('module')!=module or module not in modules:raise ValueError('A staged closed object names another module.')
    original=Path(migrated['source']['path']);obj=Path(migrated['object']['path']);old=Path(migrated['owned_workspace']).resolve();target=workspace/modules[module]
    if not target.resolve().is_relative_to(workspace) or target.resolve().relative_to(workspace)!=original.resolve().relative_to(old):raise ValueError('A closed object staging path escapes or changes its module mapping.')
