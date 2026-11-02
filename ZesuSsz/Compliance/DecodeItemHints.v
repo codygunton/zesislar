@@ -40,6 +40,7 @@ Require Export ZesuSsz.Compliance.DecodeItemCanonicalEntryFacts.
 
 #[export] Instance decodeItemSysRegs_unfold :
   LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemSysRegs) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemSysRegs.
 
 (* Derive the source domain and its exact length interval together. *)
 #[export] Instance decodeItemDomainAtLengthDerivedFacts
