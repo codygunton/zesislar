@@ -11,6 +11,7 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import shlex
+import sys
 import tempfile
 
 try:
@@ -25,6 +26,8 @@ if not _admission.is_file():
     _admission = _directory / 'block/admission_memory.py'
 if not _admission.is_file() or not _admission.resolve().is_relative_to(_directory):
     raise ImportError('The module memory helper lacks its owned admission dependency.')
+# The admission reader imports its owned siblings after module loading.
+sys.path.insert(0, str(_admission.resolve().parent))
 _spec = importlib.util.spec_from_file_location('_zesu_owned_admission_memory', _admission)
 _module = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_module)

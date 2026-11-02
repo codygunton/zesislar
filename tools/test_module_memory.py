@@ -107,6 +107,46 @@ class ModuleMemoryTests(unittest.TestCase):
             self.assertEqual(memory.main(), 0)
         self.assertEqual(observed.call_args.kwargs['fallback_bytes'], 64*memory.GIB)
 
+    def test_owned_loader_resolves_late_controller_booking_import(self):
+        import os
+        import subprocess
+        import sys
+        import textwrap
+
+        tools = Path(__file__).resolve().parent
+        script = textwrap.dedent("""
+            from pathlib import Path
+            import sys
+
+            tools = Path(sys.argv[1]).resolve()
+            harness = tools / "block/harness"
+            code = harness / "code"
+            sys.path[:0] = [str(harness), str(code), str(tools / "block"), str(tools)]
+            from test_controller_association import ControllerAssociationTests
+
+            fixture = ControllerAssociationTests()
+            fixture.setUp()
+            try:
+                sys.path[:] = [p for p in sys.path if Path(p).resolve() != code]
+                sys.modules.pop("scope_bookings", None)
+                sys.path.insert(0, str(tools))
+                import module_memory
+
+                f = fixture.f
+                sample = module_memory.ScopeReader.claim(
+                    f.reader, f.data, f.key, pending_shell=(f.marker, f.token))
+                assert sample["verified"], sample
+                assert sample["aggregate_verified"], sample
+            finally:
+                fixture.doCleanups()
+        """)
+        environment = dict(os.environ)
+        environment.pop("PYTHONPATH", None)
+        result = subprocess.run([sys.executable, "-c", script, str(tools)],
+                                cwd=self.root, env=environment,
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
     def test_admission_uses_exact_seventy_percent_boundary(self):
         self.assertTrue(memory.admission(40, [30], 100, headroom_bytes=0)["admitted"])
         self.assertEqual(memory.admission(41, [30], 100, headroom_bytes=0)["reason"], "memory_budget")
