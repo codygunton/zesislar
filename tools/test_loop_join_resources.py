@@ -112,6 +112,17 @@ class LoopJoinResourceTests(unittest.TestCase):
         self.assertEqual(result['boundary']['write_accounting']['processed_writes'], 1)
         self.assertEqual(seed.resources[0].byte_array, input_expr('bytes', None))
         self.assertEqual(len(result['seed'].state.writes), 1)
+        self.assertEqual(result['class_record']['inherited_source_facts'], seed.facts)
+
+    def test_trace_conditioned_fact_cannot_bypass_projection(self):
+        condition = operation('=', input_expr('unbound_system_word'), bits(0, 64)).to_dict()
+        for dependency in ([condition], False, []):
+            with self.subTest(dependency=dependency):
+                seed, source, continuation = self.fixture()
+                seed.facts.append({'fact_id': 'conditional', 'kind': 'bounds', 'status': 'derived-by-pass',
+                    'terms': {'resource_id': 'memory'}, 'origin': {'source_conditions': dependency}})
+                with self.assertRaisesRegex(ValueError, 'trace-condition justification'):
+                    self.assemble(seed, source, continuation)
 
 
 if __name__ == '__main__':unittest.main()

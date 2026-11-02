@@ -9,8 +9,21 @@ from symbolic_state import Expr, input_expr, operation
 from render_support import binders, expression
 
 
+def _trace_fact_dependencies(value):
+    if isinstance(value, dict):
+        names = {'condition_dependencies', 'source_conditions', 'trace_conditions',
+                 'path_conditions', 'guard', 'guards'}
+        return any(key in names or _trace_fact_dependencies(item)
+                   for key, item in value.items())
+    if isinstance(value, list):
+        return any(_trace_fact_dependencies(item) for item in value)
+    return False
+
+
 def assemble_loop_class(source, *, original_seed, vocabulary, continuation, outer_names=()):
     """Keep exact ownership and the accepted minimal condition dependencies."""
+    if any(_trace_fact_dependencies(fact) for fact in original_seed.facts):
+        raise ValueError('An inherited source fact needs a separate trace-condition justification')
     state = _state_from_result(source['proposed_state'])
     projection = source['relation_condition_projection']
     indices = projection['condition_indices']
@@ -139,5 +152,7 @@ def assemble_loop_class(source, *, original_seed, vocabulary, continuation, oute
             'control_transfer_obligations': deepcopy(source['control_transfer_obligations']),
             'zero_read_arm_refutation_source': deepcopy(source['zero_read_arm_refutation_source']),
             'minimal_condition_sets': deepcopy(source['minimal_condition_sets']),
+            'inherited_source_facts': deepcopy(original_seed.facts),
+            'source_fact_origin': 'Original public seed and source-domain facts; no trace-condition inference',
             'source_class_preserved': deepcopy(source),
             'kernel_entailments': 'OPEN'}}
