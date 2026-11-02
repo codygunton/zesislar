@@ -16,6 +16,7 @@ sys.path[:0] = [str(HERE / 'code'), str(HERE)]
 import scratch
 import scratch_limits as limits
 from entry_chain import save
+from entry_chain_provider import retain_long_check
 import memory_policy
 
 
@@ -212,7 +213,8 @@ class SearchWindowControls(unittest.TestCase):
         output.mkdir()
         namespace = {'runtime': {'phase': 'native'}, 'native_body': 'zesu_block.', 'output': output, 'calls': [],
                      'check_operation': lambda runtime, **kwargs: {}, 'atomic_json': save,
-                     'time': time, 'traceback': traceback, 'ToolFailure': RuntimeError}
+                     'time': time, 'traceback': traceback, 'ToolFailure': RuntimeError,
+                     'retain_long_check': retain_long_check}
         exec(compile(ast.fix_missing_locations(ast.Module(body=[function], type_ignores=[])), '<provider-call>', 'exec'), namespace)
         control = self
 
@@ -249,7 +251,8 @@ class SearchWindowControls(unittest.TestCase):
         output.mkdir()
         namespace = {'runtime': {'phase': 'native'}, 'native_body': 'zesu_block.', 'output': output, 'calls': [],
                      'check_operation': lambda runtime, **kwargs: {}, 'atomic_json': save,
-                     'time': time, 'traceback': traceback, 'ToolFailure': RuntimeError}
+                     'time': time, 'traceback': traceback, 'ToolFailure': RuntimeError,
+                     'retain_long_check': retain_long_check}
         exec(compile(ast.fix_missing_locations(ast.Module(body=[function], type_ignores=[])), '<provider-call>', 'exec'), namespace)
         control = self
 

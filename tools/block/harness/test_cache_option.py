@@ -44,7 +44,7 @@ class CacheOptionControls(unittest.TestCase):
     scratch.configure_cache(config,setting)
     path=out/'RUNTIME.json';path.write_text(json.dumps(config));(out/'INPUTS.json').write_text('{}')
     (native/'RESULT.json').write_text(json.dumps({'status':'infrastructure_failed','error':'Deliberate fixture. No native launch.'}))
-    with patch('restart_bindings.verify_restart_runtime'),patch.object(scratch,'check_proof_bindings'),patch.object(scratch.subprocess,'run') as run,patch.dict(scratch.os.environ,{'ZESU_IO':'','ZESU_PROOF_CACHE':'opposite'}):
+    with patch('restart_bindings.verify_restart_runtime'),patch.object(scratch,'check_proof_bindings'),patch('controller_cleanup.run') as run,patch.dict(scratch.os.environ,{'ZESU_IO':'','ZESU_PROOF_CACHE':'opposite'}):
      self.assertEqual(scratch.execute(path,scratch.digest(path)),2)
     self.assertEqual(run.call_args.kwargs['env']['ZESU_PROOF_CACHE'],setting)
     summary=json.loads((out/'RESULT.json').read_text())
@@ -52,7 +52,7 @@ class CacheOptionControls(unittest.TestCase):
  def test_gate_cannot_opt_into_checkpoint_cache(self):
   with tempfile.TemporaryDirectory() as directory:
    out=Path(directory);config={'bindings':[],'jobs':[{},{}],'result_cache':{'purpose':'exploration'}};path=out/'RUNTIME.json';path.write_text(json.dumps(config))
-   with patch('restart_bindings.verify_restart_runtime'),patch.object(scratch,'check_proof_bindings'),patch.object(scratch.subprocess,'run') as run,patch.dict(scratch.os.environ,{'ZESU_IO':'gate'}):
+   with patch('restart_bindings.verify_restart_runtime'),patch.object(scratch,'check_proof_bindings'),patch('controller_cleanup.run') as run,patch.dict(scratch.os.environ,{'ZESU_IO':'gate'}):
     with self.assertRaisesRegex(ValueError,'gate cannot'):scratch.execute(path,scratch.digest(path))
    run.assert_not_called()
 if __name__=='__main__':unittest.main()
