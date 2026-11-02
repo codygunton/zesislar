@@ -271,6 +271,14 @@ def comparisons(policy, module, obj, flags, coqdep, *, recorded=None, supplier=N
     return rows, result
 
 
+def receipt_comparison(result, owner):
+    """Keep complete comparisons without repeating each dependency's imports."""
+    summaries = [row for row in result['objects'] if row['path'] == str(Path(owner).resolve())]
+    if len(summaries) != 1:
+        raise ValueError('The migration comparison lacks one exact owner summary.')
+    return {**result, 'objects': summaries}
+
+
 def create(reference, module, source, obj, compiler, flags, workspace):
     policy = json.loads(POLICY.read_text())
     workspace, source, obj = Path(workspace).resolve(), Path(source), Path(obj)
@@ -285,7 +293,7 @@ def create(reference, module, source, obj, compiler, flags, workspace):
             'owned_workspace': str(workspace), 'source': binding(source), 'object': binding(obj),
             'compiler': compiler, 'normalized_flags': normalized(effective, workspace),
             'inspector_build': policy['inspector_build'], 'coqdep': coqdep,
-            'imported_objects': rows, 'comparison': result,
+            'imported_objects': rows, 'comparison': receipt_comparison(result, obj),
             'qualification': 'Authenticated migration. No new physical compilation or proof check.'}
 
 

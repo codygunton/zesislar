@@ -78,6 +78,16 @@ class MigrationTests(unittest.TestCase):
         self.assertEqual(workspace, self.workspace)
         self.assertNotIn('successful_compilation', receipt)
 
+    def test_compact_receipt_keeps_every_comparison_and_owner_summary(self):
+        result=self.inspect({},[self.obj],[])
+        result['objects'].append({'path':str(self.installed),'module':'Coq.Installed',
+            'imports':[{'module':'Repeated.Transitive.Import'}]})
+        result['checks']=[{'module':name,'compatible':True} for name in self.names]
+        compact=migration.receipt_comparison(result,self.obj)
+        self.assertEqual(compact['objects'],[result['objects'][0]])
+        self.assertEqual(compact['checks'],result['checks'])
+        self.assertEqual(len(result['objects']),2)
+
     def test_changed_PureFacts_refuses_ReturnBundle(self):
         receipt = self.create()
         self.dependency.write_bytes(b'changed dependency')
