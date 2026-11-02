@@ -20,6 +20,14 @@ SLICE_MAX_BYTES = 175 * GIB
 STATIC_KERNEL_ACCOUNT_SCHEMA = 'legacy_kernel_accounts.v1'
 CGROUP_ROOT = Path('/sys/fs/cgroup')
 PROC = Path('/proc')
+# Preserve only these byte-exact public templates from the accepted predecessor.
+PUBLIC_GUARD_HISTORY = {
+    'commit': '76a6622449395debea3b224bd6c5b981e61fd7d0',
+    'templates': {
+        'tools/resource_guard.sh': 'fd70d33ffc7a8515141529f4f1ba43df56e265d4c2df5c27fa7cb2ee7a4666f1',
+        'tools/block/harness/runtime-tools/resource_guard.sh': '6e4940725cf327cc7bc1693ec121d98145dbb618a09cc0b011a6f2ea4d8f5fcf',
+    },
+}
 
 
 class RejectedScopeSetup(ValueError):
@@ -535,7 +543,7 @@ class ScopeReader:
             raise ValueError('The public guard source is not owned.')
         tools = next(parent for parent in Path(__file__).resolve().parents if parent.name == 'tools')
         digest = hashlib.sha256(path.read_bytes()).hexdigest()
-        approved = False
+        approved = digest in PUBLIC_GUARD_HISTORY['templates'].values()
         for public in (tools / 'resource_guard.sh',
                        tools / 'block/harness/runtime-tools/resource_guard.sh'):
             try:
