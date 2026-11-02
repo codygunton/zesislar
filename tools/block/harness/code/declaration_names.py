@@ -114,7 +114,8 @@ def references(command, definitions):
         if i and words[i - 1] in QUOTATIONS and word == ':':
             continue
         if word in definitions and (i == start or words[i - 1] in HEAD_AFTER):
-            candidates.append((word, command[i][1], word in local))
+            candidates.append((word, command[i][1], word in local,
+                               i > start and words[i - 1] == '('))
     return candidates
 
 
@@ -144,6 +145,8 @@ def inspect(ordered, documents):
         loaded, visible, local, calls, mechanisms = {owner}, set(), set(), [], []
         proof = False
         scopes = []
+        term_bindings = set()
+        section_bindings = set()
         imports_by_sentence = {}
         for row in doc['imports']:
             imports_by_sentence.setdefault(row[0], []).append(row)
@@ -158,6 +161,17 @@ def inspect(ordered, documents):
                 if mode in {'Import', 'Export'}:
                     visible.update(closure([target], exported=True))
             mechanisms.extend(reason for position, reason in doc['unknown'] if position == index)
+            if simple[:1] in [['Lemma'], ['Theorem'], ['Definition'], ['Goal'], ['Context'],
+                               ['Variable'], ['Variables'], ['Hypothesis']]:
+                # A term binder can shadow a tactic identifier. Its type is
+                # outside this check, so retain uncertainty rather than guess.
+                bound = {word for word in words if word in names}
+                if simple[0] in {'Context','Variable','Variables','Hypothesis'}:
+                    section_bindings.update(bound)
+                else:
+                    term_bindings.update(bound)
+            if proof and simple[:1] in [['intro'], ['intros'], ['pose'], ['set'], ['assert'], ['remember']]:
+                term_bindings.update(word for word in words if word in names)
             if simple[:1] in [['Proof'], ['Goal']]:
                 proof = True
             if simple[:1] == ['Module'] and len(simple) == 2:
@@ -173,21 +187,24 @@ def inspect(ordered, documents):
                         uncertain.add('unmodeled_import:' + name)
                     elif other['unknown']:
                         uncertain.add('unsupported_imported_mechanism:' + name)
-                for name, offset, shadowed in references(command, names):
+                for name, offset, shadowed, parenthesized in references(command, names):
                     candidates = names[name]
                     qualified = '.' in name
                     matches = [(module, item) for module, item in candidates
                                if ((module == owner and item['scope'] == scopes[:len(item['scope'])] and
                                     (item['index'] < index or is_ltac and item['index'] == index))
-                                   or not item['local'] and module in (loaded if qualified else visible))]
+                                   or module != owner and not item['local'] and module in (loaded if qualified else visible))]
                     reasons = set(uncertain)
+                    shadowed = shadowed or name in term_bindings or name in section_bindings
                     if shadowed:
                         reasons.add('local_value_binding')
+                    if parenthesized:
+                        reasons.add('ambiguous_parenthesized_reference')
                     if 'Fail' in words:
                         reasons.add('expected_failure_command')
                     if len(matches) > 1:
                         reasons.add('ambiguous_project_name')
-                    status = ('unknown' if shadowed or len(matches) > 1 else
+                    status = ('unknown' if shadowed or parenthesized or len(matches) > 1 else
                               'visible' if matches else 'unknown' if reasons else 'missing')
                     calls.append({'name': name, 'line': doc['text'].count('\n', 0, offset) + 1,
                                   'project_visibility': bool(matches), 'status': status,
@@ -198,6 +215,7 @@ def inspect(ordered, documents):
                     local.add(item['short'])
             if simple[:1] in [['Qed'], ['Defined'], ['Abort'], ['Admitted']]:
                 proof = False
+                term_bindings.clear()
         results.append({'module': owner, 'source': doc['source'], 'calls': calls,
                         'unsupported': [{'sentence': index, 'reason': reason}
                                         for index, reason in doc['unknown']]})

@@ -230,7 +230,8 @@ async def execute(request):
     from coqc_findlib import compiler_environment
     compiler_context=compiler_environment(workspace,environment)
     check_operation(runtime)
-    check_declaration_names(runtime, workspace, output)
+    if runtime['phase']=='prerequisites':
+        check_declaration_names(runtime, workspace, output)
     from compiler_snapshot import publish
     snapshot=publish(runtime,lambda:check_operation(runtime,force_full=True),
                      Path(request['output'])/'COMPILER-SNAPSHOT.json',environment=compiler_context)

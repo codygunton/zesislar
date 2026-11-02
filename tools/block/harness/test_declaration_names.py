@@ -94,6 +94,36 @@ class DeclarationNamesTests(unittest.TestCase):
         self.assertEqual(result['missing'], [])
         self.assertEqual(result['modules'][0]['calls'][0]['status'], 'unknown')
 
+    def test_qualified_current_module_cannot_use_a_later_definition(self):
+        result = self.report('Goal True. Proof. Project.Control.project_switch constr:(True). Abort. '
+                             'Ltac project_switch x := idtac.')
+        self.assertEqual(len(result['missing']), 1)
+        self.assertEqual(result['missing'][0]['name'], 'Project.Control.project_switch')
+
+    def test_parenthesized_term_binder_is_unknown_not_missing(self):
+        result = self.report('Require Project.Switch. Lemma example (project_switch : True) : True. '
+                             'Proof. exact (project_switch). Qed.')
+        self.assertEqual(result['missing'], [])
+        call = result['modules'][0]['calls'][0]
+        self.assertEqual(call['status'], 'unknown')
+        self.assertIn('ambiguous_parenthesized_reference', call['unknown_reasons'])
+
+    def test_parenthesized_grammar_alone_is_unknown(self):
+        result = self.report('Require Project.Switch. Goal True. Proof. exact (project_switch). Abort.')
+        self.assertEqual(result['missing'], [])
+        self.assertEqual(result['modules'][0]['calls'][0]['status'], 'unknown')
+
+    def test_local_term_binder_does_not_become_a_missing_tactic(self):
+        result = self.report('Lemma local_term (project_switch : True) : True. Proof. project_switch. Abort.')
+        self.assertEqual(result['missing'], [])
+        self.assertEqual(result['modules'][0]['calls'][0]['status'], 'unknown')
+
+    def test_ambiguous_project_name_is_unknown(self):
+        result = self.report('Require Import Project.Switch Project.Other. Goal True. Proof. project_switch constr:(True). Abort.',
+                             extra={'Project.Other':'Ltac project_switch x := idtac.'})
+        self.assertEqual(result['missing'], [])
+        self.assertIn('ambiguous_project_name', result['modules'][0]['calls'][0]['unknown_reasons'])
+
     def test_plugin_makes_missing_visibility_unknown(self):
         result = self.report('Require Import Project.Plugin. Goal True. Proof. project_switch constr:(True). Abort.',
                              extra={'Project.Plugin': 'Declare ML Module "bound-plugin".'})
