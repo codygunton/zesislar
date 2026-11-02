@@ -95,5 +95,6 @@
   "block/phase_attribution.py": "code/phase_attribution.py",
   "block/measured_focused.py": "code/measured_focused.py",
   "policies/FOCUSED-CONTROL-PEAK.json": "policies/FOCUSED-CONTROL-PEAK.json",
-  "policies/FOCUSED-CONTROL-STOCK018-PEAK.json": "policies/FOCUSED-CONTROL-STOCK018-PEAK.json"
+  "policies/FOCUSED-CONTROL-STOCK018-PEAK.json": "policies/FOCUSED-CONTROL-STOCK018-PEAK.json",
+  "policies/FOCUSED-CONTROL-RESOURCE019-PEAK.json": "policies/FOCUSED-CONTROL-RESOURCE019-PEAK.json"
 }

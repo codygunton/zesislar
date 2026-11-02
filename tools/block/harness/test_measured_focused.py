@@ -17,7 +17,7 @@ class CompletedControlPeakTests(unittest.TestCase):
   cpu={'aggregate_peak_bytes':6954352640,'CPU_budget_enforced':False,'final_memory_accounting_available':True,'memory_events':{'available':True,'counters':{'max':0,'oom':0,'oom_kill':0,'oom_group_kill':0}}};key='claim';directory=root/'job'
   self.m={'accounting':save('job/CPU-FINAL.json',cpu),'completed_failed_run':save('job/RESULT.json',{'success':False,'phase':'prerequisites','status':'infrastructure_failed','returncode':1,'CPU':cpu,'aggregate_peak_bytes':6954352640}),'closure':save('job/CLOSURE.json',{'all_owned_actors_closed':True,'actors':[{'ended':True}],'claim_key':key}),'release':save('job/RELEASE.json',{'released':True,'claim_key':key,'bytes':64*1024**3}),'calls':save('CALLS.json',[]),'profile_origin':save('old-profile.json',{'sources':[]}),'session':save('session.json',new),'subject':source_ref,'peak_bytes':6954352640,'claim_bytes':10431528960,'physical_fence_bytes':64*1024**3}
   self.authority={'schema':'scratch.completed-control-peak-authority.v1','measurement':save('measurement.json',self.m),'prior_runtime':save('runtime.json',self.prior),'prior_job_runtime':save('job/RUNTIME.json',{'phase':'prerequisites','physical_compiler':compiler,'control_session':old,'job_output':str(directory),'ordered_modules':[]}), 'prior_control_session':old,'current_control_session':new,'source_module':module,'source_sha256':source_ref['sha256']}
-  auth=save('authority.json',self.authority);mock=patch.object(measured,'POLICY_SHA',auth['sha256']);mock.start();self.addCleanup(mock.stop)
+  auth=save('authority.json',self.authority);mock=patch.object(measured,'STOCK018_POLICY_SHA',auth['sha256']);mock.start();self.addCleanup(mock.stop)
   self.profile={'schema':'scratch.admission-profile.v1','kind':'focused_check','sources':[],'memory_booking':measured.BOOKING,'completed_control_peak':auth,'control_source':dict(source_ref,module=module,role='consumer_check')}
   self.config=copy.deepcopy(self.prior);self.config['control_session']=copy.deepcopy(new)
  def test_exact_completed_error_claim(self):
@@ -34,6 +34,9 @@ class CompletedControlPeakTests(unittest.TestCase):
  def test_changed_flags_refuses(self):
   self.config['physical_flags'].append('-unsafe')
   with self.assertRaisesRegex(ValueError,'flags'):measured.claim(self.profile,self.config)
+ def test_retired_error_peak_authority_refuses(self):
+  self.profile['completed_control_peak']={'path':str(measured.POLICY),'sha256':measured.POLICY_SHA}
+  with self.assertRaisesRegex(ValueError,'not approved'):measured.authority(self.profile)
  def test_unapproved_accounting_authority_refuses(self):
   self.profile['completed_control_peak']['sha256']='0'*64
   with self.assertRaisesRegex(ValueError,'not approved'):measured.claim(self.profile,self.config)
@@ -70,8 +73,9 @@ class CompletedControlPeakTests(unittest.TestCase):
   self.m['final_validation']=self.save_local('final-validation.json',{'final_validation':{'success':True}})
   self.m['calls']=self.save_local('CALLS.json',[{'tool':'rocq_health','result':{'success':True}},{'tool':'rocq_health','result':{'success':True}}])
   self.m['control_session_result']=self.save_local('control-result.json',{'specification':self.authority['prior_control_session'],'source':{'sha256':self.authority['source_sha256']},'native_calls':0,'observations':[{'result':{'success':True}}]})
+  self.authority['comparison_session']=self.m['session'];self.m['session']=self.save_local('historical-session.json',self.authority['prior_control_session'])
   self.m.update(peak_bytes=peak,claim_bytes=38174650368);self.authority.update(measurement=self.save_local('measurement.json',self.m),completed_result={'success':True,'status':'passed','returncode':0});ref=self.save_local('authority.json',self.authority);self.profile['completed_control_peak']=ref
-  mock=patch.object(measured,'POLICY_SHA',ref['sha256']);mock.start();self.addCleanup(mock.stop)
+  mock=patch.object(measured,'STOCK018_POLICY_SHA',ref['sha256']);mock.start();self.addCleanup(mock.stop)
  def save_local(self,name,value):
   root=Path(self.profile['completed_control_peak']['path']).parent;path=root/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(value));return {'path':str(path),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
  def test_completed_open_session_uses_exact_new_peak(self):

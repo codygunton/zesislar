@@ -1,0 +1,112 @@
+{
+  "schema": "scratch.completed-control-peak-authority.v1",
+  "measurement": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/measured-focused-stock018-v1/MEASUREMENT.json",
+    "sha256": "21bff053215fa4d6dec936ceddf03c7315e5ff5992bd0ceaf8917a02ec285618"
+  },
+  "prior_runtime": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/control-Lithium-stock018/prepare001/RUNTIME.json",
+    "sha256": "9ab7371636faa19c74997c2cde59c42b496291c89109c549e441ac86df569fe3"
+  },
+  "prior_job_runtime": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/control-Lithium-stock018/prepare001/jobs/prerequisites/RUNTIME.json",
+    "sha256": "1e7aff8d41d3dd0e193620f1e0321c2660e0fc1bd4362d7b36b6929303af35d2"
+  },
+  "prior_control_session": {
+    "module": "ZesuSsz.Evidence.Join6ae0Scratch",
+    "line": 41,
+    "character": 5,
+    "fixture": true,
+    "steps": [
+      {
+        "name": "rewrite",
+        "from": "start",
+        "body": "rewrite /decodeItemEntryAt800d6ae0 /generatedJoin6ae0 /decodeItemReturnEntryCore.",
+        "required": true,
+        "export": true
+      },
+      {
+        "name": "comparison",
+        "from": "rewrite",
+        "body": "iStartProof.\niIntros.\nrepeat liStep.",
+        "required": true,
+        "export": true
+      }
+    ]
+  },
+  "current_control_session": {
+    "module": "ZesuSsz.Evidence.Join6ae0Scratch",
+    "line": 41,
+    "character": 5,
+    "fixture": true,
+    "steps": [
+      {
+        "name": "install_opener",
+        "from": "start",
+        "body": "From iris.proofmode Require Import environments.\nImport ZesuSsz.Automation.SwitchDispatch ZesuSsz.Automation.Hooks.\n#[local] Instance diagnostic_approved_register_collection :\n  Hooks.ZesuStepRegisterCollectionSelection := {}.\nLtac zesu_contains_existential_resource body :=\n  lazymatch body with\n  | @bi_exist _ _ _ => idtac\n  | (?left \u2217 ?right)%I =>\n      first [zesu_contains_existential_resource left |\n             zesu_contains_existential_resource right]\n  | _ =>\n      let head := get_head body in\n      let registered := constr:(_ : LithiumUnfold head) in\n      let expanded := eval cbv beta zeta delta [head] in body in\n      tryif constr_eq expanded body then fail else\n        zesu_contains_existential_resource expanded\n  end.\n\nLtac zesu_open_existential_package_step :=\n  first [\n    progress iMatchHyp ltac:(fun H body =>\n      lazymatch body with\n      | @bi_exist _ _ _ => iDestruct H as (?) H\n      end)\n  | progress iMatchHyp ltac:(fun H body =>\n      lazymatch body with\n      | (_ \u2217 _)%I => zesu_contains_existential_resource body;\n          iDestruct H as \"[? ?]\"\n      end)\n  | progress iMatchHyp ltac:(fun H body =>\n      let head := get_head body in\n      tryif first [constr_eq head constr:(@bi_sep) |\n                   constr_eq head constr:(@bi_pure) |\n                   constr_eq head constr:(@bi_exist)] then fail else idtac;\n      let expanded := eval cbv beta zeta delta [head] in body in\n      zesu_contains_existential_resource expanded;\n      progress iEval (unfold head) in H;\n      ResourceGroups.zesu_open_resource_groups)\n  ].\n\nLtac zesu_open_nested_existential_packages :=\n  zesu_open_existential_package_step;\n  repeat zesu_open_existential_package_step;\n  ResourceGroups.zesu_open_resource_groups.\n\n(* Preserve every package component before selecting the requested field. *)\nLtac ResourceGroups.zesu_open_requested_struct_sys_package ::=\n  ResourceGroups.zesu_expose_environment_alias;\n  lazymatch goal with\n  | |- envs_entails _ (find_in_context (FindStructRegMapsTo _ _) _) =>\n      progress zesu_open_nested_existential_packages\n  end.\n\n\n#[local] Instance diagnostic_decode_item_sys_regs_unfold :\n LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemSysRegs) := I.\n",
+        "required": true,
+        "export": true
+      },
+      {
+        "name": "rewrite",
+        "from": "install_opener",
+        "body": "rewrite /decodeItemEntryAt800d6ae0 /generatedJoin6ae0 /decodeItemReturnEntryCore.",
+        "required": true,
+        "export": true
+      },
+      {
+        "name": "original_comparison",
+        "from": "rewrite",
+        "body": "iStartProof.\niIntros.\nrepeat liStep.",
+        "required": true,
+        "export": true
+      },
+      {
+        "name": "nested_probe",
+        "from": "original_comparison",
+        "body": "zesu_open_nested_existential_packages.",
+        "required": false,
+        "export": true
+      },
+      {
+        "name": "resource_context",
+        "from": "original_comparison",
+        "body": "ZesuSsz.Automation.ResourceGroups.zesu_open_resource_groups.\ntry zesu_open_nested_existential_packages.\nZesuSsz.Automation.ResourceGroups.zesu_open_resource_groups.",
+        "required": true,
+        "export": true
+      },
+      {
+        "name": "owned_witnesses",
+        "from": "resource_context",
+        "body": "ZesuSsz.Automation.ExplicitWitnessOrder293.zesu_apply_lithium_witnesses constr:((returnA1 locals, (returnA2 locals, (returnA3 locals, (returnA4 locals, (returnA5 locals, (returnA6 locals, tt))))))).",
+        "required": true,
+        "export": true
+      },
+      {
+        "name": "comparison",
+        "from": "owned_witnesses",
+        "body": "repeat liStep.",
+        "required": true,
+        "export": true
+      }
+    ]
+  },
+  "source_module": "ZesuSsz.Evidence.Join6ae0Scratch",
+  "source_sha256": "a3cc64d964ebf6f29de5b605f4c24677a42058d693de1505f9eb0d19df8d6a29",
+  "completed_result": {
+    "success": true,
+    "status": "passed",
+    "returncode": 0
+  },
+  "transition": "Orch approved resource019: exact accepted prelude, generic nested opener, existing resource groups, six owned return witnesses, then liStep. The subject and six-binder statement stay exact.",
+  "origin_label": "completed-control-session-with-residual",
+  "native_proof_acceptance": false,
+  "comparison_session": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/control-Lithium-resource019/SESSION.json",
+    "sha256": "bbe561b223fc1a0c9cded06de8dbc0380cfa8d52683d542aeab0d6fc1cc850f6"
+  },
+  "comparison_evidence": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/control-Lithium-resource019/SESSION-SOURCE.json",
+    "sha256": "72cd48f2499dfeacf382f5e971668146cb617b7eb172b27f1d02b619ff3e4c05"
+  }
+}
