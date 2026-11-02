@@ -1406,6 +1406,1036 @@
           "sha256": "761c54adc72f98658a3838bafe2633cb8551f85d272f9c2c47c548861a38b588"
         }
       }
+    },
+    {
+      "kind": "accepted-closed-compilations",
+      "lifecycle_mode": "accepted-registry-stop",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-authorized-stop-v1/STOPPED-COMPILATION-ORIGIN.json",
+        "sha256": "28f1ca486365a06e8f3ce3875d98d38880fc03bce647355796ed0619edfc811f"
+      },
+      "module_receipts": {
+        "SailStdpp.MachineWordInterface": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000000.json",
+          "sha256": "3f86290ed403e5001770806885792ab3266881617374dcf92b3903bf8d325f9c"
+        },
+        "SailStdpp.Inhabited": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000001.json",
+          "sha256": "d668c212676c971d4b05fd9f63ca0eac7d308776ebd72be0966a8091e60a612f"
+        },
+        "SailStdpp.TypeCasts": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000002.json",
+          "sha256": "4d7ec7228389e10e1a3a5510cf2a72eb37a18f13287e8e8d4550aba6c5e3c707"
+        },
+        "SailStdpp.MachineWord": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000003.json",
+          "sha256": "333bd31914bbebd005444df2c61327cfeee4beb208d8dd81874ff17ddcf94f84"
+        },
+        "SailStdpp.Values": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000004.json",
+          "sha256": "e4d0754dad5fa503cbedbe109fbfae310f739eb2109ad2f5e6878ce82a83f53e"
+        },
+        "SailStdpp.Instances": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000005.json",
+          "sha256": "4cd69d2914630feadd424646b70a6181d043f31b46e5b523fd4da16c6c6e9517"
+        },
+        "SailStdpp.Instr_kinds": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000006.json",
+          "sha256": "8d8f681b11cedbe0a070470e125d7332351ded8a8b175843a16acb2182a44799"
+        },
+        "SailStdpp.Prompt_monad": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000007.json",
+          "sha256": "a801f37c81e9b399e87ecddcfca1c242607261759a6e2d8c07bdce334cd55d38"
+        },
+        "SailStdpp.String": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000008.json",
+          "sha256": "f953f04756c64477916540c08fe5df460fadeb436cb6f662f3ba9e56e88b1b69"
+        },
+        "SailStdpp.Prompt": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000009.json",
+          "sha256": "2be18643e57b3f2222fe598f86d5d26d48a7266705f20493142723a10ba025e8"
+        },
+        "SailStdpp.Operators_mwords": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000010.json",
+          "sha256": "b18d53fc1d0304b6673d872a8f02da1f69383ccd9fe90391a3e957a65a61c55b"
+        },
+        "SailStdpp.State_monad": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000011.json",
+          "sha256": "7c5d8e60aba8f761363141f5965323e2b2af37a830dc9c1400a31b8182d65cb6"
+        },
+        "SailStdpp.State": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000012.json",
+          "sha256": "3d0ebabd386f08f4075a24f00537e540a8c0f7b806bdd5701b905801c8620f2f"
+        },
+        "SailStdpp.Undefined": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000013.json",
+          "sha256": "8e15cc971aaa6a0d6f9bcfce3f7525f0ec2cf401d75fbdffe77b814cd6b0e75c"
+        },
+        "SailStdpp.Base": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000014.json",
+          "sha256": "78f0a788afc96ff2001803504857810601fd74f06d34c00a4751249f088fb977"
+        },
+        "SailStdpp.Real": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000015.json",
+          "sha256": "1b7faa4cb4bcd1701f4ff53713ef01cf8d3769c1d0c4c5839816610556e3d457"
+        },
+        "EvmSailRlp.evm_rlp_types": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000016.json",
+          "sha256": "87d1ee44ba1ec315f28ed42f06e06b1d7c4a339853f6bf0fb33216f30e8e2034"
+        },
+        "EvmSailRlp.evm_rlp": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000017.json",
+          "sha256": "12a12bfeffb3f4ecf215535bdbc3384e37dbd5860dd2b2bf57fdefc872c29a26"
+        },
+        "InstrSpecs.Lookup": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000018.json",
+          "sha256": "9679ee85594b2d0628c45114a87c67a77e04dad7d4f4d8b92610434287accae2"
+        },
+        "ZesuMachineMap.Machine": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000019.json",
+          "sha256": "c95dd2d058eecc4d50bb910e33a988b3c5c06e74734e47da66f649f29638b0f8"
+        },
+        "InstrSpecs.Machine": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000020.json",
+          "sha256": "a957cd4f9d683b2e02f48f9268774a394d9b6adda75d79f0c9231ec185ffda31"
+        },
+        "InstrSpecs.Specs": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000021.json",
+          "sha256": "b15eb73e219e4a179d2f2e8f78893dfaa1566c948156d0c77f7c060205b21dc4"
+        },
+        "SailStdpp.State_lifting": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000022.json",
+          "sha256": "4268eee1eabd3749e04217eeffdef31e3699cadfadd0b03b3e59c789d8981e2f"
+        },
+        "ZesuSsz.Automation.AdditiveDecoder": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000023.json",
+          "sha256": "14acad0b743741a7315b71304ec0cb63311acf42001aba055e8f03b6e246f4a7"
+        },
+        "ZesuSsz.Contracts.IslarisEndian": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000024.json",
+          "sha256": "1154f4ecba15250c070185b0e21ce6a410bb67c56ed032826e94a4a8ea7a2026"
+        },
+        "ZesuSsz.Contracts.IslarisMemory": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000025.json",
+          "sha256": "a7a7a9d5f53a255f06e3478cf1566bce0255d81bc2c5a52579da2f6bd89ea051"
+        },
+        "ZesuSsz.Automation.AdjacentWordResources140": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000026.json",
+          "sha256": "577114331f694334003f033d637b20ce529058bf23f4b1e45a808ece8733f632"
+        },
+        "ZesuSsz.Automation.AdjacentWordSubsumption278": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000027.json",
+          "sha256": "a98a9537931316a494d8bd2557d2c78d88137f19de797bad389abaa5c246ac24"
+        },
+        "ZesuSsz.Automation.ByteExtractCodec281": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000028.json",
+          "sha256": "de6e75cf2923f55fe5c5ed82b89960a434cc1b9c6b2cbbccfb1bd977b099722d"
+        },
+        "ZesuSsz.Automation.AdjacentWordCodecHints282": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000029.json",
+          "sha256": "156445791ab5a2f63a02c4d5da223aa0eed6eff3a997f57c3d9536f44c4387ad"
+        },
+        "ZesuSsz.Automation.AdjacentFractionalFinder285": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000030.json",
+          "sha256": "d9c8bdcfa306a322bc3d9a0f3eb5e5e776673b1a913a27fed20ed463cf61b742"
+        },
+        "ZesuSsz.Automation.AdjacentWordAddress291": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000031.json",
+          "sha256": "7f4fe866adf16a18fbf15a27154eb0766118d26e633ceeaf98d503ab04ca8d8d"
+        },
+        "ZesuSsz.Automation.ArrayPacking": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000032.json",
+          "sha256": "79e957661f3b252e3a2c02c744fad35b732e71dbc7e2fe06f0d8b98f8e38c7a5"
+        },
+        "ZesuSsz.Contracts.IslarisMachine": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000033.json",
+          "sha256": "2fc6f83480e14dec5450734ecb8ce172f7c6f2c179347e1262be827eb59facbf"
+        },
+        "ZesuSsz.Automation.BitvectorFacts": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000034.json",
+          "sha256": "0aabe9d86acbc196550b2f6b94c3eae57c3d84aef6b32ec88388e620f2a61b0d"
+        },
+        "ZesuSsz.Automation.PureFacts": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000035.json",
+          "sha256": "f843c57a5672fc2dec986c1ed621a2a2d3e549041e18b42ce957afc7be444b4f"
+        },
+        "ZesuSsz.Automation.BoundedArithmetic": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000036.json",
+          "sha256": "189d91b51c75f6197d997aac9548e3da27939f95565832af5e3fb00b35a5368b"
+        },
+        "ZesuSsz.Automation.ByteArrays": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000037.json",
+          "sha256": "c60e05c30bb9316202794899154fedcba083e963b9500a7b53db5df85f04a158"
+        },
+        "ZesuSsz.Contracts.IslarisCode": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000038.json",
+          "sha256": "9f8ceda49d18cdeddef2b9dac72c6adadcc84d588a60fd8f6a0c389acc262e70"
+        },
+        "ZesuSsz.Automation.Rewrites": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000039.json",
+          "sha256": "6bbaf18b9c254dbeaefb6acc991c2869971fc70f9919c44fa51a78ea45dd9606"
+        },
+        "ZesuSsz.Automation.SwitchDispatch": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000040.json",
+          "sha256": "60327ade384547b45e7bc94a0a073b73d052f26c7f67a0d31a61289777c950f2"
+        },
+        "ZesuSsz.Automation.ByteArrayLengths": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000041.json",
+          "sha256": "46ac6910af3eb4438cca9907d3d032f016a4c02aaffadaa8999c22a284a73702"
+        },
+        "ZesuSsz.Automation.VmClosed": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000042.json",
+          "sha256": "2c3b014385576e9cca500b6c9034dbc62221fc3edb6efab92e5540d83905d654"
+        },
+        "ZesuSsz.Automation.CanonicalFactAdapter": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000043.json",
+          "sha256": "c3f4af9b45c813b8988fdb3a7a0a316c8fd2ec5b0e7e201807bf4668769f5527"
+        },
+        "ZesuSsz.Automation.ExitMeaning": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000044.json",
+          "sha256": "9729ca804612b1971cdcc497c0aa1e51a75bd1c4b0d4ec02e134def162780ee8"
+        },
+        "ZesuSsz.Automation.IntegerReturn": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000045.json",
+          "sha256": "6980ee827337219df1d4a1db492223f159cea241155fe351c371848383c227aa"
+        },
+        "ZesuSsz.Automation.EntryIntro": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000046.json",
+          "sha256": "f5adb809f7bded42db67203356463f494531d0d460997bec97c0d5ef62362d67"
+        },
+        "ZesuSsz.Automation.ResourceGroups": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000047.json",
+          "sha256": "6cbced39b19e6bdb9f50a57c5e39b84ffedb2645e1ea75e0356ea3109c9f2c5e"
+        },
+        "ZesuSsz.Automation.ConjunctMatch": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000048.json",
+          "sha256": "6d55c2665eb008a943b44f0ac331daeffe4f093d3128ff56968f21222bb1326b"
+        },
+        "ZesuSsz.Automation.ContextCollection": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000049.json",
+          "sha256": "a1414d161c3c6d6082514117a7961137fc8e30a227e9a66226d7f5b501f49bae"
+        },
+        "ZesuSsz.Evidence.Block2Core": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000050.json",
+          "sha256": "381f93657810cc7a656bbed442ddef22a95d061ac27343e46f811f2710f76e5f"
+        },
+        "ZesuSsz.Automation.FractionalRead": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000051.json",
+          "sha256": "907fdb631e124582cd3acf058dca99ddc57dee73b9f6ec8e4e2d3085f4fff2b3"
+        },
+        "ZesuSsz.Automation.InstrPre": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000052.json",
+          "sha256": "5f05046dded8c0a6767a64ea936cd90c75d29f0d7ce9856dc3488d8dcfa8d9bd"
+        },
+        "ZesuSsz.Automation.LinearFirstLia": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000053.json",
+          "sha256": "12330b5fe40517e60489d26aaad5d9732d5b1c86ace17469277a879e7cb61df6"
+        },
+        "ZesuSsz.Automation.NatBounds": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000054.json",
+          "sha256": "c0f32d96731fa11c7edc95a6e73345204bab15e5e4530783e4dd0892f7f339f1"
+        },
+        "ZesuSsz.Automation.TraceTailLemmas": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000055.json",
+          "sha256": "3ee573a6f2d7a75d93ef9d1978b2183fd3d0240bb2b41a8b0d2494e1a40852d2"
+        },
+        "ZesuSsz.Automation.UninitRegions": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000056.json",
+          "sha256": "5c86b0b2109dfb01dbef21ae08621e6cbe7310fcad159bffcda5b8466e6f0aa0"
+        },
+        "ZesuSsz.Automation.UnionArrayContainment": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000057.json",
+          "sha256": "eba4831c57369d0155931b245d4c291529481b8f8b297ccc4d77b99fe8bc339a"
+        },
+        "ZesuSsz.Automation.UnionRuleComponents": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000058.json",
+          "sha256": "a37d78a8f0879f580d566bd25b99c50ae7d6561ec807842f509591b6299d22b4"
+        },
+        "ZesuSsz.Contracts.SelectedCodeLookup": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000059.json",
+          "sha256": "56979dea05ac714753fbed7a999412186f009606056540a4587d5bb4b3a6eb03"
+        },
+        "ZesuSsz.Automation.ExplicitWitnesses292": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000060.json",
+          "sha256": "50469ca0c453a2b1de74f80ee043134f79ec9d16a90c9b2d1954dba59ee97e32"
+        },
+        "ZesuSsz.Automation.ExplicitWitnessOrder293": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000061.json",
+          "sha256": "2edcc4cb0076d4b1619959df83af9fdd4c52c0ccc95fa2e0c0a950658dc992ec"
+        },
+        "ZesuSsz.Evidence.EntryWitnessSelector": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000062.json",
+          "sha256": "fb5e3667daf4a444448e026de63d3b5b4038bce73fabc04742c5a71db4eb96d2"
+        },
+        "ZesuSsz.Evidence.EntryWitnessInputs": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000063.json",
+          "sha256": "8f2507b97c80d98a69805af0a47eaafc52d7392ac8ded4d03328242efca994eb"
+        },
+        "ZesuSsz.Automation.Hooks": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000064.json",
+          "sha256": "32060a069891f6d733d5d31c175f919023438ab35b7785d61e75c59b0b171782"
+        },
+        "ZesuSsz.Automation.BranchCastUnsigned": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000065.json",
+          "sha256": "992a21bfc00a963ca22d47b84476d920f67694d273eb8ab87b96c2b0c051e29e"
+        },
+        "ZesuSsz.Automation.BranchUnsigned": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000066.json",
+          "sha256": "6bfb9c61d679d9a6da1b37b886be3993401b151adf090caf56590a01fdd36059"
+        },
+        "ZesuSsz.Automation.Calls": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000067.json",
+          "sha256": "23216e29aaedce048e5c10445dfc6eb56ca7ba8dce461df015cdeff3194626d0"
+        },
+        "ZesuSsz.Automation.ArrayCursors": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000068.json",
+          "sha256": "d58ad9f8e2a3405e7601111fd28920f9ccd0c294e9c93f3ee0c3f926fceba7b6"
+        },
+        "ZesuSsz.Automation.ArrayByteValues": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000069.json",
+          "sha256": "abc93360a6f5581a21516b370640bb29cb4c9327039d5838af7bda86ca9278a4"
+        },
+        "ZesuSsz.Automation.ByteArrayLoadSpec": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000070.json",
+          "sha256": "9f219e4b5c6ea99704f43f9155101679ad507d86acdf8958b28425b98a62aae7"
+        },
+        "ZesuSsz.Automation.SealedCoverage": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000071.json",
+          "sha256": "b167d6e3a795f1debaf066207afe75f0594a02088a0b1b6ea9e110e32bad85b7"
+        },
+        "ZesuSsz.Automation.ArrayLoadPriority": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000072.json",
+          "sha256": "fb27f3859c35bc0096e467173d2ea92625268dae3c26dc8e3cb4cab45ed9dc44"
+        },
+        "ZesuSsz.Automation.ArrayLoadPreselect": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000073.json",
+          "sha256": "9e693a584129aa2dfed277108b06784cf990f095b6ea76329664d2054c28a38d"
+        },
+        "ZesuSsz.Automation.ArrayPayloadPresentation": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000074.json",
+          "sha256": "90c8268a0b362c53dc2c72d52a4a19f36b0b83b6710f9fc140cc19f70ffbbe1d"
+        },
+        "ZesuSsz.Automation.ArraySlices": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000075.json",
+          "sha256": "98fd0cf9160bac071c62d6d712596f0cc37a0be5833087701bba8a4c54f76169"
+        },
+        "ZesuSsz.Automation.FramePacking": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000076.json",
+          "sha256": "e236f28ae4ff0fdd36b42b8ac3ce707669a3ed0db61d766859c52248da17be00"
+        },
+        "ZesuSsz.Automation.SymbolicByteCodec": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000077.json",
+          "sha256": "257b6fe7c31b8169ffd8aa16ccfcfeaeee636c0c808b8ef6bbf03f278130c933"
+        },
+        "ZesuSsz.Automation.FramePackingFinish": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000078.json",
+          "sha256": "82aeb634fdd8da7edeec2fad7cce3a18b889b4033b8a3ed331c3b26c429c8e89"
+        },
+        "ZesuSsz.Automation.MaskPresentation": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000079.json",
+          "sha256": "9d7976eeadee0d8a49c4b5f1b483c34966beb6cd4b8eca21d11dbb3674967f76"
+        },
+        "ZesuSsz.Automation.MaskWrapPresentation": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000080.json",
+          "sha256": "54d2df1a8ff28dc538f9f61076e63e8994f174e79e516cd3527f30eb0ec5dcef"
+        },
+        "ZesuSsz.Automation.PackedWordValues": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000081.json",
+          "sha256": "6a117a0b0e7ae1287c3e2c67317d03e1d31539bc35e73ed462d9120491950620"
+        },
+        "ZesuSsz.Automation.RawWordArrayWitness": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000082.json",
+          "sha256": "d10a02a58228e09385e4f1c4498c6e1f69446888aff5ed2ca3ddbc3c6c57233e"
+        },
+        "ZesuSsz.Automation.ReturnBundle": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000083.json",
+          "sha256": "6d1c4d440d740d051764fb75749dd9b3116dc2b42e864a0aeffc0a1a77e878c1"
+        },
+        "ZesuSsz.Automation.ReturnWand": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000084.json",
+          "sha256": "10c67eab1bcc19ebdc89585cfcdb69077dedea4e8bad0247fa9aec84517e33c7"
+        },
+        "ZesuSsz.Automation.StackArrayIndices": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000085.json",
+          "sha256": "de319ce7961a5d04692d201d8278c9e113fe23d4d9bd3de5846657606ba1ef38"
+        },
+        "ZesuSsz.Automation.StoreMemoryLookup": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000086.json",
+          "sha256": "99ff4df3428178018ec741dde2107c943fea8454531452425da346eb8a601d87"
+        },
+        "ZesuSsz.Automation.GuardedTracePrefix": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000087.json",
+          "sha256": "7042043c29f4480ae49fa4d8764162c69b8a446cfe223457fe9391d2c200d40d"
+        },
+        "ZesuSsz.Automation.SpecPrefix": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000088.json",
+          "sha256": "31f827bbcff9612c7cf0f65e6a404f7a3edd145d4b75586084b065857c3b8063"
+        },
+        "ZesuSsz.Automation.TracePrefixTail": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000089.json",
+          "sha256": "b8b64bd9e87f0f0ec6049f8f9f18fc8b7c79bcec316813f5f57c92e0972386e1"
+        },
+        "ZesuSsz.Automation.CallReturn": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000090.json",
+          "sha256": "9d6c4a28b9dbba751c544b73f0490ce458e347841d0f0a439a3f76413163bb3d"
+        },
+        "ZesuSsz.Automation.CallReturnSpecTable": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000091.json",
+          "sha256": "4f66a0c9f498eb1db72d6f71738e0620b3488ef4d65040038d518aa9b9480c4d"
+        },
+        "ZesuSsz.Automation.ExistentialArrayRestore": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000092.json",
+          "sha256": "e0928562ff5e0fa834aa910043c6fd063cd57c4ad948327aa8c8a3a4f0ed243c"
+        },
+        "ZesuSsz.Automation.InteriorByteSlice": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000093.json",
+          "sha256": "985584cc3a50120f738afcb2f3d25b3ebcacc39099bf47e2e02d9464b06ffdb4"
+        },
+        "ZesuSsz.Automation.LoadedTrace": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000094.json",
+          "sha256": "b37a344e3434a2ebc870d7d7538ce41ca0e2e829e01a1e3a7d673b2b8f42e8ea"
+        },
+        "ZesuSsz.Automation.LookupReduce": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000095.json",
+          "sha256": "88903d790bd56ff0658019b9b89124caac9ed4e47a1907edb04e6d4616542f0e"
+        },
+        "ZesuSsz.Automation.OutcomeHandoff": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000096.json",
+          "sha256": "45f3aa77911243dc87dcbfaccf22f62d5ac7b1ac79078a64bb0860d1f1eebd36"
+        },
+        "ZesuSsz.Automation.V2Steps": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000097.json",
+          "sha256": "c058fe079c687aaa81e9cca20a37d3861dbe9229a2ed654dfba8e262cc22fbc4"
+        },
+        "ZesuSsz.Automation.Finish": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000098.json",
+          "sha256": "3fe806814988ba1380ae5491623355d89079a578beb02addf27d156d18ed8304"
+        },
+        "ZesuSsz.Automation.LoopIndex": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000099.json",
+          "sha256": "c959c6d4740098fb58477c76d14841c479fbbb096967dfd3233d638e4a48f9a9"
+        },
+        "ZesuSsz.Automation.NatBitvectors": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000100.json",
+          "sha256": "78e832cd1a6ea145b96813d2856b86c58c57b2d30d66f4b7c662add411b39788"
+        },
+        "ZesuSsz.Automation.All": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000101.json",
+          "sha256": "109bf55fe6d3a03833683eee7aa62a5f3ceac870199f09ceec77ef9f82c00ffa"
+        },
+        "ZesuSsz.Automation.Switches.ArrayBounds": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000102.json",
+          "sha256": "5a06135881d2a510b7de8a79c62d6fa18476b2fa1eb855a3146225efb1fb27e3"
+        },
+        "ZesuSsz.Automation.Switches.ArrayRegionBounds": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000103.json",
+          "sha256": "bac350ae11fb33fe1ba34a7d53ebca43441ec9e31995522612ca87c9b9533d25"
+        },
+        "ZesuSsz.Automation.Switches.BranchGuards": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000104.json",
+          "sha256": "fc2862b863211dff9e62d9a917233963fb920e90c10b85850ae13a7d2509f7ae"
+        },
+        "ZesuSsz.Automation.Switches.ByteListContainment": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000105.json",
+          "sha256": "63be36de9d241ad265c6b19055ba88c228647c0c808eaaf1e4b9186913295296"
+        },
+        "ZesuSsz.Automation.Switches.CanonicalAnchor": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000106.json",
+          "sha256": "d3c6857f6e2f242797e7cd310c6cb7c06cc39bf5f05d31513958421b5533323c"
+        },
+        "ZesuSsz.Automation.Switches.CanonicalPureConjunction": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000107.json",
+          "sha256": "524dad8103e93499b1a06bea4cc85c2a9034e1bfc49646ae2a750add7ec462fd"
+        },
+        "ZesuSsz.Automation.Switches.ConjunctMatch": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000108.json",
+          "sha256": "3011decb57e92ced5d78567778e16b92a65ab984b9dbead69e715bd799de4b73"
+        },
+        "ZesuSsz.Automation.Switches.ContextCollection": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000109.json",
+          "sha256": "96149997e79bbcca41cfe02dbcda9608ccfc927ff1b68049521f4e7046cab725"
+        },
+        "ZesuSsz.Automation.Switches.EntryIntro": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000110.json",
+          "sha256": "60ff9800a1ae0c1bb85a6349356db3bbc7979ca2ffe909da3eee348c3af36476"
+        },
+        "ZesuSsz.Automation.Switches.EvarImplicationGuard": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000111.json",
+          "sha256": "20c9ef42853a541bca203b06e0da06e9bbe75691668f5b72be8b10152b945e4b"
+        },
+        "ZesuSsz.Automation.Switches.EvarSideconditionGuard": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000112.json",
+          "sha256": "17d2edabce2e1c718882ceac4c874281442afbda9753c8fd199ba7f4ab3c51a5"
+        },
+        "ZesuSsz.Automation.Switches.ExitMeaning": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000113.json",
+          "sha256": "8f3f34f12b21e5c599853fe23af5ee27304344c341ebc39ab1872a38e26d6ea7"
+        },
+        "ZesuSsz.Automation.Switches.FinisherOnce": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000114.json",
+          "sha256": "1124ff3c62c6eb3c2050eb2ba74a362cec35815332e2c432baf5f9c108f38a2a"
+        },
+        "ZesuSsz.Automation.Switches.InstructionLookup": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000115.json",
+          "sha256": "12edbeb43087dcd9dabd9edea5e2e7b530e60768858d3f7d11184eb692b87404"
+        },
+        "ZesuSsz.Automation.Switches.IntegerArrayAddress": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000116.json",
+          "sha256": "7ef24d3a644e47acf4089f4b94dd17306fe04b1fa75ba6f847d888d52f5073d1"
+        },
+        "ZesuSsz.Automation.Switches.IntegerReturn": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000117.json",
+          "sha256": "eed4fd1e1da4e2aaf5f7bce2aa8be15818eb535176db95ecd143afdffb21d5c0"
+        },
+        "ZesuSsz.Automation.Switches.KnownPairWitness": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000118.json",
+          "sha256": "f2a55a37e4f5a619b419bad163d4bd6ebe9e709742345adb16eb2a7a4f3e9d23"
+        },
+        "ZesuSsz.Automation.Switches.ListWitness": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000119.json",
+          "sha256": "371211ae69ccee3494c920c34bcf1a0aa6642f5ebef40a2769d9eef2ede04c2a"
+        },
+        "ZesuSsz.Automation.Switches.LowMask": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000120.json",
+          "sha256": "972c507d0d2fc71048a5a43d5094947c2935c41d7928154184202d1e84e1ef94"
+        },
+        "ZesuSsz.Automation.Switches.MaskNormalizer": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000121.json",
+          "sha256": "b2bb711f8fd15761a0b369d44395958184e5fa8f14bf880f6b5f5c51cda8c1c9"
+        },
+        "ZesuSsz.Automation.Switches.PureFactExistential": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000122.json",
+          "sha256": "028bf7947baab6114d174a8b506ca73a78aec630c27842368cbbdfc5cf73d6aa"
+        },
+        "ZesuSsz.Automation.Switches.PureFactHints": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000123.json",
+          "sha256": "805d84d2b0fbd7c53568714ba8f50330052d0a17f1f4447e84e818b62bbfb863"
+        },
+        "ZesuSsz.Automation.Switches.PureWitnessConstraints": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000124.json",
+          "sha256": "aa2b6e201afd0a1eab431a452b6796594b524267f7a40e7dc0a9c885e99d1025"
+        },
+        "ZesuSsz.Automation.Switches.RamFault": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000125.json",
+          "sha256": "3694006d7880c06074f0401906dce1193e17b52347292b597edfd4c62c39e434"
+        },
+        "ZesuSsz.Automation.Switches.RecordWitness": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000126.json",
+          "sha256": "70053c6689cfb5e87fdef38234e19c1b60b890cf29e1790d2c0162346d955567"
+        },
+        "ZesuSsz.Automation.Switches.RegionFault": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000127.json",
+          "sha256": "2dbfb68bb3c9779e56de71e9741627c4742a7290ff315e37b433b0528bbf0e03"
+        },
+        "ZesuSsz.Automation.Switches.RegionFaultCastHypotheses": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000128.json",
+          "sha256": "b0374cd0f000e1604b1782910debfb74a494eee0d3f1a54a4010231c58fbcc53"
+        },
+        "ZesuSsz.Automation.Switches.RegionFaultNormalization": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000129.json",
+          "sha256": "e7228a886b720c210b2ed066e2c26f8c94357190eb13740bbd5e4afca29d1a26"
+        },
+        "ZesuSsz.Automation.Switches.RegisterCollectionSelection": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000130.json",
+          "sha256": "5d2e0f638eed371684e822c14b11b4deb260c866a75f2d2b423891b6bfabb5bd"
+        },
+        "ZesuSsz.Automation.Switches.ReturnBundle": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000131.json",
+          "sha256": "feff5c03b27bb851bf569e00e550ddd3671ed694ab8f3b5c5ed291d9423434bb"
+        },
+        "ZesuSsz.Automation.Switches.ReturnWand": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000132.json",
+          "sha256": "8aaaa5a3c5f83fe8a549552bd362133e7d4f6c08061698c21a9f6ec057bb4409"
+        },
+        "ZesuSsz.Automation.Switches.StackWrite": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000133.json",
+          "sha256": "24e8661d431530f148c49153f20745416879a0c8c6157908021b53799399d4e3"
+        },
+        "ZesuSsz.Automation.Switches.StrictSigned": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000134.json",
+          "sha256": "481943c413e5c72686aff3059420929b945157ed8ee72e39a0773b4459c8a304"
+        },
+        "ZesuSsz.Automation.Switches.SwitchDispatch": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000135.json",
+          "sha256": "c6662d1672c36529b83ee4655b32cb636d6f4cfac3560d96138790138876765a"
+        },
+        "ZesuSsz.Automation.Switches.TupleWitness": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000136.json",
+          "sha256": "dce3bf18b0c19ef445933a5aa9e87d3690ee9f30596e2b32bd57202f5cb70c76"
+        },
+        "ZesuSsz.Automation.Switches.WordArrayHandoff": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000137.json",
+          "sha256": "43e13a2a6974d9408023fa2a9affa7730c7217baf432ff5530cb6c7a691c44dd"
+        },
+        "ZesuSsz.Automation.Approved": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000138.json",
+          "sha256": "9e13674d78b360abb601d181a4667fb0805b53d0b07405dcaea52ed74816e34b"
+        },
+        "ZesuSsz.Automation.Sets.v1": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000139.json",
+          "sha256": "046462c08df66ed92d1317129652b2e5df30a5798e406d621a3209b0e64fec8f"
+        },
+        "ZesuSsz.Compliance.KnownBugs": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000140.json",
+          "sha256": "92706d982a8e0f8e03053ce257761522dbbd5801fe942c6516e318e8b7f2730e"
+        },
+        "ZesuSsz.Compliance.RlpInputBounds": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000141.json",
+          "sha256": "e025daed69c26e320a87432bb4e823d1d23032f38900334bcbf9342f24580dc4"
+        },
+        "ZesuSsz.Compliance.SailRun": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000142.json",
+          "sha256": "428b485efd9fac0a0a45f7b59e7422be21b60b1fc8da82a9d8e74784fb79ced5"
+        },
+        "ZesuSsz.Contracts.Level1": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000143.json",
+          "sha256": "3a8e831ab3062fae7c2c74e18e5746dd05d3b1fa96f943fc7aeb20e91f1a10ec"
+        },
+        "ZesuSsz.Contracts.RlpDecodeItem": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000144.json",
+          "sha256": "5be117367d92133631d4eb4d5600a30d6eef3c910f42502df2513e82a99eebc8"
+        },
+        "ZesuSsz.Contracts.RlpDecodeItemSchema": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000145.json",
+          "sha256": "7fc69c165cba8b836080657695012cd2075777da3e21a949cb00ae41a77ad55c"
+        },
+        "ZesuSsz.Contracts.RlpDecodeItemContract": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000146.json",
+          "sha256": "bda2a5dbf78b4bedf0048a103507e565869cba7e7dc3575b73f888c6955dcf97"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6960": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000147.json",
+          "sha256": "33ba56d94ae38d596120f2d796b6048ca6fb58eb522c91ac5f5aba1a4d50d4cf"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6964": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000148.json",
+          "sha256": "cbf4ec36d287b482feb697b57fbc96cd142a6bbb7403efec84c6d75f381fb9bd"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6968": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000149.json",
+          "sha256": "17393f8a9f811a1f04fa584c3cb7a36758a9c1fc7d14732ba6c1bb3b9012948b"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d696c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000150.json",
+          "sha256": "7a5bf48cf523b846391564a288c669c36eef45b4b6d439fa06af5c3d8ebccd38"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6970": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000151.json",
+          "sha256": "718e37bcef9c769f441e0c9a1c3676410fbe957f7682f50b48f0c14a77efa264"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6974": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000152.json",
+          "sha256": "fbd8c528cf8b93df98e8164c87591beb7b66aba4a3ae17bea6f678f9d520223c"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6978": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000153.json",
+          "sha256": "5e113f3b9ea335818499c43b6b02c8a6e59abfe2758c3c5b4695caf5e9d3bd10"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d697c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000154.json",
+          "sha256": "dcd7e10b78a76abd476a70809c5dd84dda28ea74d270fcaa2f850e5df3f20c1b"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6980": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000155.json",
+          "sha256": "a64455b22ff5f09970f329a35469463c220337f398a4d760f86929632a45ab8a"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6984": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000156.json",
+          "sha256": "37c4d6b3aa886d87dd7d4f9440080fbb6607ffffa8d92a9c07cc5526df3872ec"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6988": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000157.json",
+          "sha256": "ee60705444576096a9e228621d3d024636e149a23026e97f2ea761fc9b3a524e"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d698c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000158.json",
+          "sha256": "9d4b0b071980b736fb54afa57d7f5fb548d1244268a1aa4eb8f963dba2370c67"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6990": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000159.json",
+          "sha256": "f268dcd0748e5cabaf37fa8234dcad9527b97f00abd7ae8caf81748a43f7f946"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6994": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000160.json",
+          "sha256": "666efb7979174fd6a749c9ad01c5379d3ad0301ee795354c7b21fc620b410111"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6998": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000161.json",
+          "sha256": "0b6ce09ec0e8219748097dad108d8c6a18ef37f6edf5380abd08afc8b64efaeb"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d699c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000162.json",
+          "sha256": "5200c4e345416933bd8f109cddc27f26cfc07fcdd3ede1d57c5fc55f6818e861"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69a0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000163.json",
+          "sha256": "13bd393d27992495f0769b568454dc4a830cedd4dd5351649d676b4e94d9e8f4"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69a4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000164.json",
+          "sha256": "cab37cb7fb7d5fe970109c6b41ae9d4432a09865faacd6385d77e6bc58f876be"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69a8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000165.json",
+          "sha256": "6e3751a4c9adca1325d745258c1f1dd3add647db5b3e5198fb4bcf601c23d5f4"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69ac": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000166.json",
+          "sha256": "5b96eac430013d39dce1b08893417ddd33eac8b0fa93cd4eb3e2ff0933e68033"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69b0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000167.json",
+          "sha256": "fd76b318989653aae563b4cabcc2a694584200afebb7042d796e00cd4b7e3474"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69b4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000168.json",
+          "sha256": "22f11097c4c4bbbbcf56d338f1d465ac37458bb53c7a5fb104382e37161ee22b"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69b8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000169.json",
+          "sha256": "3045bda7bcc4a5650aa00fb56ea60e2fcff48d37259eb543e9fa9c61c852ffc8"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69bc": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000170.json",
+          "sha256": "bf5743f35a28cd06bf071359f3079de52343f4edb6cc60957795f5308594e177"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69c0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000171.json",
+          "sha256": "72007185edba433be3bb7576a1e8e6c5956355f7b5a34a4ab2a5a4a29dc74f98"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69c4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000172.json",
+          "sha256": "504e0c08e0798f53da98abd4223bce67edfb736fc7770c1c5d9ab7674ca5fc8a"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69c8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000173.json",
+          "sha256": "1c76b1b5555eee3d0b0a4bd18231497a9b5cd054f76cd2f17755d795a7ca33af"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69cc": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000174.json",
+          "sha256": "c5d3a14044b02af669ded10ad4c4bdae8417e4a85f74eb0303c2e7e965293c56"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69d0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000175.json",
+          "sha256": "439327aa254147baa70d199b43cf326cc61811513856551e68425fb54a2ef620"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69d4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000176.json",
+          "sha256": "da6c9bf5dfa233bdebc6197b9c7107d97d3e4c958fe8323ecaf81dec35d5e7a4"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69d8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000177.json",
+          "sha256": "a84cbe0e9170d6fd1e5557b64670aa63e48204a9c4295095994c848421138fa6"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69dc": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000178.json",
+          "sha256": "94ad8c80b331ecefadc92533aa93ae5343badf68ef8deed274f446576b388b4c"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69e0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000179.json",
+          "sha256": "aaa1e2847c3febe2010451e1a07821c3696483a0f8a8cc302159ff1918962d9a"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69e4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000180.json",
+          "sha256": "0a3bd2e6d2642ed12d91d01b627014b07d00a6bb0cacf9705116708f7a544217"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69e8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000181.json",
+          "sha256": "ea295b4524138abd9f491a51af956af5c4fa151bbb8d7a6a20d43e2829e5e5a2"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69ec": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000182.json",
+          "sha256": "8621dc446c93907041b2e4fc4fc0a63b4063cc2eed334d97dfcf1573b7161fbe"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69f0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000183.json",
+          "sha256": "ef4e0fc4137e28651520b9c2ae959edf3e618e8725c5f5b8b66cdba1572b04b7"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69f4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000184.json",
+          "sha256": "70f1ee229de65e45ec4d15fd1f6cd468dc0da33cb9bbcd17aedb82a3680df1ab"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69f8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000185.json",
+          "sha256": "534286e26ffd171f0a9655d6e2ac994729c01a938482e10b5786f74d79268ce2"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69fc": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000186.json",
+          "sha256": "e68995d297d4ecf9c4294986e35641882fd689beb8612e7fb6270fc5cbc1860b"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a00": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000187.json",
+          "sha256": "beb163b496cd40bdb74ae88e7c77574bd4bd0770aa486c451197dd5c99137083"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a04": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000188.json",
+          "sha256": "1ce4b54f6eb903fe708430bc64ac164e40679c57422ca77b98f7b8121cc8dc60"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a08": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000189.json",
+          "sha256": "0a792992cfb784d97b2f9ea0e5581d9bf7f2f84fac450060b7629fad355ad099"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a0c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000190.json",
+          "sha256": "fd75a64ce41eadba94a0c585e636ace5cb9a511c157353ebbffdf23796722908"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a10": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000191.json",
+          "sha256": "14bf88ade966d179ae36e5f7bbb8f2c57a16b7199ed85da394a92f747086ba73"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a14": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000192.json",
+          "sha256": "ce70e792afecfafd2611e7a4081bc02e871f6fd8bc7edfa18661bfb07a4f1231"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a18": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000193.json",
+          "sha256": "b55c1840b327a20cc85c1de90fe74f822a5266a3a8ac4db2b1fe3c8a229d4665"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a1c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000194.json",
+          "sha256": "28c25c41ebf8b4be534c5a74401d05d1dd1c653339a6ffad375abf0c3bb1940d"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a20": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000195.json",
+          "sha256": "bc40aafccc6816fb5fcad334a828b3265bb715a9bf4552f166653ba3f2a36143"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a24": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000196.json",
+          "sha256": "0e040f13ecf936e17896863af837eca9bbcd77cd701242d471621a1be198f8ed"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a28": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000197.json",
+          "sha256": "520d12cf2b2ca2521761a353ff507e22d041c2801da80e83cf6f02b001332a4b"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a2c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000198.json",
+          "sha256": "1636cf98adc01e119fc7c3ca2621a7dabe0058421bf234422bb789950decaa04"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a30": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000199.json",
+          "sha256": "b7b0f3fcf6b33955612767044070891a83db13730c148f3034342de5b982d698"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a34": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000200.json",
+          "sha256": "5bcf93a5a84432c51a4627f88aa0e551b3ac01cf38da63a4aaa11752378abfb0"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a38": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000201.json",
+          "sha256": "bb260225187440893ab785db693d1e08b045df302809e3c53464e21ec75ea1af"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a3c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000202.json",
+          "sha256": "1d53207774060d17e0969508f6698f274b0e516d27ab8c14e030018e2bdb092c"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a40": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000203.json",
+          "sha256": "c3d1a50c832099c458ba2fbfcea27721758b0455449824e69ab0e4655a8cb73c"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a44": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000204.json",
+          "sha256": "8c8945a3970d3ddac6ba8ff5abd0f0275d9e2eab0369b130dcde0211a01c735c"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a48": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000205.json",
+          "sha256": "78f72109f262615b5361d54cd8d06d07835e8e63f2820cfd88467245fac5bb62"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a4c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000206.json",
+          "sha256": "cacc397d9e259f7f778071165cd6517ea2dd544369cb59029407992cf8b999a2"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a50": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000207.json",
+          "sha256": "b87db9c2b3142b9bfa791e5ed47454163f57418593d4888433defe7b72a05179"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a54": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000208.json",
+          "sha256": "1d0285e98783c34d74394dc8d1f4f2b09e535ef135fa13534a1b1a89dece9245"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a58": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000209.json",
+          "sha256": "0bec23d81fd3802bf7967b32f505b230931fc95efcdb9492d6ccd85bd2fba814"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a5c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000210.json",
+          "sha256": "7e6cac4f189ebbc054ed0352aa06362829e44886ecc435961339a59f0e3a2517"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a60": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000211.json",
+          "sha256": "90d5b47082d5c05cdb25f457c976d606b7e7569cf1ad629e5b3adf14809994a8"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a64": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000212.json",
+          "sha256": "84f468f229a519ce2ae59894e5ee835c4fddf24ff649610b5c0d0d6ef72139a7"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a68": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000213.json",
+          "sha256": "2f42c7fe74e56e3436c5d940ff66ccdea097e4be3436071145b517549ce7a648"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a6c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000214.json",
+          "sha256": "83a73b0c73974c2feb6fcac3ce9113d39b04e7017d975ed32482629805d9ab3f"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a70": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000215.json",
+          "sha256": "449db68a9b77c2be76d5f38d8ddf74f3d31e9b1e4f5d04da36bdf4d9fb030e09"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a74": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000216.json",
+          "sha256": "ee9e0ea8e722fe107d546320e6922228cacb4f760dae65504a6e85dcc776a666"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a78": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000217.json",
+          "sha256": "d2d360cc72b777b354e71eb461566efd95e174d550aa586133bdeb8db10cd362"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a7c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000218.json",
+          "sha256": "ef75a04eda0ef8d251f1ffd69230eed832d841381245f92a950a2fa4d87e4589"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a80": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000219.json",
+          "sha256": "6b9cd818245979fbe1d2f8a6a3851aabfaf3e264329d7fc81707fc42036059e5"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a84": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000220.json",
+          "sha256": "c1daf42ad537d7e3c35bde279e53084d29301bec5c14c57cf32f02c2faec32c9"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a88": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000221.json",
+          "sha256": "69c6dffb1d3f4d9f452bd2f21b107e4721fda76789be7d4d48ec4661a639feb3"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a8c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000222.json",
+          "sha256": "54f72dd4c7fb1922248174174277652d8ccb69e0aa559fbf0a8cd087b8fa95b0"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a90": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000223.json",
+          "sha256": "aa9554551094c09a744139934e4423ea24bf9d440a3cc3481a4f5da5095b77d2"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a94": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000224.json",
+          "sha256": "3253dc4032cad5bd0ae0e7537533d0cd10cb2b601fadfcd7a3d7711984a5a86e"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a98": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000225.json",
+          "sha256": "ebab79e573e8f0126183380b4bbf447d8c08455f27d85e2dbad1b6e5ad131154"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a9c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000226.json",
+          "sha256": "73391ca7e2dffcccd82e3dcf53f3e69ef90a0ec37986516ab90d5911091ac4ad"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6aa0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000227.json",
+          "sha256": "054fb7201f4cc250214ccc6ef35401e2566502e8261c1ff562ff7ff39fda118b"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6aa4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000228.json",
+          "sha256": "4d7ca8768d69ca6016ab6723d4ff3ef4275a713d249b8f713df31afbe8de307d"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6aa8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000229.json",
+          "sha256": "e6b508a280ab48a5572b82fd3a3ce4abcdec35327ca84c6d009ae9128f5aab2d"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6aac": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000230.json",
+          "sha256": "9e450668c20ec65617f27c9bf88aaf0fed7e7296397e41211ae852ad4da37559"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ab0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000231.json",
+          "sha256": "111ea82b4f637ff0f9612d8d53bffb08bb6403dfb054613bcf26287d0bdeb0a8"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ab4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000232.json",
+          "sha256": "4c373adb09eb878cd2bfcd3cec3ada73ac3f6b45954e173e6d99b5377353af7d"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ab8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000233.json",
+          "sha256": "093e1458bbe7a10b83379d5c6021a81f11081d24f7613ac186221a2de4fee661"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6abc": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000234.json",
+          "sha256": "e088d84cdab2a27f7ee20815d00a52c0695fa696c862528de1b2962785317278"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ac0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000235.json",
+          "sha256": "8eed2e990e100d6368ab171b9c99c47abbfb0ebcb7663b4c0cc283217112cabf"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ac4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000236.json",
+          "sha256": "736e7189e33500db834c3900c8baf15ff8e7dad19333d225447af2bd198334b3"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ac8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000237.json",
+          "sha256": "60edf9496bee94beba50605efa30acfe0b19d608cd9fa1e2502deb711f5648fa"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6acc": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000238.json",
+          "sha256": "099bfd5d9ab3bf002fde2e461d19fcef295e2f2086a5588b0ae22197f6ef5b68"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ad0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000239.json",
+          "sha256": "3cc8aa5b9e41386408d510988b8c58325efa76983abaa674735c0fa82700434b"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ad4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000240.json",
+          "sha256": "595960108d406322e2582262ec35a78d2740b80243f1e854a61a16f8f957f32d"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ad8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000241.json",
+          "sha256": "be527d1795332005a4ea9eaa0cf0ec1331b1528fde7af4776d6a2029cab37ca1"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6adc": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000242.json",
+          "sha256": "307ba8b24f987554e21952fddc094dced7e85a526a5d40a26eef80d389d52192"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ae0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000243.json",
+          "sha256": "9b8b03dfdddbc382338121fe03bb56e168d761738c226e4fc4044c8295f12218"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ae4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000244.json",
+          "sha256": "726f52fb71c5ba520e8b855040324631b3b11a9cef936d3905d029615d42f614"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ae8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000245.json",
+          "sha256": "abdf6366b7f3590fc27f18635d9bc02ae1eea6845e44d3782c69b3d20ace2af0"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6aec": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000246.json",
+          "sha256": "a58ac3394de9ec7a7661c6190d1a51553229040b4df56d72f32858dc9c66fe74"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6af0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000247.json",
+          "sha256": "4aa01cdcc5fd53accd8ee40dc8bcfd2660ea82701a9a402d73cc30e5b11d9fa9"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6af4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000248.json",
+          "sha256": "7884d58dab603443fff4cc03159cb4c08062486b44586a4bbcc0946373c9b77b"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6af8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000249.json",
+          "sha256": "922a254cc422765d6c9685f2ab8293d2a0f3f401c9ed433bc49189c0d668427f"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6afc": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000250.json",
+          "sha256": "b7c8b47af0415cfe078550d8b49c056c61c29c32556d124373f5f10f37d0eae4"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6b00": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000251.json",
+          "sha256": "97e89e30c48ed20677925a9d0208b7f51f66e20914778929db8db305030a2388"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6b04": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000252.json",
+          "sha256": "bf0280582f14fb80b47edbf0e2880d1d22554acf4c167bb45e743eba904b4e39"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6b08": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000253.json",
+          "sha256": "e731870608bcdf78b1efc0c0ca2c4bf02d99d2dfc18d9ae4ebe649b6804495ec"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6b0c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/native/validated-objects/OBJECT-000254.json",
+          "sha256": "09492b05043432b856c4891d041eb0ac06771af12ecd4f00764b01dacffa1f5e"
+        }
+      }
     }
   ],
   "inspector_build": {
