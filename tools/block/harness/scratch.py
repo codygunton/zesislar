@@ -87,7 +87,7 @@ def canonical_edges(module,text,old_text,edges,module_files,installed=None,sourc
         for name in names:
             if name not in module_files:
                 if installed is None:raise ValueError('An import has no exact canonical mapping: '+name)
-                name=installed.resolution(name,origin=source_path)['canonical']
+                name=installed.source_resolution(name,module_files,origin=source_path)['canonical']
             row={'from':module,'to':name}
             if row not in result:result.append(row)
     return result
@@ -265,7 +265,7 @@ def prepare(a):
     if a.target_adapter:
         adapter=read_bound(binding(a.target_adapter));graph=read_bound(adapter['graph']);modules.update(graph['module_files'])
     edges=graph['import_edges'];changed=[];changes=[]
-    installed=InstalledMappings([word.replace(str(source),str(workspace)) for word in c['physical_flags']],receipt_dir=out/'IMPORT-RESOLUTION',supplier=profile_supplier(binding(a.admission_profile) if a.admission_profile else c.get('admission_profile')))
+    installed=InstalledMappings([word.replace(str(source),str(workspace)) for word in c['physical_flags']],receipt_dir=out/'IMPORT-RESOLUTION',supplier=profile_supplier(binding(a.admission_profile) if a.admission_profile else c.get('admission_profile')),planning_workspace=workspace,source_files=modules)
     entry=workspace/modules[ENTRY];before=entry.read_text();entry_text=a.entry_file.read_text()
     if entry_text!=before:
         edges=[r for r in edges if r['from']!=ENTRY]+canonical_edges(ENTRY,entry_text,before,edges,modules,installed,a.entry_file)
