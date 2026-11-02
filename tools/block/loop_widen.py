@@ -593,8 +593,8 @@ def widen_loop_head(seed, traces, *, loop_pc, provenance, fold_table=(),
                      'term': 'bv_unsigned machine_' + key + ' = (' + origin_term
                              + ' + ' + index_name + ')%Z',
                      'lower_bound': '(0 <= ' + index_name + ')%Z',
-                     'upper_bound': 'bv_unsigned machine_' + key + ' < bv_unsigned ' +
-                         seed.registers[limit_key].coq() if limit_key else None,
+                     'upper_bound': 'bv_unsigned machine_' + key + ' < bv_unsigned machine_' + limit_key
+                         if limit_key else None,
                      'limit_register': limit_key,
                      'limit': seed.registers[limit_key].to_dict() if limit_key else None,
                      'origin': start.to_dict(), 'origin_view': origin,
@@ -608,6 +608,10 @@ def widen_loop_head(seed, traces, *, loop_pc, provenance, fold_table=(),
         if checked(candidate):
             plan['input_registers'] = [key]
             plan['derived'] = [witness_binding]
+            binders.append({'name': 'machine_' + limit_key, 'type': 'bv ' + str(start.width),
+                'register': limit_key, 'role': 'observed_alias',
+                'source_expression': seed.registers[limit_key].to_dict(),
+                'meaning_link': 'machine_' + limit_key + ' = ' + seed.registers[limit_key].coq()})
             binders.append({'name': index_name, 'type': 'lvar "zesuLoopIndex" Z',
                             'role': 'derived'})
             relations.append(candidate)
@@ -618,6 +622,31 @@ def widen_loop_head(seed, traces, *, loop_pc, provenance, fold_table=(),
     elif affine:
         refuse(None, 'shared_index', 'More than one unit-step cursor needs a checked shared-index mapping',
                registers=affine)
+    # Existing selector inputs are registers/pairs only. The integer witness
+    # is computed from the already observed cursor, never a branch literal.
+    input_rows, witness_rows = [], []
+    for binder in binders:
+        if binder.get('register') is not None:
+            register = binder['register']
+            width = seed.registers[register].width
+            input_rows.append({'kind': 'register', 'register': register, 'width': width})
+            witness_rows.append({'binder': binder['name'],
+                'expression': input_expr(binder['name'], width).to_dict()})
+        elif binder['role'] == 'derived':
+            binding = next(row for row in plan['derived'] if row['name'] == binder['name'])
+            witness_rows.append({'binder': binder['name'],
+                'expression': input_expr(binding['expression'], None).to_dict(),
+                'derived_from': [binding['source_register']]})
+    def nested(items):
+        tree = {'kind': 'unit'}
+        for item in reversed(items):
+            tree = {'kind': 'pair', 'left': item, 'right': tree}
+        return tree
+    plan.update(schema='source.join-witness-plan.v1',
+                ordered_binders=[binder['name'] for binder in binders],
+                input=nested(input_rows), ordered_witnesses=witness_rows,
+                data=nested(witness_rows))
+    plan['input_registers'] = [row['register'] for row in input_rows]
     pending_folds = []
     # Preserve a reviewable candidate even when an unrefuted fault path prevents
     # retention. It is not an active relation or an accepted entry assertion.

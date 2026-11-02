@@ -282,6 +282,27 @@ class LoopWidenTests(unittest.TestCase):
         self.assertTrue(all(obligation['status'] == 'OPEN' for obligation in obligations))
         self.assertFalse(result.to_dict()['seed_ready'])
 
+    def test_witness_plan_covers_free_registers_and_keeps_declaration_order(self):
+        _, _, result = self.checked_fixture()
+        plan = result.witness_plan
+        self.assertEqual(plan['schema'], 'source.join-witness-plan.v1')
+        self.assertEqual(plan['ordered_binders'], [binder['name'] for binder in result.binders])
+        self.assertEqual([row['binder'] for row in plan['ordered_witnesses']], plan['ordered_binders'])
+        self.assertEqual(plan['input_registers'], ['x13', 'x15', 'x16', 'x11'])
+        self.assertEqual(plan['ordered_witnesses'][-1]['derived_from'], ['x15'])
+        self.assertIn('bv_unsigned machine_x15 -', plan['ordered_witnesses'][-1]['expression']['value'])
+        self.assertEqual(result.relations[0]['upper_bound'],
+                         'bv_unsigned machine_x15 < bv_unsigned machine_x11')
+        alias = next(b for b in result.binders if b['role'] == 'observed_alias')
+        self.assertEqual(alias['register'], 'x11')
+        cursor = plan['data']
+        names = []
+        while cursor['kind'] == 'pair':
+            names.append(cursor['left']['binder'])
+            cursor = cursor['right']
+        self.assertEqual(cursor, {'kind': 'unit'})
+        self.assertEqual(names, plan['ordered_binders'])
+
 
 if __name__ == '__main__':
     unittest.main()
