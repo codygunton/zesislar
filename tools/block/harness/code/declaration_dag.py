@@ -60,12 +60,14 @@ def execute(ordered, edges, weights, *, completed=(), protected=(),
     active, receipts, failures = {}, {}, []
     halt = threading.Event()
     peak_workers = peak_weight = 0
+    protected_active = None
 
     def report():
+        running = list(active.values()) + ([protected_active] if protected_active else [])
         checkpoint({'pending': [name for name in ordered if name in pending],
-                    'active': sorted(active.values()),
+                    'active': sorted(running),
                     'accepted': list(receipts), 'failures': list(failures),
-                    'running_weight_bytes': sum(weights[name] for name in active.values()),
+                    'running_weight_bytes': sum(weights[name] for name in running),
                     'claim_bytes': CLAIM_BYTES, 'maximum_workers': count})
 
     def worker(name):
@@ -95,12 +97,21 @@ def execute(ordered, edges, weights, *, completed=(), protected=(),
                 before = [name for name in ordered[:boundary] if name in pending]
                 if barrier is not None and not before and not active:
                     try:
+                        available = _positive(available_bytes(), 'available memory')
+                        if weights[barrier] > min(CLAIM_BYTES - 1, 7 * available // 10):
+                            raise ValueError('The protected declaration exceeds the current memory budget.')
+                        protected_active = barrier
+                        peak_workers = max(peak_workers, 1)
+                        peak_weight = max(peak_weight, weights[barrier])
+                        report()
                         artifact = compile_protected(barrier)
                         accept(barrier, artifact)
                         pending.remove(barrier)
                     except Exception as error:
                         failures.append({'module': barrier, 'error': str(error)})
                         halt.set()
+                    finally:
+                        protected_active = None
                     report()
                     continue
                 ready = [name for name in before if dependencies[name] <= completed]
