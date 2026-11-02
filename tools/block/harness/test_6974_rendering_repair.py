@@ -40,6 +40,62 @@ class RenderingRepair(unittest.TestCase):
         path.write_text(json.dumps(self.profile))
         return binding(path)
 
+    def actual_old_context(self):
+        directory = Path('/home/cody/zesislar/_build/agents/worker-build-2/'
+                         'PORT-v32-OLD-6974-launch-refresh-v1/prepare002/jobs/800d6974')
+        reference = binding(directory/'RUNTIME.json')
+        self.assertEqual(reference['sha256'],
+                         'a4cb741c360449df1ccfa953a1b156e6477d8dc3febfd13baff26778d84bc881')
+        runtime = json.loads(Path(reference['path']).read_text())
+        workspace = directory/'workspace'
+        authority, case = P.production_port_case(self.profile, self.job())
+        mapping = {row['module']: row['path'] for row in authority['production_sources']}
+        mapping[case['module']] = case['source']['path']
+        expected = {
+            'MachineSlice6960Entries': 'e47b7c7ffbb577719c9aa68c0b8c1bfe59690be82d6ede14a2f35c8b2e10c6f0',
+            'MachineBranch198Entries': '81266ed48586a557c9dde2a0125d2b5c51e9dfa7d6853d260a23aad05c74f3cc',
+            'PilotA201Entries': '1005c83416a689b4b4b2b736c87cfde861433e31964c00e98a78a3a7a813750b'}
+        for stem, sha in expected.items():
+            module = 'ZesuSsz.Generated.DecodeItem.'+stem
+            source = workspace/runtime['module_files'][module]
+            self.assertEqual(binding(source)['sha256'], sha)
+            mapping[module] = str(source)
+        return dict(proof_runtime={'module_files': mapping}, prepared_workspace='/',
+                    declarations_only=False, prerequisite_modules=[])
+
+    def test_actual_old_bank_matches_the_repair_authority(self):
+        from entry_bindings import declared_binders
+        context = self.actual_old_context()
+        caller = self.repair['variants']['v3.2']['corrected_source']
+        caller_binders = declared_binders(Path(caller['path']).read_text(), 'DesignedEntry_800d6974')
+        self.assertEqual(len(caller_binders), 23)
+        declarations = {'MachineSlice6960Entries': 'machineAt6974',
+                        'MachineBranch198Entries': 'machineAt69a4_198',
+                        'PilotA201Entries': 'machineAt697c_201'}
+        for stem, declaration in declarations.items():
+            path = context['proof_runtime']['module_files']['ZesuSsz.Generated.DecodeItem.'+stem]
+            self.assertEqual(declared_binders(Path(path).read_text(), declaration), caller_binders)
+        workload = P.workload_for_job(self.saved_profile(), self.job(), context)
+        rows = {row['module']: row for row in workload['owned_sources']}
+        for expected in self.repair['originating_definitions']:
+            self.assertEqual(rows[expected['module']]['sha256'], expected['sha256'])
+        job = P.apply_job(self.job(), workload=workload)
+        self.assertEqual((job['claim_bytes'], job['physical_fence_bytes']), (32*P.GIB, 32*P.GIB))
+
+    def test_new_bank_refuses_with_the_same_corrected_caller(self):
+        context = self.actual_old_context()
+        caller = self.repair['variants']['v3.2']['corrected_source']
+        before = binding(caller['path'])
+        original = Path('/home/cody/zesislar/_build/agents/worker-build-2/'
+                        'start-render-rss-f5-v1/rerender001/RESULT.json')
+        new_rows = json.loads(original.read_text())['originating_definitions']
+        for row in new_rows:
+            module = 'ZesuSsz.Generated.DecodeItem.'+Path(row['path']).stem
+            context['proof_runtime']['module_files'][module] = row['path']
+        with self.assertRaisesRegex(ValueError, 'actual workload source differs'):
+            P.workload_for_job(self.saved_profile(), self.job(), context)
+        self.assertEqual(binding(caller['path']), before)
+
     def test_v32_repair_keeps_full_booking_and_fence(self):
         job = self.job()
         authority, case = P.production_port_case(self.profile, job)

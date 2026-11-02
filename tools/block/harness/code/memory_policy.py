@@ -208,7 +208,7 @@ PORT_V34_PEAK_BOOKING='completed_pilot_peak'
 PORT_V34_TARGETS={'path':str(Path(__file__).resolve().parents[1]/'policies'/'PORT-V34-TARGETS16.json'),
  'sha256':'3df54454cb2ca9337d0441e51f4ad3ef1fcc4bab54285d37301cf0d12a90fd12'}
 PORT_6974_RENDER_REPAIR={'path':str(Path(__file__).resolve().parents[1]/'policies'/'PORT-6974-RENDERING-REPAIR.json'),
- 'sha256':'d10fcd60e78fa85bbd19aba7933b8a4d18d0d9f1500c154100c030d05c1e6014'}
+ 'sha256':'54b8f36288c9f5fbe09bcaec9285ecaa72416d97692948d71744f0984b21f157'}
 PORT_V34_RULES_SHA256='4620ed01bfaca15aae958fb7523e964dcbcfa58d8d4920fc0929285090f70488'
 PORT_V34_POLICY_SHA256='df435e39840983dfa6ff3d96ba83a33b90389d2aafb0f8ef0b21094d93d82def'
 PORT_V34_COMPLETED={'path':str(Path(__file__).resolve().parents[1]/'policies'/'PORT-V34-COMPLETED-PEAKS.json'),
