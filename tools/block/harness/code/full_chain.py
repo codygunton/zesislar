@@ -97,6 +97,15 @@ def prerequisite_readiness(config,result):
         source=Path(receipt['source']);obj=Path(receipt['object'])
         if digest(source)!=receipt['source_sha256'] or digest(obj)!=receipt['object_sha256']:
             raise ValueError('A prerequisite source or object changed.')
+        accepted=receipt.get('accepted_object_receipt')
+        if accepted is not None:
+            produced=read_bound(accepted)
+            if (produced.get('source')!=binding(source) or produced.get('object')!=binding(obj) or
+                    produced.get('successful_compilation') is not True or
+                    produced.get('tool_result',{}).get('success') is not True):
+                raise ValueError('A prerequisite has another accepted compilation receipt.')
+            config.setdefault('object_imports',{})[module]=accepted
+            config.setdefault('bindings',[]).append(accepted)
         if sealed_owned:
             expected=workspace/config['proof_runtime']['module_files'][module]
             if source.resolve()!=expected.resolve() or obj.resolve()!=expected.with_suffix('.vo').resolve():
