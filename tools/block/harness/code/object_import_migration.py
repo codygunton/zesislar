@@ -140,6 +140,8 @@ def origin(policy, reference, module, source, obj, compiler, flags, workspace):
     if authority['kind'] == 'accepted-ready':
         selection = bound_record(authority['selection'])
         guards = authority['selection_guards']
+        if 'module_allowlist' in authority and module not in authority['module_allowlist']:
+            raise ValueError('The selected READY does not authorize this module origin.')
         if (reference != authority['ready'] or not guards or
                 not any(row['path'] == reference['path'] and row['sha256'] == reference['sha256']
                         for row in selection['rows']) or
