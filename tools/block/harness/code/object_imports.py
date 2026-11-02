@@ -3,6 +3,7 @@ from pathlib import Path
 
 from binding_cache import digest
 from entry_chain import read_bound
+from import_graph import graph_closure
 
 
 def normalized_flags(flags, workspace):
@@ -63,7 +64,6 @@ def _record(reference, module, source, obj, compiler, flags, workspace):
 
 def compatibility(targets, edges, modules, workspace, receipts, compiler, flags, *, planned=()):
     """Schedule unknown or changed owned imports through ordinary invalidation."""
-    from entry_chain_stage import graph_closure
     workspace = Path(workspace).resolve()
     forward = {}
     for row in edges:
@@ -126,7 +126,6 @@ def require_reuse(config, runtime, workspace):
     native = runtime.get('target', {}).get('block') or {}
     if native.get('module'):
         native_outputs.add(native['module'])
-    from entry_chain_stage import graph_closure
     forward = {}
     for row in graph['import_edges']:
         forward.setdefault(row['from'], set()).add(row['to'])
