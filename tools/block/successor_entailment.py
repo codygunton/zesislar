@@ -187,6 +187,28 @@ def successor_root_parameters(design):
     return list(selected)
 
 
+def typed_local_continuation(terminal, original, root):
+    """Bind a local continuation and address to the exact entry telescope."""
+    if set(terminal) != {'kind', 'address', 'parameter', 'source_hashes'}:
+        raise ValueError('The typed local continuation has invalid fields')
+    parameter = terminal['parameter']
+    if (not isinstance(parameter, dict) or set(parameter) != {'name', 'type'}
+            or parameter['type'] != 'iProp Sigma'):
+        raise ValueError('The local continuation must have type iProp Sigma')
+    if terminal['source_hashes'] != original['source_hashes']:
+        raise ValueError('The local continuation source bindings differ')
+    from entry_bindings import check_binders
+    declared = check_binders(original, root)
+    if (declared != original['binders'] or original['arguments'] !=
+            [binder['name'] for binder in declared]):
+        raise ValueError('The local continuation requires the exact source telescope')
+    if parameter not in declared:
+        raise ValueError('The local continuation is absent from its source telescope')
+    if {'name': terminal['address'], 'type': 'Z'} not in declared:
+        raise ValueError('The local continuation address is not a source Z parameter')
+    return parameter['name']
+
+
 def native_boundary_source(state, block, design, root, *, enabled=True,
                            terminal=None, extra_imports=(), historical_target=None):
     """Use the existing whole-block renderer with actual designed boundaries.
@@ -219,6 +241,8 @@ def native_boundary_source(state, block, design, root, *, enabled=True,
             raise ValueError('Unavailable terminal Level1 obligation')
         target = chain_root.terminal_target(terminal['address'])
     else:
+        if terminal and terminal.get('kind') == 'typed_local_continuation':
+            raise ValueError('A local terminal continuation cannot replace CFG successors')
         target = successors[0]
     source = chain_root.render_probe(state, block, target)
     if not enabled:
@@ -232,13 +256,16 @@ def native_boundary_source(state, block, design, root, *, enabled=True,
     prefix, statement = source[:position], source[position:end]
     imports = list(extra_imports)
     if not successors:
-        if terminal.get('kind') != 'owned_continuation':
+        if terminal.get('kind') == 'typed_local_continuation':
+            typed_local_continuation(terminal, original, root)
+        elif terminal.get('kind') == 'owned_continuation':
+            declaration = designed_target({'entry_pc': hex(entry),
+                'entry_definition': terminal['definition'],
+                'resource_predicate': terminal['definition'], 'binders': [], 'arguments': [],
+                'source_hashes': terminal['source_hashes']}, root)
+            imports.extend(entry_schema.source_module(path) for path in declaration['source_hashes'] if path.endswith('.v'))
+        else:
             raise ValueError('Image-only terminal obligations cannot close the native boundary')
-        declaration = designed_target({'entry_pc': hex(entry),
-            'entry_definition': terminal['definition'],
-            'resource_predicate': terminal['definition'], 'binders': [], 'arguments': [],
-            'source_hashes': terminal['source_hashes']}, root)
-        imports.extend(entry_schema.source_module(path) for path in declaration['source_hashes'] if path.endswith('.v'))
         marker = chain_root.boundary_stop(target)
         binder = f' ({marker} : iProp Sigma)'
         premise = f'  instr_pre ({target}) {marker} -∗\n'
@@ -271,7 +298,7 @@ def native_boundary_source(state, block, design, root, *, enabled=True,
             'statement_sha256': hashlib.sha256(statement.encode()).hexdigest(),
             'successors': [hex(pc) for pc in successors],
             'root_parameters': root_parameters,
-            'terminal_scope': 'existing owned Level1 continuation; no added image continuation' if not successors else None,
+            'terminal_scope': ('source-bound typed local continuation' if terminal.get('kind') == 'typed_local_continuation' else 'existing owned Level1 continuation; no added image continuation') if not successors else None,
             'scope': 'unproved native designed boundary', 'contract_closed': False}
 
 
