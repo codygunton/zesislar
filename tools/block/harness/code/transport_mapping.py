@@ -34,6 +34,8 @@ FIELD_MAPPING = {
 
 KNOWN_SINKS = {'check_operation', 'proof_environment', 'prerequisite_environment', 'check_proof_bindings', 'validate_runtime', 'publish'}
 
+SCOPED_SINKS = {'entry_chain_provider.py': {'compiled_verification': ('scratch_statement', 'compiled_verification')}}
+
 
 def audit(path):
     """Refuse an unclassified runtime read or an unreviewed runtime escape."""
@@ -42,6 +44,10 @@ def audit(path):
     tree = ast.parse(source)
     parents = {child: node for node in ast.walk(tree) for child in ast.iter_child_nodes(node)}
     fields, escapes = [], []
+    scoped = SCOPED_SINKS.get(path.name, {})
+    imported = {(node.module, item.name, item.asname or item.name)
+                for node in tree.body if isinstance(node, ast.ImportFrom)
+                for item in node.names}
     for node in ast.walk(tree):
         if not isinstance(node, ast.Name) or node.id != 'runtime' or not isinstance(node.ctx, ast.Load):
             continue
@@ -67,6 +73,11 @@ def audit(path):
                 raise ValueError('A runtime method has no transport mapping.')
         elif isinstance(parent, ast.Call) and isinstance(parent.func, ast.Name) and parent.func.id in KNOWN_SINKS:
             escapes.append({'line': parent.lineno, 'sink': parent.func.id})
+        elif isinstance(parent, ast.Call) and isinstance(parent.func, ast.Name) and parent.func.id in scoped:
+            module, function = scoped[parent.func.id]
+            if (module, function, parent.func.id) not in imported:
+                raise ValueError('A scoped runtime consumer has another source import.')
+            escapes.append({'line': parent.lineno, 'sink': parent.func.id, 'module': module})
         else:
             raise ValueError('A runtime value escapes the audited consumers.')
         if name is not None:

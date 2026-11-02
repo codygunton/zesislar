@@ -20,7 +20,7 @@ def save(path, value):
 
 class AuditControls(unittest.TestCase):
     def test_actual_source014_consumers_pass_without_new_sinks(self):
-        for name in ['entry_chain_provider.py', 'entry_chain_compiler.py', 'entry_chain_resources.py']:
+        for name in ['entry_chain_provider.py', 'entry_chain_compiler.py', 'entry_chain_resources.py', 'scratch_statement.py']:
             report = M.audit(T.HERE / 'code' / name)
             self.assertEqual(report['unmapped_fields'], [])
         report = M.audit(T.HERE / 'code/entry_chain_provider.py')
@@ -38,6 +38,19 @@ class AuditControls(unittest.TestCase):
                 path.write_text(source)
                 with self.assertRaisesRegex(ValueError, 'escapes'):
                     M.audit(path)
+
+    def test_compiled_verifier_sink_is_scoped_to_its_owned_import(self):
+        with tempfile.TemporaryDirectory() as root:
+            path = Path(root) / 'entry_chain_provider.py'
+            path.write_text('from scratch_statement import compiled_verification\ncompiled_verification(runtime)\n')
+            self.assertEqual(M.audit(path)['reviewed_sinks'][0]['module'], 'scratch_statement')
+            for source in ['compiled_verification_nearby(runtime)',
+                           'from another_module import compiled_verification\ncompiled_verification(runtime)']:
+                path.write_text(source)
+                with self.assertRaises(ValueError):M.audit(path)
+            path = Path(root) / 'consumer.py'
+            path.write_text('from scratch_statement import compiled_verification\ncompiled_verification(runtime)')
+            with self.assertRaisesRegex(ValueError, 'escapes'):M.audit(path)
 
     def test_literal_eight_field_projection_and_disabled_feature(self):
         tree = ast.parse((T.HERE / 'code/entry_chain_provider.py').read_text())

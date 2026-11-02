@@ -8,7 +8,7 @@ from pathlib import Path
 sys.path[1:1] = [str(Path(__file__).resolve().parents[2]), str(Path(__file__).resolve().parents[3])]
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
-from scratch_statement import source_statement
+from scratch_statement import source_statement,compiled_verification
 from entry_chain import binding,save as atomic_json,check_bindings as bound_rows,digest,relative,strict_loads
 from entry_pilot import retain_residual
 from entry_pilot_checker import bound_json,complete_groups
@@ -490,8 +490,16 @@ async def execute(request):
                     problem = specification['prefix']+declaration
                     proof = (specification['prefix']+'Require Import '+target['module']+'.\n'+declaration+
                              'Proof. apply '+target['module']+'.'+specification['name']+'. Qed.\n')
+                    verification_context={}
+                    if accepted_objects is not None:
+                        payload=compiled_verification(runtime,target,source,specification,name,
+                            workspace=workspace,manager=accepted_objects,
+                            receipt=calls[-1].get('accepted_object_receipt'))
+                        problem,proof=payload['problem_statement'],payload['proof']
+                        verification_context=payload['context']
                     atomic_json(output/(side+'-EXACT.json'), {'problem_statement': problem,
-                        'proof': proof, 'problem_name': name, 'original_statement_sha256': statement_sha})
+                        'proof': proof, 'problem_name': name, 'original_statement_sha256': statement_sha,
+                        'compiled_context':verification_context})
                     atomic_json(output/'PROGRESS.json', {'phase': 'exact_verification', 'side': side})
                     verified = await call(session, 'rocq_verify', {'workspace': str(workspace),
                         'problem_statement': problem, 'proof': proof, 'problem_name': name, 'timeout': timeout})
