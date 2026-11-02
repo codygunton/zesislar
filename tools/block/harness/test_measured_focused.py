@@ -1,5 +1,6 @@
 """The explicit control-peak route preserves default sizing and exact boundaries."""
-import copy,hashlib,json,sys,tempfile,unittest
+import ast,copy,hashlib,inspect,json,sys,tempfile,unittest
+from types import SimpleNamespace
 from pathlib import Path
 from unittest.mock import patch
 HERE=Path(__file__).resolve().parent
@@ -34,6 +35,31 @@ class CompletedControlPeakTests(unittest.TestCase):
  def test_changed_flags_refuses(self):
   self.config['physical_flags'].append('-unsafe')
   with self.assertRaisesRegex(ValueError,'flags'):measured.claim(self.profile,self.config)
+ def preparation_statements(self,changed=False):
+  import scratch
+  root=Path(self.profile['completed_control_peak']['path']).parent;out=root/'prepared';out.mkdir();(out/'INVALIDATION.json').write_text('{}')
+  selected=copy.deepcopy(self.authority['current_control_session'])
+  if changed:selected['steps'][-1]['body']='Rejected different comparison.'
+  session=root/'selected-session.json';session.write_text(json.dumps(selected));profile=root/'profile.json';profile.write_text(json.dumps(self.profile))
+  config=copy.deepcopy(self.prior);config['control_session']=None
+  a=SimpleNamespace(control_session=session,admission_profile=profile,declarations_only=True,declaration_checks=None)
+  tree=ast.parse(inspect.getsource(scratch.prepare));body=tree.body[0].body
+  start=next(i for i,n in enumerate(body) if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='physical_flags' for t in n.targets))
+  end=next(i for i,n in enumerate(body) if isinstance(n,ast.Assign) and any(isinstance(t,ast.Subscript) and isinstance(t.value,ast.Name) and t.value.id=='c' and isinstance(t.slice,ast.Constant) and t.slice.value=='control_session' for t in n.targets))
+  reads=[];original=scratch.read_bound
+  def read(ref):
+   if ref['path']==str(session):reads.append(ref)
+   return original(ref)
+  scope=dict(vars(scratch),a=a,c=config,workspace=Path(config['prepared_workspace']),source=Path(config['prepared_workspace']),modules=config['proof_runtime']['module_files'],pre=copy.deepcopy(config['jobs'][0]),native_job={'key':'control','phase':'native','target':{},'ordered_modules':[]},completed_rows=[],out=out,policy={},apply_job=memory.apply_job,_parse_project_flags=lambda _:config['physical_flags'],read_bound=read)
+  exec(compile(ast.Module(body=body[start:end+1],type_ignores=[]),inspect.getsourcefile(scratch.prepare),'exec'),scope)
+  return scope,reads
+ def test_actual_prepare_sizes_and_serializes_one_selected_session(self):
+  scope,reads=self.preparation_statements();self.assertEqual(len(reads),1)
+  self.assertEqual(scope['pre']['claim_bytes'],10431528960)
+  self.assertEqual(scope['actual_config']['control_session'],self.authority['current_control_session'])
+  self.assertIs(scope['actual_config']['control_session'],scope['c']['control_session'])
+ def test_actual_prepare_rejects_changed_selected_session(self):
+  with self.assertRaisesRegex(ValueError,'transition'):self.preparation_statements(changed=True)
  def test_retired_error_peak_authority_refuses(self):
   self.profile['completed_control_peak']={'path':str(measured.POLICY),'sha256':measured.POLICY_SHA}
   with self.assertRaisesRegex(ValueError,'not approved'):measured.authority(self.profile)
