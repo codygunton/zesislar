@@ -43,6 +43,13 @@ def _record(reference, module, source, obj, compiler, flags, workspace):
     validation = read_bound(provenance['validation'])
     if validation.get('snapshot') != receipt.get('snapshot'):
         raise ValueError('The imported hashes name another compiler snapshot.')
+    selection = validation.get('import_selection')
+    if (not isinstance(selection, dict) or selection.get('module') != module or
+            selection.get('owned_workspace') != old_workspace or
+            selection.get('source') != receipt['source'] or
+            selection.get('imported_objects') != provenance['imported_objects']):
+        raise ValueError('The imported hashes differ from the recorded physical selection.')
+    read_bound(selection['graph'])
     physical_hashes = {str(Path(row['path']).resolve()): row['sha256']
                        for row in validation['directly_hashed_inputs']}
     imports = {}
@@ -82,9 +89,11 @@ def compatibility(targets, edges, modules, workspace, receipts, compiler, flags,
             if name not in receipts:
                 raise ValueError('The owned object has no authenticated compilation receipt.')
             imports, old_workspace = _record(receipts[name], name, source, obj, compiler, flags, workspace)
-            for dependency in sorted(graph_closure(forward.get(name, ()), forward)):
-                if dependency not in owned:
-                    continue  # Pinned installed libraries remain compiler inputs.
+            expected = graph_closure(forward.get(name, ()), forward) & owned.keys()
+            extra = set(imports) - expected
+            if extra:
+                raise ValueError('A recorded owned import is absent from the current closure: ' + sorted(extra)[0])
+            for dependency in sorted(expected):
                 if dependency in planned:
                     raise ValueError('An owned import has scheduled source compilation: ' + dependency)
                 current = owned[dependency].with_suffix('.vo')
@@ -112,7 +121,6 @@ def require_reuse(config, runtime, workspace):
     planned = list(runtime['ordered_modules'])
     targets = planned + [row['target']['module'] for row in config['jobs']
                          if row.get('target', {}).get('module')]
-    targets += [name for name in modules if '.Generated.' in name]
     # The native target always gets a fresh proof and cannot supply a reused object.
     native = runtime.get('target', {}).get('block') or {}
     if native.get('module'):
