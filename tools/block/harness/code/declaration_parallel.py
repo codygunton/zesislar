@@ -15,6 +15,8 @@ from coqc_findlib import compiler_environment
 class GuardedAdapter:
     def __init__(self, runtime, workspace, output, manager, environment, recheck,
                  protected_compile, *, runner=subprocess.run):
+        from phase_attribution import for_runtime
+        self.attribution=for_runtime(runtime,output,runtime_reference={'path':runtime.get('runtime_path'),'sha256':runtime.get('runtime_sha256')})
         self.runtime = runtime
         self.workspace = Path(workspace).resolve()
         self.output = Path(output).resolve()
@@ -24,7 +26,8 @@ class GuardedAdapter:
         self.protected_compile = protected_compile
         self.runner = runner
         from declaration_parallel_plan import validate
-        validate(runtime,self.workspace)
+        with self.attribution.span('DAG_adapter_validation'):
+            validate(runtime,self.workspace)
         self.spec = runtime['declaration_dag']
         self.protected = set(self.spec['protected_modules'])
         self.wrapper = self.workspace / runtime['coqc_wrapper']
@@ -60,7 +63,7 @@ class GuardedAdapter:
              'environment': {name: value for name, value in environment.items()
                              if name != 'ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY'},
              'authentication_key_recorded': False})
-        with (directory / 'stdout').open('xb') as stdout, (directory / 'stderr').open('xb') as stderr:
+        with (directory / 'stdout').open('xb') as stdout, (directory / 'stderr').open('xb') as stderr, self.attribution.span('DAG_dispatch'):
             result = self.runner(command, cwd=directory, env=environment,
                                  stdout=stdout, stderr=stderr, check=False)
         if result.returncode:

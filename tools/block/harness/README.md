@@ -239,3 +239,19 @@ Optional cache release does not grant validation authority.
 Forced final validation and direct compiler input hashing remain unchanged.
 The output manager authenticates its snapshot before retaining only its receipt header.
 These changes do not establish an RSS reduction without measurement.
+
+## Phase attribution
+
+Use `--phase-attribution` during public preparation or `--refresh-memory` for a future launch.
+The resulting runtime binds the option before admission. Existing jobs remain unchanged.
+Each actor writes immutable JSON spans under its owned `phase-attribution/` directory.
+
+Spans report monotonic wall time, process CPU, waited-child CPU, and available aggregate CPU separately.
+Aggregate measurements require the actor's actual aggregate and the exact batch identity.
+Missing identities and changed counters produce unknown measurements.
+Nested and overlapping spans are inclusive. Do not add them as exclusive costs.
+A completed span means that its call returned. Compiler receipts retain compilation and proof authority.
+
+Disabled runtimes write no spans. Runtime loading still captures two clock readings and two CPU counters before authentication.
+The recorder discards these values when the option is disabled. No extra source or object hashes run.
+The option adds no profiler, polling process, observer, proof call, or validation call.
