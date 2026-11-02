@@ -241,8 +241,10 @@ async def execute(request):
                      Path(request['output'])/'COMPILER-SNAPSHOT.json',environment=compiler_context)
     accepted_objects=None
     if snapshot is not None:
-        from compiler_snapshot import OutputReceipts,read as read_snapshot
-        accepted_objects=OutputReceipts(read_snapshot(snapshot,{'path':request['runtime'],'sha256':request['runtime_sha256']}),snapshot)
+        from compiler_snapshot import OutputReceipts
+        accepted_objects=OutputReceipts(snapshot,{'path':request['runtime'],'sha256':request['runtime_sha256']})
+    from waiting_envelope import release_optional_caches
+    release_optional_caches()
     row = runtime['target']
     workspace, output = Path(request['workspace']), Path(request['output'])
     atomic_json(output/'PROGRESS.json', {'phase': 'prepared_inputs', 'identity': request['identity']})

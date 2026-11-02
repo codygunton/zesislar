@@ -205,3 +205,14 @@ An old writer that can create an unrepresented aggregate blocks the rollout.
 Older gate worktrees also need the unified writer before their next launch.
 A managed tools checkout alone does not update an older Makefile or controller.
 Do not migrate live records or change running jobs without rollout approval.
+
+## Waiting data
+
+Waiting controllers store exact data in private authenticated checkpoints.
+They retain small references while their children run.
+The controller restores each dictionary before continuation and final checks.
+Changed checkpoint bytes, identities, permissions, aliases, or waiting markers refuse restoration.
+Optional cache release does not grant validation authority.
+Forced final validation and direct compiler input hashing remain unchanged.
+The output manager authenticates its snapshot before retaining only its receipt header.
+These changes do not establish an RSS reduction without measurement.

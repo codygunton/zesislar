@@ -46,6 +46,13 @@ def proof_rows(runtime):
     _CLASSIFICATION.clear();_CLASSIFICATION[key]=[dict(row) for row in result]
     return result
 
+def release_classification_cache():
+    """Drop copied rows. Later validation recomputes the same classification."""
+    count=sum(len(rows) for rows in _CLASSIFICATION.values())
+    _CLASSIFICATION.clear()
+    return count
+
+
 def check_proof_bindings(runtime,force_full=False):
     from binding_cache import force_hashing
     with force_hashing(force_full):return _check_proof_bindings(runtime)

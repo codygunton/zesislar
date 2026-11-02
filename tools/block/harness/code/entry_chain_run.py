@@ -306,14 +306,19 @@ def inside(out):
             command=strict_loads((out/'KERNEL-ARGV.json').read_text())
             kernel_environment=strict_loads((out/'KERNEL-ENVIRONMENT.json').read_text())
             kernel_environment['ZESU_AGGREGATE_SLICE']=os.environ['ZESU_AGGREGATE_SLICE']
-            result=subprocess.run(command,cwd=Path(runtime['job_output'])/'workspace',env=kernel_environment)
+            kernel_cwd=Path(runtime['job_output'])/'workspace'
+            from waiting_envelope import compact_wait
+            with compact_wait(out,runtime=runtime):
+                result=subprocess.run(command,cwd=kernel_cwd,env=kernel_environment)
         else:
             environment=None
             if runtime['phase']=='native':
                 import stage1_runtime
                 stage1_runtime.materialize_inside(out)
                 environment=strict_loads((out/'prospective/ACTUAL-ENVIRONMENT.json').read_text())
-            result=subprocess.run([sys.executable,'-B',str(Path(__file__).with_name('entry_chain_provider.py')),str(out/'native/REQUEST.json')],env=environment)
+            from waiting_envelope import compact_wait
+            with compact_wait(out,runtime=runtime):
+                result=subprocess.run([sys.executable,'-B',str(Path(__file__).with_name('entry_chain_provider.py')),str(out/'native/REQUEST.json')],env=environment)
 
         return result.returncode
     finally:
@@ -351,7 +356,9 @@ def run_stock_job(config,job,out,prepared=None):
         with (out/'stock.stdout').open('wb') as stdout,(out/'stock.stderr').open('wb') as stderr:
             child=__import__('controller_cleanup').launch(argv,cwd=workspace,env=env,stdout=stdout,stderr=stderr,start_new_session=True)
             child_start=ticks(child.pid);save(out/'BATCH-PROCESS.json',{'pid':child.pid,'startticks':child_start});from scratch_limits import wait_with_limits
-            code=wait_with_limits(child,out,job['claim_bytes'],0,phase=job['phase'],memory_job=job,family=(job.get('workload') or {}).get('kind') in {'stock_pass_spec_bundle','minimal_native_tactic'},family_threshold_bytes=(8 if (job.get('workload') or {}).get('kind')=='minimal_native_tactic' else 16)*1024**3)
+            from waiting_envelope import compact_wait
+            with compact_wait(out,configuration=config,runtime=runtime):
+                code=wait_with_limits(child,out,job['claim_bytes'],0,phase=job['phase'],memory_job=job,family=(job.get('workload') or {}).get('kind') in {'stock_pass_spec_bundle','minimal_native_tactic'},family_threshold_bytes=(8 if (job.get('workload') or {}).get('kind')=='minimal_native_tactic' else 16)*1024**3)
         check_proof_bindings(runtime)
         receipts=read_optional(out/'native/NATIVE-RESULTS.json') or {}
         receipt=receipts.get('block',{})
