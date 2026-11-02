@@ -303,6 +303,19 @@ class LoopWidenTests(unittest.TestCase):
         self.assertEqual(cursor, {'kind': 'unit'})
         self.assertEqual(names, plan['ordered_binders'])
 
+    def test_source_origin_does_not_cancel_a_whole_modulus(self):
+        _, _, result = self.checked_fixture(
+            origin_term='decodeItemInputPointer args + 1 + 18446744073709551616')
+        self.assertFalse(result.relations)
+        self.assertTrue(all(row['check'].get('missing_relation', {}).get('kind') == 'origin_identity'
+                            for row in result.edge_records))
+
+    def test_source_integer_bound_does_not_alias_a_wrapped_term(self):
+        seed, bound, _ = self.checked_fixture()
+        bound['integer_term'] += ' + 18446744073709551616'
+        with self.assertRaisesRegex(ValueError, 'different typed expression'):
+            UnsignedCursorInduction(seed, [bound])
+
 
 if __name__ == '__main__':
     unittest.main()

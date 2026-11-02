@@ -10,11 +10,13 @@ import re
 try:
     from .guard_normal_form import GuardNormalForm
     from .resource_seed import source_z_expression
+    from .forward_resources import _strip_enclosure, _top_positions
     from .forward_design import _footprint
     from .symbolic_state import Expr, bits, evaluate_block, input_expr, operation, parse_trace, _offset
 except ImportError:
     from guard_normal_form import GuardNormalForm
     from resource_seed import source_z_expression
+    from forward_resources import _strip_enclosure, _top_positions
     from forward_design import _footprint
     from symbolic_state import Expr, bits, evaluate_block, input_expr, operation, parse_trace, _offset
 
@@ -135,6 +137,24 @@ def _subtract_affine(left, right):
     return constant, terms
 
 
+def _source_integer_affine(term, width):
+    """Preserve Z constants before a cast; do not normalize them modulo width."""
+    term = _strip_enclosure(term.strip())
+    term = _strip_enclosure(re.sub(r'%Z\s*$', '', term))
+    if re.fullmatch(r'-?[0-9]+', term):
+        return int(term), {}
+    positions = [position for operator in ('+', '-') for position in _top_positions(term, operator)
+                 if position > 0 and not term.startswith('->', position)]
+    if positions:
+        position = max(positions)
+        left = _source_integer_affine(term[:position], width)
+        right = _source_integer_affine(term[position + 1:], width)
+        if term[position] == '+':
+            right = (-right[0], {a: -c for a, c in right[1].items()})
+        return _subtract_affine(left, right)
+    return 0, {source_z_expression(term, {}, width): 1}
+
+
 def source_sum_bounds(clauses, substitutions, constants, *, width, provenance):
     """Project only 0<=a, 0<=b, a+b<2^width from exact source clauses.
 
@@ -206,7 +226,7 @@ class UnsignedCursorInduction:
             self.bindings.append(dict(row))
             if row.get('interpretation') == 'source_integer':
                 term = row.get('integer_term')
-                if not term or _linear(source_z_expression(term, {}, expression.width)) != _linear(expression):
+                if not term or _source_integer_affine(term, expression.width) != _integer_affine(expression):
                     raise ValueError('A source integer bound has a different typed expression')
                 self.integer_bounds[expression] = (lower, upper)
         self.guards = GuardNormalForm(seed.conditions)
@@ -306,7 +326,7 @@ class UnsignedCursorInduction:
             if view is not None:
                 # The public source parser checks the exact typed cast/add tree.
                 parsed = source_z_expression(view['term'], {}, origin.width)
-                if _linear(parsed) != _linear(origin):
+                if _source_integer_affine(view['term'], origin.width) != _integer_affine(origin):
                     raise _MissingCursorRelation({'kind': 'origin_identity',
                         'source_expression': parsed.to_dict(), 'actual_origin': origin.to_dict()})
                 for atom in _integer_affine(parsed)[1]:
