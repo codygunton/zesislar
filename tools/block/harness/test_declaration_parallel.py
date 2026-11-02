@@ -168,6 +168,72 @@ class GuardedAdapterTests(unittest.TestCase):
         self.assertEqual(self.case.manager.rows, [])
         self.assertFalse(self.f.source.with_suffix('.vo').exists())
 
+    def failed_physical_runner(self, command, **keywords):
+        import json
+        self.physical_runner(command, **keywords)
+        record = next((self.f.root/'compiler-invocations').glob('*/PHYSICAL-RESULT.json'))
+        value = json.loads(record.read_text())
+        value.update(returncode=1)
+        value.pop('output_validation')
+        value.pop('compiler_outputs')
+        S._publish(record,value,replace=True)
+        return subprocess.CompletedProcess(command,1)
+
+    def test_authenticated_physical_error_allows_only_module_failure(self):
+        from declaration_dag import ModuleCompileFailure
+        adapter=self.adapter(self.failed_physical_runner)
+        with self.assertRaises(ModuleCompileFailure) as caught:
+            adapter.compile_private('Example.Control')
+        self.assertEqual(caught.exception.evidence['returncode'],1)
+        self.assertFalse(caught.exception.evidence['output_acceptance'])
+        self.assertEqual(self.case.manager.rows,[])
+
+    def test_missing_physical_error_record_is_unsafe_in_keep_going(self):
+        adapter=self.adapter(lambda command,**kwargs: subprocess.CompletedProcess(command,1))
+        adapter.spec['keep_going']=True
+        with self.assertRaises(RuntimeError) as caught:
+            adapter.execute(lambda:256*GIB)
+        self.assertEqual(caught.exception.result['failures'][0]['kind'],'unsafe_runtime')
+        self.assertEqual(self.case.manager.rows,[])
+
+    def test_global_refusal_after_module_error_still_halts(self):
+        adapter=self.adapter(self.failed_physical_runner)
+        def refuse():
+            raise ValueError('Synthetic monitor refusal.')
+        adapter.recheck=refuse
+        with self.assertRaisesRegex(ValueError,'monitor refusal'):
+            adapter.compile_private('Example.Control')
+        self.assertEqual(self.case.manager.rows,[])
+
+    def test_protected_transport_or_restart_failure_never_uses_module_classification(self):
+        from unittest.mock import patch
+        class FailedTool(RuntimeError):
+            def __init__(self, value):
+                self.result=value
+        for value in [{'success':False,'reason':'timeout'},
+                      {'success':False,'reason':'compile_error','pet_restarted':True}]:
+            with self.subTest(value=value):
+                adapter=self.adapter()
+                def fail(module):
+                    raise FailedTool(value)
+                adapter.protected_compile=fail
+                with patch.object(adapter,'failed_compilation',side_effect=AssertionError('Unsafe classification.')):
+                    with self.assertRaises(FailedTool):
+                        adapter.compile_protected('Example.Control')
+
+    def test_changed_failure_validation_refuses_continued_dispatch(self):
+        import json
+        def changed(command,**kwargs):
+            result=self.failed_physical_runner(command,**kwargs)
+            record=next((self.f.root/'compiler-invocations').glob('*/PHYSICAL-VALIDATION.json'))
+            value=json.loads(record.read_text());value['producer']={'pid':0}
+            S._publish(record,value,replace=True)
+            return result
+        adapter=self.adapter(changed)
+        with self.assertRaises(ValueError):
+            adapter.compile_private('Example.Control')
+        self.assertEqual(self.case.manager.rows,[])
+
     def test_changed_wrapper_refuses_before_launch(self):
         adapter = self.adapter()
         (self.f.root / self.f.runtime['coqc_wrapper']).write_text('Changed wrapper.\n')

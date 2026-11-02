@@ -2,7 +2,7 @@
 import threading
 import unittest
 
-from declaration_dag import CLAIM_BYTES, GIB, execute, frontier_claim
+from declaration_dag import CLAIM_BYTES, GIB, ModuleCompileFailure, execute, frontier_claim
 
 
 class DeclarationDagTests(unittest.TestCase):
@@ -149,6 +149,70 @@ class DeclarationDagTests(unittest.TestCase):
                           compile_private=compile_private, publish=publish)
         self.assertEqual(published, ['B'])
         self.assertEqual(caught.exception.result['pending'], ['C'])
+
+    def test_keep_going_skips_only_failed_transitive_dependents(self):
+        started = []
+        edges = [{'from': 'B', 'to': 'A'}, {'from': 'C', 'to': 'B'},
+                 {'from': 'GoodEnd', 'to': 'Good'}]
+        def compile_private(name):
+            started.append(name)
+            if name == 'A':
+                raise ModuleCompileFailure('Synthetic module error.', {'physical_result': '/A'})
+            return name
+        with self.assertRaises(RuntimeError) as caught:
+            self.run_plan(['A', 'B', 'C', 'Good', 'GoodEnd'], edges,
+                          maximum_workers=1, compile_private=compile_private, keep_going=True)
+        result = caught.exception.result
+        self.assertEqual(started, ['A', 'Good', 'GoodEnd'])
+        self.assertEqual(result['skipped'], {'B': ['A'], 'C': ['B']})
+        self.assertEqual(result['pending'], [])
+        self.assertEqual(list(result['receipts']), ['Good', 'GoodEnd'])
+
+    def test_keep_going_reports_every_independent_module_error(self):
+        def fail(name):
+            raise ModuleCompileFailure('Module ' + name, {'physical_result': '/' + name})
+        with self.assertRaises(RuntimeError) as caught:
+            self.run_plan(['A', 'B', 'C'], compile_private=fail, keep_going=True, maximum_workers=1)
+        self.assertEqual([x['module'] for x in caught.exception.result['failures']], ['A', 'B', 'C'])
+        self.assertEqual(caught.exception.result['pending'], [])
+
+    def test_keep_going_does_not_bypass_global_identity_refusal(self):
+        started = []
+        def fail(name):
+            started.append(name)
+            raise ValueError('The runtime identity changed.')
+        with self.assertRaises(RuntimeError) as caught:
+            self.run_plan(['A', 'B'], compile_private=fail, keep_going=True, maximum_workers=1)
+        self.assertEqual(started, ['A'])
+        self.assertEqual(caught.exception.result['failures'][0]['kind'], 'unsafe_runtime')
+        self.assertEqual(caught.exception.result['pending'], ['B'])
+
+    def test_keep_going_does_not_bypass_publication_refusal(self):
+        def refuse(name, artifact):
+            raise ModuleCompileFailure('Publication is unsafe.', {})
+        with self.assertRaises(RuntimeError) as caught:
+            self.run_plan(['A', 'B'], publish=refuse, keep_going=True, maximum_workers=1)
+        self.assertEqual(caught.exception.result['failures'][0]['kind'], 'unsafe_runtime')
+        self.assertEqual(caught.exception.result['pending'], ['B'])
+
+    def test_keep_going_crosses_failed_protected_barrier_only_for_independent_work(self):
+        def fail(name):
+            raise ModuleCompileFailure('Protected compiler error.', {})
+        with self.assertRaises(RuntimeError) as caught:
+            self.run_plan(['Barrier', 'Dependent', 'Independent'],
+                          [{'from': 'Dependent', 'to': 'Barrier'}],
+                          protected={'Barrier'}, compile_protected=fail, keep_going=True)
+        result = caught.exception.result
+        self.assertEqual(result['skipped'], {'Dependent': ['Barrier']})
+        self.assertEqual(list(result['receipts']), ['Independent'])
+
+    def test_default_still_stops_after_authenticated_module_error(self):
+        def fail(name):
+            raise ModuleCompileFailure('Module error.', {})
+        with self.assertRaises(RuntimeError) as caught:
+            self.run_plan(['A', 'B'], compile_private=fail, maximum_workers=1)
+        self.assertFalse(caught.exception.result['keep_going'])
+        self.assertEqual(caught.exception.result['pending'], ['B'])
 
     def test_running_weight_survives_until_publication(self):
         observations = []

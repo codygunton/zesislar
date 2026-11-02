@@ -7,7 +7,7 @@ import sys
 import uuid
 
 from entry_chain import binding, read_bound, save
-from declaration_dag import execute
+from declaration_dag import execute, ModuleCompileFailure
 from declaration_outputs import private_target, publish
 from coqc_findlib import compiler_environment
 
@@ -64,6 +64,10 @@ class GuardedAdapter:
             result = self.runner(command, cwd=directory, env=environment,
                                  stdout=stdout, stderr=stderr, check=False)
         if result.returncode:
+            self.recheck()
+            evidence = self.failed_compilation(module, source_binding, target)
+            if evidence is not None:
+                raise ModuleCompileFailure('The physical declaration compiler failed: ' + module, evidence)
             raise RuntimeError('A private declaration compiler failed: ' + module +
                                ' (retained launch: ' + str(directory) + ')')
         self.check_tools()
@@ -82,6 +86,44 @@ class GuardedAdapter:
         return {'module': module, 'source': source_binding, 'private_object': binding(target),
                 'physical_result': candidates[0], 'launch': binding(directory / 'LAUNCH.json'),
                 'stdout': binding(directory / 'stdout'), 'stderr': binding(directory / 'stderr')}
+
+    def failed_compilation(self, module, source, target=None):
+        # Only a recorded normal coqc error permits independent dispatch.
+        # Guard refusals, signals, missing records, and identity errors halt it.
+        from compiler_snapshot import failed_compilation
+        self.check_tools()
+        self.recheck()
+        candidates = []
+        invocations = Path(self.runtime['job_output']) / 'compiler-invocations'
+        for path in invocations.glob('*/PHYSICAL-RESULT.json'):
+            value = read_bound(binding(path))
+            inputs = read_bound(value['input'])
+            if inputs.get('source') == source and (target is None or
+                    inputs.get('physical_argv', [])[-3:] == ['-o', str(target), source['path']]):
+                candidates.append(binding(path))
+        if len(candidates) != 1:
+            return None
+        return failed_compilation(candidates[0], self.manager.snapshot,
+                                  self.manager.reference, source,
+                                  self.runtime['physical_compiler'],
+                                  self.runtime['physical_flags'], target)
+
+    def compile_protected(self, module):
+        try:
+            return self.protected_compile(module)
+        except Exception as error:
+            value = getattr(error, 'result', None)
+            normal_error = (isinstance(value, dict) and value.get('success') is False and
+                            not value.get('pet_restarted') and not value.get('restarted') and
+                            (value.get('reason') == 'compile_error' or
+                             value.get('method') == 'stock-guarded-dependency-build' and value.get('returncode') == 1))
+            if not normal_error:
+                raise
+            source = binding(self.workspace / self.runtime['module_files'][module])
+            evidence = self.failed_compilation(module, source)
+            if evidence is not None:
+                raise ModuleCompileFailure('The protected physical compiler failed: ' + module, evidence)
+            raise
 
     def check_tools(self):
         if compiler_environment(self.workspace, self.environment) != self.environment:
@@ -120,9 +162,10 @@ class GuardedAdapter:
                        claim_bytes=admission['minimum_claim_bytes'],
                        fence_bytes=admission['physical_fence_bytes'], available_bytes=available_bytes,
                        compile_private=self.compile_private, publish=self.publish,
-                       compile_protected=self.protected_compile,
+                       compile_protected=self.compile_protected,
                        checkpoint=lambda value: save(self.output / 'DECLARATION-DAG-PROGRESS.json', value),
-                       maximum_workers=self.spec['maximum_workers'])
+                       maximum_workers=self.spec['maximum_workers'],
+                       keep_going=self.spec.get('keep_going', False))
 
 
 async def run(runtime, workspace, output, manager, environment, recheck, protected_compile):
@@ -135,6 +178,11 @@ async def run(runtime, workspace, output, manager, environment, recheck, protect
     def available():
         return next(int(line.split()[1])*1024 for line in Path('/proc/meminfo').read_text().splitlines()
                     if line.startswith('MemAvailable:'))
-    result=await asyncio.to_thread(adapter.execute,available)
+    try:
+        result=await asyncio.to_thread(adapter.execute,available)
+    except RuntimeError as error:
+        if hasattr(error,'result'):
+            save(Path(output)/'DECLARATION-DAG-RESULT.json',error.result)
+        raise
     save(Path(output)/'DECLARATION-DAG-RESULT.json',result)
     return result

@@ -56,6 +56,20 @@ Focused profiles without this option keep their existing booking.
 The unused empty native carrier does not receive a declaration workload.
 The declaration-only executor does not run that carrier.
 
+The DAG stops new dispatch after its first failure by default.
+Use `--parallel-declarations --declaration-keep-going` to continue independent declarations after an authenticated physical compiler error.
+The scheduler skips the failed module's transitive dependents.
+Identity, admission, monitor, and publication errors still stop new dispatch.
+The result retains every observed failure and each skipped dependency.
+
+Before the first compilation, the harness checks project-defined Ltac call heads in every planned module.
+The report is `DECLARATION-NAME-PREFLIGHT.json`.
+The check models plain imports, exports, qualified names, and supported local definitions.
+It refuses a missing definition only when that visibility analysis is complete.
+Plugins, unsupported syntax, and unmodeled imports produce unknown results.
+The report keeps missing project visibility useful when global resolution is unknown.
+This bounded check does not replace compiler name resolution or typechecking.
+
 Before an external stop, the harness retains the complete available export.
 An in-flight tactic has no returned internal state.
 The report labels a pre-call export explicitly.

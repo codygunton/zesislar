@@ -589,6 +589,48 @@ def _physical_record(reference, snapshot, snapshot_reference, source, compiler, 
     return outputs,before,_physical_import_provenance(record,inputs,snapshot,source,compiler,flags),context
 
 
+def failed_compilation(reference, snapshot, snapshot_reference, source, compiler, flags, target=None):
+    """Classify one normal compiler error without granting output acceptance."""
+    record = _read_private(reference)
+    inputs = _read_private(record['input'])
+    runtime = _bound_runtime(snapshot['runtime'])
+    directory = Path(reference['path']).parent
+    job = Path(runtime['job_output'])
+    context = compilation(flags, source)
+    selected = context['physical_flags']
+    extra = []
+    if target is not None:
+        from declaration_outputs import output_context
+        output = output_context(runtime, source, target, inputs['owned_workspace'])
+        if inputs.get('output_context') != output:
+            raise ValueError('A failed compiler has another private output context.')
+        selected = output['physical_flags']
+        extra = ['-o', str(target)]
+    elif inputs.get('output_context') is not None:
+        raise ValueError('A failed canonical compiler has a private output context.')
+    if (Path(reference['path']).name != 'PHYSICAL-RESULT.json' or
+            directory.parent != job/'compiler-invocations' or directory.resolve() != directory or
+            Path(record['input']['path']) != directory/'INPUT.json' or
+            inputs.get('source') != source or inputs.get('compiler') != compiler or
+            inputs.get('validation') != {'runtime': snapshot['runtime'], 'snapshot': snapshot_reference} or
+            record.get('physical_argv') != [compiler['path'], *selected, *extra, source['path']] or
+            inputs.get('physical_argv') != record['physical_argv'] or
+            context['changes'] and inputs.get('compiler_context') != context or
+            inputs.get('compiler_context') is not None and inputs['compiler_context'] != context):
+        raise ValueError('A failed physical compiler record differs from this run.')
+    if (type(record.get('returncode')) is not int or record['returncode'] != 1 or
+            record.get('output_capture', {}).get('complete') is not True):
+        return None
+    # This rechecks the source context, producer, snapshot, selected imports,
+    # and validation report. A missing report cannot justify continued work.
+    if _physical_import_provenance(record, inputs, snapshot, source, compiler,
+                                   context['physical_flags']) is None:
+        return None
+    return {'physical_result': reference, 'input': record['input'],
+            'input_validation': record['input_validation'], 'returncode': 1,
+            'output_acceptance': False}
+
+
 class OutputReceipts:
     """Authenticate only objects accepted after successful provider checks."""
     def __init__(self, reference, runtime_reference, key=None):
