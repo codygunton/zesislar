@@ -264,13 +264,17 @@ class SymbolicState:
     register_writes: list | None = None
     source_intervals: list = field(default_factory=list)
     source_alignments: list = field(default_factory=list)
+    symbolic_read_ranges: list = field(default_factory=list)
+    read_obligations: list = field(default_factory=list)
 
     def copy(self):
         return SymbolicState(dict(self.registers), list(self.memory), list(self.conditions),
                              list(self.reports), list(self.writes), self.endianness, self.trace_count,
                              dict(self.retained_registers), list(self.memory_disjoint),
                              list(self.register_writes) if self.register_writes is not None else None,
-                             list(self.source_intervals), list(self.source_alignments))
+                             list(self.source_intervals), list(self.source_alignments),
+                             [dict(row) for row in self.symbolic_read_ranges],
+                             [dict(row) for row in self.read_obligations])
 
     def to_dict(self):
         result = {'schema': 1, 'registers': {k: v.to_dict() for k, v in sorted(self.registers.items())},
@@ -287,6 +291,10 @@ class SymbolicState:
             result['source_intervals'] = list(self.source_intervals)
         if self.source_alignments:
             result['source_alignments'] = list(self.source_alignments)
+        if self.symbolic_read_ranges:
+            result['symbolic_read_ranges'] = [dict(row) for row in self.symbolic_read_ranges]
+        if self.read_obligations:
+            result['read_obligations'] = [dict(row) for row in self.read_obligations]
         return result
 
 

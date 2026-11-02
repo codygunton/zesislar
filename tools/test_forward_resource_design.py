@@ -4,7 +4,7 @@ import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'block'))
-from forward_resource_design import evaluate_owned_function
+from forward_resource_design import _state_from_result, evaluate_owned_function
 from forward_resources import OwnedBytes, parse_source_ownership
 from resource_seed import OwnedSeed
 from symbolic_state import Expr, MemoryRegion, SymbolicState, bits, input_expr, operation
@@ -38,6 +38,26 @@ def cfg(first_end=20):
 
 
 class ForwardResourceDesignTests(unittest.TestCase):
+    def test_loop_read_metadata_survives_state_copy_and_result_decode(self):
+        state = seed().state
+        state.symbolic_read_ranges = [{'owner': 'array', 'first': 1, 'last': 8}]
+        state.read_obligations = [{'kind': 'open_range', 'source_index': 2}]
+        record = state.to_dict()
+        copied = state.copy()
+        restored = _state_from_result(record)
+        self.assertEqual(restored.to_dict(), record)
+        self.assertEqual(copied.to_dict(), record)
+        copied.symbolic_read_ranges[0]['last'] = 4
+        copied.read_obligations[0]['source_index'] = 3
+        self.assertEqual(state.symbolic_read_ranges[0]['last'], 8)
+        self.assertEqual(state.read_obligations[0]['source_index'], 2)
+
+    def test_absent_loop_read_metadata_preserves_the_existing_result_shape(self):
+        record = seed().state.to_dict()
+        self.assertNotIn('symbolic_read_ranges', record)
+        self.assertNotIn('read_obligations', record)
+        self.assertEqual(_state_from_result(record).to_dict(), record)
+
     def test_dead_owned_register_keeps_its_actual_final_value(self):
         traces = {16: '(trace (write-reg |x1| nil #x0000000000000007) (write-reg |PC| nil #x0000000000000014))',
                   20: '(trace (write-reg |PC| nil #x0000000000000018))',

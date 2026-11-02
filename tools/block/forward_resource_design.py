@@ -26,7 +26,8 @@ def _state_from_result(record):
                          {key: Expr.from_dict(value) for key, value in record.get('retained_registers', {}).items()},
                          list(record.get('memory_disjoint', [])),
                          list(record['register_writes']) if 'register_writes' in record else None,
-                         list(record.get('source_intervals', [])), list(record.get('source_alignments', [])))
+                         list(record.get('source_intervals', [])), list(record.get('source_alignments', [])),
+                         list(record.get('symbolic_read_ranges', [])), list(record.get('read_obligations', [])))
 
 
 def _prepare_state(state, seed):
