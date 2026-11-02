@@ -139,19 +139,29 @@ def origin(policy, reference, module, source, obj, compiler, flags, workspace):
     ready = bound_record(authority['ready'])
     if authority['kind'] == 'accepted-ready':
         selection = bound_record(authority['selection'])
-        expected = authority['allowed_objects'].get(module)
-        if (reference != authority['ready'] or expected is None or
+        guards = authority['selection_guards']
+        if (reference != authority['ready'] or not guards or
                 not any(row['path'] == reference['path'] and row['sha256'] == reference['sha256']
                         for row in selection['rows']) or
-                selection['recorded_expected_objects'].get(module) != expected):
+                selection['recorded_expected_objects'] != guards):
             raise ValueError('The accepted READY lacks its exact authorized selection.')
-        old_source = (Path(ready['prepared_workspace']) /
-                      ready['proof_runtime']['module_files'][module]).resolve()
         inputs = {row['path']: row for row in ready['bindings']}
-        rows = [{'module': module, 'source': inputs[str(old_source)],
-                 'object': inputs[str(old_source.with_suffix('.vo'))]}]
-        if rows[0]['object']['sha256'] != expected:
-            raise ValueError('The accepted READY differs from the selected frozen object.')
+        root = Path(ready['prepared_workspace']).resolve()
+        def mapped(name):
+            relative = ready['proof_runtime']['module_files'].get(name)
+            if relative is None:
+                raise ValueError('The accepted READY lacks a module mapping: ' + name)
+            selected = (root / relative).resolve()
+            if not selected.is_relative_to(root):
+                raise ValueError('The selected READY module is not owned: ' + name)
+            source_row, object_row = inputs.get(str(selected)), inputs.get(str(selected.with_suffix('.vo')))
+            if source_row is None or object_row is None:
+                raise ValueError('The accepted READY lacks bound source/object identities: ' + name)
+            return {'module': name, 'source': source_row, 'object': object_row}
+        for name, expected in guards.items():
+            if mapped(name)['object']['sha256'] != expected:
+                raise ValueError('The accepted READY differs from a selected frozen marker.')
+        rows = [mapped(module)]
     else:
         rows = [row for row in publication['modules'] if row['module'] == module]
     if len(rows) != 1:
@@ -339,7 +349,7 @@ def main():
     if args.all_owned:
         publication = read_bound(reference)
         names = ([row['module'] for row in publication['modules']] if
-                 authority['kind'] == 'accepted-supplier' else list(authority['allowed_objects']))
+                 authority['kind'] == 'accepted-supplier' else list(runtime['proof_runtime']['module_files']))
         modules = [name for name in names if name in runtime['proof_runtime']['module_files'] and
                    (workspace / runtime['proof_runtime']['module_files'][name]).resolve().is_relative_to(workspace)]
     else:
