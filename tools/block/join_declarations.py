@@ -25,9 +25,9 @@ def join_declarations(join, *, entry_name, entry_module, parameters, imports):
         identifier(module, 'join import', qualified=True)
     # All imports automation, but its dependencies do not re-export the
     # machine and Iris notation used in a generated resource expression.
-    imports = [imports[0], 'isla.riscv64.riscv64', *imports[1:]]
+    imports = [imports[0], 'isla.riscv64.riscv64', 'Coq.Lists.List', *imports[1:]]
     header = ''.join('Require Import ' + module + '.\n' for module in dict.fromkeys(imports))
-    header += 'Open Scope Z_scope.\n'
+    header += 'Import ListNotations.\nOpen Scope Z_scope.\n'
     typed = ''.join(f' ({name} : {kind})' for name, kind in binders(parameters, ['Sigma']))
     continuation = join['continuation']
     definition = (f'Definition {entry_name} `{{!islaG Sigma}} `{{!threadG}}{typed} : iProp Sigma :=\n'

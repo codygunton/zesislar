@@ -36,6 +36,19 @@ class JoinDeclarationTests(unittest.TestCase):
         self.assertNotIn('Proof.', result['entry'] + result['structural'])
         self.assertFalse(result['proof_established'])
 
+    def test_direct_owner_imports_keep_order_and_standard_imports_do_not_repeat(self):
+        result = join_declarations(self.fixture(), entry_name='machineJoin',
+            entry_module='ZesuSsz.Generated.Example.JoinEntries', parameters=[],
+            imports=['ZesuSsz.Automation.All', 'Coq.Lists.List',
+                'isla.riscv64.riscv64', 'ZesuSsz.Contracts.ExampleArgs',
+                'ZesuSsz.Contracts.ExampleMeaning'])
+        for kind in ['entry', 'structural']:
+            source = result[kind]
+            self.assertEqual(source.count('Require Import isla.riscv64.riscv64.'), 1)
+            self.assertEqual(source.count('Require Import Coq.Lists.List.'), 1)
+            self.assertIn('Import ListNotations.\n', source)
+            self.assertLess(source.index('ExampleArgs.'), source.index('ExampleMeaning.'))
+
     def test_missing_pullback_refuses(self):
         join = self.fixture()
         join['pullback']['status'] = 'refused'
