@@ -541,6 +541,27 @@ def memory_workload_context(config):
     return dict(config,prerequisite_modules=list(modules))
 
 
+
+def refresh_admission_profile(config, explicit=None):
+    """Inherit only the profile selected by current job workload records."""
+    profiles=[]
+    for job in config['jobs']:
+        workload=job.get('workload')
+        if workload is None:continue
+        profile=workload.get('profile') if isinstance(workload,dict) else None
+        if (not isinstance(profile,dict) or set(profile)!={'path','sha256'}
+                or not isinstance(profile['path'],str) or not Path(profile['path']).is_absolute()
+                or not isinstance(profile['sha256'],str)
+                or re.fullmatch(r'[0-9a-f]{64}',profile['sha256']) is None):
+            raise ValueError('An active workload has a malformed admission profile binding.')
+        profiles.append(profile)
+    inherited=profiles[0] if profiles else None
+    if any(profile!=inherited for profile in profiles):
+        raise ValueError('The active workload admission profiles conflict.')
+    if inherited is not None and config.get('admission_profile')!=inherited:
+        raise ValueError('The active workload admission profile differs from its runtime binding.')
+    return binding(explicit.resolve()) if explicit is not None else deepcopy(inherited)
+
 def refresh_memory(argv):
     from command_scope import require
     require()
@@ -582,10 +603,11 @@ def refresh_memory(argv):
     rows=read_bound(measurements)['rows']
     from memory_policy import apply_job
     from memory_policy import workload_for_job
-    context=binding(args.admission_profile.resolve()) if args.admission_profile else c.get('admission_profile')
     actual_config=memory_workload_context(c)
+    context=refresh_admission_profile(c,args.admission_profile)
     c['jobs']=[dict(apply_job(job,rows,workload_for_job(context,job,actual_config)),output=str(out/'jobs'/job['key'])) for job in c['jobs']]
     if context:c['admission_profile']=context
+    else:c.pop('admission_profile',None)
     from port_native_policy import configure_cpu
     native_job=next(job for job in c['jobs'] if job['phase']=='native')
     search_budget,setup_budget=configure_cpu(c,native_job)
