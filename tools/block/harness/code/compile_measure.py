@@ -16,17 +16,19 @@ for name in ['.lia.cache','.nia.cache','.nra.cache','.csdp.cache','.bv_solve.cac
     removed.append({'path':str(cache),'removed':existed,'absent_after':not cache.exists()})
 record.update(cwd=str(cwd),removed_cache_paths=removed)
 path.write_text(json.dumps(record,indent=2)+'\n')
-report=None;before=None
+report=None;before=None;input_validation=None;imports=None
 # Validate after guarded admission, immediately before the physical compiler.
 if record.get('validation') is not None:
     from entry_chain import read_bound,save
-    from compiler_snapshot import validate_compiler,sidecar_prestate,check_sidecar_prestate,compiler_outputs,_publish
+    from compiler_snapshot import validate_compiler,sidecar_prestate,check_sidecar_prestate,compiler_outputs,_publish,import_selection,check_import_selection
     envelope=record['validation']['runtime']
     checked_runtime=read_bound(envelope)
     report=validate_compiler(checked_runtime,envelope,record['validation']['snapshot'],
         record['source'],record['physical_argv'][0],
         output_key=os.environ.get('ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY'))
-    save(directory/'PHYSICAL-VALIDATION.json',report)
+    imports=import_selection(checked_runtime,record['source'],workspace,report)
+    report['import_selection']=imports
+    input_validation=_publish(directory/'PHYSICAL-VALIDATION.json',report)
     target=(Path(record['physical_argv'][-2]) if record['physical_argv'][-3:-2]==['-o']
             else Path(record['source']['path']).with_suffix('.vo'))
     if target.suffix=='.vo':
@@ -36,6 +38,7 @@ if record.get('validation') is not None:
 # The physical compiler never receives the provider authentication key.
 os.environ.pop('ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY',None)
 if before is not None:check_sidecar_prestate(before)
+if report is not None:check_import_selection(imports,report)
 started=time.monotonic();child=subprocess.Popen(record['physical_argv'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 capture_errors=[]
 def retain(stream,name,descriptor):
@@ -71,9 +74,11 @@ result={'input':{'path':str(path),'sha256':hashlib.sha256(path.read_bytes()).hex
 result['output_capture']={'complete':not capture_errors,'errors':capture_errors,'streams':[
     {'path':str(directory/name),'sha256':hashlib.sha256((directory/name).read_bytes()).hexdigest(),'bytes':(directory/name).stat().st_size}
     for name in ['STDOUT','STDERR'] if (directory/name).is_file()]}
+if input_validation is not None:result['input_validation']=input_validation
 output_error=None
 if before is not None and code==0 and not capture_errors:
     try:
+        check_import_selection(imports,report)
         result['compiler_outputs']=compiler_outputs(target,before)
         result['output_validation']={'success':True}
     except BaseException as error:

@@ -141,8 +141,7 @@ def accept_guarded_dependency(accepted_objects,module,source,obj,flags,result,re
         if not entry_intro_plugin_build(module,source):return False
         if not entry_intro_plugin_refusal(result.get('MCP_refusal_result',{})):return False
     recheck()
-    accepted_objects.accept(source,obj,'/home/cody/islaris/_opam/bin/coqc',flags,result)
-    return True
+    return accepted_objects.accept(source,obj,'/home/cody/islaris/_opam/bin/coqc',flags,result)
 
 
 def control_step_required(step):
@@ -376,11 +375,13 @@ async def execute(request):
                     obj = source.with_suffix('.vo')
                     if not obj.is_file():
                         raise ToolFailure('A dependency object is absent after compilation.')
-                    accept_guarded_dependency(accepted_objects,module,source,obj,
+                    accepted_receipt=accept_guarded_dependency(accepted_objects,module,source,obj,
                         runtime['physical_flags'],result,lambda:check_operation(runtime))
+                    if not accepted_receipt and calls:
+                        accepted_receipt=calls[-1].get('accepted_object_receipt')
                     atomic_json(output/('dependency-'+module+'.json'), {'source': str(source),
                         'source_sha256': digest(source), 'object': str(obj), 'object_sha256': digest(obj),
-                        'result': result})
+                        'result': result,'accepted_object_receipt':accepted_receipt or None})
                 if runtime['phase']=='prerequisites':
                     verified_controls=[]
                     for specification in runtime.get('declaration_checks',[]):

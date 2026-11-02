@@ -187,6 +187,8 @@ def stage_job(config,job,out):
 
     # The compiler wrapper sits in tools beside the stock findlib and resource guard.
     runtime=deepcopy(config['proof_runtime'])
+    if config.get('cache_import_graph') is not None:
+        runtime['cache_import_graph']=deepcopy(config['cache_import_graph'])
     if sealed:
         runtime['prepared_workspace']=str(workspace)
         launcher=list(runtime['mcp_argv'])
@@ -240,6 +242,8 @@ def stage_job(config,job,out):
     runtime['bindings']=list(config['bindings'])+[x['owned'] for x in copies
         if Path(x['owned']['path']).suffix in {'.v','.vo','.vos','.cmxs','.cma','.cmxa','.so'}
         and x['owned']['path'] not in output_paths]
+    if runtime.get('cache_import_graph') is not None:
+        runtime['bindings'].append(runtime['cache_import_graph'])
     if preflight is not None:
         runtime['bindings'].extend([binding(preflight),runtime['native_parse_preflight']])
     if runtime.get('native_delta'):
