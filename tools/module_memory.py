@@ -30,6 +30,7 @@ _module = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_module)
 evaluate, ScopeReader = _module.evaluate, _module.ScopeReader
 confirm_shell, release_shell = _module.confirm_shell, _module.release_shell
+recover_dead_shell = _module.recover_dead_shell
 current_projection = _module.current_projection
 mark_shell = _module.mark_shell
 refresh_shell_growth = _module.refresh_shell_growth
@@ -329,6 +330,8 @@ def main():
     confirm.add_argument('--available-bytes', type=int, required=True)
     release = commands.add_parser('ledger-release')
     release.add_argument('--marker', type=Path, required=True)
+    recover = commands.add_parser('ledger-recover-dead')
+    recover.add_argument('--marker', type=Path, required=True)
     mark = commands.add_parser('ledger-mark')
     mark.add_argument('--marker', type=Path, required=True)
     aggregate = commands.add_parser('aggregate-limit')
@@ -358,6 +361,8 @@ def main():
         return 0 if mark_shell(args.marker) else 4
     if args.command == 'ledger-release':
         return 0 if release_shell(args.marker) else 4
+    if args.command == 'ledger-recover-dead':
+        return 0 if recover_dead_shell(args.marker) else 4
     if args.command == "claim":
         arguments = args.arguments[1:] if args.arguments[:1] == ["--"] else args.arguments
         result = module_claim(json.loads(args.profile.read_text()), arguments, args.cwd, args.compiler,

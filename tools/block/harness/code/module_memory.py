@@ -40,6 +40,7 @@ if _staged_tools is not None:
     _spec.loader.exec_module(_module)
     evaluate, ScopeReader = _module.evaluate, _module.ScopeReader
     confirm_shell, release_shell = _module.confirm_shell, _module.release_shell
+    recover_dead_shell = _module.recover_dead_shell
     current_projection = _module.current_projection
     mark_shell = _module.mark_shell
     refresh_shell_growth = _module.refresh_shell_growth
@@ -47,7 +48,7 @@ if _staged_tools is not None:
     read_shell_bookings = _module.read_shell_bookings
     select_guard_aggregate_limit = _module.select_guard_aggregate_limit
 else:
-    from admission_memory import evaluate, ScopeReader, confirm_shell, release_shell, current_projection, mark_shell, refresh_shell_growth, check_test_ledger, read_shell_bookings, select_guard_aggregate_limit
+    from admission_memory import evaluate, ScopeReader, confirm_shell, release_shell, recover_dead_shell, current_projection, mark_shell, refresh_shell_growth, check_test_ledger, read_shell_bookings, select_guard_aggregate_limit
 
 GIB = 1024 ** 3
 SCHEMA = "zesu.module-memory.v1"
@@ -341,6 +342,8 @@ def main():
     confirm.add_argument('--available-bytes', type=int, required=True)
     release = commands.add_parser('ledger-release')
     release.add_argument('--marker', type=Path, required=True)
+    recover = commands.add_parser('ledger-recover-dead')
+    recover.add_argument('--marker', type=Path, required=True)
     mark = commands.add_parser('ledger-mark')
     mark.add_argument('--marker', type=Path, required=True)
     aggregate = commands.add_parser('aggregate-limit')
@@ -370,6 +373,8 @@ def main():
         return 0 if mark_shell(args.marker) else 4
     if args.command == 'ledger-release':
         return 0 if release_shell(args.marker) else 4
+    if args.command == 'ledger-recover-dead':
+        return 0 if recover_dead_shell(args.marker) else 4
     if args.command == "claim":
         arguments = args.arguments[1:] if args.arguments[:1] == ["--"] else args.arguments
         result = module_claim(json.loads(args.profile.read_text()), arguments, args.cwd, args.compiler,

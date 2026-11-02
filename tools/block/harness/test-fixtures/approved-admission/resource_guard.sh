@@ -494,6 +494,21 @@ live_launches() {
   done
 }
 
+recover_dead_reservation() {
+  local marker=$1 detail status
+  if [[ -e /proc/$BASHPID/fd/7 && /proc/$BASHPID/fd/7 -ef "$GATE_MUTEX" ]]; then
+    detail=$(ZESU_GUARD_MUTEX_FD=7 python3 "$MEMORY_TOOL" ledger-recover-dead --marker "$marker" 2>&1)
+  else
+    detail=$(env -u ZESU_GUARD_MUTEX_FD python3 "$MEMORY_TOOL" ledger-recover-dead --marker "$marker" 2>&1)
+  fi
+  status=$?
+  if [ "$status" -ne 0 ]; then
+    note "KEEP dead-owner reservation: ${marker##*/}: ${detail##*$'\n'}"
+    return "$status"
+  fi
+  note "RELEASE dead-owner reservation: ${marker##*/}"
+}
+
 # An admitted launch keeps its slot until its owner or compiler exits.
 live_reservations() {
   local marker owner child
@@ -501,7 +516,8 @@ live_reservations() {
     [ -e "$marker" ] || continue
     owner=${marker##*/}; owner=${owner%%.*}
     if ! kill -0 "$owner" 2>/dev/null; then
-      # Keep unknown memory evidence. The shared ledger requires exact closure.
+      # Recovery retains unknown evidence and live compiler leaves.
+      recover_dead_reservation "$marker" || true
       continue
     fi
     read -r child < "$marker" || continue
@@ -915,6 +931,7 @@ confirm_coqc() {
         if [ "$unified_status" -ne 3 ]; then
           flock -u 7; exec 7>&-; return "$unified_status"
         fi
+        note "HOLD reservation launch: unified memory ledger; owner=$owner claim_bytes=$MEMORY_CLAIM_BYTES marker=${marker##*/}"
         flock -u 7; exec 7>&-
         sleep "$POLL_SECONDS"
         continue

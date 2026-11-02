@@ -411,6 +411,8 @@ PORT_V33_OPEN_BOOKING='completed_open_pilot_peak'
 PORT_V33_OPEN_AUTHORITY={'path':str(Path(__file__).resolve().parents[1]/'policies'/'PORT-V33-OPEN-AUTHORITY.json'),
  'sha256':'7d59bc18d574bb9eed93e3ef3274e00015e40bf92db767e4f75cbc54c0357df3'}
 
+PORT_V33_OPEN_LEGACY_PATHS=('/home/cody/zesislar/.worktrees/shared-block-6d32e24c03517ef7bc2419021db6d0412155a7cf/tools/block/harness/policies/PORT-V33-OPEN-AUTHORITY.json',)
+
 def v33_open_profile(profile):
  return profile.get('memory_booking')==PORT_V33_OPEN_BOOKING
 
@@ -418,7 +420,7 @@ def v33_open_authority(profile):
  if (set(profile)!={'schema','kind','authority','memory_route','memory_booking','supplier_ready'} or
      profile.get('schema')!='scratch.admission-profile.v1' or profile.get('kind')!=PORT_KIND or
      profile.get('memory_route')!='measured_native' or not v33_open_profile(profile) or
-     not relocated_authority(profile.get('authority'),PORT_V33_OPEN_AUTHORITY)):
+     not relocated_authority(profile.get('authority'),PORT_V33_OPEN_AUTHORITY,PORT_V33_OPEN_LEGACY_PATHS)):
   raise ValueError('The v3.3 open-pilot profile is invalid.')
  value=read(profile['authority'])
  if (value.get('schema')!='port.v33.open-pilot-authority.v1' or value.get('rule_version')!='v3.3' or
@@ -432,7 +434,7 @@ def v33_open_authority(profile):
 def completed_v33_open(row,target):
  required={'format','route','block','module','native_source','statement_sha256','result','accounting','closure','release','authority'}
  if set(row)!=required or row['route']!='stock_zesu_block':return None,'The v3.3 open measurement has invalid fields.'
- if not relocated_authority(row['authority'],PORT_V33_OPEN_AUTHORITY):return None,'The v3.3 open measurement authority differs.'
+ if not relocated_authority(row['authority'],PORT_V33_OPEN_AUTHORITY,PORT_V33_OPEN_LEGACY_PATHS):return None,'The v3.3 open measurement authority differs.'
  authority=read(row['authority']);matches=[r for r in authority['cases'] if r['block']==row['block']]
  if len(matches)!=1:return None,'The v3.3 open measurement case differs.'
  case=matches[0]

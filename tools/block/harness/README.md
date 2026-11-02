@@ -179,6 +179,11 @@ Shell helpers reuse the authenticated inherited mutex descriptor.
 They do not unlock the shell's descriptor.
 
 The ledger retains each token and its owner.
+The guard logs every unified-ledger refusal before its next retry.
+The guard attempts `ledger-recover-dead` when a token owner ends.
+Recovery uses the existing exact token and compiler-leaf checks.
+A populated compiler leaf or changed token keeps its booking.
+Unverifiable legacy tokens require a separate recovery decision.
 The memory calculation groups only authenticated aggregate identities.
 It charges the largest approved booking once per aggregate.
 It charges verified current usage when that usage exceeds the booking.

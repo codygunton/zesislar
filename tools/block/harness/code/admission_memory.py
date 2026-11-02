@@ -20,6 +20,14 @@ SLICE_MAX_BYTES = 175 * GIB
 STATIC_KERNEL_ACCOUNT_SCHEMA = 'legacy_kernel_accounts.v1'
 CGROUP_ROOT = Path('/sys/fs/cgroup')
 PROC = Path('/proc')
+# Preserve only these byte-exact public templates from the accepted predecessor.
+PUBLIC_GUARD_HISTORY = {
+    'commit': '76a6622449395debea3b224bd6c5b981e61fd7d0',
+    'templates': {
+        'tools/resource_guard.sh': 'fd70d33ffc7a8515141529f4f1ba43df56e265d4c2df5c27fa7cb2ee7a4666f1',
+        'tools/block/harness/runtime-tools/resource_guard.sh': '6e4940725cf327cc7bc1693ec121d98145dbb618a09cc0b011a6f2ea4d8f5fcf',
+    },
+}
 
 
 class RejectedScopeSetup(ValueError):
@@ -379,11 +387,19 @@ class ScopeReader:
                 elif (record['owner'] != actor or record['generation'] != generation
                       or tuple(record['token_identity']) != before):
                     raise ValueError('The admitted shell token identity changed.')
-                if (fields.get('writer') != ''
-                        or max(int(fields['memory_claim_bytes']),
-                               int(fields.get('memory_probe_claim_bytes', 0)))
-                        != ledger_claims(data)[key]):
+                amount = max(int(fields['memory_claim_bytes']),
+                             int(fields.get('memory_probe_claim_bytes', 0)))
+                canonical = ledger_claims(data)[key]
+                if fields.get('writer') != '':
                     raise ValueError('The early shell booking differs from its claim.')
+                if amount != canonical:
+                    from scope_bookings import authenticate_client
+                    config_path = Path(owner_args[3])
+                    config = self.read(config_path)
+                    if hashlib.sha256(config_path.read_bytes()).hexdigest() != owner_args[4]:
+                        raise ValueError('The early controller configuration changed.')
+                    authenticate_client(config, owner_args[2], owner['block'], out,
+                                        launch, amount, canonical)
                 source = self.guard_source(fields['guard_source_path'], fields['guard_source_sha256'])
                 if source['path'] != str(guard):
                     raise ValueError('The early shell uses another public guard.')
@@ -527,7 +543,7 @@ class ScopeReader:
             raise ValueError('The public guard source is not owned.')
         tools = next(parent for parent in Path(__file__).resolve().parents if parent.name == 'tools')
         digest = hashlib.sha256(path.read_bytes()).hexdigest()
-        approved = False
+        approved = digest in PUBLIC_GUARD_HISTORY['templates'].values()
         for public in (tools / 'resource_guard.sh',
                        tools / 'block/harness/runtime-tools/resource_guard.sh'):
             try:
@@ -1316,7 +1332,25 @@ def leaf_closed(reader, bound):
     return 'populated 0' in events
 
 
-def release_shell(marker, *, ledger=None, reader=None):
+def ended_process(reader, actor):
+    """Require the exact actor to end, including its possible zombie state."""
+    if (type(actor.get('pid')) is not int or actor['pid'] <= 0 or
+            type(actor.get('startticks')) is not int or actor['startticks'] <= 0):
+        raise ValueError('The ended actor identity is invalid.')
+    path = reader.proc / str(actor['pid'])
+    try:
+        fields = (path / 'stat').read_text().rsplit(')', 1)[1].split()
+        return int(fields[19]) != actor['startticks'] or fields[0] in ('Z', 'X', 'x')
+    except FileNotFoundError:
+        return True
+
+
+def recover_dead_shell(marker, *, ledger=None, reader=None):
+    """Use the exact release checks only after the admitted owner ends."""
+    return release_shell(marker, ledger=ledger, reader=reader, require_dead_owner=True)
+
+
+def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False):
     """Release only an exact token whose recorded compiler actor ended."""
     marker = Path(marker).absolute()
     ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
@@ -1325,6 +1359,8 @@ def release_shell(marker, *, ledger=None, reader=None):
         key = shell_key(marker)
         record = data.get('shell_claim_owners', {}).get(key)
         if record is None:
+            if require_dead_owner:
+                raise ValueError('Dead-owner recovery requires an admitted shell owner.')
             token_identity = reader.file_identity(marker.lstat())
             raw = marker.read_bytes()
             fields = dict(line.split('=', 1) for line in raw.decode().splitlines()[1:] if '=' in line)
@@ -1340,6 +1376,8 @@ def release_shell(marker, *, ledger=None, reader=None):
             write_ledger(ledger, data)
             marker.unlink()
             return True
+        if require_dead_owner and not ended_process(reader, record['owner']):
+            raise ValueError('The shell reservation owner is still live.')
         token_identity = reader.file_identity(marker.lstat())
         if tuple(record.get('token_identity', ())) != token_identity:
             raise ValueError('The released token identity changed.')
@@ -1361,7 +1399,7 @@ def release_shell(marker, *, ledger=None, reader=None):
                     raise ValueError('The shell compiler actor is not closed.')
             except FileNotFoundError:
                 pass
-        if lines[0] == 'confirmed':
+        if lines[0] == 'confirmed' and not require_dead_owner:
             reader.process(record['owner'])
         sample = reader.residual(record['aggregate']) if record.get('aggregate') else {}
         if sample.get('closed') is True:
@@ -1377,8 +1415,11 @@ def release_shell(marker, *, ledger=None, reader=None):
             raise ValueError('The shell aggregate closure cannot be authenticated.')
         if reader.file_identity(marker.lstat()) != token_identity:
             raise ValueError('The released token changed during validation.')
+        if require_dead_owner and not ended_process(reader, record['owner']):
+            raise ValueError('The shell reservation owner changed during release.')
         data['fixed_claims'][key] = 0
-        data.setdefault('shell_releases', {})[key] = {'marker': str(marker), 'owner': record['owner']}
+        data.setdefault('shell_releases', {})[key] = {'marker': str(marker), 'owner': record['owner'],
+            'dead_owner_recovery': require_dead_owner}
         write_ledger(ledger, data)
         marker.unlink()
         return True

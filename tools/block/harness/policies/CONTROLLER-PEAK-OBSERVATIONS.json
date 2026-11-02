@@ -1,0 +1,188 @@
+{
+  "schema": "controller-booking.diagnosis.v1",
+  "time_ns": 1793640228585746778,
+  "pin": "035425fe557d12f1a92ec3716cc3573b06f82ff4",
+  "tool_bindings": [
+    {
+      "path": "/home/cody/zesislar/.worktrees/shared-block-035425fe557d12f1a92ec3716cc3573b06f82ff4/tools/module_memory.py",
+      "sha256": "1681007ad52e8c1b5687953bd4dbe9e35132f6a456f570bf27c6333c94188655"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/shared-block-035425fe557d12f1a92ec3716cc3573b06f82ff4/tools/block/harness/code/admission_memory.py",
+      "sha256": "2ccca24e728641a1c8cbf2f1d121e392364a18c46adc519f35e47c4cba1968f5"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/shared-block-035425fe557d12f1a92ec3716cc3573b06f82ff4/tools/block/harness/code/entry_chain_run.py",
+      "sha256": "fce392f33962be653d41464d72137a0e33dc32c331e98ba45c9b6c43cc06cf59"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/shared-block-035425fe557d12f1a92ec3716cc3573b06f82ff4/tools/block/harness/code/stock_scope_stdin_relay.py",
+      "sha256": "5fb53471080b1843880d73a75c1c33575c3a5b3fa21ed2261c0470587de2f798"
+    },
+    {
+      "path": "/home/cody/zesislar/.worktrees/shared-block-035425fe557d12f1a92ec3716cc3573b06f82ff4/tools/block/harness/code/entry_chain_compiler.py",
+      "sha256": "a6d891a8be33e1692fdd261c4c3ce7eda18c00fac0da1ad0628d18cf1fe4eb9c"
+    }
+  ],
+  "scopes": [
+    {
+      "pid": 731495,
+      "startticks": 33941952,
+      "argv": "bash /home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/workspace/tools/resource_guard.sh scope entry-chain-client -- /home/cody/.local/share/uv/tools/rocq-mcp/bin/python -B /home/cody/zesislar/.worktrees/shared-block-9205af29250c371441bf4b08a850be00afbce651/tools/block/harness/code/entry_chain_run.py --inside /home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites ",
+      "scope": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/zesuworkloads.slice/zesuworkloads-aggregate1000p731345r25412.slice/zesudet-batch-entry-chain-prerequisites-731345.scope",
+      "memory.current": 10870784,
+      "memory.peak": 101351424,
+      "current_members": [
+        {
+          "pid": 731458,
+          "comm": "python3"
+        },
+        {
+          "pid": 731495,
+          "comm": "bash"
+        }
+      ],
+      "current_compiler_or_pet": false,
+      "proposed_next_launch_bytes": 1073741824,
+      "qualification": "Current membership does not prove historical or future compiler absence. No live booking changed."
+    },
+    {
+      "pid": 743677,
+      "startticks": 33963082,
+      "argv": "bash /home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/closed-import-prefix-sail002/refresh001/jobs/prerequisites/workspace/tools/resource_guard.sh scope entry-chain-client -- /home/cody/.local/share/uv/tools/rocq-mcp/bin/python -B /home/cody/zesislar/.worktrees/shared-block-9205af29250c371441bf4b08a850be00afbce651/tools/block/harness/code/entry_chain_run.py --inside /home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/closed-import-prefix-sail002/refresh001/jobs/prerequisites ",
+      "scope": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/zesuworkloads.slice/zesuworkloads-aggregate1000p743406r11061.slice/zesudet-batch-entry-chain-prerequisites-743406.scope",
+      "memory.current": 10878976,
+      "memory.peak": 102506496,
+      "current_members": [
+        {
+          "pid": 743589,
+          "comm": "python3"
+        },
+        {
+          "pid": 743677,
+          "comm": "bash"
+        }
+      ],
+      "current_compiler_or_pet": false,
+      "proposed_next_launch_bytes": 1073741824,
+      "qualification": "Current membership does not prove historical or future compiler absence. No live booking changed."
+    },
+    {
+      "pid": 749455,
+      "startticks": 33972691,
+      "argv": "bash /home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-clean-source-prefix-v1/prepare004/jobs/prerequisites/workspace/tools/resource_guard.sh scope entry-chain-client -- /home/cody/.local/share/uv/tools/rocq-mcp/bin/python -B /home/cody/zesislar/.worktrees/shared-block-9205af29250c371441bf4b08a850be00afbce651/tools/block/harness/code/entry_chain_run.py --inside /home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-clean-source-prefix-v1/prepare004/jobs/prerequisites ",
+      "scope": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/zesuworkloads.slice/zesuworkloads-aggregate1000p749290r19457.slice/zesudet-batch-entry-chain-prerequisites-749290.scope",
+      "memory.current": 10870784,
+      "memory.peak": 100286464,
+      "current_members": [
+        {
+          "pid": 749403,
+          "comm": "python3"
+        },
+        {
+          "pid": 749455,
+          "comm": "bash"
+        }
+      ],
+      "current_compiler_or_pet": false,
+      "proposed_next_launch_bytes": 1073741824,
+      "qualification": "Current membership does not prove historical or future compiler absence. No live booking changed."
+    },
+    {
+      "pid": 740666,
+      "startticks": 33957661,
+      "argv": "bash /home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/workspace/tools/resource_guard.sh scope entry-pilot-mcp -- /home/cody/.local/share/uv/tools/rocq-mcp/bin/python /home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/workspace/tools/block/stock_scope_stdin_relay.py enter 740664 33957659 3 15 60587886 -- /home/cody/.local/share/uv/tools/rocq-mcp/bin/python -B /home/cody/zesislar/_build/agents/worker-build-2/OLD6974-repaired-v32-declarations-v1/transition-sail001/jobs/prerequisites/workspace/tools/block/complete_goals_mcp.py ",
+      "scope": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/zesuworkloads.slice/zesuworkloads-aggregate1000p731345r25412.slice/zesudet-entry-chain-client-731495-9281.scope",
+      "memory.current": 830042112,
+      "memory.peak": 14327521280,
+      "current_members": [
+        {
+          "pid": 731683,
+          "comm": "python"
+        },
+        {
+          "pid": 733924,
+          "comm": "python"
+        },
+        {
+          "pid": 740664,
+          "comm": "python"
+        },
+        {
+          "pid": 740666,
+          "comm": "bash"
+        }
+      ],
+      "current_compiler_or_pet": false,
+      "proposed_next_launch_bytes": 21491281920,
+      "qualification": "Current membership does not prove historical or future compiler absence. No live booking changed."
+    },
+    {
+      "pid": 756099,
+      "startticks": 33984751,
+      "argv": "bash /home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/closed-import-prefix-sail002/refresh001/jobs/prerequisites/workspace/tools/resource_guard.sh scope entry-pilot-mcp -- /home/cody/.local/share/uv/tools/rocq-mcp/bin/python /home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/closed-import-prefix-sail002/refresh001/jobs/prerequisites/workspace/tools/block/stock_scope_stdin_relay.py enter 756096 33984749 3 15 60585699 -- /home/cody/.local/share/uv/tools/rocq-mcp/bin/python -B /home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/closed-import-prefix-sail002/refresh001/jobs/prerequisites/workspace/tools/block/complete_goals_mcp.py ",
+      "scope": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/zesuworkloads.slice/zesuworkloads-aggregate1000p743406r11061.slice/zesudet-entry-chain-client-743677-30145.scope",
+      "memory.current": 11172429824,
+      "memory.peak": 16642785280,
+      "current_members": [
+        {
+          "pid": 743874,
+          "comm": "python"
+        },
+        {
+          "pid": 747787,
+          "comm": "python"
+        },
+        {
+          "pid": 756096,
+          "comm": "python"
+        },
+        {
+          "pid": 756099,
+          "comm": "bash"
+        }
+      ],
+      "current_compiler_or_pet": false,
+      "proposed_next_launch_bytes": 24964177920,
+      "qualification": "Current membership does not prove historical or future compiler absence. No live booking changed."
+    },
+    {
+      "pid": 762721,
+      "startticks": 33993347,
+      "argv": "bash /home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-clean-source-prefix-v1/prepare004/jobs/prerequisites/workspace/tools/resource_guard.sh scope entry-pilot-mcp -- /home/cody/.local/share/uv/tools/rocq-mcp/bin/python /home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-clean-source-prefix-v1/prepare004/jobs/prerequisites/workspace/tools/block/stock_scope_stdin_relay.py enter 762715 33993345 3 15 60676113 -- /home/cody/.local/share/uv/tools/rocq-mcp/bin/python -B /home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-clean-source-prefix-v1/prepare004/jobs/prerequisites/workspace/tools/block/complete_goals_mcp.py ",
+      "scope": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/zesuworkloads.slice/zesuworkloads-aggregate1000p749290r19457.slice/zesudet-entry-chain-client-749455-11991.scope",
+      "memory.current": 4068376576,
+      "memory.peak": 6146703360,
+      "current_members": [
+        {
+          "pid": 749710,
+          "comm": "python"
+        },
+        {
+          "pid": 755561,
+          "comm": "python"
+        },
+        {
+          "pid": 762715,
+          "comm": "python"
+        },
+        {
+          "pid": 762721,
+          "comm": "bash"
+        }
+      ],
+      "current_compiler_or_pet": false,
+      "proposed_next_launch_bytes": 9220055040,
+      "qualification": "Current membership does not prove historical or future compiler absence. No live booking changed."
+    }
+  ],
+  "live_remark_supported": false,
+  "reason": "ledger-mark only binds leaf identity. refresh_shell_growth is monotonic. No supported API lowers an existing shell booking.",
+  "next_launch_requirements": [
+    "Authenticate controller-only execution before reducing its booking.",
+    "Preserve full compiler or PET booking for scopes that can contain either process.",
+    "Reset the physical compiler claim explicitly instead of inheriting a controller claim.",
+    "Retain existing physical fences and canonical admission."
+  ],
+  "mutations": []
+}

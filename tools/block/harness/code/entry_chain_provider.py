@@ -16,6 +16,7 @@ from entry_pilot_checker import bound_json,complete_groups
 from entry_chain_resources import check_operation,normalize_cpu,session_validation
 from supplier_ready import ENTRYINTRO_MCP_REFUSAL,entry_intro_plugin_refusal
 from declaration_parallel import run as run_declaration_dag
+from scope_bookings import descriptor,mcp_environment,require_tool
 
 
 class ToolFailure(RuntimeError):
@@ -273,6 +274,7 @@ async def execute(request):
     wave_modules={} if dependency_plan is None else {name:index for index,wave in enumerate(dependency_plan['waves']) for name in wave['modules']}
 
     async def call(session, name, arguments):
+        require_tool(descriptor(runtime),name)
         precheck=check_operation(runtime)
         entry = {'tool': name, 'arguments': arguments, 'started_ns': time.time_ns(),
                  'pre_operation_validation':precheck}
@@ -351,10 +353,11 @@ async def execute(request):
             atomic_json(directory/'PRIVATE-INDEX.json', {'side': side, 'qualifier': qualifier,
                                                        'retained': retained, 'state_source': state_source, 'agent_visible': False})
 
+    mcp_environment_values,controller_booking=mcp_environment(runtime,environment)
     timeout = 604800
     try:
         async with stdio_client(StdioServerParameters(command=launcher[0], args=launcher[1:],
-                                                      env=environment, cwd=str(workspace))) as streams:
+                                                      env=mcp_environment_values, cwd=str(workspace))) as streams:
             async with ClientSession(*streams) as session:
                 await session.initialize()
                 await call(session, 'rocq_health', {})

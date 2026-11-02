@@ -26,6 +26,8 @@ FIELD_MAPPING = {
     'ordered_modules': ['recipe.dependencies', 'recipe.producers', 'configuration.execution_vectors'],
     'mcp_argv': ['configuration.execution_vectors'],
     'phase': ['recipe.backend.features.phase'],
+    'declarations_only': ['recipe.backend.features.phase', 'configuration.execution_vectors'],
+    'compiler_scope_bookings': ['recipe.configuration.environment.ZESU_MODULE_CLAIM_BYTES', 'recipe.files'],
     'canonical_admission': ['recipe.configuration.environment.ZESU_MODULE_CLAIM_BYTES'],
     'module_files': ['recipe.files', 'recipe.dependencies'],
     'expected_mcp_flags': ['recipe.configuration.argv', 'recipe.configuration.load_paths'],
@@ -39,8 +41,11 @@ KNOWN_SINKS = {'check_operation', 'proof_environment', 'prerequisite_environment
 SCOPED_SINKS = {'entry_chain_provider.py': {
     'compiled_verification': ('scratch_statement', 'compiled_verification'),
     'checked_fixture': ('declaration_preflight', 'checked_fixture'),
-    'run_declaration_dag': ('declaration_parallel', 'run')},
-    'entry_chain_compiler.py': {'output_context': ('declaration_outputs', 'output_context')}}
+    'run_declaration_dag': ('declaration_parallel', 'run'),
+    'descriptor': ('scope_bookings', 'descriptor'),
+    'mcp_environment': ('scope_bookings', 'mcp_environment')},
+    'entry_chain_compiler.py': {'output_context': ('declaration_outputs', 'output_context'),
+        'scope_compiler_environment': ('scope_bookings', 'compiler_environment')}}
 
 
 def audit(path):

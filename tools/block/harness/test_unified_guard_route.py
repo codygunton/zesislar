@@ -94,6 +94,10 @@ actor=reader.proc/str(pid);actor.mkdir(parents=True,exist_ok=True)
 (actor/'stat').write_text(f'{pid} (fixture) '+' '.join(['S','1']+['0']*17+[str(ticks)]))
 (actor/'cgroup').write_text('0::/'+str(group.relative_to(reader.root))+'\\n')
 if a.command=='ledger-confirm':
+ counter=root/'confirmation-attempts'
+ prior=int(counter.read_text()) if counter.exists() else 0
+ counter.write_text(str(prior+1))
+ if prior<2:raise SystemExit(3)
  text=a.replacement.read_text().replace('aggregate=\\n','aggregate='+group.name+'\\n')
  a.replacement.write_text(text)
  result=M.confirm_shell(a.marker,a.replacement,a.request_bytes,a.available_bytes,reader=reader)
@@ -106,6 +110,7 @@ raise AssertionError('Unexpected fixture operation.')
             environment={k:v for k,v in os.environ.items() if not k.startswith('ZESU_')}
             environment.update(ZESU_GUARD_STATE=str(directory),ZESU_GATE_LOCK=str(directory/'gate.lock'),
                                ZESU_CANONICAL_LEDGER=str(ledger),ZESU_MODULE_MEMORY_TOOL=str(wrapper),
+                               ZESU_GUARD_POLL='0.01',
                                FIXTURE_CODE=str(root/'tools/block/harness/code'))
             library=(root/'tools/resource_guard.sh').read_text().split('\nprune_scope_registry\n',1)[0]
             script='''
@@ -126,6 +131,8 @@ release_coqc "$marker" || exit 14
             self.assertEqual(list(data['fixed_claims'].values()),[0])
             self.assertEqual(len(data['shell_claim_owners']),1)
             self.assertEqual(len(data['shell_releases']),1)
+            log=(directory/'guard.log').read_text()
+            self.assertEqual(log.count('HOLD reservation launch: unified memory ledger;'),2)
 
 
 if __name__=='__main__':unittest.main()
