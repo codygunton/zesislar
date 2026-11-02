@@ -920,9 +920,15 @@ def guard_lock():
         os.close(descriptor)
 
 
+TEST_CONTEXT_ENV = 'PYTHON_TEST_CONTEXT'
+
+
 def test_process():
     """Recognize test runners even when a child removes inherited flags."""
+    if os.environ.get(TEST_CONTEXT_ENV) == '1':
+        return True
     if 'unittest' in sys.modules or 'pytest' in sys.modules or os.environ.get('PYTEST_CURRENT_TEST'):
+        os.environ[TEST_CONTEXT_ENV] = '1'
         return True
     pid = os.getpid()
     for _ in range(128):
@@ -935,12 +941,18 @@ def test_process():
         names = [Path(value).name.lower() for value in arguments if value]
         if (any(name in {'unittest', 'pytest', 'py.test'} for name in names)
                 or any(name.startswith('test_') and name.endswith('.py') for name in names)):
+            os.environ[TEST_CONTEXT_ENV] = '1'
             return True
         parent = int(fields[1])
         if parent <= 1 or parent == pid:
             return False
         pid = parent
     raise ValueError('The test ancestry exceeds the supported process depth.')
+
+
+# Propagate embedded runners before their children can hide the runner argv.
+# This restrictive marker survives fixture cleanup of ZESU control options.
+test_process()
 
 
 def check_test_ledger(ledger=None):

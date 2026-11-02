@@ -107,6 +107,37 @@ class TestLedgerIsolation(unittest.TestCase):
         self.assertIn('Tests refuse the live ledger', result.stderr)
         self.assert_no_locks()
 
+    def test_embedded_text_runner_propagates_context_to_real_child(self):
+        child_code = ('import os; from pathlib import Path; '
+                      'from block.harness.code import admission_memory as a; '
+                      'assert os.environ.get(a.TEST_CONTEXT_ENV)=="1"; '
+                      f'a.DEFAULT_LEDGER=Path({str(self.live)!r}); '
+                      'a.check_test_ledger(a.DEFAULT_LEDGER)')
+        code = ("import os,subprocess,sys,unittest; "
+                "from block.harness.code import admission_memory as a\n"
+                "class Embedded(unittest.TestCase):\n"
+                " def runTest(self):\n"
+                "  environment={k:v for k,v in os.environ.items() if not k.startswith('ZESU_')}\n"
+                f"  result=subprocess.run([sys.executable,'-B','-c',{child_code!r}],"
+                "env=environment,capture_output=True,text=True)\n"
+                "  self.assertNotEqual(result.returncode,0)\n"
+                "  self.assertIn('Tests refuse the live ledger',result.stderr)\n"
+                "result=unittest.TextTestRunner().run(unittest.TestSuite([Embedded()]))\n"
+                "raise SystemExit(not result.wasSuccessful())\n")
+        environment = dict(os.environ)
+        environment.pop(A.TEST_CONTEXT_ENV, None)
+        result = self.child(code, environment)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assert_no_locks()
+
+    def test_context_survives_fixture_cleanup_and_gate_boundary(self):
+        import test_guard
+        environment = test_guard.fixture_environment()
+        self.assertEqual(environment[A.TEST_CONTEXT_ENV], '1')
+        gate = correctness_gate.gate_environment(dict(environment, ZESU_TEST_ALLOW_LIVE_LEDGER='1'))
+        self.assertEqual(gate[A.TEST_CONTEXT_ENV], '1')
+        self.assertNotIn('ZESU_TEST_ALLOW_LIVE_LEDGER', gate)
+
     def test_staged_wrapper_import_and_private_cli(self):
         tools = self.root / 'staged/tools'
         (tools / 'block').mkdir(parents=True)
