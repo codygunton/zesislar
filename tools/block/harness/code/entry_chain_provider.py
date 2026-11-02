@@ -6,6 +6,7 @@ os.environ['PYTHONDONTWRITEBYTECODE']='1'
 import asyncio,functools,hashlib,json,os,resource,sys,time,traceback
 from pathlib import Path
 sys.path[1:1] = [str(Path(__file__).resolve().parents[2]), str(Path(__file__).resolve().parents[3])]
+from phase_attribution import capture,for_runtime
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from scratch_statement import source_statement,compiled_verification
@@ -219,22 +220,32 @@ def validated_session(function):
 
 @validated_session
 async def execute(request):
+    before=capture()
     runtime = bound_json(request['runtime'], request['runtime_sha256'])
+    attribution=for_runtime(runtime,request['output'],runtime_reference={'path':request['runtime'],'sha256':request['runtime_sha256']})
+    attribution.complete('provider_runtime_loading',before)
     if runtime.get('dependency_batch') and runtime.get('phase')!='prerequisites':
         raise ValueError('Dependency waves cannot execute in native phase.')
     if runtime.get('declaration_dag') and runtime.get('phase')!='prerequisites':
         raise ValueError('The declaration DAG cannot execute in native phase.')
     runtime.update(runtime_path=request['runtime'],runtime_sha256=request['runtime_sha256'])
     workspace, output = Path(request['workspace']), Path(request['output'])
-    environment = proof_environment(runtime, workspace, output)
+    with attribution.span('proof_environment'):
+        environment = proof_environment(runtime, workspace, output)
     from coqc_findlib import compiler_environment
-    compiler_context=compiler_environment(workspace,environment)
-    check_operation(runtime)
+    with attribution.span('compiler_environment'):
+        compiler_context=compiler_environment(workspace,environment)
+    with attribution.span('provider_operation_check'):
+        check_operation(runtime)
     if runtime['phase']=='prerequisites':
         check_declaration_names(runtime, workspace, output)
     from compiler_snapshot import publish
-    snapshot=publish(runtime,lambda:check_operation(runtime,force_full=True),
-                     Path(request['output'])/'COMPILER-SNAPSHOT.json',environment=compiler_context)
+    def forced_snapshot_validation():
+        with attribution.span('snapshot_forced_validation'):
+            return check_operation(runtime,force_full=True)
+    with attribution.span('snapshot_publication'):
+        snapshot=publish(runtime,forced_snapshot_validation,
+                         Path(request['output'])/'COMPILER-SNAPSHOT.json',environment=compiler_context)
     accepted_objects=None
     if snapshot is not None:
         from compiler_snapshot import OutputReceipts
@@ -360,11 +371,13 @@ async def execute(request):
     mcp_environment_values,controller_booking=mcp_environment(runtime,environment)
     timeout = 604800
     try:
-        async with stdio_client(StdioServerParameters(command=launcher[0], args=launcher[1:],
-                                                      env=mcp_environment_values, cwd=str(workspace))) as streams:
+        async with attribution.enter('MCP_transport_startup',stdio_client(StdioServerParameters(command=launcher[0], args=launcher[1:],
+                                                      env=mcp_environment_values, cwd=str(workspace)))) as streams:
             async with ClientSession(*streams) as session:
-                await session.initialize()
-                await call(session, 'rocq_health', {})
+                with attribution.span('MCP_initialize'):
+                    await session.initialize()
+                with attribution.span('initial_health'):
+                    await call(session, 'rocq_health', {})
                 if runtime.get('declaration_dag'):
                     async def protected_compile(module):
                         source=workspace/relative(runtime['module_files'][module])

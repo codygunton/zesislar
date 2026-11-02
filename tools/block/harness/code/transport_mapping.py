@@ -33,6 +33,7 @@ FIELD_MAPPING = {
     'expected_mcp_flags': ['recipe.configuration.argv', 'recipe.configuration.load_paths'],
     'physical_flags': ['recipe.configuration.argv', 'recipe.configuration.load_paths'],
     'job_output': ['transport.diagnostic_output'],
+    'phase_attribution': ['transport.metadata_timing_only'],
     'prospective_directory': ['transport.checked_actual_environment', 'transport.checked_mcp_launch', 'configuration.execution_vectors'],
 }
 
@@ -44,7 +45,8 @@ SCOPED_SINKS = {'entry_chain_provider.py': {
     'run_declaration_dag': ('declaration_parallel', 'run'),
     'check_declaration_names': ('declaration_names', 'check'),
     'descriptor': ('scope_bookings', 'descriptor'),
-    'mcp_environment': ('scope_bookings', 'mcp_environment')},
+    'mcp_environment': ('scope_bookings', 'mcp_environment'),
+    'for_runtime': ('phase_attribution', 'for_runtime')},
     'entry_chain_compiler.py': {'output_context': ('declaration_outputs', 'output_context'),
         'scope_compiler_environment': ('scope_bookings', 'compiler_environment')}}
 

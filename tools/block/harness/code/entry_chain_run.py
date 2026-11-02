@@ -104,6 +104,8 @@ def stage_job(config,job,out):
     if config.get('prepared_tool_transition'):
         from restart_bindings import verify_restart_runtime
         verify_restart_runtime(config,Path(__file__).resolve().parent.parent)
+    from phase_attribution import for_runtime
+    attribution=for_runtime(config,out)
     source=Path(config['prepared_workspace'])
     sealed=False
     if config.get('seed_binding_reference'):
@@ -187,6 +189,8 @@ def stage_job(config,job,out):
 
     # The compiler wrapper sits in tools beside the stock findlib and resource guard.
     runtime=deepcopy(config['proof_runtime'])
+    runtime.pop('phase_attribution',None)
+    if 'phase_attribution' in config:runtime['phase_attribution']=deepcopy(config['phase_attribution'])
     if config.get('cache_import_graph') is not None:
         runtime['cache_import_graph']=deepcopy(config['cache_import_graph'])
     if sealed:
@@ -217,13 +221,15 @@ def stage_job(config,job,out):
     runtime['prospective_directory']=str(out/'prospective')
     from rocq_mcp.server import _parse_project_flags
     expected=list(config['expected_mcp_flags'])
-    actual=_parse_project_flags(workspace)
+    with attribution.span('staging_parser'):
+        actual=_parse_project_flags(workspace)
     if actual!=expected:raise ValueError('The pinned project parser returned another ordered flag vector.')
     runtime['expected_mcp_flags']=actual
     runtime['physical_flags']=[word.replace(str(source),str(workspace)) for word in config['physical_flags']]
     save(out/'PROJECT-PARSER.json',{'expected_flags':expected,'actual_flags':actual,'equal':True})
     from object_imports import require_reuse
-    reuse=require_reuse(config,runtime,workspace)
+    with attribution.span('staging_reuse'):
+        reuse=require_reuse(config,runtime,workspace)
     save(out/'OBJECT-IMPORT-REUSE-CHECK.json',reuse)
     from compiler_snapshot import declared_outputs
     output_modules=dict(runtime['module_files']);output_order=list(runtime['ordered_modules'])
@@ -241,7 +247,8 @@ def stage_job(config,job,out):
         else:preflight=prepare(runtime,workspace,out/'native')
         module=runtime['target']['block']['module']+'_EntryPilotSearch'
         output_modules[module]=str(preflight.relative_to(workspace));output_order.append(module)
-    declarations=declared_outputs(output_modules,output_order,workspace,config['bindings'],donor=source)
+    with attribution.span('staging_outputs'):
+        declarations=declared_outputs(output_modules,output_order,workspace,config['bindings'],donor=source)
     runtime['declared_outputs']=declarations
     from scope_bookings import compiler_resources
     runtime['compiler_scope_bookings']=compiler_resources(runtime,config,workspace,out)
@@ -271,7 +278,7 @@ def stage_job(config,job,out):
     runtime['bindings'].extend(binding(workspace/rel) for rel in [
         'tools/entry_chain_coqc.sh','tools/block/stock_scope_stdin_relay.py',
         'tools/block/entry_chain_compiler.py','tools/block/entry_chain.py',
-        'tools/block/entry_chain_resources.py','tools/block/proof_bindings.py','tools/block/binding_cache.py','tools/block/compiler_snapshot.py','tools/block/source_context.py','tools/block/declaration_outputs.py','tools/block/scope_bookings.py','tools/block/seed_bindings.py','tools/block/runtime_ignores.py','tools/block/entry_chain_process.py','tools/block/entry_chain_plan.py'])
+        'tools/block/entry_chain_resources.py','tools/block/proof_bindings.py','tools/block/binding_cache.py','tools/block/compiler_snapshot.py','tools/block/source_context.py','tools/block/declaration_outputs.py','tools/block/scope_bookings.py','tools/block/seed_bindings.py','tools/block/runtime_ignores.py','tools/block/entry_chain_process.py','tools/block/entry_chain_plan.py','tools/block/phase_attribution.py'])
     if sealed or config.get('prepared_tool_transition'):
         runtime['bindings'].extend(row['owned'] for row in transition['copies'])
     # One canonical path can occur in source and physical views. Refuse differing hashes.
@@ -337,10 +344,14 @@ def inside(out):
     group=aggregate_root();info=group.stat()
     save(out/'BATCH-IDENTITY.json',{'aggregate_path':str(group),'aggregate_device':info.st_dev,
         'aggregate_inode':info.st_ino,'inside_pid':os.getpid(),'inside_startticks':ticks(os.getpid())})
-    row=sample(Path('/proc')/str(os.getpid()),str(ticks(os.getpid())))
-    from memory_policy import fence
-    row['effective_limits']=effective(row['cgroup']);validate_limits(row,runtime['canonical_admission']['physical_fence_bytes'],memory_job=runtime['canonical_admission']['memory_job']);save(out/'CLIENT-LIMITS.json',row)
-    check_operation(runtime)
+    from phase_attribution import for_runtime
+    request=(read_optional(out/'native/REQUEST.json') or {}) if runtime.get('phase_attribution',{}).get('enabled') is True else {}
+    attribution=for_runtime(runtime,out,runtime_reference={'path':request.get('runtime'),'sha256':request.get('runtime_sha256')})
+    with attribution.span('guarded_batch_entry'):
+        row=sample(Path('/proc')/str(os.getpid()),str(ticks(os.getpid())))
+        from memory_policy import fence
+        row['effective_limits']=effective(row['cgroup']);validate_limits(row,runtime['canonical_admission']['physical_fence_bytes'],memory_job=runtime['canonical_admission']['memory_job']);save(out/'CLIENT-LIMITS.json',row)
+        check_operation(runtime)
     try:
         if (out/'KERNEL-ARGV.json').exists():
             command=strict_loads((out/'KERNEL-ARGV.json').read_text())
@@ -367,9 +378,13 @@ def inside(out):
 
 def run_stock_job(config,job,out,prepared=None):
     from restart_bindings import verify_restart_runtime
-    verify_restart_runtime(config,Path(__file__).resolve().parent.parent)
+    from phase_attribution import for_runtime
+    attribution=for_runtime(config,Path(config.get('runtime_path',out)).parent)
+    with attribution.span('restart_runtime_verification'):
+        verify_restart_runtime(config,Path(__file__).resolve().parent.parent)
     from memory_policy import validate_job,environment,fence
-    validate_job(job)
+    with attribution.span('controller_runtime_validation'):
+        validate_job(job)
     normalize_cpu();out=Path(out)
     if prepared is None:out.mkdir(parents=True,exist_ok=False)
     self_cpu_start=resource.getrusage(resource.RUSAGE_SELF)
@@ -386,22 +401,31 @@ def run_stock_job(config,job,out,prepared=None):
         if prepared:
             import collector
             collector.revalidate(read_bound(binding(out/'prospective/PHASE1.json')))
-        reserve(policy,key,owner,out/'ADMISSION.json',recheck=lambda:binding_recheck(config));reserved=True
+        def reservation_recheck():
+            with attribution.span('reservation_binding_recheck'):
+                binding_recheck(config)
+        with attribution.span('canonical_reservation'):
+            reserve(policy,key,owner,out/'ADMISSION.json',recheck=reservation_recheck)
+        reserved=True
         if prepared:collector.revalidate(read_bound(binding(out/'prospective/PHASE1.json')))
         binding_recheck(config)
-        runtime,workspace=(prepared['runtime'],prepared['workspace']) if prepared else stage_job(config,job,out)
-        env=clean_environment();env.update(environment(job['phase'],job['claim_bytes'],job=job),PYTHONDONTWRITEBYTECODE='1',PYTHONHASHSEED='0')
-        from scope_bookings import client_environment
-        env,controller_booking=client_environment(config,job,env)
+        with attribution.span('owned_staging'):
+            runtime,workspace=(prepared['runtime'],prepared['workspace']) if prepared else stage_job(config,job,out)
+        with attribution.span('controller_environment'):
+            env=clean_environment();env.update(environment(job['phase'],job['claim_bytes'],job=job),PYTHONDONTWRITEBYTECODE='1',PYTHONHASHSEED='0')
+            from scope_bookings import client_environment
+            env,controller_booking=client_environment(config,job,env)
         argv=outer_argv(workspace,job['key'],out)
         save(out/'LAUNCH.json',{'argv':argv,'owner':owner,'cpu_policy':'unlimited','custom_observer':False,'controller_booking':controller_booking})
         with (out/'stock.stdout').open('wb') as stdout,(out/'stock.stderr').open('wb') as stderr:
-            child=__import__('controller_cleanup').launch(argv,cwd=workspace,env=env,stdout=stdout,stderr=stderr,start_new_session=True)
+            with attribution.span('guarded_batch_launch'):
+                child=__import__('controller_cleanup').launch(argv,cwd=workspace,env=env,stdout=stdout,stderr=stderr,start_new_session=True)
             child_start=ticks(child.pid);save(out/'BATCH-PROCESS.json',{'pid':child.pid,'startticks':child_start});from scratch_limits import wait_with_limits
             from waiting_envelope import compact_wait
             with compact_wait(out,configuration=config,runtime=runtime):
                 code=wait_with_limits(child,out,job['claim_bytes'],0,phase=job['phase'],memory_job=job,family=(job.get('workload') or {}).get('kind') in {'stock_pass_spec_bundle','minimal_native_tactic'},family_threshold_bytes=(8 if (job.get('workload') or {}).get('kind')=='minimal_native_tactic' else 16)*1024**3)
-        check_proof_bindings(runtime)
+        with attribution.span('post_request_validation'):
+            check_proof_bindings(runtime)
         receipts=read_optional(out/'native/NATIVE-RESULTS.json') or {}
         receipt=receipts.get('block',{})
         accepted=(code==0 and (out/'native/TRANSPORT-CLOSED.json').exists()) if job['phase']=='prerequisites' else (code==0 and receipt.get('compile_file_success') is True and receipt.get('verification_method')=='module_m' and receipt.get('assumptions')==[])
@@ -468,11 +492,16 @@ def main():
     if sys.argv[1:2]==['--inside']:return inside(sys.argv[2])
     config_path,expected,key,out=sys.argv[1:]
     if Path(out).is_dir():save(Path(out)/'CONTROLLER-START.json',{'time_ns':time.time_ns(),'monotonic_ns':time.monotonic_ns(),'pid':os.getpid(),'startticks':ticks(os.getpid())})
+    from phase_attribution import capture,for_runtime
+    before=capture()
     config=read_bound({'path':config_path,'sha256':expected})
+    attribution=for_runtime(config,Path(config_path).parent,runtime_reference={'path':config_path,'sha256':expected})
+    attribution.complete('controller_runtime_loading',before)
     if not config.get('execution_released'):raise ValueError('The chain runtime is not released.')
     job=next(x for x in config['jobs'] if x['key']==key)
     from controller_cleanup import Supervisor
-    with Supervisor(out):
+    from phase_attribution import reference
+    with reference({'path':config_path,'sha256':expected}), Supervisor(out):
         return run_job(config,job,out)
 
 

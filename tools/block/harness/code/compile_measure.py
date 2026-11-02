@@ -16,32 +16,38 @@ for name in ['.lia.cache','.nia.cache','.nra.cache','.csdp.cache','.bv_solve.cac
     removed.append({'path':str(cache),'removed':existed,'absent_after':not cache.exists()})
 record.update(cwd=str(cwd),removed_cache_paths=removed)
 path.write_text(json.dumps(record,indent=2)+'\n')
+from phase_attribution import Recorder,capture,for_runtime
+attribution=Recorder({},directory)
 report=None;before=None;input_validation=None;imports=None
 # Validate after guarded admission, immediately before the physical compiler.
 if record.get('validation') is not None:
     from entry_chain import read_bound,save
     from compiler_snapshot import validate_compiler,sidecar_prestate,check_sidecar_prestate,compiler_outputs,_publish,import_selection,check_import_selection
     envelope=record['validation']['runtime']
+    loading=capture()
     checked_runtime=read_bound(envelope)
-    report=validate_compiler(checked_runtime,envelope,record['validation']['snapshot'],
-        record['source'],record['physical_argv'][0],
-        output_key=os.environ.get('ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY'),
-        private_output=(record.get('output_context') or {}).get('output'),private_workspace=workspace)
-    context=report['compiler_context'];selected=report['physical_flags']
-    if (record['physical_argv'][1:len(selected)+1]!=selected or
-            context['changes'] and record.get('compiler_context')!=context or
-            record.get('compiler_context') is not None and record['compiler_context']!=context or
-            record.get('output_context')!=report.get('output_context')):
-        raise ValueError('The physical compiler arguments differ from their source context.')
-    imports=import_selection(checked_runtime,record['source'],workspace,report)
-    report['import_selection']=imports
-    input_validation=_publish(directory/'PHYSICAL-VALIDATION.json',report)
-    target=(Path(record['physical_argv'][-2]) if record['physical_argv'][-3:-2]==['-o']
-            else Path(record['source']['path']).with_suffix('.vo'))
-    if target.suffix=='.vo':
-        before=sidecar_prestate(record['source'],target,record['compiler'],selected,report)
-        record['sidecar_prestate']=before
-        save(path,record)
+    attribution=for_runtime(checked_runtime,directory,runtime_reference=envelope)
+    attribution.complete('physical_runtime_loading',loading)
+    with attribution.span('physical_input_validation'):
+        report=validate_compiler(checked_runtime,envelope,record['validation']['snapshot'],
+            record['source'],record['physical_argv'][0],
+            output_key=os.environ.get('ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY'),
+            private_output=(record.get('output_context') or {}).get('output'),private_workspace=workspace)
+        context=report['compiler_context'];selected=report['physical_flags']
+        if (record['physical_argv'][1:len(selected)+1]!=selected or
+                context['changes'] and record.get('compiler_context')!=context or
+                record.get('compiler_context') is not None and record['compiler_context']!=context or
+                record.get('output_context')!=report.get('output_context')):
+            raise ValueError('The physical compiler arguments differ from their source context.')
+        imports=import_selection(checked_runtime,record['source'],workspace,report)
+        report['import_selection']=imports
+        input_validation=_publish(directory/'PHYSICAL-VALIDATION.json',report)
+        target=(Path(record['physical_argv'][-2]) if record['physical_argv'][-3:-2]==['-o']
+                else Path(record['source']['path']).with_suffix('.vo'))
+        if target.suffix=='.vo':
+            before=sidecar_prestate(record['source'],target,record['compiler'],selected,report)
+            record['sidecar_prestate']=before
+            save(path,record)
 # The physical compiler never receives the provider authentication key.
 os.environ.pop('ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY',None)
 if record.get('output_context') is not None:
@@ -49,33 +55,36 @@ if record.get('output_context') is not None:
     path.write_text(json.dumps(record,indent=2)+'\n')
 if before is not None:check_sidecar_prestate(before)
 if report is not None:check_import_selection(imports,report)
-started=time.monotonic();child=subprocess.Popen(record['physical_argv'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-capture_errors=[]
-def retain(stream,name,descriptor):
-    try:
-        with (directory/name).open('xb') as saved:
-            forwarding=True
-            while True:
-                data=stream.read(65536)
-                if not data:break
-                saved.write(data)
-                if forwarding:
-                    try:
-                        view=memoryview(data)
-                        while view:view=view[os.write(descriptor,view):]
-                    except OSError as error:
-                        capture_errors.append({'stream':name,'forward_error':repr(error)});forwarding=False
-    except BaseException as error:capture_errors.append({'stream':name,'capture_error':repr(error)})
-    finally:stream.close()
-readers=[threading.Thread(target=retain,args=(child.stdout,'STDOUT',1)),threading.Thread(target=retain,args=(child.stderr,'STDERR',2))]
-for reader in readers:reader.start()
-fd=run_registry.open_pidfd(child.pid)
-def forward(number,frame):
-    try:run_registry.signal_pidfd(fd,number)
-    except ProcessLookupError:pass
-for sig in [signal.SIGTERM,signal.SIGINT,signal.SIGHUP]:signal.signal(sig,forward)
-pid,status,usage=os.wait4(child.pid,0);code=os.waitstatus_to_exitcode(status);child.returncode=code;os.close(fd)
-for reader in readers:reader.join()
+with attribution.span('physical_compilation'):
+    started=time.monotonic()
+    with attribution.span('physical_Popen'):
+        child=subprocess.Popen(record['physical_argv'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    capture_errors=[]
+    def retain(stream,name,descriptor):
+        try:
+            with (directory/name).open('xb') as saved:
+                forwarding=True
+                while True:
+                    data=stream.read(65536)
+                    if not data:break
+                    saved.write(data)
+                    if forwarding:
+                        try:
+                            view=memoryview(data)
+                            while view:view=view[os.write(descriptor,view):]
+                        except OSError as error:
+                            capture_errors.append({'stream':name,'forward_error':repr(error)});forwarding=False
+        except BaseException as error:capture_errors.append({'stream':name,'capture_error':repr(error)})
+        finally:stream.close()
+    readers=[threading.Thread(target=retain,args=(child.stdout,'STDOUT',1)),threading.Thread(target=retain,args=(child.stderr,'STDERR',2))]
+    for reader in readers:reader.start()
+    fd=run_registry.open_pidfd(child.pid)
+    def forward(number,frame):
+        try:run_registry.signal_pidfd(fd,number)
+        except ProcessLookupError:pass
+    for sig in [signal.SIGTERM,signal.SIGINT,signal.SIGHUP]:signal.signal(sig,forward)
+    pid,status,usage=os.wait4(child.pid,0);code=os.waitstatus_to_exitcode(status);child.returncode=code;os.close(fd)
+    for reader in readers:reader.join()
 result={'input':{'path':str(path),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()},
         'physical_argv':record['physical_argv'],'returncode':code,
         'user_CPU_seconds':usage.ru_utime,'system_CPU_seconds':usage.ru_stime,

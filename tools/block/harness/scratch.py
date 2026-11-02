@@ -59,6 +59,7 @@ PYTHON=Path('/home/cody/.local/share/uv/tools/rocq-mcp/bin/python')
 def arguments(argv):
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--harness-commit',required=True);p.add_argument('--supplier-controls',type=Path);p.add_argument('--object-import-migrations',type=Path);p.add_argument('--dependency-batch',type=Path);p.add_argument('--seed-reference',type=Path);p.add_argument('--dependency-cache',type=Path);p.add_argument('--end-cleanup',choices=['on','off'],default='on',help='Use off for reusable prefixes, seeds, and queued inputs.');p.add_argument('--admission-profile',type=Path);p.add_argument('--completed-stock-measurements',type=Path);p.add_argument('--cache',choices=['off','on'],default='off');p.add_argument('block');p.add_argument('entry_file',type=Path);p.add_argument('--rules',type=Path);p.add_argument('--output',type=Path);p.add_argument('--prepare-only',action='store_true');p.add_argument('--source-overrides',type=Path);p.add_argument('--declarations-only',action='store_true');p.add_argument('--target-adapter',type=Path);p.add_argument('--sizing',type=Path);p.add_argument('--base-runtime',type=Path);p.add_argument('--base-runtime-sha256');p.add_argument('--normalization-policy',type=Path);p.add_argument('--prerequisite-target-union',action='store_true');p.add_argument('--declaration-checks',type=Path);p.add_argument('--control-session',type=Path)
+    p.add_argument('--phase-attribution',action='store_true',help='Retain metadata timing for this future launch.')
     from declaration_parallel_plan import arguments as dag_arguments,check_arguments as check_dag_arguments
     dag_arguments(p)
     a=p.parse_args(argv);a.block=a.block.lower().removeprefix('0x')
@@ -267,6 +268,8 @@ def prepare(a):
     out=a.output;out.mkdir(parents=True,exist_ok=False)
     baseline={'path':str(a.base_runtime),'sha256':a.base_runtime_sha256}
     c=read_bound(baseline)
+    c.pop('phase_attribution',None)
+    if getattr(a,'phase_attribution',False):c['phase_attribution']={'enabled':True}
     if getattr(a,'parallel_declarations',False):
         from declaration_parallel_plan import planning_compiler
         planning_compiler(c)
@@ -529,7 +532,14 @@ def execute(path,expected):
 def execute_retained(path,expected):
     from command_scope import require
     require()
-    path=Path(path);c=read_bound({'path':str(path),'sha256':expected});out=path.parent;__import__('restart_bindings').verify_restart_runtime(c,HERE);check_proof_bindings(c);pre,job=c['jobs'];cache_setting=runtime_cache_setting(c)
+    from phase_attribution import capture,for_runtime
+    before=capture()
+    path=Path(path);c=read_bound({'path':str(path),'sha256':expected});out=path.parent
+    attribution=for_runtime(c,out,runtime_reference={'path':str(path),'sha256':expected})
+    attribution.complete('outer_runtime_loading',before)
+    with attribution.span('outer_runtime_validation'):
+        __import__('restart_bindings').verify_restart_runtime(c,HERE);check_proof_bindings(c)
+    pre,job=c['jobs'];cache_setting=runtime_cache_setting(c)
     check_declaration_target(c)
     if c.get('dependency_batch') and not c.get('declarations_only'):raise ValueError('Dependency waves cannot execute a native runtime.')
     if c.get('native_route') and cache_setting!='off':raise ValueError('The minimal native route requires cache off.')
@@ -638,6 +648,7 @@ def refresh_memory(argv):
     parser.add_argument('--admission-profile',type=Path)
     parser.add_argument('--harness-commit')
     parser.add_argument('--unadmitted-retirement',type=Path)
+    parser.add_argument('--phase-attribution',action='store_true',help='Retain metadata timing for this future launch.')
     parser.add_argument('--output',type=Path,required=True)
     from declaration_parallel_plan import arguments as dag_arguments,check_arguments as check_dag_arguments
     dag_arguments(parser)
@@ -645,6 +656,8 @@ def refresh_memory(argv):
     check_dag_arguments(args,parser)
     prior={'path':str(args.prior_runtime.resolve()),'sha256':args.prior_sha256}
     c=read_bound(prior);out=args.output.resolve()
+    c.pop('phase_attribution',None)
+    if args.phase_attribution:c['phase_attribution']={'enabled':True}
     from harness_commit import pin
     previous_harness=c['harness']
     c['harness']=pin(args.harness_commit or previous_harness['commit'])
