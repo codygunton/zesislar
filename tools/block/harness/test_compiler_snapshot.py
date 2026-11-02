@@ -1,7 +1,6 @@
 """Exercise sealed validation with nonproof files and no compiler execution."""
 import hashlib
 import json
-import json
 import os
 from pathlib import Path
 import tempfile
