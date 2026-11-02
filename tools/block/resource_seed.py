@@ -178,6 +178,13 @@ def seed_owned_resources(seed, *, entry_pc, vocabulary, constants=None, facts=()
     ownership = ownership_from_assertion_tree(seed['assertion_tree'], provenance=provenance)
     lengths = _source_lengths(ownership, constants)
     state = SymbolicState(registers={'PC': bits(entry_pc, address_width)})
+    for fact in facts:
+        interval = fact.get('terms', {}).get('unsigned_interval')
+        if interval is not None and fact.get('status') in ('supplied', 'derived-by-pass'):
+            if fact.get('kind') != 'bounds' or not fact.get('origin'):
+                raise ValueError('A source interval needs a bound fact and provenance')
+            state.source_intervals.append({**interval, 'origin': fact['origin'],
+                                           'fact_id': fact['fact_id']})
     resources, derived, reports = [], list(facts), []
     witnesses = {binder['name']: Expr.from_dict(binder['expression']) for binder in ownership['binders']
                  if 'expression' in binder}

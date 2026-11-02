@@ -25,7 +25,8 @@ def _state_from_result(record):
                          record['endianness'], record['trace_count'],
                          {key: Expr.from_dict(value) for key, value in record.get('retained_registers', {}).items()},
                          list(record.get('memory_disjoint', [])),
-                         list(record['register_writes']) if 'register_writes' in record else None)
+                         list(record['register_writes']) if 'register_writes' in record else None,
+                         list(record.get('source_intervals', [])))
 
 
 def _prepare_state(state, seed):
