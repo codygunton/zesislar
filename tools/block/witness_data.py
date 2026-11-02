@@ -6,6 +6,7 @@ equalities.  Rocq must still check the emitted terms and their application.
 """
 
 import hashlib
+import re
 from pathlib import Path
 
 from check_data_only_lemmas import atom, rocq_commands, rocq_tokens, top_level_positions
@@ -54,24 +55,8 @@ def _register_owners(body):
     return result
 
 
-def has_witness_slots(source, name):
-    commands = [command for command in rocq_commands(source)
-                if [token for token, _ in command[:2]] == ["Definition", name]]
-    if len(commands) != 1:
-        raise ValueError("The witness target needs one source Definition.")
-    values = _words(commands[0])
-    position = values.index(":=") + 1
-    while position < len(values) and values[position] == "(":
-        position += 1
-    return values[position:position + 1] == ["∃"]
-
-
-def declared_witness_slots(source, name):
-    """Read one flat leading telescope, retaining every used existential.
-
-    Only syntactically unused slots disappear.  Resource ownership never makes
-    a slot disappear.  Nested binders are refused rather than guessed through.
-    """
+def _entry_body(source, name):
+    """Locate the telescope after exact, typed, non-recursive source lets."""
     commands = [command for command in rocq_commands(source)
                 if [token for token, _ in command[:2]] == ["Definition", name]]
     if len(commands) != 1:
@@ -80,8 +65,94 @@ def declared_witness_slots(source, name):
     if ":=" not in values:
         raise ValueError("The witness target has no body.")
     position = values.index(":=") + 1
-    while position < len(values) and values[position] == "(":
-        position += 1
+    reserved = {slot["name"] for slot in declared_binders(source, name)}
+    lets = []
+    while True:
+        while position < len(values) and values[position] == "(":
+            position += 1
+        if values[position:position + 1] != ["let"]:
+            return values, position, lets
+        local = values[position + 1:position + 2]
+        if (not local or not re.fullmatch(r"[A-Za-z_][A-Za-z_0-9']*", local[0])
+                or local[0] == "_" or values[position + 2:position + 3] != [":"]):
+            raise ValueError("An outer source let needs one named, typed binder.")
+        if local[0] in reserved:
+            raise ValueError("An outer source let shadows an existing binder.")
+        typed = position + 3
+        assignments = top_level_positions(values[typed:], {":="})
+        if not assignments:
+            raise ValueError("An outer source let has no value.")
+        assignment = typed + assignments[0]
+        starts = assignment + 1
+        ends = top_level_positions(values[starts:], {"in"})
+        if not ends:
+            raise ValueError("An outer source let has no continuation.")
+        end = starts + ends[0]
+        kind, value = values[typed:assignment], values[starts:end]
+        if (not kind or not value or local[0] in kind + value
+                or set(value).intersection({"let", "match"})):
+            raise ValueError("An outer source let has an unsupported value or binder scope.")
+        lets.append(dict(name=local[0], type=kind, value=value))
+        reserved.add(local[0])
+        position = end + 1
+
+
+def has_witness_slots(source, name):
+    values, position, _ = _entry_body(source, name)
+    return values[position:position + 1] == ["∃"]
+
+
+def _resource_body(body, reserved):
+    """Inspect resource tokens while checking lambdas inside pure facts only."""
+    resources, pure, lambda_names = [], False, set()
+    for index, token in enumerate(body):
+        if token == "⌜":
+            if pure:
+                raise ValueError("The witness body has nested pure facts.")
+            pure, lambda_names = True, set()
+        elif token == "⌝":
+            if not pure:
+                raise ValueError("The witness body has an unmatched pure fact.")
+            pure = False
+        elif token in {"∃", "∀", "forall", "let", "match"}:
+            raise ValueError("The witness body has unsupported nested binders.")
+        elif token in {"fun", "λ"}:
+            if not pure:
+                raise ValueError("The witness body has unsupported nested binders outside pure facts.")
+            end = body.index("⌝", index)
+            tail = body[index + 1:end]
+            arrows = top_level_positions(tail, {"=>"})
+            if not arrows:
+                raise ValueError("A pure lambda needs an explicit typed telescope.")
+            telescope = tail[:arrows[0]]
+            if not telescope or ":" not in telescope:
+                raise ValueError("A pure lambda needs an explicit typed telescope.")
+            if telescope[0] != "(":
+                telescope = ["(", *telescope, ")"]
+            parameters = declared_binders("Definition lambda_slots " + " ".join(telescope)
+                                           + " : Type := unit.", "lambda_slots")
+            names = [parameter["name"] for parameter in parameters]
+            if (not names or len(set(names)) != len(names)
+                    or set(names).intersection(reserved | lambda_names)):
+                raise ValueError("A pure lambda shadows a parameter or witness binder.")
+            if any(set(_words(rocq_tokens(parameter["type"]))).intersection(reserved | set(names))
+                   for parameter in parameters):
+                raise ValueError("A pure lambda type depends on a local binder.")
+            lambda_names.update(names)
+        if not pure and token not in {"⌜", "⌝"}:
+            resources.append(token)
+    if pure:
+        raise ValueError("The witness body has an unfinished pure fact.")
+    return resources
+
+
+def declared_witness_slots(source, name):
+    """Read one flat leading telescope, retaining every used existential.
+
+    Only syntactically unused slots disappear.  Resource ownership never makes
+    a slot disappear.  Nested binders are refused rather than guessed through.
+    """
+    values, position, lets = _entry_body(source, name)
     if values[position:position + 1] != ["∃"]:
         raise ValueError("The witness target needs a leading existential telescope.")
     position += 1
@@ -95,16 +166,20 @@ def declared_witness_slots(source, name):
     if not slots or len({slot["name"] for slot in slots}) != len(slots):
         raise ValueError("The witness telescope is empty or repeats a name.")
     outer = {slot["name"] for slot in declared_binders(source, name)}
+    locals_ = {item["name"] for item in lets}
     names = {slot["name"] for slot in slots}
-    if names.intersection(outer):
+    if names.intersection(outer | locals_):
         raise ValueError("The witness telescope shadows a declaration parameter.")
+    if any(names.intersection(item["value"] + item["type"]) for item in lets):
+        raise ValueError("An outer source let refers to a witness outside its scope.")
+    if any(locals_.intersection(_words(rocq_tokens(slot["type"]))) for slot in slots):
+        raise ValueError("The witness telescope depends on a source-local let.")
     if any(names.intersection(token for token, _ in rocq_tokens(slot["type"])) for slot in slots):
         raise ValueError("The witness telescope needs a dependent product.")
     body = values[position + 1:]
-    if set(body).intersection({"∃", "∀", "forall", "fun", "let", "match"}):
-        raise ValueError("The witness body has unsupported nested binders.")
+    resources = _resource_body(body, outer | locals_ | names)
     register_slots = {}
-    for register, word in _register_owners(body):
+    for register, word in _register_owners(resources):
         # Only a direct existential variable, with an optional annotation,
         # determines a register slot. Compound expressions are not inverted.
         if word and (len(word) == 1 or word[1:2] == [":"]):
@@ -114,7 +189,7 @@ def declared_witness_slots(source, name):
                 register_slots[word[0]] = register
     return dict(declared=slots, vacuous=[slot for slot in slots if slot["name"] not in body],
                 remaining=[slot for slot in slots if slot["name"] in body],
-                register_slots=register_slots)
+                register_slots=register_slots, outer_lets=lets)
 
 
 def check_witness_shape(expected, supplied):
