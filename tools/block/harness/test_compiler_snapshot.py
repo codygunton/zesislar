@@ -1,6 +1,7 @@
 """Exercise sealed validation with nonproof files and no compiler execution."""
 import hashlib
 import json
+import json
 import os
 from pathlib import Path
 import tempfile
@@ -291,6 +292,107 @@ class CompilerSnapshotTests(unittest.TestCase):
     def validate_outputs(self, reference, ledger):
         return S.validate_compiler(self.runtime, self.reference, reference,
             self.source_binding, self.compiler, output_key=ledger.key)
+
+    def test_verified_prefix_skips_old_physical_replay(self):
+        reference, snapshot, ledger, obj, receipt = self.outputs()
+        self.validate_outputs(reference, ledger)
+        with patch.object(S, '_physical_record', side_effect=AssertionError('old receipt replayed')):
+            report = self.validate_outputs(reference, ledger)
+        self.assertEqual(report['accepted_output_receipts'], [receipt])
+
+    def test_verified_prefix_checks_only_the_appended_receipt(self):
+        reference, snapshot, ledger, obj, receipt = self.outputs()
+        self.validate_outputs(reference, ledger)
+        later = self.library / 'Another.v'
+        later.write_text('new source fixture')
+        output = later.with_suffix('.vo')
+        output.write_text('new object fixture')
+        # The existing physical fixture helper records an exact accepted prefix.
+        self.accept_output(ledger, output, source=later)
+        with patch.object(S, '_physical_record', wraps=S._physical_record) as replay:
+            self.validate_outputs(reference, ledger)
+        self.assertEqual(replay.call_count, 1)
+
+    def test_cached_receipt_tamper_still_refuses(self):
+        reference, snapshot, ledger, obj, receipt = self.outputs()
+        self.validate_outputs(reference, ledger)
+        path = Path(receipt['path'])
+        before = path.stat()
+        path.write_text('{}')
+        os.utime(path, ns=(before.st_atime_ns, before.st_mtime_ns))
+        with self.assertRaises(ValueError):
+            self.validate_outputs(reference, ledger)
+
+    def test_cached_physical_record_tamper_still_refuses(self):
+        reference, snapshot, ledger, obj, receipt = self.outputs()
+        self.validate_outputs(reference, ledger)
+        physical = json.loads(Path(receipt['path']).read_text())['physical_result']
+        Path(physical['path']).write_text('{}')
+        with self.assertRaises(ValueError):
+            self.validate_outputs(reference, ledger)
+
+    def test_cached_source_change_still_refuses(self):
+        reference, snapshot, ledger, obj, receipt = self.outputs()
+        self.validate_outputs(reference, ledger)
+        self.source.write_text('changed source')
+        with self.assertRaises(ValueError):
+            self.validate_outputs(reference, ledger)
+
+    def test_cached_snapshot_tamper_still_refuses(self):
+        reference = self.seal()
+        S.validate_compiler(self.runtime, self.reference, reference, self.source_binding, self.compiler)
+        self.snapshot_path.write_text('{}')
+        with self.assertRaises(ValueError):
+            S.validate_compiler(self.runtime, self.reference, reference, self.source_binding, self.compiler)
+
+    def test_compiler_bytes_hash_once_while_identity_stays_exact(self):
+        with patch.object(S, 'binding', wraps=S.binding) as hashing:
+            first = S._compiler_binding(self.compiler)
+            self.assertEqual(S._compiler_binding(self.compiler), first)
+        self.assertEqual(hashing.call_count, 1)
+        self.compiler.write_text('changed compiler')
+        self.assertNotEqual(S._compiler_binding(self.compiler), first)
+
+    def import_fixture(self):
+        graph = self.root / 'GRAPH.json'
+        save(graph, {'import_edges': [{'from': 'Fixture.Control', 'to': 'Fixture.Dependency'}]})
+        runtime = {'cache_import_graph': binding(graph),
+                   'module_files': {'Fixture.Control': 'Control.v',
+                                    'Fixture.Dependency': 'library/Dependency.v'}}
+        report = {'directly_hashed_inputs': [binding(self.obj)]}
+        return graph, runtime, report
+
+    def test_import_graph_and_owner_map_build_once(self):
+        graph, runtime, report = self.import_fixture()
+        with patch.object(S, 'read_bound', wraps=S.read_bound) as reading:
+            first = S.import_selection(runtime, self.source_binding, self.root, report)
+            self.assertEqual(S.import_selection(runtime, self.source_binding, self.root, report), first)
+        self.assertEqual(reading.call_count, 1)
+        self.assertEqual(first['imported_objects'][0]['module'], 'Fixture.Dependency')
+
+    def test_cached_import_graph_change_refuses(self):
+        graph, runtime, report = self.import_fixture()
+        S.import_selection(runtime, self.source_binding, self.root, report)
+        graph.write_text('{}')
+        with self.assertRaises(ValueError):
+            S.import_selection(runtime, self.source_binding, self.root, report)
+
+    def test_cached_import_owner_ambiguity_refuses(self):
+        graph, runtime, report = self.import_fixture()
+        S.import_selection(runtime, self.source_binding, self.root, report)
+        runtime['module_files']['Fixture.Alias'] = 'Control.v'
+        with self.assertRaisesRegex(ValueError, 'canonical owner'):
+            S.import_selection(runtime, self.source_binding, self.root, report)
+
+    def test_static_snapshot_rows_stat_once_per_chain(self):
+        static = self.root / 'Unused.txt'
+        static.write_text('static metadata fixture')
+        self.runtime['bindings'].append(binding(static))
+        reference = self.seal()
+        S.validate_compiler(self.runtime, self.reference, reference, self.source_binding, self.compiler)
+        with patch.object(S, '_identity', wraps=S._identity) as identities:
+            S.validate_compiler(self.runtime, self.reference, reference, self.source_binding, self.compiler)
+        self.assertNotIn(str(static), [str(call.args[0]) for call in identities.call_args_list])
 
     def test_later_successful_object_has_validated_receipt(self):
         reference, snapshot, ledger, obj, receipt = self.outputs()

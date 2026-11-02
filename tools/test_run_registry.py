@@ -33,8 +33,8 @@ class RunRegistryTests(unittest.TestCase):
                 process.kill()
             process.wait(timeout=5)
 
-    def wait_for(self, predicate):
-        deadline = time.monotonic() + 5
+    def wait_for(self, predicate, timeout=5):
+        deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
             result = predicate()
             if result:
@@ -187,7 +187,7 @@ with patch.object(registry,method,side_effect=interrupted):
         def ready():
             row = self.registry.read()['runs'].get('old')
             return row if row and len(row['jobs']) >= 2 else None
-        previous = self.wait_for(ready)
+        previous = self.wait_for(ready, timeout=R.REFRESH_SECONDS + 5)
         released = self.root / 'released'
         self.registry.add_claim('old', 'memory', [sys.executable, '-c',
             'from pathlib import Path;Path(sys.argv[1]).write_text("released")'
@@ -536,13 +536,15 @@ class RegistryScalingTests(unittest.TestCase):
         actor = {'pid': 123, 'startticks': 45, 'ppid': 67, 'state': 'R'}
         self.registry.update('old', lambda row: row['jobs'].append(actor))
         with patch.object(self.registry, 'save_row') as saving, \
-                patch.object(R, 'descendants', return_value=[dict(actor, state='S')]):
+                patch.object(R, 'descendants', return_value=[dict(actor, state='S')]), \
+                patch.object(R, 'live', return_value=True):
             self.registry.refresh('old')
             self.registry.update('old', lambda row: None)
             saving.assert_not_called()
-        with patch.object(R, 'descendants', return_value=[dict(actor, startticks=46)]):
+        with patch.object(R, 'descendants', return_value=[dict(actor, startticks=46)]), \
+                patch.object(R, 'live', return_value=False):
             row = self.registry.refresh('old')
-        self.assertEqual([a['startticks'] for a in row['jobs']], [45, 46])
+        self.assertEqual([a['startticks'] for a in row['jobs']], [46])
 
     def test_per_run_record_id_mismatch_refuses(self):
         self.seed('old')
@@ -572,11 +574,10 @@ class RegistryScalingTests(unittest.TestCase):
                 patch.object(R.time, 'monotonic', side_effect=lambda: clock[0]), \
                 patch.object(R.time, 'sleep', side_effect=lambda t: clock.__setitem__(0, clock[0] + t)):
             self.assertEqual(R.run_command(registry, args), 0)
-        self.assertEqual(len(samples), 4)
-        self.assertGreaterEqual(samples[1] - samples[0], 3)
-        self.assertGreaterEqual(samples[2] - samples[1], 3)
+        self.assertEqual(len(samples), 3)
+        self.assertGreaterEqual(samples[1] - samples[0], 5)
         self.assertAlmostEqual(samples[-1], 7.1)
-        self.assertLess(samples[-1] - samples[-2], 3)
+        self.assertLess(samples[-1] - samples[-2], 5)
 
 
 if __name__ == '__main__':
