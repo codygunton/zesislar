@@ -45,8 +45,12 @@ class ObjectImportTests(unittest.TestCase):
         imports = [{'module': dependency,
                     'object': binding((self.old / self.modules[dependency]).with_suffix('.vo'))}
                    for dependency in dependencies]
+        graph = self.save(name + '-recorded-graph.json', {'import_edges': self.edges})
         validation = self.save(name + '-validation.json', {
-            'snapshot': snapshot, 'directly_hashed_inputs': [row['object'] for row in imports]})
+            'snapshot': snapshot, 'directly_hashed_inputs': [row['object'] for row in imports],
+            'import_selection': {'module': name, 'owned_workspace': str(self.old),
+                                 'source': binding(source), 'graph': graph,
+                                 'imported_objects': imports}})
         inputs = self.save(name + '-input.json', {
             'source': binding(source), 'compiler': self.compiler, 'owned_workspace': str(self.old),
             'physical_argv': [self.compiler['path'], *flags, str(source)],
@@ -125,6 +129,15 @@ class ObjectImportTests(unittest.TestCase):
         data['import_provenance']['imported_objects'] = []
         self.receipts[owner] = self.save(owner + '-receipt.json', data)
         self.assertIn(owner, self.check(owner)['rebuild_modules'])
+
+    def test_extra_recorded_changed_import_refuses_reuse(self):
+        owner, dependency = 'ZesuSsz.Automation.Switches.ReturnBundle', 'ZesuSsz.Automation.PureFacts'
+        self.pair(owner, dependency)
+        self.edges = []
+        (self.current / self.modules[dependency]).with_suffix('.vo').write_bytes(b'changed extra import')
+        result = self.check(owner)
+        self.assertEqual(result['rebuild_modules'], [owner])
+        self.assertIn('recorded owned import is absent', result['rebuild'][0]['reason'])
 
     def test_changed_validation_report_refuses_reuse(self):
         owner = 'ZesuSsz.Automation.Switches.ReturnBundle'
@@ -220,6 +233,13 @@ class ObjectImportTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'scheduled source compilation'):
             self.stage(owner, [dependency])
         self.assertEqual(self.stage(owner, [dependency, owner])['rebuild_modules'], [])
+
+    def test_final_stage_ignores_unrelated_generated_object(self):
+        owner = 'ZesuSsz.Automation.Switches.ReturnBundle'
+        self.module(owner)
+        self.record(owner, [])
+        self.module('ZesuSsz.Generated.DecodeItem.Unrelated')
+        self.assertEqual(self.stage(owner, [])['rebuild_modules'], [])
 
 
 if __name__ == '__main__':
