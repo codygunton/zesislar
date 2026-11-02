@@ -6,11 +6,11 @@ import unittest
 
 try:
     from .forward_resource_design import _state_from_result
-    from .loop_widen import FoldRule, UnsignedCursorInduction, source_sum_bounds, loop_read_window, bind_zero_read_refutation, affine_step, fold_recurrence, widen_loop_head, write_set
+    from .loop_widen import FoldRule, UnsignedCursorInduction, recheck_renderable_cursor, source_sum_bounds, loop_read_window, bind_zero_read_refutation, affine_step, fold_recurrence, widen_loop_head, write_set
     from .symbolic_state import bits, input_expr, operation, SymbolicState, evaluate_block
 except ImportError:
     from forward_resource_design import _state_from_result
-    from loop_widen import FoldRule, UnsignedCursorInduction, source_sum_bounds, loop_read_window, bind_zero_read_refutation, affine_step, fold_recurrence, widen_loop_head, write_set
+    from loop_widen import FoldRule, UnsignedCursorInduction, recheck_renderable_cursor, source_sum_bounds, loop_read_window, bind_zero_read_refutation, affine_step, fold_recurrence, widen_loop_head, write_set
     from symbolic_state import bits, input_expr, operation, SymbolicState, evaluate_block
 
 
@@ -419,6 +419,43 @@ class LoopWidenTests(unittest.TestCase):
                 bad = dict(binding, count_guard=operation('bvult', bits(0, 64), bits(1, 64)).to_dict())
                 with self.assertRaisesRegex(ValueError, 'original source width guard'):
                     bind_zero_read_refutation(result, bad)
+
+    def test_renderable_recheck_minimizes_conditions_without_mutating_states(self):
+        domain = json.loads((HERE / 'testdata/loop_widen_domain.json').read_text())
+        bounds = source_sum_bounds(domain['original_layout_clauses'], domain['parameter_substitution'],
+            domain['constants'], width=64, provenance={'source': domain['source_path']})
+        for suffix in ('6a24', '6ac4'):
+            data, traces = self.fixture(suffix)
+            for preheader in data['preheaders']:
+                seed = _state_from_result(preheader['state'])
+                views = {seed.registers['x15']: {'term': domain['parameter_substitution']['inputPointer'] + ' + 1',
+                    'provenance': {'source': domain['source_path']}}}
+                result = widen_loop_head(seed, traces, loop_pc=int(data['pc'], 0),
+                    provenance={'source': data['forward_source']}, source_bounds=bounds, origin_views=views,
+                    instruction_pcs=[int(row['pc'], 0) for row in data['body_traces']])
+                edges = [row.state for row in result.body_results if row.status == 'complete'
+                    and row.state.registers['PC'] == bits(int(data['pc'], 0), 64)]
+                before = [state.to_dict() for state in [seed, *edges]]
+                checked = recheck_renderable_cursor(result.relations[0], seed, edges, bounds,
+                    render=lambda condition: condition.coq())
+                self.assertTrue(checked['checked'])
+                self.assertEqual(len(checked['condition_dependencies']), 2)
+                self.assertTrue(all(len(values) == 1 for edge, values in
+                    checked['edge_condition_dependencies'].items() if edge != 'preheader'))
+                self.assertTrue(checked['render_refusals'])
+                self.assertEqual(before, [state.to_dict() for state in [seed, *edges]])
+                necessary = seed.conditions[checked['condition_dependencies'][0]]
+                def refuse_needed(condition):
+                    if condition == necessary:
+                        raise ValueError('Unit control refuses one necessary condition')
+                    return condition.coq()
+                failed = recheck_renderable_cursor(result.relations[0], seed, edges, bounds,
+                    render=refuse_needed)
+                self.assertFalse(failed['checked'])
+                self.assertEqual(failed['condition_dependencies'], [])
+                failed = recheck_renderable_cursor(result.relations[0], seed, edges, [],
+                    render=lambda condition: condition.coq())
+                self.assertFalse(failed['checked'])
 
 
 if __name__ == '__main__':

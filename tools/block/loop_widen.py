@@ -386,6 +386,78 @@ class UnsignedCursorInduction:
             return {'status': 'failed', 'checks': checks, 'missing_relation': missing.relation}
 
 
+def recheck_renderable_cursor(candidate, seed, backedges, source_bounds, *, render):
+    """Recheck exact edges, then remove every individually unnecessary clause.
+
+    The result is inclusion-minimal for this checker, not minimum cardinality.
+    Original states are never changed. Source bounds stay separately bound.
+    Rendering must check the complete declared scope, not syntax alone.
+    """
+    states = [('preheader', seed), *[
+        ('backedge:' + str(index), state) for index, state in enumerate(backedges)]]
+    selected, refused, rendered = {}, [], {}
+    for edge, state in states:
+        selected[edge] = []
+        for index, condition in enumerate(state.conditions):
+            try:
+                text = render(condition)
+                if not isinstance(text, str) or not text.strip():
+                    raise ValueError('The condition has no rendered proposition')
+            except ValueError as error:
+                refused.append({'edge': edge, 'condition_index': index,
+                    'condition': condition.to_dict(), 'reason': str(error)})
+            else:
+                selected[edge].append(index)
+                rendered[edge, index] = text
+
+    def run(indices):
+        reduced = {}
+        for edge, state in states:
+            value = state.copy()
+            value.conditions = [state.conditions[index] for index in indices[edge]]
+            reduced[edge] = value
+        checker = UnsignedCursorInduction(reduced['preheader'], source_bounds)
+        return [{'edge': edge, 'check': checker(candidate, edge, reduced[edge])}
+                for edge, _ in states]
+
+    def passed(checks):
+        return all(row['check'].get('status') == 'checked' for row in checks)
+
+    checks = run(selected)
+    if not passed(checks):
+        return {'checked': False, 'checks': checks, 'render_refusals': refused,
+                'condition_dependencies': [], 'kernel_entailments': 'OPEN'}
+    # Stable deletion order gives reproducible, inclusion-minimal dependencies.
+    for edge, _ in states:
+        for index in list(selected[edge]):
+            trial = {name: list(values) for name, values in selected.items()}
+            trial[edge].remove(index)
+            if passed(run(trial)):
+                selected = trial
+    checks = run(selected)
+    essential = []
+    for edge, _ in states:
+        for index in selected[edge]:
+            trial = {name: list(values) for name, values in selected.items()}
+            trial[edge].remove(index)
+            without = run(trial)
+            if passed(without):
+                raise ValueError('The retained condition set is not inclusion-minimal')
+            essential.append({'edge': edge, 'condition_index': index,
+                'failed_checks_without_condition': [row for row in without
+                    if row['check'].get('status') != 'checked']})
+    return {'checked': True, 'checks': checks, 'render_refusals': refused,
+        'condition_dependencies': selected['preheader'],
+        'edge_condition_dependencies': selected,
+        'rendered_dependencies': [{'edge': edge, 'condition_index': index,
+            'rendered': rendered[edge, index]} for edge, _ in states
+            for index in selected[edge]],
+        'minimality': 'inclusion-minimal under exact source checker; not minimum cardinality',
+        'essential_condition_checks': essential,
+        'source_evidence': {'source_bounds': source_bounds},
+        'kernel_entailments': 'OPEN'}
+
+
 class _MissingCursorRelation(Exception):
     def __init__(self, relation):
         self.relation = relation
