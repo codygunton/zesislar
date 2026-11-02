@@ -50,7 +50,17 @@ def references(spec):
     return result
 
 
+def planning_compiler(config):
+    """Use the same bound identity that stage_job selects for the compiler."""
+    selected=config['effective_compiler_version']['compiler']
+    if (not isinstance(selected,dict) or set(selected)!={'path','sha256'} or
+            'physical_compiler' in config and config['physical_compiler']!=selected):
+        raise ValueError('The declaration planning compiler differs from its bound effective identity.')
+    return dict(selected)
+
+
 def attach(config, *, measurements=None, maximum_workers=48):
+    compiler=planning_compiler(config)
     if (config.get('declarations_only') is not True or config.get('control_session') or
             config.get('dependency_batch') or type(maximum_workers) is not int or
             not 1 <= maximum_workers <= 48):
@@ -81,7 +91,7 @@ def attach(config, *, measurements=None, maximum_workers=48):
                 re.search(r'^\s*Declare\s+ML\s+Module\b', source.read_text(), re.M)):
             protected.append(module)
         sources.append({'module': module, 'source': binding(source)})
-    resource = weights(ordered, modules, workspace, config['physical_compiler'],
+    resource = weights(ordered, modules, workspace, compiler,
                        config['physical_flags'], measurements)
     validate_graph(ordered, graph['import_edges'], resource['weights'], completed, protected)
     dune = shutil.which('dune')

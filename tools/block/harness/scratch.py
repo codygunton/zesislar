@@ -267,6 +267,9 @@ def prepare(a):
     out=a.output;out.mkdir(parents=True,exist_ok=False)
     baseline={'path':str(a.base_runtime),'sha256':a.base_runtime_sha256}
     c=read_bound(baseline)
+    if getattr(a,'parallel_declarations',False):
+        from declaration_parallel_plan import planning_compiler
+        planning_compiler(c)
     if getattr(a,'object_import_migrations',None):
         install_object_import_migrations(c,a.object_import_migrations)
     c['harness']=harness

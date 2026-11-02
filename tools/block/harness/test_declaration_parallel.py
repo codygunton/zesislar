@@ -38,6 +38,7 @@ class GuardedAdapterTests(unittest.TestCase):
             claim_bytes=64*GIB,physical_fence_bytes=64*GIB,ordered_modules=['Example.Control'])],
             'prepared_workspace':str(f.root),'proof_runtime':{'module_files':f.runtime['module_files']},
             'cache_import_graph':f.runtime['cache_import_graph'],'physical_compiler':binding(f.compiler),
+            'effective_compiler_version':{'compiler':binding(f.compiler)},
             'physical_flags':f.runtime['physical_flags']}
         with patch('declaration_parallel_plan.shutil.which',return_value=str(dune)):
             f.runtime['declaration_dag']=attach(config)

@@ -25,7 +25,7 @@ class PublicDagPlanTests(unittest.TestCase):
         save(graph,{'import_edges':[{'from':'Example.C','to':'Example.A'},
                                    {'from':'Example.C','to':'Example.B'}]})
         self.config={'declarations_only':True,'prepared_workspace':str(self.root),
-            'physical_compiler':binding(self.dune),'physical_flags':['-Q',str(self.root/'library'),'Library'],
+            'effective_compiler_version':{'compiler':binding(self.dune)},'physical_flags':['-Q',str(self.root/'library'),'Library'],
             'cache_import_graph':binding(graph),
             'proof_runtime':{'module_files':{('Example.'+x):(x+'.v') for x in ['A','B','C']}},
             'jobs':[{'phase':'prerequisites','claim_bytes':64*GIB,'physical_fence_bytes':64*GIB,
@@ -38,7 +38,7 @@ class PublicDagPlanTests(unittest.TestCase):
     def runtime(self,spec):
         return dict(self.config['proof_runtime'],phase='prerequisites',
             declaration_dag=spec,ordered_modules=self.config['jobs'][0]['ordered_modules'],
-            physical_compiler=self.config['physical_compiler'],physical_flags=self.config['physical_flags'],
+            physical_compiler=self.config['effective_compiler_version']['compiler'],physical_flags=self.config['physical_flags'],
             canonical_admission={'minimum_claim_bytes':64*GIB,'physical_fence_bytes':64*GIB})
 
     def test_serial_is_the_public_default(self):
@@ -54,6 +54,21 @@ class PublicDagPlanTests(unittest.TestCase):
         self.assertEqual(spec['weights'],{name:16*GIB for name in ['Example.A','Example.B','Example.C']})
         self.assertEqual(spec['maximum_workers'],48)
         self.assertEqual(validate(self.runtime(spec),self.root),spec)
+
+    def test_actual_READY_shape_needs_no_staged_compiler_field(self):
+        self.assertNotIn('physical_compiler',self.config)
+        with patch('shutil.which',return_value=str(self.dune)):
+            spec=attach(self.config)
+        self.assertEqual(validate(self.runtime(spec),self.root),spec)
+
+    def test_existing_staged_identity_must_equal_the_effective_compiler(self):
+        self.config['physical_compiler']=dict(binding(self.dune),sha256='0'*64)
+        with self.assertRaisesRegex(ValueError,'bound effective identity'):
+            self.attach()
+
+    def test_matching_staged_identity_remains_supported(self):
+        self.config['physical_compiler']=binding(self.dune)
+        self.assertEqual(self.attach()['maximum_workers'],48)
 
     def test_ordinary_24_gib_profile_cannot_enable_parallel_execution(self):
         self.config['jobs'][0]['claim_bytes']=24*GIB
