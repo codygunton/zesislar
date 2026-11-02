@@ -73,6 +73,9 @@ class Expr:
             interpretation = 'bv_signed' if self.op.startswith('bvs') else 'bv_unsigned'
             relation = {'lt': '<', 'le': '<=', 'gt': '>', 'ge': '>='}[self.op[-2:]]
             return f'(bool_decide (({interpretation} {rendered[0]} {relation} {interpretation} {rendered[1]})%Z))'
+        if self.op == 'owned_array_byte':
+            array, address, base = rendered
+            return f'(List.nth (Z.to_nat ((bv_unsigned {address} - bv_unsigned {base})%Z)) {array} (BV 8%N 0%Z))'
         if self.op == 'array_byte':
             return f'(List.nth {self.value}%nat {rendered[0]} (BV 8%N 0%Z))'
         raise ValueError('The expression cannot render as Coq: ' + self.op)
@@ -263,13 +266,17 @@ class SymbolicState:
     memory_disjoint: list = field(default_factory=list)
     register_writes: list | None = None
     source_intervals: list = field(default_factory=list)
+    symbolic_read_ranges: list = field(default_factory=list)
+    read_obligations: list = field(default_factory=list)
 
     def copy(self):
         return SymbolicState(dict(self.registers), list(self.memory), list(self.conditions),
                              list(self.reports), list(self.writes), self.endianness, self.trace_count,
                              dict(self.retained_registers), list(self.memory_disjoint),
                              list(self.register_writes) if self.register_writes is not None else None,
-                             list(self.source_intervals))
+                             list(self.source_intervals),
+                             [dict(row) for row in self.symbolic_read_ranges],
+                             [dict(row) for row in self.read_obligations])
 
     def to_dict(self):
         result = {'schema': 1, 'registers': {k: v.to_dict() for k, v in sorted(self.registers.items())},
@@ -284,6 +291,10 @@ class SymbolicState:
             result['register_writes'] = [dict(write) for write in self.register_writes]
         if self.source_intervals:
             result['source_intervals'] = list(self.source_intervals)
+        if self.symbolic_read_ranges:
+            result['symbolic_read_ranges'] = [dict(row) for row in self.symbolic_read_ranges]
+        if self.read_obligations:
+            result['read_obligations'] = [dict(row) for row in self.read_obligations]
         return result
 
 
@@ -506,7 +517,95 @@ class _Evaluator:
             value = self.expression(raw)
             self.condition(operation('=', self.register(key, value.width), value))
 
+    def symbolic_memory_byte(self, address):
+        """Bind an abstract byte only to an explicit owned loop read window.
+
+        The result carries an OPEN in-range obligation. This routine never adds
+        a condition or declares the obligation proved. Closed-offset reads keep
+        the original path, including its alias and length checks.
+        """
+        if any(_offset(address, region.base) is not None for region in self.state.memory):
+            return None
+        rows = [row for row in self.state.symbolic_read_ranges
+                if row.get('address') == address.to_dict()]
+        if not rows:
+            return None
+        unknown = Expr('unknown_read', (address,), 8)
+        if len(rows) != 1:
+            self.report('ambiguous_symbolic_read_window', address=address.to_dict())
+            return unknown
+        row = rows[0]
+        regions = [region for region in self.state.memory
+                   if region.ownership_id is not None and region.ownership_id == row.get('ownership_id')]
+        if len(regions) != 1 or not row.get('provenance'):
+            self.report('unowned_symbolic_read_window', address=address.to_dict())
+            return unknown
+        region = regions[0]
+        if region.byte_array is None or region.uninitialized or region.length is None:
+            self.report('symbolic_read_without_source_array', address=address.to_dict())
+            return unknown
+        try:
+            lower, limit, end = (Expr.from_dict(row[key]) for key in ('lower', 'limit', 'end'))
+        except (KeyError, TypeError, ValueError):
+            self.report('malformed_symbolic_read_window', address=address.to_dict())
+            return unknown
+        if any(term.width != address.width for term in (region.base, lower, limit, end)):
+            self.report('symbolic_read_width_mismatch', address=address.to_dict())
+            return unknown
+        chain = [operation('bvule', lower, address), operation('bvult', address, limit),
+                 operation('bvule', limit, end)]
+        try:
+            try:
+                from .guard_normal_form import GuardNormalForm
+            except ImportError:
+                from guard_normal_form import GuardNormalForm
+            guards = GuardNormalForm(self.state.conditions)
+            address_low, address_high = guards.interval(guards.unsigned(address))
+            lower_low, _ = guards.interval(guards.unsigned(lower))
+            _, limit_high = guards.interval(guards.unsigned(limit))
+            interval_refutes = address_high < lower_low or address_low >= limit_high
+        except ValueError:
+            interval_refutes = False
+        if interval_refutes or any(term == boolean(False) or operation('not', term) in self.state.conditions
+               for term in chain):
+            self.report('out_of_range_symbolic_read', address=address.to_dict())
+            return unknown
+        def separate(owner):
+            return owner is not None and any(set(pair) == {region.ownership_id, owner}
+                for pair in self.state.memory_disjoint)
+        if any(other is not region and not separate(other.ownership_id) for other in self.state.memory):
+            self.report('ambiguous_symbolic_read_owner', address=address.to_dict())
+            return unknown
+        if any(not separate(write.ownership_id) for write in self.state.writes):
+            self.report('ambiguous_symbolic_read_write', address=address.to_dict())
+            return unknown
+        if isinstance(region.length, Expr) and region.length.width is not None and region.length.op != 'bits':
+            self.report('symbolic_read_without_nat_extent', address=address.to_dict())
+            return unknown
+        identity = hashlib.sha256(json.dumps({'array': region.byte_array.to_dict(),
+            'base': region.base.to_dict(), 'address': address.to_dict(),
+            'owner': region.ownership_id, 'trace': self.trace_sha256,
+            'event': self.event_index, 'path': self.path}, sort_keys=True).encode()).hexdigest()
+        byte = Expr('owned_array_byte', (region.byte_array, address, region.base), 8, identity)
+        index = '(bv_unsigned ' + address.coq() + ' - bv_unsigned ' + region.base.coq() + ')%Z'
+        length = str(region.length.value if isinstance(region.length, Expr) else region.length) + '%Z' \
+            if isinstance(region.length, int) or region.length.op == 'bits' else \
+            '(Z.of_nat ' + region.length.coq() + ')'
+        self.state.read_obligations.append({'kind': 'owned_symbolic_byte_range',
+            'status': 'OPEN', 'owner': region.ownership_id, 'array': region.byte_array.to_dict(),
+            'address': address.to_dict(), 'base': region.base.to_dict(), 'value': byte.to_dict(),
+            'goal': '(0 <= ' + index + ' < ' + length + ')%Z',
+            'source_chain': [term.to_dict() for term in chain],
+            'extent_link': {'end': end.to_dict(), 'base': region.base.to_dict(),
+                            'length': region.length.to_dict() if isinstance(region.length, Expr) else region.length},
+            'source': dict(row['provenance']), 'instruction_index': self.instruction_index,
+            'event_index': self.event_index, 'path': list(self.path)})
+        return byte
+
     def memory_byte(self, address):
+        symbolic = self.symbolic_memory_byte(address)
+        if symbolic is not None:
+            return symbolic
         owners = []
         for region in self.state.memory:
             offset = _offset(address, region.base)
