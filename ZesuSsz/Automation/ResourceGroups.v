@@ -47,33 +47,54 @@ Ltac zesu_open_matching_resource_package :=
           end)
   end.
 
-(* Expose the machine collection only for the mstatus field request. *)
+(* Open existential resources without choosing or discarding their witnesses. *)
+Ltac zesu_contains_existential_resource body :=
+  lazymatch body with
+  | @bi_exist _ _ _ => idtac
+  | (?left ∗ ?right)%I =>
+      first [zesu_contains_existential_resource left |
+             zesu_contains_existential_resource right]
+  | _ =>
+      let head := get_head body in
+      let registered := constr:(_ : LithiumUnfold head) in
+      let expanded := eval cbv beta zeta delta [head] in body in
+      tryif constr_eq expanded body then fail else
+        zesu_contains_existential_resource expanded
+  end.
+
+Ltac zesu_open_existential_package_step :=
+  first [
+    progress iMatchHyp ltac:(fun H body =>
+      lazymatch body with
+      | @bi_exist _ _ _ => iDestruct H as (?) H
+      end)
+  | progress iMatchHyp ltac:(fun H body =>
+      lazymatch body with
+      | (_ ∗ _)%I => zesu_contains_existential_resource body;
+          iDestruct H as "[? ?]"
+      end)
+  | progress iMatchHyp ltac:(fun H body =>
+      let head := get_head body in
+      tryif first [constr_eq head constr:(@bi_sep) |
+                   constr_eq head constr:(@bi_pure) |
+                   constr_eq head constr:(@bi_exist)] then fail else idtac;
+      let expanded := eval cbv beta zeta delta [head] in body in
+      zesu_contains_existential_resource expanded;
+      progress iEval (unfold head) in H;
+      zesu_open_resource_groups)
+  ].
+
+Ltac zesu_open_nested_existential_packages :=
+  zesu_open_existential_package_step;
+  repeat zesu_open_existential_package_step;
+  zesu_open_resource_groups.
+
+(* Preserve every package component before selecting the requested field. *)
 Ltac zesu_open_requested_struct_sys_package :=
   zesu_expose_environment_alias;
   lazymatch goal with
-  | |- envs_entails _
-      (find_in_context (FindStructRegMapsTo "mstatus" "bits") _) =>
-      iMatchHyp ltac:(fun H body =>
-        let outerHead := get_head body in
-        tryif first [constr_eq outerHead constr:(@bi_sep) |
-                     constr_eq outerHead constr:(@bi_pure)] then fail else
-          let outer := eval cbv beta zeta delta [outerHead] in body in
-          lazymatch outer with
-          | (?inner ∗ _)%I =>
-              let innerHead := get_head inner in
-              let innerBody := eval cbv beta zeta delta [innerHead] in inner in
-              lazymatch innerBody with
-              | (reg_col ?shape ∗ _)%I =>
-                  constr_eq shape constr:(zesu_sys_regs);
-                  progress iEval (unfold outerHead) in H;
-                  iDestruct H as "[? ?]";
-                  iMatchHyp ltac:(fun Hinner current =>
-                    let currentHead := get_head current in
-                    constr_eq currentHead innerHead;
-                    progress iEval (unfold innerHead) in Hinner;
-                    iDestruct Hinner as "[? ?]")
-              end
-          end)
+  | |- envs_entails _ (find_in_context (FindStructRegMapsTo _ _) _) =>
+      progress zesu_open_nested_existential_packages
   end.
 
 (* Branch frames preserve x9 behind their transparent common frame. *)
