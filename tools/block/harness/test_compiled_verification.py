@@ -88,6 +88,56 @@ class CompiledVerification(unittest.TestCase):
   self.assertTrue(p['proof'].startswith(expected))
   self.assertNotIn('Record ',p['problem_statement']+p['proof'])
 
+ def test_production_open_scope_survives_compiled_verification(self):
+  prefix='Require Import Fixture.Base.\nOpen Scope Z_scope.\n'
+  self.prepare(prefix+RECORD);p=self.payload()
+  context=prefix+'Require Import Fixture.Control.\n'
+  self.assertTrue(p['problem_statement'].startswith(context))
+  self.assertTrue(p['proof'].startswith(context))
+  self.assertNotIn('Record ',p['problem_statement']+p['proof'])
+  self.assertNotIn('Definition ',p['problem_statement']+p['proof'])
+  self.assertNotIn('Ltac ',p['problem_statement']+p['proof'])
+
+ def test_exact_scope_commands_keep_order_with_imports_and_exports(self):
+  prefix=('From Fixture Require Import Base.\n'
+          'Open Scope Z_scope.\n'
+          'Import Fixture.Base.\n'
+          'Local Open Scope nat_scope.\n'
+          'Close Scope Z_scope.\n'
+          'Export Fixture.Base.\n'
+          'Local Close Scope nat_scope.\n')
+  self.prepare(prefix+RECORD);p=self.payload()
+  context=prefix+'Require Import Fixture.Control.\n'
+  expected=self.specification['statement'].replace('DesignedBoundary_Control','check_exact_control',1)
+  self.assertEqual(p['problem_statement'],context+expected)
+  self.assertTrue(p['proof'].startswith(context+expected))
+
+ def test_safe_scope_command_retains_internal_comments_and_spacing(self):
+  prefix='Local  Open (* scope presentation only *) Scope Z_scope .\n'
+  self.prepare(prefix+RECORD);p=self.payload()
+  context=prefix+'Require Import Fixture.Control.\n'
+  self.assertTrue(p['problem_statement'].startswith(context))
+  self.assertTrue(p['proof'].startswith(context))
+
+ def test_scope_support_does_not_admit_other_local_syntax(self):
+  self.prepare('Open Scope Z_scope.\nLocal Notation token := nat.\n'+RECORD)
+  with self.assertRaisesRegex(ValueError,'unsupported local syntax'):self.payload()
+
+ def test_scope_after_declaration_still_refuses(self):
+  text=RECORD.replace('Proof.\n','Open Scope Z_scope.\nProof.\n')
+  with self.assertRaisesRegex(ValueError,'separates the statement and Proof'):self.prepare(text)
+
+ def test_malformed_or_unsupported_scope_commands_refuse(self):
+  prefixes=['Open Scope.\n','Open Scope Z_scope extra.\n','Local Open Scope Z_scope extra.\n',
+            'Global Open Scope Z_scope.\n','Local Declare Scope private_scope.\n',
+            'Delimit Scope Z_scope with injected.\n','Bind Scope Z_scope with nat.\n',
+            'Open Scope "Z_scope".\n','Open Scope A.B.\n']
+  for prefix in prefixes:
+   with self.subTest(prefix=prefix):
+    self.setUp()
+    self.prepare(prefix+RECORD)
+    with self.assertRaisesRegex(ValueError,'unsupported local syntax'):self.payload()
+
  def test_commands_between_declaration_and_proof_keep_their_imports(self):
   text=RECORD.replace('Proof.\n','Require Import Fixture.Base.\nProof.\n')
   self.prepare(text);p=self.payload()

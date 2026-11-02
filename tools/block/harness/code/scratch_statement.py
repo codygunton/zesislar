@@ -52,10 +52,15 @@ def compiled_verification(runtime,target,source,specification,name,*,workspace,m
     original_imports=[]
     context=current['prefix']+current['pre_proof_commands']
     for command in rocq_commands(context):
-        if (not command or command[0][0] not in allowed
-                or command[0][0]=='From' and not any(word=='Require' for word,_ in command)):
+        words=[word for word,_ in command]
+        # Scope commands change notation parsing and must accompany the imports.
+        scope_words=words[1:] if words[:1]==['Local'] else words
+        scope=(len(scope_words)==3 and scope_words[:2] in [['Open','Scope'],['Close','Scope']]
+               and re.fullmatch(identifier,scope_words[2]) is not None)
+        if (not scope and (not command or command[0][0] not in allowed
+                or command[0][0]=='From' and not any(word=='Require' for word,_ in command))):
             raise ValueError('The verification prefix contains unsupported local syntax.')
-        if command[0][0] in {'Require','From','Import','Export'}:
+        if scope or command[0][0] in {'Require','From','Import','Export'}:
             last,offset=command[-1];tail=offset+len(last)
             stop=rocq_tokens(context[tail:])[0]
             if stop[0]!='.':raise ValueError('A verification import lacks its command terminator.')
