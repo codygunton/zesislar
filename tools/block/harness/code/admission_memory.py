@@ -519,7 +519,20 @@ class ScopeReader:
             raise ValueError('The public guard source is not owned.')
         tools = next(parent for parent in Path(__file__).resolve().parents if parent.name == 'tools')
         digest = hashlib.sha256(path.read_bytes()).hexdigest()
-        if (digest != expected_hash or digest != hashlib.sha256((tools / 'resource_guard.sh').read_bytes()).hexdigest()
+        approved = False
+        for public in (tools / 'resource_guard.sh',
+                       tools / 'block/harness/runtime-tools/resource_guard.sh'):
+            try:
+                reference = self.file_identity(public.lstat())
+                if (public.resolve(strict=True) != public or not stat.S_ISREG(reference[5])
+                        or reference[6] != self.uid or reference[5] & 0o022):
+                    raise ValueError('The pinned public guard is not owned.')
+                approved |= digest == hashlib.sha256(public.read_bytes()).hexdigest()
+                if self.file_identity(public.lstat()) != reference:
+                    raise ValueError('The pinned public guard changed while reading.')
+            except FileNotFoundError:
+                continue  # Staged tools keep their guard beside this helper.
+        if (digest != expected_hash or not approved
                 or self.file_identity(path.lstat()) != before):
             raise ValueError('The public guard source bytes changed.')
         return {'path': str(path), 'sha256': digest, 'identity': list(before)}
