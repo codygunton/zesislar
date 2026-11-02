@@ -477,6 +477,7 @@ class LoopWidening:
     witness_plan: dict
     write_set: tuple
     fold_candidates: list = field(default_factory=list)
+    zero_refutations: list = field(default_factory=list)
 
     def to_dict(self):
         return {'schema': 'source.loop-widening.v1', 'state': self.seed.to_dict(),
@@ -486,10 +487,60 @@ class LoopWidening:
                     'actual_pc': row.state.registers['PC'].to_dict() if 'PC' in row.state.registers else None,
                     'refutation': 'OPEN'} for index, row in enumerate(self.body_results)
                     if row.status == 'control_transfer'],
-                'refusals': self.refusals,
+                'refusals': self.refusals, 'zero_refutations': self.zero_refutations,
                 'body_results': [result.to_dict() for result in self.body_results],
                 'witness_plan': self.witness_plan, 'write_set': list(self.write_set),
                 'seed_ready': not self.refusals, 'kernel_entailments': 'OPEN'}
+
+
+def bind_zero_read_refutation(proposal, binding):
+    """Link a verified exact target without deleting paths or promoting folds.
+
+    The body keeps its complete source state. The target's domain, head bound,
+    semantic endpoint link and original width guard remain required at the
+    eventual kernel entailment. A verified pure target is not a native proof.
+    """
+    receipt = binding.get('verification_receipt', {})
+    if (binding.get('schema') != 'source.loop-zero-refutation.v1'
+            or receipt.get('method') != 'module_m' or receipt.get('assumptions') != []
+            or not receipt.get('path') or not receipt.get('sha256')
+            or not binding.get('source_domain') or not binding.get('compiled_object_sha256')):
+        raise ValueError('A zero-arm binding needs a verified exact source target')
+    cursors = [row for row in proposal.relations if row['kind'] == 'affine_cursor']
+    if len(cursors) != 1:
+        raise ValueError('A zero-arm binding needs its checked source head bound')
+    cursor = cursors[0]
+    if binding.get('endpoint') != cursor['limit']:
+        raise ValueError('A zero-arm target has a different source endpoint')
+    guard = Expr.from_dict(binding['count_guard'])
+    if guard not in proposal.seed.conditions:
+        raise ValueError('A zero-arm target lacks its original source width guard')
+    outside = Expr.from_dict(binding['outside'])
+    matches = []
+    for index, row in enumerate(proposal.body_results):
+        if outside not in row.state.conditions or guard not in row.state.conditions:
+            continue
+        matches.append({'body_result_index': index, 'source_path': list(row.path),
+            'status': 'VERIFIED_SOURCE_TARGET', 'kernel_loop_entailment': 'OPEN',
+            'source_domain': binding['source_domain'], 'head_bound': cursor['upper_bound'],
+            'endpoint': binding['endpoint'], 'count_guard': binding['count_guard'],
+            'outside': binding['outside'], 'verification_receipt': dict(receipt),
+            'compiled_object_sha256': binding['compiled_object_sha256'],
+            'declaration': binding['declaration'], 'target_name': binding['target_name']})
+    if not matches:
+        raise ValueError('No body path contains the verified source zero-arm condition')
+    proposal.zero_refutations.extend(matches)
+    for fold in proposal.fold_candidates:
+        for edge in fold['edges']:
+            linked = [row for row in matches if row['source_path'] == edge['source_path']]
+            if linked and edge['status'] == 'OPEN_PATH_REFUTATION':
+                edge['status'] = 'ZERO_READ_TARGET_VERIFIED'
+                edge['verified_refutation'] = linked[0]
+    # Retain every original refusal as history for the dropped relation.
+    for refusal in proposal.refusals:
+        if refusal['relation'] == 'recurrence':
+            refusal['linked_source_refutations'] = [dict(row) for row in matches]
+    return matches
 
 
 def widen_loop_head(seed, traces, *, loop_pc, provenance, fold_table=(),

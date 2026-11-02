@@ -6,11 +6,11 @@ import unittest
 
 try:
     from .forward_resource_design import _state_from_result
-    from .loop_widen import FoldRule, UnsignedCursorInduction, source_sum_bounds, loop_read_window, affine_step, fold_recurrence, widen_loop_head, write_set
+    from .loop_widen import FoldRule, UnsignedCursorInduction, source_sum_bounds, loop_read_window, bind_zero_read_refutation, affine_step, fold_recurrence, widen_loop_head, write_set
     from .symbolic_state import bits, input_expr, operation, SymbolicState, evaluate_block
 except ImportError:
     from forward_resource_design import _state_from_result
-    from loop_widen import FoldRule, UnsignedCursorInduction, source_sum_bounds, loop_read_window, affine_step, fold_recurrence, widen_loop_head, write_set
+    from loop_widen import FoldRule, UnsignedCursorInduction, source_sum_bounds, loop_read_window, bind_zero_read_refutation, affine_step, fold_recurrence, widen_loop_head, write_set
     from symbolic_state import bits, input_expr, operation, SymbolicState, evaluate_block
 
 
@@ -383,6 +383,42 @@ class LoopWidenTests(unittest.TestCase):
         source = SymbolicState(registers={'PC': bits(0, 8)})
         with self.assertRaisesRegex(ValueError, 'does not fit'):
             evaluate_block(['(trace)'], source, instruction_pcs=[256])
+
+    def test_verified_zero_targets_link_without_deleting_body_states(self):
+        domain = json.loads((HERE / 'testdata/loop_widen_domain.json').read_text())
+        table = FoldRule(**json.loads((HERE / 'testdata/loop_widen_fold_table.json').read_text()))
+        targets = json.loads((HERE / 'testdata/loop_widen_zero_refutations.json').read_text())
+        bounds = source_sum_bounds(domain['original_layout_clauses'], domain['parameter_substitution'],
+            domain['constants'], width=64, provenance={'source': domain['source_path']})
+        for suffix in ('6a24', '6ac4'):
+            data, traces = self.fixture(suffix)
+            for preheader in data['preheaders']:
+                source = _state_from_result(preheader['state'])
+                window = loop_read_window(source, 'x15', 'x11', source_facts=domain['source_facts'],
+                    provenance={'source': data['forward_source']})
+                views = {source.registers['x15']: {'term': domain['parameter_substitution']['inputPointer'] + ' + 1',
+                         'provenance': {'source': domain['source_path']}}}
+                result = widen_loop_head(source, traces, loop_pc=int(data['pc'], 0),
+                    provenance={'source': data['forward_source']}, source_bounds=bounds, origin_views=views,
+                    symbolic_read_ranges=[window], fold_table=[table],
+                    instruction_pcs=[int(row['pc'], 0) for row in data['body_traces']])
+                before = [row.to_dict() for row in result.body_results]
+                binding = next(row for row in targets if row['loop'] == suffix)
+                matched = bind_zero_read_refutation(result, binding)
+                # Two transfer states plus the zero arm's backedge, exit, and
+                # already-infeasible branch all contain the same false guard.
+                self.assertEqual(len(matched), 5)
+                self.assertEqual(before, [row.to_dict() for row in result.body_results])
+                self.assertTrue(any(edge['status'] == 'ZERO_READ_TARGET_VERIFIED'
+                    for candidate in result.fold_candidates for edge in candidate['edges']))
+                self.assertTrue(all(row['kernel_loop_entailment'] == 'OPEN' for row in matched))
+                self.assertFalse(result.to_dict()['seed_ready'])
+                bad = dict(binding, endpoint=bits(0, 64).to_dict())
+                with self.assertRaisesRegex(ValueError, 'different source endpoint'):
+                    bind_zero_read_refutation(result, bad)
+                bad = dict(binding, count_guard=operation('bvult', bits(0, 64), bits(1, 64)).to_dict())
+                with self.assertRaisesRegex(ValueError, 'original source width guard'):
+                    bind_zero_read_refutation(result, bad)
 
 
 if __name__ == '__main__':
