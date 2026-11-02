@@ -1,5 +1,5 @@
 {
-  "function": "zesu_byte_window_fold",
+  "function": "ByteWindowFold.zesu_byte_window_fold",
   "zero": "zesu_byte_window_index_zero",
   "step": "zesu_byte_window_cursor_step",
   "word_width": 64,
