@@ -24,7 +24,7 @@ import sys
 import time
 import uuid
 
-REFRESH_SECONDS = 3.0
+REFRESH_SECONDS = 5.0
 
 
 def identity(pid, proc=Path('/proc')):
@@ -301,7 +301,7 @@ class Registry:
     @staticmethod
     def refresh_row(row):
         actors = descendants([row['scheduler']] + row['jobs'])
-        retained = {actor_key(a): a for a in row['jobs']}
+        retained = {actor_key(a): a for a in row['jobs'] if live(a)}
         for actor in actors:
             if actor_key(actor) != actor_key(row['scheduler']):
                 # Process state changes do not change an actor identity.

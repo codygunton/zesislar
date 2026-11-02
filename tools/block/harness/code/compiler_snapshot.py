@@ -9,12 +9,107 @@ import tempfile
 import secrets
 import resource
 import time
+from contextvars import ContextVar
+from copy import deepcopy
 
 from binding_cache import identity, digest, force_hashing
 from entry_chain import binding, read_bound
 from source_context import compilation, effective_flags
 
 SCHEMA = 'entry-chain.compiler-validation.v1'
+
+
+# These caches belong to one process and one authenticated chain. File identity
+# changes invalidate a hit; no cache publishes acceptance or changes a receipt.
+_VERIFIED_READS = ContextVar('compiler_verified_reads', default=None)
+_ACCEPTED_PREFIXES = {}
+_CHAIN_SNAPSHOTS = {}
+_COMPILER_BINDINGS = {}
+_IMPORT_CONTEXTS = {}
+_BOUND_RUNTIMES = {}
+
+
+def _compiler_binding(path):
+    path = Path(path).absolute()
+    current = _identity(path)
+    key = (os.getpid(), str(path), _encoded(current))
+    if key not in _COMPILER_BINDINGS:
+        with force_hashing(True):
+            value = binding(path)
+        if _identity(path) != current:
+            raise ValueError('The compiler changed during hashing.')
+        _COMPILER_BINDINGS.clear()
+        _COMPILER_BINDINGS[key] = value
+    return dict(_COMPILER_BINDINGS[key])
+
+
+def _unchanged(rows):
+    try:
+        return all(_identity(path) == expected for path, expected in rows.items())
+    except OSError:
+        return False
+
+
+def _chain_snapshot(reference, runtime_reference):
+    # The strict public read remains available. Only a compiler chain reuses
+    # its initial whole-inventory stat pass. Actual compiler inputs are hashed
+    # and checked on every invocation below.
+    key = (os.getpid(), _encoded(reference), _encoded(runtime_reference))
+    current = (_identity(reference['path']), _namespace(reference['path']))
+    cached = _CHAIN_SNAPSHOTS.get(key)
+    if cached is None or cached[0] != current:
+        value = read(reference, runtime_reference)
+        _CHAIN_SNAPSHOTS.clear()
+        _CHAIN_SNAPSHOTS[key] = (current, value)
+    else:
+        value = cached[1]
+        if _identity(value['compiler']['path']) != value['compiler']['identity']:
+            raise ValueError('The selected compiler identity changed.')
+        for row in value['mapping_context']['paths']:
+            if _namespace(row['path']) != row['namespace']:
+                raise ValueError('A compiler mapping namespace changed.')
+    return value
+
+
+def _bound_runtime(reference):
+    key = (os.getpid(), _encoded(reference), _encoded(_identity(reference['path'])))
+    if key not in _BOUND_RUNTIMES:
+        value = read_bound(reference)
+        _BOUND_RUNTIMES.clear()
+        _BOUND_RUNTIMES[key] = value
+    tracker = _VERIFIED_READS.get()
+    if tracker is not None:
+        tracker[reference['path']] = _identity(reference['path'])
+    return _BOUND_RUNTIMES[key]
+
+
+def _import_context(runtime, workspace):
+    reference = runtime.get('cache_import_graph')
+    modules = runtime.get('module_files', {})
+    if reference is None:
+        return None
+    workspace = Path(workspace).resolve()
+    key = (os.getpid(), _encoded(reference), _encoded(_identity(reference['path'])),
+           str(workspace), _encoded(_namespace(workspace)), _encoded(modules))
+    if key not in _IMPORT_CONTEXTS:
+        graph = read_bound(reference)
+        if not isinstance(graph, dict) or not isinstance(graph.get('import_edges'), list):
+            raise ValueError('The compiler import graph is invalid.')
+        owners = {}
+        for name, relative in modules.items():
+            owners.setdefault(str((workspace / relative).resolve()), []).append(name)
+        forward = {}
+        for edge in graph['import_edges']:
+            if (not isinstance(edge, dict) or set(edge) != {'from', 'to'} or
+                    any(not isinstance(edge[name], str) for name in ['from', 'to'])):
+                raise ValueError('The compiler import graph has an invalid edge.')
+            forward.setdefault(edge['from'], set()).add(edge['to'])
+        _IMPORT_CONTEXTS.clear()
+        _IMPORT_CONTEXTS[key] = (owners, forward)
+    tracker = _VERIFIED_READS.get()
+    if tracker is not None:
+        tracker[reference['path']] = _identity(reference['path'])
+    return _IMPORT_CONTEXTS[key]
 
 
 def binding_rows(runtime):
@@ -238,6 +333,9 @@ def _read_private(reference, *, with_binding=False):
         raise ValueError('The compiler snapshot hash differs.')
     from entry_chain import strict_loads
     value = strict_loads(payload.decode())
+    tracker = _VERIFIED_READS.get()
+    if tracker is not None and path.name != 'INDEX.json':
+        tracker[str(path)] = _identity(path)
     if with_binding:
         return value, {'path': str(path), 'sha256': hashlib.sha256(payload).hexdigest()}
     return value
@@ -335,19 +433,12 @@ def import_selection(runtime, source, workspace, report):
     reference=runtime.get('cache_import_graph')
     modules=runtime.get('module_files',{})
     workspace=Path(workspace).resolve()
-    owners=[name for name,relative in modules.items()
-            if (workspace/relative).resolve()==Path(source['path']).resolve()]
-    if reference is None or not owners:return None
+    context = _import_context(runtime, workspace)
+    if context is None:return None
+    owner_map, forward = context
+    owners = owner_map.get(str(Path(source['path']).resolve()), [])
+    if not owners:return None
     if len(owners)!=1:raise ValueError('A compiler source lacks one canonical owner module.')
-    graph=read_bound(reference)
-    if not isinstance(graph,dict) or not isinstance(graph.get('import_edges'),list):
-        raise ValueError('The compiler import graph is invalid.')
-    forward={}
-    for edge in graph['import_edges']:
-        if (not isinstance(edge,dict) or set(edge)!={'from','to'} or
-                any(not isinstance(edge[key],str) for key in ['from','to'])):
-            raise ValueError('The compiler import graph has an invalid edge.')
-        forward.setdefault(edge['from'],set()).add(edge['to'])
     owner=owners[0];pending=list(forward.get(owner,()));imports=set()
     while pending:
         name=pending.pop()
@@ -396,7 +487,7 @@ def _physical_import_provenance(record, inputs, snapshot, source, compiler, flag
     report=_read_private(reference)
     if report.get('snapshot')!=inputs['validation']['snapshot'] or report.get('producer')!=snapshot['producer']:
         raise ValueError('The physical input validation names another snapshot or producer.')
-    runtime=read_bound(snapshot['runtime'])
+    runtime=_bound_runtime(snapshot['runtime'])
     context=compilation(runtime['physical_flags'],source)
     if (context['changes'] and report.get('compiler_context')!=context or
             report.get('compiler_context') is not None and report['compiler_context']!=context):
@@ -419,7 +510,7 @@ def _physical_record(reference, snapshot, snapshot_reference, source, compiler, 
     record=_read_private(reference)
     input_reference=record['input'];inputs=_read_private(input_reference)
     directory=Path(reference['path']).parent
-    runtime=read_bound(snapshot['runtime'])
+    runtime=_bound_runtime(snapshot['runtime'])
     published=None
     physical_obj=obj
     if publication is not None:
@@ -536,10 +627,10 @@ class OutputReceipts:
                        'source': binding(source), 'object': binding(obj),
                        'object_lexical_path':str(lexical),'object_canonical_path':canonical,
                        'object_identity':object_identity,'object_namespace':object_namespace,
-                       'compiler': binding(compiler), 'normalized_flags': list(flags),
+                       'compiler': _compiler_binding(compiler), 'normalized_flags': list(flags),
                        'successful_compilation': True, 'tool_result': result}
         if physical_result is None:
-            runtime=read_bound(self.snapshot['runtime'])
+            runtime=_bound_runtime(self.snapshot['runtime'])
             job=Path(runtime.get('job_output',Path(self.snapshot['runtime']['path']).parent))
             candidates=[]
             for path in (job/'compiler-invocations').glob('*/PHYSICAL-RESULT.json'):
@@ -591,58 +682,83 @@ def accepted_objects(snapshot, reference, key, compiler, flags):
     version = {'path': str(root / ('INDEX-%06d.json' % len(index['receipts']))),
                'sha256': index_binding['sha256']}
     _read_private(version)
+    cache_key = (os.getpid(), _encoded(reference), _encoded(snapshot['producer']),
+                 hashlib.sha256(bytes.fromhex(key)).hexdigest(), _encoded(compiler), _encoded(flags))
+    cached = _ACCEPTED_PREFIXES.get(cache_key)
+    start = 0
+    documents = {}
     rows = [];latest={};prior=[];physical_seen=[]
-    for number, receipt_reference in enumerate(index['receipts']):
-        if receipt_reference['path'] != str(root / ('OBJECT-%06d.json' % number)):
-            raise ValueError('An accepted-object receipt leaves its exact directory.')
-        receipt = _read_private(receipt_reference)
-        selected_flags=effective_flags(flags,receipt['source'])
-        if (receipt.get('snapshot') != reference or receipt.get('runtime') != snapshot['runtime'] or receipt.get('producer') != snapshot['producer'] or
-                receipt.get('successful_compilation') is not True or receipt.get('tool_result', {}).get('success') is not True or
-                receipt.get('normalized_flags') != selected_flags or receipt.get('compiler') != compiler):
-            raise ValueError('An accepted-object receipt differs from its producer or compiler.')
-        if not all(name in receipt for name in ['object_lexical_path','object_canonical_path','object_identity','object_namespace']):
-            raise ValueError('An accepted object lacks its exact identity or namespace.')
-        if not isinstance(receipt.get('physical_result'),dict) or not isinstance(receipt.get('sidecar'),dict):
-            raise ValueError('An accepted object lacks its successful physical sidecar record.')
-        if receipt['physical_result'] in physical_seen:
-            raise ValueError('A physical compiler record authenticates multiple receipts.')
-        outputs,before,imports,context=_physical_record(receipt['physical_result'],snapshot,reference,
-            receipt['source'],compiler,selected_flags,receipt['object'],prior,
-            publication=receipt.get('publication'))
-        primary={'binding':receipt['object'],'lexical_path':receipt['object_lexical_path'],
-                 'canonical_path':receipt['object_canonical_path'],'identity':receipt['object_identity'],
-                 'namespace':receipt['object_namespace']}
-        if (primary!=outputs['object'] or receipt['sidecar']!=outputs['sidecar'] or
-                receipt.get('sidecar_prestate')!=before or receipt.get('sidecar_status')!=outputs['sidecar_status']):
-            raise ValueError('An accepted sidecar differs from its successful physical record.')
-        if receipt.get('import_provenance')!=imports:
-            raise ValueError('An accepted import provenance differs from its physical validation.')
-        if (context['changes'] and receipt.get('compiler_context')!=context or
-                receipt.get('compiler_context') is not None and receipt['compiler_context']!=context):
-            raise ValueError('An accepted object has another source context.')
-        for kind,artifact in [('vo',primary),('vos',receipt['sidecar'])]:
-            lexical=Path(artifact['lexical_path']);canonical=artifact['canonical_path']
-            object_identity=artifact['identity'];namespace=artifact['namespace']
-            if (not lexical.is_absolute() or '..' in lexical.parts or
-                    not isinstance(canonical,str) or canonical!=artifact['binding']['path'] or
-                    str(lexical.resolve())!=canonical or
-                    not isinstance(object_identity,list) or len(object_identity)!=2 or
-                    any(not isinstance(part,list) or len(part)!=6 or
-                        any(type(value) is not int for value in part) for part in object_identity) or
-                    not isinstance(namespace,list) or _namespace(lexical)[:-1]!=namespace[:-1]):
+    publication_free = True
+    # DAG publication validates additional cross-worker records. Keep its full
+    # replay until those records can join the same verified-input inventory.
+    if (cached is not None and cached['publication_free'] and
+            index['receipts'][:len(cached['prior'])] == cached['prior'] and
+            _unchanged(cached['documents'])):
+        rows, latest, prior, physical_seen = deepcopy(cached['state'])
+        documents.update(cached['documents'])
+        start = len(prior)
+    token = _VERIFIED_READS.set(documents)
+    try:
+        for number in range(start, len(index['receipts'])):
+            receipt_reference = index['receipts'][number]
+            if receipt_reference['path'] != str(root / ('OBJECT-%06d.json' % number)):
+                raise ValueError('An accepted-object receipt leaves its exact directory.')
+            receipt = _read_private(receipt_reference)
+            if receipt.get('publication') is not None:
+                publication_free = False
+            selected_flags=effective_flags(flags,receipt['source'])
+            if (receipt.get('snapshot') != reference or receipt.get('runtime') != snapshot['runtime'] or receipt.get('producer') != snapshot['producer'] or
+                    receipt.get('successful_compilation') is not True or receipt.get('tool_result', {}).get('success') is not True or
+                    receipt.get('normalized_flags') != selected_flags or receipt.get('compiler') != compiler):
+                raise ValueError('An accepted-object receipt differs from its producer or compiler.')
+            if not all(name in receipt for name in ['object_lexical_path','object_canonical_path','object_identity','object_namespace']):
                 raise ValueError('An accepted object lacks its exact identity or namespace.')
-            previous=latest.get(canonical)
-            if previous is not None and (previous['source']!=receipt['source'] or
-                    previous['artifact']['binding']['sha256']!=artifact['binding']['sha256']):
-                raise ValueError('Accepted object receipts conflict for one canonical object.')
-            latest[canonical]={'artifact':artifact,'source':receipt['source'],'kind':kind,
-                'receipt':receipt_reference,'primary_object':receipt['object']['path']}
-        with force_hashing(True):
-            for row in [receipt['source'],receipt['object'],receipt['sidecar']['binding'],receipt['compiler']]:
-                if digest(Path(row['path'])) != row['sha256']:
-                    raise ValueError('An accepted compilation input changed: ' + row['path'])
-        rows.append(receipt['object']);prior.append(receipt_reference);physical_seen.append(receipt['physical_result'])
+            if not isinstance(receipt.get('physical_result'),dict) or not isinstance(receipt.get('sidecar'),dict):
+                raise ValueError('An accepted object lacks its successful physical sidecar record.')
+            if receipt['physical_result'] in physical_seen:
+                raise ValueError('A physical compiler record authenticates multiple receipts.')
+            outputs,before,imports,context=_physical_record(receipt['physical_result'],snapshot,reference,
+                receipt['source'],compiler,selected_flags,receipt['object'],prior,
+                publication=receipt.get('publication'))
+            primary={'binding':receipt['object'],'lexical_path':receipt['object_lexical_path'],
+                     'canonical_path':receipt['object_canonical_path'],'identity':receipt['object_identity'],
+                     'namespace':receipt['object_namespace']}
+            if (primary!=outputs['object'] or receipt['sidecar']!=outputs['sidecar'] or
+                    receipt.get('sidecar_prestate')!=before or receipt.get('sidecar_status')!=outputs['sidecar_status']):
+                raise ValueError('An accepted sidecar differs from its successful physical record.')
+            if receipt.get('import_provenance')!=imports:
+                raise ValueError('An accepted import provenance differs from its physical validation.')
+            if (context['changes'] and receipt.get('compiler_context')!=context or
+                    receipt.get('compiler_context') is not None and receipt['compiler_context']!=context):
+                raise ValueError('An accepted object has another source context.')
+            for kind,artifact in [('vo',primary),('vos',receipt['sidecar'])]:
+                lexical=Path(artifact['lexical_path']);canonical=artifact['canonical_path']
+                object_identity=artifact['identity'];namespace=artifact['namespace']
+                if (not lexical.is_absolute() or '..' in lexical.parts or
+                        not isinstance(canonical,str) or canonical!=artifact['binding']['path'] or
+                        str(lexical.resolve())!=canonical or
+                        not isinstance(object_identity,list) or len(object_identity)!=2 or
+                        any(not isinstance(part,list) or len(part)!=6 or
+                            any(type(value) is not int for value in part) for part in object_identity) or
+                        not isinstance(namespace,list) or _namespace(lexical)[:-1]!=namespace[:-1]):
+                    raise ValueError('An accepted object lacks its exact identity or namespace.')
+                previous=latest.get(canonical)
+                if previous is not None and (previous['source']!=receipt['source'] or
+                        previous['artifact']['binding']['sha256']!=artifact['binding']['sha256']):
+                    raise ValueError('Accepted object receipts conflict for one canonical object.')
+                latest[canonical]={'artifact':artifact,'source':receipt['source'],'kind':kind,
+                    'receipt':receipt_reference,'primary_object':receipt['object']['path']}
+            with force_hashing(True):
+                for row in [receipt['source'],receipt['object'],receipt['sidecar']['binding']]:
+                    if digest(Path(row['path'])) != row['sha256']:
+                        raise ValueError('An accepted compilation input changed: ' + row['path'])
+            if _compiler_binding(receipt['compiler']['path']) != receipt['compiler']:
+                raise ValueError('An accepted compiler changed.')
+            for item in [receipt['source'], receipt['object'], receipt['sidecar']['binding'], receipt['compiler']]:
+                documents[item['path']] = _identity(item['path'])
+            rows.append(receipt['object']);prior.append(receipt_reference);physical_seen.append(receipt['physical_result'])
+    finally:
+        _VERIFIED_READS.reset(token)
     authenticated=[]
     for value in latest.values():
         artifact=value['artifact'];lexical=Path(artifact['lexical_path'])
@@ -651,6 +767,9 @@ def accepted_objects(snapshot, reference, key, compiler, flags):
         authenticated.append(dict(artifact['binding'],identity=artifact['identity'],
             lexical_path=str(lexical),canonical_path=artifact['canonical_path'],namespace=artifact['namespace'],
             source=value['source'],kind=value['kind'],receipt=value['receipt'],primary_object=value['primary_object']))
+    _ACCEPTED_PREFIXES.clear()
+    _ACCEPTED_PREFIXES[cache_key] = {'prior': deepcopy(prior), 'documents': documents,
+                                   'publication_free': publication_free, 'state': deepcopy((rows, latest, prior, physical_seen))}
     return rows, version, index['receipts'], authenticated
 
 
@@ -692,7 +811,8 @@ def hash_inputs(source, compiler, flags):
     with force_hashing(True):
         for path in paths:
             identities[path]=_identity(path)
-            rows.append({'path':str(path),'sha256':digest(path),'identity':identities[path]})
+            value = _compiler_binding(path)['sha256'] if path == Path(compiler).absolute() else digest(path)
+            rows.append({'path':str(path),'sha256':value,'identity':identities[path]})
     if any(_identity(path)!=before for path,before in identities.items()):
         raise ValueError('A physical compiler input changed during hashing.')
     if load_files(compiler,flags,os.environ)!=initial or physical_context(compiler,flags,os.environ)!=context:
@@ -731,7 +851,7 @@ def _validate_compiler(runtime, runtime_reference, snapshot_reference, source_bi
     usage=resource.getrusage(resource.RUSAGE_SELF)
     if runtime.get('harness') is not None:
         check(runtime['harness'])
-    snapshot = read(snapshot_reference, runtime_reference)
+    snapshot = _chain_snapshot(snapshot_reference, runtime_reference)
     if str(Path(compiler).absolute())!=snapshot['compiler']['path']:
         raise ValueError('The physical compiler differs from the selected executable.')
     if physical_context(compiler,runtime['physical_flags'],os.environ) != snapshot['mapping_context']:
@@ -742,8 +862,7 @@ def _validate_compiler(runtime, runtime_reference, snapshot_reference, source_bi
     accepted_receipts = []
     authenticated_objects=[]
     if output_key is not None:
-        with force_hashing(True):
-            compiler_binding = binding(compiler)
+        compiler_binding = _compiler_binding(compiler)
         produced, accepted_index, accepted_receipts, authenticated_objects = accepted_objects(snapshot, snapshot_reference, output_key, compiler_binding, runtime['physical_flags'])
     receipts_done=time.monotonic()
     inputs = hash_inputs(source, compiler, selected_flags)
@@ -777,6 +896,9 @@ def _validate_compiler(runtime, runtime_reference, snapshot_reference, source_bi
             raise ValueError('A physical compiler input hash differs: '+row['path'])
     # Hashing can overlap a mutation of an earlier retained input.
     for row in retained:
+        if (Path(row['path']).suffix not in DEPENDENCIES and
+                row['path'] not in {str(source.absolute()), str(Path(compiler).absolute())}):
+            continue
         if _identity(row['path']) != row['identity']:
             raise ValueError('A compiler input changed during input hashing: ' + row['path'])
     for row in authenticated_objects:
@@ -792,7 +914,8 @@ def _validate_compiler(runtime, runtime_reference, snapshot_reference, source_bi
             'final_identity_wall_seconds':ended-hashing_done,
             'total_wall_seconds':ended-started,
             'self_CPU_seconds':final_usage.ru_utime+final_usage.ru_stime-usage.ru_utime-usage.ru_stime}
-    return {'timing':timing,'snapshot': snapshot_reference,'producer':snapshot['producer'],
+    return {'snapshot_stat_policy':'Initial full inventory; physical dependencies, source, and compiler rechecked per invocation.',
+            'timing':timing,'snapshot': snapshot_reference,'producer':snapshot['producer'],
             'compiler_context':context,'physical_flags':selected_flags,'output_context':private_context,
             'retained_identities_checked': len(snapshot['rows']),
             'accepted_dependency_objects': produced,
