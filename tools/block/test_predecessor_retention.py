@@ -76,7 +76,7 @@ class PredecessorRetentionTests(unittest.TestCase):
     def definition(self, element="8%N", address="base"):
         return ("Definition entry `{!islaG Sigma} `{!threadG} (base : Z) (K : iProp Sigma)"
                 " : iProp Sigma := ((∃ (data : list (bv " + element + ")), (" + address +
-                ") ↦ₘ∗ (data) ∗ True)) ∗ K)%I.\n")
+                ") ↦ₘ∗ (data) ∗ True) ∗ K)%I.\n")
 
     def test_renderer_preserves_the_owner_frame_and_existing_bytes(self):
         facts = certified_predecessor_facts(self.report, self.rows[0])
