@@ -27,6 +27,16 @@ def _words(command):
     return result
 
 
+def closed_bitvector_width(kind):
+    """Read a literal bv width; the optional N scope does not change its type."""
+    values = _words(rocq_tokens(kind))
+    if values[-2:] == ["%", "N"]:
+        values = values[:-2]
+    if len(values) != 2 or values[0] != "bv" or not values[1].isdigit():
+        raise ValueError("The source register needs an explicit bitvector width.")
+    return int(values[1])
+
+
 def _unwrap(values):
     while values and values[0] == "(":
         inside, end = atom(values, 0)
@@ -277,11 +287,24 @@ def _array_owners(source, name):
         raise ValueError("The array source needs one bound Definition.")
     command = commands[0]
     values = [token for token, _ in command]
-    marker = [token for token, _ in rocq_tokens("↦ₘ∗")]
+    marker = [token for token, _ in rocq_tokens("↦ₘ")]
     result = []
     for position in range(values.index(":=") + 1, len(values)):
         if values[position:position + len(marker)] != marker:
             continue
+        begin = position + len(marker)
+        fraction = None
+        if values[begin:begin + 1] == ["{"]:
+            terms, end = atom(values, begin)
+            if terms != ["DfracOwn", "1"] or values[end:end + 1] != ["∗"]:
+                raise ValueError("The array witness has an unsupported explicit fraction.")
+            fraction = dict(term="DfracOwn 1", source=source[
+                command[begin][1]:command[end - 1][1] + len(command[end - 1][0])])
+            begin = end + 1
+        elif values[begin:begin + 1] == ["∗"]:
+            begin += 1
+        else:
+            continue  # This is a scalar memory owner, not an array owner.
         # Require a grouped address. Never guess an ungrouped application or
         # commute address arithmetic to make two owners appear identical.
         if values[position - 1] != ")":
@@ -301,12 +324,12 @@ def _array_owners(source, name):
                 address = address[:-2]
             if address == previous:
                 break
-        begin = position + len(marker)
-        if values[begin] == "{":
+        if begin >= len(values) or values[begin] == "{":
             raise ValueError("The array witness needs an explicit supported fraction view.")
         payload, end = atom(values, begin)
         text = source[command[begin][1]:command[end - 1][1] + len(command[end - 1][0])]
-        result.append(dict(address=address, payload=_unwrap(_words(rocq_tokens(text))), value=text))
+        result.append(dict(address=address, payload=_unwrap(_words(rocq_tokens(text))),
+                           value=text, fraction=fraction))
     return result
 
 
@@ -357,6 +380,14 @@ def resolved_witness_data(source, target, value, *, source_texts=None):
     internal = [dict(name=slot["name"], type=slot["type"]) for slot in reversed(slots)]
     check_witness_shape(list(reversed(layout["remaining"])), internal)
     registers, terms = [], []
+    # Derived source expressions can precede the register slots they observe.
+    # Capture order remains the first occurrence in declaration order.
+    for slot in slots:
+        origin = slot['source']
+        if isinstance(origin, dict) and origin.get('kind') == 'register':
+            key = (origin.get('register'), origin.get('width'))
+            if key not in registers:
+                registers.append(key)
     for slot in slots:
         origin = slot["source"]
         if not isinstance(origin, dict) or not origin.get("provenance"):
@@ -380,7 +411,7 @@ def resolved_witness_data(source, target, value, *, source_texts=None):
             if type(width) is not int or width <= 0:
                 raise ValueError("The witness register width is unresolved.")
             kind = "bv " + str(width) + "%N"
-            if normalize_type(slot["type"]) != normalize_type(kind):
+            if closed_bitvector_width(slot["type"]) != width:
                 raise ValueError("The witness register width differs from its slot type.")
             if slot["value"] is not None:
                 raise ValueError("A register witness must use its resolved owned value.")
@@ -391,7 +422,7 @@ def resolved_witness_data(source, target, value, *, source_texts=None):
                 raise ValueError("The resolved source has ambiguous register owners.")
             word = owners[0]
             if len(word) > 1 and word[1] == ":":
-                if normalize_type(" ".join(word[2:])) != normalize_type(kind):
+                if closed_bitvector_width(" ".join(word[2:])) != width:
                     raise ValueError("The resolved source register annotation has a different width.")
             key = (register, width)
             if any(other[0] == register and other != key for other in registers):
