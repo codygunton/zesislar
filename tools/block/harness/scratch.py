@@ -307,7 +307,12 @@ def prepare(a):
     forward={}
     for edge in edges:forward.setdefault(edge['from'],set()).add(edge['to'])
     missing=missing_prerequisite_objects(closure_targets,forward,modules,workspace)
-    changed=list(set(changed)|set(missing))
+    from object_imports import compatibility
+    imports=compatibility(closure_targets,edges,modules,workspace,c.get('object_imports',{}),
+        c['effective_compiler_version']['compiler'],
+        [word.replace(str(source),str(workspace)) for word in c['physical_flags']])
+    save(out/'OBJECT-IMPORT-COMPATIBILITY.json',imports)
+    changed=list(set(changed)|set(missing)|set(imports['rebuild_modules']))
     plan=invalidation(edges,changed,plan_targets)
     native_targets={row['module'] for row in targets}
     plan['prerequisites']=[name for name in plan['ordered_required'] if name not in native_targets]
@@ -383,7 +388,7 @@ def prepare(a):
     c['cache_producer_files']={'implementation':[dict(r,id='scratch-implementation:'+str(i),kind='source') for i,r in enumerate(implementations)],'inputs':[dict(binding(a.entry_file),id='scratch-entry',kind='source')]+([dict(binding(a.declaration_checks),id='declaration-checks',kind='configuration')] if a.declaration_checks else [])+([dict(binding(a.normalization_policy),id='entry-normalization-policy',kind='configuration')] if a.normalization_policy else [])+([dict(binding(a.rules),id='scratch-rules',kind='source')] if a.rules else []),'outputs':[dict(binding(native),id='scratch-native',kind='source'),dict(binding(entry),id='scratch-entries',kind='source')]}
     if a.supplier_controls:c['cache_producer_files']['inputs'].append(dict(binding(a.supplier_controls),id='supplier-activation-controls',kind='configuration'))
     if a.admission_profile:c['cache_producer_files']['inputs'].append(dict(binding(a.admission_profile),id='admission-profile',kind='configuration'))
-    additions=([binding(a.supplier_controls)] if a.supplier_controls else [])+([binding(a.admission_profile)] if a.admission_profile else [])+([binding(a.control_session)] if a.control_session else [])+([binding(a.declaration_checks)] if a.declaration_checks else [])+([binding(a.normalization_policy)] if a.normalization_policy else [])+([binding(a.target_adapter),adapter['targets'],adapter['overrides'],adapter['graph']] if adapter else [])+([binding(a.sizing)] if a.sizing else [])+[{'path':r['path'],'sha256':r['sha256']} for r in overrides]+([binding(a.source_overrides)] if a.source_overrides else [])+implementations+[binding(installed.coqdep),binding(a.entry_file),binding(out/'INVALIDATION.json')]+([binding(a.rules)] if a.rules else [])
+    additions=([binding(a.supplier_controls)] if a.supplier_controls else [])+([binding(a.admission_profile)] if a.admission_profile else [])+([binding(a.control_session)] if a.control_session else [])+([binding(a.declaration_checks)] if a.declaration_checks else [])+([binding(a.normalization_policy)] if a.normalization_policy else [])+([binding(a.target_adapter),adapter['targets'],adapter['overrides'],adapter['graph']] if adapter else [])+([binding(a.sizing)] if a.sizing else [])+[{'path':r['path'],'sha256':r['sha256']} for r in overrides]+([binding(a.source_overrides)] if a.source_overrides else [])+implementations+[binding(installed.coqdep),binding(a.entry_file),binding(out/'INVALIDATION.json'),binding(out/'OBJECT-IMPORT-COMPATIBILITY.json')]+([binding(a.rules)] if a.rules else [])
     if wave_plan:
         wave_inputs=[binding(a.dependency_batch),wave_plan['source_boundary']]+[wave_plan[key] for key in ['guard','compile_measure_helper','run_registry','compiler','dune']]+[row['source'] for row in wave_plan['modules']]
         additions+=wave_inputs

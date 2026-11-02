@@ -38,5 +38,20 @@ class SealedReadinessTests(unittest.TestCase):
  def test_other_workspace_refuses(self):
   f,c,r,out,receipt=self.fixture();value=json.loads((out/'RUNTIME.json').read_text());value['prepared_workspace']=str(f.root/'foreign');scratch.save(out/'RUNTIME.json',value)
   with self.assertRaisesRegex(ValueError,'another sealed workspace'):full_chain.prerequisite_readiness(c,r)
+ def test_propagates_exact_accepted_compilation_receipt(self):
+  f,c,r,out,receipt=self.fixture()
+  accepted=out/'native/OBJECT.json'
+  scratch.save(accepted,{'source':scratch.binding(Path(receipt['source'])),'object':scratch.binding(Path(receipt['object'])),'successful_compilation':True,'tool_result':{'success':True}})
+  reference=scratch.binding(accepted);receipt['accepted_object_receipt']=reference
+  scratch.save(out/'native/dependency-T.Proof.json',receipt)
+  full_chain.prerequisite_readiness(c,r)
+  self.assertEqual(c['object_imports'],{'T.Proof':reference});self.assertIn(reference,c['bindings'])
+ def test_other_accepted_object_refuses_propagation(self):
+  f,c,r,out,receipt=self.fixture()
+  accepted=out/'native/OBJECT.json'
+  scratch.save(accepted,{'source':scratch.binding(Path(receipt['source'])),'object':{'path':receipt['object'],'sha256':'0'*64},'successful_compilation':True,'tool_result':{'success':True}})
+  receipt['accepted_object_receipt']=scratch.binding(accepted)
+  scratch.save(out/'native/dependency-T.Proof.json',receipt)
+  with self.assertRaisesRegex(ValueError,'another accepted compilation receipt'):full_chain.prerequisite_readiness(c,r)
 
 if __name__=='__main__':unittest.main()
