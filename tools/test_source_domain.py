@@ -55,6 +55,14 @@ class DomainTests(unittest.TestCase):
                                      'modulus': 'word64Modulus', 'ram_base': 'mapRamBase defaultMap',
                                      'ram_end': 'machineRamEnd defaultMap'})
 
+    def projection_parameters(self, *, output='resultPointer', extent='40', returned='returnAddress',
+                              period='4', residue='0'):
+        values = self.parameters()
+        values['layout_projections'] = {'source': values['layout_source'],
+            'output': {'pointer': output, 'extent': extent},
+            'return': {'pointer': returned, 'modulus': period, 'residue': residue}}
+        return values
+
     def test_exact_domain_projection_preserves_source_and_adds_no_premise(self):
         original = self.contract.read_bytes(), self.layout.read_bytes()
         result = project_layout_domain(**self.parameters())
@@ -63,10 +71,12 @@ class DomainTests(unittest.TestCase):
         self.assertEqual([r['kind'] for r in result['facts']].count('disjoint_ranges'), 3)
         interval = result['facts'][-1]['terms']['unsigned_interval']
         self.assertEqual((interval['minimum'], interval['maximum']), (4112, 8192))
+        self.assertEqual(len(result['facts']), 5)
+        self.assertFalse(any(fact['kind'] == 'alignment' for fact in result['facts']))
         self.assertEqual(original, (self.contract.read_bytes(), self.layout.read_bytes()))
 
     def test_existing_output_bounds_project_the_complete_array_interval(self):
-        result = project_layout_domain(**self.parameters())
+        result = project_layout_domain(**self.projection_parameters())
         interval = next(fact['terms']['unsigned_interval'] for fact in result['facts']
                         if fact['fact_id'] == 'layout:output-interval')
         self.assertEqual((interval['minimum'], interval['maximum']), (4096, 8192 - 40))
@@ -79,10 +89,10 @@ class DomainTests(unittest.TestCase):
         self.layout.write_text(self.layout.read_text().replace(
             '  resultPointer + 40 <= machineRamEnd defaultMap /\\\n', ''))
         with self.assertRaisesRegex(ValueError, 'source output/RAM bound is absent'):
-            project_layout_domain(**self.parameters())
+            project_layout_domain(**self.projection_parameters())
 
     def test_output_store_ram_guards_use_the_projected_source_interval(self):
-        result = project_layout_domain(**self.parameters())
+        result = project_layout_domain(**self.projection_parameters())
         fact = next(fact for fact in result['facts'] if fact['fact_id'] == 'layout:output-interval')
         interval = {**fact['terms']['unsigned_interval'], 'origin': fact['origin']}
         pointer = Expr.from_dict(interval['expression'])
@@ -92,7 +102,7 @@ class DomainTests(unittest.TestCase):
         self.assertIsNotNone(_refuted_ram_guard(guard, [interval]))
 
     def test_output_access_beyond_the_array_does_not_get_refuted(self):
-        result = project_layout_domain(**self.parameters())
+        result = project_layout_domain(**self.projection_parameters())
         fact = next(fact for fact in result['facts'] if fact['fact_id'] == 'layout:output-interval')
         interval = {**fact['terms']['unsigned_interval'], 'origin': fact['origin']}
         pointer = Expr.from_dict(interval['expression'])
@@ -100,6 +110,53 @@ class DomainTests(unittest.TestCase):
         end = operation('bvadd', address, bits(8, 128))
         guard = operation('not', operation('bvsle', end, bits(8192, 128)))
         self.assertIsNone(_refuted_ram_guard(guard, [interval]))
+
+    def test_projection_uses_renamed_source_parameters(self):
+        self.layout.write_text(self.layout.read_text().replace('resultPointer', 'destination')
+                               .replace('returnAddress', 'returnPc'))
+        self.arguments['destination'] = self.arguments.pop('resultPointer')
+        self.arguments['returnPc'] = self.arguments.pop('returnAddress')
+        result = project_layout_domain(**self.projection_parameters(output='destination', returned='returnPc'))
+        projected = {fact['fact_id']: fact for fact in result['facts']}
+        self.assertIn('decodeItemOutputPointer', str(projected['layout:output-interval']['terms']))
+        self.assertIn('decodeItemReturnAddress', str(projected['layout:return-alignment']['terms']))
+
+    def test_projection_uses_a_different_source_extent_and_congruence(self):
+        self.layout.write_text(self.layout.read_text().replace('resultPointer + 40', 'resultPointer + 48')
+                               .replace('resultPointer 40', 'resultPointer 48')
+                               .replace('returnAddress mod 4 = 0', 'returnAddress mod 8 = 2'))
+        result = project_layout_domain(**self.projection_parameters(extent='48', period='8', residue='2'))
+        projected = {fact['fact_id']: fact for fact in result['facts']}
+        self.assertEqual(projected['layout:output-interval']['terms']['unsigned_interval']['maximum'], 8192 - 48)
+        self.assertEqual(projected['layout:return-alignment']['terms']['alignment']['modulus'], 8)
+        self.assertEqual(projected['layout:return-alignment']['terms']['alignment']['residue'], 2)
+
+    def test_ambiguous_output_clause_refuses(self):
+        self.layout.write_text(self.layout.read_text().replace('  mapRamBase defaultMap <= resultPointer /\\',
+            '  mapRamBase defaultMap <= resultPointer /\\ mapRamBase defaultMap <= resultPointer /\\'))
+        with self.assertRaisesRegex(ValueError, 'source output/RAM bound is absent or ambiguous'):
+            project_layout_domain(**self.projection_parameters())
+
+    def test_absent_return_clause_refuses(self):
+        self.layout.write_text(self.layout.read_text().replace(' /\\ returnAddress mod 4 = 0', ''))
+        with self.assertRaisesRegex(ValueError, 'source return alignment is absent or ambiguous'):
+            project_layout_domain(**self.projection_parameters())
+
+    def test_ambiguous_return_clause_refuses(self):
+        self.layout.write_text(self.layout.read_text().replace('returnAddress mod 4 = 0',
+            'returnAddress mod 4 = 0 /\\ returnAddress mod 4 = 0'))
+        with self.assertRaisesRegex(ValueError, 'source return alignment is absent or ambiguous'):
+            project_layout_domain(**self.projection_parameters())
+
+    def test_projection_cannot_use_another_source_binding(self):
+        values = self.projection_parameters()
+        values['layout_projections']['source'] = {**values['layout_source'], 'sha256': 'different'}
+        with self.assertRaisesRegex(ValueError, 'exact source binding'):
+            project_layout_domain(**values)
+
+    def test_projection_refuses_a_pointer_absent_from_the_source(self):
+        with self.assertRaisesRegex(ValueError, 'not a source parameter'):
+            project_layout_domain(**self.projection_parameters(output='missingPointer'))
 
     def test_missing_ram_bound_refuses(self):
         self.layout.write_text(self.layout.read_text().replace(
