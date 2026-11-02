@@ -273,8 +273,6 @@ def prepare(a):
     if getattr(a,'parallel_declarations',False):
         from declaration_parallel_plan import planning_compiler
         planning_compiler(c)
-    if getattr(a,'object_import_migrations',None):
-        install_object_import_migrations(c,a.object_import_migrations)
     c['harness']=harness
     from supplier_release import releases
     c['supplier_releases']=releases(read_bound(binding(a.supplier_controls))) if a.supplier_controls else []
@@ -317,6 +315,8 @@ def prepare(a):
     modules=c['proof_runtime']['module_files'];graph=read_bound(c['cache_import_graph']);adapter=None
     if a.target_adapter:
         adapter=read_bound(binding(a.target_adapter));graph=read_bound(adapter['graph']);modules.update(graph['module_files'])
+    if getattr(a,'object_import_migrations',None):
+        install_object_import_migrations(c,a.object_import_migrations)
     edges=graph['import_edges'];changed=[];changes=[]
     installed=InstalledMappings([word.replace(str(source),str(workspace)) for word in c['physical_flags']],receipt_dir=out/'IMPORT-RESOLUTION',supplier=profile_supplier(binding(a.admission_profile) if a.admission_profile else c.get('admission_profile')),planning_workspace=workspace,source_files=modules)
     entry=workspace/modules[ENTRY];before=entry.read_text();entry_text=a.entry_file.read_text()

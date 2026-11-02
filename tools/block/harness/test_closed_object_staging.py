@@ -53,6 +53,17 @@ class ClosedObjectStagingTests(unittest.TestCase):
  def test_ordinary_receipts_do_not_enter_this_route(self):
   self.value['origin']['kind']='individual-accepted-compilation';self.reference=self.save('migration.json',self.value);self.config['object_imports'][self.module]=self.reference
   self.assertEqual(self.stage()['count'],0)
+ def test_migration_installation_uses_completed_adapter_map(self):
+  source=(HERE/'scratch.py').read_text();start=source.index('def prepare(');end=source.index('def ',start+4);body=source[start:end]
+  self.assertLess(body.index("modules.update(graph['module_files'])"),body.index('install_object_import_migrations(c,'))
+  self.assertLess(body.index('install_object_import_migrations(c,'),body.index('closed_install=stage_closed_objects'))
+ def test_unknown_module_refusal_remains(self):
+  import scratch
+  config={'proof_runtime':{'module_files':{}},'bindings':[]};manifest=self.save('manifest.json',{'schema':'entry-chain.object-import-migrations.v1','receipts':{self.module:self.reference}})
+  with self.assertRaisesRegex(ValueError,'unknown module'):scratch.install_object_import_migrations(config,Path(manifest['path']))
+  config['proof_runtime']['module_files'].update(self.modules)
+  scratch.install_object_import_migrations(config,Path(manifest['path']))
+  self.assertEqual(config['object_imports'][self.module],self.reference)
  def test_staging_precedes_unchanged_compatibility(self):
   source=(HERE/'scratch.py').read_text();a=source.index('closed_install=stage_closed_objects');b=source.index('missing=missing_prerequisite_objects');c=source.index('imports=compatibility(')
   self.assertLess(a,b);self.assertLess(b,c);self.assertIn("c['bindings']+inherited",source)
