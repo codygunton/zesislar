@@ -1,4 +1,4 @@
-"""Separate tactic declarations from commands that invoke native search."""
+"""Permit native entry-point declarations while refusing calls and aliases."""
 from check_data_only_lemmas import rocq_commands, rocq_tokens, top_level_positions
 
 
@@ -23,7 +23,7 @@ def _command_head(values):
 
 
 def contains_native_proof(text):
-    """Refuse malformed input and detect native calls outside Ltac definitions."""
+    """Exempt only Ltac1 declarations of the native entry point itself."""
     tokens = rocq_tokens(text)
     commands = rocq_commands(text)
     if tokens and tokens[-1][0] != '.':
@@ -37,7 +37,8 @@ def contains_native_proof(text):
             if (len(values) < 4 or not assignments or assignments[0] < 2 or
                     assignments[0] == len(values) - 1):
                 raise ValueError('The declaration source has a malformed Ltac definition.')
-            continue
+            if values[0:2] == ['Ltac', 'zesu_block']:
+                continue
         if any(token.rsplit('.', 1)[-1] == 'zesu_block' for token in values):
             return True
     return False

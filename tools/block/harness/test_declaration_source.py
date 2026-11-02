@@ -40,16 +40,34 @@ class DeclarationSourceTests(unittest.TestCase):
                   'Definition message := "zesu_block and ""quoted"" text".\n')
         self.assertFalse(contains_native_proof(source))
 
-    def test_ltac_definitions_and_redefinitions_do_not_execute_the_body(self):
+    def test_ltac1_entry_definitions_and_ordinary_definitions_pass(self):
         for source in [
                 'Ltac zesu_block := idtac.',
-                'Local Ltac wrapper := zesu_block.',
-                'Global Ltac wrapper ::= zesu_block.',
-                '#[local] Ltac wrapper := zesu_block.',
-                'Ltac2 wrapper () := zesu_block ().',
-                'Ltac2 @ external zesu_block : unit -> unit := "plugin" "entry".']:
+                'Local Ltac zesu_block := idtac.',
+                'Global Ltac zesu_block ::= idtac.',
+                '#[local] Ltac zesu_block := idtac.',
+                'Ltac wrapper := idtac.',
+                'Ltac2 @ external ordinary : unit -> unit := "plugin" "entry".']:
             with self.subTest(source=source):
                 self.assertFalse(contains_native_proof(source))
+
+    def test_native_aliases_refuse_before_any_alias_execution(self):
+        for source in [
+                'Ltac hidden := zesu_block. Goal True. hidden. Qed.',
+                'Local Ltac hidden := Owner.zesu_block.',
+                'Ltac hidden := zesu_block. Ltac other := hidden. Goal True. other. Qed.']:
+            with self.subTest(source=source):
+                self.assertTrue(contains_native_proof(source))
+
+    def test_ltac2_native_initializers_and_bodies_refuse_conservatively(self):
+        for source in ['Ltac2 x := zesu_block ().',
+                       'Ltac2 x : unit := zesu_block ().',
+                       'Ltac2 x := let y := zesu_block () in y.',
+                       'Ltac2 wrapper () := zesu_block ().',
+                       'Ltac2 x := fun () => zesu_block ().',
+                       'Ltac2 @ external zesu_block : unit -> unit := "plugin" "entry".']:
+            with self.subTest(source=source):
+                self.assertTrue(contains_native_proof(source))
 
     def test_actual_native_calls_refuse(self):
         for source in [
@@ -134,13 +152,16 @@ class PublicDeclarationClassifierTests(unittest.TestCase):
                                             'physical_fence_bytes': 64 * GIB})
         self.assertEqual(validate(runtime, self.root), spec)
 
-    def test_native_call_refuses_both_public_classifiers(self):
-        config, profile = self.configuration({'Example.Owner':
-            'Lemma native : True. Proof. zesu_block. Qed.'})
-        with self.assertRaisesRegex(ValueError, 'native proof'):
-            workload_for_job(profile, config['jobs'][0], config)
-        with self.assertRaisesRegex(ValueError, 'native proof'):
-            self.attach(config)
+    def test_calls_aliases_and_initializers_refuse_both_public_classifiers(self):
+        for source in ['Lemma native : True. Proof. zesu_block. Qed.',
+                       'Ltac hidden := zesu_block. Goal True. hidden. Qed.',
+                       'Ltac2 x := zesu_block ().']:
+            with self.subTest(source=source):
+                config, profile = self.configuration({'Example.Owner': source})
+                with self.assertRaisesRegex(ValueError, 'native proof'):
+                    workload_for_job(profile, config['jobs'][0], config)
+                with self.assertRaisesRegex(ValueError, 'native proof'):
+                    self.attach(config)
 
     def test_malformed_source_refuses_both_public_classifiers(self):
         config, profile = self.configuration({'Example.Owner': '(* unfinished'})
