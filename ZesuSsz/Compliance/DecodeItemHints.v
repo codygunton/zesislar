@@ -38,6 +38,9 @@ Require Export ZesuSsz.Compliance.DecodeItemEntryAdditionalFacts.
 Require Export ZesuSsz.Compliance.DecodeItemDataRegistrations.
 Require Export ZesuSsz.Compliance.DecodeItemCanonicalEntryFacts.
 
+#[export] Instance decodeItemSysRegs_unfold :
+  LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemSysRegs) := I.
+
 (* Derive the source domain and its exact length interval together. *)
 #[export] Instance decodeItemDomainAtLengthDerivedFacts
     (returnAddress : Coq.Numbers.BinNums.Z) (args : ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs) :

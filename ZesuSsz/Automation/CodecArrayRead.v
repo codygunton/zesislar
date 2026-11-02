@@ -54,7 +54,7 @@ Ltac zesu_codec_array_find :=
    index constraints. Normalize only closed parts of the existing offset. *)
 Ltac zesu_codec_array_read_sidecond :=
   zesu_switch_enabled constr:(ZesuStepCodecArrayRead);
-  lazymatch goal with |- SHELVED_SIDECOND ?condition => change condition end;
+  try (lazymatch goal with |- SHELVED_SIDECOND ?condition => change condition end);
   lazymatch goal with
   | |- (0 <= ?offset)%Z =>
       Hooks.zesu_handoff_closed_Z offset ltac:(fun reduced =>
@@ -63,7 +63,14 @@ Ltac zesu_codec_array_read_sidecond :=
       Hooks.zesu_handoff_closed_Z offset ltac:(fun reduced =>
         change (Z.to_nat reduced + width <= extent)%nat;
         cbn [length];
-        zesu_codec_range_lengths;
+        first [
+          let rec literal_extent n :=
+            lazymatch n with
+            | O => idtac
+            | S ?tail => literal_extent tail
+            end in
+          literal_extent extent
+        | zesu_codec_range_lengths];
         cbn; lia)
   end.
 
@@ -106,12 +113,27 @@ Ltac zesu_codec_array_read_image image :=
         in image;
       clear bound
   end;
-  lazymatch type of image with
-  | context [Z_to_bv ?bits (little_endian_to_bv ?width
-      (bv_to_little_endian ?digits ?width (bv_unsigned ?word)))] =>
-      rewrite (Z_to_bv_little_endian_to_bv_to_little_endian
-        bits digits width word ltac:(lia) ltac:(reflexivity)) in image
-  end.
+  first [
+    lazymatch type of image with
+    | context [Z_to_bv ?bits (little_endian_to_bv ?width
+        (bv_to_little_endian ?digits ?width (bv_unsigned ?word)))] =>
+        rewrite (Z_to_bv_little_endian_to_bv_to_little_endian
+          bits digits width word ltac:(lia) ltac:(reflexivity)) in image
+    end
+  | lazymatch type of image with
+    | context [Z_to_bv ?bits (little_endian_to_bv ?width
+        (bv_to_little_endian ?digits ?width ?value))] =>
+        is_closed_term bits; is_closed_term digits; is_closed_term width;
+        let roundtrip := fresh "HcodecRoundtrip" in
+        assert (roundtrip :
+          Z_to_bv bits (little_endian_to_bv width
+            (bv_to_little_endian digits width value)) = Z_to_bv bits value) by (
+          apply bv_eq; rewrite !Z_to_bv_unsigned;
+          rewrite (little_endian_to_bv_to_little_endian digits width value ltac:(lia));
+          change (bv_wrap bits (bv_wrap bits value) = bv_wrap bits value);
+          apply bv_wrap_bv_wrap; lia);
+        rewrite roundtrip in image; clear roundtrip
+    end].
 
 (* This rule introduces the existing full-array wand. It does not execute the
    next trace, discard an owner, or change the surrounding continuation. *)
@@ -137,7 +159,33 @@ Ltac zesu_codec_array_read_consumer :=
   | ?source = _ => is_var source; subst source
   end.
 
+(* Normalize only a codec value requested by the current goal. *)
+Ltac zesu_codec_array_direct_prepare continuation :=
+  zesu_switch_enabled constr:(ZesuStepCodecArrayRead);
+  let inspect target :=
+    lazymatch target with
+    | context [Z_to_bv ?bits (little_endian_to_bv ?width
+        (take ?count (drop (Z.to_nat ?offset) ?values)))] =>
+        let expression := constr:(Z_to_bv bits (little_endian_to_bv width
+          (take count (drop (Z.to_nat offset) values)))) in
+        assert_fails (has_evar expression);
+        let loaded := fresh "codecDirectValue" in
+        let image := fresh "HcodecDirectImage" in
+        remember expression as loaded eqn:image in *;
+        continuation loaded image
+    end in
+  lazymatch goal with
+  | |- environments.envs_entails _ ?target => inspect target
+  | |- ?target => inspect target
+  end.
+
+Ltac zesu_codec_array_direct_value :=
+  zesu_codec_array_direct_prepare ltac:(fun loaded image =>
+    zesu_codec_array_read_image image;
+    subst loaded).
+
 Ltac zesu_codec_array_read :=
   first [zesu_codec_array_find |
     zesu_codec_array_read_consumer |
+    zesu_codec_array_direct_value |
     zesu_codec_array_read_sidecond].
