@@ -6,7 +6,7 @@ from forward_resource_design import _state_from_result
 from forward_resources import apply_owned_writes, render_resource_boundary
 from resource_seed import OwnedSeed
 from symbolic_state import Expr, input_expr, operation
-from render_support import binders, expression
+from render_support import binders, expression, identifier
 
 
 def _trace_fact_dependencies(value):
@@ -20,7 +20,7 @@ def _trace_fact_dependencies(value):
     return False
 
 
-def assemble_loop_class(source, *, original_seed, vocabulary, continuation, outer_names=()):
+def assemble_loop_class(source, *, original_seed, vocabulary, continuation, outer_names=(), fold_renderer=None):
     """Keep exact ownership and the accepted minimal condition dependencies."""
     if any(_trace_fact_dependencies(fact) for fact in original_seed.facts):
         raise ValueError('An inherited source fact needs a separate trace-condition justification')
@@ -39,7 +39,7 @@ def assemble_loop_class(source, *, original_seed, vocabulary, continuation, oute
     if not source['checked_cursor_relations'] or source['kernel_entailments'] != 'OPEN':
         raise ValueError('The class needs its checked source relations and open kernel obligations')
     required = set()
-    for relation in source['checked_cursor_relations']:
+    for relation in source['checked_cursor_relations'] + source['retained_fold_relations']:
         matches = [row for row in source['minimal_condition_sets'] if row['relation'] == relation]
         if len(matches) != 1:
             raise ValueError('The loop relation lacks one exact minimal dependency set')
@@ -89,8 +89,26 @@ def assemble_loop_class(source, *, original_seed, vocabulary, continuation, oute
             raise ValueError('The loop relation lacks an accepted renderer')
         for key in ['term', 'lower_bound', 'upper_bound']:
             facts.append(('cursor_' + key, expression(relation[key], 'loop cursor relation')))
-    if source['retained_fold_relations']:
-        raise ValueError('A retained fold needs its exact source renderer')
+    fold_renderings, required_imports = [], []
+    fold_scope = {row['name']: row['type'] for row in rows}
+    for resource in original_seed.resources:
+        if resource.element_bits == 8 and resource.byte_array is not None and resource.byte_array.op == 'input':
+            fold_scope[str(resource.byte_array.value)] = 'list (bv 8%N)'
+    for relation in source['retained_fold_relations']:
+        if fold_renderer is None:
+            raise ValueError('A retained fold needs its exact source renderer')
+        rendered_fold = fold_renderer(deepcopy(relation), scope=deepcopy(fold_scope))
+        if (not isinstance(rendered_fold, dict) or set(rendered_fold) != {'term', 'imports'}
+                or not isinstance(rendered_fold['imports'], list)):
+            raise ValueError('The fold renderer returned an unsupported declaration interface')
+        term = expression(rendered_fold['term'], 'retained fold proposition')
+        for module in rendered_fold['imports']:
+            identifier(module, 'fold import', qualified=True)
+            if module not in required_imports:
+                required_imports.append(module)
+        facts.append(('retained_fold', term))
+        fold_renderings.append({'relation': deepcopy(relation), 'scope': deepcopy(fold_scope),
+                                'term': term, 'imports': list(rendered_fold['imports'])})
     for index, value in enumerate(projection['conditions']):
         # Expr.coq renders a boolean. State assumptions assert that it is true.
         facts.append(('source_condition_' + str(index),
@@ -144,9 +162,12 @@ def assemble_loop_class(source, *, original_seed, vocabulary, continuation, oute
     if rendered['block_status'] != 'completed':
         raise ValueError('The assembled loop class cannot render its complete ownership')
     return {'seed': seed, 'boundary': rendered, 'removed_binders': removed,
+        'required_imports': required_imports,
         'class_record': {'source_index': source['source_index'], 'seed': state.to_dict(),
             'binders': deepcopy(rows), 'relations': deepcopy(source['checked_cursor_relations']),
             'folds': deepcopy(source['retained_fold_relations']), 'edge_records': deepcopy(source['induction_checks']),
+            'fold_renderings': fold_renderings, 'pending_fold_candidates': deepcopy(source.get('pending_fold_candidates', [])),
+            'required_imports': list(required_imports),
             'refusals': deepcopy(seed.join_refusals), 'witness_plan': deepcopy(source['loop_witness_plan']),
             'body_results': deepcopy(source['body_results']),
             'control_transfer_obligations': deepcopy(source['control_transfer_obligations']),

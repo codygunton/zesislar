@@ -124,5 +124,25 @@ class LoopJoinResourceTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'trace-condition justification'):
                     self.assemble(seed, source, continuation)
 
+    def test_retained_fold_uses_the_supplied_renderer_and_preserves_pending_metadata(self):
+        seed, source, continuation = self.fixture()
+        relation = {'kind': 'byte_window_fold', 'register': 'x15'}
+        source['retained_fold_relations'] = [relation]
+        source['minimal_condition_sets'].append({'relation': relation, 'preheader': [0]})
+        source['pending_fold_candidates'] = [{'status': 'OPEN', 'assertion': 'pending_only'}]
+        calls = []
+        def renderer(value, *, scope):
+            calls.append((value, scope))
+            return {'term': 'bv_unsigned machine_x15 = 0', 'imports': ['ZesuSsz.Automation.ByteWindowFold']}
+        result = assemble_loop_class(source, original_seed=seed,
+            vocabulary={'input_sha256': 'bound', 'source_vocabulary': {'imports': []}},
+            continuation=continuation, fold_renderer=renderer)
+        self.assertEqual(calls[0][1]['machine_x15'], 'bv 64')
+        self.assertEqual(calls[0][1]['i'], 'lvar "zesuLoopIndex" Z')
+        self.assertIn('⌜bv_unsigned machine_x15 = 0⌝', result['boundary']['body'])
+        self.assertNotIn('pending_only', result['boundary']['body'])
+        self.assertEqual(result['class_record']['pending_fold_candidates'], source['pending_fold_candidates'])
+        self.assertEqual(result['required_imports'], ['ZesuSsz.Automation.ByteWindowFold'])
+
 
 if __name__ == '__main__':unittest.main()

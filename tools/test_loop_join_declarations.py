@@ -69,5 +69,15 @@ class LoopJoinDeclarationTests(unittest.TestCase):
         join = self.fixture();join['boundary']['status'] = 'generated_join'
         with self.assertRaisesRegex(ValueError, 'exit pullback'):self.render(join)
 
+    def test_fold_imports_remain_ordered_and_reach_both_declaration_modules(self):
+        join = self.fixture()
+        for row in join['loop_classes']:
+            row['required_imports'] = ['Coq.ZArith.ZArith', 'ZesuSsz.Automation.ByteWindowFold']
+        result = self.render(join)
+        for text in [result['entry'], result['structural']]:
+            self.assertEqual(text.count('Require Import ZesuSsz.Automation.ByteWindowFold.'), 1)
+            self.assertLess(text.index('Require Import Coq.ZArith.ZArith.'),
+                            text.index('Require Import ZesuSsz.Automation.ByteWindowFold.'))
+
 
 if __name__ == '__main__':unittest.main()

@@ -70,6 +70,13 @@ def join_declarations(join, *, entry_name, entry_module, parameters, imports):
         raise ValueError('A join declaration has incomplete ownership')
     if not imports or imports[0] != 'ZesuSsz.Automation.All':
         raise ValueError('The join declaration must start with the standard automation import')
+    if loop:
+        imports = list(imports)
+        for row in join.get('loop_classes', []):
+            required = row.get('required_imports', [])
+            if not isinstance(required, list):
+                raise ValueError('Loop declaration imports must be an ordered module list')
+            imports.extend(required)
     for module in imports:
         identifier(module, 'join import', qualified=True)
     # All imports automation, but its dependencies do not re-export the
