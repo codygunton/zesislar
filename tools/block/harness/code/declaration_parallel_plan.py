@@ -28,6 +28,7 @@ def inherit(config):
 
 def arguments(parser):
     parser.add_argument('--parallel-declarations',action='store_true')
+    parser.add_argument('--declaration-keep-going',action='store_true')
     parser.add_argument('--declaration-module-measurements',type=Path)
     parser.add_argument('--declaration-workers',type=int,default=48)
 
@@ -35,7 +36,7 @@ def arguments(parser):
 def check_arguments(args, parser):
     if not 1 <= args.declaration_workers <= 48:
         parser.error('Declaration workers must be between 1 and 48.')
-    if not args.parallel_declarations and (args.declaration_module_measurements or args.declaration_workers!=48):
+    if not args.parallel_declarations and (args.declaration_module_measurements or args.declaration_workers!=48 or getattr(args,'declaration_keep_going',False)):
         parser.error('Declaration worker options require --parallel-declarations.')
     if args.parallel_declarations and (not getattr(args,'declarations_only',True) or
             getattr(args,'dependency_batch',None) or getattr(args,'control_session',None)):
@@ -63,10 +64,10 @@ def planning_compiler(config):
     return dict(selected)
 
 
-def attach(config, *, measurements=None, maximum_workers=48):
+def attach(config, *, measurements=None, maximum_workers=48, keep_going=False):
     compiler=planning_compiler(config)
     if (config.get('declarations_only') is not True or config.get('control_session') or
-            config.get('dependency_batch') or type(maximum_workers) is not int or
+            config.get('dependency_batch') or type(keep_going) is not bool or type(maximum_workers) is not int or
             not 1 <= maximum_workers <= 48):
         raise ValueError('Parallel declarations require an explicit declaration-only route with at most 48 workers.')
     jobs = [row for row in config['jobs'] if row['phase'] == 'prerequisites']
@@ -104,6 +105,7 @@ def attach(config, *, measurements=None, maximum_workers=48):
     spec = {'schema': SCHEMA, 'graph': config['cache_import_graph'],
             'sources': sources, 'completed_modules': sorted(completed),
             'protected_modules': protected, 'maximum_workers': maximum_workers,
+            'keep_going': keep_going,
             'dune': binding(dune), **resource}
     claim = frontier_claim(ordered, graph['import_edges'], resource['weights'], completed, protected, maximum_workers)
     spec['claim_bytes'] = claim
@@ -133,7 +135,7 @@ def for_phase(config, phase, workspace):
 def validate(runtime, workspace):
     spec = runtime['declaration_dag']
     admission = runtime.get('canonical_admission', {})
-    if (spec.get('schema') != SCHEMA or runtime.get('phase') != 'prerequisites' or
+    if (spec.get('schema') != SCHEMA or type(spec.get('keep_going',False)) is not bool or runtime.get('phase') != 'prerequisites' or
             runtime.get('native_route') or runtime.get('control_session') or
             runtime.get('dependency_batch') or
             admission.get('minimum_claim_bytes') != spec.get('claim_bytes') or

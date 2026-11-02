@@ -192,7 +192,8 @@ class DependencyBatchTests(unittest.TestCase):
     def test_actual_provider_skips_wave_modules_after_completion(self):
         import entry_chain_provider as provider
         members=self.plan['waves'][0]['modules']
-        runtime=dict(self.runtime,target={},ordered_modules=members,mcp_argv=['nonproof-fixture'],bindings=[])
+        runtime=dict(self.runtime,target={},ordered_modules=members,mcp_argv=['nonproof-fixture'],bindings=[],
+                     cache_import_graph=self.graph_binding)
         runtime_path=self.root/'provider-runtime.json';D.save(runtime_path,runtime)
         tool_calls=[];waves=[]
         class Session:

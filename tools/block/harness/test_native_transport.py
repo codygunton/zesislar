@@ -91,6 +91,17 @@ class AuditControls(unittest.TestCase):
                     D.validate_projection(broken, fixture.workspace, fixture.ordered, fixture.spec)
         finally:
             fixture.doCleanups()
+    def test_name_preflight_sink_requires_its_exact_import(self):
+        with tempfile.TemporaryDirectory() as root:
+            path = Path(root) / 'entry_chain_provider.py'
+            path.write_text('from declaration_names import check as check_declaration_names\ncheck_declaration_names(runtime, workspace, output)\n')
+            self.assertEqual(M.audit(path)['reviewed_sinks'][0]['module'], 'declaration_names')
+            for source in ['check_declaration_names_nearby(runtime)',
+                           'from other import check as check_declaration_names\ncheck_declaration_names(runtime)']:
+                path.write_text(source)
+                with self.assertRaises(ValueError):
+                    M.audit(path)
+
 
 
 class SelectedTransport(T.Fixture):

@@ -16,6 +16,7 @@ from entry_pilot_checker import bound_json,complete_groups
 from entry_chain_resources import check_operation,normalize_cpu,session_validation
 from supplier_ready import ENTRYINTRO_MCP_REFUSAL,entry_intro_plugin_refusal
 from declaration_parallel import run as run_declaration_dag
+from declaration_names import check as check_declaration_names
 from scope_bookings import descriptor,mcp_environment,require_tool
 
 
@@ -228,6 +229,9 @@ async def execute(request):
     environment = proof_environment(runtime, workspace, output)
     from coqc_findlib import compiler_environment
     compiler_context=compiler_environment(workspace,environment)
+    check_operation(runtime)
+    if runtime['phase']=='prerequisites':
+        check_declaration_names(runtime, workspace, output)
     from compiler_snapshot import publish
     snapshot=publish(runtime,lambda:check_operation(runtime,force_full=True),
                      Path(request['output'])/'COMPILER-SNAPSHOT.json',environment=compiler_context)

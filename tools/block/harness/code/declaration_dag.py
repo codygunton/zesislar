@@ -12,6 +12,13 @@ CLAIM_BYTES = 64 * GIB
 MAXIMUM_WORKERS = 48
 
 
+class ModuleCompileFailure(RuntimeError):
+    """A completed physical compiler failed after authenticated input checks."""
+    def __init__(self, message, evidence):
+        super().__init__(message)
+        self.evidence = evidence
+
+
 def _positive(value, label):
     if type(value) is not int or value <= 0:
         raise ValueError('The declaration ' + label + ' must be a positive integer.')
@@ -99,8 +106,10 @@ def frontier_claim(ordered, edges, weights, completed=(), protected=(), maximum_
 def execute(ordered, edges, weights, *, completed=(), protected=(),
             claim_bytes, fence_bytes, available_bytes, compile_private,
             publish, compile_protected, checkpoint=lambda value: None,
-            maximum_workers=MAXIMUM_WORKERS):
+            maximum_workers=MAXIMUM_WORKERS, keep_going=False):
     """Drain healthy workers after failure. Publish before releasing each weight."""
+    if type(keep_going) is not bool:
+        raise ValueError('The declaration keep-going option must be Boolean.')
     expected = frontier_claim(ordered, edges, weights, completed, protected, maximum_workers)
     if claim_bytes != expected or fence_bytes != CLAIM_BYTES:
         raise ValueError('Parallel declarations require the bound frontier booking and 64 GiB fence.')
@@ -108,7 +117,7 @@ def execute(ordered, edges, weights, *, completed=(), protected=(),
     completed, protected = set(completed), set(protected)
     dependencies = validate(ordered, edges, weights, completed, protected)
     pending = set(ordered)
-    active, receipts, failures = {}, {}, []
+    active, receipts, failures, skipped = {}, {}, [], {}
     halt = threading.Event()
     peak_workers = peak_weight = 0
     protected_active = None
@@ -118,6 +127,7 @@ def execute(ordered, edges, weights, *, completed=(), protected=(),
         checkpoint({'pending': [name for name in ordered if name in pending],
                     'active': sorted(running),
                     'accepted': list(receipts), 'failures': list(failures),
+                    'skipped': dict(skipped), 'keep_going': keep_going,
                     'running_weight_bytes': sum(weights[name] for name in running),
                     'claim_bytes': claim_bytes, 'maximum_workers': count})
 
@@ -126,9 +136,28 @@ def execute(ordered, edges, weights, *, completed=(), protected=(),
             raise RuntimeError('A declaration did not start after another worker failed.')
         try:
             return compile_private(name)
-        except BaseException:
-            halt.set()
+        except BaseException as error:
+            if not keep_going or not isinstance(error, ModuleCompileFailure):
+                halt.set()
             raise
+
+    def failed(name, error, *, publication=False):
+        module_failure = isinstance(error, ModuleCompileFailure) and not publication
+        row = {'module': name, 'error': str(error),
+               'kind': 'module_compile' if module_failure else 'unsafe_runtime'}
+        if module_failure:
+            row['evidence'] = error.evidence
+        failures.append(row)
+        if not keep_going or not module_failure:
+            halt.set()
+
+    def skip_dependents():
+        blocked = {row['module'] for row in failures if row.get('kind') == 'module_compile'}
+        for name in ordered:
+            causes = dependencies[name] & (blocked | skipped.keys())
+            if name in pending and causes:
+                skipped[name] = sorted(causes)
+                pending.remove(name)
 
     def accept(name, artifact):
         # The provider validates and publishes on this controller thread only.
@@ -141,7 +170,9 @@ def execute(ordered, edges, weights, *, completed=(), protected=(),
     report()
     with ThreadPoolExecutor(max_workers=count) as pool:
         while pending or active:
-            if not failures and not halt.is_set():
+            if keep_going:
+                skip_dependents()
+            if not halt.is_set():
                 # No later module can cross an unfinished protected MCP barrier.
                 barrier = next((name for name in ordered if name in protected and name in pending), None)
                 boundary = ordered.index(barrier) if barrier is not None else len(ordered)
@@ -155,12 +186,15 @@ def execute(ordered, edges, weights, *, completed=(), protected=(),
                         peak_workers = max(peak_workers, 1)
                         peak_weight = max(peak_weight, weights[barrier])
                         report()
-                        artifact = compile_protected(barrier)
-                        accept(barrier, artifact)
                         pending.remove(barrier)
+                        artifact = compile_protected(barrier)
                     except Exception as error:
-                        failures.append({'module': barrier, 'error': str(error)})
-                        halt.set()
+                        failed(barrier, error)
+                    else:
+                        try:
+                            accept(barrier, artifact)
+                        except Exception as error:
+                            failed(barrier, error, publication=True)
                     finally:
                         protected_active = None
                     report()
@@ -178,8 +212,8 @@ def execute(ordered, edges, weights, *, completed=(), protected=(),
                     active[pool.submit(worker, name)] = name
                     peak_workers = max(peak_workers, len(active))
                     peak_weight = max(peak_weight, running + weights[name])
-                if pending and not active and not failures:
-                    failures.append({'error': 'No ready declaration fits the current memory budget.'})
+                if pending and not active and not halt.is_set():
+                    failures.append({'kind': 'unsafe_runtime', 'error': 'No ready declaration fits the current memory budget.'})
                     halt.set()
                 report()
             if not active:
@@ -188,20 +222,24 @@ def execute(ordered, edges, weights, *, completed=(), protected=(),
             for future in finished:
                 name = active[future]
                 try:
-                    accept(name, future.result())
+                    artifact = future.result()
                 except Exception as error:
-                    failures.append({'module': name, 'error': str(error)})
-                    halt.set()
+                    failed(name, error)
+                else:
+                    try:
+                        accept(name, artifact)
+                    except Exception as error:
+                        failed(name, error, publication=True)
                 finally:
                     # Keep the weight until compilation, closure, and publication finish.
                     active.pop(future)
             report()
     result = {'schema': 'entry-chain.declaration-dag-result.v1', 'receipts': receipts,
-              'failures': failures, 'pending': [name for name in ordered if name in pending],
+              'failures': failures, 'skipped': skipped, 'keep_going': keep_going, 'pending': [name for name in ordered if name in pending],
               'peak_workers': peak_workers, 'peak_weight_bytes': peak_weight,
               'claim_bytes': claim_bytes, 'fence_bytes': CLAIM_BYTES}
     if failures:
-        error = RuntimeError('The declaration DAG stopped after a failed dispatch or publication.')
+        error = RuntimeError('The declaration DAG contains failed dispatches or publications.')
         error.result = result
         raise error
     return result

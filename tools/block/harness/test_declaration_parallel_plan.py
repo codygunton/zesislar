@@ -49,6 +49,17 @@ class PublicDagPlanTests(unittest.TestCase):
         check_arguments(args,parser)
         self.assertIsNone(for_phase(self.config,'prerequisites',self.root))
 
+    def test_keep_going_requires_explicit_parallel_opt_in(self):
+        parser=argparse.ArgumentParser()
+        arguments(parser)
+        self.assertFalse(parser.parse_args([]).declaration_keep_going)
+        with self.assertRaises(SystemExit):
+            check_arguments(parser.parse_args(['--declaration-keep-going']),parser)
+        args=parser.parse_args(['--parallel-declarations','--declaration-keep-going'])
+        check_arguments(args,parser)
+        spec=self.attach(keep_going=args.declaration_keep_going)
+        self.assertTrue(validate(self.runtime(spec),self.root)['keep_going'])
+
     def test_public_plan_keeps_pair_and_dependent_consumer(self):
         spec=self.attach()
         self.assertEqual(spec['weights'],{name:16*GIB for name in ['Example.A','Example.B','Example.C']})
