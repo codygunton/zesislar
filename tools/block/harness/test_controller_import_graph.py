@@ -15,6 +15,8 @@ from pathlib import Path
 paths=json.loads(sys.argv[1]);workspace=Path(sys.argv[2])
 sys.path[:0]=paths
 import object_imports as O
+import closed_compilation_origin as C
+assert C.KIND=='accepted-closed-compilations'
 assert 'entry_chain_stage' not in sys.modules
 assert O.graph_closure(['Owner'],{'Owner':['Dependency']})=={'Owner','Dependency'}
 modules={'Owner':'Owner.v','Dependency':'Dependency.v'}
