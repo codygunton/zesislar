@@ -1,0 +1,92 @@
+{
+  "source_path": "/home/cody/zesislar/_build/agents/worker-build-1/forward-domain300/inputs001/DOMAIN.json",
+  "original_layout_clauses": [
+    "0 <= inputPointer",
+    "0 <= inputLength",
+    "inputPointer + inputLength < word64Modulus",
+    "0 <= resultPointer",
+    "resultPointer + 40 < word64Modulus",
+    "decodeItemStackBytes <= stackPointer < word64Modulus",
+    "mapRamBase defaultMap + decodeItemStackBytes <= stackPointer",
+    "stackPointer <= machineRamEnd defaultMap",
+    "separateRanges inputPointer inputLength resultPointer 40",
+    "separateRanges inputPointer inputLength\n    (stackPointer - decodeItemStackBytes) decodeItemStackBytes",
+    "separateRanges resultPointer 40\n    (stackPointer - decodeItemStackBytes) decodeItemStackBytes",
+    "0 <= returnAddress < word64Modulus",
+    "returnAddress mod 4 = 0",
+    "((mapInputBufferAddress defaultMap <= inputPointer /\\\n    inputPointer + inputLength <=\n      mapInputBufferAddress defaultMap + mapInputCapacity defaultMap) \\/\n   (mapRamBase defaultMap <= inputPointer /\\\n    inputPointer + inputLength <= machineRamEnd defaultMap))",
+    "mapRamBase defaultMap <= resultPointer",
+    "resultPointer + 40 <= machineRamEnd defaultMap",
+    "0 <= inputEnd < word64Modulus",
+    "inputPointer + inputLength <= inputEnd"
+  ],
+  "parameter_substitution": {
+    "inputPointer": "decodeItemInputPointer args",
+    "inputLength": "decodeItemInputLength args",
+    "resultPointer": "decodeItemOutputPointer args",
+    "stackPointer": "decodeItemStackPointer args",
+    "returnAddress": "decodeItemReturnAddress args",
+    "inputEnd": "decodeItemInputEnd args"
+  },
+  "constants": {
+    "decodeItemStackBytes": {
+      "value": 16,
+      "type": "Z",
+      "origin": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItem.v",
+        "sha256": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e",
+        "declaration": "decodeItemStackBytes"
+      }
+    },
+    "word64Modulus": {
+      "value": 18446744073709551616,
+      "type": "Z",
+      "origin": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItem.v",
+        "sha256": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e",
+        "declaration": "word64Modulus"
+      }
+    },
+    "mapRamBase defaultMap": {
+      "value": 2684354560,
+      "type": "Z",
+      "origin": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+        "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+        "declaration": "defaultMap",
+        "field": "mapRamBase"
+      }
+    },
+    "machineRamEnd defaultMap": {
+      "value": 3221225472,
+      "type": "Z",
+      "origin": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+        "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+        "declaration": "machineRamEnd",
+        "sum_fields": [
+          "mapRamBase",
+          "mapRamSize"
+        ],
+        "parameter": "machine",
+        "record_source": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+          "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+          "declaration": "defaultMap"
+        }
+      }
+    }
+  },
+  "source_bindings": [
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItem.v",
+      "sha256": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e",
+      "declaration": "decodeItemEntryLayout"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+      "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+      "declaration": "decodeItemArgsWellFormed"
+    }
+  ]
+}

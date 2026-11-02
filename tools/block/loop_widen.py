@@ -135,6 +135,49 @@ def _subtract_affine(left, right):
     return constant, terms
 
 
+def source_sum_bounds(clauses, substitutions, constants, *, width, provenance):
+    """Project only 0<=a, 0<=b, a+b<2^width from exact source clauses.
+
+    The adapter supplies its source parameter substitution. Unsupported source
+    grammar supplies no bound. This projection creates no additional premise.
+    """
+    if not provenance:
+        raise ValueError('A source sum projection needs provenance')
+    nonnegative = {}
+    for index, clause in enumerate(clauses):
+        match = re.fullmatch(r'0\s*<=\s*([A-Za-z_][A-Za-z_0-9]*)', clause.strip())
+        if match:
+            nonnegative[match[1]] = index
+    result = {}
+    for index, clause in enumerate(clauses):
+        match = re.fullmatch(r'([A-Za-z_][A-Za-z_0-9]*)\s*\+\s*'
+                             r'([A-Za-z_][A-Za-z_0-9]*)\s*<\s*'
+                             r'([A-Za-z_][A-Za-z_0-9]*)', clause.strip())
+        if not match:
+            continue
+        left, right, modulus = match.groups()
+        constant = constants.get(modulus, {})
+        if (left not in nonnegative or right not in nonnegative
+                or left not in substitutions or right not in substitutions
+                or constant.get('value') != 1 << width or not constant.get('origin')):
+            continue
+        source_indices = [nonnegative[left], nonnegative[right], index]
+        source = {'projection': provenance, 'clause_indices': source_indices,
+                  'source_clauses': [clauses[i] for i in source_indices],
+                  'parameter_substitution': {name: substitutions[name] for name in (left, right)},
+                  'modulus': constant}
+        left_term, right_term = substitutions[left], substitutions[right]
+        for term in (left_term, right_term, '(' + left_term + ') + (' + right_term + ')'):
+            expression = source_z_expression(term, {}, width)
+            result.setdefault(expression, {'expression': expression.to_dict(),
+                'minimum': 0, 'maximum': (1 << width) - 1,
+                'interpretation': 'source_integer', 'integer_term': term,
+                'premise': '(' + left_term + ') >= 0 /\\ (' + right_term +
+                    ') >= 0 /\\ (' + left_term + ') + (' + right_term + ') < ' + str(1 << width),
+                'provenance': source})
+    return list(result.values())
+
+
 class UnsignedCursorInduction:
     """Check unit-step induction from exact source bounds and the exit guard.
 
@@ -148,6 +191,7 @@ class UnsignedCursorInduction:
         self.seed = seed
         self.bounds = {}
         self.bindings = []
+        self.integer_bounds = {}
         for row in source_bounds:
             expression = Expr.from_dict(row['expression'])
             lower, upper = row['minimum'], row['maximum']
@@ -160,12 +204,19 @@ class UnsignedCursorInduction:
                 raise ValueError('A cursor bound repeats an exact expression')
             self.bounds[expression] = (lower, upper)
             self.bindings.append(dict(row))
+            if row.get('interpretation') == 'source_integer':
+                term = row.get('integer_term')
+                if not term or _linear(source_z_expression(term, {}, expression.width)) != _linear(expression):
+                    raise ValueError('A source integer bound has a different typed expression')
+                self.integer_bounds[expression] = (lower, upper)
         self.guards = GuardNormalForm(seed.conditions)
 
     def _atom_interval(self, atom):
+        lower, upper = self.guards.interval(self.guards.unsigned(atom))
         if atom in self.bounds:
-            return self.bounds[atom]
-        return self.guards.interval(self.guards.unsigned(atom))
+            source_lower, source_upper = self.bounds[atom]
+            lower, upper = max(lower, source_lower), min(upper, source_upper)
+        return lower, upper
 
     def _interval(self, affine):
         lower = upper = affine[0]
@@ -175,18 +226,74 @@ class UnsignedCursorInduction:
             upper += coefficient * (hi if coefficient >= 0 else lo)
         return lower, upper
 
-    def _checked_expression(self, expression, checks):
+    def _normal_integer(self, term):
+        if term.op == 'constant':
+            return term.value, {}
+        if term.op in {'add', 'sub'}:
+            left, right = self._normal_integer(term.args[0]), self._normal_integer(term.args[1])
+            if term.op == 'sub':
+                return _subtract_affine(left, right)
+            return _subtract_affine(left, (-right[0], {a: -c for a, c in right[1].items()}))
+        if term.op == 'unsigned':
+            return 0, {term.value: 1}
+        raise ValueError('A cursor inequality has no supported unsigned integer view')
+
+    def _normal_affine(self, expression):
         if expression.op in {'bvadd', 'bvsub'}:
-            for child in expression.args:
-                self._checked_expression(child, checks)
-            lower, upper = self._interval(_integer_affine(expression))
-            if not 0 <= lower <= upper < 1 << expression.width:
-                raise _MissingCursorRelation({'kind': 'unsigned_nonwrap',
-                    'expression': expression.to_dict(), 'available_interval': [lower, upper],
-                    'required': '0 <= integer expression < ' + str(1 << expression.width)})
-            checks.append({'kind': 'unsigned_nonwrap', 'expression': expression.to_dict(),
-                           'interval': [lower, upper]})
-        return _integer_affine(expression)
+            if any(child.width != expression.width for child in expression.args):
+                raise ValueError('A cursor arithmetic expression changes width')
+            left, right = (self._normal_affine(child) for child in expression.args)
+            if expression.op == 'bvadd':
+                right = (-right[0], {atom: -c for atom, c in right[1].items()})
+            return _subtract_affine(left, right)
+        return self._normal_integer(self.guards.unsigned(expression))
+
+    def _direct_upper(self, affine):
+        upper = self._interval(affine)[1]
+        for condition in self.seed.conditions:
+            relation = self.guards.relation(condition)
+            if relation is None:
+                continue
+            op, left, right = relation
+            if op in {'>', '>='}:
+                op, left, right = ('<' if op == '>' else '<='), right, left
+            if op not in {'<', '<=', '='}:
+                continue
+            try:
+                constraint = _subtract_affine(self._normal_integer(left), self._normal_integer(right))
+            except ValueError:
+                # An unsupported signed clause remains in the source state.
+                # It supplies no inequality to this unsigned checker.
+                continue
+            variants = [constraint]
+            if op == '=':
+                variants.append((-constraint[0], {a: -c for a, c in constraint[1].items()}))
+            for constant, terms in variants:
+                if terms == affine[1]:
+                    upper = min(upper, (-1 if op == '<' else 0) + affine[0] - constant)
+        return upper
+
+    def _proven_interval(self, affine):
+        negated = (-affine[0], {a: -c for a, c in affine[1].items()})
+        lower, upper = -self._direct_upper(negated), self._direct_upper(affine)
+        for expression, (source_lower, source_upper) in self.integer_bounds.items():
+            source = self._normal_affine(expression)
+            difference = _subtract_affine(affine, source)
+            minus = (-difference[0], {a: -c for a, c in difference[1].items()})
+            lower = max(lower, source_lower - self._direct_upper(minus))
+            upper = min(upper, source_upper + self._direct_upper(difference))
+        return lower, upper
+
+    def _checked_expression(self, expression, checks):
+        affine = self._normal_affine(expression)
+        lower, upper = self._proven_interval(affine)
+        if not 0 <= lower <= upper < 1 << expression.width:
+            raise _MissingCursorRelation({'kind': 'unsigned_nonwrap',
+                'expression': expression.to_dict(), 'available_interval': [lower, upper],
+                'required': '0 <= integer expression < ' + str(1 << expression.width)})
+        checks.append({'kind': 'unsigned_nonwrap', 'expression': expression.to_dict(),
+                       'interval': [lower, upper]})
+        return affine
 
     def __call__(self, candidate, edge, state):
         if candidate.get('kind') != 'affine_cursor':
@@ -202,6 +309,11 @@ class UnsignedCursorInduction:
                 if _linear(parsed) != _linear(origin):
                     raise _MissingCursorRelation({'kind': 'origin_identity',
                         'source_expression': parsed.to_dict(), 'actual_origin': origin.to_dict()})
+                for atom in _integer_affine(parsed)[1]:
+                    if atom.op == 'input' and atom not in self.integer_bounds:
+                        raise _MissingCursorRelation({'kind': 'source_origin_range',
+                            'expression': atom.to_dict(),
+                            'required': 'A source Z bound that removes this exact input cast'})
                 checks.append({'kind': 'origin_identity', 'source': view['provenance']})
             limit_key = candidate.get('limit_register')
             if limit_key is None:
@@ -213,7 +325,7 @@ class UnsignedCursorInduction:
             start_poly = self._checked_expression(origin, checks)
             limit_poly = self._checked_expression(limit, checks)
             distance = _subtract_affine(limit_poly, start_poly)
-            distance_bounds = self._interval(distance)
+            distance_bounds = self._proven_interval(distance)
             if distance_bounds[0] <= 0:
                 raise _MissingCursorRelation({'kind': 'positive_loop_distance',
                     'available_interval': list(distance_bounds),
@@ -235,8 +347,8 @@ class UnsignedCursorInduction:
                 if not guard_present:
                     raise _MissingCursorRelation({'kind': 'backedge_exit_guard',
                         'required': 'incremented cursor differs from the same endpoint'})
-                start_lower, _ = self._interval(start_poly)
-                _, end_upper = self._interval(limit_poly)
+                start_lower, _ = self._proven_interval(start_poly)
+                _, end_upper = self._proven_interval(limit_poly)
                 # These are the proposed induction hypotheses, not added source facts.
                 # old<end gives old<=end-1; old+1<=end then guard gives old+1<end.
                 if not 0 <= start_lower <= end_upper - 1 < (1 << origin.width) - 1:

@@ -5,11 +5,11 @@ import unittest
 
 try:
     from .forward_resource_design import _state_from_result
-    from .loop_widen import FoldRule, UnsignedCursorInduction, affine_step, fold_recurrence, widen_loop_head, write_set
+    from .loop_widen import FoldRule, UnsignedCursorInduction, source_sum_bounds, affine_step, fold_recurrence, widen_loop_head, write_set
     from .symbolic_state import bits, input_expr, operation
 except ImportError:
     from forward_resource_design import _state_from_result
-    from loop_widen import FoldRule, UnsignedCursorInduction, affine_step, fold_recurrence, widen_loop_head, write_set
+    from loop_widen import FoldRule, UnsignedCursorInduction, source_sum_bounds, affine_step, fold_recurrence, widen_loop_head, write_set
     from symbolic_state import bits, input_expr, operation
 
 
@@ -121,6 +121,7 @@ class LoopWidenTests(unittest.TestCase):
         bound = {'expression': root.to_dict(), 'minimum': 0,
                  'maximum': (1 << 64) - 10 if maximum is None else maximum,
                  'premise': 'synthetic unit-control bound, not an actual source premise',
+                 'interpretation': 'source_integer', 'integer_term': 'decodeItemInputPointer args',
                  'provenance': {'source': 'unit_test_control_only'}}
         views = {seed.registers['x15']: {'term': origin_term or 'decodeItemInputPointer args + 1',
                  'provenance': {'source': 'unit_test_control_only'}}}
@@ -176,6 +177,31 @@ class LoopWidenTests(unittest.TestCase):
         backedge.registers['x11'] = bits(0, 64)
         check = checker(candidate, 'backedge:0', backedge)
         self.assertEqual(check['missing_relation']['kind'], 'endpoint_identity')
+
+    def test_actual_source_sum_closes_cursor_induction_on_all_eight_classes(self):
+        domain = json.loads((HERE / 'testdata/loop_widen_domain.json').read_text())
+        bounds = source_sum_bounds(domain['original_layout_clauses'], domain['parameter_substitution'],
+            domain['constants'], width=64, provenance={'source': domain['source_path']})
+        self.assertEqual(len(bounds), 3)
+        for suffix in ('6a24', '6ac4'):
+            data, traces = self.fixture(suffix)
+            for preheader in data['preheaders']:
+                seed = _state_from_result(preheader['state'])
+                views = {seed.registers['x15']: {'term': domain['parameter_substitution']['inputPointer'] + ' + 1',
+                         'provenance': {'source': domain['source_path']}}}
+                result = widen_loop_head(seed, traces, loop_pc=int(data['pc'], 0),
+                    provenance={'source': data['forward_source']}, source_bounds=bounds, origin_views=views)
+                self.assertEqual(len(result.relations), 1)
+                self.assertTrue(all(row['check']['status'] == 'checked' for row in result.edge_records))
+                self.assertEqual(result.relations[0]['register'], 'x15')
+                self.assertFalse(result.folds)
+                self.assertFalse(result.to_dict()['seed_ready'])
+
+    def test_source_sum_missing_lower_bound_supplies_no_interval(self):
+        domain = json.loads((HERE / 'testdata/loop_widen_domain.json').read_text())
+        clauses = [term for term in domain['original_layout_clauses'] if term != '0 <= inputLength']
+        self.assertEqual(source_sum_bounds(clauses, domain['parameter_substitution'], domain['constants'],
+                         width=64, provenance={'source': domain['source_path']}), [])
 
 
 if __name__ == '__main__':
