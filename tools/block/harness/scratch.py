@@ -29,13 +29,36 @@ from supplier_resolution_cache import profile_supplier
 def _parse_project_flags(workspace):
     from rocq_mcp.server import _parse_project_flags as parse
     return parse(workspace)
+
+def install_object_import_migrations(config, manifest):
+    """Bind explicit migration receipts before the normal compatibility planner."""
+    reference=binding(manifest)
+    data=read_bound(reference)
+    if (set(data)!={'schema','receipts'} or data['schema']!='entry-chain.object-import-migrations.v1'
+            or not isinstance(data['receipts'],dict)):
+        raise ValueError('The object migration manifest has another schema.')
+    references=[reference]
+    selected={}
+    for module,receipt_reference in data['receipts'].items():
+        if module not in config['proof_runtime']['module_files']:
+            raise ValueError('An object migration names an unknown module.')
+        receipt=read_bound(receipt_reference)
+        if (receipt.get('schema')!='entry-chain.object-import-migration.v1' or
+                receipt.get('module')!=module):
+            raise ValueError('An object migration names another module or schema.')
+        selected[module]=receipt_reference
+        references.append(receipt_reference)
+    config['object_imports']={**config.get('object_imports',{}),**selected}
+    # The normal planner and staged require_reuse validate every required receipt.
+    config['bindings']=combined_bindings(config['bindings']+references)
+    return references
 ENTRY='ZesuSsz.Generated.DecodeItem.Entries'
 RULES='ZesuSsz.Evidence.RuleScratchRules'
 PYTHON=Path('/home/cody/.local/share/uv/tools/rocq-mcp/bin/python')
 
 def arguments(argv):
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--harness-commit',required=True);p.add_argument('--supplier-controls',type=Path);p.add_argument('--dependency-batch',type=Path);p.add_argument('--seed-reference',type=Path);p.add_argument('--dependency-cache',type=Path);p.add_argument('--end-cleanup',choices=['on','off'],default='on',help='Use off for reusable prefixes, seeds, and queued inputs.');p.add_argument('--admission-profile',type=Path);p.add_argument('--completed-stock-measurements',type=Path);p.add_argument('--cache',choices=['off','on'],default='off');p.add_argument('block');p.add_argument('entry_file',type=Path);p.add_argument('--rules',type=Path);p.add_argument('--output',type=Path);p.add_argument('--prepare-only',action='store_true');p.add_argument('--source-overrides',type=Path);p.add_argument('--declarations-only',action='store_true');p.add_argument('--target-adapter',type=Path);p.add_argument('--sizing',type=Path);p.add_argument('--base-runtime',type=Path);p.add_argument('--base-runtime-sha256');p.add_argument('--normalization-policy',type=Path);p.add_argument('--prerequisite-target-union',action='store_true');p.add_argument('--declaration-checks',type=Path);p.add_argument('--control-session',type=Path)
+    p.add_argument('--harness-commit',required=True);p.add_argument('--supplier-controls',type=Path);p.add_argument('--object-import-migrations',type=Path);p.add_argument('--dependency-batch',type=Path);p.add_argument('--seed-reference',type=Path);p.add_argument('--dependency-cache',type=Path);p.add_argument('--end-cleanup',choices=['on','off'],default='on',help='Use off for reusable prefixes, seeds, and queued inputs.');p.add_argument('--admission-profile',type=Path);p.add_argument('--completed-stock-measurements',type=Path);p.add_argument('--cache',choices=['off','on'],default='off');p.add_argument('block');p.add_argument('entry_file',type=Path);p.add_argument('--rules',type=Path);p.add_argument('--output',type=Path);p.add_argument('--prepare-only',action='store_true');p.add_argument('--source-overrides',type=Path);p.add_argument('--declarations-only',action='store_true');p.add_argument('--target-adapter',type=Path);p.add_argument('--sizing',type=Path);p.add_argument('--base-runtime',type=Path);p.add_argument('--base-runtime-sha256');p.add_argument('--normalization-policy',type=Path);p.add_argument('--prerequisite-target-union',action='store_true');p.add_argument('--declaration-checks',type=Path);p.add_argument('--control-session',type=Path)
     a=p.parse_args(argv);a.block=a.block.lower().removeprefix('0x')
     if not a.target_adapter:p.error('The shared harness requires a target adapter.')
     if not a.base_runtime:p.error('The shared harness requires an exact base runtime.')
@@ -226,6 +249,8 @@ def prepare(a):
     out=a.output;out.mkdir(parents=True,exist_ok=False)
     baseline={'path':str(a.base_runtime),'sha256':a.base_runtime_sha256}
     c=read_bound(baseline)
+    if getattr(a,'object_import_migrations',None):
+        install_object_import_migrations(c,a.object_import_migrations)
     c['harness']=harness
     from supplier_release import releases
     c['supplier_releases']=releases(read_bound(binding(a.supplier_controls))) if a.supplier_controls else []

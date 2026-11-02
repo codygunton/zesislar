@@ -78,5 +78,7 @@
   "block/controller_cleanup.py": "code/controller_cleanup.py",
   "block/waiting_envelope.py": "code/waiting_envelope.py",
   "block/import_graph.py": "code/import_graph.py",
-  "block/object_imports.py": "code/object_imports.py"
+  "block/object_imports.py": "code/object_imports.py",
+  "block/object_import_migration.py": "code/object_import_migration.py",
+  "block/OBJECT-IMPORT-MIGRATION-ORIGINS.json": "policies/OBJECT-IMPORT-MIGRATION-ORIGINS.json"
 }
