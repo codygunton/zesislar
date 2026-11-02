@@ -6,7 +6,7 @@ import hashlib
 import re
 
 from entry_schema import FIELDS, contract_fields, source_module, verify_sources
-from trace_registers import tokens
+from trace_registers import TOKEN, tokens
 from function_names import FunctionNames
 
 
@@ -16,6 +16,16 @@ def normalize_type(value):
 
 def declared_binders(source, declaration):
     sequence = tokens(source)
+    spans, depth = [], 0
+    for match in TOKEN.finditer(source):
+        if match.group() == '(*':
+            depth += 1
+        elif match.group() == '*)':
+            depth -= 1
+        elif not depth:
+            spans.append(match)
+    if [match.group() for match in spans] != sequence:
+        raise ValueError('The source token offsets differ from its binder tokens')
     definitions = [index for index, value in enumerate(sequence[:-1])
                    if value == 'Definition' and sequence[index + 1] == declaration]
     if len(definitions) != 1:
@@ -61,7 +71,9 @@ def declared_binders(source, declaration):
         names, type_tokens = binder[:colon], binder[colon + 1:]
         if not names or not type_tokens or any(not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_']*", name) for name in names):
             raise ValueError('The explicit binder has an unsupported shape')
-        result.extend({'name': name, 'type': ' '.join(type_tokens)} for name in names)
+        # Tokens establish the boundary. Only the original slice is emitted.
+        type_source = source[spans[start + colon + 1].start():spans[index - 2].end()]
+        result.extend({'name': name, 'type': type_source} for name in names)
     raise ValueError('The Definition has no result type')
 
 

@@ -112,6 +112,8 @@ def stage_job(config,job,out):
         if sealed:validate(config['seed_binding_reference'],source)
     if sealed and any(row.get('prepared') is None for row in config.get('prepared_tool_transition',[])):
         raise ValueError('An absent recovery tool requires a fresh unsealed job workspace.')
+    if sealed and job['phase']=='native' and not config['proof_runtime'].get('native_parse_preflight'):
+        raise ValueError('A native declaration preflight requires a fresh unsealed job workspace.')
     workspace=source if sealed else out/'workspace'
     if job['phase']=='native':
         readiness=read_bound(config['readiness'])
@@ -185,6 +187,8 @@ def stage_job(config,job,out):
 
     # The compiler wrapper sits in tools beside the stock findlib and resource guard.
     runtime=deepcopy(config['proof_runtime'])
+    if config.get('cache_import_graph') is not None:
+        runtime['cache_import_graph']=deepcopy(config['cache_import_graph'])
     if sealed:
         runtime['prepared_workspace']=str(workspace)
         launcher=list(runtime['mcp_argv'])
@@ -214,8 +218,26 @@ def stage_job(config,job,out):
     runtime['expected_mcp_flags']=actual
     runtime['physical_flags']=[word.replace(str(source),str(workspace)) for word in config['physical_flags']]
     save(out/'PROJECT-PARSER.json',{'expected_flags':expected,'actual_flags':actual,'equal':True})
+    from object_imports import require_reuse
+    reuse=require_reuse(config,runtime,workspace)
+    save(out/'OBJECT-IMPORT-REUSE-CHECK.json',reuse)
     from compiler_snapshot import declared_outputs
-    declarations=declared_outputs(runtime['module_files'],runtime['ordered_modules'],workspace,config['bindings'],donor=source)
+    output_modules=dict(runtime['module_files']);output_order=list(runtime['ordered_modules'])
+    preflight=None
+    if job['phase']=='native':
+        from declaration_preflight import prepare,checked_fixture
+        if sealed:
+            from scratch_statement import source_statement
+            from native_route import authority_body
+            target=runtime['target']['block']
+            native_source=workspace/runtime['module_files'][target['module']]
+            route=runtime.get('native_route')
+            specification=source_statement(native_source,authority_body(route) if route else 'zesu_block.')
+            preflight,_=checked_fixture(runtime,workspace,native_source,specification)
+        else:preflight=prepare(runtime,workspace,out/'native')
+        module=runtime['target']['block']['module']+'_EntryPilotSearch'
+        output_modules[module]=str(preflight.relative_to(workspace));output_order.append(module)
+    declarations=declared_outputs(output_modules,output_order,workspace,config['bindings'],donor=source)
     runtime['declared_outputs']=declarations
     output_paths={name for row in declarations for name in row['outputs']}
     save(out/'DECLARED-OUTPUT-ABSENCE.json',{'modules':runtime['ordered_modules'],'declarations':declarations,
@@ -223,6 +245,11 @@ def stage_job(config,job,out):
     runtime['bindings']=list(config['bindings'])+[x['owned'] for x in copies
         if Path(x['owned']['path']).suffix in {'.v','.vo','.vos','.cmxs','.cma','.cmxa','.so'}
         and x['owned']['path'] not in output_paths]
+    if runtime.get('cache_import_graph') is not None:
+        runtime['bindings'].append(runtime['cache_import_graph'])
+    if preflight is not None:
+        runtime['bindings'].extend([binding(preflight),runtime['native_parse_preflight']])
+    runtime['bindings'].append(binding(out/'OBJECT-IMPORT-REUSE-CHECK.json'))
     if runtime.get('native_delta'):
         evidence=runtime['native_delta']
         runtime['bindings'] += [evidence[k] for k in ['result','closure','release']]+[r['receipt'] for r in evidence['receipts']]
@@ -261,7 +288,7 @@ def stage_job(config,job,out):
     from compiler_snapshot import externalize
     externalize(runtime,out/'BINDING-INVENTORY.json')
     save(out/'COPIES.json',copies);save(out/'RUNTIME.json',runtime)
-    native=out/'native';native.mkdir()
+    native=out/'native';native.mkdir(exist_ok=True)
     request={'runtime':str(out/'RUNTIME.json'),'runtime_sha256':digest(out/'RUNTIME.json'),
              'workspace':str(workspace),'output':str(native),'identity':config['identity']|{'block':job['key']}}
     save(native/'REQUEST.json',request)
@@ -306,14 +333,19 @@ def inside(out):
             command=strict_loads((out/'KERNEL-ARGV.json').read_text())
             kernel_environment=strict_loads((out/'KERNEL-ENVIRONMENT.json').read_text())
             kernel_environment['ZESU_AGGREGATE_SLICE']=os.environ['ZESU_AGGREGATE_SLICE']
-            result=subprocess.run(command,cwd=Path(runtime['job_output'])/'workspace',env=kernel_environment)
+            kernel_cwd=Path(runtime['job_output'])/'workspace'
+            from waiting_envelope import compact_wait
+            with compact_wait(out,runtime=runtime):
+                result=subprocess.run(command,cwd=kernel_cwd,env=kernel_environment)
         else:
             environment=None
             if runtime['phase']=='native':
                 import stage1_runtime
                 stage1_runtime.materialize_inside(out)
                 environment=strict_loads((out/'prospective/ACTUAL-ENVIRONMENT.json').read_text())
-            result=subprocess.run([sys.executable,'-B',str(Path(__file__).with_name('entry_chain_provider.py')),str(out/'native/REQUEST.json')],env=environment)
+            from waiting_envelope import compact_wait
+            with compact_wait(out,runtime=runtime):
+                result=subprocess.run([sys.executable,'-B',str(Path(__file__).with_name('entry_chain_provider.py')),str(out/'native/REQUEST.json')],env=environment)
 
         return result.returncode
     finally:
@@ -351,7 +383,9 @@ def run_stock_job(config,job,out,prepared=None):
         with (out/'stock.stdout').open('wb') as stdout,(out/'stock.stderr').open('wb') as stderr:
             child=__import__('controller_cleanup').launch(argv,cwd=workspace,env=env,stdout=stdout,stderr=stderr,start_new_session=True)
             child_start=ticks(child.pid);save(out/'BATCH-PROCESS.json',{'pid':child.pid,'startticks':child_start});from scratch_limits import wait_with_limits
-            code=wait_with_limits(child,out,job['claim_bytes'],0,phase=job['phase'],memory_job=job,family=(job.get('workload') or {}).get('kind') in {'stock_pass_spec_bundle','minimal_native_tactic'},family_threshold_bytes=(8 if (job.get('workload') or {}).get('kind')=='minimal_native_tactic' else 16)*1024**3)
+            from waiting_envelope import compact_wait
+            with compact_wait(out,configuration=config,runtime=runtime):
+                code=wait_with_limits(child,out,job['claim_bytes'],0,phase=job['phase'],memory_job=job,family=(job.get('workload') or {}).get('kind') in {'stock_pass_spec_bundle','minimal_native_tactic'},family_threshold_bytes=(8 if (job.get('workload') or {}).get('kind')=='minimal_native_tactic' else 16)*1024**3)
         check_proof_bindings(runtime)
         receipts=read_optional(out/'native/NATIVE-RESULTS.json') or {}
         receipt=receipts.get('block',{})

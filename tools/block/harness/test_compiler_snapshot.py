@@ -1,4 +1,5 @@
 """Exercise sealed validation with nonproof files and no compiler execution."""
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -41,6 +42,50 @@ class CompilerSnapshotTests(unittest.TestCase):
 
     def read(self, reference):
         return S.read(reference, self.reference)
+
+    def test_output_manager_keeps_only_authenticated_header(self):
+        reference=self.seal()
+        ledger=S.OutputReceipts(reference,self.reference)
+        self.assertEqual(set(ledger.snapshot),{'runtime','producer','objects','compiler'})
+        self.assertNotIn('rows',ledger.snapshot)
+        self.assertEqual(ledger.snapshot['runtime'],self.reference)
+        self.assertEqual(ledger.snapshot['compiler']['path'],str(self.compiler))
+        self.assertEqual(ledger.snapshot['compiler']['sha256'],binding(self.compiler)['sha256'])
+        self.assertEqual(ledger.reference,reference)
+
+    def test_abort_preflight_has_bound_inputs_and_normal_output_receipts(self):
+        from declaration_preflight import prepare
+        from scratch_statement import source_statement
+        self.source.write_text('Lemma DesignedBoundary_Control : True.\nProof.\nzesu_block.\nQed.\n')
+        target={'module':'Fixture.Control','source_sha256':binding(self.source)['sha256'],
+                'statement_sha256':hashlib.sha256(source_statement(self.source)['statement'].encode()).hexdigest()}
+        self.runtime['module_files']={'Fixture.Control':'Control.v'}
+        self.runtime['target']={'block':target}
+        self.runtime['bindings'][0]=binding(self.source)
+        output=self.root/'native'
+        fixture=prepare(self.runtime,self.root,output)
+        self.runtime['bindings'].extend([binding(fixture),self.runtime['native_parse_preflight']])
+        self.runtime['declared_outputs']=S.declared_outputs(
+            {'Fixture.Control_EntryPilotSearch':fixture.name},
+            ['Fixture.Control_EntryPilotSearch'],self.root,self.runtime['bindings'])
+        reference=self.seal();sealed=self.read(reference)
+        self.assertIn(binding(fixture),[{'path':row['path'],'sha256':row['sha256']} for row in sealed['rows']])
+        self.assertFalse(fixture.with_suffix('.vo').exists())
+        ledger=S.OutputReceipts(reference,self.reference)
+        obj=fixture.with_suffix('.vo');obj.write_text('Nonproof Abort object fixture.\n')
+        receipt=self.accept_output(ledger,obj,source=fixture)
+        stored=json.loads(Path(receipt['path']).read_text())
+        self.assertEqual(stored['source'],binding(fixture))
+        self.assertEqual(stored['object'],binding(obj))
+        self.assertTrue(stored['successful_compilation'])
+        check_proof_bindings(self.runtime,force_full=True)
+        fixture.write_text('Changed preflight input.\n')
+        with self.assertRaises(ValueError):check_proof_bindings(self.runtime,force_full=True)
+
+    def test_output_manager_authenticates_snapshot_before_header(self):
+        reference=self.seal()
+        self.snapshot_path.write_text('{}')
+        with self.assertRaises(ValueError):S.OutputReceipts(reference,self.reference)
 
     def test_round_trip_preserves_all_classified_rows(self):
         reference = self.seal()
@@ -237,7 +282,7 @@ class CompilerSnapshotTests(unittest.TestCase):
         self.runtime['bindings'].append(self.source_binding)
         reference = self.seal()
         snapshot = self.read(reference)
-        ledger = S.OutputReceipts(snapshot, reference)
+        ledger = S.OutputReceipts(reference, self.reference)
         obj = self.library / 'Later.vo'
         obj.write_text('object from a successful nonproof fixture')
         receipt = self.accept_output(ledger,obj)
@@ -463,7 +508,7 @@ class CompilerSnapshotTests(unittest.TestCase):
     def test_stale_index_refuses(self):
         reference = self.seal()
         snapshot = self.read(reference)
-        ledger = S.OutputReceipts(snapshot, reference)
+        ledger = S.OutputReceipts(reference, self.reference)
         old = (ledger.root / 'INDEX.json').read_bytes()
         obj = self.source.with_suffix('.vo')
         obj.write_text('nonproof output')
@@ -481,14 +526,14 @@ class CompilerSnapshotTests(unittest.TestCase):
     def test_failure_cannot_publish_receipt(self):
         reference = self.seal()
         snapshot = self.read(reference)
-        ledger = S.OutputReceipts(snapshot, reference)
+        ledger = S.OutputReceipts(reference, self.reference)
         with self.assertRaisesRegex(ValueError, 'failed compilation'):
             ledger.accept(self.source, self.obj, self.compiler, [], {'success': False})
         self.assertEqual(list(ledger.root.glob('OBJECT-*.json')), [])
 
     def test_other_producer_cannot_publish_receipt(self):
         reference = self.seal()
-        ledger = S.OutputReceipts(self.read(reference), reference)
+        ledger = S.OutputReceipts(reference, self.reference)
         with patch.object(S, 'producer', return_value={'pid': 0}):
             with self.assertRaisesRegex(ValueError, 'Another producer'):
                 ledger.accept(self.source, self.obj, self.compiler, [], {'success': True})

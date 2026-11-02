@@ -101,6 +101,15 @@ def validate(binding):
                 _MEMO.popitem(last=False)
         return result
 
+def release_validation_cache():
+    """Drop optional supplier memo entries without changing validation."""
+    global _MEMO_PID,_MEMO_LOCK
+    if _MEMO_PID!=os.getpid():
+        _MEMO.clear();_MEMO_LOCK=threading.RLock();_MEMO_PID=os.getpid()
+    with _MEMO_LOCK:
+        count=len(_MEMO);_MEMO.clear();return count
+
+
 ROOTS = frozenset({'ZesuSsz.Automation.All', 'ZesuSsz.Automation.Hooks',
                    'ZesuSsz.Automation.Finish'})
 FIELDS = frozenset({'ready', 'source_packet', 'modules', 'import_graph',

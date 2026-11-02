@@ -66,8 +66,9 @@ class SharedHarnessTests(unittest.TestCase):
             class Resolver:
                 def register_source(inner, actual, origin):
                     self.assertEqual((actual, origin), (text, source))
-                def resolution(inner, name, *, origin):
+                def source_resolution(inner, name, modules, *, origin):
                     self.assertEqual((name, origin), ('Coq.List', source))
+                    self.assertEqual(modules, {})
                     return {'canonical': 'Coq.Lists.List'}
             self.assertEqual(scratch.canonical_edges('A', text, text, [], {}, Resolver(), source),
                              [{'from': 'A', 'to': 'Coq.Lists.List'}])

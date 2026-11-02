@@ -87,7 +87,7 @@ def canonical_edges(module,text,old_text,edges,module_files,installed=None,sourc
         for name in names:
             if name not in module_files:
                 if installed is None:raise ValueError('An import has no exact canonical mapping: '+name)
-                name=installed.resolution(name,origin=source_path)['canonical']
+                name=installed.source_resolution(name,module_files,origin=source_path)['canonical']
             row={'from':module,'to':name}
             if row not in result:result.append(row)
     return result
@@ -265,7 +265,7 @@ def prepare(a):
     if a.target_adapter:
         adapter=read_bound(binding(a.target_adapter));graph=read_bound(adapter['graph']);modules.update(graph['module_files'])
     edges=graph['import_edges'];changed=[];changes=[]
-    installed=InstalledMappings([word.replace(str(source),str(workspace)) for word in c['physical_flags']],receipt_dir=out/'IMPORT-RESOLUTION',supplier=profile_supplier(binding(a.admission_profile) if a.admission_profile else c.get('admission_profile')))
+    installed=InstalledMappings([word.replace(str(source),str(workspace)) for word in c['physical_flags']],receipt_dir=out/'IMPORT-RESOLUTION',supplier=profile_supplier(binding(a.admission_profile) if a.admission_profile else c.get('admission_profile')),planning_workspace=workspace,source_files=modules)
     entry=workspace/modules[ENTRY];before=entry.read_text();entry_text=a.entry_file.read_text()
     if entry_text!=before:
         edges=[r for r in edges if r['from']!=ENTRY]+canonical_edges(ENTRY,entry_text,before,edges,modules,installed,a.entry_file)
@@ -307,7 +307,12 @@ def prepare(a):
     forward={}
     for edge in edges:forward.setdefault(edge['from'],set()).add(edge['to'])
     missing=missing_prerequisite_objects(closure_targets,forward,modules,workspace)
-    changed=list(set(changed)|set(missing))
+    from object_imports import compatibility
+    imports=compatibility(closure_targets,edges,modules,workspace,c.get('object_imports',{}),
+        c['effective_compiler_version']['compiler'],
+        [word.replace(str(source),str(workspace)) for word in c['physical_flags']])
+    save(out/'OBJECT-IMPORT-COMPATIBILITY.json',imports)
+    changed=list(set(changed)|set(missing)|set(imports['rebuild_modules']))
     plan=invalidation(edges,changed,plan_targets)
     native_targets={row['module'] for row in targets}
     plan['prerequisites']=[name for name in plan['ordered_required'] if name not in native_targets]
@@ -383,7 +388,7 @@ def prepare(a):
     c['cache_producer_files']={'implementation':[dict(r,id='scratch-implementation:'+str(i),kind='source') for i,r in enumerate(implementations)],'inputs':[dict(binding(a.entry_file),id='scratch-entry',kind='source')]+([dict(binding(a.declaration_checks),id='declaration-checks',kind='configuration')] if a.declaration_checks else [])+([dict(binding(a.normalization_policy),id='entry-normalization-policy',kind='configuration')] if a.normalization_policy else [])+([dict(binding(a.rules),id='scratch-rules',kind='source')] if a.rules else []),'outputs':[dict(binding(native),id='scratch-native',kind='source'),dict(binding(entry),id='scratch-entries',kind='source')]}
     if a.supplier_controls:c['cache_producer_files']['inputs'].append(dict(binding(a.supplier_controls),id='supplier-activation-controls',kind='configuration'))
     if a.admission_profile:c['cache_producer_files']['inputs'].append(dict(binding(a.admission_profile),id='admission-profile',kind='configuration'))
-    additions=([binding(a.supplier_controls)] if a.supplier_controls else [])+([binding(a.admission_profile)] if a.admission_profile else [])+([binding(a.control_session)] if a.control_session else [])+([binding(a.declaration_checks)] if a.declaration_checks else [])+([binding(a.normalization_policy)] if a.normalization_policy else [])+([binding(a.target_adapter),adapter['targets'],adapter['overrides'],adapter['graph']] if adapter else [])+([binding(a.sizing)] if a.sizing else [])+[{'path':r['path'],'sha256':r['sha256']} for r in overrides]+([binding(a.source_overrides)] if a.source_overrides else [])+implementations+[binding(installed.coqdep),binding(a.entry_file),binding(out/'INVALIDATION.json')]+([binding(a.rules)] if a.rules else [])
+    additions=([binding(a.supplier_controls)] if a.supplier_controls else [])+([binding(a.admission_profile)] if a.admission_profile else [])+([binding(a.control_session)] if a.control_session else [])+([binding(a.declaration_checks)] if a.declaration_checks else [])+([binding(a.normalization_policy)] if a.normalization_policy else [])+([binding(a.target_adapter),adapter['targets'],adapter['overrides'],adapter['graph']] if adapter else [])+([binding(a.sizing)] if a.sizing else [])+[{'path':r['path'],'sha256':r['sha256']} for r in overrides]+([binding(a.source_overrides)] if a.source_overrides else [])+implementations+[binding(installed.coqdep),binding(a.entry_file),binding(out/'INVALIDATION.json'),binding(out/'OBJECT-IMPORT-COMPATIBILITY.json')]+([binding(a.rules)] if a.rules else [])
     if wave_plan:
         wave_inputs=[binding(a.dependency_batch),wave_plan['source_boundary']]+[wave_plan[key] for key in ['guard','compile_measure_helper','run_registry','compiler','dune']]+[row['source'] for row in wave_plan['modules']]
         additions+=wave_inputs
@@ -479,7 +484,10 @@ def execute_retained(path,expected):
     env=dict(os.environ,PATH='/home/cody/islaris/_opam/bin:/home/cody/.local/bin:/usr/local/bin:/usr/bin:/bin',OPAM_SWITCH_PREFIX='/home/cody/islaris/_opam',PYTHONDONTWRITEBYTECODE='1',PYTHONHASHSEED='0',ZESU_PROOF_CACHE=cache_setting)
     argv=lambda row:[str(PYTHON),'-B',c['job_controller']['path'],str(path),digest(path),row['key'],row['output']]
     if pre['ordered_modules'] or c.get('declaration_checks') or c.get('control_session'):
-        reply=__import__('controller_cleanup').run(argv(pre),cwd=W,env=env)
+        command=argv(pre)
+        from waiting_envelope import compact_wait
+        with compact_wait(out,configuration=c):
+            reply=__import__('controller_cleanup').run(command,cwd=W,env=env)
         r=read_bound(binding(Path(pre['output'])/'RESULT.json'))
         if not r.get('success'):
             save(out/'RESULT.json',summarize(r,pre['output'],cache_setting));return 2
@@ -506,7 +514,10 @@ def execute_retained(path,expected):
     else:
         c['readiness']=binding(out/'READINESS.json');save(out/'READY-RUNTIME.json',c)
         run_path=out/'READY-RUNTIME.json'
-    reply=__import__('controller_cleanup').run([str(PYTHON),'-B',c['job_controller']['path'],str(run_path),digest(run_path),job['key'],job['output']],cwd=W,env=env)
+    command=[str(PYTHON),'-B',c['job_controller']['path'],str(run_path),digest(run_path),job['key'],job['output']]
+    from waiting_envelope import compact_wait
+    with compact_wait(out,configuration=c):
+        reply=__import__('controller_cleanup').run(command,cwd=W,env=env)
     result=read_bound(binding(Path(job['output'])/'RESULT.json'));public=summarize(result,job['output'],cache_setting)
     public.update(inputs=binding(out/'INPUTS.json'),runtime=binding(run_path),prerequisite_CPU=r.get('CPU') if pre['ordered_modules'] else None)
     for field,name in [('closure','CLOSURE.json'),('release','RELEASE.json')]:

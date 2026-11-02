@@ -9,6 +9,7 @@ sys.path[1:1] = [str(Path(__file__).resolve().parents[2]), str(Path(__file__).re
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from scratch_statement import source_statement,compiled_verification
+from declaration_preflight import declaration_search_fixture,checked_fixture
 from entry_chain import binding,save as atomic_json,check_bindings as bound_rows,digest,relative,strict_loads
 from entry_pilot import retain_residual
 from entry_pilot_checker import bound_json,complete_groups
@@ -140,8 +141,7 @@ def accept_guarded_dependency(accepted_objects,module,source,obj,flags,result,re
         if not entry_intro_plugin_build(module,source):return False
         if not entry_intro_plugin_refusal(result.get('MCP_refusal_result',{})):return False
     recheck()
-    accepted_objects.accept(source,obj,'/home/cody/islaris/_opam/bin/coqc',flags,result)
-    return True
+    return accepted_objects.accept(source,obj,'/home/cody/islaris/_opam/bin/coqc',flags,result)
 
 
 def control_step_required(step):
@@ -194,29 +194,6 @@ def proof_environment(runtime,workspace,output,inherited=None):
     return environment
 
 
-def declaration_search_fixture(source, specification, output, side):
-    """Copy the exact native declaration. Do not execute its native proof."""
-    original_sha = digest(source)
-    problem = specification['prefix'] + specification['statement'] + specification.get('pre_proof_commands','')
-    if not problem.endswith('\n'):
-        raise ValueError('The native declaration must end before its Proof line.')
-    fixture = source.with_name(source.stem + '_EntryPilotSearch.v')
-    if fixture.exists():
-        raise ValueError('The owned search fixture already exists.')
-    fixture.write_text(problem + 'Proof.\nAbort.\n')
-    proof_line = problem.count('\n')
-    if fixture.read_text().splitlines()[proof_line] != 'Proof.':
-        raise ValueError('The search cursor does not select its Proof sentence.')
-    if digest(source) != original_sha:
-        raise ValueError('The search fixture changed its native source.')
-    atomic_json(output/(side+'-SEARCH-FIXTURE.json'), {
-        'original_source': str(source), 'original_source_sha256': original_sha,
-        'prefix_sha256': hashlib.sha256(specification['prefix'].encode()).hexdigest(),
-        'statement_sha256': hashlib.sha256(specification['statement'].encode()).hexdigest(),
-        'fixture': str(fixture), 'fixture_sha256': digest(fixture),
-        'line': proof_line, 'character': len('Proof.')-1, 'suffix': 'Proof.\nAbort.\n'})
-    return fixture, proof_line
-
 
 def validated_session(function):
     @functools.wraps(function)
@@ -252,8 +229,10 @@ async def execute(request):
                      Path(request['output'])/'COMPILER-SNAPSHOT.json',environment=compiler_context)
     accepted_objects=None
     if snapshot is not None:
-        from compiler_snapshot import OutputReceipts,read as read_snapshot
-        accepted_objects=OutputReceipts(read_snapshot(snapshot,{'path':request['runtime'],'sha256':request['runtime_sha256']}),snapshot)
+        from compiler_snapshot import OutputReceipts
+        accepted_objects=OutputReceipts(snapshot,{'path':request['runtime'],'sha256':request['runtime_sha256']})
+    from waiting_envelope import release_optional_caches
+    release_optional_caches()
     row = runtime['target']
     workspace, output = Path(request['workspace']), Path(request['output'])
     atomic_json(output/'PROGRESS.json', {'phase': 'prepared_inputs', 'identity': request['identity']})
@@ -396,11 +375,13 @@ async def execute(request):
                     obj = source.with_suffix('.vo')
                     if not obj.is_file():
                         raise ToolFailure('A dependency object is absent after compilation.')
-                    accept_guarded_dependency(accepted_objects,module,source,obj,
+                    accepted_receipt=accept_guarded_dependency(accepted_objects,module,source,obj,
                         runtime['physical_flags'],result,lambda:check_operation(runtime))
+                    if not accepted_receipt and calls:
+                        accepted_receipt=calls[-1].get('accepted_object_receipt')
                     atomic_json(output/('dependency-'+module+'.json'), {'source': str(source),
                         'source_sha256': digest(source), 'object': str(obj), 'object_sha256': digest(obj),
-                        'result': result})
+                        'result': result,'accepted_object_receipt':accepted_receipt or None})
                 if runtime['phase']=='prerequisites':
                     verified_controls=[]
                     for specification in runtime.get('declaration_checks',[]):
@@ -444,8 +425,25 @@ async def execute(request):
                     statement_sha = hashlib.sha256(specification['statement'].encode()).hexdigest()
                     if statement_sha != target['statement_sha256']:
                         raise ValueError('The original public statement changed.')
-                    search_fixture, proof_line = declaration_search_fixture(
-                        source, specification, output, side)
+                    search_fixture, proof_line = checked_fixture(runtime,workspace,source,specification)
+                    atomic_json(output/'PROGRESS.json', {'phase': 'declaration_preflight', 'side': side})
+                    try:
+                        parsed = await call(session, 'rocq_compile_file', {'workspace': str(workspace),
+                            'file': str(search_fixture), 'timeout': timeout, 'keep_vo': True, 'include_warnings': True})
+                        parse_object=search_fixture.with_suffix('.vo')
+                        if not parse_object.is_file():
+                            raise ToolFailure('The declaration preflight did not retain its object.')
+                        atomic_json(output/'PARSE-PREFLIGHT.json', {'success': True,
+                            'input':runtime['native_parse_preflight'],'source':binding(search_fixture),
+                            'object':binding(parse_object),'compiler_result':parsed,
+                            'accepted_object_receipt':calls[-1].get('accepted_object_receipt'),
+                            'search_started':False})
+                    except BaseException as error:
+                        atomic_json(output/'PARSE-PREFLIGHT.json', {'success': False,
+                            'input':runtime['native_parse_preflight'],'source':binding(search_fixture),
+                            'compiler_result':error.result if isinstance(error,ToolFailure) else {'error':str(error)},
+                            'error_class':type(error).__name__,'search_started':False})
+                        raise
                     atomic_json(output/'PROGRESS.json', {'phase': 'native_start', 'side': side,
                         'start_mode': 'proof_sentence'})
                     state = await call(session, 'rocq_start', {'workspace': str(workspace),

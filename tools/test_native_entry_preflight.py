@@ -147,10 +147,13 @@ class NativeEntryPreflightTests(unittest.TestCase):
 
     def test_primary_renderer_and_checker_stay_byte_equivalent(self):
         path = Path(successor_entailment.__file__)
-        original = subprocess.check_output(['git', 'show', 'ccd89437:tools/block/successor_entailment.py'],
-                                           cwd=path.parents[2], text=True)
-        old, new = ast.parse(original), ast.parse(path.read_text())
-        for name in ('native_boundary_source', 'check_boundary'):
+        new = ast.parse(path.read_text())
+        baselines = {'native_boundary_source': '2e70b0e04a1d22401b6c8690f9eddb4021937594',
+                     'check_boundary': 'ccd89437'}
+        for name, commit in baselines.items():
+            original = subprocess.check_output(['git', 'show', commit + ':tools/block/successor_entailment.py'],
+                                               cwd=path.parents[2], text=True)
+            old = ast.parse(original)
             def function(tree):
                 return next(row for row in tree.body if isinstance(row, (ast.FunctionDef, ast.AsyncFunctionDef))
                             and row.name == name)

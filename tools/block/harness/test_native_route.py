@@ -132,7 +132,11 @@ class NativeRoute(unittest.TestCase):
   import entry_chain_provider as P
   v,r,c,j=self.fixture();exports=self.js('groups.json',{'kernel_groups':{'goals':[],'stack':[],'shelf':[],'given_up':[]}})
   runtime={'phase':'native','physical_flags':[],'native_route':r,'ordered_modules':[],'target':{'block':j['target']},'module_files':c['proof_runtime']['module_files'],'mcp_argv':['unused'],'prospective_directory':str(self.root/'prospective'),'bindings':[]}
-  rt=self.js('runtime.json',runtime);out=self.root/'native';out.mkdir();compile_files=[]
+  out=self.root/'native';out.mkdir();compile_files=[]
+  from declaration_preflight import prepare
+  fixture=prepare(runtime,self.root,out)
+  runtime['bindings']=[binding(fixture),runtime['native_parse_preflight']]
+  rt=self.js('runtime.json',runtime)
   self_test=self;root=self.root
   original=Path(v['native_source']['path']).read_bytes()
   class Raw:
@@ -155,7 +159,10 @@ class NativeRoute(unittest.TestCase):
     if name in {'rocq_start','rocq_check'}:data.update(state_id=1,proof_finished=True)
     if name=='rocq_complete_goals':data.update(path=exports['path'],sha256=exports['sha256'])
     if name=='rocq_compile_file':
-     compile_files.append(args['file']);Path(args['file']).with_suffix('.vo').write_text('native object')
+     compile_files.append(args['file'])
+     if failure=='parse' and args['file'].endswith('_EntryPilotSearch.v'):
+      return Raw({'success':False,'reason':'compile_error','error':'Syntax error fixture.'})
+     Path(args['file']).with_suffix('.vo').write_text('native object')
     if name=='rocq_verify':data.update(verification_method='module_m',assumptions=[])
     return Raw(data)
   @asynccontextmanager
@@ -173,9 +180,25 @@ class NativeRoute(unittest.TestCase):
   return out,compile_files
  def test_native_provider_compiles_no_dependencies_after_prefix(self):
   out,compile_files=self._run_native_provider()
-  self.assertEqual(compile_files,[str(self.root/'Native.v')])
+  self.assertEqual(compile_files,[str(self.root/'Native_EntryPilotSearch.v'),str(self.root/'Native.v')])
   calls=json.loads((out/'CALLS.json').read_text());self.assertEqual(sum(c['tool']=='rocq_compile_file' and c['arguments']['file'].endswith('Tactic.v') for c in calls),0)
   self.assertEqual(sum(c['tool']=='rocq_check' and c['arguments']['body']=='zesu_block.' for c in calls),1)
+
+ def test_sealed_native_preflight_refuses_before_bank_writes(self):
+  import entry_chain_run as E
+  source=self.root/'sealed';source.mkdir()
+  caller=source/'Caller.v';caller.write_text('Immutable sealed fixture.\n');caller.chmod(0o444)
+  metadata=source/'BOUNDARY.json';metadata.write_text('{}\n');metadata.chmod(0o444)
+  def snapshot():
+   return {p.name:(p.read_bytes(),p.stat().st_dev,p.stat().st_ino,p.stat().st_mode,
+                   p.stat().st_mtime_ns,p.stat().st_ctime_ns) for p in source.iterdir()}
+  before=snapshot();out=self.root/'new-job'
+  config={'prepared_workspace':str(source),'seed_binding_reference':{'descriptor':binding(metadata)},'proof_runtime':{}}
+  with patch('seed_bindings.descriptor',return_value={'sealed_boundary':True}),patch('seed_bindings.validate'),patch.object(E.clone_copy,'copy2',side_effect=AssertionError('A sealed bank write occurred.')):
+   with self.assertRaisesRegex(ValueError,'preflight requires a fresh unsealed'):
+    E.stage_job(config,{'phase':'native'},out)
+  self.assertEqual(snapshot(),before)
+  self.assertFalse(out.exists())
 
  def test_native_search_fixture_preserves_declaration_and_imports(self):
   import entry_chain_provider as P
@@ -191,18 +214,32 @@ class NativeRoute(unittest.TestCase):
                    spec['pre_proof_commands']+'Proof.\nAbort.\n')
   self.assertEqual(fixture.read_text().splitlines()[line],'Proof.')
   self.assertEqual(spec['name'],'DesignedBoundary_Test')
+ def test_parse_failure_stops_before_start_or_search_and_keeps_public_message(self):
+  out,compiled=self._run_native_provider('parse')
+  calls=json.loads((out/'CALLS.json').read_text())
+  self.assertEqual([row['tool'] for row in calls],['rocq_health','rocq_compile_file'])
+  self.assertEqual(compiled,[str(self.root/'Native_EntryPilotSearch.v')])
+  self.assertFalse((out/'PRE-CALL-STATE.json').exists())
+  from entry_chain_result import summarize
+  result=summarize(self.root,{'phase':'native','key':'800d6974'},{'success':False})
+  self.assertEqual(result['status'],'infrastructure_failed')
+  self.assertEqual(result['last_phase'],'declaration_preflight')
+  self.assertEqual(result['error'],'Syntax error fixture.')
+  hidden=summarize(self.root,{'phase':'native','key':'800aaae4'},{'success':False})
+  self.assertNotIn('error',hidden)
+
  def test_proof_sentence_start_failure_stops_before_export_or_search(self):
   out,compiled=self._run_native_provider('start')
   calls=json.loads((out/'CALLS.json').read_text())
-  self.assertEqual([row['tool'] for row in calls],['rocq_health','rocq_start'])
-  self.assertEqual(compiled,[])
+  self.assertEqual([row['tool'] for row in calls],['rocq_health','rocq_compile_file','rocq_start'])
+  self.assertEqual(compiled,[str(self.root/'Native_EntryPilotSearch.v')])
   self.assertEqual(json.loads((out/'PROGRESS.json').read_text()),
                    {'phase':'native_start','side':'block','start_mode':'proof_sentence'})
  def test_no_scope_export_stops_before_search_without_fallback(self):
   out,compiled=self._run_native_provider('scope')
   calls=json.loads((out/'CALLS.json').read_text())
-  self.assertEqual([row['tool'] for row in calls],['rocq_health','rocq_start','rocq_complete_goals'])
-  self.assertEqual(compiled,[])
+  self.assertEqual([row['tool'] for row in calls],['rocq_health','rocq_compile_file','rocq_start','rocq_complete_goals'])
+  self.assertEqual(compiled,[str(self.root/'Native_EntryPilotSearch.v')])
   self.assertFalse((out/'PRE-CALL-STATE.json').exists())
   self.assertFalse((out/'NATIVE-ERROR.json').exists())
   from entry_chain_result import summarize

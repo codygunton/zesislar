@@ -15,6 +15,12 @@ def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+class MissingLibraryObject(ValueError):
+    def __init__(self, module, path):
+        super().__init__('The compiler-resolved library object is absent: ' + module)
+        self.path = path
+
+
 def require_imports(words, origin=None):
     """Preserve Require syntax and exclude its import-category modifier."""
     if words[:1] == ['Require']:
@@ -46,9 +52,11 @@ def require_imports(words, origin=None):
 
 
 class InstalledMappings:
-    def __init__(self, flags, *, coqdep=None, receipt_dir=None, supplier=None):
+    def __init__(self, flags, *, coqdep=None, receipt_dir=None, supplier=None, planning_workspace=None, source_files=None):
         self.roots, self.entries, self.requests, self.resolutions = [], [], {}, {}
         self.context_resolutions = {}
+        self.planning_workspace = Path(planning_workspace).resolve() if planning_workspace is not None else None
+        self.planning_sources = source_files if source_files is not None else {}
         self.receipt_dir = Path(receipt_dir) if receipt_dir is not None else None
         self.coqdep = Path(coqdep) if coqdep is not None else Path(os.environ['OPAM_SWITCH_PREFIX']) / 'bin/coqdep'
         if not self.coqdep.is_file():
@@ -145,7 +153,10 @@ class InstalledMappings:
             return requests
         if module in self.requests:
             return self.requests[module]
-        if any(row['canonical'] == module for row in self.entries):
+        owned = self.planning_sources.get(module)
+        owned = self.planning_workspace / owned if self.planning_workspace is not None and owned is not None else None
+        if (any(row['canonical'] == module for row in self.entries) or
+                owned is not None and owned.is_file() and owned.resolve().is_relative_to(self.planning_workspace)):
             return [{'statement': 'Require Import ' + module + '.\n',
                      'origin': {'fully_qualified_graph_module': module}}]
         self.scan_sources()
@@ -226,7 +237,7 @@ class InstalledMappings:
                 raise ValueError('Pinned coqdep did not return one physical library: ' + module)
             obj = choices.pop()
             if not obj.is_file():
-                raise ValueError('The compiler-resolved library object is absent: ' + module)
+                raise MissingLibraryObject(module, obj)
             entries = [entry for entry in self.entries if entry['object'].absolute() == obj]
             if not entries:
                 raise ValueError('The compiler-resolved object is outside the indexed mappings: ' + module)
@@ -260,6 +271,42 @@ class InstalledMappings:
 
     def resolve(self, module, *, origin=None):
         return self.resolution(module, origin=origin)['source']
+
+    def source_resolution(self, module, module_files, *, origin=None):
+        """Plan an owned source selected by coqdep before its object exists."""
+        if self.planning_workspace is None:
+            return self.resolution(module, origin=origin)
+        try:
+            return self.resolution(module, origin=origin)
+        except MissingLibraryObject:
+            pass
+        answers = []
+        for request in self._find_request(module, origin):
+            try:
+                entry, _ = self._query(module, request)
+            except MissingLibraryObject as error:
+                source = error.path.with_suffix('.v')
+                workspace = self.planning_workspace
+                if not source.is_file() or not source.resolve().is_relative_to(workspace):
+                    raise
+                matches = set()
+                for row in self.roots:
+                    root = Path(row['root'])
+                    if not source.is_relative_to(root):
+                        continue
+                    relative = source.relative_to(root).with_suffix('').parts
+                    canonical = '.'.join(([row['prefix']] if row['prefix'] else []) + list(relative))
+                    declared = module_files.get(canonical)
+                    if declared is not None and (workspace / declared).resolve() == source.resolve():
+                        matches.add(canonical)
+                if len(matches) != 1:
+                    raise ValueError('The compiler-selected source lacks one exact owned module mapping: ' + module)
+                entry = {'source': source, 'object': error.path, 'canonical': matches.pop()}
+            answers.append(entry)
+        if len({entry['object'].resolve() for entry in answers}) != 1:
+            raise ValueError('Source contexts resolve the same graph name ambiguously: ' + module)
+        return {**answers[0], 'requests': [row['statement'] for row in self._find_request(module, origin)],
+                'source_only': True}
 
     def inventory(self):
         return {'schema': 'compiled-library.tool-resolved-mappings.v1', 'roots': self.roots,

@@ -60,6 +60,9 @@ class AddedToolTransition(unittest.TestCase):
    job_controller=restart.binding(old_here/'code/entry_chain_run.py'),guard_override=restart.binding(old_here/'runtime-tools/resource_guard.sh'),
    guard_override_base=restart.binding(old_here/'runtime-tools/resource_guard.sh'),identity={'fixture':'nonproof'},
    expected_mcp_flags=[],physical_flags=[],guard_helper_paths=[],declarations_only=True)
+  graph=self.root/'IMPORT-GRAPH.json';scratch.save(graph,{'import_edges':[]})
+  self.config['cache_import_graph']=restart.binding(graph)
+  self.config['bindings'].append(restart.binding(graph))
   self.prior=self.root/'PRIOR.json';scratch.save(self.prior,self.config)
   self.original=[dict(row) for row in self.config['bindings']]
   self.measured=self.root/'MEASUREMENTS.json';scratch.save(self.measured,{'rows':[]})

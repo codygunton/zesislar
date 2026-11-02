@@ -329,6 +329,83 @@ def compiler_outputs(obj, before):
     return {'object':primary,'sidecar':sidecar,'sidecar_status':status}
 
 
+def import_selection(runtime, source, workspace, report):
+    """Select transitive owned objects from the bound public import graph."""
+    reference=runtime.get('cache_import_graph')
+    modules=runtime.get('module_files',{})
+    workspace=Path(workspace).resolve()
+    owners=[name for name,relative in modules.items()
+            if (workspace/relative).resolve()==Path(source['path']).resolve()]
+    if reference is None or not owners:return None
+    if len(owners)!=1:raise ValueError('A compiler source lacks one canonical owner module.')
+    graph=read_bound(reference)
+    if not isinstance(graph,dict) or not isinstance(graph.get('import_edges'),list):
+        raise ValueError('The compiler import graph is invalid.')
+    forward={}
+    for edge in graph['import_edges']:
+        if (not isinstance(edge,dict) or set(edge)!={'from','to'} or
+                any(not isinstance(edge[key],str) for key in ['from','to'])):
+            raise ValueError('The compiler import graph has an invalid edge.')
+        forward.setdefault(edge['from'],set()).add(edge['to'])
+    owner=owners[0];pending=list(forward.get(owner,()));imports=set()
+    while pending:
+        name=pending.pop()
+        if name==owner:raise ValueError('The compiler import graph contains an owner cycle.')
+        if name in imports:continue
+        imports.add(name);pending.extend(forward.get(name,()))
+    inputs={}
+    for row in report['directly_hashed_inputs']:
+        key=str(Path(row['path']).resolve())
+        if key in inputs and inputs[key]['sha256']!=row['sha256']:
+            raise ValueError('A validated compiler input has conflicting aliases.')
+        inputs[key]=row
+    selected=[]
+    for name in sorted(imports & modules.keys()):
+        relative=Path(modules[name]);source_path=workspace/relative
+        if not source_path.resolve().is_relative_to(workspace):
+            if relative.is_absolute():continue
+            raise ValueError('An owned compiler import leaves its workspace.')
+        path=source_path.with_suffix('.vo').resolve()
+        if not path.is_relative_to(workspace):
+            raise ValueError('An owned compiler import leaves its workspace.')
+        row=inputs.get(str(path))
+        if row is None:raise ValueError('An owned import lacks its validated pre-compilation object.')
+        selected.append({'module':name,'object':{'path':str(path),'sha256':row['sha256']}})
+    return {'schema':'entry-chain.object-import-selection.v1','module':owner,
+            'owned_workspace':str(workspace),'source':source,'graph':reference,
+            'imported_objects':selected}
+
+
+def check_import_selection(selection, report):
+    """Refuse a selected dependency that changes across physical compilation."""
+    if selection is None:return
+    for imported in selection['imported_objects']:
+        path=Path(imported['object']['path'])
+        rows=[row for row in report['directly_hashed_inputs'] if Path(row['path']).resolve()==path]
+        if not rows or any(_identity(row['path'])!=row['identity'] for row in rows):
+            raise ValueError('An imported compiler object changed during physical compilation.')
+
+
+def _physical_import_provenance(record, inputs, snapshot, source, compiler, flags):
+    reference=record.get('input_validation')
+    if reference is None:return None
+    directory=Path(record['input']['path']).parent
+    if not isinstance(reference,dict) or Path(reference.get('path',''))!=directory/'PHYSICAL-VALIDATION.json':
+        raise ValueError('The physical input validation leaves its compiler invocation.')
+    report=_read_private(reference)
+    if report.get('snapshot')!=inputs['validation']['snapshot'] or report.get('producer')!=snapshot['producer']:
+        raise ValueError('The physical input validation names another snapshot or producer.')
+    runtime=read_bound(snapshot['runtime'])
+    selection=import_selection(runtime,source,inputs['owned_workspace'],report)
+    if report.get('import_selection')!=selection:
+        raise ValueError('The physical import selection differs from its bound runtime.')
+    if selection is None:return None
+    return {'schema':'entry-chain.object-imports.v1','module':selection['module'],
+            'owned_workspace':selection['owned_workspace'],'compiler':compiler,
+            'normalized_flags':[word.replace(selection['owned_workspace'],'{workspace}') for word in flags],
+            'validation':reference,'imported_objects':selection['imported_objects']}
+
+
 def _physical_record(reference, snapshot, snapshot_reference, source, compiler, flags, obj, prior):
     """Authenticate the completed wrapper record before sealing its outputs."""
     record=_read_private(reference)
@@ -377,18 +454,19 @@ def _physical_record(reference, snapshot, snapshot_reference, source, compiler, 
     expected='retained_authenticated_output' if retained else 'compiled_output'
     if outputs.get('sidecar_status')!=expected:
         raise ValueError('The physical compiler sidecar status differs.')
-    return outputs,before
+    return outputs,before,_physical_import_provenance(record,inputs,snapshot,source,compiler,flags)
 
 
 class OutputReceipts:
     """Authenticate only objects accepted after successful provider checks."""
-    def __init__(self, snapshot, reference, key=None):
-        self.snapshot = snapshot
-        self.reference = reference
+    def __init__(self, reference, runtime_reference, key=None):
+        snapshot=read(reference,runtime_reference)
+        self.snapshot={name:json.loads(json.dumps(snapshot[name])) for name in ('runtime','producer','objects','compiler')}
+        self.reference = dict(reference)
         self.key = key or secrets.token_hex(32)
         self.rows = []
         self.physical=[]
-        self.root = Path(snapshot['objects'])
+        self.root = Path(self.snapshot['objects'])
         self.root.mkdir(mode=0o700)
         self._write_index()
 
@@ -431,12 +509,13 @@ class OutputReceipts:
             if len(candidates)!=1:raise ValueError('The accepted output lacks one fresh physical compiler record.')
             physical_result=candidates[0]
         if physical_result in self.physical:raise ValueError('A physical compiler record was already accepted.')
-        outputs,before=_physical_record(physical_result,self.snapshot,self.reference,
+        outputs,before,imports=_physical_record(physical_result,self.snapshot,self.reference,
             receipt['source'],receipt['compiler'],list(flags),receipt['object'],self.rows)
         if output_artifact(obj)!=outputs['object'] or output_artifact(Path(obj).with_suffix('.vos'))!=outputs['sidecar']:
             raise ValueError('A compiler output changed after its physical record.')
         receipt.update(physical_result=physical_result,sidecar=outputs['sidecar'],sidecar_prestate=before,
                        sidecar_status=outputs['sidecar_status'])
+        if imports is not None:receipt['import_provenance']=imports
         if (_identity(lexical)!=object_identity or _namespace(lexical)!=object_namespace
                 or str(lexical.resolve())!=canonical):
             raise ValueError('An accepted object changed during receipt publication.')
@@ -483,7 +562,7 @@ def accepted_objects(snapshot, reference, key, compiler, flags):
             raise ValueError('An accepted object lacks its successful physical sidecar record.')
         if receipt['physical_result'] in physical_seen:
             raise ValueError('A physical compiler record authenticates multiple receipts.')
-        outputs,before=_physical_record(receipt['physical_result'],snapshot,reference,
+        outputs,before,imports=_physical_record(receipt['physical_result'],snapshot,reference,
             receipt['source'],compiler,flags,receipt['object'],prior)
         primary={'binding':receipt['object'],'lexical_path':receipt['object_lexical_path'],
                  'canonical_path':receipt['object_canonical_path'],'identity':receipt['object_identity'],
@@ -491,6 +570,8 @@ def accepted_objects(snapshot, reference, key, compiler, flags):
         if (primary!=outputs['object'] or receipt['sidecar']!=outputs['sidecar'] or
                 receipt.get('sidecar_prestate')!=before or receipt.get('sidecar_status')!=outputs['sidecar_status']):
             raise ValueError('An accepted sidecar differs from its successful physical record.')
+        if receipt.get('import_provenance')!=imports:
+            raise ValueError('An accepted import provenance differs from its physical validation.')
         for kind,artifact in [('vo',primary),('vos',receipt['sidecar'])]:
             lexical=Path(artifact['lexical_path']);canonical=artifact['canonical_path']
             object_identity=artifact['identity'];namespace=artifact['namespace']

@@ -19,6 +19,21 @@ class EntryBindingTests(unittest.TestCase):
         self.assertEqual(declared_binders(source, 'entry'), [
             {'name': 'args', 'type': 'Args'}, {'name': 'n', 'type': 'Z'}, {'name': 'cursor', 'type': 'Z'}])
 
+    def test_emitted_types_preserve_operators_names_and_comments(self):
+        types = ['(0 <= Z.of_nat (List.length xs))%Z',
+                 '(n (* preserve this comment *) + 1 < 2)%Z',
+                 'bv 64 -> list (option Z)']
+        source = 'Definition Entry ' + ''.join(
+            f'(fact{i} : {kind}) ' for i, kind in enumerate(types)) + ': Prop := True.'
+        self.assertEqual([row['type'] for row in declared_binders(source, 'Entry')], types)
+        self.assertNotIn('0 < =', declared_binders(source, 'Entry')[0]['type'])
+        self.assertIn('Z.of_nat', declared_binders(source, 'Entry')[0]['type'])
+
+    def test_emitted_type_preserves_multiline_source(self):
+        kind = '(0 <= n /\\\n  n <= Z.of_nat (List.length xs))%Z'
+        source = 'Definition Entry (fact : ' + kind + ') : Prop := True.'
+        self.assertEqual(declared_binders(source, 'Entry'), [{'name': 'fact', 'type': kind}])
+
     def test_numeric_token_boundaries_remain_distinct(self):
         self.assertEqual(normalize_type('bv 64'), 'bv 64')
         self.assertEqual(normalize_type('bv 6 4'), 'bv 6 4')
@@ -34,7 +49,8 @@ class EntryBindingTests(unittest.TestCase):
 
     def test_nested_type_parentheses_are_retained(self):
         result = declared_binders('Definition entry (f : (Z -> Z) -> Prop) : Type := nat.', 'entry')
-        self.assertEqual(result[0]['type'], normalize_type('(Z -> Z) -> Prop'))
+        self.assertEqual(result[0]['type'], '(Z -> Z) -> Prop')
+        self.assertEqual(normalize_type(result[0]['type']), normalize_type('(Z -> Z) -> Prop'))
 
     def test_implicit_locals_are_not_silently_discarded(self):
         with self.assertRaisesRegex(ValueError, 'implicit binder'):
@@ -54,7 +70,8 @@ class EntryBindingTests(unittest.TestCase):
             block['binders'] = [{'name': 'returnAddress', 'type': 'Z'},
                                 {'name': 'args', 'type': 'Args'}]
             declared = check_binders(block, root)
-            self.assertEqual(declared[0], {'name': 'domain', 'type': normalize_type('Args -> Prop')})
+            self.assertEqual(declared[0], {'name': 'domain', 'type': 'Args -> Prop'})
+            self.assertEqual(normalize_type(declared[0]['type']), normalize_type('Args -> Prop'))
             self.assertEqual(block['binders'][0]['name'], 'returnAddress')
             block['arguments'].pop()
             with self.assertRaisesRegex(ValueError, 'argument count'):

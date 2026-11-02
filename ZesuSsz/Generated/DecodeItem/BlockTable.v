@@ -69,7 +69,7 @@ Local Open Scope Z_scope.
 (* Source: build/stock-zisk/decodeItem.raw.dump; SHA-256: 309bfd72ccac295008856beb22ba83fc6834ac97c56f7591a8a1316ec7e52a2b. *)
 (* Source: build/stock-zisk/inventory.json; SHA-256: b7a3cde815744ca0babedf52bf5626403f5f133bc1350f40634e5c54ff9dbe86. *)
 (* Source: tools/block/check_data_only_lemmas.py; SHA-256: f8690247c65fa360075d2f422c3f52917bd7090f0811c95caf25faba5e3c0831. *)
-(* Source: tools/block/entry_bindings.py; SHA-256: f68373d49d74fd715204d48189480a8eaa0f816a2438b5763c459165753bc39a. *)
+(* Source: tools/block/entry_bindings.py; SHA-256: fb2175314a8c206c0ebdfd675ca6633414dda60f48616be856299f24f37c17ce. *)
 (* Source: tools/block/entry_schema.py; SHA-256: 3f91d05aced7cb0eaec0b0363d073f0f6dc59bdf638a469d72abda954059a167. *)
 (* Source: tools/block/function_names.py; SHA-256: 619eb4b97f110e5158e950fa84f91753210605512dd921a603c55bded6bdd5e9. *)
 (* Source: tools/block/generate_table.py; SHA-256: 460d42f603b58f5cb6db8ca74ee73affebdc86bcc56306d6bd3ac517d8716ee0. *)

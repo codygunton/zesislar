@@ -19,6 +19,7 @@ FIELD_MAPPING = {
     'bindings': ['recipe.files', 'transport.checked_bindings'],
     'physical_compiler': ['recipe.toolchain.compiler','recipe.files'],
     'declared_outputs': ['recipe.files','recipe.dependencies'],
+    'native_parse_preflight': ['recipe.files','transport.checked_bindings'],
     'binding_inventory': ['recipe.files', 'transport.checked_bindings'],
     'target': ['recipe.module', 'recipe.proof', 'recipe.files'],
     'ordered_modules': ['recipe.dependencies', 'recipe.producers', 'configuration.execution_vectors'],
@@ -34,7 +35,9 @@ FIELD_MAPPING = {
 
 KNOWN_SINKS = {'check_operation', 'proof_environment', 'prerequisite_environment', 'check_proof_bindings', 'validate_runtime', 'publish'}
 
-SCOPED_SINKS = {'entry_chain_provider.py': {'compiled_verification': ('scratch_statement', 'compiled_verification')}}
+SCOPED_SINKS = {'entry_chain_provider.py': {
+    'compiled_verification': ('scratch_statement', 'compiled_verification'),
+    'checked_fixture': ('declaration_preflight', 'checked_fixture')}}
 
 
 def audit(path):
