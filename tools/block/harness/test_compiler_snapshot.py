@@ -19,7 +19,7 @@ class CompilerSnapshotTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         self.source = self.root / 'Control.v'
-        self.source.write_text('nonproof test data\n')
+        self.source.write_text('(* Nonproof test data. *)\n')
         self.compiler = self.root / 'switch/bin/coqc'
         self.compiler.parent.mkdir(parents=True)
         self.compiler.write_text('nonexecutable compiler fixture\n')

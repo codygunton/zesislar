@@ -6,6 +6,7 @@ import shutil
 
 from declaration_dag import CLAIM_BYTES, frontier_claim, validate as validate_graph
 from declaration_resources import weights
+from declaration_source import contains_native_proof
 from entry_chain import binding, read_bound
 from import_graph import graph_closure
 
@@ -88,7 +89,7 @@ def attach(config, *, measurements=None, maximum_workers=48):
     for module in ordered:
         source = workspace / modules[module]
         if (not source.resolve().is_relative_to(workspace) or module in native or
-                '.Proofs.' in module or re.search(r'\bzesu_block\b', source.read_text())):
+                '.Proofs.' in module or contains_native_proof(source.read_text())):
             raise ValueError('A native proof cannot enter the declaration DAG.')
         if (module in PROTECTED or '.Evidence.' in module or
                 re.search(r'^\s*Declare\s+ML\s+Module\b', source.read_text(), re.M)):
@@ -147,7 +148,7 @@ def validate(runtime, workspace):
         if binding(source) != row['source']:
             raise ValueError('A declaration DAG source changed.')
         text=source.read_text()
-        if '.Proofs.' in row['module'] or re.search(r'\bzesu_block\b',text):
+        if '.Proofs.' in row['module'] or contains_native_proof(text):
             raise ValueError('A native proof cannot enter the declaration DAG.')
         if (row['module'] in PROTECTED or '.Evidence.' in row['module'] or
                 re.search(r'^\s*Declare\s+ML\s+Module\b',text,re.M)):
