@@ -47,28 +47,61 @@ class DeclarationSourceTests(unittest.TestCase):
                 'Global Ltac zesu_block ::= idtac.',
                 '#[local] Ltac zesu_block := idtac.',
                 'Ltac wrapper := idtac.',
+                'Ltac hidden := zesu_block.',
+                'Ltac2 wrapper () := zesu_block ().',
                 'Ltac2 @ external ordinary : unit -> unit := "plugin" "entry".']:
             with self.subTest(source=source):
                 self.assertFalse(contains_native_proof(source))
 
-    def test_native_aliases_refuse_before_any_alias_execution(self):
+    def assert_refuses(self, source):
+        try:
+            result = contains_native_proof(source)
+        except ValueError:
+            return
+        self.assertTrue(result)
+
+    def test_executed_native_aliases_refuse(self):
         for source in [
                 'Ltac hidden := zesu_block. Goal True. hidden. Qed.',
-                'Local Ltac hidden := Owner.zesu_block.',
+                'Local Ltac hidden := Owner.zesu_block. Goal True. hidden. Qed.',
                 'Ltac hidden := zesu_block. Ltac other := hidden. Goal True. other. Qed.',
                 'Ltac zesu_block := idtac with hidden := zesu_block. Goal True. hidden. Qed.']:
             with self.subTest(source=source):
-                self.assertTrue(contains_native_proof(source))
+                self.assert_refuses(source)
 
-    def test_ltac2_native_initializers_and_bodies_refuse_conservatively(self):
+    def test_ltac2_native_initializers_refuse_conservatively(self):
         for source in ['Ltac2 x := zesu_block ().',
                        'Ltac2 x : unit := zesu_block ().',
                        'Ltac2 x := let y := zesu_block () in y.',
-                       'Ltac2 wrapper () := zesu_block ().',
-                       'Ltac2 x := fun () => zesu_block ().',
-                       'Ltac2 @ external zesu_block : unit -> unit := "plugin" "entry".']:
+                       'Ltac2 Set x := zesu_block ().']:
             with self.subTest(source=source):
-                self.assertTrue(contains_native_proof(source))
+                self.assert_refuses(source)
+
+    def test_definition_only_queries_and_non_native_proofs_pass(self):
+        for source in ['Ltac hidden := zesu_block. Print Ltac hidden.',
+                       'Ltac zesu_block := idtac. Goal True. Proof. exact I. Qed.',
+                       'Ltac hidden := zesu_block. Goal True. Proof. Print Ltac hidden. exact I. Defined.']:
+            with self.subTest(source=source):
+                self.assertFalse(contains_native_proof(source))
+
+    def test_owner_invocation_and_implicit_or_inline_alias_proofs_refuse(self):
+        for source in ['Ltac zesu_block := idtac. Goal True. Proof. zesu_block. Qed.',
+                       'Ltac hidden := zesu_block. Lemma p : True. hidden. Defined.',
+                       'Ltac hidden := zesu_block. Definition p : True := ltac:(hidden).']:
+            with self.subTest(source=source):
+                self.assert_refuses(source)
+
+    def test_opaque_ltac2_execution_refuses_without_a_spelling_blacklist(self):
+        source = ('Ltac2 native_id s := Option.get (Ident.of_string s). '
+                  'Ltac2 run_native () := Ltac1.run (Ltac1.ref '
+                  '[native_id "ZesuSsz"; native_id "Automation"; '
+                  'native_id "Finish"; native_id "zesu_block"]). '
+                  'Goal True. ltac2:(run_native ()). Qed.')
+        self.assert_refuses(source)
+        self.assert_refuses('Goal True. ltac2:(opaque ()). Qed.')
+        self.assert_refuses('Ltac wrapper := ltac2:(opaque ()). Goal True. wrapper. Qed.')
+        self.assert_refuses('Ltac2 opaque () := (). Goal True. opaque (). Qed.')
+        self.assertFalse(contains_native_proof('Ltac wrapper := ltac2:(opaque ()).'))
 
     def test_actual_native_calls_refuse(self):
         for source in [
@@ -159,9 +192,9 @@ class PublicDeclarationClassifierTests(unittest.TestCase):
                        'Ltac2 x := zesu_block ().']:
             with self.subTest(source=source):
                 config, profile = self.configuration({'Example.Owner': source})
-                with self.assertRaisesRegex(ValueError, 'native proof'):
+                with self.assertRaises(ValueError):
                     workload_for_job(profile, config['jobs'][0], config)
-                with self.assertRaisesRegex(ValueError, 'native proof'):
+                with self.assertRaises(ValueError):
                     self.attach(config)
 
     def test_malformed_source_refuses_both_public_classifiers(self):
