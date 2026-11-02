@@ -1316,7 +1316,25 @@ def leaf_closed(reader, bound):
     return 'populated 0' in events
 
 
-def release_shell(marker, *, ledger=None, reader=None):
+def ended_process(reader, actor):
+    """Require the exact actor to end, including its possible zombie state."""
+    if (type(actor.get('pid')) is not int or actor['pid'] <= 0 or
+            type(actor.get('startticks')) is not int or actor['startticks'] <= 0):
+        raise ValueError('The ended actor identity is invalid.')
+    path = reader.proc / str(actor['pid'])
+    try:
+        fields = (path / 'stat').read_text().rsplit(')', 1)[1].split()
+        return int(fields[19]) != actor['startticks'] or fields[0] in ('Z', 'X', 'x')
+    except FileNotFoundError:
+        return True
+
+
+def recover_dead_shell(marker, *, ledger=None, reader=None):
+    """Use the exact release checks only after the admitted owner ends."""
+    return release_shell(marker, ledger=ledger, reader=reader, require_dead_owner=True)
+
+
+def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False):
     """Release only an exact token whose recorded compiler actor ended."""
     marker = Path(marker).absolute()
     ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
@@ -1325,6 +1343,8 @@ def release_shell(marker, *, ledger=None, reader=None):
         key = shell_key(marker)
         record = data.get('shell_claim_owners', {}).get(key)
         if record is None:
+            if require_dead_owner:
+                raise ValueError('Dead-owner recovery requires an admitted shell owner.')
             token_identity = reader.file_identity(marker.lstat())
             raw = marker.read_bytes()
             fields = dict(line.split('=', 1) for line in raw.decode().splitlines()[1:] if '=' in line)
@@ -1340,6 +1360,8 @@ def release_shell(marker, *, ledger=None, reader=None):
             write_ledger(ledger, data)
             marker.unlink()
             return True
+        if require_dead_owner and not ended_process(reader, record['owner']):
+            raise ValueError('The shell reservation owner is still live.')
         token_identity = reader.file_identity(marker.lstat())
         if tuple(record.get('token_identity', ())) != token_identity:
             raise ValueError('The released token identity changed.')
@@ -1361,7 +1383,7 @@ def release_shell(marker, *, ledger=None, reader=None):
                     raise ValueError('The shell compiler actor is not closed.')
             except FileNotFoundError:
                 pass
-        if lines[0] == 'confirmed':
+        if lines[0] == 'confirmed' and not require_dead_owner:
             reader.process(record['owner'])
         sample = reader.residual(record['aggregate']) if record.get('aggregate') else {}
         if sample.get('closed') is True:
@@ -1377,8 +1399,11 @@ def release_shell(marker, *, ledger=None, reader=None):
             raise ValueError('The shell aggregate closure cannot be authenticated.')
         if reader.file_identity(marker.lstat()) != token_identity:
             raise ValueError('The released token changed during validation.')
+        if require_dead_owner and not ended_process(reader, record['owner']):
+            raise ValueError('The shell reservation owner changed during release.')
         data['fixed_claims'][key] = 0
-        data.setdefault('shell_releases', {})[key] = {'marker': str(marker), 'owner': record['owner']}
+        data.setdefault('shell_releases', {})[key] = {'marker': str(marker), 'owner': record['owner'],
+            'dead_owner_recovery': require_dead_owner}
         write_ledger(ledger, data)
         marker.unlink()
         return True
