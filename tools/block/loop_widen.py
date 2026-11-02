@@ -4,7 +4,7 @@ Every syntactic register write becomes a binder. Algebraic checks are separate
 from unsigned non-wrap and byte-window obligations. An unavailable check drops
 its relation and records the reason; it never supplies a guessed image.
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import re
 
 try:
@@ -416,16 +416,24 @@ class FoldRule:
     zero: dict
     snoc: dict
     window: dict
+    function: str = 'ByteWindowFold.zesu_byte_window_fold'
 
     def __post_init__(self):
         if not _IDENTIFIER.fullmatch(self.name):
             raise ValueError('A fold rule needs a stable identifier')
         if not 0 < self.digit_width <= self.word_width:
             raise ValueError('A fold rule has incompatible widths')
+        if self.function != 'ByteWindowFold.zesu_byte_window_fold':
+            raise ValueError('A fold table must use the generic byte-window interface')
         for binding in (self.zero, self.snoc, self.window):
             if (not binding.get('declaration') or not binding.get('source_sha256')
                     or not binding.get('verification_receipt')):
                 raise ValueError('A fold rule lacks a verified source binding')
+            if not re.fullmatch(r'(?:ZesuSsz\.Automation\.)?ByteWindowFold(?:Word)?\.[A-Za-z_][A-Za-z_0-9]*', binding['declaration']):
+                raise ValueError('A fold proof must use the generic byte-window interface')
+            receipt = binding['verification_receipt']
+            if not isinstance(receipt, dict) or receipt.get('method') != 'module_m' or receipt.get('assumptions') != []:
+                raise ValueError('A fold binding needs closed physical verification')
 
 
 @dataclass
@@ -439,11 +447,12 @@ class LoopWidening:
     body_results: list
     witness_plan: dict
     write_set: tuple
+    fold_candidates: list = field(default_factory=list)
 
     def to_dict(self):
         return {'schema': 'source.loop-widening.v1', 'state': self.seed.to_dict(),
                 'binders': self.binders, 'relations': self.relations,
-                'folds': self.folds, 'edge_records': self.edge_records,
+                'folds': self.folds, 'fold_candidates': self.fold_candidates, 'edge_records': self.edge_records,
                 'refusals': self.refusals,
                 'body_results': [result.to_dict() for result in self.body_results],
                 'witness_plan': self.witness_plan, 'write_set': list(self.write_set),
@@ -600,5 +609,62 @@ def widen_loop_head(seed, traces, *, loop_pc, provenance, fold_table=(),
     elif affine:
         refuse(None, 'shared_index', 'More than one unit-step cursor needs a checked shared-index mapping',
                registers=affine)
+    pending_folds = []
+    # Preserve a reviewable candidate even when an unrefuted fault path prevents
+    # retention. It is not an active relation or an accepted entry assertion.
+    for binder in binders:
+        key = binder.get('register')
+        if key is None or not backedges:
+            continue
+        matches = [fold_recurrence(widened.registers[key], row.state.registers[key])
+                   for row in backedges]
+        recognized = [match for match in matches if match is not None]
+        if not recognized:
+            continue
+        tables = [rule for rule in fold_table if all(rule.word_width == match['word_width']
+                  and rule.digit_width == match['digit_width'] for match in recognized)]
+        if len(tables) != 1:
+            continue
+        table = tables[0]
+        candidate = {'register': key, 'status': 'OPEN',
+                     'preheader_zero': seed.registers[key] == bits(0, table.word_width),
+                     'zero_lemma': table.zero, 'step_lemma': table.snoc,
+                     'window_lemma': table.window, 'edges': [], 'assertion': None}
+        distances = [check['interval'] for record in records
+                     for check in record['check'].get('checks', [])
+                     if check.get('kind') == 'positive_loop_distance']
+        candidate['source_count_intervals'] = distances
+        width_supported = bool(distances) and all(0 <= lo <= hi <= table.word_width // table.digit_width
+                                                  for lo, hi in distances)
+        candidate['word_range_supported'] = width_supported
+        for number, (row, match) in enumerate(zip(backedges, matches)):
+            edge = {'edge': 'backedge:' + str(number), 'source_path': list(row.path)}
+            if match is None:
+                edge.update(status='OPEN_FAULT_REFUTATION',
+                            reason='This source path has no matching shift-or byte step')
+            else:
+                digit = Expr.from_dict(match['digit'])
+                if digit.op != 'owned_array_byte':
+                    edge.update(status='OPEN_SOURCE_READ', source_digit=match['digit'])
+                else:
+                    array, address, base = digit.args
+                    reads = [read for read in row.state.read_obligations
+                             if read.get('value') == digit.to_dict()]
+                    edge.update(status='OPEN_RANGE_AND_LOOKUP', source_digit=digit.to_dict(),
+                                range_obligations=reads)
+                    if len(relations) == 1 and width_supported:
+                        cursor = relations[0]
+                        offset = _offset(seed.registers[cursor['register']], base)
+                        if offset is not None:
+                            assertion = 'bv_unsigned machine_' + key + ' = ' + table.function + \
+                                ' (' + array.coq() + ') ' + str(offset) + '%nat (Z.to_nat ' + index_name + ')'
+                            if candidate['assertion'] not in (None, assertion):
+                                edge.update(status='OPEN_IMAGE_IDENTITY',
+                                            reason='The source fold windows differ')
+                            else:
+                                candidate['assertion'] = assertion
+                                edge['index_substitution'] = index_name + ' + 1'
+            candidate['edges'].append(edge)
+        pending_folds.append(candidate)
     return LoopWidening(widened, binders, relations, folds, records, refusals,
-                        results, plan, written)
+                        results, plan, written, pending_folds)

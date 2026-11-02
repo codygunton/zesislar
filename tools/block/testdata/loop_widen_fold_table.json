@@ -1,0 +1,38 @@
+{
+  "name": "big_endian_byte_window64",
+  "digit_width": 8,
+  "word_width": 64,
+  "zero": {
+    "declaration": "ByteWindowFold.zesu_byte_window_zero",
+    "source_sha256": "e0f3a362963c4cb82be00c0ba67ac3f8c4c13c3e3bfe97a6f2b94ed3b5cebf75",
+    "object_sha256": "426d52f529b96a3b3d298cee45dcf4248e471c5f5ae2025bedb70bad649ee2ea",
+    "verification_receipt": {
+      "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/loop-fold408-control002/RESULT.json",
+      "sha256": "d02fba2dcd7637c51340222c74b2a29be8dc55d85f39af472a33e5cff63a2f81",
+      "method": "module_m",
+      "assumptions": []
+    }
+  },
+  "snoc": {
+    "declaration": "ByteWindowFoldWord.zesu_byte_window_unsigned_step",
+    "source_sha256": "0e51b65ff416aeebe5610f35f5b138cdfdd427441958743243d7df3f5df74fb3",
+    "object_sha256": "e114a9e4b8bd7f46da3c65db5882b6b34d3448dc558556a22350f5fc02e988f5",
+    "verification_receipt": {
+      "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/loop-fold408-word008/RESULT.json",
+      "sha256": "92f1d10e680522ecb00c0c7c43a8dc8bc4dc80c0addea0151910ff45950a4074",
+      "method": "module_m",
+      "assumptions": []
+    }
+  },
+  "window": {
+    "declaration": "ByteWindowFold.zesu_window_skipn_lookup",
+    "source_sha256": "e0f3a362963c4cb82be00c0ba67ac3f8c4c13c3e3bfe97a6f2b94ed3b5cebf75",
+    "object_sha256": "426d52f529b96a3b3d298cee45dcf4248e471c5f5ae2025bedb70bad649ee2ea",
+    "verification_receipt": {
+      "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/loop-fold408-control002/RESULT.json",
+      "sha256": "d02fba2dcd7637c51340222c74b2a29be8dc55d85f39af472a33e5cff63a2f81",
+      "method": "module_m",
+      "assumptions": []
+    }
+  }
+}

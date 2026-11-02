@@ -233,6 +233,40 @@ class LoopWidenTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'source array owner'):
             loop_read_window(source, 'x15', 'x11', source_facts=[], provenance={'source': 'fixture'})
 
+    def test_verified_table_candidates_keep_range_and_fault_obligations(self):
+        domain = json.loads((HERE / 'testdata/loop_widen_domain.json').read_text())
+        table = FoldRule(**json.loads((HERE / 'testdata/loop_widen_fold_table.json').read_text()))
+        bounds = source_sum_bounds(domain['original_layout_clauses'], domain['parameter_substitution'],
+            domain['constants'], width=64, provenance={'source': domain['source_path']})
+        for suffix in ('6a24', '6ac4'):
+            data, traces = self.fixture(suffix)
+            for preheader in data['preheaders']:
+                seed = _state_from_result(preheader['state'])
+                window = loop_read_window(seed, 'x15', 'x11', source_facts=domain['source_facts'],
+                    provenance={'source': data['forward_source']})
+                views = {seed.registers['x15']: {'term': domain['parameter_substitution']['inputPointer'] + ' + 1',
+                         'provenance': {'source': domain['source_path']}}}
+                result = widen_loop_head(seed, traces, loop_pc=int(data['pc'], 0),
+                    provenance={'source': data['forward_source']}, source_bounds=bounds,
+                    origin_views=views, symbolic_read_ranges=[window], fold_table=[table])
+                self.assertEqual(len(result.relations), 1)
+                self.assertEqual(len(result.fold_candidates), 1)
+                candidate = result.fold_candidates[0]
+                self.assertTrue(candidate['preheader_zero'])
+                self.assertTrue(candidate['word_range_supported'])
+                self.assertTrue(all(interval == [1, 8] for interval in candidate['source_count_intervals']))
+                self.assertIn('ByteWindowFold.zesu_byte_window_fold', candidate['assertion'])
+                self.assertTrue(any(edge['status'] == 'OPEN_RANGE_AND_LOOKUP' for edge in candidate['edges']))
+                self.assertTrue(any(edge['status'] == 'OPEN_FAULT_REFUTATION' for edge in candidate['edges']))
+                self.assertFalse(result.folds)
+                self.assertFalse(result.to_dict()['seed_ready'])
+
+    def test_contract_specific_fold_reference_refuses(self):
+        fields = json.loads((HERE / 'testdata/loop_widen_fold_table.json').read_text())
+        fields['function'] = 'Contract.specific_fold'
+        with self.assertRaisesRegex(ValueError, 'generic byte-window interface'):
+            FoldRule(**fields)
+
 
 if __name__ == '__main__':
     unittest.main()
