@@ -1,0 +1,63 @@
+{
+  "version": "FP-20261101",
+  "kind": "new frozen source engine",
+  "provenance": "Retained infra-h1-resources-eea6 source snapshot; this is not recovery of the lost pass.",
+  "source_snapshot_sha256": "3c3106a4d10a3a4581a92c7b747a59392e030157264435d8521adceafb8db9c9",
+  "files": [
+    {
+      "path": "tools/block/entry_helper_resources.py",
+      "sha256": "56ae1ee71de43b0141712e7635264bccdfeb90943724ea50a91ec1b7c7ee09c4"
+    },
+    {
+      "path": "tools/block/entry_seed.py",
+      "sha256": "746bc86c4c47ebd22a94a88704caa971fe70a47c5b5406355312485da77e4b02"
+    },
+    {
+      "path": "tools/block/forward_design.py",
+      "sha256": "a6384a2256b8edb4077d5b2c0c9d4a78edadd0b59efcf4ff514dfad9ab9c23d6"
+    },
+    {
+      "path": "tools/block/forward_resource_design.py",
+      "sha256": "9a3f3b8cb44ee2ca9c8c5355ee009a1e5e5675e7d450d2515c04e6bc9738f48a"
+    },
+    {
+      "path": "tools/block/forward_resources.py",
+      "sha256": "810f90cc5d658eeb7cfeccdf012907dd159751c9def73780647c9d91210bfb92"
+    },
+    {
+      "path": "tools/block/resource_seed.py",
+      "sha256": "6fdb6842082dd0fda95c2cd8efe9c084ed183041bb494c4db93e01fb99a4936f"
+    },
+    {
+      "path": "tools/block/symbolic_state.py",
+      "sha256": "3113c767c2dc33f32d42c9b22771ce68424d5de73e98fc3ba7c23e424ca24439"
+    },
+    {
+      "path": "tools/block/system_shape_seed.py",
+      "sha256": "99e0c444987ce264a676479c4986772ec355ae8a1546daf81ad83838f784e73b"
+    },
+    {
+      "path": "tools/test_forward_resource_design.py",
+      "sha256": "91257a14ec5a19957469c5cd9a13f7d30d6b795d6fb96f8e19ea22edc8b11b7f"
+    },
+    {
+      "path": "tools/test_forward_resources.py",
+      "sha256": "aa42c92e4ceead7872d01244c27ea7b9ea06ab0f770b853df609766dbd2a68fc"
+    },
+    {
+      "path": "tools/test_resource_seed.py",
+      "sha256": "4bef5d764156cecc1d2716521cd535d1d2f6c585026712bf56580d922c82230a"
+    },
+    {
+      "path": "tools/test_system_shape_seed.py",
+      "sha256": "c3b68a03eb9f444c25b1f0b2e12b19097cc42ff6392ceb6ea5cd77a5e7d3745a"
+    }
+  ],
+  "entrypoint": "forward_resource_design.evaluate_owned_function",
+  "statement": "Source evaluation does not establish any generated contract or predecessor entailment.",
+  "limitations": [
+    "Unknown ownership stops propagation.",
+    "Unsupported source expressions remain explicit.",
+    "Call specifications and loop cuts require source-bound inputs."
+  ]
+}
