@@ -292,7 +292,7 @@ def create(reference, module, source, obj, compiler, flags, workspace):
 
 
 def validate(reference, module, source, obj, compiler, flags, workspace):
-    receipt = bound_record(reference)
+    receipt = read_bound(reference)
     policy = json.loads(POLICY.read_text())
     workspace, source, obj = Path(workspace).resolve(), Path(source), Path(obj)
     accepted, effective = origin(policy, receipt['origin']['publication'], module,
