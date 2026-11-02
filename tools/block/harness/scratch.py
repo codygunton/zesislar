@@ -400,10 +400,12 @@ def prepare(a):
     physical_flags=[word.replace(str(source),str(workspace)) for word in c['physical_flags']]
     expected_mcp_flags=_parse_project_flags(workspace)
     import_graph=binding(out/'INVALIDATION.json')
+    control_session_reference=binding(a.control_session) if a.control_session else None
+    selected_control_session=read_bound(control_session_reference) if control_session_reference else None
     if a.admission_profile:
         from memory_policy import workload_for_job
         context=binding(a.admission_profile)
-        actual_config=dict(c,prepared_workspace=str(workspace),proof_runtime=dict(c['proof_runtime'],module_files=modules),declarations_only=a.declarations_only,prerequisite_modules=pre['ordered_modules'],physical_flags=physical_flags,expected_mcp_flags=expected_mcp_flags,cache_import_graph=import_graph)
+        actual_config=dict(c,prepared_workspace=str(workspace),proof_runtime=dict(c['proof_runtime'],module_files=modules),declarations_only=a.declarations_only,prerequisite_modules=pre['ordered_modules'],physical_flags=physical_flags,expected_mcp_flags=expected_mcp_flags,cache_import_graph=import_graph,control_session=selected_control_session)
         native_job=apply_job(native_job,completed_rows,workload_for_job(context,native_job,actual_config))
         pre=apply_job(pre,workload=workload_for_job(context,pre,actual_config))
         c['admission_profile']=context
@@ -412,7 +414,7 @@ def prepare(a):
         if set(check)!={'problem_name','problem_statement','proof'} or not all(isinstance(v,str) and v for v in check.values()):raise ValueError('A declaration check has invalid fields.')
     if c['declaration_checks'] and not a.declarations_only:raise ValueError('Declaration checks require declaration-only mode.')
     c['entry_normalization_policy']=policy
-    c['control_session']=read_bound(binding(a.control_session)) if a.control_session else None
+    c['control_session']=selected_control_session
     c['declarations_only']=a.declarations_only
     c['source_overrides']=overrides
     c.update(jobs=[pre,native_job],selected_blocks=[a.block],prepared_workspace=str(workspace),runtime_path=str(out/'RUNTIME.json'),shared_latch=str(out/'INFRASTRUCTURE-HOLD.json'),readiness={'path':str(out/'READINESS.json'),'sha256':None},execution_released=True,priority_claim=None,job_controller=binding(HERE/'code/entry_chain_run.py'),scratch_provider=binding(HERE/'code/entry_chain_provider.py'),result_adapter=binding(HERE/'code/entry_chain_result.py'),cache_import_graph=import_graph,reuse_prerequisites=False,variant='one-block-rule-scratch')
@@ -438,7 +440,7 @@ def prepare(a):
     c['cache_producer_files']={'implementation':[dict(r,id='scratch-implementation:'+str(i),kind='source') for i,r in enumerate(implementations)],'inputs':[dict(binding(a.entry_file),id='scratch-entry',kind='source')]+([dict(binding(a.declaration_checks),id='declaration-checks',kind='configuration')] if a.declaration_checks else [])+([dict(binding(a.normalization_policy),id='entry-normalization-policy',kind='configuration')] if a.normalization_policy else [])+([dict(binding(a.rules),id='scratch-rules',kind='source')] if a.rules else []),'outputs':[dict(binding(native),id='scratch-native',kind='source'),dict(binding(entry),id='scratch-entries',kind='source')]}
     if a.supplier_controls:c['cache_producer_files']['inputs'].append(dict(binding(a.supplier_controls),id='supplier-activation-controls',kind='configuration'))
     if a.admission_profile:c['cache_producer_files']['inputs'].append(dict(binding(a.admission_profile),id='admission-profile',kind='configuration'))
-    additions=([binding(a.supplier_controls)] if a.supplier_controls else [])+([binding(a.admission_profile)] if a.admission_profile else [])+([binding(a.control_session)] if a.control_session else [])+([binding(a.declaration_checks)] if a.declaration_checks else [])+([binding(a.normalization_policy)] if a.normalization_policy else [])+([binding(a.target_adapter),adapter['targets'],adapter['overrides'],adapter['graph']] if adapter else [])+([binding(a.sizing)] if a.sizing else [])+[{'path':r['path'],'sha256':r['sha256']} for r in overrides]+([binding(a.source_overrides)] if a.source_overrides else [])+implementations+[binding(installed.coqdep),binding(a.entry_file),binding(out/'INVALIDATION.json'),binding(out/'OBJECT-IMPORT-COMPATIBILITY.json')]+([binding(a.rules)] if a.rules else [])
+    additions=([binding(a.supplier_controls)] if a.supplier_controls else [])+([binding(a.admission_profile)] if a.admission_profile else [])+([control_session_reference] if control_session_reference else [])+([binding(a.declaration_checks)] if a.declaration_checks else [])+([binding(a.normalization_policy)] if a.normalization_policy else [])+([binding(a.target_adapter),adapter['targets'],adapter['overrides'],adapter['graph']] if adapter else [])+([binding(a.sizing)] if a.sizing else [])+[{'path':r['path'],'sha256':r['sha256']} for r in overrides]+([binding(a.source_overrides)] if a.source_overrides else [])+implementations+[binding(installed.coqdep),binding(a.entry_file),binding(out/'INVALIDATION.json'),binding(out/'OBJECT-IMPORT-COMPATIBILITY.json')]+([binding(a.rules)] if a.rules else [])
     if wave_plan:
         wave_inputs=[binding(a.dependency_batch),wave_plan['source_boundary']]+[wave_plan[key] for key in ['guard','compile_measure_helper','run_registry','compiler','dune']]+[row['source'] for row in wave_plan['modules']]
         additions+=wave_inputs
