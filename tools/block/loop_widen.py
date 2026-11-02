@@ -5,6 +5,7 @@ from unsigned non-wrap and byte-window obligations. An unavailable check drops
 its relation and records the reason; it never supplies a guessed image.
 """
 from dataclasses import dataclass, field
+from copy import deepcopy
 import re
 
 try:
@@ -649,6 +650,7 @@ class LoopWidening:
     fold_candidates: list = field(default_factory=list)
     zero_refutations: list = field(default_factory=list)
     owned_read_verifications: list = field(default_factory=list)
+    transfer_refutations: list = field(default_factory=list)
 
     def to_dict(self):
         return {'schema': 'source.loop-widening.v1', 'state': self.seed.to_dict(),
@@ -660,6 +662,7 @@ class LoopWidening:
                     if row.status == 'control_transfer'],
                 'refusals': self.refusals, 'zero_refutations': self.zero_refutations,
                 'owned_read_verifications': self.owned_read_verifications,
+                'transfer_refutations': self.transfer_refutations,
                 'body_results': [result.to_dict() for result in self.body_results],
                 'witness_plan': self.witness_plan, 'write_set': list(self.write_set),
                 'seed_ready': not self.refusals, 'kernel_entailments': 'OPEN'}
@@ -801,6 +804,48 @@ def check_owned_fold_candidate(proposal, source_seed, candidate, distance_check,
         'edges': covered, 'failures': failures, 'distance_check': distance_check,
         'interface': interface, 'kernel_loop_entailment': 'OPEN',
         'source_ownership_changed': False}
+
+
+def bind_transfer_refutation(proposal, binding):
+    """Bind exact pure guard evidence without changing a transfer outcome."""
+    if not isinstance(binding, dict) or not isinstance(binding.get('verification_receipt'), dict):
+        raise ValueError('A transfer binding needs an exact verification record')
+    receipt = binding['verification_receipt']
+    if (binding.get('schema') != 'source.loop-transfer-refutation.v1'
+            or receipt.get('method') != 'module_m' or receipt.get('success') is not True
+            or receipt.get('assumptions') != [] or not receipt.get('path')
+            or not receipt.get('sha256') or not receipt.get('target')
+            or not binding.get('source_domain')):
+        raise ValueError('A transfer binding needs a verified exact source target')
+    path = binding.get('path')
+    if not isinstance(path, list) or any(type(index) is not int or index < 0 for index in path):
+        raise ValueError('The transfer target has an invalid source path')
+    cursors = [row for row in proposal.relations if row['kind'] == 'affine_cursor']
+    if len(cursors) != 1 or binding.get('endpoint') != cursors[0]['limit']:
+        raise ValueError('The transfer target has a different source endpoint')
+    guard = Expr.from_dict(binding['count_guard'])
+    if guard not in proposal.seed.conditions:
+        raise ValueError('The transfer target lacks its source count guard')
+    values = binding.get('guards')
+    if not isinstance(values, list) or not values:
+        raise ValueError('The transfer target has no exact guard premises')
+    guards = [Expr.from_dict(value) for value in values]
+    for term in guards:
+        term.coq()
+    matches = []
+    for index, row in enumerate(proposal.body_results):
+        if (row.status != 'control_transfer' or list(row.path) != path
+                or guard not in row.state.conditions
+                or not all(term in row.state.conditions for term in guards)):
+            continue
+        matches.append({'body_result_index': index, 'source_path': list(row.path),
+            'status': 'VERIFIED_SOURCE_GUARD_TARGET', 'binding': deepcopy(binding),
+            'control_transfer_classification_changed': False,
+            'kernel_resource_entailment': 'OPEN'})
+    if not matches:
+        raise ValueError('No control transfer matches the exact source guard target')
+    proposal.transfer_refutations.extend(matches)
+    return matches
 
 
 def widen_loop_head(seed, traces, *, loop_pc, provenance, fold_table=(),

@@ -1,0 +1,2688 @@
+[
+  {
+    "schema": "source.loop-transfer-refutation.v1",
+    "loop": "6a24",
+    "path": [
+      0,
+      1
+    ],
+    "guards": [
+      {
+        "op": "bvsge",
+        "args": [
+          {
+            "op": "zero_extend",
+            "width": 128,
+            "args": [
+              {
+                "op": "input",
+                "width": 64,
+                "value": "machine_x15"
+              }
+            ]
+          },
+          {
+            "op": "bits",
+            "width": 128,
+            "value": 2684354560
+          }
+        ]
+      },
+      {
+        "op": "not",
+        "args": [
+          {
+            "op": "bvsle",
+            "args": [
+              {
+                "op": "bvadd",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "zero_extend",
+                    "width": 128,
+                    "args": [
+                      {
+                        "op": "input",
+                        "width": 64,
+                        "value": "machine_x15"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "bits",
+                    "width": 128,
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "op": "bits",
+                "width": 128,
+                "value": 3221225472
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "endpoint": {
+      "op": "bvadd",
+      "width": 64,
+      "args": [
+        {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        },
+        {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvadd",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvand",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "sign_extend",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "array_byte",
+                              "width": 8,
+                              "value": 0,
+                              "args": [
+                                {
+                                  "op": "input",
+                                  "value": "decodeItemInputBytes args"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 255
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 73
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    "count_guard": {
+      "op": "not",
+      "args": [
+        {
+          "op": "bvsge",
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvadd",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "bvand",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "sign_extend",
+                              "width": 64,
+                              "args": [
+                                {
+                                  "op": "array_byte",
+                                  "width": 8,
+                                  "value": 0,
+                                  "args": [
+                                    {
+                                      "op": "input",
+                                      "value": "decodeItemInputBytes args"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "op": "bits",
+                              "width": 64,
+                              "value": 255
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 73
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "source_domain": "decodeItemDomainAt returnAddress decodeItemC1BDomain args",
+    "verification_receipt": {
+      "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/loop-path408-ram-bind041/RESULT.json",
+      "sha256": "7bb250e9f7f107c57381024e516080c17cecfa93083ace0ed3586617f665064a",
+      "target": "verified_exact_ram_upper_6a24",
+      "method": "module_m",
+      "success": true,
+      "assumptions": []
+    }
+  },
+  {
+    "schema": "source.loop-transfer-refutation.v1",
+    "loop": "6ac4",
+    "path": [
+      0,
+      1
+    ],
+    "guards": [
+      {
+        "op": "bvsge",
+        "args": [
+          {
+            "op": "zero_extend",
+            "width": 128,
+            "args": [
+              {
+                "op": "input",
+                "width": 64,
+                "value": "machine_x15"
+              }
+            ]
+          },
+          {
+            "op": "bits",
+            "width": 128,
+            "value": 2684354560
+          }
+        ]
+      },
+      {
+        "op": "not",
+        "args": [
+          {
+            "op": "bvsle",
+            "args": [
+              {
+                "op": "bvadd",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "zero_extend",
+                    "width": 128,
+                    "args": [
+                      {
+                        "op": "input",
+                        "width": 64,
+                        "value": "machine_x15"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "bits",
+                    "width": 128,
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "op": "bits",
+                "width": 128,
+                "value": 3221225472
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "endpoint": {
+      "op": "bvadd",
+      "width": 64,
+      "args": [
+        {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        },
+        {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvadd",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvand",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "sign_extend",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "array_byte",
+                              "width": 8,
+                              "value": 0,
+                              "args": [
+                                {
+                                  "op": "input",
+                                  "value": "decodeItemInputBytes args"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 255
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 9
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    "count_guard": {
+      "op": "not",
+      "args": [
+        {
+          "op": "bvsge",
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvadd",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "bvand",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "sign_extend",
+                              "width": 64,
+                              "args": [
+                                {
+                                  "op": "array_byte",
+                                  "width": 8,
+                                  "value": 0,
+                                  "args": [
+                                    {
+                                      "op": "input",
+                                      "value": "decodeItemInputBytes args"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "op": "bits",
+                              "width": 64,
+                              "value": 255
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 9
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "source_domain": "decodeItemDomainAt returnAddress decodeItemC1BDomain args",
+    "verification_receipt": {
+      "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/loop-path408-ram-bind041/RESULT.json",
+      "sha256": "7bb250e9f7f107c57381024e516080c17cecfa93083ace0ed3586617f665064a",
+      "target": "verified_exact_ram_upper_6ac4",
+      "method": "module_m",
+      "success": true,
+      "assumptions": []
+    }
+  },
+  {
+    "schema": "source.loop-transfer-refutation.v1",
+    "loop": "6a24",
+    "path": [
+      1,
+      1,
+      0,
+      1,
+      0,
+      1
+    ],
+    "guards": [
+      {
+        "op": "not",
+        "args": [
+          {
+            "op": "bvsge",
+            "args": [
+              {
+                "op": "zero_extend",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "input",
+                    "width": 64,
+                    "value": "machine_x15"
+                  }
+                ]
+              },
+              {
+                "op": "bits",
+                "width": 128,
+                "value": 2684354560
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "op": "not",
+        "args": [
+          {
+            "op": "bvsle",
+            "args": [
+              {
+                "op": "bvadd",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "zero_extend",
+                    "width": 128,
+                    "args": [
+                      {
+                        "op": "input",
+                        "width": 64,
+                        "value": "machine_x15"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "bits",
+                    "width": 128,
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "op": "bits",
+                "width": 128,
+                "value": 2147483648
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "endpoint": {
+      "op": "bvadd",
+      "width": 64,
+      "args": [
+        {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        },
+        {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvadd",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvand",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "sign_extend",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "array_byte",
+                              "width": 8,
+                              "value": 0,
+                              "args": [
+                                {
+                                  "op": "input",
+                                  "value": "decodeItemInputBytes args"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 255
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 73
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    "count_guard": {
+      "op": "not",
+      "args": [
+        {
+          "op": "bvsge",
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvadd",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "bvand",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "sign_extend",
+                              "width": 64,
+                              "args": [
+                                {
+                                  "op": "array_byte",
+                                  "width": 8,
+                                  "value": 0,
+                                  "args": [
+                                    {
+                                      "op": "input",
+                                      "value": "decodeItemInputBytes args"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "op": "bits",
+                              "width": 64,
+                              "value": 255
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 73
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "source_domain": "decodeItemDomainAt returnAddress decodeItemC1BDomain args",
+    "verification_receipt": {
+      "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/loop-path408-rest-bind043/RESULT.json",
+      "sha256": "39080f795c92a885530559baa10041b96ef236f9b32399c3d0ea7dab761298d7",
+      "target": "verified_exact_remaining_6a24_0",
+      "method": "module_m",
+      "success": true,
+      "assumptions": []
+    }
+  },
+  {
+    "schema": "source.loop-transfer-refutation.v1",
+    "loop": "6a24",
+    "path": [
+      1,
+      1,
+      0,
+      1,
+      1
+    ],
+    "guards": [
+      {
+        "op": "not",
+        "args": [
+          {
+            "op": "bvsge",
+            "args": [
+              {
+                "op": "zero_extend",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "input",
+                    "width": 64,
+                    "value": "machine_x15"
+                  }
+                ]
+              },
+              {
+                "op": "bits",
+                "width": 128,
+                "value": 2684354560
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "op": "not",
+        "args": [
+          {
+            "op": "bvsle",
+            "args": [
+              {
+                "op": "bvadd",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "zero_extend",
+                    "width": 128,
+                    "args": [
+                      {
+                        "op": "input",
+                        "width": 64,
+                        "value": "machine_x15"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "bits",
+                    "width": 128,
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "op": "bits",
+                "width": 128,
+                "value": 2147483648
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "endpoint": {
+      "op": "bvadd",
+      "width": 64,
+      "args": [
+        {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        },
+        {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvadd",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvand",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "sign_extend",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "array_byte",
+                              "width": 8,
+                              "value": 0,
+                              "args": [
+                                {
+                                  "op": "input",
+                                  "value": "decodeItemInputBytes args"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 255
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 73
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    "count_guard": {
+      "op": "not",
+      "args": [
+        {
+          "op": "bvsge",
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvadd",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "bvand",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "sign_extend",
+                              "width": 64,
+                              "args": [
+                                {
+                                  "op": "array_byte",
+                                  "width": 8,
+                                  "value": 0,
+                                  "args": [
+                                    {
+                                      "op": "input",
+                                      "value": "decodeItemInputBytes args"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "op": "bits",
+                              "width": 64,
+                              "value": 255
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 73
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "source_domain": "decodeItemDomainAt returnAddress decodeItemC1BDomain args",
+    "verification_receipt": {
+      "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/loop-path408-rest-bind043/RESULT.json",
+      "sha256": "39080f795c92a885530559baa10041b96ef236f9b32399c3d0ea7dab761298d7",
+      "target": "verified_exact_remaining_6a24_1",
+      "method": "module_m",
+      "success": true,
+      "assumptions": []
+    }
+  },
+  {
+    "schema": "source.loop-transfer-refutation.v1",
+    "loop": "6a24",
+    "path": [
+      1,
+      1,
+      1
+    ],
+    "guards": [
+      {
+        "op": "not",
+        "args": [
+          {
+            "op": "bvsge",
+            "args": [
+              {
+                "op": "zero_extend",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "input",
+                    "width": 64,
+                    "value": "machine_x15"
+                  }
+                ]
+              },
+              {
+                "op": "bits",
+                "width": 128,
+                "value": 2684354560
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "op": "not",
+        "args": [
+          {
+            "op": "bvsge",
+            "args": [
+              {
+                "op": "zero_extend",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "input",
+                    "width": 64,
+                    "value": "machine_x15"
+                  }
+                ]
+              },
+              {
+                "op": "bits",
+                "width": 128,
+                "value": 1073741824
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "endpoint": {
+      "op": "bvadd",
+      "width": 64,
+      "args": [
+        {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        },
+        {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvadd",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvand",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "sign_extend",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "array_byte",
+                              "width": 8,
+                              "value": 0,
+                              "args": [
+                                {
+                                  "op": "input",
+                                  "value": "decodeItemInputBytes args"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 255
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 73
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    "count_guard": {
+      "op": "not",
+      "args": [
+        {
+          "op": "bvsge",
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvadd",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "bvand",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "sign_extend",
+                              "width": 64,
+                              "args": [
+                                {
+                                  "op": "array_byte",
+                                  "width": 8,
+                                  "value": 0,
+                                  "args": [
+                                    {
+                                      "op": "input",
+                                      "value": "decodeItemInputBytes args"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "op": "bits",
+                              "width": 64,
+                              "value": 255
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 73
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "source_domain": "decodeItemDomainAt returnAddress decodeItemC1BDomain args",
+    "verification_receipt": {
+      "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/loop-path408-rest-bind043/RESULT.json",
+      "sha256": "39080f795c92a885530559baa10041b96ef236f9b32399c3d0ea7dab761298d7",
+      "target": "verified_exact_remaining_6a24_2",
+      "method": "module_m",
+      "success": true,
+      "assumptions": []
+    }
+  },
+  {
+    "schema": "source.loop-transfer-refutation.v1",
+    "loop": "6ac4",
+    "path": [
+      1,
+      1,
+      0,
+      1,
+      0,
+      1
+    ],
+    "guards": [
+      {
+        "op": "not",
+        "args": [
+          {
+            "op": "bvsge",
+            "args": [
+              {
+                "op": "zero_extend",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "input",
+                    "width": 64,
+                    "value": "machine_x15"
+                  }
+                ]
+              },
+              {
+                "op": "bits",
+                "width": 128,
+                "value": 2684354560
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "op": "not",
+        "args": [
+          {
+            "op": "bvsle",
+            "args": [
+              {
+                "op": "bvadd",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "zero_extend",
+                    "width": 128,
+                    "args": [
+                      {
+                        "op": "input",
+                        "width": 64,
+                        "value": "machine_x15"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "bits",
+                    "width": 128,
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "op": "bits",
+                "width": 128,
+                "value": 2147483648
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "endpoint": {
+      "op": "bvadd",
+      "width": 64,
+      "args": [
+        {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        },
+        {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvadd",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvand",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "sign_extend",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "array_byte",
+                              "width": 8,
+                              "value": 0,
+                              "args": [
+                                {
+                                  "op": "input",
+                                  "value": "decodeItemInputBytes args"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 255
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 9
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    "count_guard": {
+      "op": "not",
+      "args": [
+        {
+          "op": "bvsge",
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvadd",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "bvand",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "sign_extend",
+                              "width": 64,
+                              "args": [
+                                {
+                                  "op": "array_byte",
+                                  "width": 8,
+                                  "value": 0,
+                                  "args": [
+                                    {
+                                      "op": "input",
+                                      "value": "decodeItemInputBytes args"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "op": "bits",
+                              "width": 64,
+                              "value": 255
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 9
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "source_domain": "decodeItemDomainAt returnAddress decodeItemC1BDomain args",
+    "verification_receipt": {
+      "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/loop-path408-rest-bind043/RESULT.json",
+      "sha256": "39080f795c92a885530559baa10041b96ef236f9b32399c3d0ea7dab761298d7",
+      "target": "verified_exact_remaining_6ac4_0",
+      "method": "module_m",
+      "success": true,
+      "assumptions": []
+    }
+  },
+  {
+    "schema": "source.loop-transfer-refutation.v1",
+    "loop": "6ac4",
+    "path": [
+      1,
+      1,
+      0,
+      1,
+      1
+    ],
+    "guards": [
+      {
+        "op": "not",
+        "args": [
+          {
+            "op": "bvsge",
+            "args": [
+              {
+                "op": "zero_extend",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "input",
+                    "width": 64,
+                    "value": "machine_x15"
+                  }
+                ]
+              },
+              {
+                "op": "bits",
+                "width": 128,
+                "value": 2684354560
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "op": "not",
+        "args": [
+          {
+            "op": "bvsle",
+            "args": [
+              {
+                "op": "bvadd",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "zero_extend",
+                    "width": 128,
+                    "args": [
+                      {
+                        "op": "input",
+                        "width": 64,
+                        "value": "machine_x15"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "bits",
+                    "width": 128,
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "op": "bits",
+                "width": 128,
+                "value": 2147483648
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "endpoint": {
+      "op": "bvadd",
+      "width": 64,
+      "args": [
+        {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        },
+        {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvadd",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvand",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "sign_extend",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "array_byte",
+                              "width": 8,
+                              "value": 0,
+                              "args": [
+                                {
+                                  "op": "input",
+                                  "value": "decodeItemInputBytes args"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 255
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 9
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    "count_guard": {
+      "op": "not",
+      "args": [
+        {
+          "op": "bvsge",
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvadd",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "bvand",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "sign_extend",
+                              "width": 64,
+                              "args": [
+                                {
+                                  "op": "array_byte",
+                                  "width": 8,
+                                  "value": 0,
+                                  "args": [
+                                    {
+                                      "op": "input",
+                                      "value": "decodeItemInputBytes args"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "op": "bits",
+                              "width": 64,
+                              "value": 255
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 9
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "source_domain": "decodeItemDomainAt returnAddress decodeItemC1BDomain args",
+    "verification_receipt": {
+      "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/loop-path408-rest-bind043/RESULT.json",
+      "sha256": "39080f795c92a885530559baa10041b96ef236f9b32399c3d0ea7dab761298d7",
+      "target": "verified_exact_remaining_6ac4_1",
+      "method": "module_m",
+      "success": true,
+      "assumptions": []
+    }
+  },
+  {
+    "schema": "source.loop-transfer-refutation.v1",
+    "loop": "6ac4",
+    "path": [
+      1,
+      1,
+      1
+    ],
+    "guards": [
+      {
+        "op": "not",
+        "args": [
+          {
+            "op": "bvsge",
+            "args": [
+              {
+                "op": "zero_extend",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "input",
+                    "width": 64,
+                    "value": "machine_x15"
+                  }
+                ]
+              },
+              {
+                "op": "bits",
+                "width": 128,
+                "value": 2684354560
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "op": "not",
+        "args": [
+          {
+            "op": "bvsge",
+            "args": [
+              {
+                "op": "zero_extend",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "input",
+                    "width": 64,
+                    "value": "machine_x15"
+                  }
+                ]
+              },
+              {
+                "op": "bits",
+                "width": 128,
+                "value": 1073741824
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "endpoint": {
+      "op": "bvadd",
+      "width": 64,
+      "args": [
+        {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        },
+        {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvadd",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvand",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "sign_extend",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "array_byte",
+                              "width": 8,
+                              "value": 0,
+                              "args": [
+                                {
+                                  "op": "input",
+                                  "value": "decodeItemInputBytes args"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 255
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 9
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    "count_guard": {
+      "op": "not",
+      "args": [
+        {
+          "op": "bvsge",
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvadd",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "bvand",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "sign_extend",
+                              "width": 64,
+                              "args": [
+                                {
+                                  "op": "array_byte",
+                                  "width": 8,
+                                  "value": 0,
+                                  "args": [
+                                    {
+                                      "op": "input",
+                                      "value": "decodeItemInputBytes args"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "op": "bits",
+                              "width": 64,
+                              "value": 255
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 9
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "source_domain": "decodeItemDomainAt returnAddress decodeItemC1BDomain args",
+    "verification_receipt": {
+      "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/loop-path408-rest-bind043/RESULT.json",
+      "sha256": "39080f795c92a885530559baa10041b96ef236f9b32399c3d0ea7dab761298d7",
+      "target": "verified_exact_remaining_6ac4_2",
+      "method": "module_m",
+      "success": true,
+      "assumptions": []
+    }
+  },
+  {
+    "schema": "source.loop-transfer-refutation.v1",
+    "loop": "6a24",
+    "path": [
+      1,
+      0,
+      1
+    ],
+    "guards": [
+      {
+        "op": "not",
+        "args": [
+          {
+            "op": "bvsle",
+            "args": [
+              {
+                "op": "bvadd",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "zero_extend",
+                    "width": 128,
+                    "args": [
+                      {
+                        "op": "input",
+                        "width": 64,
+                        "value": "machine_x15"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "bits",
+                    "width": 128,
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "op": "zero_extend",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "input",
+                    "width": 64,
+                    "value": "(Z_to_bv 64%N (decodeItemInputEnd args))"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "endpoint": {
+      "op": "bvadd",
+      "width": 64,
+      "args": [
+        {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        },
+        {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvadd",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvand",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "sign_extend",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "array_byte",
+                              "width": 8,
+                              "value": 0,
+                              "args": [
+                                {
+                                  "op": "input",
+                                  "value": "decodeItemInputBytes args"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 255
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 73
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    "count_guard": {
+      "op": "not",
+      "args": [
+        {
+          "op": "bvsge",
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvadd",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "bvand",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "sign_extend",
+                              "width": 64,
+                              "args": [
+                                {
+                                  "op": "array_byte",
+                                  "width": 8,
+                                  "value": 0,
+                                  "args": [
+                                    {
+                                      "op": "input",
+                                      "value": "decodeItemInputBytes args"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "op": "bits",
+                              "width": 64,
+                              "value": 255
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 73
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "source_domain": "decodeItemDomainAt returnAddress decodeItemC1BDomain args",
+    "verification_receipt": {
+      "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/loop-zero408-bind014/RESULT.json",
+      "sha256": "affbc24fbeb84490aa501333bc045fed50f46597d5ff3d223567757a98ea7a57",
+      "target": "verified_exact_zero_6a24",
+      "method": "module_m",
+      "success": true,
+      "assumptions": []
+    }
+  },
+  {
+    "schema": "source.loop-transfer-refutation.v1",
+    "loop": "6a24",
+    "path": [
+      1,
+      1,
+      0,
+      0,
+      1,
+      1
+    ],
+    "guards": [
+      {
+        "op": "not",
+        "args": [
+          {
+            "op": "bvsle",
+            "args": [
+              {
+                "op": "bvadd",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "zero_extend",
+                    "width": 128,
+                    "args": [
+                      {
+                        "op": "input",
+                        "width": 64,
+                        "value": "machine_x15"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "bits",
+                    "width": 128,
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "op": "zero_extend",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "input",
+                    "width": 64,
+                    "value": "(Z_to_bv 64%N (decodeItemInputEnd args))"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "endpoint": {
+      "op": "bvadd",
+      "width": 64,
+      "args": [
+        {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        },
+        {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvadd",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvand",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "sign_extend",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "array_byte",
+                              "width": 8,
+                              "value": 0,
+                              "args": [
+                                {
+                                  "op": "input",
+                                  "value": "decodeItemInputBytes args"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 255
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 73
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    "count_guard": {
+      "op": "not",
+      "args": [
+        {
+          "op": "bvsge",
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvadd",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "bvand",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "sign_extend",
+                              "width": 64,
+                              "args": [
+                                {
+                                  "op": "array_byte",
+                                  "width": 8,
+                                  "value": 0,
+                                  "args": [
+                                    {
+                                      "op": "input",
+                                      "value": "decodeItemInputBytes args"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "op": "bits",
+                              "width": 64,
+                              "value": 255
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 73
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "source_domain": "decodeItemDomainAt returnAddress decodeItemC1BDomain args",
+    "verification_receipt": {
+      "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/loop-zero408-bind014/RESULT.json",
+      "sha256": "affbc24fbeb84490aa501333bc045fed50f46597d5ff3d223567757a98ea7a57",
+      "target": "verified_exact_zero_6a24",
+      "method": "module_m",
+      "success": true,
+      "assumptions": []
+    }
+  },
+  {
+    "schema": "source.loop-transfer-refutation.v1",
+    "loop": "6ac4",
+    "path": [
+      1,
+      0,
+      1
+    ],
+    "guards": [
+      {
+        "op": "not",
+        "args": [
+          {
+            "op": "bvsle",
+            "args": [
+              {
+                "op": "bvadd",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "zero_extend",
+                    "width": 128,
+                    "args": [
+                      {
+                        "op": "input",
+                        "width": 64,
+                        "value": "machine_x15"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "bits",
+                    "width": 128,
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "op": "zero_extend",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "input",
+                    "width": 64,
+                    "value": "(Z_to_bv 64%N (decodeItemInputEnd args))"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "endpoint": {
+      "op": "bvadd",
+      "width": 64,
+      "args": [
+        {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        },
+        {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvadd",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvand",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "sign_extend",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "array_byte",
+                              "width": 8,
+                              "value": 0,
+                              "args": [
+                                {
+                                  "op": "input",
+                                  "value": "decodeItemInputBytes args"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 255
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 9
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    "count_guard": {
+      "op": "not",
+      "args": [
+        {
+          "op": "bvsge",
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvadd",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "bvand",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "sign_extend",
+                              "width": 64,
+                              "args": [
+                                {
+                                  "op": "array_byte",
+                                  "width": 8,
+                                  "value": 0,
+                                  "args": [
+                                    {
+                                      "op": "input",
+                                      "value": "decodeItemInputBytes args"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "op": "bits",
+                              "width": 64,
+                              "value": 255
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 9
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "source_domain": "decodeItemDomainAt returnAddress decodeItemC1BDomain args",
+    "verification_receipt": {
+      "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/loop-zero408-bind014/RESULT.json",
+      "sha256": "affbc24fbeb84490aa501333bc045fed50f46597d5ff3d223567757a98ea7a57",
+      "target": "verified_exact_zero_6ac4",
+      "method": "module_m",
+      "success": true,
+      "assumptions": []
+    }
+  },
+  {
+    "schema": "source.loop-transfer-refutation.v1",
+    "loop": "6ac4",
+    "path": [
+      1,
+      1,
+      0,
+      0,
+      1,
+      1
+    ],
+    "guards": [
+      {
+        "op": "not",
+        "args": [
+          {
+            "op": "bvsle",
+            "args": [
+              {
+                "op": "bvadd",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "zero_extend",
+                    "width": 128,
+                    "args": [
+                      {
+                        "op": "input",
+                        "width": 64,
+                        "value": "machine_x15"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "bits",
+                    "width": 128,
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "op": "zero_extend",
+                "width": 128,
+                "args": [
+                  {
+                    "op": "input",
+                    "width": 64,
+                    "value": "(Z_to_bv 64%N (decodeItemInputEnd args))"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "endpoint": {
+      "op": "bvadd",
+      "width": 64,
+      "args": [
+        {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        },
+        {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvadd",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvand",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "sign_extend",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "array_byte",
+                              "width": 8,
+                              "value": 0,
+                              "args": [
+                                {
+                                  "op": "input",
+                                  "value": "decodeItemInputBytes args"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 255
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 9
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    "count_guard": {
+      "op": "not",
+      "args": [
+        {
+          "op": "bvsge",
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvadd",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "bvand",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "sign_extend",
+                              "width": 64,
+                              "args": [
+                                {
+                                  "op": "array_byte",
+                                  "width": 8,
+                                  "value": 0,
+                                  "args": [
+                                    {
+                                      "op": "input",
+                                      "value": "decodeItemInputBytes args"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "op": "bits",
+                              "width": 64,
+                              "value": 255
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 9
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "source_domain": "decodeItemDomainAt returnAddress decodeItemC1BDomain args",
+    "verification_receipt": {
+      "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/loop-zero408-bind014/RESULT.json",
+      "sha256": "affbc24fbeb84490aa501333bc045fed50f46597d5ff3d223567757a98ea7a57",
+      "target": "verified_exact_zero_6ac4",
+      "method": "module_m",
+      "success": true,
+      "assumptions": []
+    }
+  }
+]

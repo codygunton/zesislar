@@ -6,11 +6,11 @@ import unittest
 
 try:
     from .forward_resource_design import _state_from_result
-    from .loop_widen import FoldRule, UnsignedCursorInduction, recheck_renderable_cursor, source_sum_bounds, loop_read_window, bind_zero_read_refutation, bind_owned_read_target, check_owned_fold_candidate, affine_step, fold_recurrence, widen_loop_head, write_set
+    from .loop_widen import FoldRule, UnsignedCursorInduction, recheck_renderable_cursor, source_sum_bounds, loop_read_window, bind_zero_read_refutation, bind_owned_read_target, check_owned_fold_candidate, bind_transfer_refutation, affine_step, fold_recurrence, widen_loop_head, write_set
     from .symbolic_state import bits, input_expr, operation, SymbolicState, evaluate_block
 except ImportError:
     from forward_resource_design import _state_from_result
-    from loop_widen import FoldRule, UnsignedCursorInduction, recheck_renderable_cursor, source_sum_bounds, loop_read_window, bind_zero_read_refutation, bind_owned_read_target, check_owned_fold_candidate, affine_step, fold_recurrence, widen_loop_head, write_set
+    from loop_widen import FoldRule, UnsignedCursorInduction, recheck_renderable_cursor, source_sum_bounds, loop_read_window, bind_zero_read_refutation, bind_owned_read_target, check_owned_fold_candidate, bind_transfer_refutation, affine_step, fold_recurrence, widen_loop_head, write_set
     from symbolic_state import bits, input_expr, operation, SymbolicState, evaluate_block
 
 
@@ -451,6 +451,28 @@ class LoopWidenTests(unittest.TestCase):
                 refused = check_owned_fold_candidate(result, source, fold,
                     dict(distance, checked=False), interface)
                 self.assertFalse(refused['checked'])
+                transfers = json.loads((HERE / 'testdata/loop_widen_transfer_refutations.json').read_text())
+                for target in [row for row in transfers if row['loop'] == suffix]:
+                    matched_transfer = bind_transfer_refutation(result, target)
+                    self.assertEqual(len(matched_transfer), 1)
+                    self.assertEqual(matched_transfer[0]['kernel_resource_entailment'], 'OPEN')
+                expected_transfers = {index for index, row in enumerate(result.body_results)
+                                      if row.status == 'control_transfer'}
+                self.assertEqual({row['body_result_index'] for row in result.transfer_refutations},
+                                 expected_transfers)
+                self.assertEqual(before, [row.to_dict() for row in result.body_results])
+                self.assertTrue(all(row['refutation'] == 'OPEN'
+                    for row in result.to_dict()['control_transfer_obligations']))
+                target = next(row for row in transfers if row['loop'] == suffix)
+                with self.assertRaisesRegex(ValueError, 'different source endpoint'):
+                    bind_transfer_refutation(result, dict(target, endpoint=bits(0, 64).to_dict()))
+                with self.assertRaisesRegex(ValueError, 'No control transfer'):
+                    bind_transfer_refutation(result, dict(target, path=[9]))
+                with self.assertRaisesRegex(ValueError, 'No control transfer'):
+                    bind_transfer_refutation(result, dict(target, guards=[{'op': 'bool', 'value': True}]))
+                receipt = dict(target['verification_receipt'], assumptions=['unverified'])
+                with self.assertRaisesRegex(ValueError, 'verified exact source target'):
+                    bind_transfer_refutation(result, dict(target, verification_receipt=receipt))
                 bad = dict(binding, endpoint=bits(0, 64).to_dict())
                 with self.assertRaisesRegex(ValueError, 'different source endpoint'):
                     bind_zero_read_refutation(result, bad)
