@@ -144,7 +144,7 @@
         "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
         "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
       },
-      "allowed_objects": {
+      "selection_guards": {
         "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
         "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
       }
@@ -163,7 +163,7 @@
         "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
         "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
       },
-      "allowed_objects": {
+      "selection_guards": {
         "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
         "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
       }
@@ -182,7 +182,7 @@
         "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
         "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
       },
-      "allowed_objects": {
+      "selection_guards": {
         "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
         "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
       }
@@ -201,7 +201,7 @@
         "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
         "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
       },
-      "allowed_objects": {
+      "selection_guards": {
         "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
         "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
       }
@@ -220,7 +220,7 @@
         "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
         "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
       },
-      "allowed_objects": {
+      "selection_guards": {
         "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
         "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
       }
@@ -239,7 +239,7 @@
         "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
         "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
       },
-      "allowed_objects": {
+      "selection_guards": {
         "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
         "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
       }
@@ -258,7 +258,7 @@
         "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
         "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
       },
-      "allowed_objects": {
+      "selection_guards": {
         "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
         "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
       }
@@ -277,7 +277,7 @@
         "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
         "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
       },
-      "allowed_objects": {
+      "selection_guards": {
         "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
         "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
       }
@@ -296,7 +296,7 @@
         "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
         "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
       },
-      "allowed_objects": {
+      "selection_guards": {
         "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
         "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
       }
@@ -315,7 +315,7 @@
         "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
         "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
       },
-      "allowed_objects": {
+      "selection_guards": {
         "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
         "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
       }
@@ -334,7 +334,7 @@
         "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
         "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
       },
-      "allowed_objects": {
+      "selection_guards": {
         "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
         "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
       }
@@ -353,7 +353,7 @@
         "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
         "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
       },
-      "allowed_objects": {
+      "selection_guards": {
         "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
         "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
       }
@@ -372,7 +372,7 @@
         "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
         "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
       },
-      "allowed_objects": {
+      "selection_guards": {
         "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
         "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
       }
@@ -391,7 +391,7 @@
         "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-callers303/banks008-SELECTION.json",
         "sha256": "645a8e2496f938abd1ce63608ed8325a669d4e35b002e8701bb26ff59fcbe489"
       },
-      "allowed_objects": {
+      "selection_guards": {
         "ZesuSsz.Automation.All": "c69d757f7151698c909d6e4bd2a7c1e793d07a0a09d8e46aa89237ba103694c6",
         "ZesuSsz.Automation.Calls": "d2b3ba7ca8aeb9ae5de4bbf1aba9bff512db6e19fe3569443c44c115763b72a0"
       }

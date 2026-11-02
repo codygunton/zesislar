@@ -200,17 +200,47 @@ class MigrationTests(unittest.TestCase):
         selection=self.save('SELECTION.json',{'rows':[ready],
             'recorded_expected_objects':{self.module:binding(self.obj)['sha256']}})
         authority={'kind':'accepted-ready','binding':ready,'ready':ready,
-            'selection':selection,'allowed_objects':{self.module:binding(self.obj)['sha256']}}
+            'selection':selection,'selection_guards':{self.module:binding(self.obj)['sha256']}}
         self.policy['origins'].append(authority)
         migration.POLICY.write_text(json.dumps(self.policy))
         receipt=migration.create(ready,self.module,self.source,self.obj,
             self.compiler,self.flags,self.workspace)
         self.assertEqual(receipt['origin']['kind'],'inherited-from-accepted-READY')
         self.validate(receipt)
-        authority['allowed_objects'][self.module]='altered'
+        authority['selection_guards'][self.module]='altered'
         migration.POLICY.write_text(json.dumps(self.policy))
         with self.assertRaisesRegex(ValueError,'exact authorized selection'):
             self.validate(receipt)
+
+    def test_selected_READY_allows_other_exact_bound_owned_modules(self):
+        marker_module, marker_source, marker_object=self.module,self.source,self.obj
+        self.module='ZesuSsz.Extra'
+        self.source=self.workspace/'Extra.v'
+        self.source.write_text('(* Another accepted owned source. *)\n')
+        self.obj=self.source.with_suffix('.vo')
+        self.obj.write_bytes(b'another owned object')
+        data={'prepared_workspace':str(self.workspace),'physical_flags':self.flags,
+            'bindings':[self.compiler,self.coqdep,binding(marker_source),binding(marker_object),
+                        binding(self.source),binding(self.obj)],
+            'proof_runtime':{'module_files':{marker_module:'ReturnBundle.v',self.module:'Extra.v'}}}
+        ready=self.save('SELECTED-READY.json',data)
+        guards={marker_module:binding(marker_object)['sha256']}
+        selection=self.save('SELECTION.json',{'rows':[ready],'recorded_expected_objects':guards})
+        authority={'kind':'accepted-ready','binding':ready,'ready':ready,
+            'selection':selection,'selection_guards':guards}
+        self.policy['origins'].append(authority)
+        migration.POLICY.write_text(json.dumps(self.policy))
+        receipt=migration.create(ready,self.module,self.source,self.obj,
+            self.compiler,self.flags,self.workspace)
+        self.validate(receipt)
+        data['bindings'].remove(binding(self.obj))
+        changed=self.save('UNBOUND-READY.json',data)
+        selection=self.save('UNBOUND-SELECTION.json',{'rows':[changed],'recorded_expected_objects':guards})
+        authority.update(binding=changed,ready=changed,selection=selection)
+        migration.POLICY.write_text(json.dumps(self.policy))
+        with self.assertRaisesRegex(ValueError,'lacks bound source/object identities'):
+            migration.create(changed,self.module,self.source,self.obj,
+                self.compiler,self.flags,self.workspace)
 
     def test_batch_cache_rechecks_file_identities_and_separates_flags(self):
         calls=[]
