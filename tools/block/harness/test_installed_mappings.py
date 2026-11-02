@@ -136,6 +136,128 @@ class InstalledMappingTests(unittest.TestCase):
                    'target': {'block': {'module': 'example.Module'}}}
         self.assertEqual(module_source('example.Module', runtime, self.root), source)
 
+    def test_owned_source_only_Q_and_R_use_coqdep_selection(self):
+        for flag in ['-Q', '-R']:
+            with self.subTest(flag=flag):
+                source = self.user / 'nested/Values.v'
+                source.parent.mkdir(exist_ok=True)
+                source.write_text('Definition value := 0.\n')
+                origin = self.user / 'Consumer.v'
+                origin.write_text('From example.nested Require Import Values.\n')
+                modules = {'example.nested.Values': str(source)}
+                installed = InstalledMappings([flag, str(self.user), 'example'],
+                    planning_workspace=self.root, source_files=modules)
+                installed.register_source(origin.read_text(), origin)
+                value = installed.source_resolution('example.nested.Values', modules, origin=origin)
+                self.assertEqual(value['source'], source)
+                self.assertEqual(value['canonical'], 'example.nested.Values')
+                self.assertTrue(value['source_only'])
+                self.assertFalse(source.with_suffix('.vo').exists())
+                with self.assertRaisesRegex(ValueError, 'object is absent'):
+                    installed.resolve('example.nested.Values', origin=origin)
+
+    def test_owned_sail_sibling_source_without_object(self):
+        source = self.user / 'Values.v'
+        source.write_text('Definition value := 0.\n')
+        origin = self.user / 'Real.v'
+        origin.write_text('Require Import Values.\n')
+        modules = {'SailStdpp.Values': str(source)}
+        installed = InstalledMappings(['-Q', str(self.user), 'SailStdpp'],
+            planning_workspace=self.root, source_files=modules)
+        installed.register_source(origin.read_text(), origin)
+        edges = scratch.canonical_edges('SailStdpp.Real', origin.read_text(), None,
+                                        [], modules, installed, origin)
+        self.assertEqual(edges, [{'from': 'SailStdpp.Real', 'to': 'SailStdpp.Values'}])
+        self.assertFalse(source.with_suffix('.vo').exists())
+
+    def test_owned_source_mapping_must_match_selected_namespace(self):
+        source = self.user / 'Values.v'
+        source.write_text('Definition value := 0.\n')
+        origin = self.root / 'Consumer.v'
+        origin.write_text('Require Import example.Values.\n')
+        installed = InstalledMappings(self.flags, planning_workspace=self.root)
+        installed.register_source(origin.read_text(), origin)
+        with self.assertRaisesRegex(ValueError, 'one exact owned module'):
+            installed.source_resolution('example.Values', {'Wrong.Values': str(source)}, origin=origin)
+
+    def test_external_source_only_is_not_an_owned_plan(self):
+        source = self.theories / 'Missing.v'
+        source.write_text('Definition value := 0.\n')
+        origin = self.user / 'Consumer.v'
+        origin.write_text('From Coq Require Import Missing.\n')
+        installed = InstalledMappings(self.flags, planning_workspace=self.user)
+        installed.register_source(origin.read_text(), origin)
+        with self.assertRaisesRegex(ValueError, 'object is absent'):
+            installed.source_resolution('Coq.Missing', {'Coq.Missing': str(source)}, origin=origin)
+
+    def test_source_only_duplicate_basenames_keep_ambiguity_refusal(self):
+        modules = {}
+        for directory in ['first', 'second']:
+            source = self.user / directory / 'Values.v'
+            source.parent.mkdir()
+            source.write_text('Definition value := 0.\n')
+            modules['example.' + directory + '.Values'] = str(source)
+        origin = self.root / 'Consumer.v'
+        origin.write_text('From example Require Import Values.\n')
+        installed = InstalledMappings(['-R', str(self.user), 'example'],
+            planning_workspace=self.root, source_files=modules)
+        installed.register_source(origin.read_text(), origin)
+        with self.assertRaisesRegex(ValueError, 'ambiguous'):
+            installed.source_resolution('example.Values', modules, origin=origin)
+
+    def test_source_only_contexts_must_agree_without_origin(self):
+        sail = self.root / 'sail'
+        sail.mkdir()
+        first = sail / 'Values.v'
+        second = self.user / 'Values.v'
+        for source in [first, second]:
+            source.write_text('Definition value := 0.\n')
+        modules = {'SailStdpp.Values': str(first), 'example.Values': str(second)}
+        installed = InstalledMappings(['-R', str(self.user), 'example', '-Q', str(sail), 'SailStdpp'],
+            planning_workspace=self.root, source_files=modules)
+        for directory in [sail, self.root]:
+            origin = directory / 'Consumer.v'
+            origin.write_text('Require Import Values.\n')
+            installed.register_source(origin.read_text(), origin)
+        with self.assertRaisesRegex(ValueError, 'contexts.*ambiguously'):
+            installed.source_resolution('Values', modules)
+
+    def test_clean_required_switch_closure_schedules_all_six_sources(self):
+        from entry_chain_stage import invalidation
+        names = ['BranchGuards', 'ContextCollection', 'MaskNormalizer',
+                 'ReturnBundle', 'ReturnWand', 'SwitchDispatch']
+        modules = {}
+        for name in names:
+            module = 'ZesuSsz.Automation.Switches.' + name
+            source = self.user / 'Automation/Switches' / (name + '.v')
+            source.parent.mkdir(parents=True, exist_ok=True)
+            source.write_text('(* Source-only switch fixture. *)\n')
+            modules[module] = str(source.relative_to(self.root))
+        approved = self.user / 'Automation/Approved.v'
+        approved.write_text(''.join('Require Export ZesuSsz.Automation.Switches.' + name + '.\n'
+                                    for name in names))
+        modules['ZesuSsz.Automation.Approved'] = str(approved.relative_to(self.root))
+        target = self.user / 'Consumer.v'
+        target.write_text('Require Import ZesuSsz.Automation.Approved.\n')
+        modules['ZesuSsz.Consumer'] = str(target.relative_to(self.root))
+        installed = InstalledMappings(['-Q', str(self.user), 'ZesuSsz'],
+            planning_workspace=self.root, source_files=modules)
+        edges = scratch.reconcile_import_closure(['ZesuSsz.Consumer'], [], modules,
+                                                 self.root, installed)
+        forward = {}
+        for row in edges:
+            forward.setdefault(row['from'], []).append(row['to'])
+        missing = scratch.missing_prerequisite_objects(['ZesuSsz.Consumer'], forward,
+                                                       modules, self.root)
+        plan = invalidation(edges, missing, ['ZesuSsz.Consumer'])
+        switches = {'ZesuSsz.Automation.Switches.' + name for name in names}
+        self.assertTrue(switches.issubset(plan['prerequisites']))
+        self.assertEqual(set(plan['prerequisites']), switches | {'ZesuSsz.Automation.Approved'})
+        self.assertTrue(all(plan['ordered_required'].index(name) <
+                            plan['ordered_required'].index('ZesuSsz.Automation.Approved')
+                            for name in switches))
+        self.assertFalse(list(self.root.rglob('*.vo')))
+
     def test_private_import_must_match_compiler_resolution(self):
         self.library(self.user, 'Module.v')
         source = self.root / 'Private.v'
