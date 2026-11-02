@@ -11,7 +11,7 @@
   "statement_sha256": "0b3d70f345c256444d3395f75a1cfae0c6e4b66f00349d9f944fe4701a20c4fc",
   "banks": {
     "path": "/home/cody/zesislar/.worktrees/infra-c-v34-measured-port-policy-93f/tools/block/harness/policies/PORT-V34-ENTRY-BANKS.json",
-    "sha256": "e05132982e972f96b6d0a457a1be7d81d908ac433733299be3b65fa45c9199fe"
+    "sha256": "b4c433d68c29b34f4bcac58cda0c701524531808df91bf176a1cae3a1926e0ed"
   },
   "origin": {
     "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-NEW6a00-authority-v1/PROPOSAL.json",

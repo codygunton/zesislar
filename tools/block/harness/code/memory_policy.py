@@ -212,9 +212,9 @@ PORT_V34_POLICY_SHA256='df435e39840983dfa6ff3d96ba83a33b90389d2aafb0f8ef0b21094d
 PORT_V34_COMPLETED={'path':str(Path(__file__).resolve().parents[1]/'policies'/'PORT-V34-COMPLETED-PEAKS.json'),
  'sha256':'197eace1bdfce16dc232b9523fd1d711ba26b897f49637a1a195b51d1ca7db44'}
 PORT_V34_BANKS={'path':str(Path(__file__).resolve().parents[1]/'policies'/'PORT-V34-ENTRY-BANKS.json'),
- 'sha256':'e05132982e972f96b6d0a457a1be7d81d908ac433733299be3b65fa45c9199fe'}
+ 'sha256':'b4c433d68c29b34f4bcac58cda0c701524531808df91bf176a1cae3a1926e0ed'}
 PORT_V34_NEW={'path':str(Path(__file__).resolve().parents[1]/'policies'/'PORT-V34-NEW6A00.json'),
- 'sha256':'2b8a93ecb65fd03b1d4c7cd374cdbe162e20c129a1318740e1f209047a328924'}
+ 'sha256':'30838486fc2c14ce148cc7be3ca88aa97c01c631bbe02a8cc58884a379e09ef0'}
 PORT_HEADER_BASELINE_SHA256='b37cc0a5b86690de7f65245ebdfa9992be562af8a204ab9238e3ac85630dbd0c'
 PORT_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-22.json'), 'sha256': 'ea88c0e9eab9e6e720e7fc2500407c065d82fd7a0feb12658783d4a761c79917'}
 PORT_AUTHORITY_23={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-23.json'), 'sha256': 'dbeedb2c4fcdc916939a9c5fc9ced3d07bc619244c1d8b41bfc91aacfb5052bd'}
