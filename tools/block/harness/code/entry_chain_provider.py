@@ -133,6 +133,17 @@ async def compile_dependency(module,source,workspace,wrapper,flags,output,enviro
     return result
 
 
+def accept_guarded_dependency(accepted_objects,module,source,obj,flags,result,recheck):
+    if accepted_objects is None or result.get('success') is not True:return False
+    if result.get('method')!='stock-guarded-dependency-build':return False
+    if not hooks_plugin_build(module,source):
+        if not entry_intro_plugin_build(module,source):return False
+        if not entry_intro_plugin_refusal(result.get('MCP_refusal_result',{})):return False
+    recheck()
+    accepted_objects.accept(source,obj,'/home/cody/islaris/_opam/bin/coqc',flags,result)
+    return True
+
+
 def control_step_required(step):
     required=step.get('required',False)
     if type(required) is not bool:raise ValueError('The control requirement must be Boolean.')
@@ -385,9 +396,8 @@ async def execute(request):
                     obj = source.with_suffix('.vo')
                     if not obj.is_file():
                         raise ToolFailure('A dependency object is absent after compilation.')
-                    if accepted_objects is not None and hooks_plugin_build(module,source):
-                        check_operation(runtime)
-                        accepted_objects.accept(source,obj,'/home/cody/islaris/_opam/bin/coqc',runtime['physical_flags'],result)
+                    accept_guarded_dependency(accepted_objects,module,source,obj,
+                        runtime['physical_flags'],result,lambda:check_operation(runtime))
                     atomic_json(output/('dependency-'+module+'.json'), {'source': str(source),
                         'source_sha256': digest(source), 'object': str(obj), 'object_sha256': digest(obj),
                         'result': result})
