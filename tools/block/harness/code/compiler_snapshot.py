@@ -401,6 +401,8 @@ def _physical_import_provenance(record, inputs, snapshot, source, compiler, flag
     if (context['changes'] and report.get('compiler_context')!=context or
             report.get('compiler_context') is not None and report['compiler_context']!=context):
         raise ValueError('The physical import validation has another source context.')
+    if report.get('output_context')!=inputs.get('output_context'):
+        raise ValueError('The physical import validation has another private output context.')
     selection=import_selection(runtime,source,inputs['owned_workspace'],report)
     if report.get('import_selection')!=selection:
         raise ValueError('The physical import selection differs from its bound runtime.')
@@ -426,9 +428,15 @@ def _physical_record(reference, snapshot, snapshot_reference, source, compiler, 
             snapshot=snapshot_reference,producer=snapshot['producer'],physical_result=reference,
             canonical_object=obj)
         physical_obj=published['private_outputs']['object']['binding']
+    selected_flags=list(flags)
+    private_context=None
     if private_output or published is not None:
-        from declaration_outputs import private_target
-        private_target(runtime,source,physical_obj['path'],inputs['owned_workspace'])
+        from declaration_outputs import output_context
+        private_context=output_context(runtime,source,physical_obj['path'],inputs['owned_workspace'])
+        selected_flags=private_context['physical_flags']
+        if (inputs.get('output_context')!=private_context or
+                published is not None and published['output_context']!=private_context):
+            raise ValueError('The physical compiler has another private output mapping.')
         workspace=Path(inputs['owned_workspace']).resolve()
         owners=[name for name,relative in runtime['module_files'].items()
                 if (workspace/relative).resolve()==Path(source['path']).resolve()]
@@ -449,13 +457,13 @@ def _physical_record(reference, snapshot, snapshot_reference, source, compiler, 
             record.get('output_validation',{}).get('success') is not True or
             inputs.get('source')!=source or inputs.get('compiler')!=compiler or
             inputs.get('validation')!={'runtime':snapshot['runtime'],'snapshot':snapshot_reference} or
-            inputs.get('physical_argv')!=[compiler['path'],*flags,*extra,source['path']] or
+            inputs.get('physical_argv')!=[compiler['path'],*selected_flags,*extra,source['path']] or
             record.get('physical_argv')!=inputs['physical_argv']):
         raise ValueError('A successful physical compiler record differs from this run.')
     before=inputs.get('sidecar_prestate');outputs=record.get('compiler_outputs')
     if (not isinstance(before,dict) or not isinstance(outputs,dict) or
             before.get('source')!=source or before.get('compiler')!=compiler or
-            before.get('physical_flags')!=flags or before.get('snapshot')!=snapshot_reference or
+            before.get('physical_flags')!=selected_flags or before.get('snapshot')!=snapshot_reference or
             before.get('producer')!=snapshot['producer'] or
             not private_output and obj['path']!=str(Path(source['path']).with_suffix('.vo')) or
             before.get('primary_object')!=physical_obj['path'] or
@@ -692,22 +700,33 @@ def hash_inputs(source, compiler, flags):
     return rows
 
 
-def validate_compiler(runtime, runtime_reference, snapshot_reference, source_binding, compiler, *, output_key=None):
+def validate_compiler(runtime, runtime_reference, snapshot_reference, source_binding, compiler, *, output_key=None,
+                      private_output=None, private_workspace=None):
     if runtime.get('declaration_dag') is not None:
         from declaration_outputs import publication_lock
         with publication_lock(snapshot_reference):
             return _validate_compiler(runtime,runtime_reference,snapshot_reference,source_binding,
-                                      compiler,output_key=output_key)
+                                      compiler,output_key=output_key,private_output=private_output,
+                                      private_workspace=private_workspace)
     return _validate_compiler(runtime,runtime_reference,snapshot_reference,source_binding,
-                              compiler,output_key=output_key)
+                              compiler,output_key=output_key,private_output=private_output,
+                              private_workspace=private_workspace)
 
 
-def _validate_compiler(runtime, runtime_reference, snapshot_reference, source_binding, compiler, *, output_key=None):
+def _validate_compiler(runtime, runtime_reference, snapshot_reference, source_binding, compiler, *, output_key=None,
+                       private_output=None, private_workspace=None):
     from harness_commit import check
     if not isinstance(source_binding,dict) or set(source_binding)!={'path','sha256'}:
         raise ValueError('The physical compiler source binding is incomplete.')
     source=Path(source_binding['path'])
     context=compilation(runtime['physical_flags'],source_binding)
+    private_context=None
+    selected_flags=context['physical_flags']
+    if private_output is not None:
+        if private_workspace is None:raise ValueError('The private compiler lacks its owned workspace.')
+        from declaration_outputs import output_context
+        private_context=output_context(runtime,source_binding,private_output,private_workspace)
+        selected_flags=private_context['physical_flags']
     started=time.monotonic()
     usage=resource.getrusage(resource.RUSAGE_SELF)
     if runtime.get('harness') is not None:
@@ -727,7 +746,7 @@ def _validate_compiler(runtime, runtime_reference, snapshot_reference, source_bi
             compiler_binding = binding(compiler)
         produced, accepted_index, accepted_receipts, authenticated_objects = accepted_objects(snapshot, snapshot_reference, output_key, compiler_binding, runtime['physical_flags'])
     receipts_done=time.monotonic()
-    inputs = hash_inputs(source, compiler, context['physical_flags'])
+    inputs = hash_inputs(source, compiler, selected_flags)
     hashing_done=time.monotonic()
     source_hash=next(row['sha256'] for row in inputs if row['path']==str(source.absolute()))
     if source_hash!=source_binding['sha256']:
@@ -774,7 +793,7 @@ def _validate_compiler(runtime, runtime_reference, snapshot_reference, source_bi
             'total_wall_seconds':ended-started,
             'self_CPU_seconds':final_usage.ru_utime+final_usage.ru_stime-usage.ru_utime-usage.ru_stime}
     return {'timing':timing,'snapshot': snapshot_reference,'producer':snapshot['producer'],
-            'compiler_context':context,'physical_flags':context['physical_flags'],
+            'compiler_context':context,'physical_flags':selected_flags,'output_context':private_context,
             'retained_identities_checked': len(snapshot['rows']),
             'accepted_dependency_objects': produced,
             'accepted_dependency_identities': authenticated_objects,

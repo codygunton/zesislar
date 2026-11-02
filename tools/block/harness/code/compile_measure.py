@@ -25,11 +25,13 @@ if record.get('validation') is not None:
     checked_runtime=read_bound(envelope)
     report=validate_compiler(checked_runtime,envelope,record['validation']['snapshot'],
         record['source'],record['physical_argv'][0],
-        output_key=os.environ.get('ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY'))
+        output_key=os.environ.get('ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY'),
+        private_output=(record.get('output_context') or {}).get('output'),private_workspace=workspace)
     context=report['compiler_context'];selected=report['physical_flags']
     if (record['physical_argv'][1:len(selected)+1]!=selected or
             context['changes'] and record.get('compiler_context')!=context or
-            record.get('compiler_context') is not None and record['compiler_context']!=context):
+            record.get('compiler_context') is not None and record['compiler_context']!=context or
+            record.get('output_context')!=report.get('output_context')):
         raise ValueError('The physical compiler arguments differ from their source context.')
     imports=import_selection(checked_runtime,record['source'],workspace,report)
     report['import_selection']=imports

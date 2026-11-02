@@ -14,6 +14,7 @@ import sys
 import uuid
 from entry_chain import binding,digest,read_bound,save
 from entry_chain_resources import normalize_cpu,check_operation
+from declaration_outputs import output_context
 
 
 def validated_arguments(args,expected,workspace):
@@ -57,6 +58,11 @@ def main():
     from source_context import compilation
     context=compilation(runtime['physical_flags'],binding(source))
     flags=context['physical_flags']
+    private_context=None
+    if (runtime.get('declaration_dag') is not None and extra and
+            Path(extra[1]).is_relative_to(workspace/'.declaration-private')):
+        private_context=output_context(runtime,binding(source),extra[1],workspace)
+        flags=private_context['physical_flags']
     directory=Path(runtime['job_output'])/'compiler-invocations'/uuid.uuid4().hex
     directory.mkdir(parents=True)
     clone_copy.copy2(source,directory/'SOURCE.v')
@@ -71,6 +77,7 @@ def main():
     save(directory/'INPUT.json',{'incoming_argv':sys.argv[1:],'physical_argv':command,
          'source':binding(source),'retained_source':binding(directory/'SOURCE.v'),
          'compiler':binding(physical),'validation':validation,'compiler_context':context,
+         'output_context':private_context,
          'CPU_policy':'unlimited','owned_workspace':str(workspace),
          'target':{'module':module,'theorem':theorem,'source_sha256':digest(source)},'command_phase':phase})
 

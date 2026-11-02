@@ -34,7 +34,7 @@ def publication_lock(snapshot_reference, *, exclusive=False):
 
 
 def private_target(runtime, source, target, workspace):
-    """Keep every worker output outside all compiler load-path mappings."""
+    """Keep each output outside every shared compiler load-path mapping."""
     admission = runtime.get('canonical_admission', {})
     if (runtime.get('phase') != 'prerequisites' or
             runtime.get('declaration_dag', {}).get('schema') != 'entry-chain.declaration-dag.v1' or
@@ -60,6 +60,25 @@ def private_target(runtime, source, target, workspace):
     return target
 
 
+def output_context(runtime, source, target, workspace):
+    """Preserve the logical owner with one mapping private to this worker."""
+    from compiler_snapshot import _namespace
+    workspace = Path(workspace).resolve()
+    target = private_target(runtime, source, target, workspace)
+    owners = [name for name, relative in runtime['module_files'].items()
+              if (workspace / relative).resolve() == Path(source['path']).resolve()]
+    if len(owners) != 1 or owners[0].rsplit('.', 1)[-1] != Path(source['path']).stem:
+        raise ValueError('The private output lacks its exact source-bound logical owner.')
+    module = owners[0]
+    parent = module.rpartition('.')[0]
+    source_context = compilation(runtime['physical_flags'], source)
+    mapping = ['-Q', str(target.parent), parent]
+    return {'schema': 'entry-chain.declaration-output-context.v1', 'module': module,
+            'source': source, 'source_context': source_context, 'output': str(target),
+            'private_mapping': mapping, 'directory_namespace': _namespace(target.parent),
+            'physical_flags': source_context['physical_flags'] + mapping}
+
+
 def publication(reference, *, source, compiler, flags, snapshot, producer,
                 physical_result, canonical_object):
     """Validate the immutable association without reading relocated old outputs."""
@@ -67,13 +86,24 @@ def publication(reference, *, source, compiler, flags, snapshot, producer,
     value = _read_private(reference)
     required = {'schema', 'module', 'source', 'compiler', 'physical_flags', 'snapshot',
                 'producer', 'physical_result', 'private_outputs', 'published_outputs',
-                'private_globalization', 'published_globalization'}
+                'private_globalization', 'published_globalization', 'output_context'}
     if (not isinstance(value, dict) or set(value) != required or value['schema'] != SCHEMA or
             value['source'] != source or value['compiler'] != compiler or
             value['physical_flags'] != list(flags) or value['snapshot'] != snapshot or
             value['producer'] != producer or value['physical_result'] != physical_result):
         raise ValueError('The declaration publication differs from its physical producer.')
     private, published = value['private_outputs'], value['published_outputs']
+    context = value['output_context']
+    expected_mapping = ['-Q', str(Path(private['object']['binding']['path']).parent),
+                        value['module'].rpartition('.')[0]]
+    if (not isinstance(context, dict) or
+            context.get('schema') != 'entry-chain.declaration-output-context.v1' or
+            context.get('module') != value['module'] or context.get('source') != source or
+            context.get('output') != private['object']['binding']['path'] or
+            context.get('source_context', {}).get('physical_flags') != list(flags) or
+            context.get('private_mapping') != expected_mapping or
+            context.get('physical_flags') != list(flags) + expected_mapping):
+        raise ValueError('The declaration publication changed its private output mapping.')
     if (set(private) != {'object', 'sidecar', 'sidecar_status'} or
             set(published) != set(private) or private['sidecar_status'] != 'compiled_output' or
             published['sidecar_status'] != 'compiled_output' or
@@ -103,8 +133,10 @@ def publish(manager, module, source, physical_result, private_object, tool_resul
 def _publish_outputs(manager, module, source, physical_result, private_object, tool_result, *, workspace):
     from clone_copy import copy2
     from compiler_snapshot import (_identity, _namespace, _physical_record, _publish,
-                                   compiler_outputs, output_artifact)
+                                   compiler_outputs, output_artifact, producer)
     source = Path(source).resolve()
+    if producer() != manager.snapshot['producer']:
+        raise ValueError('Another producer cannot publish a private declaration.')
     if tool_result.get('success') is not True:
         raise ValueError('A failed compilation cannot publish a private declaration.')
     runtime = read_bound(manager.snapshot['runtime'])
@@ -149,6 +181,7 @@ def _publish_outputs(manager, module, source, physical_result, private_object, t
              'compiler': compiler, 'physical_flags': flags, 'snapshot': manager.reference,
              'producer': manager.snapshot['producer'], 'physical_result': physical_result,
              'private_outputs': private_outputs, 'published_outputs': published,
+             'output_context': output_context(runtime, source_binding, private_object, workspace),
              'private_globalization': private_glob_binding,
              'published_globalization': binding(destinations[2])}
     reference = _publish(Path(physical_result['path']).parent / 'PUBLICATION.json', value)

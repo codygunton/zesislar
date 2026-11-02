@@ -9,6 +9,7 @@ FIELD_MAPPING = {
     'native_delta': ['recipe.files', 'recipe.dependencies', 'transport.checked_bindings'],
     'native_route': ['recipe.backend.tactics', 'recipe.files', 'recipe.dependencies', 'configuration.execution_vectors'],
     'dependency_batch': ['recipe.backend.features.dependency_waves_disabled'],
+    'declaration_dag': ['recipe.backend.features.dependency_waves_disabled'],
     'declaration_checks': ['recipe.backend.features.control_sessions_disabled'],
     'control_session': ['recipe.backend.features.control_sessions_disabled'],
     'coqc_wrapper': ['recipe.backend.files', 'recipe.configuration.environment.ROCQ_COQC_BINARY'],
@@ -37,7 +38,8 @@ KNOWN_SINKS = {'check_operation', 'proof_environment', 'prerequisite_environment
 
 SCOPED_SINKS = {'entry_chain_provider.py': {
     'compiled_verification': ('scratch_statement', 'compiled_verification'),
-    'checked_fixture': ('declaration_preflight', 'checked_fixture')}}
+    'checked_fixture': ('declaration_preflight', 'checked_fixture')},
+    'entry_chain_compiler.py': {'output_context': ('declaration_outputs', 'output_context')}}
 
 
 def audit(path):

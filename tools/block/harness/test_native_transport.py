@@ -52,6 +52,19 @@ class AuditControls(unittest.TestCase):
             path.write_text('from scratch_statement import compiled_verification\ncompiled_verification(runtime)')
             with self.assertRaisesRegex(ValueError, 'escapes'):M.audit(path)
 
+    def test_private_mapping_sink_is_scoped_to_the_owned_compiler(self):
+        with tempfile.TemporaryDirectory() as root:
+            path = Path(root) / 'entry_chain_compiler.py'
+            path.write_text('from declaration_outputs import output_context\noutput_context(runtime,source,target,workspace)\n')
+            self.assertEqual(M.audit(path)['reviewed_sinks'][0]['module'], 'declaration_outputs')
+            for text in ['output_context_nearby(runtime,source,target,workspace)',
+                         'from another_module import output_context\noutput_context(runtime,source,target,workspace)']:
+                path.write_text(text)
+                with self.assertRaises(ValueError):M.audit(path)
+            path = Path(root) / 'consumer.py'
+            path.write_text('from declaration_outputs import output_context\noutput_context(runtime,source,target,workspace)')
+            with self.assertRaisesRegex(ValueError, 'escapes'):M.audit(path)
+
     def test_literal_eight_field_projection_and_disabled_feature(self):
         tree = ast.parse((T.HERE / 'code/entry_chain_provider.py').read_text())
         execute = next(node for node in tree.body if isinstance(node, ast.AsyncFunctionDef) and node.name == 'execute')

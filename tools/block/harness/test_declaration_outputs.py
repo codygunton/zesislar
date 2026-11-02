@@ -7,7 +7,7 @@ import unittest
 from unittest.mock import patch
 
 import compiler_snapshot as S
-from declaration_outputs import GIB, private_target, publication_lock, publish
+from declaration_outputs import GIB, output_context, private_target, publication_lock, publish
 from entry_chain import binding, save
 from source_context import compilation
 import test_compiler_snapshot as fixture
@@ -28,23 +28,28 @@ class DeclarationOutputTests(unittest.TestCase):
             module_files={'Example.Control': 'Control.v', 'Example.Dependency': 'library/Dependency.v'},
             cache_import_graph=binding(graph))
         f.runtime['bindings'].append(binding(graph))
+        self.configure(f)
         self.snapshot = f.seal()
         self.manager = S.OutputReceipts(self.snapshot, f.reference)
+
+    def configure(self, fixture):
+        pass
 
     def physical(self, *, owner='Example.Control', bad_argv=False):
         f = self.f
         source, compiler = binding(f.source), binding(f.compiler)
-        report = S.validate_compiler(f.runtime, f.reference, self.snapshot, source, f.compiler)
-        report['import_selection'] = S.import_selection(f.runtime, source, f.root, report)
         directory = f.root / 'compiler-invocations/synthetic'
         directory.mkdir(parents=True)
         private = f.root / '.declaration-private' / ('a' * 32) / 'Control.vo'
         private.parent.mkdir(parents=True)
-        before = S.sidecar_prestate(source, private, compiler, f.runtime['physical_flags'], report)
+        report = S.validate_compiler(f.runtime, f.reference, self.snapshot, source, f.compiler,
+                                    private_output=private, private_workspace=f.root)
+        report['import_selection'] = S.import_selection(f.runtime, source, f.root, report)
+        before = S.sidecar_prestate(source, private, compiler, report['physical_flags'], report)
         private.write_bytes(b'Nonproof private object.')
         private.with_suffix('.vos').write_bytes(b'')
         private.with_suffix('.glob').write_text('\nF' + owner + '\n')
-        argv = [compiler['path'], *f.runtime['physical_flags'], '-o', str(private), source['path']]
+        argv = [compiler['path'], *report['physical_flags'], '-o', str(private), source['path']]
         if bad_argv:
             argv[-2] = str(f.source.with_suffix('.vo'))
         validation = S._publish(directory / 'PHYSICAL-VALIDATION.json', report)
@@ -52,6 +57,7 @@ class DeclarationOutputTests(unittest.TestCase):
             'source': source, 'compiler': compiler, 'owned_workspace': str(f.root),
             'target': {'module': 'Example.Control'},
             'physical_argv': argv, 'compiler_context': compilation(f.runtime['physical_flags'], source),
+            'output_context': report['output_context'],
             'sidecar_prestate': before, 'validation': {'runtime': f.reference, 'snapshot': self.snapshot}})
         physical = S._publish(directory / 'PHYSICAL-RESULT.json', {
             'input': inputs, 'input_validation': validation, 'physical_argv': argv,
@@ -109,6 +115,12 @@ class DeclarationOutputTests(unittest.TestCase):
             self.accept(private, physical)
         self.assertFalse(self.f.source.with_suffix('.vo').exists())
 
+    def test_another_producer_refuses_before_canonical_write(self):
+        private, physical = self.physical()
+        with patch('compiler_snapshot.producer', return_value={'pid': -1}), self.assertRaisesRegex(ValueError, 'Another producer'):
+            self.accept(private, physical)
+        self.assertFalse(self.f.source.with_suffix('.vo').exists())
+
     def test_wrong_logical_owner_refuses_before_canonical_write(self):
         private, physical = self.physical(owner='Other.Control')
         with self.assertRaisesRegex(ValueError, 'logical owner'):
@@ -129,6 +141,42 @@ class DeclarationOutputTests(unittest.TestCase):
         runtime = dict(self.f.runtime, physical_flags=['-Q', str(self.f.root), 'Root'])
         with self.assertRaisesRegex(ValueError, 'compiler load path'):
             private_target(runtime, binding(self.f.source), private, self.f.root)
+
+    def test_worker_mapping_preserves_global_flags_and_other_workers(self):
+        private, _ = self.physical()
+        original = list(self.f.runtime['physical_flags'])
+        first = output_context(self.f.runtime, binding(self.f.source), private, self.f.root)
+        other = private.parent.with_name('b' * 32) / private.name
+        other.parent.mkdir()
+        second = output_context(self.f.runtime, binding(self.f.source), other, self.f.root)
+        self.assertEqual(first['private_mapping'], ['-Q', str(private.parent), 'Example'])
+        self.assertEqual(second['private_mapping'], ['-Q', str(other.parent), 'Example'])
+        self.assertNotIn(str(other.parent), first['physical_flags'])
+        self.assertNotIn(str(private.parent), second['physical_flags'])
+        self.assertEqual(self.f.runtime['physical_flags'], original)
+
+    def test_wrong_worker_parent_refuses_before_canonical_write(self):
+        private, physical = self.physical()
+        record = json.loads(Path(physical['path']).read_text())
+        inputs = json.loads(Path(record['input']['path']).read_text())
+        inputs['output_context']['private_mapping'][-1] = 'Foreign'
+        record['input'] = S._publish(record['input']['path'], inputs, replace=True)
+        physical = S._publish(physical['path'], record, replace=True)
+        with self.assertRaisesRegex(ValueError, 'private output mapping'):
+            self.accept(private, physical)
+        self.assertFalse(self.f.source.with_suffix('.vo').exists())
+
+    def test_replaced_private_directory_refuses_before_publication(self):
+        from clone_copy import copy2
+        private, physical = self.physical()
+        old = private.parent.with_name(private.parent.name + '.retained')
+        private.parent.rename(old)
+        private.parent.mkdir()
+        for suffix in ['.vo', '.vos', '.glob']:
+            copy2(old / private.with_suffix(suffix).name, private.with_suffix(suffix))
+        with self.assertRaisesRegex(ValueError, 'private output mapping'):
+            self.accept(private, physical)
+        self.assertFalse(self.f.source.with_suffix('.vo').exists())
 
     def test_private_outputs_require_explicit_fixed_policy(self):
         private, _ = self.physical()

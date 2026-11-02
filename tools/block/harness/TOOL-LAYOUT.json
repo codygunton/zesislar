@@ -78,5 +78,9 @@
   "block/controller_cleanup.py": "code/controller_cleanup.py",
   "block/waiting_envelope.py": "code/waiting_envelope.py",
   "block/import_graph.py": "code/import_graph.py",
-  "block/object_imports.py": "code/object_imports.py"
+  "block/object_imports.py": "code/object_imports.py",
+  "block/declaration_dag.py": "code/declaration_dag.py",
+  "block/declaration_outputs.py": "code/declaration_outputs.py",
+  "block/declaration_parallel.py": "code/declaration_parallel.py",
+  "block/declaration_resources.py": "code/declaration_resources.py"
 }

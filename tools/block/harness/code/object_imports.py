@@ -43,10 +43,11 @@ def _record(reference, module, source, obj, compiler, flags, workspace):
         physical_object=published['private_outputs']['object']['binding']
         private_target(read_bound(receipt['runtime']),receipt['source'],physical_object['path'],old_workspace)
         if (published['module']!=module or inputs.get('target',{}).get('module')!=module or
+                inputs.get('output_context')!=published['output_context'] or
                 physical.get('compiler_outputs')!=published['private_outputs'] or
                 receipt.get('sidecar')!=published['published_outputs']['sidecar']):
             raise ValueError('The owned object has another private publication.')
-        output_arguments=['-o',physical_object['path']]
+        output_arguments=published['output_context']['private_mapping']+['-o',physical_object['path']]
     old_context=receipt.get('compiler_context')
     if context['changes'] or old_context is not None:
         recorded_context=inputs.get('compiler_context')
@@ -72,6 +73,8 @@ def _record(reference, module, source, obj, compiler, flags, workspace):
             inputs.get('validation', {}).get('snapshot') != receipt.get('snapshot')):
         raise ValueError('The owned object lacks its matching physical compiler record.')
     validation = read_bound(provenance['validation'])
+    if validation.get('output_context')!=inputs.get('output_context'):
+        raise ValueError('The imported hashes have another private output mapping.')
     if validation.get('snapshot') != receipt.get('snapshot'):
         raise ValueError('The imported hashes name another compiler snapshot.')
     selection = validation.get('import_selection')

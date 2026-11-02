@@ -161,7 +161,7 @@ def stage_job(config,job,out):
     if digest(workspace/'tools/entry_chain_coqc.sh') != digest(expected_wrapper):
         raise ValueError('The final staged compiler wrapper differs from the bounded physical policy.')
     clone_copy.copy2(Path(__file__).with_name('entry_chain_resources.py'), workspace/'tools/block/entry_chain_resources.py')
-    for name in ['entry_chain_compiler.py','compile_measure.py','clone_copy.py','binding_cache.py','compiler_snapshot.py','source_context.py']:
+    for name in ['entry_chain_compiler.py','compile_measure.py','clone_copy.py','binding_cache.py','compiler_snapshot.py','source_context.py','declaration_outputs.py']:
         clone_copy.copy2(Path(__file__).with_name(name),workspace/'tools/block'/name)
         src=Path(__file__).with_name(name);dst=workspace/'tools/block'/name
         record={'source':binding(src),'owned':binding(dst),'distinct_inode':True}
@@ -260,7 +260,7 @@ def stage_job(config,job,out):
     runtime['bindings'].extend(binding(workspace/rel) for rel in [
         'tools/entry_chain_coqc.sh','tools/block/stock_scope_stdin_relay.py',
         'tools/block/entry_chain_compiler.py','tools/block/entry_chain.py',
-        'tools/block/entry_chain_resources.py','tools/block/proof_bindings.py','tools/block/binding_cache.py','tools/block/compiler_snapshot.py','tools/block/source_context.py','tools/block/seed_bindings.py','tools/block/runtime_ignores.py','tools/block/entry_chain_process.py','tools/block/entry_chain_plan.py'])
+        'tools/block/entry_chain_resources.py','tools/block/proof_bindings.py','tools/block/binding_cache.py','tools/block/compiler_snapshot.py','tools/block/source_context.py','tools/block/declaration_outputs.py','tools/block/seed_bindings.py','tools/block/runtime_ignores.py','tools/block/entry_chain_process.py','tools/block/entry_chain_plan.py'])
     if sealed or config.get('prepared_tool_transition'):
         runtime['bindings'].extend(row['owned'] for row in transition['copies'])
     # One canonical path can occur in source and physical views. Refuse differing hashes.
