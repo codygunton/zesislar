@@ -23,7 +23,7 @@ class DeclarationOutputTests(unittest.TestCase):
         graph = f.root / 'GRAPH.json'
         save(graph, {'import_edges': [{'from': 'Example.Control', 'to': 'Example.Dependency'}]})
         f.runtime.update(phase='prerequisites',
-            declaration_dag={'schema': 'entry-chain.declaration-dag.v1'},
+            declaration_dag={'schema': 'entry-chain.declaration-dag.v1', 'claim_bytes': 64 * GIB},
             canonical_admission={'minimum_claim_bytes': 64 * GIB, 'physical_fence_bytes': 64 * GIB},
             module_files={'Example.Control': 'Control.v', 'Example.Dependency': 'library/Dependency.v'},
             cache_import_graph=binding(graph))
@@ -182,7 +182,7 @@ class DeclarationOutputTests(unittest.TestCase):
         private, _ = self.physical()
         runtime = dict(self.f.runtime)
         runtime.pop('declaration_dag')
-        with self.assertRaisesRegex(ValueError, 'opt-in 64/64'):
+        with self.assertRaisesRegex(ValueError, 'opt-in frontier booking'):
             private_target(runtime, binding(self.f.source), private, self.f.root)
 
     def test_changed_publication_refuses_accepted_index(self):

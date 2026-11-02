@@ -47,7 +47,11 @@ Blind PORT profiles reject this option and retain their separate policy.
 
 A `focused_check` profile can also request `"memory_booking": "full_physical_fence"`.
 It requires declaration-only execution and exact source coverage for every compiled module.
-The booking equals the unchanged 64 GiB fence.
+Serial declaration booking equals the unchanged 64 GiB fence.
+With `--parallel-declarations`, the booking is the smaller of 64 GiB and the largest concurrent frontier claim.
+The frontier uses transitive dependencies, protected barriers, and the worker cap.
+Each measured module uses max(1 GiB, ceil(1.5 times its completed peak)).
+Each unmeasured module keeps its 16 GiB claim.
 Focused profiles without this option keep their existing booking.
 The unused empty native carrier does not receive a declaration workload.
 The declaration-only executor does not run that carrier.

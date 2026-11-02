@@ -39,7 +39,7 @@ class PublicDagPlanTests(unittest.TestCase):
         return dict(self.config['proof_runtime'],phase='prerequisites',
             declaration_dag=spec,ordered_modules=self.config['jobs'][0]['ordered_modules'],
             physical_compiler=self.config['effective_compiler_version']['compiler'],physical_flags=self.config['physical_flags'],
-            canonical_admission={'minimum_claim_bytes':64*GIB,'physical_fence_bytes':64*GIB})
+            canonical_admission={'minimum_claim_bytes':spec['claim_bytes'],'physical_fence_bytes':64*GIB})
 
     def test_serial_is_the_public_default(self):
         parser=argparse.ArgumentParser()
@@ -53,6 +53,8 @@ class PublicDagPlanTests(unittest.TestCase):
         spec=self.attach()
         self.assertEqual(spec['weights'],{name:16*GIB for name in ['Example.A','Example.B','Example.C']})
         self.assertEqual(spec['maximum_workers'],48)
+        self.assertEqual(spec['claim_bytes'],32*GIB)
+        self.assertEqual(self.config['jobs'][0]['claim_bytes'],32*GIB)
         self.assertEqual(validate(self.runtime(spec),self.root),spec)
 
     def test_actual_READY_shape_needs_no_staged_compiler_field(self):
@@ -74,6 +76,48 @@ class PublicDagPlanTests(unittest.TestCase):
         self.config['jobs'][0]['claim_bytes']=24*GIB
         with self.assertRaisesRegex(ValueError,'full-fence 64/64'):
             self.attach()
+
+    def test_booking_authenticates_sources_and_frontier(self):
+        from declaration_parallel_plan import booking_claim
+        self.attach()
+        job = self.config['jobs'][0]
+        self.assertEqual(booking_claim(job), 32 * GIB)
+        job['declaration_dag_booking']['spec']['claim_bytes'] = 16 * GIB
+        with self.assertRaisesRegex(ValueError, 'frontier booking'):
+            booking_claim(job)
+
+    def test_booking_refuses_changed_measurement_weights(self):
+        from declaration_parallel_plan import booking_claim
+        self.attach()
+        self.config['jobs'][0]['declaration_dag_booking']['spec']['weights']['Example.A'] = GIB
+        with self.assertRaisesRegex(ValueError, 'resource evidence'):
+            booking_claim(self.config['jobs'][0])
+
+    def test_refresh_removes_the_old_booking_before_reattaching(self):
+        self.attach()
+        inherit(self.config)
+        self.assertNotIn('declaration_dag_booking', self.config['jobs'][0])
+        self.assertEqual(self.attach()['claim_bytes'], 32 * GIB)
+
+    def test_public_memory_policy_preserves_distinct_claim_and_fence(self):
+        from memory_policy import workload_for_job, validate_job, environment
+        profile = self.root / 'PROFILE.json'
+        save(profile, {'schema': 'scratch.admission-profile.v1', 'kind': 'focused_check',
+            'memory_booking': 'full_physical_fence',
+            'sources': [dict(binding(self.root / (name + '.v')), module='Example.' + name,
+                             role='consumer_check') for name in ['A', 'B', 'C']]})
+        job = self.config['jobs'][0]
+        job['workload'] = workload_for_job(binding(profile), job, self.config)
+        self.attach()
+        self.assertEqual(validate_job(job), 32 * GIB)
+        env = environment('prerequisites', job=job)
+        self.assertEqual(env['ZESU_MODULE_CLAIM_BYTES'], str(32 * GIB))
+        self.assertEqual(env['ZESU_MODULE_LIMIT_GIB'], '64')
+        with self.assertRaisesRegex(ValueError, 'bound declaration booking'):
+            environment('prerequisites', 64 * GIB, job=job)
+        job['claim_bytes'] = 16 * GIB
+        with self.assertRaisesRegex(ValueError, 'claim or physical fence'):
+            validate_job(job)
 
     def test_native_phase_never_receives_the_plan(self):
         self.attach()

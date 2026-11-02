@@ -658,7 +658,11 @@ def workload_claim(workload,job,basis):
   return minimal_growth_claim(read(workload['profile']),job['target'])
  if kind==FOCUSED_KIND:
   if job['phase'] not in COMPILE_PHASES:raise ValueError('A focused check cannot execute native search.')
-  if profile.get('memory_booking')==PORT_FULL_FENCE_BOOKING:return job_fence(job)
+  if profile.get('memory_booking')==PORT_FULL_FENCE_BOOKING:
+   if 'declaration_dag_booking' in job:
+    from declaration_parallel_plan import booking_claim
+    return booking_claim(job)
+   return job_fence(job)
   return FOCUSED_CLAIM
  if kind==PORT_KIND:
   if v33_open_profile(profile):
@@ -812,8 +816,10 @@ def environment(phase,claim_bytes=None,job=None):
   workload=job.get('workload') or {}
   if workload.get('kind') in {PORT_KIND,FOCUSED_KIND} and read(workload['profile']).get('memory_booking')==PORT_FULL_FENCE_BOOKING:
    physical=job_fence(job)
-   if claim_bytes is not None and claim_bytes!=physical:raise ValueError('The environment claim differs from full-fence booking.')
-   claim_bytes=physical
+   expected=job['claim_bytes'] if 'declaration_dag_booking' in job else physical
+   if claim_bytes is not None and claim_bytes!=expected:
+    raise ValueError('The environment claim differs from its bound declaration booking.' if 'declaration_dag_booking' in job else 'The environment claim differs from full-fence booking.')
+   claim_bytes=expected
  physical=job_fence(job) if job is not None else fence(phase)
  measured=job is not None and measured_fence(job) is not None
  gib=physical//GIB

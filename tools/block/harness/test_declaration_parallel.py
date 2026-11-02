@@ -42,6 +42,7 @@ class GuardedAdapterTests(unittest.TestCase):
             'physical_flags':f.runtime['physical_flags']}
         with patch('declaration_parallel_plan.shutil.which',return_value=str(dune)):
             f.runtime['declaration_dag']=attach(config)
+        f.runtime['canonical_admission']['minimum_claim_bytes']=config['jobs'][0]['claim_bytes']
         f.runtime['bindings'].extend([binding(wrapper), binding(dune)])
 
     def physical_runner(self, command, **keywords):

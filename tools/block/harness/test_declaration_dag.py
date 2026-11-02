@@ -2,13 +2,15 @@
 import threading
 import unittest
 
-from declaration_dag import CLAIM_BYTES, GIB, execute
+from declaration_dag import CLAIM_BYTES, GIB, execute, frontier_claim
 
 
 class DeclarationDagTests(unittest.TestCase):
     def run_plan(self, ordered, edges=(), weights=None, **changes):
         weights = weights or {name: GIB for name in ordered}
-        values = dict(claim_bytes=CLAIM_BYTES, fence_bytes=CLAIM_BYTES,
+        claim = frontier_claim(ordered, list(edges), weights, changes.get('completed', ()),
+                               changes.get('protected', ()), changes.get('maximum_workers', 48))
+        values = dict(claim_bytes=claim, fence_bytes=CLAIM_BYTES,
                       available_bytes=lambda: 256 * GIB,
                       compile_private=lambda name: {'private': name},
                       publish=lambda name, artifact: {'path': '/' + name, 'sha256': 'a' * 64},
@@ -171,8 +173,53 @@ class DeclarationDagTests(unittest.TestCase):
 
     def test_non_fixed_booking_refuses(self):
         for key in ['claim_bytes', 'fence_bytes']:
-            with self.subTest(key=key), self.assertRaisesRegex(ValueError, '64/64'):
+            with self.subTest(key=key), self.assertRaisesRegex(ValueError, 'frontier booking'):
                 self.run_plan(['A'], **{key: 24 * GIB})
+
+    def test_pair_and_dependent_book_one_concurrent_frontier(self):
+        edges = [{'from': 'C', 'to': 'A'}, {'from': 'C', 'to': 'B'}]
+        self.assertEqual(frontier_claim(['A', 'B', 'C'], edges,
+            {name: 16 * GIB for name in ['A', 'B', 'C']}), 32 * GIB)
+
+    def test_uneven_chains_overlap_across_graph_depths(self):
+        # LongA can overlap ShortB even though they occur at different depths.
+        edges = [{'from': 'LongA', 'to': 'A'}, {'from': 'ShortB', 'to': 'B'},
+                 {'from': 'DeepB', 'to': 'ShortB'}]
+        weights = {'A': GIB, 'B': GIB, 'LongA': 20 * GIB,
+                   'ShortB': GIB, 'DeepB': 25 * GIB}
+        self.assertEqual(frontier_claim(list(weights), edges, weights), 45 * GIB)
+
+    def test_protected_barriers_prevent_cross_segment_booking(self):
+        ordered = ['A', 'Barrier', 'B']
+        weights = {'A': 10 * GIB, 'Barrier': 16 * GIB, 'B': 12 * GIB}
+        self.assertEqual(frontier_claim(ordered, [], weights, protected=['Barrier']), 16 * GIB)
+
+    def test_frontier_respects_worker_cap_and_aggregate_cap(self):
+        names = ['M' + str(i) for i in range(60)]
+        self.assertEqual(frontier_claim(names, [], dict.fromkeys(names, GIB)), 48 * GIB)
+        self.assertEqual(frontier_claim(names, [], dict.fromkeys(names, 16 * GIB)), CLAIM_BYTES)
+
+    def test_frontier_matches_exhaustive_small_graphs(self):
+        import itertools
+        import random
+        rng = random.Random(171)
+        for unused in range(40):
+            names = list('ABCDEFG')
+            edges = [{'from': names[i], 'to': names[j]} for i in range(7)
+                     for j in range(i) if rng.random() < .3]
+            weights = {name: rng.randrange(1, 15) * GIB for name in names}
+            parents = {name: set() for name in names}
+            for name in names:
+                for edge in edges:
+                    if edge['from'] == name:
+                        parents[name] |= parents[edge['to']] | {edge['to']}
+            for cap in [1, 3, 48]:
+                expected = max(sum(weights[x] for x in group) for size in range(min(cap, 7) + 1)
+                    for group in itertools.combinations(names, size)
+                    if all(a not in parents[b] and b not in parents[a]
+                           for a, b in itertools.combinations(group, 2)))
+                self.assertEqual(frontier_claim(names, edges, weights, maximum_workers=cap),
+                                 min(CLAIM_BYTES, expected))
 
     def test_available_memory_preserves_30_percent(self):
         with self.assertRaises(RuntimeError) as caught:

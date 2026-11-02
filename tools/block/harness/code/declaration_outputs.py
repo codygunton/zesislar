@@ -38,10 +38,12 @@ def private_target(runtime, source, target, workspace):
     admission = runtime.get('canonical_admission', {})
     if (runtime.get('phase') != 'prerequisites' or
             runtime.get('declaration_dag', {}).get('schema') != 'entry-chain.declaration-dag.v1' or
-            admission.get('minimum_claim_bytes') != 64 * GIB or
+            type(runtime.get('declaration_dag', {}).get('claim_bytes')) is not int or
+            not 0 < runtime['declaration_dag']['claim_bytes'] <= 64 * GIB or
+            admission.get('minimum_claim_bytes') != runtime['declaration_dag']['claim_bytes'] or
             admission.get('physical_fence_bytes') != 64 * GIB or
             runtime.get('native_route') or runtime.get('control_session')):
-        raise ValueError('Private declarations require an opt-in 64/64 GiB prerequisite job.')
+        raise ValueError('Private declarations require the opt-in frontier booking and 64 GiB fence.')
     workspace = Path(workspace).resolve()
     target = Path(target).absolute()
     source = Path(source['path'])
