@@ -547,7 +547,7 @@ def workload_for_job(profile_binding,job,config):
  if kind not in {FAMILY_KIND,FOCUSED_KIND,'minimal_native_tactic',PORT_KIND}:raise ValueError('The workload kind is unsupported.')
  if 'memory_booking' in profile and kind not in {PORT_KIND,FOCUSED_KIND}:raise ValueError('Full-fence booking requires a production PORT profile or a focused declaration profile.')
  if 'memory_booking' in profile and kind==FOCUSED_KIND:
-  if profile['memory_booking']!=PORT_FULL_FENCE_BOOKING:raise ValueError('The declaration memory booking option is invalid.')
+  if profile['memory_booking'] not in {PORT_FULL_FENCE_BOOKING,'completed_control_peak'}:raise ValueError('The declaration memory booking option is invalid.')
   if config.get('declarations_only') is not True:raise ValueError('Full-fence declaration booking requires declaration-only execution.')
   if job['phase']=='native' and job.get('ordered_modules',[])==[] and job.get('native_route') is None:return None
   if job['phase'] not in COMPILE_PHASES:raise ValueError('Full-fence declaration booking requires declaration-only execution.')
@@ -614,6 +614,12 @@ def workload_for_job(profile_binding,job,config):
    if row.get('role') not in {'generated_declarations','consumer_check'}:raise ValueError('A rule compilation retains its full claim.')
    from declaration_source import contains_native_proof
    if contains_native_proof(actual(row).read_text()):raise ValueError('A focused check contains a native proof.')
+  if profile.get('memory_booking')=='completed_control_peak':
+   from declaration_source import contains_native_proof
+   if contains_native_proof(actual(profile['control_source']).read_text()):raise ValueError('A focused control contains a native proof.')
+   from measured_focused import claim
+   claim(profile,config,job.get('ordered_modules',[]))
+   return {'kind':kind,'profile':profile_binding,'owned_sources':owned,'declarations_only':True,'focused_context':{k:config[k] for k in ['control_session','physical_flags','prepared_workspace','effective_compiler_version']}}
  else:
   native=profile['native_source'];source=actual(native);text=source.read_text()
   if native['module']!=job['target']['module'] or native['sha256']!=job['target']['source_sha256']:raise ValueError('The family native source differs.')
@@ -651,6 +657,7 @@ def workload_claim(workload,job,basis):
   if (workload['kind']!=PORT_KIND or set(workload['supplier_context'])!={'expected_mcp_flags','physical_flags','effective_compiler_version','cache_import_graph','supplier_flag_workspace'}):
    raise ValueError('The supplier workload context is invalid.')
   context.update(workload['supplier_context'])
+ if 'focused_context' in workload:context.update(workload['focused_context'])
  actual=workload_for_job(workload['profile'],job,context)
  if actual is None or actual['kind']!=workload['kind']:raise ValueError('The workload evidence is invalid.')
  profile=read(workload['profile']);kind=profile.get('kind')
@@ -666,6 +673,9 @@ def workload_claim(workload,job,basis):
     from declaration_parallel_plan import booking_claim
     return booking_claim(job)
    return job_fence(job)
+  if profile.get('memory_booking')=='completed_control_peak':
+   from measured_focused import claim
+   return claim(profile,context,job.get('ordered_modules',[]))
   return FOCUSED_CLAIM
  if kind==PORT_KIND:
   if v33_open_profile(profile):
@@ -756,6 +766,10 @@ def attempt_for_job(value,job):
 def profile_bindings(context):
  if not context:return []
  profile=read(context);values=[]
+ if profile.get('memory_booking')=='completed_control_peak':
+  from measured_focused import references
+  values.extend(references(profile))
+  values.append(profile['control_source'])
  if profile.get('kind')==PORT_KIND:
   authority=production_port_authority(profile)
   values += [profile['authority'],authority['completed_common_ready'],authority['source_packet']]
