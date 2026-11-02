@@ -218,6 +218,9 @@ def stage_job(config,job,out):
     runtime['expected_mcp_flags']=actual
     runtime['physical_flags']=[word.replace(str(source),str(workspace)) for word in config['physical_flags']]
     save(out/'PROJECT-PARSER.json',{'expected_flags':expected,'actual_flags':actual,'equal':True})
+    from object_imports import require_reuse
+    reuse=require_reuse(config,runtime,workspace)
+    save(out/'OBJECT-IMPORT-REUSE-CHECK.json',reuse)
     from compiler_snapshot import declared_outputs
     output_modules=dict(runtime['module_files']);output_order=list(runtime['ordered_modules'])
     preflight=None
@@ -246,6 +249,7 @@ def stage_job(config,job,out):
         runtime['bindings'].append(runtime['cache_import_graph'])
     if preflight is not None:
         runtime['bindings'].extend([binding(preflight),runtime['native_parse_preflight']])
+    runtime['bindings'].append(binding(out/'OBJECT-IMPORT-REUSE-CHECK.json'))
     if runtime.get('native_delta'):
         evidence=runtime['native_delta']
         runtime['bindings'] += [evidence[k] for k in ['result','closure','release']]+[r['receipt'] for r in evidence['receipts']]

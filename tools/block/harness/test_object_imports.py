@@ -6,7 +6,7 @@ import unittest
 import scratch
 from entry_chain import binding
 from entry_chain_stage import invalidation
-from object_imports import compatibility, normalized_flags
+from object_imports import compatibility, normalized_flags, require_reuse
 
 
 class ObjectImportTests(unittest.TestCase):
@@ -194,6 +194,32 @@ class ObjectImportTests(unittest.TestCase):
         self.modules[dependency] = str(external)
         self.edges.append({'from': owner, 'to': dependency})
         self.assertEqual(self.check(owner)['rebuild_modules'], [])
+
+    def stage(self, owner, planned):
+        config = {'cache_import_graph': self.save('graph.json', {'import_edges': self.edges}),
+                  'object_imports': self.receipts, 'jobs': [{'target': {'module': owner}}]}
+        runtime = {'module_files': self.modules, 'ordered_modules': planned,
+                   'physical_compiler': self.compiler, 'physical_flags': self.flags}
+        return require_reuse(config, runtime, self.current)
+
+    def test_final_stage_accepts_matching_retained_objects(self):
+        owner, dependency = 'ZesuSsz.Automation.Switches.ReturnBundle', 'ZesuSsz.Automation.PureFacts'
+        self.pair(owner, dependency)
+        self.assertEqual(self.stage(owner, [])['rebuild_modules'], [])
+
+    def test_final_stage_refuses_unknown_inherited_objects(self):
+        owner = 'ZesuSsz.Automation.Switches.ReturnBundle'
+        self.module(owner)
+        with self.assertRaisesRegex(ValueError, 'staged plan must rebuild'):
+            self.stage(owner, [])
+        self.assertEqual(self.stage(owner, [owner])['rebuild_modules'], [])
+
+    def test_final_stage_refuses_omitted_dependent_recompile(self):
+        owner, dependency = 'ZesuSsz.Automation.Switches.ReturnBundle', 'ZesuSsz.Automation.PureFacts'
+        self.pair(owner, dependency)
+        with self.assertRaisesRegex(ValueError, 'scheduled source compilation'):
+            self.stage(owner, [dependency])
+        self.assertEqual(self.stage(owner, [dependency, owner])['rebuild_modules'], [])
 
 
 if __name__ == '__main__':

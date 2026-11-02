@@ -103,3 +103,25 @@ def compatibility(targets, edges, modules, workspace, receipts, compiler, flags,
             'compatible_owned_modules': checked, 'rebuild': rebuild,
             'rebuild_modules': [row['module'] for row in rebuild],
             'rule': 'Unknown provenance or changed imported objects require source compilation.'}
+
+
+def require_reuse(config, runtime, workspace):
+    """Refuse a staged plan that would retain an incompatible owned object."""
+    graph = read_bound(config['cache_import_graph'])
+    modules = runtime['module_files']
+    planned = list(runtime['ordered_modules'])
+    targets = planned + [row['target']['module'] for row in config['jobs']
+                         if row.get('target', {}).get('module')]
+    targets += [name for name in modules if '.Generated.' in name]
+    # The native target always gets a fresh proof and cannot supply a reused object.
+    native = runtime.get('target', {}).get('block') or {}
+    if native.get('module'):
+        planned.append(native['module'])
+    result = compatibility(targets, graph['import_edges'], modules, workspace,
+                           config.get('object_imports', {}), runtime['physical_compiler'],
+                           runtime['physical_flags'], planned=planned)
+    if result['rebuild']:
+        first = result['rebuild'][0]
+        raise ValueError('The staged plan must rebuild an owned object: ' +
+                         first['module'] + ': ' + first['reason'])
+    return result
