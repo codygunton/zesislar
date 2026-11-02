@@ -46,7 +46,7 @@ class CompiledVerification(unittest.TestCase):
   save(self.path,self.runtime);self.reference=binding(self.path)
   self.runtime.update(runtime_path=str(self.path),runtime_sha256=self.reference['sha256'])
   snapshot=C.publish(self.runtime,lambda:None,self.root/'SNAPSHOT.json',compiler=self.compiler,environment={})
-  self.manager=C.OutputReceipts(C.read(snapshot,self.reference),snapshot)
+  self.manager=C.OutputReceipts(snapshot,self.reference)
   self.obj=self.source.with_suffix('.vo');self.obj.write_text('Authenticated nonproof object fixture.\n')
   self.receipt=self.accept_output(self.manager,self.obj)
 
@@ -56,6 +56,15 @@ class CompiledVerification(unittest.TestCase):
                  manager=self.manager,receipt=self.receipt)
   arguments.update(changes)
   return S.compiled_verification(**arguments)
+
+ def test_compact_output_header_supports_actual_verification_consumer(self):
+  self.prepare()
+  self.assertEqual(set(self.manager.snapshot),{'runtime','producer','objects','compiler'})
+  self.assertNotIn('rows',self.manager.snapshot)
+  payload=self.payload()
+  self.assertEqual(payload['context']['compiler'],binding(self.compiler))
+  self.assertEqual(payload['context']['accepted_compilation'],self.receipt)
+  self.assertEqual(payload['context']['object'],binding(self.obj))
 
  def test_inline_record_uses_one_compiled_identity_in_both_contexts(self):
   self.prepare();before=self.source.read_bytes();p=self.payload()

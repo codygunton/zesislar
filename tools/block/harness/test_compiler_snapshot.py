@@ -45,9 +45,11 @@ class CompilerSnapshotTests(unittest.TestCase):
     def test_output_manager_keeps_only_authenticated_header(self):
         reference=self.seal()
         ledger=S.OutputReceipts(reference,self.reference)
-        self.assertEqual(set(ledger.snapshot),{'runtime','producer','objects'})
+        self.assertEqual(set(ledger.snapshot),{'runtime','producer','objects','compiler'})
         self.assertNotIn('rows',ledger.snapshot)
         self.assertEqual(ledger.snapshot['runtime'],self.reference)
+        self.assertEqual(ledger.snapshot['compiler']['path'],str(self.compiler))
+        self.assertEqual(ledger.snapshot['compiler']['sha256'],binding(self.compiler)['sha256'])
         self.assertEqual(ledger.reference,reference)
 
     def test_output_manager_authenticates_snapshot_before_header(self):

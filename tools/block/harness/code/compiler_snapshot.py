@@ -384,7 +384,7 @@ class OutputReceipts:
     """Authenticate only objects accepted after successful provider checks."""
     def __init__(self, reference, runtime_reference, key=None):
         snapshot=read(reference,runtime_reference)
-        self.snapshot={name:json.loads(json.dumps(snapshot[name])) for name in ('runtime','producer','objects')}
+        self.snapshot={name:json.loads(json.dumps(snapshot[name])) for name in ('runtime','producer','objects','compiler')}
         self.reference = dict(reference)
         self.key = key or secrets.token_hex(32)
         self.rows = []
