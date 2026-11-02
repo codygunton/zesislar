@@ -1,0 +1,838 @@
+{
+  "schema": "port.production-stock-family-authority.v1",
+  "task": "PORT matrix, six released region-return cases, and selected354",
+  "relay": "Root relayed the explicit Orch ruling",
+  "ruling": "Root permits reversible preparation of the exact All-first selected354 caller. Orch approval remains required before selected354 execution.",
+  "basis_kind": "User-authorized family sizing from production measurements; not candidate-specific measurements",
+  "claim_bytes": 8589934592,
+  "physical_fence_bytes": 34359738368,
+  "native_body": "zesu_block.",
+  "minimal_or_private_route": false,
+  "setup_order": [],
+  "fence_hit_retry": false,
+  "production_sources": [
+    {
+      "module": "ZesuSsz.Automation.All",
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v3.1-source-v3/Automation/All.v",
+      "sha256": "cf4ea8757063daa06d05dba09c524d8c1e33fb0354a19f55881df8d05794c6f9"
+    },
+    {
+      "module": "ZesuSsz.Automation.Hooks",
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v3.1-source-v3/Automation/Hooks.v",
+      "sha256": "1b6f0992599b5016a1a6d1460c3b04572e165c340d7c3f16e281f03c46386e4d"
+    },
+    {
+      "module": "ZesuSsz.Automation.Finish",
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v3.1-source-v3/Automation/Finish.v",
+      "sha256": "4e00820888cff91dbdaf7d4e2a31732386c9df3fb194157671f24c932034326d"
+    }
+  ],
+  "cases": [
+    {
+      "block": "800d6960",
+      "module": "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6960",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-integration-v1/callers/ZesuSsz/Proofs/DecodeItem/Hand/Block800d6960.v",
+        "sha256": "0472671697a916061645fa6443c0d7226388c5534b9aaed594012c64bebe4dec"
+      },
+      "statement_sha256": "23dbaa8811451ee1a5ce2476d4f1d533cc66b10f230f19b372f1b58a44ef9336",
+      "pc": 2148362592
+    },
+    {
+      "block": "800d697c",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d697c_V10_209",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-integration-v1/callers/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d697c_V10_209.v",
+        "sha256": "089bd709bd13caff3dd981954c00e63d9906ef8bacfee80b1893ccc2696f16d5"
+      },
+      "statement_sha256": "9f534f4d12ee5eeebf3676314e9c32357f34896d53ee3e4c4acba1250321137c",
+      "pc": 2148362620
+    },
+    {
+      "block": "800d69a4",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d69a4_198",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-integration-v1/callers/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d69a4_198.v",
+        "sha256": "2611e2d362580a2b2406924b61e6dd53c5f6904297c361bdfa4cf6c631841d17"
+      },
+      "statement_sha256": "21af9d3196f14cb607bedbd0dfa28ddfbf9bd8f8f7420cc5b001580de02db6dc",
+      "pc": 2148362660
+    },
+    {
+      "block": "800d69b0",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d69b0_V10_210",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-integration-v1/callers/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d69b0_V10_210.v",
+        "sha256": "c618aa5cee42c2beb188e82fafe131f16ceb02a1aeb6f1c242b589e20ec8a42d"
+      },
+      "statement_sha256": "35d3e6fe407f59e75825989a0c41830da3efff6d4f03c069a1421de1127dcb36",
+      "pc": 2148362672
+    },
+    {
+      "block": "800d69d8",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d69d8_199",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-integration-v1/callers/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d69d8_199.v",
+        "sha256": "b05bca180ce3e44500e255fa741cb0a72101b8acda286658c8fdf96c455b9c0d"
+      },
+      "statement_sha256": "6659f5fcc8aa1bfb43f9a61788af8b442c068b0299ca2b24f6927bfbb7abfa8d",
+      "pc": 2148362712
+    },
+    {
+      "block": "800d69e0",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d69e0_V10_211",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-integration-v1/callers/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d69e0_V10_211.v",
+        "sha256": "a9ba9896990532e2a6542bcf37ebb925f57bc07acc037eb9639d230a439c0305"
+      },
+      "statement_sha256": "2d791835dfe8e482f392860352019a301ed10921eca7053b012992241cafc6aa",
+      "pc": 2148362720
+    },
+    {
+      "block": "800d69e8",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d69e8_V10_212",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-integration-v1/callers/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d69e8_V10_212.v",
+        "sha256": "22e8746ed8925c7d385c6db2b04f9279d6258dd2d7984de8176d1d2cbb4627b8"
+      },
+      "statement_sha256": "3c92d2ee4677a00791f37e2bad03e06fa7b7bffaca68e46e0a71a33bdf4b08f2",
+      "pc": 2148362728
+    },
+    {
+      "block": "800d6a00",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6a00_V10_213",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-integration-v1/callers/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6a00_V10_213.v",
+        "sha256": "ea9c006ee3e778b9d1ab3af5b8bf28202777d934dc11bb34e82e596de8d54e14"
+      },
+      "statement_sha256": "0b3d70f345c256444d3395f75a1cfae0c6e4b66f00349d9f944fe4701a20c4fc",
+      "pc": 2148362752
+    },
+    {
+      "block": "800d6a08",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6a08_V10_Delta220",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-integration-v1/callers/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6a08_V10_Delta220.v",
+        "sha256": "53a42ddebb764d242f09d0683436b5589a130fa0ef047dfa6f90d002f8686982"
+      },
+      "statement_sha256": "74ddd68632992a536140ba0e94c3065cc749e3b300aaf49ed2b0b18b86603385",
+      "pc": 2148362760
+    },
+    {
+      "block": "800d6a14",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6a14_V10_215",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-integration-v1/callers/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6a14_V10_215.v",
+        "sha256": "e12b480131c12c54a13e6ba3794526b780654e79acffe7a7a8c43835ff372a7f"
+      },
+      "statement_sha256": "1c4eda1608a411c6b92f4dfc0ef7aef8605ce41cbde84d653e806d62201b8c7f",
+      "pc": 2148362772
+    },
+    {
+      "block": "800d6a64",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6a64_322",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-integration-v1/callers/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6a64_322.v",
+        "sha256": "61860e2c7b1e1a35e9c8f1a7d4261c2bfbb3d33b62839ed87102630052cfed38"
+      },
+      "statement_sha256": "c8a603d9b9ef3667754b36353efaaa9408978c4418595363cf7c52b9003e4fac",
+      "pc": 2148362852
+    },
+    {
+      "block": "800d6a6c",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6a6c_V10_Delta221",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-integration-v1/callers/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6a6c_V10_Delta221.v",
+        "sha256": "81da688a7428a970bbe5461fc851a3151e866f8c06085ff06dfec0d5825343d6"
+      },
+      "statement_sha256": "1d96e82aca1a14dbc1609dbf5f474f771241c897e77fe767677ecf1dc4e8c7d0",
+      "pc": 2148362860
+    },
+    {
+      "block": "800d6a78",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6a78_V10_217",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-integration-v1/callers/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6a78_V10_217.v",
+        "sha256": "536f6f8fe62f4ef64c398d21fedb213e2a914528464b72f69c230326bcf1cb9b"
+      },
+      "statement_sha256": "5d2d1764c855aa164fdae683403e9fee44eef16b1882813b002b13e2fb2608e6",
+      "pc": 2148362872
+    },
+    {
+      "block": "800d6aa8",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6aa8_V10_218",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-integration-v1/callers/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6aa8_V10_218.v",
+        "sha256": "4578c3b6bb6c963b366c66220ea36c828563fd65cf025998beef4feca9af4347"
+      },
+      "statement_sha256": "537cafe4941976d9646f011d44c3e32a3e04bfa358c6010238207a482d284d0f",
+      "pc": 2148362920
+    },
+    {
+      "block": "800d6ab4",
+      "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6ab4_V10_222",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-integration-v1/callers/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6ab4_V10_222.v",
+        "sha256": "d8b00ce4db423c20563ba19413fa9531d164186b66ce131d2b50ed3422893d6d"
+      },
+      "statement_sha256": "7fcce53d4757b7cf9ee997776f053a08b75459d70123455a86ba6f3b34e825bd",
+      "pc": 2148362932
+    },
+    {
+      "block": "region-return-800d698c-a9ff9d4a8e09ee2f",
+      "module": "ZesuSsz.Proofs.DecodeItem.PortRegionExit259.Block800d698c",
+      "pc": 2148362636,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-a/exit-region-rebind259/callers/Block800d698c.v",
+        "sha256": "69c98c7d8f9b8da40a4170203f849f112f5c74947035ab011d64df2f9b38a5a4"
+      },
+      "statement_sha256": "a9ff9d4a8e09ee2fe222a310a5fee4df7f59d5f9e002979da2e59a1c31ec6821"
+    },
+    {
+      "block": "region-return-800d69b0-1474a34cc2a242d9",
+      "module": "ZesuSsz.Proofs.DecodeItem.PortRegionExit259.Block800d69b0",
+      "pc": 2148362672,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-a/exit-region-rebind259/callers/Block800d69b0.v",
+        "sha256": "7670d665c784ada57a1c0b266ae9e7d2701a7564b06171d2e8640f2d3571562b"
+      },
+      "statement_sha256": "1474a34cc2a242d9c5316b53ee1eeb98b69caaecfbc0edc37fb92df182c959e3"
+    },
+    {
+      "block": "region-return-800d6a40-745a77dfba93353a",
+      "module": "ZesuSsz.Proofs.DecodeItem.PortRegionExit259.Block800d6a40",
+      "pc": 2148362816,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-a/exit-region-rebind259/callers/Block800d6a40.v",
+        "sha256": "c2ca445fab88d961238884e5c699b2b366965c8af302178e98519780a7752ca3"
+      },
+      "statement_sha256": "745a77dfba93353a4c097d262037495024fa2c8f43a2e22c2a82702c89e1c1f2"
+    },
+    {
+      "block": "region-return-800d6a78-fefe09357ee3a1e9",
+      "module": "ZesuSsz.Proofs.DecodeItem.PortRegionExit259.Block800d6a78",
+      "pc": 2148362872,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-a/exit-region-rebind259/callers/Block800d6a78.v",
+        "sha256": "738d69fa88d1cc20bc33481b5ac4038f32dc51a09d55b4e36515f47789f5be7b"
+      },
+      "statement_sha256": "fefe09357ee3a1e9adc5a0d4726a2c56ed98bb42e78c0018344d5cc847ec1947"
+    },
+    {
+      "block": "region-return-800d6ae0-2315161efa512a1c",
+      "module": "ZesuSsz.Proofs.DecodeItem.PortRegionExit259.Block800d6ae0",
+      "pc": 2148362976,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-a/exit-region-rebind259/callers/Block800d6ae0.v",
+        "sha256": "4325e3a4a7e2d5c2461c577eee327a974b2ea59ca2085f643afa2479ff7eba28"
+      },
+      "statement_sha256": "2315161efa512a1cb5dbcf4bac7bac3b1262c6d1991ee302cf3ba8a962ca182c"
+    },
+    {
+      "block": "region-return-800d6b08-d5bd0a900b4fd769",
+      "module": "ZesuSsz.Proofs.DecodeItem.PortRegionExit259.Block800d6b08",
+      "pc": 2148363016,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-a/exit-region-rebind259/callers/Block800d6b08.v",
+        "sha256": "37e26476e537b5a91312c55c210e2031ddbd239555ae473b95d2acda4f202793"
+      },
+      "statement_sha256": "d5bd0a900b4fd769d964b6479f560b8f5ee3934edb1da98395291b433212c8c4"
+    },
+    {
+      "block": "8009c354",
+      "module": "ZesuSsz.Generated.HeldoutEqlRun197.Native8009c354",
+      "pc": 2148123476,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/native-port-policy-v1/source014-authority22-extension/caller-successor-v1/Native8009c354.v",
+        "sha256": "c7d17248dccefe98bce2397fea6a032873bccfb59521a95d467488e701dc767d"
+      },
+      "statement_sha256": "93b80e95569a3ff9b67f56fe706fb494c098b5ebc49939ada2cf56a895c60ab2"
+    },
+    {
+      "block": "800d6974",
+      "module": "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6974",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-integration-v1/callers/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v",
+        "sha256": "320a5540cfe219f3ccab76b5c343151eae73d4bf89b0e3b180d0907159221916"
+      },
+      "statement_sha256": "3abd9cb6c6ab180a18a02a93027df450a2cdd90ba6424387750dd6944c902953",
+      "pc": 2148362612
+    }
+  ],
+  "completed_common_ready": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-fractional-read-v1/controls001/READY-RUNTIME.json",
+    "sha256": "784cdd656caa318db76c5d1a5d8f8349e369390ccf8dc9c2dbb963a151bf5c0c"
+  },
+  "source_packet": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-source-inputs-v3/SOURCE-CANDIDATE.json",
+    "sha256": "74dad1750127c5d574cf1a70aab0974cef6971c92abe8be3d59aa5ac905ce1d7"
+  },
+  "cpu_policy": {
+    "search_stop_seconds": null,
+    "setup_stop_seconds": null,
+    "instruction_checkpoint_search_CPU_seconds": 600,
+    "long_search_report_CPU_seconds": 21600,
+    "stop_at_long_search": false,
+    "scope": "These exact 22 authorized PORT natives only."
+  },
+  "status": "matrix006_source_authority_draft_unlaunched",
+  "released_compiled_supplier": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-fractional-read-v1/B2-RELEASE.json",
+    "sha256": "526408838383626c0a37a5918ad8ced04df86680eaf6d6a4d4231973d85cec04"
+  },
+  "compiled_bank": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-fractional-read-v1/controls001/READY-RUNTIME.json",
+    "sha256": "784cdd656caa318db76c5d1a5d8f8349e369390ccf8dc9c2dbb963a151bf5c0c"
+  },
+  "released_supplier_evidence": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-fractional-read-v1/RESULT-PACKET.json",
+    "sha256": "c507108e8f249de97f93cde8a76785b60997bdfb2a17dec3d53ae4dcca5f627a"
+  },
+  "pending_selector_control_count": 4,
+  "completed_common_ready_qualification": "Historical matrix005 family evidence only. This field supplies no matrix006 object. Runtime construction requires separate generic v3 READY and accepted B1 objects.",
+  "authority_extension": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-authority-v1/EXTENSION.json",
+    "sha256": "2f7f180cbad4da9c40c674c3a94a9d21e6f4fc9f1605300457ebf0c2ff5a8932"
+  },
+  "original_fifteen_authority": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/private-admission-route-v1/source013/PORT-FAMILY-AUTHORITY.json",
+    "sha256": "a86e9b124131a16276860722cb5c214bd59074738df9d0a2d9d0b5efc42506b3"
+  },
+  "exit_queue": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/exit-supplier354/QUEUE002.json",
+    "sha256": "ef3e4f7d777d64e584e376de5cbc93f224094a507bd175efb8c7e0b1e473eaf4"
+  },
+  "case_count": 23,
+  "prior_ruling": "Root applies the released union matrix with the existing ordinary measured 8 GiB claim and 32 GiB fence. All 15 natives run once. A fence hit is reported without an automatic retry.",
+  "prior_21_ruling": "Orch ruling delivered2026-10-30: add the six exact QUEUE002 exits to Source014 with the SAME policy. Keep354 on its separate profile.",
+  "previous_21_authority": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/private-admission-route-v1/source014/PORT-FAMILY-AUTHORITY-21.json",
+    "sha256": "2513ae983eb07cc5f2e6a3c7a42e966112ad7c041b9c3ba140f8bb97c233ade7"
+  },
+  "selected_development_case": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-1/eql-run2-profile-plan198/selected354/CASE.json",
+    "sha256": "1e28e5f7c9a8e8d389bc77c2d0f72d93a7cddca7536450c96415185f51dd34b2"
+  },
+  "prior_candidate_authority": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/private-admission-route-v1/source014-authority22/PORT-FAMILY-AUTHORITY-22.json",
+    "sha256": "88d9ce9bbdf11c48537d7464f0ad895e5208bb7402ab295ec10cb907a4458d8f"
+  },
+  "selected354_candidate_execution_authorized": false,
+  "selected354_caller_delta": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/native-port-policy-v1/source014-authority22-extension/caller-successor-v1/SOURCE.json",
+    "sha256": "b1a679d91ae708f4faf851492aefb4241dd615a1b56a00f481b774a513dd34c1"
+  },
+  "matrix005_lineage": {
+    "base_authority": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/private-admission-route-v1/source014-authority22-caller002-counter-v1/PORT-FAMILY-AUTHORITY-22.json",
+      "sha256": "c797e22ea21f186eeb54ff4de86e5877ab1e043f0ed76dbadb119e95d99e64ae"
+    },
+    "production_source_changes": [
+      {
+        "module": "ZesuSsz.Automation.All",
+        "original": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Automation/All.v",
+          "sha256": "45871407546016efb10853d7d4f44fe995a37d2301a5e574f8a34ee8033bcda0"
+        },
+        "candidate": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-fractional-read-v1/sources/All.v",
+          "sha256": "d159522208b95e466e3a5412a1016935f0f30ca4720a9f0429b486ed17fa1710"
+        }
+      },
+      {
+        "module": "ZesuSsz.Automation.Hooks",
+        "original": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Automation/Hooks.v",
+          "sha256": "a2212cf5ebae987389c55135363b276ab504e3c8062d580a0e502f942dcb425c"
+        },
+        "candidate": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-fractional-read-v1/sources/Hooks.v",
+          "sha256": "ee65f71e47e58f66517b9340ca782356a3ee89802f865d26e0a8c880ca99128a"
+        }
+      },
+      {
+        "module": "ZesuSsz.Automation.Finish",
+        "original": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/composed004/workspace/artifacts/default/ZesuSsz/Automation/Finish.v",
+          "sha256": "0a76d4ab7522dbb3eb3e06a74bee850426a90f856142f73340052988bc9442f4"
+        },
+        "candidate": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-common-finisher-v2/Finish.v",
+          "sha256": "2e50e68844f94b7c7e504bc2c9a7676b249681264ae13bb2a9ff693299028a74"
+        }
+      }
+    ],
+    "focused_result": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-fractional-read-v1/controls001/jobs/prerequisites/RESULT.json",
+      "sha256": "e642872ecdab3874d0f86b24dc09a7f91d44ee712a4e7a95cae9d663a9eee1ed"
+    },
+    "execution_authorized_by_this_builder": false
+  },
+  "matrix006_lineage": {
+    "base_authority": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/BASE-AUTHORITY-26fad.json",
+      "sha256": "6edb3c734adee73632e220ff6de1d171b6eb2d04eca4247445d5aa142d19ddfc"
+    },
+    "source_candidate": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-source-inputs-v3/SOURCE-CANDIDATE.json",
+      "sha256": "74dad1750127c5d574cf1a70aab0974cef6971c92abe8be3d59aa5ac905ce1d7"
+    },
+    "generic_source_freeze": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v3.1-source-v3/SOURCE.json",
+      "sha256": "85e8adfd3044d8e4f36b4e6b5911c229cf2e97b18b06af0dbb3d56e458c70fe5"
+    },
+    "changed_callers": [
+      "800d6a14",
+      "800d6ab4"
+    ],
+    "policy_unchanged": true,
+    "generic_v3_READY_pending": true,
+    "B1_objects_pending": true,
+    "object_adoption_authorized": false,
+    "native_launch_authorized": false,
+    "historical_compiled_supplier_fields_only": true
+  },
+  "source_only_6974_extension": {
+    "previous_authority": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/PORT-FAMILY-AUTHORITY-22-v31.json",
+      "sha256": "ea88c0e9eab9e6e720e7fc2500407c065d82fd7a0feb12658783d4a761c79917"
+    },
+    "ruling": "Orch approved6974 caller binding and public authority extension. No native proof is released.",
+    "native_execution_released": false,
+    "ordered_cfg_successors": [
+      "800d69a4",
+      "800d697c"
+    ],
+    "coq_premise_order": [
+      "800d697c",
+      "800d69a4"
+    ],
+    "order_qualification": "The unchanged public renderer prepends continuations. Each premise keeps the exact PC, entry, and23 source parameters.",
+    "entry": {
+      "pc": "800d6974",
+      "entry_definition": "ZesuSsz.Generated.DecodeItem.MachineSlice6960Entries.machineAt6974",
+      "resource_predicate": "ZesuSsz.Generated.DecodeItem.MachineSlice6960Entries.machineAt6974",
+      "binders": [
+        {
+          "name": "args",
+          "type": "DecodeItemArgs"
+        },
+        {
+          "name": "returnAddress",
+          "type": "Z"
+        },
+        {
+          "name": "K",
+          "type": "iProp Sigma"
+        },
+        {
+          "name": "entry_fact_0",
+          "type": "( decodeItemReturnAddress ( args ) = ( returnAddress ) ) % Z"
+        },
+        {
+          "name": "entry_fact_1",
+          "type": "( ( decodeItemInputLength ( args ) ) = Z . of_nat ( List . length ( decodeItemInputBytes ( args ) ) ) ) % Z"
+        },
+        {
+          "name": "entry_fact_2",
+          "type": "( List . length ( decodeItemBeforeStorage ( args ) ) = 40 ) % nat"
+        },
+        {
+          "name": "entry_fact_3",
+          "type": "( 0 < = ( decodeItemInputPointer ( args ) ) ) % Z"
+        },
+        {
+          "name": "entry_fact_4",
+          "type": "( 0 < = ( decodeItemInputLength ( args ) ) ) % Z"
+        },
+        {
+          "name": "entry_fact_5",
+          "type": "( 0 < = ( decodeItemOutputPointer ( args ) ) ) % Z"
+        },
+        {
+          "name": "entry_fact_6",
+          "type": "( ( decodeItemInputPointer ( args ) ) + ( decodeItemInputLength ( args ) ) < ( 18446744073709551616 ) ) % Z"
+        },
+        {
+          "name": "entry_fact_7",
+          "type": "( ( decodeItemOutputPointer ( args ) ) + 40 < ( 18446744073709551616 ) ) % Z"
+        },
+        {
+          "name": "entry_fact_8",
+          "type": "( ( 16 ) < = ( decodeItemStackPointer ( args ) ) ) % Z"
+        },
+        {
+          "name": "entry_fact_9",
+          "type": "( ( decodeItemStackPointer ( args ) ) < ( 18446744073709551616 ) ) % Z"
+        },
+        {
+          "name": "entry_fact_10",
+          "type": "( ( 2684354560 ) + ( 16 ) < = ( decodeItemStackPointer ( args ) ) ) % Z"
+        },
+        {
+          "name": "entry_fact_11",
+          "type": "( ( decodeItemStackPointer ( args ) ) < = ( 3221225472 ) ) % Z"
+        },
+        {
+          "name": "entry_fact_12",
+          "type": "( 0 < = ( decodeItemReturnAddress ( args ) ) ) % Z"
+        },
+        {
+          "name": "entry_fact_13",
+          "type": "( ( decodeItemReturnAddress ( args ) ) < ( 18446744073709551616 ) ) % Z"
+        },
+        {
+          "name": "entry_fact_14",
+          "type": "( ( decodeItemReturnAddress ( args ) ) mod 4 = 0 ) % Z"
+        },
+        {
+          "name": "entry_fact_15",
+          "type": "( ( 2684354560 ) < = ( decodeItemOutputPointer ( args ) ) ) % Z"
+        },
+        {
+          "name": "entry_fact_16",
+          "type": "( ( decodeItemOutputPointer ( args ) ) + 40 < = ( 3221225472 ) ) % Z"
+        },
+        {
+          "name": "entry_fact_17",
+          "type": "( 0 < = ( decodeItemInputEnd ( args ) ) ) % Z"
+        },
+        {
+          "name": "entry_fact_18",
+          "type": "( ( decodeItemInputEnd ( args ) ) < ( 18446744073709551616 ) ) % Z"
+        },
+        {
+          "name": "entry_fact_19",
+          "type": "( ( decodeItemInputPointer ( args ) ) + ( decodeItemInputLength ( args ) ) < = ( decodeItemInputEnd ( args ) ) ) % Z"
+        }
+      ],
+      "arguments": [
+        "args",
+        "returnAddress",
+        "K",
+        "entry_fact_0",
+        "entry_fact_1",
+        "entry_fact_2",
+        "entry_fact_3",
+        "entry_fact_4",
+        "entry_fact_5",
+        "entry_fact_6",
+        "entry_fact_7",
+        "entry_fact_8",
+        "entry_fact_9",
+        "entry_fact_10",
+        "entry_fact_11",
+        "entry_fact_12",
+        "entry_fact_13",
+        "entry_fact_14",
+        "entry_fact_15",
+        "entry_fact_16",
+        "entry_fact_17",
+        "entry_fact_18",
+        "entry_fact_19"
+      ],
+      "source_hashes": {
+        "ZesuSsz/Generated/DecodeItem/MachineSlice6960Entries.v": "e47b7c7ffbb577719c9aa68c0b8c1bfe59690be82d6ede14a2f35c8b2e10c6f0"
+      },
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v32-NEW-generated-prefix-v1/prepare001/prepared/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineSlice6960Entries.v",
+        "sha256": "e47b7c7ffbb577719c9aa68c0b8c1bfe59690be82d6ede14a2f35c8b2e10c6f0"
+      }
+    },
+    "successors_in_cfg_order": [
+      {
+        "pc": "800d69a4",
+        "entry_definition": "ZesuSsz.Generated.DecodeItem.MachineBranch198Entries.machineAt69a4_198",
+        "resource_predicate": "ZesuSsz.Generated.DecodeItem.MachineBranch198Entries.machineAt69a4_198",
+        "binders": [
+          {
+            "name": "args",
+            "type": "DecodeItemArgs"
+          },
+          {
+            "name": "returnAddress",
+            "type": "Z"
+          },
+          {
+            "name": "K",
+            "type": "iProp Sigma"
+          },
+          {
+            "name": "entry_fact_0",
+            "type": "( decodeItemReturnAddress ( args ) = ( returnAddress ) ) % Z"
+          },
+          {
+            "name": "entry_fact_1",
+            "type": "( ( decodeItemInputLength ( args ) ) = Z . of_nat ( List . length ( decodeItemInputBytes ( args ) ) ) ) % Z"
+          },
+          {
+            "name": "entry_fact_2",
+            "type": "( List . length ( decodeItemBeforeStorage ( args ) ) = 40 ) % nat"
+          },
+          {
+            "name": "entry_fact_3",
+            "type": "( 0 < = ( decodeItemInputPointer ( args ) ) ) % Z"
+          },
+          {
+            "name": "entry_fact_4",
+            "type": "( 0 < = ( decodeItemInputLength ( args ) ) ) % Z"
+          },
+          {
+            "name": "entry_fact_5",
+            "type": "( 0 < = ( decodeItemOutputPointer ( args ) ) ) % Z"
+          },
+          {
+            "name": "entry_fact_6",
+            "type": "( ( decodeItemInputPointer ( args ) ) + ( decodeItemInputLength ( args ) ) < ( 18446744073709551616 ) ) % Z"
+          },
+          {
+            "name": "entry_fact_7",
+            "type": "( ( decodeItemOutputPointer ( args ) ) + 40 < ( 18446744073709551616 ) ) % Z"
+          },
+          {
+            "name": "entry_fact_8",
+            "type": "( ( 16 ) < = ( decodeItemStackPointer ( args ) ) ) % Z"
+          },
+          {
+            "name": "entry_fact_9",
+            "type": "( ( decodeItemStackPointer ( args ) ) < ( 18446744073709551616 ) ) % Z"
+          },
+          {
+            "name": "entry_fact_10",
+            "type": "( ( 2684354560 ) + ( 16 ) < = ( decodeItemStackPointer ( args ) ) ) % Z"
+          },
+          {
+            "name": "entry_fact_11",
+            "type": "( ( decodeItemStackPointer ( args ) ) < = ( 3221225472 ) ) % Z"
+          },
+          {
+            "name": "entry_fact_12",
+            "type": "( 0 < = ( decodeItemReturnAddress ( args ) ) ) % Z"
+          },
+          {
+            "name": "entry_fact_13",
+            "type": "( ( decodeItemReturnAddress ( args ) ) < ( 18446744073709551616 ) ) % Z"
+          },
+          {
+            "name": "entry_fact_14",
+            "type": "( ( decodeItemReturnAddress ( args ) ) mod 4 = 0 ) % Z"
+          },
+          {
+            "name": "entry_fact_15",
+            "type": "( ( 2684354560 ) < = ( decodeItemOutputPointer ( args ) ) ) % Z"
+          },
+          {
+            "name": "entry_fact_16",
+            "type": "( ( decodeItemOutputPointer ( args ) ) + 40 < = ( 3221225472 ) ) % Z"
+          },
+          {
+            "name": "entry_fact_17",
+            "type": "( 0 < = ( decodeItemInputEnd ( args ) ) ) % Z"
+          },
+          {
+            "name": "entry_fact_18",
+            "type": "( ( decodeItemInputEnd ( args ) ) < ( 18446744073709551616 ) ) % Z"
+          },
+          {
+            "name": "entry_fact_19",
+            "type": "( ( decodeItemInputPointer ( args ) ) + ( decodeItemInputLength ( args ) ) < = ( decodeItemInputEnd ( args ) ) ) % Z"
+          }
+        ],
+        "arguments": [
+          "args",
+          "returnAddress",
+          "K",
+          "entry_fact_0",
+          "entry_fact_1",
+          "entry_fact_2",
+          "entry_fact_3",
+          "entry_fact_4",
+          "entry_fact_5",
+          "entry_fact_6",
+          "entry_fact_7",
+          "entry_fact_8",
+          "entry_fact_9",
+          "entry_fact_10",
+          "entry_fact_11",
+          "entry_fact_12",
+          "entry_fact_13",
+          "entry_fact_14",
+          "entry_fact_15",
+          "entry_fact_16",
+          "entry_fact_17",
+          "entry_fact_18",
+          "entry_fact_19"
+        ],
+        "source_hashes": {
+          "ZesuSsz/Generated/DecodeItem/MachineBranch198Entries.v": "ebc335ded6bfb93d8e6a3cd44f4937609f9ec576ef63b2bb739c82fa5b734403"
+        },
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v32-NEW-generated-prefix-v1/prepare001/prepared/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineBranch198Entries.v",
+          "sha256": "ebc335ded6bfb93d8e6a3cd44f4937609f9ec576ef63b2bb739c82fa5b734403"
+        }
+      },
+      {
+        "pc": "800d697c",
+        "entry_definition": "ZesuSsz.Generated.DecodeItem.PilotA201Entries.machineAt697c_201",
+        "resource_predicate": "ZesuSsz.Generated.DecodeItem.PilotA201Entries.machineAt697c_201",
+        "binders": [
+          {
+            "name": "args",
+            "type": "DecodeItemArgs"
+          },
+          {
+            "name": "returnAddress",
+            "type": "Z"
+          },
+          {
+            "name": "K",
+            "type": "iProp Sigma"
+          },
+          {
+            "name": "entry_fact_0",
+            "type": "( decodeItemReturnAddress ( args ) = ( returnAddress ) ) % Z"
+          },
+          {
+            "name": "entry_fact_1",
+            "type": "( ( decodeItemInputLength ( args ) ) = Z . of_nat ( List . length ( decodeItemInputBytes ( args ) ) ) ) % Z"
+          },
+          {
+            "name": "entry_fact_2",
+            "type": "( List . length ( decodeItemBeforeStorage ( args ) ) = 40 ) % nat"
+          },
+          {
+            "name": "entry_fact_3",
+            "type": "( 0 < = ( decodeItemInputPointer ( args ) ) ) % Z"
+          },
+          {
+            "name": "entry_fact_4",
+            "type": "( 0 < = ( decodeItemInputLength ( args ) ) ) % Z"
+          },
+          {
+            "name": "entry_fact_5",
+            "type": "( 0 < = ( decodeItemOutputPointer ( args ) ) ) % Z"
+          },
+          {
+            "name": "entry_fact_6",
+            "type": "( ( decodeItemInputPointer ( args ) ) + ( decodeItemInputLength ( args ) ) < ( 18446744073709551616 ) ) % Z"
+          },
+          {
+            "name": "entry_fact_7",
+            "type": "( ( decodeItemOutputPointer ( args ) ) + 40 < ( 18446744073709551616 ) ) % Z"
+          },
+          {
+            "name": "entry_fact_8",
+            "type": "( ( 16 ) < = ( decodeItemStackPointer ( args ) ) ) % Z"
+          },
+          {
+            "name": "entry_fact_9",
+            "type": "( ( decodeItemStackPointer ( args ) ) < ( 18446744073709551616 ) ) % Z"
+          },
+          {
+            "name": "entry_fact_10",
+            "type": "( ( 2684354560 ) + ( 16 ) < = ( decodeItemStackPointer ( args ) ) ) % Z"
+          },
+          {
+            "name": "entry_fact_11",
+            "type": "( ( decodeItemStackPointer ( args ) ) < = ( 3221225472 ) ) % Z"
+          },
+          {
+            "name": "entry_fact_12",
+            "type": "( 0 < = ( decodeItemReturnAddress ( args ) ) ) % Z"
+          },
+          {
+            "name": "entry_fact_13",
+            "type": "( ( decodeItemReturnAddress ( args ) ) < ( 18446744073709551616 ) ) % Z"
+          },
+          {
+            "name": "entry_fact_14",
+            "type": "( ( decodeItemReturnAddress ( args ) ) mod 4 = 0 ) % Z"
+          },
+          {
+            "name": "entry_fact_15",
+            "type": "( ( 2684354560 ) < = ( decodeItemOutputPointer ( args ) ) ) % Z"
+          },
+          {
+            "name": "entry_fact_16",
+            "type": "( ( decodeItemOutputPointer ( args ) ) + 40 < = ( 3221225472 ) ) % Z"
+          },
+          {
+            "name": "entry_fact_17",
+            "type": "( 0 < = ( decodeItemInputEnd ( args ) ) ) % Z"
+          },
+          {
+            "name": "entry_fact_18",
+            "type": "( ( decodeItemInputEnd ( args ) ) < ( 18446744073709551616 ) ) % Z"
+          },
+          {
+            "name": "entry_fact_19",
+            "type": "( ( decodeItemInputPointer ( args ) ) + ( decodeItemInputLength ( args ) ) < = ( decodeItemInputEnd ( args ) ) ) % Z"
+          }
+        ],
+        "arguments": [
+          "args",
+          "returnAddress",
+          "K",
+          "entry_fact_0",
+          "entry_fact_1",
+          "entry_fact_2",
+          "entry_fact_3",
+          "entry_fact_4",
+          "entry_fact_5",
+          "entry_fact_6",
+          "entry_fact_7",
+          "entry_fact_8",
+          "entry_fact_9",
+          "entry_fact_10",
+          "entry_fact_11",
+          "entry_fact_12",
+          "entry_fact_13",
+          "entry_fact_14",
+          "entry_fact_15",
+          "entry_fact_16",
+          "entry_fact_17",
+          "entry_fact_18",
+          "entry_fact_19"
+        ],
+        "source_hashes": {
+          "ZesuSsz/Generated/DecodeItem/PilotA201Entries.v": "5892997f6d27b0c2a7c110df22d7d924d3175bfc4c6253ff3b21914e51dddecc"
+        },
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v32-NEW-generated-prefix-v1/prepare001/prepared/artifacts/default/ZesuSsz/Generated/DecodeItem/PilotA201Entries.v",
+          "sha256": "5892997f6d27b0c2a7c110df22d7d924d3175bfc4c6253ff3b21914e51dddecc"
+        }
+      }
+    ],
+    "generic_supplier": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v32-intact-seed-fallback-v1/prepare001/READY-RUNTIME.json",
+      "sha256": "b26bef3cb6a4a960477ac575506582e6b624962fd3078fe0e1533b0a3af21787"
+    },
+    "generated_prefix": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v32-NEW-generated-prefix-v1/prepare001/READY-RUNTIME.json",
+      "sha256": "8365b93527133124793f6f4baad16fa648271be4a38e48edeef0eaf417b465b5"
+    },
+    "caller_import_profile_update": {
+      "previous_caller": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/new6974-bindings291/emitted001/sources/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v",
+        "sha256": "32323353f564e2e57cd6e10406168aa39ac8f9de5a55d98dc3d01fe7da201acf"
+      },
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v32-NEW-6974-v1/source001/sources/ZesuSsz/Proofs/DecodeItem/Auto/Block800d6974.v",
+        "sha256": "fc7669a62c6b1539f4d17f2ea3adcd72344b3466c86a911bb8c67b6b3c67feff"
+      },
+      "statement_sha256": "3abd9cb6c6ab180a18a02a93027df450a2cdd90ba6424387750dd6944c902953",
+      "removed_imports": [
+        "ZesuSsz.Automation.Sets.call",
+        "ZesuSsz.Compliance.DecodeItemHints"
+      ],
+      "added_imports": [
+        "ZesuSsz.Automation.Sets.v1"
+      ],
+      "non_import_bytes_unchanged": true,
+      "renderer_result": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v32-NEW-6974-v1/source001/RESULT.json",
+        "sha256": "a4032ee71c7101547621f21169da0662d0bfdd749c725b79298a685f173044f8"
+      }
+    }
+  }
+}

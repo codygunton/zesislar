@@ -17,7 +17,7 @@ from entry_chain import binding,check_bindings,digest,read_bound,save,strict_loa
 from entry_chain_run import ready_claim_priority
 from entry_chain_resources import normalize_cpu,publish_latch
 from check_entry_outside import canonical_functions,identity_alive
-from admission_memory import projection
+from admission_memory import projection, guard_lock, check_test_ledger
 
 ROOT=Path(__file__).resolve().parents[4]
 
@@ -26,7 +26,8 @@ def safe_width(policy,jobs,*,available=None,claims_fn=None):
     actual_claims,actual_available=canonical_functions(policy)
     available=actual_available if available is None else available
     claims_fn=actual_claims if claims_fn is None else claims_fn
-    with Path(policy['lock']).open('a') as lock:
+    check_test_ledger(policy['ledger'])
+    with guard_lock(), Path(policy['lock']).open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX)
         data=strict_loads(Path(policy['ledger']).read_text())
         active=claims_fn(data,policy['legacy_release_bindings']);free=available()

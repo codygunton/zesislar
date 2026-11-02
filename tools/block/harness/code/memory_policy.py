@@ -89,7 +89,69 @@ def completed_verified_repair(row,target):
  peak=checked['native_peak_bytes']
  return {'measurement':row,'peak_bytes':peak,'scope':checked['scope'],'claim_bytes':rounded_claim(peak),'formula':'ceil_to_8GiB(1.5 * completed_aggregate_peak_bytes)','memory_metric':'aggregate_memory.peak','client_server_allowance_bytes':0,'qualification':row.get('qualification'),'verification_repair':checked},None
 
+def completed_header_transition(row,target):
+ if set(row)!={'format','route','module','native_source','statement_sha256','result','closure','release','baseline','authority'}:
+  return None,'The header-transition measurement has invalid fields.'
+ if row['baseline'].get('sha256')!=PORT_HEADER_BASELINE_SHA256:
+  return None,'The header-transition baseline is not approved.'
+ baseline=read(row['baseline'])
+ if (baseline.get('schema')!='port.v32.old-eight-closure-baseline.v1' or
+     baseline.get('accepted_closed_count')!=8 or baseline.get('all_sixteen_outcomes_complete') is not False):
+  return None,'The header-transition baseline inventory differs.'
+ expected=next((value for value in [PORT_EFFECTIVE_AUTHORITY,PORT_EFFECTIVE_AUTHORITY_23]
+                if row['authority'].get('sha256')==value['sha256']),None)
+ if expected is None or not relocated_authority(row['authority'],expected,
+      ('/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-authority-v1/PORT-FAMILY-AUTHORITY-22.json',
+       '/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-authority-v1/PORT-FAMILY-AUTHORITY-23.json')):
+  return None,'The header-transition authority is not approved.'
+ matches=[value for value in baseline['rows'] if value.get('status')=='closed'
+          and value.get('accepted_closed') is True and value.get('module')==target.get('module')]
+ if len(matches)!=1 or matches[0]['block'] not in baseline['must_remain_closed']:
+  return None,'The header-transition case lacks an accepted closure.'
+ prior=matches[0]
+ cases=[value for value in read(row['authority'])['cases'] if value['block']==prior['block']]
+ if len(cases)!=1:return None,'The header-transition case is not authorized.'
+ case=cases[0]
+ if (case['module']!=target.get('module') or case['pc']!=target.get('pc') or
+     case['source']['sha256']!=target.get('source_sha256') or
+     case['statement_sha256']!=target.get('statement_sha256') or
+     row['module']!=target.get('module') or row['statement_sha256']!=target.get('statement_sha256')):
+  return None,'The header-transition target differs.'
+ old=prior['source_checks']['caller'];new=bound(row['native_source'])
+ if (row['native_source']['sha256']!=target['source_sha256'] or
+     prior['source_checks']['statement_sha256']!=target['statement_sha256']):
+  return None,'The header-transition source or statement differs.'
+ text=new.read_bytes();line=b'Require Import ZesuSsz.Automation.EffectiveOverrides.\n'
+ if (not text.startswith(b'Require Import ZesuSsz.Automation.All.\n') or
+     text.count(line)!=1 or text.replace(line,b'',1)!=bound(old).read_bytes()):
+  return None,'The header transition changes more than the approved import.'
+ if (row['route']!='stock_zesu_block' or row['result']!=prior['job_result'] or
+     row['closure']!=prior['lifecycle']['closure'] or row['release']!=prior['lifecycle']['release']):
+  return None,'The header-transition result or lifecycle differs.'
+ predecessor=dict(route=row['route'],module=row['module'],native_source=old,
+     statement_sha256=row['statement_sha256'],result=row['result'],closure=row['closure'],release=row['release'])
+ checked,reason=completed(predecessor,dict(target,source_sha256=old['sha256']))
+ if checked is None:return None,reason
+ result=read(row['result']);accounting=read(prior['costs']['CPU_receipt'])
+ peak=checked['peak_bytes']
+ if (result.get('status')!='passed' or result['CPU']!=accounting or
+     accounting.get('aggregate_peak_bytes')!=peak or prior['costs']['peak_bytes']!=peak):
+  return None,'The header-transition peak or final accounting differs.'
+ claim=(3*peak+1)//2
+ if claim>PORT_FENCE:return None,'The header-transition claim exceeds its physical fence.'
+ return dict(checked,measurement=row,claim_bytes=claim,formula='ceil(3 * completed_aggregate_peak_bytes / 2)',
+     qualification='Completed v3.2 OLD peak across the approved header-only transition. Candidate performance is unmeasured.'),None
+
+def header_transition_bindings(row):
+ if row.get('format')!='completed_stock_header_transition_v1':return []
+ baseline=read(row['baseline'])
+ prior=next(value for value in baseline['rows'] if value.get('status')=='closed' and value['module']==row['module'])
+ return [row['baseline'],row['authority'],baseline['inventory'],baseline['source_transition'],baseline['header_successors'],
+     prior['source_checks']['caller'],prior['costs']['CPU_receipt'],prior['costs']['search_origin'],
+     prior['costs']['search_end'],prior['calls'],read(row['result'])['complete_state']]
+
 def completed(row,target):
+ if row.get('format')=='completed_stock_header_transition_v1':return completed_header_transition(row,target)
  if row.get('format')=='completed_stock_verification_repair_v1':return completed_verified_repair(row,target)
  if row.get('format')=='legacy_r1_workload_rss_v1':return completed_legacy(row,target)
  if row.get('route')!='stock_zesu_block':return None,'The measurement does not use the stock route.'
@@ -137,7 +199,18 @@ MINIMAL_NATIVE_CLAIM=8*GIB
 FOCUSED_CLAIM=8*GIB
 PORT_KIND='production_stock_port'
 PORT_FENCE=32*GIB
+PORT_FULL_FENCE_BOOKING='full_physical_fence'
+PORT_HEADER_PEAK_BOOKING='completed_header_transition_peak'
+PORT_HEADER_BASELINE_SHA256='b37cc0a5b86690de7f65245ebdfa9992be562af8a204ab9238e3ac85630dbd0c'
 PORT_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-22.json'), 'sha256': 'ea88c0e9eab9e6e720e7fc2500407c065d82fd7a0feb12658783d4a761c79917'}
+PORT_AUTHORITY_23={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-23.json'), 'sha256': 'dbeedb2c4fcdc916939a9c5fc9ced3d07bc619244c1d8b41bfc91aacfb5052bd'}
+PORT_EFFECTIVE_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-EFFECTIVE-OVERRIDES-AUTHORITY-22.json'), 'sha256': '35c7e4a44203e761cb286bff7d95e83d81e08567bdb5dd0323dcd9667ffd8052'}
+PORT_EFFECTIVE_AUTHORITY_23={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-EFFECTIVE-OVERRIDES-AUTHORITY-23.json'), 'sha256': '9952675250ea9828e18a1f65741aeede06c9df7689f647da8375470862768bb1'}
+PORT_EFFECTIVE_EXTENSION={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-EFFECTIVE-OVERRIDES-EXTENSION.json'), 'sha256': '2f7f180cbad4da9c40c674c3a94a9d21e6f4fc9f1605300457ebf0c2ff5a8932'}
+PORT_HELDOUT_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-HELDOUT-RUN2-AUTHORITY.json'), 'sha256': '6133fc1d79d1ebc794e77e4ea366ce61bd73444b919d7924c7ea04e67d053c29'}
+PORT_HELDOUT_AUTHORITY_78={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-HELDOUT-RUN2-AUTHORITY-78.json'), 'sha256': '91772fc69bc3c82ab81d3bdfdc0fad4d8c766390f6c63204788a1def28b5ded2'}
+PORT_HELDOUT_MEMORY_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-HELDOUT-RUN2-AUTHORITY-78-MEMORY.json'), 'sha256': '126f646885ba8b8a9fcd733037757f68bd4260d847a30031c331a134125fa8d3'}
+HELDOUT_MEMORY_BOOKING={'unmeasured':'full_physical_fence','measured':'max(1GiB,ceil(1.5*completed_aggregate_peak_bytes))','maximum_live_cases_per_kind':2,'kind_field':'score_group','admission_resume_below_bytes':150*GIB}
 PORT_EXTENSION={'path': str(Path(__file__).resolve().parents[1]/'policies'/'EXTENSION.json'), 'sha256': 'ad05524ccec944621e775ebaccf5cd39b766bd6d4c554bbfa7f8332d84d77913'}
 
 def relocated_authority(actual,expected,legacy_paths=()):
@@ -153,22 +226,48 @@ def relocated_authority(actual,expected,legacy_paths=()):
  return True
 
 def production_port_authority(profile):
- if set(profile) not in ({'schema','kind','authority','memory_route'},{'schema','kind','authority','memory_route','supplier_ready'}) or profile.get('schema')!='scratch.admission-profile.v1' or profile.get('kind')!=PORT_KIND or profile.get('memory_route')!='measured_native':
+ required={'schema','kind','authority','memory_route'}
+ if not required<=set(profile)<=required|{'supplier_ready','memory_booking'} or profile.get('schema')!='scratch.admission-profile.v1' or profile.get('kind')!=PORT_KIND or profile.get('memory_route')!='measured_native':
   raise ValueError('The production PORT profile is invalid.')
- if not relocated_authority(profile['authority'],PORT_AUTHORITY,('/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/matrix005-authority-v1/PORT-FAMILY-AUTHORITY-22.json', '/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/PORT-FAMILY-AUTHORITY-22.json')):raise ValueError('The production PORT authority is not authorized.')
+ if 'memory_booking' in profile and profile['memory_booking'] not in (PORT_FULL_FENCE_BOOKING,PORT_HEADER_PEAK_BOOKING):
+  raise ValueError('The PORT memory booking option is invalid.')
+ extended=isinstance(profile['authority'],dict) and profile['authority'].get('sha256') in {PORT_AUTHORITY_23['sha256'],PORT_EFFECTIVE_AUTHORITY_23['sha256']}
+ effective=isinstance(profile['authority'],dict) and profile['authority'].get('sha256') in {PORT_EFFECTIVE_AUTHORITY['sha256'],PORT_EFFECTIVE_AUTHORITY_23['sha256']}
+ if profile.get('memory_booking')==PORT_HEADER_PEAK_BOOKING and not effective:
+  raise ValueError('Header-transition sizing requires its exact approved authority.')
+ corrected=isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_MEMORY_AUTHORITY['sha256']
+ heldout78=isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_AUTHORITY_78['sha256']
+ heldout=corrected or heldout78 or isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_AUTHORITY['sha256']
+ if heldout and 'memory_booking' in profile:
+  raise ValueError('The full-fence option cannot change a blind PORT policy.')
+ expected=PORT_HELDOUT_MEMORY_AUTHORITY if corrected else PORT_HELDOUT_AUTHORITY_78 if heldout78 else PORT_HELDOUT_AUTHORITY if heldout else PORT_AUTHORITY_23 if extended else PORT_AUTHORITY
+ if effective:expected=PORT_EFFECTIVE_AUTHORITY_23 if extended else PORT_EFFECTIVE_AUTHORITY
+ legacy_paths=('/home/cody/zesislar/_build/agents/worker-build-1/new6974-bindings291/extension002/PORT-FAMILY-AUTHORITY-23.json',) if extended else ('/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/matrix005-authority-v1/PORT-FAMILY-AUTHORITY-22.json', '/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/PORT-FAMILY-AUTHORITY-22.json')
+ if effective:legacy_paths=('/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-authority-v1/PORT-FAMILY-AUTHORITY-23.json' if extended else '/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-authority-v1/PORT-FAMILY-AUTHORITY-22.json',)
+ if not relocated_authority(profile['authority'],expected,legacy_paths):raise ValueError('The production PORT authority is not authorized.')
  authority=read(profile['authority'])
  if (authority.get('schema')!='port.production-stock-family-authority.v1' or
-     authority.get('claim_bytes')!=8*GIB or authority.get('physical_fence_bytes')!=PORT_FENCE or
+     authority.get('claim_bytes')!=(PORT_FENCE if corrected else 8*GIB) or authority.get('physical_fence_bytes')!=PORT_FENCE or
      authority.get('native_body')!='zesu_block.' or authority.get('setup_order')!=[] or
      authority.get('minimal_or_private_route') is not False or authority.get('fence_hit_retry') is not False):
   raise ValueError('The production PORT ruling differs.')
- cases=authority['cases']
- extension=read(PORT_EXTENSION)
- read(extension['exit_queue'])
- if (extension.get('case_count')!=22 or not relocated_authority(authority.get('authority_extension'),PORT_EXTENSION,('/home/cody/zesislar/_build/agents/worker-build-2/native-port-policy-v1/source014-authority22-caller002-extension/EXTENSION.json', '/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/EXTENSION.json'))
-     or cases!=extension['original_cases']+extension['additional_cases']
-     or len(cases)!=22 or len({r['block'] for r in cases})!=22 or len({r['module'] for r in cases})!=22):
-  raise ValueError('The production PORT case set differs from the exact released22 inventory.')
+ if corrected and authority.get('memory_booking')!=HELDOUT_MEMORY_BOOKING:
+  raise ValueError('The held-out memory ruling differs.')
+ if heldout:
+  from port_heldout_authority import validate
+  validate(authority)
+ else:
+  cases=authority['cases']
+  released_cases=cases[:-1] if extended else cases
+  case_count=23 if extended else 22
+  extension_binding=PORT_EFFECTIVE_EXTENSION if effective else PORT_EXTENSION
+  extension_paths=('/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-effective-overrides-authority-v1/EXTENSION.json',) if effective else ('/home/cody/zesislar/_build/agents/worker-build-2/native-port-policy-v1/source014-authority22-caller002-extension/EXTENSION.json', '/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/EXTENSION.json')
+  extension=read(extension_binding)
+  read(extension['exit_queue'])
+  if (extension.get('case_count')!=22 or not relocated_authority(authority.get('authority_extension'),extension_binding,extension_paths)
+      or released_cases!=extension['original_cases']+extension['additional_cases']
+      or len(cases)!=case_count or len({r['block'] for r in cases})!=case_count or len({r['module'] for r in cases})!=case_count):
+   raise ValueError('The production PORT case set differs from the exact released inventory.')
  if 'supplier_ready' in profile:
   from supplier_ready import validate,ROOTS
   supplier=validate(profile['supplier_ready'])
@@ -196,6 +295,12 @@ def workload_for_job(profile_binding,job,config):
  if profile.get('schema')!='scratch.admission-profile.v1':raise ValueError('The admission profile is unsupported.')
  kind=profile.get('kind')
  if kind not in {FAMILY_KIND,FOCUSED_KIND,'minimal_native_tactic',PORT_KIND}:raise ValueError('The workload kind is unsupported.')
+ if 'memory_booking' in profile and kind not in {PORT_KIND,FOCUSED_KIND}:raise ValueError('Full-fence booking requires a production PORT profile or a focused declaration profile.')
+ if 'memory_booking' in profile and kind==FOCUSED_KIND:
+  if profile['memory_booking']!=PORT_FULL_FENCE_BOOKING:raise ValueError('The declaration memory booking option is invalid.')
+  if config.get('declarations_only') is not True:raise ValueError('Full-fence declaration booking requires declaration-only execution.')
+  if job['phase']=='native' and job.get('ordered_modules',[])==[] and job.get('native_route') is None:return None
+  if job['phase'] not in COMPILE_PHASES:raise ValueError('Full-fence declaration booking requires declaration-only execution.')
  if kind in {FAMILY_KIND,'minimal_native_tactic',PORT_KIND} and job['phase']!='native' or kind==FOCUSED_KIND and job['phase']=='native':return None
  modules=config['proof_runtime']['module_files'];workspace=Path(config['prepared_workspace']);owned=[]
  def actual(row):
@@ -278,7 +383,7 @@ def workload_claim(workload,job,basis):
   context.update(workload['supplier_context'])
  actual=workload_for_job(workload['profile'],job,context)
  if actual is None or actual['kind']!=workload['kind']:raise ValueError('The workload evidence is invalid.')
- kind=read(workload['profile']).get('kind')
+ profile=read(workload['profile']);kind=profile.get('kind')
  if kind!=workload['kind']:raise ValueError('The workload profile kind changed.')
  if kind=='minimal_native_tactic':
   if job['phase']!='native' or job.get('native_route')!=actual['native_route']:
@@ -286,8 +391,22 @@ def workload_claim(workload,job,basis):
   return minimal_growth_claim(read(workload['profile']),job['target'])
  if kind==FOCUSED_KIND:
   if job['phase'] not in COMPILE_PHASES:raise ValueError('A focused check cannot execute native search.')
+  if profile.get('memory_booking')==PORT_FULL_FENCE_BOOKING:return job_fence(job)
   return FOCUSED_CLAIM
- if kind==PORT_KIND:return 8*GIB
+ if kind==PORT_KIND:
+  if profile.get('memory_booking')==PORT_FULL_FENCE_BOOKING:return PORT_FENCE
+  if profile.get('memory_booking')==PORT_HEADER_PEAK_BOOKING:
+   if basis is None or basis['measurement'].get('format')!='completed_stock_header_transition_v1':
+    raise ValueError('Header-transition sizing requires an accepted completed measurement.')
+   return basis['claim_bytes']
+  if profile['authority']['sha256']!=PORT_HELDOUT_MEMORY_AUTHORITY['sha256']:return 8*GIB
+  if basis is None:return PORT_FENCE
+  if basis.get('memory_metric')!='aggregate_memory.peak':return PORT_FENCE
+  peak=basis.get('peak_bytes')
+  if type(peak) is not int or peak<=0:raise ValueError('A completed peak must be a positive integer.')
+  claim=max(GIB,(3*peak+1)//2)
+  if claim>PORT_FENCE:raise ValueError('The completed held-out peak requires a larger reviewed fence.')
+  return claim
  if kind==FAMILY_KIND:
   if job['phase']!='native':raise ValueError('The stock family requires a native phase.')
   return basis['claim_bytes'] if basis else FAMILY_DEFAULT_CLAIM
@@ -354,6 +473,10 @@ def profile_bindings(context):
  if profile.get('kind')==PORT_KIND:
   authority=production_port_authority(profile)
   values += [profile['authority'],authority['completed_common_ready'],authority['source_packet']]
+  if authority.get('blind_reporting') is True:
+   values += [authority[key] for key in ['case_rebind','eql18_targets','frozen_manifest','declaration_evidence']]
+   if 'raw60_targets' in authority:
+    values += [authority[key] for key in ['raw60_targets','raw60_emission','raw60_refusal_checks']]
   if 'supplier_ready' in profile:
    from supplier_ready import validate
    values += validate(profile['supplier_ready'])['bindings']
@@ -397,6 +520,11 @@ def environment(phase,claim_bytes=None,job=None):
  if job is not None:
   if job['phase']!=phase:raise ValueError('The environment phase differs from its memory job.')
   validate_job(job)
+  workload=job.get('workload') or {}
+  if workload.get('kind') in {PORT_KIND,FOCUSED_KIND} and read(workload['profile']).get('memory_booking')==PORT_FULL_FENCE_BOOKING:
+   physical=job_fence(job)
+   if claim_bytes is not None and claim_bytes!=physical:raise ValueError('The environment claim differs from full-fence booking.')
+   claim_bytes=physical
  physical=job_fence(job) if job is not None else fence(phase)
  measured=job is not None and measured_fence(job) is not None
  gib=physical//GIB

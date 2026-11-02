@@ -5,6 +5,7 @@ import ast,copy,fcntl,hashlib,json,os,subprocess,sys,tempfile,unittest
 HERE=Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE/'code'))
 import memory_policy as P
+from unittest.mock import patch
 ROWS=[row for row in historical.read_json(HERE/'test-fixtures/COMPLETED-STOCK-MEASUREMENTS.json')['rows'] if row.get('format')!='legacy_r1_workload_rss_v1']
 def binding(path):return {'path':str(path),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
 def native(row=ROWS[0]):return {'phase':'native','target':{'module':row['module'],'statement_sha256':row['statement_sha256'],'source_sha256':row['native_source']['sha256']}}
@@ -41,13 +42,24 @@ class PolicyControls(unittest.TestCase):
   job=P.apply_job(native());job['claim_bytes']=8*P.GIB
   with self.assertRaises(ValueError):P.validate_job(job)
  def test_active_reserve_uses_eight_not_sixtyfour(self):
+  import admission_memory as M
   source=ast.parse((HERE/'code/check_entry_outside.py').read_text());function=next(x for x in source.body if isinstance(x,ast.FunctionDef) and x.name=='reserve')
-  ledger=self.root/'ledger';ledger.write_text(json.dumps({'fixed_claims':{}}));receipt=self.root/'admission';lock=self.root/'lock'
+  markers=self.root/'markers';markers.mkdir()
+  ledger=self.root/'ledger';ledger.write_text(json.dumps({'fixed_claims':{},'shell_marker_directory':str(markers)}));receipt=self.root/'admission';lock=self.root/'lock'
   def save(path,value):Path(path).write_text(json.dumps(value))
   namespace={'Path':Path,'fcntl':fcntl,'time':__import__('time'),'strict_loads':json.loads,'atomic_json':save,'digest':lambda path:binding(Path(path))['sha256'],'canonical_functions':lambda policy:(lambda data,legacy:{},lambda:200*P.GIB)}
+  namespace['check_test_ledger']=__import__('admission_memory').check_test_ledger
   exec(compile(ast.fix_missing_locations(ast.Module(body=[function],type_ignores=[])),'<actual-reserve>','exec'),namespace)
   job=P.apply_job(native(),ROWS);policy={'physical_fence_bytes':64*P.GIB,'minimum_claim_bytes':job['claim_bytes'],'memory_job':job,'lock':str(lock),'ledger':str(ledger),'legacy_release_bindings':{},'capture_headroom_bytes':0}
-  result=namespace['reserve'](policy,'isolated-test',{'pid':os.getpid()},receipt)
+  reader=M.ScopeReader(proc=self.root/'proc',cgroup_root=self.root/'cgroup');reader.parent.mkdir(parents=True)
+  (reader.parent/'memory.max').write_text(str(M.SLICE_MAX_BYTES));(reader.parent/'memory.swap.max').write_text('0')
+  gate=self.root/'gate.lock'
+  for owned in (ledger,lock,markers,Path(str(gate)+'.mutex'),reader.proc,reader.root):self.assertTrue(owned.is_relative_to(self.root))
+  actual_projection=M.projection
+  def isolated_projection(data,claims,new,available):return actual_projection(data,claims,new,available,reader=reader)
+  def unexpected_retry(_):self.fail('The isolated phase reservation unexpectedly waits.')
+  with patch.dict(os.environ,{'ZESU_GATE_LOCK':str(gate)}),patch.object(M,'projection',isolated_projection):
+   result=namespace['reserve'](policy,'isolated-test',{'pid':os.getpid()},receipt,pause=unexpected_retry)
   self.assertEqual(result['claim_bytes'],8*P.GIB);self.assertEqual(json.loads(ledger.read_text())['fixed_claims']['isolated-test'],8*P.GIB)
  def guard(self,phase,claim=None,script='validate_probe_scope',available=30):
   guard=HERE/'runtime-tools/resource_guard.sh';library=guard.read_text().split('\nprune_scope_registry\n',1)[0]

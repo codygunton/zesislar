@@ -1,17 +1,23 @@
-"""Account unrealized reservations against available memory and the fixed slice.
+"""Account reservations and verified live usage against both memory limits.
 
 Only an exact owner token, batch identity, and live kernel membership can earn
 memory.current credit. Missing evidence retains the complete reservation.
 """
 import json
+import fcntl
+import hashlib
+import tempfile
+from contextlib import contextmanager
 import os
 from pathlib import Path
 import re
 import stat
+import sys
 
 GIB = 1024 ** 3
 HEADROOM_BYTES = 20 * GIB
 SLICE_MAX_BYTES = 175 * GIB
+STATIC_KERNEL_ACCOUNT_SCHEMA = 'legacy_kernel_accounts.v1'
 CGROUP_ROOT = Path('/sys/fs/cgroup')
 PROC = Path('/proc')
 
@@ -22,12 +28,21 @@ def integer(value, label):
     return value
 
 
-def evaluate(claims, new_bytes, available_bytes, *, observations=None,
+def evaluate(claims, new_bytes, available_bytes, *, observations=None, new_observation=None,
              slice_max_bytes=None, headroom_bytes=HEADROOM_BYTES):
     """Evaluate both inequalities. Observations come from ScopeReader only."""
     for key, amount in claims.items():
         integer(amount, key)
     integer(new_bytes, 'new claim')
+    if new_observation is not None:
+        if '__new_claim__' in claims:
+            raise ValueError('The new claim key collides.')
+        combined = dict(claims, __new_claim__=new_bytes)
+        observed = dict(observations or {}, __new_claim__=new_observation)
+        result = evaluate(combined, 0, available_bytes, observations=observed,
+                          slice_max_bytes=slice_max_bytes, headroom_bytes=headroom_bytes)
+        result['new_claim_bytes'] = new_bytes
+        return result
     integer(available_bytes, 'available memory')
     integer(headroom_bytes, 'fixed headroom')
     if slice_max_bytes is None:
@@ -36,14 +51,47 @@ def evaluate(claims, new_bytes, available_bytes, *, observations=None,
     rows = {}
     observations = observations or {}
     for key, amount in claims.items():
-        if not amount:
-            continue
         row = observations.get(key, {})
+        if not amount and not (row.get('verified') is True and row.get('live_bytes', 0)):
+            continue
         live = row.get('live_bytes', 0) if row.get('verified') is True else 0
         integer(live, 'verified live memory')
-        rows[key] = dict(row, claim_bytes=amount, credited_bytes=min(amount, live),
+        rows[key] = dict(row, claim_bytes=amount, accounted_bytes=max(amount, live),
+                         credited_bytes=min(amount, live),
                          reason=row.get('reason', 'unverified scope'))
-    # Parent/child aggregates and duplicate scope identities cannot earn two credits.
+    ambiguous = set()
+    candidates = [key for key, row in rows.items() if row.get('verified') is True]
+    for index, key in enumerate(candidates):
+        left = rows[key]
+        for other in candidates[index + 1:]:
+            right = rows[other]
+            a, b = Path(left['scope']), Path(right['scope'])
+            same = a == b and (left['device'], left['inode']) == (right['device'], right['inode'])
+            overlap = (a == b or a in b.parents or b in a.parents or
+                       (left['device'], left['inode']) == (right['device'], right['inode']))
+            if overlap and not (same and left.get('aggregate_verified') is True
+                                and right.get('aggregate_verified') is True):
+                ambiguous.update((key, other))
+    groups = {}
+    for key, row in rows.items():
+        if (row.get('verified') is True and row.get('aggregate_verified') is True
+                and key not in ambiguous):
+            identity = (row['scope'], row['device'], row['inode'])
+            groups.setdefault(identity, []).append(key)
+    grouped = {}
+    for identity, members in groups.items():
+        if len(members) < 2:
+            continue
+        first = members[0]
+        amount = max(rows[key]['claim_bytes'] for key in members)
+        live = max(rows[key]['live_bytes'] for key in members)
+        grouped[first] = members
+        rows[first].update(claim_bytes=amount, accounted_bytes=max(amount, live),
+                           credited_bytes=min(amount, live), live_bytes=live,
+                           members=members, reason='authenticated shared aggregate')
+        for key in members[1:]:
+            del rows[key]
+    # Unauthenticated overlaps still cannot earn two credits.
     keys = [key for key in rows if rows[key].get('verified') is True]
     conflicts = set()
     for index, key in enumerate(keys):
@@ -56,18 +104,21 @@ def evaluate(claims, new_bytes, available_bytes, *, observations=None,
                 conflicts.update((key, other))
     for key in conflicts:
         rows[key].update(credited_bytes=0, reason='duplicate or overlapping scope')
-    total = sum(claims.values())
+    total = sum(row['claim_bytes'] for row in rows.values())
+    accounted = sum(row['accounted_bytes'] for row in rows.values())
     credit = sum(row['credited_bytes'] for row in rows.values())
     unrealized = total - credit
     available_budget = available_bytes * 7 // 10
     cap = max(0, slice_max_bytes - headroom_bytes)
-    room = max(0, min(available_budget - unrealized, cap - total))
-    fits = unrealized + new_bytes <= available_budget and total + new_bytes <= cap
+    room = max(0, min(available_budget - unrealized, cap - accounted))
+    fits = unrealized + new_bytes <= available_budget and accounted + new_bytes <= cap
     return {'admitted': fits, 'fits': fits, 'MemAvailable_bytes': available_bytes,
             'budget_bytes': available_budget, 'slice_max_bytes': slice_max_bytes,
             'fixed_headroom_bytes': headroom_bytes, 'slice_claim_cap_bytes': cap,
-            'active_claim_bytes': total, 'credited_live_bytes': credit,
-            'unrealized_claim_bytes': unrealized, 'requested_total_bytes': total + new_bytes,
+            'active_claim_bytes': total, 'raw_claim_bytes': sum(claims.values()),
+            'aggregate_groups': grouped, 'accounted_active_bytes': accounted,
+            'live_over_booking_bytes': accounted-total, 'credited_live_bytes': credit,
+            'unrealized_claim_bytes': unrealized, 'requested_total_bytes': accounted + new_bytes,
             'requested_unrealized_bytes': unrealized + new_bytes, 'new_claim_bytes': new_bytes,
             'available_new_claim_bytes': room, 'claim_observations': rows}
 
@@ -182,7 +233,8 @@ class ScopeReader:
             raise ValueError('The scope changed during sampling.')
         if (self.proc / str(actor['pid']) / 'cgroup').read_text().splitlines() != membership:
             raise ValueError('The actor changed its scope during sampling.')
-        return {'verified': True, 'scope': str(path), 'device': before[0], 'inode': before[1],
+        return {'verified': True, 'aggregate_verified': path == aggregate,
+                'scope': str(path), 'device': before[0], 'inode': before[1],
                 'live_bytes': live, 'reason': 'exact owner and batch scope'}
 
     def output(self, data, key, owner, kind):
@@ -211,6 +263,20 @@ class ScopeReader:
     def claim(self, data, key):
         self.consulted = []
         try:
+            if key in data.get('shell_claim_owners', {}):
+                record = data['shell_claim_owners'][key]
+                marker = Path(record['marker'])
+                before = self.file_identity(marker.lstat())
+                if tuple(record.get('token_identity', ())) != before:
+                    raise ValueError('The admitted shell token identity changed.')
+                fields = dict(line.split('=', 1) for line in marker.read_text().splitlines()[1:] if '=' in line)
+                if fields.get('reservation_generation') != record['generation']:
+                    raise ValueError('The admitted shell generation changed.')
+                sample = self.shell(marker, owner=record['owner'],
+                                    guard_attestation=record.get('guard_attestation'))
+                if self.file_identity(marker.lstat()) != before:
+                    raise ValueError('The admitted shell token changed during sampling.')
+                return sample
             if key in data.get('entry_pilot_outside_owners', {}):
                 kind, owner = 'entry', data['entry_pilot_outside_owners'][key]
             elif key in data.get('correctness_gate_owners', {}):
@@ -253,6 +319,202 @@ class ScopeReader:
         except (OSError, ValueError, KeyError, IndexError, StopIteration, TypeError) as error:
             return {'verified': False, 'live_bytes': 0, 'reason': str(error)}
 
+    def residual(self, bound):
+        """Sample a previously authenticated aggregate after its token ends."""
+        try:
+            path = Path(bound['scope'])
+            if path.resolve() != path:
+                raise ValueError('The retained aggregate contains an alias.')
+            static = bound.get('static_until_absent') is True
+            if path.parent != self.parent or (not static and not re.fullmatch(
+                    rf'zesuworkloads-aggregate{self.uid}p[0-9]+r[0-9]+\.slice', path.name)):
+                raise ValueError('The retained aggregate namespace changed.')
+            if not path.exists():
+                if path.is_symlink():
+                    raise ValueError('The retained aggregate is an alias.')
+                return {'verified': True, 'closed': True, 'live_bytes': 0}
+            before = self.directory(path)
+            if before != (bound['device'], bound['inode']):
+                raise ValueError('The retained aggregate identity changed.')
+            live = int((path / 'memory.current').read_text())
+            events = (path / 'cgroup.events').read_text()
+            if self.directory(path) != before:
+                raise ValueError('The retained aggregate changed during sampling.')
+            integer(live, 'retained aggregate memory')
+            if 'populated 0' in events.splitlines() and not static:
+                return {'verified': True, 'closed': True, 'live_bytes': 0}
+            if 'populated 1' not in events.splitlines() and not (static and 'populated 0' in events.splitlines()):
+                raise ValueError('The retained aggregate population is unknown.')
+            return dict(bound, verified=True, aggregate_verified=True, live_bytes=live,
+                        reason='authenticated aggregate remains populated')
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            return {'verified': False, 'live_bytes': 0, 'reason': str(error)}
+
+    def shell(self, marker, *, owner=None, guard_attestation=None):
+        """Authenticate an admitted or pending shell owner's actual aggregate."""
+        try:
+            path = Path(marker)
+            before = self.file_identity(path.lstat())
+            info = path.lstat()
+            if info.st_uid != self.uid or info.st_mode & 0o022 or not stat.S_ISREG(info.st_mode):
+                raise ValueError('The shell token is not private.')
+            lines = path.read_text().splitlines()
+            fields = dict(line.split('=', 1) for line in lines[1:] if '=' in line)
+            if len(fields) != len([line for line in lines[1:] if '=' in line]):
+                raise ValueError('The shell token repeats a field.')
+            expected = {'pid': int(path.name.split('.')[0]), 'startticks': int(fields['owner_start'])} if owner is None else owner
+            if int(fields['owner_start']) != expected['startticks']:
+                raise ValueError('The shell token owner changed.')
+            self.process(expected)
+            if lines[0].isdecimal():
+                leaf = self.compiler(path)
+                if leaf.get('verified') is not True and guard_attestation is not None:
+                    leaf = self.owned_scope(path, guard_attestation)
+                if leaf.get('verified') is not True:
+                    raise ValueError('The marked shell child is not authenticated.')
+                leaf_path = Path(leaf['scope'])
+                if leaf_path.parent == self.parent:
+                    return leaf
+                aggregate = next(p for p in leaf_path.parents if p.parent == self.parent)
+                creator = int(re.fullmatch(rf'zesuworkloads-aggregate{self.uid}p([0-9]+)r[0-9]+\.slice', aggregate.name)[1])
+                raw = (self.proc / str(creator) / 'stat').read_text().rsplit(')', 1)[1].split()
+                batch = {'pid': creator, 'startticks': int(raw[19])}
+                actor = {'pid': int(lines[0]), 'startticks': int(fields['child_start'])}
+                row = self.scope(aggregate, actor, batch)
+                if self.file_identity(path.lstat()) != before:
+                    raise ValueError('The marked token changed during aggregate sampling.')
+                return row
+            membership = (self.proc / str(expected['pid']) / 'cgroup').read_text()
+            relative = next(line[3:] for line in membership.splitlines() if line.startswith('0::'))
+            actual = self.root / relative.lstrip('/')
+            aggregate = next(p for p in (actual, *actual.parents) if p.parent == self.parent)
+            if aggregate.name != fields.get('aggregate'):
+                raise ValueError('The pending owner is outside its declared aggregate.')
+            match = re.fullmatch(rf'zesuworkloads-aggregate{self.uid}p([0-9]+)r[0-9]+\.slice', aggregate.name)
+            if match is None:
+                raise ValueError('The shell aggregate name is invalid.')
+            creator = int(match[1])
+            raw = (self.proc / str(creator) / 'stat').read_text().rsplit(')', 1)[1].split()
+            batch = {'pid': creator, 'startticks': int(raw[19])}
+            chain = self.ancestry(expected['pid'], batch)
+            row = self.scope(aggregate, expected, batch)
+            if (self.file_identity(path.lstat()) != before
+                    or (self.proc / str(expected['pid']) / 'cgroup').read_text() != membership
+                    or any(self.process(actor) != parent for actor, parent in chain)):
+                raise ValueError('The shell ownership changed during sampling.')
+            return row
+        except (OSError, ValueError, KeyError, IndexError, StopIteration, TypeError) as error:
+            return {'verified': False, 'live_bytes': 0, 'reason': str(error)}
+
+    def guard_source(self, path, expected_hash):
+        """Bind one executed public guard to the helper's installed guard bytes."""
+        path = Path(path)
+        if not path.is_absolute() or path.resolve(strict=True) != path or path.name != 'resource_guard.sh':
+            raise ValueError('The public guard source path changed.')
+        before = self.file_identity(path.lstat())
+        if not stat.S_ISREG(before[5]) or before[6] != self.uid or before[5] & 0o022:
+            raise ValueError('The public guard source is not owned.')
+        tools = next(parent for parent in Path(__file__).resolve().parents if parent.name == 'tools')
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        if (digest != expected_hash or digest != hashlib.sha256((tools / 'resource_guard.sh').read_bytes()).hexdigest()
+                or self.file_identity(path.lstat()) != before):
+            raise ValueError('The public guard source bytes changed.')
+        return {'path': str(path), 'sha256': digest, 'identity': list(before)}
+
+    def guard_leaf(self, marker):
+        """Check token ownership and kernel membership without compiler reuse keys."""
+        marker = Path(marker)
+        before = self.file_identity(marker.lstat())
+        if not stat.S_ISREG(before[5]) or before[6] != self.uid or before[5] & 0o022:
+            raise ValueError('The owned scope token is not private.')
+        lines = marker.read_text().splitlines()
+        pairs = [line.split('=', 1) for line in lines[1:] if '=' in line]
+        fields = dict(pairs)
+        generation = fields['reservation_generation']
+        if (len(pairs) != len(fields) or not re.fullmatch(
+                r'[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}', generation)
+                or marker.name.partition('.')[2] != generation):
+            raise ValueError('The owned scope generation changed.')
+        owner = {'pid': int(marker.name.split('.')[0]), 'startticks': int(fields['owner_start'])}
+        actor = {'pid': int(lines[0]), 'startticks': int(fields['child_start'])}
+        chain = self.ancestry(actor['pid'], owner)
+        relative = next(line[3:] for line in (self.proc / str(actor['pid']) / 'cgroup').read_text().splitlines()
+                        if line.startswith('0::'))
+        path = self.root / relative.lstrip('/')
+        if not re.fullmatch(rf'zesudet-.+-{owner["pid"]}-[0-9]+\.scope', path.name):
+            raise ValueError('The owned scope lacks its exact guarded leaf.')
+        if path.parent == self.parent:
+            environment = dict(item.split('=', 1) for item in
+                (self.proc / str(actor['pid']) / 'environ').read_bytes().decode().split('\0') if '=' in item)
+            writer = fields.get('writer', '')
+            if (not re.fullmatch(r'[a-zA-Z0-9._-]+', writer) or environment.get('ZESU_WRITER_ID') != writer
+                    or not path.name.startswith('zesudet-writer-' + writer + '-')):
+                raise ValueError('The owned standalone scope lacks its writer identity.')
+            identity = self.directory(path)
+            live = integer(int((path / 'memory.current').read_text()), 'owned scope memory')
+            row = dict(verified=True, aggregate_verified=False, scope=str(path), device=identity[0],
+                       inode=identity[1], live_bytes=live)
+            if self.directory(path) != identity:
+                raise ValueError('The owned standalone scope changed.')
+        else:
+            aggregate = next(p for p in path.parents if p.parent == self.parent)
+            if aggregate.name != fields['aggregate']:
+                raise ValueError('The owned scope aggregate changed.')
+            creator = int(re.fullmatch(rf'zesuworkloads-aggregate{self.uid}p([0-9]+)r[0-9]+\.slice', aggregate.name)[1])
+            raw = (self.proc / str(creator) / 'stat').read_text().rsplit(')', 1)[1].split()
+            batch = {'pid': creator, 'startticks': int(raw[19])}
+            self.ancestry(owner['pid'], batch)
+            row = self.scope(path, actor, batch, leaf=True)
+        if (any(self.process(item) != parent for item, parent in chain)
+                or self.file_identity(marker.lstat()) != before
+                or (self.proc / str(actor['pid']) / 'cgroup').read_text().splitlines() != ['0::' + relative]):
+            raise ValueError('The owned scope identity changed during sampling.')
+        return row, owner, actor, generation, before
+
+    def scope_exec(self, marker, source):
+        """Validate the public scope-exec command before it replaces its process."""
+        bound = self.guard_source(source['path'], source['sha256'])
+        if bound != source:
+            raise ValueError('The admitted public guard identity changed.')
+        row, owner, actor, generation, before = self.guard_leaf(marker)
+        argv = self.argv(actor)
+        position = 1 if argv and Path(argv[0]).name == 'bash' else 0
+        if (len(argv) < position + 5 or argv[position:position + 4] !=
+                [source['path'], 'scope-exec', str(marker), '--']):
+            raise ValueError('The pre-exec actor is not this public scope-exec command.')
+        if (self.file_identity(Path(marker).lstat()) != before or self.argv(actor) != argv
+                or self.file_identity(Path(source['path']).lstat()) != tuple(source['identity'])):
+            raise ValueError('The pre-exec scope changed during validation.')
+        attestation = {'schema': 'owned.guard.scope.v1', 'marker': str(marker), 'generation': generation,
+                       'owner': owner, 'actor': actor, 'source': source, 'scope_exec_argv': argv,
+                       'leaf': {name: row[name] for name in ('scope', 'device', 'inode')}}
+        return row, attestation
+
+    def owned_scope(self, marker, attestation):
+        """Check a post-exec scope using its sealed pre-exec attestation only."""
+        try:
+            source = attestation['source']
+            if self.guard_source(source['path'], source['sha256']) != source:
+                raise ValueError('The attested public guard identity changed.')
+            row, owner, actor, generation, before = self.guard_leaf(marker)
+            if (attestation['schema'] != 'owned.guard.scope.v1' or attestation['marker'] != str(marker)
+                    or attestation['generation'] != generation or attestation['owner'] != owner
+                    or attestation['actor'] != actor or attestation['leaf'] !=
+                    {name: row[name] for name in ('scope', 'device', 'inode')}):
+                raise ValueError('The owned scope differs from its pre-exec attestation.')
+            environment = dict(item.split('=', 1) for item in
+                (self.proc / str(actor['pid']) / 'environ').read_bytes().decode().split('\0') if '=' in item)
+            if environment.get('ZESU_OWNED_GUARD_TOKEN') != str(marker):
+                raise ValueError('The actor lacks its exact inner guard identity.')
+            self.process(actor)
+            again = self.guard_leaf(marker)
+            if (self.file_identity(Path(marker).lstat()) != before or again[1:4] != (owner, actor, generation)
+                    or any(again[0][name] != row[name] for name in ('scope', 'device', 'inode'))):
+                raise ValueError('The owned scope token changed after environment sampling.')
+            return dict(row, reason='authenticated owned scope; no compiler-slot reuse')
+        except (OSError, ValueError, KeyError, IndexError, StopIteration, TypeError) as error:
+            return {'verified': False, 'live_bytes': 0, 'reason': str(error)}
+
     def compiler(self, marker):
         """A compiler gets only its unique leaf scope, never its shared aggregate."""
         try:
@@ -279,6 +541,24 @@ class ScopeReader:
             path = self.root / relative.lstrip('/')
             if not re.fullmatch(rf'zesudet-.+-{owner["pid"]}-[0-9]+\.scope', path.name):
                 raise ValueError('The compiler lacks its own guarded leaf scope.')
+            if path.parent == self.parent:
+                writer = fields.get('writer', '')
+                if (not re.fullmatch(r'[a-zA-Z0-9._-]+', writer)
+                        or environment.get('ZESU_WRITER_ID') != writer
+                        or not path.name.startswith('zesudet-writer-' + writer + '-')):
+                    raise ValueError('The standalone compiler lacks its writer identity.')
+                chain = self.ancestry(actor['pid'], owner)
+                before = self.directory(path)
+                live = int((path / 'memory.current').read_text())
+                integer(live, 'standalone compiler memory')
+                if (self.directory(path) != before or self.file_identity(marker.lstat()) != marker_before
+                        or any(self.process(item) != parent for item, parent in chain)
+                        or next(line[3:] for line in (self.proc / str(actor['pid']) / 'cgroup').read_text().splitlines()
+                                if line.startswith('0::')) != relative):
+                    raise ValueError('The standalone compiler identity changed.')
+                return {'verified': True, 'aggregate_verified': False, 'scope': str(path),
+                        'device': before[0], 'inode': before[1], 'live_bytes': live,
+                        'reason': 'exact standalone writer leaf'}
             aggregate = next(p for p in path.parents if p.parent == self.parent)
             if aggregate.name != fields['aggregate']:
                 raise ValueError('The compiler aggregate differs from its reservation.')
@@ -286,7 +566,10 @@ class ScopeReader:
             # The live batch PID is the guard that created this unique aggregate.
             raw = (self.proc / str(pid) / 'stat').read_text().rsplit(')', 1)[1].split()
             batch = {'pid': pid, 'startticks': int(raw[19])}
-            owner_chain = self.ancestry(owner['pid'], batch)
+            try:
+                owner_chain = self.ancestry(owner['pid'], batch)
+            except ValueError:
+                owner_chain = self.ancestry(batch['pid'], owner)
             row = self.scope(path, actor, batch, leaf=True)
             if any(self.process(item) != parent for item,parent in owner_chain):
                 raise ValueError('The compiler owner ancestry changed.')
@@ -298,8 +581,645 @@ class ScopeReader:
             return {'verified': False, 'live_bytes': 0, 'reason': str(error)}
 
 
-def projection(data, claims, new_bytes, available_bytes, *, reader=None):
+DEFAULT_LEDGER = Path('/home/cody/zesislar/_build/agents/worker-build-2/native-region-release-v1/LEDGER.json')
+
+
+def marker_directory():
+    return Path(os.environ.get('ZESU_GUARD_STATE',
+                str(Path(os.environ.get('XDG_RUNTIME_DIR', '/tmp')) / 'zesu-guard'))) / 'coqc-reservations'
+
+
+def shell_key(marker):
+    return 'shell:' + hashlib.sha256(str(Path(marker).absolute()).encode()).hexdigest()
+
+
+def shell_rows(data, reader):
+    """Read legacy tokens without migration, deletion, or a second ledger."""
+    directory = Path(data.get('shell_marker_directory', marker_directory()))
+    if directory.is_symlink() or directory.resolve() != directory:
+        raise ValueError('The shell reservation directory contains an alias.')
+    rows = {}
+    for marker in sorted(directory.glob('*')):
+        try:
+            info = marker.lstat()
+            if not stat.S_ISREG(info.st_mode) or info.st_uid != reader.uid or info.st_mode & 0o022:
+                raise ValueError('A shell reservation is not private.')
+            before = reader.file_identity(info)
+            lines = marker.read_text().splitlines()
+            if not lines or lines[0] == 'pending':
+                continue
+            fields = dict(line.split('=', 1) for line in lines[1:] if '=' in line)
+            if len(fields) != len([line for line in lines[1:] if '=' in line]):
+                raise ValueError('A shell reservation repeats a field.')
+            fence = int(fields.get('memory_fence_bytes', int(fields.get('memory_gib', 64)) * GIB))
+            amount = max(int(fields.get('memory_claim_bytes', fence)),
+                         int(fields.get('memory_probe_claim_bytes', 0)))
+            integer(amount, 'shell booking')
+            if reader.file_identity(marker.lstat()) != before:
+                raise ValueError('A shell reservation changed while reading.')
+            observation = reader.shell(marker)
+            if (shell_key(marker) not in data.get('shell_claim_owners', {})
+                    and observation.get('aggregate_verified') is True):
+                try:
+                    amount = legacy_aggregate_booking(reader, observation, [marker])['booking_bytes']
+                except (OSError, ValueError):
+                    observation = {'verified': False, 'live_bytes': 0, 'reason': 'legacy aggregate fence is unknown'}
+            observation = dict(observation, legacy_aggregate_name=fields.get('aggregate', ''))
+            rows[shell_key(marker)] = (amount, observation)
+        except FileNotFoundError:
+            raise ValueError('A shell token disappeared during the shared projection.')
+    return rows
+
+
+def projection(data, claims, new_bytes, available_bytes, *, reader=None, new_observation=None):
     reader = ScopeReader() if reader is None else reader
+    claims = dict(claims)
     observations = {key: reader.claim(data, key) for key, amount in claims.items() if amount}
+    # A reviewed static view changes accounting only. It grants no token or slot.
+    static_names = set()
+    for key, hold in data.get('legacy_kernel_accounts', {}).items():
+        bound = hold['aggregate']
+        sample = reader.residual(dict(bound, static_until_absent=True))
+        if sample.get('closed') is True:
+            static_names.add(Path(bound['scope']).name)
+            continue
+        amount = hold['booking_bytes']
+        integer(amount, 'reviewed static booking')
+        for prior, expected_owner in hold.get('canonical_owners', {}).items():
+            actual = data.get('entry_pilot_outside_owners', {}).get(prior) or data.get('correctness_gate_owners', {}).get(prior)
+            if (not isinstance(expected_owner, dict) or not {'pid', 'startticks'} <= expected_owner.keys()
+                    or not actual or any(actual.get(name) != value for name, value in expected_owner.items())):
+                raise ValueError('The static canonical association changed.')
+            if sample.get('verified') is True:
+                amount = max(amount, claims.pop(prior, 0))
+                observations.pop(prior, None)
+            for name in ('entry_pilot_outside_releases', 'correctness_gate_releases'):
+                released = data.get(name, {}).get(prior, {})
+                amount = max(amount, released.get('bytes', 0))
+        claims[key] = amount
+        observations[key] = sample
+        if sample.get('verified') is True:
+            static_names.add(Path(bound['scope']).name)
+    # Legacy writers stay visible until rollout closes or updates them.
+    # Non-kernel unit readers supply their own inventory explicitly.
+    if isinstance(reader, ScopeReader) and (reader.proc == PROC or 'shell_marker_directory' in data):
+        for key, (amount, observation) in shell_rows(data, reader).items():
+            if key not in data.get('shell_claim_owners', {}) and observation.get('legacy_aggregate_name') in static_names:
+                continue
+            claims[key] = max(claims.get(key, 0), amount)
+            if key not in data.get('shell_claim_owners', {}):
+                observations[key] = observation
+    retained_groups = dict(data.get('legacy_aggregate_holds', {}))
+    retained_groups.update(data.get('shell_aggregate_holds', {}))
+    for key, retained in retained_groups.items():
+        sample = reader.residual(retained['aggregate'])
+        if sample.get('closed') is True:
+            continue
+        # An unknown retained scope keeps its last booking. A verified live
+        # aggregate contributes actual usage even after its final token ends.
+        claims[key] = retained['fallback_bytes']
+        observations[key] = sample
     return dict(evaluate(claims, new_bytes, available_bytes, observations=observations,
-                         slice_max_bytes=reader.slice_max()), admission_pool='canonical')
+                         new_observation=new_observation,
+                         slice_max_bytes=reader.slice_max()), admission_pool='canonical', memory_ledger='unified')
+
+
+def aggregate_fence(reader, observation):
+    path = Path(observation['scope'])
+    before = reader.directory(path)
+    if before != (observation['device'], observation['inode']):
+        raise ValueError('The legacy aggregate identity changed.')
+    fence = int((path / 'memory.max').read_text())
+    if fence <= 0 or fence > SLICE_MAX_BYTES or (path / 'memory.swap.max').read_text().strip() != '0':
+        raise ValueError('The legacy aggregate fence is not authorized.')
+    if reader.directory(path) != before or int((path / 'memory.max').read_text()) != fence:
+        raise ValueError('The legacy aggregate fence changed during sampling.')
+    return fence
+
+
+def legacy_aggregate_booking(reader, observation, markers):
+    """Use approved token bookings once, or the bounded inner-scope fallback."""
+    if observation.get('verified') is not True or observation.get('aggregate_verified') is not True:
+        raise ValueError('The legacy booking lacks an authenticated aggregate.')
+    path = Path(observation['scope'])
+    fence = aggregate_fence(reader, observation)
+    recorded = []
+    for marker in dict.fromkeys(map(Path, markers)):
+        before = reader.file_identity(marker.lstat())
+        if marker.lstat().st_uid != reader.uid or marker.lstat().st_mode & 0o022:
+            raise ValueError('The legacy booking token is not owned.')
+        sample = reader.shell(marker)
+        if (sample.get('verified') is not True or sample.get('aggregate_verified') is not True
+                or any(sample.get(name) != observation.get(name) for name in ('scope', 'device', 'inode'))):
+            raise ValueError('The legacy booking token belongs to another aggregate.')
+        fields = dict(line.split('=', 1) for line in marker.read_text().splitlines()[1:] if '=' in line)
+        values = [int(fields[name]) for name in ('memory_claim_bytes', 'memory_probe_claim_bytes') if name in fields]
+        for value in values:
+            integer(value, 'recorded legacy booking')
+            if value == 0:
+                raise ValueError('A recorded legacy booking is zero.')
+        if values:
+            recorded.append(max(values))
+        if reader.file_identity(marker.lstat()) != before:
+            raise ValueError('The legacy booking token changed during sampling.')
+    if recorded:
+        amount = max(recorded)
+        return {'booking_bytes': amount, 'recorded_booking_bytes': amount,
+                'origin': 'recorded approved shell tokens'}
+    children = sorted(child for child in path.iterdir() if child.name.endswith('.scope'))
+    if not children:
+        raise ValueError('The legacy aggregate has no bounded inner scope.')
+    total = 0
+    identities = []
+    for child in children:
+        before = reader.directory(child)
+        maximum = (child / 'memory.max').read_text().strip()
+        amount = fence if maximum == 'max' else int(maximum)
+        integer(amount, 'inner scope fence')
+        if (child / 'memory.swap.max').read_text().strip() != '0':
+            raise ValueError('An inner legacy scope has an unknown swap fence.')
+        total += amount
+        identities.append((child, before, maximum))
+    if (sorted(child for child in path.iterdir() if child.name.endswith('.scope')) != children
+            or any(reader.directory(child) != before or (child / 'memory.max').read_text().strip() != maximum
+                   for child, before, maximum in identities)):
+        raise ValueError('The inner legacy scope inventory changed.')
+    aggregate_fence(reader, observation)
+    return {'booking_bytes': min(fence, total), 'recorded_booking_bytes': None,
+            'origin': 'minimum aggregate fence and summed inner fences'}
+
+
+def canonical_guard_fence(data, guard_pid, *, reader=None):
+    """Authorize a new aggregate through the exact live canonical owner."""
+    reader = ScopeReader() if reader is None else reader
+    raw = (reader.proc / str(guard_pid) / 'stat').read_text().rsplit(')', 1)[1].split()
+    actor = {'pid': guard_pid, 'startticks': int(raw[19])}
+    reader.process(actor)
+    argv = reader.argv(actor)
+    position = 0 if Path(argv[0]).name == 'resource_guard.sh' else 1
+    if (position >= len(argv) or Path(argv[position]).name != 'resource_guard.sh'
+            or position == 1 and Path(argv[0]).name not in ('bash', 'sh', 'dash')
+            or argv[position + 1:position + 2] != ['batch']):
+        raise ValueError('The aggregate requester is not the exact stock batch guard.')
+    matches = []
+    for key, bound in data.get('claim_fences', {}).items():
+        if not data.get('fixed_claims', {}).get(key, 0):
+            continue
+        owner = bound['owner']
+        kind = ('gate' if data.get('correctness_gate_owners', {}).get(key) == owner else
+                'entry' if data.get('entry_pilot_outside_owners', {}).get(key) == owner else None)
+        if kind is None:
+            raise ValueError('The canonical fence owner differs from its claim.')
+        try:
+            chain = reader.ancestry(guard_pid, owner)
+        except (OSError, ValueError):
+            continue
+        if any(reader.process(item) != parent for item, parent in chain):
+            raise ValueError('The aggregate requester ancestry changed.')
+        matches.append((kind, bound['physical_fence_bytes']))
+    if len(matches) > 1:
+        raise ValueError('The aggregate requester has ambiguous canonical owners.')
+    return matches[0] if matches else (None, None)
+
+
+def select_guard_aggregate_limit(guard_pid, inner_fence_bytes, booking_bytes, *,
+                                 explicit_limit_bytes=None, gate_limit_bytes=None,
+                                 ledger=None, reader=None):
+    ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
+    with ledger_transaction(ledger) as data:
+        kind, bound = canonical_guard_fence(data, guard_pid, reader=reader)
+        if kind is None:
+            if explicit_limit_bytes is not None or gate_limit_bytes is not None:
+                raise ValueError('A plain shell request cannot use an unreviewed aggregate override.')
+            return new_aggregate_limit(inner_fence_bytes, booking_bytes)
+        if (explicit_limit_bytes is not None and explicit_limit_bytes != bound
+                or gate_limit_bytes is not None and (kind != 'gate' or gate_limit_bytes != bound)):
+            raise ValueError('The aggregate override differs from its canonical fence.')
+        return new_aggregate_limit(inner_fence_bytes, booking_bytes,
+                                   gate_limit_bytes=bound if kind == 'gate' else None,
+                                   explicit_limit_bytes=bound if kind == 'entry' else None)
+
+
+def new_aggregate_limit(inner_fence_bytes, booking_bytes, *, explicit_limit_bytes=None, gate_limit_bytes=None):
+    """Select a new fence. Explicit limits require canonical authorization upstream."""
+    for value in (inner_fence_bytes, booking_bytes, explicit_limit_bytes, gate_limit_bytes):
+        if value is not None:
+            integer(value, 'new aggregate limit')
+            if value == 0 or value > SLICE_MAX_BYTES:
+                raise ValueError('The new aggregate limit is outside the workload parent.')
+    if explicit_limit_bytes is not None and gate_limit_bytes is not None and explicit_limit_bytes != gate_limit_bytes:
+        raise ValueError('The explicit canonical and gate fences disagree.')
+    return explicit_limit_bytes or gate_limit_bytes or max(inner_fence_bytes, booking_bytes)
+
+
+def prepare_legacy_rollout(data, writers, *, reader=None):
+    """Build a reviewed seed in memory. Never migrate or delete a live claim.
+
+    The coordinator must supply and review the complete old-writer inventory.
+    Only one-shot stock guards already bound to represented aggregates qualify.
+    An arbitrary old controller or future aggregate creator blocks the switch.
+    """
+    reader = ScopeReader() if reader is None else reader
+    holds = {}
+    for writer in writers:
+        owner = writer['owner']
+        reader.process(owner)
+        source = writer['source']
+        if hashlib.sha256(Path(source['path']).read_bytes()).hexdigest() != source['sha256']:
+            raise ValueError('The legacy writer source changed.')
+        argv = reader.argv(owner)
+        if argv != writer['argv']:
+            raise ValueError('The legacy writer command changed.')
+        command_end = argv.index('--') if '--' in argv else len(argv)
+        positions = [i for i, word in enumerate(argv[:command_end])
+                     if Path(word).name == 'resource_guard.sh']
+        if len(positions) != 1 or Path(argv[positions[0]]).resolve() != Path(source['path']).resolve():
+            raise ValueError('An old writer can create an unrepresented aggregate.')
+        position = positions[0]
+        if position != 0 and not (position == 1 and Path(argv[0]).name in ('bash', 'sh', 'dash')):
+            raise ValueError('The public guard is not the executable script.')
+        mode = argv[positions[0] + 1] if positions[0] + 1 < len(argv) else None
+        if mode not in ('scope', 'scope-exec', 'batch'):
+            raise ValueError('An old writer can create an unrepresented aggregate.')
+        token_owner = writer.get('token_owner', owner)
+        if mode != 'batch' and token_owner != owner:
+            raise ValueError('A scope writer cannot use another token owner.')
+        if int(Path(writer['marker']).name.split('.')[0]) != token_owner['pid']:
+            raise ValueError('The legacy token filename names another owner.')
+        reader.process(token_owner)
+        observation = reader.shell(writer['marker'], owner=token_owner)
+        if observation.get('aggregate_verified') is not True:
+            raise ValueError('The old writer has no authenticated aggregate.')
+        path = Path(observation['scope'])
+        chain = []
+        if mode == 'batch':
+            if re.fullmatch(rf'zesuworkloads-aggregate{reader.uid}p{owner["pid"]}r[0-9]+\.slice', path.name) is None:
+                raise ValueError('The old batch has not created its exact aggregate.')
+            if token_owner != owner:
+                chain = reader.ancestry(token_owner['pid'], owner)
+        else:
+            environment = dict(item.split('=', 1) for item in
+                (reader.proc / str(owner['pid']) / 'environ').read_bytes().decode().split('\0') if '=' in item)
+            if environment.get('ZESU_AGGREGATE_SLICE') != path.name:
+                raise ValueError('The old scope can create an unrepresented aggregate.')
+        booking = legacy_aggregate_booking(reader, observation, [writer['marker']])
+        identity = f"{path}:{observation['device']}:{observation['inode']}"
+        key = 'legacy-aggregate:' + hashlib.sha256(identity.encode()).hexdigest()
+        previous = holds.get(key, data.get('legacy_aggregate_holds', {}).get(key, {}))
+        recorded = [value for value in (previous.get('recorded_booking_bytes'), booking['recorded_booking_bytes']) if value is not None]
+        amount = max(recorded) if recorded else max(previous.get('fallback_bytes', 0), booking['booking_bytes'])
+        holds[key] = {'aggregate': {name: observation[name] for name in ('scope', 'device', 'inode')},
+                      'fallback_bytes': amount, 'recorded_booking_bytes': max(recorded) if recorded else None,
+                      'booking_origin': booking['origin'], 'writer': owner, 'token_owner': token_owner, 'source': source}
+        reader.process(owner)
+        reader.process(token_owner)
+        if any(reader.process(actor) != parent for actor, parent in chain):
+            raise ValueError('The batch/token owner ancestry changed during sampling.')
+    result = dict(data)
+    result['legacy_aggregate_holds'] = dict(data.get('legacy_aggregate_holds', {}), **holds)
+    return result
+
+
+@contextmanager
+def guard_lock():
+    """Take GATE_MUTEX before LEDGER.lock. Shell children reuse its exact FD."""
+    path = Path(os.environ.get('ZESU_GATE_LOCK', '/tmp/zesu-gate.lock') + '.mutex')
+    if path.resolve() != path or path.is_symlink():
+        raise ValueError('The guard mutex path contains an alias.')
+    inherited = os.environ.get('ZESU_GUARD_MUTEX_FD')
+    if inherited is not None:
+        if not inherited.isdecimal():
+            raise ValueError('The inherited guard descriptor is invalid.')
+        descriptor = int(inherited)
+        info, expected = os.fstat(descriptor), path.lstat()
+        if ((info.st_dev, info.st_ino) != (expected.st_dev, expected.st_ino)
+                or info.st_uid != os.getuid() or info.st_mode & 0o022
+                or not stat.S_ISREG(info.st_mode)):
+            raise ValueError('The inherited descriptor names another guard mutex.')
+        try:
+            fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise ValueError('The inherited guard mutex is held by another owner.')
+        current = path.lstat()
+        if (current.st_dev, current.st_ino) != (info.st_dev, info.st_ino):
+            raise ValueError('The inherited guard mutex changed.')
+        # Never unlock the shared open description. The shell owns its lifetime.
+        yield
+        return
+    descriptor = os.open(path, os.O_WRONLY | os.O_APPEND | os.O_CREAT | os.O_NOFOLLOW, 0o600)
+    try:
+        info = os.fstat(descriptor)
+        if info.st_uid != os.getuid() or info.st_mode & 0o022 or not stat.S_ISREG(info.st_mode):
+            raise ValueError('The guard mutex is not owned.')
+        fcntl.flock(descriptor, fcntl.LOCK_EX)
+        current = path.lstat()
+        if (current.st_dev, current.st_ino) != (info.st_dev, info.st_ino):
+            raise ValueError('The guard mutex changed while waiting.')
+        yield
+    finally:
+        os.close(descriptor)
+
+
+TEST_CONTEXT_ENV = 'PYTHON_TEST_CONTEXT'
+
+
+def test_process():
+    """Recognize test runners even when a child removes inherited flags."""
+    if os.environ.get(TEST_CONTEXT_ENV) == '1':
+        return True
+    if 'unittest' in sys.modules or 'pytest' in sys.modules or os.environ.get('PYTEST_CURRENT_TEST'):
+        os.environ[TEST_CONTEXT_ENV] = '1'
+        return True
+    pid = os.getpid()
+    for _ in range(128):
+        try:
+            process = Path('/proc') / str(pid)
+            arguments = (process / 'cmdline').read_bytes().decode().split('\0')
+            fields = (process / 'stat').read_text().rsplit(')', 1)[1].split()
+        except (OSError, UnicodeError):
+            return False
+        names = [Path(value).name.lower() for value in arguments if value]
+        if (any(name in {'unittest', 'pytest', 'py.test'} for name in names)
+                or any(name.startswith('test_') and name.endswith('.py') for name in names)):
+            os.environ[TEST_CONTEXT_ENV] = '1'
+            return True
+        parent = int(fields[1])
+        if parent <= 1 or parent == pid:
+            return False
+        pid = parent
+    raise ValueError('The test ancestry exceeds the supported process depth.')
+
+
+# Propagate embedded runners before their children can hide the runner argv.
+# This restrictive marker survives fixture cleanup of ZESU control options.
+test_process()
+
+
+def check_test_ledger(ledger=None):
+    """Tests may use private ledgers; live accounting needs explicit consent."""
+    ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
+    live = ledger.resolve() == DEFAULT_LEDGER.resolve()
+    if not live and ledger.exists() and DEFAULT_LEDGER.exists():
+        live = ledger.samefile(DEFAULT_LEDGER)
+    if live and test_process() and os.environ.get('ZESU_TEST_ALLOW_LIVE_LEDGER') != '1':
+        raise ValueError('Tests refuse the live ledger without explicit live mode.')
+
+
+@contextmanager
+def ledger_transaction(ledger):
+    check_test_ledger(ledger)
+    ledger = Path(ledger)
+    if ledger.is_symlink() or ledger.name != 'LEDGER.json':
+        raise ValueError('The unified ledger path is invalid.')
+    lock = ledger.with_name('LEDGER.lock')
+    if lock.is_symlink():
+        raise ValueError('The unified ledger lock is an alias.')
+    with guard_lock(), lock.open('a') as stream:
+        fcntl.flock(stream, fcntl.LOCK_EX)
+        info = ledger.lstat()
+        if info.st_uid != os.getuid() or info.st_mode & 0o022 or not stat.S_ISREG(info.st_mode):
+            raise ValueError('The unified ledger is not owned.')
+        yield json.loads(ledger.read_text())
+
+
+def write_ledger(path, data):
+    check_test_ledger(path)
+    path = Path(path)
+    fd, name = tempfile.mkstemp(prefix='.LEDGER.', dir=path.parent)
+    try:
+        with os.fdopen(fd, 'w') as stream:
+            json.dump(data, stream, indent=2)
+            stream.write('\n'); stream.flush(); os.fsync(stream.fileno())
+        os.replace(name, path)
+    finally:
+        Path(name).unlink(missing_ok=True)
+
+
+def ledger_claims(data):
+    claims = dict(data['fixed_claims'])
+    for name, amount in data.get('region_claims', {}).items():
+        release = data.get('released_region_claims', {}).get(name)
+        if (release and release.get('bytes') == amount
+                and hashlib.sha256(Path(release['receipt']).read_bytes()).hexdigest() == release['sha256']):
+            continue
+        claims['legacy:' + name] = amount
+    return claims
+
+
+def current_projection(request_bytes, available_bytes, *, ledger=None, reader=None):
+    ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
+    with ledger_transaction(ledger) as data:
+        return projection(data, ledger_claims(data), request_bytes, available_bytes, reader=reader)
+
+
+def confirm_shell(marker, replacement, request_bytes, available_bytes, *, ledger=None, reader=None):
+    """Publish one shell token and its claim under the canonical transaction lock.
+
+    Both routes take GATE_MUTEX before LEDGER.lock. Shell helpers reuse its FD.
+    A publication failure retains the ledger claim conservatively.
+    """
+    marker, replacement = Path(marker).absolute(), Path(replacement).absolute()
+    ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
+    reader = ScopeReader() if reader is None else reader
+    integer(request_bytes, 'shell request')
+    replacement_identity = reader.file_identity(replacement.lstat())
+    fields = dict(line.split('=', 1) for line in replacement.read_text().splitlines()[1:] if '=' in line)
+    amount = max(int(fields['memory_claim_bytes']), int(fields.get('memory_probe_claim_bytes', 0)))
+    if amount != request_bytes:
+        raise ValueError('The shell request differs from its effective token booking.')
+    generation = fields['reservation_generation']
+    if not re.fullmatch(r'[a-zA-Z0-9-]{16,80}', generation):
+        raise ValueError('The reservation generation is invalid.')
+    owner = {'pid': int(marker.name.split('.')[0]), 'startticks': int(fields['owner_start'])}
+    reader.process(owner)
+    guard_source = None
+    if 'guard_source_path' in fields or 'guard_source_sha256' in fields:
+        guard_source = reader.guard_source(fields['guard_source_path'], fields['guard_source_sha256'])
+    key = shell_key(marker)
+    with ledger_transaction(ledger) as data:
+        if marker.exists() or marker.is_symlink() or key in data.get('shell_claim_owners', {}):
+            raise ValueError('The shell token already exists.')
+        if marker.name.partition('.')[2] != generation:
+            raise ValueError('The token path differs from its immutable generation.')
+        expected_directory = Path(data.get('shell_marker_directory', marker_directory()))
+        if (marker.parent != expected_directory or marker.parent.resolve() != marker.parent
+                or not re.fullmatch(r'[0-9]+\.[a-zA-Z0-9.-]+', marker.name)):
+            raise ValueError('The shell token is outside its owned namespace.')
+        observation = reader.shell(replacement, owner=owner)
+        claims = ledger_claims(data)
+        result = projection(data, claims, request_bytes, available_bytes,
+                            reader=reader, new_observation=observation)
+        if not result['fits']:
+            return result
+        reader.process(owner)
+        if reader.file_identity(replacement.lstat()) != replacement_identity:
+            raise ValueError('The pending shell token changed.')
+        # Publish the booking first. An interrupted token publication cannot underbook.
+        data['fixed_claims'][key] = request_bytes
+        data.setdefault('shell_claim_owners', {})[key] = {'owner': owner, 'marker': str(marker),
+            'aggregate': observation if observation.get('aggregate_verified') is True else None,
+            'generation': generation}
+        if guard_source is not None:
+            data['shell_claim_owners'][key]['guard_source'] = guard_source
+        data.setdefault('shell_admissions', {})[key] = result
+        write_ledger(ledger, data)
+        os.replace(replacement, marker)
+        data['shell_claim_owners'][key]['token_identity'] = reader.file_identity(marker.lstat())
+        write_ledger(ledger, data)
+        return result
+
+
+def read_shell_bookings(*, ledger=None):
+    ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
+    with ledger_transaction(ledger) as data:
+        return {row['marker']: data['fixed_claims'].get(key, 0)
+                for key, row in data.get('shell_claim_owners', {}).items()}
+
+
+def refresh_shell_growth(growth, *, ledger=None, reader=None):
+    """Commit monotonic observations without replacing reservation tokens."""
+    if not growth:
+        return
+    reader = ScopeReader() if reader is None else reader
+    ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
+    with ledger_transaction(ledger) as data:
+        for row in growth:
+            marker = Path(row['reservation']).absolute()
+            amount = integer(row['claim_bytes'], 'observed shell growth')
+            key = shell_key(marker)
+            record = data.get('shell_claim_owners', {}).get(key)
+            if record is not None:
+                if data['fixed_claims'].get(key, 0) <= 0:
+                    raise ValueError('Growth cannot revive a released shell token.')
+                sample = reader.claim(data, key)
+                if sample.get('verified') is not True:
+                    raise ValueError('Growth lacks an authenticated shell token.')
+                data['fixed_claims'][key] = max(data['fixed_claims'][key], amount)
+            else:
+                sample = reader.shell(marker)
+                matching = [hold for hold in data.get('legacy_aggregate_holds', {}).values()
+                            if all(hold['aggregate'].get(name) == sample.get(name)
+                                   for name in ('scope', 'device', 'inode'))]
+                if sample.get('aggregate_verified') is not True or len(matching) != 1:
+                    raise ValueError('Legacy growth lacks its authenticated aggregate hold.')
+                matching[0]['fallback_bytes'] = max(matching[0]['fallback_bytes'], amount)
+            data.setdefault('shell_growth', []).append(dict(row, claim_key=key))
+        write_ledger(ledger, data)
+
+
+def mark_shell(marker, *, ledger=None, reader=None):
+    """Bind the actual guarded compiler leaf after systemd starts it."""
+    marker = Path(marker).absolute()
+    reader = ScopeReader() if reader is None else reader
+    ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
+    with ledger_transaction(ledger) as data:
+        record = data.get('shell_claim_owners', {}).get(shell_key(marker))
+        if record is None:
+            return False
+        if data['fixed_claims'].get(shell_key(marker), 0) <= 0:
+            raise ValueError('The marked shell booking is already released.')
+        lines = marker.read_text().splitlines()
+        fields = dict(line.split('=', 1) for line in lines[1:] if '=' in line)
+        if (fields.get('reservation_generation') != record['generation']
+                or int(fields['owner_start']) != record['owner']['startticks']):
+            raise ValueError('The marked reservation generation changed.')
+        source = record.get('guard_source')
+        actor = {'pid': int(lines[0]), 'startticks': int(fields['child_start'])}
+        argv = reader.argv(actor) if source is not None else []
+        position = 1 if argv and Path(argv[0]).name == 'bash' else 0
+        if source is not None and argv[position:position + 2] == [source['path'], 'scope-exec']:
+            sample, attestation = reader.scope_exec(marker, source)
+            record['guard_attestation'] = attestation
+        else:
+            sample = reader.compiler(marker)
+        if sample.get('verified') is not True:
+            raise ValueError('The marked compiler lacks an authenticated leaf.')
+        record['leaf'] = {name: sample[name] for name in ('scope', 'device', 'inode')}
+        record['token_identity'] = reader.file_identity(marker.lstat())
+        write_ledger(ledger, data)
+        return True
+
+
+def leaf_closed(reader, bound):
+    path = Path(bound['scope'])
+    if path.resolve() != path:
+        raise ValueError('The released leaf contains an alias.')
+    if not path.exists():
+        if path.is_symlink():
+            raise ValueError('The released leaf is an alias.')
+        return True
+    before = reader.directory(path)
+    if before != (bound['device'], bound['inode']):
+        raise ValueError('The released leaf identity changed.')
+    events = (path / 'cgroup.events').read_text().splitlines()
+    if reader.directory(path) != before:
+        raise ValueError('The released leaf changed during sampling.')
+    return 'populated 0' in events
+
+
+def release_shell(marker, *, ledger=None, reader=None):
+    """Release only an exact token whose recorded compiler actor ended."""
+    marker = Path(marker).absolute()
+    ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
+    reader = ScopeReader() if reader is None else reader
+    with ledger_transaction(ledger) as data:
+        key = shell_key(marker)
+        record = data.get('shell_claim_owners', {}).get(key)
+        if record is None:
+            token_identity = reader.file_identity(marker.lstat())
+            raw = marker.read_bytes()
+            fields = dict(line.split('=', 1) for line in raw.decode().splitlines()[1:] if '=' in line)
+            matching = [hold for hold in data.get('legacy_aggregate_holds', {}).values()
+                        if Path(hold['aggregate']['scope']).name == fields.get('aggregate')]
+            if len(matching) != 1 or reader.residual(matching[0]['aggregate']).get('closed') is not True:
+                raise ValueError('The legacy token lacks authenticated aggregate closure.')
+            if reader.file_identity(marker.lstat()) != token_identity:
+                raise ValueError('The legacy token changed during reclamation.')
+            data.setdefault('legacy_shell_releases', {})[key] = {
+                'marker': str(marker), 'token_sha256': hashlib.sha256(raw).hexdigest(),
+                'aggregate': matching[0]['aggregate']}
+            write_ledger(ledger, data)
+            marker.unlink()
+            return True
+        token_identity = reader.file_identity(marker.lstat())
+        if tuple(record.get('token_identity', ())) != token_identity:
+            raise ValueError('The released token identity changed.')
+        lines = marker.read_text().splitlines()
+        fields = dict(line.split('=', 1) for line in lines[1:] if '=' in line)
+        if (fields.get('reservation_generation') != record['generation']
+                or int(fields['owner_start']) != record['owner']['startticks']):
+            raise ValueError('The release owner differs from its token.')
+        if lines[0].isdecimal():
+            if not record.get('leaf') or not leaf_closed(reader, record['leaf']):
+                raise ValueError('The exact shell compiler leaf is not closed.')
+            actor = {'pid': int(lines[0]), 'startticks': int(fields['child_start'])}
+            try:
+                path = reader.proc / str(actor['pid'])
+                raw = (path / 'stat').read_text().rsplit(')', 1)[1].split()
+                if path.stat().st_uid != reader.uid:
+                    raise ValueError('The shell compiler UID changed.')
+                if int(raw[19]) == actor['startticks'] and raw[0] not in ('Z', 'X', 'x'):
+                    raise ValueError('The shell compiler actor is not closed.')
+            except FileNotFoundError:
+                pass
+        if lines[0] == 'confirmed':
+            reader.process(record['owner'])
+        sample = reader.residual(record['aggregate']) if record.get('aggregate') else {}
+        if sample.get('closed') is True:
+            sample = dict(record['aggregate'], aggregate_verified=True)
+        if sample.get('aggregate_verified') is True:
+            aggregate_identity = str(sample['scope']) + ':' + str(sample['device']) + ':' + str(sample['inode'])
+            hold = 'shell-aggregate:' + hashlib.sha256(aggregate_identity.encode()).hexdigest()
+            data.setdefault('shell_aggregate_holds', {})[hold] = {
+                'aggregate': {name: sample[name] for name in ('scope', 'device', 'inode')},
+                'fallback_bytes': max(data['fixed_claims'][key],
+                    data.get('shell_aggregate_holds', {}).get(hold, {}).get('fallback_bytes', 0))}
+        elif record.get('aggregate') or not (lines[0].isdecimal() and record.get('leaf') and leaf_closed(reader, record['leaf'])):
+            raise ValueError('The shell aggregate closure cannot be authenticated.')
+        if reader.file_identity(marker.lstat()) != token_identity:
+            raise ValueError('The released token changed during validation.')
+        data['fixed_claims'][key] = 0
+        data.setdefault('shell_releases', {})[key] = {'marker': str(marker), 'owner': record['owner']}
+        write_ledger(ledger, data)
+        marker.unlink()
+        return True

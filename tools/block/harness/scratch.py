@@ -213,10 +213,10 @@ def sealed_rules_prefix(profile_binding,declarations_only,control_session):
     return selected,common(selected)
 
 
-def rebind_prepared_tools(c):
-    layout=json.loads((HERE/'TOOL-LAYOUT.json').read_text())
-    c['prepared_tool_transition']=[dict(relative=relative,prepared=binding(Path(c['prepared_workspace'])/'tools'/relative),successor=binding(HERE/source)) for relative,source in layout.items()]
-    __import__('restart_bindings').verify_restart_runtime(c,HERE)
+def rebind_prepared_tools(c,prior_runtime=None):
+    from restart_bindings import prepared_transitions,verify_restart_runtime
+    c['prepared_tool_transition']=prepared_transitions(c,HERE,prior_runtime)
+    verify_restart_runtime(c,HERE)
 
 def prepare(a):
     from command_scope import require
@@ -395,6 +395,8 @@ def prepare(a):
             basis=memory_job.get('completed_stock_measurement')
             if basis:
                 evidence=basis['measurement']
+                from memory_policy import header_transition_bindings
+                additions.extend(header_transition_bindings(evidence))
                 names=['native_source','result','acceptance','release_ledger','compiler'] if evidence.get('format')=='legacy_r1_workload_rss_v1' else ['native_source','result','closure','release']
                 additions.extend(evidence[name] for name in names)
                 if evidence.get('declaration_projection'):
@@ -455,7 +457,10 @@ def check_declaration_target(config):
 def execute(path,expected):
     from command_scope import require
     require()
-    try:return execute_retained(path,expected)
+    from controller_cleanup import Supervisor
+    try:
+        with Supervisor(Path(path).parent):
+            return execute_retained(path,expected)
     finally:
         from end_run_cleanup import finish
         cleanup_config=read_bound({'path':str(path),'sha256':expected})
@@ -474,7 +479,7 @@ def execute_retained(path,expected):
     env=dict(os.environ,PATH='/home/cody/islaris/_opam/bin:/home/cody/.local/bin:/usr/local/bin:/usr/bin:/bin',OPAM_SWITCH_PREFIX='/home/cody/islaris/_opam',PYTHONDONTWRITEBYTECODE='1',PYTHONHASHSEED='0',ZESU_PROOF_CACHE=cache_setting)
     argv=lambda row:[str(PYTHON),'-B',c['job_controller']['path'],str(path),digest(path),row['key'],row['output']]
     if pre['ordered_modules'] or c.get('declaration_checks') or c.get('control_session'):
-        reply=subprocess.run(argv(pre),cwd=W,env=env)
+        reply=__import__('controller_cleanup').run(argv(pre),cwd=W,env=env)
         r=read_bound(binding(Path(pre['output'])/'RESULT.json'))
         if not r.get('success'):
             save(out/'RESULT.json',summarize(r,pre['output'],cache_setting));return 2
@@ -501,7 +506,7 @@ def execute_retained(path,expected):
     else:
         c['readiness']=binding(out/'READINESS.json');save(out/'READY-RUNTIME.json',c)
         run_path=out/'READY-RUNTIME.json'
-    reply=subprocess.run([str(PYTHON),'-B',c['job_controller']['path'],str(run_path),digest(run_path),job['key'],job['output']],cwd=W,env=env)
+    reply=__import__('controller_cleanup').run([str(PYTHON),'-B',c['job_controller']['path'],str(run_path),digest(run_path),job['key'],job['output']],cwd=W,env=env)
     result=read_bound(binding(Path(job['output'])/'RESULT.json'));public=summarize(result,job['output'],cache_setting)
     public.update(inputs=binding(out/'INPUTS.json'),runtime=binding(run_path),prerequisite_CPU=r.get('CPU') if pre['ordered_modules'] else None)
     for field,name in [('closure','CLOSURE.json'),('release','RELEASE.json')]:
@@ -607,6 +612,8 @@ def refresh_memory(argv):
         basis=job.get('completed_stock_measurement')
         if not basis:continue
         evidence=basis['measurement'];legacy=evidence.get('format')=='legacy_r1_workload_rss_v1'
+        from memory_policy import header_transition_bindings
+        additions.extend(header_transition_bindings(evidence))
         additions.extend(evidence[name] for name in (['native_source','result','acceptance','release_ledger','compiler'] if legacy else ['native_source','result','closure','release']))
         if evidence.get('declaration_projection'):
             projection=read_bound(evidence['declaration_projection']);additions.extend([evidence['declaration_projection']]+[projection[name] for name in ['current_source','legacy_interval','declaration']])
@@ -624,7 +631,7 @@ def refresh_memory(argv):
         compact(c,c['seed_binding_reference']['descriptor'],c['prepared_workspace'])
         check_proof_bindings(c)
     # New tools have identical owned shell bytes. Never write the old workspace.
-    rebind_prepared_tools(c)
+    rebind_prepared_tools(c,prior)
     original_inputs=args.prior_runtime.parent/'INPUTS.json'
     inputs=read_bound(binding(original_inputs)) if original_inputs.exists() else {}
     inputs.update(CPU_external_stop_seconds=search_budget,end_of_run_cleanup=c['end_of_run_cleanup'],memory_refresh={'prior_runtime':prior,'prepared_workspace_unchanged':True,'source_staging_repeated':False,'proof_calls':0,'claims_created':0},completed_stock_measurements=measurements,memory_jobs=c['jobs'])

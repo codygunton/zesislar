@@ -29,20 +29,7 @@ class OutputCapture(unittest.TestCase):
    current=HERE/layout[relative]
    self.assertEqual(current.stat().st_mode&0o111,Path(row['path']).stat().st_mode&0o111,str(current))
  def test_policy_and_guard_are_unchanged(self):
-  original=historical.materialize('/home/cody/zesislar/_build/agents/worker-build-2/private-admission-route-v1/source014/restart-tools/resource_guard.sh')
-  # Preserve the reviewed PID identities and the ten-second throttle cache.
-  expected=original.read_text()
-  needle='      if diagnostic_probe; then\n        local probe_tag=issue10'
-  expected=expected.replace(needle,'''      printf 'owner_start=%s\\n' "$(process_start "$owner")" >> "$replacement" || {
-        rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
-      }
-'''+needle)
-  expected=expected.replace('        if ! printf \'probe=%s\\nmemory_gib=%s\\ncpu=unlimited\\nowner_start=%s\\n\' \\\n            "$probe_tag" "$MODULE_LIMIT_GIB" "$(process_start "$owner")"','        if ! printf \'probe=%s\\nmemory_gib=%s\\ncpu=unlimited\\n\' \\\n            "$probe_tag" "$MODULE_LIMIT_GIB"')
-  expected=expected.replace('  sed -n \'4,$p\' "$marker" >> "$replacement"', '  sed -n \'4,$p\' "$marker" | sed \'/^child_start=/d\' >> "$replacement"')
-  needle="  # Marking the child must not restart the confirmation's launch window."
-  expected=expected.replace(needle,'''  printf 'child_start=%s\\n' "$(process_start "$child")" >> "$replacement"
-'''+needle)
-  expected=expected.replace('guards share it for two seconds','guards share it for ten seconds')
-  expected=expected.replace('$(date +%s) - stamp >= 2','$(date +%s) - stamp >= 10')
-  self.assertEqual((HERE/'runtime-tools/resource_guard.sh').read_text(),expected)
+  golden=HERE/'test-fixtures/approved-admission'
+  self.assertEqual((HERE/'runtime-tools/resource_guard.sh').read_bytes(),(golden/'resource_guard.sh').read_bytes())
+  self.assertEqual((HERE/'code/memory_policy.py').read_bytes(),(golden/'memory_policy.py').read_bytes())
 if __name__=='__main__':unittest.main()

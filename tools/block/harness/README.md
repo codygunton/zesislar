@@ -39,6 +39,19 @@ The memory fence and the shared parent remain unchanged.
 Unmeasured probes book their full fence.
 Measured families book their validated claim and observed growth.
 
+An authorized PORT profile can request `"memory_booking": "full_physical_fence"`.
+This option raises its booking to the unchanged 32 GiB fence.
+It does not change the caller, authority, proof body, or CPU policy.
+Profiles without this option keep their existing booking.
+Blind PORT profiles reject this option and retain their separate policy.
+
+A `focused_check` profile can also request `"memory_booking": "full_physical_fence"`.
+It requires declaration-only execution and exact source coverage for every compiled module.
+The booking equals the unchanged 64 GiB fence.
+Focused profiles without this option keep their existing booking.
+The unused empty native carrier does not receive a declaration workload.
+The declaration-only executor does not run that carrier.
+
 Before an external stop, the harness retains the complete available export.
 An in-flight tactic has no returned internal state.
 The report labels a pre-call export explicitly.
@@ -136,3 +149,59 @@ The physical gate fences remain unchanged.
 
 A supplier release requires explicit verification success.
 `module_m` and an empty assumption list cannot replace that success flag.
+
+
+Controller exit cleanup follows the existing stock guard route.
+Scratch supervisors track their child controllers through pidfds and exact PID start ticks.
+Entry controllers track their stock batches with the same checks.
+TERM, INT, HUP, Python failures, and normal exits close registered children.
+The guard cleanup trap stops only its owned aggregate.
+A failed child registration remains unknown and blocks claim release.
+Cancellation before aggregate identity publication also retains an unproved claim.
+Existing aggregate identity and actor closure checks remain authoritative.
+Local cleanup handlers cannot cover SIGKILL or host failure.
+
+The real cleanup control uses synthetic processes and real private cgroups.
+It preserves a simultaneous foreign aggregate.
+Run it explicitly with `python -m unittest tools.block.harness.controller_cleanup_real_control`.
+It creates no Rocq process, PET process, compiler, or production claim.
+Normal unit discovery excludes this control because it needs the host user service.
+
+## Shared memory ledger
+
+Canonical jobs and shell compiler reservations use the canonical `LEDGER.json`.
+Both routes take `GATE_MUTEX` before `LEDGER.lock`.
+Shell helpers reuse the authenticated inherited mutex descriptor.
+They do not unlock the shell's descriptor.
+
+The ledger retains each token and its owner.
+The memory calculation groups only authenticated aggregate identities.
+It charges the largest approved booking once per aggregate.
+It charges verified current usage when that usage exceeds the booking.
+Unknown or conflicting identities retain separate full costs.
+Compiler slot counts remain separate.
+`ZESU_OWNED_GUARD_TOKEN` identifies the current inner scope only.
+The relay preserves this identity and removes both compiler-reuse keys.
+A later compiler must reserve its own slot.
+Before exec, the guard binds its public source, command, token generation, actor identities, and kernel leaf.
+Later accounting checks that attestation and the exact inner identity.
+`compiler()` retains its separate strict token checks.
+Legacy actors without this attestation receive no new identity permission.
+Growth updates use the same transaction and preserve the token file identity.
+The 175 GiB slice fence, 20 GiB headroom, and account limits remain unchanged.
+
+A token release requires its exact generation, file identity, and closed compiler leaf.
+Released token paths cannot serve another reservation.
+The ledger retains the largest aggregate booking until authenticated aggregate closure.
+A missing or replaced scope cannot silently release that booking.
+
+A rollout needs a reviewed inventory of every old writer.
+`prepare_legacy_rollout` builds a source-only seed without changing a live ledger.
+Old aggregates retain their largest recorded booking until closure.
+Without a booking, accounting uses the smaller of the aggregate fence and summed inner fences.
+New plain-shell aggregates use the larger of the approved booking and inner fence.
+Canonical gate and family fences remain exact.
+An old writer that can create an unrepresented aggregate blocks the rollout.
+Older gate worktrees also need the unified writer before their next launch.
+A managed tools checkout alone does not update an older Makefile or controller.
+Do not migrate live records or change running jobs without rollout approval.

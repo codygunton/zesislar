@@ -74,7 +74,7 @@ class DependencyBatchTests(unittest.TestCase):
     def test_actual_restart_staging_installs_the_exact_recorder(self):
         import restart_bindings
         owned=self.root/'staged';owned.mkdir()
-        config={'admission':{},'harness':{'commit':'fixture'}}
+        config={'admission':{},'harness':{'commit':'fixture'},'prepared_workspace':str(self.workspace)}
         with patch('harness_commit.check'):
             result=restart_bindings.install_restart_tools(owned,config,HERE)
         staged=owned/'tools/block/dependency_compile_measure.py'

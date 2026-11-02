@@ -25,7 +25,7 @@ class TransportFailureControls(unittest.TestCase):
    path=out/'RUNTIME.json';path.write_text(json.dumps(c));(out/'INPUTS.json').write_text('{}')
    first='A runtime value escapes the audited consumers.'
    result=native/'RESULT.json';result.write_text(json.dumps({'status':'infrastructure_failed','error':first,'last_phase':'cache_or_prospective_collection'}));before=scratch.digest(result)
-   with patch('restart_bindings.verify_restart_runtime'),patch.object(scratch,'check_proof_bindings'),patch.object(scratch.subprocess,'run'):
+   with patch('restart_bindings.verify_restart_runtime'),patch.object(scratch,'check_proof_bindings'),patch('controller_cleanup.run'):
     self.assertEqual(scratch.execute(path,scratch.digest(path)),2)
    public=json.loads((out/'RESULT.json').read_text())
    self.assertEqual(public['first_error'],first)
@@ -38,7 +38,7 @@ class TransportFailureControls(unittest.TestCase):
       'job_controller':{'path':'unused-controller'},'sealed_native_preparation':{'job':'800d6a64'},'readiness':scratch.binding(ready)}
    path=out/'RUNTIME.json';path.write_text(json.dumps(c));before=scratch.digest(path);(out/'INPUTS.json').write_text('{}')
    (native/'RESULT.json').write_text(json.dumps({'status':'infrastructure_failed','error':'retained diagnostic failure'}))
-   with patch('restart_bindings.verify_restart_runtime'),patch.object(scratch,'check_proof_bindings'),patch.object(scratch.subprocess,'run') as run:
+   with patch('restart_bindings.verify_restart_runtime'),patch.object(scratch,'check_proof_bindings'),patch('controller_cleanup.run') as run:
     self.assertEqual(scratch.execute(path,before),2)
    self.assertEqual(scratch.digest(path),before);self.assertFalse((out/'READY-RUNTIME.json').exists())
    self.assertEqual(run.call_args.args[0][3],str(path));self.assertEqual(json.loads((out/'RESULT.json').read_text())['runtime'],scratch.binding(path))

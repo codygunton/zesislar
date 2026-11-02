@@ -12,15 +12,50 @@ from pathlib import Path
 
 import test_guard
 from coqc_recipe import compiler_recipe
+from test_resource_guard import MEMORY_HELPER
 
 
 TOOLS = Path(__file__).resolve().parent
 
 
+def private_guard_fixture():
+    fixture = test_guard.GuardLockTest()
+    fixture.setUp()
+    root = Path(fixture.directory.name)
+    ledger = root / "canonical/LEDGER.json"
+    ledger.parent.mkdir()
+    ledger.write_text(json.dumps({"fixed_claims": {}, "region_claims": {}}))
+    cgroups = root / "cgroup"
+    cgroups.mkdir()
+    helper = root / "fixture_memory.py"
+    # Fake systemd cannot publish an authenticated kernel leaf. Keep slot
+    # publication private while using the real admission and sizing arithmetic.
+    helper.write_text("import sys\nsys.path.insert(0, " + repr(str(TOOLS)) + ")\n" + r'''
+if sys.argv[1:2] == ["aggregate-limit"]:
+    import argparse
+    from module_memory import _module
+    parser = argparse.ArgumentParser()
+    parser.add_argument("operation", choices=("aggregate-limit",))
+    parser.add_argument("--guard-pid", type=int, required=True)
+    parser.add_argument("--inner-fence-bytes", type=int, required=True)
+    parser.add_argument("--booking-bytes", type=int, required=True)
+    parser.add_argument("--explicit-limit-bytes", type=int)
+    parser.add_argument("--gate-limit-bytes", type=int)
+    args = parser.parse_args()
+    print(_module.new_aggregate_limit(args.inner_fence_bytes, args.booking_bytes,
+          explicit_limit_bytes=args.explicit_limit_bytes,
+          gate_limit_bytes=args.gate_limit_bytes))
+    raise SystemExit(0)
+''' + MEMORY_HELPER)
+    fixture.environment.update(ZESU_CANONICAL_LEDGER=str(ledger),
+                               ZESU_CGROUP_ROOT=str(cgroups),
+                               ZESU_MODULE_MEMORY_TOOL=str(helper))
+    return fixture
+
+
 class GateQueueTest(unittest.TestCase):
     def setUp(self):
-        self.fixture = test_guard.GuardLockTest()
-        self.fixture.setUp()
+        self.fixture = private_guard_fixture()
         self.addCleanup(self.fixture.tearDown)
         self.root = Path(self.fixture.directory.name)
         self.environment = self.fixture.environment.copy()
@@ -331,8 +366,7 @@ class GateQueueTest(unittest.TestCase):
 
 class DuneCompilerGuardTest(unittest.TestCase):
     def setUp(self):
-        self.fixture = test_guard.GuardLockTest()
-        self.fixture.setUp()
+        self.fixture = private_guard_fixture()
         self.addCleanup(self.fixture.tearDown)
         self.root = Path(self.fixture.directory.name)
         self.blocked = self.fixture.prepare_blocked_fixture(16)

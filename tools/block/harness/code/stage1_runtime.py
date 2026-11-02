@@ -318,6 +318,8 @@ def kernel_launch(config, job, outer_out, runtime, workspace, argv, controller):
     runtime['canonical_admission']=policy
     save(out / 'RUNTIME.json', runtime)
     child = None; child_ticks = None; reserved = False; closed = False; code = 1
+    from controller_cleanup import mark,children_closed
+    launch_marker=mark()
     try:
         from proof_bindings import check_proof_bindings
         reserve(policy, claim, owner, out / 'ADMISSION.json', recheck=lambda: check_proof_bindings(runtime)); reserved = True
@@ -325,15 +327,21 @@ def kernel_launch(config, job, outer_out, runtime, workspace, argv, controller):
         command = controller.outer_argv(workspace, job['key'] + '-kernel', out)
         save(out / 'LAUNCH.json', {'argv': command, 'kernel_argv': argv, 'search_calls': 0})
         with (out / 'stdout').open('wb') as stdout, (out / 'stderr').open('wb') as stderr:
-            child = subprocess.Popen(command, cwd=workspace, env=env, stdout=stdout, stderr=stderr, start_new_session=True)
+            child = __import__('controller_cleanup').launch(command, cwd=workspace, env=env, stdout=stdout, stderr=stderr, start_new_session=True)
             child_ticks = ticks(child.pid); save(out / 'BATCH-PROCESS.json', {'pid': child.pid, 'startticks': child_ticks}); code = child.wait()
     finally:
+        if sys.exc_info()[0] is not None:
+            from controller_cleanup import cleanup,last_child
+            if child is None:
+                child,registered=last_child(launch_marker)
+                if registered is not None:child_ticks=registered['startticks']
+            cleanup()
         if child is not None and child.poll() is None: child.wait()
         batch = read_bound(binding(out / 'BATCH-IDENTITY.json')) if (out / 'BATCH-IDENTITY.json').exists() else None
-        actors = [] if child is None else [{'pid': child.pid, 'startticks': child_ticks, 'ended': not identity_alive(child.pid, child_ticks)}]
+        actors = [] if child is None else [{'pid': child.pid, 'startticks': child_ticks, 'ended': child_ticks is not None and not identity_alive(child.pid, child_ticks)}]
         if batch:
             actors.append({'pid': batch['inside_pid'], 'startticks': batch['inside_startticks'], 'ended': not identity_alive(batch['inside_pid'], batch['inside_startticks'])})
-        closed = all(row['ended'] for row in actors) and (batch is None or closed_aggregate(batch, child.pid, child_ticks))
+        closed = children_closed(launch_marker) and all(row['ended'] for row in actors) and (child is None if batch is None else child_ticks is not None and closed_aggregate(batch, child.pid, child_ticks))
         save(out / 'CLOSURE.json', {'owner': owner, 'actors': actors, 'batch_identity': batch, 'all_owned_actors_closed': closed, 'claim_key': claim})
         released = release(policy, claim, owner, binding(out / 'CLOSURE.json')) if reserved and closed else {'released': not reserved, 'bytes': 0}
         save(out / 'RELEASE.json', released)

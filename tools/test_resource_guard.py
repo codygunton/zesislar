@@ -14,6 +14,67 @@ LIBRARY = SOURCE.split("\nprune_scope_registry\n", 1)[0]
 DISPATCH_MARKER = '\ncase "${1:-report}" in\n'
 DISPATCH = DISPATCH_MARKER.lstrip("\n") + SOURCE.rsplit(DISPATCH_MARKER, 1)[1]
 
+# These shell controls exercise slot publication, not the unified kernel ledger.
+# Keep the real arithmetic for the profile-capacity control.
+MEMORY_HELPER = r'''
+import argparse
+import os
+from pathlib import Path
+import module_memory
+
+parser = argparse.ArgumentParser()
+parser.add_argument("operation", choices=("admission", "ledger-confirm", "ledger-mark", "ledger-release", "test-ledger-policy", "aggregate-limit"))
+parser.add_argument("--guard-pid", type=int)
+parser.add_argument("--inner-fence-bytes", type=int)
+parser.add_argument("--booking-bytes", type=int)
+parser.add_argument("--explicit-limit-bytes", type=int)
+parser.add_argument("--gate-limit-bytes", type=int)
+parser.add_argument("--marker", type=Path)
+parser.add_argument("--replacement", type=Path)
+parser.add_argument("--request-bytes", type=int)
+parser.add_argument("--available-bytes", type=int)
+parser.add_argument("--fallback-bytes", type=int)
+parser.add_argument("--headroom-bytes", type=int, default=20 * 1024**3)
+parser.add_argument("--maximum-compilers", type=int, default=48)
+parser.add_argument("--proc", type=Path)
+parser.add_argument("markers", nargs="*")
+args = parser.parse_args()
+state = Path(os.environ["ZESU_GUARD_STATE"])
+if args.marker is not None:
+    assert args.marker.parent == state / "coqc-reservations"
+
+def admitted(markers):
+    claims = []
+    for marker in markers:
+        lines = Path(marker).read_text().splitlines()
+        if not lines or lines[0] == "pending":
+            continue
+        fields = dict(line.split("=", 1) for line in lines[1:] if "=" in line)
+        claims.append(int(fields["memory_claim_bytes"]))
+    return module_memory.admission(
+        args.request_bytes, claims, args.available_bytes,
+        headroom_bytes=args.headroom_bytes, maximum_compilers=args.maximum_compilers,
+        slice_max_bytes=175 * 1024**3)["admitted"]
+
+if args.operation == "test-ledger-policy":
+    module_memory.check_test_ledger()
+elif args.operation == "aggregate-limit":
+    print(module_memory._module.new_aggregate_limit(
+        args.inner_fence_bytes, args.booking_bytes,
+        explicit_limit_bytes=args.explicit_limit_bytes, gate_limit_bytes=args.gate_limit_bytes))
+elif args.operation == "admission":
+    if not admitted(args.markers):
+        print("fixture memory admission refused")
+elif args.operation == "ledger-confirm":
+    assert args.replacement.parent == state
+    if os.environ.get("ZESU_MODULE_MEMORY_PROFILE") and not admitted(args.marker.parent.glob("*")):
+        raise SystemExit(3)
+    os.replace(args.replacement, args.marker)
+elif args.operation == "ledger-release":
+    args.marker.unlink()
+# ledger-mark only acknowledges the shell's private marker update.
+'''
+
 
 class ResourceGuard(unittest.TestCase):
     def test_profile_mode_opens_dune_width_without_changing_default_width(self):
@@ -53,7 +114,6 @@ wait "$first" || exit 11
 wait "$second" || exit 12
 cat "$STATE_DIR/events"
 ''', ZESU_IN_BATCH="1", ZESU_MODULE_MEMORY_PROFILE="fixture",
-                ZESU_MODULE_MEMORY_TOOL=str(GUARD.with_name("module_memory.py")),
                 ZESU_MODULE_CLAIM_BYTES=str(12 * 1024 ** 3), ZESU_PROC_ROOT=directory)
         self.assertEqual(result.returncode, 0, result.stderr)
         active = set()
@@ -815,16 +875,26 @@ live_scopes
 
     def run_guard(self, script, **variables):
         with tempfile.TemporaryDirectory() as directory:
+            helper = Path(directory) / "module_memory.py"
+            helper.write_text("import sys\nsys.path.insert(0, " + repr(str(GUARD.parent)) + ")\n" + MEMORY_HELPER)
+            ledger = Path(directory) / "LEDGER.json"
+            ledger.write_text(json.dumps({"fixed_claims": {}, "region_claims": {}}))
+            cgroups = Path(directory) / "cgroup"
+            cgroups.mkdir()
             environment = {key: value for key, value in os.environ.items()
                            if not key.startswith("ZESU_")}
             environment.update(ZESU_GUARD_STATE=directory,
                                ZESU_GATE_LOCK=str(Path(directory) / "gate.lock"),
                                ZESU_RUN_REGISTRY=str(Path(directory) / "run-registry"),
                                ZESU_RUN_REGISTRY_TOOL=str(GUARD.with_name("run_registry.py")),
+                               ZESU_CANONICAL_LEDGER=str(ledger),
+                               ZESU_CGROUP_ROOT=str(cgroups),
+                               ZESU_MODULE_MEMORY_TOOL=str(helper),
+                               PYTHONDONTWRITEBYTECODE="1",
                                **variables)
             # Legacy fixtures never inspect or trim the shared host cache.
             prefix = "\nhome_free_bytes() { echo 60000000000; }\n"
-            return subprocess.run(["bash"], input=LIBRARY + prefix + script,
+            return subprocess.run(["bash", "-c", LIBRARY + prefix + script, str(GUARD.resolve())],
                                   text=True, capture_output=True, env=environment, timeout=20)
 
     def test_gate_does_not_wait_for_unadmitted_probe_request(self):

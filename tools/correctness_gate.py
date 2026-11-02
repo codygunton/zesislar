@@ -17,7 +17,7 @@ import uuid
 
 from coqc_findlib import preflight
 from module_memory import measurement_claim
-from block.harness.code.admission_memory import projection
+from block.harness.code.admission_memory import projection, guard_lock, check_test_ledger
 
 
 TARGETS = {"check-fast", "check-iris"}
@@ -44,7 +44,8 @@ def save(path, value):
 
 @contextmanager
 def locked(path):
-    with Path(path).open("a") as stream:
+    check_test_ledger(Path(path).with_name('LEDGER.json'))
+    with guard_lock(), Path(path).open("a") as stream:
         fcntl.flock(stream, fcntl.LOCK_EX)
         yield
 
@@ -140,11 +141,20 @@ def select_peak(history, target, *, claim_ceiling_bytes=0, physical_fence_bytes=
             "qualification": "No completed uncached measurement binds the exact current workload identity. Reserve the full aggregate fence."}
 
 
-def select_admission_basis(history, target, command, physical_fence_bytes, claim_ceiling_bytes=0):
+def select_admission_basis(history, target, command, physical_fence_bytes, claim_ceiling_bytes=0,
+                           *, family_profile=None, family_profile_sha256=None):
     if type(claim_ceiling_bytes) is not int or claim_ceiling_bytes < 0:
         raise ValueError('The declared gate claim ceiling must be a nonnegative integer.')
     from gate_family import select as measured_family
-    basis = measured_family(target, command, physical_fence_bytes)
+    if family_profile is not None or family_profile_sha256 is not None:
+        if family_profile is None or family_profile_sha256 is None:
+            raise ValueError('Select a gate-family profile with its exact hash.')
+        basis = measured_family(target, command, physical_fence_bytes,
+                                profile=family_profile, profile_sha256=family_profile_sha256)
+        if basis is None:
+            raise ValueError('The selected gate-family profile does not match the command and fence.')
+    else:
+        basis = measured_family(target, command, physical_fence_bytes)
     if basis is None:
         basis = select_peak(history, target, claim_ceiling_bytes=claim_ceiling_bytes,
                             physical_fence_bytes=physical_fence_bytes)
@@ -190,6 +200,9 @@ def reserve(policy, owner, receipt, *, available=memory_available, pause=time.sl
             if record["admitted"]:
                 ledger["fixed_claims"][key] = policy["claim_bytes"]
                 ledger.setdefault("correctness_gate_owners", {})[key] = owner
+                if policy.get('physical_fence_bytes') is not None:
+                    ledger.setdefault('claim_fences', {})[key] = {
+                        'owner': owner, 'physical_fence_bytes': policy['physical_fence_bytes']}
                 ledger.setdefault("claim_locations", {})[key] = {"kind": "gate", "owner": owner,
                     "output_path": str(Path(receipt).parent)}
                 ledger.setdefault("correctness_gate_admissions", {})[key] = record
@@ -286,7 +299,9 @@ def inside(out):
 
 
 def gate_environment(environment):
-    return dict(environment, ZESU_PROOF_CACHE='off')
+    result = dict(environment, ZESU_PROOF_CACHE='off')
+    result.pop('ZESU_TEST_ALLOW_LIVE_LEDGER', None)
+    return result
 
 
 def batch_fence_bytes(environment):
@@ -322,13 +337,19 @@ def run(args):
     if not command:
         raise ValueError("The correctness gate command is absent.")
     basis = select_admission_basis(history_data, args.target, command,
-                                   batch_fence_bytes(os.environ), args.claim_ceiling_bytes)
+                                   batch_fence_bytes(os.environ), args.claim_ceiling_bytes,
+                                   family_profile=args.family_profile,
+                                   family_profile_sha256=args.family_profile_sha256)
     ledger = Path(os.environ.get("ZESU_CANONICAL_LEDGER", base / "_build/agents/worker-build-2/native-region-release-v1/LEDGER.json"))
     policy = {"ledger": str(ledger), "lock": str(ledger.with_name("LEDGER.lock")),
-              "claim_key": "CorrectnessGate_" + uuid.uuid4().hex, "claim_bytes": basis["claim_bytes"]}
+              "claim_key": "CorrectnessGate_" + uuid.uuid4().hex, "claim_bytes": basis["claim_bytes"],
+              "physical_fence_bytes": batch_fence_bytes(os.environ)}
     owner = {"pid": os.getpid(), "startticks": identity(os.getpid())["startticks"], "run_id": run_id}
-    save(out / "REQUEST.json", {"policy": policy, "owner": owner, "workspace": str(workspace), "build": str(build),
-          "target": args.target, "command": command, "basis": basis, "preflight": checked})
+    request_record = {"policy": policy, "owner": owner, "workspace": str(workspace), "build": str(build),
+          "target": args.target, "command": command, "basis": basis, "preflight": checked}
+    if 'family_profile' in basis:
+        request_record['family_profile'] = basis['family_profile']
+    save(out / "REQUEST.json", request_record)
     request = out / "REQUEST.json"
     registry("register-claim", "--claim-id", policy["claim_key"], "--", sys.executable,
              str(Path(__file__).resolve()), "release", "--receipt", str(request))
@@ -351,6 +372,8 @@ def run(args):
               "cache_provenance": {"mode": "unknown",
                   "authority": "The stock runner disables the proof cache but does not establish an uncached Dune build."},
               **metrics}
+    if 'family_profile' in basis:
+        result['family_profile'] = basis['family_profile']
     save(out / "RESULT.json", result)
     if metrics.get("aggregate_peak_bytes"):
         history.parent.mkdir(parents=True, exist_ok=True)
@@ -371,6 +394,10 @@ def main():
     execute = commands.add_parser("run")
     execute.add_argument("--target", choices=sorted(TARGETS), required=True)
     execute.add_argument("--build-dir", type=Path, required=True)
+    execute.add_argument("--family-profile", type=Path,
+                         help="Select an externally reviewed gate-family profile.")
+    execute.add_argument("--family-profile-sha256",
+                         help="Bind the selected gate-family profile by its SHA256.")
     execute.add_argument("--claim-ceiling-bytes", "--bootstrap-claim-bytes", dest="claim_ceiling_bytes", type=int,
                          default=int(os.environ.get("ZESU_GATE_CLAIM_CEILING_BYTES",
                                      os.environ.get("ZESU_GATE_BOOTSTRAP_CLAIM_BYTES", "0"))),

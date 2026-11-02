@@ -18,7 +18,7 @@ class DeclarationChecks(unittest.TestCase):
    rows=returned(specification)
    for row in rows:row['result'].setdefault('success',True)
    (pre/"native/CONTROL-VERIFICATION.json").write_text(json.dumps(rows))
-   with patch("restart_bindings.verify_restart_runtime"),patch.object(scratch,"check_proof_bindings"),patch.object(scratch.subprocess,"run") as launch,patch("runpy.run_path",return_value={"prerequisite_readiness":lambda *args:None}):
+   with patch("restart_bindings.verify_restart_runtime"),patch.object(scratch,"check_proof_bindings"),patch("controller_cleanup.run") as launch,patch("runpy.run_path",return_value={"prerequisite_readiness":lambda *args:None}):
     result=scratch.execute(path,scratch.digest(path))
     self.assertEqual(result,0);self.assertEqual(launch.call_count,1)
     self.assertEqual(launch.call_args.args[0][-2],"prerequisites")
