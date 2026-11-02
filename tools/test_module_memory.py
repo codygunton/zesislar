@@ -127,8 +127,11 @@ class ModuleMemoryTests(unittest.TestCase):
             fixture = ControllerAssociationTests()
             fixture.setUp()
             try:
-                sys.path[:] = [p for p in sys.path if Path(p).resolve() != code]
-                sys.modules.pop("scope_bookings", None)
+                sys.path[:] = [p for p in sys.path
+                               if Path(p).resolve() not in (harness, code, tools / "block")]
+                for name in ("scope_bookings", "entry_chain",
+                             "entry_pilot_checker", "complete_goals_mcp"):
+                    sys.modules.pop(name, None)
                 sys.path.insert(0, str(tools))
                 import module_memory
 
