@@ -89,6 +89,143 @@ def constant_from_source(origin):
     return {'value': value, 'type': 'Z', 'origin': dict(origin)}
 
 
+def _parameter_projections(clauses, parameters, arguments, constants, word, origin):
+    """Retain only integer ranges and congruences justified by source clauses."""
+    names = [row['name'] for row in parameters if _key(row['type']) == 'Z']
+    intervals = {name: [None, None, set()] for name in names}
+    used_constants = {}
+
+    def closed(text):
+        for name in sorted(constants, key=len, reverse=True):
+            pattern = r"(?<![\w'])" + re.escape(name) + r"(?![\w'])"
+            if not re.search(pattern, text):
+                continue
+            value = constants[name]
+            if (not isinstance(value, dict) or type(value.get('value')) is not int
+                    or not value.get('origin')
+                    or constant_from_source(value['origin'])['value'] != value['value']):
+                raise ValueError('A parameter bound has no authenticated source constant.')
+            used_constants[name] = deepcopy(value)
+            text = re.sub(pattern, '(' + str(value['value']) + ')', text)
+        return closed_integer(text)
+
+    def linear(text):
+        text = _strip_enclosure(text.strip())
+        if text in intervals:
+            return {text: 1}, 0
+        positions = sorted([*_top_positions(text, '+'), *_top_positions(text, '-')])
+        positions = [position for position in positions if position]
+        if positions:
+            position = positions[-1]
+            left, offset = linear(text[:position])
+            right, value = linear(text[position + 1:])
+            sign = 1 if text[position] == '+' else -1
+            result = dict(left)
+            for name, coefficient in right.items():
+                result[name] = result.get(name, 0) + sign * coefficient
+            return {name: value for name, value in result.items() if value}, offset + sign * value
+        return {}, closed(text)
+
+    constraints, congruences, unsupported = [], [], []
+    for index, clause in enumerate(clauses):
+        text = _strip_enclosure(clause)
+        positions = _top_positions(text, '<')
+        if positions:
+            start, terms, operators = 0, [], []
+            for position in positions:
+                terms.append(text[start:position])
+                width = 2 if text[position:position + 2] == '<=' else 1
+                operators.append(width)
+                start = position + width
+            terms.append(text[start:])
+            for left, right, width in zip(terms, terms[1:], operators):
+                try:
+                    coefficients, value = linear(left)
+                    other, offset = linear(right)
+                except ValueError:
+                    continue
+                coefficients = dict(coefficients)
+                for name, coefficient in other.items():
+                    coefficients[name] = coefficients.get(name, 0) - coefficient
+                coefficients = {name: value for name, value in coefficients.items() if value}
+                if coefficients:
+                    constraints.append((coefficients, offset - value - (width == 1), index))
+        match = re.fullmatch(r"([A-Za-z_][A-Za-z0-9_']*)\s+mod\s+(.+?)\s*=\s*(.+)", text)
+        if match and match[1] in intervals:
+            try:
+                period, residue = closed(match[2]), closed(match[3])
+            except ValueError:
+                unsupported.append({'parameter': match[1], 'kind': 'parameter_alignment_refusal',
+                                    'source_clause': clause,
+                                    'detail': 'The congruence has an unsupported symbolic period or residue.'})
+                continue
+            if 1 < period <= word and not period & (period - 1) and 0 <= residue < period:
+                congruences.append((match[1], period, residue, index))
+            else:
+                unsupported.append({'parameter': match[1], 'kind': 'parameter_alignment_refusal',
+                                    'source_clause': clause,
+                                    'detail': 'The congruence is not a supported power-of-two word alignment.'})
+
+    # Each update uses only already established bounds. Stop inconsistent or
+    # cyclic source systems rather than manufacturing an unsigned interval.
+    for _ in range(max(1, len(names) * len(constraints) + 1)):
+        changed = False
+        for coefficients, bound, index in constraints:
+            for name, coefficient in coefficients.items():
+                if coefficient not in (-1, 1):
+                    continue
+                minimum, dependencies = 0, {index}
+                for other, factor in coefficients.items():
+                    if other == name:
+                        continue
+                    low, high, sources = intervals[other]
+                    value = low if factor > 0 else high
+                    if value is None:
+                        break
+                    minimum += factor * value
+                    dependencies.update(sources)
+                else:
+                    side = 1 if coefficient == 1 else 0
+                    value = bound - minimum if side else minimum - bound
+                    previous = intervals[name][side]
+                    if previous is None or (value < previous if side else value > previous):
+                        intervals[name][side] = value
+                        intervals[name][2].update(dependencies)
+                        changed = True
+        if any(low is not None and high is not None and low > high
+               for low, high, _ in intervals.values()):
+            raise ValueError('The source parameter constraints have an empty interval.')
+        if not changed:
+            break
+
+    facts, refusals = [], unsupported
+    for ordinal, name in enumerate(names):
+        low, high, indices = intervals[name]
+        if low is None or high is None or not 0 <= low <= high < word:
+            refusals.append({'parameter': name, 'kind': 'parameter_nonwrap_refusal',
+                             'detail': 'The original clauses do not establish an unsigned non-wrap interval.'})
+            continue
+        expression = source_z_expression(arguments[name], constants).to_dict()
+        provenance = {**origin, 'parameter': name, 'conjunct_indices': sorted(indices),
+                      'source_clauses': [clauses[index] for index in sorted(indices)],
+                      'constants': deepcopy(used_constants),
+                      'derivation': 'Conjunction projection and integer linear bounds; unsigned non-wrap.'}
+        facts.append({'fact_id': f'layout:parameter:{ordinal}:range', 'kind': 'bounds',
+                      'status': 'supplied', 'terms': {'unsigned_interval': {
+                          'expression': expression, 'minimum': low, 'maximum': high}},
+                      'origin': provenance})
+        for parameter, period, residue, index in congruences:
+            if parameter != name:
+                continue
+            facts.append({'fact_id': f'layout:parameter:{ordinal}:alignment:{index}',
+                          'kind': 'alignment', 'status': 'supplied',
+                          'terms': {'alignment': {'expression': expression,
+                                                 'modulus': period, 'residue': residue}},
+                          'origin': {**provenance, 'conjunct_indices': sorted(indices | {index}),
+                                     'source_clauses': [clauses[i] for i in sorted(indices | {index})]}})
+    return facts, refusals
+
+
 def project_layout_domain(*, layout_source, wellformed_source, arguments,
                           resource_roles, source_constants, interval_layout, layout_projections=None):
     """Project source clauses and a bounded stack interval from a checked layout.
@@ -247,6 +384,18 @@ def project_layout_domain(*, layout_source, wellformed_source, arguments,
                   'origin': {**origin, 'source_clauses': [clauses[i] for i in indices],
                              'constants': {term: source_constants[term] for term in values},
                              'derivation': 'Conjunction projection, closed addition, and unsigned non-wrap.'}})
-    return {'facts': facts, 'original_layout_clauses': clauses,
+    projected, refusals = _parameter_projections(clauses, parameters, arguments,
+                                                 source_constants, word, origin)
+    for fact in projected:
+        field = 'unsigned_interval' if fact['kind'] == 'bounds' else 'alignment'
+        keys = ('expression', 'minimum', 'maximum') if fact['kind'] == 'bounds' else (
+            'expression', 'modulus', 'residue')
+        value = fact['terms'][field]
+        if not any(row['kind'] == fact['kind'] and field in row['terms']
+                   and all(row['terms'][field].get(key) == value[key] for key in keys) for row in facts):
+            facts.append(fact)
+    return {'facts': facts, 'source_alignments': [deepcopy(row['terms']['alignment'])
+                                                for row in facts if row['kind'] == 'alignment'],
+            'parameter_projection_refusals': refusals, 'original_layout_clauses': clauses,
             'original_wellformed_clauses': wf_clauses, 'source_bindings': origin['sources'],
             'entry_assertion_changed': False, 'premises_added': []}
