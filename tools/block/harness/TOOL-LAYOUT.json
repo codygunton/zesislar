@@ -77,5 +77,6 @@
   "block/controller_cleanup.py": "code/controller_cleanup.py",
   "block/waiting_envelope.py": "code/waiting_envelope.py",
   "block/import_graph.py": "code/import_graph.py",
-  "block/object_imports.py": "code/object_imports.py"
+  "block/object_imports.py": "code/object_imports.py",
+  "policies/PORT-V33-OPEN-AUTHORITY.json": "policies/PORT-V33-OPEN-AUTHORITY.json"
 }
