@@ -8,9 +8,13 @@ from dataclasses import dataclass
 import re
 
 try:
+    from .guard_normal_form import GuardNormalForm
+    from .resource_seed import source_z_expression
     from .forward_design import _footprint
     from .symbolic_state import Expr, bits, evaluate_block, input_expr, parse_trace
 except ImportError:
+    from guard_normal_form import GuardNormalForm
+    from resource_seed import source_z_expression
     from forward_design import _footprint
     from symbolic_state import Expr, bits, evaluate_block, input_expr, parse_trace
 
@@ -105,6 +109,156 @@ def _inputs(expression):
     return result | set().union(*(_inputs(arg) for arg in expression.args))
 
 
+def _integer_affine(expression):
+    """Expand addition/subtraction over Z, without modular cancellation."""
+    if expression.op == 'bits':
+        return expression.value, {}
+    if expression.op in {'bvadd', 'bvsub'}:
+        left, terms = _integer_affine(expression.args[0])
+        right, others = _integer_affine(expression.args[1])
+        sign = 1 if expression.op == 'bvadd' else -1
+        terms = dict(terms)
+        for atom, value in others.items():
+            terms[atom] = terms.get(atom, 0) + sign * value
+            if not terms[atom]:
+                del terms[atom]
+        return left + sign * right, terms
+    return 0, {expression: 1}
+
+
+def _subtract_affine(left, right):
+    constant, terms = left[0] - right[0], dict(left[1])
+    for atom, coefficient in right[1].items():
+        terms[atom] = terms.get(atom, 0) - coefficient
+        if not terms[atom]:
+            del terms[atom]
+    return constant, terms
+
+
+class UnsignedCursorInduction:
+    """Check unit-step induction from exact source bounds and the exit guard.
+
+    The source supplies unsigned bounds on exact typed expressions. Each bound
+    needs its original premise and provenance. A finite interval is sufficient;
+    a coupled bound that this checker cannot use remains an explicit obligation.
+    No supplied bound is a proof of a new machine premise.
+    """
+
+    def __init__(self, seed, source_bounds=()):
+        self.seed = seed
+        self.bounds = {}
+        self.bindings = []
+        for row in source_bounds:
+            expression = Expr.from_dict(row['expression'])
+            lower, upper = row['minimum'], row['maximum']
+            if (type(lower) is not int or type(upper) is not int
+                    or not isinstance(expression.width, int)
+                    or not 0 <= lower <= upper < 1 << expression.width
+                    or not row.get('provenance') or not row.get('premise')):
+                raise ValueError('A cursor bound needs a typed unsigned interval and source premise')
+            if expression in self.bounds:
+                raise ValueError('A cursor bound repeats an exact expression')
+            self.bounds[expression] = (lower, upper)
+            self.bindings.append(dict(row))
+        self.guards = GuardNormalForm(seed.conditions)
+
+    def _atom_interval(self, atom):
+        if atom in self.bounds:
+            return self.bounds[atom]
+        return self.guards.interval(self.guards.unsigned(atom))
+
+    def _interval(self, affine):
+        lower = upper = affine[0]
+        for atom, coefficient in affine[1].items():
+            lo, hi = self._atom_interval(atom)
+            lower += coefficient * (lo if coefficient >= 0 else hi)
+            upper += coefficient * (hi if coefficient >= 0 else lo)
+        return lower, upper
+
+    def _checked_expression(self, expression, checks):
+        if expression.op in {'bvadd', 'bvsub'}:
+            for child in expression.args:
+                self._checked_expression(child, checks)
+            lower, upper = self._interval(_integer_affine(expression))
+            if not 0 <= lower <= upper < 1 << expression.width:
+                raise _MissingCursorRelation({'kind': 'unsigned_nonwrap',
+                    'expression': expression.to_dict(), 'available_interval': [lower, upper],
+                    'required': '0 <= integer expression < ' + str(1 << expression.width)})
+            checks.append({'kind': 'unsigned_nonwrap', 'expression': expression.to_dict(),
+                           'interval': [lower, upper]})
+        return _integer_affine(expression)
+
+    def __call__(self, candidate, edge, state):
+        if candidate.get('kind') != 'affine_cursor':
+            return {'status': 'unavailable', 'reason': 'This checker handles only cursor induction'}
+        checks = []
+        key = candidate['register']
+        origin = Expr.from_dict(candidate['origin'])
+        view = candidate.get('origin_view')
+        try:
+            if view is not None:
+                # The public source parser checks the exact typed cast/add tree.
+                parsed = source_z_expression(view['term'], {}, origin.width)
+                if _linear(parsed) != _linear(origin):
+                    raise _MissingCursorRelation({'kind': 'origin_identity',
+                        'source_expression': parsed.to_dict(), 'actual_origin': origin.to_dict()})
+                checks.append({'kind': 'origin_identity', 'source': view['provenance']})
+            limit_key = candidate.get('limit_register')
+            if limit_key is None:
+                raise _MissingCursorRelation({'kind': 'stable_loop_endpoint',
+                    'required': 'A unique unchanged endpoint in every backedge guard'})
+            limit = Expr.from_dict(candidate['limit'])
+            if state.registers.get(limit_key) != limit:
+                raise _MissingCursorRelation({'kind': 'endpoint_identity', 'register': limit_key})
+            start_poly = self._checked_expression(origin, checks)
+            limit_poly = self._checked_expression(limit, checks)
+            distance = _subtract_affine(limit_poly, start_poly)
+            distance_bounds = self._interval(distance)
+            if distance_bounds[0] <= 0:
+                raise _MissingCursorRelation({'kind': 'positive_loop_distance',
+                    'available_interval': list(distance_bounds),
+                    'required': 'unsigned initial cursor < unsigned endpoint'})
+            checks.append({'kind': 'positive_loop_distance', 'interval': list(distance_bounds)})
+            if edge == 'preheader':
+                if state.registers.get(key) != origin:
+                    raise _MissingCursorRelation({'kind': 'preheader_cursor_identity'})
+                checks.append({'kind': 'preheader_i0', 'index': 0})
+            else:
+                before = input_expr('machine_' + key, origin.width)
+                after = state.registers[key]
+                if affine_step(before, after) != 1:
+                    raise _MissingCursorRelation({'kind': 'backedge_unit_step',
+                        'actual': after.to_dict()})
+                guard_present = any(condition.op == 'not' and condition.args[0].op == '='
+                    and set(condition.args[0].args) == {after, limit}
+                    for condition in state.conditions)
+                if not guard_present:
+                    raise _MissingCursorRelation({'kind': 'backedge_exit_guard',
+                        'required': 'incremented cursor differs from the same endpoint'})
+                start_lower, _ = self._interval(start_poly)
+                _, end_upper = self._interval(limit_poly)
+                # These are the proposed induction hypotheses, not added source facts.
+                # old<end gives old<=end-1; old+1<=end then guard gives old+1<end.
+                if not 0 <= start_lower <= end_upper - 1 < (1 << origin.width) - 1:
+                    raise _MissingCursorRelation({'kind': 'backedge_nonwrap',
+                        'available_interval': [start_lower, end_upper - 1]})
+                checks.append({'kind': 'backedge_i1', 'index': candidate['index'] + ' + 1',
+                    'induction_hypotheses': [candidate['term'], candidate['lower_bound'],
+                                             candidate['upper_bound']],
+                    'old_cursor_interval': [start_lower, end_upper - 1],
+                    'strictness': 'unit step plus exact disequality exit guard'})
+            return {'status': 'checked', 'provenance': {'source_bounds': self.bindings,
+                    'source_conditions': [term.to_dict() for term in self.seed.conditions]},
+                    'checks': checks, 'kernel_entailment': 'OPEN'}
+        except _MissingCursorRelation as missing:
+            return {'status': 'failed', 'checks': checks, 'missing_relation': missing.relation}
+
+
+class _MissingCursorRelation(Exception):
+    def __init__(self, relation):
+        self.relation = relation
+
+
 @dataclass(frozen=True)
 class FoldRule:
     """A table row binds all three verified public proof interfaces.
@@ -153,7 +307,7 @@ class LoopWidening:
 
 
 def widen_loop_head(seed, traces, *, loop_pc, provenance, fold_table=(),
-                    validate=None, origin_views=None, index_name='i'):
+                    validate=None, origin_views=None, source_bounds=None, index_name='i'):
     """Run one body pass and retain only per-edge validated relations.
 
     validate(candidate, edge, state) returns a source-bound check record with
@@ -190,6 +344,8 @@ def widen_loop_head(seed, traces, *, loop_pc, provenance, fold_table=(),
     backedges = [row for row in results if row.status == 'complete'
                  and row.state.registers.get('PC') == bits(loop_pc, seed.registers['PC'].width)]
     relations, folds, records, refusals = [], [], [], []
+    if validate is None and source_bounds is not None:
+        validate = UnsignedCursorInduction(seed, source_bounds)
     plan = {'input_registers': [], 'derived': [], 'pending': [], 'kernel_entailments': 'OPEN'}
 
     def refuse(key, relation, reason, **detail):
@@ -255,10 +411,29 @@ def widen_loop_head(seed, traces, *, loop_pc, provenance, fold_table=(),
         if origin is not None and (not origin.get('term') or not origin.get('provenance')):
             raise ValueError('An unsigned origin view needs exact source provenance')
         origin_term = origin['term'] if origin else '(bv_unsigned ' + start.coq() + ')'
+        endpoints = []
+        for row in backedges:
+            after = row.state.registers[key]
+            names = set()
+            for condition in row.state.conditions:
+                if condition.op == 'not' and condition.args[0].op == '=':
+                    left, right = condition.args[0].args
+                    other = right if left == after else left if right == after else None
+                    if other is not None:
+                        names.update(name for name, value in seed.registers.items()
+                                     if name not in written and _REGISTER.fullmatch(name)
+                                     and value == other and row.state.registers.get(name) == value)
+            endpoints.append(names)
+        common_endpoints = set.intersection(*endpoints) if endpoints else set()
+        limit_key = next(iter(common_endpoints)) if len(common_endpoints) == 1 else None
         candidate = {'kind': 'affine_cursor', 'register': key,
                      'term': 'bv_unsigned machine_' + key + ' = (' + origin_term
                              + ' + ' + index_name + ')%Z',
                      'lower_bound': '(0 <= ' + index_name + ')%Z',
+                     'upper_bound': 'bv_unsigned machine_' + key + ' < bv_unsigned ' +
+                         seed.registers[limit_key].coq() if limit_key else None,
+                     'limit_register': limit_key,
+                     'limit': seed.registers[limit_key].to_dict() if limit_key else None,
                      'origin': start.to_dict(), 'origin_view': origin,
                      'index': index_name, 'step': 1,
                      'modular_checks': {'preheader_i0': affine_step(start, seed.registers[key]) == 0,

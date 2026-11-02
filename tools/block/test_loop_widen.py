@@ -5,11 +5,11 @@ import unittest
 
 try:
     from .forward_resource_design import _state_from_result
-    from .loop_widen import FoldRule, affine_step, fold_recurrence, widen_loop_head, write_set
+    from .loop_widen import FoldRule, UnsignedCursorInduction, affine_step, fold_recurrence, widen_loop_head, write_set
     from .symbolic_state import bits, input_expr, operation
 except ImportError:
     from forward_resource_design import _state_from_result
-    from loop_widen import FoldRule, affine_step, fold_recurrence, widen_loop_head, write_set
+    from loop_widen import FoldRule, UnsignedCursorInduction, affine_step, fold_recurrence, widen_loop_head, write_set
     from symbolic_state import bits, input_expr, operation
 
 
@@ -113,6 +113,69 @@ class LoopWidenTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'source provenance'):
             widen_loop_head(source, traces, loop_pc=int(data['pc'], 0), provenance={'source': 'fixture'},
                             origin_views={source.registers['x15']: {'term': 'inPtr + 1'}})
+
+    def checked_fixture(self, *, maximum=None, origin_term=None):
+        data, traces = self.fixture('6a24')
+        seed = _state_from_result(data['preheaders'][0]['state'])
+        root = seed.registers['x15'].args[0]
+        bound = {'expression': root.to_dict(), 'minimum': 0,
+                 'maximum': (1 << 64) - 10 if maximum is None else maximum,
+                 'premise': 'synthetic unit-control bound, not an actual source premise',
+                 'provenance': {'source': 'unit_test_control_only'}}
+        views = {seed.registers['x15']: {'term': origin_term or 'decodeItemInputPointer args + 1',
+                 'provenance': {'source': 'unit_test_control_only'}}}
+        result = widen_loop_head(seed, traces, loop_pc=int(data['pc'], 0),
+            provenance={'source': 'unit_test_control_only'}, source_bounds=[bound],
+            origin_views=views)
+        return seed, bound, result
+
+    def test_checked_unsigned_induction_retains_only_cursor(self):
+        seed, bound, result = self.checked_fixture()
+        self.assertEqual(len(result.relations), 1)
+        self.assertEqual(result.relations[0]['register'], 'x15')
+        self.assertIn('i', result.relations[0]['term'])
+        self.assertEqual(result.relations[0]['limit_register'], 'x11')
+        self.assertEqual(result.witness_plan['derived'][0]['expression'],
+            '(bv_unsigned machine_x15 - (decodeItemInputPointer args + 1))%Z')
+        self.assertTrue(all(row['check']['status'] == 'checked' for row in result.edge_records))
+        self.assertFalse(result.folds)
+        self.assertFalse(result.to_dict()['seed_ready'])
+
+    def test_unsigned_induction_refuses_absent_bounds(self):
+        data, traces = self.fixture('6a24')
+        seed = _state_from_result(data['preheaders'][0]['state'])
+        result = widen_loop_head(seed, traces, loop_pc=int(data['pc'], 0),
+            provenance={'source': 'fixture'}, source_bounds=[])
+        self.assertFalse(result.relations)
+        self.assertTrue(any(row['check'].get('missing_relation', {}).get('kind') == 'unsigned_nonwrap'
+                            for row in result.edge_records))
+
+    def test_unsigned_induction_refuses_wraparound(self):
+        seed, bound, result = self.checked_fixture(maximum=(1 << 64) - 1)
+        self.assertFalse(result.relations)
+        self.assertTrue(any(row['check'].get('missing_relation', {}).get('kind') == 'unsigned_nonwrap'
+                            for row in result.edge_records))
+
+    def test_unsigned_induction_refuses_changed_origin(self):
+        seed, bound, result = self.checked_fixture(origin_term='decodeItemInputPointer args + 2')
+        self.assertFalse(result.relations)
+        self.assertTrue(all(row['check'].get('missing_relation', {}).get('kind') == 'origin_identity'
+                            for row in result.edge_records))
+
+    def test_unsigned_induction_refuses_missing_guard_and_changed_endpoint(self):
+        seed, bound, result = self.checked_fixture()
+        candidate = result.relations[0]
+        backedge = next(row.state.copy() for row in result.body_results
+            if row.status == 'complete' and row.state.registers['PC'] == seed.registers['PC'])
+        checker = UnsignedCursorInduction(seed, [bound])
+        backedge.conditions = [condition for condition in backedge.conditions
+            if not (condition.op == 'not' and condition.args[0].op == '='
+                    and backedge.registers['x15'] in condition.args[0].args)]
+        check = checker(candidate, 'backedge:0', backedge)
+        self.assertEqual(check['missing_relation']['kind'], 'backedge_exit_guard')
+        backedge.registers['x11'] = bits(0, 64)
+        check = checker(candidate, 'backedge:0', backedge)
+        self.assertEqual(check['missing_relation']['kind'], 'endpoint_identity')
 
 
 if __name__ == '__main__':
