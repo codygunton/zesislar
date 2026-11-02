@@ -1,0 +1,24 @@
+{
+  "range": {
+    "declaration": "LoopCursorRanges.zesu_loop_read_range",
+    "source_sha256": "8310490c94de38e082471c7785dabb951f56df9a1f8e9eff83b902572de78864",
+    "object_sha256": "8a2dadbef66cc582b9311d54afc241f4e319ce3f63016d642637eb669b415078",
+    "verification_receipt": {
+      "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/loop-range408-control010/RESULT.json",
+      "sha256": "76dcd1c77b7ab254b67abab789c5f75d113715483695b0f8521a0854aefe43f2",
+      "method": "module_m",
+      "assumptions": []
+    }
+  },
+  "lookup": {
+    "declaration": "LoopCursorRanges.zesu_loop_read_lookup",
+    "source_sha256": "8310490c94de38e082471c7785dabb951f56df9a1f8e9eff83b902572de78864",
+    "object_sha256": "8a2dadbef66cc582b9311d54afc241f4e319ce3f63016d642637eb669b415078",
+    "verification_receipt": {
+      "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/loop-range408-control010/RESULT.json",
+      "sha256": "76dcd1c77b7ab254b67abab789c5f75d113715483695b0f8521a0854aefe43f2",
+      "method": "module_m",
+      "assumptions": []
+    }
+  }
+}

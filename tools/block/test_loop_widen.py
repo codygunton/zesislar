@@ -267,6 +267,21 @@ class LoopWidenTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'generic byte-window interface'):
             FoldRule(**fields)
 
+    def test_range_bridge_is_bound_but_does_not_close_kernel_obligations(self):
+        domain = json.loads((HERE / 'testdata/loop_widen_domain.json').read_text())
+        interface = json.loads((HERE / 'testdata/loop_widen_range_interface.json').read_text())
+        data, traces = self.fixture('6a24')
+        seed = _state_from_result(data['preheaders'][0]['state'])
+        window = loop_read_window(seed, 'x15', 'x11', source_facts=domain['source_facts'],
+            provenance={'source': data['forward_source']}, range_interface=interface)
+        result = widen_loop_head(seed, traces, loop_pc=int(data['pc'], 0),
+            provenance={'source': data['forward_source']}, symbolic_read_ranges=[window])
+        obligations = [obligation for row in result.body_results for obligation in row.state.read_obligations]
+        self.assertTrue(obligations)
+        self.assertTrue(all(obligation['range_interface'] == interface for obligation in obligations))
+        self.assertTrue(all(obligation['status'] == 'OPEN' for obligation in obligations))
+        self.assertFalse(result.to_dict()['seed_ready'])
+
 
 if __name__ == '__main__':
     unittest.main()

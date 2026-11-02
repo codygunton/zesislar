@@ -371,7 +371,7 @@ class _MissingCursorRelation(Exception):
         self.relation = relation
 
 
-def loop_read_window(seed, cursor, endpoint, *, source_facts, provenance):
+def loop_read_window(seed, cursor, endpoint, *, source_facts, provenance, range_interface=None):
     """Select only an existing owner and its exact source length view.
 
     The source chain and extent link remain obligations. No range condition is
@@ -395,7 +395,16 @@ def loop_read_window(seed, cursor, endpoint, *, source_facts, provenance):
     length = Expr.from_dict(lengths[0]['terms']['length_view'])
     if length.width != region.base.width or start.width != region.base.width:
         raise ValueError('A loop read window changes address width')
+    if range_interface is not None:
+        for name in ('range', 'lookup'):
+            binding = range_interface.get(name, {})
+            receipt = binding.get('verification_receipt', {})
+            if (not re.fullmatch(r'LoopCursorRanges\.[A-Za-z_][A-Za-z_0-9]*', binding.get('declaration', ''))
+                    or not binding.get('source_sha256') or not binding.get('object_sha256')
+                    or receipt.get('method') != 'module_m' or receipt.get('assumptions') != []):
+                raise ValueError('A loop range interface needs closed generic physical bindings')
     return {'ownership_id': region.ownership_id,
+            'range_interface': range_interface,
             'address': input_expr('machine_' + cursor, start.width).to_dict(),
             'lower': start.to_dict(), 'limit': seed.registers[endpoint].to_dict(),
             'end': operation('bvadd', region.base, length).to_dict(),
