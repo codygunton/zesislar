@@ -38,7 +38,10 @@ def _footprint(events, universe):
             name = _name(raw[0]) if isinstance(raw[0], str) else None
             direct = {name} if isinstance(name, str) and GPR.fullmatch(name) else set()
             return direct | set().union(*(expression_reads(child) for child in raw))
-        uses.update(expression_reads(args) - written)
+        # A write destination is not an expression read. Its value can still
+        # read that register, as in a self update.
+        expressions = args[1:] if kind == 'write-reg' else args
+        uses.update(expression_reads(expressions) - written)
         if kind == 'cases':
             if len(args) < 2:
                 return universe, set()
