@@ -1,0 +1,23 @@
+{
+  "schema": "port.v34.new-comparison-authority.v1",
+  "variant": "NEW6a00",
+  "block": "800d6a00",
+  "module": "ZesuSsz.Proofs.DecodeItem.MachineOnly.Block800d6a00_V10_213",
+  "pc": 2148362752,
+  "caller": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v32-four-block-inputs-v2/new/ZesuSsz/Proofs/DecodeItem/MachineOnly/Block800d6a00_V10_213.v",
+    "sha256": "42060a898619702ae132e8dc6da4eed64e421d8ec203b2dd3f4fff74561b8b9b"
+  },
+  "statement_sha256": "0b3d70f345c256444d3395f75a1cfae0c6e4b66f00349d9f944fe4701a20c4fc",
+  "banks": {
+    "path": "/home/cody/zesislar/.worktrees/infra-c-v34-measured-port-policy-93f/tools/block/harness/policies/PORT-V34-ENTRY-BANKS.json",
+    "sha256": "b4c433d68c29b34f4bcac58cda0c701524531808df91bf176a1cae3a1926e0ed"
+  },
+  "origin": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-NEW6a00-authority-v1/PROPOSAL.json",
+    "sha256": "4b4f99fd4b818c67d9ab1d12dff33a9ef74fed3e9792e2a336a22eae3fd07966"
+  },
+  "claim_bytes": 34359738368,
+  "physical_fence_bytes": 34359738368,
+  "historical_OOM_is_measurement": false
+}

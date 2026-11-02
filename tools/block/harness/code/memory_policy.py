@@ -143,6 +143,8 @@ def completed_header_transition(row,target):
      qualification='Completed v3.2 OLD peak across the approved header-only transition. Candidate performance is unmeasured.'),None
 
 def header_transition_bindings(row):
+ if row.get('format')=='completed_stock_v34_pilot_v1':
+  return [row[name] for name in ['targets','authority','original_source','accounting','native_rules','normalization_policy','completed_authority']]
  if row.get('format')!='completed_stock_header_transition_v1':return []
  baseline=read(row['baseline'])
  prior=next(value for value in baseline['rows'] if value.get('status')=='closed' and value['module']==row['module'])
@@ -151,6 +153,7 @@ def header_transition_bindings(row):
      prior['costs']['search_end'],prior['calls'],read(row['result'])['complete_state']]
 
 def completed(row,target):
+ if row.get('format')=='completed_stock_v34_pilot_v1':return completed_v34_pilot(row,target)
  if row.get('format')=='completed_stock_header_transition_v1':return completed_header_transition(row,target)
  if row.get('format')=='completed_stock_verification_repair_v1':return completed_verified_repair(row,target)
  if row.get('format')=='legacy_r1_workload_rss_v1':return completed_legacy(row,target)
@@ -201,6 +204,17 @@ PORT_KIND='production_stock_port'
 PORT_FENCE=32*GIB
 PORT_FULL_FENCE_BOOKING='full_physical_fence'
 PORT_HEADER_PEAK_BOOKING='completed_header_transition_peak'
+PORT_V34_PEAK_BOOKING='completed_pilot_peak'
+PORT_V34_TARGETS={'path':str(Path(__file__).resolve().parents[1]/'policies'/'PORT-V34-TARGETS16.json'),
+ 'sha256':'3df54454cb2ca9337d0441e51f4ad3ef1fcc4bab54285d37301cf0d12a90fd12'}
+PORT_V34_RULES_SHA256='4620ed01bfaca15aae958fb7523e964dcbcfa58d8d4920fc0929285090f70488'
+PORT_V34_POLICY_SHA256='df435e39840983dfa6ff3d96ba83a33b90389d2aafb0f8ef0b21094d93d82def'
+PORT_V34_COMPLETED={'path':str(Path(__file__).resolve().parents[1]/'policies'/'PORT-V34-COMPLETED-PEAKS.json'),
+ 'sha256':'197eace1bdfce16dc232b9523fd1d711ba26b897f49637a1a195b51d1ca7db44'}
+PORT_V34_BANKS={'path':str(Path(__file__).resolve().parents[1]/'policies'/'PORT-V34-ENTRY-BANKS.json'),
+ 'sha256':'b4c433d68c29b34f4bcac58cda0c701524531808df91bf176a1cae3a1926e0ed'}
+PORT_V34_NEW={'path':str(Path(__file__).resolve().parents[1]/'policies'/'PORT-V34-NEW6A00.json'),
+ 'sha256':'30838486fc2c14ce148cc7be3ca88aa97c01c631bbe02a8cc58884a379e09ef0'}
 PORT_HEADER_BASELINE_SHA256='b37cc0a5b86690de7f65245ebdfa9992be562af8a204ab9238e3ac85630dbd0c'
 PORT_AUTHORITY={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-22.json'), 'sha256': 'ea88c0e9eab9e6e720e7fc2500407c065d82fd7a0feb12658783d4a761c79917'}
 PORT_AUTHORITY_23={'path': str(Path(__file__).resolve().parents[1]/'policies'/'PORT-FAMILY-AUTHORITY-23.json'), 'sha256': 'dbeedb2c4fcdc916939a9c5fc9ced3d07bc619244c1d8b41bfc91aacfb5052bd'}
@@ -225,16 +239,159 @@ def relocated_authority(actual,expected,legacy_paths=()):
  if before!=after:raise ValueError('An authority relocation changes the approved bytes.')
  return True
 
+def v34_target(binding,target,block):
+ if not relocated_authority(binding,PORT_V34_TARGETS):
+  raise ValueError('The v3.4 pilot inventory is not authorized.')
+ rows=[row for row in read(binding)['rows'] if row['key']==block]
+ if len(rows)!=1 or any(rows[0][key]!=target.get(key) for key in ['module','pc','statement_sha256']):
+  raise ValueError('The v3.4 pilot target differs from the public inventory.')
+ return rows[0]
+
+def v34_native_caller(rules,policy,source):
+ if (not isinstance(rules,dict) or rules.get('sha256')!=PORT_V34_RULES_SHA256 or
+     not isinstance(policy,dict) or policy.get('sha256')!=PORT_V34_POLICY_SHA256):
+  raise ValueError('The v3.4 carrier or normalization policy is not approved.')
+ bound(rules)
+ if read(policy)!={'hook_enabled':False,'database':'zesu_entry_normalize','registrations':[rules]}:
+  raise ValueError('The v3.4 policy does not bind its exact inert carrier.')
+ from scratch_statement import source_statement
+ path=bound(source);original=path.read_text();spec=source_statement(path,'zesu_block.')
+ offset=len(spec['prefix'])+len(spec['statement'])+len(spec.get('pre_proof_commands',''))
+ line='Require Import ZesuSsz.Evidence.RuleScratchRules.\n'
+ if line in original or original[offset:offset+6]!='Proof.':
+  raise ValueError('The approved v3.4 import frontier differs.')
+ return (original[:offset]+line+original[offset:]).encode()
+
+def v34_completed_authority(binding):
+ if not relocated_authority(binding,PORT_V34_COMPLETED):
+  raise ValueError('The completed peak authority is not approved.')
+ value=read(binding)
+ if (value.get('schema')!='port.v34.completed-peak-authority.v1' or
+     value.get('targets_sha256')!=PORT_V34_TARGETS['sha256']):
+  raise ValueError('The completed peak authority names another inventory.')
+ return value
+
+def v34_profile(profile):
+ return profile.get('memory_booking')==PORT_V34_PEAK_BOOKING or 'comparison_authority' in profile
+
+def v34_comparison(profile):
+ if not relocated_authority(profile.get('comparison_authority'),PORT_V34_NEW):
+  raise ValueError('The NEW6a00 comparison authority is not approved.')
+ value=read(profile['comparison_authority'])
+ if (value.get('schema')!='port.v34.new-comparison-authority.v1' or value.get('variant')!='NEW6a00' or
+     value.get('claim_bytes')!=PORT_FENCE or value.get('physical_fence_bytes')!=PORT_FENCE):
+  raise ValueError('The NEW6a00 comparison policy differs.')
+ return value
+
+def v34_case_source(profile,case):
+ return v34_comparison(profile)['caller'] if 'comparison_authority' in profile else case['source']
+
+def v34_bank_sources(profile,job):
+ if not relocated_authority(profile.get('bank_authority'),PORT_V34_BANKS):
+  raise ValueError('The v3.4 declaration bank authority is not approved.')
+ bank=read(profile['bank_authority'])
+ if 'comparison_authority' in profile:
+  comparison=v34_comparison(profile)
+  if (job['key']!=comparison['block'] or any(job['target'].get(key)!=comparison[key]
+      for key in ['module','pc','statement_sha256']) or comparison['banks']['sha256']!=profile['bank_authority']['sha256']):
+   raise ValueError('The NEW6a00 target or declaration bank differs.')
+  names=bank['case_modules']['NEW:800d6a00'];sources=bank['NEW6a00_sources']
+ else:
+  v34_target(profile['pilot_targets'],job['target'],job['key'])
+  names=bank['case_modules'][job['key']];sources=dict(bank['OLD_sources'])
+  if job['key'] in bank['retention_cases']:sources.update(bank['retention_sources'])
+ selected={name:sources[name] for name in names}
+ for row in read(bank['shared_overlay']):
+  if row['module'].startswith('ZesuSsz.Automation.'):
+   if row['module'] in selected and selected[row['module']]!=row['sha256']:
+    raise ValueError('The shared v3.4 overlay conflicts with its declaration bank.')
+   selected[row['module']]=row['sha256']
+ return [dict(module=name,sha256=sha) for name,sha in sorted(selected.items())]
+
+def completed_v34_pilot(row,target):
+ required={'format','route','block','module','native_source','original_source',
+  'statement_sha256','result','accounting','closure','release','targets','authority','native_rules','normalization_policy','completed_authority'}
+ if set(row)!=required:return None,'The v3.4 completed measurement has invalid fields.'
+ prior=v34_target(row['targets'],target,row['block'])
+ if prior['key']=='800d6974':return None,'The v3.4 6974 pilot requires full-fence booking.'
+ approved=[item for item in v34_completed_authority(row['completed_authority'])['rows'] if item['block']==row['block']]
+ if (len(approved)!=1 or approved[0]['module']!=prior['module'] or
+     approved[0]['statement_sha256']!=prior['statement_sha256'] or
+     any(row[name]['sha256']!=approved[0]['receipt_sha256'][name] for name in ['result','accounting','closure','release'])):
+  return None,'The completed v3.2 receipt is not authorized for this pilot.'
+ if not relocated_authority(row['authority'],PORT_EFFECTIVE_AUTHORITY_23):
+  return None,'The v3.4 completed measurement authority is not approved.'
+ matches=[case for case in read(row['authority'])['cases'] if case['block']==prior['key']]
+ if (len(matches)!=1 or matches[0]['module']!=target['module'] or
+     row['module']!=target['module'] or row['statement_sha256']!=target['statement_sha256']):
+  return None,'The v3.4 current caller differs from its approved authority.'
+ if row['original_source']['sha256']!=prior['source_sha256']:
+  return None,'The completed v3.2 caller differs from the public inventory.'
+ old=bound(row['original_source']).read_bytes();base=bound(matches[0]['source']).read_bytes()
+ line=b'Require Import ZesuSsz.Automation.EffectiveOverrides.\n'
+ if base.count(line)!=1 or base.replace(line,b'',1)!=old:
+  return None,'The v3.4 caller changes more than the approved header.'
+ expected=v34_native_caller(row['native_rules'],row['normalization_policy'],matches[0]['source'])
+ if (bound(row['native_source']).read_bytes()!=expected or
+     row['native_source']['sha256']!=target['source_sha256']):
+  return None,'The v3.4 caller differs from the exact public rules import.'
+ predecessor={key:row[key] for key in ['route','module','statement_sha256','result','closure','release']}
+ predecessor['native_source']=row['original_source']
+ version=approved[0]['provenance_version']
+ if version=='v3.1' and row['block'] in {'800d6a14','800d6ab4'}:
+  result,accounting,closure,release=(read(row[name]) for name in ['result','accounting','closure','release'])
+  peak=result.get('aggregate_peak_bytes')
+  if (result.get('status')!='unresolved' or result.get('module')!=target['module'] or
+      result.get('statement_sha256')!=target['statement_sha256'] or
+      result.get('resource_reason') or result.get('shared_infrastructure_failure') or
+      result.get('final_memory_accounting_available') is not True or
+      accounting.get('final_memory_accounting_available') is not True or
+      type(peak) is not int or peak<=0 or accounting.get('aggregate_peak_bytes')!=peak or
+      any((accounting.get('memory_events') or {}).get('counters',{}).get(key,0)>0
+          for key in ['oom','oom_kill','oom_group_kill']) or
+      closure.get('all_owned_actors_closed') is not True or release.get('released') is not True or
+      release.get('bytes')!=8*GIB or not accounting.get('scope')):
+   return None,'The approved v3.1 peak or lifecycle is incomplete.'
+  checked={'peak_bytes':peak,'scope':accounting['scope'],'memory_metric':'aggregate_memory.peak',
+   'client_server_allowance_bytes':0}
+  reason=None
+ elif version=='v3.2':checked,reason=completed(predecessor,dict(target,source_sha256=prior['source_sha256']))
+ else:return None,'The completed peak provenance is not approved.'
+ if checked is None:return None,reason
+ if checked['peak_bytes']!=approved[0]['peak_bytes']:
+  return None,'The completed v3.2 peak differs from its approved receipt.'
+ result=read(row['result']);accounting=read(row['accounting'])
+ if (Path(row['accounting']['path']).parent!=Path(row['result']['path']).parent or
+     Path(row['accounting']['path']).name!='CPU-FINAL.json' or result['CPU']!=accounting):
+  return None,'The completed v3.2 accounting receipt differs.'
+ claim=max(GIB,(3*checked['peak_bytes']+1)//2)
+ if claim>PORT_FENCE:return None,'The completed v3.2 peak exceeds the approved v3.4 fence.'
+ return dict(checked,measurement=row,claim_bytes=claim,
+  formula='max(1GiB,ceil(1.5*completed_aggregate_peak_bytes))',provenance_version=version,
+  qualification='Approved '+version+' OLD aggregate peak. Candidate performance is unmeasured. Memory evidence does not establish proof acceptance.'),None
+
 def production_port_authority(profile):
  required={'schema','kind','authority','memory_route'}
- if not required<=set(profile)<=required|{'supplier_ready','memory_booking'} or profile.get('schema')!='scratch.admission-profile.v1' or profile.get('kind')!=PORT_KIND or profile.get('memory_route')!='measured_native':
+ if not required<=set(profile)<=required|{'supplier_ready','memory_booking','pilot_targets','native_rules','normalization_policy','completed_peak_authority','bank_authority','comparison_authority'} or profile.get('schema')!='scratch.admission-profile.v1' or profile.get('kind')!=PORT_KIND or profile.get('memory_route')!='measured_native':
   raise ValueError('The production PORT profile is invalid.')
- if 'memory_booking' in profile and profile['memory_booking'] not in (PORT_FULL_FENCE_BOOKING,PORT_HEADER_PEAK_BOOKING):
+ if 'memory_booking' in profile and profile['memory_booking'] not in (PORT_FULL_FENCE_BOOKING,PORT_HEADER_PEAK_BOOKING,PORT_V34_PEAK_BOOKING):
   raise ValueError('The PORT memory booking option is invalid.')
  extended=isinstance(profile['authority'],dict) and profile['authority'].get('sha256') in {PORT_AUTHORITY_23['sha256'],PORT_EFFECTIVE_AUTHORITY_23['sha256']}
  effective=isinstance(profile['authority'],dict) and profile['authority'].get('sha256') in {PORT_EFFECTIVE_AUTHORITY['sha256'],PORT_EFFECTIVE_AUTHORITY_23['sha256']}
  if profile.get('memory_booking')==PORT_HEADER_PEAK_BOOKING and not effective:
   raise ValueError('Header-transition sizing requires its exact approved authority.')
+ if v34_profile(profile):
+  if profile['authority'].get('sha256')!=PORT_EFFECTIVE_AUTHORITY_23['sha256'] or not relocated_authority(profile.get('pilot_targets'),PORT_V34_TARGETS):
+   raise ValueError('The v3.4 sizing policy requires its exact public authority and inventory.')
+  case=next(row for row in read(profile['authority'])['cases'] if row['block']=='800d6a00')
+  v34_native_caller(profile.get('native_rules'),profile.get('normalization_policy'),v34_case_source(profile,case))
+  if not relocated_authority(profile.get('bank_authority'),PORT_V34_BANKS):
+   raise ValueError('The v3.4 declaration bank authority is not approved.')
+  if 'comparison_authority' in profile:
+   if profile['memory_booking']!=PORT_FULL_FENCE_BOOKING or 'completed_peak_authority' in profile:
+    raise ValueError('The NEW6a00 comparison requires unmeasured full-fence booking.')
+  else:v34_completed_authority(profile.get('completed_peak_authority'))
+ elif set(profile)&{'pilot_targets','native_rules','normalization_policy','completed_peak_authority','bank_authority'}:raise ValueError('The v3.4 inputs require the v3.4 booking policy.')
  corrected=isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_MEMORY_AUTHORITY['sha256']
  heldout78=isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_AUTHORITY_78['sha256']
  heldout=corrected or heldout78 or isinstance(profile['authority'],dict) and profile['authority'].get('sha256')==PORT_HELDOUT_AUTHORITY['sha256']
@@ -285,8 +442,14 @@ def production_port_case(profile,job):
  if len(rows)!=1:raise ValueError('The production PORT case is not authorized.')
  case=rows[0]
  if target.get('pc')!=case['pc']:raise ValueError('The production PORT address differs.')
- if target.get('source_sha256')!=case['source']['sha256'] or target.get('statement_sha256')!=case['statement_sha256']:
+ expected=case['source']['sha256']
+ if v34_profile(profile):
+  v34_bank_sources(profile,job)
+  expected=hashlib.sha256(v34_native_caller(profile['native_rules'],profile['normalization_policy'],v34_case_source(profile,case))).hexdigest()
+ if target.get('source_sha256')!=expected or target.get('statement_sha256')!=case['statement_sha256']:
   raise ValueError('The production PORT source or statement differs.')
+ if profile.get('memory_booking')==PORT_V34_PEAK_BOOKING:
+  v34_target(profile['pilot_targets'],target,job['key'])
  return authority,case
 
 def workload_for_job(profile_binding,job,config):
@@ -319,8 +482,19 @@ def workload_for_job(profile_binding,job,config):
   authority,case=production_port_case(profile,job)
   if config.get('native_route') is not None or config.get('declarations_only') or config.get('prerequisite_modules')!=[]:
    raise ValueError('The production PORT runtime requires stock native search with empty setup.')
-  source=actual(dict(case['source'],module=case['module']));text=source.read_text()
-  if not text.startswith('Require Import ZesuSsz.Automation.All.\n') or re.search(r'\b(?:Ltac2?|RuleScratchRules|AllLegacy)\b',text):
+  v34=v34_profile(profile)
+  if v34:
+   source=actual(dict(path=str(workspace/modules[case['module']]),sha256=job['target']['source_sha256'],module=case['module']))
+   if source.read_bytes()!=v34_native_caller(profile['native_rules'],profile['normalization_policy'],v34_case_source(profile,case)):
+    raise ValueError('The staged v3.4 caller differs from its public import plan.')
+   actual(dict(profile['native_rules'],module='ZesuSsz.Evidence.RuleScratchRules'))
+   for row in v34_bank_sources(profile,job):
+    if row['module'] not in modules:raise ValueError('A v3.4 semantic bank source is absent.')
+    actual(dict(row,path=str(workspace/modules[row['module']])))
+  else:source=actual(dict(case['source'],module=case['module']))
+  text=source.read_text()
+  forbidden=r'\b(?:Ltac2?|AllLegacy)\b' if v34 else r'\b(?:Ltac2?|RuleScratchRules|AllLegacy)\b'
+  if not text.startswith('Require Import ZesuSsz.Automation.All.\n') or re.search(forbidden,text):
    raise ValueError('The production PORT caller is not plain production stock.')
   from scratch_statement import source_statement
   specification=source_statement(source,'zesu_block.')
@@ -395,6 +569,14 @@ def workload_claim(workload,job,basis):
   return FOCUSED_CLAIM
  if kind==PORT_KIND:
   if profile.get('memory_booking')==PORT_FULL_FENCE_BOOKING:return PORT_FENCE
+  if profile.get('memory_booking')==PORT_V34_PEAK_BOOKING:
+   v34_target(profile['pilot_targets'],job['target'],job['key'])
+   if job['key']=='800d6974':return PORT_FENCE
+   if (basis is None or basis['measurement'].get('format')!='completed_stock_v34_pilot_v1' or
+       basis['measurement']['block']!=job['key'] or
+       basis['measurement']['targets']['sha256']!=profile['pilot_targets']['sha256']):
+    raise ValueError('The v3.4 pilot requires its exact completed v3.2 measurement.')
+   return basis['claim_bytes']
   if profile.get('memory_booking')==PORT_HEADER_PEAK_BOOKING:
    if basis is None or basis['measurement'].get('format')!='completed_stock_header_transition_v1':
     raise ValueError('Header-transition sizing requires an accepted completed measurement.')
@@ -473,6 +655,11 @@ def profile_bindings(context):
  if profile.get('kind')==PORT_KIND:
   authority=production_port_authority(profile)
   values += [profile['authority'],authority['completed_common_ready'],authority['source_packet']]
+  if v34_profile(profile):
+   values.extend(profile[name] for name in ['pilot_targets','native_rules','normalization_policy','bank_authority'])
+   values.append(profile['comparison_authority'] if 'comparison_authority' in profile else profile['completed_peak_authority'])
+   bank=read(profile['bank_authority'])
+   values.extend(bank[name] for name in ['shared_overlay','old_graph','new_graph','retention_authority','NEW6a00_authority'] if name in bank)
   if authority.get('blind_reporting') is True:
    values += [authority[key] for key in ['case_rebind','eql18_targets','frozen_manifest','declaration_evidence']]
    if 'raw60_targets' in authority:
