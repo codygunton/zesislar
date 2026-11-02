@@ -319,6 +319,23 @@ def _remove_terminal(tree, terminal_id):
     raise ValueError('The join ownership tree has an unsupported node')
 
 
+def _memory_basis(states, plan, original_seed):
+    expressions = {name: Expr.from_dict(value) for name, value in plan['values'].items()}
+    registers = [{**state.retained_registers, **state.registers} for state in states]
+    basis = {name: [state[name] for state in registers] for name in expressions}
+    old_binders = [binder['name'] for binder in original_seed.ownership.get('binders', [])]
+    for register, value in original_seed.state.registers.items():
+        if not REGISTER.fullmatch(register) or value.op in {'bits', 'bool', 'enum'} or value in expressions.values():
+            continue
+        text = value.coq()
+        if any(re.search(r"(?<![\w'])" + re.escape(name) + r"(?![\w'])", text) for name in old_binders):
+            continue
+        name = 'source_parameter_' + str(len(expressions))
+        expressions[name] = value
+        basis[name] = [value] * len(states)
+    return basis, expressions
+
+
 def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                           continuation, outer_names=(), liveness=None, observables=None):
     """Build a seed when every incoming non-register resource is identical.
@@ -390,13 +407,28 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
             raise ValueError('A join changes system state')
     resources, components = [], []
     memory_by_id = {resource.id: resource for resource in original_seed.resources}
+    memory_basis, memory_expressions = _memory_basis(states, plan, original_seed)
+    plan['memory_relations'] = []
     for component in ownership['components']:
         key = component['id']
         current = deepcopy(component)
         if component['kind'] != 'register':
             source = records[0][key]['source']
             if any(record[key]['source'] != source for record in records[1:]):
-                raise ValueError('A join memory value needs affine elimination or array packaging: ' + key)
+                if key not in memory_by_id:
+                    raise ValueError('A non-memory join resource differs: ' + key)
+                try:
+                    from .join_memory import affine_memory_image
+                except ImportError:
+                    from join_memory import affine_memory_image
+                paths = [[(image.writes[step['write_index']], step['offset']) for step in image.transitions
+                          if step['resource_id'] == key] for image in images]
+                reconstruction = affine_memory_image(memory_by_id[key], paths, basis=memory_basis,
+                    expressions=memory_expressions, register_names=register_order, vocabulary=vocabulary)
+                if reconstruction['status'] != 'generated':
+                    raise ValueError('A join memory value needs explicit array packaging: ' + key + ': ' + reconstruction['detail'])
+                source = reconstruction['source']
+                plan['memory_relations'].append(reconstruction)
             current['source'] = source
         if key == terminal_id:
             if component['kind'] != 'opaque' or current['source'] != 'True':
