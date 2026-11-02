@@ -55,7 +55,8 @@ class DeclarationSourceTests(unittest.TestCase):
         for source in [
                 'Ltac hidden := zesu_block. Goal True. hidden. Qed.',
                 'Local Ltac hidden := Owner.zesu_block.',
-                'Ltac hidden := zesu_block. Ltac other := hidden. Goal True. other. Qed.']:
+                'Ltac hidden := zesu_block. Ltac other := hidden. Goal True. other. Qed.',
+                'Ltac zesu_block := idtac with hidden := zesu_block. Goal True. hidden. Qed.']:
             with self.subTest(source=source):
                 self.assertTrue(contains_native_proof(source))
 

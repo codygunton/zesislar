@@ -37,7 +37,8 @@ def contains_native_proof(text):
             if (len(values) < 4 or not assignments or assignments[0] < 2 or
                     assignments[0] == len(values) - 1):
                 raise ValueError('The declaration source has a malformed Ltac definition.')
-            if values[0:2] == ['Ltac', 'zesu_block']:
+            if (values[0:2] == ['Ltac', 'zesu_block'] and
+                    not top_level_positions(values, {'with'})):
                 continue
         if any(token.rsplit('.', 1)[-1] == 'zesu_block' for token in values):
             return True
