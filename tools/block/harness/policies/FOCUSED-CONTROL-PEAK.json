@@ -1,0 +1,56 @@
+{
+  "schema": "scratch.completed-control-peak-authority.v1",
+  "measurement": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/control-Lithium-alternative011/MEASURED-BOOKING.json",
+    "sha256": "cb27be70a3894b6317f1d4139782066bb96b1222afe6a8f82867fe5cbca65d44"
+  },
+  "prior_runtime": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/scratch-entailment004/prepare001/RUNTIME.json",
+    "sha256": "937c6b721f72668f70385ec72f4febc6fce900a177d540f9be8ca6881c5a3736"
+  },
+  "prior_job_runtime": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/scratch-entailment004/prepare001/jobs/prerequisites/RUNTIME.json",
+    "sha256": "becc75f467c239296e15d0c84e60fa235f59ec5921237a0df70a13bc7e8c5813"
+  },
+  "prior_control_session": {
+    "module": "ZesuSsz.Evidence.Join6ae0Scratch",
+    "line": 41,
+    "character": 5,
+    "fixture": true,
+    "steps": [
+      {
+        "name": "entailment",
+        "from": "start",
+        "body": "rewrite /decodeItemEntryAt800d6ae0 /generatedJoin6ae0 /decodeItemReturnEntryCore.\niSteps.",
+        "required": true,
+        "export": true
+      }
+    ]
+  },
+  "current_control_session": {
+    "module": "ZesuSsz.Evidence.Join6ae0Scratch",
+    "line": 41,
+    "character": 5,
+    "fixture": true,
+    "steps": [
+      {
+        "name": "rewrite",
+        "from": "start",
+        "body": "rewrite /decodeItemEntryAt800d6ae0 /generatedJoin6ae0 /decodeItemReturnEntryCore.",
+        "required": true,
+        "export": true
+      },
+      {
+        "name": "comparison",
+        "from": "rewrite",
+        "body": "iStartProof.\niIntros.\nrepeat liStep.",
+        "required": true,
+        "export": true
+      }
+    ]
+  },
+  "source_module": "ZesuSsz.Evidence.Join6ae0Scratch",
+  "source_sha256": "a3cc64d964ebf6f29de5b605f4c24677a42058d693de1505f9eb0d19df8d6a29",
+  "transition": "Approved comparison: preserve rewrite and carrier; replace iSteps with iStartProof, iIntros, repeat liStep.",
+  "origin_label": "approved-completed-error-accounting"
+}
