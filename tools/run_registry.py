@@ -311,7 +311,19 @@ class Registry:
         row['jobs'] = list(retained.values())
 
     def refresh(self, run_id):
-        return self.update(run_id, self.refresh_row)
+        while True:
+            with self.lock():
+                previous = copy.deepcopy(self.load_row(self.header(), run_id))
+            refreshed = copy.deepcopy(previous)
+            self.refresh_row(refreshed)
+            with self.lock():
+                data = self.header()
+                if self.load_row(data, run_id) != previous:
+                    # Discovery must not overwrite a concurrent registry update.
+                    continue
+                if refreshed != previous:
+                    self.save_row(data, refreshed)
+                return refreshed
 
     def add_claim(self, run_id, claim_id, command):
         if not claim_id or not command:

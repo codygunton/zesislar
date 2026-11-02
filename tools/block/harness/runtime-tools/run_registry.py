@@ -10,6 +10,7 @@ starts outside the scheduler's process tree.
 from __future__ import annotations
 
 import argparse
+import copy
 from contextlib import contextmanager
 import ctypes
 import fcntl
@@ -199,7 +200,20 @@ class Registry:
         row['jobs'] = list(retained.values())
 
     def refresh(self, run_id):
-        return self.update(run_id, self.refresh_row)
+        while True:
+            with self.lock():
+                previous = copy.deepcopy(self.read()['runs'][run_id])
+            refreshed = copy.deepcopy(previous)
+            self.refresh_row(refreshed)
+            with self.lock():
+                data = self.read()
+                if data['runs'][run_id] != previous:
+                    # Discovery must not overwrite a concurrent registry update.
+                    continue
+                if refreshed != previous:
+                    data['runs'][run_id] = refreshed
+                    self.write(data)
+                return refreshed
 
     def add_claim(self, run_id, claim_id, command):
         if not claim_id or not command:
