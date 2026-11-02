@@ -206,7 +206,7 @@ class _Facts:
                 raise ValueError('An ownership fact must include source provenance')
             if fact.get('status') not in ('supplied', 'derived-by-pass', 'required-unavailable'):
                 raise ValueError('The ownership fact status is unsupported')
-            if fact.get('kind') not in ('address_equality', 'bounds', 'nonwrap', 'disjoint_ranges', 'permission', 'element_lookup'):
+            if fact.get('kind') not in ('address_equality', 'bounds', 'alignment', 'nonwrap', 'disjoint_ranges', 'permission', 'element_lookup'):
                 raise ValueError('The ownership fact kind is unsupported')
             if not isinstance(fact.get('terms'), dict):
                 raise ValueError('An ownership fact needs typed terms')

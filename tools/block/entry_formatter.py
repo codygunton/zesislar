@@ -206,9 +206,15 @@ def format_entry_boundary(boundary, *, case_id, source_policy, handwritten_owner
     The formatter factors that identical operand outside the full disjunction.
     It keeps every other resource inside its original existential scope.
     """
-    alternatives = boundary.get('alternatives', [])
+    incoming = boundary.get('alternatives', [])
+    alternatives = incoming
+    if boundary.get('status') in {'generated_join', 'generated_loop_head'}:
+        alternatives = [alternative for alternative in incoming
+                        if alternative.get('predecessor_pc') is None
+                        and alternative.get('seed_pc') == boundary.get('pc')]
     manifest = {'schema': 'entry-formatter-manifest.v1', 'pc': boundary.get('pc'),
                 'alternative_count': len(alternatives), 'alternatives': [],
+                'incoming_alternative_count': len(incoming) - len(alternatives),
                 'helpers': [], 'continuation_id': continuation_id,
                 'guard_scope': list(guard_scope), 'proof_ran': False}
     for index, alternative in enumerate(alternatives):
@@ -221,7 +227,7 @@ def format_entry_boundary(boundary, *, case_id, source_policy, handwritten_owner
     reports, definitions, choices = [], [], []
     active = {'alternative_index': None, 'tree_path': []}
     try:
-        if boundary.get('status') != 'generated' or not alternatives:
+        if boundary.get('status') not in {'generated', 'generated_join', 'generated_loop_head'} or not alternatives:
             raise ValueError('The boundary has no generated alternatives')
         if not guard_scope:
             raise ValueError('Conditions require an explicit existential source scope')

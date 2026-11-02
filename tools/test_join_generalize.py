@@ -8,8 +8,11 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'block'))
 from forward_design import _footprint
 from join_generalize import (anti_unify, exit_pullback, generalize_registers, hull,
-                             validate_edges, witness_plan)
-from symbolic_state import Expr, bits, input_expr, operation
+                             attach_exit_pullback, generalize_owned_join, validate_edges, witness_plan)
+from forward_resources import (OwnedBytes, ownership_from_assertion_tree,
+                               render_resource_boundary, apply_owned_writes)
+from resource_seed import OwnedSeed
+from symbolic_state import Expr, MemoryRegion, SymbolicState, bits, input_expr, operation
 
 
 class FootprintTests(unittest.TestCase):
@@ -75,6 +78,15 @@ class JoinRegisterTests(unittest.TestCase):
             anti_unify([{'x': Expr('unknown_read', width=64)}, {'x': bits(1, 64)}],
                        names={'x': 'machine_x'})
 
+    def test_new_binder_cannot_capture_an_outer_input(self):
+        with self.assertRaisesRegex(ValueError, 'captures a source input'):
+            anti_unify([{'x': input_expr('machine_x')}, {'x': bits(1, 64)}], names={'x': 'machine_x'})
+
+    def test_new_binder_cannot_capture_a_source_declaration(self):
+        with self.assertRaisesRegex(ValueError, 'captures a source input'):
+            anti_unify([{'x': bits(0, 64)}, {'x': bits(1, 64)}], names={'x': 'machine_x'},
+                       reserved_names=['machine_x'])
+
     def test_hull_uses_direct_unsigned_binder_bounds(self):
         word = input_expr('word')
         bounded = operation('bvule', word, bits(55, 64))
@@ -130,6 +142,96 @@ class ExitPullbackTests(unittest.TestCase):
 
     def test_nonreturn_exit_refuses(self):
         self.assertEqual(exit_pullback([{'kind': 'outside_pc'}], allows={})['status'], 'refused')
+
+
+class OwnedJoinTests(unittest.TestCase):
+    def fixture(self):
+        tree = {'kind': 'exists', 'binders': [{'name': 'old', 'type': 'bv 64',
+                                              'expression': input_expr('old').to_dict()}],
+                'components': [{'kind': 'register', 'id': 'r', 'register': 'x13', 'value_coq': 'old'},
+                               {'kind': 'opaque', 'id': 'terminal', 'coq': 'True'}]}
+        ownership = ownership_from_assertion_tree(tree, provenance={'source': 'fixture'})
+        seed = OwnedSeed(SymbolicState(registers={'PC': bits(32, 64), 'x13': input_expr('old')}),
+                         ownership, [], [], [])
+        vocabulary = {'input_sha256': 'fixture', 'source_vocabulary': {'imports': []}}
+        alternatives = []
+        for value in [input_expr('old'), bits(2, 64)]:
+            state = seed.state.copy()
+            state.registers['x13'] = value
+            resource = render_resource_boundary(ownership, apply_owned_writes([], []), state, vocabulary=vocabulary)
+            alternatives.append({'predecessor_pc': '0x10', 'seed_pc': '0x10', 'path': [],
+                                 'state': state.to_dict(), 'resource_boundary': resource})
+        continuation = {'name': 'K', 'coq': 'instr_pre exit_pc exit_resources',
+                        'source_binding': {'source': 'Level1.IslarisContractSpec'}, 'terminal_id': 'terminal'}
+        return seed, alternatives, vocabulary, continuation
+
+    def test_join_seed_replaces_true_with_outer_continuation(self):
+        seed, alternatives, vocabulary, continuation = self.fixture()
+        before = deepcopy(seed.ownership)
+        result = generalize_owned_join(alternatives, original_seed=seed, entry_pc=32,
+                                       vocabulary=vocabulary, continuation=continuation)
+        owned = result['seed']
+        self.assertEqual(owned.join_kind, 'join')
+        self.assertEqual([binder['name'] for binder in owned.ownership['binders']], ['machine_x13'])
+        self.assertEqual(owned.ownership['tree']['right'], {'kind': 'component', 'id': 'terminal'})
+        self.assertEqual(owned.ownership['components'][-1]['source'], 'K')
+        self.assertEqual(seed.ownership, before)
+        self.assertEqual(result['boundary']['status'], 'generated_join')
+        self.assertEqual(result['boundary']['alternatives'][0]['predecessor_pc'], None)
+        self.assertEqual(result['boundary']['alternatives'][0]['seed_pc'], '0x20')
+
+    def test_missing_contract_binding_refuses(self):
+        seed, alternatives, vocabulary, continuation = self.fixture()
+        continuation['source_binding'] = {}
+        with self.assertRaisesRegex(ValueError, 'source-bound outer continuation'):
+            generalize_owned_join(alternatives, original_seed=seed, entry_pc=32,
+                                  vocabulary=vocabulary, continuation=continuation)
+
+    def test_different_system_state_refuses(self):
+        seed, alternatives, vocabulary, continuation = self.fixture()
+        alternatives[0]['state']['registers']['system'] = bits(1, 64).to_dict()
+        alternatives[1]['state']['registers']['system'] = bits(2, 64).to_dict()
+        with self.assertRaisesRegex(ValueError, 'changes system state'):
+            generalize_owned_join(alternatives, original_seed=seed, entry_pc=32,
+                                  vocabulary=vocabulary, continuation=continuation)
+
+    def test_pullback_uses_the_complete_owned_image_and_keeps_outer_k(self):
+        seed, alternatives, vocabulary, continuation = self.fixture()
+        component = {'id': 'output', 'kind': 'byte_array', 'source': 'base ↦ₘ∗ bytes',
+                     'provenance': {'source': 'fixture'}, 'scope': [[]]}
+        seed.ownership['components'].insert(-1, component)
+        seed.ownership['tree']['body']['children'].insert(-1, {'kind': 'component', 'id': 'output'})
+        seed.resources = [OwnedBytes('output', bits(4096, 64), 'base', input_expr('bytes', None),
+                                    4, True, 'DfracOwn 1', component, {'source': 'fixture'}, 8)]
+        for alternative in alternatives:
+            alternative['resource_boundary']['tree'] = deepcopy(seed.ownership['tree'])
+            alternative['resource_boundary']['components'].insert(-1, component)
+        joined = generalize_owned_join(alternatives, original_seed=seed, entry_pc=32,
+                                       vocabulary=vocabulary, continuation=continuation)
+        before = deepcopy(joined['seed'].ownership)
+        state = joined['seed'].state.copy()
+        state.registers['PC'] = input_expr('return_address')
+        traversal = {'stops': [{'reason': 'unknown_pc', 'stage': 'block_exit', 'path': [],
+                               'actual_pc': input_expr('return_address').to_dict(), 'state': state.to_dict()}]}
+        result = attach_exit_pullback(joined, traversal, output_resource_id='output',
+                                     return_expression=input_expr('return_address'),
+                                     allows={'application': 'allows args', 'source_binding': {'source': 'fixture'}},
+                                     vocabulary=vocabulary)
+        self.assertEqual(result['pullback']['status'], 'generated')
+        self.assertEqual(result['pullback']['image'], 'bytes')
+        self.assertEqual(result['seed'].ownership['components'][-2]['id'], 'join_exit_meaning')
+        self.assertEqual(result['seed'].ownership['components'][-1]['source'], 'K')
+        self.assertEqual(joined['seed'].ownership, before)
+
+    def test_exception_path_prevents_attaching_exit_meaning(self):
+        seed, alternatives, vocabulary, continuation = self.fixture()
+        joined = generalize_owned_join(alternatives, original_seed=seed, entry_pc=32,
+                                       vocabulary=vocabulary, continuation=continuation)
+        result = attach_exit_pullback(joined, {'stops': [{'reason': 'outside_pc', 'path': []}]},
+                                     output_resource_id='output', return_expression=input_expr('return_address'),
+                                     allows={}, vocabulary=vocabulary)
+        self.assertEqual(result['pullback']['status'], 'refused')
+        self.assertFalse(any(c['id'] == 'join_exit_meaning' for c in joined['seed'].ownership['components']))
 
 if __name__ == '__main__':
     unittest.main()

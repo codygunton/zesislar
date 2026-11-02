@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Propagate untrusted symbolic states through straight-line CFG blocks.
 
-Only caller-supplied entry states and handwritten cut seeds start execution.
-Incoming states never cross a join or loop head. The pass never generalizes them.
+Only caller-supplied entry states and explicit cut seeds start execution.
+Incoming states never cross a join or loop head. A separate source pass may
+generalize them and supply an explicit generated seed on a later round.
 """
 from collections import deque
 from dataclasses import dataclass
@@ -123,7 +124,8 @@ class _Work:
     visited: tuple = ()
 
 
-def evaluate_function(function, traces, initial_states, *, max_paths=4096, check_state=None):
+def evaluate_function(function, traces, initial_states, *, max_paths=4096, check_state=None,
+                      generated_seeds=None):
     """Return a complete boundary inventory and explicit propagation stops.
 
     max_paths bounds the total leaf alternatives created during this traversal.
@@ -170,13 +172,18 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
         if reasons:
             cuts[pc] = reasons
     seeds = {_pc(pc): state for pc, state in initial_states.items()}
+    generated_seeds = {_pc(pc): kind for pc, kind in (generated_seeds or {}).items()}
+    if any(pc not in seeds or pc not in cuts or kind not in {'join', 'loop_head'}
+           for pc, kind in generated_seeds.items()):
+        raise ValueError('A generated seed must name an explicit join or loop head')
     if len(seeds) != len(initial_states) or any(pc != entry and pc not in cuts for pc in seeds):
         raise ValueError('An initial state must belong to the function entry or a handwritten cut')
     if any(not isinstance(state, SymbolicState) for state in seeds.values()):
         raise ValueError('Every initial state must be an explicit SymbolicState')
     traces = {_pc(pc): source for pc, source in traces.items()}
     live = _liveness(blocks, instructions, traces, seeds)
-    boundaries = {pc: {'pc': hex(pc), 'status': 'handwritten_cut' if pc in cuts else 'unreachable',
+    boundaries = {pc: {'pc': hex(pc), 'status': ('generated_' + generated_seeds[pc]) if pc in generated_seeds
+                       else 'handwritten_cut' if pc in cuts else 'unreachable',
                        'alternatives': []} for pc in blocks}
     result = {'schema': 'block-forward-states.v1',
               'function': {'name': function['name'], 'entry': hex(entry), 'end': hex(end)},
@@ -198,7 +205,9 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
         projected = _project(state, live[pc])
         boundaries[pc]['alternatives'].append({'predecessor_pc': hex(predecessor) if predecessor is not None else None,
                                               'seed_pc': hex(work.seed_pc), 'state': projected.to_dict(),
-                                              'path': list(work.path)})
+                                              'path': list(work.path),
+                                              'back_edge': pc in loop_heads and predecessor is not None
+                                              and (pc == work.seed_pc or pc in work.visited)})
         if pc not in cuts:
             boundaries[pc]['status'] = 'generated'
         return projected

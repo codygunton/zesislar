@@ -8,8 +8,8 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'block'))
 from source_domain import constant_from_source, project_layout_domain
-from symbolic_state import (SymbolicState, _refuted_ram_guard, bits,
-                            evaluate_trace, input_expr, operation)
+from symbolic_state import (Expr, SymbolicState, _refuted_ram_guard, bits,
+                            _source_comparison_refutation, evaluate_trace, input_expr, operation)
 
 
 class DomainTests(unittest.TestCase):
@@ -64,6 +64,42 @@ class DomainTests(unittest.TestCase):
         interval = result['facts'][-1]['terms']['unsigned_interval']
         self.assertEqual((interval['minimum'], interval['maximum']), (4112, 8192))
         self.assertEqual(original, (self.contract.read_bytes(), self.layout.read_bytes()))
+
+    def test_existing_output_bounds_project_the_complete_array_interval(self):
+        result = project_layout_domain(**self.parameters())
+        interval = next(fact['terms']['unsigned_interval'] for fact in result['facts']
+                        if fact['fact_id'] == 'layout:output-interval')
+        self.assertEqual((interval['minimum'], interval['maximum']), (4096, 8192 - 40))
+        self.assertEqual(interval['expression'], input_expr('(Z_to_bv 64%N (decodeItemOutputPointer args))').to_dict())
+        fact = next(fact for fact in result['facts'] if fact['fact_id'] == 'layout:output-interval')
+        self.assertEqual(len(fact['origin']['source_clauses']), 4)
+        self.assertEqual(result['premises_added'], [])
+
+    def test_missing_output_end_bound_refuses(self):
+        self.layout.write_text(self.layout.read_text().replace(
+            '  resultPointer + 40 <= machineRamEnd defaultMap /\\\n', ''))
+        with self.assertRaisesRegex(ValueError, 'source output/RAM bound is absent'):
+            project_layout_domain(**self.parameters())
+
+    def test_output_store_ram_guards_use_the_projected_source_interval(self):
+        result = project_layout_domain(**self.parameters())
+        fact = next(fact for fact in result['facts'] if fact['fact_id'] == 'layout:output-interval')
+        interval = {**fact['terms']['unsigned_interval'], 'origin': fact['origin']}
+        pointer = Expr.from_dict(interval['expression'])
+        address = operation('zero_extend', operation('bvadd', pointer, bits(32, 64)), width=128)
+        end = operation('bvadd', address, bits(8, 128))
+        guard = operation('not', operation('bvsle', end, bits(8192, 128)))
+        self.assertIsNotNone(_refuted_ram_guard(guard, [interval]))
+
+    def test_output_access_beyond_the_array_does_not_get_refuted(self):
+        result = project_layout_domain(**self.parameters())
+        fact = next(fact for fact in result['facts'] if fact['fact_id'] == 'layout:output-interval')
+        interval = {**fact['terms']['unsigned_interval'], 'origin': fact['origin']}
+        pointer = Expr.from_dict(interval['expression'])
+        address = operation('zero_extend', operation('bvadd', pointer, bits(40, 64)), width=128)
+        end = operation('bvadd', address, bits(8, 128))
+        guard = operation('not', operation('bvsle', end, bits(8192, 128)))
+        self.assertIsNone(_refuted_ram_guard(guard, [interval]))
 
     def test_missing_ram_bound_refuses(self):
         self.layout.write_text(self.layout.read_text().replace(
@@ -145,7 +181,7 @@ class FaultTests(unittest.TestCase):
         condition = operation('not', operation('bvsge', self.pointer, bits(7, 64)))
         self.assertIsNone(_refuted_ram_guard(condition, self.rows))
 
-    def test_trace_prunes_only_exception_leaf_and_retains_obligation(self):
+    def test_source_contradiction_prunes_each_leaf_and_retains_its_obligation(self):
         state = SymbolicState(registers={'x2': self.pointer}, source_intervals=self.rows)
         trace = '''(trace
           (declare-const p (_ BitVec 64)) (read-reg |x2| nil p)
@@ -164,13 +200,139 @@ class FaultTests(unittest.TestCase):
         self.assertTrue(report['required_rocq_guard_projection'])
         self.assertEqual(report['proof_premises_added'], [])
         ordinary = trace.replace('(write-reg |mcause| nil #x0000000000000007)', '')
-        self.assertEqual(evaluate_trace(ordinary, state)[0].status, 'complete')
+        ordinary_result, = evaluate_trace(ordinary, state)
+        self.assertEqual(ordinary_result.status, 'infeasible')
+        self.assertEqual(ordinary_result.state.reports[-1]['rule'], 'source_interval_comparison')
+        self.assertTrue(ordinary_result.state.reports[-1]['required_rocq_guard_projection'])
+        self.assertEqual(ordinary_result.state.reports[-1]['proof_premises_added'], [])
 
     def test_copy_preserves_bounds_without_changing_original(self):
         state = SymbolicState(source_intervals=self.rows)
         copy = state.copy()
         copy.source_intervals.clear()
         self.assertEqual(len(state.source_intervals), 1)
+
+
+class JoinGuardTests(unittest.TestCase):
+    def setUp(self):
+        self.pointer = input_expr('pointer', 64)
+        self.intervals = [{'expression': self.pointer.to_dict(), 'minimum': 4096, 'maximum': 8192,
+                           'origin': {'source': 'fixture'}}]
+        self.returned = input_expr('return_address', 64)
+        self.alignments = [{'expression': self.returned.to_dict(), 'modulus': 4, 'residue': 0,
+                            'origin': {'source': 'fixture'}}]
+
+    def test_source_interval_excludes_an_unrelated_mmio_equality(self):
+        state = SymbolicState(registers={'x2': self.pointer}, source_intervals=self.intervals)
+        source = '''(trace (declare-const p (_ BitVec 64)) (read-reg |x2| nil p)
+          (assert (= ((_ zero_extend 64) p) #x00000000000000000000000000000008)))'''
+        result, = evaluate_trace(source, state)
+        self.assertEqual(result.status, 'infeasible')
+        self.assertEqual(result.state.reports[-1]['proof_premises_added'], [])
+        self.assertTrue(result.state.reports[-1]['required_rocq_guard_projection'])
+
+    def test_existing_alignment_excludes_the_ret_fault_guard(self):
+        state = SymbolicState(registers={'x1': self.returned}, source_alignments=self.alignments)
+        source = '''(trace (declare-const ret (_ BitVec 64)) (read-reg |x1| nil ret)
+          (define-const target (bvand ret #xfffffffffffffffe))
+          (assert (= ((_ extract 0 0) (bvlshr target #x0000000000000001)) #b1)))'''
+        result, = evaluate_trace(source, state)
+        self.assertEqual(result.status, 'infeasible')
+
+    def test_aligned_return_mask_reduces_with_its_source_obligation(self):
+        state = SymbolicState(registers={'x1': self.returned}, source_alignments=self.alignments)
+        source = '''(trace (declare-const ret (_ BitVec 64)) (read-reg |x1| nil ret)
+          (write-reg |PC| nil (bvand ret #xfffffffffffffffe)))'''
+        result, = evaluate_trace(source, state)
+        self.assertEqual(result.state.registers['PC'], self.returned)
+        self.assertEqual(result.state.reports[-1]['proof_status'], 'open')
+        self.assertEqual(result.state.reports[-1]['proof_premises_added'], [])
+
+    def test_no_alignment_fact_keeps_the_mask_and_fault_path(self):
+        state = SymbolicState(registers={'x1': self.returned})
+        source = '''(trace (declare-const ret (_ BitVec 64)) (read-reg |x1| nil ret)
+          (write-reg |PC| nil (bvand ret #xfffffffffffffffe)))'''
+        result, = evaluate_trace(source, state)
+        self.assertEqual(result.state.registers['PC'].op, 'bvand')
+        self.assertEqual(result.state.reports, [])
+
+    def test_invalid_or_ambiguous_alignment_cannot_remove_the_mask(self):
+        source = '''(trace (declare-const ret (_ BitVec 64)) (read-reg |x1| nil ret)
+          (write-reg |PC| nil (bvand ret #xfffffffffffffffe)))'''
+        cases = [{'modulus': 3}, {'modulus': 0}, {'modulus': True}, {'residue': 1}, {'residue': 4},
+                 {'origin': {}}, {'expression': input_expr('other').to_dict()}]
+        for changes in cases:
+            with self.subTest(changes=changes):
+                rows = [{**self.alignments[0], **changes}]
+                state = SymbolicState(registers={'x1': self.returned}, source_alignments=rows)
+                result, = evaluate_trace(source, state)
+                self.assertEqual(result.state.registers['PC'].op, 'bvand')
+        state = SymbolicState(registers={'x1': self.returned}, source_alignments=self.alignments * 2)
+        result, = evaluate_trace(source, state)
+        self.assertEqual(result.state.registers['PC'].op, 'bvand')
+
+    def test_mask_cannot_remove_an_unknown_bit(self):
+        state = SymbolicState(registers={'x1': self.returned}, source_alignments=self.alignments)
+        source = '''(trace (declare-const ret (_ BitVec 64)) (read-reg |x1| nil ret)
+          (write-reg |PC| nil (bvand ret #xfffffffffffffffb)))'''
+        result, = evaluate_trace(source, state)
+        self.assertEqual(result.state.registers['PC'].op, 'bvand')
+
+    def test_overlapping_intervals_cannot_exclude_equality(self):
+        state = SymbolicState(registers={'x2': self.pointer}, source_intervals=self.intervals)
+        source = '''(trace (declare-const p (_ BitVec 64)) (read-reg |x2| nil p)
+          (assert (= p #x0000000000001000)))'''
+        result, = evaluate_trace(source, state)
+        self.assertEqual(result.status, 'complete')
+
+    def test_missing_interval_origin_cannot_exclude_equality(self):
+        state = SymbolicState(registers={'x2': self.pointer},
+                              source_intervals=[{**self.intervals[0], 'origin': {}}])
+        source = '''(trace (declare-const p (_ BitVec 64)) (read-reg |x2| nil p)
+          (assert (= p #x0000000000000008)))'''
+        result, = evaluate_trace(source, state)
+        self.assertEqual(result.status, 'complete')
+
+    def test_copy_and_serialization_keep_alignment_provenance(self):
+        state = SymbolicState(source_alignments=self.alignments)
+        cloned = state.copy()
+        self.assertEqual(cloned.to_dict()['source_alignments'], self.alignments)
+        cloned.source_alignments.clear()
+        self.assertEqual(state.source_alignments, self.alignments)
+
+    def test_unsigned_and_signed_endpoint_checks_keep_their_meaning(self):
+        word = input_expr('narrow', 8)
+        rows = [{'expression': word.to_dict(), 'minimum': 240, 'maximum': 250,
+                 'origin': {'source': 'fixture'}}]
+        signed = operation('bvsgt', word, bits(0, 8))
+        unsigned = operation('bvugt', word, bits(0, 8))
+        result = _source_comparison_refutation(signed, rows)
+        self.assertEqual(result['interval'], [-16, -6])
+        self.assertTrue(result['signed'])
+        self.assertIsNone(_source_comparison_refutation(unsigned, rows))
+
+    def test_signed_interval_crossing_the_sign_bit_refuses(self):
+        word = input_expr('narrow', 8)
+        rows = [{'expression': word.to_dict(), 'minimum': 120, 'maximum': 140,
+                 'origin': {'source': 'fixture'}}]
+        self.assertIsNone(_source_comparison_refutation(operation('bvsgt', word, bits(0, 8)), rows))
+
+    def test_symbolic_endpoint_refuses(self):
+        guard = operation('bvult', self.pointer, input_expr('endpoint'))
+        self.assertIsNone(_source_comparison_refutation(guard, self.intervals))
+
+    def test_reversed_constant_endpoint_uses_the_same_source_interval(self):
+        guard = operation('bvugt', bits(8, 64), self.pointer)
+        result = _source_comparison_refutation(guard, self.intervals)
+        self.assertEqual(result['comparison'], 'bvult')
+        self.assertFalse(result['signed'])
+
+    def test_modular_wrap_ambiguity_cannot_prune_a_comparison(self):
+        word = input_expr('narrow', 8)
+        rows = [{'expression': word.to_dict(), 'minimum': 250, 'maximum': 255,
+                 'origin': {'source': 'fixture'}}]
+        wrapped = operation('bvadd', word, bits(2, 8))
+        self.assertIsNone(_source_comparison_refutation(operation('bvule', wrapped, bits(1, 8)), rows))
 
 
 if __name__ == '__main__':

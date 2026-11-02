@@ -138,6 +138,26 @@ def project_layout_domain(*, layout_source, wellformed_source, arguments,
               'wellformed_declaration': wellformed_source['declaration'],
               'parameter_substitution': dict(arguments)}
     facts = []
+    # These clauses already bound the complete owned output array. Projecting
+    # only the stack leaves every output store's RAM exception path unresolved.
+    output_clauses = ['0 <= resultPointer', f'resultPointer + 40 < {modulus}',
+                      f'{base} <= resultPointer', f'resultPointer + 40 <= {end}']
+    output_indices = []
+    for statement in output_clauses:
+        matches = [i for i, clause in enumerate(clauses) if _key(clause) == _key(statement)]
+        if len(matches) != 1:
+            raise ValueError('A required source output/RAM bound is absent or ambiguous.')
+        output_indices.append(matches[0])
+    if ram_end - ram_base < 40:
+        raise ValueError('The complete output array exceeds the source RAM interval.')
+    output_interval = {'fact_id': 'layout:output-interval', 'kind': 'bounds', 'status': 'supplied',
+                      'terms': {'unsigned_interval': {
+                          'expression': source_z_expression(arguments['resultPointer'], source_constants).to_dict(),
+                          'minimum': ram_base, 'maximum': ram_end - 40,
+                          'ram_base': ram_base, 'ram_end': ram_end}},
+                      'origin': {**origin, 'source_clauses': [clauses[i] for i in output_indices],
+                                 'constants': {term: source_constants[term] for term in values},
+                                 'derivation': 'Conjunction projection, closed subtraction, and unsigned non-wrap.'}}
     pairs = [('input', 'output'), ('input', 'stack'), ('output', 'stack')]
     separate = [(i, clause) for i, clause in enumerate(clauses)
                 if clause.startswith('separateRanges ')]
@@ -166,6 +186,22 @@ def project_layout_domain(*, layout_source, wellformed_source, arguments,
             facts.append({'fact_id': 'wellformed:input-length', 'kind': 'bounds',
                           'status': 'supplied', 'terms': terms,
                           'origin': {**origin, 'source_clause': clause, 'conjunct_index': index}})
+    facts.append(output_interval)
+    # Keep the modulus equation separate from its unsigned range. Both are
+    # existing layout conjuncts, not new assumptions about a return path.
+    return_clauses = [f'0 <= returnAddress < {modulus}', 'returnAddress mod 4 = 0']
+    return_indices = []
+    for statement in return_clauses:
+        matches = [i for i, clause in enumerate(clauses) if _key(clause) == _key(statement)]
+        if len(matches) != 1:
+            raise ValueError('A required source return alignment is absent or ambiguous.')
+        return_indices.append(matches[0])
+    facts.append({'fact_id': 'layout:return-alignment', 'kind': 'alignment', 'status': 'supplied',
+                  'terms': {'alignment': {
+                      'expression': source_z_expression(arguments['returnAddress'], source_constants).to_dict(),
+                      'modulus': 4, 'residue': 0}},
+                  'origin': {**origin, 'source_clauses': [clauses[i] for i in return_indices],
+                             'derivation': 'Conjunction projection and unsigned non-wrap.'}})
     expression = source_z_expression(arguments[stack], source_constants)
     facts.append({'fact_id': 'layout:stack-interval', 'kind': 'bounds', 'status': 'supplied',
                   'terms': {'unsigned_interval': {'expression': expression.to_dict(),

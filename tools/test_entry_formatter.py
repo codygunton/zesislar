@@ -72,6 +72,22 @@ class FormatterTests(unittest.TestCase):
         value['alternatives'][1]['resource_boundary']['components'][-1]['source'] = 'OtherK'
         self.assertEqual(self.formatted(value).status, 'stopped')
 
+    def test_join_renders_only_the_generated_seed(self):
+        value = boundary()
+        value['status'] = 'generated_join'
+        incoming, seed = value['alternatives']
+        incoming.update(predecessor_pc='predecessor', seed_pc='function-entry')
+        seed.update(predecessor_pc=None, seed_pc=value['pc'])
+        result = self.formatted(value)
+        self.assertEqual(result.status, 'complete')
+        self.assertEqual(result.manifest['alternative_count'], 1)
+        self.assertEqual(result.manifest['incoming_alternative_count'], 1)
+
+    def test_join_without_a_generated_seed_refuses(self):
+        value = boundary()
+        value['status'] = 'generated_join'
+        self.assertEqual(self.formatted(value).status, 'stopped')
+
     def test_changed_continuation_scope_refuses(self):
         value = boundary()
         value['alternatives'][0]['resource_boundary']['tree']['right'] = {'kind': 'component', 'id': 'terminal'}

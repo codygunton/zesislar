@@ -4,7 +4,7 @@ Every result remains an untrusted declaration proposal. Edge certificates check
 source arithmetic only. They never certify an Iris entailment or a native proof.
 """
 from copy import deepcopy
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 import re
 
 try:
@@ -44,7 +44,7 @@ class AntiUnification:
     substitutions: list
 
 
-def anti_unify(paths, *, names):
+def anti_unify(paths, *, names, reserved_names=()):
     """Keep equal values. Bind every differing value in declaration order.
 
     names maps each value key to its proposed binder name. The caller supplies
@@ -67,6 +67,12 @@ def anti_unify(paths, *, names):
         if all(value == values[0] for value in values[1:]):
             result[key] = values[0]
             continue
+        def contains_name(value):
+            return ((value.op == 'input' and re.search(r"(?<![\w'])" + re.escape(name) + r"(?![\w'])",
+                                                       str(value.value)))
+                    or any(contains_name(arg) for arg in value.args))
+        if name in reserved_names or any(contains_name(value) for path in paths for value in path.values()):
+            raise ValueError('A join binder captures a source input: ' + name)
         width = values[0].width
         result[key] = input_expr(name, width)
         binders.append({'name': name, 'type': f'bv {width}', 'value_key': key})
@@ -156,7 +162,7 @@ def validate_edges(plan):
     return True
 
 
-def generalize_registers(alternatives, *, register_order):
+def generalize_registers(alternatives, *, register_order, reserved_names=()):
     """Prepare a register-only join core from complete source alternatives."""
     if len(set(register_order)) != len(register_order) or not register_order:
         raise ValueError('A join needs a unique owned register order')
@@ -170,7 +176,8 @@ def generalize_registers(alternatives, *, register_order):
             raise ValueError('A join edge lost an owned register value')
         paths.append({register: Expr.from_dict(registers[register]) for register in register_order})
         conditions.append([Expr.from_dict(value) for value in state['conditions']])
-    unified = anti_unify(paths, names={register: 'machine_' + register for register in register_order})
+    unified = anti_unify(paths, names={register: 'machine_' + register for register in register_order},
+                        reserved_names=reserved_names)
     relations, refusals = [], []
     for binder in unified.binders:
         try:
@@ -199,6 +206,230 @@ def generalize_registers(alternatives, *, register_order):
     return plan
 
 
+def common_conditions(alternatives, plan):
+    """Intersect path propositions after replacing exact register values."""
+    renamed = []
+    for alternative, edge in zip(alternatives, plan['edges']):
+        mapping = {}
+        for binder in plan['binders']:
+            value = normalize(Expr.from_dict(edge['widened_substitution'][binder['name']]))
+            mapping.setdefault(value, input_expr(binder['name'], value.width))
+        renamed.append([substitute(normalize(Expr.from_dict(value)), mapping)
+                        for value in alternative['state']['conditions']])
+    return [value for index, value in enumerate(renamed[0])
+            if value not in renamed[0][:index] and all(value in path for path in renamed[1:])]
+
+
+def _remove_terminal(tree, terminal_id):
+    kind = tree['kind']
+    if kind == 'component':
+        return None if tree['id'] == terminal_id else deepcopy(tree)
+    if kind == 'exists':
+        result = deepcopy(tree)
+        result['body'] = _remove_terminal(tree['body'], terminal_id)
+        if result['body'] is None:
+            raise ValueError('A continuation cannot erase an existential scope')
+        return result
+    if kind == 'sep_list':
+        children = [_remove_terminal(child, terminal_id) for child in tree['children']]
+        return {**deepcopy(tree), 'children': [child for child in children if child is not None]}
+    if kind == 'sep':
+        left, right = (_remove_terminal(tree[key], terminal_id) for key in ('left', 'right'))
+        if left is None or right is None:
+            raise ValueError('The terminal has an unsupported separation scope')
+        return {**deepcopy(tree), 'left': left, 'right': right}
+    raise ValueError('The join ownership tree has an unsupported node')
+
+
+def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
+                          continuation, outer_names=()):
+    """Build a seed when every incoming non-register resource is identical.
+
+    This first case needs no memory witness. A differing memory image refuses
+    here until affine elimination or whole-array packaging supplies its binder.
+    continuation binds the Level1 exit expression as a local K, not a premise.
+    """
+    try:
+        from .forward_resource_design import _state_from_result
+        from .forward_resources import parse_source_ownership, render_resource_boundary, apply_owned_writes
+        from .resource_seed import OwnedSeed
+        from .symbolic_state import MemoryRegion
+    except ImportError:
+        from forward_resource_design import _state_from_result
+        from forward_resources import parse_source_ownership, render_resource_boundary, apply_owned_writes
+        from resource_seed import OwnedSeed
+        from symbolic_state import MemoryRegion
+    if not alternatives:
+        raise ValueError('An owned join has no incoming paths')
+    if (not isinstance(continuation, dict) or set(continuation) != {'name', 'coq', 'source_binding', 'terminal_id'}
+            or not continuation['source_binding'] or not continuation['coq']):
+        raise ValueError('An owned join needs a source-bound outer continuation')
+    name, terminal_id = continuation['name'], continuation['terminal_id']
+    if not re.fullmatch(r'[A-Za-z][A-Za-z0-9_]*', name) or name in outer_names:
+        raise ValueError('The continuation captures an outer input')
+    ownership = deepcopy(original_seed.ownership)
+    original_binders = ownership.get('binders', [])
+    if any(binder['name'] == name for binder in original_binders):
+        raise ValueError('The continuation captures a source binder')
+    register_order = [component['name'] for component in ownership['components'] if component['kind'] == 'register']
+    plan = generalize_registers(alternatives, register_order=register_order,
+                               reserved_names=[*outer_names, name, *(b['name'] for b in original_binders)])
+    records = []
+    for alternative in alternatives:
+        boundary = alternative['resource_boundary']
+        if boundary.get('block_status') != 'completed' or boundary.get('tree') != ownership['tree']:
+            raise ValueError('A join edge has incomplete or different ownership')
+        components = {component['id']: component for component in boundary['components']}
+        if len(components) != len(boundary['components']) or set(components) != {c['id'] for c in ownership['components']}:
+            raise ValueError('A join edge changes the owned resource set')
+        records.append(components)
+    states = [_state_from_result(alternative['state']) for alternative in alternatives]
+    first = states[0]
+    if any(state.registers.get('PC') != bits(entry_pc, 64) for state in states):
+        raise ValueError('A join edge reaches another program counter')
+    images = [apply_owned_writes(original_seed.resources, state.writes, conditions=state.conditions,
+                                facts=original_seed.facts, endianness=state.endianness) for state in states]
+    if any(image.status != 'complete' for image in images):
+        raise ValueError('A join edge cannot authenticate its complete write image')
+    # System state is never generalized. Every path must retain the same value.
+    for state in states[1:]:
+        left = {key: value for key, value in first.registers.items() if not REGISTER.fullmatch(key)}
+        right = {key: value for key, value in state.registers.items() if not REGISTER.fullmatch(key)}
+        if left != right:
+            raise ValueError('A join changes system state')
+    resources, components = [], []
+    memory_by_id = {resource.id: resource for resource in original_seed.resources}
+    for component in ownership['components']:
+        key = component['id']
+        current = deepcopy(component)
+        if component['kind'] != 'register':
+            source = records[0][key]['source']
+            if any(record[key]['source'] != source for record in records[1:]):
+                raise ValueError('A join memory value needs affine elimination or array packaging: ' + key)
+            current['source'] = source
+        if key == terminal_id:
+            if component['kind'] != 'opaque' or current['source'] != 'True':
+                raise ValueError('The selected inventory terminal is not True')
+            continue
+        if key in memory_by_id:
+            old = memory_by_id[key]
+            parsed, = parse_source_ownership(current['source'], provenance=current['provenance'])['components']
+            if parsed['kind'] != 'byte_array':
+                raise ValueError('An owned join array has no complete incoming image')
+            current.update(kind='byte_array', value=parsed['value'], address_z=parsed['address_z'],
+                           fraction=parsed.get('fraction'))
+            resources.append(replace(old, byte_array=input_expr(parsed['value'], None), component=current))
+        components.append(current)
+    if terminal_id not in records[0]:
+        raise ValueError('The continuation replaces no inventory terminal')
+    state = first.copy()
+    for interval in original_seed.state.source_intervals:
+        if interval not in state.source_intervals:
+            state.source_intervals.append(deepcopy(interval))
+    for alignment in original_seed.state.source_alignments:
+        if alignment not in state.source_alignments:
+            state.source_alignments.append(deepcopy(alignment))
+    state.registers = {key: value for key, value in state.registers.items() if not REGISTER.fullmatch(key)}
+    state.registers.update({key: Expr.from_dict(value) for key, value in plan['values'].items()})
+    state.retained_registers = dict(state.registers)
+    # Common trace facts can contain locals that the selector cannot observe.
+    # Keep only relations with an implemented source validator. A later trial
+    # traversal must establish that discarded facts are unnecessary at the cut.
+    state.conditions = []
+    for value in common_conditions(alternatives, plan):
+        plan['join_refusals'].append({'kind': 'join_common_condition_refusal', 'expression': value.to_dict(),
+                                     'detail': 'The common trace fact has no authorized join relation validator'})
+    for relation in plan['relations']:
+        word = input_expr(relation['binder'], relation['width'])
+        state.conditions.extend([operation('bvuge', word, bits(relation['lower'], word.width)),
+                                 operation('bvule', word, bits(relation['upper'], word.width))])
+    state.writes, state.reports, state.register_writes = [], [], []
+    state.memory = []
+    for resource in resources:
+        prefix = []
+        updates = images[0].updates[resource.id]
+        for offset in range(len(updates)):
+            if offset not in updates:
+                break
+            value = normalize(Expr.from_dict(updates[offset]['value']))
+            if any(offset not in image.updates[resource.id]
+                   or normalize(Expr.from_dict(image.updates[resource.id][offset]['value'])) != value
+                   for image in images[1:]):
+                break
+            prefix.append(value)
+        state.memory.append(MemoryRegion(resource.base, tuple(prefix), resource.byte_array, resource.length,
+                                         ownership_id=resource.id))
+    state.trace_count = 0
+    def source_inputs(value):
+        return ([str(value.value)] if value.op == 'input' else []) + [
+            text for child in value.args for text in source_inputs(child)]
+    source_text = ' '.join([*(component['source'] for component in components if component['kind'] != 'register'),
+                            *(text for value in state.registers.values() for text in source_inputs(value)),
+                            *(text for value in state.conditions for text in source_inputs(value))])
+    used_binders = [binder for binder in original_binders
+                    if re.search(r"(?<![\w'])" + re.escape(binder['name']) + r"(?![\w'])", source_text)]
+    # The inherited source has one explicit witness scope. Nested scopes need
+    # their own packaging design rather than moving a binder across a wand.
+    tree = _remove_terminal(ownership['tree'], terminal_id)
+    if tree['kind'] != 'exists' or any(binder['scope'] != [] for binder in original_binders):
+        raise ValueError('The join needs one explicit source witness scope')
+    additions = [{**binder, 'expression': input_expr(binder['name'], int(binder['type'].split()[1])).to_dict()}
+                 for binder in plan['binders']]
+    available = {binder['name']: binder for binder in [*used_binders, *additions]}
+    ordered = []
+    for register in register_order:
+        value = state.registers[register]
+        for binder in available.values():
+            if binder not in ordered and str(binder['name']) in source_inputs(value):
+                ordered.append(binder)
+    ordered.extend(binder for binder in available.values() if binder not in ordered)
+    tree['binders'] = [{key: value for key, value in binder.items() if key != 'scope'} for binder in ordered]
+    ownership['binders'] = [{**binder, 'scope': [0]} for binder in ordered]
+    tree['scope'] = [0]
+    for component in components:
+        component['scope'] = [[0] if scope == [] else scope for scope in component.get('scope', [])]
+    if tree['body']['kind'] != 'sep_list':
+        raise ValueError('The join relation scope is not an owned resource list')
+    for index, relation in enumerate(plan['relations']):
+        key = f'join_relation_{index}'
+        if key in records[0]:
+            raise ValueError('A join relation captures an owned resource identifier')
+        components.append({'id': key, 'kind': 'opaque', 'source': '⌜' + relation['coq'] + '⌝', 'scope': [[0]],
+                           'provenance': {'join_edge_count': len(alternatives), 'relation': deepcopy(relation)}})
+        tree['body']['children'].append({'kind': 'component', 'id': key})
+    provenance = {'contract_exit': deepcopy(continuation['source_binding'])}
+    components.append({'id': terminal_id, 'kind': 'opaque', 'source': name, 'scope': [],
+                       'provenance': provenance, 'seed_component': {'kind': 'opaque', 'coq': name}})
+    ownership.update(tree={'kind': 'sep', 'left': tree, 'right': {'kind': 'component', 'id': terminal_id}},
+                     components=components, existential_prefixes=[])
+    register_bindings = {}
+    for binder in ordered:
+        for register in register_order:
+            value = state.registers[register]
+            if value == input_expr(binder['name'], value.width):
+                register_bindings.setdefault(binder['name'], (register, value.width))
+    full_witness_plan = witness_plan(ordered, register_bindings=register_bindings)
+    owned_edges = []
+    for edge in plan['edges']:
+        record = deepcopy(edge)
+        record['ordered_witnesses'] = [{'binder': binder['name'],
+            'expression': deepcopy(edge['original_values'][register_bindings[binder['name']][0]])}
+            for binder in ordered]
+        record['widened_substitution'] = {row['binder']: row['expression'] for row in record['ordered_witnesses']}
+        owned_edges.append(record)
+    plan.update(owned_binders=deepcopy(ordered), owned_edges=owned_edges, join_witness_plan=full_witness_plan)
+    seed = OwnedSeed(state, ownership, resources, deepcopy(original_seed.facts), [],
+                     deepcopy(plan['join_refusals']), owned_edges, full_witness_plan, 'join')
+    rendered = render_resource_boundary(ownership, apply_owned_writes(resources, [], facts=seed.facts),
+                                        state, vocabulary=vocabulary)
+    if rendered['block_status'] != 'completed':
+        raise ValueError('The generalized join ownership cannot render')
+    boundary = {'pc': hex(entry_pc), 'status': 'generated_join', 'alternatives': [
+        {'predecessor_pc': None, 'seed_pc': hex(entry_pc), 'path': [], 'state': state.to_dict(),
+         'resource_boundary': rendered}]}
+    return {'seed': seed, 'plan': plan, 'boundary': boundary, 'continuation': deepcopy(continuation)}
+
+
 def exit_pullback(exits, *, allows):
     """Form one meaning conjunct only for a single symbolic return image.
 
@@ -219,3 +450,57 @@ def exit_pullback(exits, *, allows):
     return {'status': 'generated', 'kind': 'exit_pullback', 'image': deepcopy(image),
             'return': deepcopy(exits[0].get('return')), 'allows': deepcopy(allows),
             'proof_established': False}
+
+
+def attach_exit_pullback(join, traversal, *, output_resource_id, return_expression, allows, vocabulary):
+    """Attach the contract relation only after checking every traversal stop."""
+    try:
+        from .forward_resource_design import _state_from_result
+        from .forward_resources import apply_owned_writes, parse_source_ownership, render_resource_boundary
+    except ImportError:
+        from forward_resource_design import _state_from_result
+        from forward_resources import apply_owned_writes, parse_source_ownership, render_resource_boundary
+    seed, exits, obligations = join['seed'], [], []
+    for stop in traversal['stops']:
+        if stop['reason'] == 'infeasible':
+            obligations.append({'path': deepcopy(stop['path']), 'state': deepcopy(stop.get('state')),
+                                'proof_status': 'open', 'required_rocq_guard_projection': True})
+            continue
+        if (stop['reason'] != 'unknown_pc' or stop.get('stage') != 'block_exit'
+                or normalize(Expr.from_dict(stop['actual_pc'])) != normalize(return_expression)):
+            refusal = {'kind': 'join_exit_pullback_refusal', 'reason': stop['reason'],
+                       'path': deepcopy(stop.get('path')), 'actual_pc': deepcopy(stop.get('actual_pc'))}
+            return {**join, 'pullback': {'status': 'refused', **refusal}}
+        state = _state_from_result(stop['state'])
+        image = apply_owned_writes(seed.resources, state.writes, conditions=state.conditions, facts=seed.facts,
+                                   endianness=state.endianness)
+        boundary = render_resource_boundary(seed.ownership, image, state, vocabulary=vocabulary)
+        if boundary['block_status'] != 'completed':
+            return {**join, 'pullback': {'status': 'refused', 'kind': 'join_exit_pullback_refusal',
+                                       'reason': 'incomplete_final_ownership'}}
+        components = [component for component in boundary['components'] if component['id'] == output_resource_id]
+        if len(components) != 1:
+            raise ValueError('The exit image has no unique owned output resource')
+        parsed = parse_source_ownership(components[0]['source'], provenance=components[0]['provenance'])
+        if len(parsed['components']) != 1 or parsed['components'][0]['kind'] != 'byte_array':
+            return {**join, 'pullback': {'status': 'refused', 'kind': 'join_exit_pullback_refusal',
+                                       'reason': 'incomplete_final_output_array'}}
+        exits.append({'kind': 'symbolic_return', 'return': return_expression.to_dict(),
+                      'image': parsed['components'][0]['value']})
+    pullback = exit_pullback(exits, allows=allows)
+    pullback['source_refutations'] = obligations
+    if pullback['status'] != 'generated':
+        return {**join, 'pullback': pullback}
+    owned = deepcopy(seed)
+    key = 'join_exit_meaning'
+    if any(component['id'] == key for component in owned.ownership['components']):
+        raise ValueError('The exit meaning captures an owned resource identifier')
+    source = '⌜(' + allows['application'] + ') (' + pullback['image'] + ')⌝'
+    owned.ownership['components'].insert(-1, {'id': key, 'kind': 'opaque', 'source': source, 'scope': [[0]],
+        'provenance': {'contract_allows': deepcopy(allows['source_binding']), 'proof_established': False}})
+    owned.ownership['tree']['left']['body']['children'].append({'kind': 'component', 'id': key})
+    body = render_resource_boundary(owned.ownership, apply_owned_writes(owned.resources, [], facts=owned.facts),
+                                    owned.state, vocabulary=vocabulary)
+    boundary = deepcopy(join['boundary'])
+    boundary['alternatives'][0]['resource_boundary'] = body
+    return {**join, 'seed': owned, 'boundary': boundary, 'pullback': pullback}

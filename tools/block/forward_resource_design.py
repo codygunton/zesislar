@@ -26,7 +26,7 @@ def _state_from_result(record):
                          {key: Expr.from_dict(value) for key, value in record.get('retained_registers', {}).items()},
                          list(record.get('memory_disjoint', [])),
                          list(record['register_writes']) if 'register_writes' in record else None,
-                         list(record.get('source_intervals', [])))
+                         list(record.get('source_intervals', [])), list(record.get('source_alignments', [])))
 
 
 def _prepare_state(state, seed):
@@ -65,7 +65,8 @@ def evaluate_owned_function(function, traces, initial_seeds, *, vocabulary, max_
             return rendered
         return None
 
-    report = evaluate_function(function, traces, initial, max_paths=max_paths, check_state=check)
+    report = evaluate_function(function, traces, initial, max_paths=max_paths, check_state=check,
+                               generated_seeds={pc: seed.join_kind for pc, seed in seeds.items() if seed.join_kind})
     report['resource_layer_schema'] = 'owned-resources.v1'
     for boundary in report['boundaries']:
         for alternative in boundary['alternatives']:
