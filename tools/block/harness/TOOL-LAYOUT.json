@@ -87,5 +87,7 @@
   "block/OBJECT-IMPORT-MIGRATION-ORIGINS.json": "policies/OBJECT-IMPORT-MIGRATION-ORIGINS.json",
   "block/declaration_parallel_plan.py": "code/declaration_parallel_plan.py",
   "block/check_data_only_lemmas.py": "../check_data_only_lemmas.py",
-  "policies/PORT-V33-OPEN-AUTHORITY.json": "policies/PORT-V33-OPEN-AUTHORITY.json"
+  "policies/PORT-V33-OPEN-AUTHORITY.json": "policies/PORT-V33-OPEN-AUTHORITY.json",
+  "block/scope_bookings.py": "code/scope_bookings.py",
+  "policies/CONTROLLER-PEAK-OBSERVATIONS.json": "policies/CONTROLLER-PEAK-OBSERVATIONS.json"
 }

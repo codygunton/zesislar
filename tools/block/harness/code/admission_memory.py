@@ -379,11 +379,19 @@ class ScopeReader:
                 elif (record['owner'] != actor or record['generation'] != generation
                       or tuple(record['token_identity']) != before):
                     raise ValueError('The admitted shell token identity changed.')
-                if (fields.get('writer') != ''
-                        or max(int(fields['memory_claim_bytes']),
-                               int(fields.get('memory_probe_claim_bytes', 0)))
-                        != ledger_claims(data)[key]):
+                amount = max(int(fields['memory_claim_bytes']),
+                             int(fields.get('memory_probe_claim_bytes', 0)))
+                canonical = ledger_claims(data)[key]
+                if fields.get('writer') != '':
                     raise ValueError('The early shell booking differs from its claim.')
+                if amount != canonical:
+                    from scope_bookings import authenticate_client
+                    config_path = Path(owner_args[3])
+                    config = self.read(config_path)
+                    if hashlib.sha256(config_path.read_bytes()).hexdigest() != owner_args[4]:
+                        raise ValueError('The early controller configuration changed.')
+                    authenticate_client(config, owner_args[2], owner['block'], out,
+                                        launch, amount, canonical)
                 source = self.guard_source(fields['guard_source_path'], fields['guard_source_sha256'])
                 if source['path'] != str(guard):
                     raise ValueError('The early shell uses another public guard.')

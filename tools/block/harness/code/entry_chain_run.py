@@ -161,7 +161,7 @@ def stage_job(config,job,out):
     if digest(workspace/'tools/entry_chain_coqc.sh') != digest(expected_wrapper):
         raise ValueError('The final staged compiler wrapper differs from the bounded physical policy.')
     clone_copy.copy2(Path(__file__).with_name('entry_chain_resources.py'), workspace/'tools/block/entry_chain_resources.py')
-    for name in ['entry_chain_compiler.py','compile_measure.py','clone_copy.py','binding_cache.py','compiler_snapshot.py','source_context.py','declaration_outputs.py']:
+    for name in ['entry_chain_compiler.py','compile_measure.py','clone_copy.py','binding_cache.py','compiler_snapshot.py','source_context.py','declaration_outputs.py','scope_bookings.py']:
         clone_copy.copy2(Path(__file__).with_name(name),workspace/'tools/block'/name)
         src=Path(__file__).with_name(name);dst=workspace/'tools/block'/name
         record={'source':binding(src),'owned':binding(dst),'distinct_inode':True}
@@ -199,7 +199,7 @@ def stage_job(config,job,out):
         runtime['mcp_argv']=launcher
     runtime['physical_compiler']=deepcopy(config['effective_compiler_version']['compiler'])
     runtime.update(harness=deepcopy(config.get('harness')),native_route=deepcopy(job.get('native_route')),control_session=deepcopy(config.get('control_session')),declaration_checks=deepcopy(config.get('declaration_checks',[])),
-        phase=job['phase'],target={'block':job.get('target')},
+        phase=job['phase'],declarations_only=bool(config.get('declarations_only')),target={'block':job.get('target')},
         ordered_modules=job.get('ordered_modules',[]),job_output=str(out),
         canonical_admission=job['policy'])
     if job.get('native_route'):
@@ -243,6 +243,8 @@ def stage_job(config,job,out):
         output_modules[module]=str(preflight.relative_to(workspace));output_order.append(module)
     declarations=declared_outputs(output_modules,output_order,workspace,config['bindings'],donor=source)
     runtime['declared_outputs']=declarations
+    from scope_bookings import compiler_resources
+    runtime['compiler_scope_bookings']=compiler_resources(runtime,config,workspace,out)
     output_paths={name for row in declarations for name in row['outputs']}
     save(out/'DECLARED-OUTPUT-ABSENCE.json',{'modules':runtime['ordered_modules'],'declarations':declarations,
         'donor_bindings_preserved':True,'observed_before_snapshot':True})
@@ -251,6 +253,11 @@ def stage_job(config,job,out):
         and x['owned']['path'] not in output_paths]
     if runtime.get('cache_import_graph') is not None:
         runtime['bindings'].append(runtime['cache_import_graph'])
+    resources=runtime['compiler_scope_bookings']
+    if resources['profile'] is not None:
+        runtime['bindings'].append(resources['profile'])
+    for evidence in resources['evidence'].values():
+        runtime['bindings'].extend(evidence[name] for name in ('receipt','physical_result') if name in evidence)
     if preflight is not None:
         runtime['bindings'].extend([binding(preflight),runtime['native_parse_preflight']])
     runtime['bindings'].append(binding(out/'OBJECT-IMPORT-REUSE-CHECK.json'))
@@ -264,7 +271,7 @@ def stage_job(config,job,out):
     runtime['bindings'].extend(binding(workspace/rel) for rel in [
         'tools/entry_chain_coqc.sh','tools/block/stock_scope_stdin_relay.py',
         'tools/block/entry_chain_compiler.py','tools/block/entry_chain.py',
-        'tools/block/entry_chain_resources.py','tools/block/proof_bindings.py','tools/block/binding_cache.py','tools/block/compiler_snapshot.py','tools/block/source_context.py','tools/block/declaration_outputs.py','tools/block/seed_bindings.py','tools/block/runtime_ignores.py','tools/block/entry_chain_process.py','tools/block/entry_chain_plan.py'])
+        'tools/block/entry_chain_resources.py','tools/block/proof_bindings.py','tools/block/binding_cache.py','tools/block/compiler_snapshot.py','tools/block/source_context.py','tools/block/declaration_outputs.py','tools/block/scope_bookings.py','tools/block/seed_bindings.py','tools/block/runtime_ignores.py','tools/block/entry_chain_process.py','tools/block/entry_chain_plan.py'])
     if sealed or config.get('prepared_tool_transition'):
         runtime['bindings'].extend(row['owned'] for row in transition['copies'])
     # One canonical path can occur in source and physical views. Refuse differing hashes.
@@ -325,6 +332,8 @@ def final_accounting(group):
 def inside(out):
     normalize_cpu();out=Path(out)
     runtime=strict_loads((out/'RUNTIME.json').read_text())
+    from scope_bookings import require_client
+    require_client(runtime,os.environ,kernel_driver=(out/'KERNEL-ARGV.json').exists())
     group=aggregate_root();info=group.stat()
     save(out/'BATCH-IDENTITY.json',{'aggregate_path':str(group),'aggregate_device':info.st_dev,
         'aggregate_inode':info.st_ino,'inside_pid':os.getpid(),'inside_startticks':ticks(os.getpid())})
@@ -382,8 +391,10 @@ def run_stock_job(config,job,out,prepared=None):
         binding_recheck(config)
         runtime,workspace=(prepared['runtime'],prepared['workspace']) if prepared else stage_job(config,job,out)
         env=clean_environment();env.update(environment(job['phase'],job['claim_bytes'],job=job),PYTHONDONTWRITEBYTECODE='1',PYTHONHASHSEED='0')
+        from scope_bookings import client_environment
+        env,controller_booking=client_environment(config,job,env)
         argv=outer_argv(workspace,job['key'],out)
-        save(out/'LAUNCH.json',{'argv':argv,'owner':owner,'cpu_policy':'unlimited','custom_observer':False})
+        save(out/'LAUNCH.json',{'argv':argv,'owner':owner,'cpu_policy':'unlimited','custom_observer':False,'controller_booking':controller_booking})
         with (out/'stock.stdout').open('wb') as stdout,(out/'stock.stderr').open('wb') as stderr:
             child=__import__('controller_cleanup').launch(argv,cwd=workspace,env=env,stdout=stdout,stderr=stderr,start_new_session=True)
             child_start=ticks(child.pid);save(out/'BATCH-PROCESS.json',{'pid':child.pid,'startticks':child_start});from scratch_limits import wait_with_limits
