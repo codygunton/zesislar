@@ -118,6 +118,69 @@ class EntryIntroCompilerRoute(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((self.output / 'HOOKS-COMPILE.json').read_bytes(), hooks)
         self.assertTrue((self.output / 'ENTRYINTRO-COMPILE.json').is_file())
 
+    async def test_guarded_owners_publish_one_object_receipt(self):
+        for module in [HOOKS, ENTRY]:
+            with self.subTest(module=module):
+                result = await self.compile(module)
+                accepted = Mock()
+                recheck = Mock()
+                obj = self.source.with_suffix('.vo')
+                flags = ['-Q', str(self.workspace), 'Fixture']
+                self.assertTrue(provider.accept_guarded_dependency(
+                    accepted, module, self.source, obj, flags, result, recheck))
+                recheck.assert_called_once_with()
+                accepted.accept.assert_called_once_with(self.source, obj,
+                    '/home/cody/islaris/_opam/bin/coqc', flags, result)
+
+    async def test_ordinary_mcp_success_does_not_publish_twice(self):
+        self.call = AsyncMock(return_value=dict(success=True))
+        result = await self.compile()
+        accepted = Mock()
+        recheck = Mock()
+        self.assertFalse(provider.accept_guarded_dependency(accepted, ENTRY,
+            self.source, self.source.with_suffix('.vo'), [], result, recheck))
+        accepted.accept.assert_not_called()
+        recheck.assert_not_called()
+
+    async def test_failed_guarded_compilation_cannot_publish(self):
+        result = dict(success=False, method='stock-guarded-dependency-build',
+                      MCP_refusal_result=REFUSAL)
+        accepted = Mock()
+        self.assertFalse(provider.accept_guarded_dependency(accepted, ENTRY,
+            self.source, self.source.with_suffix('.vo'), [], result, self.recheck))
+        accepted.accept.assert_not_called()
+        self.recheck.assert_not_called()
+
+    async def test_other_refusal_or_owner_cannot_publish(self):
+        accepted = Mock()
+        result = await self.compile()
+        for module, changed in [(ENTRY, dict(error='another refusal')),
+                                ('Other.Module', REFUSAL)]:
+            with self.subTest(module=module):
+                value = dict(result, MCP_refusal_result=changed)
+                self.assertFalse(provider.accept_guarded_dependency(accepted,
+                    module, self.source, self.source.with_suffix('.vo'), [],
+                    value, self.recheck))
+        accepted.accept.assert_not_called()
+
+    async def test_changed_source_blocks_guarded_receipt(self):
+        result = await self.compile()
+        self.source.write_text('Declare ML Module "another.plugin".\n')
+        accepted = Mock()
+        with self.assertRaisesRegex(ValueError, 'plugin declaration changed'):
+            provider.accept_guarded_dependency(accepted, ENTRY, self.source,
+                self.source.with_suffix('.vo'), [], result, self.recheck)
+        accepted.accept.assert_not_called()
+
+    async def test_failed_recheck_blocks_guarded_receipt(self):
+        result = await self.compile()
+        accepted = Mock()
+        recheck = Mock(side_effect=ValueError('The compiler binding changed.'))
+        with self.assertRaisesRegex(ValueError, 'compiler binding changed'):
+            provider.accept_guarded_dependency(accepted, ENTRY, self.source,
+                self.source.with_suffix('.vo'), [], result, recheck)
+        accepted.accept.assert_not_called()
+
 
 if __name__ == '__main__':
     unittest.main()
