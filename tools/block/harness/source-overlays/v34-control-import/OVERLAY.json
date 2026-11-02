@@ -1,0 +1,44 @@
+{
+  "schema": "port.v34.control-import-overlay.v1",
+  "module": "ZesuSsz.Evidence.V34CombinedControls",
+  "source_relative_path": "tools/block/harness/source-overlays/v34-control-import/V34CombinedControls.v",
+  "source_sha256": "7698fb51059038cb5ca7b461d42c5d109db23368660889c073bd68fe59bad345",
+  "parent_source_packet": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-complete-source-v1/SOURCE.json",
+    "sha256": "a6a103622e63b423ac2088e2fe14427759da3fc80d87c106ffcbdac6f34b77eb"
+  },
+  "parent_control": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-complete-source-v1/sources/ZesuSsz/Evidence/V34CombinedControls.v",
+    "sha256": "341b998aa01b6f75754501608752a9933a67510d0a984a8faa57542f993df7b3"
+  },
+  "classifier_commit": "c80b3894a76b71969d2f9e113a793317cec7c31f",
+  "classifier_sources": [
+    {
+      "path": "tools/block/harness/code/declaration_source.py",
+      "sha256": "a3ca1f955974f06313b3cc4ed0264c997433888f77a37380cd262af22d027c49"
+    },
+    {
+      "path": "tools/block/harness/code/declaration_parallel_plan.py",
+      "sha256": "36f8569b0e5dc75eef556d4649f62fb41eef4dea474b0ebbf08443306efcd70d"
+    },
+    {
+      "path": "tools/block/harness/code/memory_policy.py",
+      "sha256": "63d9256bc6cf22673fa309b2cc77fd9b64b39947fc0a466eb0f759ee6e36ef26"
+    }
+  ],
+  "added_lines": [
+    "Require Import ZesuSsz.Automation.SwitchDispatch.",
+    "Print Ltac zesu_switch_enabled."
+  ],
+  "owner": "ZesuSsz.Automation.SwitchDispatch",
+  "availability_query_precedes_negative_controls": true,
+  "removing_added_lines_recovers_original": true,
+  "checks36": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-complete-source-v1/CHECKS36.json",
+    "sha256": "0a0fba699e440163bbb036d8eeaac2d643ca243ebdd47974f255c2538e4a1289"
+  },
+  "statements_and_rule_bodies_unchanged": true,
+  "stub_added": false,
+  "proof_calls": 0,
+  "compiler_calls": 0
+}
