@@ -6,11 +6,11 @@ import unittest
 
 try:
     from .forward_resource_design import _state_from_result
-    from .loop_widen import FoldRule, UnsignedCursorInduction, recheck_renderable_cursor, source_sum_bounds, loop_read_window, bind_zero_read_refutation, affine_step, fold_recurrence, widen_loop_head, write_set
+    from .loop_widen import FoldRule, UnsignedCursorInduction, recheck_renderable_cursor, source_sum_bounds, loop_read_window, bind_zero_read_refutation, bind_owned_read_target, affine_step, fold_recurrence, widen_loop_head, write_set
     from .symbolic_state import bits, input_expr, operation, SymbolicState, evaluate_block
 except ImportError:
     from forward_resource_design import _state_from_result
-    from loop_widen import FoldRule, UnsignedCursorInduction, recheck_renderable_cursor, source_sum_bounds, loop_read_window, bind_zero_read_refutation, affine_step, fold_recurrence, widen_loop_head, write_set
+    from loop_widen import FoldRule, UnsignedCursorInduction, recheck_renderable_cursor, source_sum_bounds, loop_read_window, bind_zero_read_refutation, bind_owned_read_target, affine_step, fold_recurrence, widen_loop_head, write_set
     from symbolic_state import bits, input_expr, operation, SymbolicState, evaluate_block
 
 
@@ -388,6 +388,7 @@ class LoopWidenTests(unittest.TestCase):
         domain = json.loads((HERE / 'testdata/loop_widen_domain.json').read_text())
         table = FoldRule(**json.loads((HERE / 'testdata/loop_widen_fold_table.json').read_text()))
         targets = json.loads((HERE / 'testdata/loop_widen_zero_refutations.json').read_text())
+        read_targets = json.loads((HERE / 'testdata/loop_widen_owned_reads.json').read_text())
         bounds = source_sum_bounds(domain['original_layout_clauses'], domain['parameter_substitution'],
             domain['constants'], width=64, provenance={'source': domain['source_path']})
         for suffix in ('6a24', '6ac4'):
@@ -413,6 +414,13 @@ class LoopWidenTests(unittest.TestCase):
                     for candidate in result.fold_candidates for edge in candidate['edges']))
                 self.assertTrue(all(row['kernel_loop_entailment'] == 'OPEN' for row in matched))
                 self.assertFalse(result.to_dict()['seed_ready'])
+                read_binding = next(row for row in read_targets if row['loop'] == suffix)
+                reads = bind_owned_read_target(result, read_binding)
+                self.assertTrue(reads)
+                self.assertTrue(all(row['kernel_loop_entailment'] == 'OPEN' for row in reads))
+                self.assertEqual(before, [row.to_dict() for row in result.body_results])
+                with self.assertRaisesRegex(ValueError, 'No exact owned read'):
+                    bind_owned_read_target(result, dict(read_binding, array=input_expr('other').to_dict()))
                 bad = dict(binding, endpoint=bits(0, 64).to_dict())
                 with self.assertRaisesRegex(ValueError, 'different source endpoint'):
                     bind_zero_read_refutation(result, bad)

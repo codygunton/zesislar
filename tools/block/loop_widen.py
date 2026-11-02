@@ -550,6 +550,7 @@ class LoopWidening:
     write_set: tuple
     fold_candidates: list = field(default_factory=list)
     zero_refutations: list = field(default_factory=list)
+    owned_read_verifications: list = field(default_factory=list)
 
     def to_dict(self):
         return {'schema': 'source.loop-widening.v1', 'state': self.seed.to_dict(),
@@ -560,6 +561,7 @@ class LoopWidening:
                     'refutation': 'OPEN'} for index, row in enumerate(self.body_results)
                     if row.status == 'control_transfer'],
                 'refusals': self.refusals, 'zero_refutations': self.zero_refutations,
+                'owned_read_verifications': self.owned_read_verifications,
                 'body_results': [result.to_dict() for result in self.body_results],
                 'witness_plan': self.witness_plan, 'write_set': list(self.write_set),
                 'seed_ready': not self.refusals, 'kernel_entailments': 'OPEN'}
@@ -612,6 +614,45 @@ def bind_zero_read_refutation(proposal, binding):
     for refusal in proposal.refusals:
         if refusal['relation'] == 'recurrence':
             refusal['linked_source_refutations'] = [dict(row) for row in matches]
+    return matches
+
+
+def bind_owned_read_target(proposal, binding):
+    """Bind a verified pure lookup target without changing its owned read.
+
+    Complete loop entailments still need the source domain and head relation.
+    The original byte owner, base, value, path and range obligation stay intact.
+    """
+    receipt = binding.get('verification_receipt', {})
+    if (binding.get('schema') != 'source.loop-owned-read.v1'
+            or receipt.get('method') != 'module_m' or receipt.get('assumptions') != []
+            or not receipt.get('path') or not receipt.get('sha256')
+            or not binding.get('source_domain') or not binding.get('compiled_object_sha256')):
+        raise ValueError('An owned-read binding needs a verified exact source target')
+    cursors = [row for row in proposal.relations if row['kind'] == 'affine_cursor']
+    if len(cursors) != 1 or binding.get('endpoint') != cursors[0]['limit']:
+        raise ValueError('An owned-read target has a different source endpoint')
+    guard = Expr.from_dict(binding['count_guard'])
+    if guard not in proposal.seed.conditions:
+        raise ValueError('An owned-read target lacks its original source width guard')
+    matches = []
+    for index, row in enumerate(proposal.body_results):
+        for read_index, read in enumerate(row.state.read_obligations):
+            if (read.get('kind') != 'owned_symbolic_byte_range'
+                    or read.get('array') != binding.get('array')
+                    or read.get('base') != binding.get('base')):
+                continue
+            if read.get('address') != input_expr('machine_' + cursors[0]['register'], 64).to_dict():
+                continue
+            if guard not in row.state.conditions:
+                continue
+            matches.append({'body_result_index': index, 'read_obligation_index': read_index,
+                'source_path': list(row.path), 'owner': read['owner'],
+                'status': 'VERIFIED_SOURCE_TARGET', 'verification_receipt': dict(receipt),
+                'binding': dict(binding), 'kernel_loop_entailment': 'OPEN'})
+    if not matches:
+        raise ValueError('No exact owned read matches the verified source target')
+    proposal.owned_read_verifications.extend(matches)
     return matches
 
 
