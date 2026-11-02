@@ -29,7 +29,8 @@ class JoinDeclarationTests(unittest.TestCase):
                 'Require Import ZesuSsz.Automation.All.\n'
                 'Require Import isla.riscv64.riscv64.\n'))
         self.assertIn('let K : iProp Sigma := (True)%I in', result['entry'])
-        self.assertIn('Typeclasses Opaque machineJoin.', result['entry'])
+        self.assertIn('#[global] Typeclasses Opaque machineJoin.', result['entry'])
+        self.assertIn('\n  (let K : iProp Sigma := (True)%I in', result['structural'])
         self.assertIn('Instance machineJoin_intro', result['structural'])
         self.assertIn('@PreOrder_Reflexive', result['structural'])
         self.assertIn('(∃ (word : bv 64), "x11" ↦ᵣ RVal_Bits word ∗ K)', result['structural'])

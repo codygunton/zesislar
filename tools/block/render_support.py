@@ -539,9 +539,12 @@ def definition_introduction_source(source, name):
     if len(commands) != 1:
         raise ValueError("The introduction source contains extra commands.")
     arguments = " ".join("(" + item["name"] + ")" for item in parameters)
+    # A bare let is a term, but cannot occupy an application argument without
+    # parentheses. Keep the exact definition body inside that argument.
+    argument = "(" + body + ")" if re.match(r"let\b", body) else body
     return (f"#[export] Instance {name}_intro{telescope} :\n"
             f"  @ZesuSsz.Automation.Hooks.ZesuPureFactIntro Sigma ({name} {arguments})\n"
-            f"  {body} := @PreOrder_Reflexive _ _ bi.entails_po _.\n")
+            f"  {argument} := @PreOrder_Reflexive _ _ bi.entails_po _.\n")
 
 
 def introduction_predicate_owner(source, namespace, imports, resolver):

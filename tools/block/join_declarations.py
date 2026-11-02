@@ -110,7 +110,7 @@ def join_declarations(join, *, entry_name, entry_module, parameters, imports):
             seed = row['seed']
             row['seed'] = seed.state.to_dict() if hasattr(seed, 'state') else seed.to_dict() if hasattr(seed, 'to_dict') else seed
         return {'entry': header + '\n'.join(declarations) + '\n' +
-                    '\n'.join('Typeclasses Opaque ' + name + '.' for name in names) + '\n',
+                    '\n'.join('#[global] Typeclasses Opaque ' + name + '.' for name in names) + '\n',
                 'structural': structural, 'definition': definition, 'definitions': declarations,
                 'witness_plans': witnesses, 'loop_classes': evidence,
                 'proof_established': False, 'kernel_entailments': 'OPEN'}
@@ -118,6 +118,6 @@ def join_declarations(join, *, entry_name, entry_module, parameters, imports):
                   f'  let {continuation["name"]} : iProp Sigma := ({continuation["coq"]})%I in\n'
                   f'  ({resource["body"]})%I.\n')
     structural = header + f'Require Import {entry_module}.\n' + definition_introduction_source(definition, entry_name)
-    return {'entry': header + definition + f'\nTypeclasses Opaque {entry_name}.\n',
+    return {'entry': header + definition + f'\n#[global] Typeclasses Opaque {entry_name}.\n',
             'structural': structural, 'definition': definition,
             'witness_plan': deepcopy(join['seed'].join_witness_plan), 'proof_established': False}
