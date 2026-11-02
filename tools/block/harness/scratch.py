@@ -357,6 +357,12 @@ def prepare(a):
     plan_targets=[row['module'] for row in targets] if a.prerequisite_target_union else ([RULES] if a.declarations_only and a.rules else [module])
     closure_targets=list(dict.fromkeys([row['module'] for row in targets]+[name for name in modules if '.Generated.' in name]+plan_targets))
     edges=reconcile_import_closure(closure_targets,edges,modules,workspace,installed)
+    from closed_object_staging import stage as stage_closed_objects
+    closed_install=stage_closed_objects(c,workspace,modules)
+    if closed_install['count']:
+        save(out/'CLOSED-OBJECT-INSTALL.json',closed_install)
+        inherited=[row[key] for row in closed_install['installed'] for key in ['object','sidecar']]
+        c['bindings']=combined_bindings(c['bindings']+inherited+[binding(out/'CLOSED-OBJECT-INSTALL.json')])
     forward={}
     for edge in edges:forward.setdefault(edge['from'],set()).add(edge['to'])
     missing=missing_prerequisite_objects(closure_targets,forward,modules,workspace)
