@@ -482,6 +482,10 @@ class LoopWidening:
         return {'schema': 'source.loop-widening.v1', 'state': self.seed.to_dict(),
                 'binders': self.binders, 'relations': self.relations,
                 'folds': self.folds, 'fold_candidates': self.fold_candidates, 'edge_records': self.edge_records,
+                'control_transfer_obligations': [{'body_result_index': index, 'source_path': list(row.path),
+                    'actual_pc': row.state.registers['PC'].to_dict() if 'PC' in row.state.registers else None,
+                    'refutation': 'OPEN'} for index, row in enumerate(self.body_results)
+                    if row.status == 'control_transfer'],
                 'refusals': self.refusals,
                 'body_results': [result.to_dict() for result in self.body_results],
                 'witness_plan': self.witness_plan, 'write_set': list(self.write_set),
@@ -489,7 +493,7 @@ class LoopWidening:
 
 
 def widen_loop_head(seed, traces, *, loop_pc, provenance, fold_table=(),
-                    validate=None, origin_views=None, source_bounds=None, symbolic_read_ranges=(), index_name='i'):
+                    validate=None, origin_views=None, source_bounds=None, symbolic_read_ranges=(), instruction_pcs=None, index_name='i'):
     """Run one body pass and retain only per-edge validated relations.
 
     validate(candidate, edge, state) returns a source-bound check record with
@@ -523,7 +527,7 @@ def widen_loop_head(seed, traces, *, loop_pc, provenance, fold_table=(),
             widened.retained_registers[key] = widened.registers[key]
         binders.append({'name': name, 'type': 'bv ' + str(value.width),
                         'register': key, 'role': 'free'})
-    results = evaluate_block(traces, widened)
+    results = evaluate_block(traces, widened, instruction_pcs=instruction_pcs)
     backedges = [row for row in results if row.status == 'complete'
                  and row.state.registers.get('PC') == bits(loop_pc, seed.registers['PC'].width)]
     relations, folds, records, refusals = [], [], [], []
@@ -698,7 +702,7 @@ def widen_loop_head(seed, traces, *, loop_pc, provenance, fold_table=(),
         for number, (row, match) in enumerate(zip(backedges, matches)):
             edge = {'edge': 'backedge:' + str(number), 'source_path': list(row.path)}
             if match is None:
-                edge.update(status='OPEN_FAULT_REFUTATION',
+                edge.update(status='OPEN_PATH_REFUTATION',
                             reason='This source path has no matching shift-or byte step')
             else:
                 digit = Expr.from_dict(match['digit'])

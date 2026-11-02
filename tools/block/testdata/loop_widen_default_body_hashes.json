@@ -1,0 +1,53 @@
+{
+  "schema": "source.loop-default-body-hashes.v1",
+  "before_optional_pc_check": [
+    {
+      "loop": "6a24",
+      "source_index": 0,
+      "sha256": "0a3e91396e0d085fd8ade43590694f5f5bee70b0fdb77c480754a1282464ef1a",
+      "result_count": 33
+    },
+    {
+      "loop": "6a24",
+      "source_index": 1,
+      "sha256": "d66f68a076f8fd3b85e006595c9819583c6a337040c1f31e52bf3a3c45964325",
+      "result_count": 33
+    },
+    {
+      "loop": "6a24",
+      "source_index": 2,
+      "sha256": "ab34df35bccb3006147910a15f8faaf8b62a7cbce1f8eff7dc2f788a065489e7",
+      "result_count": 33
+    },
+    {
+      "loop": "6a24",
+      "source_index": 3,
+      "sha256": "973e72423b60bedf836915dfb01bb2b476d19df067ded78f679c3fde60a410c9",
+      "result_count": 33
+    },
+    {
+      "loop": "6ac4",
+      "source_index": 0,
+      "sha256": "9c8f99a043bc87c17374e3215e3009ed1fcb2deb4bab70b03c243ed1c23aad56",
+      "result_count": 33
+    },
+    {
+      "loop": "6ac4",
+      "source_index": 1,
+      "sha256": "77cbf58cc570c3b17fac63390f272bd145d5a19dfa9f59f22f880c5895bdd6f3",
+      "result_count": 33
+    },
+    {
+      "loop": "6ac4",
+      "source_index": 2,
+      "sha256": "700a19cd01f0807128b6bca918b2c88b5f15598b163b60ba020d8afb8ea12b36",
+      "result_count": 33
+    },
+    {
+      "loop": "6ac4",
+      "source_index": 3,
+      "sha256": "47738348a8cb503c70c420ab0c92ac185fdb0e77bfedfc4706d80c61949829fb",
+      "result_count": 33
+    }
+  ]
+}

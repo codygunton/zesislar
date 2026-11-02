@@ -1,16 +1,17 @@
 """Loop widening controls from frozen forward states and source traces."""
 from pathlib import Path
 import json
+import hashlib
 import unittest
 
 try:
     from .forward_resource_design import _state_from_result
     from .loop_widen import FoldRule, UnsignedCursorInduction, source_sum_bounds, loop_read_window, affine_step, fold_recurrence, widen_loop_head, write_set
-    from .symbolic_state import bits, input_expr, operation
+    from .symbolic_state import bits, input_expr, operation, SymbolicState, evaluate_block
 except ImportError:
     from forward_resource_design import _state_from_result
     from loop_widen import FoldRule, UnsignedCursorInduction, source_sum_bounds, loop_read_window, affine_step, fold_recurrence, widen_loop_head, write_set
-    from symbolic_state import bits, input_expr, operation
+    from symbolic_state import bits, input_expr, operation, SymbolicState, evaluate_block
 
 
 HERE = Path(__file__).parent
@@ -257,7 +258,7 @@ class LoopWidenTests(unittest.TestCase):
                 self.assertTrue(all(interval == [1, 8] for interval in candidate['source_count_intervals']))
                 self.assertIn('ByteWindowFold.zesu_byte_window_fold', candidate['assertion'])
                 self.assertTrue(any(edge['status'] == 'OPEN_RANGE_AND_LOOKUP' for edge in candidate['edges']))
-                self.assertTrue(any(edge['status'] == 'OPEN_FAULT_REFUTATION' for edge in candidate['edges']))
+                self.assertTrue(any(edge['status'] == 'OPEN_PATH_REFUTATION' for edge in candidate['edges']))
                 self.assertFalse(result.folds)
                 self.assertFalse(result.to_dict()['seed_ready'])
 
@@ -315,6 +316,73 @@ class LoopWidenTests(unittest.TestCase):
         bound['integer_term'] += ' + 18446744073709551616'
         with self.assertRaisesRegex(ValueError, 'different typed expression'):
             UnsignedCursorInduction(seed, [bound])
+
+    def test_optional_pc_check_preserves_default_source_bytes(self):
+        golden = json.loads((HERE / 'testdata/loop_widen_default_body_hashes.json').read_text())
+        for expected in golden['before_optional_pc_check']:
+            data, traces = self.fixture(expected['loop'])
+            source = _state_from_result(data['preheaders'][expected['source_index']]['state'])
+            default = [row.to_dict() for row in evaluate_block(traces, source)]
+            explicit_none = [row.to_dict() for row in evaluate_block(traces, source, instruction_pcs=None)]
+            self.assertEqual(default, explicit_none)
+            self.assertEqual(len(default), expected['result_count'])
+            digest = hashlib.sha256(json.dumps(default, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+            self.assertEqual(digest, expected['sha256'])
+
+    def test_optional_pc_check_stops_before_later_trace_after_fault(self):
+        source = SymbolicState(registers={'PC': bits(16, 64), 'x13': bits(7, 64)})
+        traces = ['(trace (write-reg |PC| () #x0000000000000100))',
+                  '(trace (write-reg |x13| () #x0000000000000000) (write-reg |PC| () #x0000000000000010))']
+        default, = evaluate_block(traces, source)
+        checked, = evaluate_block(traces, source, instruction_pcs=[16, 20])
+        self.assertEqual(default.state.registers['PC'], bits(16, 64))
+        self.assertEqual(default.state.registers['x13'], bits(0, 64))
+        self.assertEqual(checked.status, 'control_transfer')
+        self.assertEqual(checked.state.registers['PC'], bits(256, 64))
+        self.assertEqual(checked.state.registers['x13'], source.registers['x13'])
+        self.assertEqual(checked.state.reports[-1]['refutation'], 'OPEN')
+        self.assertEqual(checked.state.reports[-1]['expected_pc'], 20)
+        self.assertEqual(source.registers['PC'], bits(16, 64))
+
+    def test_optional_pc_check_changes_nothing_on_matching_flow(self):
+        source = SymbolicState(registers={'PC': bits(16, 64)})
+        traces = ['(trace (write-reg |PC| () #x0000000000000014))',
+                  '(trace (write-reg |PC| () #x0000000000000018))']
+        default, = evaluate_block(traces, source)
+        checked, = evaluate_block(traces, source, instruction_pcs=[16, 20])
+        self.assertEqual(default.to_dict(), checked.to_dict())
+        with self.assertRaisesRegex(ValueError, 'one nonnegative source PC'):
+            evaluate_block(traces, source, instruction_pcs=[16])
+
+    def test_checked_source_body_retains_zero_read_arm_and_open_transfers(self):
+        domain = json.loads((HERE / 'testdata/loop_widen_domain.json').read_text())
+        for suffix in ('6a24', '6ac4'):
+            data, traces = self.fixture(suffix)
+            for preheader in data['preheaders']:
+                seed = _state_from_result(preheader['state'])
+                window = loop_read_window(seed, 'x15', 'x11', source_facts=domain['source_facts'],
+                    provenance={'source': data['forward_source']})
+                result = widen_loop_head(seed, traces, loop_pc=int(data['pc'], 0),
+                    provenance={'source': data['forward_source']}, symbolic_read_ranges=[window],
+                    instruction_pcs=[int(row['pc'], 0) for row in data['body_traces']])
+                heads = [row for row in result.body_results if row.status == 'complete'
+                         and row.state.registers['PC'] == seed.registers['PC']]
+                reads = [row for row in heads if row.state.read_obligations]
+                zero = [row for row in heads if not row.state.read_obligations]
+                self.assertEqual(len(reads), 4)
+                self.assertEqual(len(zero), 1)
+                self.assertEqual(zero[0].state.registers['x16'], bits(0, 64))
+                self.assertTrue(all(fold_recurrence(result.seed.registers['x13'],
+                    row.state.registers['x13']) for row in reads))
+                self.assertTrue(result.to_dict()['control_transfer_obligations'])
+                self.assertTrue(all(row['refutation'] == 'OPEN'
+                    for row in result.to_dict()['control_transfer_obligations']))
+                self.assertFalse(result.to_dict()['seed_ready'])
+
+    def test_source_pc_cannot_wrap_to_match(self):
+        source = SymbolicState(registers={'PC': bits(0, 8)})
+        with self.assertRaisesRegex(ValueError, 'does not fit'):
+            evaluate_block(['(trace)'], source, instruction_pcs=[256])
 
 
 if __name__ == '__main__':

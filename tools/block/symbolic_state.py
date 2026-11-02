@@ -899,8 +899,19 @@ def evaluate_trace(source, state, *, live_registers=None, instruction_index=0, m
     return results
 
 
-def evaluate_block(traces, state, *, live_registers=None):
-    """Compose traces. Prune registers only after the final instruction."""
+def evaluate_block(traces, state, *, live_registers=None, instruction_pcs=None):
+    """Compose traces, optionally checking the next source instruction PC.
+
+    A mismatched transfer stops before the next trace. Its exact state remains
+    an OPEN control-flow/refutation obligation. With no instruction_pcs input,
+    composition retains its original behavior.
+    """
+    if instruction_pcs is not None:
+        traces = tuple(traces)
+        instruction_pcs = tuple(instruction_pcs)
+        if len(instruction_pcs) != len(traces) or any(type(pc) is not int or pc < 0
+                                                    for pc in instruction_pcs):
+            raise ValueError('A block PC check needs one nonnegative source PC per trace')
     results = [TraceResult(state.copy())]
     for index, source in enumerate(traces):
         following = []
@@ -908,6 +919,21 @@ def evaluate_block(traces, state, *, live_registers=None):
             if result.status != 'complete':
                 following.append(result)
                 continue
+            if instruction_pcs is not None:
+                actual = result.state.registers.get('PC')
+                if actual is not None and (type(actual.width) is not int or actual.width <= 0
+                        or instruction_pcs[index] >= 1 << actual.width):
+                    raise ValueError('A source instruction PC does not fit its register width')
+                expected = bits(instruction_pcs[index], actual.width) if actual is not None else None
+                if actual is None or actual != expected:
+                    stopped = result.state.copy()
+                    stopped.reports.append({'kind': 'block_instruction_pc_mismatch',
+                        'instruction_index': index, 'expected_pc': instruction_pcs[index],
+                        'actual_pc': actual.to_dict() if actual is not None else None,
+                        'path': list(result.path), 'refutation': 'OPEN'})
+                    following.append(TraceResult(stopped, status='control_transfer',
+                        unsupported_event='instruction-pc-mismatch', path=result.path))
+                    continue
             for successor in evaluate_trace(source, result.state, instruction_index=index):
                 successor.path = result.path + successor.path
                 following.append(successor)
