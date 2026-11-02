@@ -32,6 +32,17 @@ class DeclarationNamesTests(unittest.TestCase):
         self.assertEqual([x['name'] for x in result['missing']], ['project_switch'])
         self.assertFalse(result['complete_semantic_resolution'])
 
+    def test_lazymatch_body_does_not_hide_its_Ltac_declaration(self):
+        result = self.report('Require Project.Switch. Goal True. Proof. project_switch constr:(True). Abort.',
+                             helper='Ltac project_switch x := lazymatch goal with | _ => idtac end.')
+        self.assertEqual(len(result['missing']), 1)
+        self.assertEqual(result['missing'][0]['name'], 'project_switch')
+
+    def test_actual_switch_dispatch_catalogue_contains_the_observed_name(self):
+        source = Path(__file__).resolve().parents[3]/'ZesuSsz/Automation/SwitchDispatch.v'
+        doc = document('ZesuSsz.Automation.SwitchDispatch', source)
+        self.assertIn('zesu_switch_enabled', {row['short'] for row in doc['definitions']})
+
     def test_import_opens_the_project_tactic(self):
         result = self.report('Require Import Project.Switch. Goal True. Proof. project_switch constr:(True). Abort.')
         self.assertEqual(result['missing'], [])
@@ -130,6 +141,7 @@ class DeclarationNamesTests(unittest.TestCase):
         call = result['modules'][0]['calls'][0]
         self.assertFalse(call['project_visibility'])
         self.assertEqual(call['status'], 'unknown')
+        self.assertEqual(call['diagnostic'], 'Missing project import. Full resolution unknown.')
         self.assertIn('unsupported_imported_mechanism:Project.Plugin', call['unknown_reasons'])
         self.assertEqual(result['missing'], [])
 
@@ -147,6 +159,7 @@ class DeclarationNamesTests(unittest.TestCase):
         self.assertEqual(call['name'], 'project_switch')
         self.assertFalse(call['project_visibility'])
         self.assertEqual(call['status'], 'unknown')
+        self.assertEqual(call['diagnostic'], 'Missing project import. Full resolution unknown.')
         self.assertEqual(result['missing'], [])
 
     def test_unmodeled_import_and_notation_report_without_refusal(self):

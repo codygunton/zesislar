@@ -65,7 +65,7 @@ def document(module, source):
             scopes.pop()
         elif words[0] == 'Ltac' and len(words) > 2 and ':=' in words:
             if (IDENTIFIER.fullmatch(words[1]) and '.' not in words[1] and
-                    ':' not in words[2:words.index(':=')] and 'with' not in words):
+                    ':' not in words[2:words.index(':=')]):
                 definitions.append({'name': '.'.join([module, *scopes, words[1]]),
                                     'short': words[1], 'scope': list(scopes), 'index': index, 'local': 'Local' in raw[:2]})
             else:
@@ -209,6 +209,9 @@ def inspect(ordered, documents):
                     calls.append({'name': name, 'line': doc['text'].count('\n', 0, offset) + 1,
                                   'project_visibility': bool(matches), 'status': status,
                                   'possible_owners': sorted({module for module, _ in candidates}),
+                                  'diagnostic': ('Missing project import. Full resolution unknown.'
+                                      if not matches and status == 'unknown' and not shadowed and
+                                      all(module != owner for module, _ in candidates) else None),
                                   'unknown_reasons': sorted(reasons) if status == 'unknown' else []})
             for item in doc['definitions']:
                 if item['index'] == index:
