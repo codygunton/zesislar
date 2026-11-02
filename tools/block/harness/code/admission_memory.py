@@ -260,7 +260,7 @@ class ScopeReader:
             return cwd / '_build/agents/correctness-gates' / run
         raise ValueError('The legacy claim lacks a verifiable scope.')
 
-    def claim(self, data, key):
+    def claim(self, data, key, *, pending_shell=None):
         self.consulted = []
         try:
             if key in data.get('shell_claim_owners', {}):
@@ -293,13 +293,17 @@ class ScopeReader:
                     raise ValueError('The entry token differs from its ledger owner.')
                 if key != 'EntryChain_' + owner['block'] + '_' + owner['token']:
                     raise ValueError('The entry claim token changed.')
-                bound = self.read(out / 'BATCH-IDENTITY.json')
-                actor = {'pid': bound['inside_pid'], 'startticks': bound['inside_startticks']}
-                args = self.argv(actor)
-                if args[-2:] != ['--inside', str(out)] or Path(args[-3]).name != 'entry_chain_run.py':
-                    raise ValueError('The inside controller belongs to another output.')
-                row = self.scope(bound['aggregate_path'], actor, batch,
-                                 expected=(bound['aggregate_device'], bound['aggregate_inode']))
+                identity = out / 'BATCH-IDENTITY.json'
+                if not os.path.lexists(identity):
+                    row = self.early_entry_scope(data, key, owner, out, batch, pending_shell)
+                else:
+                    bound = self.read(out / 'BATCH-IDENTITY.json')
+                    actor = {'pid': bound['inside_pid'], 'startticks': bound['inside_startticks']}
+                    args = self.argv(actor)
+                    if args[-2:] != ['--inside', str(out)] or Path(args[-3]).name != 'entry_chain_run.py':
+                        raise ValueError('The inside controller belongs to another output.')
+                    row = self.scope(bound['aggregate_path'], actor, batch,
+                                     expected=(bound['aggregate_device'], bound['aggregate_inode']))
             else:
                 request = self.read(out / 'REQUEST.json')
                 if request['owner'] != owner or request['policy']['claim_key'] != key:
@@ -318,6 +322,105 @@ class ScopeReader:
             return row
         except (OSError, ValueError, KeyError, IndexError, StopIteration, TypeError) as error:
             return {'verified': False, 'live_bytes': 0, 'reason': str(error)}
+
+    def early_entry_scope(self, data, key, owner, out, batch, pending_shell):
+        """Bind the stock guard before its inside controller can write its receipt."""
+        launch = self.read(out / 'LAUNCH.json')
+        guard = out / 'workspace/tools/resource_guard.sh'
+        owner_args = self.argv(owner)
+        if (len(owner_args) != 7 or owner_args[1] != '-B'
+                or Path(owner_args[2]).name != 'entry_chain_run.py'
+                or owner_args[-2:] != [owner['block'], str(out)]):
+            raise ValueError('The early entry controller belongs to another output.')
+        inside = owner_args[:3] + ['--inside', str(out)]
+        expected = [str(guard), 'batch', 'entry-chain-' + owner['block'], '--',
+                    str(guard), 'scope', 'entry-chain-client', '--', *inside]
+        if launch['owner'] != owner or launch['argv'] != expected:
+            raise ValueError('The early entry launch differs from its owner.')
+        wrapper = self.argv(batch)
+        registry = str(guard.with_name('run_registry.py'))
+        prefix = wrapper[:wrapper.index('--')]
+        registry_index = prefix.index(registry)
+        if (prefix[:registry_index] not in ([prefix[0]], [prefix[0], '-B'])
+                or prefix[registry_index + 1:-1] != ['run', '--kind', 'stock-batch', '--owner']
+                or not prefix[-1] or wrapper[len(prefix) + 1:] != expected):
+            raise ValueError('The early batch wrapper belongs to another launch.')
+        candidates = [(Path(record['marker']), Path(record['marker']), record)
+                      for record in data.get('shell_claim_owners', {}).values()]
+        if pending_shell is not None:
+            candidates.insert(0, (*map(Path, pending_shell), None))
+        failures = []
+        for marker, token, record in candidates:
+            try:
+                before = self.file_identity(token.lstat())
+                lines = token.read_text().splitlines()
+                pairs = [line.split('=', 1) for line in lines[1:] if '=' in line]
+                fields = dict(pairs)
+                generation = fields['reservation_generation']
+                expected_directory = Path(data.get('shell_marker_directory', marker_directory()))
+                if (len(fields) != len(pairs) or marker.parent != expected_directory
+                        or marker.parent.resolve() != marker.parent
+                        or not re.fullmatch(r'[a-zA-Z0-9-]{16,80}', generation)
+                        or marker.name.partition('.')[2] != generation):
+                    raise ValueError('The early shell generation or namespace changed.')
+                actor = {'pid': int(marker.name.split('.')[0]),
+                         'startticks': int(fields['owner_start'])}
+                if record is None:
+                    if lines[0] != 'confirmed' or os.path.lexists(marker):
+                        raise ValueError('The pending shell token already exists.')
+                elif (record['owner'] != actor or record['generation'] != generation
+                      or tuple(record['token_identity']) != before):
+                    raise ValueError('The admitted shell token identity changed.')
+                if (fields.get('writer') != ''
+                        or max(int(fields['memory_claim_bytes']),
+                               int(fields.get('memory_probe_claim_bytes', 0)))
+                        != ledger_claims(data)[key]):
+                    raise ValueError('The early shell booking differs from its claim.')
+                source = self.guard_source(fields['guard_source_path'], fields['guard_source_sha256'])
+                if source['path'] != str(guard):
+                    raise ValueError('The early shell uses another public guard.')
+                args = self.argv(actor)
+                if args not in (expected[4:], ['bash', *expected[4:]]):
+                    raise ValueError('The early shell belongs to another command.')
+                sample = self.shell(token, owner=actor)
+                if sample.get('verified') is not True or sample.get('aggregate_verified') is not True:
+                    raise ValueError('The early shell aggregate is not authenticated.')
+                aggregate = Path(sample['scope'])
+                creator_pid = int(re.fullmatch(
+                    rf'zesuworkloads-aggregate{self.uid}p([0-9]+)r[0-9]+\.slice', aggregate.name)[1])
+                raw = (self.proc / str(creator_pid) / 'stat').read_text().rsplit(')', 1)[1].split()
+                creator = {'pid': creator_pid, 'startticks': int(raw[19])}
+                if self.process(creator) != batch['pid']:
+                    raise ValueError('The early aggregate has another batch creator.')
+                if self.argv(creator) not in (expected, ['bash', *expected]):
+                    raise ValueError('The early aggregate creator uses another command.')
+                chain = self.ancestry(actor['pid'], creator)
+                fence = int(fields['memory_fence_bytes'])
+                if (fence <= 0 or fence > SLICE_MAX_BYTES
+                        or int((aggregate / 'memory.max').read_text()) != fence
+                        or (aggregate / 'memory.swap.max').read_text().strip() != '0'):
+                    raise ValueError('The early aggregate fence changed.')
+                row = self.scope(aggregate, actor, batch,
+                                 expected=(sample['device'], sample['inode']))
+                if (int((aggregate / 'memory.max').read_text()) != fence
+                        or (aggregate / 'memory.swap.max').read_text().strip() != '0'
+                        or self.directory(aggregate) != (sample['device'], sample['inode'])
+                        or self.file_identity(token.lstat()) != before
+                        or self.file_identity(guard.lstat()) != tuple(source['identity'])
+                        or any(self.process(item) != parent for item, parent in chain)
+                        or self.process(batch) != owner['pid']
+                        or self.process(creator) != batch['pid']
+                        or self.argv(owner) != owner_args
+                        or self.argv(creator) not in (expected, ['bash', *expected])
+                        or self.argv(actor) != args or self.argv(batch) != wrapper
+                        or os.path.lexists(out / 'BATCH-IDENTITY.json')):
+                    raise ValueError('The early entry association changed during sampling.')
+                self.consulted.append((token, before))
+                self.consulted.append((guard, tuple(source['identity'])))
+                return dict(row, reason='authenticated early entry aggregate')
+            except (OSError, ValueError, KeyError, IndexError, StopIteration, TypeError) as error:
+                failures.append(str(error))
+        raise ValueError('The early entry lacks an authenticated shell token: ' + '; '.join(failures))
 
     def residual(self, bound):
         """Sample a previously authenticated aggregate after its token ends."""
@@ -631,10 +734,16 @@ def shell_rows(data, reader):
     return rows
 
 
-def projection(data, claims, new_bytes, available_bytes, *, reader=None, new_observation=None):
+def projection(data, claims, new_bytes, available_bytes, *, reader=None, new_observation=None,
+               pending_shell=None):
     reader = ScopeReader() if reader is None else reader
     claims = dict(claims)
-    observations = {key: reader.claim(data, key) for key, amount in claims.items() if amount}
+    observations = {}
+    for key, amount in claims.items():
+        if amount:
+            options = {'pending_shell': pending_shell} if (pending_shell is not None
+                and key in data.get('entry_pilot_outside_owners', {})) else {}
+            observations[key] = reader.claim(data, key, **options)
     # A reviewed static view changes accounting only. It grants no token or slot.
     static_names = set()
     for key, hold in data.get('legacy_kernel_accounts', {}).items():
@@ -1048,7 +1157,8 @@ def confirm_shell(marker, replacement, request_bytes, available_bytes, *, ledger
         observation = reader.shell(replacement, owner=owner)
         claims = ledger_claims(data)
         result = projection(data, claims, request_bytes, available_bytes,
-                            reader=reader, new_observation=observation)
+                            reader=reader, new_observation=observation,
+                            pending_shell=(marker, replacement))
         if not result['fits']:
             return result
         reader.process(owner)
