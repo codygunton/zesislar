@@ -52,6 +52,7 @@ class PreparationResolutionCache(unittest.TestCase):
         flags = [word.replace(str(self.workspace), str(source)) for word in self.flags]
         return self.construct(scratch.prepare, dict(vars(scratch),
             a=SimpleNamespace(admission_profile=profile), source=source, workspace=self.workspace,
+            modules={'Example.Alpha': str(self.source.relative_to(self.workspace))},
             c={'physical_flags': flags, 'admission_profile': inherited}, out=self.root / 'prepare'))
 
     def stage_constructor(self, profile):
@@ -64,6 +65,9 @@ class PreparationResolutionCache(unittest.TestCase):
         self.assertEqual(resolver.shared_cache.supplier, binding(self.supplier))
         self.assertEqual(resolver.flags, ['-boot', '-dyndep', 'no', *self.flags])
         self.assertEqual(resolver.receipt_dir, self.root / 'prepare/IMPORT-RESOLUTION')
+        self.assertEqual(resolver.planning_workspace, self.workspace)
+        self.assertEqual(resolver.planning_sources,
+                         {'Example.Alpha': str(self.source.relative_to(self.workspace))})
 
     def test_prepare_inherited_profile_remains_bound(self):
         resolver = self.scratch_constructor(inherited=binding(self.profile))
