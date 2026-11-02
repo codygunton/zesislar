@@ -371,7 +371,7 @@ def prepare(a):
         c['effective_compiler_version']['compiler'],
         [word.replace(str(source),str(workspace)) for word in c['physical_flags']])
     save(out/'OBJECT-IMPORT-COMPATIBILITY.json',imports)
-    changed=list(set(changed)|set(missing)|set(imports['rebuild_modules']))
+    changed=list((set(changed)-set(imports['compatible_owned_modules']))|set(missing)|set(imports['rebuild_modules']))
     plan=invalidation(edges,changed,plan_targets)
     native_targets={row['module'] for row in targets}
     plan['prerequisites']=[name for name in plan['ordered_required'] if name not in native_targets]
