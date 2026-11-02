@@ -241,6 +241,33 @@ class ObjectImportTests(unittest.TestCase):
         self.module('ZesuSsz.Generated.DecodeItem.Unrelated')
         self.assertEqual(self.stage(owner, [])['rebuild_modules'], [])
 
+    def prerequisite_stage(self, native, order):
+        config = {'cache_import_graph': self.save('prerequisite-graph.json', {'import_edges': self.edges}),
+                  'object_imports': self.receipts,
+                  'jobs': [{'phase': 'prerequisites', 'target': None},
+                           {'phase': 'native', 'target': {'module': native}}]}
+        runtime = {'phase': 'prerequisites', 'target': {'block': None},
+                   'module_files': self.modules, 'ordered_modules': order,
+                   'physical_compiler': self.compiler, 'physical_flags': self.flags}
+        return require_reuse(config, runtime, self.current)
+
+    def test_prerequisite_stage_excludes_unimported_native_output_only(self):
+        owner, dependency = 'ZesuSsz.Proofs.Control', 'ZesuSsz.Automation.PureFacts'
+        self.pair(owner, dependency)
+        del self.receipts[owner]
+        result = self.prerequisite_stage(owner, [])
+        self.assertEqual(result['compatible_owned_modules'], [dependency])
+        (self.current / self.modules[dependency]).with_suffix('.vo').write_bytes(b'changed import')
+        with self.assertRaisesRegex(ValueError, 'staged plan must rebuild'):
+            self.prerequisite_stage(owner, [])
+
+    def test_prerequisite_stage_checks_native_output_when_it_is_imported(self):
+        native, declaration = 'ZesuSsz.Proofs.Control', 'ZesuSsz.Generated.DecodeItem.Declaration'
+        self.pair(declaration, native)
+        del self.receipts[native]
+        with self.assertRaisesRegex(ValueError, 'staged plan must rebuild.*Control'):
+            self.prerequisite_stage(native, [declaration])
+
 
 if __name__ == '__main__':
     unittest.main()

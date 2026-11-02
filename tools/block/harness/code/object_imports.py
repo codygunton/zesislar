@@ -120,11 +120,21 @@ def require_reuse(config, runtime, workspace):
     modules = runtime['module_files']
     planned = list(runtime['ordered_modules'])
     targets = planned + [row['target']['module'] for row in config['jobs']
-                         if row.get('target', {}).get('module')]
-    # The native target always gets a fresh proof and cannot supply a reused object.
+                         if (row.get('target') or {}).get('module')]
+    native_outputs = {row['target']['module'] for row in config['jobs']
+                      if row.get('phase') == 'native' and (row.get('target') or {}).get('module')}
     native = runtime.get('target', {}).get('block') or {}
     if native.get('module'):
-        planned.append(native['module'])
+        native_outputs.add(native['module'])
+    from entry_chain_stage import graph_closure
+    forward = {}
+    for row in graph['import_edges']:
+        forward.setdefault(row['from'], set()).add(row['to'])
+    imported = set()
+    for name in targets:
+        imported.update(graph_closure(forward.get(name, ()), forward))
+    # A future native output is not reused unless another required module imports it.
+    planned.extend(native_outputs - imported)
     result = compatibility(targets, graph['import_edges'], modules, workspace,
                            config.get('object_imports', {}), runtime['physical_compiler'],
                            runtime['physical_flags'], planned=planned)
