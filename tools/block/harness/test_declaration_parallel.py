@@ -31,10 +31,16 @@ class GuardedAdapterTests(unittest.TestCase):
         dune.write_text('Nonexecutable Dune fixture.\n')
         f.runtime.update(coqc_wrapper='tools/entry_chain_coqc.sh',
                          build_dir='artifacts', expected_mcp_flags=['-fixture'], job_output=str(f.root))
-        f.runtime['declaration_dag'].update(protected_modules=[], dune=binding(dune),
-            graph=f.runtime['cache_import_graph'], weights={'Example.Control': GIB},
-            completed_modules=['Example.Dependency'])
         f.runtime['ordered_modules'] = ['Example.Control']
+        from declaration_parallel_plan import attach
+        from unittest.mock import patch
+        config={'declarations_only':True,'jobs':[dict(phase='prerequisites',
+            claim_bytes=64*GIB,physical_fence_bytes=64*GIB,ordered_modules=['Example.Control'])],
+            'prepared_workspace':str(f.root),'proof_runtime':{'module_files':f.runtime['module_files']},
+            'cache_import_graph':f.runtime['cache_import_graph'],'physical_compiler':binding(f.compiler),
+            'physical_flags':f.runtime['physical_flags']}
+        with patch('declaration_parallel_plan.shutil.which',return_value=str(dune)):
+            f.runtime['declaration_dag']=attach(config)
         f.runtime['bindings'].extend([binding(wrapper), binding(dune)])
 
     def physical_runner(self, command, **keywords):
@@ -84,7 +90,7 @@ class GuardedAdapterTests(unittest.TestCase):
         self.assertIn('--no-build', command)
         self.assertNotIn('ZESU_COQC_SCOPE', options['env'])
         self.assertNotIn('ZESU_COQC_RESERVATION', options['env'])
-        self.assertEqual(options['env']['ZESU_MODULE_CLAIM_BYTES'], str(GIB))
+        self.assertEqual(options['env']['ZESU_MODULE_CLAIM_BYTES'], str(16*GIB))
         self.assertEqual(options['env']['ZESU_MODULE_LIMIT_GIB'], '64')
         self.assertTrue(Path(command[-2]).is_relative_to(self.f.root / '.declaration-private'))
 
@@ -106,8 +112,8 @@ class GuardedAdapterTests(unittest.TestCase):
         self.assertEqual(self.launches, [])
 
     def test_protected_declaration_cannot_enter_a_worker(self):
-        self.f.runtime['declaration_dag']['protected_modules'] = ['Example.Control']
         adapter = self.adapter()
+        adapter.protected.add('Example.Control')
         with self.assertRaisesRegex(ValueError, 'protected declaration'):
             adapter.compile_private('Example.Control')
         self.assertEqual(self.launches, [])

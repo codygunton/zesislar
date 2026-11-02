@@ -38,7 +38,8 @@ KNOWN_SINKS = {'check_operation', 'proof_environment', 'prerequisite_environment
 
 SCOPED_SINKS = {'entry_chain_provider.py': {
     'compiled_verification': ('scratch_statement', 'compiled_verification'),
-    'checked_fixture': ('declaration_preflight', 'checked_fixture')},
+    'checked_fixture': ('declaration_preflight', 'checked_fixture'),
+    'run_declaration_dag': ('declaration_parallel', 'run')},
     'entry_chain_compiler.py': {'output_context': ('declaration_outputs', 'output_context')}}
 
 

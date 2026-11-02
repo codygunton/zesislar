@@ -1,6 +1,6 @@
 """Connect DAG workers to the bound Dune, guard, and physical receipt route."""
 import json
-import os
+import asyncio
 from pathlib import Path
 import subprocess
 import sys
@@ -22,6 +22,8 @@ class GuardedAdapter:
         self.recheck = recheck
         self.protected_compile = protected_compile
         self.runner = runner
+        from declaration_parallel_plan import validate
+        validate(runtime,self.workspace)
         self.spec = runtime['declaration_dag']
         self.protected = set(self.spec['protected_modules'])
         self.wrapper = self.workspace / runtime['coqc_wrapper']
@@ -116,4 +118,19 @@ class GuardedAdapter:
                        compile_private=self.compile_private, publish=self.publish,
                        compile_protected=self.protected_compile,
                        checkpoint=lambda value: save(self.output / 'DECLARATION-DAG-PROGRESS.json', value),
-                       maximum_workers=48)
+                       maximum_workers=self.spec['maximum_workers'])
+
+
+async def run(runtime, workspace, output, manager, environment, recheck, protected_compile):
+    if manager is None:
+        raise ValueError('Parallel declarations require authenticated compiler output receipts.')
+    loop=asyncio.get_running_loop()
+    def protected(module):
+        return asyncio.run_coroutine_threadsafe(protected_compile(module),loop).result()
+    adapter=GuardedAdapter(runtime,workspace,output,manager,environment,recheck,protected)
+    def available():
+        return next(int(line.split()[1])*1024 for line in Path('/proc/meminfo').read_text().splitlines()
+                    if line.startswith('MemAvailable:'))
+    result=await asyncio.to_thread(adapter.execute,available)
+    save(Path(output)/'DECLARATION-DAG-RESULT.json',result)
+    return result

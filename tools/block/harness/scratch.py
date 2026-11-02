@@ -59,7 +59,10 @@ PYTHON=Path('/home/cody/.local/share/uv/tools/rocq-mcp/bin/python')
 def arguments(argv):
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--harness-commit',required=True);p.add_argument('--supplier-controls',type=Path);p.add_argument('--object-import-migrations',type=Path);p.add_argument('--dependency-batch',type=Path);p.add_argument('--seed-reference',type=Path);p.add_argument('--dependency-cache',type=Path);p.add_argument('--end-cleanup',choices=['on','off'],default='on',help='Use off for reusable prefixes, seeds, and queued inputs.');p.add_argument('--admission-profile',type=Path);p.add_argument('--completed-stock-measurements',type=Path);p.add_argument('--cache',choices=['off','on'],default='off');p.add_argument('block');p.add_argument('entry_file',type=Path);p.add_argument('--rules',type=Path);p.add_argument('--output',type=Path);p.add_argument('--prepare-only',action='store_true');p.add_argument('--source-overrides',type=Path);p.add_argument('--declarations-only',action='store_true');p.add_argument('--target-adapter',type=Path);p.add_argument('--sizing',type=Path);p.add_argument('--base-runtime',type=Path);p.add_argument('--base-runtime-sha256');p.add_argument('--normalization-policy',type=Path);p.add_argument('--prerequisite-target-union',action='store_true');p.add_argument('--declaration-checks',type=Path);p.add_argument('--control-session',type=Path)
+    from declaration_parallel_plan import arguments as dag_arguments,check_arguments as check_dag_arguments
+    dag_arguments(p)
     a=p.parse_args(argv);a.block=a.block.lower().removeprefix('0x')
+    check_dag_arguments(a,p)
     if not a.target_adapter:p.error('The shared harness requires a target adapter.')
     if not a.base_runtime:p.error('The shared harness requires an exact base runtime.')
     rows=[]
@@ -257,6 +260,10 @@ def prepare(a):
     save(out/'HARNESS.json',harness)
     from dependency_batch import inherit as inherit_dependency_batch
     wave_transition=inherit_dependency_batch(c)
+    from declaration_parallel_plan import inherit as inherit_declaration_dag
+    dag_transition=inherit_declaration_dag(c)
+    if dag_transition['removed'] or dag_transition['removed_nested']:
+        save(out/'DECLARATION-DAG-TRANSITION.json',dict(dag_transition,source_runtime=baseline))
     if wave_transition['removed'] or wave_transition['removed_nested']:
         save(out/'DECLARATION-WAVE-TRANSITION.json',dict(wave_transition,source_runtime=baseline,lineage_retained=True))
     if a.seed_reference:
@@ -409,6 +416,11 @@ def prepare(a):
         from dependency_batch import attach
         wave_plan=attach(c,binding(a.dependency_batch))
     else:wave_plan=None
+    dag_plan=None
+    if getattr(a,'parallel_declarations',False):
+        from declaration_parallel_plan import attach
+        dag_plan=attach(c,measurements=(binding(a.declaration_module_measurements)
+            if a.declaration_module_measurements else None),maximum_workers=a.declaration_workers)
     implementations=[binding(out/'HARNESS.json')]
     c['cache_producer_files']={'implementation':[dict(r,id='scratch-implementation:'+str(i),kind='source') for i,r in enumerate(implementations)],'inputs':[dict(binding(a.entry_file),id='scratch-entry',kind='source')]+([dict(binding(a.declaration_checks),id='declaration-checks',kind='configuration')] if a.declaration_checks else [])+([dict(binding(a.normalization_policy),id='entry-normalization-policy',kind='configuration')] if a.normalization_policy else [])+([dict(binding(a.rules),id='scratch-rules',kind='source')] if a.rules else []),'outputs':[dict(binding(native),id='scratch-native',kind='source'),dict(binding(entry),id='scratch-entries',kind='source')]}
     if a.supplier_controls:c['cache_producer_files']['inputs'].append(dict(binding(a.supplier_controls),id='supplier-activation-controls',kind='configuration'))
@@ -418,6 +430,12 @@ def prepare(a):
         wave_inputs=[binding(a.dependency_batch),wave_plan['source_boundary']]+[wave_plan[key] for key in ['guard','compile_measure_helper','run_registry','compiler','dune']]+[row['source'] for row in wave_plan['modules']]
         additions+=wave_inputs
         c['cache_producer_files']['inputs']+=[dict(row,id='declaration-wave:'+str(i),kind='configuration') for i,row in enumerate(wave_inputs)]
+    if dag_plan:
+        from declaration_parallel_plan import references
+        dag_inputs=references(dag_plan)
+        additions+=dag_inputs
+        c['cache_producer_files']['inputs']+=[dict(row,id='declaration-dag:'+str(i),kind='configuration') for i,row in enumerate(dag_inputs)]
+    if (out/'DECLARATION-DAG-TRANSITION.json').exists():additions.append(binding(out/'DECLARATION-DAG-TRANSITION.json'))
     if (out/'DECLARATION-WAVE-TRANSITION.json').exists():additions.append(binding(out/'DECLARATION-WAVE-TRANSITION.json'))
     if a.completed_stock_measurements:
         additions.append(binding(a.completed_stock_measurements))
@@ -611,7 +629,10 @@ def refresh_memory(argv):
     parser.add_argument('--harness-commit')
     parser.add_argument('--unadmitted-retirement',type=Path)
     parser.add_argument('--output',type=Path,required=True)
+    from declaration_parallel_plan import arguments as dag_arguments,check_arguments as check_dag_arguments
+    dag_arguments(parser)
     args=parser.parse_args(argv)
+    check_dag_arguments(args,parser)
     prior={'path':str(args.prior_runtime.resolve()),'sha256':args.prior_sha256}
     c=read_bound(prior);out=args.output.resolve()
     from harness_commit import pin
@@ -642,6 +663,14 @@ def refresh_memory(argv):
     actual_config=memory_workload_context(c)
     context=refresh_admission_profile(c,args.admission_profile)
     c['jobs']=[dict(apply_job(job,rows,workload_for_job(context,job,actual_config)),output=str(out/'jobs'/job['key'])) for job in c['jobs']]
+    from declaration_parallel_plan import inherit as inherit_declaration_dag
+    dag_transition=inherit_declaration_dag(c)
+    if args.parallel_declarations:
+        from declaration_parallel_plan import attach
+        dag_plan=attach(c,measurements=(binding(args.declaration_module_measurements)
+            if args.declaration_module_measurements else None),maximum_workers=args.declaration_workers)
+        from declaration_parallel_plan import references
+        c['bindings']=combined_bindings(c['bindings']+references(dag_plan))
     if context:c['admission_profile']=context
     else:c.pop('admission_profile',None)
     from port_native_policy import configure_cpu
@@ -660,7 +689,10 @@ def refresh_memory(argv):
     implementations=[binding(out/'HARNESS.json')]
     producers=dict(c['cache_producer_files'])
     producers['implementation']=[dict(row,id='scratch-implementation:'+str(i),kind='source') for i,row in enumerate(implementations)]
-    producers['inputs']=[row for row in producers['inputs'] if row.get('id') not in {'completed-stock-memory','admission-profile'} and not row.get('id','').startswith('memory-evidence:')]+[dict(measurements,id='completed-stock-memory',kind='configuration')]+([dict(context,id='admission-profile',kind='configuration')] if context else [])
+    producers['inputs']=[row for row in producers['inputs'] if row.get('id') not in {'completed-stock-memory','admission-profile'} and not row.get('id','').startswith(('memory-evidence:','declaration-dag:'))]+[dict(measurements,id='completed-stock-memory',kind='configuration')]+([dict(context,id='admission-profile',kind='configuration')] if context else [])
+    if c.get('declaration_dag'):
+        from declaration_parallel_plan import references
+        producers['inputs'] += [dict(row,id='declaration-dag:'+str(i),kind='configuration') for i,row in enumerate(references(c['declaration_dag']))]
     c['cache_producer_files']=producers
     from memory_policy import profile_bindings
     memory_inputs=profile_bindings(context)

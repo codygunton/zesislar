@@ -209,6 +209,10 @@ def stage_job(config,job,out):
     from dependency_batch import for_phase as dependency_batch_for_phase
     dependency_spec=dependency_batch_for_phase(config,job['phase'])
     if dependency_spec:runtime['dependency_batch']=deepcopy(dependency_spec)
+    runtime.pop('declaration_dag',None)
+    from declaration_parallel_plan import for_phase as declaration_dag_for_phase
+    dag_spec=declaration_dag_for_phase(config,job['phase'],workspace)
+    if dag_spec:runtime['declaration_dag']=dag_spec
     runtime['coqc_wrapper']='tools/entry_chain_coqc.sh'
     runtime['prospective_directory']=str(out/'prospective')
     from rocq_mcp.server import _parse_project_flags
