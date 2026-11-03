@@ -41,3 +41,29 @@ Ltac zesu_source_match_tree requested finish :=
         ltac:(zesu_source_match_tree right finish)
   | _ => finish
   end.
+
+(* Check fixed facts before any source-value alternatives can branch. *)
+Ltac zesu_source_check_fixed_fact requested :=
+  lazymatch requested with
+  | bool_decide ?fact = true => zesu_source_check_fixed_fact fact
+  | bool_decide ?fact = false => zesu_source_check_fixed_fact (~ fact)
+  | negb (bool_decide ?fact) = true => zesu_source_check_fixed_fact (~ fact)
+  | negb (bool_decide ?fact) = false => zesu_source_check_fixed_fact fact
+  | ?left /\ ?right =>
+      zesu_source_check_fixed_fact left; zesu_source_check_fixed_fact right
+  | _ =>
+      tryif has_evar requested then idtac
+      else
+        let checked := fresh "HsourceFixedConstraint" in
+        tryif (assert (checked : requested) by zesu_source_fact)
+        then clear checked
+        else fail 0 "Unsupported fixed source fact:" requested
+  end.
+
+Ltac zesu_source_check_fixed_tree requested :=
+  lazymatch requested with
+  | @bi_pure _ ?fact => zesu_source_check_fixed_fact fact
+  | @bi_sep _ ?left ?right =>
+      zesu_source_check_fixed_tree left; zesu_source_check_fixed_tree right
+  | _ => idtac
+  end.
