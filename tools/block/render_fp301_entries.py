@@ -128,7 +128,7 @@ Require Import stdpp.bitvector.definitions.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.Level1.
-Open Scope Z_scope.
+Local Open Scope Z_scope.
 """
 # These are the source-bound argument and continuation types from Level 1.
 base_telescope = (
