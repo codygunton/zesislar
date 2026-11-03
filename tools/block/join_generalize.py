@@ -285,17 +285,26 @@ def generalize_registers(alternatives, *, register_order, reserved_names=(), dea
 
 
 def common_conditions(alternatives, plan):
-    """Intersect path propositions after replacing exact register values."""
+    """Preserve exact common guards before deriving binder-correlated guards."""
+    paths = [[normalize(Expr.from_dict(value)) for value in alternative['state']['conditions']]
+             for alternative in alternatives]
+    exact = [value for index, value in enumerate(paths[0])
+             if value not in paths[0][:index] and all(value in path for path in paths[1:])]
     renamed = []
-    for alternative, edge in zip(alternatives, plan['edges']):
+    def symbolic(value):
+        return (value.op not in {'bits', 'enum'} and
+                (not value.args or any(symbolic(child) for child in value.args)))
+    for path, edge in zip(paths, plan['edges']):
         mapping = {}
         for binder in plan['binders']:
             value = normalize(Expr.from_dict(edge['widened_substitution'][binder['name']]))
-            mapping.setdefault(value, input_expr(binder['name'], value.width))
-        renamed.append([substitute(normalize(Expr.from_dict(value)), mapping)
-                        for value in alternative['state']['conditions']])
-    return [value for index, value in enumerate(renamed[0])
-            if value not in renamed[0][:index] and all(value in path for path in renamed[1:])]
+            # Replacing a constant would also replace unrelated guard literals.
+            if symbolic(value):
+                mapping.setdefault(value, input_expr(binder['name'], value.width))
+        renamed.append([substitute(value, mapping) for value in path])
+    correlated = [value for index, value in enumerate(renamed[0])
+                  if value not in renamed[0][:index] and all(value in path for path in renamed[1:])]
+    return exact + [value for value in correlated if value not in exact]
 
 
 def _remove_terminal(tree, terminal_id):
@@ -455,13 +464,27 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
     state.registers = {key: value for key, value in state.registers.items() if not REGISTER.fullmatch(key)}
     state.registers.update({key: Expr.from_dict(value) for key, value in plan['values'].items()})
     state.retained_registers = dict(state.registers)
-    # Common trace facts can contain locals that the selector cannot observe.
-    # Keep only relations with an implemented source validator. A later trial
-    # traversal must establish that discarded facts are unnecessary at the cut.
-    state.conditions = []
-    for value in common_conditions(alternatives, plan):
-        plan['join_refusals'].append({'kind': 'join_common_condition_refusal', 'expression': value.to_dict(),
-                                     'detail': 'The common trace fact has no authorized join relation validator'})
+    # Exact intersection preserves source facts without choosing a path.
+    state.conditions = common_conditions(alternatives, plan)
+    plan['common_guards'] = [value.to_dict() for value in state.conditions]
+    plan['common_guard_certificates'] = []
+    for guard in state.conditions:
+        matches = []
+        for edge in plan['edges']:
+            originals = [normalize(Expr.from_dict(value)) for value in edge['original_conditions']]
+            bindings = {input_expr(binder['name'], int(binder['type'].split()[1])):
+                        normalize(Expr.from_dict(edge['widened_substitution'][binder['name']]))
+                        for binder in plan['binders']}
+            restored = substitute(guard, bindings)
+            if guard in originals:
+                matches.append({'edge': edge['index'], 'condition': originals.index(guard),
+                                'kind': 'exact_source_guard'})
+            elif restored in originals:
+                matches.append({'edge': edge['index'], 'condition': originals.index(restored),
+                                'kind': 'source_substitution'})
+            else:
+                raise ValueError('A common guard has no source condition on every edge')
+        plan['common_guard_certificates'].append({'guard': guard.to_dict(), 'edges': matches})
     for relation in plan['relations']:
         word = input_expr(relation['binder'], relation['width'])
         state.conditions.extend([operation('bvuge', word, bits(relation['lower'], word.width)),
