@@ -1,5 +1,6 @@
 """Check the narrow gate origin with private files and no compiler execution."""
 from copy import deepcopy
+import ast
 import json
 from pathlib import Path
 import shutil
@@ -16,9 +17,26 @@ from entry_chain import binding, read_bound
 import gate_object_origin as G
 import object_import_migration as M
 import closed_object_staging as S
+import scratch
 
 
 class GateOriginTest(unittest.TestCase):
+    def preparation_bindings(self, installation):
+        """Execute the actual two assignments at the prepare/staging seam."""
+        source = Path(scratch.__file__).read_text()
+        tree = ast.parse(source)
+        prepare = next(node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == 'prepare')
+        block = next(node for node in prepare.body if isinstance(node, ast.If)
+                     and ast.unparse(node.test) == "closed_install['count']")
+        statements = [node for node in block.body if isinstance(node, ast.Assign)]
+        self.assertEqual(len(statements), 2)
+        self.save('CLOSED-OBJECT-INSTALL.json', installation)
+        namespace = {'closed_install': installation, 'c': {'bindings': [self.compiler]},
+                     'out': self.root, 'binding': binding,
+                     'combined_bindings': scratch.combined_bindings}
+        exec(compile(ast.Module(body=statements, type_ignores=[]), scratch.__file__, 'exec'), namespace)
+        return namespace['c']['bindings']
+
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
@@ -230,6 +248,22 @@ class GateOriginTest(unittest.TestCase):
         self.assertEqual(binding(self.target_source.with_suffix('.vo'))['sha256'], binding(self.obj)['sha256'])
         self.assertNotEqual(self.target_source.with_suffix('.vo').stat().st_ino, self.obj.stat().st_ino)
         self.assertFalse(self.target_source.with_suffix('.vos').exists())
+        bindings = self.preparation_bindings(result)
+        self.assertEqual(bindings, [self.compiler, binding(self.target_source.with_suffix('.vo')),
+                                   binding(self.root / 'CLOSED-OBJECT-INSTALL.json')])
+
+    def test_preparation_preserves_real_sidecar_bindings(self):
+        sidecar = self.save('sidecar.json', {'private': True})
+        obj = binding(self.obj)
+        result = {'count': 1, 'installed': [{'object': obj, 'sidecar': sidecar}]}
+        self.assertEqual(self.preparation_bindings(result),
+                         [self.compiler, obj, sidecar, binding(self.root / 'CLOSED-OBJECT-INSTALL.json')])
+
+    def test_preparation_does_not_filter_required_object_or_malformed_sidecar(self):
+        for row in [{'object': None, 'sidecar': None},
+                    {'object': binding(self.obj), 'sidecar': {}}]:
+            with self.subTest(row=row), self.assertRaises((TypeError, KeyError)):
+                self.preparation_bindings({'count': 1, 'installed': [row]})
 
 
 if __name__ == '__main__':

@@ -361,7 +361,7 @@ def prepare(a):
     closed_install=stage_closed_objects(c,workspace,modules)
     if closed_install['count']:
         save(out/'CLOSED-OBJECT-INSTALL.json',closed_install)
-        inherited=[row[key] for row in closed_install['installed'] for key in ['object','sidecar']]
+        inherited=[row[key] for row in closed_install['installed'] for key in ['object','sidecar'] if key!='sidecar' or row[key] is not None]
         c['bindings']=combined_bindings(c['bindings']+inherited+[binding(out/'CLOSED-OBJECT-INSTALL.json')])
     forward={}
     for edge in edges:forward.setdefault(edge['from'],set()).add(edge['to'])
