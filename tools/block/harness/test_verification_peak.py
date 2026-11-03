@@ -101,6 +101,11 @@ class VerificationPeakTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'released profile'):
             self.workload()
 
+    def test_changed_authenticated_evidence_refuses(self):
+        Path(measured.PACKET['path']).write_text('{}')
+        with self.assertRaisesRegex(ValueError, 'binding changed'):
+            self.workload()
+
     def test_changed_check_subject_rule_and_compiler_refuse(self):
         for kind in ['checks', 'subject', 'rules', 'compiler', 'flags', 'session']:
             with self.subTest(kind=kind):

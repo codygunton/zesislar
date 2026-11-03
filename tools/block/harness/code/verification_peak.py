@@ -25,7 +25,10 @@ def authenticate(reference):
 
 
 def read(reference):
-    return json.loads(authenticate(reference).read_text())
+    data = Path(reference['path']).read_bytes()
+    if hashlib.sha256(data).hexdigest() != reference['sha256']:
+        raise ValueError('A completed verification binding changed.')
+    return json.loads(data)
 
 
 def references(profile):
