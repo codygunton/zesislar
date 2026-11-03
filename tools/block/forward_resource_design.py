@@ -38,7 +38,7 @@ def _prepare_state(state, seed):
                     if region.ownership_id in owned else region for region in state.memory]
 
 
-def evaluate_owned_function(function, traces, initial_seeds, *, vocabulary, max_paths=4096):
+def evaluate_owned_function(function, traces, initial_seeds, *, vocabulary, max_paths=4096, capture_witness_origins=False):
     """Stop a block before another instruction when ownership checks fail.
 
     Each seed carries public source ownership or an explicit handwritten cut.
@@ -53,6 +53,10 @@ def evaluate_owned_function(function, traces, initial_seeds, *, vocabulary, max_
 
     def check(state, *, seed_pc, **context):
         seed = seeds[seed_pc]
+        if capture_witness_origins:
+            from source_witness_bindings import record_trace_origins
+            record_trace_origins(state, traces[context['instruction_pc']],
+                                 instruction_pc=context['instruction_pc'], seed_pc=seed_pc)
         _prepare_state(state, seed)
         result = apply_owned_writes(seed.resources, state.writes, conditions=state.conditions,
                                     facts=seed.facts, endianness=state.endianness)
