@@ -128,10 +128,16 @@ class GateFamilyTests(unittest.TestCase):
         child = SimpleNamespace(pid=99999999, wait=lambda: 0)
         environment = {key: value for key, value in os.environ.items() if not key.startswith('ZESU_')}
         environment['ZESU_RUN_ID'] = 'synthetic-gate'
+        environment['ZESU_CANONICAL_LEDGER'] = str(self.root/'LEDGER.json')
+        environment['ZESU_GATE_LOCK'] = str(self.root/'gate.lock')
+        environment['ZESU_GUARD_STATE'] = str(self.root/'guard-state')
+        environment['ZESU_RESOURCE_GUARD'] = str(Path(__file__).with_name('resource_guard.sh'))
+        correctness_gate.save(self.root/'LEDGER.json', {'fixed_claims':{}})
         with patch.dict(os.environ, environment, clear=True), \
              patch.object(correctness_gate.Path, 'cwd', return_value=self.root), \
              patch.object(correctness_gate, 'preflight', return_value={'synthetic': True}), \
              patch.object(correctness_gate.subprocess, 'check_output', return_value=str(self.root / '.git')), \
+             patch('gate_exit_peaks.code_identity', return_value={'fixture':'unchanged-workload'}), \
              patch.object(correctness_gate.subprocess, 'Popen', return_value=child), \
              patch.object(correctness_gate, 'identity', return_value={'startticks': 1}), \
              patch.object(correctness_gate, 'registry'), \

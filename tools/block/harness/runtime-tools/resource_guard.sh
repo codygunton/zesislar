@@ -1804,6 +1804,9 @@ case "${1:-report}" in
     export ZESU_COQC_RESERVATION="$token" ZESU_COQC_SCOPE="$token" ZESU_OWNED_GUARD_TOKEN="$token"
     apply_scope_limits || exit $?
     register_run_actor || exit $?
+    if [ -n "${ZESU_CONTROLLER_ROLE:-}" ] && [ -n "${ZESU_CONTROLLER_BOOKING_JSON:-}" ]; then
+      exec python3 -B "$MEMORY_TOOL" role-exit-exec --marker "$token" -- "$@"
+    fi
     exec "$@" ;;
   batch-exec)
     verify_workload_ancestor || exit $?

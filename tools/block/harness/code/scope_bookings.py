@@ -1,5 +1,9 @@
 """Separate controller bookings from authenticated physical compiler bookings."""
 from pathlib import Path
+import json
+import os
+import sys
+import uuid
 
 from entry_chain import binding, read_bound
 
@@ -8,7 +12,9 @@ SCHEMA = 'entry-chain.controller-booking.v1'
 AUTHORITY = {'path': str(Path(__file__).resolve().parents[1] / 'policies' /
                          'CONTROLLER-PEAK-OBSERVATIONS.json'),
              'sha256': '5be79459f72d02889a05ad314a913ba2a68488bda8922ef962a9447662cd12dd'}
-CONTROLLER_KEYS = ('ZESU_CONTROLLER_ROLE', 'ZESU_CONTROLLER_AUTHORITY_SHA256')
+CONTROLLER_KEYS = ('ZESU_CONTROLLER_ROLE', 'ZESU_CONTROLLER_AUTHORITY_SHA256',
+                   'ZESU_CONTROLLER_RUN_KIND', 'ZESU_CONTROLLER_BOOKING_JSON',
+                   'ZESU_CONTROLLER_BOOKING_SHA256')
 TOOLS = ('rocq_health', 'rocq_compile_file')
 
 
@@ -39,6 +45,68 @@ def descriptor(config, job=None):
             'qualification': 'Approved historical MCP-scope peaks, not completed aggregate measurements.'}
 
 
+def run_kind(config, job=None):
+    if not controller_only(config, job):
+        raise ValueError('A controller booking requires a declaration-only run kind.')
+    return 'declarations-dag' if config.get('declaration_dag') else 'declarations-serial'
+
+
+def measured_descriptor(config, job=None):
+    from role_peaks import last_peak, ROLES
+    selected = descriptor(config, job)
+    if selected is None:
+        return None
+    selected = dict(selected, run_kind=run_kind(config, job), exit_peaks={})
+    for role, field in zip(ROLES, ('client_claim_bytes', 'mcp_claim_bytes')):
+        observation = last_peak(role, selected['run_kind'])
+        selected['exit_peaks'][role] = observation[0] if observation else None
+        if observation:
+            selected[field] = max(GIB, (3 * observation[1] + 1) // 2)
+    return selected
+
+
+def validate_booking(config, job, selected):
+    """Revalidate pinned observations. Never replace them with newer records."""
+    from role_peaks import recorded_peak, ROLES
+    base = descriptor(config, job)
+    if selected == base:
+        return base
+    if (base is None or not isinstance(selected, dict)
+            or set(selected) != set(base) | {'run_kind', 'exit_peaks'}
+            or selected['run_kind'] != run_kind(config, job)
+            or not isinstance(selected['exit_peaks'], dict)
+            or set(selected['exit_peaks']) != set(ROLES)):
+        raise ValueError('The pinned controller booking changed its role or run kind.')
+    expected = dict(base, run_kind=run_kind(config, job), exit_peaks=selected['exit_peaks'])
+    for role, field in zip(ROLES, ('client_claim_bytes', 'mcp_claim_bytes')):
+        reference = selected['exit_peaks'][role]
+        if reference is not None:
+            value = recorded_peak(reference, role, selected['run_kind'])
+            expected[field] = max(GIB, (3 * value['memory_peak_bytes'] + 1) // 2)
+    if selected != expected:
+        raise ValueError('The pinned controller booking differs from its exit peak.')
+    return selected
+
+
+def _peak_context(runtime_reference, selected, role, environment, command=None):
+    from role_peaks import CONTEXT_SCHEMA
+    runtime = read_bound(runtime_reference)
+    if selected['run_kind'] != run_kind(runtime):
+        raise ValueError('The controller peak context differs from its runtime.')
+    output = Path(runtime['job_output'])/'controller-bookings'
+    output.mkdir(mode=0o700, exist_ok=True)
+    path = output/(uuid.uuid4().hex+'.json')
+    field = 'client_claim_bytes' if role == 'entry-chain-client' else 'mcp_claim_bytes'
+    value = {'schema': CONTEXT_SCHEMA, 'runtime': runtime_reference, 'booking': selected,
+             'role': role, 'run_kind': selected['run_kind'],
+             'claim_bytes': selected[field], 'command': command}
+    with open(path, 'x', opener=lambda name, flags: os.open(name, flags, 0o600)) as stream:
+        json.dump(value, stream, sort_keys=True);stream.write('\n')
+    environment.update(ZESU_CONTROLLER_RUN_KIND=selected['run_kind'],
+                       ZESU_CONTROLLER_BOOKING_JSON=str(path),
+                       ZESU_CONTROLLER_BOOKING_SHA256=binding(path)['sha256'])
+
+
 def reset_controller(environment):
     result = dict(environment)
     for name in CONTROLLER_KEYS:
@@ -49,6 +117,14 @@ def reset_controller(environment):
 def client_environment(config, job, environment):
     result = reset_controller(environment)
     selected = descriptor(config, job)
+    path = Path(job['output'])/'RUNTIME.json' if job.get('output') else None
+    if selected is not None and path is not None and path.is_file():
+        runtime = read_bound(binding(path))
+        if run_kind(config, job) != run_kind(runtime):
+            raise ValueError('The client booking runtime changed its run kind.')
+        selected = measured_descriptor(runtime)
+        command = [sys.executable, '-B', config['job_controller']['path'], '--inside', job['output']]
+        _peak_context(binding(path), selected, selected['client_role'], result, command)
     if selected is not None:
         result.update(ZESU_MODULE_CLAIM_BYTES=str(selected['client_claim_bytes']),
                       ZESU_CONTROLLER_ROLE=selected['client_role'],
@@ -59,6 +135,10 @@ def client_environment(config, job, environment):
 def mcp_environment(runtime, environment):
     result = reset_controller(environment)
     selected = descriptor(runtime)
+    if selected is not None and runtime.get('runtime_path') and runtime.get('runtime_sha256'):
+        reference = {'path': runtime['runtime_path'], 'sha256': runtime['runtime_sha256']}
+        selected = measured_descriptor(read_bound(reference))
+        _peak_context(reference, selected, selected['mcp_role'], result)
     if selected is not None:
         result.update(ZESU_MODULE_CLAIM_BYTES=str(selected['mcp_claim_bytes']),
                       ZESU_CONTROLLER_ROLE=selected['mcp_role'],
@@ -142,7 +222,7 @@ def authenticate_client(config, controller, key, output, launch, amount, canonic
     if len(jobs) != 1:
         raise ValueError('The controller booking names another job.')
     job = jobs[0]
-    selected = descriptor(config, job)
+    selected = validate_booking(config, job, launch.get('controller_booking'))
     if (selected is None or launch.get('controller_booking') != selected
             or amount != selected['client_claim_bytes']
             or job['claim_bytes'] != canonical or canonical < amount):

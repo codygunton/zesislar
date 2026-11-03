@@ -37,7 +37,7 @@ mkdir -p "$PROC_ROOT/$owner"
 printf '0::/user.slice/zesuworkloads.slice/%s/client.scope/mcp.scope\n' "$ZESU_AGGREGATE_SLICE" > "$PROC_ROOT/$owner/cgroup"
 [ -z "$(probe_admission_reason "$owner")" ] || exit 91
 [ "$(probe_count)" = 6 ]
-''')
+''', ZESU_PROBE_AGGREGATE_LIMIT="6")
         self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_seventh_new_aggregate_stays_held(self):
@@ -46,8 +46,8 @@ for n in 1 2 3 4 5 6; do fixture_probe "$n" "zesuworkloads-aggregate1000p${n}r1.
 owner=100; ZESU_AGGREGATE_SLICE=zesuworkloads-aggregate1000p7r1.slice
 mkdir -p "$PROC_ROOT/$owner"
 printf '0::/user.slice/zesuworkloads.slice/%s/client.scope\n' "$ZESU_AGGREGATE_SLICE" > "$PROC_ROOT/$owner/cgroup"
-[ "$(probe_admission_reason "$owner")" = 'issue10 probes at their six-aggregate limit' ]
-''')
+[ "$(probe_admission_reason "$owner")" = 'issue10 probes at their 6-aggregate limit' ]
+''', ZESU_PROBE_AGGREGATE_LIMIT='6')
         self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_declared_aggregate_requires_actual_owner_membership(self):

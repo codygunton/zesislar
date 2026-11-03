@@ -92,6 +92,7 @@
   "block/check_data_only_lemmas.py": "../check_data_only_lemmas.py",
   "policies/PORT-V33-OPEN-AUTHORITY.json": "policies/PORT-V33-OPEN-AUTHORITY.json",
   "block/scope_bookings.py": "code/scope_bookings.py",
+  "block/role_peaks.py": "code/role_peaks.py",
   "policies/CONTROLLER-PEAK-OBSERVATIONS.json": "policies/CONTROLLER-PEAK-OBSERVATIONS.json",
   "block/phase_attribution.py": "code/phase_attribution.py",
   "block/closed_compilation_origin.py": "code/closed_compilation_origin.py",

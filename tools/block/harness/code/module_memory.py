@@ -328,6 +328,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("test-ledger-policy")
+    role_exit = commands.add_parser('role-exit-exec')
+    role_exit.add_argument('--marker', type=Path, required=True)
+    role_exit.add_argument('payload', nargs=argparse.REMAINDER)
     claim = commands.add_parser("claim")
     claim.add_argument("--profile", type=Path, required=True)
     claim.add_argument("--cwd", type=Path, required=True)
@@ -360,6 +363,12 @@ def main():
     aggregate.add_argument('--explicit-limit-bytes', type=int)
     aggregate.add_argument('--gate-limit-bytes', type=int)
     args = parser.parse_args()
+    if args.command == 'role-exit-exec':
+        from role_peaks import supervise
+        payload = args.payload[1:] if args.payload[:1] == ['--'] else args.payload
+        if not payload:
+            parser.error('The controller exit supervisor requires its exact payload.')
+        return supervise(args.marker, payload)
     if args.command == 'test-ledger-policy':
         try:
             check_test_ledger()
