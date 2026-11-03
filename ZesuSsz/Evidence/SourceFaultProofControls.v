@@ -123,3 +123,23 @@ Fail assert (Hfalse : False) by (zesu_source_fault_proof ltac:(idtac) Hleaf).
 exact I.
 
 Qed.
+
+Lemma source_offset_closed_positive : bv_unsigned (BV 128 1) < 2 ^ 64.
+Proof. zesu_source_fault_offset_bound. Qed.
+
+Lemma source_offset_closed_false_refuses : True.
+Proof.
+  Fail assert ((2 : Z) < 1) by zesu_source_fault_offset_bound.
+  exact I.
+Qed.
+
+Lemma source_offset_symbolic_vm_refuses (offset : bv 128) : True.
+Proof.
+  Fail VmClosed.zesu_vm_closed constr:(bv_unsigned offset).
+  exact I.
+Qed.
+
+Lemma source_offset_symbolic_fallback (offset : bv 128)
+    (Hsmall : bv_unsigned offset < 2 ^ 64) :
+    bv_unsigned offset < 2 ^ 64.
+Proof. zesu_source_fault_offset_bound. Qed.

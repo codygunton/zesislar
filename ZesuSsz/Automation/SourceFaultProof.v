@@ -1,10 +1,21 @@
 Require Import ZesuSsz.Automation.SwitchDispatch.
 Require Import ZesuSsz.Automation.BitvectorFacts.
 Require Import ZesuSsz.Automation.Hooks.
+Require Import ZesuSsz.Automation.VmClosed.
+Require Import ZesuSsz.Automation.RewriteBoundGuards.
 From Coq Require Import Bool.Bool ZArith.ZArith.
 From stdpp Require Import bitvector.definitions decidable.
 
 Class ZesuStepSourceFaultProof : Prop := {}.
+
+(* Closed offset bounds use the checked evaluator. Symbolic bounds retain
+   the existing solver path. A false closed bound never enters that path. *)
+Ltac zesu_source_fault_offset_bound :=
+  lazymatch goal with |- ?bound =>
+    tryif VmClosed.zesu_vm_closed bound
+    then RewriteBoundGuards.a3n_closed_bound
+    else bv_solve
+  end.
 
 (* Check offsets before the existing integer-address parser evaluates them. *)
 Ltac zesu_source_fault_closed_offsets pointer :=
@@ -39,7 +50,7 @@ Ltac zesu_source_fault_proof project leaf :=
         repeat lazymatch type of leaf with
         | context [bv_signed (bv_zero_extend 128 ?value + ?offset)] =>
             rewrite (BitvectorFacts.zesu_signed_zero_extend_add_64_128 value offset) in leaf;
-              last bv_solve
+              last zesu_source_fault_offset_bound
         | context [bv_signed (bv_zero_extend 128 ?value)] =>
             rewrite (BitvectorFacts.zesu_signed_zero_extend_64_128 value) in leaf
         end;
