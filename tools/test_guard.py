@@ -380,8 +380,17 @@ class GuardLockTest(unittest.TestCase):
             self.guard("release-coqc", token)
 
     def test_failed_snapshot_prevents_scope_and_batch_commands(self):
+        from run_registry import Registry, identity
+
         self.enter_parent_fixture()
         self.prepare_blocked_fixture(0)
+        registry = Registry(Path(self.environment['ZESU_RUN_REGISTRY']))
+        run_id = 'snapshot-parent'
+        scheduler = identity(os.getpid())
+        # Authenticate the parent before the timed guard refusal checks.
+        registry.register(run_id, 'fixture', 'guard-test', scheduler, [])
+        self.assertEqual(registry.read_run(run_id)['scheduler'], scheduler)
+        self.environment['ZESU_RUN_ID'] = run_id
         executed = Path(self.directory.name) / "command-executed"
         for status in (2, 3):
             (self.bin / "pgrep").write_text(f"#!/bin/sh\nexit {status}\n")
@@ -396,6 +405,34 @@ class GuardLockTest(unittest.TestCase):
                                             capture_output=True, text=True, timeout=3)
                     self.assertEqual(result.returncode, status, result.stderr)
                     self.assertFalse(executed.exists())
+        self.assertEqual(list(registry.read()['runs']), [run_id])
+        self.assertEqual(registry.read_run(run_id)['jobs'], [])
+        self.assertEqual(registry.read_run(run_id)['claims'], {})
+
+    def test_failed_snapshot_keeps_standalone_registration_coverage(self):
+        from run_registry import Registry, live
+
+        self.enter_parent_fixture()
+        self.prepare_blocked_fixture(0)
+        (self.bin / 'pgrep').write_text('#!/bin/sh\nexit 2\n')
+        executed = Path(self.directory.name) / 'command-executed'
+        registry = Registry(Path(self.environment['ZESU_RUN_REGISTRY']))
+        self.assertNotIn('ZESU_RUN_ID', self.environment)
+        for route in ('scope', 'batch'):
+            with self.subTest(route=route):
+                result = self.guard(route, 'failure', '--', 'touch', str(executed))
+                self.assertEqual(result.returncode, 2, result.stderr)
+                self.assertFalse(executed.exists())
+                rows = [row for row in registry.read()['runs'].values()
+                        if row['kind'] == 'stock-' + route]
+                self.assertEqual(len(rows), 1)
+                row = rows[0]
+                self.assertEqual(row['exit_code'], 2)
+                self.assertEqual(row['status'], 'failed')
+                self.assertTrue(row['all_actors_closed'])
+                self.assertFalse(live(row['scheduler']))
+                self.assertTrue(all(not live(actor) for actor in row['jobs']))
+                self.assertEqual(row['claims'], {})
 
     def test_failed_snapshot_prevents_scope_exec_command(self):
         self.enter_parent_fixture()
