@@ -78,7 +78,7 @@ class ClaimReleaseControls(unittest.TestCase):
    job=apply_job({'phase':'prerequisites','key':'fixture','ordered_modules':[]})
    config={'identity':{'fixture':True},'admission':{},'shared_latch':str(root/'latch')}
    unknown=SimpleNamespace(pid=99999999,poll=lambda:None)
-   with patch('restart_bindings.verify_restart_runtime'),patch.object(E,'normalize_cpu'),patch.object(E,'reserve'),patch.object(E,'binding_recheck'),patch.object(E,'stage_job',return_value=({'bindings':[]},root)),patch.object(E,'outer_argv',return_value=['fixture']),patch.object(C,'launch',side_effect=OSError('injected pidfd failure')),patch.object(C,'last_child',return_value=(unknown,None)),patch.object(C,'cleanup',side_effect=RuntimeError('unknown actor')),patch.object(C,'children_closed',return_value=False),patch.object(E,'release') as release,patch.object(E.entry_chain_result,'summarize',return_value={}):
+   with patch('restart_bindings.verify_restart_runtime'),patch.object(E,'normalize_cpu'),patch.object(E,'reserve'),patch.object(E,'binding_recheck'),patch('staging_peaks.stage',return_value=({'bindings':[]},root)),patch.object(E,'outer_argv',return_value=['fixture']),patch.object(C,'launch',side_effect=OSError('injected pidfd failure')),patch.object(C,'last_child',return_value=(unknown,None)),patch.object(C,'cleanup',side_effect=RuntimeError('unknown actor')),patch.object(C,'children_closed',return_value=False),patch.object(E,'release') as release,patch.object(E.entry_chain_result,'summarize',return_value={}):
     with self.assertRaisesRegex(RuntimeError,'unknown actor'):E.run_stock_job(config,job,out)
     release.assert_not_called()
    closure=json.loads((out/'CLOSURE.json').read_text())

@@ -356,7 +356,16 @@ def main():
     aggregate.add_argument('--booking-bytes', type=int, required=True)
     aggregate.add_argument('--explicit-limit-bytes', type=int)
     aggregate.add_argument('--gate-limit-bytes', type=int)
+    staging_exit = commands.add_parser('staging-exit-exec')
+    staging_exit.add_argument('--marker', type=Path, required=True)
+    staging_exit.add_argument('payload', nargs=argparse.REMAINDER)
     args = parser.parse_args()
+    if args.command == 'staging-exit-exec':
+        from staging_peaks import supervise
+        payload = args.payload[1:] if args.payload[:1] == ['--'] else args.payload
+        if not payload:
+            parser.error('The staging supervisor requires its exact payload.')
+        return supervise(args.marker, payload)
     if args.command == 'role-exit-exec':
         from role_peaks import supervise
         payload = args.payload[1:] if args.payload[:1] == ['--'] else args.payload

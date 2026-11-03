@@ -14,7 +14,8 @@ AUTHORITY = {'path': str(Path(__file__).resolve().parents[1] / 'policies' /
              'sha256': '5be79459f72d02889a05ad314a913ba2a68488bda8922ef962a9447662cd12dd'}
 CONTROLLER_KEYS = ('ZESU_CONTROLLER_ROLE', 'ZESU_CONTROLLER_AUTHORITY_SHA256',
                    'ZESU_CONTROLLER_RUN_KIND', 'ZESU_CONTROLLER_BOOKING_JSON',
-                   'ZESU_CONTROLLER_BOOKING_SHA256')
+                   'ZESU_CONTROLLER_BOOKING_SHA256',
+                   'ZESU_STAGING_CONTEXT_JSON', 'ZESU_STAGING_CONTEXT_SHA256')
 TOOLS = ('rocq_health', 'rocq_compile_file')
 
 
