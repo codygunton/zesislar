@@ -1,4 +1,3 @@
-Require Import ZesuSsz.Automation.All.
 From iris.proofmode Require Import tactics environments.
 From Coq Require Import Bool.Bool.
 From stdpp Require Import decidable.

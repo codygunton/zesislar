@@ -1,4 +1,5 @@
-Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.Hooks.
+Require Import ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.ByteArrayAssemblyCodec.
 Require Import lithium.interpreter lithium.pure_definitions.
 From iris.proofmode Require Import tactics environments.
