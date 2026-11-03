@@ -1976,6 +1976,2123 @@
           "sha256": "d6d6ac1a93eed62c911befc706ef9724ce0d098ab23ae74cd0fcea18dad594be"
         }
       }
+    },
+    {
+      "kind": "accepted-correctness-gate-objects",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/unfold6ae0-compile001/gate-origin-v2/GATE-OBJECT-ORIGIN.json",
+        "sha256": "de3c9133aa3a0535a06e30740f25549ae496487065852274cd830c0b8b4a9de8"
+      },
+      "gate_final": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/migration-single-read-gates-v2/FINAL-RESULT.json",
+        "sha256": "af8cd445cecd72c989570daecce38888d5016d5ad3812e07f89812c8462652d3"
+      },
+      "module_objects": {
+        "ZesuSsz.Automation.Switches.ArrayBounds": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/ArrayBounds.vo",
+          "sha256": "4fe56a1f62b2050a2fb00d65231350ae47703adebf9b64605d0331767071b452"
+        },
+        "ZesuSsz.Automation.Switches.ArrayRegionBounds": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/ArrayRegionBounds.vo",
+          "sha256": "ca4ee93183f47aea4366d633176df3afb4f72cf03be902a77f1a697e644fe7d3"
+        },
+        "ZesuSsz.Automation.Switches.BranchGuards": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/BranchGuards.vo",
+          "sha256": "64179e7cd672b225605e4984fcb7fb5aa6efad707566e4bd11a2ef06c197affe"
+        },
+        "ZesuSsz.Automation.Switches.ByteListContainment": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/ByteListContainment.vo",
+          "sha256": "5310a2784d355273fcce945d7798f9ac1b16659a74b07851455d937d98ad01ea"
+        },
+        "ZesuSsz.Automation.Switches.CanonicalAnchor": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/CanonicalAnchor.vo",
+          "sha256": "242a284acdee2385e1c89ff80aaf29afa655392afc51619b5cf3bdf844687562"
+        },
+        "ZesuSsz.Automation.Switches.CanonicalPureConjunction": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/CanonicalPureConjunction.vo",
+          "sha256": "9c78c1a2351fa2fff1e5897982949e80ec1fcb5d3c3bd052b23338c68f3f1d16"
+        },
+        "ZesuSsz.Automation.Switches.ConjunctMatch": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/ConjunctMatch.vo",
+          "sha256": "0bc1afad7d803fc2fbbcf3520b17e42e04ce412071813de31351adfd1638bea6"
+        },
+        "ZesuSsz.Automation.Switches.ContextCollection": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/ContextCollection.vo",
+          "sha256": "ce342fd469a059259d8d5845a8e936e27cfb8a4d79f82a748febdd0ed8b167f6"
+        },
+        "ZesuSsz.Automation.Switches.EntryIntro": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/EntryIntro.vo",
+          "sha256": "f63ea526738c8b112f3b28b3e840747ddd7da74f87bb20ea317502abab1dd36f"
+        },
+        "ZesuSsz.Automation.Switches.EvarImplicationGuard": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/EvarImplicationGuard.vo",
+          "sha256": "98e063481bba9011bc833787bac391e281bf361b4382cf384f8f552c3bb66c26"
+        },
+        "ZesuSsz.Automation.Switches.EvarSideconditionGuard": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/EvarSideconditionGuard.vo",
+          "sha256": "2887d9f3852a871d6ce482da8c6f4300a1c9ccf0559c5e34eacf9cb7e91e2796"
+        },
+        "ZesuSsz.Automation.Switches.ExitMeaning": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/ExitMeaning.vo",
+          "sha256": "1c0c71f35fa4b31815d7f651b66574fb33a34fcfb914d560688d19434bda1a80"
+        },
+        "ZesuSsz.Automation.Switches.InstructionLookup": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/InstructionLookup.vo",
+          "sha256": "119460c0fafe293c4c2357939cae37a80b0d928f02f91466a27b6c056f22b8ee"
+        },
+        "ZesuSsz.Automation.Switches.IntegerArrayAddress": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/IntegerArrayAddress.vo",
+          "sha256": "f35537d646d7fe4872ce1e3cf773cd973ef2dc34de9ce40f6f8f31dbae02271c"
+        },
+        "ZesuSsz.Automation.Switches.IntegerReturn": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/IntegerReturn.vo",
+          "sha256": "1d098613128e76ce1e93aac25bca9eb8cabbc143f241fc592907eb7ace58a5bc"
+        },
+        "ZesuSsz.Automation.Switches.KnownPairWitness": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/KnownPairWitness.vo",
+          "sha256": "8ceea3466585436013ff68891f96e6ebe1c0995673de09b2a93072006280fec8"
+        },
+        "ZesuSsz.Automation.Switches.ListWitness": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/ListWitness.vo",
+          "sha256": "6711d19908cc27f11d73cba6ba6e928a6f48aba12812740463cb609a2348f975"
+        },
+        "ZesuSsz.Automation.Switches.LowMask": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/LowMask.vo",
+          "sha256": "5e716ce8fbc2391c9a7f527a1fdc251ff706350e9f473bf196033c24fe323aec"
+        },
+        "ZesuSsz.Automation.Switches.MaskNormalizer": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/MaskNormalizer.vo",
+          "sha256": "94ad7064970c14d3ae1bc386c15366d60bd714334a04328088c0d2265393d700"
+        },
+        "ZesuSsz.Automation.Switches.PureFactExistential": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/PureFactExistential.vo",
+          "sha256": "00ac95e958d9b657a0dbe54adbe36c44295daf028d7a1a4361ce1dd8a9f56c5e"
+        },
+        "ZesuSsz.Automation.Switches.PureFactHints": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/PureFactHints.vo",
+          "sha256": "0a9151330aeddd5e92a46586b794dded7c4049a433db7ecaf9808abdf0442f2f"
+        },
+        "ZesuSsz.Automation.Switches.PureWitnessConstraints": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/PureWitnessConstraints.vo",
+          "sha256": "90b904eb7291b6c3d2c07d18b1bdcb24aca3c5d2918dcf67d84947045eb4c8e6"
+        },
+        "ZesuSsz.Automation.Switches.RamFault": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/RamFault.vo",
+          "sha256": "e97a44b7778df3d8752e05da48edf08369b5ce4b27afae492cbbc6673804da01"
+        },
+        "ZesuSsz.Automation.Switches.RecordWitness": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/RecordWitness.vo",
+          "sha256": "5720f998fa80fc6e09019a235dec8ec76e3e3882364410b774940533b09b1de0"
+        },
+        "ZesuSsz.Automation.Switches.RegionFault": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/RegionFault.vo",
+          "sha256": "8791bae838091e3e693d6721dfed55e2230da211e0887fa0093898f1dba06dbc"
+        },
+        "ZesuSsz.Automation.Switches.RegionFaultCastHypotheses": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/RegionFaultCastHypotheses.vo",
+          "sha256": "c32c9922717cdeff995bb5264e25dcd9c843d6a5324bb9db7071150a10fa12e0"
+        },
+        "ZesuSsz.Automation.Switches.RegionFaultNormalization": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/RegionFaultNormalization.vo",
+          "sha256": "72ad171c9a2b0d94bd4e7d09b4f2e3a76e439b8fede96e6216fc04d33cf6d3cf"
+        },
+        "ZesuSsz.Automation.Switches.RegisterCollectionSelection": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/RegisterCollectionSelection.vo",
+          "sha256": "935833e8050a1cb8f86ab7bb99e63ac8f1e833a8ec6c2e3054ff9a922b49d8d0"
+        },
+        "ZesuSsz.Automation.Switches.ReturnBundle": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/ReturnBundle.vo",
+          "sha256": "8878768ff4e56427a9665e8acc2ebfc9edb19204f7e11e1311447c694126ed3e"
+        },
+        "ZesuSsz.Automation.Switches.ReturnWand": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/ReturnWand.vo",
+          "sha256": "df31b60990bf0c09712e10c70ad47ac8c6dbc74f69872567cb080b0fd64defb3"
+        },
+        "ZesuSsz.Automation.Switches.StackWrite": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/StackWrite.vo",
+          "sha256": "c9b2859267aa820ac61be28eb449d5e522885eb56db06e4e73c503d7db47c761"
+        },
+        "ZesuSsz.Automation.Switches.StrictSigned": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/StrictSigned.vo",
+          "sha256": "607360933c10ea43b048cec2274ae81bbd6cee98b15e161e758abb54e2549b46"
+        },
+        "ZesuSsz.Automation.Switches.SwitchDispatch": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/SwitchDispatch.vo",
+          "sha256": "b98e16427a8e520185548f23b98a626ab5e1458fe0b1e7d26d1e6686a3a663d3"
+        },
+        "ZesuSsz.Automation.Switches.TupleWitness": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/TupleWitness.vo",
+          "sha256": "f8b7082a5021f02fea11baebd26314389dfdafc04490a21a3fa361e06cfd899f"
+        },
+        "ZesuSsz.Automation.Switches.WordArrayHandoff": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Switches/WordArrayHandoff.vo",
+          "sha256": "fd5efd3e5124df7d29c101badffe3124deefa4e10a9930d70d360d684af82a7a"
+        },
+        "ZesuSsz.Automation.Approved": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/Approved.vo",
+          "sha256": "1c6d0d2924c9f20b2c1c1f7b842c7ba5b20ceec4ded7d3cfe55ac577443c8cb0"
+        },
+        "ZesuSsz.Automation.FactRegistry": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Automation/FactRegistry.vo",
+          "sha256": "9e9a2f3a0a346e120b831b6397cbadf3858d467a1cf8196d09d95db7f16cbf2f"
+        },
+        "ZesuSsz.Compliance.DecodeItemSemanticIntroduction": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemSemanticIntroduction.vo",
+          "sha256": "3b842e3a9a091ab6e4c03513b1336771cea1fad26785e45246be3d5c29462a79"
+        },
+        "ZesuSsz.Compliance.DecodeItemSailEvaluation": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemSailEvaluation.vo",
+          "sha256": "202621e1b61d82023c0fb0a85b046d2a4e6ff62c61571112971a3ebf3f6942ca"
+        },
+        "ZesuSsz.Proofs.DecodeItem.ByteFoldPure": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Proofs/DecodeItem/ByteFoldPure.vo",
+          "sha256": "60165f917b05aa35e84a0ddbf2ed73420ad17f509c499fa051a83b52ef42c121"
+        },
+        "ZesuSsz.Compliance.DecodeItemSailFold": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemSailFold.vo",
+          "sha256": "aa94a1f3fa1852e3b55c5c8470c789810e55896a7541f456ffe87afa63632dd7"
+        },
+        "ZesuSsz.Compliance.DecodeItemSailIntroduction": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemSailIntroduction.vo",
+          "sha256": "82fd4d68f816504aa52aabfa394f8f03a83380018feb40ca9c62d040e1ec7f50"
+        },
+        "ZesuSsz.Compliance.DecodeItemBranchGuardFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemBranchGuardFacts.vo",
+          "sha256": "8b45a7087f7d29caaf0be8124df6b29e7ecf09094f789f1498a6f7a15892f028"
+        },
+        "ZesuSsz.Compliance.DecodeItemInputHeadWordFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemInputHeadWordFacts.vo",
+          "sha256": "73e0d62eb9699e304f8d0bbd754ba5114b45fab905d73ad758ccc5ecf86926a6"
+        },
+        "ZesuSsz.Contracts.DecodeItemFrameImage": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Contracts/DecodeItemFrameImage.vo",
+          "sha256": "2f6694bbaefb4e63960dc03c14ad5197dddf0aa07d18e146c57b1fe03d9d9b5e"
+        },
+        "ZesuSsz.Compliance.DecodeItemSavedFrameWitnesses": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemSavedFrameWitnesses.vo",
+          "sha256": "41bfab717bcdcc41aa27f1c04bce67e9c68c4c3e4c7dfb083ecaef934b64998d"
+        },
+        "ZesuSsz.Compliance.DecodeItemCanonicalEntryFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemCanonicalEntryFacts.vo",
+          "sha256": "6e66576ff815840419d968cbdad886064224358b4306277ae60763ec666d09ca"
+        },
+        "ZesuSsz.Compliance.DecodeItemJoinTransferPure": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemJoinTransferPure.vo",
+          "sha256": "d53e944b9d4ff8145b7b06d77c2a3e425c8843457bfbc6a39ef44103e73c3bfa"
+        },
+        "ZesuSsz.Compliance.DecodeItemFoldBackEdgeWitnesses": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemFoldBackEdgeWitnesses.vo",
+          "sha256": "9f4250de7c3ef0f9aa442d554f5e3ad7561e736e88461790747c4fd2a6577132"
+        },
+        "ZesuSsz.Compliance.DecodeItemDataWitnessFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemDataWitnessFacts.vo",
+          "sha256": "e806be764444ab8aa56327d37df155d530d64335782ce9c41d4197648653921b"
+        },
+        "ZesuSsz.Compliance.DecodeItemEntryGuardFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemEntryGuardFacts.vo",
+          "sha256": "9cb1ef2fc8cfe5d5bc0332cc28e0e7b5f26d37629e2a6a1c00f3e75e2b380bf5"
+        },
+        "ZesuSsz.Compliance.DecodeItemFoldRejectionFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemFoldRejectionFacts.vo",
+          "sha256": "6e3913c34abfb7b2ffd6fa41a3b0e12db1addad33de0c75b464da1a94f4c7246"
+        },
+        "ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.vo",
+          "sha256": "9f1ca8018daa83533e0643d54734cd0657b5fade8426047ededf95c5b93ff06e"
+        },
+        "ZesuSsz.Compliance.DecodeItemCorrectedWitnessSelections": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.vo",
+          "sha256": "3dd729ae6bd4faaf5b51ef68bdb0fbf643baa4c2cbbaf5f7f76ab0db4e2c0faa"
+        },
+        "ZesuSsz.Compliance.DecodeItemFoldExitFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemFoldExitFacts.vo",
+          "sha256": "a3243ba961faa6c316aeefca6dd17a9a8c0a0f84d23fa96072b56b106c813520"
+        },
+        "ZesuSsz.Compliance.DecodeItemCompletedFoldFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemCompletedFoldFacts.vo",
+          "sha256": "77d3110d6b06a11da7a4be00ac7cee9181424a07d97a006c449a8f76e99e3cbf"
+        },
+        "ZesuSsz.Compliance.DecodeItemEntryIntroductions": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemEntryIntroductions.vo",
+          "sha256": "396eeff8a0ad50b66df38c8900b650c5d004fea1bc77197a621eed71a9b3628e"
+        },
+        "ZesuSsz.Compliance.DecodeItemPathAgreement": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemPathAgreement.vo",
+          "sha256": "5cc415c4acf6393167c9248e981dccb77aefbd3c204d40062bb6feddbc613994"
+        },
+        "ZesuSsz.Compliance.DecodeItemReturnExitResources": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemReturnExitResources.vo",
+          "sha256": "8d98cb4e2cfffb24c89c9218186b1104d9b16f4b4082cd2359ef6cec76da6912"
+        },
+        "ZesuSsz.Compliance.DecodeItemExitMeanings": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemExitMeanings.vo",
+          "sha256": "74aa230ad15cd523d50c7cda5bab04190cf59f7cea23664a293811551b49f76e"
+        },
+        "ZesuSsz.Compliance.DecodeItemLoopSteps": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemLoopSteps.vo",
+          "sha256": "561a9fccd44e34aad1692742ca5dff09c2707f87df4dee4accaf1a3be7d8d5ec"
+        },
+        "ZesuSsz.Compliance.DecodeItemDataRegistrations": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemDataRegistrations.vo",
+          "sha256": "bf9271fe9572116adccd7739405c87033e5cf7e7ce08fe5e4b7c5861193d5e1e"
+        },
+        "ZesuSsz.Contracts.RlpDecodeItemReturnImages": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Contracts/RlpDecodeItemReturnImages.vo",
+          "sha256": "37d5bbe73743e4a2c0f7425fe0899a84fd3ee13e0f2e4102cdd9f094100ced39"
+        },
+        "ZesuSsz.Compliance.DecodeItemReturnExitPure": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemReturnExitPure.vo",
+          "sha256": "b40f02807ae94925fd5880ff8b0a9213339c675296ce9e6e26f9bc512f32cd0c"
+        },
+        "ZesuSsz.Compliance.DecodeItemReturnRestorationFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemReturnRestorationFacts.vo",
+          "sha256": "3755ece9a2185cab8437159bd7f199065dc549b6c7449fc27dba070f3396c709"
+        },
+        "ZesuSsz.Compliance.DecodeItemEmptyStringOutputMeaning": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemEmptyStringOutputMeaning.vo",
+          "sha256": "d8bc40ece57030b6d8170c79e0531ff728cb62a72aef259baaa76e3c8d2afc1c"
+        },
+        "ZesuSsz.Compliance.DecodeItemEntryAdditionalFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemEntryAdditionalFacts.vo",
+          "sha256": "0b0fd6696ff39e1c84443176149f25844b6dac21f13ec2f82b90bd0327842645"
+        },
+        "ZesuSsz.Compliance.DecodeItemEntryByteIndexFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemEntryByteIndexFacts.vo",
+          "sha256": "3c546b6fc0125637ac01b979c93c5736377c541e94f6758606579aa20a8cad14"
+        },
+        "ZesuSsz.Compliance.DecodeItemOutputWitnessSelections": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemOutputWitnessSelections.vo",
+          "sha256": "647a6d3140c0c33e94639bdda67f7ce2ad0fc517ee1b86d24fe0879d75bd660a"
+        },
+        "ZesuSsz.Compliance.DecodeItemRawOutputFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemRawOutputFacts.vo",
+          "sha256": "ec5973079523dfcabda174233199e1900060978fa25246cd68396ef4159b339f"
+        },
+        "ZesuSsz.Compliance.DecodeItemEntryWitnessIntroductions": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemEntryWitnessIntroductions.vo",
+          "sha256": "b8b095dc5baa3e3439d8220759325781859af18474dbe2e0c2e129e26d2ac054"
+        },
+        "ZesuSsz.Compliance.DecodeItemFoldInitializationWitnesses": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemFoldInitializationWitnesses.vo",
+          "sha256": "bcb73c9bca7c93e72e3010ffc32d0e5018478a9863d3f99ef18de0fbf6b03b92"
+        },
+        "ZesuSsz.Compliance.DecodeItemFoldZeroFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemFoldZeroFacts.vo",
+          "sha256": "ce99faacbadcab722b5aabbf87387d1dcee607a1ba8d72cef0d1ee1b2fbce2a1"
+        },
+        "ZesuSsz.Compliance.DecodeItemInitializationPureFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemInitializationPureFacts.vo",
+          "sha256": "3029a19e073a9496cde4cda60bc7f3b74532fa0d932dba51b21eab825a9f4db1"
+        },
+        "ZesuSsz.Compliance.DecodeItemLoadedEntryFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemLoadedEntryFacts.vo",
+          "sha256": "2bafc017483088e2772f0a56a3cb7995d6c70de0e8cd75aade36986da1b9f835"
+        },
+        "ZesuSsz.Compliance.DecodeItemLongStringOutputMeaning": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemLongStringOutputMeaning.vo",
+          "sha256": "8c063c311ea25919eaa6de7bb6c8ba10ee21412c70f5f98d5e903a1d485d371e"
+        },
+        "ZesuSsz.Compliance.DecodeItemMaskedReturnFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemMaskedReturnFacts.vo",
+          "sha256": "5ee5c1097f2bae1d9db65a6d45c5c1d7fa18d545bfa2b33e034b16a11ccd5bff"
+        },
+        "ZesuSsz.Compliance.DecodeItemNormalizedGuardRegistrations": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemNormalizedGuardRegistrations.vo",
+          "sha256": "0d48b81b9d91b63e113ff0b3c93ee64e3cf958cdb677fd528d06202a027563aa"
+        },
+        "ZesuSsz.Compliance.DecodeItemOutcomeWitnessFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemOutcomeWitnessFacts.vo",
+          "sha256": "0132621ad7d32ad3330fc940b7fd746f23e9c071e40a56079d878d8eee14f8f4"
+        },
+        "ZesuSsz.Compliance.DecodeItemOutputBaseWitnessFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemOutputBaseWitnessFacts.vo",
+          "sha256": "25828fafba0560fcc5055791c9af24254834bf72cf45879cc348af7fe5830b1d"
+        },
+        "ZesuSsz.Compliance.DecodeItemS40GuardFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemS40GuardFacts.vo",
+          "sha256": "c7516b5a5bd8b766b68c5acffdca0b7367476597177689e1488c6039b888e9c6"
+        },
+        "ZesuSsz.Compliance.DecodeItemShortListHandoffFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemShortListHandoffFacts.vo",
+          "sha256": "0d0cb7e18841a1a6f21656be8f794a1831122648999b2b4bdf77955fe4b51ad6"
+        },
+        "ZesuSsz.Compliance.DecodeItemShortListOutputMeaning": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemShortListOutputMeaning.vo",
+          "sha256": "e5a1b951f987a67693e353d3d4b28ce549336191424bdcde5cfb044cd4e47a5a"
+        },
+        "ZesuSsz.Evidence.DecodeItemOutput24Selections": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Evidence/DecodeItemOutput24Selections.vo",
+          "sha256": "040bba3cf3b12dd936e56aa4386944fc2c79dd71842ff8af0d8cdc964dc1c21c"
+        },
+        "ZesuSsz.Evidence.DecodeItemS152Selected6b08": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Evidence/DecodeItemS152Selected6b08.vo",
+          "sha256": "819743b76433afad59964db5a7526c50a067300c47e16cd3a033dd5b7e7c19db"
+        },
+        "ZesuSsz.Evidence.DecodeItemS152StageDIndex32": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Evidence/DecodeItemS152StageDIndex32.vo",
+          "sha256": "94a42c5f1aea79a2656b2a2c1eb5b8f0a5cf1aca7c4884d0539452b2737ccd5a"
+        },
+        "ZesuSsz.Compliance.DecodeItemStoreSelectionIntroductions": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/DecodeItemStoreSelectionIntroductions.vo",
+          "sha256": "cc0a9ea9f4b58edc06d7dd01ce278ea88203c8ef41111f9aa319340a0e013bb0"
+        },
+        "ZesuSsz.Contracts.DecodeItemCallSpec": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Contracts/DecodeItemCallSpec.vo",
+          "sha256": "b9986cf066920522a25d569baf4ba13e53f79629ebdd9e99fdb318d120a58379"
+        },
+        "ZesuSsz.Contracts.DecodeItemErrorBranch": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Contracts/DecodeItemErrorBranch.vo",
+          "sha256": "4390d8d4c0c3e9afdc6ab3dbc92f090cd9be9728ac0780847f82f92e7e35cea0"
+        },
+        "ZesuSsz.Contracts.ParentHeader": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Contracts/ParentHeader.vo",
+          "sha256": "0fe56ee0fcd96521addcfe2cf976470d2500a1933f387fc5e17d495b73be7472"
+        },
+        "ZesuSsz.Contracts.ZiskRuntime": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Contracts/ZiskRuntime.vo",
+          "sha256": "41e33abc6bfb195f4d8ea94691bd8f906e5eaebf105a12c7b189a51dd482ed12"
+        },
+        "ZesuSsz.Contracts.ParentHeaderRootFacts": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Contracts/ParentHeaderRootFacts.vo",
+          "sha256": "3117c12bc1279725800c6758be77758c4902f80989689ad01fd0cff05a0cb75d"
+        },
+        "ZesuSsz.Contracts.ParentHeaderLevel1": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Contracts/ParentHeaderLevel1.vo",
+          "sha256": "dbac8c28dc908a8ea0987e4e2780544a4515a630ca0e7cce53fd6ea1d2259872"
+        },
+        "ZesuSsz.Stock.Closure.a800d6274": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6274.vo",
+          "sha256": "82913559256f1a996cf97f54bed412bd9566a5a62e5aaa1a579beaf938a38cee"
+        },
+        "ZesuSsz.Stock.Closure.a800d6278": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6278.vo",
+          "sha256": "4427af488fd1b69fc8885979762f22daa453bed60437e353ef3a7d2cc7761390"
+        },
+        "ZesuSsz.Stock.Closure.a800d627c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d627c.vo",
+          "sha256": "a2a604972ce118d207a68d3ffa3ab1f6b4465bfb42c30f74bbc1ce66b66c2c5a"
+        },
+        "ZesuSsz.Stock.Closure.a800d6280": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6280.vo",
+          "sha256": "7e24d3f02c3fda3b1f133f6afbac1c997a1b364ca3d84b41cbe49f769911c90d"
+        },
+        "ZesuSsz.Stock.Closure.a800d6284": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6284.vo",
+          "sha256": "3a08f727af624fa886aeeadfafa2748708bb450206ca02141f1d81ed3cd50265"
+        },
+        "ZesuSsz.Stock.Closure.a800d6288": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6288.vo",
+          "sha256": "ef0595c81bbdc9548be54098720104a5b0f6c06842df4df3c5a078fa979f8450"
+        },
+        "ZesuSsz.Stock.Closure.a800d628c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d628c.vo",
+          "sha256": "c9ef83cd3c614caf1a5ac318aa0c926b5bb5c53328f0cbd8ad07cc6f3be858c3"
+        },
+        "ZesuSsz.Stock.Closure.a800d6290": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6290.vo",
+          "sha256": "64bce72a6f858e776d7b2de3a0dcb2269b9d3c18c76d95375cc64d469e203d9c"
+        },
+        "ZesuSsz.Stock.Closure.a800d6294": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6294.vo",
+          "sha256": "a9f0e06a0f282e214ef5921f062654b65779108f42e29beb81f586999982b1b2"
+        },
+        "ZesuSsz.Stock.Closure.a800d6298": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6298.vo",
+          "sha256": "6c1c807fedb676a4c2e27bf494b478f49a51782fcdacac0e8bd1f3a1773f6d82"
+        },
+        "ZesuSsz.Stock.Closure.a800d629c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d629c.vo",
+          "sha256": "31bfe87175b3e4c38f2072f29039cae4d10b8e66abfb4a3633124fd2c85e921d"
+        },
+        "ZesuSsz.Stock.Closure.a800d62a0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62a0.vo",
+          "sha256": "0728cf33853a85480e0b410469187f02ef52216c7804b36e2bde313dbbd391ca"
+        },
+        "ZesuSsz.Stock.Closure.a800d62a4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62a4.vo",
+          "sha256": "eff4ca998d43d7f60506a662bbb7bd4e13d71e0903745a2e0d07b4ce870f89ec"
+        },
+        "ZesuSsz.Stock.Closure.a800d62a8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62a8.vo",
+          "sha256": "add8cca7780e9af0fa2a193771810a29d07a529fdd9a5b04ef05cfed0dd7588e"
+        },
+        "ZesuSsz.Stock.Closure.a800d62ac": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62ac.vo",
+          "sha256": "6246211717d8b75cf85240c9f8b51bdc9a28e82a96434731ed67ed10cf094aec"
+        },
+        "ZesuSsz.Stock.Closure.a800d62b0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62b0.vo",
+          "sha256": "038216088e9cf8abfa4ca61a120562aa688789c6bc655584780cc78518f25e4e"
+        },
+        "ZesuSsz.Stock.Closure.a800d62b4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62b4.vo",
+          "sha256": "78a609693910be1fa27f7e523213ec170ddd09f95ef170df70a4fd4a59d206d8"
+        },
+        "ZesuSsz.Stock.Closure.a800d62b8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62b8.vo",
+          "sha256": "33e41c20795e974d0b67a01725c39ef9775240e3dfa1e3c59dc7999e0690e698"
+        },
+        "ZesuSsz.Stock.Closure.a800d62bc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62bc.vo",
+          "sha256": "2d0518b40407e42aec103b013ec42a16989906157bb9c640852642ac3c11879a"
+        },
+        "ZesuSsz.Stock.Closure.a800d62c0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62c0.vo",
+          "sha256": "9318e5e30bb5faff87505ecac70c4a3439a6c9a512feb5ab46c48a484058deb1"
+        },
+        "ZesuSsz.Stock.Closure.a800d62c4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62c4.vo",
+          "sha256": "8ffd22b2816b31523145c756fef68a86c05d50486967e5882fb82bb5f5e903f1"
+        },
+        "ZesuSsz.Stock.Closure.a800d62c8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62c8.vo",
+          "sha256": "6136bfc570580e0de21fc21ee5e46145d185ab8f55c4ec220e9308c465b5f549"
+        },
+        "ZesuSsz.Stock.Closure.a800d62cc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62cc.vo",
+          "sha256": "81a6cc3a0d42349daee207d3433bc2fa7f8fafe78df43304b4012d4be53e18af"
+        },
+        "ZesuSsz.Stock.Closure.a800d62d0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62d0.vo",
+          "sha256": "cca6d30b19a448a3ce2e39d79a8bd55bfed06a2af1d265a7b51c39f8471de042"
+        },
+        "ZesuSsz.Stock.Closure.a800d62d4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62d4.vo",
+          "sha256": "dc65fe044898ed072badb9e6bf14a886b0e22cb2473fd386aeaf530c68fa49ee"
+        },
+        "ZesuSsz.Stock.Closure.a800d62d8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62d8.vo",
+          "sha256": "681efd88cf6715d0f63a832774bb11ea0cb8b9fdca37ba83376f801602f3e029"
+        },
+        "ZesuSsz.Stock.Closure.a800d62dc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62dc.vo",
+          "sha256": "606dc5cb9dd8c7fbf53ce72800a5df0470a46896f8e7194ff1f31e0a4f44f8ae"
+        },
+        "ZesuSsz.Stock.Closure.a800d62e0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62e0.vo",
+          "sha256": "5cf9a53fe7117738a7e6cfe5f7d41590107f4b057e7ad6f2d395f2e14c30b7fa"
+        },
+        "ZesuSsz.Stock.Closure.a800d62e4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62e4.vo",
+          "sha256": "1dbf211b84272e5ee27e5e9d1cb11e12823d7b8461a55f4374271f34d0fdb80d"
+        },
+        "ZesuSsz.Stock.Closure.a800d62e8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62e8.vo",
+          "sha256": "f073ba227986c9257fb42bfd2aab70d0e1f4e1ff749310019e81b2c2795920fc"
+        },
+        "ZesuSsz.Stock.Closure.a800d62ec": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62ec.vo",
+          "sha256": "7ec2ffbe7fc166c8d90bb34159da95845afc7eb42a61c696bf62375e1bd3e00d"
+        },
+        "ZesuSsz.Stock.Closure.a800d62f0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62f0.vo",
+          "sha256": "2e0fe0fad36be62a153d8ae89030daccb743491db06db4320f184a49f9d4f1e5"
+        },
+        "ZesuSsz.Stock.Closure.a800d62f4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62f4.vo",
+          "sha256": "c4fb6879d84cd298d0d10b41b8c944abc746e98da8c895de46af547855e6a590"
+        },
+        "ZesuSsz.Stock.Closure.a800d62f8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62f8.vo",
+          "sha256": "3eb8877be251d044c85a532d162ee675dc091206146e2c47b1172dfe43d01943"
+        },
+        "ZesuSsz.Stock.Closure.a800d62fc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d62fc.vo",
+          "sha256": "5daefdff35660dcfbeef8d96377224425f4d6ad89a9d837bca8b6f446b076bb6"
+        },
+        "ZesuSsz.Stock.Closure.a800d6300": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6300.vo",
+          "sha256": "c936729558ffcc25d7b235bc7e9f5c7e35d3374344c9a60fa8ac7409f3f3ed83"
+        },
+        "ZesuSsz.Stock.Closure.a800d6304": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6304.vo",
+          "sha256": "c768ee8435ca69fe229b5bc67efda7359985a4acec555a369fa18da7173a6909"
+        },
+        "ZesuSsz.Stock.Closure.a800d6308": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6308.vo",
+          "sha256": "8e4575c1303ef2817d1bc50db30d2836be4c40439132b57466e07ebe9226b056"
+        },
+        "ZesuSsz.Stock.Closure.a800d630c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d630c.vo",
+          "sha256": "e257d949c5dd990e92f03509c3661ef6ebfe728d754fcea76918165b3125e211"
+        },
+        "ZesuSsz.Stock.Closure.a800d6310": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6310.vo",
+          "sha256": "e233436b35337068a90ee5e2b4bb9f82dfbb21c3ba1e861e044db04f8dd74de8"
+        },
+        "ZesuSsz.Stock.Closure.a800d6314": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6314.vo",
+          "sha256": "dfa93c9a08dd638d86603590f368c1d3a9d6294cc44b381fea3660e391908eee"
+        },
+        "ZesuSsz.Stock.Closure.a800d6318": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6318.vo",
+          "sha256": "64fddfb1553529764822bfce7057613ce78a12080d6fcf0657bb53032629f3e8"
+        },
+        "ZesuSsz.Stock.Closure.a800d631c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d631c.vo",
+          "sha256": "cd1d8969c1e02d2f4569654d41a5b635987d76cdbf843cb697fd8b86817e24c1"
+        },
+        "ZesuSsz.Stock.Closure.a800d6320": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6320.vo",
+          "sha256": "7359a7479be222245954e7276233aa4841d43fbf742f55ad4e9b2ee16f829c5e"
+        },
+        "ZesuSsz.Stock.Closure.a800d6324": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6324.vo",
+          "sha256": "5b3316b7ba6edfc57d8ef434c5598ab10df8c8a64f97fbbf064b93262460d6f8"
+        },
+        "ZesuSsz.Stock.Closure.a800d6328": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6328.vo",
+          "sha256": "c3853e72658b840cad7d64b4f25da231f103bf9e496e5adffd28ca2068709b65"
+        },
+        "ZesuSsz.Stock.Closure.a800d632c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d632c.vo",
+          "sha256": "bc735f97a50bde3ca7fcd456a6d109d52efc77b6431b893bb70d0d1d7e0421c5"
+        },
+        "ZesuSsz.Stock.Closure.a800d6330": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6330.vo",
+          "sha256": "6fd6707f598c48eec13c12ecab13022b0e2328a217cc92efc7bab6a35592713e"
+        },
+        "ZesuSsz.Stock.Closure.a800d6334": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6334.vo",
+          "sha256": "a60a59bb106c4e8c243e34cc8aaf3dec397bad12d2fc65b731dfd47f53118632"
+        },
+        "ZesuSsz.Stock.Closure.a800d6338": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6338.vo",
+          "sha256": "9638696277e12c60c190e9b2a256ec379e53645bcd7436e9cb209352d17fc3f7"
+        },
+        "ZesuSsz.Stock.Closure.a800d633c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d633c.vo",
+          "sha256": "fb3b5cc0d2cc0d51ee0396f39001f375f9936d66683ed49f6469b751a020c32d"
+        },
+        "ZesuSsz.Stock.Closure.a800d6340": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6340.vo",
+          "sha256": "a5dbf8caf54b97f0982fcfb746422872885c33896ed24eeddd69f727cc98787a"
+        },
+        "ZesuSsz.Stock.Closure.a800d6344": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6344.vo",
+          "sha256": "219f3911a7821ae228e03c33785f1bd0669c0282162713973ef72a57820d6132"
+        },
+        "ZesuSsz.Stock.Closure.index_nextUint64": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/index_nextUint64.vo",
+          "sha256": "9555b19dce53083d2b592b8c243dff7a520e586e2807295c5df05cffbd997235"
+        },
+        "ZesuSsz.Contracts.NextUint64Selected": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Contracts/NextUint64Selected.vo",
+          "sha256": "dcfa744d702697a1fb8f5c96ca68325ea36ac62ff6052942a288c2db0d273bdc"
+        },
+        "ZesuSsz.Contracts.ParentHeaderMemcpyService": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Contracts/ParentHeaderMemcpyService.vo",
+          "sha256": "2b5b51857a9aa86db842bc9eba7ddab866e8c45a5e971f7ea15930f29cc67d7c"
+        },
+        "ZesuSsz.Compliance.ProjectionParentHeader": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Compliance/ProjectionParentHeader.vo",
+          "sha256": "737bd0a6bc27baa8982f2957006f1cbe2c329e301ede956cbadf1b0dc64fe898"
+        },
+        "ZesuSsz.Contracts.Candidates.ParentHeaderDomain": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Contracts/Candidates/ParentHeaderDomain.vo",
+          "sha256": "ad41a2cc54c51fdaca5bb77cbe88e34d92d4be814901682d5c6555706ccc3fa5"
+        },
+        "ZesuSsz.Contracts.ParentHeaderRequiredFields": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Contracts/ParentHeaderRequiredFields.vo",
+          "sha256": "c9637afa5e7317bfca0b4721085561f85b8bdd85681d925d115dd8d06e3e5c6e"
+        },
+        "ZesuSsz.Contracts.ParentHeaderRung2": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Contracts/ParentHeaderRung2.vo",
+          "sha256": "b23d6746d9081217e77683ed91bfac675b5216b79416ebba097ecf15aaac0aec"
+        },
+        "ZesuSsz.Stock.Closure.a800d5cb8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5cb8.vo",
+          "sha256": "e6aeb47c0838b2ce3961c72f396f7f5cf23e5bf29698789e894e1708e63654b7"
+        },
+        "ZesuSsz.Stock.Closure.a800d5cbc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5cbc.vo",
+          "sha256": "d3b98282bcaa079fbf5bd7a0e5fe52f62ed9b87264e68ca34476ccfc60ee905e"
+        },
+        "ZesuSsz.Stock.Closure.a800d5cc0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5cc0.vo",
+          "sha256": "7a162735ee857cfdff9b722466e1bf50e01550a0a6d1798a1a9e645c5976c49f"
+        },
+        "ZesuSsz.Stock.Closure.a800d5cc4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5cc4.vo",
+          "sha256": "69835547228fba141c51b09d836fed3d8c491869bd7754a064aa03425b104a11"
+        },
+        "ZesuSsz.Stock.Closure.a800d5cc8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5cc8.vo",
+          "sha256": "c6226b5cac556f2a50f9b47f04903c12ec9a76828b0dcbd8332feda16c124bca"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ccc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ccc.vo",
+          "sha256": "ec5be569e2bc0823231e30e51da60cd1c01edeb71fe2d7e66b848846cd9eb4ad"
+        },
+        "ZesuSsz.Stock.Closure.a800d5cd0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5cd0.vo",
+          "sha256": "d5a5328757c83a03f0a2ed3b65cae546d4e26ce634cdd9486e9241d11e76778b"
+        },
+        "ZesuSsz.Stock.Closure.a800d5cd4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5cd4.vo",
+          "sha256": "c88cb9392ddf585c0e287ecd74740a86465dc35bc479925e627487ef4f3852bd"
+        },
+        "ZesuSsz.Stock.Closure.a800d5cd8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5cd8.vo",
+          "sha256": "9bb8851e0b3b78eed51ca488a7c97b85b319a27263fa6d7a1024b5834bc6701c"
+        },
+        "ZesuSsz.Stock.Closure.a800d5cdc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5cdc.vo",
+          "sha256": "7c040a1b3a6d34190c7e59cbc997c5d057cb73c80957c35a379c0c0ee873d50e"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ce0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ce0.vo",
+          "sha256": "a60f035cb5677cdc177826bef75f43d5ca212f805cb86d85d70ca2604cb3dfd8"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ce4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ce4.vo",
+          "sha256": "dbd6a631f1483ceeea445ace680ca9337129a4ef251ddebb9a348026871e0e0e"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ce8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ce8.vo",
+          "sha256": "b96b010a23c50ed87be960c0fb35e63cda496cfdec9897902511ab34fc4aa386"
+        },
+        "ZesuSsz.Stock.Closure.a800d5cec": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5cec.vo",
+          "sha256": "a6debe040420ad3367bfdc7d974efb95f9876f1c4e91d75d0c11dcaad9555e8c"
+        },
+        "ZesuSsz.Stock.Closure.a800d5cf0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5cf0.vo",
+          "sha256": "68ab3ad8b287565e91246f82a40db7dcea57585d9ba38ac76673afe8d5052edc"
+        },
+        "ZesuSsz.Stock.Closure.a800d5cf4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5cf4.vo",
+          "sha256": "028436346fbbf820cfa7c83bcb138b18010999dd0faca3a1bbaa74838d8cdf9b"
+        },
+        "ZesuSsz.Stock.Closure.a800d5cf8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5cf8.vo",
+          "sha256": "59064538c39be4e60d5d013f48f8fcdb11deb472f84fcf43c8757c2f0c7fc9fd"
+        },
+        "ZesuSsz.Stock.Closure.a800d5cfc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5cfc.vo",
+          "sha256": "7f388d6f0d617d95d5f779815ecc463329e0469d1744ee18efe581849ae39ef6"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d00": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d00.vo",
+          "sha256": "ae1eee12c581508e2c0fc20d123356fc854ea107b0d0bfa0f4263b0d336305b6"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d04": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d04.vo",
+          "sha256": "59939f25ce8f35dc9614b6ae660d58792ee1cc6d2971f58c71dc58eca1ac77af"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d08": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d08.vo",
+          "sha256": "5e70fa3173e6d791a7d70d4b4874886c8df0141376367f153d2bdfe69689c089"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d0c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d0c.vo",
+          "sha256": "20081a079499dc7f8c7ad12e8768a92baafe38db3b3564294f29e6d94a132e8d"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d10": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d10.vo",
+          "sha256": "de674296604ac6f79a72aa52c49ca51f4e131d4905b287f7a30c1aa4cae2ff5f"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d14": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d14.vo",
+          "sha256": "0bdbddcdc3833b9d5f29bebf4733e7ffe18185c0fac5ea03d9bf4ec3ef8f50cf"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d18": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d18.vo",
+          "sha256": "2ca5aa678391214df63ba2b33c5008afa669ad77ff0144a919dc07ea2d85db41"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d1c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d1c.vo",
+          "sha256": "50fb8eece541f4e9cf5bfce58f0a4acf819ab0690f46f3b30360b2792f0551f7"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d20": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d20.vo",
+          "sha256": "d9ef0d37c512250b11dab0f40e46ac1f2c88dfdf6116e2140e72166b2f2d3c71"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d24": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d24.vo",
+          "sha256": "77826022d98f4fb7e20b711a8471a50dd3775c571dbad4a2aec0a951e7273e3c"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d28": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d28.vo",
+          "sha256": "cb841fa15cfa0e1362427be96c0678a405577999916df8e190c841e8df928725"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d2c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d2c.vo",
+          "sha256": "bc688b115fb0bc8360003fcbff85bc04b8f22d4c337094b96ccbb06ab898defb"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d30": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d30.vo",
+          "sha256": "58708234b51e93972e310f0e1b42d2315dfcaf499b39354a5abfc18231088307"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d34": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d34.vo",
+          "sha256": "c82dad85fdaed855c47e48010e8ba1282ae46c71f645e644731f9bec75978071"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d38": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d38.vo",
+          "sha256": "e53326a5525f99a72ac4130c26d766dca5efb741af5b4a76419ac11dc41176ab"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d3c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d3c.vo",
+          "sha256": "1153624abfce1edd069b0ec95e625a1d8842d36e02b0946ddf03858323e639e4"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d40": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d40.vo",
+          "sha256": "f796f2160b8691c4af6afd9294d20b9cfd61644a9515ee7b4f9c46560f878566"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d44": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d44.vo",
+          "sha256": "a69e31cfa15698fe50dd3812e2d3670d071ec4a2955b56b155b6d8f0e02282c7"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d48": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d48.vo",
+          "sha256": "8ff6daf9caa5800a2d9ff859f7fcc0382d137a1b892da5b4cb4b8a438929009c"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d4c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d4c.vo",
+          "sha256": "43f2386256fcdcfef0567ee94557e87bd25cb8126090fbaed4d4cea9f9af7ada"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d50": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d50.vo",
+          "sha256": "3831c8cb248a1bf5ac5e6c46868eb82d79a01167e71f99cab2db3f1e2381597b"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d54": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d54.vo",
+          "sha256": "e16379647e31dd138bf5fce02a2904a6c118ea80703a2f5a36a04777a0eda05c"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d58": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d58.vo",
+          "sha256": "01430b0c35fba4c2a537030a9fde2d143479afadb7b2cb43179964e3ae7a8fe0"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d5c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d5c.vo",
+          "sha256": "3c3f710ccff1038c28dccdbe9e0dbb13dc54824904a05fe715c5d2d2903f79d9"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d60": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d60.vo",
+          "sha256": "aa68efdcb9dc22ea81328581f3fcf9503cd17417797115df6cf5c301f79164c6"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d64": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d64.vo",
+          "sha256": "f9638fb2625e0d608e1780c87918e9f2abd63a4fbd0c6488fd44bb7f65ba19de"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d68": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d68.vo",
+          "sha256": "80ce56d3274897f315cae81fedc6f9ed01d0c6a0b71168e60872c262adb7b027"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d6c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d6c.vo",
+          "sha256": "27d45c4108caa962c5b7fce2302050a1789e352fb255ef0b08fb811588cb7133"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d70": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d70.vo",
+          "sha256": "2f9d89b7f2e71a5512d8a90c9f8c595eb768940d70ae90ce23feee255bafdab1"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d74": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d74.vo",
+          "sha256": "c0a6e01305b9b2100768f1808454a8466b3573bffb875444817253113cb83471"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d78": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d78.vo",
+          "sha256": "f581c1e2d0984321295c0e6f27d15dffa09a55b97d92f2e64ad998489feec2a4"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d7c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d7c.vo",
+          "sha256": "64308f9af2b8af59ebf77dacd1b50bc00d8b7f9f4d0a4ba1d321e277c34e9939"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d80": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d80.vo",
+          "sha256": "8d41c98fee42888aa45b28da35106837b66c0930088b6d92f220f617f364dd52"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d84": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d84.vo",
+          "sha256": "7210ee3a36a0d774d38d2809c366f93515364025d9b2b11aa2eed8c7bbdce54f"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d88": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d88.vo",
+          "sha256": "9947b8210190313499fa4700dcdc012856c7f8f549c993808f567ce1caa0f0a9"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d8c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d8c.vo",
+          "sha256": "138b466a53de417144923d76d37a60ba3fbb820e8dc1424a071ead5e7d72fe89"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d90": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d90.vo",
+          "sha256": "de7f2f49feb0613053ee34abd3665322cc8c43b8e769408a85f84033f433c973"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d94": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d94.vo",
+          "sha256": "c6a8ecb3bf79e80e0c069b31dc61897cce9520381e9f0f36a5f3a0b362d33662"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d98": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d98.vo",
+          "sha256": "4272b3d88f20756673d7e75ef9686526188f8c5cf4d92bd15df76ff2fe24b918"
+        },
+        "ZesuSsz.Stock.Closure.a800d5d9c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5d9c.vo",
+          "sha256": "f367ddac9a0eb85dd770925cfba3573500582b40c88c57200dda9b1142fafa74"
+        },
+        "ZesuSsz.Stock.Closure.a800d5da0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5da0.vo",
+          "sha256": "f019ad7671816ba1e1da727c6e1ea97b7171edfab2e99a7a0026c7cd5032e5a1"
+        },
+        "ZesuSsz.Stock.Closure.a800d5da4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5da4.vo",
+          "sha256": "292703dcffbca7f881c89c273f589e4c2be015f81a3130a93588fe7d481a8944"
+        },
+        "ZesuSsz.Stock.Closure.a800d5da8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5da8.vo",
+          "sha256": "d2460d4e709d1f511d366c211983709d0ce90141eab6d798d499a2029272d31c"
+        },
+        "ZesuSsz.Stock.Closure.a800d5dac": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5dac.vo",
+          "sha256": "adb1e199773ee4411f9c9700a438507b0a2635251649a4b82758ea5068dc52e7"
+        },
+        "ZesuSsz.Stock.Closure.a800d5db0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5db0.vo",
+          "sha256": "6611b48ec0fe22ffdef9b057344a0c702af639521ed765a4887c8f1c7afa0bbe"
+        },
+        "ZesuSsz.Stock.Closure.a800d5db4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5db4.vo",
+          "sha256": "786947cd206a6f22a5096944675a37129ba1368942eddbd2aed60af4699ef10e"
+        },
+        "ZesuSsz.Stock.Closure.a800d5db8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5db8.vo",
+          "sha256": "13ef12b5953ac8ef001c961d69bc3895bbe2c4e6ae358fcbc8ee44ebba6ab370"
+        },
+        "ZesuSsz.Stock.Closure.a800d5dbc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5dbc.vo",
+          "sha256": "1b5a3877f7cd75470c58a7ac32b9dff413d62eac6b34fcf02bb7f511d98dd864"
+        },
+        "ZesuSsz.Stock.Closure.a800d5dc0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5dc0.vo",
+          "sha256": "2f058f9c26d1501d910e1e5f8e807f6453300ea03885e54728646e98ac08c1ac"
+        },
+        "ZesuSsz.Stock.Closure.a800d5dc4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5dc4.vo",
+          "sha256": "6a46224f91afd075ab8e26ea9f46f354cfd1e6974ee59926ec39f26961de020a"
+        },
+        "ZesuSsz.Stock.Closure.a800d5dc8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5dc8.vo",
+          "sha256": "cd4c2b13190d7ae76543f96b06cf69e9c9a95b6cbbc64726ac55b67f54867f14"
+        },
+        "ZesuSsz.Stock.Closure.a800d5dcc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5dcc.vo",
+          "sha256": "cf0aa27745f5a99d22f4106c2094a0b577be9d4cf60d410fb0680a88bc4c74a4"
+        },
+        "ZesuSsz.Stock.Closure.a800d5dd0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5dd0.vo",
+          "sha256": "7675564186cd2c82985c4cc6249e38842749e3b72ca196880d0a75cb1a7f2ba1"
+        },
+        "ZesuSsz.Stock.Closure.a800d5dd4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5dd4.vo",
+          "sha256": "c3ed2113419a93ca315819093d6255448f8b9eabb2d409d3f9594cbd12c968d4"
+        },
+        "ZesuSsz.Stock.Closure.a800d5dd8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5dd8.vo",
+          "sha256": "f0c74bcee58125dc8f355801d822c3ad506dd30289b87b70191c94b2e2873bd9"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ddc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ddc.vo",
+          "sha256": "bf252df499fd45962e0b7ae88dcc20eb421d78ce15e940e810bf5cf9bcc5ae0b"
+        },
+        "ZesuSsz.Stock.Closure.a800d5de0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5de0.vo",
+          "sha256": "c7d715e82cad14f0f5124615d94a611822a9fa864b55822d8cf13ed750fa54ab"
+        },
+        "ZesuSsz.Stock.Closure.a800d5de4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5de4.vo",
+          "sha256": "f74a9937136c3b36e902559b65ff629ed261b1a6034df980af9f2b4565d9708b"
+        },
+        "ZesuSsz.Stock.Closure.a800d5de8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5de8.vo",
+          "sha256": "ac00e13ff22a015f4d5664336a9be68ccebaa6865412c7fd77194e272af6c202"
+        },
+        "ZesuSsz.Stock.Closure.a800d5dec": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5dec.vo",
+          "sha256": "b12e246af4bdd7b7157f3f3e54d0c1173d88274ab4b016b2f5b7536b9b2a375c"
+        },
+        "ZesuSsz.Stock.Closure.a800d5df0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5df0.vo",
+          "sha256": "e7f31385db2debdb96e3177a81e3123542d6031fc7557ac18e37aad730f59f8b"
+        },
+        "ZesuSsz.Stock.Closure.a800d5df4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5df4.vo",
+          "sha256": "d8a42bd8d0d0f01b71cd8d04d0e1cef01b63e6a416459d557218e76137ef6ccb"
+        },
+        "ZesuSsz.Stock.Closure.a800d5df8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5df8.vo",
+          "sha256": "6b9c41a84eaecb4c83d847f81019645c24f643a13961ad94029ecd8245a1d927"
+        },
+        "ZesuSsz.Stock.Closure.a800d5dfc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5dfc.vo",
+          "sha256": "34ec2026c0b9d0b9d1d63bf127e906b33fc88ac966dd19d99ab1c589135233b6"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e00": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e00.vo",
+          "sha256": "fbb5afe01f298e7f9c2d7182ec01df8e573b60d5a2a333cd1ad5197e851ce72f"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e04": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e04.vo",
+          "sha256": "d9555a35a7a7cf458ce5dd21f9681ed70832407af65cb90b1df60c326f91e706"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e08": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e08.vo",
+          "sha256": "a59901a03046c60e8a5ec18e0af53d8189d8337e86a5c1b4033050e905ffb190"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e0c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e0c.vo",
+          "sha256": "fae01f3478f9488302385ffa37e4c165052a5941153cda879c28103458d88789"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e10": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e10.vo",
+          "sha256": "7d098269d1f4a869d3533f60444fe16df2d04141b6605873e2d26e01193cdda0"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e14": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e14.vo",
+          "sha256": "c3ba7e1eecd5266ab093f866813b0f17bc1e63713699854afc8394545992795a"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e18": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e18.vo",
+          "sha256": "a2b889ac118c87a4820a75719a768b8188c7676344aaf59154383d8f4e632423"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e1c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e1c.vo",
+          "sha256": "2dbfb9cfeef399cf27d349f4e742c4b5d8257418b166b65f4ac1d732f2c5237b"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e20": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e20.vo",
+          "sha256": "b2904c98dd299303e4af89f999d6e6674365859a307e1e30ca3caf0b5f58fa52"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e24": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e24.vo",
+          "sha256": "826df96b2215e84069ebbb522798b4b7e7861ea0245c14e76be834bdc634d597"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e28": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e28.vo",
+          "sha256": "9de1432ce54f6c87d2748d529338f06049881dccd974662ef7eb2a692c86f7e2"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e2c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e2c.vo",
+          "sha256": "2ff911ea598d127f32286f20916884d7037c0f409378c2baefee959b235d89ac"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e30": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e30.vo",
+          "sha256": "beb2354432d2bfd8c56a21dd67cc483edec394e5329f7289205e7563fdb604e3"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e34": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e34.vo",
+          "sha256": "f3095be53bdc9bf456579efefd92ae672066030b3462bd898796604a652ea859"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e38": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e38.vo",
+          "sha256": "2a3ce68770f874dcfe1430bdfa39cff429d067dbd9d12c26270bf8eb69b72fae"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e3c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e3c.vo",
+          "sha256": "8075def6722d085e485c5c3374b21d860242cce63a9fbb6f33a5432ecb28da75"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e40": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e40.vo",
+          "sha256": "9af5d21bf51563a8182de8d02d53f847b1eb7a1fdf491925d1103ecbb9929324"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e44": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e44.vo",
+          "sha256": "528f40ef7d3a7dbfa58d680f0ea835ae6d5b49e08ffeb72d8a28494081ccfa84"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e48": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e48.vo",
+          "sha256": "75ed96896d1418bcedf566459de8897b98114c929f0d2abc1f68542a435552f1"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e4c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e4c.vo",
+          "sha256": "77221b6f16bb02d9701f8b1198a8595df94fdce2b1df2a9527160b9efdd4baa6"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e50": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e50.vo",
+          "sha256": "27363f59a9ccbd9c4f655ec5a8dbec0318cc45a0818c73cdd057fa3a10730364"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e54": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e54.vo",
+          "sha256": "248f653454651f53b7303151250b5265d07b057307ea1c17e7eb81c7a57e6537"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e58": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e58.vo",
+          "sha256": "56ee639ec4be8f0e0faeab062ee5729687b2b5c96fd4ba968e6b4f5e082046b8"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e5c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e5c.vo",
+          "sha256": "142fb5c18457f448f0fff20c53d9f47bb4d27c2f0044de263d0a66eb761e6f4f"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e60": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e60.vo",
+          "sha256": "a88262445ee2929d72b7daddb97ae739433467e10cde248a615d892d577485e1"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e64": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e64.vo",
+          "sha256": "6f134c90e23eabecaf3b476c0a8b2e0ea9d06d3e61072352680e450a4c9b3e55"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e68": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e68.vo",
+          "sha256": "db703546d5249857bb9b1d6736d15ee95a0f109082111d7c81b28808cdc6bd7d"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e6c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e6c.vo",
+          "sha256": "aea9598969d2d23752ea6ca4a57149766708a4ca6bfbda114bc7ead9e92e9eaf"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e70": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e70.vo",
+          "sha256": "a8697bbfe5c29178e21487d1385717233cc80e92d8539f22cc65e27d80a349cb"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e74": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e74.vo",
+          "sha256": "d619e7790d4b8dde4351d4a9883f95de5b914178c650cd63a28400f6e0bcefc4"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e78": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e78.vo",
+          "sha256": "a37158d289f58150f85dc627bc83a1ace48e7a44ee831675a862a2fbc686935b"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e7c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e7c.vo",
+          "sha256": "2dd3b1e2c2c19b62cc4d8c418bfbd0d1dd81ad3ef12a42df1ea071b96635ad89"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e80": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e80.vo",
+          "sha256": "1d3b797930d52012aa5a419b5d44f0206d63386f41b54e4f3c8e611ed7dbec39"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e84": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e84.vo",
+          "sha256": "757cbbc44145e3de692654a0532fb419b5aea9efe6081285d5742fffd65bced3"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e88": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e88.vo",
+          "sha256": "472c077776e14bbd3575e4fd2c1ba80cf903771b78ae26a677ac4e783f027c73"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e8c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e8c.vo",
+          "sha256": "c8767fb63c416be2b5029c193a7f11179495a80390e13e8f137cdc07818a9ff6"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e90": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e90.vo",
+          "sha256": "ba8f3fb0be16dbdeb06111f0599e0dad541cc626d63a2905c39b107f6255c496"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e94": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e94.vo",
+          "sha256": "254d4e0fc161264008e83d04baec043d6b192d21e7aed57d4eefe7629472fa40"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e98": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e98.vo",
+          "sha256": "5d501494f59eb485f1d41ea55ba6f35f3dcfd389f174210748490e6630d36c32"
+        },
+        "ZesuSsz.Stock.Closure.a800d5e9c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5e9c.vo",
+          "sha256": "8aa6d1770d354a92b8090d8fb595c16109db32833c8c36778baa5a3914c86637"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ea0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ea0.vo",
+          "sha256": "b230831009ba4908fcc2904b687fa614468300553e65118873be520b3ed2a14c"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ea4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ea4.vo",
+          "sha256": "eabbcd3f58be36e0fa98e6c9ded28273a78d468727348bc0a495dde33fb2a5ee"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ea8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ea8.vo",
+          "sha256": "65dacb28ddb0d14edbaf4873ea3a7efd15e12a9f5d5ee366fe782d425964b356"
+        },
+        "ZesuSsz.Stock.Closure.a800d5eac": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5eac.vo",
+          "sha256": "101264d5a762024d0838a5c92df081fca96139d73df50aeb39458e4513b4415f"
+        },
+        "ZesuSsz.Stock.Closure.a800d5eb0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5eb0.vo",
+          "sha256": "73e1fa2617871d536c287efb7c02181d254f7c3717cac30116f098d13baa15fa"
+        },
+        "ZesuSsz.Stock.Closure.a800d5eb4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5eb4.vo",
+          "sha256": "b5511ede990070676a279adf4438e2e963d63940834ec1e8477307a733cafc6f"
+        },
+        "ZesuSsz.Stock.Closure.a800d5eb8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5eb8.vo",
+          "sha256": "f23feaa65c831536c15824a076fe8a2ae6e4f2e45e3035aa8f4f815edd83e3c5"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ebc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ebc.vo",
+          "sha256": "3f1fba05ac4f044bc2fae97f03700dbd0fdbb4816b1740d5d499b90822d68f3d"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ec0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ec0.vo",
+          "sha256": "d4c77ab23d31322199dac22932888036c580338b4f785a6fbe064c059d7b6abb"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ec4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ec4.vo",
+          "sha256": "d4d5e65135efa59555685787f965da6d5a44dba803eb6e135048146926a825c1"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ec8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ec8.vo",
+          "sha256": "cce99ed969c9bb4d0ffd4db63d98acd242418b1f93f620a3c96d9490108aaa45"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ecc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ecc.vo",
+          "sha256": "881ba85af0e1ca3f82f7b8e67dfb013b3ca8465230a288375f566b653c08534e"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ed0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ed0.vo",
+          "sha256": "a35238ecdfda7ee1f17d59b2abda15290ec3799a07186dcc87f24360491d8b26"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ed4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ed4.vo",
+          "sha256": "b0fd86938ff44b7b7b705247939419e410239cb83270d5a8f6533e91f062cf39"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ed8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ed8.vo",
+          "sha256": "429f61eb06eaf1812ca0db831e8b3c564b8ffb53cd48e41122c2727f1d607a18"
+        },
+        "ZesuSsz.Stock.Closure.a800d5edc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5edc.vo",
+          "sha256": "8c5b9b90ae27d9179c0311cb46e87a03c194cbb83eef6b5e52721a5eddb8ebdd"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ee0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ee0.vo",
+          "sha256": "88a43caec591d586ae3b1188da18dfb35c7d183ae58d6c24fa0f5d93c7eeb0f5"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ee4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ee4.vo",
+          "sha256": "9952f16250d68a4ac79901f9e62b2eaec1fdd9adfc824ff0dac49853e3797af4"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ee8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ee8.vo",
+          "sha256": "e73a8d95f42989f7c7c6ee0de1a1476fac03c15f26f8f9ae936f538259ed387c"
+        },
+        "ZesuSsz.Stock.Closure.a800d5eec": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5eec.vo",
+          "sha256": "17f8180c6c622b44dcfcd2f5649d0b70abbad0ed0643bee318d82f6220d98d65"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ef0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ef0.vo",
+          "sha256": "b70709f39833de4875ab87b7729edae63ef1a8c087541c2e37b7471695ec7d20"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ef4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ef4.vo",
+          "sha256": "2cd9e4a5435384cb42b14a5d04c0116bb5abbcd0d45cb440b4c0fe7a77b23004"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ef8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ef8.vo",
+          "sha256": "a5b827a390558c668997b4b5b36e566cea1426643504f2dcb5fb294a8b161cd9"
+        },
+        "ZesuSsz.Stock.Closure.a800d5efc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5efc.vo",
+          "sha256": "a14d48c23a7669f2c9cea11d12be095ee6a7510b6f5c5c903207aa1ee71baacd"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f00": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f00.vo",
+          "sha256": "dc71a90797f9b881253e9070e8594bd345b68ce49d6b6e6e92739996ca6dfc00"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f04": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f04.vo",
+          "sha256": "c559b7b7fb112e24562fde7e95023df0c50dc96ff6db165a969d2652211f7812"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f08": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f08.vo",
+          "sha256": "bed5fff9cb149fe775e2ca3037ca1fe1090c596fbd5297bd4ae86877a67ec048"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f0c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f0c.vo",
+          "sha256": "e2d69e06fbafb34338463c172c25209e76a380535cf2968b422bb554deb66e3d"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f10": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f10.vo",
+          "sha256": "edfe1395f391d04de3d1d66902f7697607ced8d603ae195faacd187f88a26f9a"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f14": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f14.vo",
+          "sha256": "36daa3008f39533dbee0000bb3876b9dd0047cc4bbcecf06aef08720710c5ee8"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f18": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f18.vo",
+          "sha256": "49e5a8a88c80bda7e1c93c5b2919dac0fae4f43e93023295b16f5e005b7ab8f1"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f1c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f1c.vo",
+          "sha256": "b5cc174a48c08d018397397fb71d89beb98c5e8f3a22fb26bbcbef5696e7c895"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f20": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f20.vo",
+          "sha256": "31bd14e4c033154a9bfeba6f5a09696d7f605044bf61ab8db3dd45946c9b74b1"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f24": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f24.vo",
+          "sha256": "078b6d86eb6b59050133a3bf40f72aa219b18166137abdaeaf46eb447f0e66cb"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f28": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f28.vo",
+          "sha256": "b0d774648245ee4aa3c6b3a47292187a0a1b16e939c566562b1776e8f329bc64"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f2c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f2c.vo",
+          "sha256": "ad00b4bf16b329ebde0450824f35cd62bcd69f11bf46f2ef1839f3b6f5a853eb"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f30": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f30.vo",
+          "sha256": "95971a16e024233ca2136f11bf76231f21d17dc699eaf8d4d0d874905f68ad65"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f34": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f34.vo",
+          "sha256": "c140b32c4fffc97e4a4f3b48b5c0ba2d3ddb38ff9fb0411e6e3667c79acc2693"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f38": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f38.vo",
+          "sha256": "c4bcbba56a2a6381296cdddfc537a437e698b5e2737234dc69467cbaf57431fd"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f3c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f3c.vo",
+          "sha256": "e4715029682cfad8998d22af118eaca59880e53633b6b203484799a26f0d7176"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f40": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f40.vo",
+          "sha256": "ce4e44eb571b9bd49bf1d64a0133dea276200f53fb3dc013be6428db182e3135"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f44": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f44.vo",
+          "sha256": "c963a1b62fe76203fd383536f5a02ab1974d622e5433e431119de4dcb6046193"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f48": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f48.vo",
+          "sha256": "e926f2cfec145fb02c42163260bf8bb77841bb8b3a837b05b19f46768b0306b6"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f4c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f4c.vo",
+          "sha256": "282b6957badf36f4270924bca72a39994ad9787605c6ab371a8398ee35799b57"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f50": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f50.vo",
+          "sha256": "13b6e985668ed71e8b09a2c34d8373c9d6d2275df838584ab0f61a187eb05d84"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f54": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f54.vo",
+          "sha256": "846bbd298c3895b395b3bc5612720d8f40ab8156a70c5f57f8faebf5f79cf91f"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f58": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f58.vo",
+          "sha256": "07b4a6280714f9bd2b26c63a226b668936c8bc574e9836012028d884994c3289"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f5c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f5c.vo",
+          "sha256": "66db9bca5453ed135cbfd6420a8cce20feed5f264f87eabe310a599e1304d20c"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f60": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f60.vo",
+          "sha256": "4f369e08f02baa51f9999018e097e38338be2c31fcae8a90ee9f2b8fc4083d0f"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f64": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f64.vo",
+          "sha256": "29c6f9393b2a2ce8ea57533709ac7b3f45154c1506e1da2c92931042da8cac12"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f68": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f68.vo",
+          "sha256": "ee8a1273e3c599a7e85c5c90315f161daa6cda151a0d980b5f3e7f4b388a43e3"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f6c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f6c.vo",
+          "sha256": "8e35a06369301b3225034b9ca8c587370c53a89e0a4580318d2a453ade5363d2"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f70": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f70.vo",
+          "sha256": "76db0ec7d70fca3dadfe95c0041e217eb23f95ef75d694b8f34241c2b69b39ab"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f74": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f74.vo",
+          "sha256": "fc9c308edd2deb1404122f23929ab15e48a8494c645b2793c821691a7c064d75"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f78": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f78.vo",
+          "sha256": "13668964616016c48cdc890a5be750f2fd9d66eab4eafa1ddba9bcbeaf532720"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f7c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f7c.vo",
+          "sha256": "98adc94a7cef90c9d1aed83e02ca0a8671979d33209e2f7353ba4008f5cc76b0"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f80": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f80.vo",
+          "sha256": "e2258468567b0a5099e746946b4b299bb480e40091513af00c27f3487fe362f2"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f84": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f84.vo",
+          "sha256": "b4443a81bc5c3e233885ce49272b546bce42bdd9229ed8cca42e5e325088bd24"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f88": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f88.vo",
+          "sha256": "af4727ba8a6148e30eaf1d3bafc850196ca7f7c75655981fbc718e7474cf8e4e"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f8c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f8c.vo",
+          "sha256": "48e2f25d92e389157d043657181b4121fbac9abbca08364f77dc209cfc532de1"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f90": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f90.vo",
+          "sha256": "c1957631fa3892d99c2a2ab7e2effc431fb59b80ed28232387a7d80b8538d08d"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f94": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f94.vo",
+          "sha256": "3c68ce04aaf56ae1850146baf2fd732406d186e454e190f3566f5adcf21c986d"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f98": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f98.vo",
+          "sha256": "9897c6edf705abaf7803ce2c6b4c7876f4366c2954a5b469fc11dcb4e10cc816"
+        },
+        "ZesuSsz.Stock.Closure.a800d5f9c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5f9c.vo",
+          "sha256": "2e7e489116307cc82ad364764029046e1276199983a140db1a5d7ff9ac94e294"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fa0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fa0.vo",
+          "sha256": "610a4fe4079bef98fe0db86629f7c509b6d5497b5a646c93e6604018ac4c23d9"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fa4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fa4.vo",
+          "sha256": "6cdf3a30b4e91a2bd7a743f6c26827a6bfe621df95eeafa019d57c3836ff1f1c"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fa8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fa8.vo",
+          "sha256": "7a3e10ce6da6f42d8cf33e64d6d4732c6c84e629cad5db3ac3b0fbba5d38f0af"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fac": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fac.vo",
+          "sha256": "34dd4df9509b55e57450b1b964b8afb2ec871dd71bdb220a6ec8e6ab02e3d5bc"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fb0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fb0.vo",
+          "sha256": "04a1f4d7f17a35f358212e7edc9aa7aba523af984c817cb5f7bcf2c4b4f8efdb"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fb4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fb4.vo",
+          "sha256": "7e7412ef56d467e0e8fe0372a6f8def742b00fde54652221d28f7edd5f8094bf"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fb8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fb8.vo",
+          "sha256": "57270e8239410a5110de7101463e64912361041822a54c110a14a3503e70e585"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fbc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fbc.vo",
+          "sha256": "7ee836e6318838db70fffac5e5a2563224e2059a85cce0f5609ac2733c3c4f7e"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fc0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fc0.vo",
+          "sha256": "87a87ce03d0ea6669ddac53d630c26a9264aebf962c9bbde4f1828546c02b0e4"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fc4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fc4.vo",
+          "sha256": "615578e76134e3c5a58e5f5271d4c355a89968e58378dc6120c07910c5963479"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fc8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fc8.vo",
+          "sha256": "b1c6386b5ac27cd6a82d6f31e32961856cb1074336713fd5afb576ea72d8d5f4"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fcc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fcc.vo",
+          "sha256": "c882a544c99a229586235034f6417ce187ee919b9804a9be0de8ad51dc73ec5e"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fd0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fd0.vo",
+          "sha256": "a3592835f8f8a93ac31a6bd6b34c08313886b3e458bcb43e7d29c3a65c29f042"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fd4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fd4.vo",
+          "sha256": "5b65e44bb348a6c7d2936156157750ebbd3e08e8a51e8f64f7adaa2b22ec8dae"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fd8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fd8.vo",
+          "sha256": "82200bd05ac40b2c750a4062bb3f451959ad393a6083e87a7ac276700f3784f0"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fdc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fdc.vo",
+          "sha256": "bef1fab843632706984100c3388b9eadefbfc498243209231fd8c5887eaddfb8"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fe0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fe0.vo",
+          "sha256": "392d2f392f5d3e9445d90ba185600253fe0ac46d13c3f24f1917c7ba3b1b439a"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fe4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fe4.vo",
+          "sha256": "8ab38c09068c5271d919846c8117387b8af7689626b7f9d012a07dd7396c8551"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fe8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fe8.vo",
+          "sha256": "27578e59943e376c1c61c4bfae093e1a86bbc2d95c7ef74f1e35b5a929c7c6e9"
+        },
+        "ZesuSsz.Stock.Closure.a800d5fec": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5fec.vo",
+          "sha256": "70417610795e7697f5d32d3a2929a694afa8d7f42299cd0bcfba0763f6b9e041"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ff0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ff0.vo",
+          "sha256": "6bcd0c13f65e3eb47f0c7cb3a9b6190327663e371dd5275f65862fdae35205b6"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ff4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ff4.vo",
+          "sha256": "947607598637f3bdf890b3d7af6f214764c89d422e46530c444eb3972d1d4c06"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ff8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ff8.vo",
+          "sha256": "18b2ad267f4f11fc9be4bcc2c0b732ba7e2709e988387ed66b04d13aca58729e"
+        },
+        "ZesuSsz.Stock.Closure.a800d5ffc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d5ffc.vo",
+          "sha256": "be2f50aeed095514ffb74212f0ae147251297499f143da9cf5d65922c2e9837d"
+        },
+        "ZesuSsz.Stock.Closure.a800d6000": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6000.vo",
+          "sha256": "370527efbd2f5924378e95d4e8ef8fa753ee630484a9e7d334fd37a2519f18cb"
+        },
+        "ZesuSsz.Stock.Closure.a800d6004": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6004.vo",
+          "sha256": "829e99e661bd90463476ae4bfecb25f50c30d01e685258f60281aeb8147443b1"
+        },
+        "ZesuSsz.Stock.Closure.a800d6008": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6008.vo",
+          "sha256": "214e33a7c3ad8ea8d14ea3010b26f7c133f9dceedb4cdb87636acb1baeb100f8"
+        },
+        "ZesuSsz.Stock.Closure.a800d600c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d600c.vo",
+          "sha256": "3a70d34a56b610d45a832e18613c5be233d65c2b42d22f0785590312595c3290"
+        },
+        "ZesuSsz.Stock.Closure.a800d6010": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6010.vo",
+          "sha256": "ad31a2559cddf205b536ae4f4f636cea2b48ece342cd8ffc1405f574c027fd7c"
+        },
+        "ZesuSsz.Stock.Closure.a800d6014": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6014.vo",
+          "sha256": "2c7d89a31e363d8bd6b5978da737f9f5c2e22ab6bf1ea164e8a4b73c52e67252"
+        },
+        "ZesuSsz.Stock.Closure.a800d6018": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6018.vo",
+          "sha256": "41e2eb07c2820f04a2e55f220cba483280fde9ea782190ebe0bf31b677eec0f1"
+        },
+        "ZesuSsz.Stock.Closure.a800d601c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d601c.vo",
+          "sha256": "04eebddabb7cfb1865858cd1aaf8ea50fa5cfab7579f906ea0575b61b2baafd1"
+        },
+        "ZesuSsz.Stock.Closure.a800d6020": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6020.vo",
+          "sha256": "5cbabc4a2816743a297564c8e8f5b9ab35ccf509fe14e721bef19fb3d5394acd"
+        },
+        "ZesuSsz.Stock.Closure.a800d6024": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6024.vo",
+          "sha256": "2ea4b0da849204d43f784973e83994dc009f0bfe2e8a6662275bf7e73a8e4c69"
+        },
+        "ZesuSsz.Stock.Closure.a800d6028": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6028.vo",
+          "sha256": "f430a49203e75c71f609dd778850ed2a713c6e3ddfe70e8579e4240c33c82dca"
+        },
+        "ZesuSsz.Stock.Closure.a800d602c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d602c.vo",
+          "sha256": "d2f6bf0d42a76b5aab88b5fc8abb4376d3c2bf635ef374794695bdae9f6ed7dc"
+        },
+        "ZesuSsz.Stock.Closure.a800d6030": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6030.vo",
+          "sha256": "09e2e2bde708cbb0429b3bcd02c156c16ec84210c4507da4adaf7587a1396954"
+        },
+        "ZesuSsz.Stock.Closure.a800d6034": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6034.vo",
+          "sha256": "a796bf8c511bcc233c931f3bb79b7baf374309da2d2da649040be6d0a5ce4b74"
+        },
+        "ZesuSsz.Stock.Closure.a800d6038": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6038.vo",
+          "sha256": "e28ed2da318c3549f195d11390de8c4bc8043ba8730624f0c04bb65f557eb8b6"
+        },
+        "ZesuSsz.Stock.Closure.a800d603c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d603c.vo",
+          "sha256": "37e417ba85e5c83dbc2d40bee0bad68332247894135cd2500710f984c3f7d9ac"
+        },
+        "ZesuSsz.Stock.Closure.a800d6040": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6040.vo",
+          "sha256": "2da6318f563c311521caa6299e45399e7762ffebb2703fea2bf87904bc5bb54f"
+        },
+        "ZesuSsz.Stock.Closure.a800d6044": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6044.vo",
+          "sha256": "ac680e5325826d7654eeaff7715b6471ac8c7da78ede45b5381ed380703a7f20"
+        },
+        "ZesuSsz.Stock.Closure.a800d6048": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6048.vo",
+          "sha256": "79ecb12fa287c3d73e611f09549e3ade242c91a3eeb909e17eaa5e03691e91c8"
+        },
+        "ZesuSsz.Stock.Closure.a800d604c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d604c.vo",
+          "sha256": "2de756516b6538836562d193ce4f8754067a3c353269d14336c3e9d808f032fd"
+        },
+        "ZesuSsz.Stock.Closure.a800d6050": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6050.vo",
+          "sha256": "b9b0f4712177173be7441afc1993cec05a2db2d94616dfebe8a3e77a3cd7f79a"
+        },
+        "ZesuSsz.Stock.Closure.a800d6054": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6054.vo",
+          "sha256": "71d3442f6463fa62c6794bca48b7720488c017302150c627a1b46db65479be17"
+        },
+        "ZesuSsz.Stock.Closure.a800d6058": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6058.vo",
+          "sha256": "580578173028ed35e51eada1df5471267d78bbee29ecbd215d16cd917520e4fc"
+        },
+        "ZesuSsz.Stock.Closure.a800d605c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d605c.vo",
+          "sha256": "08d5cb2e9a3268389fa4e378ce34e6a1eb5a07646c2ebe5d7804414a35f3faff"
+        },
+        "ZesuSsz.Stock.Closure.a800d6060": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6060.vo",
+          "sha256": "ed086dc65c9de888741ce1d76acefb5c94a8aa0a295a3306859f1a6a8b3a8e99"
+        },
+        "ZesuSsz.Stock.Closure.a800d6064": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6064.vo",
+          "sha256": "0db25b0bd0b4d1e729bf39d29f519b32b6120678e96248ae857a36477902ecea"
+        },
+        "ZesuSsz.Stock.Closure.a800d6068": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6068.vo",
+          "sha256": "1e3cce0a039ad75cd913e63992794a0cd2613ebe207910e254ad54c188f125f5"
+        },
+        "ZesuSsz.Stock.Closure.a800d606c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d606c.vo",
+          "sha256": "6cebf24fae06e1cf3270dbfeddc285c831691534bdc57004b72d7cfc29bb7475"
+        },
+        "ZesuSsz.Stock.Closure.a800d6070": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6070.vo",
+          "sha256": "83869f545f59a5a16323c06b8e37a10a5325a508c0d92e7cfc73c28dba2e752e"
+        },
+        "ZesuSsz.Stock.Closure.a800d6074": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6074.vo",
+          "sha256": "8660c6025eaccdf36a340bab683458a844a9aacf27f19c6c531e12011fe0db4c"
+        },
+        "ZesuSsz.Stock.Closure.a800d6078": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6078.vo",
+          "sha256": "d6998628cd02a96c889217768fedc0bd4436834d472d213e914158c711b69e3a"
+        },
+        "ZesuSsz.Stock.Closure.a800d607c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d607c.vo",
+          "sha256": "63cde8ecb314909e5fb1e8a9dd4055622b098f86f4a5b438e062000329460d6b"
+        },
+        "ZesuSsz.Stock.Closure.a800d6080": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6080.vo",
+          "sha256": "22b0d4865919ae9d00ae216f7b3cac538bbaca5a427e4a9e86d2dc15674f52f2"
+        },
+        "ZesuSsz.Stock.Closure.a800d6084": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6084.vo",
+          "sha256": "e5e085b7de0b5e64f5c7ae43fdc015865ce713ef787f7df274372453eaf9f9c9"
+        },
+        "ZesuSsz.Stock.Closure.a800d6088": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6088.vo",
+          "sha256": "4b2f5a4d944e2aa5693156c4d09c5efac866b1bce71760745b3e1554528890b3"
+        },
+        "ZesuSsz.Stock.Closure.a800d608c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d608c.vo",
+          "sha256": "32f96fba26739985c1622deb35f855c20956b2a43dd5acb59623a07806100364"
+        },
+        "ZesuSsz.Stock.Closure.a800d6090": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6090.vo",
+          "sha256": "f4535d28a4bbdc46bd154e04653a257c033f63d1d21f746331b0de5d33862629"
+        },
+        "ZesuSsz.Stock.Closure.a800d6094": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6094.vo",
+          "sha256": "840b4ea9c92db0030f5035134ba73d0738f1a2ef81808dc5d8fa1efb1baf7033"
+        },
+        "ZesuSsz.Stock.Closure.a800d6098": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6098.vo",
+          "sha256": "8a2784758520cce524060438bccb6117eccd653e93f686905e5eeaa9aef81da8"
+        },
+        "ZesuSsz.Stock.Closure.a800d609c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d609c.vo",
+          "sha256": "6c4dc807e67d6ffb86008e6b874d355f7570454fd39db447b486c021446c39a3"
+        },
+        "ZesuSsz.Stock.Closure.a800d60a0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60a0.vo",
+          "sha256": "d6a550714d083398d73444e7709c5f8b9c5d5b1e7a63c35dcdec46cd2689fbec"
+        },
+        "ZesuSsz.Stock.Closure.a800d60a4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60a4.vo",
+          "sha256": "f666fd5d0341ebfff5491d706b1ef31ccd6c52347fd335094a62b7f78d7734a1"
+        },
+        "ZesuSsz.Stock.Closure.a800d60a8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60a8.vo",
+          "sha256": "60f26c9f35f3bd478129e43075e54566de3f3792433b84d5a7d5161b15fbf9d3"
+        },
+        "ZesuSsz.Stock.Closure.a800d60ac": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60ac.vo",
+          "sha256": "13617cfc049148ff21a8416cbab46730d2424e27b9026a8c9d7230e6aed2e684"
+        },
+        "ZesuSsz.Stock.Closure.a800d60b0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60b0.vo",
+          "sha256": "920120376a34f782a0c395ec0c57a6a2b1ee9dd5fc6bd055aeea9071932a506c"
+        },
+        "ZesuSsz.Stock.Closure.a800d60b4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60b4.vo",
+          "sha256": "3b3a48477cfabd9417e6058037f559247ebe8f40dea0a17d23ee1ab57b05a326"
+        },
+        "ZesuSsz.Stock.Closure.a800d60b8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60b8.vo",
+          "sha256": "ed416ceff897c5a2c1dc3a5b02924c3aa36889c9e17c544709b03a66cf65862f"
+        },
+        "ZesuSsz.Stock.Closure.a800d60bc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60bc.vo",
+          "sha256": "f6486f6e353053c701d0593333f0560b111b001268990f7f676948a6dd8b919f"
+        },
+        "ZesuSsz.Stock.Closure.a800d60c0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60c0.vo",
+          "sha256": "482c69efbaa7d6819099ce93b227d6310129b3b211a1fff8c9e8c916e4d54130"
+        },
+        "ZesuSsz.Stock.Closure.a800d60c4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60c4.vo",
+          "sha256": "b428ed668a0fab695c141b3f1de29ef888c6677bba8f09b089d8086529d119d2"
+        },
+        "ZesuSsz.Stock.Closure.a800d60c8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60c8.vo",
+          "sha256": "492cf19fa3c7fdecf0dbcca6d00e4c38998c258eba99a1a01178ed8a507dba60"
+        },
+        "ZesuSsz.Stock.Closure.a800d60cc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60cc.vo",
+          "sha256": "98f09eae2604cbcd5cfe63b2750022e50343d7df4288913ab27f02e7591e160d"
+        },
+        "ZesuSsz.Stock.Closure.a800d60d0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60d0.vo",
+          "sha256": "4842d3b3dabd914fbf15ae9af7d6238823820751cbbf5dd0d420ab92d122b332"
+        },
+        "ZesuSsz.Stock.Closure.a800d60d4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60d4.vo",
+          "sha256": "7e6bec5712564b30f610a1b19ef4e1fadeeee9b4c602b077a5fc9334d3be8bc9"
+        },
+        "ZesuSsz.Stock.Closure.a800d60d8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60d8.vo",
+          "sha256": "afc201a874a67bd589c50de2fcf431efaa071563c6f66c18f71f43de6b6db509"
+        },
+        "ZesuSsz.Stock.Closure.a800d60dc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60dc.vo",
+          "sha256": "f5e02cba5599068d7e1b60a673471f86b6d4c7044df694b70076cee7f2394a29"
+        },
+        "ZesuSsz.Stock.Closure.a800d60e0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60e0.vo",
+          "sha256": "a4067fc1f789be0ad422bd2fd04628131a54c2c0d6aaa52c16cfa0a8a75c3494"
+        },
+        "ZesuSsz.Stock.Closure.a800d60e4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60e4.vo",
+          "sha256": "127904a53133b5fcea8914fbed669bd165b46447e307ce78ca0b4f57e435f249"
+        },
+        "ZesuSsz.Stock.Closure.a800d60e8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60e8.vo",
+          "sha256": "98d90a5ba9740465c05617fc87eecd143303b7a12a280f7970858d9e2b7404a3"
+        },
+        "ZesuSsz.Stock.Closure.a800d60ec": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60ec.vo",
+          "sha256": "12bb14dc05853bdbf1f99e793d732d56acf9a7995267a9cf7b1668f92b082dbf"
+        },
+        "ZesuSsz.Stock.Closure.a800d60f0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60f0.vo",
+          "sha256": "7a8009bd2a3529e784e35b08522ee60eeb0924d985df3bf497988eb6b99a326e"
+        },
+        "ZesuSsz.Stock.Closure.a800d60f4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60f4.vo",
+          "sha256": "ff9d8f954efc8e60c50ba122bedfc254872cb30b2b92a9c4ad8b042aedaa083a"
+        },
+        "ZesuSsz.Stock.Closure.a800d60f8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60f8.vo",
+          "sha256": "65d328029527788688f5a891daf49298c828a6d36150d8b56caf570dca46e13b"
+        },
+        "ZesuSsz.Stock.Closure.a800d60fc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d60fc.vo",
+          "sha256": "ace5a072096724bec7f93cf2b0a1572e05110ea3801859057de31b31b54e45f6"
+        },
+        "ZesuSsz.Stock.Closure.a800d6100": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6100.vo",
+          "sha256": "ef80ad6e93bb7a9374192c8af3f06618aabfb95419d0d9b1819b65b06320de80"
+        },
+        "ZesuSsz.Stock.Closure.a800d6104": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6104.vo",
+          "sha256": "7ea7f82ef3a172bb4af31fd0005329fcd829d9255b0350bc76359129daf40d80"
+        },
+        "ZesuSsz.Stock.Closure.a800d6108": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6108.vo",
+          "sha256": "e7aa295274ac4167074326c064176e2834dbb2ea4fc3349d83081e33ef84cf69"
+        },
+        "ZesuSsz.Stock.Closure.a800d610c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d610c.vo",
+          "sha256": "b200dff669697a7bc6a6ca818e1fe9b31c06d8f8758340ed3b2ba9e77b61b4eb"
+        },
+        "ZesuSsz.Stock.Closure.a800d6110": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6110.vo",
+          "sha256": "90a7f4dc78df259e6d8ff689c044ab813d192fd88b9bdb3081beaaf95f354edc"
+        },
+        "ZesuSsz.Stock.Closure.a800d6114": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6114.vo",
+          "sha256": "40c9c97579a9dee052652c263fbd95e123bc4f498fd04650930cd3c7bfed154f"
+        },
+        "ZesuSsz.Stock.Closure.a800d6118": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6118.vo",
+          "sha256": "15ad6ce067b8c71e23804a20178a7982851bbec1977f3ba3a08bd6c2fb0d4e38"
+        },
+        "ZesuSsz.Stock.Closure.a800d611c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d611c.vo",
+          "sha256": "eece1bd5ad3fbb89a53bc37156da17c9cc9089e9c093cacf5c4dab7d34bf9a04"
+        },
+        "ZesuSsz.Stock.Closure.a800d6120": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6120.vo",
+          "sha256": "6388457ad945d6d22831a40fba6a4bb5bedb77bbbbb1c55ff9d8e69fe81677d4"
+        },
+        "ZesuSsz.Stock.Closure.a800d6124": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6124.vo",
+          "sha256": "8b76d71d4cbbe834316368959f0664961838656b02ab5349ed6fd6c51495d3a2"
+        },
+        "ZesuSsz.Stock.Closure.a800d6128": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6128.vo",
+          "sha256": "5290f45394661039eff48553ad49a12f4f0a6fbc157b671ce0acf0dd0c39c0af"
+        },
+        "ZesuSsz.Stock.Closure.a800d612c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d612c.vo",
+          "sha256": "6f4915f4c1f4e7c86eff499c8018fed30a87b6d64df71a93f54de8d61e744a2d"
+        },
+        "ZesuSsz.Stock.Closure.a800d6130": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6130.vo",
+          "sha256": "48b8dbbedadb274251c555c98aaa4646996ff1954c30e0bdc3735ca8ebe5b11d"
+        },
+        "ZesuSsz.Stock.Closure.a800d6134": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6134.vo",
+          "sha256": "9efac33ec29afefd245aa200582d5cb7d12e710a1364e2e3d4243484c57d0021"
+        },
+        "ZesuSsz.Stock.Closure.a800d6138": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6138.vo",
+          "sha256": "5892468d43a5c792dfb9d2b6019b57070ab033461ed41746c1f221cdbc16a5c4"
+        },
+        "ZesuSsz.Stock.Closure.a800d613c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d613c.vo",
+          "sha256": "534456e16098368507595209bb0e9ed0a8719bf069ef13385ca23c52512d134f"
+        },
+        "ZesuSsz.Stock.Closure.a800d6140": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6140.vo",
+          "sha256": "78c614c448ebd9e4f22d478b940fb37a3e3899288f76718f77d9bde5572f5f6d"
+        },
+        "ZesuSsz.Stock.Closure.a800d6144": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6144.vo",
+          "sha256": "8040e96cc0033fbb570980d3b552d0140816549373dcd9e3a1a8b93cd14129be"
+        },
+        "ZesuSsz.Stock.Closure.a800d6148": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6148.vo",
+          "sha256": "1339abee2a6c5347386a1d7f1a2cfa35780ab2592e78160adad3ed3768ff36f6"
+        },
+        "ZesuSsz.Stock.Closure.a800d614c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d614c.vo",
+          "sha256": "9ee4a1ebf4f0049af6ed70640992ca34a9ff808df5b27f45e5b523e66580a365"
+        },
+        "ZesuSsz.Stock.Closure.a800d6150": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6150.vo",
+          "sha256": "c18064624ba25f120f8a060a83a957b4d4d58a924b32c0b0a2230c3b67e033db"
+        },
+        "ZesuSsz.Stock.Closure.a800d6154": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6154.vo",
+          "sha256": "de58d304b3847be465538dd04665410e7127872eccf2c36efc6e8f2cf53b3547"
+        },
+        "ZesuSsz.Stock.Closure.a800d6158": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6158.vo",
+          "sha256": "1a69822199f1a78b906b7a53ec2fd4d160492c3793b6a83c777bc8173b8d023c"
+        },
+        "ZesuSsz.Stock.Closure.a800d615c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d615c.vo",
+          "sha256": "1b82f423a05aed719c7cc94eda5bbb031b29f1c0595cec9be3e1ff338f3d0cc5"
+        },
+        "ZesuSsz.Stock.Closure.a800d6160": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6160.vo",
+          "sha256": "f148a4b718edadce13cce89f6c8f2661dcfd379cd12f08ec8b63d15b6cda213f"
+        },
+        "ZesuSsz.Stock.Closure.a800d6164": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6164.vo",
+          "sha256": "b2be4ce4e385ac0af654fad54bc94857db4e84fb7e4a1fb0529fea4ada18b05e"
+        },
+        "ZesuSsz.Stock.Closure.a800d6168": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6168.vo",
+          "sha256": "62b1a24d907b3158bfb3dd3bfb113cc236f05cd1713162a7d2bd54ada3824cde"
+        },
+        "ZesuSsz.Stock.Closure.a800d616c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d616c.vo",
+          "sha256": "5cd43067859fbedb5319442ae7e9710f81b8ccf36fd6d3f8c9edfa381088a53a"
+        },
+        "ZesuSsz.Stock.Closure.a800d6170": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6170.vo",
+          "sha256": "3a9fe4933fb96929f7e2e699c39909c2c518edcb0d511b84749910b1cc2a0f22"
+        },
+        "ZesuSsz.Stock.Closure.a800d6174": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6174.vo",
+          "sha256": "7ddaf1c133b50eb4ad5865370c4c010a1dbe423e9ab137248024f2a1478b2958"
+        },
+        "ZesuSsz.Stock.Closure.a800d6178": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6178.vo",
+          "sha256": "f3069c2683c57ca76403fbffae1cfc87c6998cd6e4626dd6783ac70898c77ce9"
+        },
+        "ZesuSsz.Stock.Closure.a800d617c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d617c.vo",
+          "sha256": "76a39305f735d31b764cea74b4cbffc8e499e0e5eab479d2821d1f309b9f6946"
+        },
+        "ZesuSsz.Stock.Closure.a800d6180": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6180.vo",
+          "sha256": "cbd1ecec93072cefed2855f37eb4357bf8e9208e3d5c9536a04560a727ec439e"
+        },
+        "ZesuSsz.Stock.Closure.a800d6184": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6184.vo",
+          "sha256": "0931ca1eae55806f9eab3abc27b63fc4b7e961efaf59b33972719d750c02ec67"
+        },
+        "ZesuSsz.Stock.Closure.a800d6188": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6188.vo",
+          "sha256": "6b5770b67d82ac638c717332057d28254ab5bf348c93929caae15e9237c984ea"
+        },
+        "ZesuSsz.Stock.Closure.a800d618c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d618c.vo",
+          "sha256": "059f68506f33664ae0145caeb3786764fbc8d22cc5f8d2e0a89e49ac7220142f"
+        },
+        "ZesuSsz.Stock.Closure.a800d6190": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6190.vo",
+          "sha256": "b6ee1bfb99f3006a40534d0f866fbe946eb152f9abf495d8950df1e4ddddb302"
+        },
+        "ZesuSsz.Stock.Closure.a800d6194": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6194.vo",
+          "sha256": "908ca808b0dfc36815929fa107658d2561bcf40fc15ee80795110e73c30f46c3"
+        },
+        "ZesuSsz.Stock.Closure.a800d6198": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6198.vo",
+          "sha256": "98a02e99c1f2400a3233cceaaddef1863e8415c9d0704f62053df4425701a531"
+        },
+        "ZesuSsz.Stock.Closure.a800d619c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d619c.vo",
+          "sha256": "8ba64f7e64f7c9972789fef20ead8ca8752f735e76b08d1c3ee1e224ef39c21a"
+        },
+        "ZesuSsz.Stock.Closure.a800d61a0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61a0.vo",
+          "sha256": "2dd8e5ca8a77906427ba11c3cf5139f5abc4fd3e9f0e83b346c91cf141e6adbf"
+        },
+        "ZesuSsz.Stock.Closure.a800d61a4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61a4.vo",
+          "sha256": "149784c8a688313dea5ff9e4ccc10f385f041d20cbb5383b1b4965641f09d09c"
+        },
+        "ZesuSsz.Stock.Closure.a800d61a8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61a8.vo",
+          "sha256": "666d4b99acf1c56b5299671e606d6202cdf6d088eedfc1e7b9f905fd6ab46591"
+        },
+        "ZesuSsz.Stock.Closure.a800d61ac": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61ac.vo",
+          "sha256": "f26e4a91843d10badad4e2107618dfac474b3a44a414711a3eea76884fbf723d"
+        },
+        "ZesuSsz.Stock.Closure.a800d61b0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61b0.vo",
+          "sha256": "8b993a7c74c8019da031ff37afdc744b3fff499f1966ef87c86e3eab41cda237"
+        },
+        "ZesuSsz.Stock.Closure.a800d61b4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61b4.vo",
+          "sha256": "783090280432fbebb162ffa33293d8a0d294f2971cb5913147e53540d406ee19"
+        },
+        "ZesuSsz.Stock.Closure.a800d61b8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61b8.vo",
+          "sha256": "be9f776caefe9d9990142aec64d521cab00019c492a2a52094fec138e6915f99"
+        },
+        "ZesuSsz.Stock.Closure.a800d61bc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61bc.vo",
+          "sha256": "25f046b1395ac745eae82bb23795edf6208523ac050a68782c5df6cfec614bb4"
+        },
+        "ZesuSsz.Stock.Closure.a800d61c0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61c0.vo",
+          "sha256": "29737fa4636ea95c9953be198aa878d0a617a1d94b932c944e43f8e9f31c1d99"
+        },
+        "ZesuSsz.Stock.Closure.a800d61c4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61c4.vo",
+          "sha256": "10c10d0d4904cc9e39312da29f36e0bf4407d8ee55856ce2bae62282263e0005"
+        },
+        "ZesuSsz.Stock.Closure.a800d61c8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61c8.vo",
+          "sha256": "91cd37f8a9aa1c826fd56f57d96afacac3664ce323f402f547dac10ece022b8b"
+        },
+        "ZesuSsz.Stock.Closure.a800d61cc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61cc.vo",
+          "sha256": "a62ed088a845ba626a36d8c75f97bd774e548b99553d3d23450fefdafa821b28"
+        },
+        "ZesuSsz.Stock.Closure.a800d61d0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61d0.vo",
+          "sha256": "d7d68c9814cca193da3bb5d438ca039c94c8dd943604df98eb889026b4ab7541"
+        },
+        "ZesuSsz.Stock.Closure.a800d61d4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61d4.vo",
+          "sha256": "da4d2be5071c0f7b6fcd9f0a1156df433f5777ae16de5459a319b84e24c4fcb0"
+        },
+        "ZesuSsz.Stock.Closure.a800d61d8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61d8.vo",
+          "sha256": "58d15ce26ff16144d6ec1bed3e708d3ccd3291f97600347296c108dbbc747981"
+        },
+        "ZesuSsz.Stock.Closure.a800d61dc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61dc.vo",
+          "sha256": "34f2484a4e1ea4cfd665c667d278a1cb511a621d771e77fac5b24be397252c40"
+        },
+        "ZesuSsz.Stock.Closure.a800d61e0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61e0.vo",
+          "sha256": "9be82207e42133093576e2d437f61adcfa2dde7ff8310fc991ba892a13f33a4d"
+        },
+        "ZesuSsz.Stock.Closure.a800d61e4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61e4.vo",
+          "sha256": "b051c748127b429bb4f47944faaa1cd3319744984ccb8826925fcaa9b9c612e6"
+        },
+        "ZesuSsz.Stock.Closure.a800d61e8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61e8.vo",
+          "sha256": "68ab8f3922eb1b3a2eed640e160cfe2cf5e61e088f1b4ea9b4e805308f944a35"
+        },
+        "ZesuSsz.Stock.Closure.a800d61ec": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61ec.vo",
+          "sha256": "48b5c330e052f0fbff9eaaae882221a98f82be71955e622ddcc90c023d1062df"
+        },
+        "ZesuSsz.Stock.Closure.a800d61f0": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61f0.vo",
+          "sha256": "a9a36b06b40361b6465f0b35247ca5b366222b3a6a90969bd34a57918202a2c0"
+        },
+        "ZesuSsz.Stock.Closure.a800d61f4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61f4.vo",
+          "sha256": "8d84b6f3bf3e0f19ea8247b33239c9baecc3fb64d2d70f27aa2411e7565f4e12"
+        },
+        "ZesuSsz.Stock.Closure.a800d61f8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61f8.vo",
+          "sha256": "b4dd9997b85b263367c41ce8cc89923f070513413cc1987092081a2656e544b2"
+        },
+        "ZesuSsz.Stock.Closure.a800d61fc": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d61fc.vo",
+          "sha256": "0dd2f905366db167b45b48a8da349e6d25ccf0d3aac273f204cfeebffc922e26"
+        },
+        "ZesuSsz.Stock.Closure.a800d6200": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6200.vo",
+          "sha256": "c992d0d77e0ba8e63ca5d7878cc97c8d1b5c480cc619cee83efe2e760529f2e7"
+        },
+        "ZesuSsz.Stock.Closure.a800d6204": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6204.vo",
+          "sha256": "4542f0a8956b2c55bd15c222f7135e944f5af537a7a973e2dcc5a1694383739a"
+        },
+        "ZesuSsz.Stock.Closure.a800d6208": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6208.vo",
+          "sha256": "6494b2aef51b02f1813feb67dddc6c261104bd39dbbc3188ef4ee98c5ea08413"
+        },
+        "ZesuSsz.Stock.Closure.a800d620c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d620c.vo",
+          "sha256": "3b8872f18740fbd221fc0dd607c6699d849c9ecd11ada9283628bee7435b288b"
+        },
+        "ZesuSsz.Stock.Closure.a800d6210": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6210.vo",
+          "sha256": "943f7ae55b0ae788dc31660d5bb3cc650644cd3a8dd14755b771e8c5adfac351"
+        },
+        "ZesuSsz.Stock.Closure.a800d6214": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6214.vo",
+          "sha256": "a0118903fd15bc5aa92ce6d1b6053f7f576463b207060c4b403f083a616e5801"
+        },
+        "ZesuSsz.Stock.Closure.a800d6218": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6218.vo",
+          "sha256": "db37b4f517515ddac74a271192e4979612fca570a9e3d3290b3b42ce888a2146"
+        },
+        "ZesuSsz.Stock.Closure.a800d621c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d621c.vo",
+          "sha256": "66660d434e23d31012be668cb7ea04847b6dae3a03c845d299738f0713a406a3"
+        },
+        "ZesuSsz.Stock.Closure.a800d6220": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6220.vo",
+          "sha256": "b643172714c4a004766df01bb0e79967da857c778e488b7b71a6644e81dd88e3"
+        },
+        "ZesuSsz.Stock.Closure.a800d6224": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6224.vo",
+          "sha256": "d79e3b5b29046e3ec73944f8e593cff55e4263b7eb16be858ea083ae3768ae95"
+        },
+        "ZesuSsz.Stock.Closure.a800d6228": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6228.vo",
+          "sha256": "a78bcd998af49d3fb43d731196d3f08283d74d9858245cbf41091bf5f875a4cd"
+        },
+        "ZesuSsz.Stock.Closure.a800d622c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d622c.vo",
+          "sha256": "ec171cef8d35118470a655b73b2fa86aee96375649c2a723b548863dc3a20a57"
+        },
+        "ZesuSsz.Stock.Closure.a800d6230": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6230.vo",
+          "sha256": "a08cbb41aca7ca04c11b5723ab8467dd6fa67fa51e079c1e35139dc3dc42c4fa"
+        },
+        "ZesuSsz.Stock.Closure.a800d6234": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6234.vo",
+          "sha256": "d04b113dd0f6b0b818817657dce5c62721c11460e8c87cfe5768a1279ee54c57"
+        },
+        "ZesuSsz.Stock.Closure.a800d6238": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6238.vo",
+          "sha256": "17b1f662418fb0308ca4dccd6ad09cbabb5bdcc023fe1267d5471a97fa811df2"
+        },
+        "ZesuSsz.Stock.Closure.a800d623c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d623c.vo",
+          "sha256": "e3633e0f3c12154dcbbab21a05a53cf3376a551e643878f6e528385cc63c4a43"
+        },
+        "ZesuSsz.Stock.Closure.a800d6240": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6240.vo",
+          "sha256": "e7c56cba083f55e1fd0845e0f325e36dff414097755cb32bf2b30b81eb123298"
+        },
+        "ZesuSsz.Stock.Closure.a800d6244": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6244.vo",
+          "sha256": "fb48c0f0737554d7899f13bcf4ac8edf8692d9b57d28cba8a78f53d80d2d031b"
+        },
+        "ZesuSsz.Stock.Closure.a800d6248": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6248.vo",
+          "sha256": "308ffb5fa57ebd353e307ba153afdb3017706aa11c89af57cf396b0f9d03f52f"
+        },
+        "ZesuSsz.Stock.Closure.a800d624c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d624c.vo",
+          "sha256": "954b823dc9cb0f9cdd58181018c2413346179de1a1696a7d7156105cc24164a3"
+        },
+        "ZesuSsz.Stock.Closure.a800d6250": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6250.vo",
+          "sha256": "2dd7baad12ee34d9f8dbf604031aca925840375007173ec618a684ac04e38aa9"
+        },
+        "ZesuSsz.Stock.Closure.a800d6254": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6254.vo",
+          "sha256": "ead7d116b9b630e961add43e70d0c023604e0ae0cae6f05992d488b5dc0ab297"
+        },
+        "ZesuSsz.Stock.Closure.a800d6258": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6258.vo",
+          "sha256": "a9170f8f194ef27ed0cbad570d7440b21b0d57083533276c259ca51182f38002"
+        },
+        "ZesuSsz.Stock.Closure.a800d625c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d625c.vo",
+          "sha256": "b7fa4047b06bb2f8247897025b593d847bb46295bdf6f7c52052d49aa5d781cd"
+        },
+        "ZesuSsz.Stock.Closure.a800d6260": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6260.vo",
+          "sha256": "f57d2d9e6d508d669a78aa1014fbc1316b753f4bf11be88bbd2bde767df8e791"
+        },
+        "ZesuSsz.Stock.Closure.a800d6264": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6264.vo",
+          "sha256": "d6631d44aaa069b687a43c995607b3544faa2a164fe60d075c68cea26e1aa0fa"
+        },
+        "ZesuSsz.Stock.Closure.a800d6268": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6268.vo",
+          "sha256": "3b111359cc3735c214aae21d33fc2e67bd011d7ddf63e56b1684c9e566c49b94"
+        },
+        "ZesuSsz.Stock.Closure.a800d626c": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d626c.vo",
+          "sha256": "c61d662f90c61034ded4fff10a37ed299381a816dcc842aae856a8f20a73285e"
+        },
+        "ZesuSsz.Stock.Closure.a800d6270": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800d6270.vo",
+          "sha256": "77a7dcb60c26cf785d9c3ec07fae13e474ed201f2d361eb6760605856b2c54cc"
+        },
+        "ZesuSsz.Stock.Closure.index_decodeParentHeader": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/index_decodeParentHeader.vo",
+          "sha256": "a2404c9552903f05ebfeb22959f9c7a13cd53c07738e96524656861535192340"
+        },
+        "ZesuSsz.Stock.Closure.a800e06c4": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800e06c4.vo",
+          "sha256": "227293e18d8a58db31c01e8bf04727d74c487c990ae38e58dd3cc730189cf5e8"
+        },
+        "ZesuSsz.Stock.Closure.a800e06c8": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/a800e06c8.vo",
+          "sha256": "44ade97c8826736635d29e71c3f110cd0f562d6bf3f273ce46163b3f9b05d49e"
+        },
+        "ZesuSsz.Stock.Closure.index_memcpyStub": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/generated/isla-traces/stock-zisk/closure/index_memcpyStub.vo",
+          "sha256": "af41aae9a4cf013f28d872ed59a0c4094b30a5c601d9c331637c869899ac9ac8"
+        },
+        "ZesuSsz.Contracts.ParentHeaderSelected": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Contracts/ParentHeaderSelected.vo",
+          "sha256": "043c22c302c3d2656d3fc2d18052d5834a3ce29360d3e399206a23519d1fc023"
+        },
+        "ZesuSsz.Generated.DecodeItem.BootstrapRegistrations": {
+          "path": "/home/cody/zesislar/.worktrees/infra-c-migration-single-read-a242/_build/agents/worker-build-2-migration-single-read-v2-check-iris/default/ZesuSsz/Generated/DecodeItem/BootstrapRegistrations.vo",
+          "sha256": "035b039b62f7a582042f156c0e065c861d97002741b3d12bfb2633b1a93745e3"
+        }
+      }
     }
   ],
   "inspector_build": {
