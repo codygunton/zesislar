@@ -78,20 +78,32 @@ async def run(runtime, output, main_session, open_session, compile_one, *, contr
             values = dict(line.split() for line in (group / 'cpu.stat').read_text().splitlines())
             return int(values['usage_usec']) / 1000000
         before_cpu, before_wall = aggregate_cpu(), time.monotonic()
-        reference = await compile_selected(main_session, sample)
-        sample_cpu, sample_wall = aggregate_cpu() - before_cpu, time.monotonic() - before_wall
-        receipt = read_bound(reference)
-        physical = read_bound(receipt['physical_result'])
-        report['sample'] = {'module': sample, 'depth': depths[sample], 'receipt': reference,
-                            'physical_result': receipt['physical_result'],
-                            'compiler_CPU_seconds': physical['user_CPU_seconds'] + physical['system_CPU_seconds'],
-                            'physical_wall_seconds': physical['wall_seconds'],
-                            'aggregate_CPU_seconds': sample_cpu, 'aggregate_wall_seconds': sample_wall,
-                            'aggregate_scope': str(group),
-                            'CPU_ratio': sample_cpu / (physical['user_CPU_seconds'] + physical['system_CPU_seconds']) if physical['user_CPU_seconds'] + physical['system_CPU_seconds'] else None}
-        publish()
-        if report['sample']['CPU_ratio'] is not None and report['sample']['CPU_ratio'] > 10:
-            raise RuntimeError('The measured compiler ratio exceeds 10. Further dispatch requires a harness correction.')
+        try:
+            reference = await compile_selected(main_session, sample)
+        except BaseException as error:
+            failures[sample] = {'error': str(error), 'depth': depths[sample]}
+            report['sample'] = {'module': sample, 'depth': depths[sample], 'success': False,
+                                'error': str(error), 'compiler_CPU_seconds': None,
+                                'aggregate_CPU_seconds': aggregate_cpu() - before_cpu,
+                                'aggregate_wall_seconds': time.monotonic() - before_wall,
+                                'aggregate_scope': str(group), 'CPU_ratio': None}
+            publish()
+            if not normal_failure(error) or not spec.get('keep_going'):
+                raise
+        else:
+            sample_cpu, sample_wall = aggregate_cpu() - before_cpu, time.monotonic() - before_wall
+            receipt = read_bound(reference)
+            physical = read_bound(receipt['physical_result'])
+            report['sample'] = {'module': sample, 'depth': depths[sample], 'success': True,
+                                'receipt': reference, 'physical_result': receipt['physical_result'],
+                                'compiler_CPU_seconds': physical['user_CPU_seconds'] + physical['system_CPU_seconds'],
+                                'physical_wall_seconds': physical['wall_seconds'],
+                                'aggregate_CPU_seconds': sample_cpu, 'aggregate_wall_seconds': sample_wall,
+                                'aggregate_scope': str(group),
+                                'CPU_ratio': sample_cpu / (physical['user_CPU_seconds'] + physical['system_CPU_seconds']) if physical['user_CPU_seconds'] + physical['system_CPU_seconds'] else None}
+            publish()
+            if report['sample']['CPU_ratio'] is not None and report['sample']['CPU_ratio'] > 10:
+                raise RuntimeError('The measured compiler ratio exceeds 10. Further dispatch requires a harness correction.')
     async with AsyncExitStack() as stack:
         sessions = [main_session]
         for index in range(1, width):
@@ -99,7 +111,7 @@ async def run(runtime, output, main_session, open_session, compile_one, *, contr
         for depth, wave in enumerate(waves, 1):
             ready = []
             for name in wave:
-                if name in done:
+                if name in done or name in failures:
                     continue
                 missing = dependencies[name] - done
                 if missing:
@@ -119,6 +131,7 @@ async def run(runtime, output, main_session, open_session, compile_one, *, contr
                 publish()
                 if fatal is not None:
                     raise fatal
+    publish()
     if failures or blocked:
         raise RuntimeError('The MCP declaration levels contain failed or blocked modules.')
     return report

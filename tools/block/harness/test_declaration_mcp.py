@@ -140,3 +140,40 @@ class DispatchTests(unittest.IsolatedAsyncioTestCase):
         result = await self.execute(overlap)
         self.assertTrue(both.is_set())
         self.assertEqual(result['completed_modules'], 3)
+
+    async def test_normal_sample_error_continues_independent_and_blocks_dependent(self):
+        attempted = []
+        async def fail(session, name):
+            attempted.append(name)
+            if name == 'A':raise ValueError('Recorded sample compile_error')
+            return await self.compile(session, name)
+        with self.assertRaisesRegex(RuntimeError, 'failed or blocked'):
+            await self.execute(fail)
+        report=json.loads((self.root/'MCP-DECLARATIONS.json').read_text())
+        self.assertEqual(attempted,['A','B'])
+        self.assertEqual(set(report['receipts']),{'B'})
+        self.assertEqual(set(report['failures']),{'A'})
+        self.assertEqual(report['blocked'],{'C':['A']})
+        self.assertFalse(report['sample']['success'])
+        self.assertIsNone(report['sample']['compiler_CPU_seconds'])
+        self.assertEqual(self.closed,[1])
+
+    async def test_fatal_sample_error_stops_independent_work(self):
+        attempted=[]
+        async def fail(session,name):
+            attempted.append(name)
+            raise OSError('Changed compiler binding')
+        with self.assertRaisesRegex(OSError,'Changed compiler'):
+            await self.execute(fail)
+        self.assertEqual(attempted,['A'])
+        self.assertEqual(self.closed,[])
+
+    async def test_normal_sample_error_stops_when_keep_going_is_disabled(self):
+        self.runtime['declaration_dag']['keep_going']=False
+        attempted=[]
+        async def fail(session,name):
+            attempted.append(name)
+            raise ValueError('Recorded sample compile_error')
+        with self.assertRaisesRegex(ValueError,'sample compile_error'):
+            await self.execute(fail)
+        self.assertEqual(attempted,['A'])
