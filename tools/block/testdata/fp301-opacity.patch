@@ -1,0 +1,120 @@
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot6960Structural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot6960Structural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt6960_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt6960.
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot6974Structural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot6974Structural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt6974_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt6974.
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot697cStructural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot697cStructural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt697c_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt697c.
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot698cStructural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot698cStructural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt698c_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt698c.
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot69a4Structural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot69a4Structural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt69a4_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt69a4.
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot69b0Structural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot69b0Structural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt69b0_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt69b0.
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot69d8Structural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot69d8Structural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt69d8_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt69d8.
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot69e0Structural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot69e0Structural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt69e0_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt69e0.
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot69e8Structural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot69e8Structural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt69e8_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt69e8.
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot6a00Structural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot6a00Structural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt6a00_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt6a00.
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot6a08Structural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot6a08Structural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt6a08_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt6a08.
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot6a14Structural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot6a14Structural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt6a14_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt6a14.
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot6a24Structural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot6a24Structural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt6a24_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt6a24.
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot6a64Structural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot6a64Structural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt6a64_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt6a64.
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot6a6cStructural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot6a6cStructural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt6a6c_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt6a6c.
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot6a78Structural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot6a78Structural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt6a78_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt6a78.
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot6aa8Structural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot6aa8Structural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt6aa8_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt6aa8.
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot6ab4Structural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot6ab4Structural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt6ab4_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt6ab4.
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot6ac4Structural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot6ac4Structural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt6ac4_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt6ac4.
+--- a/ZesuSsz/Generated/DecodeItem/FP301/Pilot6ae0Structural.v
++++ b/ZesuSsz/Generated/DecodeItem/FP301/Pilot6ae0Structural.v
+@@ -11,0 +12 @@
++#[export] Typeclasses Opaque fp_machineAt6ae0_ForwardA0N0.
+@@ -16,0 +18 @@
++#[export] Typeclasses Opaque fp_machineAt6ae0.
