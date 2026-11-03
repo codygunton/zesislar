@@ -3,6 +3,7 @@
 import os
 import fcntl
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -1153,6 +1154,20 @@ class GuardLockTest(unittest.TestCase):
                     self.assertIn(expected, result.stdout)
                 else:
                     self.assertNotIn("memory", result.stdout)
+
+    def test_account_cgroup_replaces_machine_memory_and_load(self):
+        account = (Path(self.environment["ZESU_CGROUP_ROOT"]) / "user.slice"
+                   / f"user-{os.getuid()}.slice")
+        shutil.copytree(TOOLS / "fixtures" / "account-cgroup", account)
+        # The machine has 25 GiB available and the load limits stay at their
+        # defaults; our account uses 31 of 152 GiB with 5 % CPU pressure.
+        self.environment.update(GUARD_TEST_USED_GIB="226", ZESU_MAX_LOAD="80",
+                                ZESU_MAX_BLOCKED="16")
+        self.assertEqual(self.guard("hold").stdout.strip(), "none")
+        (account / "memory.current").write_text(f"{140 * 1024 ** 3}\n")
+        (account / "memory.stat").write_text("anon 1\n")
+        self.assertEqual(self.guard("hold").stdout.strip(),
+                         "account memory 140 of 152 GiB, at the 88 % hold")
 
     def test_single_proof_batch_accepts_64_gib_fence(self):
         self.environment["ZESU_BATCH_LIMIT"] = "64G"
