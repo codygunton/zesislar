@@ -1,4 +1,5 @@
 Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Automation.RewriteBoundGuards.
 Require Import ZesuSsz.Automation.ByteArrays.
 Require Import ZesuSsz.Contracts.IslarisCode.
 
@@ -62,9 +63,9 @@ Create HintDb zesu_selectors.
   (@bv_sign_extend_idemp 64) zesu_bv_sign_extend_same
   : isla_coq_rewrite lithium_rewrite.
 #[export] Hint Rewrite zesu_bv_unsigned_add_Z_64
-  zesu_bv_unsigned_add_no_wrap_64 using bv_solve
+  zesu_bv_unsigned_add_no_wrap_64 using (first [ZesuSsz.Automation.RewriteBoundGuards.a3n_closed_bound_if_enabled | bv_solve])
   : isla_coq_rewrite lithium_rewrite.
-#[export] Hint Rewrite zesu_bv_unsigned_Z_to_bv_small using bv_solve
+#[export] Hint Rewrite zesu_bv_unsigned_Z_to_bv_small using (first [ZesuSsz.Automation.RewriteBoundGuards.a3n_closed_bound_if_enabled | bv_solve])
   : isla_coq_rewrite lithium_rewrite.
 #[export] Hint Rewrite Z_to_bv_add Z_to_bv_unsigned
   : lithium_rewrite.
