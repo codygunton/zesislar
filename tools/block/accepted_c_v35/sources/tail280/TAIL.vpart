@@ -1,0 +1,10 @@
+Ltac zesu_native_entry_tail :=
+ lazymatch goal with arguments : DecodeItemArgs |- _ =>
+ EntryWitnessFinish232.zesu_entry_witness_finish ltac:(progress liAStep) ltac:(native_entry_scalar arguments)
+ end.
+
+Ltac zesu_native_entry_tail ::=
+ lazymatch goal with arguments : DecodeItemArgs |- _ =>
+ EntryWitnessFinish232.zesu_entry_witness_finish ltac:(progress liAStep)
+   ltac:(cbn [li_fst li_snd]; native_entry_scalar arguments)
+ end.

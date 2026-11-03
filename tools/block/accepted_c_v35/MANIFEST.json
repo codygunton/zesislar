@@ -1,0 +1,1652 @@
+{
+  "schema": "accepted-c-source-transfer.v1",
+  "base_commit": "a6abfb7c8728572b3cc45d969d56db92de87bf8f",
+  "scope": "Immutable accepted source transfer. No global installation or object reuse is authorized.",
+  "components": [
+    {
+      "component": "repair184",
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners",
+      "accepted_packet": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/repair-bundle184/BINDINGS.json",
+        "sha256": "a96233c84ecbe8fa4be3746fe4c19262b5228828dfe5f0ad363d04806d7f0ec4"
+      },
+      "source_files": [
+        "sources/repair184/REPAIRS.vpart",
+        "sources/repair184/HEADER.vpart",
+        "sources/repair184/Full6aa8Closed176.v",
+        "sources/repair184/All.v",
+        "sources/repair184/EffectiveOverrides.v",
+        "sources/repair184/Hooks.v",
+        "sources/repair184/ResourceGroups.v",
+        "sources/repair184/SwitchDispatch.v",
+        "sources/repair184/BitvectorFacts.v",
+        "sources/repair184/HypothesisCast.v",
+        "sources/repair184/VmClosed.v",
+        "sources/repair184/FramePacking.v",
+        "sources/repair184/AdditiveDecoder.v",
+        "sources/repair184/SymbolicByteCodec.v",
+        "sources/repair184/ArrayPayloadPresentation.v",
+        "sources/repair184/FramePackingFinish167.v",
+        "sources/repair184/ArrayContinuation167.v",
+        "sources/repair184/RlpDecodeItemContract.v",
+        "sources/repair184/RlpDecodeItem.v",
+        "sources/repair184/DecodeItemSelected.v",
+        "sources/repair184/riscv64.v",
+        "sources/repair184/definitions.v",
+        "sources/repair184/environments.v"
+      ]
+    },
+    {
+      "component": "readiness151",
+      "ownership": "B: profile metadata and baseline body; C: exact control acceptance",
+      "accepted_packet": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-verify151/SEALED-RESULT.json",
+        "sha256": "3dd4a7e2421a17118e5a370e8d800861dd725d9f5fe485ac5a9ad3710faa6348"
+      },
+      "source_files": [
+        "sources/readiness151/ReadinessBodyControls148.v",
+        "sources/readiness151/ReadinessProfileControls150.v",
+        "sources/readiness151/EntryWitnessReadiness.v",
+        "sources/readiness151/EntryWitnessProfile.v"
+      ]
+    },
+    {
+      "component": "phase204",
+      "ownership": "C: final phase guard; B: profile and canonical selector",
+      "accepted_packet": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-phase-verify204/SEALED-RESULT.json",
+        "sha256": "9e8f6919172ecba1dc1267bd5140ed91be765514e11af4bf04b71e3d145c55e9"
+      },
+      "source_files": [
+        "sources/phase204/EntryWitnessReadiness.v",
+        "sources/phase204/EntryWitnessBodyControls196.v"
+      ]
+    },
+    {
+      "component": "selector224",
+      "ownership": "C: validated integration; B: canonical Inputs and metadata records",
+      "accepted_packet": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-handoff224/SELECTOR-INTEGRATION.json",
+        "sha256": "2fe67c00dfbb339a28fc4c466773ab31bb19aaeec276933e8da41ff10432089f"
+      },
+      "source_files": [
+        "sources/selector224/EntryWitnessInputs.v",
+        "sources/selector224/SELECTOR-INTEGRATION.vpart",
+        "sources/selector224/SELECTOR-HEADER.vpart",
+        "sources/selector224/INSTALL.vpart",
+        "sources/selector224/Entry6a24ProfileReady181.v",
+        "sources/selector224/Entry6a24WitnessRegistration.v",
+        "sources/selector224/EntryWitnessData329.v",
+        "sources/selector224/MachineExit6a24Entries322.v",
+        "sources/selector224/Entry6a24WitnessRegistrationMetadata137.v",
+        "sources/selector224/Entry6ac4ProfileReady181.v",
+        "sources/selector224/Entry6ac4WitnessRegistration.v",
+        "sources/selector224/EntryWitnessData184.v",
+        "sources/selector224/MachinePilot180Fallthrough6ac4Projection.v",
+        "sources/selector224/Entry6ac4WitnessRegistrationMetadata137.v"
+      ]
+    },
+    {
+      "component": "readiness224",
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings",
+      "accepted_packet": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-handoff224/HANDOFF.json",
+        "sha256": "947849a1ff2a32e36379f190c4749ec0c11d21767ca65f4bd0ecf1b601460b54"
+      },
+      "source_files": [
+        "sources/readiness224/EntryWitnessReadiness.v",
+        "sources/readiness224/EntryWitnessProfile.v",
+        "sources/readiness224/EntryWitnessInputs.v",
+        "sources/readiness224/EntryWitnessReadiness-405aebfc.v",
+        "sources/readiness224/SourceWitnessInputs.v",
+        "sources/readiness224/Hooks.v",
+        "sources/readiness224/BranchCastUnsigned.v",
+        "sources/readiness224/BranchUnsigned.v",
+        "sources/readiness224/EffectiveOverrides.v",
+        "sources/readiness224/ArrayLoadPreselect.v",
+        "sources/readiness224/ArrayPayloadPresentation.v",
+        "sources/readiness224/MaskWrapPresentation.v",
+        "sources/readiness224/HypothesisCast.v",
+        "sources/readiness224/MaskPresentation.v",
+        "sources/readiness224/RawWordArrayWitness.v",
+        "sources/readiness224/StoreMemoryLookup.v",
+        "sources/readiness224/ExistentialArrayRestore.v",
+        "sources/readiness224/InteriorByteSlice.v",
+        "sources/readiness224/V2Steps.v",
+        "sources/readiness224/Finish.v",
+        "sources/readiness224/All.v",
+        "sources/readiness224/Pilot6a38Entries.v",
+        "sources/readiness224/Pilot6a38Structural.v",
+        "sources/readiness224/Pilot6a40Entries.v",
+        "sources/readiness224/Pilot6a40Structural.v",
+        "sources/readiness224/Pilot6ad8Entries.v",
+        "sources/readiness224/Pilot6ad8Structural.v",
+        "sources/readiness224/Pilot6b08Entries.v",
+        "sources/readiness224/Pilot6b08Structural.v",
+        "sources/readiness224/SourceMapping6a38.v",
+        "sources/readiness224/SourceMapping6ad8.v",
+        "sources/readiness224/MachineJoin6ae0Entries.v",
+        "sources/readiness224/MachineJoin6ae0SourceOwner.v",
+        "sources/readiness224/MachineJoin6ae0Structural.v",
+        "sources/readiness224/MachineJoin6ae0WitnessRegistration.v",
+        "sources/readiness224/RuleScratchRules.v",
+        "sources/readiness224/DecodeItemBranchContinuationOrder.v",
+        "sources/readiness224/800d6a14-HEADER.vpart",
+        "sources/readiness224/EntryWitnessData329.v",
+        "sources/readiness224/MachineExit6a24Entries322.v",
+        "sources/readiness224/MachinePilot323Entries.v",
+        "sources/readiness224/Entry6a24WitnessRegistration.v",
+        "sources/readiness224/MachineExit6a24Structural322.v",
+        "sources/readiness224/MachinePilot323Structural.v",
+        "sources/readiness224/Entry6a24ProfileReady181.v",
+        "sources/readiness224/Entry6a24WitnessRegistrationMetadata137.v",
+        "sources/readiness224/800d6ab4-HEADER.vpart",
+        "sources/readiness224/EntryWitnessData184.v",
+        "sources/readiness224/MachinePilot180Entries.v",
+        "sources/readiness224/MachinePilot180Fallthrough6ac4Projection.v",
+        "sources/readiness224/Entry6ac4WitnessRegistration.v",
+        "sources/readiness224/MachinePilot180Fallthrough6ac4ProjectionStructural.v",
+        "sources/readiness224/MachinePilot180Structural.v",
+        "sources/readiness224/Entry6ac4ProfileReady181.v",
+        "sources/readiness224/Entry6ac4WitnessRegistrationMetadata137.v",
+        "sources/readiness224/Calls.v",
+        "sources/readiness224/INSTALL.vpart",
+        "sources/readiness224/REPAIRS.vpart"
+      ]
+    },
+    {
+      "component": "finish237",
+      "ownership": "C: generic bounded finish and controls",
+      "accepted_packet": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generic-finish-verify237/SEALED-RESULT.json",
+        "sha256": "3a6c2872c3fa3113840970e2577393857bac16a3b8aa0e024b744ad3f42e9a5b"
+      },
+      "source_files": [
+        "sources/finish237/EntryWitnessFinish232.v",
+        "sources/finish237/EntryWitnessFinishControls232.v"
+      ]
+    },
+    {
+      "component": "tail245",
+      "ownership": "C: native-tail installation example; caller-specific profiles remain required",
+      "accepted_packet": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generated6a14-tail-handoff245/HANDOFF.json",
+        "sha256": "90101cbd151c0110e40860e37290b958be92da48d0080d5b13b12c010ebf69ee"
+      },
+      "source_files": [
+        "sources/tail245/EntryWitnessFinish232.v",
+        "sources/tail245/EXAMPLE-HEADER.vpart",
+        "sources/tail245/TAIL.vpart"
+      ]
+    },
+    {
+      "component": "tail280",
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile",
+      "accepted_packet": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-handoff280/HANDOFF.json",
+        "sha256": "ca101de6fb7ae0256d9cf801a1631aa61b49ed28551f0266fc23e9df35f49fdb"
+      },
+      "source_files": [
+        "sources/tail280/STATEMENT.vpart",
+        "sources/tail280/Subject.v",
+        "sources/tail280/Full6ab4_277.v",
+        "sources/tail280/OriginalReference252.v",
+        "sources/tail280/EXACT-HEADER.vpart",
+        "sources/tail280/IMPORTS.vpart",
+        "sources/tail280/SCALAR.vpart",
+        "sources/tail280/TAIL.vpart",
+        "sources/tail280/BOUNDED-ROUTE.vpart",
+        "sources/tail280/EntryWitnessFinish232.v",
+        "sources/tail280/All.v",
+        "sources/tail280/EffectiveOverrides.v",
+        "sources/tail280/Hooks.v",
+        "sources/tail280/EntryWitnessReadiness.v",
+        "sources/tail280/EntryWitnessProfile.v",
+        "sources/tail280/ListHeadFromLength.v",
+        "sources/tail280/EntryWitnessInputs.v",
+        "sources/tail280/EntryWitnessSelector.v",
+        "sources/tail280/Entry6ac4ProfileReady181.v",
+        "sources/tail280/MachinePilot180Entries.v",
+        "sources/tail280/MachinePilot180Structural.v",
+        "sources/tail280/MachinePilot180Fallthrough6ac4Projection.v",
+        "sources/tail280/MachinePilot180Fallthrough6ac4ProjectionStructural.v",
+        "sources/tail280/EntryWitnessData184.v",
+        "sources/tail280/Entry6ac4WitnessRegistration.v"
+      ]
+    },
+    {
+      "component": "projection282",
+      "ownership": "C: unreduced projection controls",
+      "accepted_packet": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/projection-scalar-verify282/SEALED-RESULT.json",
+        "sha256": "ac71460a129041bc10cf8ea1bbe2a7fea88b6d94701c2de599f97ba13663b7c8"
+      },
+      "source_files": [
+        "sources/projection282/ProjectionScalarControls281.v",
+        "sources/projection282/SCALAR.vpart"
+      ]
+    },
+    {
+      "component": "frame274",
+      "ownership": "C: frame handoff; B: frame finish; A: assembly035 and closed-codec view",
+      "accepted_packet": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/frame-handoff274/HANDOFF.json",
+        "sha256": "c8989de2023e5e90bbf1b4a922ab74a51d4204648e6eaf35161305efee1a47fc"
+      },
+      "source_files": [
+        "sources/frame274/FrameClosed163.v",
+        "sources/frame274/VALIDATED-FRAME163-HEADER.vpart",
+        "sources/frame274/IMPORTS.vpart",
+        "sources/frame274/CONSUMER.vpart",
+        "sources/frame274/FramePackingFinish167.v",
+        "sources/frame274/SwitchDispatch.v",
+        "sources/frame274/VmClosed.v",
+        "sources/frame274/FramePacking.v",
+        "sources/frame274/AdditiveDecoder.v",
+        "sources/frame274/SymbolicByteCodec.v",
+        "sources/frame274/ByteArrayAssembly.v",
+        "sources/frame274/ByteArrayAssemblyCodec.v",
+        "sources/frame274/definitions.v"
+      ]
+    },
+    {
+      "component": "conversions289",
+      "ownership": "C: exact scalar controls and whole-array conversion",
+      "accepted_packet": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/return-source-conversions289/SEALED-RESULT.json",
+        "sha256": "acde3c1edf03ba15292d0adb82221046dc929029d6e9895a1b3ca100f8db5e26"
+      },
+      "source_files": [
+        "sources/conversions289/ReturnScalarAndStack288.v",
+        "sources/conversions289/HEADER.vpart"
+      ]
+    },
+    {
+      "component": "projection291",
+      "ownership": "C: generated source-fact projection only",
+      "accepted_packet": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generated6a78-projection291/SEALED-RESULT.json",
+        "sha256": "e2233be572f186fbff6196f7f1015f5f30378840fe4b7d4a688c3d75ed81dd71"
+      },
+      "source_files": [
+        "sources/projection291/GeneratedSourceProjection290.v",
+        "sources/projection291/Pilot6a78Entries.v"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "sources/repair184/REPAIRS.vpart",
+      "sha256": "81844e00ff882b9ce551c42b6258f2e8663a347229fe540c2a6d7c9c1c70ff65",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/repair-bundle184/REPAIRS.vpart",
+        "sha256": "81844e00ff882b9ce551c42b6258f2e8663a347229fe540c2a6d7c9c1c70ff65"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/HEADER.vpart",
+      "sha256": "53a3e282236276fe65211446e8707fc7a5b6d2aa88c5f87de7957f9772f5d9fa",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/repair-bundle184/HEADER.vpart",
+        "sha256": "53a3e282236276fe65211446e8707fc7a5b6d2aa88c5f87de7957f9772f5d9fa"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/Full6aa8Closed176.v",
+      "sha256": "60547a1595aaff72251655eabcbf3a9a177276e33944bb683e1338b4f0ae6567",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Evidence/Full6aa8Closed176.v",
+        "sha256": "60547a1595aaff72251655eabcbf3a9a177276e33944bb683e1338b4f0ae6567"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/All.v",
+      "sha256": "8d5669ff96616746d28c297dd87ca7421db751a5f370522a4b59b6643f5f664b",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/All.v",
+        "sha256": "8d5669ff96616746d28c297dd87ca7421db751a5f370522a4b59b6643f5f664b"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/EffectiveOverrides.v",
+      "sha256": "a931e57d7d29e5d0469726dbf84e8ba110cdf6a53a2272ea631747147d407cca",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/EffectiveOverrides.v",
+        "sha256": "a931e57d7d29e5d0469726dbf84e8ba110cdf6a53a2272ea631747147d407cca"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/Hooks.v",
+      "sha256": "2e38b40cfa3717ebdec550a8af13aee9f57380533ca5e59e9add7a32bcca62ff",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/Hooks.v",
+        "sha256": "2e38b40cfa3717ebdec550a8af13aee9f57380533ca5e59e9add7a32bcca62ff"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/ResourceGroups.v",
+      "sha256": "69f3d0d289843d28d7237e5ddc83a18490f7e348057d94268d026e9c7a142f2d",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/ResourceGroups.v",
+        "sha256": "69f3d0d289843d28d7237e5ddc83a18490f7e348057d94268d026e9c7a142f2d"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/SwitchDispatch.v",
+      "sha256": "d34dabce60a8b7552ff673f9ff93417fe0a07fec24e5312633ba69b70ebdb417",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/SwitchDispatch.v",
+        "sha256": "d34dabce60a8b7552ff673f9ff93417fe0a07fec24e5312633ba69b70ebdb417"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/BitvectorFacts.v",
+      "sha256": "a061b3663b96469e60ca6ae22e1bf634115e047ef655d96549b331bf4019fd6b",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/BitvectorFacts.v",
+        "sha256": "a061b3663b96469e60ca6ae22e1bf634115e047ef655d96549b331bf4019fd6b"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/HypothesisCast.v",
+      "sha256": "250c84d6264a5c4f9146bce40665e495073a26ee58c367dbd9fc46e21c1e5a8d",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/HypothesisCast.v",
+        "sha256": "250c84d6264a5c4f9146bce40665e495073a26ee58c367dbd9fc46e21c1e5a8d"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/VmClosed.v",
+      "sha256": "328c9bcf9a75a7ef0a099d04602ac8c28690dbad6edb691bb05819d821d72755",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/VmClosed.v",
+        "sha256": "328c9bcf9a75a7ef0a099d04602ac8c28690dbad6edb691bb05819d821d72755"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/FramePacking.v",
+      "sha256": "8566092237f2894265d66eff6edbf6e2fe61a784b0302a868a499455fe912eda",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/FramePacking.v",
+        "sha256": "8566092237f2894265d66eff6edbf6e2fe61a784b0302a868a499455fe912eda"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/AdditiveDecoder.v",
+      "sha256": "8a7af3035a500dc1a8b88f81ae02a35ae07f165335a0caa5b8f0198cd7f7eceb",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/AdditiveDecoder.v",
+        "sha256": "8a7af3035a500dc1a8b88f81ae02a35ae07f165335a0caa5b8f0198cd7f7eceb"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/SymbolicByteCodec.v",
+      "sha256": "9a17c8cbc5d05bf715920c609f7837470d71d063543db5788b43edcb45351ce8",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/SymbolicByteCodec.v",
+        "sha256": "9a17c8cbc5d05bf715920c609f7837470d71d063543db5788b43edcb45351ce8"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/ArrayPayloadPresentation.v",
+      "sha256": "0bd098a3479c4e8da84769a2dd4ddc6abb3cdf3bc8d8691d1ec3c8fa29292ddd",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/ArrayPayloadPresentation.v",
+        "sha256": "0bd098a3479c4e8da84769a2dd4ddc6abb3cdf3bc8d8691d1ec3c8fa29292ddd"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/FramePackingFinish167.v",
+      "sha256": "4605d3c8f15849c3ce678c59ce4b86eff8ae60e1437d043fa3b118f8ae9b59b3",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/FramePackingFinish167.v",
+        "sha256": "4605d3c8f15849c3ce678c59ce4b86eff8ae60e1437d043fa3b118f8ae9b59b3"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/ArrayContinuation167.v",
+      "sha256": "8f85b8094d4b91e812b8a4a49be5256d1f7c5c34e9769fb725560472755ab157",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/ArrayContinuation167.v",
+        "sha256": "8f85b8094d4b91e812b8a4a49be5256d1f7c5c34e9769fb725560472755ab157"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/RlpDecodeItemContract.v",
+      "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+        "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/RlpDecodeItem.v",
+      "sha256": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Contracts/RlpDecodeItem.v",
+        "sha256": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/DecodeItemSelected.v",
+      "sha256": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Contracts/DecodeItemSelected.v",
+        "sha256": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/riscv64.v",
+      "sha256": "fd545c025c599db1ec64ecf57a322b78ad63945affbade9b3b4e82a6737d64b8",
+      "original": {
+        "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/riscv64/riscv64.v",
+        "sha256": "fd545c025c599db1ec64ecf57a322b78ad63945affbade9b3b4e82a6737d64b8"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/definitions.v",
+      "sha256": "225a27f182ac95c4abf8bcff913b451e47f008aeaf69a06efe14fc15f7ed2e65",
+      "original": {
+        "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/stdpp/bitvector/definitions.v",
+        "sha256": "225a27f182ac95c4abf8bcff913b451e47f008aeaf69a06efe14fc15f7ed2e65"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/repair184/environments.v",
+      "sha256": "1dfcfbce45677fb1ab3088d1e5813e26ea8a99f22c9b27430c285ee4d92601c9",
+      "original": {
+        "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/iris/proofmode/environments.v",
+        "sha256": "1dfcfbce45677fb1ab3088d1e5813e26ea8a99f22c9b27430c285ee4d92601c9"
+      },
+      "ownership": "C: diagnostic installation; shared helpers retain their original owners"
+    },
+    {
+      "file": "sources/readiness151/ReadinessBodyControls148.v",
+      "sha256": "11447ae1691282ba60d6d7a77fefe16eca3138798ddc022fff37cf7b20b1e900",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-controls148/ReadinessBodyControls148.v",
+        "sha256": "11447ae1691282ba60d6d7a77fefe16eca3138798ddc022fff37cf7b20b1e900"
+      },
+      "ownership": "B: profile metadata and baseline body; C: exact control acceptance"
+    },
+    {
+      "file": "sources/readiness151/ReadinessProfileControls150.v",
+      "sha256": "2d3d8c9c58f47e5aede7d2565561b53d8b9619b7094e9eec62fa35b142199bb3",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-controls150/ReadinessProfileControls150.v",
+        "sha256": "2d3d8c9c58f47e5aede7d2565561b53d8b9619b7094e9eec62fa35b142199bb3"
+      },
+      "ownership": "B: profile metadata and baseline body; C: exact control acceptance"
+    },
+    {
+      "file": "sources/readiness151/EntryWitnessReadiness.v",
+      "sha256": "405aebfc310e7f8738df26afb707de2fcdbc608bf01745f865fd9ba4a2e402f3",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-verify151/owned/artifacts/default/ZesuSsz/Automation/EntryWitnessReadiness.v",
+        "sha256": "405aebfc310e7f8738df26afb707de2fcdbc608bf01745f865fd9ba4a2e402f3"
+      },
+      "ownership": "B: profile metadata and baseline body; C: exact control acceptance"
+    },
+    {
+      "file": "sources/readiness151/EntryWitnessProfile.v",
+      "sha256": "b4efd820f7abe06a7794ab6aaf456daafdc5dd7aaed9d57b440cc0596b861705",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-verify151/owned/artifacts/default/ZesuSsz/Automation/EntryWitnessProfile.v",
+        "sha256": "b4efd820f7abe06a7794ab6aaf456daafdc5dd7aaed9d57b440cc0596b861705"
+      },
+      "ownership": "B: profile metadata and baseline body; C: exact control acceptance"
+    },
+    {
+      "file": "sources/phase204/EntryWitnessReadiness.v",
+      "sha256": "29eb44bb3af3f35f4096d0e9f7280ac7f8ab128ad8eed473965da3b4606953f7",
+      "original": {
+        "path": "/home/cody/zesislar/.worktrees/spec-c-readiness-phase196/ZesuSsz/Automation/EntryWitnessReadiness.v",
+        "sha256": "29eb44bb3af3f35f4096d0e9f7280ac7f8ab128ad8eed473965da3b4606953f7"
+      },
+      "ownership": "C: final phase guard; B: profile and canonical selector"
+    },
+    {
+      "file": "sources/phase204/EntryWitnessBodyControls196.v",
+      "sha256": "121f41069cee75cb5108c69180567b8a0c31600ed7d8504452359d1e881a27ab",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-phase196/owned/artifacts/default/ZesuSsz/Evidence/EntryWitnessBodyControls196.v",
+        "sha256": "121f41069cee75cb5108c69180567b8a0c31600ed7d8504452359d1e881a27ab"
+      },
+      "ownership": "C: final phase guard; B: profile and canonical selector"
+    },
+    {
+      "file": "sources/selector224/EntryWitnessInputs.v",
+      "sha256": "635e7340afb04cbaccb61f1b6b81754da5d96b2fe29a09b82336e187dde479ef",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Evidence/EntryWitnessInputs.v",
+        "sha256": "635e7340afb04cbaccb61f1b6b81754da5d96b2fe29a09b82336e187dde479ef"
+      },
+      "ownership": "C: validated integration; B: canonical Inputs and metadata records"
+    },
+    {
+      "file": "sources/selector224/SELECTOR-INTEGRATION.vpart",
+      "sha256": "9ac6a987235d317d73019465e1b6f137748c9078a886dc301f3f7d64a63b81e9",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-handoff224/SELECTOR-INTEGRATION.vpart",
+        "sha256": "9ac6a987235d317d73019465e1b6f137748c9078a886dc301f3f7d64a63b81e9"
+      },
+      "ownership": "C: validated integration; B: canonical Inputs and metadata records"
+    },
+    {
+      "file": "sources/selector224/SELECTOR-HEADER.vpart",
+      "sha256": "131bcad6b921d2b754712d53f4b1c73ffde547639b961487df727a93b91396eb",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-handoff224/SELECTOR-HEADER.vpart",
+        "sha256": "131bcad6b921d2b754712d53f4b1c73ffde547639b961487df727a93b91396eb"
+      },
+      "ownership": "C: validated integration; B: canonical Inputs and metadata records"
+    },
+    {
+      "file": "sources/selector224/INSTALL.vpart",
+      "sha256": "1940bed6360408cfe3e3738ebec7ab98d7c7e005e4adf298cb4148d1b2fb960c",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-handoff224/INSTALL.vpart",
+        "sha256": "1940bed6360408cfe3e3738ebec7ab98d7c7e005e4adf298cb4148d1b2fb960c"
+      },
+      "ownership": "C: validated integration; B: canonical Inputs and metadata records"
+    },
+    {
+      "file": "sources/selector224/Entry6a24ProfileReady181.v",
+      "sha256": "eb33a2282e90e1dfa4c0eebeb9d7fc2c86715d79bc0bbee80d8193887022dbf1",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-dependencies187/800d6a14/owned/artifacts/default/ZesuSsz/Evidence/Entry6a24ProfileReady181.v",
+        "sha256": "eb33a2282e90e1dfa4c0eebeb9d7fc2c86715d79bc0bbee80d8193887022dbf1"
+      },
+      "ownership": "C: validated integration; B: canonical Inputs and metadata records"
+    },
+    {
+      "file": "sources/selector224/Entry6a24WitnessRegistration.v",
+      "sha256": "5de40e90e379e94c81c03bf67ef6fb82c05673c4a1289115f6d4d69202a773a1",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-dependencies187/800d6a14/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/Entry6a24WitnessRegistration.v",
+        "sha256": "5de40e90e379e94c81c03bf67ef6fb82c05673c4a1289115f6d4d69202a773a1"
+      },
+      "ownership": "C: validated integration; B: canonical Inputs and metadata records"
+    },
+    {
+      "file": "sources/selector224/EntryWitnessData329.v",
+      "sha256": "283baae1450435ddffcf1e16b4782085f03b30025c6a289c12a9e83812ea8bad",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/next-dependencies097/800d6a14/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/EntryWitnessData329.v",
+        "sha256": "283baae1450435ddffcf1e16b4782085f03b30025c6a289c12a9e83812ea8bad"
+      },
+      "ownership": "C: validated integration; B: canonical Inputs and metadata records"
+    },
+    {
+      "file": "sources/selector224/MachineExit6a24Entries322.v",
+      "sha256": "12096fb79c2dafdc49e61efede9995b55b0d1e5a64ba0d7fdd4bf80f7fbdb88e",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/next-dependencies097/800d6a14/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineExit6a24Entries322.v",
+        "sha256": "12096fb79c2dafdc49e61efede9995b55b0d1e5a64ba0d7fdd4bf80f7fbdb88e"
+      },
+      "ownership": "C: validated integration; B: canonical Inputs and metadata records"
+    },
+    {
+      "file": "sources/selector224/Entry6a24WitnessRegistrationMetadata137.v",
+      "sha256": "842970049eff60cc629ee8e918ffb8089dc103f84032f8df6ef641b150facc81",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-metadata137/Entry6a24WitnessRegistrationMetadata137.v",
+        "sha256": "842970049eff60cc629ee8e918ffb8089dc103f84032f8df6ef641b150facc81"
+      },
+      "ownership": "C: validated integration; B: canonical Inputs and metadata records"
+    },
+    {
+      "file": "sources/selector224/Entry6ac4ProfileReady181.v",
+      "sha256": "3cd2280768a201753ab79e4a7da77a7145cfd1596293a1abce9e212c3b5b5838",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-dependencies187/800d6ab4/owned/artifacts/default/ZesuSsz/Evidence/Entry6ac4ProfileReady181.v",
+        "sha256": "3cd2280768a201753ab79e4a7da77a7145cfd1596293a1abce9e212c3b5b5838"
+      },
+      "ownership": "C: validated integration; B: canonical Inputs and metadata records"
+    },
+    {
+      "file": "sources/selector224/Entry6ac4WitnessRegistration.v",
+      "sha256": "4b64491db4943264e3dc283c87a42287f110cbb9bd59029e2881164f78887191",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-dependencies187/800d6ab4/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/Entry6ac4WitnessRegistration.v",
+        "sha256": "4b64491db4943264e3dc283c87a42287f110cbb9bd59029e2881164f78887191"
+      },
+      "ownership": "C: validated integration; B: canonical Inputs and metadata records"
+    },
+    {
+      "file": "sources/selector224/EntryWitnessData184.v",
+      "sha256": "afc98a64fd5f5f06fdc5dc842096c1ed667934a54a4742e3b7c95fb9186b33f2",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/next-dependencies097/800d6ab4/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/EntryWitnessData184.v",
+        "sha256": "afc98a64fd5f5f06fdc5dc842096c1ed667934a54a4742e3b7c95fb9186b33f2"
+      },
+      "ownership": "C: validated integration; B: canonical Inputs and metadata records"
+    },
+    {
+      "file": "sources/selector224/MachinePilot180Fallthrough6ac4Projection.v",
+      "sha256": "e5e3a4cb48c4f31c7aa51fe234e659a433ad1eb88df7c54b7756264d7c8d5574",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/next-dependencies097/800d6ab4/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/MachinePilot180Fallthrough6ac4Projection.v",
+        "sha256": "e5e3a4cb48c4f31c7aa51fe234e659a433ad1eb88df7c54b7756264d7c8d5574"
+      },
+      "ownership": "C: validated integration; B: canonical Inputs and metadata records"
+    },
+    {
+      "file": "sources/selector224/Entry6ac4WitnessRegistrationMetadata137.v",
+      "sha256": "ac38bb3eddb955be6d624917d3d1f69894d5a8695cc91cb010f496a558d0a101",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-metadata137/Entry6ac4WitnessRegistrationMetadata137.v",
+        "sha256": "ac38bb3eddb955be6d624917d3d1f69894d5a8695cc91cb010f496a558d0a101"
+      },
+      "ownership": "C: validated integration; B: canonical Inputs and metadata records"
+    },
+    {
+      "file": "sources/readiness224/EntryWitnessReadiness.v",
+      "sha256": "29eb44bb3af3f35f4096d0e9f7280ac7f8ab128ad8eed473965da3b4606953f7",
+      "original": {
+        "path": "/home/cody/zesislar/.worktrees/spec-c-readiness-phase196/ZesuSsz/Automation/EntryWitnessReadiness.v",
+        "sha256": "29eb44bb3af3f35f4096d0e9f7280ac7f8ab128ad8eed473965da3b4606953f7"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/EntryWitnessProfile.v",
+      "sha256": "b4efd820f7abe06a7794ab6aaf456daafdc5dd7aaed9d57b440cc0596b861705",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-verify151/owned/artifacts/default/ZesuSsz/Automation/EntryWitnessProfile.v",
+        "sha256": "b4efd820f7abe06a7794ab6aaf456daafdc5dd7aaed9d57b440cc0596b861705"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/EntryWitnessInputs.v",
+      "sha256": "635e7340afb04cbaccb61f1b6b81754da5d96b2fe29a09b82336e187dde479ef",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Evidence/EntryWitnessInputs.v",
+        "sha256": "635e7340afb04cbaccb61f1b6b81754da5d96b2fe29a09b82336e187dde479ef"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/EntryWitnessReadiness-405aebfc.v",
+      "sha256": "405aebfc310e7f8738df26afb707de2fcdbc608bf01745f865fd9ba4a2e402f3",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Automation/EntryWitnessReadiness.v",
+        "sha256": "405aebfc310e7f8738df26afb707de2fcdbc608bf01745f865fd9ba4a2e402f3"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/SourceWitnessInputs.v",
+      "sha256": "4562a2f98b359cbe48e9bb71abdd477833982b133dae6fcdd417fb4857e28a5f",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Automation/SourceWitnessInputs.v",
+        "sha256": "4562a2f98b359cbe48e9bb71abdd477833982b133dae6fcdd417fb4857e28a5f"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/Hooks.v",
+      "sha256": "e41b6401079924cfbfabfce82027c7e3ad5b702033ce27b36aba376e62685ee1",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Automation/Hooks.v",
+        "sha256": "e41b6401079924cfbfabfce82027c7e3ad5b702033ce27b36aba376e62685ee1"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/BranchCastUnsigned.v",
+      "sha256": "dda58a9b8c98b288aad6c4f2145956256d978af88d8f08b489e959572c39a1b9",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Automation/BranchCastUnsigned.v",
+        "sha256": "dda58a9b8c98b288aad6c4f2145956256d978af88d8f08b489e959572c39a1b9"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/BranchUnsigned.v",
+      "sha256": "c5e291e7711be5b17466d9b0a86a7702703b953e12562c22f0f4b6c6af7a4079",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Automation/BranchUnsigned.v",
+        "sha256": "c5e291e7711be5b17466d9b0a86a7702703b953e12562c22f0f4b6c6af7a4079"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/EffectiveOverrides.v",
+      "sha256": "a931e57d7d29e5d0469726dbf84e8ba110cdf6a53a2272ea631747147d407cca",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Automation/EffectiveOverrides.v",
+        "sha256": "a931e57d7d29e5d0469726dbf84e8ba110cdf6a53a2272ea631747147d407cca"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/ArrayLoadPreselect.v",
+      "sha256": "0b52f9a4a1dce14a519a93cb6aac0db0bfa3bf1009b5b38bb2e464cf6b7e46c9",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Automation/ArrayLoadPreselect.v",
+        "sha256": "0b52f9a4a1dce14a519a93cb6aac0db0bfa3bf1009b5b38bb2e464cf6b7e46c9"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/ArrayPayloadPresentation.v",
+      "sha256": "0bd098a3479c4e8da84769a2dd4ddc6abb3cdf3bc8d8691d1ec3c8fa29292ddd",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Automation/ArrayPayloadPresentation.v",
+        "sha256": "0bd098a3479c4e8da84769a2dd4ddc6abb3cdf3bc8d8691d1ec3c8fa29292ddd"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/MaskWrapPresentation.v",
+      "sha256": "5ce3e997652f2ea11acdefd10d15ef7840be8723aa1793bdd4be0f2ddb3c2c50",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Automation/MaskWrapPresentation.v",
+        "sha256": "5ce3e997652f2ea11acdefd10d15ef7840be8723aa1793bdd4be0f2ddb3c2c50"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/HypothesisCast.v",
+      "sha256": "250c84d6264a5c4f9146bce40665e495073a26ee58c367dbd9fc46e21c1e5a8d",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Automation/HypothesisCast.v",
+        "sha256": "250c84d6264a5c4f9146bce40665e495073a26ee58c367dbd9fc46e21c1e5a8d"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/MaskPresentation.v",
+      "sha256": "8d1230fc2e211ed4c228ea6fa163aa3c9607ead8d4364bafcc3876ab1c337758",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Automation/MaskPresentation.v",
+        "sha256": "8d1230fc2e211ed4c228ea6fa163aa3c9607ead8d4364bafcc3876ab1c337758"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/RawWordArrayWitness.v",
+      "sha256": "3cdfc8cbab112eafab591c4146e755d44e1300d017e4df61d393f77f2d8d1ccc",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Automation/RawWordArrayWitness.v",
+        "sha256": "3cdfc8cbab112eafab591c4146e755d44e1300d017e4df61d393f77f2d8d1ccc"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/StoreMemoryLookup.v",
+      "sha256": "9c5aaccc3d74edfcf62985e6efb2b6e29fbddd9dc9b2bb8083c57b3213c3f33d",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Automation/StoreMemoryLookup.v",
+        "sha256": "9c5aaccc3d74edfcf62985e6efb2b6e29fbddd9dc9b2bb8083c57b3213c3f33d"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/ExistentialArrayRestore.v",
+      "sha256": "7206794357f54ba98a898de4d3c8b65f1f144954b30f4ca1bd08872e46958219",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Automation/ExistentialArrayRestore.v",
+        "sha256": "7206794357f54ba98a898de4d3c8b65f1f144954b30f4ca1bd08872e46958219"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/InteriorByteSlice.v",
+      "sha256": "34a9c4c0efbc63bed5bef5715fae06825c7d661e30c6327837b2754befd837a1",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Automation/InteriorByteSlice.v",
+        "sha256": "34a9c4c0efbc63bed5bef5715fae06825c7d661e30c6327837b2754befd837a1"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/V2Steps.v",
+      "sha256": "7af373278c7d5104c718d6a3cf23d294d5d4916516aa265f4266482fed4b2e53",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Automation/V2Steps.v",
+        "sha256": "7af373278c7d5104c718d6a3cf23d294d5d4916516aa265f4266482fed4b2e53"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/Finish.v",
+      "sha256": "6dd18d9e2df77b8e19415af5dcbee6b84d2dc0de74d1d70a267a34a7cdb68326",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Automation/Finish.v",
+        "sha256": "6dd18d9e2df77b8e19415af5dcbee6b84d2dc0de74d1d70a267a34a7cdb68326"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/All.v",
+      "sha256": "8d5669ff96616746d28c297dd87ca7421db751a5f370522a4b59b6643f5f664b",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Automation/All.v",
+        "sha256": "8d5669ff96616746d28c297dd87ca7421db751a5f370522a4b59b6643f5f664b"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/Pilot6a38Entries.v",
+      "sha256": "b58f7963d70ff8802fd87fa4136372b329298bb90ad6f467e069b84a03d41cd8",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6a38Entries.v",
+        "sha256": "b58f7963d70ff8802fd87fa4136372b329298bb90ad6f467e069b84a03d41cd8"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/Pilot6a38Structural.v",
+      "sha256": "97807c632483dc26a0684b27b2f4010f02ccc962a85a5412b334b020fcdda6d1",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6a38Structural.v",
+        "sha256": "97807c632483dc26a0684b27b2f4010f02ccc962a85a5412b334b020fcdda6d1"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/Pilot6a40Entries.v",
+      "sha256": "1c1ae06b00847a8ff1914132dce8ccfd582b597b7ec4c42106c861351f77ba31",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6a40Entries.v",
+        "sha256": "1c1ae06b00847a8ff1914132dce8ccfd582b597b7ec4c42106c861351f77ba31"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/Pilot6a40Structural.v",
+      "sha256": "4b4b587609c0499d77c3811018975185ee1cae388a7f26e8fba8f7ae00ca7f5d",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6a40Structural.v",
+        "sha256": "4b4b587609c0499d77c3811018975185ee1cae388a7f26e8fba8f7ae00ca7f5d"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/Pilot6ad8Entries.v",
+      "sha256": "8afd7cc33cfc7311621e540074e8d55df23b9bb02379195082e3038b8aaccbdc",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6ad8Entries.v",
+        "sha256": "8afd7cc33cfc7311621e540074e8d55df23b9bb02379195082e3038b8aaccbdc"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/Pilot6ad8Structural.v",
+      "sha256": "40a73d1de57dc8873c75006d713328a7ba9d1d0dbe5dbc627f6a202b16bb5506",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6ad8Structural.v",
+        "sha256": "40a73d1de57dc8873c75006d713328a7ba9d1d0dbe5dbc627f6a202b16bb5506"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/Pilot6b08Entries.v",
+      "sha256": "d1397865136230469339790f6319f1eb7b024034fc349e6835ba9d13dc241559",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6b08Entries.v",
+        "sha256": "d1397865136230469339790f6319f1eb7b024034fc349e6835ba9d13dc241559"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/Pilot6b08Structural.v",
+      "sha256": "6d17f218850ec653f2e6229426486ccc0b3a6d57d35a3258465df08e4551ec0f",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6b08Structural.v",
+        "sha256": "6d17f218850ec653f2e6229426486ccc0b3a6d57d35a3258465df08e4551ec0f"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/SourceMapping6a38.v",
+      "sha256": "9b91725e1ffd8e5e8c0803227ed27a76096022b93724aa63fa17a36da998b72b",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/SourceMapping6a38.v",
+        "sha256": "9b91725e1ffd8e5e8c0803227ed27a76096022b93724aa63fa17a36da998b72b"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/SourceMapping6ad8.v",
+      "sha256": "268b3e277ca0cabc519c6cb99eaf3eb3f9ba833a6f0f5248ddafeb24d5488206",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/SourceMapping6ad8.v",
+        "sha256": "268b3e277ca0cabc519c6cb99eaf3eb3f9ba833a6f0f5248ddafeb24d5488206"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/MachineJoin6ae0Entries.v",
+      "sha256": "27a7c0acbeb5e9d06d955b68d4456f5323e73418928985360f1857d8e7624987",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0Entries.v",
+        "sha256": "27a7c0acbeb5e9d06d955b68d4456f5323e73418928985360f1857d8e7624987"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/MachineJoin6ae0SourceOwner.v",
+      "sha256": "08438479762919b05ec13114022f09ffb1f0881878c588b07d04ed280e38181b",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0SourceOwner.v",
+        "sha256": "08438479762919b05ec13114022f09ffb1f0881878c588b07d04ed280e38181b"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/MachineJoin6ae0Structural.v",
+      "sha256": "536d550e2439a05c63acf2aab5b0e60e876a73b28920eef2a5f9354263e4d066",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0Structural.v",
+        "sha256": "536d550e2439a05c63acf2aab5b0e60e876a73b28920eef2a5f9354263e4d066"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/MachineJoin6ae0WitnessRegistration.v",
+      "sha256": "fcf44f12cb2ed2adb5a1c669f0c6c5f8b0a481d26c8f02d69b65ec6f54799ba0",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0WitnessRegistration.v",
+        "sha256": "fcf44f12cb2ed2adb5a1c669f0c6c5f8b0a481d26c8f02d69b65ec6f54799ba0"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/RuleScratchRules.v",
+      "sha256": "9a0e24b8c271fa3bfabd24991794015a12f8276c2559b811691f7d9780b8e1d8",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Evidence/RuleScratchRules.v",
+        "sha256": "9a0e24b8c271fa3bfabd24991794015a12f8276c2559b811691f7d9780b8e1d8"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/DecodeItemBranchContinuationOrder.v",
+      "sha256": "bbd530c079701d8a47b0bb70691f47f313e8aa233bd42364ae07b98aebb17e08",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned066/artifacts/default/ZesuSsz/Proofs/Tests/DecodeItemBranchContinuationOrder.v",
+        "sha256": "bbd530c079701d8a47b0bb70691f47f313e8aa233bd42364ae07b98aebb17e08"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/800d6a14-HEADER.vpart",
+      "sha256": "6e49105125240bd1d4538ee2352cdc9f37e5f014e6603c487939f7f99426802b",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-handoff224/800d6a14-HEADER.vpart",
+        "sha256": "6e49105125240bd1d4538ee2352cdc9f37e5f014e6603c487939f7f99426802b"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/EntryWitnessData329.v",
+      "sha256": "283baae1450435ddffcf1e16b4782085f03b30025c6a289c12a9e83812ea8bad",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-dependencies187/800d6a14/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/EntryWitnessData329.v",
+        "sha256": "283baae1450435ddffcf1e16b4782085f03b30025c6a289c12a9e83812ea8bad"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/MachineExit6a24Entries322.v",
+      "sha256": "12096fb79c2dafdc49e61efede9995b55b0d1e5a64ba0d7fdd4bf80f7fbdb88e",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-dependencies187/800d6a14/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineExit6a24Entries322.v",
+        "sha256": "12096fb79c2dafdc49e61efede9995b55b0d1e5a64ba0d7fdd4bf80f7fbdb88e"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/MachinePilot323Entries.v",
+      "sha256": "8e063c269dd87410328214d78b2b8b818ef848a2e33b2869da851ecd74ffc743",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-dependencies187/800d6a14/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/MachinePilot323Entries.v",
+        "sha256": "8e063c269dd87410328214d78b2b8b818ef848a2e33b2869da851ecd74ffc743"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/Entry6a24WitnessRegistration.v",
+      "sha256": "5de40e90e379e94c81c03bf67ef6fb82c05673c4a1289115f6d4d69202a773a1",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-dependencies187/800d6a14/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/Entry6a24WitnessRegistration.v",
+        "sha256": "5de40e90e379e94c81c03bf67ef6fb82c05673c4a1289115f6d4d69202a773a1"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/MachineExit6a24Structural322.v",
+      "sha256": "0468d31401c4fe8fad74c076ee9bccb81c8a2ae1a739d7d29b9eff49bdbf790d",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-dependencies187/800d6a14/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineExit6a24Structural322.v",
+        "sha256": "0468d31401c4fe8fad74c076ee9bccb81c8a2ae1a739d7d29b9eff49bdbf790d"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/MachinePilot323Structural.v",
+      "sha256": "cd1a8e0f0f74ca3c9cfa9aa2a916a37198dcd4a237c422b22faf0ede78ef984a",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-dependencies187/800d6a14/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/MachinePilot323Structural.v",
+        "sha256": "cd1a8e0f0f74ca3c9cfa9aa2a916a37198dcd4a237c422b22faf0ede78ef984a"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/Entry6a24ProfileReady181.v",
+      "sha256": "eb33a2282e90e1dfa4c0eebeb9d7fc2c86715d79bc0bbee80d8193887022dbf1",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-dependencies187/800d6a14/owned/artifacts/default/ZesuSsz/Evidence/Entry6a24ProfileReady181.v",
+        "sha256": "eb33a2282e90e1dfa4c0eebeb9d7fc2c86715d79bc0bbee80d8193887022dbf1"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/Entry6a24WitnessRegistrationMetadata137.v",
+      "sha256": "842970049eff60cc629ee8e918ffb8089dc103f84032f8df6ef641b150facc81",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-metadata137/Entry6a24WitnessRegistrationMetadata137.v",
+        "sha256": "842970049eff60cc629ee8e918ffb8089dc103f84032f8df6ef641b150facc81"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/800d6ab4-HEADER.vpart",
+      "sha256": "6b42b9de2eeb68bcf2e5e5033cab02428006a71a095fc2b3ca593fb8b5090608",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-handoff224/800d6ab4-HEADER.vpart",
+        "sha256": "6b42b9de2eeb68bcf2e5e5033cab02428006a71a095fc2b3ca593fb8b5090608"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/EntryWitnessData184.v",
+      "sha256": "afc98a64fd5f5f06fdc5dc842096c1ed667934a54a4742e3b7c95fb9186b33f2",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-dependencies187/800d6ab4/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/EntryWitnessData184.v",
+        "sha256": "afc98a64fd5f5f06fdc5dc842096c1ed667934a54a4742e3b7c95fb9186b33f2"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/MachinePilot180Entries.v",
+      "sha256": "3aebd53b7d3f7154708c9d09a05f0e434125ffddb140b0e718394bffeeb52767",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-dependencies187/800d6ab4/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/MachinePilot180Entries.v",
+        "sha256": "3aebd53b7d3f7154708c9d09a05f0e434125ffddb140b0e718394bffeeb52767"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/MachinePilot180Fallthrough6ac4Projection.v",
+      "sha256": "e5e3a4cb48c4f31c7aa51fe234e659a433ad1eb88df7c54b7756264d7c8d5574",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-dependencies187/800d6ab4/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/MachinePilot180Fallthrough6ac4Projection.v",
+        "sha256": "e5e3a4cb48c4f31c7aa51fe234e659a433ad1eb88df7c54b7756264d7c8d5574"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/Entry6ac4WitnessRegistration.v",
+      "sha256": "4b64491db4943264e3dc283c87a42287f110cbb9bd59029e2881164f78887191",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-dependencies187/800d6ab4/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/Entry6ac4WitnessRegistration.v",
+        "sha256": "4b64491db4943264e3dc283c87a42287f110cbb9bd59029e2881164f78887191"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/MachinePilot180Fallthrough6ac4ProjectionStructural.v",
+      "sha256": "6c28e41f490497a9bd92b5c973eb6a83e01040bbec3832606a9d578f353efc14",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-dependencies187/800d6ab4/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/MachinePilot180Fallthrough6ac4ProjectionStructural.v",
+        "sha256": "6c28e41f490497a9bd92b5c973eb6a83e01040bbec3832606a9d578f353efc14"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/MachinePilot180Structural.v",
+      "sha256": "42b23b0a2a84d05f734f5c01b7c0d7cf52eae14cf47c1d02390176fde00e030d",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-dependencies187/800d6ab4/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/MachinePilot180Structural.v",
+        "sha256": "42b23b0a2a84d05f734f5c01b7c0d7cf52eae14cf47c1d02390176fde00e030d"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/Entry6ac4ProfileReady181.v",
+      "sha256": "3cd2280768a201753ab79e4a7da77a7145cfd1596293a1abce9e212c3b5b5838",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-dependencies187/800d6ab4/owned/artifacts/default/ZesuSsz/Evidence/Entry6ac4ProfileReady181.v",
+        "sha256": "3cd2280768a201753ab79e4a7da77a7145cfd1596293a1abce9e212c3b5b5838"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/Entry6ac4WitnessRegistrationMetadata137.v",
+      "sha256": "ac38bb3eddb955be6d624917d3d1f69894d5a8695cc91cb010f496a558d0a101",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-metadata137/Entry6ac4WitnessRegistrationMetadata137.v",
+        "sha256": "ac38bb3eddb955be6d624917d3d1f69894d5a8695cc91cb010f496a558d0a101"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/Calls.v",
+      "sha256": "9fa858592cbf546bbc737139d8fa59f9275b07a70b89127c66328fbed6fd7330",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-phase-exact203/800d6a14/owned/artifacts/default/ZesuSsz/Automation/Calls.v",
+        "sha256": "9fa858592cbf546bbc737139d8fa59f9275b07a70b89127c66328fbed6fd7330"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/INSTALL.vpart",
+      "sha256": "1940bed6360408cfe3e3738ebec7ab98d7c7e005e4adf298cb4148d1b2fb960c",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-handoff224/INSTALL.vpart",
+        "sha256": "1940bed6360408cfe3e3738ebec7ab98d7c7e005e4adf298cb4148d1b2fb960c"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/readiness224/REPAIRS.vpart",
+      "sha256": "81844e00ff882b9ce551c42b6258f2e8663a347229fe540c2a6d7c9c1c70ff65",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/repair-bundle184/REPAIRS.vpart",
+        "sha256": "81844e00ff882b9ce551c42b6258f2e8663a347229fe540c2a6d7c9c1c70ff65"
+      },
+      "ownership": "C: final phase guard; B: profile, Inputs, reader, and generated mappings"
+    },
+    {
+      "file": "sources/finish237/EntryWitnessFinish232.v",
+      "sha256": "25838e8a7dd675dc6d5b661c15562f5cc2dec536c427560ce3e60cd535d69dc6",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generic-finish236/EntryWitnessFinish232.v",
+        "sha256": "25838e8a7dd675dc6d5b661c15562f5cc2dec536c427560ce3e60cd535d69dc6"
+      },
+      "ownership": "C: generic bounded finish and controls"
+    },
+    {
+      "file": "sources/finish237/EntryWitnessFinishControls232.v",
+      "sha256": "90632550a2942eb096134ed58979991cc25258738b63894c41f5690cd7671d0e",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generic-finish236/owned/artifacts/default/ZesuSsz/Evidence/EntryWitnessFinishControls232.v",
+        "sha256": "90632550a2942eb096134ed58979991cc25258738b63894c41f5690cd7671d0e"
+      },
+      "ownership": "C: generic bounded finish and controls"
+    },
+    {
+      "file": "sources/tail245/EntryWitnessFinish232.v",
+      "sha256": "25838e8a7dd675dc6d5b661c15562f5cc2dec536c427560ce3e60cd535d69dc6",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generic-finish236/EntryWitnessFinish232.v",
+        "sha256": "25838e8a7dd675dc6d5b661c15562f5cc2dec536c427560ce3e60cd535d69dc6"
+      },
+      "ownership": "C: native-tail installation example; caller-specific profiles remain required"
+    },
+    {
+      "file": "sources/tail245/EXAMPLE-HEADER.vpart",
+      "sha256": "0ab77327b8ae4285cd9dfd3d8f76414213d8c4cde7d48261728029e3e21cff48",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generated6a14-tail-handoff245/EXAMPLE-HEADER.vpart",
+        "sha256": "0ab77327b8ae4285cd9dfd3d8f76414213d8c4cde7d48261728029e3e21cff48"
+      },
+      "ownership": "C: native-tail installation example; caller-specific profiles remain required"
+    },
+    {
+      "file": "sources/tail245/TAIL.vpart",
+      "sha256": "0146c9e3e9843f5f5f986f76af525ae633526c6eda3a10bc3744f2253a8b8daf",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generated6a14-tail-handoff245/TAIL.vpart",
+        "sha256": "0146c9e3e9843f5f5f986f76af525ae633526c6eda3a10bc3744f2253a8b8daf"
+      },
+      "ownership": "C: native-tail installation example; caller-specific profiles remain required"
+    },
+    {
+      "file": "sources/tail280/STATEMENT.vpart",
+      "sha256": "4e88fbf70227e245c7296c3de8662ffc163b73ceef52d7092723cb052f81545f",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-handoff280/STATEMENT.vpart",
+        "sha256": "4e88fbf70227e245c7296c3de8662ffc163b73ceef52d7092723cb052f81545f"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/Subject.v",
+      "sha256": "d6c6f36e94249be67a550d66ae8ab684f8fd11d682c719f685342d84327f61cb",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/parallel6ab4-native275/800d6ab4/Subject.v",
+        "sha256": "d6c6f36e94249be67a550d66ae8ab684f8fd11d682c719f685342d84327f61cb"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/Full6ab4_277.v",
+      "sha256": "81108e16b03a759665a56aa0c5c87f67b8359747001b419fefc256af327827c2",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-physical277/owned/artifacts/default/ZesuSsz/Evidence/Full6ab4_277.v",
+        "sha256": "81108e16b03a759665a56aa0c5c87f67b8359747001b419fefc256af327827c2"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/OriginalReference252.v",
+      "sha256": "aa2a395c31c7613e233a8d337ee91452b19c74f345d9e9076d360557d3cd74a4",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/parallel6ab4-native275/800d6ab4/OriginalReference252.v",
+        "sha256": "aa2a395c31c7613e233a8d337ee91452b19c74f345d9e9076d360557d3cd74a4"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/EXACT-HEADER.vpart",
+      "sha256": "ec5623f191b3b6e66f73b7073f64d628f06369eb375ebf5ff792cc0d99ae5d60",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-handoff280/EXACT-HEADER.vpart",
+        "sha256": "ec5623f191b3b6e66f73b7073f64d628f06369eb375ebf5ff792cc0d99ae5d60"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/IMPORTS.vpart",
+      "sha256": "07f30a3f8999d831029f68bd178675eeb3d6fcd6a5cbe017436bf5b8949616a1",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-handoff280/IMPORTS.vpart",
+        "sha256": "07f30a3f8999d831029f68bd178675eeb3d6fcd6a5cbe017436bf5b8949616a1"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/SCALAR.vpart",
+      "sha256": "c450f64544083287f3e9a4fa5ed30eb3f3166120a9b564c637e24db724257bed",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-handoff280/SCALAR.vpart",
+        "sha256": "c450f64544083287f3e9a4fa5ed30eb3f3166120a9b564c637e24db724257bed"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/TAIL.vpart",
+      "sha256": "bff9f3731a9962c77294b7b0b41dbdee4b4afa4c4895a817a142bf761b8006c7",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-handoff280/TAIL.vpart",
+        "sha256": "bff9f3731a9962c77294b7b0b41dbdee4b4afa4c4895a817a142bf761b8006c7"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/BOUNDED-ROUTE.vpart",
+      "sha256": "0a5ff790c90332c1e4805bafd7648cb528d3833066487e09c1375a04d14e87ed",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-handoff280/BOUNDED-ROUTE.vpart",
+        "sha256": "0a5ff790c90332c1e4805bafd7648cb528d3833066487e09c1375a04d14e87ed"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/EntryWitnessFinish232.v",
+      "sha256": "25838e8a7dd675dc6d5b661c15562f5cc2dec536c427560ce3e60cd535d69dc6",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-physical277/owned/artifacts/default/ZesuSsz/Automation/EntryWitnessFinish232.v",
+        "sha256": "25838e8a7dd675dc6d5b661c15562f5cc2dec536c427560ce3e60cd535d69dc6"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/All.v",
+      "sha256": "8d5669ff96616746d28c297dd87ca7421db751a5f370522a4b59b6643f5f664b",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-physical277/owned/artifacts/default/ZesuSsz/Automation/All.v",
+        "sha256": "8d5669ff96616746d28c297dd87ca7421db751a5f370522a4b59b6643f5f664b"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/EffectiveOverrides.v",
+      "sha256": "a931e57d7d29e5d0469726dbf84e8ba110cdf6a53a2272ea631747147d407cca",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-physical277/owned/artifacts/default/ZesuSsz/Automation/EffectiveOverrides.v",
+        "sha256": "a931e57d7d29e5d0469726dbf84e8ba110cdf6a53a2272ea631747147d407cca"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/Hooks.v",
+      "sha256": "e41b6401079924cfbfabfce82027c7e3ad5b702033ce27b36aba376e62685ee1",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-physical277/owned/artifacts/default/ZesuSsz/Automation/Hooks.v",
+        "sha256": "e41b6401079924cfbfabfce82027c7e3ad5b702033ce27b36aba376e62685ee1"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/EntryWitnessReadiness.v",
+      "sha256": "29eb44bb3af3f35f4096d0e9f7280ac7f8ab128ad8eed473965da3b4606953f7",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-physical277/owned/artifacts/default/ZesuSsz/Automation/EntryWitnessReadiness.v",
+        "sha256": "29eb44bb3af3f35f4096d0e9f7280ac7f8ab128ad8eed473965da3b4606953f7"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/EntryWitnessProfile.v",
+      "sha256": "b4efd820f7abe06a7794ab6aaf456daafdc5dd7aaed9d57b440cc0596b861705",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-physical277/owned/artifacts/default/ZesuSsz/Automation/EntryWitnessProfile.v",
+        "sha256": "b4efd820f7abe06a7794ab6aaf456daafdc5dd7aaed9d57b440cc0596b861705"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/ListHeadFromLength.v",
+      "sha256": "21cbf33908017e7cdde093f47ed3e84cf05bf4e17edbd0ff52583002eaca6f8a",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-physical277/owned/artifacts/default/ZesuSsz/Automation/ListHeadFromLength.v",
+        "sha256": "21cbf33908017e7cdde093f47ed3e84cf05bf4e17edbd0ff52583002eaca6f8a"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/EntryWitnessInputs.v",
+      "sha256": "635e7340afb04cbaccb61f1b6b81754da5d96b2fe29a09b82336e187dde479ef",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-physical277/owned/artifacts/default/ZesuSsz/Evidence/EntryWitnessInputs.v",
+        "sha256": "635e7340afb04cbaccb61f1b6b81754da5d96b2fe29a09b82336e187dde479ef"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/EntryWitnessSelector.v",
+      "sha256": "4e73830d62d26df4634da69b9bab94feef6f123d51759384fb91ca32ef85cfb9",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-physical277/owned/artifacts/default/ZesuSsz/Evidence/EntryWitnessSelector.v",
+        "sha256": "4e73830d62d26df4634da69b9bab94feef6f123d51759384fb91ca32ef85cfb9"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/Entry6ac4ProfileReady181.v",
+      "sha256": "3cd2280768a201753ab79e4a7da77a7145cfd1596293a1abce9e212c3b5b5838",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-physical277/owned/artifacts/default/ZesuSsz/Evidence/Entry6ac4ProfileReady181.v",
+        "sha256": "3cd2280768a201753ab79e4a7da77a7145cfd1596293a1abce9e212c3b5b5838"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/MachinePilot180Entries.v",
+      "sha256": "3aebd53b7d3f7154708c9d09a05f0e434125ffddb140b0e718394bffeeb52767",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-physical277/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/MachinePilot180Entries.v",
+        "sha256": "3aebd53b7d3f7154708c9d09a05f0e434125ffddb140b0e718394bffeeb52767"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/MachinePilot180Structural.v",
+      "sha256": "42b23b0a2a84d05f734f5c01b7c0d7cf52eae14cf47c1d02390176fde00e030d",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-physical277/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/MachinePilot180Structural.v",
+        "sha256": "42b23b0a2a84d05f734f5c01b7c0d7cf52eae14cf47c1d02390176fde00e030d"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/MachinePilot180Fallthrough6ac4Projection.v",
+      "sha256": "e5e3a4cb48c4f31c7aa51fe234e659a433ad1eb88df7c54b7756264d7c8d5574",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-physical277/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/MachinePilot180Fallthrough6ac4Projection.v",
+        "sha256": "e5e3a4cb48c4f31c7aa51fe234e659a433ad1eb88df7c54b7756264d7c8d5574"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/MachinePilot180Fallthrough6ac4ProjectionStructural.v",
+      "sha256": "6c28e41f490497a9bd92b5c973eb6a83e01040bbec3832606a9d578f353efc14",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-physical277/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/MachinePilot180Fallthrough6ac4ProjectionStructural.v",
+        "sha256": "6c28e41f490497a9bd92b5c973eb6a83e01040bbec3832606a9d578f353efc14"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/EntryWitnessData184.v",
+      "sha256": "afc98a64fd5f5f06fdc5dc842096c1ed667934a54a4742e3b7c95fb9186b33f2",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-physical277/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/EntryWitnessData184.v",
+        "sha256": "afc98a64fd5f5f06fdc5dc842096c1ed667934a54a4742e3b7c95fb9186b33f2"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/tail280/Entry6ac4WitnessRegistration.v",
+      "sha256": "4b64491db4943264e3dc283c87a42287f110cbb9bd59029e2881164f78887191",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-physical277/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/Entry6ac4WitnessRegistration.v",
+        "sha256": "4b64491db4943264e3dc283c87a42287f110cbb9bd59029e2881164f78887191"
+      },
+      "ownership": "C: full6ab4 native-tail installation; preserve its exact seven-slot profile"
+    },
+    {
+      "file": "sources/projection282/ProjectionScalarControls281.v",
+      "sha256": "5e22e2c4f058103004f28a67b664d15624786aee78953047d017fc8f5643bc90",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/projection-scalar-controls281/owned/artifacts/default/ZesuSsz/Evidence/ProjectionScalarControls281.v",
+        "sha256": "5e22e2c4f058103004f28a67b664d15624786aee78953047d017fc8f5643bc90"
+      },
+      "ownership": "C: unreduced projection controls"
+    },
+    {
+      "file": "sources/projection282/SCALAR.vpart",
+      "sha256": "c450f64544083287f3e9a4fa5ed30eb3f3166120a9b564c637e24db724257bed",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6ab4-handoff280/SCALAR.vpart",
+        "sha256": "c450f64544083287f3e9a4fa5ed30eb3f3166120a9b564c637e24db724257bed"
+      },
+      "ownership": "C: unreduced projection controls"
+    },
+    {
+      "file": "sources/frame274/FrameClosed163.v",
+      "sha256": "976a153a4881cc81fa1ddb0562a720874f4350e24b2f4c333d3960977b2d75b3",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/frame-physical163/owned/artifacts/default/ZesuSsz/Evidence/FrameClosed163.v",
+        "sha256": "976a153a4881cc81fa1ddb0562a720874f4350e24b2f4c333d3960977b2d75b3"
+      },
+      "ownership": "C: frame handoff; B: frame finish; A: assembly035 and closed-codec view"
+    },
+    {
+      "file": "sources/frame274/VALIDATED-FRAME163-HEADER.vpart",
+      "sha256": "81cb5c80fb28fd49863ea60cabe496ea47e360e6534a41fb26fefc67c78483c1",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/frame-handoff274/VALIDATED-FRAME163-HEADER.vpart",
+        "sha256": "81cb5c80fb28fd49863ea60cabe496ea47e360e6534a41fb26fefc67c78483c1"
+      },
+      "ownership": "C: frame handoff; B: frame finish; A: assembly035 and closed-codec view"
+    },
+    {
+      "file": "sources/frame274/IMPORTS.vpart",
+      "sha256": "599821ad63ac928cc24cdf43acf03debd2eadb9f9965d69017e50a2f2db78f45",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/frame-handoff274/IMPORTS.vpart",
+        "sha256": "599821ad63ac928cc24cdf43acf03debd2eadb9f9965d69017e50a2f2db78f45"
+      },
+      "ownership": "C: frame handoff; B: frame finish; A: assembly035 and closed-codec view"
+    },
+    {
+      "file": "sources/frame274/CONSUMER.vpart",
+      "sha256": "101836eca12a142b0aa02fe0bf7eab2389566a81e5320cd96e217e026341f4c5",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/frame-handoff274/CONSUMER.vpart",
+        "sha256": "101836eca12a142b0aa02fe0bf7eab2389566a81e5320cd96e217e026341f4c5"
+      },
+      "ownership": "C: frame handoff; B: frame finish; A: assembly035 and closed-codec view"
+    },
+    {
+      "file": "sources/frame274/FramePackingFinish167.v",
+      "sha256": "4605d3c8f15849c3ce678c59ce4b86eff8ae60e1437d043fa3b118f8ae9b59b3",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/FramePackingFinish167.v",
+        "sha256": "4605d3c8f15849c3ce678c59ce4b86eff8ae60e1437d043fa3b118f8ae9b59b3"
+      },
+      "ownership": "C: frame handoff; B: frame finish; A: assembly035 and closed-codec view"
+    },
+    {
+      "file": "sources/frame274/SwitchDispatch.v",
+      "sha256": "d34dabce60a8b7552ff673f9ff93417fe0a07fec24e5312633ba69b70ebdb417",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/SwitchDispatch.v",
+        "sha256": "d34dabce60a8b7552ff673f9ff93417fe0a07fec24e5312633ba69b70ebdb417"
+      },
+      "ownership": "C: frame handoff; B: frame finish; A: assembly035 and closed-codec view"
+    },
+    {
+      "file": "sources/frame274/VmClosed.v",
+      "sha256": "328c9bcf9a75a7ef0a099d04602ac8c28690dbad6edb691bb05819d821d72755",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/VmClosed.v",
+        "sha256": "328c9bcf9a75a7ef0a099d04602ac8c28690dbad6edb691bb05819d821d72755"
+      },
+      "ownership": "C: frame handoff; B: frame finish; A: assembly035 and closed-codec view"
+    },
+    {
+      "file": "sources/frame274/FramePacking.v",
+      "sha256": "8566092237f2894265d66eff6edbf6e2fe61a784b0302a868a499455fe912eda",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/FramePacking.v",
+        "sha256": "8566092237f2894265d66eff6edbf6e2fe61a784b0302a868a499455fe912eda"
+      },
+      "ownership": "C: frame handoff; B: frame finish; A: assembly035 and closed-codec view"
+    },
+    {
+      "file": "sources/frame274/AdditiveDecoder.v",
+      "sha256": "8a7af3035a500dc1a8b88f81ae02a35ae07f165335a0caa5b8f0198cd7f7eceb",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/AdditiveDecoder.v",
+        "sha256": "8a7af3035a500dc1a8b88f81ae02a35ae07f165335a0caa5b8f0198cd7f7eceb"
+      },
+      "ownership": "C: frame handoff; B: frame finish; A: assembly035 and closed-codec view"
+    },
+    {
+      "file": "sources/frame274/SymbolicByteCodec.v",
+      "sha256": "9a17c8cbc5d05bf715920c609f7837470d71d063543db5788b43edcb45351ce8",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/full6aa8-physical177/owned/artifacts/default/ZesuSsz/Automation/SymbolicByteCodec.v",
+        "sha256": "9a17c8cbc5d05bf715920c609f7837470d71d063543db5788b43edcb45351ce8"
+      },
+      "ownership": "C: frame handoff; B: frame finish; A: assembly035 and closed-codec view"
+    },
+    {
+      "file": "sources/frame274/ByteArrayAssembly.v",
+      "sha256": "fe48ccb8e4a357ff2c3747647f2b0fb99893bd31c8e7dd657c0db2f6e78b8529",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/join-entailment419-corrected023/owned/artifacts/default/ZesuSsz/Automation/ByteArrayAssembly.v",
+        "sha256": "fe48ccb8e4a357ff2c3747647f2b0fb99893bd31c8e7dd657c0db2f6e78b8529"
+      },
+      "ownership": "C: frame handoff; B: frame finish; A: assembly035 and closed-codec view"
+    },
+    {
+      "file": "sources/frame274/ByteArrayAssemblyCodec.v",
+      "sha256": "5174022ba0a4df1da3b8b3841e6e4ab74fece64d4afe42652a4025366b43b1da",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/spec-a/composition403/join-entailment419-corrected023/owned/artifacts/default/ZesuSsz/Automation/ByteArrayAssemblyCodec.v",
+        "sha256": "5174022ba0a4df1da3b8b3841e6e4ab74fece64d4afe42652a4025366b43b1da"
+      },
+      "ownership": "C: frame handoff; B: frame finish; A: assembly035 and closed-codec view"
+    },
+    {
+      "file": "sources/frame274/definitions.v",
+      "sha256": "225a27f182ac95c4abf8bcff913b451e47f008aeaf69a06efe14fc15f7ed2e65",
+      "original": {
+        "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/stdpp/bitvector/definitions.v",
+        "sha256": "225a27f182ac95c4abf8bcff913b451e47f008aeaf69a06efe14fc15f7ed2e65"
+      },
+      "ownership": "C: frame handoff; B: frame finish; A: assembly035 and closed-codec view"
+    },
+    {
+      "file": "sources/conversions289/ReturnScalarAndStack288.v",
+      "sha256": "aa0919db98f2dc4551403067a7cf35ea70e039d845fe355661b75bf606069453",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/return-source-conversions289/owned/artifacts/default/ZesuSsz/Evidence/ReturnScalarAndStack288.v",
+        "sha256": "aa0919db98f2dc4551403067a7cf35ea70e039d845fe355661b75bf606069453"
+      },
+      "ownership": "C: exact scalar controls and whole-array conversion"
+    },
+    {
+      "file": "sources/conversions289/HEADER.vpart",
+      "sha256": "d4d580c0384bc20d26910406ed1d33c7cef0994466280acacf3062c0d2c943cf",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/return-source-conversions289/HEADER.vpart",
+        "sha256": "d4d580c0384bc20d26910406ed1d33c7cef0994466280acacf3062c0d2c943cf"
+      },
+      "ownership": "C: exact scalar controls and whole-array conversion"
+    },
+    {
+      "file": "sources/projection291/GeneratedSourceProjection290.v",
+      "sha256": "9278c5f4d59a850cb12808f672090f609db657c03ec362952303c8958e5955bf",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generated6a78-projection291/owned/artifacts/default/ZesuSsz/Evidence/GeneratedSourceProjection290.v",
+        "sha256": "9278c5f4d59a850cb12808f672090f609db657c03ec362952303c8958e5955bf"
+      },
+      "ownership": "C: generated source-fact projection only"
+    },
+    {
+      "file": "sources/projection291/Pilot6a78Entries.v",
+      "sha256": "d6aa9599cb7da5f06ca25477c448e2bafa77e54974c3ead9457df08bd68aa0e4",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/generated-memory-batch-B-f058-v1/6a78-native002/800d6a78/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/FP301/Pilot6a78Entries.v",
+        "sha256": "d6aa9599cb7da5f06ca25477c448e2bafa77e54974c3ead9457df08bd68aa0e4"
+      },
+      "ownership": "C: generated source-fact projection only"
+    },
+    {
+      "file": "sources/rule-d43331aa/CodecArrayRead.v",
+      "sha256": "7762048b6269c3abdb406c14038279ab01d5a2ce86d2f7b4d41c8711557a9c0b",
+      "original_git": {
+        "commit": "d43331aa",
+        "path": "ZesuSsz/Automation/CodecArrayRead.v"
+      },
+      "ownership": "C: accepted rule packet; B2 assembles production dispatch"
+    }
+  ],
+  "prior_commits": [
+    "b757dbc730786b747457d61e572a9aa32e6ef631",
+    "d43331aa"
+  ],
+  "ownership_rules": [
+    "Do not overwrite B-owned Profile, Inputs, reader, frame finish, or array continuation from historical snapshots.",
+    "Readiness151 body is historical; final phase204 body supersedes it. Profile metadata bytes remain separately bound.",
+    "Bundle184 is a diagnostic installation fragment. Do not globally export its local unfold instance or Ltac redefinitions.",
+    "A owns assembly035 and closed-codec ad84114. C relays their source bindings only.",
+    "Conversions289 and projection291 do not establish generated6a78 native closure.",
+    "Native-tail examples require each caller own authenticated source/data profiles.",
+    "Existing physical and module_m evidence applies to the recorded source bytes and import contexts only. Recompile against the release closure."
+  ],
+  "objects_copied": false
+}

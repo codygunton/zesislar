@@ -1,0 +1,33 @@
+(* Stop before consuming the first authenticated registered witness package. *)
+Ltac zesu_registered_pending_ready :=
+ lazymatch goal with
+ | _ : @ZesuEntryWitnessPending _ ?Witness ?key _
+   |- environments.envs_entails _ (@bi_exist _ (li_prod ?A ?B) ?body) =>
+   EntryWitnessProfile.zesu_entry_witness_ready key Witness constr:(li_prod A B) body
+ end.
+Ltac zesu_registered_prefix_steps fuel :=
+ first [zesu_registered_pending_ready |
+   lazymatch fuel with
+   | S ?remaining => progress ZesuSsz.Automation.Finish.zesu_run_pass_steps;
+       try ZesuSsz.Automation.Finish.zesu_solve_instances; zesu_registered_prefix_steps remaining
+   | O => idtac "BOUNDED_PREFIX_FUEL_FRONTIER"
+   end | idtac "BOUNDED_PREFIX_STEP_FRONTIER"].
+Ltac ZesuSsz.Automation.Finish.zesu_run ::=
+ ZesuSsz.Automation.ResourceGroups.zesu_expose_environment_alias;
+ try ZesuSsz.Automation.Hooks.zesu_prepare_uninit_goal;
+ try ZesuSsz.Automation.Hooks.zesu_normalize_find_mem_address;
+ let switches := ZesuSsz.Automation.Finish.zesu_search_switches in
+ ZesuSsz.Automation.SwitchDispatch.zesu_dispatch_search switches ltac:(fun _ =>
+   unshelve (zesu_registered_prefix_steps constr:(64%nat))).
+Ltac zesu_native_entry_tail ::=
+ lazymatch goal with arguments : DecodeItemArgs |- _ =>
+ EntryWitnessFinish232.zesu_entry_witness_finish ltac:(progress liAStep)
+   ltac:(cbn [li_fst li_snd]; native_entry_scalar arguments)
+ end.
+Ltac zesu_parallel_frontier_step :=
+ lazymatch goal with arguments : DecodeItemArgs |- _ =>
+ first [solve [unfold SHELVED_SIDECOND; apply Z_to_bv_small;
+              change (0 <= decodeItemInputPointer arguments < 18446744073709551616); lia] |
+        solve [unfold SHELVED_SIDECOND; f_equal; apply bool_decide_eq_true_2; bv_solve] |
+        zesu_native_entry_tail | ZesuSsz.Automation.Finish.zesu_run]
+ end.

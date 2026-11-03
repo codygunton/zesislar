@@ -1,0 +1,3 @@
+Ltac zesu_native_entry_tail :=
+ zesu_entry_witness_finish ltac:(progress liAStep)
+ ltac:(first [reflexivity | solve [rewrite take_0; unfold RlpDecodeItem.bigEndian; cbn; bv_solve] | solve [unfold RlpDecodeItem.decodeItemStackBytes; bv_solve] | solve [lia] | solve [zesu_byte_bias_finish] | solve [bv_solve]]).

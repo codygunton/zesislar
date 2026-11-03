@@ -1,0 +1,7 @@
+Ltac ZesuSsz.Evidence.EntryWitnessInputs.zesu_entry_mapping_consume_ready ::=
+  lazymatch goal with
+  | _ : @ZesuEntryWitnessPending _ ?Witness ?key _
+    |- environments.envs_entails _ (@bi_exist _ (li_prod ?A ?B) ?body) =>
+      EntryWitnessProfile.zesu_entry_witness_ready key Witness constr:(li_prod A B) body;
+      zesu_entry_witness_consume
+  end.
