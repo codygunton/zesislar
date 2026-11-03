@@ -15,6 +15,67 @@ SCHEMA = 'entry-chain.staging-peak-context.v1'
 ROLES = ('public-prepare', 'owned-staging')
 KEYS = ('ZESU_STAGING_CONTEXT_JSON', 'ZESU_STAGING_CONTEXT_SHA256')
 GIB = 1024**3
+TRANSPORT_SCHEMAS = frozenset((
+    'zesu-proof-key-input-v2',
+    'entry-chain.runtime-semantic-projection.v1',
+))
+
+
+class _UnknownTransport(ValueError):
+    pass
+
+
+def _transport(reference, output, active):
+    """Authenticate the envelope before projecting declared transport paths."""
+    import proof_cache_key as keys
+    document = read_bound(reference)
+    if not isinstance(document, dict) or document.get('schema') not in TRANSPORT_SCHEMAS:
+        raise _UnknownTransport('The output transport has no recognized schema.')
+    if document['schema'] == keys.INPUT_SCHEMA:
+        keys.build_keys(document)
+    else:
+        keys.fields(document, {'schema', 'provider_fields', 'scope_roles', 'phase',
+                               'module', 'proof_source_sha256', 'statement_sha256'})
+        keys.string(document['module'])
+        keys.sha256(document['proof_source_sha256'])
+        keys.sha256(document['statement_sha256'])
+        if (document['phase'] != 'native' or not isinstance(document['provider_fields'], dict)
+                or not isinstance(document['scope_roles'], list)):
+            raise ValueError('The runtime semantic projection is malformed.')
+    path = reference['path']
+    if path in active:
+        raise _UnknownTransport('The output transport has a reference cycle.')
+    active = active | {path}
+
+    def relocate(value):
+        if value == output or value.startswith(output + '/'):
+            return '{output}' + value[len(output):]
+        return value
+
+    def project(value, trail=()):
+        if isinstance(value, list):
+            return [project(child, trail + (index,)) for index, child in enumerate(value)]
+        if not isinstance(value, dict):
+            return value
+        if value.get('kind') == 'literal':
+            return copy.deepcopy(value)
+        result = {key: project(child, trail + (key,)) for key, child in value.items()}
+        typed = (trail[:2] == ('recipe', 'configuration') and len(trail) > 2
+                 and trail[2] in ('argv', 'execution_vectors', 'cwd', 'environment'))
+        declared_path = (len(trail) == 2 and trail[0] in ('roots', 'files')
+                         or typed and trail[-1] == 'binding')
+        path = value.get('path')
+        if declared_path and isinstance(path, str) and (path == output or path.startswith(output + '/')):
+            if isinstance(value.get('sha256'), str) and path.endswith('.json'):
+                result['sha256'] = _transport(value, output, active)
+            result['path'] = relocate(path)
+        if typed and value.get('kind') == 'path' and isinstance(value.get('value'), str):
+            result['value'] = relocate(value['value'])
+        if typed and value.get('kind') == 'paths' and isinstance(value.get('values'), list):
+            result['values'] = [relocate(child) for child in value['values']]
+        return result
+
+    return keys.identity('entry-chain.staging-transport.v1', project(document))
 
 
 def workload(root):
@@ -24,7 +85,10 @@ def workload(root):
     paths += sorted((root/'tools/block/harness/code').rglob('*.py'))
     paths += [root/'tools/module_memory.py', root/'tools/resource_guard.sh',
               root/'tools/block/harness/runtime-tools/resource_guard.sh']
-    rows = [(str(path.relative_to(root)), binding(path)['sha256']) for path in paths]
+    # Preparation also imports helpers outside harness/code.
+    paths += [path for path in (root/'tools').rglob('*')
+              if path.suffix in ('.py', '.sh') and not path.name.startswith('test_')]
+    rows = [(str(path.relative_to(root)), binding(path)['sha256']) for path in sorted(set(paths))]
     return hashlib.sha256(json.dumps(rows, separators=(',', ':')).encode()).hexdigest()
 
 
@@ -59,14 +123,25 @@ def input_workload(role, command, configuration=None, job=None):
         for key in ('commit','tree','tools_tree'):
             harness.pop(key,None)
         def relocated(value):
-            if isinstance(value,dict):return {key:relocated(child)for key,child in value.items()}
+            if isinstance(value,dict):
+                if value.get('kind') == 'literal':
+                    return copy.deepcopy(value)
+                result = {key:relocated(child)for key,child in value.items()}
+                path = value.get('path')
+                if (root and isinstance(path,str) and path.startswith(root+'/')
+                        and path.endswith('.json') and isinstance(value.get('sha256'),str)):
+                    result['sha256'] = _transport(value,root,set())
+                return result
             if isinstance(value,list):return [relocated(child)for child in value]
             if isinstance(value,str):
                 for prefix,label in ((root,'{output}'),(harness_root,'{harness}')):
                     if prefix and (value==prefix or value.startswith(prefix+'/')):
                         return label+value[len(prefix):]
             return value
-        value=relocated({'configuration':configuration,'job':{key:val for key,val in job.items()if key!='policy'}})
+        try:
+            value=relocated({'configuration':configuration,'job':{key:val for key,val in job.items()if key!='policy'}})
+        except _UnknownTransport:
+            return None
     return key_identity('entry-chain.staging-inputs.v1',value)
 
 
@@ -178,6 +253,8 @@ def _released(reference, entry, data, reader, role, kind, source):
             or type(value.get('memory_peak_bytes')) is not int or value['memory_peak_bytes'] <= 0):
         raise ValueError('The staging exit lacks an exact normal status and peak.')
     selected = context(value['context'], reader)
+    if selected['input_workload'] is None:
+        raise ValueError('The staging transport has no reusable workload identity.')
     if selected['role'] != role or selected['run_kind'] != kind or (selected['workload'],selected['input_workload']) != source:
         raise ValueError('The staging exit has another workload.')
     key = value['claim_key']; owner = data['shell_claim_owners'][key]
@@ -246,7 +323,7 @@ def create(role, harness, command, default, limit, *, job=None, configuration=No
     config = configuration_value(configuration,derived) if configuration else None
     kind = run_kind(role, command[3:] if role == ROLES[0] else None, job, config)
     material=input_workload(role,command,config,job)
-    peak = last_peak(role, kind, (source,material))
+    peak = last_peak(role, kind, (source,material)) if material is not None else None
     claim = max(GIB, (3*peak[1]+1)//2) if peak else default
     # A completed peak cannot authorize a booking above the unchanged fence.
     if claim > limit:

@@ -14,6 +14,109 @@ import role_peaks
 from entry_chain import binding, save
 import test_role_peaks
 import test_early_canonical_aggregate
+import test_proof_cache_key
+
+
+class TransportWorkload(unittest.TestCase):
+    def setUp(self):
+        fixture = test_proof_cache_key.ProofCacheKeyTests()
+        fixture.setUp()
+        self.addCleanup(fixture.doCleanups)
+        self.fixture = fixture
+        self.output = fixture.work
+        self.child = self.output/'CHILD.json'
+        save(self.child, fixture.spec)
+        self.spec = deepcopy(fixture.spec)
+        self.spec['files'].append(dict(binding(self.child), id='child',
+                                       kind='configuration', root_role='workspace'))
+        self.spec['recipe']['dependencies'].append({'id': 'child', 'requires': []})
+        self.input = self.output/'INPUTS.json'
+        save(self.input, self.spec)
+
+    def configuration(self, output, reference):
+        return {'runtime_path': str(output/'RUNTIME.json'), 'binding_inventory': reference}
+
+    def material(self, output=None, reference=None):
+        output = output or self.output
+        return P.input_workload(P.ROLES[1], [],
+            self.configuration(output, reference or binding(self.input)),
+            {'phase': 'prerequisites', 'output': str(output/'jobs/prerequisites')})
+
+    def test_nested_typed_transports_relocate_after_authentication(self):
+        import shutil
+        before = self.material()
+        other = self.fixture.root/'second'
+        shutil.copytree(self.output, other)
+        child = json.loads((other/'CHILD.json').read_text().replace(str(self.output), str(other)))
+        save(other/'CHILD.json', child)
+        parent = json.loads(self.input.read_text().replace(str(self.output), str(other)))
+        next(row for row in parent['files'] if row['id'] == 'child').update(binding(other/'CHILD.json'))
+        save(other/'INPUTS.json', parent)
+        self.assertNotEqual(binding(self.input)['sha256'], binding(other/'INPUTS.json')['sha256'])
+        self.assertEqual(before, self.material(other, binding(other/'INPUTS.json')))
+
+    def test_nested_digest_tampering_refuses(self):
+        self.child.write_text(self.child.read_text() + '\n')
+        with self.assertRaises(ValueError):
+            self.material()
+
+    def test_changed_source_and_literal_inputs_keep_distinct_identities(self):
+        before = self.material()
+        self.spec['recipe']['backend']['tactics'].append('idtac "changed".')
+        save(self.input, self.spec)
+        self.assertNotEqual(before, self.material())
+        before = self.material()
+        self.spec['recipe']['configuration']['argv'].append(
+            {'kind': 'literal', 'value': str(self.output/'literal-text')})
+        save(self.input, self.spec)
+        self.assertNotEqual(before, self.material())
+
+    def test_changed_source_bytes_cannot_reuse_the_workload(self):
+        before = self.material()
+        source = self.output/'Proof.v'
+        source.write_text(source.read_text() + '(* changed source *)\n')
+        child = json.loads(self.child.read_text())
+        for document in (child, self.spec):
+            next(row for row in document['files'] if row['id'] == 'Proof.v').update(binding(source))
+        save(self.child, child)
+        next(row for row in self.spec['files'] if row['id'] == 'child').update(binding(self.child))
+        save(self.input, self.spec)
+        self.assertNotEqual(before, self.material())
+
+    def test_external_bindings_remain_byte_exact(self):
+        external = self.fixture.root/'EXTERNAL.json'
+        save(external, self.fixture.spec)
+        before = self.material(reference=binding(external))
+        external.write_text(external.read_text() + '\n')
+        self.assertNotEqual(before, self.material(reference=binding(external)))
+
+    def test_undeclared_metadata_path_is_material(self):
+        self.spec['recipe']['backend']['features']['material_path'] = str(self.output/'first')
+        save(self.input, self.spec)
+        before = self.material()
+        self.spec['recipe']['backend']['features']['material_path'] = str(self.output/'second')
+        save(self.input, self.spec)
+        self.assertNotEqual(before, self.material())
+
+    def test_malformed_recognized_schema_stays_refused(self):
+        self.spec['recipe']['backend']['features']['material_path'] = {'path': str(self.output)}
+        save(self.input, self.spec)
+        with self.assertRaisesRegex(ValueError, 'backend feature'):
+            self.material()
+
+    def test_unknown_output_schema_disables_historical_sizing(self):
+        save(self.input, {'schema': 'unknown.v1', 'path': str(self.output)})
+        self.assertIsNone(self.material())
+
+    def test_semantic_projection_keeps_statement_bytes_exact(self):
+        projection = {'schema': 'entry-chain.runtime-semantic-projection.v1',
+            'provider_fields': {}, 'scope_roles': [], 'phase': 'native', 'module': 'Test.Proof',
+            'proof_source_sha256': 'a'*64, 'statement_sha256': 'b'*64}
+        save(self.input, projection)
+        before = self.material()
+        projection['statement_sha256'] = 'c'*64
+        save(self.input, projection)
+        self.assertNotEqual(before, self.material())
 
 
 class StagingPeaks(unittest.TestCase):
@@ -243,6 +346,22 @@ class StagingPeaks(unittest.TestCase):
             else:row['status']='stopped'
             self.registry.write({'schema':'zesu.run-registry.v1','runs':{self.run_id:row}})
             self.assertIsNone(self.latest())
+
+    def test_unrecognized_transport_cannot_select_a_historical_peak(self):
+        with patch.object(P, 'input_workload', return_value=None), \
+                patch.object(P, 'last_peak', side_effect=AssertionError('Unknown transport reused')):
+            _, value, _ = P.create(P.ROLES[0], self.harness, self.command, 24*M.GIB, 64*M.GIB,
+                environment={'ZESU_CANONICAL_LEDGER': str(self.f.ledger)})
+        self.assertEqual(value['claim_bytes'], 24*M.GIB)
+        self.assertIsNone(value['selected_peak'])
+
+    def test_outer_preparation_helper_change_changes_workload(self):
+        root = Path(self.harness['root'])
+        helper = root/'tools/block/entry_bindings.py'
+        helper.write_text('# original preparation helper\n')
+        before = P.workload(root)
+        helper.write_text('# changed preparation helper\n')
+        self.assertNotEqual(before, P.workload(root))
 
 
 class EarlyStaging(unittest.TestCase):
