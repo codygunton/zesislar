@@ -189,8 +189,11 @@ def successor_root_parameters(design):
 
 def typed_local_continuation(terminal, original, root):
     """Bind a local continuation and address to the exact entry telescope."""
-    if set(terminal) != {'kind', 'address', 'parameter', 'source_hashes'}:
+    fields = {'kind', 'address', 'parameter', 'source_hashes'}
+    if set(terminal) not in (fields, fields | {'local_let'}):
         raise ValueError('The typed local continuation has invalid fields')
+    if 'local_let' in terminal and terminal['local_let'] is not True:
+        raise ValueError('The local-let option must be true')
     parameter = terminal['parameter']
     if (not isinstance(parameter, dict) or set(parameter) != {'name', 'type'}
             or parameter['type'] != 'iProp Sigma'):
@@ -207,6 +210,32 @@ def typed_local_continuation(terminal, original, root):
     if {'name': terminal['address'], 'type': 'Z'} not in declared:
         raise ValueError('The local continuation address is not a source Z parameter')
     return parameter['name']
+
+
+def local_continuation_let(row, terminal):
+    """Read the exact continuation expression from its bound source slice."""
+    continuation = row.get('continuation')
+    if (not isinstance(continuation, dict)
+            or set(continuation) != {'parameter', 'type', 'source'}
+            or continuation['parameter'] != terminal['parameter']['name']
+            or continuation['type'] != terminal['parameter']['type']):
+        raise ValueError('The design row lacks the matching typed continuation')
+    source = continuation['source']
+    if (not isinstance(source, dict)
+            or set(source) != {'path', 'sha256', 'start', 'end'}
+            or type(source['start']) is not int or type(source['end']) is not int):
+        raise ValueError('The continuation source slice is invalid')
+    data = Path(source['path']).read_bytes()
+    if hashlib.sha256(data).hexdigest() != source['sha256']:
+        raise ValueError('The continuation source bytes changed')
+    if not 0 <= source['start'] < source['end'] <= len(data):
+        raise ValueError('The continuation source offsets are invalid')
+    expression = data[source['start']:source['end']].decode('utf-8')
+    if not expression.strip():
+        raise ValueError('The continuation source expression is empty')
+    if re.search(r'\b' + re.escape(continuation['parameter']) + r'\b', expression):
+        raise ValueError('The local continuation refers to its removed parameter')
+    return expression
 
 
 def native_boundary_source(state, block, design, root, *, enabled=True,
@@ -257,7 +286,22 @@ def native_boundary_source(state, block, design, root, *, enabled=True,
     imports = list(extra_imports)
     if not successors:
         if terminal.get('kind') == 'typed_local_continuation':
-            typed_local_continuation(terminal, original, root)
+            parameter = typed_local_continuation(terminal, original, root)
+            if terminal.get('local_let'):
+                if original['binders'][-1] != terminal['parameter']:
+                    raise ValueError('The local-let parameter must end the source telescope')
+                value = local_continuation_let(entries[entry], terminal)
+                local_binder = f' ({parameter} : iProp Sigma)'
+                telescope = f'Lemma infer_boundary {expected_binders}'
+                if not statement.startswith(telescope) or statement.count(local_binder) != 1:
+                    raise ValueError('The local-let source telescope changed')
+                # Only the selected source parameter becomes a local definition.
+                # Its uses and the remaining caller bytes stay literal.
+                statement = statement.replace(local_binder, '', 1)
+                colon = statement.index(':\n', len(telescope) - len(local_binder))
+                statement = (statement[:colon + 2] +
+                             f'  let {parameter} : iProp Sigma := ({value})%I in\n' +
+                             statement[colon + 2:])
         elif terminal.get('kind') == 'owned_continuation':
             declaration = designed_target({'entry_pc': hex(entry),
                 'entry_definition': terminal['definition'],
@@ -298,6 +342,8 @@ def native_boundary_source(state, block, design, root, *, enabled=True,
             'statement_sha256': hashlib.sha256(statement.encode()).hexdigest(),
             'successors': [hex(pc) for pc in successors],
             'root_parameters': root_parameters,
+            'local_continuation': deepcopy(entries[entry]['continuation'])
+                if not successors and terminal.get('local_let') else None,
             'terminal_scope': ('source-bound typed local continuation' if terminal.get('kind') == 'typed_local_continuation' else 'existing owned Level1 continuation; no added image continuation') if not successors else None,
             'scope': 'unproved native designed boundary', 'contract_closed': False}
 
