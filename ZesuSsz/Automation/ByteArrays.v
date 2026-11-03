@@ -1,4 +1,5 @@
 From Coq Require Import Lists.List ZArith.ZArith.
+Require Import ZesuSsz.Automation.RewriteBoundGuards.
 From iris.proofmode Require Import environments.
 From iris.program_logic Require Import lifting.
 Require Import isla.riscv64.riscv64.
@@ -90,9 +91,9 @@ Proof. rewrite /array_region_start Z.sub_diag. reflexivity. Qed.
   zesu_array_region_start_8_same zesu_bv_add_zero_64 : zesu_indices.
 #[export] Hint Rewrite (@Z_to_bv_bv_unsigned 64)
   : zesu_indices isla_coq_rewrite lithium_rewrite.
-#[export] Hint Rewrite zesu_bv_unsigned_add_Z_64 using bv_solve
+#[export] Hint Rewrite zesu_bv_unsigned_add_Z_64 using (first [ZesuSsz.Automation.RewriteBoundGuards.a3n_closed_bound_if_enabled | bv_solve])
   : zesu_indices isla_coq_rewrite lithium_rewrite.
-#[export] Hint Rewrite zesu_bv_unsigned_add_no_wrap_64 using bv_solve
+#[export] Hint Rewrite zesu_bv_unsigned_add_no_wrap_64 using (first [ZesuSsz.Automation.RewriteBoundGuards.a3n_closed_bound_if_enabled | bv_solve])
   : zesu_indices isla_coq_rewrite lithium_rewrite.
 
 Lemma zesu_take_8_drop (bytes : list (bv 8)) (offset : nat) :

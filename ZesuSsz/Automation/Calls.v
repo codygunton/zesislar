@@ -105,6 +105,7 @@ Global Instance : LithiumUnfold (@machine_call) := I.
 
 Definition zesu_call_ret `{!islaG Sigma} `{!threadG} :=
   @machine_call_ret Sigma _ _ defaultMap.
+Global Typeclasses Opaque zesu_call_ret.
 Definition zesu_call `{!islaG Sigma} `{!threadG} :=
   @machine_call Sigma _ _ defaultMap.
 Global Instance : LithiumUnfold (@zesu_call_ret) := I.
@@ -126,6 +127,7 @@ Definition zesu_call_preserved_frame `{!islaG Sigma} `{!threadG}
    "x12" ↦ᵣ RVal_Bits b12 ∗ "x13" ↦ᵣ RVal_Bits b13 ∗
    "x14" ↦ᵣ RVal_Bits b14 ∗ "x15" ↦ᵣ RVal_Bits b15 ∗
    "x16" ↦ᵣ RVal_Bits b16 ∗ "x17" ↦ᵣ RVal_Bits b17 ∗ True)%I.
+Global Typeclasses Opaque zesu_call_preserved_frame.
 Global Instance : LithiumUnfold (@zesu_call_preserved_frame) := I.
 
 (** Open the standard call boundary without unfolding temporary collections. *)
