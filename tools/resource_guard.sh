@@ -1802,6 +1802,9 @@ case "${1:-report}" in
     export ZESU_COQC_RESERVATION="$token" ZESU_COQC_SCOPE="$token" ZESU_OWNED_GUARD_TOKEN="$token"
     apply_scope_limits || exit $?
     register_run_actor || exit $?
+    if [ -n "${ZESU_STAGING_CONTEXT_JSON:-}" ] || [ -n "${ZESU_STAGING_CONTEXT_SHA256:-}" ]; then
+      exec python3 -B "$MEMORY_TOOL" staging-exit-exec --marker "$token" -- "$@"
+    fi
     if [ -n "${ZESU_CONTROLLER_ROLE:-}" ] && [ -n "${ZESU_CONTROLLER_BOOKING_JSON:-}" ]; then
       exec python3 -B "$MEMORY_TOOL" role-exit-exec --marker "$token" -- "$@"
     fi

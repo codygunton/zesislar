@@ -248,6 +248,8 @@ def finish(start, payload, returncode):
     row.update(schema=SCHEMA, payload_actor=payload, returncode=returncode,
                memory_peak_bytes=peak, payload_process_group_closed=True,
                finished_ns=time.time_ns(), qualification='Guarded role scope at payload exit; includes the supervisor.')
+    if 'staging_registry' in start:
+        row['staging_registry'] = start['staging_registry']
     destination = start['ledger'].parent/'controller-exit-peaks'
     destination.mkdir(mode=0o700, exist_ok=True)
     output = destination/(uuid.uuid4().hex+'.json')

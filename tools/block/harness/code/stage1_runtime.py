@@ -372,7 +372,8 @@ def run_native(config, job, out, controller):
         runtime=read_bound(staged['runtime']);workspace=Path(runtime['prepared_workspace'])
         report=read_bound(staged['phase1']);selected=read_bound(staged['key'])
     else:
-        runtime, workspace = controller.stage_job(config, dict(job, policy=policy), out)
+        from staging_peaks import stage
+        runtime, workspace = stage(config, dict(job, policy=policy), out)
         report, selected = prepare(config, job, out, runtime, workspace)
     collector.revalidate(report)
     defects = []

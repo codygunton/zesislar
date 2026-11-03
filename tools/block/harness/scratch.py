@@ -11,6 +11,8 @@ if __name__=='__main__':
     sys.path.insert(0,str(HERE/'code'))
     from harness_commit import bootstrap
     bootstrap(__file__,sys.argv[1:])
+    from staging_peaks import enter_prepare
+    enter_prepare(__file__,sys.argv[1:])
 W=HERE.parents[2]
 os.environ['PATH']='/home/cody/islaris/_opam/bin:/home/cody/.local/bin:/usr/local/bin:/usr/bin:/bin'
 os.environ['OPAM_SWITCH_PREFIX']='/home/cody/islaris/_opam'

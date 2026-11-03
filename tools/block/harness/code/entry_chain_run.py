@@ -410,7 +410,8 @@ def run_stock_job(config,job,out,prepared=None):
         if prepared:collector.revalidate(read_bound(binding(out/'prospective/PHASE1.json')))
         binding_recheck(config)
         with attribution.span('owned_staging'):
-            runtime,workspace=(prepared['runtime'],prepared['workspace']) if prepared else stage_job(config,job,out)
+            from staging_peaks import stage
+            runtime,workspace=(prepared['runtime'],prepared['workspace']) if prepared else stage(config,job,out)
         with attribution.span('controller_environment'):
             env=clean_environment();env.update(environment(job['phase'],job['claim_bytes'],job=job),PYTHONDONTWRITEBYTECODE='1',PYTHONHASHSEED='0')
             from scope_bookings import client_environment

@@ -31,6 +31,10 @@ PUBLIC_GUARD_HISTORY = {
 }
 PUBLIC_GUARD_PREDECESSORS = (
     PUBLIC_GUARD_HISTORY,
+    {'commit': 'c25dfe0dfce252bc4f71e140dd498cb8a8c6050c', 'templates': {
+        'tools/resource_guard.sh': '9275b3eaa793a87174d7fddfdb3293c00a0aa56f8a41b5a7f1bf9c7ac5ccb5aa',
+        'tools/block/harness/runtime-tools/resource_guard.sh': '52b20a4ccb8e951a9538723a9cf21d0854c331d41f09242609ebea4840bfdecf',
+    }},
     {'commit': '1bfccdef857827ad460038972fbb80480bfa30a7', 'templates': {
         'tools/resource_guard.sh': 'ce7be67dcee1a6a612eed7a4a18f6e98f406312cd36517c04b516881655debe8',
         'tools/block/harness/runtime-tools/resource_guard.sh': '6736b1c0197c449d4c67e22cfc6465176e6fa30d1fc6eaad59ba359f92b82baf',
@@ -326,7 +330,9 @@ class ScopeReader:
                 raise ValueError('The claim lacks an owned batch binding.')
             self.process(owner)
             out = self.output(data, key, owner, kind)
-            batch = self.read(out / 'BATCH-PROCESS.json')
+            staging = (kind == 'entry' and not (out / 'BATCH-PROCESS.json').exists()
+                       and (out / 'STAGING-PROCESS.json').exists())
+            batch = self.read(out / ('STAGING-PROCESS.json' if staging else 'BATCH-PROCESS.json'))
             if self.process(batch) != owner['pid']:
                 raise ValueError('The batch process has another owner.')
             if kind == 'entry':
@@ -366,7 +372,8 @@ class ScopeReader:
 
     def early_entry_scope(self, data, key, owner, out, batch, pending_shell):
         """Bind the stock guard before its inside controller can write its receipt."""
-        launch = self.read(out / 'LAUNCH.json')
+        staging = not (out / 'LAUNCH.json').exists() and (out / 'STAGING-LAUNCH.json').exists()
+        launch = self.read(out / ('STAGING-LAUNCH.json' if staging else 'LAUNCH.json'))
         guard = out / 'workspace/tools/resource_guard.sh'
         owner_args = self.argv(owner)
         if (len(owner_args) != 7 or owner_args[1] != '-B'
@@ -374,8 +381,12 @@ class ScopeReader:
                 or owner_args[-2:] != [owner['block'], str(out)]):
             raise ValueError('The early entry controller belongs to another output.')
         inside = owner_args[:3] + ['--inside', str(out)]
-        expected = [str(guard), 'batch', 'entry-chain-' + owner['block'], '--',
-                    str(guard), 'scope', 'entry-chain-client', '--', *inside]
+        if staging:
+            from staging_peaks import authenticate_launch
+            expected, guard = authenticate_launch(self,launch,owner,owner_args,out,ledger_claims(data)[key])
+        else:
+            expected = [str(guard), 'batch', 'entry-chain-' + owner['block'], '--',
+                        str(guard), 'scope', 'entry-chain-client', '--', *inside]
         if launch['owner'] != owner or launch['argv'] != expected:
             raise ValueError('The early entry launch differs from its owner.')
         wrapper = self.argv(batch)
@@ -417,7 +428,9 @@ class ScopeReader:
                 canonical = ledger_claims(data)[key]
                 if fields.get('writer') != '':
                     raise ValueError('The early shell booking differs from its claim.')
-                if amount != canonical:
+                if staging:
+                    authenticate_launch(self,launch,owner,owner_args,out,canonical,amount)
+                elif amount != canonical:
                     from scope_bookings import authenticate_client
                     config_path = Path(owner_args[3])
                     config = self.read(config_path)
