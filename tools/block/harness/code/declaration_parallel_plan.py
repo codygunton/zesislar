@@ -28,6 +28,7 @@ def inherit(config):
 
 def arguments(parser):
     parser.add_argument('--parallel-declarations',action='store_true')
+    parser.add_argument('--declaration-transport',choices=['dag','mcp'],default='dag')
     parser.add_argument('--declaration-keep-going',action='store_true')
     parser.add_argument('--declaration-module-measurements',type=Path)
     parser.add_argument('--declaration-workers',type=int,default=48)
@@ -36,7 +37,7 @@ def arguments(parser):
 def check_arguments(args, parser):
     if not 1 <= args.declaration_workers <= 48:
         parser.error('Declaration workers must be between 1 and 48.')
-    if not args.parallel_declarations and (args.declaration_module_measurements or args.declaration_workers!=48 or getattr(args,'declaration_keep_going',False)):
+    if not args.parallel_declarations and (getattr(args,'declaration_transport','dag')!='dag' or args.declaration_module_measurements or args.declaration_workers!=48 or getattr(args,'declaration_keep_going',False)):
         parser.error('Declaration worker options require --parallel-declarations.')
     if args.parallel_declarations and (not getattr(args,'declarations_only',True) or
             getattr(args,'dependency_batch',None) or getattr(args,'control_session',None)):
@@ -64,8 +65,10 @@ def planning_compiler(config):
     return dict(selected)
 
 
-def attach(config, *, measurements=None, maximum_workers=48, keep_going=False):
+def attach(config, *, measurements=None, maximum_workers=48, keep_going=False, transport='dag'):
     compiler=planning_compiler(config)
+    if transport not in {'dag','mcp'}:
+        raise ValueError('The declaration transport is unsupported.')
     if (config.get('declarations_only') is not True or config.get('control_session') or
             config.get('dependency_batch') or type(keep_going) is not bool or type(maximum_workers) is not int or
             not 1 <= maximum_workers <= 48):
@@ -90,7 +93,7 @@ def attach(config, *, measurements=None, maximum_workers=48, keep_going=False):
     for module in ordered:
         source = workspace / modules[module]
         if (not source.resolve().is_relative_to(workspace) or module in native or
-                '.Proofs.' in module or contains_native_proof(source.read_text())):
+                transport=='dag' and '.Proofs.' in module or contains_native_proof(source.read_text())):
             raise ValueError('A native proof cannot enter the declaration DAG.')
         if (module in PROTECTED or '.Evidence.' in module or
                 re.search(r'^\s*Declare\s+ML\s+Module\b', source.read_text(), re.M)):
@@ -107,7 +110,8 @@ def attach(config, *, measurements=None, maximum_workers=48, keep_going=False):
             'protected_modules': protected, 'maximum_workers': maximum_workers,
             'keep_going': keep_going,
             'dune': binding(dune), **resource}
-    claim = frontier_claim(ordered, graph['import_edges'], resource['weights'], completed, protected, maximum_workers)
+    if transport=='mcp':spec['transport']='mcp'
+    claim = (CLAIM_BYTES if transport=='mcp' else frontier_claim(ordered, graph['import_edges'], resource['weights'], completed, protected, maximum_workers))
     spec['claim_bytes'] = claim
     job['declaration_dag_booking'] = {'spec': deepcopy(spec), 'workspace': str(workspace),
         'compiler': compiler, 'physical_flags': list(config['physical_flags'])}
@@ -134,6 +138,9 @@ def for_phase(config, phase, workspace):
 
 def validate(runtime, workspace):
     spec = runtime['declaration_dag']
+    transport=spec.get('transport','dag')
+    if transport not in {'dag','mcp'}:
+        raise ValueError('The declaration transport is unsupported.')
     admission = runtime.get('canonical_admission', {})
     if (spec.get('schema') != SCHEMA or type(spec.get('keep_going',False)) is not bool or runtime.get('phase') != 'prerequisites' or
             runtime.get('native_route') or runtime.get('control_session') or
@@ -150,7 +157,7 @@ def validate(runtime, workspace):
         if binding(source) != row['source']:
             raise ValueError('A declaration DAG source changed.')
         text=source.read_text()
-        if '.Proofs.' in row['module'] or contains_native_proof(text):
+        if transport=='dag' and '.Proofs.' in row['module'] or contains_native_proof(text):
             raise ValueError('A native proof cannot enter the declaration DAG.')
         if (row['module'] in PROTECTED or '.Evidence.' in row['module'] or
                 re.search(r'^\s*Declare\s+ML\s+Module\b',text,re.M)):
@@ -169,8 +176,8 @@ def validate(runtime, workspace):
         forward.setdefault(row['from'],set()).add(row['to'])
     if graph_closure(runtime['ordered_modules'],forward)-set(runtime['ordered_modules'])!=set(spec['completed_modules']):
         raise ValueError('The declaration DAG changed its completed import closure.')
-    expected = frontier_claim(runtime['ordered_modules'], graph['import_edges'], spec['weights'],
-                   spec['completed_modules'], spec['protected_modules'], spec['maximum_workers'])
+    expected = (CLAIM_BYTES if transport=='mcp' else frontier_claim(runtime['ordered_modules'], graph['import_edges'], spec['weights'],
+                   spec['completed_modules'], spec['protected_modules'], spec['maximum_workers']))
     if spec['claim_bytes'] != expected:
         raise ValueError('The declaration DAG changed its concurrent frontier booking.')
     return spec
