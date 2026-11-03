@@ -50,13 +50,7 @@ Ltac zesu_memory_open_tuple fuel :=
    the source addresses, fractions, and byte order. Callers supply pure logic. *)
 Ltac zesu_memory_tuple consume_facts finish :=
   once (ResourceGroups.zesu_open_resource_groups;
-  repeat multimatch goal with
-  | Hwidth : (8 = ?stride * 8)%N |- _ =>
-      is_var stride;
-      let Hone := fresh "HmemoryByteStride" in
-      assert (Hone : stride = 1%N) by (clear - Hwidth; Lia.lia);
-      subst stride
-  end;
+  ByteArrayAssemblyCodec.zesu_byte_array_normalize_stride;
   zesu_memory_open_tuple constr:(16%nat);
   repeat iMatchHyp ltac:(fun name body => is_var body; progress (iFrame name));
   lazymatch goal with

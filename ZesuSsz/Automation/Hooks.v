@@ -21,6 +21,7 @@ Require Export ZesuSsz.Automation.IntegerReturn.
 Require Import ZesuSsz.Contracts.SelectedCodeLookup.
 Require Import InstrSpecs.Lookup.
 Require Import ZesuSsz.Automation.ResourceGroups.
+Require Import ZesuSsz.Automation.ByteArrayAssemblyCodec.
 Require Import ZesuSsz.Automation.ConjunctMatch.
 
 (* The pure closer must not unfold an Iris entailment into arithmetic. *)
@@ -2052,6 +2053,7 @@ Ltac zesu_integer_array_address_if_enabled :=
       let expanded := eval cbv beta zeta in pointer in
       zesu_integer_pointer_root expanded ltac:(fun _ =>
       let integer := zesu_stack_integer_address expanded in
+      first [ByteArrayAssemblyCodec.zesu_byte_array_restore_source |
       iMatchHyp ltac:(fun H body =>
         lazymatch body with
         | (?lower ↦ₘ{?q}∗ ?values)%I =>
@@ -2075,7 +2077,7 @@ Ltac zesu_integer_array_address_if_enabled :=
               zesu_integer_array_facts;
               rewrite Heq; clear Heq
             end
-        end))
+        end)])
   end.
 
 Ltac zesu_liAStep :=

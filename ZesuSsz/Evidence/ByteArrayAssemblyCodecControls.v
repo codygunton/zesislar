@@ -68,3 +68,52 @@ Proof.
   exact I.
 Qed.
 End Controls.
+
+
+Section DispatchControls.
+Context (Sigma : gFunctors) (G : islaG Sigma).
+#[local] Existing Instance G.
+Lemma restore_adjacent_cells (base : Z) (a b : bv 8) (K : iProp Sigma) (limit : Z) (Hbounds : (0 <= base /\ base + Z.of_N 1 * Z.of_nat (length [a;b]) <= limit)%Z) : ⊢ (((base ↦ₘ{DfracOwn 1} a ∗ (base+1) ↦ₘ{DfracOwn 1} b ∗ emp) ∗ K)%I -∗ find_in_context (FindMemMapsTo (base+1)) (fun _ => K))%I.
+Proof.
+iIntros "[Hcells HK]".
+  ByteArrayAssemblyCodec.zesu_byte_array_restore_source.
+  iExists (MKArray 8 base [a;b]). iFrame.
+  lazymatch goal with
+  | |- iris.proofmode.environments.envs_entails ?environment _ =>
+      change (iris.proofmode.environments.envs_entails environment
+        (base ↦ₘ∗ [a;b])%I)
+  end. iFrame.
+Qed.
+
+Lemma restore_source_stride (base : Z) (a b : bv 8) (K : iProp Sigma) (limit : Z) (stride : N) (Hwidth : (8 = stride*8)%N) (Hbounds : (0 <= base /\ base + Z.of_N stride * Z.of_nat (length [a;b]) <= limit)%Z) : ⊢ (((base ↦ₘ{DfracOwn 1} a ∗ (base+Z.of_N stride) ↦ₘ{DfracOwn 1} b ∗ emp) ∗ K)%I -∗ find_in_context (FindMemMapsTo (base+1)) (fun _ => K))%I.
+Proof.
+iIntros "[Hcells HK]".
+  ByteArrayAssemblyCodec.zesu_byte_array_restore_source.
+  iExists (MKArray 8 base [a;b]). iFrame.
+  lazymatch goal with
+  | |- iris.proofmode.environments.envs_entails ?environment _ =>
+      change (iris.proofmode.environments.envs_entails environment
+        (base ↦ₘ∗ [a;b])%I)
+  end. iFrame.
+Qed.
+
+Lemma restore_fraction_refuses (base : Z) (q : dfrac) (a b : bv 8) (K : iProp Sigma) (limit : Z) (Hbounds : (0 <= base /\ base + Z.of_N 1 * Z.of_nat (length [a;b]) <= limit)%Z) : True.
+Proof.
+assert_fails ltac:(assert (Hbad : ⊢ (((base ↦ₘ{DfracOwn 1} a ∗ (base+1) ↦ₘ{DfracDiscarded} b ∗ emp) ∗ K)%I -∗ find_in_context (FindMemMapsTo (base+1)) (fun _ => K))%I) by (iIntros "[Hcells HK]"; ByteArrayAssemblyCodec.zesu_byte_array_restore_source)). exact I.
+Qed.
+
+Lemma restore_address_refuses (base : Z) (q : dfrac) (a b : bv 8) (K : iProp Sigma) (limit : Z) (Hbounds : (0 <= base /\ base + Z.of_N 1 * Z.of_nat (length [a;b]) <= limit)%Z) : True.
+Proof.
+assert_fails ltac:(assert (Hbad : ⊢ (((base ↦ₘ{q} a ∗ (base+2) ↦ₘ{q} b ∗ emp) ∗ K)%I -∗ find_in_context (FindMemMapsTo (base+1)) (fun _ => K))%I) by (iIntros "[Hcells HK]"; ByteArrayAssemblyCodec.zesu_byte_array_restore_source)). exact I.
+Qed.
+
+Lemma restore_order_refuses (base : Z) (q : dfrac) (a b : bv 8) (K : iProp Sigma) (limit : Z) (Hbounds : (0 <= base /\ base + Z.of_N 1 * Z.of_nat (length [a;b]) <= limit)%Z) : True.
+Proof.
+assert_fails ltac:(assert (Hbad : ⊢ (((base ↦ₘ{q} b ∗ (base+1) ↦ₘ{q} a ∗ emp) ∗ K)%I -∗ find_in_context (FindMemMapsTo (base+1)) (fun _ => K))%I) by (iIntros "[Hcells HK]"; ByteArrayAssemblyCodec.zesu_byte_array_restore_source)). exact I.
+Qed.
+
+Lemma restore_source_bound_refuses (base : Z) (q : dfrac) (a b : bv 8) (K : iProp Sigma) (limit : Z) : True.
+Proof.
+assert_fails ltac:(assert (Hbad : ⊢ (((base ↦ₘ{q} a ∗ (base+1) ↦ₘ{q} b ∗ emp) ∗ K)%I -∗ find_in_context (FindMemMapsTo (base+2)) (fun _ => K))%I) by (iIntros "[Hcells HK]"; ByteArrayAssemblyCodec.zesu_byte_array_restore_source)). exact I.
+Qed.
+End DispatchControls.
