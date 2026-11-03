@@ -83,6 +83,24 @@ def select_closure(roots, resolve_original, donor_imports, inspect):
     return selected, result
 
 
+def install_projects(projects, output):
+    """Keep the same flags at the returned workspace and MCP artifact root."""
+    output=Path(output)
+    artifacts=output/'artifacts'
+    (artifacts/'default').mkdir(parents=True,exist_ok=True)
+    (output/'default').symlink_to('artifacts/default',target_is_directory=True)
+    copies=[]
+    for reference in projects:
+        read_bytes(reference)
+        for root in [output,artifacts]:
+            target=root/Path(reference['path']).name
+            clone_copy.copy2(reference['path'],target)
+            if binding(target)['sha256']!=reference['sha256']:
+                raise ValueError('The replay project bytes changed during installation.')
+            copies.append(binding(target))
+    return copies
+
+
 def create(spec_reference, output):
     spec = read_bound(spec_reference)
     original_reference = spec['original_replay']
@@ -173,8 +191,7 @@ def create(spec_reference, output):
             if binding(target)['sha256'] != reference['sha256'] or target.stat().st_ino == source.stat().st_ino:
                 raise ValueError('A replay reflink differs from its authenticated input.')
             copied.append({'module': name, 'kind': key, 'original': reference, 'owned': binding(target)})
-    for reference in original['projects']:
-        clone_copy.copy2(reference['path'], output / Path(reference['path']).name)
+    projects=install_projects(original['projects'],output)
     # Preserve the existing plugin view. No source bank changes.
     install = old / 'artifacts/install'
     if install.exists():(output / 'artifacts/install').symlink_to(install, target_is_directory=True)
@@ -202,7 +219,8 @@ def create(spec_reference, output):
     if len(actual['checks'])!=len(actual_checks) or any(row.get('compatible') is not True for row in actual['checks']):
         raise ValueError('The installed replay view has an incompatible imported object.')
     value = {'schema': 'entry-chain.exact-replay-view.v1', 'spec': spec_reference,
-             'workspace': str(output), 'objects': selected, 'copies': copied,
+             'workspace': str(output), 'MCP_artifact_root':str(output/'artifacts'),
+             'projects':projects, 'objects': selected, 'copies': copied,
              'import_comparison': compared, 'installed_comparison':actual, 'banks_changed': False,
              'READY_granted': False, 'proof_acceptance': False}
     save(output / 'OBJECT-VIEW.json', value)
