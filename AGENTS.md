@@ -106,7 +106,7 @@ The 300-second and 6 GiB figures are production goals for a finished proof modul
 on search. During development, first bound the problem: run a search or a proof to completion
 with whatever memory and time it needs (the machine has 256 GiB; a 64 GiB cap and no CPU cap are
 normal for a probe).
-Our account may use at most 200 GiB in total, because another account shares this host; `systemctl cat user-1000.slice` shows the limit and its reason. Ask the user before a job that needs more.
+Our account may use at most 152 GiB in total (lowered from 200 GiB on 2026-11-03), because another account shares this host; `systemctl cat user-1000.slice` shows the limit and its reason. Ask the user before a job that needs more.
 Record its peak memory, CPU, and residual goals, and optimize afterwards
 from that measurement. A run that stops at a cap mid-search has measured nothing.
 After an out-of-memory stop, profile the run one time with `perf` under a small cap (24 GiB)

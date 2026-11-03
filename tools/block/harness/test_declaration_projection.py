@@ -49,6 +49,6 @@ class ProjectionControls(unittest.TestCase):
   job=P.apply_job({'phase':'native','target':TARGET},[ROW])
   self.assertEqual(P.validate_job(job),16*P.GIB)
   self.assertEqual(job['physical_fence_bytes'],64*P.GIB)
-  self.assertEqual(P.PARENT_FENCE,175*P.GIB)
+  self.assertEqual(P.PARENT_FENCE,127*P.GIB)
 
 if __name__=='__main__':unittest.main()

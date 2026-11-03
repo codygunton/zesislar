@@ -137,11 +137,11 @@ aggregate=scope.parent
 parent=aggregate.parent
 assert parent.name=='zesuworkloads.slice'
 assert aggregate.name.startswith('zesuworkloads-aggregate')
-for group,expected in [(scope,68719476736),(aggregate,68719476736),(parent,187904819200)]:
+for group,expected in [(scope,68719476736),(aggregate,68719476736),(parent,136365211648)]:
  assert int((group/'memory.max').read_text())==expected
  assert (group/'memory.swap.max').read_text().strip()=='0'
 ticks=int(Path('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19])
-data={'pid':os.getpid(),'startticks':ticks,'cgroup':membership,'scope_bytes':68719476736,'aggregate_bytes':68719476736,'parent_bytes':187904819200,'swap_bytes':0,'proof_calls':0,'compiler_calls':0}
+data={'pid':os.getpid(),'startticks':ticks,'cgroup':membership,'scope_bytes':68719476736,'aggregate_bytes':68719476736,'parent_bytes':136365211648,'swap_bytes':0,'proof_calls':0,'compiler_calls':0}
 Path(sys.argv[1]).write_text(json.dumps(data,indent=2)+'\\n')
 ''')
         environment = {key: value for key, value in os.environ.items()
