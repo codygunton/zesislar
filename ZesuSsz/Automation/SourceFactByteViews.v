@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.ByteMaskCast.
+Require Import ZesuSsz.Automation.BitvectorFacts.
 Require Import ZesuSsz.Automation.VmClosed.
 From iris.proofmode Require Import tactics environments.
 From Coq Require Import ZArith NArith Lia.
@@ -117,9 +118,6 @@ Ltac zesu_source_byte_equal_views :=
           (rewrite Hequal; apply Z.le_refl)
   end.
 
-Ltac zesu_source_byte_views :=
-  zesu_source_byte_distinct_views; zesu_source_byte_equal_views.
-
 Lemma zesu_masked_byte_signed_order_view (width wide : N) (byte : bv 8)
     (Hwidth : (8 <= width)%N) (Hwide : (9 <= wide)%N) :
   bv_signed (bv_zero_extend wide
@@ -138,8 +136,73 @@ Proof.
   apply bv_swrap_small. lia.
 Qed.
 
+(* Use proved bounds. Evaluate only their closed constants. *)
+Ltac zesu_source_signed_order_goal :=
+  let requested := match goal with |- ?requested => requested end in
+  assert_fails (has_evar requested);
+  let word := lazymatch requested with
+    | context [bv_zero_extend 128 ?value] => constr:(value)
+    | context [bv_unsigned ?value] => constr:(value)
+    end in
+    let T := type of word in constr_eq T constr:(bv 64);
+    lazymatch word with
+    | context [Z_to_bv 64 ?quantity] =>
+      let finish := ltac:(fun Hzero Hrange Hsource =>
+        clear - Hzero Hrange Hsource;
+        repeat lazymatch goal with
+        | |- context [bv_signed (bv_add (bv_zero_extend 128 ?value) ?offset)] =>
+          VmClosed.zesu_vm_closed offset;
+          let Hoffset := fresh "HsignedOrderOffset" in
+          assert (Hoffset : bv_unsigned offset < 2 ^ 64) by
+            (vm_compute; congruence);
+          rewrite (BitvectorFacts.zesu_signed_zero_extend_add_64_128
+            value offset Hoffset); clear Hoffset
+        end;
+        repeat rewrite BitvectorFacts.zesu_signed_zero_extend_64_128;
+        bv_solve) in
+      multimatch goal with
+      | Hzero : ?minimum <= quantity, Hrange : ?endpoint < ?modulus |- _ =>
+        VmClosed.zesu_vm_closed minimum;
+        VmClosed.zesu_vm_closed modulus;
+        let floor := eval vm_compute in minimum in
+        let limit := eval vm_compute in modulus in
+        change (floor <= quantity) in Hzero;
+        change (endpoint < limit) in Hrange;
+        first [constr_eq endpoint quantity |
+          lazymatch endpoint with
+          | quantity + ?extent =>
+            VmClosed.zesu_vm_closed extent;
+            let count := eval vm_compute in extent in
+            change (quantity + count < limit) in Hrange
+          end];
+        first [
+          multimatch goal with
+          | Hsource : ?lower <= quantity |- _ =>
+            VmClosed.zesu_vm_closed lower;
+            let bound := eval vm_compute in lower in
+            change (bound <= quantity) in Hsource;
+            finish Hzero Hrange Hsource
+          end
+        | multimatch goal with
+          | Hsource : ?ending <= ?upper |- _ =>
+            VmClosed.zesu_vm_closed upper;
+            let bound := eval vm_compute in upper in
+            change (ending <= bound) in Hsource;
+            first [constr_eq ending quantity |
+              lazymatch ending with
+              | quantity + ?span =>
+                VmClosed.zesu_vm_closed span;
+                let count := eval vm_compute in span in
+                change (quantity + count <= bound) in Hsource
+              end];
+            finish Hzero Hrange Hsource
+          end]
+      end
+    end.
+
 (* This consumer evaluates only closed widths, masks, and signed bounds. *)
 Ltac zesu_source_byte_order_goal :=
+  first [zesu_source_signed_order_goal |
   let requested := match goal with |- ?requested => requested end in
   assert_fails (has_evar requested);
   lazymatch requested with
@@ -173,7 +236,7 @@ Ltac zesu_source_byte_order_goal :=
           end;
           solve [clear - Hderived; lia]
       end
-  end.
+  end].
 
 Ltac zesu_source_byte_order_fact requested :=
   lazymatch requested with
@@ -195,5 +258,13 @@ Ltac zesu_source_byte_order_tree requested :=
   | @bi_pure _ ?fact => zesu_source_byte_order_fact fact
   | @bi_sep _ ?left ?right =>
       zesu_source_byte_order_tree left; zesu_source_byte_order_tree right
+  | _ => idtac
+  end.
+
+Ltac zesu_source_byte_views :=
+  zesu_source_byte_distinct_views; zesu_source_byte_equal_views;
+  lazymatch goal with
+  | |- environments.envs_entails _ ?requested =>
+      zesu_source_byte_order_tree requested
   | _ => idtac
   end.
