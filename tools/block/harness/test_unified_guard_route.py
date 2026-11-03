@@ -37,8 +37,12 @@ class UnifiedGuardRoute(unittest.TestCase):
             marker=tokens/'2147483647.legacy'
             marker.write_text('confirmed\nwriter=\naggregate=\nmemory_fence_bytes=68719476736\n')
             original=marker.read_bytes()
+            ledger=directory/'LEDGER.json'
+            ledger.write_text(json.dumps({'fixed_claims':{},'shell_claim_owners':{}}))
             environment={k:v for k,v in os.environ.items() if not k.startswith('ZESU_')}
-            environment.update(ZESU_GUARD_STATE=str(directory),ZESU_GATE_LOCK=str(directory/'gate.lock'))
+            environment.update(ZESU_GUARD_STATE=str(directory),ZESU_GATE_LOCK=str(directory/'gate.lock'),
+                               ZESU_CANONICAL_LEDGER=str(ledger),
+                               ZESU_MODULE_MEMORY_TOOL=str(root/'tools/module_memory.py'))
             library=(root/'tools/resource_guard.sh').read_text().split('\nprune_scope_registry\n',1)[0]
             result=subprocess.run(['bash'],input=library+'\nlive_reservations\n',env=environment,
                                   text=True,capture_output=True,timeout=10)
