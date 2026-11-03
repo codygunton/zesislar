@@ -26,7 +26,8 @@ def _state_from_result(record):
                          {key: Expr.from_dict(value) for key, value in record.get('retained_registers', {}).items()},
                          list(record.get('memory_disjoint', [])),
                          list(record['register_writes']) if 'register_writes' in record else None,
-                         list(record.get('source_intervals', [])))
+                         list(record.get('source_intervals', [])), list(record.get('source_alignments', [])),
+                         list(record.get('symbolic_read_ranges', [])), list(record.get('read_obligations', [])))
 
 
 def _prepare_state(state, seed):
@@ -38,7 +39,7 @@ def _prepare_state(state, seed):
                     if region.ownership_id in owned else region for region in state.memory]
 
 
-def evaluate_owned_function(function, traces, initial_seeds, *, vocabulary, max_paths=4096):
+def evaluate_owned_function(function, traces, initial_seeds, *, vocabulary, max_paths=4096, capture_witness_origins=False):
     """Stop a block before another instruction when ownership checks fail.
 
     Each seed carries public source ownership or an explicit handwritten cut.
@@ -53,6 +54,10 @@ def evaluate_owned_function(function, traces, initial_seeds, *, vocabulary, max_
 
     def check(state, *, seed_pc, **context):
         seed = seeds[seed_pc]
+        if capture_witness_origins:
+            from source_witness_bindings import record_trace_origins
+            record_trace_origins(state, traces[context['instruction_pc']],
+                                 instruction_pc=context['instruction_pc'], seed_pc=seed_pc)
         _prepare_state(state, seed)
         result = apply_owned_writes(seed.resources, state.writes, conditions=state.conditions,
                                     facts=seed.facts, endianness=state.endianness)
@@ -65,7 +70,8 @@ def evaluate_owned_function(function, traces, initial_seeds, *, vocabulary, max_
             return rendered
         return None
 
-    report = evaluate_function(function, traces, initial, max_paths=max_paths, check_state=check)
+    report = evaluate_function(function, traces, initial, max_paths=max_paths, check_state=check,
+                               generated_seeds={pc: seed.join_kind for pc, seed in seeds.items() if seed.join_kind})
     report['resource_layer_schema'] = 'owned-resources.v1'
     for boundary in report['boundaries']:
         for alternative in boundary['alternatives']:

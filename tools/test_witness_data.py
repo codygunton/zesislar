@@ -2,18 +2,34 @@
 
 from copy import deepcopy
 import hashlib
+import json
 from pathlib import Path
 import sys
 import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).parent / "block"))
-from witness_data import declared_witness_slots, resolved_witness_data
+from witness_data import (declared_witness_slots, resolved_witness_data, _array_owners,
+                          witness_profile_metadata, product)
 from entry_bindings import normalize_type
 from render_support import witness_mapping_source
 
 
 class WitnessDataTests(unittest.TestCase):
+    def test_explicit_full_array_definition_preserves_source(self):
+        text = 'Definition owner : iProp Sigma := isla.ghost_state.mem_mapsto_array_def ((base)%Z) (DfracOwn 1) (payload).'
+        owners = _array_owners(text, 'owner')
+        self.assertEqual(len(owners), 1)
+        self.assertEqual(owners[0]['address'], ['base'])
+        self.assertEqual(owners[0]['payload'], ['payload'])
+        self.assertEqual(owners[0]['fraction']['term'], 'DfracOwn 1')
+        self.assertEqual(owners[0]['fraction']['source'], '(DfracOwn 1)')
+
+    def test_explicit_array_definition_refuses_other_fractions(self):
+        for fraction in ['DfracOwn 2', 'DfracOwn q', 'DfracDiscarded', 'DfracOwn (1 / 2)', 'DfracOwn']:
+            with self.subTest(fraction=fraction), self.assertRaisesRegex(ValueError, 'unsupported explicit fraction'):
+                _array_owners('Definition owner : iProp Sigma := isla.ghost_state.mem_mapsto_array_def (base) (' + fraction + ') (payload).', 'owner')
+
     target = '''Definition target (K : iProp Sigma) : iProp Sigma :=
       ((∃ (unused : Z) (count : Z) (frame : list (bv 8%N))
           (loaded first second : bv 64%N),
@@ -96,6 +112,46 @@ Definition bytes : list (bv 8%N) := [].
         with self.assertRaisesRegex(ValueError, "nested binders"):
             declared_witness_slots(self.target.replace("count = 0", "(let count := 0 in count) = 0"), "target")
 
+    def test_frozen_mapping_metadata_refuses_same_type_slot_swap(self):
+        slots = declared_witness_slots(self.target, "target")["remaining"]
+        supplied = deepcopy(slots)
+        first = next(i for i, slot in enumerate(supplied) if slot["name"] == "first")
+        second = next(i for i, slot in enumerate(supplied) if slot["name"] == "second")
+        supplied[first], supplied[second] = supplied[second], supplied[first]
+        with self.assertRaisesRegex(ValueError, "slot order"):
+            witness_profile_metadata(self.target, "target", supplied, name="profile",
+                typed="", entry="target K", witness_type=product([s["type"] for s in slots]),
+                mapping_fragment="unchanged emitted mapping")
+
+    def test_frozen_phase_uses_authenticated_original_metadata(self):
+        slots = declared_witness_slots(self.target, "target")["remaining"][::2]
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "emission.json"
+            path.write_text(json.dumps({"phase": [s["name"] for s in slots]}))
+            phase = {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                     "pointer": "/phase"}
+            arguments = dict(name="profile", typed="", entry="target K",
+                             witness_type=product([s["type"] for s in slots]),
+                             mapping_fragment="unchanged mapping", phase_metadata=phase)
+            result = witness_profile_metadata(self.target, "target", slots, **arguments)
+            self.assertEqual(result["source_slots"], slots)
+            self.assertEqual(result["phase_metadata"], phase)
+            path.write_text(json.dumps({"phase": list(reversed([s["name"] for s in slots]))}))
+            with self.assertRaisesRegex(ValueError, "metadata changed"):
+                witness_profile_metadata(self.target, "target", slots, **arguments)
+            phase["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+            with self.assertRaisesRegex(ValueError, "declaration order"):
+                witness_profile_metadata(self.target, "target", slots, **arguments)
+
+    def test_frozen_mapping_metadata_keeps_fragment_hash(self):
+        slots = declared_witness_slots(self.target, "target")["remaining"]
+        fragment = "unchanged emitted mapping"
+        result = witness_profile_metadata(self.target, "target", slots, name="profile",
+            typed="", entry="target K", witness_type=product([s["type"] for s in slots]),
+            mapping_fragment=fragment)
+        self.assertEqual(result["mapping_fragment_sha256"], hashlib.sha256(fragment.encode()).hexdigest())
+        self.assertFalse(result["runtime_names_recovered"])
+
     def test_mapping_renderer_checks_complete_data_before_registration(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -116,6 +172,8 @@ Definition bytes : list (bv 8%N) := [].
             self.assertLess(text.index("Definition data"), text.index("Instance mapping"))
             self.assertIn("zesu_witness_mapping := data", text)
             self.assertNotIn("Proof", text)
+            self.assertIn("ZesuEntryWitnessSourceProfile", text)
+            self.assertIn("ZesuEntryWitnessDataProfile", text)
             mapping["data"]["slots"].pop(1)
             with self.assertRaisesRegex(ValueError, "slot count"):
                 witness_mapping_source(mapping, fields, root, {"Support.Inputs", "Contracts.Target"})

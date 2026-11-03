@@ -12,7 +12,8 @@ from pathlib import Path
 from check_data_only_lemmas import atom, rocq_tokens, top_level_positions
 from entry_bindings import declared_binders, normalize_type
 from witness_data import (_array_owners, _register_owners, _source_declaration,
-                          _source_definition, _unwrap, _words, declared_witness_slots)
+                          _source_definition, _unwrap, _words, declared_witness_slots,
+                          closed_bitvector_width as _width)
 
 
 def _bound_json(binding):
@@ -58,14 +59,6 @@ def _application_arguments(text):
         arguments.append(text[lexed[start][1]:lexed[position - 1][1] + len(lexed[position - 1][0])])
     return values[0], arguments
 
-
-def _width(kind):
-    values = _words(rocq_tokens(kind))
-    if values[-2:] == ["%", "N"]:
-        values = values[:-2]
-    if len(values) != 2 or values[0] != "bv" or not values[1].isdigit():
-        raise ValueError("The source register needs an explicit bitvector width.")
-    return int(values[1])
 
 
 def _canonical(values, *, word=False, address=False):
@@ -151,15 +144,17 @@ def _check_forward_owner(row, binding):
     if len(arrays) != len(expected_arrays):
         raise ValueError("The source array ownership differs from the bound forward row.")
     unmatched = list(arrays)
+    array_fractions = []
     for resource in expected_arrays:
         matches = [owner for owner in unmatched
                    if _canonical(owner["address"], address=True) == _canonical(_words(rocq_tokens(resource["address"])), address=True)
                    and _canonical(owner["payload"]) == _canonical(_words(rocq_tokens(resource["value"]))) ]
         if len(matches) != 1:
             raise ValueError("The source array address or payload differs from the bound forward row.")
+        array_fractions.append(dict(address=resource['address'], fraction=matches[0]['fraction']))
         unmatched.remove(matches[0])
     return dict(registers=evidence, arrays=expected_arrays, collections=expected_collections,
-                exact_machine_resource_projection=True)
+                array_fractions=array_fractions, exact_machine_resource_projection=True)
 
 
 def _argument_catalog(row, dependencies):
@@ -240,7 +235,10 @@ def forward_witness_data(value, target_source, target, parameters, output_path):
     layout = declared_witness_slots(target_source, target)
     arrays = {owner["payload"][0] for owner in _array_owners(target_source, target)
               if len(owner["payload"]) == 1}
+    from join_witness_plan import planned_witnesses
+    join_values, join_registers, join_plan = planned_witnesses(row, layout, roles)
     slots, pending, certificates = [], [], []
+    pending_inputs = set()
     for slot in layout["remaining"]:
         bound = slot["name"]
         if bound in layout["register_slots"] or bound in roles:
@@ -252,6 +250,10 @@ def forward_witness_data(value, target_source, target, parameters, output_path):
                          width=width, provenance=source_assertion)))
         elif bound in arrays:
             slots.append(dict(**slot, value=None, source=dict(kind="array", provenance=source_assertion)))
+        elif bound in join_values:
+            pending.append((slot, join_values[bound]))
+            pending_inputs.add(bound)
+            certificates.append(dict(slot=bound, join_witness_plan=join_plan))
         else:
             candidates = catalog.get(bound, [])
             unique = {normalize_type(item["value"]) for item in candidates}
@@ -276,9 +278,12 @@ def forward_witness_data(value, target_source, target, parameters, output_path):
         raise ValueError("A forward argument needs a parameter absent from the mapping scope.")
     typed = "".join(" (" + bound + " : " + kind + ")" for bound, kind in binders(data_parameters))
     prefix, value_sources = [], []
+    from witness_data import product
+    input_type = product(['bv ' + str(width) + '%N' for _, width in join_registers])
     for slot, term in pending:
         definition = identifier(name + "_source_" + slot["name"], "forward value name")
-        prefix.append("Definition " + definition + typed + " : " + expression(slot["type"], "slot type") +
+        inputs = ' (source_words : ' + input_type + ')' if slot['name'] in pending_inputs else ''
+        prefix.append("Definition " + definition + typed + inputs + " : " + expression(slot["type"], "slot type") +
                       " :=\n  " + term + ".\n")
         value_sources.append(dict(path=str(Path(output_path).resolve()), declaration=definition))
     prefix = "\n".join(prefix)

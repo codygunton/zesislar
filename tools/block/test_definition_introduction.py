@@ -28,6 +28,18 @@ class DefinitionIntroduction(unittest.TestCase):
         self.assertNotIn("bi.entails_refl", rendered)
         self.assertNotIn(":= reflexivity _.", rendered)
 
+    def test_outer_lets_are_one_argument_without_changing_the_body(self):
+        for body in [
+            "let J : iProp Sigma := (True)%I in (J ∗ K)%I",
+            "let number : Z := value in let J : iProp Sigma := (⌜number = value⌝)%I in J",
+        ]:
+            with self.subTest(body=body):
+                source = self.source(body)
+                rendered = definition_introduction_source(source, "sample")
+                self.assertIn("\n  (" + body + ") := @PreOrder_Reflexive", rendered)
+                self.assertEqual(rendered.count(body), 1)
+                self.assertEqual(source, self.source(body))
+
     def test_extra_command_refuses(self):
         with self.assertRaises(ValueError):
             definition_introduction_source(self.source("True%I") + "Axiom bad : False.\n", "sample")
