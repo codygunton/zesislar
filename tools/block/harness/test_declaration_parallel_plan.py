@@ -197,3 +197,32 @@ class PublicDagPlanTests(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+
+class PublicMcpPlanTests(PublicDagPlanTests):
+    def test_mcp_transport_keeps_full_fence_booking(self):
+        spec=self.attach(transport='mcp',maximum_workers=8)
+        self.assertEqual(spec['transport'],'mcp')
+        self.assertEqual(spec['claim_bytes'],64*GIB)
+        self.assertEqual(validate(self.runtime(spec),self.root),spec)
+
+    def test_transport_requires_explicit_parallel_flag(self):
+        parser=argparse.ArgumentParser()
+        arguments(parser)
+        with self.assertRaises(SystemExit):
+            check_arguments(parser.parse_args(['--declaration-transport','mcp']),parser)
+
+    def test_unknown_transport_refuses(self):
+        with self.assertRaisesRegex(ValueError,'transport'):
+            self.attach(transport='unknown')
+
+    def test_mcp_allows_pure_dependency_in_proofs_namespace_only(self):
+        module='ZesuSsz.Proofs.ExamplePure'
+        self.config['jobs'][0]['ordered_modules']=[module]
+        self.config['proof_runtime']['module_files']={module:'A.v'}
+        with self.assertRaisesRegex(ValueError,'native proof'):
+            self.attach()
+        spec=self.attach(transport='mcp')
+        self.assertEqual(validate(self.runtime(spec),self.root),spec)
+        (self.root/'A.v').write_text('Goal True. Proof. zesu_block. Qed.\n')
+        with self.assertRaisesRegex(ValueError,'native proof'):
+            self.attach(transport='mcp')

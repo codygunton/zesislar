@@ -43,6 +43,8 @@ SCOPED_SINKS = {'entry_chain_provider.py': {
     'compiled_verification': ('scratch_statement', 'compiled_verification'),
     'checked_fixture': ('declaration_preflight', 'checked_fixture'),
     'run_declaration_dag': ('declaration_parallel', 'run'),
+    'run_mcp_levels': ('declaration_mcp', 'run'),
+    'validate_mcp_plan': ('declaration_parallel_plan', 'validate'),
     'check_declaration_names': ('declaration_names', 'check'),
     'descriptor': ('scope_bookings', 'descriptor'),
     'mcp_environment': ('scope_bookings', 'mcp_environment'),
